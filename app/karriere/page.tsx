@@ -93,36 +93,59 @@ function JobIcon({ name }: { name: string }) {
 export default function KarrierePage() {
   return (
     <article className="overflow-hidden">
-      {/* Bild direkt unterm Header – volle Breite */}
-      <section className="relative w-full">
-        <Image
-          src="/images/karriere/Karriere.webp"
-          alt="Karriere bei Alltagshilfe-Süd – Team und Arbeitsalltag"
-          width={1920}
-          height={800}
-          className="block h-auto w-full object-cover"
-          sizes="100vw"
-          priority
-        />
-      </section>
-
-      {/* Hero */}
-      <section className="relative bg-gradient-to-br from-[#0F4F68] via-[#0F4F68] to-[#0c3d52] px-4 py-20 sm:py-28">
+      {/* Hero + Rechts: Kontaktbild, Telefon, E-Mail */}
+      <section className="relative border-b border-[#0F4F68]/15 bg-gradient-to-br from-[#0F4F68] via-[#0F4F68] to-[#0c3d52] px-4 py-16 sm:py-20">
         <div className="absolute inset-0 opacity-10" aria-hidden>
           <div className="absolute left-1/4 top-1/4 h-64 w-64 rounded-full bg-white blur-3xl" />
           <div className="absolute bottom-1/4 right-1/4 h-48 w-48 rounded-full bg-[#F78F2E] blur-3xl" />
         </div>
         <Container className="relative">
-          <p className="text-sm font-semibold uppercase tracking-widest text-[#F78F2E]">
-            Karriere bei {siteConfig.name}
-          </p>
-          <h1 className="mt-4 max-w-3xl text-4xl font-bold tracking-tight text-white sm:text-5xl lg:text-6xl">
-            Karriere
-          </h1>
-          <p className="mt-6 max-w-2xl text-lg text-white/90">
-            Wir suchen Menschen, die mit uns den Alltag von Pflegebedürftigen und
-            Angehörigen einfacher und würdevoll gestalten wollen.
-          </p>
+          <div className="grid gap-10 lg:grid-cols-[1fr,minmax(280px,380px)] lg:items-start lg:gap-12">
+            <div>
+              <p className="text-sm font-semibold uppercase tracking-widest text-[#F78F2E]">
+                Karriere bei {siteConfig.name}
+              </p>
+              <h1 className="mt-4 max-w-3xl text-4xl font-bold tracking-tight text-white sm:text-5xl lg:text-6xl">
+                Karriere
+              </h1>
+              <p className="mt-6 max-w-2xl text-lg text-white/90">
+                Wir suchen Menschen, die mit uns den Alltag von Pflegebedürftigen und
+                Angehörigen einfacher und würdevoll gestalten wollen.
+              </p>
+            </div>
+            <div className="flex flex-col items-center rounded-2xl bg-white/95 p-6 shadow-lg lg:sticky lg:top-24">
+              <div className="relative aspect-[4/3] w-full max-w-[280px] overflow-hidden rounded-xl">
+                <Image
+                  src="/images/Kontakt_Bild.webp"
+                  alt="Karriere – Alltagshilfe-Süd"
+                  width={560}
+                  height={420}
+                  className="h-full w-full object-cover"
+                  sizes="(max-width: 1024px) 90vw, 380px"
+                />
+              </div>
+              <p className="mt-4 text-sm font-semibold uppercase tracking-wide text-[#0F4F68]">
+                Direkt erreichen
+              </p>
+              <a
+                href="tel:+4983349893330"
+                className="mt-2 inline-flex items-center gap-2 text-xl font-bold text-[#0F4F68] hover:underline focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2 rounded"
+                aria-label="Anrufen: 08334 9893330"
+              >
+                <svg className="h-6 w-6 shrink-0" fill="currentColor" viewBox="0 0 24 24" aria-hidden style={{ color: "#F78F2E" }}>
+                  <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z" />
+                </svg>
+                08334 / 9893330
+              </a>
+              <p className="mt-4 text-sm font-semibold text-neutral-600">E-Mail</p>
+              <a
+                href="mailto:info@alltagshilfe-sued.de"
+                className="mt-1 text-base font-medium text-[#0F4F68] hover:underline focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2 rounded break-all"
+              >
+                info@alltagshilfe-sued.de
+              </a>
+            </div>
+          </div>
         </Container>
       </section>
 
