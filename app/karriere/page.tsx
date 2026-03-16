@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { Container } from "@/components/layout/Container";
+import { KarriereForm } from "@/components/forms/KarriereForm";
 import { siteConfig } from "@/config/site";
 
 export const metadata: Metadata = {
@@ -143,6 +144,7 @@ export default function KarrierePage() {
               >
                 daniel.niebauer@alltagshilfe-sued.de
               </a>
+              <KarriereForm />
             </div>
           </div>
         </Container>

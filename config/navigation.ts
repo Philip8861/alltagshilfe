@@ -11,6 +11,15 @@ export type NavLink = {
 export const navLinks: NavLink[] = [
   { href: "/leistungen", label: "Unsere Leistungen" },
   { href: "/standorte", label: "Standorte" },
+  {
+    href: "/ueber-uns",
+    label: "Unternehmen",
+    children: [
+      { href: "/ueber-uns", label: "Über uns" },
+      { href: "/kooperation", label: "Kooperation" },
+      { href: "/neuigkeiten", label: "Neuigkeiten" },
+    ],
+  },
   { href: "/karriere", label: "Karriere" },
   {
     href: "/pflegeberatung",
@@ -18,6 +27,7 @@ export const navLinks: NavLink[] = [
     children: [
       { href: "/pflegeberatung#private-pflegeberatung", label: "Private Pflegeberatung" },
       { href: "/pflegeberatung#betriebliche-pflegeberatung", label: "Betriebliche Pflegeberatung" },
+      { href: "/ratgeber", label: "Ratgeber" },
     ],
   },
   { href: "/pflegebox", label: "Pflegebox" },

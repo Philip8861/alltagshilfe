@@ -9,7 +9,7 @@ import { cn } from "@/lib/utils";
 export function HeaderNav() {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [openDropdownHref, setOpenDropdownHref] = useState<string | null>(null);
 
   return (
     <>
@@ -23,8 +23,8 @@ export function HeaderNav() {
               <div
                 key={item.href}
                 className="relative group"
-                onMouseEnter={() => setDropdownOpen(true)}
-                onMouseLeave={() => setDropdownOpen(false)}
+                onMouseEnter={() => setOpenDropdownHref(item.href)}
+                onMouseLeave={() => setOpenDropdownHref(null)}
               >
                 <Link
                   href={item.href}
@@ -35,7 +35,7 @@ export function HeaderNav() {
                 >
                   {item.label}
                   <svg
-                    className={cn("h-4 w-4 transition-transform", dropdownOpen && "rotate-180")}
+                    className={cn("h-4 w-4 transition-transform", openDropdownHref === item.href && "rotate-180")}
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
@@ -47,7 +47,7 @@ export function HeaderNav() {
                 <div
                   className={cn(
                     "absolute left-0 top-full pt-1 min-w-[220px] transition-opacity duration-150",
-                    dropdownOpen ? "opacity-100 visible" : "invisible opacity-0 pointer-events-none"
+                    openDropdownHref === item.href ? "opacity-100 visible" : "invisible opacity-0 pointer-events-none"
                   )}
                 >
                   <ul
