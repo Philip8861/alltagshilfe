@@ -124,12 +124,11 @@ export default function KarrierePage() {
                   sizes="(max-width: 1024px) 90vw, 380px"
                 />
               </div>
-              <p className="mt-4 text-sm font-semibold uppercase tracking-wide text-[#0F4F68]">
-                Direkt erreichen
-              </p>
+              <p className="mt-4 text-base font-bold text-[#0F4F68] sm:text-lg">Daniel Niebauer</p>
+              <p className="mt-0.5 text-sm text-neutral-600">Personalreferent</p>
               <a
                 href="tel:+4983349893330"
-                className="mt-2 inline-flex items-center gap-2 text-xl font-bold text-[#0F4F68] hover:underline focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2 rounded"
+                className="mt-3 inline-flex items-center gap-2 text-xl font-bold text-[#0F4F68] hover:underline focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2 rounded"
                 aria-label="Anrufen: 08334 9893330"
               >
                 <svg className="h-6 w-6 shrink-0" fill="currentColor" viewBox="0 0 24 24" aria-hidden style={{ color: "#F78F2E" }}>
@@ -139,10 +138,10 @@ export default function KarrierePage() {
               </a>
               <p className="mt-4 text-sm font-semibold text-neutral-600">E-Mail</p>
               <a
-                href="mailto:info@alltagshilfe-sued.de"
-                className="mt-1 text-base font-medium text-[#0F4F68] hover:underline focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2 rounded break-all"
+                href="mailto:daniel.niebauer@alltagshilfe-sued.de"
+                className="mt-1 block text-base font-medium text-[#0F4F68] hover:underline focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2 rounded break-all"
               >
-                info@alltagshilfe-sued.de
+                daniel.niebauer@alltagshilfe-sued.de
               </a>
             </div>
           </div>
