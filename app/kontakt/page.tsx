@@ -18,31 +18,19 @@ export default function KontaktPage() {
         <div className="mx-auto grid w-full max-w-6xl gap-10 lg:grid-cols-2 lg:items-start lg:gap-12">
           <div className="flex flex-col items-center order-2 lg:order-1">
             <div className="w-full max-w-xl rounded-2xl bg-[#F2F9FA] p-6 sm:p-8 lg:p-10">
-            <h1 className="text-3xl font-bold tracking-tight text-[#0F4F68] sm:text-4xl">
-              Kontakt
-            </h1>
-            <p
-              className="mt-4 opacity-0 text-neutral-600 animate-fade-in-up"
-              style={{ animationDelay: "0.1s" }}
-            >
-              Schreiben Sie uns – wir melden uns zeitnah bei Ihnen.
-            </p>
-            <div
-              className="mt-10 opacity-0 animate-fade-in-up"
-              style={{ animationDelay: "0.2s" }}
-            >
-              <ContactForm />
-            </div>
-            <p
-              className="mt-8 text-sm text-neutral-500 opacity-0 animate-fade-in-up"
-              style={{ animationDelay: "0.35s" }}
-            >
-              Weitere Informationen zur Datenverarbeitung finden Sie in unserer{" "}
-              <Link href="/datenschutz" className="underline hover:text-neutral-700">
-                Datenschutzerklärung
-              </Link>
-              .
-            </p>
+              <h1 className="text-3xl font-bold tracking-tight text-[#0F4F68] sm:text-4xl">
+                Kontakt
+              </h1>
+              <p className="mt-4 text-neutral-600">
+                Schreiben Sie uns – wir melden uns zeitnah bei Ihnen.
+              </p>
+              <p className="mt-6 text-sm text-neutral-500">
+                Weitere Informationen zur Datenverarbeitung finden Sie in unserer{" "}
+                <Link href="/datenschutz" className="underline hover:text-neutral-700">
+                  Datenschutzerklärung
+                </Link>
+                .
+              </p>
             </div>
           </div>
           <div className="flex flex-col items-center gap-6 text-center order-1 lg:order-2">
@@ -61,33 +49,46 @@ export default function KontaktPage() {
                 />
               </div>
               <div
-                className="relative z-10 -mt-10 w-[63%] min-w-[200px] rounded-xl bg-[#F2F9FA] px-6 py-3 text-center text-lg font-semibold text-[#0F4F68] sm:-mt-12 sm:py-4 sm:text-xl"
-                style={{ boxShadow: "0 -2px 12px rgba(15, 79, 104, 0.15)" }}
+                className="relative z-10 -mt-10 mx-auto w-full max-w-md rounded-xl border border-[#0F4F68]/15 bg-[#F2F9FA] px-5 py-4 text-center opacity-0 animate-fade-in-up sm:px-6 sm:py-5"
+                style={{ boxShadow: "0 -2px 12px rgba(15, 79, 104, 0.15)", animationDelay: "0.2s" }}
               >
-                Rufen Sie uns an
+                <p className="text-base font-bold text-[#0F4F68] sm:text-lg">Daniel Niebauer</p>
+                <p className="mt-0.5 text-sm text-neutral-600">Personalreferent</p>
+                <a
+                  href="tel:+4983349893330"
+                  className="mt-3 inline-flex items-center justify-center gap-2 text-xl font-bold text-[#0F4F68] hover:underline focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2 rounded"
+                  aria-label="Anrufen: 08334 9893330"
+                >
+                  <svg className="h-5 w-5 shrink-0" fill="currentColor" viewBox="0 0 24 24" aria-hidden style={{ color: "#F78F2E" }}>
+                    <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z" />
+                  </svg>
+                  08334 / 9893330
+                </a>
+                <p className="mt-3 text-sm font-semibold text-neutral-600">E-Mail</p>
+                <a
+                  href="mailto:daniel.niebauer@alltagshilfe-sued.de"
+                  className="mt-1 block text-base font-medium text-[#0F4F68] hover:underline break-all"
+                >
+                  daniel.niebauer@alltagshilfe-sued.de
+                </a>
               </div>
+            </div>
+            <div className="w-full max-w-xl rounded-2xl border border-[#0F4F68]/15 bg-white p-6 shadow-sm sm:p-8 opacity-0 animate-fade-in-up" style={{ animationDelay: "0.22s" }}>
+              <h2 className="text-xl font-bold text-[#0F4F68] sm:text-2xl">Nachricht senden</h2>
+              <p className="mt-2 text-sm text-neutral-600">Kontaktformular – wir antworten zeitnah.</p>
+              <div className="mt-6">
+                <ContactForm />
+              </div>
+              <p className="mt-6 text-xs text-neutral-500">
+                Weitere Informationen zur Datenverarbeitung:{" "}
+                <Link href="/datenschutz" className="underline hover:text-neutral-700">Datenschutzerklärung</Link>.
+              </p>
             </div>
             <div
               className="mx-auto w-full max-w-md opacity-0 animate-fade-in-up"
-              style={{ animationDelay: "0.25s" }}
+              style={{ animationDelay: "0.3s" }}
             >
-              <a
-                href="tel:+4983349893330"
-                className="inline-flex items-center justify-center gap-2 text-3xl font-bold text-[#0F4F68] hover:underline focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2 rounded sm:text-4xl"
-                aria-label="Anrufen: 08334 9893330"
-              >
-                <svg
-                  className="h-8 w-8 shrink-0 sm:h-9 sm:w-9"
-                  fill="currentColor"
-                  viewBox="0 0 24 24"
-                  aria-hidden
-                  style={{ color: "#F78F2E" }}
-                >
-                  <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z" />
-                </svg>
-                08334 / 9893330
-              </a>
-              <ul className="mt-5 space-y-2.5 text-base text-neutral-700 sm:text-lg">
+              <ul className="space-y-2.5 text-base text-neutral-700 sm:text-lg">
                 <li><span className="font-semibold text-[#0F4F68]">Montag:</span> 08:30 – 12:00 Uhr, 13:00 – 16:00 Uhr</li>
                 <li><span className="font-semibold text-[#0F4F68]">Dienstag:</span> 08:30 – 12:00 Uhr, 13:00 – 16:00 Uhr</li>
                 <li><span className="font-semibold text-[#0F4F68]">Mittwoch:</span> 08:30 – 12:00 Uhr, 13:00 – 16:00 Uhr</li>
