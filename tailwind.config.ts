@@ -8,7 +8,7 @@ const config: Config = {
   theme: {
     extend: {
       fontFamily: {
-        site: ["'Nunito Sans'", "Inter", "system-ui", "sans-serif"],
+        site: ["'Nunito Sans'", "system-ui", "sans-serif"],
       },
       keyframes: {
         "fade-in-up": {

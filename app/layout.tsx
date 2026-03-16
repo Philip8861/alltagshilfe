@@ -1,6 +1,12 @@
 import type { Metadata } from "next";
+import { Nunito_Sans } from "next/font/google";
 import "./globals.css";
 import { siteConfig } from "@/config/site";
+
+const nunitoSans = Nunito_Sans({
+  subsets: ["latin"],
+  display: "swap",
+});
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { CookieBanner } from "@/components/CookieBanner";
@@ -26,7 +32,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="de">
-      <body className="antialiased" style={{ fontFamily: "system-ui, sans-serif" }}>
+      <body className={`${nunitoSans.className} antialiased`}>
         <OrganizationJsonLd />
         <a
           href="#main-content"

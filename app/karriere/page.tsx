@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Container } from "@/components/layout/Container";
 import { KarriereForm } from "@/components/forms/KarriereForm";
+import { KarriereHeadline } from "@/components/karriere/KarriereHeadline";
 import { siteConfig } from "@/config/site";
 
 export const metadata: Metadata = {
@@ -93,65 +94,99 @@ function JobIcon({ name }: { name: string }) {
 
 export default function KarrierePage() {
   return (
-    <article className="overflow-hidden">
-      {/* Hero + Rechts: Kontaktbild, Telefon, E-Mail */}
-      <section className="relative border-b border-[#0F4F68]/15 bg-gradient-to-br from-[#0F4F68] via-[#0F4F68] to-[#0c3d52] px-4 py-16 sm:py-20">
-        <div className="absolute inset-0 opacity-10" aria-hidden>
-          <div className="absolute left-1/4 top-1/4 h-64 w-64 rounded-full bg-white blur-3xl" />
-          <div className="absolute bottom-1/4 right-1/4 h-48 w-48 rounded-full bg-[#F78F2E] blur-3xl" />
+    <article className="overflow-hidden bg-[#FAFBFC]">
+      {/* Hero: Bild mittig, ovaler Rahmen; F2F9FA ab Bildmitte nach unten */}
+      <section
+        className="relative w-full overflow-hidden"
+        style={{ background: "linear-gradient(to bottom, transparent 0%, transparent 50%, #F2F9FA 50%, #F2F9FA 100%)" }}
+      >
+        <div className="relative flex justify-center px-4 py-6 md:px-8 md:py-10">
+          <div className="overflow-hidden rounded-[2.5rem] md:rounded-[3.5rem] lg:rounded-[4rem] [box-shadow:0_4px_20px_rgba(15,79,104,0.35)]">
+            <Image
+              src="/images/karriere/Karriere.webp"
+              alt="Karriere bei Alltagshilfe-Süd"
+              width={1920}
+              height={1080}
+              className="block h-auto w-full max-w-6xl object-cover object-center"
+              sizes="100vw"
+              priority
+            />
+          </div>
         </div>
-        <Container className="relative">
-          <div className="grid gap-10 lg:grid-cols-[1fr,minmax(280px,380px)] lg:items-start lg:gap-12">
-            <div>
-              <p className="text-sm font-semibold uppercase tracking-widest text-[#F78F2E]">
-                Karriere bei {siteConfig.name}
-              </p>
-              <h1 className="mt-4 max-w-3xl text-4xl font-bold tracking-tight text-white sm:text-5xl lg:text-6xl">
-                Karriere
-              </h1>
-              <p className="mt-6 max-w-2xl text-lg text-white/90">
-                Wir suchen Menschen, die mit uns den Alltag von Pflegebedürftigen und
-                Angehörigen einfacher und würdevoll gestalten wollen.
-              </p>
-            </div>
-            <div className="flex flex-col items-center rounded-2xl bg-white/95 p-6 shadow-lg lg:sticky lg:top-24">
-              <div className="relative aspect-[4/3] w-full max-w-[280px] overflow-hidden rounded-xl">
-                <Image
-                  src="/images/Kontakt_Bild.webp"
-                  alt="Karriere – Alltagshilfe-Süd"
-                  width={560}
-                  height={420}
-                  className="h-full w-full object-cover"
-                  sizes="(max-width: 1024px) 90vw, 380px"
-                />
+        <div className="absolute inset-0 flex scale-110 origin-right items-center justify-end pr-[5vw] md:pr-[calc(5vw+2rem)] lg:pr-[calc(5vw+4rem)]">
+          <div className="flex w-full max-w-md flex-col items-center justify-center gap-6 px-6 py-10 md:max-w-sm md:py-12 lg:max-w-md lg:px-10" style={{ transform: "translateY(-5vh)" }}>
+            <KarriereHeadline>
+              <Link
+                href="#bewerbung"
+                className="inline-flex shrink-0 items-center justify-center rounded-xl bg-[#0F4F68] px-8 py-4 text-lg font-bold text-white shadow-lg transition-opacity hover:opacity-95 focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2 focus:ring-offset-transparent"
+              >
+                Jetzt Bewerben
+              </Link>
+            </KarriereHeadline>
+          </div>
+        </div>
+      </section>
+
+      {/* Daniel-Bereich mit gleichem Abstand wie Kontakt */}
+      <section id="bewerbung" className="py-16 sm:py-24">
+        <Container className="flex justify-center">
+          <div className="mx-auto flex w-full max-w-6xl justify-end">
+            <div className="flex flex-col items-center gap-6 text-center scale-100 origin-top lg:scale-[0.84] lg:origin-top lg:w-[50%]">
+              <div className="flex w-full flex-col items-center">
+                <div
+                  className="relative aspect-[4/3] w-[80%] max-w-[80%] overflow-visible lg:max-w-[80%]"
+                >
+                  <Image
+                    src="/images/Kontakt_Bild.webp"
+                    alt="Daniel Niebauer – Alltagshilfe-Süd"
+                    fill
+                    className="object-contain drop-shadow-[0_4px_20px_rgba(15,79,104,0.18)]"
+                    sizes="(max-width: 1024px) 90vw, 50vw"
+                  />
+                </div>
+                <div
+                  className="relative z-10 -mt-10 w-[63%] min-w-[200px] rounded-xl bg-[#F2F9FA] px-6 py-3 text-center sm:-mt-12 sm:py-4"
+                  style={{ boxShadow: "0 -2px 12px rgba(15, 79, 104, 0.15)" }}
+                >
+                  <p className="text-lg font-bold text-[#0F4F68] sm:text-xl">Daniel Niebauer</p>
+                  <p className="text-xs font-normal text-neutral-600">Personalreferent</p>
+                </div>
               </div>
-              <p className="mt-4 text-base font-bold text-[#0F4F68] sm:text-lg">Daniel Niebauer</p>
-              <p className="mt-0.5 text-sm text-neutral-600">Personalreferent</p>
-              <a
-                href="tel:+4983349893330"
-                className="mt-3 inline-flex items-center gap-2 text-xl font-bold text-[#0F4F68] hover:underline focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2 rounded"
-                aria-label="Anrufen: 08334 9893330"
-              >
-                <svg className="h-6 w-6 shrink-0" fill="currentColor" viewBox="0 0 24 24" aria-hidden style={{ color: "#F78F2E" }}>
-                  <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z" />
-                </svg>
-                08334 / 9893330
-              </a>
-              <p className="mt-4 text-sm font-semibold text-neutral-600">E-Mail</p>
-              <a
-                href="mailto:daniel.niebauer@alltagshilfe-sued.de"
-                className="mt-1 block text-base font-medium text-[#0F4F68] hover:underline focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2 rounded break-all"
-              >
-                daniel.niebauer@alltagshilfe-sued.de
-              </a>
-              <KarriereForm />
+              <div className="mx-auto w-full max-w-md">
+                <a
+                  href="tel:+4983349893330"
+                  className="inline-flex items-center justify-center gap-2 text-3xl font-bold text-[#0F4F68] hover:underline focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2 rounded sm:text-4xl"
+                  aria-label="Anrufen: 08334 9893330"
+                >
+                  <svg
+                    className="h-8 w-8 shrink-0 sm:h-9 sm:w-9"
+                    fill="currentColor"
+                    viewBox="0 0 24 24"
+                    aria-hidden
+                    style={{ color: "#F78F2E" }}
+                  >
+                    <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z" />
+                  </svg>
+                  08334 / 9893330
+                </a>
+                <p className="mt-4 text-sm font-semibold text-neutral-600">E-Mail</p>
+                <a
+                  href="mailto:daniel.niebauer@alltagshilfe-sued.de"
+                  className="mt-1 block text-base font-medium text-[#0F4F68] hover:underline break-all"
+                >
+                  daniel.niebauer@alltagshilfe-sued.de
+                </a>
+              </div>
+              <div className="w-full max-w-md rounded-2xl border border-[#0F4F68]/10 bg-white p-6 shadow-sm sm:p-8">
+                <KarriereForm />
+              </div>
             </div>
           </div>
         </Container>
       </section>
 
       {/* Warum wir */}
-      <section className="border-b border-neutral-200 bg-[#F2F9FA] py-12 sm:py-16">
+      <section className="border-b border-neutral-200 bg-[#FAFBFC] py-12 sm:py-16">
         <Container>
           <h2 className="text-center text-2xl font-bold text-[#0F4F68] sm:text-3xl">
             Warum zu uns?
@@ -176,12 +211,12 @@ export default function KarrierePage() {
       </section>
 
       {/* Stellenanzeigen */}
-      <section className="py-16 sm:py-24">
+      <section className="bg-[#0F4F68] py-16 sm:py-24">
         <Container>
-          <h2 className="text-3xl font-bold tracking-tight text-[#0F4F68] sm:text-4xl">
+          <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
             Aktuelle Stellenangebote
           </h2>
-          <p className="mt-3 max-w-2xl text-neutral-600">
+          <p className="mt-3 max-w-2xl text-white/90">
             Klicken Sie auf eine Stelle, um mehr zu erfahren – oder bewerben Sie
             sich direkt per E-Mail oder über unser Kontaktformular.
           </p>
@@ -268,7 +303,7 @@ export default function KarrierePage() {
       </section>
 
       {/* Ansprechpartner */}
-      <section className="border-t border-neutral-200 bg-white py-16 sm:py-20">
+      <section className="border-t border-neutral-200 bg-[#FAFBFC] py-16 sm:py-20">
         <Container>
           <h2 className="text-2xl font-bold text-[#0F4F68] sm:text-3xl">
             Ihr Ansprechpartner
@@ -340,7 +375,7 @@ export default function KarrierePage() {
       </section>
 
       {/* CTA */}
-      <section className="border-t border-neutral-200 bg-[#F2F9FA] py-16 sm:py-20">
+      <section className="border-t border-neutral-200 bg-[#FAFBFC] py-16 sm:py-20">
         <Container>
           <div className="mx-auto max-w-2xl rounded-2xl bg-[#0F4F68] px-8 py-12 text-center sm:px-12 sm:py-16">
             <h2 className="text-2xl font-bold text-white sm:text-3xl">
