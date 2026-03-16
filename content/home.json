@@ -1,0 +1,69 @@
+{
+  "hero": {
+    "title": "Ihre Partner für Qualität und Innovation",
+    "subtitle": "Wir unterstützen Sie mit maßgeschneiderten Lösungen – professionell, zuverlässig und auf Augenhöhe.",
+    "ctaPrimary": "Kontakt aufnehmen",
+    "ctaSecondary": "Leistungen entdecken"
+  },
+  "leistungen": {
+    "title": "Unsere Leistungen",
+    "subtitle": "Von der Haushaltshilfe über Betreuung und Pflegeberatung bis zur Pflegehilfsmittelbox – wir unterstützen Sie im Alltag.",
+    "items": [
+      { "slug": "haushaltshilfe", "title": "Haushaltshilfe", "description": "Unterstützung im Haushalt – Reinigung, kleine Reparaturen, Gartenarbeiten." },
+      { "slug": "betreuung-beschaeftigung", "title": "Betreuung und Beschäftigung", "description": "Gemeinsam einkaufen, kochen, spazieren – und Begleitung bei Behördengängen." },
+      { "slug": "pflegeberatung-einsaetze", "title": "Pflegeberatungseinsätze §37.3 SGB XI", "description": "Professionelle Pflegeberatung – Kosten übernimmt die Pflegekasse." },
+      { "slug": "pflegehilfsmittelbox", "title": "Kostenfreie Pflegehilfsmittelbox", "description": "Monatlich 42€ kostenfrei ab Pflegegrad 1 – Pflegekasse übernimmt." },
+      { "slug": "essen-auf-raeder", "title": "Essen auf Räder", "description": "Mit Herz gekocht, liebevoll gebracht – frisch und regional mit LuckyLunch." },
+      { "slug": "einkaufsservice", "title": "Einkaufsservice", "description": "Wir erledigen Ihren Einkauf – aus der Filiale Ihrer Wahl." },
+      { "slug": "hilfe-nach-operation", "title": "Hilfe nach Operation, Unfall oder Schwangerschaft", "description": "Entlastung in besonderen Zeiten – Haushaltshilfe, Kinderbetreuung, Begleitung." }
+    ]
+  },
+  "trust": {
+    "title": "Warum uns Kunden vertrauen",
+    "items": [
+      { "title": "Erfahrung", "description": "Jahrelange Expertise in Ihrem Umfeld." },
+      { "title": "Qualität", "description": "Hohe Standards in allen Projekten." },
+      { "title": "Partnerschaft", "description": "Langfristige Zusammenarbeit auf Augenhöhe." }
+    ]
+  },
+  "referenzen": {
+    "title": "Referenzen",
+    "subtitle": "Das sagen Kunden über uns.",
+    "items": [
+      {
+        "quote": "Professionell und unkompliziert. Gerne wieder.",
+        "author": "Kunde A"
+      },
+      {
+        "quote": "Schnelle Umsetzung, sehr gute Qualität.",
+        "author": "Kunde B"
+      },
+      {
+        "quote": "Kompetente Beratung und zuverlässige Partner.",
+        "author": "Kunde C"
+      }
+    ]
+  },
+  "faq": {
+    "title": "Häufige Fragen",
+    "items": [
+      {
+        "question": "Wie kann ich Sie kontaktieren?",
+        "answer": "Am einfachsten über unser Kontaktformular oder per E-Mail. Wir melden uns zeitnah bei Ihnen."
+      },
+      {
+        "question": "In welchem Umfeld sind Sie tätig?",
+        "answer": "Wir beraten und entwickeln branchenübergreifend – von KMU bis zu größeren Organisationen."
+      },
+      {
+        "question": "Wie läuft ein typisches Projekt ab?",
+        "answer": "Nach einem ersten Gespräch erstellen wir ein Angebot. Nach Ihrer Zusage starten wir mit der Planung und Umsetzung."
+      }
+    ]
+  },
+  "cta": {
+    "title": "Bereit für den nächsten Schritt?",
+    "subtitle": "Wir freuen uns auf Ihre Nachricht.",
+    "button": "Jetzt Kontakt aufnehmen"
+  }
+}

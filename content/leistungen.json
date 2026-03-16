@@ -1,0 +1,125 @@
+[
+  {
+    "slug": "haushaltshilfe",
+    "title": "Haushaltshilfe",
+    "description": "Unterstützung im Haushalt – Reinigung, kleine Reparaturen, Gartenarbeiten.",
+    "intro": "Sie benötigen Unterstützung im Haushalt? Wir erledigen für Sie alle Tätigkeiten im Bereich der haushaltsnahen Dienstleistungen. Dazu gehören beispielsweise:",
+    "sections": [
+      {
+        "bullets": [
+          "Haushaltsreinigung (Fensterputzen, Staubsaugen, Aufräumen etc.).",
+          "Kleine Reparatur- und Instandhaltungs-Arbeiten.",
+          "Kleinere Gartenarbeiten."
+        ]
+      }
+    ]
+  },
+  {
+    "slug": "betreuung-beschaeftigung",
+    "title": "Betreuung und Beschäftigung",
+    "description": "Gemeinsam einkaufen, kochen, spazieren – und Begleitung bei Behördengängen.",
+    "intro": "Wir nehmen uns gerne Zeit für Sie und Ihre Wünsche. Zu diesen Leistungen gehören alle Tätigkeiten, die wir mit Ihnen gemeinsam unternehmen. Dazu gehören beispielsweise:",
+    "sections": [
+      {
+        "bullets": [
+          "Gemeinsames Einkaufen, Kochen oder Spazierengehen.",
+          "Unterstützung bei bürokratischen Tätigkeiten.",
+          "Begleitungen bei Behördengängen, zur Arztpraxis oder bei Apothekenbesuchen.",
+          "Pflegeberatungseinsätze nach §37.3 SGB XI"
+        ]
+      }
+    ]
+  },
+  {
+    "slug": "pflegeberatung-einsaetze",
+    "title": "Pflegeberatungseinsätze nach §37.3 SGB XI",
+    "description": "Professionelle Pflegeberatung – verpflichtend je nach Pflegegrad, Kosten übernimmt die Pflegekasse.",
+    "intro": "Wir bieten Ihnen professionelle Pflegeberatungseinsätze gemäß §37.3 SGB XI, um sicherzustellen, dass Sie die bestmögliche Unterstützung erhalten. Unsere Beratungen richten sich insbesondere an Personen, die von ihren Angehörigen zu Hause gepflegt werden.",
+    "sections": [
+      {
+        "text": "Ab einem Pflegegrad 1 stehen Ihnen bis zu 131 € monatlich durch die Pflegekasse zu."
+      },
+      {
+        "bullets": [
+          "Pflegegrad 1: Beratungseinsätze sind nicht verpflichtend, dürfen jedoch bis zu zweimal im Jahr kostenlos in Anspruch genommen werden.",
+          "Pflegegrad 2 und 3: Beratungseinsätze sind halbjährlich verpflichtend.",
+          "Pflegegrad 4 und 5: Beratungseinsätze sind vierteljährlich verpflichtend. Die Kosten für die Pflegeberatungseinsätze werden von Ihrer Pflegekasse übernommen."
+        ]
+      }
+    ]
+  },
+  {
+    "slug": "pflegehilfsmittelbox",
+    "title": "Kostenfreie Pflegehilfsmittelbox im Wert von 42€",
+    "description": "Monatlich kostenfrei ab Pflegegrad 1 – die Pflegekasse übernimmt die Kosten.",
+    "intro": "Ab Pflegegrad 1 steht Ihnen eine monatliche und kostenfreie Pflegehilfsmittelbox im Wert von 42€ zu. Die Pflegekasse übernimmt die anfallenden Kosten für Sie!",
+    "sections": [
+      {
+        "text": "Die Pflegehilfsmittelbox ist eine Sammlung von verschiedenen Hilfsmitteln, die zur Unterstützung in der häuslichen Pflege verwendet werden. Sie enthält Artikel wie Einmalhandschuhe, Desinfektionsmittel, Flächendesinfektionsmittel, Mundschutz, Bettschutzeinlagen und andere Pflegeutensilien. Einfach und unkompliziert telefonisch oder online beantragen unter www.alltagshilfe-pflegebox.de"
+      },
+      {
+        "bullets": [
+          "Kostenlose Lieferung nach Hause.",
+          "Einfach und unkompliziert telefonisch oder online beantragen.",
+          "Wir übernehmen alle erforderlichen Formalitäten.",
+          "Jederzeit änder- oder kündbar."
+        ]
+      }
+    ],
+    "highlight": "42€ monatlich kostenfrei"
+  },
+  {
+    "slug": "essen-auf-raeder",
+    "title": "Essen auf Räder",
+    "description": "Mit Herz gekocht, liebevoll gebracht – frisch und regional mit Partner LuckyLunch.",
+    "intro": "„Mit Herz gekocht, liebevoll gebracht“ – zusammen mit unserem Partner LuckyLunch bieten wir im Raum Kempten und Umgebung ab sofort frische, regionale Mahlzeiten, unkompliziert und direkt zu Ihnen nach Hause.",
+    "sections": [
+      {
+        "bullets": [
+          "Frisch gekocht in Waltenhofen-Hegge durch LuckyLunch",
+          "Hochwertige Gerichte, ohne Zusätze und ohne Füllmittel",
+          "Nur frische Zutaten, ohne Geschmacksverstärker",
+          "Täglich wechselnde Gerichte"
+        ]
+      },
+      {
+        "text": "Ab Pflegegrad 1 ist eine Kostenübernahme möglich."
+      },
+      {
+        "text": "Die Lieferung des Tagesgerichts erfolgt durch unsere Alltagshelfer*innen. Gerne unterstützen wir Sie auf Wunsch bei:",
+        "bullets": [
+          "Dem Anrichten der Mahlzeit",
+          "Der Auswahl und Bestellung Ihres Wochenplans",
+          "Dem Spülen von Geschirr und Besteck."
+        ]
+      }
+    ]
+  },
+  {
+    "slug": "einkaufsservice",
+    "title": "Einkaufsservice",
+    "description": "Wir erledigen Ihren Einkauf – aus der Filiale Ihrer Wahl.",
+    "intro": "Sie benötigen Unterstützung beim Einkauf Ihrer Lebensmittel oder es fehlt Ihnen die Zeit dafür? Wir entlasten Sie im Alltag und kümmern uns um Ihre Einkäufe. Sie entscheiden, aus welcher Lebensmittelfiliale Sie den Einkauf gerne hätten – wir kümmern uns um den Rest."
+  },
+  {
+    "slug": "hilfe-nach-operation",
+    "title": "Hilfe nach Operation, Unfall oder Schwangerschaft",
+    "description": "Entlastung in besonderen Zeiten – Haushaltshilfe, Kinderbetreuung, Begleitung.",
+    "intro": "Nach einer Operation, einem Unfall oder der Geburt eines Kindes kann der Alltag schnell zur Herausforderung werden. Wir bieten Ihnen gezielte Unterstützung, um Ihnen in dieser besonderen Zeit Entlastung und Sicherheit zu geben.",
+    "sections": [
+      {
+        "text": "Unsere Leistungen:"
+      },
+      {
+        "bullets": [
+          "Haushaltshilfe: Unterstützung bei alltäglichen Aufgaben wie Kochen, Einkaufen und Reinigung.",
+          "Kinderbetreuung: Liebevolle Betreuung Ihrer Kinder, damit Sie sich erholen können.",
+          "Begleitung & Mobilitätshilfe: Fahrdienste zu Arztterminen oder Therapien."
+        ]
+      },
+      {
+        "text": "Wir sind zugelassene Partner bei allen Krankenkassen, und eine Übernahme der Kosten ist durch die Krankenkasse möglich! Wir beraten Sie gerne und unterstützen Sie bei der Antragstellung."
+      }
+    ]
+  }
+]

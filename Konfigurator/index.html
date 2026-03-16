@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <title>Budget-Konfigurator</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;500;600;700&family=Baloo+2:wght@500;600;700&display=swap"
+    rel="stylesheet"
+  />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="hero-wrapper">
+    <img
+      src="Hintergrundbild_Konfigurator.jpg"
+      alt="Alltagshilfe-Süd Kopfbereich"
+      class="hero-image"
+    />
+    <div class="hero-overlay">
+      <header class="header">
+    <div class="steps">
+      <div class="step step--active">
+        <div class="step-text">
+          <span class="step-title">1. Produktauswahl</span>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-text">
+          <span class="step-title">2. Dateneingabe</span>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-text">
+          <span class="step-title">3. Fertig</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="layout">
+    <div class="budget-progress-mobile-wrapper">
+      <div class="budget-progress budget-progress-mobile">
+        <div class="budget-progress-bar">
+          <div
+            class="budget-progress-fill"
+            id="budget-progress-fill-mobile"
+          ></div>
+          <span
+            class="budget-progress-percent"
+            id="budget-percent-mobile"
+            >0&nbsp;%</span
+          >
+        </div>
+      </div>
+    </div>
+    <section class="panel">
+      <h2>Wählen Sie Ihre Produkte</h2>
+      <p class="item-limit-message" id="item-limit-message" style="display: none">
+        Die Box wäre damit randvoll.
+      </p>
+      <div id="item-list" class="item-list">
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="box-header">
+        <div class="box-title-row">
+          <h2>Meine Pflegebox</h2>
+          <div class="box-icon-wrapper">
+            <img src="Box.png" alt="Pflegebox-Icon" class="box-icon" id="box-icon" />
+            <span class="box-icon-badge" id="box-icon-badge">0</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="budget-progress">
+        <div class="budget-progress-bar">
+          <div class="budget-progress-fill" id="budget-progress-fill"></div>
+          <span class="budget-progress-percent" id="budget-percent">0&nbsp;%</span>
+        </div>
+      </div>
+
+      <div id="cart" class="cart">
+      </div>
+
+      <button type="button" class="btn-next-step" id="btn-next-step">Nächster Schritt</button>
+    </section>
+  </main>
+
+  <button type="button" class="admin-toggle-btn" id="admin-toggle-btn" aria-label="Artikel-Tool ein- oder ausblenden">
+    Artikel-Tool ein-/ausblenden
+  </button>
+  <!-- Internes Artikel-Tool (nur zur Konfiguration, kein Backend) -->
+  <section class="panel admin-panel" id="admin-panel">
+    <h3>Artikel-Tool (intern)</h3>
+    <p class="panel-subtitle">
+      Hier können Sie neue Artikel für den Konfigurator anlegen. Die Daten werden
+      nur in dieser Sitzung im Browser gehalten.
+    </p>
+    <form id="admin-item-form" class="contact-form" autocomplete="off">
+      <div class="form-row-inline">
+        <div class="form-row">
+          <label for="admin-item-name">Name</label>
+          <input type="text" id="admin-item-name" />
+        </div>
+        <div class="form-row">
+          <label for="admin-item-pieces">Stück</label>
+          <input type="text" id="admin-item-pieces" placeholder="z. B. 10 Stk" />
+        </div>
+        <div class="form-row">
+          <label for="admin-item-quantity">Menge</label>
+          <input type="text" id="admin-item-quantity" placeholder="z. B. 2 Packungen" />
+        </div>
+      </div>
+
+      <div class="form-row-inline">
+        <div class="form-row">
+          <label for="admin-item-ml">ml Anzahl</label>
+          <input type="number" id="admin-item-ml" min="0" step="10" />
+        </div>
+        <div class="form-row">
+          <label for="admin-item-price">Preis (€)</label>
+          <input type="text" id="admin-item-price" placeholder="z. B. 5,90" />
+        </div>
+        <div class="form-row">
+          <label for="admin-item-image">Bild (URL oder Dateiname)</label>
+          <input
+            type="text"
+            id="admin-item-image"
+            placeholder="z. B. flaeche_500ml.png"
+          />
+        </div>
+      </div>
+
+      <div class="form-row">
+        <label class="form-label-inline">
+          <input type="checkbox" id="admin-item-glove" />
+          Handschuhe?
+        </label>
+      </div>
+
+      <div class="form-row">
+        <label class="form-label-inline">
+          <input type="checkbox" id="admin-item-bettschutzeinlage" />
+          Wiederverwendbare Bettschutzeinlage
+        </label>
+      </div>
+
+      <div class="form-row">
+        <span class="form-label-inline">Größen (optional)</span>
+        <div class="size-checkboxes">
+          <label><input type="checkbox" name="admin-item-size" value="S" /> S</label>
+          <label><input type="checkbox" name="admin-item-size" value="M" /> M</label>
+          <label><input type="checkbox" name="admin-item-size" value="L" /> L</label>
+          <label><input type="checkbox" name="admin-item-size" value="XL" /> XL</label>
+          <label><input type="checkbox" name="admin-item-size" value="XXL" /> XXL</label>
+        </div>
+      </div>
+
+      <button type="submit" class="btn-primary btn-small">
+        Artikel anlegen und im Konfigurator testen
+      </button>
+    </form>
+
+    <div id="admin-item-list" class="admin-item-list">
+      <!-- Bestehende Artikel werden hier zur Bearbeitung / zum Löschen angezeigt -->
+    </div>
+  </section>
+    </div>
+  </div>
+
+  <!-- Handschuh-Auswahl-Popup -->
+  <div class="glove-modal-backdrop" id="glove-modal" style="display: none">
+    <div class="glove-modal">
+      <h3>Handschuhe konfigurieren</h3>
+      <p>Passt gleich perfekt! Bitte wählen Sie Material und Größe.</p>
+
+      <div class="glove-section">
+        <span class="form-label-inline">Material</span>
+        <div class="glove-options" id="glove-material-options">
+          <label><input type="radio" name="glove-material" value="Latex" /> Latex</label>
+          <label><input type="radio" name="glove-material" value="Vinyl" /> Vinyl</label>
+          <label><input type="radio" name="glove-material" value="Nitril" /> Nitril</label>
+        </div>
+      </div>
+
+      <div class="glove-section">
+        <span class="form-label-inline">Größe</span>
+        <div class="glove-size-buttons" id="glove-size-buttons">
+          <button type="button" data-size="S">S</button>
+          <button type="button" data-size="M">M</button>
+          <button type="button" data-size="L">L</button>
+          <button type="button" data-size="XL">XL</button>
+        </div>
+      </div>
+
+      <div class="glove-actions">
+        <button type="button" class="btn-primary btn-small" id="glove-confirm">
+          Ab in die Box
+        </button>
+        <button type="button" class="admin-btn" id="glove-cancel">
+          Abbrechen
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Chatbot-Box unten rechts -->
+  <div class="box-chatbot box-chatbot--collapsed" id="box-chatbot">
+    <button type="button" class="box-chatbot-close" id="box-chatbot-close" aria-label="Chat schließen">×</button>
+    <div class="box-chatbot-avatar">
+      <img
+        src="pflegeboxi.png"
+        onerror="this.onerror=null;this.src='Pflegeboxi.jpg';"
+        alt="Pflegeboxi"
+        class="box-chatbot-image"
+      />
+      <div class="box-chatbot-bubble-over" id="box-chatbot-bubble-over">
+        Hallo, ich bin Pflegeboxi! Drück auf mich, ich helfe dir gerne weiter
+      </div>
+    </div>
+    <button type="button" class="box-chatbot-hide-mobile" id="box-chatbot-hide-mobile" aria-label="Pflegeboxi ausblenden">×</button>
+    <div class="box-chatbot-window" id="box-chatbot-window">
+      <div class="box-chatbot-messages" id="box-chatbot-messages">
+        <div class="box-chatbot-message bot">
+          <div class="bubble">
+            Hallo, ich bin Pflegeboxi. Ich helfe dir bei deiner Auswahl sehr gerne weiter. Wie kann ich dir helfen?
+          </div>
+        </div>
+      </div>
+      <form class="box-chatbot-input-row" id="box-chatbot-form" autocomplete="off">
+        <input
+          type="text"
+          id="box-chatbot-input"
+          placeholder="Nachricht an die Box eingeben..."
+        />
+        <button type="submit">Senden</button>
+      </form>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

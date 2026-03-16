@@ -1,0 +1,26 @@
+---
+description: Projekt-Kontext und Architektur der Unternehmens-Homepage; bei jeder Arbeit in diesem Projekt diese Regeln und die Regeldatei beachten.
+alwaysApply: true
+---
+
+# Projekt-Regeln beachten
+
+Bei jeder Arbeit in diesem Projekt:
+
+1. **Lies und befolge die Projekt-Regeln** in [docs/PROJECT-RULES.md](docs/PROJECT-RULES.md). Dort stehen Architektur, Tech-Stack (Next.js 15, TypeScript, Tailwind, App Router), Seitenstruktur, Ordnerstruktur, Feature-Phasierung (MVP / Phase 2 / Phase 3), Security-, Performance- und SEO-Vorgaben sowie der Cursor-Agenten-Einsatz.
+
+2. **Eigenständig ausführen:** Alles, was fachlich sinnvoll erscheint, darf und soll eigenständig umgesetzt werden. Keine Rückfragen bei jeder Kleinigkeit – nur bei echten Zielkonflikten oder fehlenden Vorgaben nachfragen.
+
+3. **Sicherheit hat oberste Priorität:** Hacking-Sicherheit und Datenschutz (DSGVO) gehen vor. Jede Änderung muss sicherheitskonform sein (sichere Formulare, keine sensiblen Daten im Frontend, Security-Headers, CSP, Rate-Limiting, serverseitige Validierung). Im Zweifel die sichere Variante wählen.
+
+4. **Google SEO immer mitdenken:** Die Seite so bauen, dass Google sie mag – schnell, sicher, suchmaschinenfreundlich. Bei jeder Seite/ jedem Feature: Metadata, semantisches HTML, saubere URLs, JSON-LD, Core Web Vitals (LCP, INP, CLS), indexierbar und intern verlinkt.
+
+5. **Mobile extrem wichtig:** Immer an die Mobile-Version denken – Mobile First. Jedes Layout und jede Interaktion muss auf Smartphone/Tablet funktionieren; Touch-Ziele, Lesbarkeit, Performance auf mobilen Netzen. Später: Google Analytics und Cookie-Banner einbaubar; Architektur consent-gated vorbereiten, kein Tracking ohne Consent. **Hosting-portabel:** Basis-URL über Umgebungsvariable, keine festen Server-URLs im Code – die Seite soll später auf einen anderen Server umziehen können ohne Code-Änderung.
+
+6. **Architektur- und Feature-Entscheidungen** müssen mit docs/PROJECT-RULES.md übereinstimmen (Server Components bevorzugen, Zod serverseitig, Ordnerstruktur einhalten). Bei Abweichungen die Regeldatei aktualisieren oder den Nutzer informieren.
+
+7. **Bilder/Grafiken:** Wenn Bilder oder Grafiken zu groß sind (Dateigröße oder Pixelmaße für Web ungeeignet), den Nutzer darauf hinweisen und Bescheid sagen.
+
+8. **Weitere Regeln (Abschnitt 8 in PROJECT-RULES.md):** .env nie committen; keine Secrets im Frontend/Logs; .gitignore vollständig; Dependencies minimal, npm audit vor Release; Fehlermeldungen ohne Information Leakage; Input validieren und gegen XSS absichern; URLs einheitlich, Canonical HTTPS; Barrierefreiheit (Skip-Link, Fokus, aria, Alt-Texte, Kontrast); Consent vor nicht notwendigen Cookies; Content von Code trennen; Browser-Support definieren und testen; JSON-LD validieren; kritische Pfade testbar halten.
+
+9. **„Push“ = Online pushen:** Wenn der Nutzer „push“ (oder „pushen“, „online pushen“) schreibt, soll der Assistent den Code zu GitHub pushen: `git add .` → `git commit -m "…"` (sinnvolle Kurzbeschreibung der letzten Änderungen) → `git push` (bzw. `git push -u origin main` falls noch nicht gesetzt). Vor dem Commit prüfen, ob Änderungen vorhanden sind; bei fehlendem Git-User (Author identity unknown) den Nutzer kurz an die nötigen `git config`-Befehle erinnern.
