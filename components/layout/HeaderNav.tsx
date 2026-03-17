@@ -18,7 +18,7 @@ export function HeaderNav() {
         className="hidden md:flex md:w-full md:min-w-0 md:items-center md:justify-end md:gap-3 lg:gap-4"
         aria-label="Hauptnavigation"
       >
-        <div className="flex min-w-0 flex-1 flex-wrap items-center justify-center gap-x-2 gap-y-1.5 lg:justify-end lg:gap-x-3">
+        <div className="flex min-w-0 flex-1 flex-nowrap items-center justify-center gap-x-2 overflow-x-auto lg:justify-end lg:gap-x-3">
           {navLinks.map((item) =>
             item.children ? (
               <div
