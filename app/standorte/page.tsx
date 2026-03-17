@@ -48,7 +48,7 @@ const PUNKTE = [
 export default function StandortePage() {
   return (
     <article
-      className="min-h-[60vh] w-full pt-8 sm:pt-10 pb-16 sm:pb-24 pl-0 -ml-4 sm:-ml-6 lg:-ml-8"
+      className="min-h-[60vh] w-full pt-10 sm:pt-14 pb-16 sm:pb-24 pl-0 -ml-4 sm:-ml-6 lg:-ml-8"
       style={{ backgroundColor: "#fafbfc" }}
     >
       <div className="flex w-full flex-col gap-8 lg:flex-row lg:flex-nowrap lg:items-flex-start lg:justify-start lg:gap-10 lg:pl-0">

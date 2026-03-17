@@ -66,6 +66,9 @@ export function KartenMitKoordinatenErfassen({ hauptmarker, punkte }: Props) {
           alt="Karte Süddeutschland – Standorte Alltagshilfe-Süd"
           fill
           className="object-contain object-left z-0"
+          style={{
+            filter: "drop-shadow(0 3px 8px rgba(15, 79, 104, 0.15)) drop-shadow(0 8px 24px rgba(242, 249, 250, 0.85)) drop-shadow(0 12px 32px rgba(225, 240, 242, 0.75))",
+          }}
           priority
           sizes="(max-width: 1024px) 100vw, 50vw"
         />
