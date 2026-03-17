@@ -1,7 +1,5 @@
 "use client";
 
-import { useEffect, useState } from "react";
-
 const ORANGE = "#F78F2E";
 
 /** Einzelner GPS-Marker mit Label – Position in % (links, oben). */
@@ -39,6 +37,8 @@ function GpsIcon({ className }: { className?: string }) {
       className={className}
       viewBox="0 0 24 24"
       fill={ORANGE}
+      stroke="white"
+      strokeWidth={2}
       aria-hidden
     >
       <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
@@ -47,34 +47,25 @@ function GpsIcon({ className }: { className?: string }) {
 }
 
 export function KartenMarker() {
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
   return (
     <div
-      className="pointer-events-none absolute inset-0 flex items-stretch justify-stretch"
+      className="pointer-events-none absolute inset-0 z-[1]"
       aria-hidden
     >
       {/* Kleine orangene Punkte */}
       {PUNKTE.map((p, i) => (
         <span
           key={`dot-${i}`}
-          className="absolute h-1.5 w-1.5 rounded-full bg-[#F78F2E] opacity-90"
+          className="absolute h-2 w-2 rounded-full border-2 border-white bg-[#F78F2E] shadow-md"
           style={{
             left: `${p.left}%`,
             top: `${p.top}%`,
             transform: "translate(-50%, -50%)",
-            transition: "opacity 0.4s ease, transform 0.4s ease",
-            opacity: mounted ? 0.9 : 0,
-            animation: mounted ? undefined : "none",
           }}
         />
       ))}
       {/* Größere GPS-Icons mit Beschriftung */}
-      {HAUPTMARKER.map((m, i) => (
+      {HAUPTMARKER.map((m) => (
         <div
           key={m.label}
           className="absolute flex flex-col items-center"
@@ -82,12 +73,17 @@ export function KartenMarker() {
             left: `${m.left}%`,
             top: `${m.top}%`,
             transform: "translate(-50%, -50%)",
-            transition: `opacity 0.5s ease ${i * 0.08}s, transform 0.5s ease ${i * 0.08}s`,
-            opacity: mounted ? 1 : 0,
           }}
         >
-          <GpsIcon className="h-5 w-5 sm:h-6 sm:w-6 drop-shadow-sm" />
-          <span className="mt-1 whitespace-nowrap rounded bg-white/95 px-2 py-0.5 text-xs font-semibold text-[#0F4F68] shadow-sm">
+          <span
+            className="flex drop-shadow-lg"
+            style={{
+              filter: "drop-shadow(0 0 2px white) drop-shadow(0 1px 3px rgba(0,0,0,0.3))",
+            }}
+          >
+            <GpsIcon className="h-7 w-7 sm:h-8 sm:w-8" />
+          </span>
+          <span className="mt-1.5 whitespace-nowrap rounded bg-white px-2.5 py-1 text-xs font-bold text-[#0F4F68] shadow-md ring-1 ring-[#F78F2E]/30">
             {m.label}
           </span>
         </div>

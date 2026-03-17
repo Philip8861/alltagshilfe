@@ -24,7 +24,7 @@ export default function StandortePage() {
               fill
               className="object-contain object-left"
               style={{
-                filter: "drop-shadow(0 4px 10px rgba(242, 249, 250, 1)) drop-shadow(0 8px 18px rgba(242, 249, 250, 0.98)) drop-shadow(0 3px 8px rgba(242, 249, 250, 0.95))",
+                filter: "drop-shadow(0 2px 4px rgba(15, 79, 104, 0.12)) drop-shadow(0 6px 16px rgba(242, 249, 250, 1)) drop-shadow(0 12px 28px rgba(230, 243, 244, 0.95)) drop-shadow(0 4px 12px rgba(220, 238, 240, 0.9))",
               }}
               priority
               sizes="(max-width: 1024px) 100vw, 56vw"
