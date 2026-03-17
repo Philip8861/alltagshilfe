@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import { StandortSuche } from "@/components/standorte/StandortSuche";
+import { KartenMarker } from "@/components/standorte/KartenMarker";
 import { siteConfig } from "@/config/site";
 
 export const metadata: Metadata = {
@@ -28,6 +29,7 @@ export default function StandortePage() {
             priority
             sizes="(max-width: 1024px) 100vw, 56vw"
           />
+          <KartenMarker />
         </div>
         <div className="w-full min-w-0 px-4 sm:px-6 lg:max-w-md lg:flex-1 lg:px-8">
           <StandortSuche />
