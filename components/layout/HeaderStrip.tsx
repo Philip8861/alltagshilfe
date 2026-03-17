@@ -64,11 +64,13 @@ export function HeaderStrip({ nunitoClass = "", balooClass = "" }: HeaderStripPr
 
   return (
     <div
-      className="relative flex flex-wrap items-center justify-end gap-x-2 gap-y-1 px-4 py-2.5 pr-16 text-base font-semibold text-white sm:gap-x-3 sm:pr-20"
+      className="relative flex flex-wrap items-center justify-between gap-x-4 gap-y-1 px-4 py-2.5 pr-16 text-base font-semibold text-white sm:gap-x-6 sm:pr-20"
       style={{ backgroundColor: color, minHeight: "3.25rem" }}
     >
-      <span className="whitespace-nowrap">
-        Kostenlose Telefonnummer{" "}
+      <span className="whitespace-nowrap text-white/95">Ihr Begleiter im Alltag</span>
+      <div className="flex flex-wrap items-center justify-end gap-x-2 gap-y-1 sm:gap-x-3">
+        <span className="whitespace-nowrap">
+          Kostenlose Telefonnummer{" "}
         <a
           href="tel:+4983349893330"
           aria-label="Anrufen: 08334 9893330"
@@ -76,9 +78,8 @@ export function HeaderStrip({ nunitoClass = "", balooClass = "" }: HeaderStripPr
         >
           08334/9893330
         </a>
-      </span>
-      <span className="whitespace-nowrap">Mo–Do 08:30–16:00 Uhr</span>
-      <span className="whitespace-nowrap">Fr 08:30–12:00 Uhr</span>
+        </span>
+      </div>
       <button
         type="button"
         onClick={toggleFont}
