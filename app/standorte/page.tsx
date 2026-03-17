@@ -22,7 +22,7 @@ export default function StandortePage() {
             height={800}
             className="block h-auto w-full object-contain"
             style={{
-              filter: "drop-shadow(0 5px 16px rgba(180, 195, 200, 0.26)) drop-shadow(0 2px 10px rgba(170, 185, 192, 0.24))",
+              filter: "drop-shadow(0 6px 18px rgba(180, 195, 200, 0.31)) drop-shadow(0 3px 11px rgba(170, 185, 192, 0.29))",
             }}
             priority
             sizes="(max-width: 1024px) 49vw, 588px"
