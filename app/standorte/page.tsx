@@ -15,7 +15,7 @@ export default function StandortePage() {
     >
       <div className="mx-auto flex max-w-5xl justify-center px-4">
         <div
-          className="relative overflow-hidden rounded-lg border-2 border-[#0F4F68]/20 bg-white"
+          className="relative w-[70%] overflow-visible rounded-lg border-2 border-[#0F4F68]/20 bg-transparent"
           style={{
             boxShadow: "0 8px 24px rgba(245, 250, 250, 0.9), 0 4px 12px rgba(245, 250, 250, 0.7)",
           }}
@@ -27,7 +27,7 @@ export default function StandortePage() {
             height={800}
             className="block h-auto w-full object-contain"
             priority
-            sizes="(max-width: 1024px) 100vw, 1200px"
+            sizes="(max-width: 1024px) 70vw, 840px"
           />
         </div>
       </div>
