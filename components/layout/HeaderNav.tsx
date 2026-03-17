@@ -10,14 +10,15 @@ export function HeaderNav() {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [openDropdownHref, setOpenDropdownHref] = useState<string | null>(null);
+  const [openMobileDropdown, setOpenMobileDropdown] = useState<string | null>(null);
 
   return (
     <>
       <nav
-        className="hidden md:flex md:w-full md:flex-nowrap md:items-center md:justify-between md:gap-3 md:px-4 lg:gap-5 lg:px-6"
+        className="hidden md:flex md:w-full md:min-w-0 md:items-center md:justify-end md:gap-3 lg:gap-4"
         aria-label="Hauptnavigation"
       >
-        <div className="flex flex-1 flex-nowrap items-center justify-between gap-2 min-w-0 overflow-hidden lg:justify-evenly lg:gap-4">
+        <div className="flex min-w-0 flex-1 flex-wrap items-center justify-center gap-x-2 gap-y-1.5 lg:justify-end lg:gap-x-3">
           {navLinks.map((item) =>
             item.children ? (
               <div
@@ -29,7 +30,7 @@ export function HeaderNav() {
                 <Link
                   href={item.href}
                   className={cn(
-                    "inline-flex items-center gap-1 whitespace-nowrap rounded px-2 py-1 text-base font-semibold text-neutral-600 hover:text-neutral-900 focus:outline-none focus:ring-2 focus:ring-neutral-500 focus:ring-offset-2",
+                    "inline-flex items-center gap-0.5 whitespace-nowrap rounded px-1.5 py-1 text-sm font-semibold text-neutral-600 hover:text-neutral-900 focus:outline-none focus:ring-2 focus:ring-neutral-500 focus:ring-offset-2 lg:gap-1 lg:px-2 lg:text-base",
                     pathname === item.href && "text-neutral-900"
                   )}
                 >
@@ -73,7 +74,7 @@ export function HeaderNav() {
                 key={item.href}
                 href={item.href}
                 className={cn(
-                  "shrink-0 whitespace-nowrap rounded px-2 py-1 text-base font-semibold text-neutral-600 hover:text-neutral-900 focus:outline-none focus:ring-2 focus:ring-neutral-500 focus:ring-offset-2",
+                  "shrink-0 whitespace-nowrap rounded px-1.5 py-1 text-sm font-semibold text-neutral-600 hover:text-neutral-900 focus:outline-none focus:ring-2 focus:ring-neutral-500 focus:ring-offset-2 lg:px-2 lg:text-base",
                   pathname === item.href && "text-neutral-900"
                 )}
               >
@@ -84,7 +85,7 @@ export function HeaderNav() {
         </div>
         <Link
           href="/kontakt"
-          className="ml-3 shrink-0 whitespace-nowrap rounded-lg px-4 py-2 text-base font-semibold text-white transition-colors hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-[#F78F2E] focus:ring-offset-2 lg:ml-6"
+          className="shrink-0 whitespace-nowrap rounded-lg px-3 py-2 text-sm font-semibold text-white transition-colors hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-[#F78F2E] focus:ring-offset-2 lg:px-4 lg:text-base"
           style={{ backgroundColor: "#F78F2E" }}
         >
           Jetzt Kontakt aufnehmen
@@ -145,15 +146,42 @@ export function HeaderNav() {
               <li key={item.href}>
                 {item.children ? (
                   <>
-                    <span className="block rounded-lg px-4 py-2 text-sm font-semibold text-neutral-500">
+                    <button
+                      type="button"
+                      onClick={() => setOpenMobileDropdown((open) => (open === item.href ? null : item.href))}
+                      className="flex w-full items-center justify-between rounded-lg px-4 py-3 text-left text-base font-semibold text-neutral-600 hover:bg-neutral-50 hover:text-neutral-900 focus:outline-none focus:ring-2 focus:ring-neutral-500 focus:ring-inset"
+                      aria-expanded={openMobileDropdown === item.href}
+                      aria-controls={`mobile-submenu-${item.href.replace(/\//g, "-")}`}
+                      id={`mobile-trigger-${item.href.replace(/\//g, "-")}`}
+                    >
                       {item.label}
-                    </span>
-                    <ul className="ml-4 mt-1 flex flex-col gap-1 border-l border-[#0F4F68]/15 pl-4">
+                      <svg
+                        className={cn("h-5 w-5 shrink-0 transition-transform", openMobileDropdown === item.href && "rotate-180")}
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        aria-hidden
+                      >
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                      </svg>
+                    </button>
+                    <ul
+                      id={`mobile-submenu-${item.href.replace(/\//g, "-")}`}
+                      role="region"
+                      aria-labelledby={`mobile-trigger-${item.href.replace(/\//g, "-")}`}
+                      className={cn(
+                        "flex flex-col gap-1 border-l-2 border-[#0F4F68]/20 pl-4 ml-4 overflow-hidden transition-[height] duration-200",
+                        openMobileDropdown === item.href ? "visible max-h-96 opacity-100" : "invisible max-h-0 opacity-0"
+                      )}
+                    >
                       {item.children.map((child) => (
                         <li key={child.href}>
                           <Link
                             href={child.href}
-                            onClick={() => setMobileOpen(false)}
+                            onClick={() => {
+                              setMobileOpen(false);
+                              setOpenMobileDropdown(null);
+                            }}
                             className={cn(
                               "block rounded-lg px-4 py-3 text-base font-semibold text-neutral-600 hover:bg-neutral-50 hover:text-neutral-900 focus:outline-none focus:ring-2 focus:ring-neutral-500 focus:ring-inset",
                               pathname === child.href && "bg-neutral-50 text-neutral-900"
