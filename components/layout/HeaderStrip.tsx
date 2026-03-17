@@ -9,6 +9,9 @@ const STORAGE_KEY_FONT = "site-font";
 const FONT_NUNITO = "nunito";
 const FONT_BALOO = "baloo";
 
+const TAGLINE = "Ihr Begleiter im Alltag";
+const TAGLINE_CHAR_MS = 55;
+
 type HeaderStripProps = {
   nunitoClass?: string;
   balooClass?: string;
@@ -23,6 +26,21 @@ function applyFont(nunitoClass: string, balooClass: string, font: string) {
 export function HeaderStrip({ nunitoClass = "", balooClass = "" }: HeaderStripProps) {
   const [color, setColor] = useState(COLOR_NEW);
   const [font, setFont] = useState(FONT_NUNITO);
+  const [taglineLength, setTaglineLength] = useState(0);
+
+  useEffect(() => {
+    if (typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      setTaglineLength(TAGLINE.length);
+      return;
+    }
+    let i = 0;
+    const t = setInterval(() => {
+      i += 1;
+      setTaglineLength(i);
+      if (i >= TAGLINE.length) clearInterval(t);
+    }, TAGLINE_CHAR_MS);
+    return () => clearInterval(t);
+  }, []);
 
   useEffect(() => {
     try {
@@ -67,7 +85,10 @@ export function HeaderStrip({ nunitoClass = "", balooClass = "" }: HeaderStripPr
       className="flex flex-wrap items-center gap-x-3 gap-y-2 px-4 py-2.5 text-base font-semibold text-white sm:gap-x-4"
       style={{ backgroundColor: color, minHeight: "3.25rem" }}
     >
-      <span className="shrink-0 text-white/95">Ihr Begleiter im Alltag</span>
+      <span className="shrink-0 text-white/95" aria-live="polite">
+        {TAGLINE.slice(0, taglineLength)}
+        {taglineLength < TAGLINE.length && <span className="animate-pulse" aria-hidden>|</span>}
+      </span>
       <div className="min-w-0 flex-1 flex flex-wrap items-center justify-end gap-x-2 gap-y-1 sm:gap-x-3">
         <span className="whitespace-nowrap">
           Kostenlose Telefonnummer{" "}

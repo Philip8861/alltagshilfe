@@ -30,7 +30,7 @@ export function Header({ nunitoClass = "", balooClass = "" }: HeaderProps) {
               priority
             />
           </Link>
-          <div className="hidden md:block min-w-0 flex-1">
+          <div className="flex min-w-0 flex-1 items-center justify-end md:justify-between">
             <HeaderNav />
           </div>
         </Container>

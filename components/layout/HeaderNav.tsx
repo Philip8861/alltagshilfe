@@ -84,7 +84,7 @@ export function HeaderNav() {
         </div>
         <Link
           href="/kontakt"
-          className="ml-4 shrink-0 rounded-lg px-4 py-2 text-base font-semibold text-white transition-colors hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-[#F78F2E] focus:ring-offset-2"
+          className="ml-6 shrink-0 rounded-lg px-4 py-2 text-base font-semibold text-white transition-colors hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-[#F78F2E] focus:ring-offset-2 sm:ml-8"
           style={{ backgroundColor: "#F78F2E" }}
         >
           Jetzt Kontakt aufnehmen
