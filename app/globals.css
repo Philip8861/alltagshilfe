@@ -14,4 +14,8 @@
     opacity: 1 !important;
     transform: none !important;
   }
+  .animate-dog-run {
+    animation: none !important;
+    transform: translateX(80px) scaleX(1) !important;
+  }
 }

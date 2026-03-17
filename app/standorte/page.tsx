@@ -8,10 +8,10 @@ export const metadata: Metadata = {
   description: `Unsere Standorte – ${siteConfig.name}. Augsburg und Umgebung.`,
 };
 
-/** Vereinfachte Kontur Augsburg (grober Umriss) + Punkte für anliegende Orte – rein schematisch. */
+/** Vereinfachte Kontur Augsburg + Punkte + verspielte Illustration: Hund rennt durch, Vale beleidigt. */
 function AugsburgSkizze() {
   return (
-    <figure className="mx-auto w-full max-w-md" aria-hidden>
+    <figure className="relative mx-auto w-full max-w-md" aria-hidden>
       <svg
         viewBox="0 0 320 280"
         className="h-auto w-full text-[#0F4F68]"
@@ -35,7 +35,41 @@ function AugsburgSkizze() {
         <circle cx="95" cy="230" r="4" className="fill-[#F78F2E]" aria-hidden />
         <circle cx="55" cy="175" r="4" className="fill-[#F78F2E]" aria-hidden />
         <circle cx="65" cy="120" r="4" className="fill-[#F78F2E]" aria-hidden />
+
+        {/* Vale (beleidigt) mit Sprechblase – oben rechts */}
+        <g transform="translate(255, 45)">
+          <path
+            d="M0 18 Q-4 14 -2 10 Q2 6 8 8 Q14 10 14 16 Q14 22 8 24 Q2 26 0 18 Z"
+            className="fill-white stroke-[#0F4F68]"
+            strokeWidth="1.2"
+          />
+          <text x="4" y="14" className="fill-[#0F4F68] text-[6px] font-bold" style={{ fontFamily: "system-ui, sans-serif" }}>So nicht!</text>
+          <text x="0" y="58" className="fill-[#0F4F68] text-[7px] font-semibold" style={{ fontFamily: "system-ui, sans-serif" }}>Vale</text>
+          <circle cx="8" cy="32" r="10" className="fill-[#F78F2E]/90 stroke-[#0F4F68]" strokeWidth="1" />
+          <circle cx="5" cy="30" r="1.5" className="fill-[#0F4F68]" />
+          <circle cx="11" cy="30" r="1.5" className="fill-[#0F4F68]" />
+          <path d="M4 36 Q8 40 12 36" stroke="#0F4F68" strokeWidth="1" fill="none" strokeLinecap="round" />
+          <path d="M8 32 L8 48 L6 52 L10 52 L8 48" className="stroke-[#0F4F68]" strokeWidth="1" fill="none" />
+        </g>
       </svg>
+      {/* Hund läuft durch die Karte – Layer über der SVG für CSS-Animation */}
+      <div
+        className="absolute inset-0 flex items-center pointer-events-none"
+        style={{ top: "42%", bottom: "auto", height: "20%" }}
+        aria-hidden
+      >
+        <div className="animate-dog-run h-full w-full flex items-center justify-start">
+          <svg viewBox="0 0 60 40" className="h-full w-auto max-w-[120px] flex-shrink-0 text-[#8B4513]">
+            <ellipse cx="20" cy="22" rx="14" ry="8" fill="currentColor" className="text-[#8B4513]" />
+            <circle cx="34" cy="18" r="6" fill="currentColor" className="text-[#8B4513]" />
+            <circle cx="37" cy="16" r="2" fill="#0F4F68" />
+            <circle cx="37" cy="20" r="2" fill="#0F4F68" />
+            <path d="M6 22 Q0 16 4 20" stroke="#5D2E0C" strokeWidth="2" fill="none" strokeLinecap="round" />
+            <path d="M10 18 L14 24 M12 24 L16 20" stroke="#5D2E0C" strokeWidth="1.5" fill="none" strokeLinecap="round" />
+            <path d="M30 30 L34 34 M32 32 L36 30" stroke="#5D2E0C" strokeWidth="1.5" fill="none" strokeLinecap="round" />
+          </svg>
+        </div>
+      </div>
       <figcaption className="mt-2 text-center text-sm text-neutral-500">
         Schematische Darstellung – Augsburg (blau) und anliegende Orte (orange)
       </figcaption>
