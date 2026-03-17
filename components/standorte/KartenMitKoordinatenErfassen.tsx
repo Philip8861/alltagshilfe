@@ -6,13 +6,15 @@ import Link from "next/link";
 
 type Hauptmarker = { left: number; top: number; label: string; href?: string };
 type Punkt = { left: number; top: number };
+type OrtsLabel = { left: number; top: number; label: string; withX?: boolean };
 
 type Props = {
   hauptmarker: Hauptmarker[];
   punkte: Punkt[];
+  ortsLabels?: OrtsLabel[];
 };
 
-export function KartenMitKoordinatenErfassen({ hauptmarker, punkte }: Props) {
+export function KartenMitKoordinatenErfassen({ hauptmarker, punkte, ortsLabels = [] }: Props) {
   const mapRef = useRef<HTMLDivElement>(null);
   const [erfassenAktiv, setErfassenAktiv] = useState(false);
   const [mouseProzent, setMouseProzent] = useState<{ left: number; top: number } | null>(null);
@@ -88,6 +90,24 @@ export function KartenMitKoordinatenErfassen({ hauptmarker, punkte }: Props) {
                 animationDelay: `${Math.min(i * 35, 650)}ms`,
               }}
             />
+          ))}
+          {ortsLabels.map((o) => (
+            <div
+              key={o.label}
+              className="pointer-events-none absolute flex items-center gap-1"
+              style={{
+                left: `${o.left}%`,
+                top: `${o.top}%`,
+                transform: "translate(-50%, -50%)",
+              }}
+            >
+              <span className="whitespace-nowrap font-semibold text-[#0F4F68] text-sm sm:text-base">
+                {o.label}
+              </span>
+              {o.withX && (
+                <span className="text-[#0F4F68] font-bold" aria-hidden>×</span>
+              )}
+            </div>
           ))}
           {hauptmarker.map((m) => {
             const content = (

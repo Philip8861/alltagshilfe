@@ -8,6 +8,12 @@ export const metadata: Metadata = {
   description: `Unsere Standorte – ${siteConfig.name}. Augsburg und Umgebung.`,
 };
 
+/** Dunkle Ortsbezeichnungen auf der Karte (ohne Link). */
+const ORTSLABELS = [
+  { left: 71.1, top: 73.8, label: "München", withX: true },
+  { left: 68.4, top: 33.2, label: "Nürnberg", withX: false },
+];
+
 /** GPS-Marker – Position in % (links, oben), href = Link zu Standort/Kontakt. */
 const HAUPTMARKER = [
   { left: 48.4, top: 83.3, label: "Allgäu", href: "/kontakt" },
@@ -53,7 +59,7 @@ export default function StandortePage() {
     >
       <div className="flex w-full flex-col gap-8 lg:flex-row lg:flex-nowrap lg:items-flex-start lg:justify-start lg:gap-10 lg:pl-0">
         <div className="relative w-full shrink-0 bg-transparent pl-0 lg:w-[50%] lg:max-w-3xl lg:flex-shrink-0 lg:min-w-0">
-          <KartenMitKoordinatenErfassen hauptmarker={HAUPTMARKER} punkte={PUNKTE} />
+          <KartenMitKoordinatenErfassen hauptmarker={HAUPTMARKER} punkte={PUNKTE} ortsLabels={ORTSLABELS} />
         </div>
         <div className="w-full min-w-0 px-4 sm:px-6 lg:max-w-lg lg:flex-1 lg:px-8">
           <StandortSuche />
