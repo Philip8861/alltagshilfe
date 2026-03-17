@@ -85,7 +85,7 @@ export function HeaderStrip({ nunitoClass = "", balooClass = "" }: HeaderStripPr
       className="flex flex-wrap items-center gap-x-3 gap-y-2 px-4 py-2.5 text-base font-semibold text-white sm:gap-x-4"
       style={{ backgroundColor: color, minHeight: "3.25rem" }}
     >
-      <span className="shrink-0 text-white/95" aria-live="polite">
+      <span className="hidden shrink-0 text-white/95 md:inline" aria-live="polite">
         {TAGLINE.slice(0, taglineLength)}
         {taglineLength < TAGLINE.length && <span className="animate-pulse" aria-hidden>|</span>}
       </span>
