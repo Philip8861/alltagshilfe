@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 /** Dunkle Ortsbezeichnungen auf der Karte (ohne Link). */
 const ORTSLABELS = [
   { left: 71.1, top: 73.8, label: "München", withX: true },
-  { left: 68.4, top: 33.2, label: "Nürnberg", withX: false },
+  { left: 68.4, top: 33.2, label: "Nürnberg", withX: true },
 ];
 
 /** GPS-Marker – Position in % (links, oben), href = Link zu Standort/Kontakt. */
