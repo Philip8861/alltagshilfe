@@ -39,18 +39,18 @@ export default function StandortePage() {
     >
       <div className="flex w-full flex-col gap-8 lg:flex-row lg:flex-nowrap lg:items-flex-start lg:justify-start lg:gap-10 lg:pl-0">
         {/* Karte ganz links – kein linkes Padding */}
-        <div className="relative w-full shrink-0 bg-transparent pl-0 lg:w-[56%] lg:max-w-4xl lg:flex-shrink-0 lg:min-w-0">
-          <div className="relative w-full aspect-[3/2] min-h-[280px]">
+        <div className="relative w-full shrink-0 bg-transparent pl-0 lg:w-[45%] lg:max-w-3xl lg:flex-shrink-0 lg:min-w-0">
+          <div className="relative w-full aspect-[3/2] min-h-[224px]">
             <Image
               src="/images/Landkarte_sueddeutschland.webp"
               alt="Karte Süddeutschland – Standorte Alltagshilfe-Süd"
               fill
               className="object-contain object-left z-0"
               style={{
-                filter: "drop-shadow(0 3px 8px rgba(15, 79, 104, 0.18)) drop-shadow(0 8px 24px rgba(242, 249, 250, 1)) drop-shadow(0 16px 40px rgba(225, 240, 242, 0.98)) drop-shadow(0 6px 20px rgba(210, 235, 238, 0.95))",
+                filter: "drop-shadow(0 2px 6px rgba(15, 79, 104, 0.13)) drop-shadow(0 6px 17px rgba(242, 249, 250, 0.7)) drop-shadow(0 11px 28px rgba(225, 240, 242, 0.69)) drop-shadow(0 4px 14px rgba(210, 235, 238, 0.67))",
               }}
               priority
-              sizes="(max-width: 1024px) 100vw, 56vw"
+              sizes="(max-width: 1024px) 100vw, 45vw"
             />
             {/* GPS-Marker direkt im Markup – serverseitig, immer sichtbar */}
             <div
