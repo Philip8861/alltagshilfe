@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Nunito_Sans } from "next/font/google";
+import { Nunito_Sans, Baloo_2 } from "next/font/google";
 import "./globals.css";
 import { siteConfig } from "@/config/site";
 
@@ -7,6 +7,12 @@ const nunitoSans = Nunito_Sans({
   subsets: ["latin"],
   display: "swap",
 });
+
+const baloo2 = Baloo_2({
+  subsets: ["latin"],
+  display: "swap",
+});
+
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { CookieBanner } from "@/components/CookieBanner";
@@ -42,7 +48,7 @@ export default function RootLayout({
         </a>
         <div className="flex min-h-screen flex-col">
           <div className="flex flex-1 flex-col">
-            <Header />
+            <Header nunitoClass={nunitoSans.className} balooClass={baloo2.className} />
             <main id="main-content" className="flex-1">
               {children}
             </main>

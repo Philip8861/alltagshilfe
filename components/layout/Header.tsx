@@ -5,10 +5,15 @@ import { siteConfig } from "@/config/site";
 import { HeaderNav } from "./HeaderNav";
 import { HeaderStrip } from "./HeaderStrip";
 
-export function Header() {
+type HeaderProps = {
+  nunitoClass?: string;
+  balooClass?: string;
+};
+
+export function Header({ nunitoClass = "", balooClass = "" }: HeaderProps) {
   return (
     <header className="sticky top-0 z-50 shadow-[0_4px_6px_-1px_rgb(0_0_0/0.07),0_2px_4px_-2px_rgb(0_0_0/0.07)]">
-      <HeaderStrip />
+      <HeaderStrip nunitoClass={nunitoClass} balooClass={balooClass} />
       <div className="relative border-b border-[#0F4F68]/15 bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/80">
         <Container className="flex h-16 items-center justify-between gap-4">
           <Link
