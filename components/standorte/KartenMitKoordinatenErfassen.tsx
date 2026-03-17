@@ -66,9 +66,6 @@ export function KartenMitKoordinatenErfassen({ hauptmarker, punkte }: Props) {
           alt="Karte Süddeutschland – Standorte Alltagshilfe-Süd"
           fill
           className="object-contain object-left z-0"
-          style={{
-            filter: "drop-shadow(0 2px 6px rgba(15, 79, 104, 0.13)) drop-shadow(0 6px 17px rgba(242, 249, 250, 0.7)) drop-shadow(0 11px 28px rgba(225, 240, 242, 0.69)) drop-shadow(0 4px 14px rgba(210, 235, 238, 0.67))",
-          }}
           priority
           sizes="(max-width: 1024px) 100vw, 50vw"
         />
@@ -80,12 +77,12 @@ export function KartenMitKoordinatenErfassen({ hauptmarker, punkte }: Props) {
           {punkte.map((p, i) => (
             <span
               key={`dot-${i}`}
-              className="pointer-events-none absolute h-2.5 w-2.5 rounded-full bg-[#F78F2E] ring-2 ring-white"
+              className="pointer-events-none absolute h-2.5 w-2.5 rounded-full bg-[#F78F2E] ring-2 ring-white animate-marker-pop-in"
               style={{
                 left: `${p.left}%`,
                 top: `${p.top}%`,
                 transform: "translate(-50%, -50%)",
-                boxShadow: "0 1px 4px rgba(15,79,104,0.4)",
+                animationDelay: `${Math.min(i * 35, 650)}ms`,
               }}
             />
           ))}
@@ -119,13 +116,15 @@ export function KartenMitKoordinatenErfassen({ hauptmarker, punkte }: Props) {
               top: `${m.top}%`,
               transform: "translate(-50%, -50%)",
             };
+            const animDelay = 400 + (hauptmarker.indexOf(m) * 120);
+            const commonStyle = { ...style, animationDelay: `${animDelay}ms` };
             if (m.href) {
               return (
                 <Link
                   key={m.label}
                   href={m.href}
-                  className="absolute flex flex-col items-center pointer-events-auto rounded-lg transition-opacity hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2 focus:ring-offset-transparent"
-                  style={style}
+                  className="absolute flex flex-col items-center pointer-events-auto rounded-lg transition-opacity hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2 focus:ring-offset-transparent animate-marker-slide-in"
+                  style={commonStyle}
                   aria-label={`${m.label} – Standort anzeigen`}
                 >
                   {content}
@@ -133,7 +132,7 @@ export function KartenMitKoordinatenErfassen({ hauptmarker, punkte }: Props) {
               );
             }
             return (
-              <div key={m.label} className="absolute flex flex-col items-center pointer-events-none" style={style}>
+              <div key={m.label} className="absolute flex flex-col items-center pointer-events-none animate-marker-slide-in" style={commonStyle}>
                 {content}
               </div>
             );

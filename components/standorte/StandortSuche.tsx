@@ -31,34 +31,31 @@ export function StandortSuche() {
   );
 
   return (
-    <div
-      className="w-full rounded-2xl border border-[#0F4F68]/15 bg-[#F2F9FA] p-6 sm:p-8"
-      style={{ boxShadow: "0 4px 20px rgba(15, 79, 104, 0.08)" }}
-    >
-      <div className="flex items-center gap-3">
+    <div className="w-full rounded-2xl border border-[#0F4F68]/15 bg-[#F2F9FA] p-8 sm:p-10">
+      <div className="flex items-center gap-4">
         <span
-          className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#0F4F68] text-white"
+          className="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-[#0F4F68] text-white"
           aria-hidden
         >
-          <svg className="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
+          <svg className="h-6 w-6" viewBox="0 0 24 24" fill="currentColor">
             <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
           </svg>
         </span>
         <div>
-          <h2 className="text-xl font-bold tracking-tight text-[#0F4F68] sm:text-2xl">
+          <h2 className="text-2xl font-bold tracking-tight text-[#0F4F68] sm:text-3xl">
             Standort suchen
           </h2>
-          <p className="mt-0.5 text-sm text-neutral-600">
+          <p className="mt-1 text-base text-neutral-600">
             Postleitzahl eingeben – wir zeigen Ihren Ansprechpartner.
           </p>
         </div>
       </div>
 
-      <div className="mt-6">
+      <div className="mt-8">
         <label htmlFor="standort-plz" className="sr-only">
           Postleitzahl
         </label>
-        <div className="flex gap-3">
+        <div className="flex gap-4">
           <input
             id="standort-plz"
             type="text"
@@ -73,16 +70,16 @@ export function StandortSuche() {
               setError(null);
             }}
             onKeyDown={handleKeyDown}
-            className="min-w-0 flex-1 rounded-xl border border-[#0F4F68]/25 bg-white px-4 py-3 text-neutral-900 placeholder-neutral-400 focus:border-[#0F4F68] focus:outline-none focus:ring-2 focus:ring-[#0F4F68]/20"
+            className="min-w-0 flex-1 rounded-xl border border-[#0F4F68]/25 bg-white px-5 py-4 text-base text-neutral-900 placeholder-neutral-400 focus:border-[#0F4F68] focus:outline-none focus:ring-2 focus:ring-[#0F4F68]/20"
             aria-invalid={!!error}
             aria-describedby={error ? "standort-plz-error" : undefined}
           />
           <button
             type="button"
             onClick={handleSearch}
-            className="flex shrink-0 items-center gap-2 rounded-xl bg-[#0F4F68] px-5 py-3 font-semibold text-white transition-colors hover:bg-[#0c3d52] focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2 focus:ring-offset-[#F2F9FA]"
+            className="flex shrink-0 items-center gap-2 rounded-xl bg-[#0F4F68] px-6 py-4 font-semibold text-base text-white transition-colors hover:bg-[#0c3d52] focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2 focus:ring-offset-[#F2F9FA]"
           >
-            <svg className="h-5 w-5" viewBox="0 0 24 24" fill="currentColor" style={{ color: "#F78F2E" }} aria-hidden>
+            <svg className="h-6 w-6" viewBox="0 0 24 24" fill="currentColor" style={{ color: "#F78F2E" }} aria-hidden>
               <path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0016 9.5 6.5 6.5 0 109.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" />
             </svg>
             Suchen
@@ -96,7 +93,7 @@ export function StandortSuche() {
       </div>
 
       {result !== "idle" && (
-        <div className="mt-6 rounded-xl border border-[#0F4F68]/20 bg-white/80 p-4 shadow-sm">
+        <div className="mt-8 rounded-xl border border-[#0F4F68]/20 bg-white/80 p-5">
           {result ? (
             <>
               <p className="text-xs font-semibold uppercase tracking-wide text-[#0F4F68]">
