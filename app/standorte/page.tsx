@@ -14,18 +14,16 @@ export default function StandortePage() {
       style={{ backgroundColor: "#fafbfc" }}
     >
       <div className="mx-auto flex max-w-5xl justify-center px-4">
-        <div
-          className="relative w-[70%] overflow-visible rounded-lg border-2 border-[#0F4F68]/20 bg-transparent"
-          style={{
-            boxShadow: "0 8px 24px rgba(245, 250, 250, 0.9), 0 4px 12px rgba(245, 250, 250, 0.7)",
-          }}
-        >
+        <div className="relative w-[70%] bg-transparent">
           <Image
             src="/images/Landkarte_sueddeutschland.webp"
             alt="Karte Süddeutschland – Standorte Alltagshilfe-Süd"
             width={1200}
             height={800}
             className="block h-auto w-full object-contain"
+            style={{
+              filter: "drop-shadow(0 4px 12px rgba(245, 250, 250, 0.85)) drop-shadow(0 2px 6px rgba(245, 250, 250, 0.7))",
+            }}
             priority
             sizes="(max-width: 1024px) 70vw, 840px"
           />
