@@ -12,6 +12,13 @@ export function middleware(request: NextRequest) {
       "Permissions-Policy",
       "camera=(), microphone=(), geolocation=()"
     );
+    // HSTS: nur in Produktion mit HTTPS setzen (max-age 1 Jahr, includeSubDomains)
+    if (request.nextUrl.protocol === "https:") {
+      response.headers.set(
+        "Strict-Transport-Security",
+        "max-age=31536000; includeSubDomains; preload"
+      );
+    }
 
     const csp = [
       "default-src 'self'",

@@ -3,6 +3,7 @@
 import { redirect } from "next/navigation";
 import { contactSchema, type ContactFormData } from "@/lib/validations/contact";
 import { rateLimit } from "@/lib/rate-limit";
+import { getClientIp } from "@/lib/security";
 
 export type ContactResult = { success: boolean; error?: string };
 
@@ -39,8 +40,8 @@ export async function submitContact(formData: FormData): Promise<ContactResult> 
     return { success: true };
   }
 
-  const id = "contact";
-  const { success: allowed } = rateLimit(id);
+  const ip = await getClientIp();
+  const { success: allowed } = rateLimit(`contact:${ip}`);
   if (!allowed) {
     return { success: false, error: "Zu viele Anfragen. Bitte versuchen Sie es später erneut." };
   }

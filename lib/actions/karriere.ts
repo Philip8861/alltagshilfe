@@ -3,6 +3,7 @@
 import { redirect } from "next/navigation";
 import { karriereSchema, type KarriereFormData } from "@/lib/validations/karriere";
 import { rateLimit } from "@/lib/rate-limit";
+import { getClientIp } from "@/lib/security";
 
 export type KarriereResult = { success: boolean; error?: string };
 
@@ -36,8 +37,8 @@ export async function submitKarriere(formData: FormData): Promise<KarriereResult
     return { success: true };
   }
 
-  const id = "karriere";
-  const { success: allowed } = rateLimit(id);
+  const ip = await getClientIp();
+  const { success: allowed } = rateLimit(`karriere:${ip}`);
   if (!allowed) {
     return { success: false, error: "Zu viele Anfragen. Bitte versuchen Sie es später erneut." };
   }
