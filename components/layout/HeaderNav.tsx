@@ -14,22 +14,22 @@ export function HeaderNav() {
   return (
     <>
       <nav
-        className="hidden md:flex md:w-full md:items-center md:justify-between md:gap-6 md:px-6"
+        className="hidden md:flex md:w-full md:flex-nowrap md:items-center md:justify-between md:gap-3 md:px-4 lg:gap-5 lg:px-6"
         aria-label="Hauptnavigation"
       >
-        <div className="flex flex-1 items-center justify-evenly gap-4 min-w-0">
+        <div className="flex flex-1 flex-nowrap items-center justify-between gap-2 min-w-0 overflow-hidden lg:justify-evenly lg:gap-4">
           {navLinks.map((item) =>
             item.children ? (
               <div
                 key={item.href}
-                className="relative group"
+                className="relative shrink-0 group"
                 onMouseEnter={() => setOpenDropdownHref(item.href)}
                 onMouseLeave={() => setOpenDropdownHref(null)}
               >
                 <Link
                   href={item.href}
                   className={cn(
-                    "inline-flex items-center gap-1 text-base font-semibold text-neutral-600 hover:text-neutral-900 focus:outline-none focus:ring-2 focus:ring-neutral-500 focus:ring-offset-2 rounded px-2 py-1",
+                    "inline-flex items-center gap-1 whitespace-nowrap rounded px-2 py-1 text-base font-semibold text-neutral-600 hover:text-neutral-900 focus:outline-none focus:ring-2 focus:ring-neutral-500 focus:ring-offset-2",
                     pathname === item.href && "text-neutral-900"
                   )}
                 >
@@ -73,7 +73,7 @@ export function HeaderNav() {
                 key={item.href}
                 href={item.href}
                 className={cn(
-                  "text-base font-semibold text-neutral-600 hover:text-neutral-900 focus:outline-none focus:ring-2 focus:ring-neutral-500 focus:ring-offset-2 rounded px-2 py-1",
+                  "shrink-0 whitespace-nowrap rounded px-2 py-1 text-base font-semibold text-neutral-600 hover:text-neutral-900 focus:outline-none focus:ring-2 focus:ring-neutral-500 focus:ring-offset-2",
                   pathname === item.href && "text-neutral-900"
                 )}
               >
@@ -84,7 +84,7 @@ export function HeaderNav() {
         </div>
         <Link
           href="/kontakt"
-          className="ml-6 shrink-0 rounded-lg px-4 py-2 text-base font-semibold text-white transition-colors hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-[#F78F2E] focus:ring-offset-2 sm:ml-8"
+          className="ml-3 shrink-0 whitespace-nowrap rounded-lg px-4 py-2 text-base font-semibold text-white transition-colors hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-[#F78F2E] focus:ring-offset-2 lg:ml-6"
           style={{ backgroundColor: "#F78F2E" }}
         >
           Jetzt Kontakt aufnehmen

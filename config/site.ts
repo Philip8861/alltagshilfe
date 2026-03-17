@@ -18,9 +18,26 @@ function getBaseUrl(): string {
 
 const baseUrl = getBaseUrl();
 
+/**
+ * Indeed: URL zu euren offenen Stellen (Firmenseite oder Suche).
+ * In .env: NEXT_PUBLIC_INDEED_JOBS_URL=https://de.indeed.com/cmp/Alltagshilfe-Süd/jobs
+ * oder Suche: https://de.indeed.com/jobs?q=Alltagshilfe+Süd
+ */
+function getIndeedJobsUrl(): string {
+  try {
+    const raw = process.env.NEXT_PUBLIC_INDEED_JOBS_URL;
+    if (typeof raw === "string" && raw.trim().startsWith("http")) return raw.trim();
+    return "https://de.indeed.com/jobs?q=Alltagshilfe+S%C3%BCd";
+  } catch {
+    return "https://de.indeed.com/jobs?q=Alltagshilfe+S%C3%BCd";
+  }
+}
+
 export const siteConfig = {
   name: "Alltagshilfe-Süd",
   description: "Alltagshilfe-Süd – modern, sicher, suchmaschinenoptimiert.",
   baseUrl,
   locale: "de",
+  /** Link zu den Stellen bei Indeed (optional). */
+  indeedJobsUrl: getIndeedJobsUrl(),
 } as const;

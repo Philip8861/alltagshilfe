@@ -299,6 +299,29 @@ export default function KarrierePage() {
               </li>
             ))}
           </ul>
+
+          {/* Verknüpfung Indeed – alle offenen Stellen */}
+          {siteConfig.indeedJobsUrl && (
+            <div className="mt-12 rounded-2xl border-2 border-white/30 bg-white/10 p-6 text-center sm:p-8">
+              <p className="text-lg font-semibold text-white sm:text-xl">
+                Alle aktuellen Stellenangebote finden Sie auch bei Indeed.
+              </p>
+              <p className="mt-2 text-white/90">
+                Dort können Sie sich direkt bewerben oder die Details zu jeder Stelle einsehen.
+              </p>
+              <a
+                href={siteConfig.indeedJobsUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-6 inline-flex items-center justify-center gap-2 rounded-xl bg-[#2557a7] px-6 py-3.5 text-base font-semibold text-white transition-opacity hover:opacity-95 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-[#0F4F68]"
+              >
+                <svg className="h-5 w-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden>
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                </svg>
+                Offene Stellen bei Indeed anzeigen
+              </a>
+            </div>
+          )}
         </Container>
       </section>
 
