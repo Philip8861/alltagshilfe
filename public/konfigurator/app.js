@@ -712,7 +712,18 @@ function initBoxChatbot() {
 
   if (avatarImage) {
     avatarImage.addEventListener("click", () => {
-      toggleChatbot();
+      if (root.classList.contains("box-chatbot--expanded")) {
+        // Geöffnet: Pflegeboxi vor Freude hüpfen
+        avatarImage.classList.remove("pflegeboxi-jump");
+        void avatarImage.offsetWidth;
+        avatarImage.classList.add("pflegeboxi-jump");
+        avatarImage.addEventListener("animationend", function removeJump() {
+          avatarImage.classList.remove("pflegeboxi-jump");
+          avatarImage.removeEventListener("animationend", removeJump);
+        }, { once: true });
+      } else {
+        toggleChatbot();
+      }
     });
     avatarImage.style.cursor = "pointer";
   }

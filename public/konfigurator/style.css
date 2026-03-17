@@ -835,6 +835,20 @@ body {
   filter: drop-shadow(0 0 12px rgba(255, 255, 255, 0.9)) drop-shadow(0 0 24px rgba(15, 79, 104, 0.35));
 }
 
+/* Pflegeboxi vor Freude hüpfen, wenn geöffnet und angeklickt */
+@keyframes pflegeboxi-jump {
+  0%, 100% { transform: translateY(0) scale(1); }
+  20% { transform: translateY(-28px) scale(1.08); }
+  40% { transform: translateY(0) scale(1.02); }
+  55% { transform: translateY(-14px) scale(1.04); }
+  70% { transform: translateY(0) scale(1.01); }
+  85% { transform: translateY(-6px) scale(1.02); }
+}
+
+.box-chatbot-image.pflegeboxi-jump {
+  animation: pflegeboxi-jump 0.7s ease-out;
+}
+
 .box-chatbot-bubble-over {
   position: absolute;
   bottom: 100%;
