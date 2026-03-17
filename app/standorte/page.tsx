@@ -17,19 +17,22 @@ export default function StandortePage() {
     >
       <div className="flex w-full flex-col gap-8 lg:flex-row lg:flex-nowrap lg:items-flex-start lg:justify-start lg:gap-10">
         <div className="relative w-full shrink-0 bg-transparent pl-0 lg:w-[56%] lg:max-w-4xl lg:flex-shrink-0">
-          <div className="relative aspect-[3/2] w-full min-h-[280px]">
+          <div className="relative aspect-[3/2] w-full min-h-[280px] overflow-visible">
             <Image
               src="/images/Landkarte_sueddeutschland.webp"
               alt="Karte Süddeutschland – Standorte Alltagshilfe-Süd"
               fill
-              className="object-contain object-left"
+              className="object-contain object-left z-0"
               style={{
-                filter: "drop-shadow(0 2px 4px rgba(15, 79, 104, 0.12)) drop-shadow(0 6px 16px rgba(242, 249, 250, 1)) drop-shadow(0 12px 28px rgba(230, 243, 244, 0.95)) drop-shadow(0 4px 12px rgba(220, 238, 240, 0.9))",
+                filter: "drop-shadow(0 3px 8px rgba(15, 79, 104, 0.18)) drop-shadow(0 8px 24px rgba(242, 249, 250, 1)) drop-shadow(0 16px 40px rgba(225, 240, 242, 0.98)) drop-shadow(0 6px 20px rgba(210, 235, 238, 0.95))",
               }}
               priority
               sizes="(max-width: 1024px) 100vw, 56vw"
             />
-            <div className="absolute inset-0 z-10">
+            <div
+              className="absolute inset-0 z-[100] w-full h-full"
+              style={{ left: 0, top: 0, right: 0, bottom: 0 }}
+            >
               <KartenMarker />
             </div>
           </div>
