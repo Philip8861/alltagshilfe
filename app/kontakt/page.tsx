@@ -68,24 +68,24 @@ export default function KontaktPage() {
               </div>
             </div>
             <div
-              className="mx-auto w-full max-w-md opacity-0 animate-fade-in-up text-lg sm:text-xl"
+              className="mx-auto w-full max-w-md opacity-0 animate-fade-in-up"
               style={{ animationDelay: "0.25s" }}
             >
-              <p className="font-semibold text-[#0F4F68]">
-                Kostenlose Telefonnummer{" "}
-                <a
-                  href="tel:+4983349893330"
-                  className="inline-flex items-center gap-1.5 font-bold text-[#0F4F68] hover:underline focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2 rounded"
-                  aria-label="Anrufen: 08334 9893330"
-                >
-                  <svg className="h-6 w-6 shrink-0 sm:h-7 sm:w-7" fill="currentColor" viewBox="0 0 24 24" aria-hidden style={{ color: "#F78F2E" }}>
-                    <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z" />
-                  </svg>
-                  08334/9893330
-                </a>
-              </p>
-              <p className="mt-3 text-neutral-700">Mo–Do 08:30–16:00 Uhr</p>
-              <p className="mt-1 text-neutral-700">Fr 08:30–12:00 Uhr</p>
+              <p className="text-base font-semibold text-[#0F4F68] sm:text-lg">Kostenlose Telefonnummer</p>
+              <a
+                href="tel:+4983349893330"
+                className="mt-2 inline-flex items-center justify-center gap-2 text-3xl font-bold text-[#0F4F68] hover:underline focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2 rounded sm:text-4xl"
+                aria-label="Anrufen: 08334 9893330"
+              >
+                <svg className="h-8 w-8 shrink-0 sm:h-9 sm:w-9" fill="currentColor" viewBox="0 0 24 24" aria-hidden style={{ color: "#F78F2E" }}>
+                  <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z" />
+                </svg>
+                08334 / 9893330
+              </a>
+              <ul className="mt-5 space-y-2 text-base text-neutral-700 sm:text-lg">
+                <li><span className="font-semibold text-[#0F4F68]">Mo–Do:</span> 08:30 – 12:00 und 13:00 – 16:00</li>
+                <li><span className="font-semibold text-[#0F4F68]">Freitag:</span> 08:30 – 12:00</li>
+              </ul>
 
               <section
                 className="mt-8 pt-6 opacity-0 animate-fade-in-up border-t border-neutral-200"
