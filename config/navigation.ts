@@ -30,5 +30,13 @@ export const navLinks: NavLink[] = [
       { href: "/ratgeber", label: "Ratgeber" },
     ],
   },
-  { href: "/pflegebox", label: "Pflegebox" },
+  {
+    href: "/pflegebox",
+    label: "Pflegehilfsmittel",
+    children: [
+      { href: "/pflegebox", label: "Konfigurator" },
+      { href: "/pflegeshop", label: "Pflegeshop" },
+      { href: "/inkontinenzversorgung", label: "Inkontinenzversorgung" },
+    ],
+  },
 ];
