@@ -15,10 +15,10 @@ export function HeaderNav() {
   return (
     <>
       <nav
-        className="hidden md:flex md:w-full md:min-w-0 md:items-center md:justify-end md:gap-3 lg:gap-4"
+        className="hidden md:flex md:w-full md:min-w-0 md:items-center md:justify-end md:gap-1 lg:gap-2 xl:gap-3"
         aria-label="Hauptnavigation"
       >
-        <div className="flex min-w-0 flex-1 flex-nowrap items-center justify-center gap-x-2 overflow-x-auto lg:justify-end lg:gap-x-3">
+        <div className="flex min-w-0 flex-1 flex-nowrap items-center justify-center gap-x-1 lg:justify-end lg:gap-x-2 xl:gap-x-3">
           {navLinks.map((item) =>
             item.children ? (
               <div
@@ -30,13 +30,15 @@ export function HeaderNav() {
                 <Link
                   href={item.href}
                   className={cn(
-                    "inline-flex items-center gap-0.5 whitespace-nowrap rounded px-1.5 py-1 text-sm font-semibold text-neutral-600 hover:text-neutral-900 focus:outline-none focus:ring-2 focus:ring-neutral-500 focus:ring-offset-2 lg:gap-1 lg:px-2 lg:text-base",
+                    "inline-flex items-center gap-0.5 whitespace-nowrap rounded px-1 py-0.5 font-semibold text-neutral-600 hover:text-neutral-900 focus:outline-none focus:ring-2 focus:ring-neutral-500 focus:ring-offset-2 lg:gap-1 lg:px-1.5 xl:px-2",
                     pathname === item.href && "text-neutral-900"
                   )}
+                  style={{ fontSize: "clamp(0.6875rem, 1.1vw, 1rem)" }}
                 >
                   {item.label}
                   <svg
-                    className={cn("h-4 w-4 transition-transform", openDropdownHref === item.href && "rotate-180")}
+                    className={cn("shrink-0 transition-transform", openDropdownHref === item.href && "rotate-180")}
+                    style={{ width: "clamp(0.75rem, 1.2vw, 1rem)", height: "clamp(0.75rem, 1.2vw, 1rem)" }}
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
@@ -74,9 +76,10 @@ export function HeaderNav() {
                 key={item.href}
                 href={item.href}
                 className={cn(
-                  "shrink-0 whitespace-nowrap rounded px-1.5 py-1 text-sm font-semibold text-neutral-600 hover:text-neutral-900 focus:outline-none focus:ring-2 focus:ring-neutral-500 focus:ring-offset-2 lg:px-2 lg:text-base",
+                  "shrink-0 whitespace-nowrap rounded px-1 py-0.5 font-semibold text-neutral-600 hover:text-neutral-900 focus:outline-none focus:ring-2 focus:ring-neutral-500 focus:ring-offset-2 lg:px-1.5 xl:px-2",
                   pathname === item.href && "text-neutral-900"
                 )}
+                style={{ fontSize: "clamp(0.6875rem, 1.1vw, 1rem)" }}
               >
                 {item.label}
               </Link>
@@ -85,8 +88,8 @@ export function HeaderNav() {
         </div>
         <Link
           href="/kontakt"
-          className="shrink-0 whitespace-nowrap rounded-lg px-3 py-2 text-sm font-semibold text-white transition-colors hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-[#F78F2E] focus:ring-offset-2 lg:px-4 lg:text-base"
-          style={{ backgroundColor: "#F78F2E" }}
+          className="shrink-0 whitespace-nowrap rounded-lg px-2 py-1.5 font-semibold text-white transition-colors hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-[#F78F2E] focus:ring-offset-2 lg:px-3 xl:px-4 xl:py-2"
+          style={{ backgroundColor: "#F78F2E", fontSize: "clamp(0.6875rem, 1.1vw, 1rem)" }}
         >
           Jetzt Kontakt aufnehmen
         </Link>

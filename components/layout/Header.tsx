@@ -15,7 +15,7 @@ export function Header({ nunitoClass = "", balooClass = "" }: HeaderProps) {
     <header className="sticky top-0 z-50 overflow-visible shadow-[0_4px_6px_-1px_rgb(0_0_0/0.07),0_2px_4px_-2px_rgb(0_0_0/0.07)]">
       <HeaderStrip nunitoClass={nunitoClass} balooClass={balooClass} />
       <div className="relative overflow-visible border-b border-[#0F4F68]/15 bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/80">
-        <Container className="grid min-h-16 grid-cols-[auto_1fr] items-center gap-4 overflow-visible pr-3 sm:pr-4 md:gap-6 lg:pr-6">
+        <Container className="grid min-h-16 grid-cols-[auto_1fr] items-center gap-2 overflow-visible pr-3 sm:pr-4 md:gap-4 lg:gap-6 lg:pr-6">
           <Link
             href="/"
             className="-ml-4 flex shrink-0 focus:outline-none rounded sm:-ml-6 md:h-10 md:w-auto"
