@@ -55,25 +55,7 @@ export function KartenMitKoordinatenErfassen({ hauptmarker, punkte }: Props) {
 
   return (
     <div className="flex flex-col gap-3">
-      <div className="flex flex-wrap items-center gap-2">
-        <button
-          type="button"
-          onClick={() => setErfassenAktiv((a) => !a)}
-          className={`rounded-lg px-4 py-2 text-sm font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2 ${
-            erfassenAktiv
-              ? "bg-[#F78F2E] text-white hover:bg-[#e07d1f]"
-              : "bg-[#0F4F68] text-white hover:bg-[#0c3d52]"
-          }`}
-        >
-          {erfassenAktiv ? "Koordinaten-Erfassung an" : "GPS-Koordinaten erfassen"}
-        </button>
-        {erfassenAktiv && (
-          <span className="text-sm text-neutral-600">
-            Maus auf Karte bewegen → Leertaste = Punkt speichern
-          </span>
-        )}
-      </div>
-
+      {/* Karte zuerst = direkt unter Header, am linken Rand */}
       <div
         ref={mapRef}
         className="relative w-full aspect-[3/2] min-h-[246px] select-none"
@@ -152,6 +134,26 @@ export function KartenMitKoordinatenErfassen({ hauptmarker, punkte }: Props) {
               Leertaste = Koordinaten speichern
             </div>
           </div>
+        )}
+      </div>
+
+      {/* Button unter der Karte */}
+      <div className="flex flex-wrap items-center gap-2">
+        <button
+          type="button"
+          onClick={() => setErfassenAktiv((a) => !a)}
+          className={`rounded-lg px-4 py-2 text-sm font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2 ${
+            erfassenAktiv
+              ? "bg-[#F78F2E] text-white hover:bg-[#e07d1f]"
+              : "bg-[#0F4F68] text-white hover:bg-[#0c3d52]"
+          }`}
+        >
+          {erfassenAktiv ? "Koordinaten-Erfassung an" : "GPS-Koordinaten erfassen"}
+        </button>
+        {erfassenAktiv && (
+          <span className="text-sm text-neutral-600">
+            Maus auf Karte bewegen → Leertaste = Punkt speichern
+          </span>
         )}
       </div>
 
