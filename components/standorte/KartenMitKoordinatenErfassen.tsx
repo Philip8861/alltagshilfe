@@ -2,8 +2,9 @@
 
 import { useRef, useState, useCallback, useEffect } from "react";
 import Image from "next/image";
+import Link from "next/link";
 
-type Hauptmarker = { left: number; top: number; label: string };
+type Hauptmarker = { left: number; top: number; label: string; href?: string };
 type Punkt = { left: number; top: number };
 
 type Props = {
@@ -71,15 +72,15 @@ export function KartenMitKoordinatenErfassen({ hauptmarker, punkte }: Props) {
           priority
           sizes="(max-width: 1024px) 100vw, 50vw"
         />
-        {/* GPS-Marker */}
+        {/* GPS-Marker: Punkte nicht klickbar, Hauptmarker klickbar → Standort/Kontakt */}
         <div
-          className="pointer-events-none absolute left-0 top-0 w-full h-full z-[100]"
+          className="absolute left-0 top-0 w-full h-full z-[100]"
           aria-hidden
         >
           {punkte.map((p, i) => (
             <span
               key={`dot-${i}`}
-              className="absolute h-2.5 w-2.5 rounded-full bg-[#F78F2E] ring-2 ring-white"
+              className="pointer-events-none absolute h-2.5 w-2.5 rounded-full bg-[#F78F2E] ring-2 ring-white"
               style={{
                 left: `${p.left}%`,
                 top: `${p.top}%`,
@@ -88,38 +89,55 @@ export function KartenMitKoordinatenErfassen({ hauptmarker, punkte }: Props) {
               }}
             />
           ))}
-          {hauptmarker.map((m) => (
-            <div
-              key={m.label}
-              className="absolute flex flex-col items-center"
-              style={{
-                left: `${m.left}%`,
-                top: `${m.top}%`,
-                transform: "translate(-50%, -50%)",
-              }}
-            >
-              <span
-                className="flex shrink-0"
-                style={{
-                  filter: "drop-shadow(0 0 3px white) drop-shadow(0 2px 6px rgba(15,79,104,0.5))",
-                }}
-              >
-                <svg
-                  className="h-8 w-8 sm:h-10 sm:w-10"
-                  viewBox="0 0 24 24"
-                  fill="#F78F2E"
-                  stroke="#0F4F68"
-                  strokeWidth={1.5}
-                  aria-hidden
+          {hauptmarker.map((m) => {
+            const content = (
+              <>
+                <span
+                  className="flex shrink-0"
+                  style={{
+                    filter: "drop-shadow(0 0 3px white) drop-shadow(0 2px 6px rgba(15,79,104,0.5))",
+                  }}
                 >
-                  <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
-                </svg>
-              </span>
-              <span className="mt-1.5 whitespace-nowrap rounded-md bg-white px-2.5 py-1 text-xs font-bold text-[#0F4F68] shadow-lg ring-2 ring-[#F78F2E]">
-                {m.label}
-              </span>
-            </div>
-          ))}
+                  <svg
+                    className="h-10 w-10 sm:h-12 sm:w-12"
+                    viewBox="0 0 24 24"
+                    fill="#F78F2E"
+                    stroke="#0F4F68"
+                    strokeWidth={1.5}
+                    aria-hidden
+                  >
+                    <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
+                  </svg>
+                </span>
+                <span className="mt-1.5 whitespace-nowrap rounded-md bg-white px-2.5 py-1 text-xs font-bold text-[#0F4F68] shadow-lg ring-2 ring-[#F78F2E]">
+                  {m.label}
+                </span>
+              </>
+            );
+            const style = {
+              left: `${m.left}%`,
+              top: `${m.top}%`,
+              transform: "translate(-50%, -50%)",
+            };
+            if (m.href) {
+              return (
+                <Link
+                  key={m.label}
+                  href={m.href}
+                  className="absolute flex flex-col items-center pointer-events-auto rounded-lg transition-opacity hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2 focus:ring-offset-transparent"
+                  style={style}
+                  aria-label={`${m.label} – Standort anzeigen`}
+                >
+                  {content}
+                </Link>
+              );
+            }
+            return (
+              <div key={m.label} className="absolute flex flex-col items-center pointer-events-none" style={style}>
+                {content}
+              </div>
+            );
+          })}
         </div>
 
         {/* Overlay: Maus-% Anzeige + Leertaste-Hinweis */}

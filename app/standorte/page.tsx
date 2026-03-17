@@ -8,12 +8,12 @@ export const metadata: Metadata = {
   description: `Unsere Standorte – ${siteConfig.name}. Augsburg und Umgebung.`,
 };
 
-/** GPS-Marker – Position in % (links, oben). */
+/** GPS-Marker – Position in % (links, oben), href = Link zu Standort/Kontakt. */
 const HAUPTMARKER = [
-  { left: 55, top: 48, label: "Augsburg" },
-  { left: 45, top: 68, label: "Allgäu" },
-  { left: 22, top: 35, label: "Konstanz/Engen" },
-  { left: 18, top: 28, label: "Bodenseeregion" },
+  { left: 48.4, top: 83.3, label: "Allgäu", href: "/kontakt" },
+  { left: 56.9, top: 66.3, label: "Augsburg", href: "/kontakt" },
+  { left: 27, top: 76.6, label: "Engen/Konstanz", href: "/kontakt" },
+  { left: 38.9, top: 82.9, label: "Bodenseeregion", href: "/kontakt" },
 ];
 
 const PUNKTE = [
