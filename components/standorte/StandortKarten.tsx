@@ -66,7 +66,7 @@ export function StandortKarten() {
       <h2 id="standorte-heading" className="text-xl font-bold text-[#0F4F68] sm:text-2xl mb-6">
         Unsere 4 Standorte
       </h2>
-      <ul className="grid gap-6 sm:grid-cols-2 lg:gap-8">
+      <ul className="grid w-full grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4 lg:gap-8">
         {STANDORTE.map((s) => (
           <li key={s.name}>
             <article className="flex flex-col h-full rounded-2xl border border-[#0F4F68]/15 bg-white overflow-hidden shadow-sm hover:shadow-md transition-shadow">

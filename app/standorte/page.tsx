@@ -104,10 +104,12 @@ export default function StandortePage() {
           <div className="w-full max-w-md mx-auto lg:mx-0">
             <StandortSuche />
           </div>
-          <div className="w-full max-w-4xl mx-auto lg:mx-0">
-            <StandortKarten />
-          </div>
         </div>
+      </div>
+
+      {/* Unsere 4 Standorte: unterhalb Landkarte und Standort suchen, volle Breite von links nach rechts */}
+      <div className="mt-10 sm:mt-12 w-full px-0 sm:px-0">
+        <StandortKarten />
       </div>
     </article>
   );
