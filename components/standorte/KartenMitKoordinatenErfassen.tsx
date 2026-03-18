@@ -71,7 +71,7 @@ export function KartenMitKoordinatenErfassen({ hauptmarker, punkte, ortsLabels =
             fill
             className="object-contain object-left object-top"
             style={{
-              filter: "drop-shadow(0 3px 8px rgba(15, 79, 104, 0.15)) drop-shadow(0 8px 24px rgba(242, 249, 250, 0.85)) drop-shadow(0 12px 32px rgba(225, 240, 242, 0.75))",
+              filter: "drop-shadow(0 3px 8px rgba(15, 79, 104, 0.17)) drop-shadow(0 8px 24px rgba(242, 249, 250, 0.98)) drop-shadow(0 12px 32px rgba(225, 240, 242, 0.86))",
             }}
             priority
             sizes="(max-width: 1024px) 100vw, 50vw"
@@ -108,13 +108,13 @@ export function KartenMitKoordinatenErfassen({ hauptmarker, punkte, ortsLabels =
                 {o.label}
               </span>
               {o.withX && (
-                <span className="text-[#0F4F68] font-bold text-xl sm:text-2xl leading-none -mt-px" aria-hidden>×</span>
+                <span className="text-[#0F4F68] font-bold text-xl sm:text-2xl leading-none -mt-1" aria-hidden>×</span>
               )}
             </div>
           ))}
           {hauptmarker.map((m) => {
             const labelEl = (
-              <span className="whitespace-nowrap rounded-md bg-white px-2.5 py-1 text-xs font-bold text-[#0F4F68] shadow-lg ring-2 ring-[#F78F2E]">
+              <span className="whitespace-nowrap text-xs font-extrabold text-[#0F4F68]">
                 {m.label}
               </span>
             );
