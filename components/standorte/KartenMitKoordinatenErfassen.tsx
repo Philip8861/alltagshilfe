@@ -15,6 +15,12 @@ type Props = {
   ortsLabels?: OrtsLabel[];
 };
 
+/** Sichtbarer Bildausschnitt: Bild hat links ~38% Rand, Karte beginnt danach – object-position -38% 0 */
+const IMAGE_CROP_LEFT = 38;
+const IMAGE_VISIBLE_PCT = 100 - IMAGE_CROP_LEFT; // 62
+const imageToContainer = (left: number) => ((left - IMAGE_CROP_LEFT) / IMAGE_VISIBLE_PCT) * 100;
+const containerToImage = (left: number) => (left * IMAGE_VISIBLE_PCT) / 100 + IMAGE_CROP_LEFT;
+
 export function KartenMitKoordinatenErfassen({ hauptmarker, punkte, ortsLabels = [] }: Props) {
   const router = useRouter();
   const mapRef = useRef<HTMLDivElement>(null);
@@ -97,11 +103,13 @@ export function KartenMitKoordinatenErfassen({ hauptmarker, punkte, ortsLabels =
       const { index, startLeft, startTop, startX, startY } = dragRef.current;
       const deltaX = ((e.clientX - startX) / rect.width) * 100;
       const deltaY = ((e.clientY - startY) / rect.height) * 100;
+      const newLeftContainer = imageToContainer(startLeft) + deltaX;
+      const newTop = startTop + deltaY;
       setMarkerPositions((prev) => {
         const next = [...prev];
         next[index] = {
-          left: Math.max(0, Math.min(100, startLeft + deltaX)),
-          top: Math.max(0, Math.min(100, startTop + deltaY)),
+          left: Math.max(IMAGE_CROP_LEFT, Math.min(100, containerToImage(Math.max(0, Math.min(100, newLeftContainer))))),
+          top: Math.max(0, Math.min(100, newTop)),
         };
         return next;
       });
@@ -159,8 +167,9 @@ export function KartenMitKoordinatenErfassen({ hauptmarker, punkte, ortsLabels =
             src="/images/Landkarte_sueddeutschland.webp"
             alt="Karte Süddeutschland – Standorte Alltagshilfe-Süd"
             fill
-            className="object-contain object-left object-top"
+            className="object-contain object-top"
             style={{
+              objectPosition: "-38% 0",
               filter: "drop-shadow(0 3px 8px rgba(15, 79, 104, 0.17)) drop-shadow(0 8px 24px rgba(242, 249, 250, 0.98)) drop-shadow(0 12px 32px rgba(225, 240, 242, 0.86))",
             }}
             priority
@@ -177,7 +186,7 @@ export function KartenMitKoordinatenErfassen({ hauptmarker, punkte, ortsLabels =
               key={`dot-${i}`}
               className="pointer-events-none absolute h-[5px] w-[5px] rounded-full bg-[#F78F2E] ring-2 ring-white animate-marker-pop-in"
               style={{
-                left: `${p.left}%`,
+                left: `${imageToContainer(p.left)}%`,
                 top: `${p.top}%`,
                 transform: "translate(-50%, -50%)",
                 animationDelay: `${Math.min(i * 35, 650)}ms`,
@@ -189,7 +198,7 @@ export function KartenMitKoordinatenErfassen({ hauptmarker, punkte, ortsLabels =
               key={o.label}
               className="pointer-events-none absolute flex flex-col items-center gap-0 leading-tight"
               style={{
-                left: `${o.left}%`,
+                left: `${imageToContainer(o.left)}%`,
                 top: `${o.top}%`,
                 transform: "translate(-50%, -50%)",
               }}
@@ -259,7 +268,7 @@ export function KartenMitKoordinatenErfassen({ hauptmarker, punkte, ortsLabels =
               </>
             );
             const style = {
-              left: `${pos.left}%`,
+              left: `${imageToContainer(pos.left)}%`,
               top: `${pos.top}%`,
               transform: "translate(-50%, 100%)",
             };
