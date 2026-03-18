@@ -19,7 +19,7 @@ const HAUPTMARKER = [
   { left: 51, top: 81.3, label: "Kempten (Allgäu)", href: "/kontakt", labelAbove: true },
   { left: 56.8, top: 64.7, label: "Augsburg", href: "/kontakt", labelAbove: true },
   { left: 27, top: 72.6, label: "Engen/Konstanz", href: "/kontakt", labelAbove: false },
-  { left: 38.9, top: 82.9, label: "Wangen", sublabel: "(Bodenseeregion)", href: "/kontakt", labelAbove: false },
+  { left: 42.5, top: 82.1, label: "Wangen", sublabel: "(Bodenseeregion)", href: "/kontakt", labelAbove: false },
 ];
 
 /** Orangene Punkte vorerst ausgeblendet. */
