@@ -85,7 +85,7 @@ export function KartenMitKoordinatenErfassen({ hauptmarker, punkte, ortsLabels =
           {punkte.map((p, i) => (
             <span
               key={`dot-${i}`}
-              className="pointer-events-none absolute h-2.5 w-2.5 rounded-full bg-[#F78F2E] ring-2 ring-white animate-marker-pop-in"
+              className="pointer-events-none absolute h-[7px] w-[7px] rounded-full bg-[#F78F2E] ring-2 ring-white animate-marker-pop-in"
               style={{
                 left: `${p.left}%`,
                 top: `${p.top}%`,
@@ -135,7 +135,7 @@ export function KartenMitKoordinatenErfassen({ hauptmarker, punkte, ortsLabels =
                 }}
               >
                 <svg
-                  className="h-10 w-10 sm:h-12 sm:w-12"
+                  className="h-7 w-7 sm:h-8 sm:w-8"
                   viewBox="0 0 24 24"
                   fill="#F78F2E"
                   stroke="#0F4F68"
