@@ -2,7 +2,8 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import { navLinks } from "@/config/navigation";
 import { cn } from "@/lib/utils";
 
@@ -11,6 +12,8 @@ export function HeaderNav() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [openDropdownHref, setOpenDropdownHref] = useState<string | null>(null);
   const [openMobileDropdown, setOpenMobileDropdown] = useState<string | null>(null);
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
 
   return (
     <>
@@ -131,14 +134,18 @@ export function HeaderNav() {
         </button>
       </div>
 
-      {/* Backdrop: Seite unter dem Dropdown abdunkeln, nur mobil wenn Menü offen */}
-      {mobileOpen && (
-        <div
-          className="fixed inset-0 top-16 left-0 right-0 bottom-0 z-40 bg-black/50 md:hidden"
-          aria-hidden
-          onClick={() => setMobileOpen(false)}
-        />
-      )}
+      {/* Backdrop per Portal unter body: liegt garantiert über dem Seiteninhalt (z-[45] unter Header z-50), nur mobil */}
+      {mounted &&
+        mobileOpen &&
+        typeof document !== "undefined" &&
+        createPortal(
+          <div
+            className="fixed inset-0 top-16 left-0 right-0 bottom-0 z-[45] bg-black/60 md:hidden"
+            aria-hidden
+            onClick={() => setMobileOpen(false)}
+          />,
+          document.body
+        )}
       <div
         id="mobile-menu"
         className={cn(
