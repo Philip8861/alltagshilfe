@@ -10,8 +10,8 @@ export const metadata: Metadata = {
 
 /** Dunkle Ortsbezeichnungen auf der Karte (ohne Link) – X an dieser Position. */
 const ORTSLABELS = [
-  { left: 50.4, top: 61.8, label: "München", withX: true },
-  { left: 46.2, top: 31.6, label: "Nürnberg", withX: true },
+  { left: 51.7, top: 62.8, label: "München", withX: true },
+  { left: 46.3, top: 31.6, label: "Nürnberg", withX: true },
 ];
 
 /** GPS-Marker – Spitze des Pins auf der Koordinate. labelAbove: Name über Symbol. */

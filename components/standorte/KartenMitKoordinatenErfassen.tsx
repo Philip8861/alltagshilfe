@@ -20,6 +20,8 @@ const IMAGE_CROP_LEFT = 38;
 const IMAGE_VISIBLE_PCT = 100 - IMAGE_CROP_LEFT; // 62
 const imageToContainer = (left: number) => ((left - IMAGE_CROP_LEFT) / IMAGE_VISIBLE_PCT) * 100;
 const containerToImage = (left: number) => (left * IMAGE_VISIBLE_PCT) / 100 + IMAGE_CROP_LEFT;
+/** Container-X für Anzeige: links vom sichtbaren Ausschnitt wird auf 0 geklemmt, damit Marker (z. B. Engen/Konstanz) sichtbar bleiben. */
+const visibleContainerLeft = (left: number) => Math.max(0, imageToContainer(left));
 
 export function KartenMitKoordinatenErfassen({ hauptmarker, punkte, ortsLabels = [] }: Props) {
   const router = useRouter();
@@ -186,7 +188,7 @@ export function KartenMitKoordinatenErfassen({ hauptmarker, punkte, ortsLabels =
               key={`dot-${i}`}
               className="pointer-events-none absolute h-[5px] w-[5px] rounded-full bg-[#F78F2E] ring-2 ring-white animate-marker-pop-in"
               style={{
-                left: `${imageToContainer(p.left)}%`,
+                left: `${visibleContainerLeft(p.left)}%`,
                 top: `${p.top}%`,
                 transform: "translate(-50%, -50%)",
                 animationDelay: `${Math.min(i * 35, 650)}ms`,
@@ -198,7 +200,7 @@ export function KartenMitKoordinatenErfassen({ hauptmarker, punkte, ortsLabels =
               key={o.label}
               className="pointer-events-none absolute flex flex-col items-center gap-0 leading-tight"
               style={{
-                left: `${imageToContainer(o.left)}%`,
+                left: `${visibleContainerLeft(o.left)}%`,
                 top: `${o.top}%`,
                 transform: "translate(-50%, -50%)",
               }}
@@ -268,7 +270,7 @@ export function KartenMitKoordinatenErfassen({ hauptmarker, punkte, ortsLabels =
               </>
             );
             const style = {
-              left: `${imageToContainer(pos.left)}%`,
+              left: `${visibleContainerLeft(pos.left)}%`,
               top: `${pos.top}%`,
               transform: "translate(-50%, 100%)",
             };
