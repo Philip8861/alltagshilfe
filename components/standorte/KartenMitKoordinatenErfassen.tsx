@@ -58,16 +58,16 @@ export function KartenMitKoordinatenErfassen({ hauptmarker, punkte, ortsLabels =
 
   return (
     <div className="flex flex-col gap-3">
-      {/* Karte zuerst = direkt unter Header, am linken Rand */}
+      {/* Karte: aspect-[3/2] = gleiches Seitenverhältnis wie Landkarte_sueddeutschland – Positionen in % bleiben auf Desktop und Mobil gleich auf dem Kartenbild. */}
       <div
         ref={mapRef}
-        className="relative w-full aspect-[3/2] min-h-[246px] select-none"
+        className="relative w-full aspect-[3/2] min-h-[246px] select-none overflow-hidden"
       >
         <Image
           src="/images/Landkarte_sueddeutschland.webp"
           alt="Karte Süddeutschland – Standorte Alltagshilfe-Süd"
           fill
-          className="object-contain object-left z-0"
+          className="object-contain object-left object-top z-0"
           style={{
             filter: "drop-shadow(0 3px 8px rgba(15, 79, 104, 0.15)) drop-shadow(0 8px 24px rgba(242, 249, 250, 0.85)) drop-shadow(0 12px 32px rgba(225, 240, 242, 0.75))",
           }}
@@ -94,7 +94,7 @@ export function KartenMitKoordinatenErfassen({ hauptmarker, punkte, ortsLabels =
           {ortsLabels.map((o) => (
             <div
               key={o.label}
-              className="pointer-events-none absolute flex flex-col items-center"
+              className="pointer-events-none absolute flex flex-col items-center gap-0 leading-tight"
               style={{
                 left: `${o.left}%`,
                 top: `${o.top}%`,
@@ -105,7 +105,7 @@ export function KartenMitKoordinatenErfassen({ hauptmarker, punkte, ortsLabels =
                 {o.label}
               </span>
               {o.withX && (
-                <span className="text-[#0F4F68] font-bold text-xl sm:text-2xl leading-none mt-0.5" aria-hidden>×</span>
+                <span className="text-[#0F4F68] font-bold text-xl sm:text-2xl leading-none -mt-px" aria-hidden>×</span>
               )}
             </div>
           ))}
