@@ -4,7 +4,7 @@ import { useRef, useState, useCallback, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 
-type Hauptmarker = { left: number; top: number; label: string; href?: string; labelAbove?: boolean };
+type Hauptmarker = { left: number; top: number; label: string; sublabel?: string; href?: string; labelAbove?: boolean };
 type Punkt = { left: number; top: number };
 type OrtsLabel = { left: number; top: number; label: string; withX?: boolean };
 
@@ -113,18 +113,27 @@ export function KartenMitKoordinatenErfassen({ hauptmarker, punkte, ortsLabels =
             </div>
           ))}
           {hauptmarker.map((m) => {
+            const textShadow = [
+              "0 0 2px white",
+              "1px 0 0 white", "-1px 0 0 white", "0 1px 0 white", "0 -1px 0 white",
+              "1px 1px 0 white", "-1px -1px 0 white", "1px -1px 0 white", "-1px 1px 0 white",
+            ].join(", ");
             const labelEl = (
-              <span
-                className="whitespace-nowrap text-xs font-extrabold text-[#0F4F68]"
-                style={{
-                  textShadow: [
-                    "0 0 2px white",
-                    "1px 0 0 white", "-1px 0 0 white", "0 1px 0 white", "0 -1px 0 white",
-                    "1px 1px 0 white", "-1px -1px 0 white", "1px -1px 0 white", "-1px 1px 0 white",
-                  ].join(", "),
-                }}
-              >
-                {m.label}
+              <span className="flex flex-col items-center gap-0">
+                <span
+                  className="whitespace-nowrap text-xs font-extrabold text-[#0F4F68]"
+                  style={{ textShadow }}
+                >
+                  {m.label}
+                </span>
+                {m.sublabel && (
+                  <span
+                    className="whitespace-nowrap text-[10px] font-bold text-[#0F4F68] leading-tight"
+                    style={{ textShadow }}
+                  >
+                    {m.sublabel}
+                  </span>
+                )}
               </span>
             );
             const iconEl = (
