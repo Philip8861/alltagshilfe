@@ -277,7 +277,7 @@ export function KartenMitKoordinatenErfassen({ hauptmarker, punkte, ortsLabels =
             };
             const animDelay = 400 + (i * 120);
             const commonStyle = { ...style, animationDelay: `${animDelay}ms` };
-            const markerClassName = `absolute flex flex-col items-center pointer-events-auto rounded-lg transition-opacity hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2 focus:ring-offset-transparent animate-marker-slide-in cursor-grab active:cursor-grabbing ${isSelected ? "ring-2 ring-[#F78F2E] ring-offset-2 ring-offset-white" : ""}`;
+            const markerClassName = `absolute flex flex-col items-center pointer-events-auto rounded-lg transition-opacity hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2 focus:ring-offset-transparent animate-marker-slide-in cursor-grab active:cursor-grabbing ${isSelected ? "ring-2 ring-[#F78F2E] ring-offset-0" : ""}`;
             const handleClick = (e: React.MouseEvent) => {
               e.preventDefault();
               if (!didDragRef.current) setSelectedMarkerIndex(i);
