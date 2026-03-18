@@ -8,48 +8,21 @@ export const metadata: Metadata = {
   description: `Unsere Standorte – ${siteConfig.name}. Augsburg und Umgebung.`,
 };
 
-/** Dunkle Ortsbezeichnungen auf der Karte (ohne Link). */
+/** Dunkle Ortsbezeichnungen auf der Karte (ohne Link) – X an dieser Position. */
 const ORTSLABELS = [
-  { left: 71.1, top: 73.8, label: "München", withX: true },
-  { left: 68.4, top: 33.2, label: "Nürnberg", withX: true },
+  { left: 67.3, top: 72, label: "München", withX: true },
+  { left: 57.7, top: 33.8, label: "Nürnberg", withX: true },
 ];
 
-/** GPS-Marker – labelAbove: Name über Symbol (Allgäu, Augsburg), sonst unter dem Symbol. */
+/** GPS-Marker – Spitze des Pins auf der Koordinate. labelAbove: Name über Symbol. */
 const HAUPTMARKER = [
-  { left: 48.4, top: 83.3, label: "Allgäu", href: "/kontakt", labelAbove: true },
-  { left: 56.9, top: 66.3, label: "Augsburg", href: "/kontakt", labelAbove: true },
-  { left: 27, top: 76.6, label: "Engen/Konstanz", href: "/kontakt", labelAbove: false },
-  { left: 38.9, top: 82.9, label: "Bodenseeregion", href: "/kontakt", labelAbove: false },
+  { left: 51, top: 81.3, label: "Kempten (Allgäu)", href: "/kontakt", labelAbove: true },
+  { left: 56.8, top: 64.7, label: "Augsburg", href: "/kontakt", labelAbove: true },
+  { left: 27, top: 72.6, label: "Engen/Konstanz", href: "/kontakt", labelAbove: false },
 ];
 
-const PUNKTE = [
-  { left: 52.2, top: 84.3 },
-  { left: 52.6, top: 79.5 },
-  { left: 57.2, top: 71.1 },
-  { left: 62.6, top: 65.5 },
-  { left: 62.3, top: 57 },
-  { left: 57.3, top: 54.7 },
-  { left: 52.7, top: 58 },
-  { left: 50, top: 61.6 },
-  { left: 41.6, top: 83.3 },
-  { left: 43.4, top: 75.8 },
-  { left: 37.9, top: 74.2 },
-  { left: 35.9, top: 78.9 },
-  { left: 36, top: 82.3 },
-  { left: 28.5, top: 76.8 },
-  { left: 25.5, top: 78.6 },
-  { left: 22, top: 75.6 },
-  { left: 22.4, top: 69.5 },
-  { left: 24.3, top: 65.1 },
-  { left: 28.9, top: 65.9 },
-  { left: 32.6, top: 75.2 },
-  { left: 33.7, top: 70.3 },
-  { left: 43.5, top: 79.1 },
-  { left: 43.8, top: 72.8 },
-  { left: 56.4, top: 78 },
-  { left: 56.4, top: 82.9 },
-  { left: 59.2, top: 88.4 },
-];
+/** Orangene Punkte vorerst ausgeblendet. */
+const PUNKTE: { left: number; top: number }[] = [];
 
 export default function StandortePage() {
   return (

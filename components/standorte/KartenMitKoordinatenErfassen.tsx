@@ -135,7 +135,7 @@ export function KartenMitKoordinatenErfassen({ hauptmarker, punkte, ortsLabels =
                 }}
               >
                 <svg
-                  className="h-7 w-7 sm:h-8 sm:w-8"
+                  className="h-8 w-8 sm:h-9 sm:w-9"
                   viewBox="0 0 24 24"
                   fill="#F78F2E"
                   stroke="#0F4F68"
@@ -146,6 +146,7 @@ export function KartenMitKoordinatenErfassen({ hauptmarker, punkte, ortsLabels =
                 </svg>
               </span>
             );
+            /* Icon immer unten, damit die Pin-Spitze auf der Koordinate liegt (transform: translate(-50%, 100%)) */
             const content = m.labelAbove ? (
               <>
                 <span className="mb-1.5">{labelEl}</span>
@@ -160,7 +161,7 @@ export function KartenMitKoordinatenErfassen({ hauptmarker, punkte, ortsLabels =
             const style = {
               left: `${m.left}%`,
               top: `${m.top}%`,
-              transform: "translate(-50%, -50%)",
+              transform: "translate(-50%, 100%)",
             };
             const animDelay = 400 + (hauptmarker.indexOf(m) * 120);
             const commonStyle = { ...style, animationDelay: `${animDelay}ms` };
