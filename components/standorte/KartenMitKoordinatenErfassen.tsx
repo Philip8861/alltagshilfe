@@ -172,7 +172,7 @@ export function KartenMitKoordinatenErfassen({ hauptmarker, punkte, ortsLabels =
             className="object-contain object-top"
             style={{
               objectPosition: "-38% 0",
-              filter: "drop-shadow(0 3px 8px rgba(15, 79, 104, 0.17)) drop-shadow(0 8px 24px rgba(242, 249, 250, 0.98)) drop-shadow(0 12px 32px rgba(225, 240, 242, 0.86))",
+              filter: "drop-shadow(0 2px 6px rgba(15, 79, 104, 0.22)) drop-shadow(0 6px 18px rgba(242, 249, 250, 1)) drop-shadow(0 10px 28px rgba(230, 245, 247, 0.95)) drop-shadow(0 14px 36px rgba(242, 249, 250, 0.9))",
             }}
             priority
             sizes="(max-width: 1024px) 100vw, 50vw"
