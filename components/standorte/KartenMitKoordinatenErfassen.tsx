@@ -26,9 +26,13 @@ const containerToImage = (left: number) => (left * IMAGE_VISIBLE_PCT) / 100 + IM
 /** Container-X für Anzeige: links vom sichtbaren Ausschnitt wird auf 0 geklemmt, damit Marker (z. B. Engen/Konstanz) sichtbar bleiben. */
 const visibleContainerLeft = (left: number) => Math.max(0, imageToContainer(left));
 
+/** md-Breakpoint (768px): Darunter = mobil, Marker-Animation erst bei Sichtbarkeit der Karte. */
+const MOBILE_MAX_WIDTH = 768;
+
 export function KartenMitKoordinatenErfassen({ hauptmarker, punkte, ortsLabels = [] }: Props) {
   const router = useRouter();
   const mapRef = useRef<HTMLDivElement>(null);
+  const [playMarkerAnimation, setPlayMarkerAnimation] = useState(false);
   const [erfassenAktiv, setErfassenAktiv] = useState(false);
   const [mouseProzent, setMouseProzent] = useState<{ left: number; top: number } | null>(null);
   const [gespeichert, setGespeichert] = useState<Array<{ left: number; top: number }>>([]);
@@ -160,6 +164,25 @@ export function KartenMitKoordinatenErfassen({ hauptmarker, punkte, ortsLabels =
     };
   }, [handleGlobalMouseMove, handleGlobalMouseUp]);
 
+  /* Mobil: Marker-Animation erst, wenn Karte in den Viewport kommt. Desktop: sofort. */
+  useEffect(() => {
+    const mql = window.matchMedia(`(min-width: ${MOBILE_MAX_WIDTH}px)`);
+    if (mql.matches) {
+      setPlayMarkerAnimation(true);
+      return;
+    }
+    const el = mapRef.current;
+    if (!el) return;
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) setPlayMarkerAnimation(true);
+      },
+      { threshold: 0.15, rootMargin: "0px" }
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+
   return (
     <div className="flex flex-col gap-3">
       {/* Karte bündig links, direkt unter Header; Aspect 3/2.5 strikt für einheitliche Marker-Position. */}
@@ -193,14 +216,14 @@ export function KartenMitKoordinatenErfassen({ hauptmarker, punkte, ortsLabels =
           {punkte.map((p, i) => (
             <span
               key={`dot-${i}`}
-              className="pointer-events-none absolute rounded-full bg-[#F78F2E] ring-2 ring-white animate-marker-pop-in overflow-visible"
+              className={`pointer-events-none absolute rounded-full bg-[#F78F2E] ring-2 ring-white overflow-visible ${playMarkerAnimation ? "animate-marker-pop-in" : ""}`}
               style={{
                 left: `${p.left}%`,
                 top: `${p.top}%`,
                 width: "clamp(3px, 0.65vw, 5px)",
                 height: "clamp(3px, 0.65vw, 5px)",
                 transform: "translate(-50%, -50%) translateZ(0)",
-                animationDelay: `${Math.min(i * 35, 650)}ms`,
+                ...(playMarkerAnimation ? { animationDelay: `${Math.min(i * 35, 650)}ms` } : {}),
               }}
             />
           ))}
@@ -291,10 +314,11 @@ export function KartenMitKoordinatenErfassen({ hauptmarker, punkte, ortsLabels =
               transform: "translate(-50%, 100%)",
             };
             const animDelay = 400 + (i * 120);
-            const commonStyle = { ...style, animationDelay: `${animDelay}ms` };
+            const commonStyle = { ...style, ...(playMarkerAnimation ? { animationDelay: `${animDelay}ms` } : {}) };
+            const animClass = playMarkerAnimation ? "animate-marker-slide-in" : "";
             const markerClassName = ENABLE_DRAG_AND_CAPTURE
-              ? `absolute flex flex-col items-center pointer-events-auto rounded-lg transition-opacity hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2 focus:ring-offset-transparent animate-marker-slide-in cursor-grab active:cursor-grabbing ${isSelected ? "ring-2 ring-[#F78F2E] ring-offset-0 z-[5]" : "z-10"}`
-              : "absolute flex flex-col items-center pointer-events-auto rounded-lg transition-opacity hover:opacity-90 focus:outline-none focus:ring-0 focus:ring-offset-0 focus-visible:ring-2 focus-visible:ring-[#0F4F68] focus-visible:ring-offset-0 animate-marker-slide-in cursor-pointer z-10";
+              ? `absolute flex flex-col items-center pointer-events-auto rounded-lg transition-opacity hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2 focus:ring-offset-transparent ${animClass} cursor-grab active:cursor-grabbing ${isSelected ? "ring-2 ring-[#F78F2E] ring-offset-0 z-[5]" : "z-10"}`
+              : `absolute flex flex-col items-center pointer-events-auto rounded-lg transition-opacity hover:opacity-90 focus:outline-none focus:ring-0 focus:ring-offset-0 focus-visible:ring-2 focus-visible:ring-[#0F4F68] focus-visible:ring-offset-0 ${animClass} cursor-pointer z-10`;
             const handleClick = (e: React.MouseEvent) => {
               e.preventDefault();
               if (!didDragRef.current) setSelectedMarkerIndex(i);

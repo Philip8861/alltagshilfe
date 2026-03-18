@@ -75,8 +75,8 @@ const PUNKTE = [
 ];
 
 const STANDORTE_INTRO = {
-  heading: "An unseren Standorten sind wir für Sie da",
-  text: "Wir sind stolz darauf, unsere Dienstleistungen an verschiedenen Standorten anzubieten und damit sowohl städtische als auch ländlichere Gebiete zuverlässig zu versorgen. Denn gute Unterstützung sollte überall erreichbar sein.",
+  heading: "An unseren Standorten sind wir für Sie da!",
+  text: "Hier finden Sie Ihren passenden Ansprechpartner für eine zuverlässige, liebevolle Unterstützung ganz in Ihrer Nähe. Wir stehen Ihnen im Alltag gerne zur Seite.",
 };
 
 export default function StandortePage() {
