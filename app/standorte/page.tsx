@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { StandortSuche } from "@/components/standorte/StandortSuche";
+import { StandortKarten } from "@/components/standorte/StandortKarten";
 import { KartenMitKoordinatenErfassen } from "@/components/standorte/KartenMitKoordinatenErfassen";
 import { siteConfig } from "@/config/site";
 
@@ -102,6 +103,9 @@ export default function StandortePage() {
           </header>
           <div className="w-full max-w-md mx-auto lg:mx-0">
             <StandortSuche />
+          </div>
+          <div className="w-full max-w-4xl mx-auto lg:mx-0">
+            <StandortKarten />
           </div>
         </div>
       </div>
