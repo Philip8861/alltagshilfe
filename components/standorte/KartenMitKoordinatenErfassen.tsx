@@ -158,10 +158,10 @@ export function KartenMitKoordinatenErfassen({ hauptmarker, punkte, ortsLabels =
 
   return (
     <div className="flex flex-col gap-3">
-      {/* Karte 25 % größer: aspect 3/2.5, min-h 308px – Positionen in % bleiben gleich. */}
+      {/* Karte: aspect 3/2.5 strikt (ohne min-h), damit GPS-Symbole auf Mobil und Desktop an gleicher Stelle liegen. */}
       <div
         ref={mapRef}
-        className="relative w-full flex-none aspect-[3/2.5] min-h-[308px] select-none overflow-visible isolate"
+        className="relative w-full flex-none aspect-[3/2.5] select-none overflow-visible isolate"
       >
         {/* Karte als unterste Ebene (z-0); overflow-visible damit drop-shadow auf Mobil sichtbar bleibt */}
         <div className="absolute inset-0 z-0 overflow-visible">
@@ -278,7 +278,7 @@ export function KartenMitKoordinatenErfassen({ hauptmarker, punkte, ortsLabels =
             };
             const animDelay = 400 + (i * 120);
             const commonStyle = { ...style, animationDelay: `${animDelay}ms` };
-            const markerClassName = `absolute flex flex-col items-center pointer-events-auto rounded-lg transition-opacity hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2 focus:ring-offset-transparent animate-marker-slide-in cursor-grab active:cursor-grabbing ${isSelected ? "ring-2 ring-[#F78F2E] ring-offset-0" : ""}`;
+            const markerClassName = `absolute flex flex-col items-center pointer-events-auto rounded-lg transition-opacity hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2 focus:ring-offset-transparent animate-marker-slide-in cursor-grab active:cursor-grabbing ${isSelected ? "ring-2 ring-[#F78F2E] ring-offset-0 z-[5]" : "z-10"}`;
             const handleClick = (e: React.MouseEvent) => {
               e.preventDefault();
               if (!didDragRef.current) setSelectedMarkerIndex(i);
