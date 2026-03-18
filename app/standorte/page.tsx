@@ -14,12 +14,12 @@ const ORTSLABELS = [
   { left: 68.4, top: 33.2, label: "Nürnberg", withX: true },
 ];
 
-/** GPS-Marker – Position in % (links, oben), href = Link zu Standort/Kontakt. */
+/** GPS-Marker – labelAbove: Name über Symbol (Allgäu, Augsburg), sonst unter dem Symbol. */
 const HAUPTMARKER = [
-  { left: 48.4, top: 83.3, label: "Allgäu", href: "/kontakt" },
-  { left: 56.9, top: 66.3, label: "Augsburg", href: "/kontakt" },
-  { left: 27, top: 76.6, label: "Engen/Konstanz", href: "/kontakt" },
-  { left: 38.9, top: 82.9, label: "Bodenseeregion", href: "/kontakt" },
+  { left: 48.4, top: 83.3, label: "Allgäu", href: "/kontakt", labelAbove: true },
+  { left: 56.9, top: 66.3, label: "Augsburg", href: "/kontakt", labelAbove: true },
+  { left: 27, top: 76.6, label: "Engen/Konstanz", href: "/kontakt", labelAbove: false },
+  { left: 38.9, top: 82.9, label: "Bodenseeregion", href: "/kontakt", labelAbove: false },
 ];
 
 const PUNKTE = [
@@ -54,11 +54,11 @@ const PUNKTE = [
 export default function StandortePage() {
   return (
     <article
-      className="min-h-[60vh] w-full pt-10 sm:pt-14 pb-16 sm:pb-24 pl-0 -ml-4 sm:-ml-6 lg:-ml-8"
+      className="min-h-[60vh] w-full pt-0 pb-16 sm:pb-24 pl-0 -ml-4 sm:-ml-6 lg:-ml-8"
       style={{ backgroundColor: "#fafbfc" }}
     >
       <div className="flex w-full flex-col gap-8 lg:flex-row lg:flex-nowrap lg:items-flex-start lg:justify-start lg:gap-10 lg:pl-0">
-        <div className="relative w-full shrink-0 bg-transparent pl-0 lg:w-[50%] lg:max-w-3xl lg:flex-shrink-0 lg:min-w-0">
+        <div className="relative w-full shrink-0 bg-transparent pl-0 lg:w-[50%] lg:max-w-3xl lg:flex-shrink-0 lg:min-w-0 order-first">
           <KartenMitKoordinatenErfassen hauptmarker={HAUPTMARKER} punkte={PUNKTE} ortsLabels={ORTSLABELS} />
         </div>
         <div className="w-full min-w-0 px-4 sm:px-6 lg:max-w-lg lg:flex-1 lg:px-8">

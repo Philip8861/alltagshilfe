@@ -4,7 +4,7 @@ import { useRef, useState, useCallback, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 
-type Hauptmarker = { left: number; top: number; label: string; href?: string };
+type Hauptmarker = { left: number; top: number; label: string; href?: string; labelAbove?: boolean };
 type Punkt = { left: number; top: number };
 type OrtsLabel = { left: number; top: number; label: string; withX?: boolean };
 
@@ -110,28 +110,39 @@ export function KartenMitKoordinatenErfassen({ hauptmarker, punkte, ortsLabels =
             </div>
           ))}
           {hauptmarker.map((m) => {
-            const content = (
-              <>
-                <span className="mb-1.5 whitespace-nowrap rounded-md bg-white px-2.5 py-1 text-xs font-bold text-[#0F4F68] shadow-lg ring-2 ring-[#F78F2E]">
-                  {m.label}
-                </span>
-                <span
-                  className="flex shrink-0"
-                  style={{
-                    filter: "drop-shadow(0 0 3px white) drop-shadow(0 2px 6px rgba(15,79,104,0.5))",
-                  }}
+            const labelEl = (
+              <span className="whitespace-nowrap rounded-md bg-white px-2.5 py-1 text-xs font-bold text-[#0F4F68] shadow-lg ring-2 ring-[#F78F2E]">
+                {m.label}
+              </span>
+            );
+            const iconEl = (
+              <span
+                className="flex shrink-0"
+                style={{
+                  filter: "drop-shadow(0 0 3px white) drop-shadow(0 2px 6px rgba(15,79,104,0.5))",
+                }}
+              >
+                <svg
+                  className="h-10 w-10 sm:h-12 sm:w-12"
+                  viewBox="0 0 24 24"
+                  fill="#F78F2E"
+                  stroke="#0F4F68"
+                  strokeWidth={1.5}
+                  aria-hidden
                 >
-                  <svg
-                    className="h-10 w-10 sm:h-12 sm:w-12"
-                    viewBox="0 0 24 24"
-                    fill="#F78F2E"
-                    stroke="#0F4F68"
-                    strokeWidth={1.5}
-                    aria-hidden
-                  >
-                    <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
-                  </svg>
-                </span>
+                  <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
+                </svg>
+              </span>
+            );
+            const content = m.labelAbove ? (
+              <>
+                <span className="mb-1.5">{labelEl}</span>
+                {iconEl}
+              </>
+            ) : (
+              <>
+                {iconEl}
+                <span className="mt-1.5">{labelEl}</span>
               </>
             );
             const style = {
