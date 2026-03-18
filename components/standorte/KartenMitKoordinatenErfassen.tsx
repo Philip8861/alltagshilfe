@@ -195,12 +195,13 @@ export function KartenMitKoordinatenErfassen({ hauptmarker, punkte, ortsLabels =
               }}
             />
           ))}
+          {/* München/Nürnberg: Koordinaten sind Container-% (0–100 sichtbarer Bereich), keine Umrechnung */}
           {ortsLabels.map((o) => (
             <div
               key={o.label}
               className="pointer-events-none absolute flex flex-col items-center gap-0 leading-tight"
               style={{
-                left: `${visibleContainerLeft(o.left)}%`,
+                left: `${o.left}%`,
                 top: `${o.top}%`,
                 transform: "translate(-50%, -50%)",
               }}

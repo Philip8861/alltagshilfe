@@ -18,7 +18,7 @@ const ORTSLABELS = [
 const HAUPTMARKER = [
   { left: 60.3, top: 66.9, label: "Allgäu", href: "/kontakt", labelAbove: true },
   { left: 64.4, top: 50.9, label: "Augsburg", href: "/kontakt", labelAbove: true },
-  { left: 16.3, top: 64.5, label: "Engen/Konstanz", href: "/kontakt", labelAbove: false },
+  { left: 48.4, top: 66.1, label: "Engen/Konstanz", href: "/kontakt", labelAbove: false },
   { left: 56.6, top: 71.1, label: "Wangen", sublabel: "(Bodenseeregion)", href: "/kontakt", labelAbove: false },
 ];
 
