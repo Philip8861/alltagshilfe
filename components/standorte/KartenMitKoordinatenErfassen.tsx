@@ -3,6 +3,7 @@
 import { useRef, useState, useCallback, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 type Hauptmarker = { left: number; top: number; label: string; sublabel?: string; href?: string; labelAbove?: boolean };
 type Punkt = { left: number; top: number };
@@ -15,10 +16,22 @@ type Props = {
 };
 
 export function KartenMitKoordinatenErfassen({ hauptmarker, punkte, ortsLabels = [] }: Props) {
+  const router = useRouter();
   const mapRef = useRef<HTMLDivElement>(null);
   const [erfassenAktiv, setErfassenAktiv] = useState(false);
   const [mouseProzent, setMouseProzent] = useState<{ left: number; top: number } | null>(null);
   const [gespeichert, setGespeichert] = useState<Array<{ left: number; top: number }>>([]);
+
+  const [markerPositions, setMarkerPositions] = useState<Array<{ left: number; top: number }>>(() =>
+    hauptmarker.map((m) => ({ left: m.left, top: m.top }))
+  );
+  const [selectedMarkerIndex, setSelectedMarkerIndex] = useState<number | null>(null);
+  const [savedMarkerPositions, setSavedMarkerPositions] = useState<
+    Array<{ name: string; left: number; top: number }>
+  >([]);
+  const dragRef = useRef<{ index: number; startLeft: number; startTop: number; startX: number; startY: number } | null>(null);
+  const didDragRef = useRef(false);
+  const pendingSelectRef = useRef<number | null>(null);
 
   const updateMouse = useCallback(
     (e: MouseEvent) => {
@@ -34,27 +47,104 @@ export function KartenMitKoordinatenErfassen({ hauptmarker, punkte, ortsLabels =
 
   const handleKeyDown = useCallback(
     (e: KeyboardEvent) => {
-      if (!erfassenAktiv || e.code !== "Space") return;
-      e.preventDefault();
-      if (mouseProzent) {
+      if (e.code !== "Space") return;
+      if (erfassenAktiv && mouseProzent) {
+        e.preventDefault();
         setGespeichert((prev) => [...prev, { ...mouseProzent }]);
+        return;
+      }
+      if (selectedMarkerIndex !== null) {
+        e.preventDefault();
+        const m = hauptmarker[selectedMarkerIndex];
+        const pos = markerPositions[selectedMarkerIndex];
+        if (pos) {
+          const name = m.sublabel ? `${m.label} ${m.sublabel}` : m.label;
+          setSavedMarkerPositions((prev) => [
+            ...prev,
+            { name, left: Math.round(pos.left * 10) / 10, top: Math.round(pos.top * 10) / 10 },
+          ]);
+        }
       }
     },
-    [erfassenAktiv, mouseProzent]
+    [erfassenAktiv, mouseProzent, selectedMarkerIndex, hauptmarker, markerPositions]
   );
 
-  useEffect(() => {
-    if (!erfassenAktiv) {
-      setMouseProzent(null);
-      return;
+  const handleMarkerMouseDown = useCallback(
+    (e: React.MouseEvent, index: number) => {
+      e.preventDefault();
+      didDragRef.current = false;
+      pendingSelectRef.current = index;
+      const rect = mapRef.current?.getBoundingClientRect();
+      if (!rect) return;
+      const pos = markerPositions[index];
+      dragRef.current = {
+        index,
+        startLeft: pos.left,
+        startTop: pos.top,
+        startX: e.clientX,
+        startY: e.clientY,
+      };
+    },
+    [markerPositions]
+  );
+
+  const handleGlobalMouseMove = useCallback(
+    (e: MouseEvent) => {
+      if (!dragRef.current) return;
+      const rect = mapRef.current?.getBoundingClientRect();
+      if (!rect) return;
+      didDragRef.current = true;
+      const { index, startLeft, startTop, startX, startY } = dragRef.current;
+      const deltaX = ((e.clientX - startX) / rect.width) * 100;
+      const deltaY = ((e.clientY - startY) / rect.height) * 100;
+      setMarkerPositions((prev) => {
+        const next = [...prev];
+        next[index] = {
+          left: Math.max(0, Math.min(100, startLeft + deltaX)),
+          top: Math.max(0, Math.min(100, startTop + deltaY)),
+        };
+        return next;
+      });
+    },
+    []
+  );
+
+  const handleGlobalMouseUp = useCallback(() => {
+    if (!didDragRef.current && pendingSelectRef.current !== null) {
+      setSelectedMarkerIndex(pendingSelectRef.current);
     }
+    pendingSelectRef.current = null;
+    dragRef.current = null;
+  }, []);
+
+  useEffect(() => {
+    if (erfassenAktiv) {
+      setMouseProzent(null);
+    }
+  }, [erfassenAktiv]);
+
+  useEffect(() => {
+    const onKeyDown = (e: KeyboardEvent) => handleKeyDown(e);
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [handleKeyDown]);
+
+  useEffect(() => {
+    if (!erfassenAktiv) return;
     window.addEventListener("mousemove", updateMouse);
-    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("mousemove", updateMouse);
+  }, [erfassenAktiv, updateMouse]);
+
+  useEffect(() => {
+    window.addEventListener("mousemove", handleGlobalMouseMove);
+    window.addEventListener("mouseup", handleGlobalMouseUp);
+    window.addEventListener("mouseleave", handleGlobalMouseUp);
     return () => {
-      window.removeEventListener("mousemove", updateMouse);
-      window.removeEventListener("keydown", handleKeyDown);
+      window.removeEventListener("mousemove", handleGlobalMouseMove);
+      window.removeEventListener("mouseup", handleGlobalMouseUp);
+      window.removeEventListener("mouseleave", handleGlobalMouseUp);
     };
-  }, [erfassenAktiv, updateMouse, handleKeyDown]);
+  }, [handleGlobalMouseMove, handleGlobalMouseUp]);
 
   return (
     <div className="flex flex-col gap-3">
@@ -112,7 +202,9 @@ export function KartenMitKoordinatenErfassen({ hauptmarker, punkte, ortsLabels =
               )}
             </div>
           ))}
-          {hauptmarker.map((m) => {
+          {hauptmarker.map((m, i) => {
+            const pos = markerPositions[i] ?? { left: m.left, top: m.top };
+            const isSelected = selectedMarkerIndex === i;
             const textShadow = [
               "0 0 2px white",
               "1px 0 0 white", "-1px 0 0 white", "0 1px 0 white", "0 -1px 0 white",
@@ -155,7 +247,6 @@ export function KartenMitKoordinatenErfassen({ hauptmarker, punkte, ortsLabels =
                 </svg>
               </span>
             );
-            /* Icon immer unten, damit die Pin-Spitze auf der Koordinate liegt (transform: translate(-50%, 100%)) */
             const content = m.labelAbove ? (
               <>
                 <span className="mb-1.5">{labelEl}</span>
@@ -168,27 +259,52 @@ export function KartenMitKoordinatenErfassen({ hauptmarker, punkte, ortsLabels =
               </>
             );
             const style = {
-              left: `${m.left}%`,
-              top: `${m.top}%`,
+              left: `${pos.left}%`,
+              top: `${pos.top}%`,
               transform: "translate(-50%, 100%)",
             };
-            const animDelay = 400 + (hauptmarker.indexOf(m) * 120);
+            const animDelay = 400 + (i * 120);
             const commonStyle = { ...style, animationDelay: `${animDelay}ms` };
+            const markerClassName = `absolute flex flex-col items-center pointer-events-auto rounded-lg transition-opacity hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2 focus:ring-offset-transparent animate-marker-slide-in cursor-grab active:cursor-grabbing ${isSelected ? "ring-2 ring-[#F78F2E] ring-offset-2 ring-offset-white" : ""}`;
+            const handleClick = (e: React.MouseEvent) => {
+              e.preventDefault();
+              if (!didDragRef.current) setSelectedMarkerIndex(i);
+            };
             if (m.href) {
               return (
                 <Link
                   key={m.label}
                   href={m.href}
-                  className="absolute flex flex-col items-center pointer-events-auto rounded-lg transition-opacity hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2 focus:ring-offset-transparent animate-marker-slide-in"
+                  className={markerClassName}
                   style={commonStyle}
-                  aria-label={`${m.label} – Standort anzeigen`}
+                  aria-label={`${m.label} – Klick: auswählen. Doppelklick: Standort öffnen. Leertaste: Position speichern.`}
+                  onMouseDown={(e) => handleMarkerMouseDown(e, i)}
+                  onClick={handleClick}
+                  onDoubleClick={(e) => {
+                    e.preventDefault();
+                    router.push(m.href!);
+                  }}
                 >
                   {content}
                 </Link>
               );
             }
             return (
-              <div key={m.label} className="absolute flex flex-col items-center pointer-events-none animate-marker-slide-in" style={commonStyle}>
+              <div
+                key={m.label}
+                className={markerClassName}
+                style={commonStyle}
+                role="button"
+                tabIndex={0}
+                onMouseDown={(e) => handleMarkerMouseDown(e, i)}
+                onClick={() => setSelectedMarkerIndex(i)}
+                onKeyDown={(e) => {
+                  if (e.code === "Space" || e.code === "Enter") {
+                    e.preventDefault();
+                    setSelectedMarkerIndex(i);
+                  }
+                }}
+              >
                 {content}
               </div>
             );
@@ -210,27 +326,34 @@ export function KartenMitKoordinatenErfassen({ hauptmarker, punkte, ortsLabels =
         )}
       </div>
 
-      {/* Button unter der Karte */}
-      <div className="flex flex-wrap items-center gap-2">
-        <button
-          type="button"
-          onClick={() => setErfassenAktiv((a) => !a)}
-          className={`rounded-lg px-4 py-2 text-sm font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2 ${
-            erfassenAktiv
-              ? "bg-[#F78F2E] text-white hover:bg-[#e07d1f]"
-              : "bg-[#0F4F68] text-white hover:bg-[#0c3d52]"
-          }`}
-        >
-          {erfassenAktiv ? "Koordinaten-Erfassung an" : "GPS-Koordinaten erfassen"}
-        </button>
-        {erfassenAktiv && (
-          <span className="text-sm text-neutral-600">
-            Maus auf Karte bewegen → Leertaste = Punkt speichern
-          </span>
+      {/* Button unter der Karte + Hinweise */}
+      <div className="flex flex-col gap-2">
+        <div className="flex flex-wrap items-center gap-2">
+          <button
+            type="button"
+            onClick={() => setErfassenAktiv((a) => !a)}
+            className={`rounded-lg px-4 py-2 text-sm font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2 ${
+              erfassenAktiv
+                ? "bg-[#F78F2E] text-white hover:bg-[#e07d1f]"
+                : "bg-[#0F4F68] text-white hover:bg-[#0c3d52]"
+            }`}
+          >
+            {erfassenAktiv ? "Koordinaten-Erfassung an" : "GPS-Koordinaten erfassen"}
+          </button>
+          {erfassenAktiv && (
+            <span className="text-sm text-neutral-600">
+              Maus auf Karte bewegen → Leertaste = Punkt speichern
+            </span>
+          )}
+        </div>
+        {selectedMarkerIndex !== null && (
+          <p className="text-sm font-medium text-[#0F4F68]">
+            <strong>{hauptmarker[selectedMarkerIndex]?.label}</strong> ausgewählt – Leertaste = Name + Koordinaten speichern. Doppelklick auf Symbol = Standort öffnen.
+          </p>
         )}
       </div>
 
-      {/* Gespeicherte Koordinaten zum Kopieren */}
+      {/* Gespeicherte Koordinaten (Maus-Klick-Modus) */}
       {gespeichert.length > 0 && (
         <div className="rounded-lg border border-[#0F4F68]/20 bg-[#F2F9FA] p-4">
           <p className="mb-2 text-sm font-semibold text-[#0F4F68]">
@@ -244,6 +367,27 @@ export function KartenMitKoordinatenErfassen({ hauptmarker, punkte, ortsLabels =
           <button
             type="button"
             onClick={() => setGespeichert([])}
+            className="mt-2 text-sm text-[#0F4F68] underline hover:no-underline"
+          >
+            Liste leeren
+          </button>
+        </div>
+      )}
+
+      {/* Gespeicherte Standort-Positionen (Marker verschieben + Leertaste) */}
+      {savedMarkerPositions.length > 0 && (
+        <div className="rounded-lg border border-[#0F4F68]/20 bg-[#F2F9FA] p-4">
+          <p className="mb-2 text-sm font-semibold text-[#0F4F68]">
+            Gespeicherte Standort-Positionen (Name + % Koordinaten):
+          </p>
+          <pre className="max-h-48 overflow-auto rounded bg-white p-3 text-xs text-neutral-800">
+            {savedMarkerPositions
+              .map((s) => `${s.name}, left: ${s.left}, top: ${s.top}`)
+              .join("\n")}
+          </pre>
+          <button
+            type="button"
+            onClick={() => setSavedMarkerPositions([])}
             className="mt-2 text-sm text-[#0F4F68] underline hover:no-underline"
           >
             Liste leeren
