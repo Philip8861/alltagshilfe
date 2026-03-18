@@ -61,8 +61,8 @@ export default function StandortePage() {
         <div className="relative w-full flex-none shrink-0 bg-transparent pl-0 lg:w-[50%] lg:max-w-3xl lg:min-w-0 order-first">
           <KartenMitKoordinatenErfassen hauptmarker={HAUPTMARKER} punkte={PUNKTE} ortsLabels={ORTSLABELS} />
         </div>
-        <div className="w-full min-w-0 flex justify-center pt-4 sm:pt-6 px-4 sm:px-6 lg:max-w-lg lg:flex-1 lg:justify-start lg:px-8">
-          <div className="w-full max-w-md lg:max-w-none">
+        <div className="w-full min-w-0 pt-6 sm:pt-8 px-4 sm:px-6 lg:max-w-lg lg:flex-1 lg:px-8">
+          <div className="w-full max-w-md mx-auto lg:mx-0">
             <StandortSuche />
           </div>
         </div>

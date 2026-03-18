@@ -61,22 +61,25 @@ export function KartenMitKoordinatenErfassen({ hauptmarker, punkte, ortsLabels =
       {/* Karte fixiert: aspect-[3/2] wie Landkarte_sueddeutschland – Positionen in % bleiben auf Desktop und Mobil gleich. */}
       <div
         ref={mapRef}
-        className="relative w-full flex-none aspect-[3/2] min-h-[246px] select-none overflow-hidden"
+        className="relative w-full flex-none aspect-[3/2] min-h-[246px] select-none overflow-hidden isolate"
       >
-        <Image
-          src="/images/Landkarte_sueddeutschland.webp"
-          alt="Karte Süddeutschland – Standorte Alltagshilfe-Süd"
-          fill
-          className="object-contain object-left object-top z-0"
-          style={{
-            filter: "drop-shadow(0 3px 8px rgba(15, 79, 104, 0.15)) drop-shadow(0 8px 24px rgba(242, 249, 250, 0.85)) drop-shadow(0 12px 32px rgba(225, 240, 242, 0.75))",
-          }}
-          priority
-          sizes="(max-width: 1024px) 100vw, 50vw"
-        />
-        {/* GPS-Marker: Punkte nicht klickbar, Hauptmarker klickbar → Standort/Kontakt */}
+        {/* Karte als unterste Ebene (z-0), Marker-Overlay darüber, aber unter Header/Nav */}
+        <div className="absolute inset-0 z-0">
+          <Image
+            src="/images/Landkarte_sueddeutschland.webp"
+            alt="Karte Süddeutschland – Standorte Alltagshilfe-Süd"
+            fill
+            className="object-contain object-left object-top"
+            style={{
+              filter: "drop-shadow(0 3px 8px rgba(15, 79, 104, 0.15)) drop-shadow(0 8px 24px rgba(242, 249, 250, 0.85)) drop-shadow(0 12px 32px rgba(225, 240, 242, 0.75))",
+            }}
+            priority
+            sizes="(max-width: 1024px) 100vw, 50vw"
+          />
+        </div>
+        {/* GPS-Symbole, orangene Punkte, X München/Nürnberg: über der Karte, unter sonstigen Grafiken (Header) */}
         <div
-          className="absolute left-0 top-0 w-full h-full z-[100]"
+          className="absolute left-0 top-0 w-full h-full z-10"
           aria-hidden
         >
           {punkte.map((p, i) => (
