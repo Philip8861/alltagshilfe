@@ -162,13 +162,16 @@ export function KartenMitKoordinatenErfassen({ hauptmarker, punkte, ortsLabels =
 
   return (
     <div className="flex flex-col gap-3">
+      {/* Wrapper mit Innenabstand: Schatten haben Platz und werden beim Zoom nicht abgeschnitten */}
+      <div className="overflow-visible isolate p-4 sm:p-5 min-w-0">
       {/* Karte: Aspect 3/2.5 strikt, damit GPS-Symbole auf Mobil und Desktop exakt gleich liegen. */}
       <div
         ref={mapRef}
         className="relative w-full flex-none select-none overflow-visible isolate aspect-[3/2.5] min-h-0"
+        style={{ transform: "translateZ(0)", backfaceVisibility: "hidden" } as React.CSSProperties}
       >
         {/* Karte als unterste Ebene (z-0); overflow-visible damit drop-shadow auf Mobil sichtbar bleibt */}
-        <div className="absolute inset-0 z-0 overflow-visible">
+        <div className="absolute inset-0 z-0 overflow-visible" style={{ transform: "translateZ(0)" }}>
           <Image
             src="/images/Landkarte_sueddeutschland.webp"
             alt="Karte Süddeutschland – Standorte Alltagshilfe-Süd"
@@ -182,22 +185,23 @@ export function KartenMitKoordinatenErfassen({ hauptmarker, punkte, ortsLabels =
             sizes="(max-width: 1024px) 100vw, 50vw"
           />
         </div>
-        {/* GPS-Symbole, orangene Punkte, X München/Nürnberg: über der Karte, unter sonstigen Grafiken (Header) */}
+        {/* GPS-Symbole, orangene Punkte: eigene Compositing-Layer (translateZ(0)) damit Schatten beim Zoom konstant bleiben */}
         <div
-          className="absolute left-0 top-0 w-full h-full z-10"
+          className="absolute left-0 top-0 w-full h-full z-10 overflow-visible"
           aria-hidden
+          style={{ transform: "translateZ(0)", backfaceVisibility: "hidden" } as React.CSSProperties}
         >
           {/* Orangene Punkte: Koordinaten sind Container-% (0–100 sichtbarer Bereich), keine Umrechnung */}
           {punkte.map((p, i) => (
             <span
               key={`dot-${i}`}
-              className="pointer-events-none absolute rounded-full bg-[#F78F2E] ring-2 ring-white animate-marker-pop-in"
+              className="pointer-events-none absolute rounded-full bg-[#F78F2E] ring-2 ring-white animate-marker-pop-in overflow-visible"
               style={{
                 left: `${p.left}%`,
                 top: `${p.top}%`,
                 width: "clamp(3px, 0.65vw, 5px)",
                 height: "clamp(3px, 0.65vw, 5px)",
-                transform: "translate(-50%, -50%)",
+                transform: "translate(-50%, -50%) translateZ(0)",
                 animationDelay: `${Math.min(i * 35, 650)}ms`,
               }}
             />
@@ -250,11 +254,13 @@ export function KartenMitKoordinatenErfassen({ hauptmarker, punkte, ortsLabels =
             );
             const iconEl = (
               <span
-                className="flex shrink-0"
+                className="flex shrink-0 overflow-visible"
                 style={{
                   filter: "drop-shadow(0 0 3px white) drop-shadow(0 2px 6px rgba(15,79,104,0.5))",
                   width: "clamp(24px, 5.5vw, 45px)",
                   height: "clamp(24px, 5.5vw, 45px)",
+                  transform: "translateZ(0)",
+                  backfaceVisibility: "hidden",
                 }}
               >
                 <svg
@@ -362,6 +368,7 @@ export function KartenMitKoordinatenErfassen({ hauptmarker, punkte, ortsLabels =
             </div>
           </div>
         )}
+      </div>
       </div>
 
       {/* Button unter der Karte + Hinweise (nur wenn Drag/Capture aktiv) */}
