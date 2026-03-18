@@ -114,7 +114,16 @@ export function KartenMitKoordinatenErfassen({ hauptmarker, punkte, ortsLabels =
           ))}
           {hauptmarker.map((m) => {
             const labelEl = (
-              <span className="whitespace-nowrap text-xs font-extrabold text-[#0F4F68]">
+              <span
+                className="whitespace-nowrap text-xs font-extrabold text-[#0F4F68]"
+                style={{
+                  textShadow: [
+                    "0 0 2px white",
+                    "1px 0 0 white", "-1px 0 0 white", "0 1px 0 white", "0 -1px 0 white",
+                    "1px 1px 0 white", "-1px -1px 0 white", "1px -1px 0 white", "-1px 1px 0 white",
+                  ].join(", "),
+                }}
+              >
                 {m.label}
               </span>
             );
