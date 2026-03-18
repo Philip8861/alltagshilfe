@@ -15,6 +15,9 @@ type Props = {
   ortsLabels?: OrtsLabel[];
 };
 
+/** Verschieben der Standorte + %-Anzeige/Koordinaten-Erfassung (später wieder aktivierbar). */
+const ENABLE_DRAG_AND_CAPTURE = false;
+
 /** Sichtbarer Bildausschnitt: Bild hat links ~38% Rand, Karte beginnt danach – object-position -38% 0 */
 const IMAGE_CROP_LEFT = 38;
 const IMAGE_VISIBLE_PCT = 100 - IMAGE_CROP_LEFT; // 62
@@ -55,7 +58,7 @@ export function KartenMitKoordinatenErfassen({ hauptmarker, punkte, ortsLabels =
 
   const handleKeyDown = useCallback(
     (e: KeyboardEvent) => {
-      if (e.code !== "Space") return;
+      if (!ENABLE_DRAG_AND_CAPTURE || e.code !== "Space") return;
       if (erfassenAktiv && mouseProzent) {
         e.preventDefault();
         setGespeichert((prev) => [...prev, { ...mouseProzent }]);
@@ -146,6 +149,7 @@ export function KartenMitKoordinatenErfassen({ hauptmarker, punkte, ortsLabels =
   }, [erfassenAktiv, updateMouse]);
 
   useEffect(() => {
+    if (!ENABLE_DRAG_AND_CAPTURE) return;
     window.addEventListener("mousemove", handleGlobalMouseMove);
     window.addEventListener("mouseup", handleGlobalMouseUp);
     window.addEventListener("mouseleave", handleGlobalMouseUp);
@@ -158,11 +162,13 @@ export function KartenMitKoordinatenErfassen({ hauptmarker, punkte, ortsLabels =
 
   return (
     <div className="flex flex-col gap-3">
-      {/* Karte: aspect 3/2.5 strikt (ohne min-h), damit GPS-Symbole auf Mobil und Desktop an gleicher Stelle liegen. */}
+      {/* Karte: Aspect 3/2.5 per padding-bottom, damit GPS-Symbole auf Mobil und Desktop exakt gleich liegen. */}
       <div
         ref={mapRef}
-        className="relative w-full flex-none aspect-[3/2.5] select-none overflow-visible isolate"
+        className="relative w-full flex-none select-none overflow-visible isolate"
+        style={{ paddingBottom: "83.333%" }}
       >
+        <div className="absolute inset-0">
         {/* Karte als unterste Ebene (z-0); overflow-visible damit drop-shadow auf Mobil sichtbar bleibt */}
         <div className="absolute inset-0 z-0 overflow-visible">
           <Image
@@ -278,25 +284,40 @@ export function KartenMitKoordinatenErfassen({ hauptmarker, punkte, ortsLabels =
             };
             const animDelay = 400 + (i * 120);
             const commonStyle = { ...style, animationDelay: `${animDelay}ms` };
-            const markerClassName = `absolute flex flex-col items-center pointer-events-auto rounded-lg transition-opacity hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2 focus:ring-offset-transparent animate-marker-slide-in cursor-grab active:cursor-grabbing ${isSelected ? "ring-2 ring-[#F78F2E] ring-offset-0 z-[5]" : "z-10"}`;
+            const markerClassName = ENABLE_DRAG_AND_CAPTURE
+              ? `absolute flex flex-col items-center pointer-events-auto rounded-lg transition-opacity hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2 focus:ring-offset-transparent animate-marker-slide-in cursor-grab active:cursor-grabbing ${isSelected ? "ring-2 ring-[#F78F2E] ring-offset-0 z-[5]" : "z-10"}`
+              : "absolute flex flex-col items-center pointer-events-auto rounded-lg transition-opacity hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2 focus:ring-offset-transparent animate-marker-slide-in cursor-pointer z-10";
             const handleClick = (e: React.MouseEvent) => {
               e.preventDefault();
               if (!didDragRef.current) setSelectedMarkerIndex(i);
             };
             if (m.href) {
+              if (ENABLE_DRAG_AND_CAPTURE) {
+                return (
+                  <Link
+                    key={m.label}
+                    href={m.href}
+                    className={markerClassName}
+                    style={commonStyle}
+                    aria-label={`${m.label} – Klick: auswählen. Doppelklick: Standort öffnen. Leertaste: Position speichern.`}
+                    onMouseDown={(e) => handleMarkerMouseDown(e, i)}
+                    onClick={handleClick}
+                    onDoubleClick={(e) => {
+                      e.preventDefault();
+                      router.push(m.href!);
+                    }}
+                  >
+                    {content}
+                  </Link>
+                );
+              }
               return (
                 <Link
                   key={m.label}
                   href={m.href}
                   className={markerClassName}
                   style={commonStyle}
-                  aria-label={`${m.label} – Klick: auswählen. Doppelklick: Standort öffnen. Leertaste: Position speichern.`}
-                  onMouseDown={(e) => handleMarkerMouseDown(e, i)}
-                  onClick={handleClick}
-                  onDoubleClick={(e) => {
-                    e.preventDefault();
-                    router.push(m.href!);
-                  }}
+                  aria-label={`${m.label} – Standort öffnen`}
                 >
                   {content}
                 </Link>
@@ -307,16 +328,16 @@ export function KartenMitKoordinatenErfassen({ hauptmarker, punkte, ortsLabels =
                 key={m.label}
                 className={markerClassName}
                 style={commonStyle}
-                role="button"
-                tabIndex={0}
-                onMouseDown={(e) => handleMarkerMouseDown(e, i)}
-                onClick={() => setSelectedMarkerIndex(i)}
-                onKeyDown={(e) => {
+                role={ENABLE_DRAG_AND_CAPTURE ? "button" : undefined}
+                tabIndex={ENABLE_DRAG_AND_CAPTURE ? 0 : undefined}
+                onMouseDown={ENABLE_DRAG_AND_CAPTURE ? (e) => handleMarkerMouseDown(e, i) : undefined}
+                onClick={ENABLE_DRAG_AND_CAPTURE ? () => setSelectedMarkerIndex(i) : undefined}
+                onKeyDown={ENABLE_DRAG_AND_CAPTURE ? (e) => {
                   if (e.code === "Space" || e.code === "Enter") {
                     e.preventDefault();
                     setSelectedMarkerIndex(i);
                   }
-                }}
+                } : undefined}
               >
                 {content}
               </div>
@@ -337,37 +358,40 @@ export function KartenMitKoordinatenErfassen({ hauptmarker, punkte, ortsLabels =
             </div>
           </div>
         )}
+        </div>
       </div>
 
-      {/* Button unter der Karte + Hinweise */}
-      <div className="flex flex-col gap-2">
-        <div className="flex flex-wrap items-center gap-2">
-          <button
-            type="button"
-            onClick={() => setErfassenAktiv((a) => !a)}
-            className={`rounded-lg px-4 py-2 text-sm font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2 ${
-              erfassenAktiv
-                ? "bg-[#F78F2E] text-white hover:bg-[#e07d1f]"
-                : "bg-[#0F4F68] text-white hover:bg-[#0c3d52]"
-            }`}
-          >
-            {erfassenAktiv ? "Koordinaten-Erfassung an" : "GPS-Koordinaten erfassen"}
-          </button>
-          {erfassenAktiv && (
-            <span className="text-sm text-neutral-600">
-              Maus auf Karte bewegen → Leertaste = Punkt speichern
-            </span>
+      {/* Button unter der Karte + Hinweise (nur wenn Drag/Capture aktiv) */}
+      {ENABLE_DRAG_AND_CAPTURE && (
+        <div className="flex flex-col gap-2">
+          <div className="flex flex-wrap items-center gap-2">
+            <button
+              type="button"
+              onClick={() => setErfassenAktiv((a) => !a)}
+              className={`rounded-lg px-4 py-2 text-sm font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2 ${
+                erfassenAktiv
+                  ? "bg-[#F78F2E] text-white hover:bg-[#e07d1f]"
+                  : "bg-[#0F4F68] text-white hover:bg-[#0c3d52]"
+              }`}
+            >
+              {erfassenAktiv ? "Koordinaten-Erfassung an" : "GPS-Koordinaten erfassen"}
+            </button>
+            {erfassenAktiv && (
+              <span className="text-sm text-neutral-600">
+                Maus auf Karte bewegen → Leertaste = Punkt speichern
+              </span>
+            )}
+          </div>
+          {selectedMarkerIndex !== null && (
+            <p className="text-sm font-medium text-[#0F4F68]">
+              <strong>{hauptmarker[selectedMarkerIndex]?.label}</strong> ausgewählt – Leertaste = Name + Koordinaten speichern. Doppelklick auf Symbol = Standort öffnen.
+            </p>
           )}
         </div>
-        {selectedMarkerIndex !== null && (
-          <p className="text-sm font-medium text-[#0F4F68]">
-            <strong>{hauptmarker[selectedMarkerIndex]?.label}</strong> ausgewählt – Leertaste = Name + Koordinaten speichern. Doppelklick auf Symbol = Standort öffnen.
-          </p>
-        )}
-      </div>
+      )}
 
-      {/* Gespeicherte Koordinaten (Maus-Klick-Modus) */}
-      {gespeichert.length > 0 && (
+      {/* Gespeicherte Koordinaten (Maus-Klick-Modus) – nur bei aktivierter Erfassung */}
+      {ENABLE_DRAG_AND_CAPTURE && gespeichert.length > 0 && (
         <div className="rounded-lg border border-[#0F4F68]/20 bg-[#F2F9FA] p-4">
           <p className="mb-2 text-sm font-semibold text-[#0F4F68]">
             Gespeicherte Koordinaten (zum Kopieren an den Assistenten):
@@ -387,8 +411,8 @@ export function KartenMitKoordinatenErfassen({ hauptmarker, punkte, ortsLabels =
         </div>
       )}
 
-      {/* Gespeicherte Standort-Positionen (Marker verschieben + Leertaste) */}
-      {savedMarkerPositions.length > 0 && (
+      {/* Gespeicherte Standort-Positionen (Marker verschieben + Leertaste) – nur bei aktivierter Erfassung */}
+      {ENABLE_DRAG_AND_CAPTURE && savedMarkerPositions.length > 0 && (
         <div className="rounded-lg border border-[#0F4F68]/20 bg-[#F2F9FA] p-4">
           <p className="mb-2 text-sm font-semibold text-[#0F4F68]">
             Gespeicherte Standort-Positionen (Name + % Koordinaten):
