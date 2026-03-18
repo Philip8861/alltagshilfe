@@ -101,9 +101,20 @@ export function StandortKarten() {
         <ul className="grid w-full grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4 lg:gap-8">
           {STANDORTE.map((s) => (
             <li key={s.name}>
-              <article className="flex flex-col h-full rounded-2xl border border-[#0F4F68]/15 bg-white overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+              <article
+                className="flex flex-col h-full rounded-2xl border border-[#0F4F68]/15 bg-white overflow-hidden transition-all duration-300 ease-out hover:-translate-y-2 hover:scale-[1.02]"
+                style={{
+                  boxShadow: "0 4px 14px rgba(242, 249, 250, 0.9), 0 2px 6px rgba(15, 79, 104, 0.08)",
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.boxShadow = "0 12px 28px rgba(242, 249, 250, 1), 0 8px 20px rgba(15, 79, 104, 0.12)";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.boxShadow = "0 4px 14px rgba(242, 249, 250, 0.9), 0 2px 6px rgba(15, 79, 104, 0.08)";
+                }}
+              >
                 {s.imageSrc && (
-                  <div className="relative w-full aspect-[2/1] max-h-[140px] bg-[#F2F9FA] shrink-0">
+                  <div className="relative w-full aspect-[16/9] max-h-[200px] bg-[#F2F9FA] shrink-0">
                     <Image
                       src={s.imageSrc}
                       alt={s.imageAlt ?? s.name}
