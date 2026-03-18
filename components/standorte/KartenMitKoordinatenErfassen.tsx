@@ -162,9 +162,7 @@ export function KartenMitKoordinatenErfassen({ hauptmarker, punkte, ortsLabels =
 
   return (
     <div className="flex flex-col gap-3">
-      {/* Wrapper mit Innenabstand: Schatten haben Platz und werden beim Zoom nicht abgeschnitten */}
-      <div className="overflow-visible isolate p-4 sm:p-5 min-w-0">
-      {/* Karte: Aspect 3/2.5 strikt, damit GPS-Symbole auf Mobil und Desktop exakt gleich liegen. */}
+      {/* Karte bündig links, direkt unter Header; Aspect 3/2.5 strikt für einheitliche Marker-Position. */}
       <div
         ref={mapRef}
         className="relative w-full flex-none select-none overflow-visible isolate aspect-[3/2.5] min-h-0"
@@ -368,7 +366,6 @@ export function KartenMitKoordinatenErfassen({ hauptmarker, punkte, ortsLabels =
             </div>
           </div>
         )}
-      </div>
       </div>
 
       {/* Button unter der Karte + Hinweise (nur wenn Drag/Capture aktiv) */}
