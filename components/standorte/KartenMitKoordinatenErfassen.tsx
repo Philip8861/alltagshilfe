@@ -151,10 +151,10 @@ export function KartenMitKoordinatenErfassen({ hauptmarker, punkte, ortsLabels =
       {/* Karte fixiert: aspect-[3/2] wie Landkarte_sueddeutschland – Positionen in % bleiben auf Desktop und Mobil gleich. */}
       <div
         ref={mapRef}
-        className="relative w-full flex-none aspect-[3/2] min-h-[246px] select-none overflow-hidden isolate"
+        className="relative w-full flex-none aspect-[3/2] min-h-[246px] select-none overflow-visible isolate"
       >
-        {/* Karte als unterste Ebene (z-0), Marker-Overlay darüber, aber unter Header/Nav */}
-        <div className="absolute inset-0 z-0">
+        {/* Karte als unterste Ebene (z-0); overflow-visible damit drop-shadow auf Mobil sichtbar bleibt */}
+        <div className="absolute inset-0 z-0 overflow-visible">
           <Image
             src="/images/Landkarte_sueddeutschland.webp"
             alt="Karte Süddeutschland – Standorte Alltagshilfe-Süd"
