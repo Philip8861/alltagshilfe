@@ -58,10 +58,10 @@ export function KartenMitKoordinatenErfassen({ hauptmarker, punkte, ortsLabels =
 
   return (
     <div className="flex flex-col gap-3">
-      {/* Karte: aspect-[3/2] = gleiches Seitenverhältnis wie Landkarte_sueddeutschland – Positionen in % bleiben auf Desktop und Mobil gleich auf dem Kartenbild. */}
+      {/* Karte fixiert: aspect-[3/2] wie Landkarte_sueddeutschland – Positionen in % bleiben auf Desktop und Mobil gleich. */}
       <div
         ref={mapRef}
-        className="relative w-full aspect-[3/2] min-h-[246px] select-none overflow-hidden"
+        className="relative w-full flex-none aspect-[3/2] min-h-[246px] select-none overflow-hidden"
       >
         <Image
           src="/images/Landkarte_sueddeutschland.webp"
