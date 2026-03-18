@@ -10,16 +10,16 @@ export const metadata: Metadata = {
 
 /** Dunkle Ortsbezeichnungen auf der Karte (ohne Link) – X an dieser Position. */
 const ORTSLABELS = [
-  { left: 51.7, top: 62.8, label: "München", withX: true },
-  { left: 46.3, top: 31.6, label: "Nürnberg", withX: true },
+  { left: 65.2, top: 57.6, label: "München", withX: true },
+  { left: 59.3, top: 30.2, label: "Nürnberg", withX: true },
 ];
 
 /** GPS-Marker – Spitze des Pins auf der Koordinate. labelAbove: Name über Symbol. */
 const HAUPTMARKER = [
-  { left: 60.3, top: 66.9, label: "Allgäu", href: "/kontakt", labelAbove: true },
-  { left: 64.4, top: 50.9, label: "Augsburg", href: "/kontakt", labelAbove: true },
-  { left: 48.4, top: 66.1, label: "Engen/Konstanz", href: "/kontakt", labelAbove: false },
-  { left: 56.6, top: 71.1, label: "Wangen", sublabel: "(Bodenseeregion)", href: "/kontakt", labelAbove: false },
+  { left: 68.3, top: 63.7, label: "Allgäu", href: "/kontakt", labelAbove: true },
+  { left: 72.3, top: 49, label: "Augsburg", href: "/kontakt", labelAbove: true },
+  { left: 54.1, top: 62.3, label: "Engen/Konstanz", href: "/kontakt", labelAbove: false },
+  { left: 63.9, top: 66.5, label: "Wangen", sublabel: "(Bodenseeregion)", href: "/kontakt", labelAbove: false },
 ];
 
 /** Orangene Punkte auf der Karte (25% kleiner dargestellt). */

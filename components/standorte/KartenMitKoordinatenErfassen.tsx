@@ -248,7 +248,7 @@ export function KartenMitKoordinatenErfassen({ hauptmarker, punkte, ortsLabels =
                 }}
               >
                 <svg
-                  className="h-8 w-8 sm:h-9 sm:w-9"
+                  className="h-10 w-10 sm:h-[45px] sm:w-[45px]"
                   viewBox="0 0 24 24"
                   fill="#F78F2E"
                   stroke="#0F4F68"
