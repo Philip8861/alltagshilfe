@@ -107,8 +107,8 @@ export default function StandortePage() {
         </div>
       </div>
 
-      {/* Unsere 4 Standorte: unterhalb Landkarte und Standort suchen, volle Breite von links nach rechts */}
-      <div className="mt-10 sm:mt-12 w-full px-0 sm:px-0">
+      {/* Unsere 4 Standorte: unterhalb Landkarte und Standort suchen, mit Seitenabstand und reduzierter Breite */}
+      <div className="mt-10 sm:mt-12 w-full max-w-5xl mx-auto px-6 sm:px-8 lg:px-10">
         <StandortKarten />
       </div>
     </article>

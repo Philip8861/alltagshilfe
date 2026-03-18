@@ -114,26 +114,26 @@ export function StandortKarten() {
   return (
     <>
       <section className="mt-10 lg:mt-12" aria-labelledby="standorte-heading">
-        <h2 id="standorte-heading" className="text-xl font-bold text-[#0F4F68] sm:text-2xl mb-6">
+        <h2 id="standorte-heading" className="text-lg font-bold text-[#0F4F68] sm:text-xl mb-4">
           Unsere 4 Standorte
         </h2>
-        <ul className="grid w-full grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4 lg:gap-8">
+        <ul className="grid w-full grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 lg:gap-5">
           {STANDORTE.map((s) => (
             <li key={s.name}>
               <article
-                className="flex flex-col h-full rounded-2xl border border-[#0F4F68]/15 bg-white overflow-hidden transition-all duration-300 ease-out hover:-translate-y-2 hover:scale-[1.02]"
+                className="flex flex-col h-full rounded-xl border border-[#0F4F68]/15 bg-white overflow-hidden transition-all duration-300 ease-out hover:-translate-y-2 hover:scale-[1.02]"
                 style={{
-                  boxShadow: "0 6px 20px rgba(242, 249, 250, 1), 0 4px 12px rgba(242, 249, 250, 0.85), 0 2px 6px rgba(15, 79, 104, 0.1)",
+                  boxShadow: "0 8px 28px rgba(242, 249, 250, 1), 0 6px 18px rgba(242, 249, 250, 1), 0 4px 12px rgba(242, 249, 250, 0.95), 0 2px 6px rgba(15, 79, 104, 0.1)",
                 }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.boxShadow = "0 16px 40px rgba(242, 249, 250, 1), 0 12px 28px rgba(242, 249, 250, 1), 0 8px 20px rgba(15, 79, 104, 0.15)";
+                  e.currentTarget.style.boxShadow = "0 20px 50px rgba(242, 249, 250, 1), 0 16px 36px rgba(242, 249, 250, 1), 0 12px 28px rgba(242, 249, 250, 1), 0 8px 20px rgba(15, 79, 104, 0.15)";
                 }}
                 onMouseLeave={(e) => {
-                  e.currentTarget.style.boxShadow = "0 6px 20px rgba(242, 249, 250, 1), 0 4px 12px rgba(242, 249, 250, 0.85), 0 2px 6px rgba(15, 79, 104, 0.1)";
+                  e.currentTarget.style.boxShadow = "0 8px 28px rgba(242, 249, 250, 1), 0 6px 18px rgba(242, 249, 250, 1), 0 4px 12px rgba(242, 249, 250, 0.95), 0 2px 6px rgba(15, 79, 104, 0.1)";
                 }}
               >
                 {s.imageSrc && (
-                  <div className="relative w-full aspect-[16/9] max-h-[200px] bg-[#F2F9FA] shrink-0">
+                  <div className="relative w-full aspect-[16/9] max-h-[150px] bg-[#F2F9FA] shrink-0">
                     <Image
                       src={s.imageSrc}
                       alt={s.imageAlt ?? s.name}
@@ -143,21 +143,21 @@ export function StandortKarten() {
                     />
                   </div>
                 )}
-                <div className="p-5 sm:p-6 flex flex-col flex-1 min-w-0">
-                  <h3 className="text-lg font-bold text-[#0F4F68]">
+                <div className="p-4 sm:p-5 flex flex-col flex-1 min-w-0">
+                  <h3 className="text-base font-bold text-[#0F4F68]">
                     {s.name}
                   </h3>
-                  <p className="mt-1.5 text-neutral-600 text-sm">
+                  <p className="mt-1 text-neutral-600 text-xs">
                     {s.address}<br />
                     {s.plzOrt}
                   </p>
-                  <p className="mt-3 text-xs font-medium text-neutral-500 uppercase tracking-wide">
+                  <p className="mt-2 text-[11px] font-medium text-neutral-500 uppercase tracking-wide">
                     Dienstleistungen u. a. in:
                   </p>
-                  <p className="mt-1 text-sm text-neutral-700 leading-snug">
+                  <p className="mt-0.5 text-xs text-neutral-700 leading-snug">
                     {s.orte.join(", ")}
                   </p>
-                  <div className="mt-4 pt-4 border-t border-[#0F4F68]/10 flex flex-wrap gap-x-4 gap-y-1 text-sm">
+                  <div className="mt-3 pt-3 border-t border-[#0F4F68]/10 flex flex-wrap gap-x-3 gap-y-1 text-xs">
                     <a
                       href={s.phoneHref}
                       className="font-semibold text-[#0F4F68] hover:underline focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2 rounded"
@@ -174,7 +174,7 @@ export function StandortKarten() {
                   <button
                     type="button"
                     onClick={() => openContactPopup(s.name)}
-                    className="mt-4 inline-flex items-center justify-center rounded-xl bg-[#F78F2E] px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[#e07d1f] focus:outline-none focus:ring-2 focus:ring-[#F78F2E] focus:ring-offset-2"
+                    className="mt-3 inline-flex items-center justify-center rounded-lg bg-[#F78F2E] px-3 py-2 text-xs font-semibold text-white transition-colors hover:bg-[#e07d1f] focus:outline-none focus:ring-2 focus:ring-[#F78F2E] focus:ring-offset-2"
                   >
                     Kontakt aufnehmen
                   </button>
@@ -215,7 +215,7 @@ export function StandortKarten() {
               </button>
             </div>
             <p className="mt-2 text-neutral-600">
-              Schreiben Sie uns – wir melden uns zeitnah bei Ihnen.
+              Wir freuen uns über Ihre Nachricht.
             </p>
             <div className="mt-8">
               <ContactForm />

@@ -76,11 +76,8 @@ export function StandortSuche() {
         <button
           type="button"
           onClick={handleSearch}
-          className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl bg-[#0F4F68] px-6 py-4 font-semibold text-lg text-white transition-colors hover:bg-[#0c3d52] focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2 focus:ring-offset-[#F2F9FA]"
+          className="mt-4 flex w-full items-center justify-center rounded-xl bg-[#0F4F68] px-6 py-4 font-semibold text-lg text-white transition-colors hover:bg-[#0c3d52] focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2 focus:ring-offset-[#F2F9FA]"
         >
-          <svg className="h-6 w-6" viewBox="0 0 24 24" fill="currentColor" style={{ color: "#F78F2E" }} aria-hidden>
-            <path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0016 9.5 6.5 6.5 0 109.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" />
-          </svg>
           Suchen
         </button>
         {error && (
