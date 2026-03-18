@@ -238,7 +238,7 @@ export function StandortKarten() {
                 {selectedStandort && selectedStandort.orte.length > 0 && (
                   <div className="lg:w-72 shrink-0 border-t lg:border-t-0 lg:border-l border-[#0F4F68]/15 bg-white/60 lg:rounded-r-2xl p-5 sm:p-6">
                     <p className="text-sm text-neutral-700 leading-snug">
-                      Diese Nachricht wird an den Standort <strong className="text-[#0F4F68]">{selectedStandort.name}</strong> übermittelt. Der Standort <strong className="text-[#0F4F68]">{selectedStandort.name}</strong> ist Ihr Ansprechpartner für Anfragen aus folgenden Städten und Regionen:
+                      Diese Nachricht wird an den Standort <strong className="text-[#0F4F68]">{selectedStandort.name}</strong> übermittelt. Dieser ist Ihr Ansprechpartner für Anfragen aus folgenden Städten und Regionen:
                     </p>
                     <p className="mt-3 text-xs font-semibold uppercase tracking-wider text-[#0F4F68]">
                       Städte und Regionen
