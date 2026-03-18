@@ -175,7 +175,7 @@ export function KartenMitKoordinatenErfassen({ hauptmarker, punkte, ortsLabels =
           {punkte.map((p, i) => (
             <span
               key={`dot-${i}`}
-              className="pointer-events-none absolute h-[7px] w-[7px] rounded-full bg-[#F78F2E] ring-2 ring-white animate-marker-pop-in"
+              className="pointer-events-none absolute h-[5px] w-[5px] rounded-full bg-[#F78F2E] ring-2 ring-white animate-marker-pop-in"
               style={{
                 left: `${p.left}%`,
                 top: `${p.top}%`,
@@ -194,7 +194,7 @@ export function KartenMitKoordinatenErfassen({ hauptmarker, punkte, ortsLabels =
                 transform: "translate(-50%, -50%)",
               }}
             >
-              <span className="whitespace-nowrap font-semibold text-[#0F4F68] text-sm sm:text-base">
+              <span className="whitespace-nowrap font-semibold text-[#0F4F68] text-base sm:text-lg">
                 {o.label}
               </span>
               {o.withX && (
@@ -213,14 +213,14 @@ export function KartenMitKoordinatenErfassen({ hauptmarker, punkte, ortsLabels =
             const labelEl = (
               <span className="flex flex-col items-center gap-0">
                 <span
-                  className="whitespace-nowrap text-xs font-extrabold text-[#0F4F68]"
+                  className="whitespace-nowrap text-[13.8px] font-extrabold text-[#0F4F68] leading-tight"
                   style={{ textShadow }}
                 >
                   {m.label}
                 </span>
                 {m.sublabel && (
                   <span
-                    className="whitespace-nowrap text-[10px] font-bold text-[#0F4F68] leading-tight"
+                    className="whitespace-nowrap text-[11.5px] font-bold text-[#0F4F68] leading-tight"
                     style={{ textShadow }}
                   >
                     {m.sublabel}
