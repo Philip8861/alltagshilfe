@@ -55,3 +55,37 @@
     transform: translate(-50%, -50%) !important;
   }
 }
+
+/* Moderne Scrollbars in Markenfarben (#0F4F68, #F2F9FA) */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #0F4F68 #F2F9FA;
+}
+
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+*::-webkit-scrollbar-track {
+  background: #F2F9FA;
+  border-radius: 4px;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: #0F4F68;
+  border-radius: 4px;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: #0c3d52;
+}
+
+*::-webkit-scrollbar-thumb:active {
+  background: #F78F2E;
+}
+
+/* Pfeile ausblenden (moderner Look) */
+*::-webkit-scrollbar-button {
+  display: none;
+}
