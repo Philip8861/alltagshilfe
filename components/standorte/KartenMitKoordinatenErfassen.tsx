@@ -191,10 +191,12 @@ export function KartenMitKoordinatenErfassen({ hauptmarker, punkte, ortsLabels =
           {punkte.map((p, i) => (
             <span
               key={`dot-${i}`}
-              className="pointer-events-none absolute h-[5px] w-[5px] rounded-full bg-[#F78F2E] ring-2 ring-white animate-marker-pop-in"
+              className="pointer-events-none absolute rounded-full bg-[#F78F2E] ring-2 ring-white animate-marker-pop-in"
               style={{
                 left: `${p.left}%`,
                 top: `${p.top}%`,
+                width: "clamp(3px, 0.65vw, 5px)",
+                height: "clamp(3px, 0.65vw, 5px)",
                 transform: "translate(-50%, -50%)",
                 animationDelay: `${Math.min(i * 35, 650)}ms`,
               }}
@@ -209,13 +211,14 @@ export function KartenMitKoordinatenErfassen({ hauptmarker, punkte, ortsLabels =
                 left: `${o.left}%`,
                 top: `${o.top}%`,
                 transform: "translate(-50%, -50%)",
+                fontSize: "clamp(0.6rem, 1.75vw, 18px)",
               }}
             >
-              <span className="whitespace-nowrap font-semibold text-[#0F4F68] text-base sm:text-lg">
+              <span className="whitespace-nowrap font-semibold text-[#0F4F68]">
                 {o.label}
               </span>
               {o.withX && (
-                <span className="text-[#0F4F68] font-bold text-xl sm:text-2xl leading-none -mt-1" aria-hidden>×</span>
+                <span className="text-[#0F4F68] font-bold leading-none -mt-1" style={{ fontSize: "clamp(0.75rem, 2vw, 24px)" }} aria-hidden>×</span>
               )}
             </div>
           ))}
@@ -231,14 +234,14 @@ export function KartenMitKoordinatenErfassen({ hauptmarker, punkte, ortsLabels =
               <span className="flex flex-col items-center gap-0">
                 <span
                   className="whitespace-nowrap font-extrabold text-[#0F4F68] leading-tight"
-                  style={{ textShadow, fontSize: "clamp(0.65rem, 2.2vw, 13.8px)" }}
+                  style={{ textShadow, fontSize: "clamp(0.5rem, 2.2vw, 13.8px)" }}
                 >
                   {m.label}
                 </span>
                 {m.sublabel && (
                   <span
                     className="whitespace-nowrap font-bold text-[#0F4F68] leading-tight"
-                    style={{ textShadow, fontSize: "clamp(0.55rem, 1.8vw, 11.5px)" }}
+                    style={{ textShadow, fontSize: "clamp(0.45rem, 1.8vw, 11.5px)" }}
                   >
                     {m.sublabel}
                   </span>
@@ -250,10 +253,12 @@ export function KartenMitKoordinatenErfassen({ hauptmarker, punkte, ortsLabels =
                 className="flex shrink-0"
                 style={{
                   filter: "drop-shadow(0 0 3px white) drop-shadow(0 2px 6px rgba(15,79,104,0.5))",
+                  width: "clamp(24px, 5.5vw, 45px)",
+                  height: "clamp(24px, 5.5vw, 45px)",
                 }}
               >
                 <svg
-                  className="h-10 w-10 sm:h-[45px] sm:w-[45px]"
+                  className="h-full w-full"
                   viewBox="0 0 24 24"
                   fill="#F78F2E"
                   stroke="#0F4F68"
@@ -264,15 +269,16 @@ export function KartenMitKoordinatenErfassen({ hauptmarker, punkte, ortsLabels =
                 </svg>
               </span>
             );
+            const gapV = "clamp(2px, 0.4vw, 6px)";
             const content = m.labelAbove ? (
               <>
-                <span className="mb-1.5">{labelEl}</span>
+                <span style={{ marginBottom: gapV }}>{labelEl}</span>
                 {iconEl}
               </>
             ) : (
               <>
                 {iconEl}
-                <span className="mt-1.5">{labelEl}</span>
+                <span style={{ marginTop: gapV }}>{labelEl}</span>
               </>
             );
             const style = {
