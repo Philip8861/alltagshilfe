@@ -162,13 +162,11 @@ export function KartenMitKoordinatenErfassen({ hauptmarker, punkte, ortsLabels =
 
   return (
     <div className="flex flex-col gap-3">
-      {/* Karte: Aspect 3/2.5 per padding-bottom, damit GPS-Symbole auf Mobil und Desktop exakt gleich liegen. */}
+      {/* Karte: Aspect 3/2.5 strikt, damit GPS-Symbole auf Mobil und Desktop exakt gleich liegen. */}
       <div
         ref={mapRef}
-        className="relative w-full flex-none select-none overflow-visible isolate"
-        style={{ paddingBottom: "83.333%" }}
+        className="relative w-full flex-none select-none overflow-visible isolate aspect-[3/2.5] min-h-0"
       >
-        <div className="absolute inset-0">
         {/* Karte als unterste Ebene (z-0); overflow-visible damit drop-shadow auf Mobil sichtbar bleibt */}
         <div className="absolute inset-0 z-0 overflow-visible">
           <Image
@@ -286,7 +284,7 @@ export function KartenMitKoordinatenErfassen({ hauptmarker, punkte, ortsLabels =
             const commonStyle = { ...style, animationDelay: `${animDelay}ms` };
             const markerClassName = ENABLE_DRAG_AND_CAPTURE
               ? `absolute flex flex-col items-center pointer-events-auto rounded-lg transition-opacity hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2 focus:ring-offset-transparent animate-marker-slide-in cursor-grab active:cursor-grabbing ${isSelected ? "ring-2 ring-[#F78F2E] ring-offset-0 z-[5]" : "z-10"}`
-              : "absolute flex flex-col items-center pointer-events-auto rounded-lg transition-opacity hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2 focus:ring-offset-transparent animate-marker-slide-in cursor-pointer z-10";
+              : "absolute flex flex-col items-center pointer-events-auto rounded-lg transition-opacity hover:opacity-90 focus:outline-none focus:ring-0 focus:ring-offset-0 focus-visible:ring-2 focus-visible:ring-[#0F4F68] focus-visible:ring-offset-0 animate-marker-slide-in cursor-pointer z-10";
             const handleClick = (e: React.MouseEvent) => {
               e.preventDefault();
               if (!didDragRef.current) setSelectedMarkerIndex(i);
@@ -358,7 +356,6 @@ export function KartenMitKoordinatenErfassen({ hauptmarker, punkte, ortsLabels =
             </div>
           </div>
         )}
-        </div>
       </div>
 
       {/* Button unter der Karte + Hinweise (nur wenn Drag/Capture aktiv) */}
