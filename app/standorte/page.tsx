@@ -13,7 +13,7 @@ const ORTSLABELS: { left: number; top: number; label: string; withX?: boolean }[
 
 /** GPS-Marker – Spitze des Pins auf der Koordinate. labelAbove: Name über Symbol. */
 const HAUPTMARKER = [
-  { left: 68.3, top: 63.7, label: "Allgäu", href: "/kontakt", labelAbove: false },
+  { left: 68.3, top: 67, label: "Allgäu", href: "/kontakt", labelAbove: false },
   { left: 72.3, top: 49, label: "Augsburg", href: "/kontakt", labelAbove: true },
   { left: 54.1, top: 62.3, label: "Engen/Konstanz", href: "/kontakt", labelAbove: false },
   { left: 62.7, top: 61.1, label: "Wangen", sublabel: "(Bodenseeregion)", href: "/kontakt", labelAbove: true },

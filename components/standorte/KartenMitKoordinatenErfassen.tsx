@@ -229,8 +229,8 @@ export function KartenMitKoordinatenErfassen({ hauptmarker, punkte, ortsLabels =
           {hauptmarker.map((m, i) => {
             const pos = markerPositions[i] ?? { left: m.left, top: m.top };
             const isSelected = selectedMarkerIndex === i;
+            /* Einheitliche 1px-Weißumrandung ohne Blur, damit keine Doppelkante/verschobener Schatten wirkt */
             const textShadow = [
-              "0 0 2px white",
               "1px 0 0 white", "-1px 0 0 white", "0 1px 0 white", "0 -1px 0 white",
               "1px 1px 0 white", "-1px -1px 0 white", "1px -1px 0 white", "-1px 1px 0 white",
             ].join(", ");
