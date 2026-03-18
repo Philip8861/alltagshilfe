@@ -220,13 +220,7 @@ export function StandortKarten() {
                     </button>
                   </div>
                   <p className="mt-2 text-neutral-600">
-                    {selectedStandortName ? (
-                      <>
-                        Diese Nachricht wird an den Standort <strong className="text-[#0F4F68]">{selectedStandortName}</strong> übermittelt. Der Standort <strong className="text-[#0F4F68]">{selectedStandortName}</strong> ist Ihr Ansprechpartner für Anfragen aus folgenden Städten und Regionen:
-                      </>
-                    ) : (
-                      "Wir freuen uns über Ihre Nachricht."
-                    )}
+                    Wir freuen uns über Ihre Nachricht.
                   </p>
                   <div className="mt-8">
                     <ContactForm />
@@ -240,10 +234,13 @@ export function StandortKarten() {
                   </p>
                 </div>
 
-                {/* Rechte Spalte: Zuordnung dieses Standorts – Orte-Liste */}
+                {/* Rechte Spalte: Zuordnung dieses Standorts – Text + Orte-Liste */}
                 {selectedStandort && selectedStandort.orte.length > 0 && (
                   <div className="lg:w-72 shrink-0 border-t lg:border-t-0 lg:border-l border-[#0F4F68]/15 bg-white/60 lg:rounded-r-2xl p-5 sm:p-6">
-                    <p className="text-xs font-semibold uppercase tracking-wider text-[#0F4F68]">
+                    <p className="text-sm text-neutral-700 leading-snug">
+                      Diese Nachricht wird an den Standort <strong className="text-[#0F4F68]">{selectedStandort.name}</strong> übermittelt. Der Standort <strong className="text-[#0F4F68]">{selectedStandort.name}</strong> ist Ihr Ansprechpartner für Anfragen aus folgenden Städten und Regionen:
+                    </p>
+                    <p className="mt-3 text-xs font-semibold uppercase tracking-wider text-[#0F4F68]">
                       Städte und Regionen
                     </p>
                     <ul className="mt-2 flex flex-wrap gap-2" role="list">
