@@ -220,7 +220,13 @@ export function StandortKarten() {
                     </button>
                   </div>
                   <p className="mt-2 text-neutral-600">
-                    Wir freuen uns über Ihre Nachricht.
+                    {selectedStandortName ? (
+                      <>
+                        Diese Nachricht wird an den Standort <strong className="text-[#0F4F68]">{selectedStandortName}</strong> übermittelt. Der Standort <strong className="text-[#0F4F68]">{selectedStandortName}</strong> ist Ihr Ansprechpartner für Anfragen aus folgenden Städten und Regionen:
+                      </>
+                    ) : (
+                      "Wir freuen uns über Ihre Nachricht."
+                    )}
                   </p>
                   <div className="mt-8">
                     <ContactForm />
@@ -238,13 +244,7 @@ export function StandortKarten() {
                 {selectedStandort && selectedStandort.orte.length > 0 && (
                   <div className="lg:w-72 shrink-0 border-t lg:border-t-0 lg:border-l border-[#0F4F68]/15 bg-white/60 lg:rounded-r-2xl p-5 sm:p-6">
                     <p className="text-xs font-semibold uppercase tracking-wider text-[#0F4F68]">
-                      Dieses Formular gilt für
-                    </p>
-                    <p className="mt-1 font-bold text-[#0F4F68] text-lg">
-                      {selectedStandort.name}
-                    </p>
-                    <p className="mt-3 text-xs font-medium text-neutral-500 uppercase tracking-wide">
-                      Dienstleistungen u. a. in:
+                      Städte und Regionen
                     </p>
                     <ul className="mt-2 flex flex-wrap gap-2" role="list">
                       {selectedStandort.orte.map((ort) => (
