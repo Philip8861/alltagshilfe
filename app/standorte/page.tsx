@@ -54,14 +54,14 @@ const PUNKTE = [
 export default function StandortePage() {
   return (
     <article
-      className="min-h-[60vh] w-full pt-4 sm:pt-6 pb-16 sm:pb-24 pl-0 -ml-4 sm:-ml-6 lg:-ml-8"
+      className="min-h-[60vh] w-full pt-0 pb-16 sm:pb-24 pl-0 lg:-ml-4 xl:-ml-6 2xl:-ml-8"
       style={{ backgroundColor: "#fafbfc" }}
     >
       <div className="flex w-full flex-col gap-8 lg:flex-row lg:flex-nowrap lg:items-flex-start lg:justify-start lg:gap-10 lg:pl-0">
         <div className="relative w-full flex-none shrink-0 bg-transparent pl-0 lg:w-[50%] lg:max-w-3xl lg:min-w-0 order-first">
           <KartenMitKoordinatenErfassen hauptmarker={HAUPTMARKER} punkte={PUNKTE} ortsLabels={ORTSLABELS} />
         </div>
-        <div className="w-full min-w-0 flex flex-col items-center px-4 sm:px-6 lg:max-w-lg lg:flex-1 lg:items-stretch lg:px-8">
+        <div className="w-full min-w-0 flex justify-center pt-4 sm:pt-6 px-4 sm:px-6 lg:max-w-lg lg:flex-1 lg:justify-start lg:px-8">
           <div className="w-full max-w-md lg:max-w-none">
             <StandortSuche />
           </div>
