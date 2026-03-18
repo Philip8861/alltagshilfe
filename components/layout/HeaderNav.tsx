@@ -131,10 +131,18 @@ export function HeaderNav() {
         </button>
       </div>
 
+      {/* Backdrop: Seite unter dem Dropdown abdunkeln, nur mobil wenn Menü offen */}
+      {mobileOpen && (
+        <div
+          className="fixed inset-0 top-16 left-0 right-0 bottom-0 z-40 bg-black/50 md:hidden"
+          aria-hidden
+          onClick={() => setMobileOpen(false)}
+        />
+      )}
       <div
         id="mobile-menu"
         className={cn(
-          "absolute left-0 right-0 top-16 border-b border-[#0F4F68]/15 bg-white md:hidden",
+          "absolute left-0 right-0 top-16 z-50 border-b border-[#0F4F68]/15 bg-white md:hidden",
           mobileOpen ? "block" : "hidden"
         )}
         role="dialog"
