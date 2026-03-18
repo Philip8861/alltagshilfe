@@ -72,11 +72,21 @@ const STANDORTE: StandortKarte[] = [
   },
 ];
 
+/** Custom-Event von Karte: GPS-Symbol geklickt → gleiches Pop-up öffnen */
+export const STANDORTE_OPEN_CONTACT_EVENT = "standorte-open-contact";
+
 export function StandortKarten() {
   const [contactPopupOpen, setContactPopupOpen] = useState(false);
+  const [selectedStandortName, setSelectedStandortName] = useState<string | null>(null);
 
-  const openContactPopup = useCallback(() => setContactPopupOpen(true), []);
-  const closeContactPopup = useCallback(() => setContactPopupOpen(false), []);
+  const openContactPopup = useCallback((standortName: string) => {
+    setSelectedStandortName(standortName);
+    setContactPopupOpen(true);
+  }, []);
+  const closeContactPopup = useCallback(() => {
+    setContactPopupOpen(false);
+    setSelectedStandortName(null);
+  }, []);
 
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
@@ -92,6 +102,15 @@ export function StandortKarten() {
     };
   }, [contactPopupOpen, closeContactPopup]);
 
+  useEffect(() => {
+    const handler = (e: Event) => {
+      const ev = e as CustomEvent<{ standortName: string }>;
+      if (ev.detail?.standortName) openContactPopup(ev.detail.standortName);
+    };
+    window.addEventListener(STANDORTE_OPEN_CONTACT_EVENT, handler);
+    return () => window.removeEventListener(STANDORTE_OPEN_CONTACT_EVENT, handler);
+  }, [openContactPopup]);
+
   return (
     <>
       <section className="mt-10 lg:mt-12" aria-labelledby="standorte-heading">
@@ -104,13 +123,13 @@ export function StandortKarten() {
               <article
                 className="flex flex-col h-full rounded-2xl border border-[#0F4F68]/15 bg-white overflow-hidden transition-all duration-300 ease-out hover:-translate-y-2 hover:scale-[1.02]"
                 style={{
-                  boxShadow: "0 4px 14px rgba(242, 249, 250, 0.9), 0 2px 6px rgba(15, 79, 104, 0.08)",
+                  boxShadow: "0 6px 20px rgba(242, 249, 250, 1), 0 4px 12px rgba(242, 249, 250, 0.85), 0 2px 6px rgba(15, 79, 104, 0.1)",
                 }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.boxShadow = "0 12px 28px rgba(242, 249, 250, 1), 0 8px 20px rgba(15, 79, 104, 0.12)";
+                  e.currentTarget.style.boxShadow = "0 16px 40px rgba(242, 249, 250, 1), 0 12px 28px rgba(242, 249, 250, 1), 0 8px 20px rgba(15, 79, 104, 0.15)";
                 }}
                 onMouseLeave={(e) => {
-                  e.currentTarget.style.boxShadow = "0 4px 14px rgba(242, 249, 250, 0.9), 0 2px 6px rgba(15, 79, 104, 0.08)";
+                  e.currentTarget.style.boxShadow = "0 6px 20px rgba(242, 249, 250, 1), 0 4px 12px rgba(242, 249, 250, 0.85), 0 2px 6px rgba(15, 79, 104, 0.1)";
                 }}
               >
                 {s.imageSrc && (
@@ -154,7 +173,7 @@ export function StandortKarten() {
                   </div>
                   <button
                     type="button"
-                    onClick={openContactPopup}
+                    onClick={() => openContactPopup(s.name)}
                     className="mt-4 inline-flex items-center justify-center rounded-xl bg-[#F78F2E] px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[#e07d1f] focus:outline-none focus:ring-2 focus:ring-[#F78F2E] focus:ring-offset-2"
                   >
                     Kontakt aufnehmen
@@ -182,7 +201,7 @@ export function StandortKarten() {
           <div className="relative z-10 w-full max-w-xl max-h-[90vh] overflow-y-auto rounded-2xl bg-[#F2F9FA] p-6 shadow-xl sm:p-8">
             <div className="flex items-start justify-between gap-4">
               <h2 id="kontakt-popup-title" className="text-2xl font-bold text-[#0F4F68] sm:text-3xl">
-                Kontakt
+                {selectedStandortName ? `Kontakt ${selectedStandortName}` : "Kontakt"}
               </h2>
               <button
                 type="button"

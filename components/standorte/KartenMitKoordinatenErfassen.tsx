@@ -4,6 +4,7 @@ import { useRef, useState, useCallback, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { STANDORTE_OPEN_CONTACT_EVENT } from "./StandortKarten";
 
 type Hauptmarker = { left: number; top: number; label: string; sublabel?: string; href?: string; labelAbove?: boolean };
 type Punkt = { left: number; top: number };
@@ -343,13 +344,20 @@ export function KartenMitKoordinatenErfassen({ hauptmarker, punkte, ortsLabels =
                   </Link>
                 );
               }
+              const standortDisplayName = m.sublabel ? `${m.label} ${m.sublabel}` : `Standort ${m.label}`;
               return (
                 <Link
                   key={m.label}
                   href={m.href}
                   className={markerClassName}
                   style={commonStyle}
-                  aria-label={`${m.label} – Standort öffnen`}
+                  aria-label={`${m.label} – Kontakt öffnen`}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    window.dispatchEvent(
+                      new CustomEvent(STANDORTE_OPEN_CONTACT_EVENT, { detail: { standortName: standortDisplayName } })
+                    );
+                  }}
                 >
                   {content}
                 </Link>
