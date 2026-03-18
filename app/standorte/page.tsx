@@ -22,8 +22,46 @@ const HAUPTMARKER = [
   { left: 63.9, top: 66.5, label: "Wangen", sublabel: "(Bodenseeregion)", href: "/kontakt", labelAbove: false },
 ];
 
-/** Orangene Punkte auf der Karte (25% kleiner dargestellt). */
-const PUNKTE: { left: number; top: number }[] = [];
+/** Orangene Punkte auf der Karte. */
+const PUNKTE = [
+  { left: 47.3, top: 76.4 },
+  { left: 48.1, top: 73.3 },
+  { left: 45.8, top: 70.7 },
+  { left: 48.4, top: 69.6 },
+  { left: 47.1, top: 67.4 },
+  { left: 46.9, top: 61.9 },
+  { left: 50.4, top: 59.8 },
+  { left: 52.3, top: 68.7 },
+  { left: 52.5, top: 66.2 },
+  { left: 55.6, top: 63.8 },
+  { left: 52.6, top: 63.2 },
+  { left: 54.8, top: 60.2 },
+  { left: 51, top: 59.4 },
+  { left: 55.2, top: 56.7 },
+  { left: 52.7, top: 53.8 },
+  { left: 50.9, top: 52.4 },
+  { left: 52.2, top: 50.2 },
+  { left: 52.7, top: 46.9 },
+  { left: 55.6, top: 44.4 },
+  { left: 58.9, top: 47.1 },
+  { left: 59.4, top: 49.6 },
+  { left: 59.3, top: 53.2 },
+  { left: 29.5, top: 62.5 },
+  { left: 22.9, top: 64.1 },
+  { left: 23.1, top: 61.9 },
+  { left: 21.4, top: 59.4 },
+  { left: 23.1, top: 56.1 },
+  { left: 26.6, top: 54.5 },
+  { left: 29.5, top: 56.7 },
+  { left: 37.7, top: 63.8 },
+  { left: 37.2, top: 60.8 },
+  { left: 39.1, top: 58.6 },
+  { left: 41.6, top: 58.6 },
+  { left: 44.5, top: 59.4 },
+  { left: 44.3, top: 66.5 },
+  { left: 37.2, top: 68.4 },
+  { left: 37.7, top: 66.3 },
+];
 
 export default function StandortePage() {
   return (
