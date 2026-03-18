@@ -158,10 +158,10 @@ export function KartenMitKoordinatenErfassen({ hauptmarker, punkte, ortsLabels =
 
   return (
     <div className="flex flex-col gap-3">
-      {/* Karte fixiert: aspect-[3/2] wie Landkarte_sueddeutschland – Positionen in % bleiben auf Desktop und Mobil gleich. */}
+      {/* Karte 25 % größer: aspect 3/2.5, min-h 308px – Positionen in % bleiben gleich. */}
       <div
         ref={mapRef}
-        className="relative w-full flex-none aspect-[3/2] min-h-[246px] select-none overflow-visible isolate"
+        className="relative w-full flex-none aspect-[3/2.5] min-h-[308px] select-none overflow-visible isolate"
       >
         {/* Karte als unterste Ebene (z-0); overflow-visible damit drop-shadow auf Mobil sichtbar bleibt */}
         <div className="absolute inset-0 z-0 overflow-visible">
