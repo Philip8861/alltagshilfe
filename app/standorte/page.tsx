@@ -74,6 +74,11 @@ const PUNKTE = [
   { left: 47.7, top: 57.4 },
 ];
 
+const STANDORTE_INTRO = {
+  heading: "An unseren Standorten sind wir für Sie da",
+  text: "Wir sind stolz darauf, unsere Dienstleistungen an verschiedenen Standorten anzubieten und damit sowohl städtische als auch ländlichere Gebiete zuverlässig zu versorgen. Denn gute Unterstützung sollte überall erreichbar sein.",
+};
+
 export default function StandortePage() {
   return (
     <article
@@ -81,10 +86,20 @@ export default function StandortePage() {
       style={{ backgroundColor: "#fafbfc" }}
     >
       <div className="flex w-full flex-col gap-8 lg:flex-row lg:flex-nowrap lg:items-flex-start lg:justify-start lg:gap-10">
-        <div className="relative w-full flex-none shrink-0 bg-transparent lg:w-[50%] lg:max-w-3xl lg:min-w-0 order-first">
+        {/* Desktop: Karte links (order-1). Mobil: Karte unten (order-2). */}
+        <div className="relative w-full flex-none shrink-0 bg-transparent lg:w-[50%] lg:max-w-3xl lg:min-w-0 order-2 lg:order-1">
           <KartenMitKoordinatenErfassen hauptmarker={HAUPTMARKER} punkte={PUNKTE} ortsLabels={ORTSLABELS} />
         </div>
-        <div className="w-full min-w-0 pt-6 sm:pt-8 px-4 sm:px-6 lg:max-w-lg lg:flex-1 lg:px-8">
+        {/* Desktop: Text + Standortsuche rechts (order-2). Mobil: oben (order-1) – zuerst Text, dann Standortsuche. */}
+        <div className="w-full min-w-0 flex flex-col gap-6 lg:gap-8 pt-6 sm:pt-8 px-4 sm:px-6 lg:max-w-lg lg:flex-1 lg:px-8 order-1 lg:order-2">
+          <header className="space-y-3">
+            <h1 className="text-2xl font-bold text-[#0F4F68] sm:text-3xl">
+              {STANDORTE_INTRO.heading}
+            </h1>
+            <p className="text-neutral-700 leading-relaxed">
+              {STANDORTE_INTRO.text}
+            </p>
+          </header>
           <div className="w-full max-w-md mx-auto lg:mx-0">
             <StandortSuche />
           </div>
