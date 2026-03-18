@@ -183,12 +183,13 @@ export function KartenMitKoordinatenErfassen({ hauptmarker, punkte, ortsLabels =
           className="absolute left-0 top-0 w-full h-full z-10"
           aria-hidden
         >
+          {/* Orangene Punkte: Koordinaten sind Container-% (0–100 sichtbarer Bereich), keine Umrechnung */}
           {punkte.map((p, i) => (
             <span
               key={`dot-${i}`}
               className="pointer-events-none absolute h-[5px] w-[5px] rounded-full bg-[#F78F2E] ring-2 ring-white animate-marker-pop-in"
               style={{
-                left: `${visibleContainerLeft(p.left)}%`,
+                left: `${p.left}%`,
                 top: `${p.top}%`,
                 transform: "translate(-50%, -50%)",
                 animationDelay: `${Math.min(i * 35, 650)}ms`,
@@ -225,15 +226,15 @@ export function KartenMitKoordinatenErfassen({ hauptmarker, punkte, ortsLabels =
             const labelEl = (
               <span className="flex flex-col items-center gap-0">
                 <span
-                  className="whitespace-nowrap text-[13.8px] font-extrabold text-[#0F4F68] leading-tight"
-                  style={{ textShadow }}
+                  className="whitespace-nowrap font-extrabold text-[#0F4F68] leading-tight"
+                  style={{ textShadow, fontSize: "clamp(0.65rem, 2.2vw, 13.8px)" }}
                 >
                   {m.label}
                 </span>
                 {m.sublabel && (
                   <span
-                    className="whitespace-nowrap text-[11.5px] font-bold text-[#0F4F68] leading-tight"
-                    style={{ textShadow }}
+                    className="whitespace-nowrap font-bold text-[#0F4F68] leading-tight"
+                    style={{ textShadow, fontSize: "clamp(0.55rem, 1.8vw, 11.5px)" }}
                   >
                     {m.sublabel}
                   </span>

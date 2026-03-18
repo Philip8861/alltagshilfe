@@ -8,11 +8,8 @@ export const metadata: Metadata = {
   description: `Unsere Standorte – ${siteConfig.name}. Augsburg und Umgebung.`,
 };
 
-/** Dunkle Ortsbezeichnungen auf der Karte (ohne Link) – X an dieser Position. */
-const ORTSLABELS = [
-  { left: 65.2, top: 57.6, label: "München", withX: true },
-  { left: 59.3, top: 30.2, label: "Nürnberg", withX: true },
-];
+/** Ortsbezeichnungen mit X (München, Nürnberg) – aktuell ausgeblendet. */
+const ORTSLABELS: { left: number; top: number; label: string; withX?: boolean }[] = [];
 
 /** GPS-Marker – Spitze des Pins auf der Koordinate. labelAbove: Name über Symbol. */
 const HAUPTMARKER = [
