@@ -185,51 +185,84 @@ export function StandortKarten() {
         </ul>
       </section>
 
-      {/* Pop-up: Kontaktformular wie auf Kontakt-Seite */}
-      {contactPopupOpen && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center p-4"
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby="kontakt-popup-title"
-        >
+      {/* Pop-up: Kontaktformular + Standort-Orte-Liste daneben */}
+      {contactPopupOpen && (() => {
+        const selectedStandort = STANDORTE.find((s) => s.name === selectedStandortName);
+        return (
           <div
-            className="absolute inset-0 bg-black/50 backdrop-blur-sm"
-            aria-hidden
-            onClick={closeContactPopup}
-          />
-          <div className="relative z-10 w-full max-w-xl max-h-[90vh] overflow-y-auto rounded-2xl bg-[#F2F9FA] p-6 shadow-xl sm:p-8">
-            <div className="flex items-start justify-between gap-4">
-              <h2 id="kontakt-popup-title" className="text-2xl font-bold text-[#0F4F68] sm:text-3xl">
-                {selectedStandortName ? `Kontakt ${selectedStandortName}` : "Kontakt"}
-              </h2>
-              <button
-                type="button"
-                onClick={closeContactPopup}
-                className="shrink-0 rounded-lg p-2 text-neutral-500 hover:bg-[#0F4F68]/10 hover:text-[#0F4F68] focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2"
-                aria-label="Schließen"
-              >
-                <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
+            className="fixed inset-0 z-50 flex items-center justify-center p-4"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="kontakt-popup-title"
+          >
+            <div
+              className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+              aria-hidden
+              onClick={closeContactPopup}
+            />
+            <div className="relative z-10 w-full max-w-4xl max-h-[90vh] overflow-y-auto rounded-2xl bg-[#F2F9FA] shadow-xl">
+              <div className="flex flex-col lg:flex-row">
+                {/* Formular (links bzw. oben mobil) */}
+                <div className="flex-1 min-w-0 p-6 sm:p-8">
+                  <div className="flex items-start justify-between gap-4">
+                    <h2 id="kontakt-popup-title" className="text-2xl font-bold text-[#0F4F68] sm:text-3xl">
+                      {selectedStandortName ? `Kontakt ${selectedStandortName}` : "Kontakt"}
+                    </h2>
+                    <button
+                      type="button"
+                      onClick={closeContactPopup}
+                      className="shrink-0 rounded-lg p-2 text-neutral-500 hover:bg-[#0F4F68]/10 hover:text-[#0F4F68] focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2"
+                      aria-label="Schließen"
+                    >
+                      <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </button>
+                  </div>
+                  <p className="mt-2 text-neutral-600">
+                    Wir freuen uns über Ihre Nachricht.
+                  </p>
+                  <div className="mt-8">
+                    <ContactForm />
+                  </div>
+                  <p className="mt-6 text-sm text-neutral-500">
+                    Weitere Informationen zur Datenverarbeitung finden Sie in unserer{" "}
+                    <Link href="/datenschutz" className="underline hover:text-neutral-700" onClick={closeContactPopup}>
+                      Datenschutzerklärung
+                    </Link>
+                    .
+                  </p>
+                </div>
+
+                {/* Rechte Spalte: Zuordnung dieses Standorts – Orte-Liste */}
+                {selectedStandort && selectedStandort.orte.length > 0 && (
+                  <div className="lg:w-72 shrink-0 border-t lg:border-t-0 lg:border-l border-[#0F4F68]/15 bg-white/60 lg:rounded-r-2xl p-5 sm:p-6">
+                    <p className="text-xs font-semibold uppercase tracking-wider text-[#0F4F68]">
+                      Dieses Formular gilt für
+                    </p>
+                    <p className="mt-1 font-bold text-[#0F4F68] text-lg">
+                      {selectedStandort.name}
+                    </p>
+                    <p className="mt-3 text-xs font-medium text-neutral-500 uppercase tracking-wide">
+                      Dienstleistungen u. a. in:
+                    </p>
+                    <ul className="mt-2 flex flex-wrap gap-2" role="list">
+                      {selectedStandort.orte.map((ort) => (
+                        <li
+                          key={ort}
+                          className="rounded-lg bg-[#0F4F68]/10 px-2.5 py-1.5 text-sm font-medium text-[#0F4F68]"
+                        >
+                          {ort}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </div>
             </div>
-            <p className="mt-2 text-neutral-600">
-              Wir freuen uns über Ihre Nachricht.
-            </p>
-            <div className="mt-8">
-              <ContactForm />
-            </div>
-            <p className="mt-6 text-sm text-neutral-500">
-              Weitere Informationen zur Datenverarbeitung finden Sie in unserer{" "}
-              <Link href="/datenschutz" className="underline hover:text-neutral-700" onClick={closeContactPopup}>
-                Datenschutzerklärung
-              </Link>
-              .
-            </p>
           </div>
-        </div>
-      )}
+        );
+      })()}
     </>
   );
 }
