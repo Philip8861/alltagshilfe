@@ -212,14 +212,14 @@ export function StandortFinderPopup() {
                       </p>
                     )}
                     <p className="mt-3 text-sm font-semibold text-[#0F4F68]">
-                      Ihr Ansprechpartner: {result.name}
+                      Ihr Ansprechpartner: {result.name.startsWith("Standort") ? result.name : `Standort ${result.name}`}
                     </p>
                     <p className="mt-1 text-neutral-700">{result.address}</p>
                     <a
                       href={result.phoneHref}
-                      className="mt-3 inline-flex items-center gap-2 font-semibold text-[#0F4F68] hover:underline focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2 rounded"
+                      className="mt-3 inline-flex items-center gap-2 text-2xl font-extrabold text-[#0F4F68] hover:underline focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2 rounded"
                     >
-                      <svg className="h-5 w-5" viewBox="0 0 24 24" fill="currentColor" style={{ color: "#F78F2E" }}>
+                      <svg className="h-6 w-6" viewBox="0 0 24 24" fill="currentColor" style={{ color: "#F78F2E" }}>
                         <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z" />
                       </svg>
                       {result.phone}
