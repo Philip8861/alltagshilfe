@@ -22,6 +22,9 @@ export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.baseUrl),
   title: { default: siteConfig.name, template: `%s | ${siteConfig.name}` },
   description: siteConfig.description,
+  icons: {
+    icon: "/images/Herz.webp",
+  },
   openGraph: {
     type: "website",
     locale: "de_DE",
