@@ -117,11 +117,11 @@ export function StandortSuche() {
             </>
           ) : (
             <p className="text-neutral-700" role="status">
-              Für diese Postleitzahl ist noch kein Standort hinterlegt. Rufen Sie uns gerne unter{" "}
+              Kein passender Ansprechpartner gefunden? Versuchen Sie es mit der nächstgrößeren Stadt. Gerne helfen wir Ihnen auch direkt weiter. Rufen Sie uns unter{" "}
               <a href="tel:+4983349893330" className="font-semibold text-[#0F4F68] hover:underline focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2 rounded">
                 08334 / 9893330
               </a>{" "}
-              an – wir helfen weiter.
+              an.
             </p>
           )}
         </div>
