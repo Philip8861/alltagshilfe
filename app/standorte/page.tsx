@@ -121,78 +121,34 @@ export default function StandortePage() {
         </div>
       </div>
 
-      {/* Intro-Text: Bild oben bündig zur Überschrift, ~30 % größer; object-cover blendet transparente Ränder aus */}
+      {/* Intro: nur Bild (ohne schrägen Rahmen), Leitfarbe-Schatten; Text daneben oben bündig */}
       <section className="mt-12 sm:mt-16 w-full max-w-4xl mx-auto px-4 sm:px-6">
         <div className="mb-6 sm:mb-8" aria-hidden />
-        <div className="grid grid-cols-[auto,minmax(0,1fr)] gap-x-4 gap-y-3 sm:gap-x-6 sm:gap-y-4">
+        <div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:gap-8">
           <div
-            className="row-start-1 flex shrink-0 items-start justify-start"
-            style={{
-              filter:
-                "drop-shadow(0 4px 12px rgba(15, 79, 104, 0.16)) drop-shadow(0 2px 4px rgba(15, 79, 104, 0.1))",
-            }}
+            className="shrink-0 max-w-full overflow-hidden rounded-xl [box-shadow:0_4px_18px_rgba(15,79,104,0.16),0_2px_6px_rgba(15,79,104,0.08)]"
+            style={{ width: "min(410px, calc(100vw - 2.5rem))" }}
           >
-            <div
-              className="rotate-[7deg] overflow-hidden rounded-xl bg-[#fafbfc] max-w-full"
-              style={{
-                transformOrigin: "center center",
-                width: "min(410px, calc(100vw - 2.5rem))",
-              }}
-            >
-              <div className="relative aspect-[4/5] w-full overflow-hidden bg-[#fafbfc]">
-                <Image
-                  src="/images/standort_gemeinsam.webp"
-                  alt="Betreuung und Zuwendung: Team Alltagshilfe-Süd mit Seniorin im Freien"
-                  fill
-                  className="object-cover object-center"
-                  sizes="(max-width: 640px) min(410px, 90vw), 410px"
-                  priority={false}
-                  unoptimized
-                />
-              </div>
+            <div className="relative aspect-[4/5] w-full">
+              <Image
+                src="/images/standort_gemeinsam.webp"
+                alt="Betreuung und Zuwendung: Team Alltagshilfe-Süd mit Seniorin im Freien"
+                fill
+                className="object-cover object-center"
+                sizes="(max-width: 640px) min(410px, 90vw), 410px"
+                priority={false}
+                unoptimized
+              />
             </div>
           </div>
-          <div className="relative row-start-1 min-w-0 self-start overflow-visible text-left">
-            {/* Bogen nur hinter der Überschrift, auf gleicher Höhenlinie wie das Bild */}
-            <svg
-              className="pointer-events-none absolute left-[-2%] right-0 top-[40%] z-0 h-[4.5rem] w-[104%] max-w-none -translate-y-1/2 sm:h-[5.25rem]"
-              viewBox="0 0 1000 140"
-              preserveAspectRatio="none"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-              aria-hidden
-            >
-              <defs>
-                <filter id="standort-bogen-weich" x="-5%" y="-40%" width="110%" height="180%">
-                  <feGaussianBlur in="SourceAlpha" stdDeviation="2" result="blur" />
-                  <feOffset dx="0" dy="1" />
-                  <feMerge>
-                    <feMergeNode />
-                    <feMergeNode in="SourceGraphic" />
-                  </feMerge>
-                </filter>
-              </defs>
-              <path
-                d="M 0 88 Q 500 12 1000 88"
-                stroke="rgba(15, 79, 104, 0.07)"
-                strokeWidth="32"
-                strokeLinecap="round"
-              />
-              <path
-                d="M 0 88 Q 500 12 1000 88"
-                stroke="#F2F9FA"
-                strokeWidth="26"
-                strokeLinecap="round"
-                filter="url(#standort-bogen-weich)"
-              />
-            </svg>
-            <h2 className="relative z-10 text-xl font-bold text-[#0F4F68] sm:text-2xl">
+          <div className="min-w-0 flex-1 space-y-3 text-left">
+            <h2 className="text-xl font-bold text-[#0F4F68] sm:text-2xl">
               {STANDORTE_LEISTUNGEN_INTRO.heading}
             </h2>
+            <p className="text-neutral-700 leading-relaxed">
+              {STANDORTE_LEISTUNGEN_INTRO.text}
+            </p>
           </div>
-          <p className="col-start-2 row-start-2 text-neutral-700 leading-relaxed">
-            {STANDORTE_LEISTUNGEN_INTRO.text}
-          </p>
         </div>
       </section>
 
