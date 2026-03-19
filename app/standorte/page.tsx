@@ -147,9 +147,9 @@ export default function StandortePage() {
             <div className="flex flex-col items-center text-center gap-3 sm:gap-4">
               <h2
                 id="standort-teaser-heading"
-                className="text-lg font-bold text-[#0F4F68] sm:text-xl w-full"
+                className="text-lg font-extrabold text-[#0F4F68] sm:text-xl w-full"
               >
-                Haushaltshilfe in {teaser.plz} {teaser.ort}
+                Haushaltshilfe & Alltagsbegleitung in {teaser.plz} {teaser.ort}
               </h2>
 
               <p className="flex flex-wrap items-center justify-center gap-x-2 gap-y-1 text-sm text-neutral-800">

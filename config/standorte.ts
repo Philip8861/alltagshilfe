@@ -31,6 +31,7 @@ const HOURS =
 /** Leistungen auf Standort-Unterseiten und Teaser-Karte (einheitlich). */
 export const STANDORT_LEISTUNGEN = [
   "Haushaltshilfe",
+  "Alltagsbegleitung",
   "Pflegeberatung nach §37.3 SGB XI",
   "Kostenfreie Pflegehilfsmittel",
 ] as const;

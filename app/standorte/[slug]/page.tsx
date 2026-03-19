@@ -15,8 +15,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const data = getStandortBySlug(slug);
   if (!data) return { title: "Standort" };
-  const title = `Haushaltshilfe in ${data.plz} ${data.ort} | ${siteConfig.name}`;
-  const description = `Haushaltshilfe, Pflegeberatung und Pflegehilfsmittel in ${data.ort}. Ihr Ansprechpartner: ${data.standort.name}.`;
+  const title = `Haushaltshilfe & Alltagsbegleitung in ${data.plz} ${data.ort} | ${siteConfig.name}`;
+  const description = `Haushaltshilfe, Alltagsbegleitung, Pflegeberatung und Pflegehilfsmittel in ${data.ort}. Ihr Ansprechpartner: ${data.standort.name}.`;
   return { title, description };
 }
 
@@ -49,9 +49,9 @@ export default async function StandortSlugPage({ params }: Props) {
         </ol>
       </nav>
 
-      <h1 className="text-3xl font-bold text-[#0F4F68] sm:text-4xl mb-6">
-        Haushaltshilfe in {plz} {ort}
-      </h1>
+        <h1 className="text-3xl font-extrabold text-[#0F4F68] sm:text-4xl mb-6">
+          Haushaltshilfe & Alltagsbegleitung in {plz} {ort}
+        </h1>
 
       <section className="mb-10">
         <h2 className="text-xl font-semibold text-[#0F4F68] mb-4">
