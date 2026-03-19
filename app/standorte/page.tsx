@@ -138,20 +138,21 @@ export default function StandortePage() {
           aria-labelledby="standort-teaser-heading"
         >
           <div
-            className="rounded-xl border-2 border-[#0F4F68] bg-white px-4 py-4 sm:px-5 sm:py-4"
+            className="rounded-xl border-2 border-[#0F4F68] bg-white px-4 py-4 sm:px-5 sm:py-5"
             style={{
               boxShadow:
                 "0 2px 8px rgba(15, 79, 104, 0.25), 0 4px 14px rgba(242, 249, 250, 1), 0 8px 24px rgba(242, 249, 250, 0.9), 0 12px 32px rgba(230, 245, 247, 0.85)",
             }}
           >
-            <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between sm:gap-x-4 sm:gap-y-2">
+            <div className="flex flex-col items-center text-center gap-3 sm:gap-4">
               <h2
                 id="standort-teaser-heading"
-                className="text-lg font-bold text-[#0F4F68] sm:text-xl shrink-0"
+                className="text-lg font-bold text-[#0F4F68] sm:text-xl w-full"
               >
                 Haushaltshilfe in {teaser.plz} {teaser.ort}
               </h2>
-              <p className="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-neutral-800 sm:flex-1 sm:justify-center sm:min-w-0">
+
+              <p className="flex flex-wrap items-center justify-center gap-x-2 gap-y-1 text-sm text-neutral-800">
                 {STANDORT_LEISTUNGEN.map((leistung, i) => (
                   <span key={leistung} className="inline-flex items-center gap-1.5">
                     {i > 0 && <span className="text-[#0F4F68]/50" aria-hidden>·</span>}
@@ -164,7 +165,8 @@ export default function StandortePage() {
                   </span>
                 ))}
               </p>
-              <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm sm:shrink-0">
+
+              <div className="flex flex-col items-center gap-2 sm:flex-row sm:flex-wrap sm:justify-center sm:gap-x-6 text-sm">
                 <a
                   href={teaser.standort.phoneHref}
                   className="font-semibold text-[#0F4F68] hover:underline focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2 rounded"
@@ -177,13 +179,14 @@ export default function StandortePage() {
                 >
                   {teaser.standort.email}
                 </a>
-                <Link
-                  href={`/standorte/${STANDORT_TEASER_SLUG}`}
-                  className="inline-flex items-center justify-center rounded-lg bg-[#0F4F68] px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-[#0c3d52] focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2"
-                >
-                  Zum Standort
-                </Link>
               </div>
+
+              <Link
+                href={`/standorte/${STANDORT_TEASER_SLUG}`}
+                className="mt-1 inline-flex w-full max-w-xs items-center justify-center rounded-lg bg-[#0F4F68] px-6 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[#0c3d52] focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2"
+              >
+                Zum Standort
+              </Link>
             </div>
           </div>
         </section>
