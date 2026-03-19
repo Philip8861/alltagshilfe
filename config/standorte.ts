@@ -2,7 +2,18 @@
  * Standorte nach PLZ – aus Standortlisten.pdf.
  * PLZ-Suche (Standort suchen, Kontakt-Popup) und findStandortByPlz nutzen diese Daten.
  */
-import plzByStandort from "./standorte-plz-generated.json";
+import standortePlzData from "./standorte-plz-generated.json";
+
+type StandortePlzJson = {
+  Allgäu: string[];
+  Wangen: string[];
+  Augsburg: string[];
+  "Engen/Konstanz": string[];
+  plzToOrt?: Record<string, string>;
+};
+
+const data = standortePlzData as StandortePlzJson;
+const plzToOrt: Record<string, string> = data.plzToOrt ?? {};
 
 export interface Standort {
   name: string;
@@ -22,7 +33,7 @@ export const standorteByPlz: Standort[] = [
     phone: "08334 / 9893330",
     phoneHref: "tel:+4983349893330",
     hours: HOURS,
-    plzList: (plzByStandort as Record<string, string[]>)["Allgäu"] ?? [],
+    plzList: data["Allgäu"] ?? [],
   },
   {
     name: "Wangen (Bodenseeregion)",
@@ -30,7 +41,7 @@ export const standorteByPlz: Standort[] = [
     phone: "07522 / 9151686",
     phoneHref: "tel:+4975229151686",
     hours: HOURS,
-    plzList: (plzByStandort as Record<string, string[]>)["Wangen"] ?? [],
+    plzList: data["Wangen"] ?? [],
   },
   {
     name: "Standort Augsburg",
@@ -38,7 +49,7 @@ export const standorteByPlz: Standort[] = [
     phone: "0821 / 48046200",
     phoneHref: "tel:+4982148046200",
     hours: HOURS,
-    plzList: (plzByStandort as Record<string, string[]>)["Augsburg"] ?? [],
+    plzList: data["Augsburg"] ?? [],
   },
   {
     name: "Standort Engen/Konstanz",
@@ -46,7 +57,7 @@ export const standorteByPlz: Standort[] = [
     phone: "08334 / 9893330",
     phoneHref: "tel:+4983349893330",
     hours: HOURS,
-    plzList: (plzByStandort as Record<string, string[]>)["Engen/Konstanz"] ?? [],
+    plzList: data["Engen/Konstanz"] ?? [],
   },
 ];
 
@@ -55,4 +66,10 @@ export function findStandortByPlz(plz: string): Standort | undefined {
   const normalized = plz.replace(/\D/g, "").slice(0, 5);
   if (normalized.length < 5) return undefined;
   return standorteByPlz.find((s) => s.plzList.includes(normalized));
+}
+
+/** Ortsname zur PLZ (aus Standortlisten.pdf); für Anzeige „PLZ Ort“. */
+export function getOrtByPlz(plz: string): string | undefined {
+  const normalized = plz.replace(/\D/g, "").slice(0, 5);
+  return plzToOrt[normalized];
 }

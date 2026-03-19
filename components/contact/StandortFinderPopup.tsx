@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useCallback, useEffect, useRef } from "react";
-import { findStandortByPlz, type Standort } from "@/config/standorte";
+import { findStandortByPlz, getOrtByPlz, type Standort } from "@/config/standorte";
 
 export function StandortFinderPopup() {
   const [widgetVisible, setWidgetVisible] = useState(true);
@@ -204,6 +204,12 @@ export function StandortFinderPopup() {
                     <p className="text-sm font-semibold uppercase tracking-wide text-[#0F4F68]">
                       Ihr Standort
                     </p>
+                    {plz.trim() && (
+                      <p className="mt-1 text-sm text-neutral-600">
+                        {plz.trim()}
+                        {getOrtByPlz(plz) ? ` ${getOrtByPlz(plz)}` : ""}
+                      </p>
+                    )}
                     <h3 className="mt-1 text-lg font-bold text-[#0F4F68]">
                       {result.name}
                     </h3>

@@ -15,11 +15,22 @@ try {
 
 function extractPlz(block) {
   const plzSet = new Set();
-  // PLZ + Leerzeichen + (ein Nicht-Buchstabe ODER 2+ Zeichen für "ÔÇô") + Leerzeichen
   const re = /\b(\d{5})\s+(?:[^\dA-Za-z]|.{2,})\s*/g;
   let m;
   while ((m = re.exec(block)) !== null) plzSet.add(m[1]);
   return [...plzSet].sort();
+}
+
+/** PLZ → Ortsname aus Zeilen wie "86498 – Kettershausen 87645 – Schwangau". */
+function extractPlzToOrt(block) {
+  const plzToOrt = {};
+  const re = /\b(\d{5})\s+(?:[^\dA-Za-z]|.{2,})\s+([^\d\r\n]+?)(?=\s*\d{5}\s|\r?\n|$)/g;
+  let m;
+  while ((m = re.exec(block)) !== null) {
+    const ort = m[2].trim().replace(/\s+/g, " ");
+    if (ort) plzToOrt[m[1]] = ort;
+  }
+  return plzToOrt;
 }
 
 const keys = ["Allgäu", "Wangen", "Augsburg", "Engen/Konstanz"];
@@ -39,20 +50,23 @@ const blocks = [
   text.slice(idxEngen, text.length),
 ];
 
-const phonePrefixesToExclude = ["07522"]; // Telefonvorwahl Wangen, keine PLZ
+const phonePrefixesToExclude = ["07522"];
 
+const plzToOrt = {};
 for (let i = 0; i < keys.length; i++) {
   let list = extractPlz(blocks[i]);
   if (keys[i] === "Wangen") list = list.filter((p) => !phonePrefixesToExclude.includes(p));
   results[keys[i]] = list;
+  Object.assign(plzToOrt, extractPlzToOrt(blocks[i]));
   console.log(keys[i], results[keys[i]].length, "PLZ");
 }
+phonePrefixesToExclude.forEach((p) => delete plzToOrt[p]);
 
-console.log(JSON.stringify(results, null, 2));
+const output = { ...results, plzToOrt };
+console.log(JSON.stringify(output, null, 2));
 
-// Optional: PLZ-Listen für config/standorte.ts ausgeben (zum Kopieren)
 if (process.argv.includes("--ts")) {
   const out = path.join(__dirname, "..", "config", "standorte-plz-generated.json");
-  fs.writeFileSync(out, JSON.stringify(results, null, 2), "utf8");
+  fs.writeFileSync(out, JSON.stringify(output, null, 2), "utf8");
   console.log("Geschrieben:", out);
 }

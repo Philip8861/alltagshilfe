@@ -2,7 +2,7 @@
 
 import { useState, useCallback } from "react";
 import Link from "next/link";
-import { findStandortByPlz, type Standort } from "@/config/standorte";
+import { findStandortByPlz, getOrtByPlz, type Standort } from "@/config/standorte";
 
 export function StandortSuche() {
   const [plz, setPlz] = useState("");
@@ -94,6 +94,12 @@ export function StandortSuche() {
               <p className="text-xs font-semibold uppercase tracking-wide text-[#0F4F68]">
                 Ihr Standort
               </p>
+              {plz.trim() && (
+                <p className="mt-1 text-sm text-neutral-600">
+                  {plz.trim()}
+                  {getOrtByPlz(plz) ? ` ${getOrtByPlz(plz)}` : ""}
+                </p>
+              )}
               <h3 className="mt-1 text-lg font-bold text-[#0F4F68]">
                 {result.name}
               </h3>
