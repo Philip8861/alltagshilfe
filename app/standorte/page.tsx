@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import { StandortSuche } from "@/components/standorte/StandortSuche";
 import { StandortTeaserMitBild } from "@/components/standorte/StandortTeaserMitBild";
 import { KartenMitKoordinatenErfassen } from "@/components/standorte/KartenMitKoordinatenErfassen";
@@ -120,15 +121,42 @@ export default function StandortePage() {
         </div>
       </div>
 
-      {/* Intro-Text zu Leistungen – mittig, unterhalb Karte/Suche, Abstand vor Überschrift */}
-      <section className="mt-12 sm:mt-16 w-full max-w-3xl mx-auto px-4 sm:px-6 text-center">
+      {/* Intro-Text zu Leistungen – Bild links (ca. 50 % der früheren Teaser-Größe), Text rechts */}
+      <section className="mt-12 sm:mt-16 w-full max-w-4xl mx-auto px-4 sm:px-6">
         <div className="mb-6 sm:mb-8" aria-hidden />
-        <h2 className="text-xl font-bold text-[#0F4F68] sm:text-2xl mb-4">
-          {STANDORTE_LEISTUNGEN_INTRO.heading}
-        </h2>
-        <p className="text-neutral-700 leading-relaxed">
-          {STANDORTE_LEISTUNGEN_INTRO.text}
-        </p>
+        <div className="flex flex-row items-start gap-4 sm:items-center sm:gap-6 lg:gap-8">
+          <div
+            className="shrink-0 pt-1 sm:pt-0"
+            style={{
+              filter:
+                "drop-shadow(0 4px 12px rgba(15, 79, 104, 0.16)) drop-shadow(0 2px 4px rgba(15, 79, 104, 0.1))",
+            }}
+          >
+            <div
+              className="rotate-[2.5deg] rounded-[1.1rem] bg-white p-1 ring-2 ring-white"
+              style={{ transformOrigin: "center center", width: "140px" }}
+            >
+              <div className="relative aspect-[4/5] w-full overflow-hidden rounded-xl">
+                <Image
+                  src="/images/Testbild.webp"
+                  alt="Betreuung und Zuwendung: Team Alltagshilfe-Süd mit Seniorin im Freien"
+                  fill
+                  className="object-cover object-center"
+                  sizes="140px"
+                  priority={false}
+                />
+              </div>
+            </div>
+          </div>
+          <div className="min-w-0 flex-1 text-left">
+            <h2 className="text-xl font-bold text-[#0F4F68] sm:text-2xl mb-4">
+              {STANDORTE_LEISTUNGEN_INTRO.heading}
+            </h2>
+            <p className="text-neutral-700 leading-relaxed">
+              {STANDORTE_LEISTUNGEN_INTRO.text}
+            </p>
+          </div>
+        </div>
       </section>
 
       {/* Beispiel-Standort: gleiche Karten-Optik wie „Standort suchen“, Bild + Scroll-Animation */}
