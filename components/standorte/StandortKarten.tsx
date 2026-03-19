@@ -18,8 +18,8 @@ export type StandortKarte = {
   imageAlt?: string;
 };
 
-/** Gemeinsames Motiv für alle Standort-Karten (früher Wangen.webp / standort_gemeinsam). */
-const STANDORT_CARD_BILD = "/images/Testbild.webp";
+/** Gemeinsames Motiv für alle Standort-Karten. */
+const STANDORT_CARD_BILD = "/images/standort_gemeinsam.webp";
 
 const STANDORTE: StandortKarte[] = [
   {

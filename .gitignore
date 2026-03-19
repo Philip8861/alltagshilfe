@@ -41,6 +41,3 @@ coverage
 
 # Lokale PDF-Text-Extrakte (UTF-16 von Windows-Redirect; nicht committen)
 scripts/standortlisten-extract.txt
-
-# Altes Motiv ersetzt durch Testbild.webp (Standorte-Intro + StandortKarten) – bitte nicht committen
-public/images/standort_gemeinsam.webp

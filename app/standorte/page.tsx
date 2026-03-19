@@ -139,7 +139,7 @@ export default function StandortePage() {
             >
               <div className="relative aspect-[4/5] w-full bg-[#fafbfc]">
                 <Image
-                  src="/images/Testbild.webp"
+                  src="/images/standort_gemeinsam.webp"
                   alt="Betreuung und Zuwendung: Team Alltagshilfe-Süd mit Seniorin im Freien"
                   fill
                   className="object-contain object-center bg-[#fafbfc]"
