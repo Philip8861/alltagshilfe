@@ -125,17 +125,18 @@ export default function StandortePage() {
       <section className="mt-12 sm:mt-16 w-full max-w-4xl mx-auto px-4 sm:px-6">
         <div className="mb-6 sm:mb-8" aria-hidden />
         <div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:gap-8">
+          {/* Kein eigener Hintergrund/Schatten am Kasten – nur Foto, Schatten direkt am Bild (drop-shadow = entlang Alpha) */}
           <div
-            className="shrink-0 max-w-full overflow-hidden rounded-xl [box-shadow:0_4px_18px_rgba(15,79,104,0.16),0_2px_6px_rgba(15,79,104,0.08)]"
-            style={{ width: "min(410px, calc(100vw - 2.5rem))" }}
+            className="shrink-0 max-w-full"
+            style={{ width: "min(451px, calc(100vw - 2.5rem))" }}
           >
-            <div className="relative aspect-[4/5] w-full">
+            <div className="relative aspect-[4/5] w-full overflow-hidden rounded-xl bg-transparent ring-0">
               <Image
                 src="/images/standort_gemeinsam.webp"
                 alt="Betreuung und Zuwendung: Team Alltagshilfe-Süd mit Seniorin im Freien"
                 fill
-                className="object-cover object-center"
-                sizes="(max-width: 640px) min(410px, 90vw), 410px"
+                className="object-cover object-center scale-[1.12] [filter:drop-shadow(0_4px_16px_rgba(15,79,104,0.2))_drop-shadow(0_2px_6px_rgba(15,79,104,0.12))]"
+                sizes="(max-width: 640px) min(451px, 90vw), 451px"
                 priority={false}
                 unoptimized
               />
