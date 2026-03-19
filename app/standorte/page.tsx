@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import { StandortSuche } from "@/components/standorte/StandortSuche";
+import { StandortAnthrazitRule } from "@/components/standorte/StandortAnthrazitRule";
 import { StandortNummerEinsReveal } from "@/components/standorte/StandortNummerEinsReveal";
 import { StandortTeaserMitBild } from "@/components/standorte/StandortTeaserMitBild";
 import { KartenMitKoordinatenErfassen } from "@/components/standorte/KartenMitKoordinatenErfassen";
@@ -145,8 +146,11 @@ export default function StandortePage() {
         />
       </div>
 
+      {/* Strukturlinie Anthrazit (~2/3 Breite), über Bereich mit standort_gemeinsam */}
+      <StandortAnthrazitRule className="mt-8 sm:mt-10" />
+
       {/* Desktop: Bild | Linie | Text. Mobil: zuerst Text, Linie, dann Bild */}
-      <section className="mt-10 w-full max-w-4xl mx-auto px-4 sm:mt-12 sm:px-6">
+      <section className="mt-6 w-full max-w-4xl mx-auto px-4 sm:mt-8 sm:px-6">
         <div className="flex flex-col sm:flex-row sm:items-stretch">
           <StandortNummerEinsReveal className="order-1 w-full min-w-0 sm:order-3">
             <h2 className={HEADING_CLASS}>
@@ -188,6 +192,9 @@ export default function StandortePage() {
           </div>
         </div>
       </section>
+
+      {/* Strukturlinie vor dem folgenden Standort-Teaser */}
+      {teaser && <StandortAnthrazitRule className="mt-12 sm:mt-14" />}
 
       {/* Beispiel-Standort: gleiche Karten-Optik wie „Standort suchen“, Bild + Scroll-Animation */}
       {teaser && (
