@@ -1,6 +1,12 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { StandortSuche } from "@/components/standorte/StandortSuche";
 import { KartenMitKoordinatenErfassen } from "@/components/standorte/KartenMitKoordinatenErfassen";
+import {
+  getStandortBySlug,
+  STANDORT_LEISTUNGEN,
+  STANDORT_TEASER_SLUG,
+} from "@/config/standorte";
 import { siteConfig } from "@/config/site";
 
 export const metadata: Metadata = {
@@ -86,6 +92,8 @@ const STANDORTE_LEISTUNGEN_INTRO = {
 };
 
 export default function StandortePage() {
+  const teaser = getStandortBySlug(STANDORT_TEASER_SLUG);
+
   return (
     <article
       className="min-h-[60vh] w-full max-w-[100vw] pt-0 pb-16 sm:pb-24 overflow-x-hidden -ml-4 sm:-ml-6 lg:-ml-8 pl-4 sm:pl-6 lg:pl-8"
@@ -121,6 +129,82 @@ export default function StandortePage() {
           {STANDORTE_LEISTUNGEN_INTRO.text}
         </p>
       </section>
+
+      {/* Beispiel-Standort: kompakt, gerahmt, Link zur Unterseite */}
+      {teaser && (
+        <section
+          className="mt-12 sm:mt-14 w-full max-w-xl mx-auto px-4 sm:px-6"
+          aria-labelledby="standort-teaser-heading"
+        >
+          <div className="relative overflow-hidden rounded-2xl border-2 border-[#0F4F68]/20 bg-white shadow-[0_12px_40px_-12px_rgba(15,79,104,0.18),0_0_0_1px_rgba(242,249,250,0.9)]">
+            <div className="absolute left-0 top-0 h-1.5 w-full bg-gradient-to-r from-[#0F4F68] via-[#0F4F68]/80 to-[#F78F2E]" aria-hidden />
+            <div className="p-6 sm:p-8 pt-8">
+              <h2
+                id="standort-teaser-heading"
+                className="text-center text-xl font-bold text-[#0F4F68] sm:text-2xl"
+              >
+                Haushaltshilfe in {teaser.plz} {teaser.ort}
+              </h2>
+
+              <h3 className="mt-6 text-sm font-semibold uppercase tracking-wide text-[#0F4F68]/90">
+                Folgende Leistungen bieten wir hier an:
+              </h3>
+              <ul className="mt-3 space-y-2.5">
+                {STANDORT_LEISTUNGEN.map((leistung) => (
+                  <li key={leistung} className="flex items-start gap-3">
+                    <span
+                      className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#F78F2E] text-white"
+                      aria-hidden
+                    >
+                      <svg
+                        className="h-3.5 w-3.5"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="3"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
+                        <polyline points="20 6 9 17 4 12" />
+                      </svg>
+                    </span>
+                    <span className="text-neutral-800">{leistung}</span>
+                  </li>
+                ))}
+              </ul>
+
+              <div className="mt-6 rounded-xl border border-[#0F4F68]/12 bg-[#F2F9FA]/90 p-4 sm:p-5">
+                <p className="text-xs font-semibold uppercase tracking-wide text-[#0F4F68]/80">
+                  Kontakt
+                </p>
+                <div className="mt-3 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:gap-x-8 sm:gap-y-2">
+                  <a
+                    href={teaser.standort.phoneHref}
+                    className="text-lg font-bold text-[#0F4F68] hover:underline focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2 rounded"
+                  >
+                    {teaser.standort.phone}
+                  </a>
+                  <a
+                    href={`mailto:${teaser.standort.email}`}
+                    className="break-all text-base font-semibold text-[#0F4F68] hover:underline focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2 rounded"
+                  >
+                    {teaser.standort.email}
+                  </a>
+                </div>
+              </div>
+
+              <div className="mt-6 flex justify-center">
+                <Link
+                  href={`/standorte/${STANDORT_TEASER_SLUG}`}
+                  className="inline-flex w-full max-w-sm items-center justify-center rounded-xl bg-[#0F4F68] px-6 py-3.5 text-center font-semibold text-white shadow-sm transition-colors hover:bg-[#0c3d52] focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2 sm:w-auto sm:min-w-[200px]"
+                >
+                  Zum Standort
+                </Link>
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
     </article>
   );
 }

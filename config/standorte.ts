@@ -28,6 +28,16 @@ export interface Standort {
 const HOURS =
   "Mo–Do: 08:30 – 12:00 und 13:00 – 16:00 Uhr · Freitag: 08:30 – 12:00 Uhr";
 
+/** Leistungen auf Standort-Unterseiten und Teaser-Karte (einheitlich). */
+export const STANDORT_LEISTUNGEN = [
+  "Haushaltshilfe",
+  "Pflegeberatung nach §37.3 SGB XI",
+  "Kostenfreie Pflegehilfsmittel",
+] as const;
+
+/** Slug des auf der Standorte-Seite hervorgehobenen Beispiel-Standorts (A–Z-Ausbau folgt). */
+export const STANDORT_TEASER_SLUG = "87700-memmingen" as const;
+
 export const standorteByPlz: Standort[] = [
   {
     name: "Standort Allgäu",

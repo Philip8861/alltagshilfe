@@ -1,14 +1,8 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { getStandortBySlug } from "@/config/standorte";
+import { getStandortBySlug, STANDORT_LEISTUNGEN } from "@/config/standorte";
 import { siteConfig } from "@/config/site";
-
-const LEISTUNGEN = [
-  "Haushaltshilfe",
-  "Pflegeberatung nach §37.3 SGB XI",
-  "Kostenfreie Pflegehilfsmittel",
-];
 
 /** Für den Test: nur einen Standort vorab generieren. Später: getAllStandortSlugs() für alle PLZ/Orte. */
 export async function generateStaticParams() {
@@ -64,7 +58,7 @@ export default async function StandortSlugPage({ params }: Props) {
           Folgende Leistungen bieten wir hier an:
         </h2>
         <ul className="space-y-3">
-          {LEISTUNGEN.map((leistung) => (
+          {STANDORT_LEISTUNGEN.map((leistung) => (
             <li key={leistung} className="flex items-start gap-3">
               <span
                 className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#F78F2E] text-white"
