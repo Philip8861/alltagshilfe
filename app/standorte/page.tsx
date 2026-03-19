@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import Link from "next/link";
 import { StandortSuche } from "@/components/standorte/StandortSuche";
 import { KartenMitKoordinatenErfassen } from "@/components/standorte/KartenMitKoordinatenErfassen";
@@ -139,23 +138,13 @@ export default function StandortePage() {
           aria-labelledby="standort-teaser-heading"
         >
           <div
-            className="relative overflow-hidden rounded-xl border-2 border-[#0F4F68] bg-white px-4 py-4 sm:px-5 sm:py-5"
+            className="rounded-xl border-2 border-[#0F4F68] bg-white px-4 py-4 sm:px-5 sm:py-5"
             style={{
               boxShadow:
                 "0 2px 8px rgba(15, 79, 104, 0.25), 0 4px 14px rgba(242, 249, 250, 1), 0 8px 24px rgba(242, 249, 250, 0.9), 0 12px 32px rgba(230, 245, 247, 0.85)",
             }}
           >
-            {/* Wangen sehr blass im Hintergrund (dekorativ) */}
-            <div className="pointer-events-none absolute inset-0 z-0" aria-hidden>
-              <Image
-                src="/images/Wangen.webp"
-                alt=""
-                fill
-                className="object-cover object-center opacity-[0.09]"
-                sizes="(max-width: 896px) 100vw, 896px"
-              />
-            </div>
-            <div className="relative z-10 flex flex-col items-center text-center gap-3 sm:gap-4">
+            <div className="flex flex-col items-center text-center gap-3 sm:gap-4">
               <h2
                 id="standort-teaser-heading"
                 className="text-lg font-extrabold text-[#0F4F68] sm:text-xl w-full"

@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { getStandortBySlug, STANDORT_LEISTUNGEN } from "@/config/standorte";
@@ -30,21 +29,9 @@ export default async function StandortSlugPage({ params }: Props) {
 
   return (
     <article
-      className="relative min-h-[60vh] w-full max-w-3xl mx-auto overflow-hidden px-4 sm:px-6 py-10 sm:py-14"
+      className="min-h-[60vh] w-full max-w-3xl mx-auto px-4 sm:px-6 py-10 sm:py-14"
       style={{ backgroundColor: "#fafbfc" }}
     >
-      <div className="pointer-events-none absolute inset-0 z-0" aria-hidden>
-        <Image
-          src="/images/Wangen.webp"
-          alt=""
-          fill
-          className="object-cover object-center opacity-[0.08]"
-          sizes="(max-width: 768px) 100vw, 768px"
-        />
-        <div className="absolute inset-0 bg-[#fafbfc]/88" aria-hidden />
-      </div>
-
-      <div className="relative z-10">
       <nav className="mb-8" aria-label="Breadcrumb">
         <ol className="flex flex-wrap items-center gap-2 text-sm text-neutral-600">
           <li>
@@ -121,7 +108,6 @@ export default async function StandortSlugPage({ params }: Props) {
           Zurück zur Standortsuche
         </Link>
       </p>
-      </div>
     </article>
   );
 }
