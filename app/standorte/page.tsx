@@ -121,7 +121,7 @@ export default function StandortePage() {
         </div>
       </div>
 
-      {/* Intro-Text zu Leistungen – Bild links (ca. 50 % der früheren Teaser-Größe), Text rechts */}
+      {/* Intro-Text zu Leistungen – Bild links ohne Rahmen, leicht nach rechts gedreht, Text rechts */}
       <section className="mt-12 sm:mt-16 w-full max-w-4xl mx-auto px-4 sm:px-6">
         <div className="mb-6 sm:mb-8" aria-hidden />
         <div className="flex flex-row items-start gap-4 sm:items-center sm:gap-6 lg:gap-8">
@@ -132,17 +132,18 @@ export default function StandortePage() {
                 "drop-shadow(0 4px 12px rgba(15, 79, 104, 0.16)) drop-shadow(0 2px 4px rgba(15, 79, 104, 0.1))",
             }}
           >
+            {/* Kein weißer Rahmen/Hintergrund; Drehung nach rechts (im Uhrzeigersinn); 50 % größer als zuvor 140px → 210px */}
             <div
-              className="rotate-[2.5deg] rounded-[1.1rem] bg-white p-1 ring-2 ring-white"
-              style={{ transformOrigin: "center center", width: "140px" }}
+              className="rotate-[7deg] overflow-hidden rounded-xl"
+              style={{ transformOrigin: "center center", width: "210px" }}
             >
-              <div className="relative aspect-[4/5] w-full overflow-hidden rounded-xl">
+              <div className="relative aspect-[4/5] w-full">
                 <Image
                   src="/images/Testbild.webp"
                   alt="Betreuung und Zuwendung: Team Alltagshilfe-Süd mit Seniorin im Freien"
                   fill
                   className="object-cover object-center"
-                  sizes="140px"
+                  sizes="210px"
                   priority={false}
                 />
               </div>
