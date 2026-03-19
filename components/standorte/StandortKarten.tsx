@@ -18,8 +18,8 @@ export type StandortKarte = {
   imageAlt?: string;
 };
 
-/** Kontaktdaten laut Standortlisten.pdf (Hauptstandorte). */
-const WANGEN_IMAGE = "/images/Wangen.webp";
+/** Gemeinsames Motiv für alle Standort-Karten (früher Wangen.webp / standort_gemeinsam). */
+const STANDORT_CARD_BILD = "/images/Testbild.webp";
 
 const STANDORTE: StandortKarte[] = [
   {
@@ -44,7 +44,7 @@ const STANDORTE: StandortKarte[] = [
       "Oberstdorf",
       "u. a.",
     ],
-    imageSrc: WANGEN_IMAGE,
+    imageSrc: STANDORT_CARD_BILD,
     imageAlt: "Standort Allgäu",
   },
   {
@@ -67,7 +67,7 @@ const STANDORTE: StandortKarte[] = [
       "Tettnang",
       "u. a.",
     ],
-    imageSrc: WANGEN_IMAGE,
+    imageSrc: STANDORT_CARD_BILD,
     imageAlt: "Standort Wangen im Allgäu",
   },
   {
@@ -89,7 +89,7 @@ const STANDORTE: StandortKarte[] = [
       "Mering",
       "u. a.",
     ],
-    imageSrc: WANGEN_IMAGE,
+    imageSrc: STANDORT_CARD_BILD,
     imageAlt: "Standort Augsburg",
   },
   {
@@ -110,7 +110,7 @@ const STANDORTE: StandortKarte[] = [
       "Pfullendorf",
       "u. a.",
     ],
-    imageSrc: WANGEN_IMAGE,
+    imageSrc: STANDORT_CARD_BILD,
     imageAlt: "Standort Engen/Konstanz",
   },
 ];
