@@ -90,8 +90,7 @@ const STANDORTE_INTRO = {
 
 /** Intro neben standort_gemeinsam */
 const STANDORTE_LEISTUNGEN_INTRO = {
-  heading:
-    "Mit Herz und viel Einfühlungsvermögen sind wir in Süddeutschland für Sie da.",
+  heading: "Mit viel Herz und Engagement sind wir in Süddeutschland für Sie da.",
   text: "Wir begleiten Sie zuverlässig in den Bereichen Haushaltshilfe, Betreuung und Pflegeberatung und stehen Ihnen in jeder Lebenssituation unterstützend zur Seite. Bei uns finden Sie passende Hilfe aus einer Hand, persönlich, vertrauensvoll und mit dem Blick auf das, was Ihnen wirklich wichtig ist.",
 };
 
@@ -145,38 +144,14 @@ export default function StandortePage() {
       {/* Strukturlinie Anthrazit (~2/3 Breite), über Bereich mit standort_gemeinsam */}
       <StandortAnthrazitRule className="mt-8 sm:mt-10" />
 
-      {/* Gleiches lg-Layout wie Hero: Bild-Spalte wie Karte, Text-Spalte wie Sidebar → H2 bündig mit H1 */}
+      {/* Wie Hero: nur 2 Spalten + ein lg:gap-10 → H2 bündig mit H1 (kein extra Flex-Kind dazwischen) */}
       <section className="mt-6 w-full sm:mt-8">
-        <div className="flex flex-col sm:flex-row sm:items-stretch lg:gap-10">
-          <StandortNummerEinsReveal className="order-1 w-full min-w-0 px-4 sm:px-6 sm:order-3 lg:order-3 lg:flex-1 lg:max-w-lg lg:self-start lg:px-8">
-            <h2 className={HEADING_CLASS}>
-              {STANDORTE_LEISTUNGEN_INTRO.heading}
-            </h2>
-            <p className="text-neutral-700 leading-relaxed">
-              {STANDORTE_LEISTUNGEN_INTRO.text}
-            </p>
-          </StandortNummerEinsReveal>
-
-          {/* Mobil: Linie zwischen Text und Bild */}
+        <div className="flex flex-col sm:flex-row sm:items-stretch sm:gap-8 lg:gap-10">
+          {/* Bild links (Desktop); Trennlinie am Text per border-l statt eigener Spalte */}
           <div
-            className="order-2 my-3 h-px w-full shrink-0 bg-gradient-to-r from-transparent via-[#0F4F68]/22 to-transparent sm:hidden"
-            role="presentation"
-          />
-
-          {/* Desktop: vertikale Linie Bild ↔ Text */}
-          <div
-            className="mx-2 hidden min-h-[10rem] w-px shrink-0 self-stretch bg-gradient-to-b from-transparent via-[#0F4F68]/28 to-transparent sm:mx-4 sm:order-2 sm:block lg:order-2"
-            aria-hidden
-          />
-
-          {/* Bild-Spalte: wie Karten-Spalte (links), weiter nach links / ohne überzähliges Padding ab lg */}
-          <div
-            className="order-3 flex w-full max-w-full justify-center pb-5 pt-1 sm:order-1 lg:order-1 lg:w-[50%] lg:max-w-3xl lg:shrink-0 lg:justify-start lg:pb-10 lg:pr-4 lg:pt-2 sm:px-4 lg:px-0"
+            className="order-3 flex w-full max-w-full justify-center pb-5 pt-1 sm:order-1 lg:order-1 lg:w-[50%] lg:max-w-3xl lg:shrink-0 lg:justify-center lg:px-6 lg:pb-10 lg:pt-2 sm:px-4"
           >
-            <div
-              className="px-1 sm:px-0"
-              style={{ width: "min(546px, calc(100vw - 3rem))" }}
-            >
+            <div style={{ width: "min(546px, calc(100vw - 3rem))" }}>
               <div className="relative aspect-[1301/1535] w-full">
                 <Image
                   src="/images/standort_gemeinsam.webp"
@@ -190,6 +165,21 @@ export default function StandortePage() {
               </div>
             </div>
           </div>
+
+          {/* Mobil: Linie zwischen Bild und Text */}
+          <div
+            className="order-2 my-3 h-px w-full shrink-0 bg-gradient-to-r from-transparent via-[#0F4F68]/22 to-transparent sm:hidden"
+            role="presentation"
+          />
+
+          <StandortNummerEinsReveal className="order-1 w-full min-w-0 px-4 sm:order-2 sm:px-6 sm:shadow-[inset_1px_0_0_rgba(15,79,104,0.18)] lg:order-2 lg:flex-1 lg:max-w-lg lg:self-start lg:px-8 lg:shadow-[inset_1px_0_0_rgba(15,79,104,0.22)]">
+            <h2 className={HEADING_CLASS}>
+              {STANDORTE_LEISTUNGEN_INTRO.heading}
+            </h2>
+            <p className="text-neutral-700 leading-relaxed">
+              {STANDORTE_LEISTUNGEN_INTRO.text}
+            </p>
+          </StandortNummerEinsReveal>
         </div>
       </section>
 
