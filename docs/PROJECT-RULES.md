@@ -87,6 +87,7 @@ Diese Datei ist die verbindliche Referenz für Architektur, Tech-Stack, Seitenst
 - **lib/**: rate-limit.ts, security.ts, utils.ts.
 - **content/**: pages, leistungen, landing, blog, faq, site.json.
 - **config/**: site.ts, navigation.ts, features.ts.
+- **config/standorte.ts** + **config/standorte-plz-generated.json**: PLZ-Zuordnung zu den vier Hauptstandorten (Quelle: `public/Standortlisten.pdf`). PLZ-Suche (Standorte, Kontakt-Popup) nutzt `findStandortByPlz`. Bei aktualisierter PDF-Liste: PDF-Text extrahieren (`npx pdf-parse text public/Standortlisten.pdf`), in `scripts/standortlisten-extract.txt` speichern (UTF-8 empfohlen), dann `node scripts/parse-standort-pdf-text.js --ts` ausführen – überschreibt `standorte-plz-generated.json`.
 - **middleware.ts**: Security-Headers, ggf. Rate-Limit-Route.
 
 ---

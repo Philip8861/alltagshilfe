@@ -38,3 +38,6 @@ coverage
 # Misc
 .DS_Store
 *.pem
+
+# Lokale PDF-Text-Extrakte (UTF-16 von Windows-Redirect; nicht committen)
+scripts/standortlisten-extract.txt

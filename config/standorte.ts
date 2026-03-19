@@ -1,7 +1,9 @@
 /**
- * Standorte nach PLZ – für PLZ-Finder im Kontaktbereich.
- * PLZ-Bereiche können Sie hier ergänzen.
+ * Standorte nach PLZ – aus Standortlisten.pdf.
+ * PLZ-Suche (Standort suchen, Kontakt-Popup) und findStandortByPlz nutzen diese Daten.
  */
+import plzByStandort from "./standorte-plz-generated.json";
+
 export interface Standort {
   name: string;
   address: string;
@@ -11,30 +13,40 @@ export interface Standort {
   plzList: string[];
 }
 
+const HOURS = "Mo–Do 08:30–16:00 Uhr, Fr 08:30–12:00 Uhr";
+
 export const standorteByPlz: Standort[] = [
   {
-    name: "Memmingen & Umgebung",
-    address: "Hauptstandort Memmingen",
+    name: "Standort Allgäu",
+    address: "Hinter den Gärten 10, 87730 Bad Grönenbach",
     phone: "08334 / 9893330",
     phoneHref: "tel:+4983349893330",
-    hours: "Mo–Do 08:30–16:00 Uhr, Fr 08:30–12:00 Uhr",
-    plzList: ["87700", "87719", "87724", "87727", "87734", "87736", "87739", "87743", "87746", "87749", "87751", "87754", "87757", "87760", "87763", "87764", "87767", "87770", "87772", "87775", "87776", "87778", "87779", "87781", "87784", "87785", "87787", "87789"],
+    hours: HOURS,
+    plzList: (plzByStandort as Record<string, string[]>)["Allgäu"] ?? [],
   },
   {
-    name: "Mindelheim",
-    address: "Standort Mindelheim",
-    phone: "08334 / 9893330",
-    phoneHref: "tel:+4983349893330",
-    hours: "Mo–Do 08:30–16:00 Uhr, Fr 08:30–12:00 Uhr",
-    plzList: ["87719", "87740", "87742", "87745", "87747", "87748", "87753", "87755", "87756", "87758", "87761", "87765", "87766", "87768", "87769", "87773", "87786"],
+    name: "Wangen (Bodenseeregion)",
+    address: "Karlstraße 3, 88239 Wangen im Allgäu",
+    phone: "07522 / 9151686",
+    phoneHref: "tel:+4975229151686",
+    hours: HOURS,
+    plzList: (plzByStandort as Record<string, string[]>)["Wangen"] ?? [],
   },
   {
-    name: "Kaufbeuren & Ostallgäu",
-    address: "Standort Kaufbeuren",
+    name: "Standort Augsburg",
+    address: "Ulmer Straße 160, 86156 Augsburg",
+    phone: "0821 / 48046200",
+    phoneHref: "tel:+4982148046200",
+    hours: HOURS,
+    plzList: (plzByStandort as Record<string, string[]>)["Augsburg"] ?? [],
+  },
+  {
+    name: "Standort Engen/Konstanz",
+    address: "Robert-Bosch-Straße 1, 78234 Engen",
     phone: "08334 / 9893330",
     phoneHref: "tel:+4983349893330",
-    hours: "Mo–Do 08:30–16:00 Uhr, Fr 08:30–12:00 Uhr",
-    plzList: ["87600", "87616", "87629", "87634", "87637", "87640", "87642", "87645", "87647", "87648", "87650", "87653", "87654", "87656", "87657", "87659", "87660", "87662", "87663", "87665", "87666", "87668", "87669", "87671", "87672", "87674", "87675", "87677", "87679", "87681", "87684", "87685", "87687", "87689", "87690", "87692", "87693", "87695", "87697", "87698"],
+    hours: HOURS,
+    plzList: (plzByStandort as Record<string, string[]>)["Engen/Konstanz"] ?? [],
   },
 ];
 
