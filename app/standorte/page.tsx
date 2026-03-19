@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { StandortSuche } from "@/components/standorte/StandortSuche";
+import { StandortTeaserMitBild } from "@/components/standorte/StandortTeaserMitBild";
 import { KartenMitKoordinatenErfassen } from "@/components/standorte/KartenMitKoordinatenErfassen";
 import {
   getStandortBySlug,
@@ -131,65 +131,17 @@ export default function StandortePage() {
         </p>
       </section>
 
-      {/* Beispiel-Standort: Optik wie „Standort suchen“ (Hellblau, Rand), Schatten in Dunkelblau – für spätere A–Z-PLZ-Liste */}
+      {/* Beispiel-Standort: gleiche Karten-Optik wie „Standort suchen“, Bild + Scroll-Animation */}
       {teaser && (
-        <section
-          className="mt-10 sm:mt-12 w-full max-w-4xl mx-auto px-4 sm:px-6"
-          aria-labelledby="standort-teaser-heading"
-        >
-          <div
-            className="w-full rounded-2xl border border-[#0F4F68]/15 bg-[#F2F9FA] px-6 py-6 sm:px-10 sm:py-8"
-            style={{
-              boxShadow:
-                "0 4px 14px rgba(15, 79, 104, 0.12), 0 10px 28px rgba(15, 79, 104, 0.1), 0 18px 44px rgba(15, 79, 104, 0.06)",
-            }}
-          >
-            <div className="flex flex-col items-center text-center gap-3 sm:gap-4">
-              <h2
-                id="standort-teaser-heading"
-                className="text-lg font-extrabold text-[#0F4F68] sm:text-xl w-full"
-              >
-                Haushaltshilfe & Alltagsbegleitung in {teaser.plz} {teaser.ort}
-              </h2>
-
-              <p className="flex flex-wrap items-center justify-center gap-x-2 gap-y-1 text-sm text-neutral-800">
-                {STANDORT_LEISTUNGEN.map((leistung, i) => (
-                  <span key={leistung} className="inline-flex items-center gap-1.5">
-                    {i > 0 && <span className="text-[#0F4F68]/50" aria-hidden>·</span>}
-                    <span className="inline-flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-[#F78F2E] text-white" aria-hidden>
-                      <svg className="h-2.5 w-2.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-                        <polyline points="20 6 9 17 4 12" />
-                      </svg>
-                    </span>
-                    <span>{leistung}</span>
-                  </span>
-                ))}
-              </p>
-
-              <div className="flex flex-col items-center gap-2 sm:flex-row sm:flex-wrap sm:justify-center sm:gap-x-6 text-sm">
-                <a
-                  href={teaser.standort.phoneHref}
-                  className="font-semibold text-[#0F4F68] hover:underline focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2 rounded"
-                >
-                  {teaser.standort.phone}
-                </a>
-                <a
-                  href={`mailto:${teaser.standort.email}`}
-                  className="break-all font-semibold text-[#0F4F68] hover:underline focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2 rounded"
-                >
-                  {teaser.standort.email}
-                </a>
-              </div>
-
-              <Link
-                href={`/standorte/${STANDORT_TEASER_SLUG}`}
-                className="mt-1 inline-flex w-full max-w-xs items-center justify-center rounded-xl bg-[#0F4F68] px-6 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[#0c3d52] focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2 focus:ring-offset-[#F2F9FA]"
-              >
-                Zum Standort
-              </Link>
-            </div>
-          </div>
-        </section>
+        <StandortTeaserMitBild
+          plz={teaser.plz}
+          ort={teaser.ort}
+          phone={teaser.standort.phone}
+          phoneHref={teaser.standort.phoneHref}
+          email={teaser.standort.email}
+          slug={STANDORT_TEASER_SLUG}
+          leistungen={STANDORT_LEISTUNGEN}
+        />
       )}
     </article>
   );
