@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import { StandortSuche } from "@/components/standorte/StandortSuche";
+import { StandortNummerEinsReveal } from "@/components/standorte/StandortNummerEinsReveal";
 import { StandortTeaserMitBild } from "@/components/standorte/StandortTeaserMitBild";
 import { KartenMitKoordinatenErfassen } from "@/components/standorte/KartenMitKoordinatenErfassen";
 import {
@@ -97,60 +98,89 @@ export default function StandortePage() {
 
   return (
     <article
-      className="min-h-[60vh] w-full max-w-[100vw] pt-0 pb-16 sm:pb-24 overflow-x-hidden -ml-4 sm:-ml-6 lg:-ml-8 pl-4 sm:pl-6 lg:pl-8"
+      className="min-h-[60vh] w-full max-w-[100vw] pt-0 pb-16 sm:pb-24 -ml-4 sm:-ml-6 lg:-ml-8 pl-4 sm:pl-6 lg:pl-8"
       style={{ backgroundColor: "#fafbfc" }}
     >
-      <div className="flex w-full flex-col gap-8 lg:flex-row lg:flex-nowrap lg:items-flex-start lg:justify-start lg:gap-10">
-        {/* Desktop: Karte links (order-1). Mobil: Karte unten (order-2). */}
-        <div className="relative w-full flex-none shrink-0 bg-transparent lg:w-[50%] lg:max-w-3xl lg:min-w-0 order-2 lg:order-1">
-          <KartenMitKoordinatenErfassen hauptmarker={HAUPTMARKER} punkte={PUNKTE} ortsLabels={ORTSLABELS} />
-        </div>
-        {/* Desktop: Text + Standortsuche rechts (order-2). Mobil: oben (order-1) – zuerst Text, dann Standortsuche. */}
-        <div className="w-full min-w-0 flex flex-col gap-6 lg:gap-8 pt-6 sm:pt-8 px-4 sm:px-6 lg:max-w-lg lg:flex-1 lg:px-8 order-1 lg:order-2">
-          <header className="space-y-3">
-            <h1 className="text-2xl font-bold text-[#0F4F68] sm:text-3xl">
-              {STANDORTE_INTRO.heading}
-            </h1>
-            <p className="text-neutral-700 leading-relaxed">
-              {STANDORTE_INTRO.text}
-            </p>
-          </header>
-          <div className="w-full max-w-md mx-auto lg:mx-0">
-            <StandortSuche />
+      {/* overflow-x nur hier: Karte/Suche – Schatten beim Intro-Bild darf nicht am article geclippt werden */}
+      <div className="w-full overflow-x-hidden">
+        <div className="flex w-full flex-col gap-8 lg:flex-row lg:flex-nowrap lg:items-flex-start lg:justify-start lg:gap-10">
+          {/* Desktop: Karte links (order-1). Mobil: Karte unten (order-2). */}
+          <div className="relative w-full flex-none shrink-0 bg-transparent lg:w-[50%] lg:max-w-3xl lg:min-w-0 order-2 lg:order-1">
+            <KartenMitKoordinatenErfassen hauptmarker={HAUPTMARKER} punkte={PUNKTE} ortsLabels={ORTSLABELS} />
+          </div>
+          {/* Desktop: Text + Standortsuche rechts (order-2). Mobil: oben (order-1) – zuerst Text, dann Standortsuche. */}
+          <div className="w-full min-w-0 flex flex-col gap-6 lg:gap-8 pt-6 sm:pt-8 px-4 sm:px-6 lg:max-w-lg lg:flex-1 lg:px-8 order-1 lg:order-2">
+            <header className="space-y-3">
+              <h1 className="text-2xl font-bold text-[#0F4F68] sm:text-3xl">
+                {STANDORTE_INTRO.heading}
+              </h1>
+              <p className="text-neutral-700 leading-relaxed">
+                {STANDORTE_INTRO.text}
+              </p>
+            </header>
+            <div className="w-full max-w-md mx-auto lg:mx-0">
+              <StandortSuche />
+            </div>
           </div>
         </div>
       </div>
 
-      {/* Intro: nur Bild (ohne schrägen Rahmen), Leitfarbe-Schatten; Text daneben oben bündig */}
-      <section className="mt-12 sm:mt-16 w-full max-w-4xl mx-auto px-4 sm:px-6">
-        <div className="mb-6 sm:mb-8" aria-hidden />
-        <div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:gap-8">
-          {/* Kein eigener Hintergrund/Schatten am Kasten – nur Foto, Schatten direkt am Bild (drop-shadow = entlang Alpha) */}
+      {/* Trennlinie zwischen Karte/Standortsuche und „Ihre Nummer 1 …“-Bereich */}
+      <div
+        className="relative mx-auto mt-10 max-w-4xl px-4 sm:mt-14 sm:px-6"
+        role="presentation"
+      >
+        <div
+          className="h-px w-full bg-gradient-to-r from-transparent via-[#0F4F68]/28 to-transparent"
+          aria-hidden
+        />
+        <span
+          className="pointer-events-none absolute left-1/2 top-1/2 block h-2 w-2 -translate-x-1/2 -translate-y-1/2 rotate-45 border border-[#0F4F68]/30 bg-[#fafbfc]"
+          aria-hidden
+        />
+      </div>
+
+      {/* Intro: Bild (+ Platz für Schatten), Trennlinie, Text mit Einblend-Animation */}
+      <section className="mt-10 w-full max-w-4xl mx-auto px-4 sm:mt-12 sm:px-6">
+        <div className="flex flex-col sm:flex-row sm:items-stretch">
+          {/* Kein overflow-hidden: drop-shadow darf überstehen; Padding = Reserve */}
           <div
-            className="shrink-0 max-w-full"
-            style={{ width: "min(451px, calc(100vw - 2.5rem))" }}
+            className="shrink-0 max-w-full pb-5 pt-1 px-3 sm:px-6 sm:pb-10 sm:pt-2"
+            style={{ width: "min(546px, calc(100vw - 3rem))" }}
           >
-            {/* Natürliches Seitenverhältnis 1301×1535, object-contain = nichts abschneiden (kein Scale-Crop) */}
-            <div className="relative aspect-[1301/1535] w-full overflow-hidden rounded-xl bg-transparent">
+            <div className="relative aspect-[1301/1535] w-full">
               <Image
                 src="/images/standort_gemeinsam.webp"
                 alt="Betreuung und Zuwendung: Team Alltagshilfe-Süd mit Seniorin im Freien"
                 fill
-                className="object-contain object-center [filter:drop-shadow(0_4px_16px_rgba(15,79,104,0.2))_drop-shadow(0_2px_6px_rgba(15,79,104,0.12))]"
-                sizes="(max-width: 640px) min(451px, 90vw), 451px"
+                className="rounded-xl object-contain object-center [filter:drop-shadow(0_6px_22px_rgba(15,79,104,0.24))_drop-shadow(0_3px_10px_rgba(15,79,104,0.12))]"
+                sizes="(max-width: 640px) min(546px, 88vw), 546px"
                 priority={false}
                 unoptimized
               />
             </div>
           </div>
-          <div className="min-w-0 flex-1 space-y-3 text-left">
-            <h2 className="text-xl font-bold text-[#0F4F68] sm:text-2xl">
+
+          {/* Mobil: Linie zwischen Bild und Text */}
+          <div
+            className="my-1 h-px w-full shrink-0 bg-gradient-to-r from-transparent via-[#0F4F68]/22 to-transparent sm:hidden"
+            role="presentation"
+          />
+
+          {/* Desktop: vertikale Linie Bild ↔ Text */}
+          <div
+            className="mx-3 hidden min-h-[10rem] w-px shrink-0 self-stretch bg-gradient-to-b from-transparent via-[#0F4F68]/28 to-transparent sm:mx-5 sm:block"
+            aria-hidden
+          />
+
+          <StandortNummerEinsReveal>
+            <h2 className="text-xl font-bold text-[#0F4F68] sm:text-2xl sm:pt-2">
               {STANDORTE_LEISTUNGEN_INTRO.heading}
             </h2>
             <p className="text-neutral-700 leading-relaxed">
               {STANDORTE_LEISTUNGEN_INTRO.text}
             </p>
-          </div>
+          </StandortNummerEinsReveal>
         </div>
       </section>
 
