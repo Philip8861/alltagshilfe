@@ -94,9 +94,12 @@ const STANDORTE_LEISTUNGEN_INTRO = {
   text: "Wir begleiten Sie zuverlässig in den Bereichen Haushaltshilfe, Betreuung und Pflegeberatung und stehen Ihnen in jeder Lebenssituation unterstützend zur Seite. Bei uns finden Sie passende Hilfe aus einer Hand, persönlich, vertrauensvoll und mit dem Blick auf das, was Ihnen wirklich wichtig ist.",
 };
 
-/** Größere Überschriften (wie früher h1); gleiche Breite für beide Intro-Titel */
+/** Intro-Überschriften eine Stufe größer */
 const HEADING_CLASS =
-  "text-2xl font-bold text-[#0F4F68] sm:text-3xl w-full max-w-lg self-start";
+  "text-3xl font-bold text-[#0F4F68] sm:text-4xl w-full max-w-lg self-start";
+
+/** Intro-Fließtext eine Stufe größer */
+const INTRO_BODY_CLASS = "text-lg text-neutral-700 leading-relaxed sm:text-xl";
 
 export default function StandortePage() {
   const teaser = getStandortBySlug(STANDORT_TEASER_SLUG);
@@ -119,7 +122,7 @@ export default function StandortePage() {
               <h1 className={HEADING_CLASS}>
                 {STANDORTE_INTRO.heading}
               </h1>
-              <p className="text-neutral-700 leading-relaxed">
+              <p className={INTRO_BODY_CLASS}>
                 {STANDORTE_INTRO.text}
               </p>
             </header>
@@ -146,45 +149,51 @@ export default function StandortePage() {
 
       {/* Wie Hero: nur 2 Spalten + ein lg:gap-10 → H2 bündig mit H1 (kein extra Flex-Kind dazwischen) */}
       <section className="mt-6 w-full sm:mt-8">
-        <div className="flex flex-col sm:flex-row sm:items-stretch sm:gap-8 lg:gap-10">
+        <div className="flex flex-col gap-6 sm:flex-row sm:items-stretch sm:gap-8 lg:gap-10">
           {/* Bild links (Desktop); Trennlinie am Text per border-l statt eigener Spalte */}
           <div
-            className="order-3 flex w-full max-w-full justify-center pb-5 pt-1 sm:order-1 lg:order-1 lg:w-[50%] lg:max-w-3xl lg:shrink-0 lg:justify-center lg:px-6 lg:pb-10 lg:pt-2 sm:px-4"
+            className="order-3 flex w-full max-w-full justify-center pb-2 pt-1 sm:order-1 lg:order-1 lg:w-[50%] lg:max-w-3xl lg:shrink-0 lg:justify-center lg:px-6 lg:pb-6 lg:pt-2 sm:px-4"
           >
-            <div style={{ width: "min(546px, calc(100vw - 3rem))" }}>
-              <div className="relative aspect-[1301/1535] w-full">
-                <Image
-                  src="/images/standort_gemeinsam.webp"
-                  alt="Betreuung und Zuwendung: Team Alltagshilfe-Süd mit Seniorin im Freien"
-                  fill
-                  className="rounded-xl object-contain object-center [filter:drop-shadow(0_6px_22px_rgba(15,79,104,0.24))_drop-shadow(0_3px_10px_rgba(15,79,104,0.12))]"
-                  sizes="(max-width: 640px) min(546px, 88vw), 546px"
-                  priority={false}
-                  unoptimized
+            <div
+              className="w-full max-w-full"
+              style={{ width: "min(546px, calc(100vw - 3rem))" }}
+            >
+              <div className="relative w-full">
+                <div className="relative z-20 aspect-[1301/1535] w-full overflow-hidden rounded-xl">
+                  <Image
+                    src="/images/standort_gemeinsam.webp"
+                    alt="Betreuung und Zuwendung: Team Alltagshilfe-Süd mit Seniorin im Freien"
+                    fill
+                    className="object-contain object-center [filter:drop-shadow(0_6px_22px_rgba(15,79,104,0.24))_drop-shadow(0_3px_10px_rgba(15,79,104,0.12))]"
+                    sizes="(max-width: 640px) min(546px, 88vw), 546px"
+                    priority={false}
+                    unoptimized
+                  />
+                  {/* Untere ~10 %: in Marken-Hellblau übergehen */}
+                  <div
+                    className="pointer-events-none absolute inset-x-0 bottom-0 z-[1] h-[10%] min-h-[12px] rounded-b-xl bg-gradient-to-t from-[#F2F9FA] via-[#F2F9FA]/75 to-transparent"
+                    aria-hidden
+                  />
+                </div>
+                {/* Hellblau zieht nach unten weiter; leicht unter das Bild geschoben = Überlappung */}
+                <div
+                  className="relative z-10 -mt-6 min-h-[3.5rem] w-full rounded-b-xl bg-[#F2F9FA] sm:-mt-8 sm:min-h-[4.5rem]"
+                  aria-hidden
                 />
               </div>
             </div>
           </div>
 
-          {/* Mobil: Linie zwischen Bild und Text */}
-          <div
-            className="order-2 my-3 h-px w-full shrink-0 bg-gradient-to-r from-transparent via-[#0F4F68]/22 to-transparent sm:hidden"
-            role="presentation"
-          />
-
-          <StandortNummerEinsReveal className="order-1 w-full min-w-0 px-4 sm:order-2 sm:px-6 sm:shadow-[inset_1px_0_0_rgba(15,79,104,0.18)] lg:order-2 lg:flex-1 lg:max-w-lg lg:self-start lg:px-8 lg:shadow-[inset_1px_0_0_rgba(15,79,104,0.22)]">
+          <StandortNummerEinsReveal className="order-1 w-full min-w-0 px-4 sm:order-2 sm:px-6 lg:order-2 lg:flex-1 lg:max-w-lg lg:self-start lg:px-8">
             <h2 className={HEADING_CLASS}>
               {STANDORTE_LEISTUNGEN_INTRO.heading}
             </h2>
-            <p className="text-neutral-700 leading-relaxed">
+            <p className={INTRO_BODY_CLASS}>
               {STANDORTE_LEISTUNGEN_INTRO.text}
             </p>
           </StandortNummerEinsReveal>
         </div>
       </section>
-
-      {/* Strukturlinie vor dem folgenden Standort-Teaser */}
-      {teaser && <StandortAnthrazitRule className="mt-12 sm:mt-14" />}
 
       {/* Beispiel-Standort: gleiche Karten-Optik wie „Standort suchen“, Bild + Scroll-Animation */}
       {teaser && (
