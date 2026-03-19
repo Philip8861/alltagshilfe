@@ -3,6 +3,7 @@
  * PLZ-Suche (Standort suchen, Kontakt-Popup) und findStandortByPlz nutzen diese Daten.
  */
 import standortePlzData from "./standorte-plz-generated.json";
+import standortePlzOverrides from "./standorte-plz-overrides.json";
 
 type StandortePlzJson = {
   Allgäu: string[];
@@ -14,6 +15,7 @@ type StandortePlzJson = {
 
 const data = standortePlzData as StandortePlzJson;
 const plzToOrt: Record<string, string> = data.plzToOrt ?? {};
+const plzOverrides: Record<string, string> = standortePlzOverrides as Record<string, string>;
 
 export interface Standort {
   name: string;
@@ -24,7 +26,8 @@ export interface Standort {
   plzList: string[];
 }
 
-const HOURS = "Mo–Do 08:30–16:00 Uhr, Fr 08:30–12:00 Uhr";
+const HOURS =
+  "Mo–Do: 08:30 – 12:00 und 13:00 – 16:00 Uhr · Freitag: 08:30 – 12:00 Uhr";
 
 export const standorteByPlz: Standort[] = [
   {
@@ -68,8 +71,9 @@ export function findStandortByPlz(plz: string): Standort | undefined {
   return standorteByPlz.find((s) => s.plzList.includes(normalized));
 }
 
-/** Ortsname zur PLZ (aus Standortlisten.pdf); für Anzeige „PLZ Ort“. */
+/** Ortsname zur PLZ (aus Standortlisten.pdf + optionale Overrides); für Anzeige „PLZ Ort“. */
 export function getOrtByPlz(plz: string): string | undefined {
   const normalized = plz.replace(/\D/g, "").slice(0, 5);
+  if (plzOverrides[normalized]) return plzOverrides[normalized];
   return plzToOrt[normalized];
 }

@@ -21,14 +21,31 @@ function extractPlz(block) {
   return [...plzSet].sort();
 }
 
-/** PLZ → Ortsname aus Zeilen wie "86498 – Kettershausen 87645 – Schwangau". */
+/**
+ * PLZ → Ortsname: Text *zwischen* zwei PLZ-Marken (nicht Regex bis zur nächsten PLZ),
+ * damit z. B. "87435 – Kempten 87663 – Lengenwang" korrekt wird:
+ * 87435→Kempten, 87663→Lengenwang (nicht 87435→Lengenwang).
+ */
 function extractPlzToOrt(block) {
   const plzToOrt = {};
-  const re = /\b(\d{5})\s+(?:[^\dA-Za-z]|.{2,})\s+([^\d\r\n]+?)(?=\s*\d{5}\s|\r?\n|$)/g;
-  let m;
-  while ((m = re.exec(block)) !== null) {
-    const ort = m[2].trim().replace(/\s+/g, " ");
-    if (ort) plzToOrt[m[1]] = ort;
+  const lines = block.split(/\r?\n/);
+  for (const line of lines) {
+    const plzRe = /\b(\d{5})\b/g;
+    const hits = [...line.matchAll(plzRe)];
+    if (hits.length === 0) continue;
+    for (let i = 0; i < hits.length; i++) {
+      const plz = hits[i][1];
+      const from = hits[i].index + 5;
+      const to = i + 1 < hits.length ? hits[i + 1].index : line.length;
+      let ort = line.slice(from, to).trim();
+      // Häufig im PDF-Text: „ÔÇô“ statt echtem Gedankenstrich (Encoding)
+      ort = ort.replace(/^ÔÇô\s*/, "");
+      ort = ort.replace(/^[\s\u2013\u2014\-\u2212\u00AD·.:]+/, "").trim();
+      ort = ort.replace(/^[^\p{L}]+/gu, "").trim();
+      ort = ort.replace(/\s+/g, " ");
+      if (!ort || !/[A-Za-zÄÖÜäöüß\u00C0-\u024F]/.test(ort)) continue;
+      plzToOrt[plz] = ort;
+    }
   }
   return plzToOrt;
 }

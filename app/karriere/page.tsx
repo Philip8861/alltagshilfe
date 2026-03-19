@@ -382,7 +382,7 @@ export default function KarrierePage() {
                 <div className="flex flex-wrap items-center gap-2">
                   <dt className="sr-only">Erreichbarkeit</dt>
                   <dd className="text-sm text-neutral-600">
-                    Mo–Do 08:30–16:00 Uhr, Fr 08:30–12:00 Uhr
+                    Mo–Do: 08:30 – 12:00 und 13:00 – 16:00 Uhr · Freitag: 08:30 – 12:00 Uhr
                   </dd>
                 </div>
               </dl>
