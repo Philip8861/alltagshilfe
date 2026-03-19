@@ -130,12 +130,13 @@ export default function StandortePage() {
             className="shrink-0 max-w-full"
             style={{ width: "min(451px, calc(100vw - 2.5rem))" }}
           >
-            <div className="relative aspect-[4/5] w-full overflow-hidden rounded-xl bg-transparent ring-0">
+            {/* Natürliches Seitenverhältnis 1301×1535, object-contain = nichts abschneiden (kein Scale-Crop) */}
+            <div className="relative aspect-[1301/1535] w-full overflow-hidden rounded-xl bg-transparent">
               <Image
                 src="/images/standort_gemeinsam.webp"
                 alt="Betreuung und Zuwendung: Team Alltagshilfe-Süd mit Seniorin im Freien"
                 fill
-                className="object-cover object-center scale-[1.12] [filter:drop-shadow(0_4px_16px_rgba(15,79,104,0.2))_drop-shadow(0_2px_6px_rgba(15,79,104,0.12))]"
+                className="object-contain object-center [filter:drop-shadow(0_4px_16px_rgba(15,79,104,0.2))_drop-shadow(0_2px_6px_rgba(15,79,104,0.12))]"
                 sizes="(max-width: 640px) min(451px, 90vw), 451px"
                 priority={false}
                 unoptimized
