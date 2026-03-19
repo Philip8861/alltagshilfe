@@ -94,8 +94,9 @@ const STANDORTE_LEISTUNGEN_INTRO = {
   text: "Wir begleiten Sie zuverlässig in den Bereichen Haushaltshilfe, Betreuung und Pflegeberatung und stehen Ihnen in jeder Lebenssituation unterstützend zur Seite. Bei uns finden Sie passende Hilfe aus einer Hand, persönlich, vertrauensvoll und mit dem Blick auf das, was Ihnen wirklich wichtig ist.",
 };
 
-/** Eine Überschriftengröße für alle Seitentitel auf dieser Seite */
-const HEADING_CLASS = "text-2xl font-bold text-[#0F4F68]";
+/** Größere Überschriften (wie früher h1); gleiche Breite für beide Intro-Titel */
+const HEADING_CLASS =
+  "text-2xl font-bold text-[#0F4F68] sm:text-3xl w-full max-w-lg self-start";
 
 export default function StandortePage() {
   const teaser = getStandortBySlug(STANDORT_TEASER_SLUG);
@@ -147,7 +148,7 @@ export default function StandortePage() {
       {/* Desktop: Bild | Linie | Text. Mobil: zuerst Text, Linie, dann Bild */}
       <section className="mt-10 w-full max-w-4xl mx-auto px-4 sm:mt-12 sm:px-6">
         <div className="flex flex-col sm:flex-row sm:items-stretch">
-          <StandortNummerEinsReveal className="order-1 sm:order-3 sm:pt-2">
+          <StandortNummerEinsReveal className="order-1 w-full min-w-0 sm:order-3">
             <h2 className={HEADING_CLASS}>
               {STANDORTE_LEISTUNGEN_INTRO.heading}
             </h2>
