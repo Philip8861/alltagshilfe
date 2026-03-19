@@ -131,17 +131,17 @@ export default function StandortePage() {
         </p>
       </section>
 
-      {/* Beispiel-Standort: platzsparend, dunkler Rahmen + Schatten wie Landkarte, für spätere A–Z-PLZ-Liste */}
+      {/* Beispiel-Standort: Optik wie „Standort suchen“ (Hellblau, Rand), Schatten in Dunkelblau – für spätere A–Z-PLZ-Liste */}
       {teaser && (
         <section
           className="mt-10 sm:mt-12 w-full max-w-4xl mx-auto px-4 sm:px-6"
           aria-labelledby="standort-teaser-heading"
         >
           <div
-            className="rounded-xl border-2 border-[#0F4F68] bg-white px-4 py-4 sm:px-5 sm:py-5"
+            className="w-full rounded-2xl border border-[#0F4F68]/15 bg-[#F2F9FA] px-6 py-6 sm:px-10 sm:py-8"
             style={{
               boxShadow:
-                "0 2px 8px rgba(15, 79, 104, 0.25), 0 4px 14px rgba(242, 249, 250, 1), 0 8px 24px rgba(242, 249, 250, 0.9), 0 12px 32px rgba(230, 245, 247, 0.85)",
+                "0 4px 14px rgba(15, 79, 104, 0.12), 0 10px 28px rgba(15, 79, 104, 0.1), 0 18px 44px rgba(15, 79, 104, 0.06)",
             }}
           >
             <div className="flex flex-col items-center text-center gap-3 sm:gap-4">
@@ -183,7 +183,7 @@ export default function StandortePage() {
 
               <Link
                 href={`/standorte/${STANDORT_TEASER_SLUG}`}
-                className="mt-1 inline-flex w-full max-w-xs items-center justify-center rounded-lg bg-[#0F4F68] px-6 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[#0c3d52] focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2"
+                className="mt-1 inline-flex w-full max-w-xs items-center justify-center rounded-xl bg-[#0F4F68] px-6 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[#0c3d52] focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2 focus:ring-offset-[#F2F9FA]"
               >
                 Zum Standort
               </Link>
