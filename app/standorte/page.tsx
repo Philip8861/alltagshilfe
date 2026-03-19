@@ -85,10 +85,10 @@ const STANDORTE_INTRO = {
   text: "Hier finden Sie Ihren passenden Ansprechpartner für eine zuverlässige, liebevolle Unterstützung ganz in Ihrer Nähe. Wir stehen Ihnen im Alltag gerne zur Seite.",
 };
 
-/** Intro-Text mittig unterhalb der Karte/Suche: Dienstleistungen & Nummer 1. */
+/** Intro-Text mittig unterhalb der Karte/Suche: Nummer 1, Herz & Kompetenz. */
 const STANDORTE_LEISTUNGEN_INTRO = {
-  heading: "Ihre Ansprechpartner für Haushaltshilfe & Pflege in Süddeutschland",
-  text: "Wir bieten Ihnen eine Vielzahl an Dienstleistungen an und sind Ihre Nummer 1, wenn es um Haushaltshilfe & Betreuung, Pflegeberatung und kostenfreie Pflegehilfsmittel geht. An unseren Standorten sind wir für Sie da – zuverlässig, persönlich und mit Herz. Nutzen Sie die Standortsuche und entdecken Sie Ihren Ansprechpartner vor Ort.",
+  heading: "Ihre Nummer 1 im Bereich Haushaltshilfe, Betreuung und Pflegeberatung in Süddeutschland.",
+  text: "Wir sind mit Herz und Kompetenz für Sie da und bieten Ihnen eine Vielzahl an individuellen Dienstleistungen aus einer Hand. Bei uns finden Sie genau das Angebot, das zu Ihrer persönlichen Situation passt.",
 };
 
 export default function StandortePage() {
@@ -120,8 +120,9 @@ export default function StandortePage() {
         </div>
       </div>
 
-      {/* Intro-Text zu Leistungen – mittig, unterhalb Karte/Suche */}
+      {/* Intro-Text zu Leistungen – mittig, unterhalb Karte/Suche, Abstand vor Überschrift */}
       <section className="mt-12 sm:mt-16 w-full max-w-3xl mx-auto px-4 sm:px-6 text-center">
+        <div className="mb-6 sm:mb-8" aria-hidden />
         <h2 className="text-xl font-bold text-[#0F4F68] sm:text-2xl mb-4">
           {STANDORTE_LEISTUNGEN_INTRO.heading}
         </h2>
@@ -130,73 +131,55 @@ export default function StandortePage() {
         </p>
       </section>
 
-      {/* Beispiel-Standort: kompakt, gerahmt, Link zur Unterseite */}
+      {/* Beispiel-Standort: platzsparend, dunkler Rahmen + Schatten wie Landkarte, für spätere A–Z-PLZ-Liste */}
       {teaser && (
         <section
-          className="mt-12 sm:mt-14 w-full max-w-xl mx-auto px-4 sm:px-6"
+          className="mt-10 sm:mt-12 w-full max-w-4xl mx-auto px-4 sm:px-6"
           aria-labelledby="standort-teaser-heading"
         >
-          <div className="relative overflow-hidden rounded-2xl border-2 border-[#0F4F68]/20 bg-white shadow-[0_12px_40px_-12px_rgba(15,79,104,0.18),0_0_0_1px_rgba(242,249,250,0.9)]">
-            <div className="absolute left-0 top-0 h-1.5 w-full bg-gradient-to-r from-[#0F4F68] via-[#0F4F68]/80 to-[#F78F2E]" aria-hidden />
-            <div className="p-6 sm:p-8 pt-8">
+          <div
+            className="rounded-xl border-2 border-[#0F4F68] bg-white px-4 py-4 sm:px-5 sm:py-4"
+            style={{
+              boxShadow:
+                "0 2px 8px rgba(15, 79, 104, 0.25), 0 4px 14px rgba(242, 249, 250, 1), 0 8px 24px rgba(242, 249, 250, 0.9), 0 12px 32px rgba(230, 245, 247, 0.85)",
+            }}
+          >
+            <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between sm:gap-x-4 sm:gap-y-2">
               <h2
                 id="standort-teaser-heading"
-                className="text-center text-xl font-bold text-[#0F4F68] sm:text-2xl"
+                className="text-lg font-bold text-[#0F4F68] sm:text-xl shrink-0"
               >
                 Haushaltshilfe in {teaser.plz} {teaser.ort}
               </h2>
-
-              <h3 className="mt-6 text-sm font-semibold uppercase tracking-wide text-[#0F4F68]/90">
-                Folgende Leistungen bieten wir hier an:
-              </h3>
-              <ul className="mt-3 space-y-2.5">
-                {STANDORT_LEISTUNGEN.map((leistung) => (
-                  <li key={leistung} className="flex items-start gap-3">
-                    <span
-                      className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#F78F2E] text-white"
-                      aria-hidden
-                    >
-                      <svg
-                        className="h-3.5 w-3.5"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="3"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      >
+              <p className="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-neutral-800 sm:flex-1 sm:justify-center sm:min-w-0">
+                {STANDORT_LEISTUNGEN.map((leistung, i) => (
+                  <span key={leistung} className="inline-flex items-center gap-1.5">
+                    {i > 0 && <span className="text-[#0F4F68]/50" aria-hidden>·</span>}
+                    <span className="inline-flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-[#F78F2E] text-white" aria-hidden>
+                      <svg className="h-2.5 w-2.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
                         <polyline points="20 6 9 17 4 12" />
                       </svg>
                     </span>
-                    <span className="text-neutral-800">{leistung}</span>
-                  </li>
+                    <span>{leistung}</span>
+                  </span>
                 ))}
-              </ul>
-
-              <div className="mt-6 rounded-xl border border-[#0F4F68]/12 bg-[#F2F9FA]/90 p-4 sm:p-5">
-                <p className="text-xs font-semibold uppercase tracking-wide text-[#0F4F68]/80">
-                  Kontakt
-                </p>
-                <div className="mt-3 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:gap-x-8 sm:gap-y-2">
-                  <a
-                    href={teaser.standort.phoneHref}
-                    className="text-lg font-bold text-[#0F4F68] hover:underline focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2 rounded"
-                  >
-                    {teaser.standort.phone}
-                  </a>
-                  <a
-                    href={`mailto:${teaser.standort.email}`}
-                    className="break-all text-base font-semibold text-[#0F4F68] hover:underline focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2 rounded"
-                  >
-                    {teaser.standort.email}
-                  </a>
-                </div>
-              </div>
-
-              <div className="mt-6 flex justify-center">
+              </p>
+              <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm sm:shrink-0">
+                <a
+                  href={teaser.standort.phoneHref}
+                  className="font-semibold text-[#0F4F68] hover:underline focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2 rounded"
+                >
+                  {teaser.standort.phone}
+                </a>
+                <a
+                  href={`mailto:${teaser.standort.email}`}
+                  className="break-all font-semibold text-[#0F4F68] hover:underline focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2 rounded"
+                >
+                  {teaser.standort.email}
+                </a>
                 <Link
                   href={`/standorte/${STANDORT_TEASER_SLUG}`}
-                  className="inline-flex w-full max-w-sm items-center justify-center rounded-xl bg-[#0F4F68] px-6 py-3.5 text-center font-semibold text-white shadow-sm transition-colors hover:bg-[#0c3d52] focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2 sm:w-auto sm:min-w-[200px]"
+                  className="inline-flex items-center justify-center rounded-lg bg-[#0F4F68] px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-[#0c3d52] focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2"
                 >
                   Zum Standort
                 </Link>
