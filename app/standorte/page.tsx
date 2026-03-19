@@ -132,19 +132,20 @@ export default function StandortePage() {
                 "drop-shadow(0 4px 12px rgba(15, 79, 104, 0.16)) drop-shadow(0 2px 4px rgba(15, 79, 104, 0.1))",
             }}
           >
-            {/* Kein weißer Rahmen/Hintergrund; Drehung nach rechts (im Uhrzeigersinn); 50 % größer als zuvor 140px → 210px */}
+            {/* 315px = nochmals 50 % größer als 210px; #fafbfc + unoptimized = Transparenz bleibt sichtbar (kein Schwarz durch Optimizer) */}
             <div
-              className="rotate-[7deg] overflow-hidden rounded-xl"
-              style={{ transformOrigin: "center center", width: "210px" }}
+              className="rotate-[7deg] overflow-hidden rounded-xl bg-[#fafbfc]"
+              style={{ transformOrigin: "center center", width: "315px" }}
             >
-              <div className="relative aspect-[4/5] w-full">
+              <div className="relative aspect-[4/5] w-full bg-[#fafbfc]">
                 <Image
                   src="/images/Testbild.webp"
                   alt="Betreuung und Zuwendung: Team Alltagshilfe-Süd mit Seniorin im Freien"
                   fill
-                  className="object-cover object-center"
-                  sizes="210px"
+                  className="object-contain object-center bg-[#fafbfc]"
+                  sizes="315px"
                   priority={false}
+                  unoptimized
                 />
               </div>
             </div>
