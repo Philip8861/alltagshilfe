@@ -150,13 +150,49 @@ export default function StandortePage() {
               </div>
             </div>
           </div>
-          <div className="min-w-0 flex-1 text-left">
-            <h2 className="text-xl font-bold text-[#0F4F68] sm:text-2xl mb-4">
-              {STANDORTE_LEISTUNGEN_INTRO.heading}
-            </h2>
-            <p className="text-neutral-700 leading-relaxed">
-              {STANDORTE_LEISTUNGEN_INTRO.text}
-            </p>
+          <div className="relative min-w-0 flex-1 overflow-visible text-left">
+            {/* Dekorativer Bogen (links → rechts) in Hellblau, mittig im Textblock */}
+            <svg
+              className="pointer-events-none absolute left-[-2%] top-1/2 z-0 h-[5.5rem] w-[104%] max-w-none -translate-y-1/2 sm:h-[6.5rem]"
+              viewBox="0 0 1000 140"
+              preserveAspectRatio="none"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              aria-hidden
+            >
+              <defs>
+                <filter id="standort-bogen-weich" x="-5%" y="-40%" width="110%" height="180%">
+                  <feGaussianBlur in="SourceAlpha" stdDeviation="2" result="blur" />
+                  <feOffset dx="0" dy="1" />
+                  <feMerge>
+                    <feMergeNode />
+                    <feMergeNode in="SourceGraphic" />
+                  </feMerge>
+                </filter>
+              </defs>
+              {/* leichte Kontur für Lesbarkeit auf #fafbfc */}
+              <path
+                d="M 0 88 Q 500 12 1000 88"
+                stroke="rgba(15, 79, 104, 0.07)"
+                strokeWidth="32"
+                strokeLinecap="round"
+              />
+              <path
+                d="M 0 88 Q 500 12 1000 88"
+                stroke="#F2F9FA"
+                strokeWidth="26"
+                strokeLinecap="round"
+                filter="url(#standort-bogen-weich)"
+              />
+            </svg>
+            <div className="relative z-10">
+              <h2 className="text-xl font-bold text-[#0F4F68] sm:text-2xl mb-4">
+                {STANDORTE_LEISTUNGEN_INTRO.heading}
+              </h2>
+              <p className="text-neutral-700 leading-relaxed">
+                {STANDORTE_LEISTUNGEN_INTRO.text}
+              </p>
+            </div>
           </div>
         </div>
       </section>
