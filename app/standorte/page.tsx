@@ -106,7 +106,7 @@ export default function StandortePage() {
 
   return (
     <article
-      className="min-h-[60vh] w-full max-w-[100vw] pt-0 pb-16 sm:pb-24 -ml-4 sm:-ml-6 lg:-ml-8 pl-4 sm:pl-6 lg:pl-8"
+      className="flex min-h-[60vh] w-full max-w-[100vw] flex-col pt-0 pb-0 -ml-4 sm:-ml-6 lg:-ml-8 pl-4 sm:pl-6 lg:pl-8"
       style={{ backgroundColor: "#fafbfc" }}
     >
       {/* overflow-x nur hier: Karte/Suche – Schatten beim Intro-Bild darf nicht am article geclippt werden */}
@@ -148,37 +148,26 @@ export default function StandortePage() {
       <StandortAnthrazitRule className="mt-8 sm:mt-10" />
 
       {/* Wie Hero: nur 2 Spalten + ein lg:gap-10 → H2 bündig mit H1 (kein extra Flex-Kind dazwischen) */}
-      <section className="mt-6 w-full sm:mt-8">
-        <div className="flex flex-col gap-6 sm:flex-row sm:items-stretch sm:gap-8 lg:gap-10">
+      <section className="relative z-10 mt-6 w-full sm:mt-8">
+        <div className="flex flex-col gap-6 sm:flex-row sm:items-start sm:gap-8 lg:gap-10">
           {/* Bild links (Desktop); Trennlinie am Text per border-l statt eigener Spalte */}
           <div
-            className="order-3 flex w-full max-w-full justify-center pb-2 pt-1 sm:order-1 lg:order-1 lg:w-[50%] lg:max-w-3xl lg:shrink-0 lg:justify-center lg:px-6 lg:pb-6 lg:pt-2 sm:px-4"
+            className="relative z-20 order-3 flex w-full max-w-full justify-center pb-2 pt-1 sm:order-1 lg:order-1 lg:w-[50%] lg:max-w-3xl lg:shrink-0 lg:justify-center lg:px-6 lg:pb-4 lg:pt-2 sm:px-4"
           >
             <div
               className="w-full max-w-full"
               style={{ width: "min(546px, calc(100vw - 3rem))" }}
             >
-              <div className="relative w-full">
-                <div className="relative z-20 aspect-[1301/1535] w-full overflow-hidden rounded-xl">
-                  <Image
-                    src="/images/standort_gemeinsam.webp"
-                    alt="Betreuung und Zuwendung: Team Alltagshilfe-Süd mit Seniorin im Freien"
-                    fill
-                    className="object-contain object-center [filter:drop-shadow(0_6px_22px_rgba(15,79,104,0.24))_drop-shadow(0_3px_10px_rgba(15,79,104,0.12))]"
-                    sizes="(max-width: 640px) min(546px, 88vw), 546px"
-                    priority={false}
-                    unoptimized
-                  />
-                  {/* Untere ~10 %: in Marken-Hellblau übergehen */}
-                  <div
-                    className="pointer-events-none absolute inset-x-0 bottom-0 z-[1] h-[10%] min-h-[12px] rounded-b-xl bg-gradient-to-t from-[#F2F9FA] via-[#F2F9FA]/75 to-transparent"
-                    aria-hidden
-                  />
-                </div>
-                {/* Hellblau zieht nach unten weiter; leicht unter das Bild geschoben = Überlappung */}
-                <div
-                  className="relative z-10 -mt-6 min-h-[3.5rem] w-full rounded-b-xl bg-[#F2F9FA] sm:-mt-8 sm:min-h-[4.5rem]"
-                  aria-hidden
+              {/* Box-Schatten (wie zuvor am Kasten), kein filter-Drop-Shadow am img */}
+              <div className="relative aspect-[1301/1535] w-full overflow-hidden rounded-xl [box-shadow:0_10px_36px_rgba(15,79,104,0.22),0_4px_18px_rgba(15,79,104,0.16),0_2px_8px_rgba(15,79,104,0.1)]">
+                <Image
+                  src="/images/standort_gemeinsam.webp"
+                  alt="Betreuung und Zuwendung: Team Alltagshilfe-Süd mit Seniorin im Freien"
+                  fill
+                  className="object-contain object-center"
+                  sizes="(max-width: 640px) min(546px, 88vw), 546px"
+                  priority={false}
+                  unoptimized
                 />
               </div>
             </div>
@@ -195,18 +184,23 @@ export default function StandortePage() {
         </div>
       </section>
 
-      {/* Beispiel-Standort: gleiche Karten-Optik wie „Standort suchen“, Bild + Scroll-Animation */}
-      {teaser && (
-        <StandortTeaserMitBild
-          plz={teaser.plz}
-          ort={teaser.ort}
-          phone={teaser.standort.phone}
-          phoneHref={teaser.standort.phoneHref}
-          email={teaser.standort.email}
-          slug={STANDORT_TEASER_SLUG}
-          leistungen={STANDORT_LEISTUNGEN}
-        />
-      )}
+      {/* Ab etwas unter dem Bild: volle Breite #F2F9FA bis Seitenende; -mt = Überlappung unter dem Foto */}
+      <div
+        className="relative z-0 -mx-4 -mt-10 min-h-[42vh] flex-1 bg-[#F2F9FA] px-4 pt-14 pb-20 sm:-mx-6 sm:-mt-14 sm:px-6 sm:pt-16 sm:pb-24 lg:-mx-8 lg:px-8 [&>section]:mt-0"
+      >
+        {/* Beispiel-Standort: gleiche Karten-Optik wie „Standort suchen“, Bild + Scroll-Animation */}
+        {teaser && (
+          <StandortTeaserMitBild
+            plz={teaser.plz}
+            ort={teaser.ort}
+            phone={teaser.standort.phone}
+            phoneHref={teaser.standort.phoneHref}
+            email={teaser.standort.email}
+            slug={STANDORT_TEASER_SLUG}
+            leistungen={STANDORT_LEISTUNGEN}
+          />
+        )}
+      </div>
     </article>
   );
 }
