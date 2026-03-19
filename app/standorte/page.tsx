@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { StandortSuche } from "@/components/standorte/StandortSuche";
-import { StandortKarten } from "@/components/standorte/StandortKarten";
 import { KartenMitKoordinatenErfassen } from "@/components/standorte/KartenMitKoordinatenErfassen";
 import { siteConfig } from "@/config/site";
 
@@ -80,6 +79,12 @@ const STANDORTE_INTRO = {
   text: "Hier finden Sie Ihren passenden Ansprechpartner für eine zuverlässige, liebevolle Unterstützung ganz in Ihrer Nähe. Wir stehen Ihnen im Alltag gerne zur Seite.",
 };
 
+/** Intro-Text mittig unterhalb der Karte/Suche: Dienstleistungen & Nummer 1. */
+const STANDORTE_LEISTUNGEN_INTRO = {
+  heading: "Ihre Ansprechpartner für Haushaltshilfe & Pflege in Süddeutschland",
+  text: "Wir bieten Ihnen eine Vielzahl an Dienstleistungen an und sind Ihre Nummer 1, wenn es um Haushaltshilfe & Betreuung, Pflegeberatung und kostenfreie Pflegehilfsmittel geht. An unseren Standorten sind wir für Sie da – zuverlässig, persönlich und mit Herz. Nutzen Sie die Standortsuche und entdecken Sie Ihren Ansprechpartner vor Ort.",
+};
+
 export default function StandortePage() {
   return (
     <article
@@ -107,10 +112,15 @@ export default function StandortePage() {
         </div>
       </div>
 
-      {/* Unsere 4 Standorte: unterhalb Landkarte und Standort suchen, mit Seitenabstand und reduzierter Breite */}
-      <div className="mt-10 sm:mt-12 w-full max-w-7xl mx-auto px-6 sm:px-8 lg:px-10">
-        <StandortKarten />
-      </div>
+      {/* Intro-Text zu Leistungen – mittig, unterhalb Karte/Suche */}
+      <section className="mt-12 sm:mt-16 w-full max-w-3xl mx-auto px-4 sm:px-6 text-center">
+        <h2 className="text-xl font-bold text-[#0F4F68] sm:text-2xl mb-4">
+          {STANDORTE_LEISTUNGEN_INTRO.heading}
+        </h2>
+        <p className="text-neutral-700 leading-relaxed">
+          {STANDORTE_LEISTUNGEN_INTRO.text}
+        </p>
+      </section>
     </article>
   );
 }
