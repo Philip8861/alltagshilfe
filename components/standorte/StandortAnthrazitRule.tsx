@@ -2,8 +2,8 @@
 
 import { useEffect, useId, useRef, useState } from "react";
 
-/** Dunkles Anthrazit, schlicht und lesbar auf #fafbfc */
-const ANTHRAZIT = "#3a4550";
+/** Sehr dezentes Anthrazit */
+const ANTHRAZIT = "#4a5568";
 
 type StandortAnthrazitRuleProps = {
   className?: string;
@@ -43,35 +43,33 @@ export function StandortAnthrazitRule({ className = "" }: StandortAnthrazitRuleP
   return (
     <div
       ref={ref}
-      className={`flex w-full justify-center px-4 sm:px-6 ${className}`.trim()}
+      className={`flex w-full justify-center px-4 sm:px-6 lg:px-8 ${className}`.trim()}
       aria-hidden
     >
       <div
         className={
-          "w-2/3 max-w-4xl origin-center transition-[opacity,transform] duration-[900ms] ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none " +
+          "w-2/3 max-w-3xl origin-center transition-[opacity,transform] duration-[750ms] ease-out motion-reduce:transition-none " +
           (visible
             ? "opacity-100 [transform:translateZ(0)_scaleX(1)]"
-            : "opacity-0 [transform:translateZ(0)_scaleX(0.88)]")
+            : "opacity-0 [transform:translateZ(0)_scaleX(0.96)]")
         }
       >
         <svg
-          viewBox="0 0 600 12"
-          className="block h-2.5 w-full sm:h-3"
+          viewBox="0 0 600 6"
+          className="block h-[3px] w-full sm:h-[4px]"
           preserveAspectRatio="none"
         >
           <defs>
             <linearGradient id={gradId} x1="0" y1="0" x2="1" y2="0">
               <stop offset="0%" stopColor={ANTHRAZIT} stopOpacity="0" />
-              <stop offset="10%" stopColor={ANTHRAZIT} stopOpacity="0.2" />
-              <stop offset="48%" stopColor={ANTHRAZIT} stopOpacity="0.65" />
-              <stop offset="52%" stopColor={ANTHRAZIT} stopOpacity="0.65" />
-              <stop offset="90%" stopColor={ANTHRAZIT} stopOpacity="0.2" />
+              <stop offset="12%" stopColor={ANTHRAZIT} stopOpacity="0.08" />
+              <stop offset="50%" stopColor={ANTHRAZIT} stopOpacity="0.22" />
+              <stop offset="88%" stopColor={ANTHRAZIT} stopOpacity="0.08" />
               <stop offset="100%" stopColor={ANTHRAZIT} stopOpacity="0" />
             </linearGradient>
           </defs>
-          {/* Linse: horizontal dünn → dicker → dünn */}
           <path
-            d="M 0 6 C 80 2.8 180 2.2 300 3.5 C 420 2.2 520 2.8 600 6 C 520 9.2 420 9.8 300 8.5 C 180 9.8 80 9.2 0 6 Z"
+            d="M 0 3 C 90 2.1 220 1.8 300 2.2 C 380 1.8 510 2.1 600 3 C 510 3.9 380 4.2 300 3.8 C 220 4.2 90 3.9 0 3 Z"
             fill={`url(#${gradId})`}
           />
         </svg>

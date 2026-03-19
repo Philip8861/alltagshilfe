@@ -115,8 +115,8 @@ export default function StandortePage() {
             <KartenMitKoordinatenErfassen hauptmarker={HAUPTMARKER} punkte={PUNKTE} ortsLabels={ORTSLABELS} />
           </div>
           {/* Desktop: Text + Standortsuche rechts (order-2). Mobil: oben (order-1) – zuerst Text, dann Standortsuche. */}
-          <div className="w-full min-w-0 flex flex-col gap-6 lg:gap-8 pt-6 sm:pt-8 px-4 sm:px-6 lg:max-w-lg lg:flex-1 lg:px-8 order-1 lg:order-2">
-            <header className="space-y-3">
+          <div className="w-full min-w-0 flex flex-col gap-6 lg:gap-8 pt-6 sm:pt-8 px-4 sm:px-6 lg:max-w-lg lg:flex-1 lg:px-8 lg:items-start order-1 lg:order-2">
+            <header className="space-y-3 w-full max-w-lg">
               <h1 className={HEADING_CLASS}>
                 {STANDORTE_INTRO.heading}
               </h1>
@@ -133,15 +133,11 @@ export default function StandortePage() {
 
       {/* Trennlinie zwischen Karte/Standortsuche und Leistungs-Intro */}
       <div
-        className="relative mx-auto mt-10 max-w-4xl px-4 sm:mt-14 sm:px-6"
+        className="mx-auto mt-10 w-full px-4 sm:mt-14 sm:px-6 lg:px-8"
         role="presentation"
       >
         <div
           className="h-px w-full bg-gradient-to-r from-transparent via-[#0F4F68]/28 to-transparent"
-          aria-hidden
-        />
-        <span
-          className="pointer-events-none absolute left-1/2 top-1/2 block h-2 w-2 -translate-x-1/2 -translate-y-1/2 rotate-45 border border-[#0F4F68]/30 bg-[#fafbfc]"
           aria-hidden
         />
       </div>
@@ -149,10 +145,10 @@ export default function StandortePage() {
       {/* Strukturlinie Anthrazit (~2/3 Breite), über Bereich mit standort_gemeinsam */}
       <StandortAnthrazitRule className="mt-8 sm:mt-10" />
 
-      {/* Desktop: Bild | Linie | Text. Mobil: zuerst Text, Linie, dann Bild */}
-      <section className="mt-6 w-full max-w-4xl mx-auto px-4 sm:mt-8 sm:px-6">
-        <div className="flex flex-col sm:flex-row sm:items-stretch">
-          <StandortNummerEinsReveal className="order-1 w-full min-w-0 sm:order-3">
+      {/* Gleiches lg-Layout wie Hero: Bild-Spalte wie Karte, Text-Spalte wie Sidebar → H2 bündig mit H1 */}
+      <section className="mt-6 w-full sm:mt-8">
+        <div className="flex flex-col sm:flex-row sm:items-stretch lg:gap-10">
+          <StandortNummerEinsReveal className="order-1 w-full min-w-0 px-4 sm:px-6 sm:order-3 lg:order-3 lg:flex-1 lg:max-w-lg lg:self-start lg:px-8">
             <h2 className={HEADING_CLASS}>
               {STANDORTE_LEISTUNGEN_INTRO.heading}
             </h2>
@@ -167,27 +163,31 @@ export default function StandortePage() {
             role="presentation"
           />
 
-          {/* Desktop: vertikale Linie Bild ↔ Text (nicht mobil, Order nur ab sm) */}
+          {/* Desktop: vertikale Linie Bild ↔ Text */}
           <div
-            className="mx-3 hidden min-h-[10rem] w-px shrink-0 self-stretch bg-gradient-to-b from-transparent via-[#0F4F68]/28 to-transparent sm:mx-5 sm:order-2 sm:block"
+            className="mx-2 hidden min-h-[10rem] w-px shrink-0 self-stretch bg-gradient-to-b from-transparent via-[#0F4F68]/28 to-transparent sm:mx-4 sm:order-2 sm:block lg:order-2"
             aria-hidden
           />
 
-          {/* Kein overflow-hidden: drop-shadow darf überstehen; Padding = Reserve */}
+          {/* Bild-Spalte: wie Karten-Spalte (links), weiter nach links / ohne überzähliges Padding ab lg */}
           <div
-            className="order-3 shrink-0 max-w-full pb-5 pt-1 px-3 sm:order-1 sm:px-6 sm:pb-10 sm:pt-2"
-            style={{ width: "min(546px, calc(100vw - 3rem))" }}
+            className="order-3 flex w-full max-w-full justify-center pb-5 pt-1 sm:order-1 lg:order-1 lg:w-[50%] lg:max-w-3xl lg:shrink-0 lg:justify-start lg:pb-10 lg:pr-4 lg:pt-2 sm:px-4 lg:px-0"
           >
-            <div className="relative aspect-[1301/1535] w-full">
-              <Image
-                src="/images/standort_gemeinsam.webp"
-                alt="Betreuung und Zuwendung: Team Alltagshilfe-Süd mit Seniorin im Freien"
-                fill
-                className="rounded-xl object-contain object-center [filter:drop-shadow(0_6px_22px_rgba(15,79,104,0.24))_drop-shadow(0_3px_10px_rgba(15,79,104,0.12))]"
-                sizes="(max-width: 640px) min(546px, 88vw), 546px"
-                priority={false}
-                unoptimized
-              />
+            <div
+              className="px-1 sm:px-0"
+              style={{ width: "min(546px, calc(100vw - 3rem))" }}
+            >
+              <div className="relative aspect-[1301/1535] w-full">
+                <Image
+                  src="/images/standort_gemeinsam.webp"
+                  alt="Betreuung und Zuwendung: Team Alltagshilfe-Süd mit Seniorin im Freien"
+                  fill
+                  className="rounded-xl object-contain object-center [filter:drop-shadow(0_6px_22px_rgba(15,79,104,0.24))_drop-shadow(0_3px_10px_rgba(15,79,104,0.12))]"
+                  sizes="(max-width: 640px) min(546px, 88vw), 546px"
+                  priority={false}
+                  unoptimized
+                />
+              </div>
             </div>
           </div>
         </div>
