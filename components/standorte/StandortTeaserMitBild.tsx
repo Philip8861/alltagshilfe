@@ -59,7 +59,7 @@ export function StandortTeaserMitBild({
         <div className="flex flex-col items-center text-center gap-3 sm:gap-4">
           <h2
             id="standort-teaser-heading"
-            className={`st-teaser-anim text-lg font-extrabold text-[#0F4F68] sm:text-xl w-full ${anim}`}
+            className={`st-teaser-anim text-2xl font-bold text-[#0F4F68] w-full ${anim}`}
           >
             Haushaltshilfe & Alltagsbegleitung in {plz} {ort}
           </h2>

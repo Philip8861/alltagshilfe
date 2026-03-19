@@ -87,11 +87,15 @@ const STANDORTE_INTRO = {
   text: "Hier finden Sie Ihren passenden Ansprechpartner für eine zuverlässige, liebevolle Unterstützung ganz in Ihrer Nähe. Wir stehen Ihnen im Alltag gerne zur Seite.",
 };
 
-/** Intro-Text mittig unterhalb der Karte/Suche: Nummer 1, Herz & Kompetenz. */
+/** Intro neben standort_gemeinsam */
 const STANDORTE_LEISTUNGEN_INTRO = {
-  heading: "Ihre Nummer 1 im Bereich Haushaltshilfe, Betreuung und Pflegeberatung in Süddeutschland.",
-  text: "Wir sind mit Herz und Kompetenz für Sie da und bieten Ihnen eine Vielzahl an individuellen Dienstleistungen aus einer Hand. Bei uns finden Sie genau das Angebot, das zu Ihrer persönlichen Situation passt.",
+  heading:
+    "Mit Herz und viel Einfühlungsvermögen sind wir in Süddeutschland für Sie da.",
+  text: "Wir begleiten Sie zuverlässig in den Bereichen Haushaltshilfe, Betreuung und Pflegeberatung und stehen Ihnen in jeder Lebenssituation unterstützend zur Seite. Bei uns finden Sie passende Hilfe aus einer Hand, persönlich, vertrauensvoll und mit dem Blick auf das, was Ihnen wirklich wichtig ist.",
 };
+
+/** Eine Überschriftengröße für alle Seitentitel auf dieser Seite */
+const HEADING_CLASS = "text-2xl font-bold text-[#0F4F68]";
 
 export default function StandortePage() {
   const teaser = getStandortBySlug(STANDORT_TEASER_SLUG);
@@ -111,7 +115,7 @@ export default function StandortePage() {
           {/* Desktop: Text + Standortsuche rechts (order-2). Mobil: oben (order-1) – zuerst Text, dann Standortsuche. */}
           <div className="w-full min-w-0 flex flex-col gap-6 lg:gap-8 pt-6 sm:pt-8 px-4 sm:px-6 lg:max-w-lg lg:flex-1 lg:px-8 order-1 lg:order-2">
             <header className="space-y-3">
-              <h1 className="text-2xl font-bold text-[#0F4F68] sm:text-3xl">
+              <h1 className={HEADING_CLASS}>
                 {STANDORTE_INTRO.heading}
               </h1>
               <p className="text-neutral-700 leading-relaxed">
@@ -125,7 +129,7 @@ export default function StandortePage() {
         </div>
       </div>
 
-      {/* Trennlinie zwischen Karte/Standortsuche und „Ihre Nummer 1 …“-Bereich */}
+      {/* Trennlinie zwischen Karte/Standortsuche und Leistungs-Intro */}
       <div
         className="relative mx-auto mt-10 max-w-4xl px-4 sm:mt-14 sm:px-6"
         role="presentation"
@@ -140,12 +144,33 @@ export default function StandortePage() {
         />
       </div>
 
-      {/* Intro: Bild (+ Platz für Schatten), Trennlinie, Text mit Einblend-Animation */}
+      {/* Desktop: Bild | Linie | Text. Mobil: zuerst Text, Linie, dann Bild */}
       <section className="mt-10 w-full max-w-4xl mx-auto px-4 sm:mt-12 sm:px-6">
         <div className="flex flex-col sm:flex-row sm:items-stretch">
+          <StandortNummerEinsReveal className="order-1 sm:order-3 sm:pt-2">
+            <h2 className={HEADING_CLASS}>
+              {STANDORTE_LEISTUNGEN_INTRO.heading}
+            </h2>
+            <p className="text-neutral-700 leading-relaxed">
+              {STANDORTE_LEISTUNGEN_INTRO.text}
+            </p>
+          </StandortNummerEinsReveal>
+
+          {/* Mobil: Linie zwischen Text und Bild */}
+          <div
+            className="order-2 my-3 h-px w-full shrink-0 bg-gradient-to-r from-transparent via-[#0F4F68]/22 to-transparent sm:hidden"
+            role="presentation"
+          />
+
+          {/* Desktop: vertikale Linie Bild ↔ Text (nicht mobil, Order nur ab sm) */}
+          <div
+            className="mx-3 hidden min-h-[10rem] w-px shrink-0 self-stretch bg-gradient-to-b from-transparent via-[#0F4F68]/28 to-transparent sm:mx-5 sm:order-2 sm:block"
+            aria-hidden
+          />
+
           {/* Kein overflow-hidden: drop-shadow darf überstehen; Padding = Reserve */}
           <div
-            className="shrink-0 max-w-full pb-5 pt-1 px-3 sm:px-6 sm:pb-10 sm:pt-2"
+            className="order-3 shrink-0 max-w-full pb-5 pt-1 px-3 sm:order-1 sm:px-6 sm:pb-10 sm:pt-2"
             style={{ width: "min(546px, calc(100vw - 3rem))" }}
           >
             <div className="relative aspect-[1301/1535] w-full">
@@ -160,27 +185,6 @@ export default function StandortePage() {
               />
             </div>
           </div>
-
-          {/* Mobil: Linie zwischen Bild und Text */}
-          <div
-            className="my-1 h-px w-full shrink-0 bg-gradient-to-r from-transparent via-[#0F4F68]/22 to-transparent sm:hidden"
-            role="presentation"
-          />
-
-          {/* Desktop: vertikale Linie Bild ↔ Text */}
-          <div
-            className="mx-3 hidden min-h-[10rem] w-px shrink-0 self-stretch bg-gradient-to-b from-transparent via-[#0F4F68]/28 to-transparent sm:mx-5 sm:block"
-            aria-hidden
-          />
-
-          <StandortNummerEinsReveal>
-            <h2 className="text-xl font-bold text-[#0F4F68] sm:text-2xl sm:pt-2">
-              {STANDORTE_LEISTUNGEN_INTRO.heading}
-            </h2>
-            <p className="text-neutral-700 leading-relaxed">
-              {STANDORTE_LEISTUNGEN_INTRO.text}
-            </p>
-          </StandortNummerEinsReveal>
         </div>
       </section>
 

@@ -3,10 +3,16 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
 
 /**
- * Blendet den „Ihre Nummer 1 …“-Block sanft von rechts ein (Richtung Bild links),
+ * Blendet den Intro-Text neben dem Bild sanft von rechts ein (Richtung Bild links),
  * sobald der Bereich ins Sichtfeld kommt. Respektiert prefers-reduced-motion.
  */
-export function StandortNummerEinsReveal({ children }: { children: ReactNode }) {
+export function StandortNummerEinsReveal({
+  children,
+  className = "",
+}: {
+  children: ReactNode;
+  className?: string;
+}) {
   const ref = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
 
@@ -35,7 +41,8 @@ export function StandortNummerEinsReveal({ children }: { children: ReactNode }) 
       className={
         "min-w-0 flex-1 space-y-3 text-left transition-[opacity,transform] duration-700 ease-out " +
         "motion-reduce:translate-x-0 motion-reduce:opacity-100 " +
-        (visible ? "opacity-100 translate-x-0" : "opacity-0 translate-x-8")
+        (visible ? "opacity-100 translate-x-0" : "opacity-0 translate-x-8") +
+        (className ? ` ${className}` : "")
       }
     >
       {children}

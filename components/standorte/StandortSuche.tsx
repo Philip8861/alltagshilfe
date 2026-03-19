@@ -70,7 +70,7 @@ export function StandortSuche() {
             </svg>
           </span>
           <div>
-            <h2 className="text-3xl font-bold tracking-tight text-[#0F4F68] sm:text-[2rem]">
+            <h2 className="text-2xl font-bold text-[#0F4F68]">
               Standort suchen
             </h2>
             <p className="mt-1.5 text-lg text-neutral-600">
