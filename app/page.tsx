@@ -66,42 +66,43 @@ export default function HomePage() {
       </section>
 
       <section className="relative z-20 mt-10 w-full px-4 sm:mt-12 sm:px-6 lg:px-8">
-        <div className="mx-auto w-full max-w-6xl rounded-2xl border border-[#0F4F68]/12 bg-white/70 p-5 shadow-[0_10px_24px_rgba(15,79,104,0.06)] sm:p-7">
+        <div className="mx-auto w-full max-w-6xl rounded-3xl border border-[#f2c9a3]/35 bg-gradient-to-br from-[#fff7ef] via-[#fffaf4] to-white p-5 shadow-[0_12px_28px_rgba(120,78,45,0.10)] sm:p-7">
           <h2 className="text-2xl font-bold text-[#0F4F68] sm:text-3xl">Unsere Leistungen im Überblick</h2>
-          <div className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          <p className="mt-2 text-sm text-[#7c5a43] sm:text-base">Persoenlich, zuverlaessig und mit viel Herz im Alltag.</p>
+          <div className="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {LEISTUNGEN.map((leistung, index) => (
               <article
                 key={leistung.title}
-                className="rounded-xl border border-[#0F4F68]/12 bg-white px-4 py-4 opacity-0 shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md animate-fade-in-up"
+                className="rounded-2xl border border-[#e9c8a8]/60 bg-gradient-to-r from-white to-[#fff8f1] px-4 py-4 opacity-0 shadow-[0_6px_14px_rgba(120,78,45,0.08)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_10px_20px_rgba(120,78,45,0.13)] animate-fade-in-up"
                 style={{ animationDelay: `${0.06 * (index + 1)}s` }}
               >
                 <div className="flex items-start gap-3">
                   <span
-                    className="mt-0.5 inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#0F4F68]/10 text-[#0F4F68]"
+                    className="mt-0.5 inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#0F4F68] text-white shadow-sm"
                     aria-hidden
                   >
                     {leistung.icon === "home" && (
-                      <svg className="h-4 w-4" viewBox="0 0 24 24" fill="currentColor">
+                      <svg className="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
                         <path d="M12 3.2 3.5 10v10.3h6.2v-6.3h4.6v6.3h6.2V10L12 3.2z" />
                       </svg>
                     )}
                     {leistung.icon === "chat" && (
-                      <svg className="h-4 w-4" viewBox="0 0 24 24" fill="currentColor">
+                      <svg className="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
                         <path d="M4 4h16v11H7.6L4 18.6V4zm4 4v2h8V8H8zm0 4v2h5v-2H8z" />
                       </svg>
                     )}
                     {leistung.icon === "box" && (
-                      <svg className="h-4 w-4" viewBox="0 0 24 24" fill="currentColor">
+                      <svg className="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
                         <path d="M3 7.2 12 3l9 4.2v9.6L12 21l-9-4.2V7.2zm9 8.5 6.8-3.2V8.6L12 11.8 5.2 8.6v3.9l6.8 3.2z" />
                       </svg>
                     )}
                     {leistung.icon === "shield" && (
-                      <svg className="h-4 w-4" viewBox="0 0 24 24" fill="currentColor">
+                      <svg className="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
                         <path d="M12 2 4 5.2v6.1c0 5.1 3.4 9.8 8 10.7 4.6-.9 8-5.6 8-10.7V5.2L12 2zm-1 13.2-3-3 1.4-1.4 1.6 1.6 3.6-3.6 1.4 1.4-5 5z" />
                       </svg>
                     )}
                     {leistung.icon === "cart" && (
-                      <svg className="h-4 w-4" viewBox="0 0 24 24" fill="currentColor">
+                      <svg className="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
                         <path d="M7 4H4v2h1.3l2 9.1h9.6l1.7-6.8H8.5L8 6h12V4H7zm2 13a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm8 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4z" />
                       </svg>
                     )}
