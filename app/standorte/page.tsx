@@ -173,10 +173,29 @@ export default function StandortePage() {
         </div>
       </section>
 
-      {/* Übergang startet unter dem Bild und läuft bis zum Footer */}
+      {/* Übergang startet etwas höher, mit gebogener Oberkante und weichem Verlauf */}
       <div
-        className="relative z-0 -mx-4 -mt-4 min-h-[26vh] flex-1 bg-[#F2F9FA] px-4 pt-12 pb-20 sm:-mx-6 sm:-mt-6 sm:px-6 sm:pt-14 sm:pb-24 lg:-mx-8 lg:px-8"
-      />
+        className="relative z-0 -mx-4 -mt-[9%] min-h-[26vh] flex-1 bg-[#F2F9FA] px-4 pt-16 pb-20 sm:-mx-6 sm:pt-18 sm:pb-24 lg:-mx-8 lg:px-8"
+      >
+        {/* Gebogene Oberkante */}
+        <svg
+          className="pointer-events-none absolute left-0 top-0 h-12 w-full -translate-y-[70%] sm:h-16"
+          viewBox="0 0 1200 120"
+          preserveAspectRatio="none"
+          fill="none"
+          aria-hidden
+        >
+          <path
+            d="M0,120 C200,32 420,8 600,22 C800,38 1010,90 1200,120 L1200,120 L0,120 Z"
+            fill="#F2F9FA"
+          />
+        </svg>
+        {/* Weicher Übergang direkt unter der Kante */}
+        <div
+          className="pointer-events-none absolute left-0 top-0 h-10 w-full -translate-y-2 bg-gradient-to-b from-[#F2F9FA]/85 to-transparent"
+          aria-hidden
+        />
+      </div>
     </article>
   );
 }
