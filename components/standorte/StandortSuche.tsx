@@ -203,14 +203,6 @@ export function StandortSuche() {
                         Zum Standort
                       </Link>
                     </div>
-                    <div className="mt-3 flex justify-center">
-                      <Link
-                        href={`/kontakt?plz=${encodeURIComponent(plz.trim())}`}
-                        className="flex w-full items-center justify-center rounded-xl border border-[#0F4F68]/25 bg-white px-6 py-3 font-semibold text-[#0F4F68] transition-colors hover:bg-[#edf5f7] focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2"
-                      >
-                        Zum Kontaktformular
-                      </Link>
-                    </div>
                   </>
                 ) : (
                   <>
