@@ -3,13 +3,7 @@ import Image from "next/image";
 import { StandortSuche } from "@/components/standorte/StandortSuche";
 import { StandortAnthrazitRule } from "@/components/standorte/StandortAnthrazitRule";
 import { StandortNummerEinsReveal } from "@/components/standorte/StandortNummerEinsReveal";
-import { StandortTeaserMitBild } from "@/components/standorte/StandortTeaserMitBild";
 import { KartenMitKoordinatenErfassen } from "@/components/standorte/KartenMitKoordinatenErfassen";
-import {
-  getStandortBySlug,
-  STANDORT_LEISTUNGEN,
-  STANDORT_TEASER_SLUG,
-} from "@/config/standorte";
 import { siteConfig } from "@/config/site";
 
 export const metadata: Metadata = {
@@ -102,8 +96,6 @@ const HEADING_CLASS =
 const INTRO_BODY_CLASS = "text-lg text-neutral-700 leading-relaxed sm:text-xl";
 
 export default function StandortePage() {
-  const teaser = getStandortBySlug(STANDORT_TEASER_SLUG);
-
   return (
     <article
       className="flex min-h-[60vh] w-full max-w-[100vw] flex-col pt-0 pb-0 -ml-4 sm:-ml-6 lg:-ml-8 pl-4 sm:pl-6 lg:pl-8"
@@ -148,7 +140,7 @@ export default function StandortePage() {
       <StandortAnthrazitRule className="mt-8 sm:mt-10" />
 
       {/* Wie Hero: nur 2 Spalten + ein lg:gap-10 → H2 bündig mit H1 (kein extra Flex-Kind dazwischen) */}
-      <section className="relative z-10 mt-6 w-full sm:mt-8">
+      <section className="relative z-20 mt-6 w-full sm:mt-8">
         <div className="flex flex-col gap-6 sm:flex-row sm:items-start sm:gap-8 lg:gap-10">
           {/* Bild links (Desktop); Trennlinie am Text per border-l statt eigener Spalte */}
           <div
@@ -156,16 +148,16 @@ export default function StandortePage() {
           >
             <div
               className="w-full max-w-full"
-              style={{ width: "min(546px, calc(100vw - 3rem))" }}
+              style={{ width: "min(491px, calc(100vw - 3rem))" }}
             >
-              {/* Box-Schatten (wie zuvor am Kasten), kein filter-Drop-Shadow am img */}
-              <div className="relative aspect-[1301/1535] w-full overflow-hidden rounded-xl [box-shadow:0_10px_36px_rgba(15,79,104,0.22),0_4px_18px_rgba(15,79,104,0.16),0_2px_8px_rgba(15,79,104,0.1)]">
+              {/* Kein weißer Hintergrund; Schatten nur am Bildrahmen */}
+              <div className="relative aspect-[1301/1535] w-full overflow-visible rounded-xl [box-shadow:0_10px_36px_rgba(15,79,104,0.22),0_4px_18px_rgba(15,79,104,0.16),0_2px_8px_rgba(15,79,104,0.1)]">
                 <Image
                   src="/images/standort_gemeinsam.webp"
                   alt="Betreuung und Zuwendung: Team Alltagshilfe-Süd mit Seniorin im Freien"
                   fill
-                  className="object-contain object-center"
-                  sizes="(max-width: 640px) min(546px, 88vw), 546px"
+                  className="rounded-xl object-contain object-center"
+                  sizes="(max-width: 640px) min(491px, 88vw), 491px"
                   priority={false}
                   unoptimized
                 />
@@ -184,23 +176,10 @@ export default function StandortePage() {
         </div>
       </section>
 
-      {/* Ab etwas unter dem Bild: volle Breite #F2F9FA bis Seitenende; -mt = Überlappung unter dem Foto */}
+      {/* Übergang startet unter dem Bild und läuft bis zum Footer */}
       <div
-        className="relative z-0 -mx-4 -mt-10 min-h-[42vh] flex-1 bg-[#F2F9FA] px-4 pt-14 pb-20 sm:-mx-6 sm:-mt-14 sm:px-6 sm:pt-16 sm:pb-24 lg:-mx-8 lg:px-8 [&>section]:mt-0"
-      >
-        {/* Beispiel-Standort: gleiche Karten-Optik wie „Standort suchen“, Bild + Scroll-Animation */}
-        {teaser && (
-          <StandortTeaserMitBild
-            plz={teaser.plz}
-            ort={teaser.ort}
-            phone={teaser.standort.phone}
-            phoneHref={teaser.standort.phoneHref}
-            email={teaser.standort.email}
-            slug={STANDORT_TEASER_SLUG}
-            leistungen={STANDORT_LEISTUNGEN}
-          />
-        )}
-      </div>
+        className="relative z-0 -mx-4 -mt-6 min-h-[26vh] flex-1 bg-[#F2F9FA] px-4 pt-12 pb-20 sm:-mx-6 sm:-mt-8 sm:px-6 sm:pt-14 sm:pb-24 lg:-mx-8 lg:px-8"
+      />
     </article>
   );
 }
