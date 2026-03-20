@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { Container } from "@/components/layout/Container";
 import { siteConfig } from "@/config/site";
 import { HeaderNav } from "./HeaderNav";
@@ -20,16 +21,14 @@ export function Header({ nunitoClass = "", balooClass = "" }: HeaderProps) {
             className="-ml-4 flex shrink-0 focus:outline-none rounded sm:-ml-6 md:h-10 md:w-auto"
             aria-label={`${siteConfig.name} – Startseite`}
           >
-            <picture>
-              <source srcSet="/images/alltagshilfe-logo.eps" type="application/postscript" />
-              <img
-                src="/images/site/logo.png"
-                alt={siteConfig.name}
-                width={207}
-                height={53}
-                className="h-9 w-auto object-contain sm:h-10 md:h-[38px] lg:h-[42px]"
-              />
-            </picture>
+            <Image
+              src="/images/site/logo.png"
+              alt={siteConfig.name}
+              width={207}
+              height={53}
+              className="h-9 w-auto object-contain sm:h-10 md:h-[38px] lg:h-[42px]"
+              priority
+            />
           </Link>
           <div className="min-w-0 flex items-center justify-center md:justify-end">
             <HeaderNav />
