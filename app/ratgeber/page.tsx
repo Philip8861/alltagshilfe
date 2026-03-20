@@ -16,17 +16,17 @@ export default function RatgeberPage() {
           Ratgeber
         </h1>
         <p className="mt-4 max-w-3xl text-neutral-600">
-          Praxistipps, Erklaerungen und konkrete Hilfen rund um Pflege, Betreuung und Entlastung im Alltag.
+          Praxistipps, Erklärungen und konkrete Hilfen rund um Pflege, Betreuung und Entlastung im Alltag.
         </p>
 
         <section className="mt-10 grid grid-cols-1 gap-5 sm:grid-cols-2">
-          <article className="rounded-2xl border border-[#0F4F68]/12 bg-white p-5 shadow-sm transition-shadow hover:shadow-md">
+          <article className="rounded-2xl border border-[#efcba7]/40 bg-gradient-to-br from-white to-[#fff8f0] p-5 shadow-sm transition-shadow hover:shadow-md">
             <p className="text-xs font-semibold uppercase tracking-wide text-[#0F4F68]/80">Blog-Beitrag</p>
             <h2 className="mt-2 text-xl font-bold text-[#0F4F68]">
               Entlastungsbetrag 131 Euro: so nutzen Sie Ihren Anspruch richtig
             </h2>
             <p className="mt-3 text-sm leading-relaxed text-neutral-700">
-              Wer Anspruch hat, welche Leistungen bezahlt werden, wie lange ungenutzte Betraege gueltig sind und wie die
+              Wer Anspruch hat, welche Leistungen bezahlt werden, wie lange ungenutzte Beträge gültig sind und wie die
               Abrechnung mit der Pflegekasse funktioniert.
             </p>
             <Link
