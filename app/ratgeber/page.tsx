@@ -21,7 +21,7 @@ export default function RatgeberPage() {
 
         <section className="mt-10 grid grid-cols-1 gap-5 sm:grid-cols-2">
           <article className="rounded-2xl border border-[#0F4F68]/12 bg-white p-5 shadow-sm transition-shadow hover:shadow-md">
-            <p className="text-xs font-semibold uppercase tracking-wide text-[#0F4F68]/80">Neu</p>
+            <p className="text-xs font-semibold uppercase tracking-wide text-[#0F4F68]/80">Blog-Beitrag</p>
             <h2 className="mt-2 text-xl font-bold text-[#0F4F68]">
               Entlastungsbetrag 131 Euro: so nutzen Sie Ihren Anspruch richtig
             </h2>
