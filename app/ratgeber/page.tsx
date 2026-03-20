@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { Container } from "@/components/layout/Container";
 import { siteConfig } from "@/config/site";
@@ -21,6 +22,17 @@ export default function RatgeberPage() {
 
         <section className="mt-10 grid grid-cols-1 gap-5 sm:grid-cols-2">
           <article className="rounded-2xl border border-[#efcba7]/40 bg-gradient-to-br from-white to-[#fff8f0] p-5 shadow-sm transition-shadow hover:shadow-md">
+            <div className="mb-4 overflow-hidden rounded-xl border border-[#0F4F68]/12 bg-white">
+              <div className="relative aspect-[16/9]">
+                <Image
+                  src="/images/Ratgeber/ratgeber.webp"
+                  alt="Vorschaubild Entlastungsbetrag 131 Euro"
+                  fill
+                  className="object-cover transition-transform duration-500 hover:scale-[1.03]"
+                  sizes="(max-width: 640px) 100vw, 50vw"
+                />
+              </div>
+            </div>
             <p className="text-xs font-semibold uppercase tracking-wide text-[#0F4F68]/80">Blog-Beitrag</p>
             <h2 className="mt-2 text-xl font-bold text-[#0F4F68]">
               Entlastungsbetrag 131 Euro: so nutzen Sie Ihren Anspruch richtig

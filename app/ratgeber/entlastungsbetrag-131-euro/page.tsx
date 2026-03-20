@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { Container } from "@/components/layout/Container";
 import { siteConfig } from "@/config/site";
@@ -14,27 +15,49 @@ export default function EntlastungsbetragRatgeberPage() {
     <article className="py-14 sm:py-20">
       <Container className="max-w-4xl">
         <header className="rounded-2xl border border-[#efcba7]/45 bg-gradient-to-br from-[#fffaf4] via-white to-[#f7fbfc] p-5 sm:p-7">
-          <p className="text-sm font-semibold text-[#0F4F68]">Ratgeber-Beitrag</p>
-          <h1 className="mt-2 text-3xl font-bold leading-tight text-[#0F4F68] sm:text-4xl">
-            Entlastungsbetrag 131 Euro sinnvoll nutzen
-          </h1>
-          <p className="mt-4 text-base leading-relaxed text-neutral-700 sm:text-lg">
-            Pflegebedürftige Menschen mit Pflegegrad haben Anspruch auf den Entlastungsbetrag von 131 Euro pro Monat
-            (1.572 Euro pro Jahr). Dieser Beitrag erklärt kompakt, wie Sie den Betrag richtig einsetzen und worauf Sie
-            achten sollten.
-          </p>
-          <div className="mt-5 grid grid-cols-1 gap-3 text-sm sm:grid-cols-3">
-            <div className="rounded-xl border border-[#0F4F68]/12 bg-white/95 p-3 text-[#0F4F68] shadow-sm">
-              <p className="font-semibold">Monatlich</p>
-              <p className="mt-1 text-neutral-700">131 Euro</p>
+          <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1.15fr_0.85fr] lg:items-center">
+            <div>
+              <p className="text-sm font-semibold text-[#0F4F68]">Ratgeber-Beitrag</p>
+              <h1 className="mt-2 text-3xl font-bold leading-tight text-[#0F4F68] sm:text-4xl">
+                Entlastungsbetrag 131 Euro sinnvoll nutzen
+              </h1>
+              <p className="mt-4 text-base leading-relaxed text-neutral-700 sm:text-lg">
+                Pflegebedürftige Menschen mit Pflegegrad haben Anspruch auf den Entlastungsbetrag von 131 Euro pro Monat
+                (1.572 Euro pro Jahr). Dieser Beitrag erklärt kompakt, wie Sie den Betrag richtig einsetzen und worauf Sie
+                achten sollten.
+              </p>
+              <div className="mt-5 grid grid-cols-1 gap-3 text-sm sm:grid-cols-3">
+                <div className="rounded-xl border border-[#0F4F68]/12 bg-white/95 p-3 text-[#0F4F68] shadow-sm">
+                  <p className="font-semibold">Monatlich</p>
+                  <p className="mt-1 text-neutral-700">131 Euro</p>
+                </div>
+                <div className="rounded-xl border border-[#0F4F68]/12 bg-white/95 p-3 text-[#0F4F68] shadow-sm">
+                  <p className="font-semibold">Jährlich</p>
+                  <p className="mt-1 text-neutral-700">1.572 Euro</p>
+                </div>
+                <div className="rounded-xl border border-[#0F4F68]/12 bg-white/95 p-3 text-[#0F4F68] shadow-sm">
+                  <p className="font-semibold">Frist</p>
+                  <p className="mt-1 text-neutral-700">bis 30.06. Folgejahr</p>
+                </div>
+              </div>
             </div>
-            <div className="rounded-xl border border-[#0F4F68]/12 bg-white/95 p-3 text-[#0F4F68] shadow-sm">
-              <p className="font-semibold">Jährlich</p>
-              <p className="mt-1 text-neutral-700">1.572 Euro</p>
-            </div>
-            <div className="rounded-xl border border-[#0F4F68]/12 bg-white/95 p-3 text-[#0F4F68] shadow-sm">
-              <p className="font-semibold">Frist</p>
-              <p className="mt-1 text-neutral-700">bis 30.06. Folgejahr</p>
+            <div className="relative mx-auto w-full max-w-sm">
+              <div className="absolute -inset-2 -z-10 rounded-[1.6rem] bg-gradient-to-br from-[#0F4F68]/20 via-[#f4c89f]/25 to-transparent blur-md" />
+              <div className="relative overflow-hidden rounded-[1.4rem] border border-[#0F4F68]/12 bg-white p-2 shadow-[0_14px_28px_rgba(15,79,104,0.14)]">
+                <div className="relative aspect-[4/3] overflow-hidden rounded-[1rem]">
+                  <Image
+                    src="/images/Ratgeber/ratgeber.webp"
+                    alt="Ratgeber zur Entlastung im Pflegealltag"
+                    fill
+                    className="object-cover transition-transform duration-700 hover:scale-[1.03]"
+                    sizes="(max-width: 1024px) 100vw, 420px"
+                    priority
+                  />
+                </div>
+                <div className="pointer-events-none absolute right-4 top-4 rounded-full bg-white/95 px-3 py-1 text-xs font-semibold text-[#0F4F68] shadow-sm">
+                  Ratgeber
+                </div>
+              </div>
             </div>
           </div>
         </header>
