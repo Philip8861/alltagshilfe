@@ -1,9 +1,8 @@
 import type { Metadata } from "next";
 import { StandortSuche } from "@/components/standorte/StandortSuche";
 import { StandortAnthrazitRule } from "@/components/standorte/StandortAnthrazitRule";
-import { StandortNummerEinsReveal } from "@/components/standorte/StandortNummerEinsReveal";
-import { StandortWechselBild } from "@/components/standorte/StandortWechselBild";
 import { KartenMitKoordinatenErfassen } from "@/components/standorte/KartenMitKoordinatenErfassen";
+import { getAllStandortSlugs, getOrtByPlz } from "@/config/standorte";
 import { siteConfig } from "@/config/site";
 
 export const metadata: Metadata = {
@@ -82,12 +81,6 @@ const STANDORTE_INTRO = {
   text: "Hier finden Sie Ihren passenden Ansprechpartner für eine zuverlässige, liebevolle Unterstützung ganz in Ihrer Nähe. Wir stehen Ihnen im Alltag gerne zur Seite.",
 };
 
-/** Intro neben standort_gemeinsam */
-const STANDORTE_LEISTUNGEN_INTRO = {
-  heading: "Mit viel Herz und Engagement sind wir in Süddeutschland für Sie da.",
-  text: "Wir begleiten Sie zuverlässig in den Bereichen Haushaltshilfe, Betreuung und Pflegeberatung und stehen Ihnen in jeder Lebenssituation unterstützend zur Seite. Bei uns finden Sie passende Hilfe aus einer Hand, persönlich, vertrauensvoll und mit dem Blick auf das, was Ihnen wirklich wichtig ist.",
-};
-
 /** Intro-Überschriften eine Stufe größer */
 const HEADING_CLASS =
   "text-3xl font-bold text-[#0F4F68] sm:text-4xl w-full max-w-lg self-start";
@@ -96,6 +89,14 @@ const HEADING_CLASS =
 const INTRO_BODY_CLASS = "text-lg text-neutral-700 leading-relaxed sm:text-xl";
 
 export default function StandortePage() {
+  const regionen = getAllStandortSlugs()
+    .map(({ slug }) => {
+      const plz = slug.split("-")[0] ?? "";
+      const ort = getOrtByPlz(plz) ?? slug.replace(/^\d{5}-/, "").replace(/-/g, " ");
+      return { slug, plz, ort };
+    })
+    .sort((a, b) => a.ort.localeCompare(b.ort, "de", { sensitivity: "base" }));
+
   return (
     <article
       className="flex min-h-[60vh] w-full max-w-[100vw] flex-col pt-0 pb-0 -ml-4 sm:-ml-6 lg:-ml-8 pl-4 sm:pl-6 lg:pl-8"
@@ -139,37 +140,31 @@ export default function StandortePage() {
       {/* Strukturlinie Anthrazit (~2/3 Breite), über Bereich mit standort_gemeinsam */}
       <StandortAnthrazitRule className="mt-8 sm:mt-10" />
 
-      {/* Wie Hero: nur 2 Spalten + ein lg:gap-10 → H2 bündig mit H1 (kein extra Flex-Kind dazwischen) */}
-      <section className="relative z-20 mt-6 w-full sm:mt-8">
-        <div className="flex flex-col gap-6 sm:flex-row sm:items-start sm:gap-8 lg:gap-10">
-          {/* Bild links (Desktop); Trennlinie am Text per border-l statt eigener Spalte */}
-          <div
-            className="relative z-20 order-3 flex w-full max-w-full justify-center pb-2 pt-1 sm:order-1 lg:order-1 lg:w-[50%] lg:max-w-3xl lg:shrink-0 lg:justify-center lg:px-6 lg:pb-4 lg:pt-2 sm:px-4"
-          >
-            <div
-              className="w-full max-w-full"
-              style={{ width: "min(491px, calc(100vw - 3rem))" }}
-            >
-              {/* Schatten um das Motiv, ohne weißen Kasten im Hintergrund */}
-              <div
-                className="[filter:drop-shadow(0_10px_22px_rgba(15,79,104,0.2))_drop-shadow(0_4px_12px_rgba(15,79,104,0.12))]"
-              >
-                <StandortWechselBild
-                  alt="Betreuung und Zuwendung: Team Alltagshilfe-Süd mit Seniorin im Freien"
-                  sizes="(max-width: 640px) min(491px, 88vw), 491px"
-                />
-              </div>
-            </div>
-          </div>
-
-          <StandortNummerEinsReveal className="order-1 w-full min-w-0 px-4 sm:order-2 sm:px-6 lg:order-2 lg:flex-1 lg:max-w-lg lg:self-start lg:px-8">
-            <h2 className={HEADING_CLASS}>
-              {STANDORTE_LEISTUNGEN_INTRO.heading}
-            </h2>
-            <p className={INTRO_BODY_CLASS}>
-              {STANDORTE_LEISTUNGEN_INTRO.text}
-            </p>
-          </StandortNummerEinsReveal>
+      <section className="relative z-20 mt-8 w-full px-4 sm:mt-10 sm:px-6 lg:px-8">
+        <div className="mx-auto w-full max-w-5xl rounded-2xl border border-[#0F4F68]/12 bg-white/65 p-5 shadow-sm sm:p-7">
+          <h2 className="text-2xl font-bold text-[#0F4F68] sm:text-3xl">
+            Wir bieten Haushaltshilfe und Alltagsbegleitungen in folgenden Regionen an
+          </h2>
+          <p className="mt-2 text-sm text-neutral-600 sm:text-base">
+            Alphabetisch sortiert – klicken Sie auf eine Region, um direkt zur Standortseite zu gelangen.
+          </p>
+          <ul className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            {regionen.map((eintrag) => (
+              <li key={eintrag.slug}>
+                <a
+                  href={`/standorte/${eintrag.slug}`}
+                  className="group flex items-center justify-between rounded-xl border border-[#0F4F68]/15 bg-[#F2F9FA] px-4 py-3 text-left transition-colors hover:bg-[#e8f3f6] focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2"
+                >
+                  <span className="font-semibold text-[#0F4F68]">
+                    {eintrag.ort}
+                  </span>
+                  <span className="ml-3 rounded-md bg-white px-2 py-0.5 text-sm font-bold text-[#0F4F68] ring-1 ring-[#0F4F68]/12">
+                    {eintrag.plz}
+                  </span>
+                </a>
+              </li>
+            ))}
+          </ul>
         </div>
       </section>
 
