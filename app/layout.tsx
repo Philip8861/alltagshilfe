@@ -4,12 +4,12 @@ import "./globals.css";
 import { siteConfig } from "@/config/site";
 
 const nunitoSans = Nunito_Sans({
-  subsets: ["latin"],
+  subsets: ["latin", "latin-ext"],
   display: "swap",
 });
 
 const baloo2 = Baloo_2({
-  subsets: ["latin"],
+  subsets: ["latin", "latin-ext"],
   display: "swap",
 });
 
