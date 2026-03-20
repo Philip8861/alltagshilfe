@@ -148,9 +148,6 @@ export function StandortSuche() {
                     <h2 id="standort-popup-title" className="text-2xl font-bold text-[#0F4F68]">
                       Suchergebnis
                     </h2>
-                    <p id="standort-popup-desc" className="mt-1 text-sm text-neutral-600">
-                      Ihr Ansprechpartner für die gesuchte Region.
-                    </p>
                   </div>
                 </div>
                 <button
@@ -168,22 +165,16 @@ export function StandortSuche() {
               <div className="mt-6 rounded-xl border border-[#0F4F68]/20 bg-[#F2F9FA]/80 p-5">
                 {result ? (
                   <>
-                    <p className="text-sm font-semibold uppercase tracking-wide text-[#0F4F68]">
-                      Gesuchte Region
-                    </p>
                     {plz.trim() && (
-                      <p className="mt-1 text-base text-neutral-700 sm:text-lg">
+                      <p className="text-base font-semibold text-neutral-700 sm:text-lg">
                         {plz.trim()}
                         {getOrtByPlz(plz) ? ` ${getOrtByPlz(plz)}` : ""}
                       </p>
                     )}
-                    <p className="mt-3 text-xs font-semibold uppercase tracking-wide text-[#0F4F68]/85 sm:text-sm">
-                      Ihr Ansprechpartner
-                    </p>
-                    <p className="mt-1 truncate text-base font-bold text-[#0F4F68] sm:text-lg">
+                    <p className="mt-2 truncate text-base font-bold text-[#0F4F68] sm:text-lg">
                       {result.name.startsWith("Standort") ? result.name : `Standort ${result.name}`}
                     </p>
-                    <p className="mt-2 text-base text-neutral-700 sm:text-lg">{result.address}</p>
+                    <p className="mt-2 text-sm text-neutral-700 sm:text-base">{result.address}</p>
                     <a
                       href={result.phoneHref}
                       className="mt-3 inline-flex items-center gap-2 text-2xl font-extrabold text-[#0F4F68] hover:underline focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2 rounded"
@@ -193,7 +184,7 @@ export function StandortSuche() {
                       </svg>
                       {result.phone}
                     </a>
-                    <p className="mt-2 text-base text-neutral-700 sm:text-lg">{result.hours}</p>
+                    <p className="mt-2 text-sm text-neutral-700 sm:text-base">{result.hours}</p>
                     <div className="mt-4 flex justify-center">
                       <Link
                         href={

@@ -42,24 +42,18 @@ export default async function KontaktPage({
                   className="mt-5 rounded-xl border border-[#0F4F68]/20 bg-[#F2F9FA]/80 p-5 text-center opacity-0 animate-fade-in-up sm:p-6"
                   style={{ animationDelay: "0.15s" }}
                 >
-                  <p className="text-sm font-semibold uppercase tracking-wide text-[#0F4F68]">
-                    Gesuchte Region
-                  </p>
                   {selectedPlz && (
-                    <p className="mt-1 text-base text-neutral-700 sm:text-lg">
+                    <p className="text-base font-semibold text-neutral-700 sm:text-lg">
                       {selectedPlz}
                       {selectedOrt ? ` ${selectedOrt}` : ""}
                     </p>
                   )}
-                  <p className="mt-3 text-xs font-semibold uppercase tracking-wide text-[#0F4F68]/85 sm:text-sm">
-                    Ihr Ansprechpartner
-                  </p>
-                  <p className="mt-1 truncate text-base font-bold text-[#0F4F68] sm:text-lg">
+                  <p className="mt-2 truncate text-base font-bold text-[#0F4F68] sm:text-lg">
                     {selectedStandort.name.startsWith("Standort")
                       ? selectedStandort.name
                       : `Standort ${selectedStandort.name}`}
                   </p>
-                  <p className="mt-2 text-base text-neutral-700 sm:text-lg">{selectedStandort.address}</p>
+                  <p className="mt-2 text-sm text-neutral-700 sm:text-base">{selectedStandort.address}</p>
                   <a
                     href={selectedStandort.phoneHref}
                     className="mt-3 inline-flex items-center justify-center gap-2 text-2xl font-extrabold text-[#0F4F68] hover:underline focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2 rounded"
@@ -75,7 +69,7 @@ export default async function KontaktPage({
                     </svg>
                     {selectedStandort.phone}
                   </a>
-                  <p className="mt-2 text-base text-neutral-700 sm:text-lg">{selectedStandort.hours}</p>
+                  <p className="mt-2 text-sm text-neutral-700 sm:text-base">{selectedStandort.hours}</p>
                   <div className="mt-4 flex justify-center">
                     <Link
                       href={

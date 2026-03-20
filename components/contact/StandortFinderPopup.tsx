@@ -142,9 +142,6 @@ export function StandortFinderPopup() {
                   >
                     Standort finden
                   </h2>
-                  <p id="standort-finder-desc" className="mt-0.5 text-sm text-neutral-600">
-                    Postleitzahl eingeben – wir zeigen Ihren Ansprechpartner.
-                  </p>
                 </div>
               </div>
               <button
@@ -202,22 +199,16 @@ export function StandortFinderPopup() {
               <div className="mt-6 rounded-xl border border-[#0F4F68]/20 bg-[#F2F9FA]/80 p-4">
                 {result ? (
                   <>
-                    <p className="text-sm font-semibold uppercase tracking-wide text-[#0F4F68]">
-                      Gesuchte Region
-                    </p>
                     {plz.trim() && (
-                      <p className="mt-1 text-sm text-neutral-600">
+                      <p className="text-base font-semibold text-neutral-700">
                         {plz.trim()}
                         {getOrtByPlz(plz) ? ` ${getOrtByPlz(plz)}` : ""}
                       </p>
                     )}
-                    <p className="mt-3 text-xs font-semibold uppercase tracking-wide text-[#0F4F68]/85">
-                      Ihr Ansprechpartner
-                    </p>
-                    <p className="mt-1 truncate text-sm font-semibold text-[#0F4F68]">
+                    <p className="mt-2 truncate text-sm font-semibold text-[#0F4F68]">
                       {result.name.startsWith("Standort") ? result.name : `Standort ${result.name}`}
                     </p>
-                    <p className="mt-1 text-neutral-700">{result.address}</p>
+                    <p className="mt-2 text-sm text-neutral-700">{result.address}</p>
                     <a
                       href={result.phoneHref}
                       className="mt-3 inline-flex items-center gap-2 text-2xl font-extrabold text-[#0F4F68] hover:underline focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2 rounded"
@@ -227,7 +218,7 @@ export function StandortFinderPopup() {
                       </svg>
                       {result.phone}
                     </a>
-                    <p className="mt-2 text-sm text-neutral-600">{result.hours}</p>
+                    <p className="mt-2 text-xs text-neutral-600">{result.hours}</p>
                     <div className="mt-4 flex justify-center">
                       <Link
                         href={
