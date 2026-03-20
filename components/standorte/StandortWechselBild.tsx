@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { useEffect, useState } from "react";
 
-const BILDER = ["/images/standort_gemeinsam.webp", "/images/standort_gemeinsam1.webp"];
+const BILDER = ["/images/standort_gemeinsam.webp", "/images/einkaufen.webp"];
 
 type StandortWechselBildProps = {
   alt: string;

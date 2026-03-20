@@ -149,7 +149,7 @@ export default function StandortePage() {
 
       {/* Trennlinie zwischen Karte/Standortsuche und Leistungs-Intro */}
       <div
-        className="mx-auto mt-10 w-full px-4 sm:mt-14 sm:px-6 lg:px-8"
+        className="mx-auto mt-8 w-full px-4 sm:mt-10 sm:px-6 lg:px-8"
         role="presentation"
       >
         <div
@@ -159,9 +159,9 @@ export default function StandortePage() {
       </div>
 
       {/* Strukturlinie Anthrazit (~2/3 Breite), über Bereich mit standort_gemeinsam */}
-      <StandortAnthrazitRule className="mt-10 sm:mt-14" />
+      <StandortAnthrazitRule className="mt-8 sm:mt-10" />
 
-      <section className="relative z-20 mt-10 w-full px-4 sm:mt-14 sm:px-6 lg:px-8">
+      <section className="relative z-20 mt-8 w-full px-4 sm:mt-10 sm:px-6 lg:px-8">
         <div className="mx-auto w-full max-w-5xl rounded-2xl border border-[#0F4F68]/10 bg-white/55 p-5 sm:p-7">
           <h2 className="text-2xl font-bold text-[#0F4F68] sm:text-3xl">
             Wir bieten Haushaltshilfe und Alltagsbegleitungen in folgenden Regionen an
