@@ -4,6 +4,7 @@ import Link from "next/link";
 import { Container } from "@/components/layout/Container";
 import { ContactForm } from "@/components/forms/ContactForm";
 import { StandortFinderPopup } from "@/components/contact/StandortFinderPopup";
+import { findStandortByPlz, getOrtByPlz } from "@/config/standorte";
 import { siteConfig } from "@/config/site";
 
 export const metadata: Metadata = {
@@ -11,7 +12,16 @@ export const metadata: Metadata = {
   description: `Kontaktieren Sie uns – ${siteConfig.name}.`,
 };
 
-export default function KontaktPage() {
+export default async function KontaktPage({
+  searchParams,
+}: {
+  searchParams?: Promise<{ plz?: string }>;
+}) {
+  const resolvedSearchParams = await searchParams;
+  const selectedPlz = (resolvedSearchParams?.plz ?? "").replace(/\D/g, "").slice(0, 5);
+  const selectedOrt = selectedPlz ? getOrtByPlz(selectedPlz) : undefined;
+  const selectedStandort = selectedPlz ? findStandortByPlz(selectedPlz) : undefined;
+
   return (
     <article className="py-16 sm:py-24">
       <Container className="flex justify-center">
@@ -27,6 +37,26 @@ export default function KontaktPage() {
               >
                 Schreiben Sie uns – wir melden uns zeitnah bei Ihnen.
               </p>
+              {selectedStandort && (
+                <div
+                  className="mt-5 rounded-xl border border-[#0F4F68]/20 bg-white px-4 py-3 text-sm text-[#0F4F68] opacity-0 animate-fade-in-up sm:text-base"
+                  style={{ animationDelay: "0.15s" }}
+                >
+                  <p className="font-semibold">
+                    Ihr ausgewählter Standort:
+                    {" "}
+                    {selectedStandort.name.startsWith("Standort")
+                      ? selectedStandort.name
+                      : `Standort ${selectedStandort.name}`}
+                  </p>
+                  <p className="mt-1 text-neutral-700">
+                    {selectedPlz}
+                    {selectedOrt ? ` ${selectedOrt}` : ""}
+                    {" · "}
+                    {selectedStandort.address}
+                  </p>
+                </div>
+              )}
               <div
                 className="mt-10 opacity-0 animate-fade-in-up"
                 style={{ animationDelay: "0.2s" }}

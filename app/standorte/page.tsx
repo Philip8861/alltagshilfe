@@ -78,7 +78,7 @@ const PUNKTE = [
 ];
 
 const STANDORTE_INTRO = {
-  heading: "An unseren Standorten sind wir für Sie da!",
+  heading: "Wir sind ganz in Ihrer Nähe!",
   text: "Hier finden Sie Ihren passenden Ansprechpartner für eine zuverlässige, liebevolle Unterstützung ganz in Ihrer Nähe. Wir stehen Ihnen im Alltag gerne zur Seite.",
 };
 
