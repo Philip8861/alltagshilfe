@@ -4,7 +4,7 @@ import Link from "next/link";
 import { Container } from "@/components/layout/Container";
 import { ContactForm } from "@/components/forms/ContactForm";
 import { StandortFinderPopup } from "@/components/contact/StandortFinderPopup";
-import { findStandortByPlz, getOrtByPlz } from "@/config/standorte";
+import { findStandortByPlz, getOrtByPlz, ortToSlugSegment } from "@/config/standorte";
 import { siteConfig } from "@/config/site";
 
 export const metadata: Metadata = {
@@ -39,22 +39,55 @@ export default async function KontaktPage({
               </p>
               {selectedStandort && (
                 <div
-                  className="mt-5 rounded-xl border border-[#0F4F68]/20 bg-white px-4 py-3 text-sm text-[#0F4F68] opacity-0 animate-fade-in-up sm:text-base"
+                  className="mt-5 rounded-xl border border-[#0F4F68]/20 bg-[#F2F9FA]/80 p-5 text-center opacity-0 animate-fade-in-up sm:p-6"
                   style={{ animationDelay: "0.15s" }}
                 >
-                  <p className="font-semibold">
-                    Ihr ausgewählter Standort:
-                    {" "}
+                  <p className="text-sm font-semibold uppercase tracking-wide text-[#0F4F68]">
+                    Gesuchte Region
+                  </p>
+                  {selectedPlz && (
+                    <p className="mt-1 text-base text-neutral-700 sm:text-lg">
+                      {selectedPlz}
+                      {selectedOrt ? ` ${selectedOrt}` : ""}
+                    </p>
+                  )}
+                  <p className="mt-3 text-xs font-semibold uppercase tracking-wide text-[#0F4F68]/85 sm:text-sm">
+                    Ihr Ansprechpartner
+                  </p>
+                  <p className="mt-1 truncate text-base font-bold text-[#0F4F68] sm:text-lg">
                     {selectedStandort.name.startsWith("Standort")
                       ? selectedStandort.name
                       : `Standort ${selectedStandort.name}`}
                   </p>
-                  <p className="mt-1 text-neutral-700">
-                    {selectedPlz}
-                    {selectedOrt ? ` ${selectedOrt}` : ""}
-                    {" · "}
-                    {selectedStandort.address}
-                  </p>
+                  <p className="mt-2 text-base text-neutral-700 sm:text-lg">{selectedStandort.address}</p>
+                  <a
+                    href={selectedStandort.phoneHref}
+                    className="mt-3 inline-flex items-center justify-center gap-2 text-2xl font-extrabold text-[#0F4F68] hover:underline focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2 rounded"
+                  >
+                    <svg
+                      className="h-6 w-6 shrink-0"
+                      viewBox="0 0 24 24"
+                      fill="currentColor"
+                      style={{ color: "#F78F2E" }}
+                      aria-hidden
+                    >
+                      <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z" />
+                    </svg>
+                    {selectedStandort.phone}
+                  </a>
+                  <p className="mt-2 text-base text-neutral-700 sm:text-lg">{selectedStandort.hours}</p>
+                  <div className="mt-4 flex justify-center">
+                    <Link
+                      href={
+                        selectedOrt
+                          ? `/standorte/${selectedPlz}-${ortToSlugSegment(selectedOrt)}`
+                          : "/standorte"
+                      }
+                      className="flex w-full max-w-sm items-center justify-center rounded-xl bg-[#0F4F68] px-6 py-3.5 font-semibold text-white transition-colors hover:bg-[#0c3d52] focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2"
+                    >
+                      Zum Standort
+                    </Link>
+                  </div>
                 </div>
               )}
               <div
