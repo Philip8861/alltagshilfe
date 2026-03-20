@@ -66,14 +66,14 @@ export default function HomePage() {
       </section>
 
       <section className="relative z-20 mt-10 w-full px-4 sm:mt-12 sm:px-6 lg:px-8">
-        <div className="mx-auto w-full max-w-6xl rounded-3xl border border-[#f2c9a3]/35 bg-gradient-to-br from-[#fff7ef] via-[#fffaf4] to-white p-5 shadow-[0_12px_28px_rgba(120,78,45,0.10)] sm:p-7">
+        <div className="mx-auto w-full max-w-6xl rounded-3xl border border-[#f2c9a3]/20 bg-gradient-to-br from-[#fffbf8] via-[#fffefd] to-white p-5 shadow-[0_10px_24px_rgba(120,78,45,0.06)] sm:p-7">
           <h2 className="text-2xl font-bold text-[#0F4F68] sm:text-3xl">Unsere Leistungen im Überblick</h2>
-          <p className="mt-2 text-sm text-[#7c5a43] sm:text-base">Persoenlich, zuverlaessig und mit viel Herz im Alltag.</p>
+          <p className="mt-2 text-sm text-[#8a6a55] sm:text-base">Persoenlich, zuverlaessig und mit viel Herz im Alltag.</p>
           <div className="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {LEISTUNGEN.map((leistung, index) => (
               <article
                 key={leistung.title}
-                className="rounded-2xl border border-[#e9c8a8]/60 bg-gradient-to-r from-white to-[#fff8f1] px-4 py-4 opacity-0 shadow-[0_6px_14px_rgba(120,78,45,0.08)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_10px_20px_rgba(120,78,45,0.13)] animate-fade-in-up"
+                className="rounded-2xl border border-[#e9c8a8]/35 bg-gradient-to-r from-white to-[#fffdfa] px-4 py-4 opacity-0 shadow-[0_5px_12px_rgba(120,78,45,0.05)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_8px_18px_rgba(120,78,45,0.09)] animate-fade-in-up"
                 style={{ animationDelay: `${0.06 * (index + 1)}s` }}
               >
                 <div className="flex items-start gap-3">
