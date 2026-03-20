@@ -130,12 +130,11 @@ export function StandortSuche() {
               role="dialog"
               aria-modal="true"
               aria-labelledby="standort-popup-title"
-              aria-describedby="standort-popup-desc"
-              className="fixed left-1/2 top-1/2 z-50 w-[calc(100%-2rem)] max-w-md -translate-x-1/2 -translate-y-1/2 rounded-2xl bg-white p-6 text-center shadow-xl sm:p-8"
+              className="fixed left-1/2 top-1/2 z-50 w-[calc(100%-2rem)] max-w-md -translate-x-1/2 -translate-y-1/2 rounded-2xl bg-white p-6 shadow-xl sm:p-8"
               onKeyDown={handlePopupKeyDown}
             >
-              <div className="relative flex justify-center">
-                <div className="flex min-w-0 flex-1 flex-col items-center gap-2">
+              <div className="flex items-start justify-between gap-4">
+                <div className="flex min-w-0 flex-1 items-center gap-3">
                   <span
                     className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#0F4F68] text-white"
                     aria-hidden
@@ -144,8 +143,8 @@ export function StandortSuche() {
                       <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
                     </svg>
                   </span>
-                  <div className="text-center">
-                    <h2 id="standort-popup-title" className="text-2xl font-bold text-[#0F4F68]">
+                  <div>
+                    <h2 id="standort-popup-title" className="text-xl font-bold text-[#0F4F68]">
                       Suchergebnis
                     </h2>
                   </div>
@@ -153,7 +152,7 @@ export function StandortSuche() {
                 <button
                   type="button"
                   onClick={closePopup}
-                  className="absolute right-0 top-0 shrink-0 rounded-lg p-2 text-neutral-500 transition-colors hover:bg-neutral-100 hover:text-neutral-700 focus:outline-none focus:ring-2 focus:ring-[#0F4F68]"
+                  className="shrink-0 rounded-lg p-2 text-neutral-500 transition-colors hover:bg-neutral-100 hover:text-neutral-700 focus:outline-none focus:ring-2 focus:ring-[#0F4F68]"
                   aria-label="Popup schließen"
                 >
                   <svg className="h-5 w-5" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" strokeWidth="2">
@@ -162,11 +161,11 @@ export function StandortSuche() {
                 </button>
               </div>
 
-              <div className="mt-6 rounded-xl border border-[#0F4F68]/20 bg-[#F2F9FA]/80 p-5">
+              <div className="mt-6 rounded-xl border border-[#0F4F68]/20 bg-[#F2F9FA]/80 p-4">
                 {result ? (
                   <>
                     {plz.trim() && (
-                      <p className="text-base font-semibold text-neutral-700 sm:text-lg">
+                      <p className="text-base font-semibold text-neutral-700">
                         {plz.trim()}
                         {getOrtByPlz(plz) ? ` ${getOrtByPlz(plz)}` : ""}
                       </p>
@@ -174,7 +173,7 @@ export function StandortSuche() {
                     <p className="mt-2 truncate text-base font-bold text-[#0F4F68] sm:text-lg">
                       {result.name.startsWith("Standort") ? result.name : `Standort ${result.name}`}
                     </p>
-                    <p className="mt-2 text-sm text-neutral-700 sm:text-base">{result.address}</p>
+                    <p className="mt-2 text-sm text-neutral-700">{result.address}</p>
                     <a
                       href={result.phoneHref}
                       className="mt-3 inline-flex items-center gap-2 text-2xl font-extrabold text-[#0F4F68] hover:underline focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2 rounded"
@@ -184,7 +183,7 @@ export function StandortSuche() {
                       </svg>
                       {result.phone}
                     </a>
-                    <p className="mt-2 text-sm text-neutral-700 sm:text-base">{result.hours}</p>
+                    <p className="mt-2 text-xs text-neutral-600">{result.hours}</p>
                     <div className="mt-4 flex justify-center">
                       <Link
                         href={
@@ -199,27 +198,13 @@ export function StandortSuche() {
                     </div>
                   </>
                 ) : (
-                  <>
-                    <p className="text-sm font-semibold uppercase tracking-wide text-[#0F4F68]">
-                      Kein Standort gefunden
-                    </p>
-                    <p className="mt-3 text-neutral-700" role="status">
-                      Kein passender Ansprechpartner gefunden? Versuchen Sie es mit der nächstgrößeren Stadt. Gerne helfen wir Ihnen auch direkt weiter. Rufen Sie uns unter{" "}
-                      <a href="tel:+4983349893330" className="font-semibold text-[#0F4F68] hover:underline">
-                        08334 / 9893330
-                      </a>{" "}
-                      an.
-                    </p>
-                    <div className="mt-4 flex justify-center">
-                      <button
-                        type="button"
-                        onClick={closePopup}
-                        className="flex w-full items-center justify-center rounded-xl bg-[#0F4F68] px-6 py-3.5 font-semibold text-white transition-colors hover:bg-[#0c3d52] focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2"
-                      >
-                        Schließen
-                      </button>
-                    </div>
-                  </>
+                  <p className="text-neutral-700" role="status">
+                    Kein passender Ansprechpartner gefunden? Versuchen Sie es mit der nächstgrößeren Stadt. Gerne helfen wir Ihnen auch direkt weiter. Rufen Sie uns unter{" "}
+                    <a href="tel:+4983349893330" className="font-semibold text-[#0F4F68] hover:underline">
+                      08334 / 9893330
+                    </a>{" "}
+                    an.
+                  </p>
                 )}
               </div>
             </div>
