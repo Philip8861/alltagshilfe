@@ -90,6 +90,15 @@ const HEADING_CLASS =
 const INTRO_BODY_CLASS = "text-lg text-neutral-700 leading-relaxed sm:text-xl";
 
 export default function StandortePage() {
+  const leistungen = [
+    "Haushaltshilfe",
+    "Alltagsbegleitung",
+    "Kostenfreie Pflegehilfsmittel",
+    "Pflegeberatung",
+    "Inkontinenzversorgung",
+    "Pflegeshop",
+  ] as const;
+
   const regionen = getAllStandortSlugs()
     .map(({ slug }) => {
       const plz = slug.split("-")[0] ?? "";
@@ -107,6 +116,7 @@ export default function StandortePage() {
   const sortedLetters = Object.keys(groupedRegionen).sort((a, b) =>
     a.localeCompare(b, "de", { sensitivity: "base" })
   );
+  const plzAnzahl = regionen.length;
 
   return (
     <article
@@ -149,16 +159,26 @@ export default function StandortePage() {
       </div>
 
       {/* Strukturlinie Anthrazit (~2/3 Breite), über Bereich mit standort_gemeinsam */}
-      <StandortAnthrazitRule className="mt-8 sm:mt-10" />
+      <StandortAnthrazitRule className="mt-10 sm:mt-14" />
 
-      <section className="relative z-20 mt-8 w-full px-4 sm:mt-10 sm:px-6 lg:px-8">
+      <section className="relative z-20 mt-10 w-full px-4 sm:mt-14 sm:px-6 lg:px-8">
         <div className="mx-auto w-full max-w-5xl rounded-2xl border border-[#0F4F68]/10 bg-white/55 p-5 sm:p-7">
           <h2 className="text-2xl font-bold text-[#0F4F68] sm:text-3xl">
             Wir bieten Haushaltshilfe und Alltagsbegleitungen in folgenden Regionen an
           </h2>
-          <p className="mt-2 text-sm text-neutral-600 sm:text-base">
-            Alphabetisch sortiert.
+          <p className="mt-2 text-base font-semibold text-[#0F4F68]/90 sm:text-lg">
+            Wir bieten unsere Leistungen an ({plzAnzahl} PLZ) an.
           </p>
+          <ul className="mt-4 grid grid-cols-1 gap-2 text-sm text-neutral-700 sm:grid-cols-2 sm:text-base lg:grid-cols-3">
+            {leistungen.map((leistung) => (
+              <li key={leistung} className="inline-flex items-center gap-2">
+                <span aria-hidden className="text-[#EA580C]">
+                  ✓
+                </span>
+                <span>{leistung}</span>
+              </li>
+            ))}
+          </ul>
           <div className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {sortedLetters.map((letter) => (
               <section key={letter} aria-label={`Regionen mit ${letter}`}>
