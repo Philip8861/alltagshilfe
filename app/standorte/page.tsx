@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import { StandortSuche } from "@/components/standorte/StandortSuche";
 import { StandortAnthrazitRule } from "@/components/standorte/StandortAnthrazitRule";
 import { StandortNummerEinsReveal } from "@/components/standorte/StandortNummerEinsReveal";
+import { StandortWechselBild } from "@/components/standorte/StandortWechselBild";
 import { KartenMitKoordinatenErfassen } from "@/components/standorte/KartenMitKoordinatenErfassen";
 import { siteConfig } from "@/config/site";
 
@@ -150,16 +150,13 @@ export default function StandortePage() {
               className="w-full max-w-full"
               style={{ width: "min(491px, calc(100vw - 3rem))" }}
             >
-              {/* Kein weißer Hintergrund; Schatten nur am Bildrahmen */}
-              <div className="relative aspect-[1301/1535] w-full overflow-visible rounded-xl [box-shadow:0_10px_36px_rgba(15,79,104,0.22),0_4px_18px_rgba(15,79,104,0.16),0_2px_8px_rgba(15,79,104,0.1)]">
-                <Image
-                  src="/images/standort_gemeinsam.webp"
+              {/* Schatten um das Motiv, ohne weißen Kasten im Hintergrund */}
+              <div
+                className="[filter:drop-shadow(0_10px_22px_rgba(15,79,104,0.2))_drop-shadow(0_4px_12px_rgba(15,79,104,0.12))]"
+              >
+                <StandortWechselBild
                   alt="Betreuung und Zuwendung: Team Alltagshilfe-Süd mit Seniorin im Freien"
-                  fill
-                  className="rounded-xl object-contain object-center"
                   sizes="(max-width: 640px) min(491px, 88vw), 491px"
-                  priority={false}
-                  unoptimized
                 />
               </div>
             </div>
@@ -178,7 +175,7 @@ export default function StandortePage() {
 
       {/* Übergang startet unter dem Bild und läuft bis zum Footer */}
       <div
-        className="relative z-0 -mx-4 -mt-6 min-h-[26vh] flex-1 bg-[#F2F9FA] px-4 pt-12 pb-20 sm:-mx-6 sm:-mt-8 sm:px-6 sm:pt-14 sm:pb-24 lg:-mx-8 lg:px-8"
+        className="relative z-0 -mx-4 -mt-4 min-h-[26vh] flex-1 bg-[#F2F9FA] px-4 pt-12 pb-20 sm:-mx-6 sm:-mt-6 sm:px-6 sm:pt-14 sm:pb-24 lg:-mx-8 lg:px-8"
       />
     </article>
   );
