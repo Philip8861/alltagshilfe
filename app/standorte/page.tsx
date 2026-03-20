@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { StandortSuche } from "@/components/standorte/StandortSuche";
 import { StandortAnthrazitRule } from "@/components/standorte/StandortAnthrazitRule";
 import { KartenMitKoordinatenErfassen } from "@/components/standorte/KartenMitKoordinatenErfassen";
@@ -97,6 +98,16 @@ export default function StandortePage() {
     })
     .sort((a, b) => a.ort.localeCompare(b.ort, "de", { sensitivity: "base" }));
 
+  const groupedRegionen = regionen.reduce<Record<string, typeof regionen>>((acc, eintrag) => {
+    const letter = eintrag.ort.charAt(0).toLocaleUpperCase("de");
+    if (!acc[letter]) acc[letter] = [];
+    acc[letter].push(eintrag);
+    return acc;
+  }, {});
+  const sortedLetters = Object.keys(groupedRegionen).sort((a, b) =>
+    a.localeCompare(b, "de", { sensitivity: "base" })
+  );
+
   return (
     <article
       className="flex min-h-[60vh] w-full max-w-[100vw] flex-col pt-0 pb-0 -ml-4 sm:-ml-6 lg:-ml-8 pl-4 sm:pl-6 lg:pl-8"
@@ -141,30 +152,33 @@ export default function StandortePage() {
       <StandortAnthrazitRule className="mt-8 sm:mt-10" />
 
       <section className="relative z-20 mt-8 w-full px-4 sm:mt-10 sm:px-6 lg:px-8">
-        <div className="mx-auto w-full max-w-5xl rounded-2xl border border-[#0F4F68]/12 bg-white/65 p-5 shadow-sm sm:p-7">
+        <div className="mx-auto w-full max-w-5xl rounded-2xl border border-[#0F4F68]/10 bg-white/55 p-5 sm:p-7">
           <h2 className="text-2xl font-bold text-[#0F4F68] sm:text-3xl">
             Wir bieten Haushaltshilfe und Alltagsbegleitungen in folgenden Regionen an
           </h2>
           <p className="mt-2 text-sm text-neutral-600 sm:text-base">
-            Alphabetisch sortiert – klicken Sie auf eine Region, um direkt zur Standortseite zu gelangen.
+            Alphabetisch sortiert.
           </p>
-          <ul className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            {regionen.map((eintrag) => (
-              <li key={eintrag.slug}>
-                <a
-                  href={`/standorte/${eintrag.slug}`}
-                  className="group flex items-center justify-between rounded-xl border border-[#0F4F68]/15 bg-[#F2F9FA] px-4 py-3 text-left transition-colors hover:bg-[#e8f3f6] focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2"
-                >
-                  <span className="font-semibold text-[#0F4F68]">
-                    {eintrag.ort}
-                  </span>
-                  <span className="ml-3 rounded-md bg-white px-2 py-0.5 text-sm font-bold text-[#0F4F68] ring-1 ring-[#0F4F68]/12">
-                    {eintrag.plz}
-                  </span>
-                </a>
-              </li>
+          <div className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            {sortedLetters.map((letter) => (
+              <section key={letter} aria-label={`Regionen mit ${letter}`}>
+                <h3 className="mb-2 text-lg font-bold text-[#0F4F68]">{letter}</h3>
+                <ul className="space-y-1.5">
+                  {groupedRegionen[letter].map((eintrag) => (
+                    <li key={eintrag.slug}>
+                      <Link
+                        href={`/standorte/${eintrag.slug}`}
+                        className="inline-flex items-baseline gap-2 text-neutral-800 hover:text-[#0F4F68] hover:underline focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2 rounded-sm"
+                      >
+                        <span>{eintrag.ort}</span>
+                        <span className="text-sm text-neutral-500">{eintrag.plz}</span>
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </section>
             ))}
-          </ul>
+          </div>
         </div>
       </section>
 

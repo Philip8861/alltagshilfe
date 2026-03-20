@@ -2,7 +2,7 @@
 
 import { useState, useCallback, useEffect, useRef } from "react";
 import Link from "next/link";
-import { findStandortByPlz, getOrtByPlz, type Standort } from "@/config/standorte";
+import { findStandortByPlz, getOrtByPlz, ortToSlugSegment, type Standort } from "@/config/standorte";
 
 export function StandortFinderPopup() {
   const [widgetVisible, setWidgetVisible] = useState(true);
@@ -227,7 +227,11 @@ export function StandortFinderPopup() {
                     <p className="mt-2 text-sm text-neutral-600">{result.hours}</p>
                     <div className="mt-4 flex justify-center">
                       <Link
-                        href="/kontakt"
+                        href={
+                          getOrtByPlz(plz.trim())
+                            ? `/standorte/${plz.trim()}-${ortToSlugSegment(getOrtByPlz(plz.trim()) ?? "")}`
+                            : "/kontakt"
+                        }
                         className="flex w-full items-center justify-center rounded-xl bg-[#0F4F68] px-6 py-3.5 font-semibold text-white transition-colors hover:bg-[#0c3d52] focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2 rounded"
                       >
                         Zum Standort
