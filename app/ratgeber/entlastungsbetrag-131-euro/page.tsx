@@ -41,22 +41,16 @@ export default function EntlastungsbetragRatgeberPage() {
                 </div>
               </div>
             </div>
-            <div className="relative mx-auto w-full max-w-sm">
-              <div className="absolute -inset-2 -z-10 rounded-[1.6rem] bg-gradient-to-br from-[#0F4F68]/20 via-[#f4c89f]/25 to-transparent blur-md" />
-              <div className="relative overflow-hidden rounded-[1.4rem] border border-[#0F4F68]/12 bg-white p-2 shadow-[0_14px_28px_rgba(15,79,104,0.14)]">
-                <div className="relative aspect-[4/3] overflow-hidden rounded-[1rem]">
-                  <Image
-                    src="/images/Ratgeber/ratgeber.webp"
-                    alt="Ratgeber zur Entlastung im Pflegealltag"
-                    fill
-                    className="object-cover transition-transform duration-700 hover:scale-[1.03]"
-                    sizes="(max-width: 1024px) 100vw, 420px"
-                    priority
-                  />
-                </div>
-                <div className="pointer-events-none absolute right-4 top-4 rounded-full bg-white/95 px-3 py-1 text-xs font-semibold text-[#0F4F68] shadow-sm">
-                  Ratgeber
-                </div>
+            <div className="mx-auto w-full max-w-[240px] lg:max-w-[260px]">
+              <div className="relative aspect-[4/3] overflow-hidden rounded-lg">
+                <Image
+                  src="/images/Ratgeber/ratgeber.webp"
+                  alt="Ratgeber zur Entlastung im Pflegealltag"
+                  fill
+                  className="object-cover transition-transform duration-700 hover:scale-[1.02]"
+                  sizes="260px"
+                  priority
+                />
               </div>
             </div>
           </div>

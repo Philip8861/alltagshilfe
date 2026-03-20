@@ -22,14 +22,14 @@ export default function RatgeberPage() {
 
         <section className="mt-10 grid grid-cols-1 gap-5 sm:grid-cols-2">
           <article className="rounded-2xl border border-[#efcba7]/40 bg-gradient-to-br from-white to-[#fff8f0] p-5 shadow-sm transition-shadow hover:shadow-md">
-            <div className="mb-4 overflow-hidden rounded-xl border border-[#0F4F68]/12 bg-white">
-              <div className="relative aspect-[16/9]">
+            <div className="mb-3">
+              <div className="relative aspect-[16/9] w-full max-w-[220px] overflow-hidden rounded-lg">
                 <Image
                   src="/images/Ratgeber/ratgeber.webp"
                   alt="Vorschaubild Entlastungsbetrag 131 Euro"
                   fill
-                  className="object-cover transition-transform duration-500 hover:scale-[1.03]"
-                  sizes="(max-width: 640px) 100vw, 50vw"
+                  className="object-cover transition-transform duration-500 hover:scale-[1.02]"
+                  sizes="220px"
                 />
               </div>
             </div>
