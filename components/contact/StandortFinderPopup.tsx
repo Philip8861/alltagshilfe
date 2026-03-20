@@ -211,8 +211,11 @@ export function StandortFinderPopup() {
                         {getOrtByPlz(plz) ? ` ${getOrtByPlz(plz)}` : ""}
                       </p>
                     )}
-                    <p className="mt-3 text-sm font-semibold text-[#0F4F68]">
-                      Ihr Ansprechpartner: {result.name.startsWith("Standort") ? result.name : `Standort ${result.name}`}
+                    <p className="mt-3 text-xs font-semibold uppercase tracking-wide text-[#0F4F68]/85">
+                      Ihr Ansprechpartner
+                    </p>
+                    <p className="mt-1 truncate text-sm font-semibold text-[#0F4F68]">
+                      {result.name.startsWith("Standort") ? result.name : `Standort ${result.name}`}
                     </p>
                     <p className="mt-1 text-neutral-700">{result.address}</p>
                     <a

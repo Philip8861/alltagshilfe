@@ -177,8 +177,11 @@ export function StandortSuche() {
                         {getOrtByPlz(plz) ? ` ${getOrtByPlz(plz)}` : ""}
                       </p>
                     )}
-                    <p className="mt-3 text-lg font-bold text-[#0F4F68] sm:text-xl">
-                      Ihr Ansprechpartner: {result.name.startsWith("Standort") ? result.name : `Standort ${result.name}`}
+                    <p className="mt-3 text-xs font-semibold uppercase tracking-wide text-[#0F4F68]/85 sm:text-sm">
+                      Ihr Ansprechpartner
+                    </p>
+                    <p className="mt-1 truncate text-base font-bold text-[#0F4F68] sm:text-lg">
+                      {result.name.startsWith("Standort") ? result.name : `Standort ${result.name}`}
                     </p>
                     <p className="mt-2 text-base text-neutral-700 sm:text-lg">{result.address}</p>
                     <a
