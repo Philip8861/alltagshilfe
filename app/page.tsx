@@ -65,7 +65,7 @@ const LEISTUNGEN = [
     icon: "cart",
   },
   {
-    title: "Essen auf Räder (nur Raum Kempten)",
+    title: "Essen auf Räder (im Raum Kempten)",
     icon: "meal",
   },
 ] as const;
