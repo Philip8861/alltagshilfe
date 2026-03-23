@@ -76,7 +76,7 @@ export default function HomePage() {
     >
       <section className="w-full pt-0 pb-6 sm:pb-8 lg:pb-10">
         <div className="mx-auto w-full max-w-[100rem] px-4 sm:px-6 lg:px-8">
-          {/* Oberer Bereich: Bild + freistehender Text rechts, vertikal zur Bildmitte (Desktop) */}
+          {/* Oberer Bereich: Bild rechts, Überschrift + drei Punkte links, etwas oberhalb der Bildmitte (Desktop) */}
           <div className="relative">
             <div className="flex justify-end">
               <div
@@ -98,7 +98,7 @@ export default function HomePage() {
             </div>
 
             <header
-              className="relative z-10 mt-8 max-w-lg sm:max-w-xl lg:absolute lg:left-auto lg:right-[min(1.25rem,4vw)] xl:right-[min(2.5rem,7vw)] lg:top-1/2 lg:mt-0 lg:max-w-[min(22rem,34vw)] lg:-translate-y-1/2 lg:translate-y-[10%] 2xl:right-[min(4rem,6vw)] 2xl:max-w-[min(24rem,28vw)]"
+              className="relative z-10 mt-8 max-w-lg text-left sm:max-w-xl lg:absolute lg:left-0 lg:right-auto lg:top-[38%] lg:mt-0 lg:max-w-[min(26rem,42vw)] lg:-translate-y-1/2 xl:left-[min(0.25rem,1vw)] xl:max-w-[min(28rem,38vw)] 2xl:left-[min(0.5rem,2vw)] 2xl:max-w-[min(30rem,34vw)]"
             >
               <h1
                 className="text-balance text-3xl font-extrabold leading-tight tracking-tight text-[#0F4F68] opacity-0 animate-fade-in-up sm:text-4xl lg:text-[2.35rem] xl:text-[2.6rem]"
