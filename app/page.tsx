@@ -64,11 +64,12 @@ export default function HomePage() {
             <div className="relative w-full max-w-[56rem]">
               <div className="[filter:drop-shadow(0_10px_22px_rgba(15,79,104,0.2))_drop-shadow(0_4px_12px_rgba(15,79,104,0.12))]">
                 <Image
-                  src="/images/startseite_gemeinsam.png"
+                  src="/images/startseite_gemeinsam.webp"
                   alt="Gemeinsam zur passenden Unterstützung im Alltag"
                   width={900}
                   height={700}
                   className="h-auto w-full object-contain"
+                  unoptimized
                   priority
                 />
               </div>
