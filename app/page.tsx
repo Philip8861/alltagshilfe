@@ -5,7 +5,8 @@ import { StandortWechselBild } from "@/components/standorte/StandortWechselBild"
 
 const HERO_INTRO = {
   brand: "Alltagshilfe-Süd",
-  tagline: "Herz an Ihrer Seite.",
+  tagline:
+    "Mehr Unterstützung. Mehr Entlastung. Mehr Zeit fürs Wesentliche.",
   lead:
     "Ihr verlässlicher Partner für Haushaltshilfe, Betreuung, Pflegeberatung und Pflegehilfsmittel.",
 } as const;
@@ -62,18 +63,10 @@ export default function HomePage() {
                 {HERO_INTRO.brand}
               </h1>
               <p
-                className="mt-2 flex flex-wrap items-center gap-2 text-base font-semibold text-[#0F4F68] opacity-0 animate-fade-in-up sm:text-lg"
+                className="mt-2 text-base font-semibold leading-snug text-[#0F4F68] opacity-0 animate-fade-in-up sm:text-lg"
                 style={{ animationDelay: "0.14s" }}
               >
-                <svg
-                  className="h-5 w-5 shrink-0 text-[#F78F2E]"
-                  viewBox="0 0 24 24"
-                  fill="currentColor"
-                  aria-hidden
-                >
-                  <path d="M12 21s-7.2-4.35-9.6-9.6C.35 8.25 2.1 5 5.25 5c1.95 0 3.75 1.05 4.65 2.7a5.45 5.45 0 0 1 4.1-2.7C17.15 5 19 8.1 18.35 11.4 16.35 16.2 12 21 12 21z" />
-                </svg>
-                <span>{HERO_INTRO.tagline}</span>
+                {HERO_INTRO.tagline}
               </p>
               <p
                 className="mt-3 text-sm leading-relaxed text-neutral-700 opacity-0 animate-fade-in-up sm:text-base lg:text-[1.05rem]"
