@@ -40,7 +40,7 @@ export default function HomePage() {
       className="flex min-h-[60vh] w-full max-w-[100vw] flex-col pt-0 pb-0 -ml-4 sm:-ml-6 lg:-ml-8 pl-4 sm:pl-6 lg:pl-8"
       style={{ backgroundColor: "#fafbfc" }}
     >
-      <section className="w-full px-4 pt-6 sm:px-6 sm:pt-8 lg:px-8">
+      <section className="w-full px-4 pt-0 sm:px-6 sm:pt-0 lg:px-8">
         <div className="grid w-full grid-cols-1 gap-6 p-0 sm:p-0 lg:grid-cols-2 lg:items-center">
           <div className="order-2 lg:order-1">
             <p className="text-xs font-semibold uppercase tracking-wide text-[#0F4F68]/80">In 3 Schritten zur passenden Hilfe</p>
@@ -64,7 +64,7 @@ export default function HomePage() {
             <div className="relative w-full max-w-md">
               <div className="[filter:drop-shadow(0_10px_22px_rgba(15,79,104,0.2))_drop-shadow(0_4px_12px_rgba(15,79,104,0.12))]">
                 <Image
-                  src="/images/startseite_gemeinsam.png"
+                  src="/images/startseite_gemeinsam.webp"
                   alt="Gemeinsam zur passenden Unterstützung im Alltag"
                   width={900}
                   height={700}
