@@ -37,11 +37,11 @@ const LEISTUNGEN = [
 export default function HomePage() {
   return (
     <article
-      className="flex min-h-[60vh] w-full max-w-[100vw] flex-col pt-0 pb-0 -ml-4 sm:-ml-6 lg:-ml-8 pl-4 sm:pl-6 lg:pl-8"
+      className="flex min-h-[60vh] w-full max-w-[100vw] flex-col pt-0 pb-0"
       style={{ backgroundColor: "#fafbfc" }}
     >
-      <section className="w-full px-4 pt-0 sm:px-6 sm:pt-0 lg:px-8">
-        <div className="grid w-full grid-cols-1 gap-6 p-0 sm:p-0 lg:grid-cols-2 lg:items-center">
+      <section className="w-full pt-0">
+        <div className="grid w-full grid-cols-1 gap-6 pl-4 pr-0 sm:pl-6 sm:pr-0 lg:grid-cols-2 lg:items-center lg:pl-8">
           <div className="order-2 lg:order-1">
             <p className="text-xs font-semibold uppercase tracking-wide text-[#0F4F68]/80">In 3 Schritten zur passenden Hilfe</p>
             <h2 className="mt-2 text-2xl font-bold text-[#0F4F68] sm:text-3xl">Schnell. Persönlich. Passend.</h2>
@@ -61,14 +61,14 @@ export default function HomePage() {
             </div>
           </div>
           <div className="order-1 flex w-full justify-end lg:order-2">
-            <div className="relative w-full max-w-lg lg:max-w-[42rem]">
-              <div className="[filter:drop-shadow(0_16px_30px_rgba(15,79,104,0.24))_drop-shadow(0_6px_14px_rgba(15,79,104,0.16))]">
+            <div className="relative w-full max-w-[56rem]">
+              <div className="[filter:drop-shadow(0_10px_22px_rgba(15,79,104,0.2))_drop-shadow(0_4px_12px_rgba(15,79,104,0.12))]">
                 <Image
                   src="/images/startseite_gemeinsam.webp"
                   alt="Gemeinsam zur passenden Unterstützung im Alltag"
                   width={900}
                   height={700}
-                  className="h-auto w-full rounded-none object-contain"
+                  className="h-auto w-full object-cover object-top"
                   unoptimized
                   priority
                 />
@@ -84,8 +84,8 @@ export default function HomePage() {
 
       <StandortAnthrazitRule className="mt-6 sm:mt-8" />
 
-      <section className="relative z-20 mt-4 w-full sm:mt-6">
-        <div className="flex flex-col gap-6 sm:flex-row sm:items-start sm:gap-8 lg:gap-10">
+      <section className="relative z-20 mt-4 w-full px-4 sm:mt-6 sm:px-6 lg:px-8">
+        <div className="mx-auto flex w-full max-w-6xl flex-col gap-6 sm:flex-row sm:items-start sm:gap-8 lg:gap-10">
           <div className="relative z-20 order-3 flex w-full max-w-full justify-center pb-2 pt-1 sm:order-1 lg:w-[50%] lg:max-w-3xl lg:shrink-0 lg:justify-center lg:px-6 lg:pb-4 lg:pt-2 sm:px-4">
             <div className="w-full max-w-full" style={{ width: "min(491px, calc(100vw - 3rem))" }}>
               <div className="[filter:drop-shadow(0_10px_22px_rgba(15,79,104,0.2))_drop-shadow(0_4px_12px_rgba(15,79,104,0.12))]">
@@ -154,7 +154,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      <div className="relative z-0 -mx-4 -mt-[9%] min-h-[26vh] flex-1 bg-[#F2F9FA] px-4 pt-16 pb-20 sm:-mx-6 sm:pt-18 sm:pb-24 lg:-mx-8 lg:px-8">
+      <div className="relative z-0 -mt-[9%] min-h-[26vh] flex-1 bg-[#F2F9FA] px-4 pt-16 pb-20 sm:pt-18 sm:pb-24 lg:px-8">
         <svg
           className="pointer-events-none absolute left-0 top-0 h-12 w-full -translate-y-[70%] sm:h-16"
           viewBox="0 0 1200 120"
