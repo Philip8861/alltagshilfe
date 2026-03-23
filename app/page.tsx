@@ -4,7 +4,7 @@ import { StandortNummerEinsReveal } from "@/components/standorte/StandortNummerE
 import { StandortWechselBild } from "@/components/standorte/StandortWechselBild";
 
 const STARTSEITE_LEISTUNGEN_INTRO = {
-  heading: "Mit viel Herz und Engagement sind wir in Süddeutschland für Sie da.",
+  heading: "Mit viel Herz und Engagement sind wir für Sie da.",
   text: "Wir begleiten Sie zuverlässig in den Bereichen Haushaltshilfe, Betreuung und Pflegeberatung und stehen Ihnen in jeder Lebenssituation unterstützend zur Seite. Bei uns finden Sie passende Hilfe aus einer Hand, persönlich, vertrauensvoll und mit dem Blick auf das, was Ihnen wirklich wichtig ist.",
 };
 
@@ -64,11 +64,12 @@ export default function HomePage() {
             <div className="relative w-full max-w-lg lg:max-w-[42rem]">
               <div className="[filter:drop-shadow(0_16px_30px_rgba(15,79,104,0.24))_drop-shadow(0_6px_14px_rgba(15,79,104,0.16))]">
                 <Image
-                  src="/images/startseite_gemeinsam.png"
+                  src="/images/startseite_gemeinsam.webp"
                   alt="Gemeinsam zur passenden Unterstützung im Alltag"
                   width={900}
                   height={700}
                   className="h-auto w-full rounded-none object-contain"
+                  unoptimized
                   priority
                 />
               </div>
@@ -77,7 +78,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      <div className="mx-auto mt-6 w-full px-4 sm:mt-8 sm:px-6 lg:px-8" role="presentation">
+      <div className="mx-auto mt-10 w-full px-4 sm:mt-12 sm:px-6 lg:px-8" role="presentation">
         <div className="h-px w-full bg-gradient-to-r from-transparent via-[#0F4F68]/28 to-transparent" aria-hidden />
       </div>
 
