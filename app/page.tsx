@@ -10,13 +10,32 @@ const HERO_INTRO = {
     "Mehr Entlastung.",
     "Mehr Zeit fürs Wesentliche.",
   ],
-  lead:
-    "Ihr verlässlicher Partner für Haushaltshilfe, Betreuung, Pflegeberatung und Pflegehilfsmittel.",
 } as const;
+
+function HeroCheckIcon({ className = "" }: { className?: string }) {
+  return (
+    <span
+      className={`inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#F78F2E]/15 text-[#F78F2E] ${className}`.trim()}
+      aria-hidden
+    >
+      <svg
+        className="h-[1.1rem] w-[1.1rem] sm:h-5 sm:w-5"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        <path d="M20 6L9 17l-5-5" />
+      </svg>
+    </span>
+  );
+}
 
 const STARTSEITE_LEISTUNGEN_INTRO = {
   heading: "Mit viel Herz und Engagement sind wir für Sie da.",
-  text: "Wir begleiten Sie zuverlässig in den Bereichen Haushaltshilfe, Betreuung und Pflegeberatung und stehen Ihnen in jeder Lebenssituation unterstützend zur Seite. Bei uns finden Sie passende Hilfe aus einer Hand, persönlich, vertrauensvoll und mit dem Blick auf das, was Ihnen wirklich wichtig ist.",
+  text: "Was uns besonders wichtig ist: Wir möchten dazu beitragen, dass Sie Ihren Alltag so lange wie möglich selbstbestimmt gestalten und in Ihrem vertrauten Zuhause bleiben können. Unsere Unterstützung orientiert sich dabei an Ihren individuellen Bedürfnissen und Ihrer persönlichen Lebenssituation.",
 };
 
 const HEADING_CLASS =
@@ -56,110 +75,92 @@ export default function HomePage() {
       style={{ backgroundColor: "#fafbfc" }}
     >
       <section className="w-full pt-0 pb-6 sm:pb-8 lg:pb-10">
-        <div className="grid w-full grid-cols-1 gap-8 pl-4 pr-4 sm:gap-10 sm:pl-6 sm:pr-6 lg:grid-cols-2 lg:items-center lg:gap-10 xl:gap-14 lg:pl-8 lg:pr-8">
-          <div className="order-2 flex w-full min-w-0 flex-col gap-10 lg:order-1 lg:justify-center">
-            <header className="relative min-w-0 overflow-hidden rounded-3xl border border-[#0F4F68]/12 bg-gradient-to-br from-[#e8f4f8]/95 via-white to-[#fafcfb] p-6 shadow-[0_16px_48px_rgba(15,79,104,0.09)] sm:p-8 lg:p-10 xl:p-11">
+        <div className="mx-auto w-full max-w-[100rem] px-4 sm:px-6 lg:px-8">
+          {/* Oberer Bereich: Bild + freistehender Text rechts, vertikal zur Bildmitte (Desktop) */}
+          <div className="relative">
+            <div className="flex justify-end">
               <div
-                className="pointer-events-none absolute -right-6 -top-10 h-40 w-40 rounded-full bg-[#F78F2E]/15 blur-3xl"
-                aria-hidden
-              />
-              <div
-                className="pointer-events-none absolute -bottom-8 -left-6 h-36 w-36 rounded-full bg-[#0F4F68]/[0.07] blur-2xl"
-                aria-hidden
-              />
-              <div
-                className="pointer-events-none absolute left-0 top-8 hidden h-[calc(100%-4rem)] w-1 rounded-full bg-gradient-to-b from-[#F78F2E] via-[#0F4F68]/40 to-transparent sm:block"
-                aria-hidden
-              />
-              <div className="relative sm:pl-5">
-                <p
-                  className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-[#0F4F68]/55 opacity-0 animate-fade-in-up sm:text-xs"
-                  style={{ animationDelay: "0s" }}
-                >
-                  Ihre Alltagshilfe
-                </p>
-                <h1
-                  className="mt-2 text-balance text-3xl font-extrabold leading-[1.12] tracking-tight text-[#0F4F68] opacity-0 animate-fade-in-up sm:text-4xl lg:text-[2.4rem] xl:text-[2.75rem] xl:leading-[1.1]"
-                  style={{ animationDelay: "0.06s" }}
-                >
-                  {HERO_INTRO.brand}
-                </h1>
-                <ul className="mt-5 space-y-2.5 sm:mt-6 sm:space-y-3" aria-label="Was Sie bei uns gewinnen">
-                  {HERO_INTRO.taglineLines.map((line, i) => (
-                    <li
-                      key={line}
-                      className="flex items-baseline gap-3 text-pretty text-lg font-semibold leading-snug text-[#0F4F68] opacity-0 animate-fade-in-up sm:text-xl lg:text-[1.35rem]"
-                      style={{ animationDelay: `${0.14 + i * 0.08}s` }}
-                    >
-                      <span
-                        className="mt-1.5 inline-block h-2 w-2 shrink-0 rounded-full bg-[#F78F2E] shadow-[0_0_0_3px_rgba(247,143,46,0.2)]"
-                        aria-hidden
-                      />
-                      {line}
-                    </li>
-                  ))}
-                </ul>
-                <p
-                  className="mt-6 max-w-prose text-pretty border-t border-[#0F4F68]/10 pt-6 text-base leading-relaxed text-neutral-600 opacity-0 animate-fade-in-up sm:text-lg lg:text-xl"
-                  style={{ animationDelay: "0.42s" }}
-                >
-                  {HERO_INTRO.lead}
-                </p>
-              </div>
-            </header>
-            <div>
-              <p
-                className="text-xs font-semibold uppercase tracking-wide text-[#0F4F68]/80 opacity-0 animate-fade-in-up"
-                style={{ animationDelay: "0.52s" }}
+                className="relative w-full max-w-[56rem] opacity-0 animate-fade-in-up motion-reduce:opacity-100"
+                style={{ animationDelay: "0.08s" }}
               >
-                In 3 Schritten zur passenden Hilfe
-              </p>
-              <h2
-                className="mt-2 text-2xl font-bold text-[#0F4F68] opacity-0 animate-fade-in-up sm:text-3xl"
-                style={{ animationDelay: "0.58s" }}
-              >
-                Schnell. Persönlich. Passend.
-              </h2>
-              <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-3">
-                <div
-                  className="rounded-xl border border-[#0F4F68]/10 bg-[#f8fcfd] p-3 text-sm text-neutral-700 opacity-0 animate-fade-in-up"
-                  style={{ animationDelay: "0.66s" }}
-                >
-                  <p className="font-semibold text-[#0F4F68]">1. Bedarf wählen</p>
-                  <p className="mt-1">Kurz angeben, wobei Sie Unterstützung wünschen.</p>
-                </div>
-                <div
-                  className="rounded-xl border border-[#0F4F68]/10 bg-[#f8fcfd] p-3 text-sm text-neutral-700 opacity-0 animate-fade-in-up"
-                  style={{ animationDelay: "0.68s" }}
-                >
-                  <p className="font-semibold text-[#0F4F68]">2. Daten ergänzen</p>
-                  <p className="mt-1">PLZ und Situation eintragen, wir prüfen Ihre Region.</p>
-                </div>
-                <div
-                  className="rounded-xl border border-[#0F4F68]/10 bg-[#f8fcfd] p-3 text-sm text-neutral-700 opacity-0 animate-fade-in-up"
-                  style={{ animationDelay: "0.82s" }}
-                >
-                  <p className="font-semibold text-[#0F4F68]">3. Rückmeldung erhalten</p>
-                  <p className="mt-1">Sie erhalten die passende Empfehlung von unserem Team.</p>
+                <div className="[filter:drop-shadow(0_10px_22px_rgba(15,79,104,0.2))_drop-shadow(0_4px_12px_rgba(15,79,104,0.12))]">
+                  <Image
+                    src="/images/startseite_front.webp"
+                    alt="Gemeinsam zur passenden Unterstützung im Alltag"
+                    width={900}
+                    height={700}
+                    className="h-auto w-full object-contain"
+                    unoptimized
+                    priority
+                  />
                 </div>
               </div>
             </div>
-          </div>
-          <div className="order-1 flex w-full justify-center lg:order-2 lg:justify-end">
-            <div
-              className="relative mx-auto w-full max-w-[56rem] opacity-0 animate-fade-in-up motion-reduce:opacity-100 lg:mx-0 lg:ml-auto lg:mr-0"
-              style={{ animationDelay: "0.36s" }}
+
+            <header
+              className="relative z-10 mt-8 max-w-lg sm:max-w-xl lg:absolute lg:left-auto lg:right-[min(1.25rem,4vw)] xl:right-[min(2.5rem,7vw)] lg:top-1/2 lg:mt-0 lg:max-w-[min(22rem,34vw)] lg:-translate-y-1/2 lg:translate-y-[10%] 2xl:right-[min(4rem,6vw)] 2xl:max-w-[min(24rem,28vw)]"
             >
-              <div className="[filter:drop-shadow(0_10px_22px_rgba(15,79,104,0.2))_drop-shadow(0_4px_12px_rgba(15,79,104,0.12))]">
-                <Image
-                  src="/images/startseite_front.webp"
-                  alt="Gemeinsam zur passenden Unterstützung im Alltag"
-                  width={900}
-                  height={700}
-                  className="h-auto w-full object-contain"
-                  unoptimized
-                  priority
-                />
+              <h1
+                className="text-balance text-3xl font-extrabold leading-tight tracking-tight text-[#0F4F68] opacity-0 animate-fade-in-up sm:text-4xl lg:text-[2.35rem] xl:text-[2.6rem]"
+                style={{ animationDelay: "0s" }}
+              >
+                {HERO_INTRO.brand}
+              </h1>
+              <ul
+                className="mt-5 space-y-3 sm:mt-6 sm:space-y-3.5"
+                aria-label="Ihre Vorteile auf einen Blick"
+              >
+                {HERO_INTRO.taglineLines.map((line, i) => (
+                  <li
+                    key={line}
+                    className="flex items-center gap-3 text-pretty text-lg font-semibold leading-snug text-[#0F4F68] opacity-0 animate-fade-in-up sm:text-xl lg:text-[1.28rem]"
+                    style={{
+                      /* Nach Abschluss der Überschriften-Animation (~0,6s) nacheinander */
+                      animationDelay: `${0.68 + i * 0.26}s`,
+                    }}
+                  >
+                    <HeroCheckIcon />
+                    <span>{line}</span>
+                  </li>
+                ))}
+              </ul>
+            </header>
+          </div>
+
+          <div className="mt-12 sm:mt-14 lg:mt-16">
+            <p
+              className="text-xs font-semibold uppercase tracking-wide text-[#0F4F68]/80 opacity-0 animate-fade-in-up"
+              style={{ animationDelay: "1.55s" }}
+            >
+              In 3 Schritten zur passenden Hilfe
+            </p>
+            <h2
+              className="mt-2 text-2xl font-bold text-[#0F4F68] opacity-0 animate-fade-in-up sm:text-3xl"
+              style={{ animationDelay: "1.32s" }}
+            >
+              Schnell. Persönlich. Passend.
+            </h2>
+            <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-3">
+              <div
+                className="rounded-xl border border-[#0F4F68]/10 bg-[#f8fcfd] p-3 text-sm text-neutral-700 opacity-0 animate-fade-in-up"
+                style={{ animationDelay: "1.7s" }}
+              >
+                <p className="font-semibold text-[#0F4F68]">1. Bedarf wählen</p>
+                <p className="mt-1">Kurz angeben, wobei Sie Unterstützung wünschen.</p>
+              </div>
+              <div
+                className="rounded-xl border border-[#0F4F68]/10 bg-[#f8fcfd] p-3 text-sm text-neutral-700 opacity-0 animate-fade-in-up"
+                style={{ animationDelay: "1.78s" }}
+              >
+                <p className="font-semibold text-[#0F4F68]">2. Daten ergänzen</p>
+                <p className="mt-1">PLZ und Situation eintragen, wir prüfen Ihre Region.</p>
+              </div>
+              <div
+                className="rounded-xl border border-[#0F4F68]/10 bg-[#f8fcfd] p-3 text-sm text-neutral-700 opacity-0 animate-fade-in-up"
+                style={{ animationDelay: "1.86s" }}
+              >
+                <p className="font-semibold text-[#0F4F68]">3. Rückmeldung erhalten</p>
+                <p className="mt-1">Sie erhalten die passende Empfehlung von unserem Team.</p>
               </div>
             </div>
           </div>
