@@ -63,7 +63,7 @@ export default function HomePage() {
           <div className="order-1 flex w-full justify-end lg:order-2">
             <div className="relative w-full max-w-[56rem]">
               <Image
-                src="/images/startseite_gemeinsam.webp"
+                src="/images/startseite_gemeinsam.png"
                 alt="Gemeinsam zur passenden Unterstützung im Alltag"
                 width={900}
                 height={700}
