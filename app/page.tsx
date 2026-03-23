@@ -3,6 +3,13 @@ import { StandortAnthrazitRule } from "@/components/standorte/StandortAnthrazitR
 import { StandortNummerEinsReveal } from "@/components/standorte/StandortNummerEinsReveal";
 import { StandortWechselBild } from "@/components/standorte/StandortWechselBild";
 
+const HERO_INTRO = {
+  brand: "Alltagshilfe-Süd",
+  tagline: "Herz an Ihrer Seite.",
+  lead:
+    "Ihr verlässlicher Partner für Haushaltshilfe, Betreuung, Pflegeberatung und Pflegehilfsmittel.",
+} as const;
+
 const STARTSEITE_LEISTUNGEN_INTRO = {
   heading: "Mit viel Herz und Engagement sind wir für Sie da.",
   text: "Wir begleiten Sie zuverlässig in den Bereichen Haushaltshilfe, Betreuung und Pflegeberatung und stehen Ihnen in jeder Lebenssituation unterstützend zur Seite. Bei uns finden Sie passende Hilfe aus einer Hand, persönlich, vertrauensvoll und mit dem Blick auf das, was Ihnen wirklich wichtig ist.",
@@ -45,27 +52,76 @@ export default function HomePage() {
       style={{ backgroundColor: "#fafbfc" }}
     >
       <section className="w-full pt-0 pb-6 sm:pb-8 lg:pb-10">
-        <div className="grid w-full grid-cols-1 gap-6 pl-4 pr-0 sm:pl-6 sm:pr-0 lg:grid-cols-2 lg:items-center lg:pl-8">
-          <div className="order-2 lg:order-1">
-            <p className="text-xs font-semibold uppercase tracking-wide text-[#0F4F68]/80">In 3 Schritten zur passenden Hilfe</p>
-            <h2 className="mt-2 text-2xl font-bold text-[#0F4F68] sm:text-3xl">Schnell. Persönlich. Passend.</h2>
-            <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-3">
-              <div className="rounded-xl border border-[#0F4F68]/10 bg-[#f8fcfd] p-3 text-sm text-neutral-700">
-                <p className="font-semibold text-[#0F4F68]">1. Bedarf wählen</p>
-                <p className="mt-1">Kurz angeben, wobei Sie Unterstützung wünschen.</p>
-              </div>
-              <div className="rounded-xl border border-[#0F4F68]/10 bg-[#f8fcfd] p-3 text-sm text-neutral-700">
-                <p className="font-semibold text-[#0F4F68]">2. Daten ergänzen</p>
-                <p className="mt-1">PLZ und Situation eintragen, wir prüfen Ihre Region.</p>
-              </div>
-              <div className="rounded-xl border border-[#0F4F68]/10 bg-[#f8fcfd] p-3 text-sm text-neutral-700">
-                <p className="font-semibold text-[#0F4F68]">3. Rückmeldung erhalten</p>
-                <p className="mt-1">Sie erhalten die passende Empfehlung von unserem Team.</p>
+        <div className="grid w-full grid-cols-1 gap-6 pl-4 pr-0 sm:pl-6 sm:pr-0 lg:grid-cols-2 lg:items-start lg:gap-8 lg:pl-8">
+          <div className="order-2 flex w-full min-w-0 flex-col gap-8 lg:order-1 lg:max-w-xl lg:justify-start lg:pr-4">
+            <header className="min-w-0">
+              <h1
+                className="text-xl font-extrabold tracking-tight text-[#0F4F68] opacity-0 animate-fade-in-up sm:text-2xl lg:text-[1.65rem] lg:leading-snug"
+                style={{ animationDelay: "0ms" }}
+              >
+                {HERO_INTRO.brand}
+              </h1>
+              <p
+                className="mt-2 flex flex-wrap items-center gap-2 text-base font-semibold text-[#0F4F68] opacity-0 animate-fade-in-up sm:text-lg"
+                style={{ animationDelay: "0.14s" }}
+              >
+                <svg
+                  className="h-5 w-5 shrink-0 text-[#F78F2E]"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                  aria-hidden
+                >
+                  <path d="M12 21s-7.2-4.35-9.6-9.6C.35 8.25 2.1 5 5.25 5c1.95 0 3.75 1.05 4.65 2.7a5.45 5.45 0 0 1 4.1-2.7C17.15 5 19 8.1 18.35 11.4 16.35 16.2 12 21 12 21z" />
+                </svg>
+                <span>{HERO_INTRO.tagline}</span>
+              </p>
+              <p
+                className="mt-3 text-sm leading-relaxed text-neutral-700 opacity-0 animate-fade-in-up sm:text-base lg:text-[1.05rem]"
+                style={{ animationDelay: "0.28s" }}
+              >
+                {HERO_INTRO.lead}
+              </p>
+            </header>
+            <div>
+              <p
+                className="text-xs font-semibold uppercase tracking-wide text-[#0F4F68]/80 opacity-0 animate-fade-in-up"
+                style={{ animationDelay: "0.4s" }}
+              >
+                In 3 Schritten zur passenden Hilfe
+              </p>
+              <h2
+                className="mt-2 text-2xl font-bold text-[#0F4F68] opacity-0 animate-fade-in-up sm:text-3xl"
+                style={{ animationDelay: "0.48s" }}
+              >
+                Schnell. Persönlich. Passend.
+              </h2>
+              <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-3">
+                <div
+                  className="rounded-xl border border-[#0F4F68]/10 bg-[#f8fcfd] p-3 text-sm text-neutral-700 opacity-0 animate-fade-in-up"
+                  style={{ animationDelay: "0.58s" }}
+                >
+                  <p className="font-semibold text-[#0F4F68]">1. Bedarf wählen</p>
+                  <p className="mt-1">Kurz angeben, wobei Sie Unterstützung wünschen.</p>
+                </div>
+                <div
+                  className="rounded-xl border border-[#0F4F68]/10 bg-[#f8fcfd] p-3 text-sm text-neutral-700 opacity-0 animate-fade-in-up"
+                  style={{ animationDelay: "0.68s" }}
+                >
+                  <p className="font-semibold text-[#0F4F68]">2. Daten ergänzen</p>
+                  <p className="mt-1">PLZ und Situation eintragen, wir prüfen Ihre Region.</p>
+                </div>
+                <div
+                  className="rounded-xl border border-[#0F4F68]/10 bg-[#f8fcfd] p-3 text-sm text-neutral-700 opacity-0 animate-fade-in-up"
+                  style={{ animationDelay: "0.78s" }}
+                >
+                  <p className="font-semibold text-[#0F4F68]">3. Rückmeldung erhalten</p>
+                  <p className="mt-1">Sie erhalten die passende Empfehlung von unserem Team.</p>
+                </div>
               </div>
             </div>
           </div>
-          <div className="order-1 flex w-full justify-end lg:order-2">
-            <div className="relative w-full max-w-[56rem]">
+          <div className="order-1 flex w-full justify-end self-start lg:order-2">
+            <div className="relative w-full max-w-[56rem] opacity-0 animate-fade-in-up motion-reduce:opacity-100" style={{ animationDelay: "0.34s" }}>
               <div className="[filter:drop-shadow(0_10px_22px_rgba(15,79,104,0.2))_drop-shadow(0_4px_12px_rgba(15,79,104,0.12))]">
                 <Image
                   src="/images/startseite_front.webp"
