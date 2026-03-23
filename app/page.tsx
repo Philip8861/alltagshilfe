@@ -63,17 +63,14 @@ export default function HomePage() {
           <div className="order-1 flex w-full justify-end lg:order-2">
             <div className="relative w-full max-w-[56rem]">
               <div className="[filter:drop-shadow(0_10px_22px_rgba(15,79,104,0.2))_drop-shadow(0_4px_12px_rgba(15,79,104,0.12))]">
-                <div className="overflow-hidden" style={{ clipPath: "inset(0 0 22% 0)" }}>
-                  <Image
-                    src="/images/startseite_gemeinsam.webp"
-                    alt="Gemeinsam zur passenden Unterstützung im Alltag"
-                    width={900}
-                    height={700}
-                    className="h-auto w-full object-cover object-top"
-                    unoptimized
-                    priority
-                  />
-                </div>
+                <Image
+                  src="/images/startseite_gemeinsam.png"
+                  alt="Gemeinsam zur passenden Unterstützung im Alltag"
+                  width={900}
+                  height={700}
+                  className="h-auto w-full object-contain"
+                  priority
+                />
               </div>
             </div>
           </div>
