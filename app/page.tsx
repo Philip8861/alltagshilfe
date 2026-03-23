@@ -1,5 +1,4 @@
 import Image from "next/image";
-import { StandortAnthrazitRule } from "@/components/standorte/StandortAnthrazitRule";
 import { StandortNummerEinsReveal } from "@/components/standorte/StandortNummerEinsReveal";
 import { StandortWechselBild } from "@/components/standorte/StandortWechselBild";
 
@@ -32,6 +31,10 @@ const LEISTUNGEN = [
     title: "Pflegeshop",
     icon: "cart",
   },
+  {
+    title: "Essen auf Räder (nur Raum Kempten)",
+    icon: "meal",
+  },
 ] as const;
 
 export default function HomePage() {
@@ -40,7 +43,7 @@ export default function HomePage() {
       className="flex min-h-[60vh] w-full max-w-[100vw] flex-col pt-0 pb-0"
       style={{ backgroundColor: "#fafbfc" }}
     >
-      <section className="w-full pt-0 pb-10 sm:pb-12 lg:pb-14">
+      <section className="w-full pt-0 pb-6 sm:pb-8 lg:pb-10">
         <div className="grid w-full grid-cols-1 gap-6 pl-4 pr-0 sm:pl-6 sm:pr-0 lg:grid-cols-2 lg:items-center lg:pl-8">
           <div className="order-2 lg:order-1">
             <p className="text-xs font-semibold uppercase tracking-wide text-[#0F4F68]/80">In 3 Schritten zur passenden Hilfe</p>
@@ -87,9 +90,7 @@ export default function HomePage() {
         </div>
       </div>
 
-      <StandortAnthrazitRule className="mt-12 sm:mt-16 lg:mt-20" />
-
-      <section className="relative z-20 mt-8 w-full px-4 sm:mt-10 sm:px-6 lg:px-8">
+      <section className="relative z-20 mt-12 w-full px-4 sm:mt-16 sm:px-6 lg:mt-20 lg:px-8">
         <div className="mx-auto flex w-full max-w-6xl flex-col gap-6 sm:flex-row sm:items-start sm:gap-8 lg:gap-10">
           <div className="relative z-20 order-3 flex w-full max-w-full justify-center pb-2 pt-1 sm:order-1 lg:w-[50%] lg:max-w-3xl lg:shrink-0 lg:justify-center lg:px-6 lg:pb-4 lg:pt-2 sm:px-4">
             <div className="w-full max-w-full" style={{ width: "min(491px, calc(100vw - 3rem))" }}>
@@ -148,6 +149,16 @@ export default function HomePage() {
                     {leistung.icon === "cart" && (
                       <svg className="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
                         <path d="M7 4H4v2h1.3l2 9.1h9.6l1.7-6.8H8.5L8 6h12V4H7zm2 13a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm8 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4z" />
+                      </svg>
+                    )}
+                    {leistung.icon === "meal" && (
+                      <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M4 4v7" />
+                        <path d="M7 4v7" />
+                        <path d="M4 8h3" />
+                        <path d="M6 11v9" />
+                        <path d="M14 4c2.2 0 4 1.8 4 4v12" />
+                        <path d="M18 8h-4" />
                       </svg>
                     )}
                   </span>
