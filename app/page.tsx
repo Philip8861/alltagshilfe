@@ -10,6 +10,8 @@ const HERO_INTRO = {
     "Mehr Entlastung.",
     "Mehr Zeit fürs Wesentliche.",
   ],
+  partnerLine:
+    "Ihr verlässlicher Partner für Haushaltshilfe, Betreuung, Pflegeberatung und Pflegehilfsmittel.",
 } as const;
 
 function HeroCheckIcon({ className = "" }: { className?: string }) {
@@ -124,40 +126,46 @@ export default function HomePage() {
                   </li>
                 ))}
               </ul>
+              <p
+                className="mt-5 max-w-prose text-pretty text-base font-normal leading-relaxed text-neutral-600 opacity-0 animate-fade-in-up sm:mt-6 sm:text-[1.05rem]"
+                style={{ animationDelay: "1.22s" }}
+              >
+                {HERO_INTRO.partnerLine}
+              </p>
             </header>
           </div>
 
           <div className="mt-12 sm:mt-14 lg:mt-16">
             <p
               className="text-xs font-semibold uppercase tracking-wide text-[#0F4F68]/80 opacity-0 animate-fade-in-up"
-              style={{ animationDelay: "1.55s" }}
+              style={{ animationDelay: "1.95s" }}
             >
               In 3 Schritten zur passenden Hilfe
             </p>
             <h2
               className="mt-2 text-2xl font-bold text-[#0F4F68] opacity-0 animate-fade-in-up sm:text-3xl"
-              style={{ animationDelay: "1.32s" }}
+              style={{ animationDelay: "2.02s" }}
             >
               Schnell. Persönlich. Passend.
             </h2>
             <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-3">
               <div
                 className="rounded-xl border border-[#0F4F68]/10 bg-[#f8fcfd] p-3 text-sm text-neutral-700 opacity-0 animate-fade-in-up"
-                style={{ animationDelay: "1.7s" }}
+                style={{ animationDelay: "2.1s" }}
               >
                 <p className="font-semibold text-[#0F4F68]">1. Bedarf wählen</p>
                 <p className="mt-1">Kurz angeben, wobei Sie Unterstützung wünschen.</p>
               </div>
               <div
                 className="rounded-xl border border-[#0F4F68]/10 bg-[#f8fcfd] p-3 text-sm text-neutral-700 opacity-0 animate-fade-in-up"
-                style={{ animationDelay: "1.78s" }}
+                style={{ animationDelay: "2.18s" }}
               >
                 <p className="font-semibold text-[#0F4F68]">2. Daten ergänzen</p>
                 <p className="mt-1">PLZ und Situation eintragen, wir prüfen Ihre Region.</p>
               </div>
               <div
                 className="rounded-xl border border-[#0F4F68]/10 bg-[#f8fcfd] p-3 text-sm text-neutral-700 opacity-0 animate-fade-in-up"
-                style={{ animationDelay: "1.86s" }}
+                style={{ animationDelay: "2.26s" }}
               >
                 <p className="font-semibold text-[#0F4F68]">3. Rückmeldung erhalten</p>
                 <p className="mt-1">Sie erhalten die passende Empfehlung von unserem Team.</p>
