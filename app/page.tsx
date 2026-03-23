@@ -69,6 +69,7 @@ export default function HomePage() {
                   width={900}
                   height={700}
                   className="h-auto w-full object-cover object-top"
+                  style={{ clipPath: "inset(0 0 9% 0)" }}
                   unoptimized
                   priority
                 />
