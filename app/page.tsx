@@ -85,8 +85,15 @@ export default function HomePage() {
         className="mx-auto mt-12 w-full px-4 sm:mt-16 sm:px-6 lg:mt-20 lg:px-8"
         role="presentation"
       >
-        <div className="mx-auto w-full max-w-6xl">
-          <div className="h-px w-full bg-gradient-to-r from-transparent via-[#0F4F68]/28 to-transparent" aria-hidden />
+        <div className="mx-auto flex w-full max-w-6xl justify-center">
+          {/*
+            Vorher: 1px + sehr niedrige Opazität – auf vielen Displays praktisch unsichtbar.
+            Jetzt: etwas höher + kräftigeres „via“, optisch vergleichbar mit der früheren Anthrazit-Linie (~2/3 Breite).
+          */}
+          <div
+            className="h-[3px] w-2/3 max-w-3xl rounded-full bg-gradient-to-r from-transparent via-[#0F4F68]/45 to-transparent sm:h-[4px] sm:via-[#0F4F68]/50"
+            aria-hidden
+          />
         </div>
       </div>
 
