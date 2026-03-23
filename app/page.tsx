@@ -5,8 +5,11 @@ import { StandortWechselBild } from "@/components/standorte/StandortWechselBild"
 
 const HERO_INTRO = {
   brand: "Alltagshilfe-Süd",
-  tagline:
-    "Mehr Unterstützung. Mehr Entlastung. Mehr Zeit fürs Wesentliche.",
+  taglineLines: [
+    "Mehr Unterstützung.",
+    "Mehr Entlastung.",
+    "Mehr Zeit fürs Wesentliche.",
+  ],
   lead:
     "Ihr verlässlicher Partner für Haushaltshilfe, Betreuung, Pflegeberatung und Pflegehilfsmittel.",
 } as const;
@@ -53,45 +56,74 @@ export default function HomePage() {
       style={{ backgroundColor: "#fafbfc" }}
     >
       <section className="w-full pt-0 pb-6 sm:pb-8 lg:pb-10">
-        <div className="grid w-full grid-cols-1 gap-6 pl-4 pr-0 sm:pl-6 sm:pr-0 lg:grid-cols-2 lg:items-start lg:gap-8 lg:pl-8">
-          <div className="order-2 flex w-full min-w-0 flex-col gap-8 lg:order-1 lg:max-w-xl lg:justify-start lg:pr-4">
-            <header className="min-w-0">
-              <h1
-                className="text-xl font-extrabold tracking-tight text-[#0F4F68] opacity-0 animate-fade-in-up sm:text-2xl lg:text-[1.65rem] lg:leading-snug"
-                style={{ animationDelay: "0ms" }}
-              >
-                {HERO_INTRO.brand}
-              </h1>
-              <p
-                className="mt-2 text-base font-semibold leading-snug text-[#0F4F68] opacity-0 animate-fade-in-up sm:text-lg"
-                style={{ animationDelay: "0.14s" }}
-              >
-                {HERO_INTRO.tagline}
-              </p>
-              <p
-                className="mt-3 text-sm leading-relaxed text-neutral-700 opacity-0 animate-fade-in-up sm:text-base lg:text-[1.05rem]"
-                style={{ animationDelay: "0.28s" }}
-              >
-                {HERO_INTRO.lead}
-              </p>
+        <div className="grid w-full grid-cols-1 gap-8 pl-4 pr-4 sm:gap-10 sm:pl-6 sm:pr-6 lg:grid-cols-2 lg:items-center lg:gap-10 xl:gap-14 lg:pl-8 lg:pr-8">
+          <div className="order-2 flex w-full min-w-0 flex-col gap-10 lg:order-1 lg:justify-center">
+            <header className="relative min-w-0 overflow-hidden rounded-3xl border border-[#0F4F68]/12 bg-gradient-to-br from-[#e8f4f8]/95 via-white to-[#fafcfb] p-6 shadow-[0_16px_48px_rgba(15,79,104,0.09)] sm:p-8 lg:p-10 xl:p-11">
+              <div
+                className="pointer-events-none absolute -right-6 -top-10 h-40 w-40 rounded-full bg-[#F78F2E]/15 blur-3xl"
+                aria-hidden
+              />
+              <div
+                className="pointer-events-none absolute -bottom-8 -left-6 h-36 w-36 rounded-full bg-[#0F4F68]/[0.07] blur-2xl"
+                aria-hidden
+              />
+              <div
+                className="pointer-events-none absolute left-0 top-8 hidden h-[calc(100%-4rem)] w-1 rounded-full bg-gradient-to-b from-[#F78F2E] via-[#0F4F68]/40 to-transparent sm:block"
+                aria-hidden
+              />
+              <div className="relative sm:pl-5">
+                <p
+                  className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-[#0F4F68]/55 opacity-0 animate-fade-in-up sm:text-xs"
+                  style={{ animationDelay: "0s" }}
+                >
+                  Ihre Alltagshilfe
+                </p>
+                <h1
+                  className="mt-2 text-balance text-3xl font-extrabold leading-[1.12] tracking-tight text-[#0F4F68] opacity-0 animate-fade-in-up sm:text-4xl lg:text-[2.4rem] xl:text-[2.75rem] xl:leading-[1.1]"
+                  style={{ animationDelay: "0.06s" }}
+                >
+                  {HERO_INTRO.brand}
+                </h1>
+                <ul className="mt-5 space-y-2.5 sm:mt-6 sm:space-y-3" aria-label="Was Sie bei uns gewinnen">
+                  {HERO_INTRO.taglineLines.map((line, i) => (
+                    <li
+                      key={line}
+                      className="flex items-baseline gap-3 text-pretty text-lg font-semibold leading-snug text-[#0F4F68] opacity-0 animate-fade-in-up sm:text-xl lg:text-[1.35rem]"
+                      style={{ animationDelay: `${0.14 + i * 0.08}s` }}
+                    >
+                      <span
+                        className="mt-1.5 inline-block h-2 w-2 shrink-0 rounded-full bg-[#F78F2E] shadow-[0_0_0_3px_rgba(247,143,46,0.2)]"
+                        aria-hidden
+                      />
+                      {line}
+                    </li>
+                  ))}
+                </ul>
+                <p
+                  className="mt-6 max-w-prose text-pretty border-t border-[#0F4F68]/10 pt-6 text-base leading-relaxed text-neutral-600 opacity-0 animate-fade-in-up sm:text-lg lg:text-xl"
+                  style={{ animationDelay: "0.42s" }}
+                >
+                  {HERO_INTRO.lead}
+                </p>
+              </div>
             </header>
             <div>
               <p
                 className="text-xs font-semibold uppercase tracking-wide text-[#0F4F68]/80 opacity-0 animate-fade-in-up"
-                style={{ animationDelay: "0.4s" }}
+                style={{ animationDelay: "0.52s" }}
               >
                 In 3 Schritten zur passenden Hilfe
               </p>
               <h2
                 className="mt-2 text-2xl font-bold text-[#0F4F68] opacity-0 animate-fade-in-up sm:text-3xl"
-                style={{ animationDelay: "0.48s" }}
+                style={{ animationDelay: "0.58s" }}
               >
                 Schnell. Persönlich. Passend.
               </h2>
               <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-3">
                 <div
                   className="rounded-xl border border-[#0F4F68]/10 bg-[#f8fcfd] p-3 text-sm text-neutral-700 opacity-0 animate-fade-in-up"
-                  style={{ animationDelay: "0.58s" }}
+                  style={{ animationDelay: "0.66s" }}
                 >
                   <p className="font-semibold text-[#0F4F68]">1. Bedarf wählen</p>
                   <p className="mt-1">Kurz angeben, wobei Sie Unterstützung wünschen.</p>
@@ -105,7 +137,7 @@ export default function HomePage() {
                 </div>
                 <div
                   className="rounded-xl border border-[#0F4F68]/10 bg-[#f8fcfd] p-3 text-sm text-neutral-700 opacity-0 animate-fade-in-up"
-                  style={{ animationDelay: "0.78s" }}
+                  style={{ animationDelay: "0.82s" }}
                 >
                   <p className="font-semibold text-[#0F4F68]">3. Rückmeldung erhalten</p>
                   <p className="mt-1">Sie erhalten die passende Empfehlung von unserem Team.</p>
@@ -113,8 +145,11 @@ export default function HomePage() {
               </div>
             </div>
           </div>
-          <div className="order-1 flex w-full justify-end self-start lg:order-2">
-            <div className="relative w-full max-w-[56rem] opacity-0 animate-fade-in-up motion-reduce:opacity-100" style={{ animationDelay: "0.34s" }}>
+          <div className="order-1 flex w-full justify-center lg:order-2 lg:justify-end">
+            <div
+              className="relative mx-auto w-full max-w-[56rem] opacity-0 animate-fade-in-up motion-reduce:opacity-100 lg:mx-0 lg:ml-auto lg:mr-0"
+              style={{ animationDelay: "0.36s" }}
+            >
               <div className="[filter:drop-shadow(0_10px_22px_rgba(15,79,104,0.2))_drop-shadow(0_4px_12px_rgba(15,79,104,0.12))]">
                 <Image
                   src="/images/startseite_front.webp"
