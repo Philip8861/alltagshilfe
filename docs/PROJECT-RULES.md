@@ -79,6 +79,7 @@ Diese Datei ist die verbindliche Referenz für Architektur, Tech-Stack, Seitenst
 - **components/ui**: Buttons, Input, Card, etc.
 - **components/layout**: Header, Footer, Container.
 - **components/sections**: Hero, Leistungen, Trust, Referenzen, FAQ, CTA.
+- **components/home**: startseitenspezifische Bausteine (z. B. geführter Einstieg).
 - **components/forms**: ContactForm, Konfigurator-Steps.
 - **components/seo**: JsonLd, Breadcrumbs, Metadata-Helfer.
 - **components/consent**: Cookie-Banner (Platzhalter).
@@ -86,7 +87,7 @@ Diese Datei ist die verbindliche Referenz für Architektur, Tech-Stack, Seitenst
 - **lib/actions**: Server Actions (contact, configurator).
 - **lib/**: rate-limit.ts, security.ts, utils.ts.
 - **content/**: pages, leistungen, landing, blog, faq, site.json.
-- **config/**: site.ts, navigation.ts, features.ts.
+- **config/**: site.ts, navigation.ts, features.ts, **start-einstieg.ts** (Startseite: Texte/Links für den geführten Einstiegsbereich unter dem Hero).
 - **config/standorte.ts** + **config/standorte-plz-generated.json**: PLZ-Zuordnung zu den vier Hauptstandorten (Quelle: `public/Standortlisten.pdf`). PLZ-Suche nutzt `findStandortByPlz` und `getOrtByPlz` (Ortsnamen zeilenweise aus der PDF). Bei PDF-Update: Text extrahieren (`npx pdf-parse text public/Standortlisten.pdf`), UTF-8 in `scripts/standortlisten-extract.txt`, dann `node scripts/parse-standort-pdf-text.js --ts`.
 - **middleware.ts**: Security-Headers, ggf. Rate-Limit-Route.
 
