@@ -61,10 +61,10 @@ export default function HomePage() {
             </div>
           </div>
           <div className="order-1 flex w-full justify-end lg:order-2">
-            <div className="relative w-full max-w-md">
-              <div className="[filter:drop-shadow(0_10px_22px_rgba(15,79,104,0.2))_drop-shadow(0_4px_12px_rgba(15,79,104,0.12))]">
+            <div className="relative w-full max-w-lg lg:max-w-[42rem]">
+              <div className="[filter:drop-shadow(0_16px_30px_rgba(15,79,104,0.24))_drop-shadow(0_6px_14px_rgba(15,79,104,0.16))]">
                 <Image
-                  src="/images/startseite_gemeinsam.webp"
+                  src="/images/startseite_gemeinsam.png"
                   alt="Gemeinsam zur passenden Unterstützung im Alltag"
                   width={900}
                   height={700}
