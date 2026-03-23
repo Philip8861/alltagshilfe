@@ -7,20 +7,29 @@ const ANTHRAZIT = "#4a5568";
 
 type StandortAnthrazitRuleProps = {
   className?: string;
+  /**
+   * Sofort sichtbar (kein Scroll nötig). Sinnvoll oberhalb der Falz, damit die Linie nicht
+   * wegen IntersectionObserver/Root-Margin unsichtbar bleibt.
+   */
+  immediate?: boolean;
 };
 
 /**
  * Horizontale Strukturlinie: ~2/3 Seitenbreite (zentriert, mit Seitenabstand),
  * dünner an den Enden, in der Mitte etwas kräftiger; sanftes Einblenden im Viewport.
  */
-export function StandortAnthrazitRule({ className = "" }: StandortAnthrazitRuleProps) {
+export function StandortAnthrazitRule({ className = "", immediate = false }: StandortAnthrazitRuleProps) {
   const ref = useRef<HTMLDivElement>(null);
-  const [visible, setVisible] = useState(false);
+  const [visible, setVisible] = useState(immediate);
   const rawId = useId().replace(/[^a-zA-Z0-9]/g, "");
   const gradId = `standort-anthrazit-rule-${rawId}`;
 
   useEffect(() => {
     if (typeof window === "undefined") return;
+    if (immediate) {
+      setVisible(true);
+      return;
+    }
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
       setVisible(true);
       return;
@@ -38,7 +47,7 @@ export function StandortAnthrazitRule({ className = "" }: StandortAnthrazitRuleP
     );
     obs.observe(el);
     return () => obs.disconnect();
-  }, []);
+  }, [immediate]);
 
   return (
     <div

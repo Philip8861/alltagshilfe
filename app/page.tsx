@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { StandortAnthrazitRule } from "@/components/standorte/StandortAnthrazitRule";
 import { StandortNummerEinsReveal } from "@/components/standorte/StandortNummerEinsReveal";
 import { StandortWechselBild } from "@/components/standorte/StandortWechselBild";
 
@@ -85,11 +86,13 @@ export default function HomePage() {
         className="mx-auto mt-12 w-full px-4 sm:mt-16 sm:px-6 lg:mt-20 lg:px-8"
         role="presentation"
       >
-        <div className="mx-auto w-full max-w-6xl">
+        <div className="mx-auto w-full max-w-6xl space-y-2">
           <div
             className="h-px w-full bg-gradient-to-r from-transparent via-[#0F4F68]/28 to-transparent"
             aria-hidden
           />
+          {/* Frühere, gut sichtbare Strukturlinie (~2/3 Breite, weiche Enden); immediate = sofort sichtbar oberhalb der Falz */}
+          <StandortAnthrazitRule immediate className="px-0 sm:px-0 lg:px-0" />
         </div>
       </div>
 
