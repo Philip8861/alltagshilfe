@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { StandortAnthrazitRule } from "@/components/standorte/StandortAnthrazitRule";
 import { StandortNummerEinsReveal } from "@/components/standorte/StandortNummerEinsReveal";
 import { StandortWechselBild } from "@/components/standorte/StandortWechselBild";
@@ -39,6 +40,41 @@ export default function HomePage() {
       className="flex min-h-[60vh] w-full max-w-[100vw] flex-col pt-0 pb-0 -ml-4 sm:-ml-6 lg:-ml-8 pl-4 sm:pl-6 lg:pl-8"
       style={{ backgroundColor: "#fafbfc" }}
     >
+      <section className="w-full px-4 pt-6 sm:px-6 sm:pt-8 lg:px-8">
+        <div className="mx-auto grid w-full max-w-6xl grid-cols-1 gap-6 rounded-2xl border border-[#0F4F68]/12 bg-white/70 p-4 sm:p-6 lg:grid-cols-2 lg:items-center">
+          <div className="order-2 lg:order-1">
+            <p className="text-xs font-semibold uppercase tracking-wide text-[#0F4F68]/80">In 3 Schritten zur passenden Hilfe</p>
+            <h2 className="mt-2 text-2xl font-bold text-[#0F4F68] sm:text-3xl">Schnell. Persönlich. Passend.</h2>
+            <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-3">
+              <div className="rounded-xl border border-[#0F4F68]/10 bg-[#f8fcfd] p-3 text-sm text-neutral-700">
+                <p className="font-semibold text-[#0F4F68]">1. Bedarf wählen</p>
+                <p className="mt-1">Kurz angeben, wobei Sie Unterstützung wünschen.</p>
+              </div>
+              <div className="rounded-xl border border-[#0F4F68]/10 bg-[#f8fcfd] p-3 text-sm text-neutral-700">
+                <p className="font-semibold text-[#0F4F68]">2. Daten ergänzen</p>
+                <p className="mt-1">PLZ und Situation eintragen, wir prüfen Ihre Region.</p>
+              </div>
+              <div className="rounded-xl border border-[#0F4F68]/10 bg-[#f8fcfd] p-3 text-sm text-neutral-700">
+                <p className="font-semibold text-[#0F4F68]">3. Rückmeldung erhalten</p>
+                <p className="mt-1">Sie erhalten die passende Empfehlung von unserem Team.</p>
+              </div>
+            </div>
+          </div>
+          <div className="order-1 lg:order-2">
+            <div className="relative ml-auto w-full max-w-md overflow-hidden rounded-xl">
+              <Image
+                src="/images/startseite_gemeinsam.png"
+                alt="Gemeinsam zur passenden Unterstützung im Alltag"
+                width={900}
+                height={700}
+                className="h-auto w-full object-contain"
+                priority
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+
       <div className="mx-auto mt-6 w-full px-4 sm:mt-8 sm:px-6 lg:px-8" role="presentation">
         <div className="h-px w-full bg-gradient-to-r from-transparent via-[#0F4F68]/28 to-transparent" aria-hidden />
       </div>
