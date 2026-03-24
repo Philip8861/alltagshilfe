@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { KundenstimmenCarousel } from "@/components/home/KundenstimmenCarousel";
 import { StartEinstiegsHilfe } from "@/components/home/StartEinstiegsHilfe";
 import { StandortAnthrazitRule } from "@/components/standorte/StandortAnthrazitRule";
 import { StandortNummerEinsReveal } from "@/components/standorte/StandortNummerEinsReveal";
@@ -233,6 +234,8 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+
+      <KundenstimmenCarousel />
 
       <div className="relative z-0 -mt-[9%] min-h-[26vh] flex-1 bg-[#F2F9FA] px-4 pt-16 pb-20 sm:pt-18 sm:pb-24 lg:px-8">
         <svg
