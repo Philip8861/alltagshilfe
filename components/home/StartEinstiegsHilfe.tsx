@@ -42,6 +42,100 @@ const FUER_WEN_OPTIONEN = [
 const optionButtonClass =
   "min-h-[48px] w-full rounded-xl border border-[#0F4F68]/18 bg-white px-4 py-3 text-left text-base font-medium text-[#0F4F68] transition-colors hover:border-[#0F4F68]/40 hover:bg-[#F2F9FA] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0F4F68]";
 
+function SelectMark({ active }: { active: boolean }) {
+  if (active) {
+    return (
+      <span
+        className="inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#F78F2E] text-white"
+        aria-hidden
+      >
+        <svg
+          viewBox="0 0 24 24"
+          className="h-3.5 w-3.5"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          <path d="M20 6L9 17l-5-5" />
+        </svg>
+      </span>
+    );
+  }
+  return <span className="inline-flex h-5 w-5 shrink-0 rounded-full border border-[#0F4F68]/30" aria-hidden />;
+}
+
+function ServiceIcon({ service }: { service: ServiceKey }) {
+  if (service === "haushalt") {
+    return (
+      <svg className="h-5 w-5 text-[#0F4F68]/75" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+        <path d="M12 3.2 3.5 10v10.3h6.2v-6.3h4.6v6.3h6.2V10L12 3.2z" />
+      </svg>
+    );
+  }
+  if (service === "pflegeberatung") {
+    return (
+      <svg className="h-5 w-5 text-[#0F4F68]/75" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+        <path d="M4 4h16v11H7.6L4 18.6V4zm4 4v2h8V8H8zm0 4v2h5v-2H8z" />
+      </svg>
+    );
+  }
+  if (service === "pflegehilfsmittel") {
+    return (
+      <svg className="h-5 w-5 text-[#0F4F68]/75" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+        <path d="M3 7.2 12 3l9 4.2v9.6L12 21l-9-4.2V7.2zm9 8.5 6.8-3.2V8.6L12 11.8 5.2 8.6v3.9l6.8 3.2z" />
+      </svg>
+    );
+  }
+  if (service === "inkontinenz") {
+    return (
+      <svg className="h-5 w-5 text-[#0F4F68]/75" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+        <path d="M12 2 4 5.2v6.1c0 5.1 3.4 9.8 8 10.7 4.6-.9 8-5.6 8-10.7V5.2L12 2zm-1 13.2-3-3 1.4-1.4 1.6 1.6 3.6-3.6 1.4 1.4-5 5z" />
+      </svg>
+    );
+  }
+  if (service === "pflegeshop") {
+    return (
+      <svg className="h-5 w-5 text-[#0F4F68]/75" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+        <path d="M7 4H4v2h1.3l2 9.1h9.6l1.7-6.8H8.5L8 6h12V4H7zm2 13a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm8 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4z" />
+      </svg>
+    );
+  }
+  return (
+    <svg className="h-5 w-5 text-[#0F4F68]/75" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+      <path d="M4 4v7" />
+      <path d="M7 4v7" />
+      <path d="M4 8h3" />
+      <path d="M6 11v9" />
+      <path d="M14 4c2.2 0 4 1.8 4 4v12" />
+      <path d="M18 8h-4" />
+    </svg>
+  );
+}
+
+function StepFlatIcon({ kind }: { kind: "pflegegrad" | "person" | "kontakt" }) {
+  if (kind === "pflegegrad") {
+    return (
+      <svg className="h-5 w-5 text-[#0F4F68]/75" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+        <path d="M12 2 3 6v6c0 5 3.4 9.6 9 10 5.6-.4 9-5 9-10V6l-9-4zm-1 13-3-3 1.4-1.4 1.6 1.6 3.6-3.6L16 10l-5 5z" />
+      </svg>
+    );
+  }
+  if (kind === "person") {
+    return (
+      <svg className="h-5 w-5 text-[#0F4F68]/75" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+        <path d="M12 12a5 5 0 1 0-5-5 5 5 0 0 0 5 5zm0 2c-4.4 0-8 2-8 4.5V21h16v-2.5C20 16 16.4 14 12 14z" />
+      </svg>
+    );
+  }
+  return (
+    <svg className="h-5 w-5 text-[#0F4F68]/75" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+      <path d="M4 4h16v11H7.6L4 18.6V4zm4 4v2h8V8H8zm0 4v2h5v-2H8z" />
+    </svg>
+  );
+}
+
 const serviceZuLink: Record<ServiceKey, string> = {
   haushalt: serviceLinks.haushalt.mehr ?? "/leistungen/haushaltshilfe",
   pflegeberatung: serviceLinks.pflegeberatung.mehr ?? "/pflegeberatung",
@@ -189,19 +283,9 @@ export function StartEinstiegsHilfe() {
                           active && "border-[#F78F2E]/65 bg-[#fff8f2] shadow-[0_6px_16px_rgba(247,143,46,0.14)]"
                         )}
                       >
-                        <span className="flex items-start gap-2">
-                          {active ? (
-                            <span
-                              className="mt-0.5 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#F78F2E] text-white"
-                              aria-hidden
-                            >
-                              <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                                <path d="M20 6L9 17l-5-5" />
-                              </svg>
-                            </span>
-                          ) : (
-                            <span className="mt-0.5 inline-flex h-5 w-5 shrink-0 rounded-full border border-[#0F4F68]/30" aria-hidden />
-                          )}
+                        <span className="flex items-start gap-2.5">
+                          <SelectMark active={active} />
+                          <ServiceIcon service={opt.key} />
                           <span className="block">{opt.label}</span>
                         </span>
                         {opt.hinweis ? <span className="mt-1 block text-sm text-neutral-500">{opt.hinweis}</span> : null}
@@ -222,9 +306,17 @@ export function StartEinstiegsHilfe() {
                     <button
                       type="button"
                       onClick={() => setPflegegrad(p)}
-                      className={cn(optionButtonClass, pflegegrad === p && "border-[#0F4F68]/50 bg-[#eef7f9]")}
+                      className={cn(
+                        optionButtonClass,
+                        "transition-all duration-300",
+                        pflegegrad === p && "border-[#F78F2E]/65 bg-[#fff8f2] shadow-[0_6px_16px_rgba(247,143,46,0.14)]"
+                      )}
                     >
-                      {p}
+                      <span className="flex items-center gap-2.5">
+                        <SelectMark active={pflegegrad === p} />
+                        <StepFlatIcon kind="pflegegrad" />
+                        <span>{p}</span>
+                      </span>
                     </button>
                   </li>
                 ))}
@@ -241,9 +333,17 @@ export function StartEinstiegsHilfe() {
                     <button
                       type="button"
                       onClick={() => setFuerWen(f.id)}
-                      className={cn(optionButtonClass, fuerWen === f.id && "border-[#0F4F68]/50 bg-[#eef7f9]")}
+                      className={cn(
+                        optionButtonClass,
+                        "transition-all duration-300",
+                        fuerWen === f.id && "border-[#F78F2E]/65 bg-[#fff8f2] shadow-[0_6px_16px_rgba(247,143,46,0.14)]"
+                      )}
                     >
-                      {f.label}
+                      <span className="flex items-center gap-2.5">
+                        <SelectMark active={fuerWen === f.id} />
+                        <StepFlatIcon kind="person" />
+                        <span>{f.label}</span>
+                      </span>
                     </button>
                   </li>
                 ))}
@@ -288,23 +388,47 @@ export function StartEinstiegsHilfe() {
                 <button
                   type="button"
                   onClick={() => setKontaktArt("rueckruf")}
-                  className={cn(optionButtonClass, kontaktArt === "rueckruf" && "border-[#0F4F68]/50 bg-[#eef7f9]")}
+                  className={cn(
+                    optionButtonClass,
+                    "transition-all duration-300",
+                    kontaktArt === "rueckruf" && "border-[#F78F2E]/65 bg-[#fff8f2] shadow-[0_6px_16px_rgba(247,143,46,0.14)]"
+                  )}
                 >
-                  Ich bitte um Rückruf
+                  <span className="flex items-center gap-2.5">
+                    <SelectMark active={kontaktArt === "rueckruf"} />
+                    <StepFlatIcon kind="kontakt" />
+                    <span>Ich bitte um Rückruf</span>
+                  </span>
                 </button>
                 <button
                   type="button"
                   onClick={() => setKontaktArt("email")}
-                  className={cn(optionButtonClass, kontaktArt === "email" && "border-[#0F4F68]/50 bg-[#eef7f9]")}
+                  className={cn(
+                    optionButtonClass,
+                    "transition-all duration-300",
+                    kontaktArt === "email" && "border-[#F78F2E]/65 bg-[#fff8f2] shadow-[0_6px_16px_rgba(247,143,46,0.14)]"
+                  )}
                 >
-                  Ich möchte Kontakt per E-Mail
+                  <span className="flex items-center gap-2.5">
+                    <SelectMark active={kontaktArt === "email"} />
+                    <StepFlatIcon kind="kontakt" />
+                    <span>Ich möchte Kontakt per E-Mail</span>
+                  </span>
                 </button>
                 <button
                   type="button"
                   onClick={() => setKontaktArt("keine_daten")}
-                  className={cn(optionButtonClass, kontaktArt === "keine_daten" && "border-[#0F4F68]/50 bg-[#eef7f9]")}
+                  className={cn(
+                    optionButtonClass,
+                    "transition-all duration-300",
+                    kontaktArt === "keine_daten" && "border-[#F78F2E]/65 bg-[#fff8f2] shadow-[0_6px_16px_rgba(247,143,46,0.14)]"
+                  )}
                 >
-                  Ich möchte keine Daten angeben
+                  <span className="flex items-center gap-2.5">
+                    <SelectMark active={kontaktArt === "keine_daten"} />
+                    <StepFlatIcon kind="kontakt" />
+                    <span>Ich möchte keine Daten angeben</span>
+                  </span>
                 </button>
               </div>
 
