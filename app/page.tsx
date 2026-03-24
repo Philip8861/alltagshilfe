@@ -83,7 +83,7 @@ export default function HomePage() {
           <div className="relative">
             <div className="flex justify-end">
               <div
-                className="relative w-full max-w-[45rem] opacity-0 animate-fade-in-up motion-reduce:opacity-100"
+                className="relative mr-[-1rem] w-full max-w-[50rem] opacity-0 animate-fade-in-up motion-reduce:opacity-100 sm:mr-[-1.5rem] lg:mr-[-2rem]"
                 style={{ animationDelay: "0.08s" }}
               >
                 <div className="[filter:drop-shadow(0_10px_22px_rgba(15,79,104,0.2))_drop-shadow(0_4px_12px_rgba(15,79,104,0.12))]">
@@ -101,7 +101,7 @@ export default function HomePage() {
             </div>
 
             <header
-              className="relative z-10 mt-8 max-w-lg text-left sm:max-w-xl lg:absolute lg:left-0 lg:right-auto lg:top-[38%] lg:mt-0 lg:max-w-[min(26rem,42vw)] lg:-translate-y-1/2 xl:left-[min(0.25rem,1vw)] xl:max-w-[min(28rem,38vw)] 2xl:left-[min(0.5rem,2vw)] 2xl:max-w-[min(30rem,34vw)]"
+              className="relative z-10 mt-8 max-w-lg text-left sm:max-w-xl lg:absolute lg:left-0 lg:right-auto lg:top-[33%] lg:mt-0 lg:max-w-[min(26rem,42vw)] lg:-translate-y-1/2 xl:left-[min(0.25rem,1vw)] xl:max-w-[min(28rem,38vw)] 2xl:left-[min(0.5rem,2vw)] 2xl:max-w-[min(30rem,34vw)]"
             >
               <h1
                 className="text-balance text-3xl font-extrabold leading-tight tracking-tight text-[#0F4F68] opacity-0 animate-fade-in-up sm:text-4xl lg:text-[2.35rem] xl:text-[2.6rem]"

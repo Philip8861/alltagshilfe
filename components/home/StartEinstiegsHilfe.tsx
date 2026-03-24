@@ -135,7 +135,7 @@ export function StartEinstiegsHilfe() {
   return (
     <section className="mt-12 w-full sm:mt-14 lg:mt-16" aria-labelledby="hilfefinder-headline">
       <h2 id="hilfefinder-headline" className="text-2xl font-bold leading-tight text-[#0F4F68] sm:text-3xl lg:text-[1.85rem]">
-        Welche Unterstüzung benötigen Sie aktuell?
+        Welche Unterstützung benötigen Sie aktuell?
       </h2>
       <p className="mt-3 max-w-3xl text-base leading-relaxed text-neutral-700 sm:text-lg">
         Finden Sie in nur 60 Sekunden die passende Hilfe.
