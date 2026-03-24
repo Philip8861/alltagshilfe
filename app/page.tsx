@@ -83,7 +83,7 @@ export default function HomePage() {
           <div className="relative">
             <div className="flex justify-end">
               <div
-                className="relative w-full max-w-[56rem] opacity-0 animate-fade-in-up motion-reduce:opacity-100"
+                className="relative w-full max-w-[45rem] opacity-0 animate-fade-in-up motion-reduce:opacity-100"
                 style={{ animationDelay: "0.08s" }}
               >
                 <div className="[filter:drop-shadow(0_10px_22px_rgba(15,79,104,0.2))_drop-shadow(0_4px_12px_rgba(15,79,104,0.12))]">
