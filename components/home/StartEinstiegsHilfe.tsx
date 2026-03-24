@@ -18,10 +18,10 @@ type KontaktArt = "rueckruf" | "email" | "keine_daten";
 
 const SERVICE_OPTIONEN: { key: ServiceKey; label: string; hinweis?: string }[] = [
   { key: "haushalt", label: "Haushaltshilfe & Alltagsbegleitung" },
-  { key: "pflegeberatung", label: "Pflegeberatung nach §37.3 SGB XI" },
+  { key: "pflegeberatung", label: "Kostenfreie Pflegeberatung nach §37.3 SGB XI" },
   { key: "pflegehilfsmittel", label: "Kostenfreie Pflegehilfsmittel" },
   { key: "inkontinenz", label: "Inkontinenzversorgung" },
-  { key: "pflegeshop", label: "Pflegeshop" },
+  { key: "pflegeshop", label: "Pflegeutensilien für Körperpflege" },
   { key: "essen", label: "Essen auf Rädern", hinweis: "Nur im Raum Kempten" },
 ];
 
@@ -135,29 +135,43 @@ export function StartEinstiegsHilfe() {
   return (
     <section className="mt-12 w-full sm:mt-14 lg:mt-16" aria-labelledby="hilfefinder-headline">
       <h2 id="hilfefinder-headline" className="text-2xl font-bold leading-tight text-[#0F4F68] sm:text-3xl lg:text-[1.85rem]">
-        Welche Unterstützung brauchen Sie gerade?
+        Welche Unterstüzung benötigen Sie aktuell?
       </h2>
       <p className="mt-3 max-w-3xl text-base leading-relaxed text-neutral-700 sm:text-lg">
         Finden Sie in nur 60 Sekunden die passende Hilfe.
       </p>
 
       {!started ? (
-        <div className="mt-6">
+        <div className="mt-6 animate-fade-in-up">
           <button
             type="button"
             onClick={() => setStarted(true)}
-            className="inline-flex min-h-[50px] items-center justify-center rounded-xl bg-[#F78F2E] px-6 py-3 text-base font-semibold text-white shadow-sm transition-colors hover:bg-[#e67e22] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0F4F68]"
+            className="inline-flex min-h-[50px] items-center justify-center rounded-xl bg-[#F78F2E] px-6 py-3 text-base font-semibold text-white shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#e67e22] hover:shadow-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0F4F68]"
           >
             Passende Hilfe finden
           </button>
           <p className="mt-3 text-sm text-neutral-600">Sie müssen nicht alles schon wissen - wir führen Sie Schritt für Schritt.</p>
         </div>
       ) : (
-        <div className="mt-7 rounded-2xl border border-[#0F4F68]/15 bg-white p-5 shadow-sm sm:p-7">
-          <p className="text-xs font-semibold uppercase tracking-wide text-[#0F4F68]/70">Schritt {Math.min(step, 5)} von 5</p>
+        <div className="fixed inset-0 z-50 flex items-end justify-center bg-[#0F4F68]/45 p-3 backdrop-blur-[2px] sm:items-center sm:p-6">
+          <div className="w-full max-w-4xl animate-fade-in-up rounded-2xl border border-[#0F4F68]/15 bg-white p-5 shadow-2xl sm:p-7">
+            <div className="mb-3 flex items-center justify-between gap-3">
+              <p className="text-xs font-semibold uppercase tracking-wide text-[#0F4F68]/70">Schritt {Math.min(step, 5)} von 5</p>
+              <button
+                type="button"
+                onClick={() => {
+                  setStarted(false);
+                  resetFlow();
+                }}
+                className="inline-flex min-h-[40px] items-center rounded-lg border border-[#0F4F68]/20 px-3 py-1.5 text-sm font-semibold text-[#0F4F68] hover:bg-[#F2F9FA]"
+                aria-label="Hilfe-Finder schließen"
+              >
+                Schließen
+              </button>
+            </div>
 
-          {step === 1 ? (
-            <div className="mt-3">
+            {step === 1 ? (
+              <div className="mt-3 animate-fade-in-up">
               <h3 className="text-lg font-bold text-[#0F4F68] sm:text-xl">Welche Leistungen brauchen Sie gerade?</h3>
               <p className="mt-2 text-neutral-700">Mehrfachauswahl ist möglich.</p>
               <ul className="mt-4 grid list-none gap-2 sm:grid-cols-2">
@@ -169,20 +183,38 @@ export function StartEinstiegsHilfe() {
                         type="button"
                         aria-pressed={active}
                         onClick={() => toggleLeistung(opt.key)}
-                        className={cn(optionButtonClass, active && "border-[#0F4F68]/50 bg-[#eef7f9]")}
+                        className={cn(
+                          optionButtonClass,
+                          "transition-all duration-300",
+                          active && "border-[#F78F2E]/65 bg-[#fff8f2] shadow-[0_6px_16px_rgba(247,143,46,0.14)]"
+                        )}
                       >
-                        <span className="block">{opt.label}</span>
+                        <span className="flex items-start gap-2">
+                          {active ? (
+                            <span
+                              className="mt-0.5 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#F78F2E] text-white"
+                              aria-hidden
+                            >
+                              <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                                <path d="M20 6L9 17l-5-5" />
+                              </svg>
+                            </span>
+                          ) : (
+                            <span className="mt-0.5 inline-flex h-5 w-5 shrink-0 rounded-full border border-[#0F4F68]/30" aria-hidden />
+                          )}
+                          <span className="block">{opt.label}</span>
+                        </span>
                         {opt.hinweis ? <span className="mt-1 block text-sm text-neutral-500">{opt.hinweis}</span> : null}
                       </button>
                     </li>
                   );
                 })}
               </ul>
-            </div>
-          ) : null}
+              </div>
+            ) : null}
 
-          {step === 2 ? (
-            <div className="mt-3">
+            {step === 2 ? (
+              <div className="mt-3 animate-fade-in-up">
               <h3 className="text-lg font-bold text-[#0F4F68] sm:text-xl">Welchen Pflegegrad gibt es aktuell?</h3>
               <ul className="mt-4 grid list-none gap-2 sm:grid-cols-2">
                 {PFLEGEGRADE.map((p) => (
@@ -197,11 +229,11 @@ export function StartEinstiegsHilfe() {
                   </li>
                 ))}
               </ul>
-            </div>
-          ) : null}
+              </div>
+            ) : null}
 
-          {step === 3 ? (
-            <div className="mt-3">
+            {step === 3 ? (
+              <div className="mt-3 animate-fade-in-up">
               <h3 className="text-lg font-bold text-[#0F4F68] sm:text-xl">Für wen suchen Sie Unterstützung?</h3>
               <ul className="mt-4 grid list-none gap-2 sm:grid-cols-2">
                 {FUER_WEN_OPTIONEN.map((f) => (
@@ -216,11 +248,11 @@ export function StartEinstiegsHilfe() {
                   </li>
                 ))}
               </ul>
-            </div>
-          ) : null}
+              </div>
+            ) : null}
 
-          {step === 4 ? (
-            <div className="mt-3">
+            {step === 4 ? (
+              <div className="mt-3 animate-fade-in-up">
               <h3 className="text-lg font-bold text-[#0F4F68] sm:text-xl">Welche PLZ hat der Einsatzort?</h3>
               <p className="mt-2 text-neutral-700">So zeigen wir Ihnen den passenden Ansprechpartner.</p>
               <label htmlFor="hilfefinder-plz" className="mt-4 block text-sm font-medium text-[#0F4F68]">PLZ</label>
@@ -246,11 +278,11 @@ export function StartEinstiegsHilfe() {
                   )}
                 </p>
               ) : null}
-            </div>
-          ) : null}
+              </div>
+            ) : null}
 
-          {step === 5 ? (
-            <div className="mt-3">
+            {step === 5 ? (
+              <div className="mt-3 animate-fade-in-up">
               <h3 className="text-lg font-bold text-[#0F4F68] sm:text-xl">Wie möchten Sie jetzt weitermachen?</h3>
               <div className="mt-4 grid gap-2 sm:grid-cols-3">
                 <button
@@ -292,11 +324,11 @@ export function StartEinstiegsHilfe() {
                   <input value={email} onChange={(e) => setEmail(e.target.value)} placeholder="E-Mail" type="email" className="rounded-xl border border-[#0F4F68]/20 px-4 py-3 sm:col-span-2" />
                 </div>
               ) : null}
-            </div>
-          ) : null}
+              </div>
+            ) : null}
 
-          {step === 6 ? (
-            <div className="mt-3 space-y-4">
+            {step === 6 ? (
+              <div className="mt-3 space-y-4 animate-fade-in-up">
               <h3 className="text-lg font-bold text-[#0F4F68] sm:text-xl">Ihre nächsten Schritte</h3>
               <p className="text-neutral-700">Vielen Dank. Auf Basis Ihrer Angaben schlagen wir Ihnen die passenden Wege vor.</p>
 
@@ -351,41 +383,42 @@ export function StartEinstiegsHilfe() {
                   </div>
                 </div>
               )}
+              </div>
+            ) : null}
+
+            {error ? <p className="mt-4 text-sm text-red-600" role="alert">{error}</p> : null}
+
+            <div className="mt-6 flex flex-wrap gap-3">
+              {step > 1 && step < 6 ? (
+                <button
+                  type="button"
+                  onClick={zurueck}
+                  className="inline-flex min-h-[46px] items-center justify-center rounded-xl border border-[#0F4F68]/30 px-5 py-2 text-base font-semibold text-[#0F4F68] hover:bg-[#F2F9FA]"
+                >
+                  Zurück
+                </button>
+              ) : null}
+
+              {step < 6 ? (
+                <button
+                  type="button"
+                  onClick={weiter}
+                  className="inline-flex min-h-[46px] items-center justify-center rounded-xl bg-[#0F4F68] px-5 py-2 text-base font-semibold text-white hover:bg-[#0c3d52]"
+                >
+                  Weiter
+                </button>
+              ) : null}
+
+              {step === 6 ? (
+                <button
+                  type="button"
+                  onClick={resetFlow}
+                  className="inline-flex min-h-[46px] items-center justify-center rounded-xl bg-[#F78F2E] px-5 py-2 text-base font-semibold text-white hover:bg-[#e67e22]"
+                >
+                  Neu starten
+                </button>
+              ) : null}
             </div>
-          ) : null}
-
-          {error ? <p className="mt-4 text-sm text-red-600" role="alert">{error}</p> : null}
-
-          <div className="mt-6 flex flex-wrap gap-3">
-            {step > 1 && step < 6 ? (
-              <button
-                type="button"
-                onClick={zurueck}
-                className="inline-flex min-h-[46px] items-center justify-center rounded-xl border border-[#0F4F68]/30 px-5 py-2 text-base font-semibold text-[#0F4F68] hover:bg-[#F2F9FA]"
-              >
-                Zurück
-              </button>
-            ) : null}
-
-            {step < 6 ? (
-              <button
-                type="button"
-                onClick={weiter}
-                className="inline-flex min-h-[46px] items-center justify-center rounded-xl bg-[#0F4F68] px-5 py-2 text-base font-semibold text-white hover:bg-[#0c3d52]"
-              >
-                Weiter
-              </button>
-            ) : null}
-
-            {step === 6 ? (
-              <button
-                type="button"
-                onClick={resetFlow}
-                className="inline-flex min-h-[46px] items-center justify-center rounded-xl bg-[#F78F2E] px-5 py-2 text-base font-semibold text-white hover:bg-[#e67e22]"
-              >
-                Neu starten
-              </button>
-            ) : null}
           </div>
         </div>
       )}
