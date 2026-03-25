@@ -34,7 +34,6 @@ export function StandortWechselBild({ alt, sizes }: StandortWechselBildProps) {
             (i === index ? "opacity-100" : "opacity-0")
           }
           sizes={sizes}
-          unoptimized
           priority={i === 0}
         />
       ))}

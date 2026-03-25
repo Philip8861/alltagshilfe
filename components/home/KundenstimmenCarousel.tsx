@@ -108,7 +108,7 @@ export function KundenstimmenCarousel() {
               aria-hidden
               width={22}
               height={22}
-              unoptimized
+              sizes="22px"
               className={cn(
                 "h-[22px] w-[22px] transition-all duration-300",
                 i < starCount ? "scale-100 opacity-100" : "scale-75 opacity-25"

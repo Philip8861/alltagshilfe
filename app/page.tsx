@@ -93,8 +93,8 @@ export default function HomePage() {
                     alt="Gemeinsam zur passenden Unterstützung im Alltag"
                     width={900}
                     height={700}
+                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 90vw, min(50rem, 90vw)"
                     className="h-auto w-full object-contain"
-                    unoptimized
                     priority
                   />
                 </div>
