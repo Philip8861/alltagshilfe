@@ -6,40 +6,41 @@ import { cn } from "@/lib/utils";
 
 type Bewertung = {
   name: string;
-  ort: string;
+  meta: string;
   text: string;
 };
 
 const BEWERTUNGEN: Bewertung[] = [
   {
-    name: "Sabine M.",
-    ort: "Memmingen",
-    text: "Sehr herzliches Team. Wir haben schnell die passende Unterstützung bekommen und fühlen uns wirklich gut begleitet.",
+    name: "Elena Zimmermann",
+    meta: "Local Guide · 11 Rezensionen · vor 2 Wochen",
+    text: "Ich bin rundum zufrieden mit der Alltagshilfe-Süd. Der Kontakt ist immer freundlich, zuverlässig und unkompliziert. Die Unterstützung im Alltag ist eine große Hilfe und alles wird sehr sorgfältig und engagiert erledigt. Man merkt, dass hier mit viel Herz gearbeitet wird. Vielen Dank für die tolle Unterstützung – ich kann den Service absolut weiterempfehlen!",
   },
   {
-    name: "Thomas M.",
-    ort: "Augsburg",
-    text: "Freundlich, zuverlässig und verständlich erklärt. Besonders die Pflegeberatung hat uns enorm geholfen.",
+    name: "Ta K.",
+    meta: "2 Rezensionen · 17 Fotos · vor einem Jahr",
+    text: "Nach einem Beratungsgespräch wurde der Bedarf konkret geklärt und zeitnah eine hauswirtschaftliche Fachkraft eingesetzt. Neben den Reinigungsarbeiten und dem Kochen wurden auch Begleitungen übernommen. Besonders wertvoll: flexible, bedarfsgerechte Unterstützung, direkte Abrechnung mit den Kassen und immer erreichbare Ansprechpartnerinnen.",
   },
   {
-    name: "Elena K.",
-    ort: "Wangen",
-    text: "Die Alltagsbegleitung ist eine große Entlastung für unsere Familie. Termine klappen verlässlich und menschlich.",
+    name: "Patricia Schmidt",
+    meta: "6 Rezensionen · vor einer Woche",
+    text: "Herzlichen Dank. Angerufen und am gleichen Tag noch einen Termin bekommen. Frau Riegel hat mich sehr freundlich und kompetent beraten und direkt eine passende Unterstützung organisiert. Diesen Service kann ich absolut empfehlen.",
   },
   {
-    name: "Petra M.",
-    ort: "Kempten",
-    text: "Vom ersten Kontakt an hatten wir ein gutes Gefühl. Alles lief ruhig, transparent und ohne komplizierte Schritte.",
+    name: "Alf Laumann",
+    meta: "1 Rezension · vor einer Woche",
+    text: "Nach meinem Oberschenkelhalsbruch war ich auf Hilfe angewiesen. Die Unterstützung kam pünktlich, sehr hilfsbereit und zuverlässig. Auch der Kontakt mit dem Büro war perfekt. Vielen Dank für den großartigen Service.",
   },
   {
-    name: "Johann S.",
-    ort: "Engen",
-    text: "Tolle Unterstützung im Alltag. Wir wurden sehr respektvoll behandelt und jederzeit kompetent beraten.",
+    name: "Kathi Bühler",
+    meta: "2 Rezensionen · vor 2 Monaten",
+    text: "Unsere Oma wird wöchentlich unterstützt, wodurch wir Angehörigen sehr entlastet werden. Vielen Dank für die professionelle und liebevolle Betreuung. Von Pflegeberatung über Hilfeleistungen bis zu Formularen fühlt man sich hier fachgerecht begleitet.",
   },
 ];
 
 export function KundenstimmenCarousel() {
   const [index, setIndex] = useState(0);
+  const [starCount, setStarCount] = useState(0);
 
   const count = useMemo(() => BEWERTUNGEN.length, []);
 
@@ -51,10 +52,24 @@ export function KundenstimmenCarousel() {
     return () => window.clearInterval(id);
   }, [count]);
 
+  useEffect(() => {
+    setStarCount(0);
+    const id = window.setInterval(() => {
+      setStarCount((prev) => {
+        if (prev >= 5) {
+          window.clearInterval(id);
+          return 5;
+        }
+        return prev + 1;
+      });
+    }, 120);
+    return () => window.clearInterval(id);
+  }, [index]);
+
   return (
     <section className="relative z-20 mt-10 w-full px-4 sm:mt-12 sm:px-6 lg:px-8" aria-label="Kundenstimmen">
-      <div className="mx-auto w-full max-w-6xl rounded-3xl border border-[#0F4F68]/12 bg-white/95 p-5 shadow-[0_10px_24px_rgba(15,79,104,0.07)] sm:p-7">
-        <div className="flex flex-wrap items-center gap-2">
+      <div className="mx-auto w-full max-w-6xl rounded-3xl border border-[#0F4F68]/12 bg-gradient-to-br from-[#f7fcfe] via-white to-[#fff8f2] p-5 text-center shadow-[0_14px_30px_rgba(15,79,104,0.09)] sm:p-7">
+        <div className="flex flex-wrap items-center justify-center gap-2">
           {Array.from({ length: 5 }).map((_, i) => (
             <Image
               key={`star-${i}`}
@@ -63,20 +78,25 @@ export function KundenstimmenCarousel() {
               aria-hidden
               width={22}
               height={22}
-              className="h-[22px] w-[22px]"
+              unoptimized
+              className={cn(
+                "h-[22px] w-[22px] transition-all duration-300",
+                i < starCount ? "scale-100 opacity-100" : "scale-75 opacity-25"
+              )}
             />
           ))}
         </div>
-        <h2 className="mt-3 text-2xl font-bold text-[#0F4F68] sm:text-3xl">Das sagen unsere Kunden*in</h2>
+        <p className="mt-2 text-sm font-semibold text-[#0F4F68]/75">Google-Rezensionen · 5,0 Sterne</p>
+        <h2 className="mt-1 text-2xl font-bold text-[#0F4F68] sm:text-3xl">Das sagen unsere Kunden*innen</h2>
 
-        <div className="relative mt-4 min-h-[150px] sm:min-h-[130px]">
+        <div className="relative mt-5 min-h-[250px] sm:min-h-[220px]">
           {BEWERTUNGEN.map((b, i) => {
             const active = i === index;
             return (
               <article
                 key={`${b.name}-${i}`}
                 className={cn(
-                  "absolute inset-0 transition-all duration-500",
+                  "absolute inset-0 rounded-2xl border border-[#0F4F68]/10 bg-white/90 p-5 text-left transition-all duration-500",
                   active
                     ? "translate-y-0 opacity-100"
                     : "pointer-events-none translate-y-1 opacity-0"
@@ -88,15 +108,28 @@ export function KundenstimmenCarousel() {
                   {b.text}
                   <span aria-hidden>&ldquo;</span>
                 </p>
-                <p className="mt-4 text-sm font-semibold text-[#0F4F68]">
-                  {b.name} - {b.ort}
-                </p>
+                <p className="mt-4 text-sm font-semibold text-[#0F4F68]">{b.name}</p>
+                <p className="mt-0.5 text-xs text-neutral-500">{b.meta}</p>
+                <div className="mt-3 flex items-center gap-1">
+                  {Array.from({ length: 5 }).map((_, starIdx) => (
+                    <Image
+                      key={`${b.name}-row-star-${starIdx}`}
+                      src="/images/star.png"
+                      alt=""
+                      aria-hidden
+                      width={16}
+                      height={16}
+                      unoptimized
+                      className="h-4 w-4"
+                    />
+                  ))}
+                </div>
               </article>
             );
           })}
         </div>
 
-        <div className="mt-4 flex gap-2" aria-label="Bewertung auswählen">
+        <div className="mt-4 flex justify-center gap-2" aria-label="Bewertung auswählen">
           {BEWERTUNGEN.map((_, i) => (
             <button
               key={`dot-${i}`}
