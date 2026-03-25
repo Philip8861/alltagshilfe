@@ -12,6 +12,16 @@ type Bewertung = {
 
 const BEWERTUNGEN: Bewertung[] = [
   {
+    name: "Tati",
+    meta: "5 Rezensionen · vor 2 Monaten",
+    text: "Sehr freundliche telefonische Beratung. Absolut empfehlenswert.",
+  },
+  {
+    name: "Elmas Sert",
+    meta: "1 Rezension · vor einem Monat",
+    text: "Wir haben eine sehr freundliche Beratung vor Ort erhalten. Unterstützung wurde nach kurzer Zeit unkompliziert geschickt. Vielen Dank!",
+  },
+  {
     name: "Elena Zimmermann",
     meta: "Local Guide · 11 Rezensionen · vor 2 Wochen",
     text: "Ich bin rundum zufrieden mit der Alltagshilfe-Süd. Der Kontakt ist immer freundlich, zuverlässig und unkompliziert. Die Unterstützung im Alltag ist eine große Hilfe und alles wird sehr sorgfältig und engagiert erledigt. Man merkt, dass hier mit viel Herz gearbeitet wird. Vielen Dank für die tolle Unterstützung – ich kann den Service absolut weiterempfehlen!",
@@ -36,6 +46,21 @@ const BEWERTUNGEN: Bewertung[] = [
     meta: "2 Rezensionen · vor 2 Monaten",
     text: "Unsere Oma wird wöchentlich unterstützt, wodurch wir Angehörigen sehr entlastet werden. Vielen Dank für die professionelle und liebevolle Betreuung. Von Pflegeberatung über Hilfeleistungen bis zu Formularen fühlt man sich hier fachgerecht begleitet.",
   },
+  {
+    name: "Iris Huber",
+    meta: "2 Rezensionen · vor 4 Monaten",
+    text: "Ich war in einer Notlage und mir und meiner Familie wurde sofort auf die beste Art und Weise geholfen. Das gesamte Team ist sehr kompetent und sehr freundlich. Vielen Dank für die Unterstützung!",
+  },
+  {
+    name: "E. A.",
+    meta: "10 Rezensionen · vor 5 Monaten",
+    text: "Alles bestens, top Service.",
+  },
+  {
+    name: "Petra Kupzok",
+    meta: "5 Rezensionen · vor 10 Monaten",
+    text: "Herzlichen Dank für die vielfältige Unterstützung. Egal ob Termine oder Anträge – wir bekommen immer Hilfe und wichtige Infos. Das Personal ist hilfsbereit und nicht aufdringlich. Ich fühle mich bei der Alltagshilfe-Süd sehr gut aufgehoben.",
+  },
 ];
 
 export function KundenstimmenCarousel() {
@@ -48,7 +73,7 @@ export function KundenstimmenCarousel() {
     if (count <= 1) return;
     const id = window.setInterval(() => {
       setIndex((prev) => (prev + 1) % count);
-    }, 5000);
+    }, 8000);
     return () => window.clearInterval(id);
   }, [count]);
 
@@ -68,7 +93,7 @@ export function KundenstimmenCarousel() {
 
   return (
     <section className="relative z-20 mt-10 w-full px-4 sm:mt-12 sm:px-6 lg:px-8" aria-label="Kundenstimmen">
-      <div className="mx-auto w-full max-w-6xl rounded-3xl border border-[#0F4F68]/12 bg-gradient-to-br from-[#f7fcfe] via-white to-[#fff8f2] p-5 text-center shadow-[0_14px_30px_rgba(15,79,104,0.09)] sm:p-7">
+      <div className="mx-auto w-full max-w-6xl p-5 text-center sm:p-7">
         <div className="flex flex-wrap items-center justify-center gap-2">
           {Array.from({ length: 5 }).map((_, i) => (
             <Image
@@ -96,7 +121,7 @@ export function KundenstimmenCarousel() {
               <article
                 key={`${b.name}-${i}`}
                 className={cn(
-                  "absolute inset-0 rounded-2xl border border-[#0F4F68]/10 bg-white/90 p-5 text-left transition-all duration-500",
+                  "absolute inset-0 p-1 text-left transition-all duration-500",
                   active
                     ? "translate-y-0 opacity-100"
                     : "pointer-events-none translate-y-1 opacity-0"
@@ -129,18 +154,24 @@ export function KundenstimmenCarousel() {
           })}
         </div>
 
-        <div className="mt-4 flex justify-center gap-2" aria-label="Bewertung auswählen">
+        <div className="mt-4 flex flex-wrap justify-center gap-2" aria-label="Bewertung auswählen">
           {BEWERTUNGEN.map((_, i) => (
             <button
               key={`dot-${i}`}
               type="button"
               onClick={() => setIndex(i)}
               className={cn(
-                "h-2.5 w-2.5 rounded-full transition-colors",
-                i === index ? "bg-[#F78F2E]" : "bg-[#0F4F68]/22 hover:bg-[#0F4F68]/38"
+                "inline-flex h-6 w-6 items-center justify-center rounded-full border transition-colors",
+                i === index
+                  ? "border-[#F78F2E] bg-[#F78F2E] text-white"
+                  : "border-[#0F4F68]/25 bg-white text-[#0F4F68]/45 hover:border-[#0F4F68]/45 hover:text-[#0F4F68]/65"
               )}
               aria-label={`Bewertung ${i + 1} anzeigen`}
-            />
+            >
+              <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                <path d="M20 6L9 17l-5-5" />
+              </svg>
+            </button>
           ))}
         </div>
       </div>
