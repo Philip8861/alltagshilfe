@@ -114,44 +114,16 @@ export function KundenstimmenCarousel() {
         <p className="mt-2 text-sm font-semibold text-[#0F4F68]/75">Google-Rezensionen · 5,0 Sterne</p>
         <h2 className="mt-1 text-2xl font-bold text-[#0F4F68] sm:text-3xl">Das sagen unsere Kunden*innen</h2>
 
-        <div className="relative mt-5 min-h-[250px] sm:min-h-[220px]">
-          {BEWERTUNGEN.map((b, i) => {
-            const active = i === index;
-            return (
-              <article
-                key={`${b.name}-${i}`}
-                className={cn(
-                  "absolute inset-0 p-1 text-left transition-all duration-500",
-                  active
-                    ? "translate-y-0 opacity-100"
-                    : "pointer-events-none translate-y-1 opacity-0"
-                )}
-                aria-hidden={!active}
-              >
-                <p className="text-base leading-relaxed text-neutral-700 sm:text-lg">
-                  <span aria-hidden>&bdquo;</span>
-                  {b.text}
-                  <span aria-hidden>&ldquo;</span>
-                </p>
-                <p className="mt-4 text-sm font-semibold text-[#0F4F68]">{b.name}</p>
-                <p className="mt-0.5 text-xs text-neutral-500">{b.meta}</p>
-                <div className="mt-3 flex items-center gap-1">
-                  {Array.from({ length: 5 }).map((_, starIdx) => (
-                    <Image
-                      key={`${b.name}-row-star-${starIdx}`}
-                      src="/images/star.png"
-                      alt=""
-                      aria-hidden
-                      width={16}
-                      height={16}
-                      unoptimized
-                      className="h-4 w-4"
-                    />
-                  ))}
-                </div>
-              </article>
-            );
-          })}
+        <div className="mt-5 text-left">
+          <article key={`${BEWERTUNGEN[index]?.name}-${index}`} className="animate-fade-in-up p-1">
+            <p className="text-base leading-relaxed text-neutral-700 sm:text-lg">
+              <span aria-hidden>&bdquo;</span>
+              {BEWERTUNGEN[index]?.text}
+              <span aria-hidden>&ldquo;</span>
+            </p>
+            <p className="mt-4 text-sm font-semibold text-[#0F4F68]">{BEWERTUNGEN[index]?.name}</p>
+            <p className="mt-0.5 text-xs text-neutral-500">{BEWERTUNGEN[index]?.meta}</p>
+          </article>
         </div>
 
         <div className="mt-4 flex flex-wrap justify-center gap-2" aria-label="Bewertung auswählen">
