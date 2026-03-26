@@ -278,8 +278,8 @@ export default function HomePage() {
           </p>
           <ul className="mt-6 grid gap-4 sm:grid-cols-2">
             {VORTEILE.map((item) => (
-              <li key={item} className="flex items-start gap-3 rounded-xl border-l-4 border-[#F78F2E] pl-3">
-                <Image src="/images/haken.webp" alt="" aria-hidden width={34} height={34} className="mt-0.5 h-[34px] w-[34px] shrink-0 object-contain" />
+              <li key={item} className="flex items-start gap-3 rounded-xl">
+                <Image src="/images/haken.webp" alt="" aria-hidden width={42} height={42} unoptimized className="mt-0.5 h-[42px] w-[42px] shrink-0 object-contain drop-shadow-[0_2px_4px_rgba(247,143,46,0.35)]" />
                 <span className="text-[1.03rem] font-medium leading-relaxed text-neutral-800 sm:text-[1.08rem]">{item}</span>
               </li>
             ))}

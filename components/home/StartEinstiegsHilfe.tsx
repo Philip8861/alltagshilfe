@@ -563,7 +563,7 @@ export function StartEinstiegsHilfe() {
                     <span className="flex items-center gap-2.5">
                       <SelectMark active={kontaktArt === "rueckruf"} />
                       <StepFlatIcon kind="kontakt" />
-                      <span>Ich wünsche einen Rückruf</span>
+                      <span>Ich wünsche einen Anruf</span>
                     </span>
                   </button>
                   <button
