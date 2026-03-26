@@ -184,10 +184,19 @@ export default function HomePage() {
         </div>
       </div>
 
-      <section className="relative z-20 mt-10 w-full px-4 sm:mt-12 sm:px-6 lg:px-8">
+      <section className="relative z-20 mt-10 w-full bg-[#F2F9FA] px-4 pt-16 pb-10 sm:mt-12 sm:px-6 sm:pt-20 sm:pb-12 lg:px-8">
+        <svg
+          className="pointer-events-none absolute left-0 top-0 h-12 w-full -translate-y-[68%] sm:h-16"
+          viewBox="0 0 1200 120"
+          preserveAspectRatio="none"
+          fill="none"
+          aria-hidden
+        >
+          <path d="M0,120 C200,32 420,8 600,22 C800,38 1010,90 1200,120 L1200,120 L0,120 Z" fill="#F2F9FA" />
+        </svg>
         <div className="mx-auto w-full max-w-6xl p-1 sm:p-2">
           <h2 className="text-2xl font-bold text-[#0F4F68] sm:text-3xl">Unsere Leistungen im Überblick</h2>
-          <p className="mt-2 text-sm text-[#8a6a55] sm:text-base">Persoenlich, zuverlaessig und mit viel Herz im Alltag.</p>
+          <p className="mt-2 text-sm text-[#8a6a55] sm:text-base">Persönlich, zuverlässig und mit viel Herz im Alltag.</p>
           <div className="mt-6 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {LEISTUNGEN.map((leistung, index) => (
               <Link
@@ -272,6 +281,7 @@ export default function HomePage() {
 
       <section className="relative z-20 mt-6 w-full px-4 sm:mt-8 sm:px-6 lg:px-8">
         <div className="mx-auto w-full max-w-6xl">
+          <div className="mb-5 h-px w-full bg-gradient-to-r from-transparent via-[#0F4F68]/28 to-transparent" aria-hidden />
           <h3 className="text-3xl font-extrabold tracking-tight text-[#0F4F68] sm:text-4xl">Ihre Vorteile bei uns</h3>
           <p className="mt-2 max-w-3xl text-sm text-neutral-600 sm:text-base">
             Verlässlich, transparent und nah bei Ihnen - mit klaren Prozessen und echter Unterstützung im Alltag.
@@ -279,7 +289,9 @@ export default function HomePage() {
           <ul className="mt-6 grid gap-4 sm:grid-cols-2">
             {VORTEILE.map((item) => (
               <li key={item} className="flex items-start gap-3 rounded-xl">
-                <Image src="/images/haken.webp" alt="" aria-hidden width={42} height={42} unoptimized className="mt-0.5 h-[42px] w-[42px] shrink-0 object-contain drop-shadow-[0_2px_4px_rgba(247,143,46,0.35)]" />
+                <span className="mt-0.5 inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#0F4F68]/8">
+                  <Image src="/images/haken.webp" alt="" aria-hidden width={36} height={36} unoptimized className="h-9 w-9 object-contain opacity-100" />
+                </span>
                 <span className="text-[1.03rem] font-medium leading-relaxed text-neutral-800 sm:text-[1.08rem]">{item}</span>
               </li>
             ))}
