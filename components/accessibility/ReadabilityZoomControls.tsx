@@ -86,7 +86,7 @@ export function ReadabilityZoomControls() {
   const buttonStyle: CSSProperties = isKontakt
     ? {
         right: "max(1.5rem, env(safe-area-inset-right))",
-        bottom: "calc(max(1.5rem, env(safe-area-inset-bottom)) + 92px)",
+        bottom: "calc(max(1.5rem, env(safe-area-inset-bottom)) + 92px - 5vh)",
       }
     : {
         right: "1rem",
@@ -101,15 +101,15 @@ export function ReadabilityZoomControls() {
         aria-haspopup="menu"
         aria-expanded={open}
         aria-label={`Lesbarkeit Einstellungen öffnen. Aktuelle Schriftgröße: ${zoomLevel}%`}
-        className="fixed z-[90] flex flex-col items-center justify-center gap-0.5 rounded-2xl border border-[#0F4F68]/20 bg-white/95 px-3 py-2 shadow-[0_10px_26px_rgba(15,79,104,0.2)] backdrop-blur transition hover:bg-white"
+        className="fixed z-[90] flex flex-col items-center justify-center gap-0.5 rounded-2xl border border-[#0F4F68]/25 bg-white/95 px-4 py-2.5 shadow-[0_12px_30px_rgba(15,79,104,0.22)] backdrop-blur transition hover:bg-white"
         style={buttonStyle}
       >
         <svg
-          className="h-[1.35rem] w-[1.35rem] shrink-0"
+          className="h-[1.7rem] w-[1.7rem] shrink-0"
           viewBox="0 0 24 24"
           fill="none"
           stroke="#0F4F68"
-          strokeWidth="2.5"
+          strokeWidth="3"
           strokeLinecap="round"
           strokeLinejoin="round"
           aria-hidden
@@ -117,7 +117,9 @@ export function ReadabilityZoomControls() {
           <path d="M21 21l-4.35-4.35" />
           <circle cx="11" cy="11" r="7" />
         </svg>
-        <span className="text-[11px] font-extrabold text-[#F78F2E]">{zoomLevel}%</span>
+        <span className="text-[14px] font-extrabold tracking-wide text-[#F78F2E] drop-shadow-[0_2px_2px_rgba(0,0,0,0.08)]">
+          {zoomLevel}%
+        </span>
       </button>
 
       {open && (
@@ -129,7 +131,7 @@ export function ReadabilityZoomControls() {
             isKontakt
               ? {
                   right: "max(1.5rem, env(safe-area-inset-right))",
-                  bottom: "calc(max(1.5rem, env(safe-area-inset-bottom)) + 180px)",
+                  bottom: "calc(max(1.5rem, env(safe-area-inset-bottom)) + 180px - 5vh)",
                 }
               : { right: "1rem", bottom: "5rem" }
           }
