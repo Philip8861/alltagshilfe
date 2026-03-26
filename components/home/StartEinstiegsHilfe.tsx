@@ -341,6 +341,15 @@ export function StartEinstiegsHilfe() {
   }, [besteZeit, email, fuerWen, kontaktWunsch, leistungsText, nachricht, pflegegrad, plzNorm, nachname, telefon, vorname]);
 
   const absenden = () => {
+    setError("");
+    if (!kontaktArt) {
+      setError("Bitte wählen Sie eine Kontaktart aus.");
+      return;
+    }
+    if (!vorname.trim() || !nachname.trim() || !telefon.trim() || !email.trim()) {
+      setError("Bitte füllen Sie Vorname, Nachname, Telefonnummer und E-Mail aus.");
+      return;
+    }
     if (kontaktArt !== "selbst") window.location.href = mailtoHref;
     setStep(8);
   };
@@ -609,7 +618,7 @@ export function StartEinstiegsHilfe() {
                       <p className="font-medium text-[#0F4F68]">{finalerStandort.name}</p>
                       <p>{finalerStandort.address}</p>
                       <p>
-                        Telefon: <a className="text-[#0F4F68] underline" href={finalerStandort.phoneHref}>{finalerStandort.phone}</a>
+                        Telefon: <a className="font-bold text-[#0F4F68] underline" href={finalerStandort.phoneHref}>{finalerStandort.phone}</a>
                       </p>
                       <p>
                         E-Mail: <a className="text-[#0F4F68] underline" href={`mailto:${finalerStandort.email}`}>{finalerStandort.email}</a>
