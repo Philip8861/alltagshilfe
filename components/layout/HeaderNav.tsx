@@ -30,11 +30,18 @@ export function HeaderNav() {
                 onMouseEnter={() => setOpenDropdownHref(item.href)}
                 onMouseLeave={() => setOpenDropdownHref(null)}
               >
-                <Link
-                  href={item.href}
+                <button
+                  type="button"
+                  aria-haspopup="menu"
+                  aria-expanded={openDropdownHref === item.href}
+                  onFocus={() => setOpenDropdownHref(item.href)}
+                  onBlur={() => setOpenDropdownHref(null)}
+                  onClick={() => {
+                    setOpenDropdownHref((prev) => (prev === item.href ? null : item.href));
+                  }}
                   className={cn(
                     "inline-flex items-center gap-0.5 whitespace-nowrap rounded px-1 py-0.5 font-semibold text-neutral-600 hover:text-neutral-900 focus:outline-none focus:ring-2 focus:ring-neutral-500 focus:ring-offset-2 lg:gap-1 lg:px-1.5 xl:px-2",
-                    pathname === item.href && "text-neutral-900"
+                    (pathname === item.href || pathname.startsWith(`${item.href}/`)) && "text-neutral-900"
                   )}
                   style={{ fontSize: "clamp(0.6875rem, 1.1vw, 1rem)" }}
                 >
@@ -49,7 +56,7 @@ export function HeaderNav() {
                   >
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                   </svg>
-                </Link>
+                </button>
                 <div
                   className={cn(
                     "absolute left-0 top-full pt-1 min-w-[220px] transition-opacity duration-150",

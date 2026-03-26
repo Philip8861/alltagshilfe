@@ -2,14 +2,21 @@
  * Hauptnavigation – zentrale Pfade.
  * Einträge mit `children` werden als Dropdown dargestellt.
  */
+import leistungenData from "@/content/leistungen.json";
+
 export type NavLink = {
   href: string;
   label: string;
   children?: { href: string; label: string }[];
 };
 
+const leistungenNav = (leistungenData as { slug: string; title: string }[]).map((item) => ({
+  href: `/leistungen/${item.slug}`,
+  label: item.title,
+}));
+
 export const navLinks: NavLink[] = [
-  { href: "/leistungen", label: "Unsere Leistungen" },
+  { href: "/leistungen", label: "Unsere Leistungen", children: leistungenNav },
   { href: "/standorte", label: "Standorte" },
   {
     href: "/ueber-uns",
