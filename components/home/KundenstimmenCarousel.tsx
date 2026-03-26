@@ -97,7 +97,7 @@ export function KundenstimmenCarousel() {
   }, [index]);
 
   return (
-    <section className="relative z-20 mt-10 w-full px-4 sm:mt-12 sm:px-6 lg:px-8" aria-label="Kundenstimmen">
+    <section className="relative z-20 mt-16 w-full px-4 sm:mt-20 sm:px-6 lg:mt-24 lg:px-8" aria-label="Kundenstimmen">
       <div className="mx-auto w-full max-w-6xl p-5 text-center sm:p-7">
         <div className="flex flex-wrap items-center justify-center gap-2.5">
           {Array.from({ length: 5 }).map((_, i) => (
