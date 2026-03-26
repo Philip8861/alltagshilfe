@@ -55,7 +55,7 @@ export function ReadabilityZoomControls() {
   return (
     <>
       {showPrompt && (
-        <div className="fixed right-4 bottom-28 z-[95] w-[min(92vw,22rem)] rounded-2xl border border-[#0F4F68]/25 bg-white/95 p-4 shadow-[0_12px_30px_rgba(15,79,104,0.18)] backdrop-blur">
+        <div className="fixed left-4 top-1/2 z-[95] w-[min(92vw,22rem)] -translate-y-1/2 rounded-2xl border border-[#0F4F68]/25 bg-white/95 p-4 shadow-[0_12px_30px_rgba(15,79,104,0.18)] backdrop-blur">
           <p className="text-sm font-semibold text-[#0F4F68]">Möchten Sie die Seite größer anzeigen?</p>
           <p className="mt-1 text-xs text-neutral-600">
             Für bessere Lesbarkeit können Sie die Ansicht mit einem Klick vergrößern.
@@ -82,12 +82,12 @@ export function ReadabilityZoomControls() {
         </div>
       )}
 
-      <div className="fixed right-4 bottom-5 z-[90] flex items-center gap-2 rounded-full border border-[#0F4F68]/20 bg-white/95 px-2 py-2 shadow-[0_10px_26px_rgba(15,79,104,0.2)] backdrop-blur">
+      <div className="fixed left-4 top-1/2 z-[90] flex -translate-y-1/2 flex-col items-center gap-2 rounded-3xl border border-[#0F4F68]/20 bg-white/95 px-2 py-2 shadow-[0_10px_26px_rgba(15,79,104,0.2)] backdrop-blur">
         <button
           type="button"
           onClick={decrease}
           aria-label="Ansicht verkleinern"
-          className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-[#0F4F68] text-2xl font-bold leading-none text-white transition hover:bg-[#0c3d52] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#F78F2E] focus-visible:ring-offset-2"
+          className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-[#0F4F68] text-2xl font-bold leading-none text-white transition hover:bg-[#0c3d52] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#F78F2E] focus-visible:ring-offset-2 order-3"
         >
           -
         </button>
@@ -95,15 +95,31 @@ export function ReadabilityZoomControls() {
           type="button"
           onClick={reset}
           aria-label="Ansicht zurücksetzen"
-          className="inline-flex h-11 min-w-12 items-center justify-center rounded-full bg-[#F2F9FA] px-2 text-xs font-extrabold text-[#0F4F68] transition hover:bg-[#e4f1f4] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#F78F2E] focus-visible:ring-offset-2"
+          className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-[#F2F9FA] text-[#0F4F68] transition hover:bg-[#e4f1f4] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#F78F2E] focus-visible:ring-offset-2 order-2"
         >
-          {zoomLevel}%
+          <span className="sr-only">Ansicht zurücksetzen</span>
+          <span className="flex flex-col items-center justify-center leading-none">
+            <svg
+              className="h-[1.05rem] w-[1.05rem]"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden
+            >
+              <path d="M21 21l-4.35-4.35" />
+              <circle cx="11" cy="11" r="7" />
+            </svg>
+            <span className="mt-0.5 text-[10px] font-extrabold">{zoomLevel}%</span>
+          </span>
         </button>
         <button
           type="button"
           onClick={increase}
           aria-label="Ansicht vergrößern"
-          className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-[#F78F2E] text-2xl font-bold leading-none text-white transition hover:bg-[#e57f1f] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68] focus-visible:ring-offset-2"
+          className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-[#F78F2E] text-2xl font-bold leading-none text-white transition hover:bg-[#e57f1f] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68] focus-visible:ring-offset-2 order-1"
         >
           +
         </button>

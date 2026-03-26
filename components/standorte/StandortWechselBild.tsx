@@ -22,7 +22,7 @@ export function StandortWechselBild({ alt, sizes }: StandortWechselBildProps) {
   }, []);
 
   return (
-    <div className="relative aspect-[1301/1535] w-full overflow-hidden rounded-xl">
+    <div className="relative aspect-[1301/1535] w-full rounded-xl">
       {BILDER.map((src, i) => (
         <Image
           key={src}
