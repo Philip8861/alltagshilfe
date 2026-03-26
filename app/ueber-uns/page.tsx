@@ -58,6 +58,15 @@ export default function UeberUnsPage() {
             className="pointer-events-none absolute left-0 top-0 h-14 w-full -translate-y-3 bg-gradient-to-b from-[#F2F9FA] via-[#F2F9FA]/70 to-transparent"
             aria-hidden
           />
+          <svg
+            className="pointer-events-none absolute bottom-0 left-0 h-14 w-full translate-y-[66%] sm:h-16 sm:translate-y-[62%]"
+            viewBox="0 0 1200 120"
+            preserveAspectRatio="none"
+            fill="none"
+            aria-hidden
+          >
+            <path d="M0,0 C210,84 430,108 600,96 C820,82 1010,30 1200,0 L1200,120 L0,120 Z" fill="#ffffff" />
+          </svg>
           <div className="mx-auto max-w-5xl space-y-5 text-neutral-700">
           <p>
             Die Alltagshilfe-Süd ist ein professioneller Hauswirtschafts-, Betreuungs- und Beratungsdienst für
