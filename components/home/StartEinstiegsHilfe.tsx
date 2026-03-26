@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import { useEffect, useMemo, useState } from "react";
 import { findStandortByPlz, type Standort } from "@/config/standorte";
 import { cn } from "@/lib/utils";
@@ -95,49 +94,60 @@ function SelectMark({ active }: { active: boolean }) {
 function ServiceIcon({ service }: { service: ServiceKey }) {
   if (service === "haushalt") {
     return (
-      <svg className="h-5 w-5 text-[#0F4F68]/75" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+      <svg className="h-6 w-6 text-[#0F4F68]/75" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
         <path d="M12 21s-7-4.35-7-10a4 4 0 0 1 7-2.65A4 4 0 0 1 19 11c0 5.65-7 10-7 10z" />
       </svg>
     );
   }
   if (service === "pflegeberatung") {
     return (
-      <svg className="h-5 w-5 text-[#0F4F68]/75" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+      <svg className="h-6 w-6 text-[#0F4F68]/75" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
         <path d="M4 4h16v11H7.6L4 18.6V4zm4 4v2h8V8H8zm0 4v2h5v-2H8z" />
       </svg>
     );
   }
-  if (service === "pflegebox" || service === "hilfsmittel") {
+  if (service === "pflegebox") {
     return (
-      <svg className="h-5 w-5 text-[#0F4F68]/75" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+      <svg className="h-6 w-6 text-[#0F4F68]/75" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
         <path d="M3 7.2 12 3l9 4.2v9.6L12 21l-9-4.2V7.2zm2.4 1.5 6.6 3.1 6.6-3.1-6.6-3.1-6.6 3.1z" />
+      </svg>
+    );
+  }
+  if (service === "hilfsmittel") {
+    return (
+      <svg className="h-6 w-6 text-[#0F4F68]/75" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.1" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+        <circle cx="8" cy="18" r="1.7" />
+        <circle cx="16" cy="18" r="1.7" />
+        <path d="M8 16V7.5a2.5 2.5 0 0 1 5 0V10" />
+        <path d="M13 10h3.2a1.8 1.8 0 0 1 1.8 1.8V16" />
+        <path d="M8 13h6" />
       </svg>
     );
   }
   if (service === "koerperpflege") {
     return (
-      <svg className="h-5 w-5 text-[#0F4F68]/75" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+      <svg className="h-6 w-6 text-[#0F4F68]/75" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
         <path d="M12 2 4 5.2v6.1c0 5.1 3.4 9.8 8 10.7 4.6-.9 8-5.6 8-10.7V5.2L12 2zm-1 13.2-3-3 1.4-1.4 1.6 1.6 3.6-3.6 1.4 1.4-5 5z" />
       </svg>
     );
   }
   if (service === "medizinisch") {
     return (
-      <svg className="h-5 w-5 text-[#0F4F68]/75" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+      <svg className="h-6 w-6 text-[#0F4F68]/75" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
         <path d="M4 4h16v16H4zM10 7v3H7v4h3v3h4v-3h3v-4h-3V7z" />
       </svg>
     );
   }
   if (service === "hausnotruf") {
     return (
-      <svg className="h-5 w-5 text-[#0F4F68]/75" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+      <svg className="h-6 w-6 text-[#0F4F68]/75" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
         <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z" />
       </svg>
     );
   }
   if (service === "essen") {
     return (
-      <svg className="h-5 w-5 text-[#0F4F68]/75" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+      <svg className="h-6 w-6 text-[#0F4F68]/75" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
         <path d="M7 3v8" />
         <path d="M4.5 3v5.5" />
         <path d="M9.5 3v5.5" />
@@ -150,13 +160,13 @@ function ServiceIcon({ service }: { service: ServiceKey }) {
   }
   if (service === "umbau") {
     return (
-      <svg className="h-5 w-5 text-[#0F4F68]/75" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+      <svg className="h-6 w-6 text-[#0F4F68]/75" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
         <path d="M12 3.2 3.5 10v10.3h6.2v-6.3h4.6v6.3h6.2V10L12 3.2z" />
       </svg>
     );
   }
   return (
-    <svg className="h-5 w-5 text-[#0F4F68]/75" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+    <svg className="h-6 w-6 text-[#0F4F68]/75" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
       <path d="M4 4v7" />
       <path d="M7 4v7" />
       <path d="M4 8h3" />
@@ -282,6 +292,22 @@ export function StartEinstiegsHilfe() {
     () => SERVICE_OPTIONEN.filter((s) => leistungen.includes(s.key)),
     [leistungen]
   );
+  const leistungenFuerErgebnis = useMemo(() => {
+    const hasKoerperpflege = ausgewaehlteLeistungen.some((l) => l.key === "koerperpflege");
+    const hasMedizinisch = ausgewaehlteLeistungen.some((l) => l.key === "medizinisch");
+    const rest = ausgewaehlteLeistungen.filter((l) => l.key !== "koerperpflege" && l.key !== "medizinisch");
+    if (hasKoerperpflege && hasMedizinisch) {
+      return [
+        ...rest,
+        {
+          key: "koerperpflege" as ServiceKey,
+          label: "Körperliche Pflege und Medizinische Versorgung",
+          verfuegbarkeit: "partner" as const,
+        },
+      ];
+    }
+    return ausgewaehlteLeistungen;
+  }, [ausgewaehlteLeistungen]);
   const leistungsText = useMemo(
     () => ausgewaehlteLeistungen.map((s) => `- ${s.label}`).join("\n"),
     [ausgewaehlteLeistungen]
@@ -335,19 +361,7 @@ export function StartEinstiegsHilfe() {
         </div>
       ) : (
         <div className="fixed inset-0 z-50 flex items-end justify-center overflow-y-auto bg-[#0F4F68]/45 p-3 backdrop-blur-[2px] sm:items-center sm:p-6">
-          <div className="flex w-full max-w-[70rem] items-start justify-center gap-4">
-            <div className="hidden lg:block lg:w-[260px] xl:w-[300px]">
-              <div className="relative aspect-[4/5] w-full overflow-hidden rounded-2xl border border-white/35 bg-white/90 shadow-2xl">
-                <Image
-                  src="/images/Kontakt_Bild.webp"
-                  alt="Kontakt – Alltagshilfe-Süd"
-                  fill
-                  className="object-contain p-3"
-                  sizes="300px"
-                />
-              </div>
-            </div>
-            <div className="max-h-[92vh] w-full max-w-4xl overflow-y-auto animate-fade-in-up rounded-2xl border border-[#0F4F68]/15 bg-white p-5 shadow-2xl sm:p-7">
+          <div className="max-h-[92vh] w-full max-w-4xl overflow-y-auto animate-fade-in-up rounded-2xl border border-[#0F4F68]/15 bg-white p-5 shadow-2xl sm:p-7">
             <div className="mb-4 grid grid-cols-[1fr_auto_1fr] items-center gap-3">
               <p className="justify-self-start text-sm font-bold uppercase tracking-wide text-[#0F4F68]/80">Schritt {Math.min(step, 7)} von 7</p>
               <p className="text-center text-xl font-extrabold text-[#0F4F68] sm:text-2xl">{SCHRITT_MOTIVATION[step]}</p>
@@ -469,9 +483,9 @@ export function StartEinstiegsHilfe() {
                 <h3 className="text-lg font-bold text-[#0F4F68] sm:text-xl">Gute Nachricht!</h3>
                 <p className="text-neutral-700">Wir haben für folgende Dienstleistungen freie Kapazitäten:</p>
                 <ul className="space-y-2">
-                  {ausgewaehlteLeistungen
+                  {leistungenFuerErgebnis
                     .filter((l) => l.verfuegbarkeit === "direkt")
-                    .concat(ausgewaehlteLeistungen.filter((l) => l.verfuegbarkeit === "partner"))
+                    .concat(leistungenFuerErgebnis.filter((l) => l.verfuegbarkeit === "partner"))
                     .map((l, i) => (
                     <li
                       key={l.key}
@@ -594,12 +608,16 @@ export function StartEinstiegsHilfe() {
             ) : null}
 
             {step === 8 ? (
-              <div className="mt-6 animate-fade-in-up space-y-4">
-                <div className="rounded-xl border border-emerald-200 bg-emerald-50 p-4">
-                  <p className="font-semibold text-emerald-800">Ihre Anfrage ist erfolgreich bei uns eingegangen.</p>
-                  <p className="mt-1 text-emerald-700">Wir melden uns in Kürze bei Ihnen zurück.</p>
+              <div className="mt-6 animate-fade-in-up space-y-5">
+                <div className="rounded-2xl border border-emerald-200 bg-gradient-to-br from-emerald-50 to-white p-6 text-center">
+                  <h3 className="text-2xl font-extrabold text-[#0F4F68] sm:text-3xl">
+                    Vielen Dank! Ihre Anfrage ist bei uns eingegangen.
+                  </h3>
+                  <p className="mt-2 text-base text-neutral-700 sm:text-lg">
+                    Wir melden uns in Kürze bei Ihnen zurück.
+                  </p>
                 </div>
-                <div className="rounded-xl border border-[#F78F2E]/35 bg-[#fff8f2] p-4">
+                <div className="rounded-2xl border border-[#F78F2E]/35 bg-gradient-to-br from-[#fff8f2] to-white p-5">
                   <p className="flex items-start gap-2 font-semibold text-[#c86d1f]">
                     <span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-[#F78F2E] text-white" aria-hidden>
                       <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
@@ -613,6 +631,24 @@ export function StartEinstiegsHilfe() {
                   <p className="mt-1 text-[#7a4d28]">
                     Entdecken Sie hochwertige Produkte, die Sie bei der täglichen Pflege zuverlässig unterstützen. Geprüfte Qualität und von Pflegekräften empfohlen.
                   </p>
+                  <div className="mt-4 flex flex-wrap justify-center gap-3">
+                    <a
+                      href="/pflegeshop"
+                      className="inline-flex min-h-[44px] items-center justify-center rounded-xl bg-[#0F4F68] px-5 py-2.5 font-semibold text-white hover:bg-[#0c3d52]"
+                    >
+                      Zum Shop
+                    </a>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setStarted(false);
+                        resetFlow();
+                      }}
+                      className="inline-flex min-h-[44px] items-center justify-center rounded-xl border border-[#0F4F68]/30 px-5 py-2.5 font-semibold text-[#0F4F68] hover:bg-[#F2F9FA]"
+                    >
+                      Schließen
+                    </button>
+                  </div>
                 </div>
               </div>
             ) : null}
@@ -660,7 +696,6 @@ export function StartEinstiegsHilfe() {
               ) : null}
             </div>
             </div>
-          </div>
         </div>
       )}
     </section>
