@@ -84,7 +84,7 @@ export default function HomePage() {
           <div className="relative">
             <div className="flex justify-end">
               <div
-                className="relative mr-[-1rem] w-full max-w-[50rem] opacity-0 animate-fade-in-up motion-reduce:opacity-100 sm:mr-[-1.5rem] lg:mr-[-2rem]"
+                className="relative ml-auto w-full max-w-[50rem] opacity-0 animate-fade-in-up motion-reduce:opacity-100"
                 style={{ animationDelay: "0.08s" }}
               >
                 <div className="w-full [filter:drop-shadow(0_10px_22px_rgba(15,79,104,0.2))_drop-shadow(0_4px_12px_rgba(15,79,104,0.12))]">
@@ -94,7 +94,7 @@ export default function HomePage() {
                     alt="Gemeinsam zur passenden Unterstützung im Alltag"
                     width={900}
                     height={700}
-                    className="block h-auto w-full object-contain object-left"
+                    className="block h-auto w-full object-contain object-right"
                     priority
                     unoptimized
                   />

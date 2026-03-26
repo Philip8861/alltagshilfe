@@ -42,6 +42,16 @@ const FUER_WEN_OPTIONEN = [
   { id: "andere", label: "Für Angehörige/Bekannte" },
 ] as const;
 
+const SCHRITT_MOTIVATION: Record<number, string> = {
+  1: "Okay, fangen wir an.",
+  2: "Super, jetzt geht's weiter.",
+  3: "Klasse, nur noch ein paar Fragen.",
+  4: "Top, damit sind wir fast durch.",
+  5: "Stark! Hier ist Ihr Ergebnis.",
+  6: "Sehr gut, jetzt nur noch Ihren Standort finden.",
+  7: "Geschafft! Wählen Sie Ihren bevorzugten Kontaktweg.",
+};
+
 const optionButtonClass =
   "min-h-[48px] w-full rounded-xl border border-[#0F4F68]/18 bg-white px-4 py-3 text-left text-base font-medium text-[#0F4F68] transition-colors hover:border-[#0F4F68]/40 hover:bg-[#F2F9FA] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0F4F68]";
 
@@ -251,10 +261,10 @@ export function StartEinstiegsHilfe() {
       "Anfrage aus dem Hilfe-Finder",
       "",
       `Pflegegrad: ${pflegegrad || "-"}`,
-      `Fuer wen: ${fuerWen === "selbst" ? "Fuer mich" : fuerWen === "andere" ? "Fuer Angehoerige/Bekannte" : "-"}`,
+      `Für wen: ${fuerWen === "selbst" ? "Für mich" : fuerWen === "andere" ? "Für Angehörige/Bekannte" : "-"}`,
       `PLZ: ${plzNorm || "-"}`,
       "",
-      "Ausgewaehlte Leistungen:",
+      "Ausgewählte Leistungen:",
       leistungsText || "-",
       "",
       `Vorname: ${vorname || "-"}`,
@@ -264,7 +274,7 @@ export function StartEinstiegsHilfe() {
       `Passender Tag/Uhrzeit: ${besteZeit || "-"}`,
       `Hinweis: ${kontaktWunsch || "-"}`,
     ].join("\n");
-    return `mailto:info@alltagshilfe-sued.de?subject=${encodeURIComponent("Anfrage ueber Hilfe-Finder")}&body=${encodeURIComponent(body)}`;
+    return `mailto:info@alltagshilfe-sued.de?subject=${encodeURIComponent("Anfrage über Hilfe-Finder")}&body=${encodeURIComponent(body)}`;
   }, [besteZeit, email, fuerWen, kontaktWunsch, leistungsText, pflegegrad, plzNorm, nachname, telefon, vorname]);
 
   return (
@@ -304,12 +314,13 @@ export function StartEinstiegsHilfe() {
                 Schließen
               </button>
             </div>
+            <p className="mb-2 text-sm font-semibold text-[#0F4F68]/75">{SCHRITT_MOTIVATION[step]}</p>
 
             {step === 1 ? (
               <div className="mt-3 animate-fade-in-up">
                 <h3 className="text-lg font-bold text-[#0F4F68] sm:text-xl">Kurze Information vor dem Start</h3>
                 <p className="mt-2 text-neutral-700">
-                  Sie muessen fuer das Ergebnis keine persoenlichen Daten eingeben. Sie erhalten das Ergebnis direkt am Ende in wenigen Schritten.
+                  Sie müssen für das Ergebnis keine persönlichen Daten eingeben. Sie erhalten das Ergebnis direkt am Ende in wenigen Schritten.
                 </p>
               </div>
             ) : null}
@@ -370,8 +381,8 @@ export function StartEinstiegsHilfe() {
 
             {step === 4 ? (
               <div className="mt-3 animate-fade-in-up">
-                <h3 className="text-lg font-bold text-[#0F4F68] sm:text-xl">Was fuer Hilfsleistungen benoetigen Sie aktuell?</h3>
-                <p className="mt-2 text-neutral-700">Mehrfachauswahl ist moeglich.</p>
+                <h3 className="text-lg font-bold text-[#0F4F68] sm:text-xl">Was für Hilfsleistungen benötigen Sie aktuell?</h3>
+                <p className="mt-2 text-neutral-700">Mehrfachauswahl ist möglich.</p>
                 <ul className="mt-4 grid list-none gap-2 sm:grid-cols-2">
                   {SERVICE_OPTIONEN.map((opt) => {
                     const active = leistungen.includes(opt.key);
@@ -403,7 +414,7 @@ export function StartEinstiegsHilfe() {
             {step === 5 ? (
               <div className="mt-3 animate-fade-in-up space-y-4">
                 <h3 className="text-lg font-bold text-[#0F4F68] sm:text-xl">Gute Nachricht!</h3>
-                <p className="text-neutral-700">Wir haben fuer folgende Dienstleistungen freie Kapazitaeten:</p>
+                <p className="text-neutral-700">Wir haben für folgende Dienstleistungen freie Kapazitäten:</p>
                 <ul className="space-y-2">
                   {ausgewaehlteLeistungen.map((l, i) => (
                     <li
@@ -419,14 +430,14 @@ export function StartEinstiegsHilfe() {
                       <div>
                         <p className="text-sm font-semibold text-[#0F4F68] sm:text-base">{l.label}</p>
                         <p className={cn("text-xs sm:text-sm", l.verfuegbarkeit === "direkt" ? "text-emerald-700" : "text-[#c86d1f]")}>
-                          {l.verfuegbarkeit === "direkt" ? "Sofort verfuegbar ueber uns" : "Freie Kapazitaeten ueber unsere Kooperationspartner"}
+                          {l.verfuegbarkeit === "direkt" ? "Sofort verfügbar über uns" : "Freie Kapazitäten über unsere Kooperationspartner"}
                         </p>
                       </div>
                     </li>
                   ))}
                 </ul>
-                {direktVerfuegbar.length > 0 ? <p className="text-sm text-emerald-700">Sofort verfuegbar ueber uns: {direktVerfuegbar.map((l) => l.label).join(", ")}.</p> : null}
-                {partnerVerfuegbar.length > 0 ? <p className="text-sm text-[#c86d1f]">Freie Kapazitaeten ueber unsere Kooperationspartner: {partnerVerfuegbar.map((l) => l.label).join(", ")}.</p> : null}
+                {direktVerfuegbar.length > 0 ? <p className="text-sm text-emerald-700">Sofort verfügbar über uns: {direktVerfuegbar.map((l) => l.label).join(", ")}.</p> : null}
+                {partnerVerfuegbar.length > 0 ? <p className="text-sm text-[#c86d1f]">Freie Kapazitäten über unsere Kooperationspartner: {partnerVerfuegbar.map((l) => l.label).join(", ")}.</p> : null}
               </div>
             ) : null}
 
@@ -466,7 +477,7 @@ export function StartEinstiegsHilfe() {
 
             {step === 7 ? (
               <div className="mt-3 animate-fade-in-up">
-                <h3 className="text-lg font-bold text-[#0F4F68] sm:text-xl">Wie moechten Sie den Kontakt?</h3>
+                <h3 className="text-lg font-bold text-[#0F4F68] sm:text-xl">Wie möchten Sie den Kontakt?</h3>
                 <div className="mt-4 grid gap-2 sm:grid-cols-3">
                   <button
                     type="button"
@@ -476,7 +487,7 @@ export function StartEinstiegsHilfe() {
                     <span className="flex items-center gap-2.5">
                       <SelectMark active={kontaktArt === "rueckruf"} />
                       <StepFlatIcon kind="kontakt" />
-                      <span>Ich wuensche einen Rueckruf</span>
+                      <span>Ich wünsche einen Rückruf</span>
                     </span>
                   </button>
                   <button
@@ -487,7 +498,7 @@ export function StartEinstiegsHilfe() {
                     <span className="flex items-center gap-2.5">
                       <SelectMark active={kontaktArt === "email"} />
                       <StepFlatIcon kind="kontakt" />
-                      <span>Ich wuensche Kontakt per E-Mail</span>
+                      <span>Ich wünsche Kontakt per E-Mail</span>
                     </span>
                   </button>
                   <button
@@ -498,7 +509,7 @@ export function StartEinstiegsHilfe() {
                     <span className="flex items-center gap-2.5">
                       <SelectMark active={kontaktArt === "selbst"} />
                       <StepFlatIcon kind="kontakt" />
-                      <span>Ich moechte selbst kontaktieren</span>
+                      <span>Ich möchte selbst kontaktieren</span>
                     </span>
                   </button>
                 </div>
@@ -531,7 +542,7 @@ export function StartEinstiegsHilfe() {
 
                 {kontaktArt && kontaktArt !== "selbst" ? (
                   <div className="mt-4 rounded-xl border border-[#0F4F68]/15 bg-[#f8fcfd] p-4">
-                    <p className="text-sm font-semibold text-[#0F4F68]">Ausgewaehlte Leistungen (werden uebermittelt):</p>
+                    <p className="text-sm font-semibold text-[#0F4F68]">Ausgewählte Leistungen (werden übermittelt):</p>
                     <pre className="mt-2 whitespace-pre-wrap text-sm text-neutral-700">{leistungsText || "-"}</pre>
                     <a href={mailtoHref} className="mt-3 inline-flex min-h-[42px] items-center rounded-lg bg-[#0F4F68] px-4 py-2 text-sm font-semibold text-white hover:bg-[#0c3d52]">
                       Anfrage senden
@@ -542,7 +553,7 @@ export function StartEinstiegsHilfe() {
                 {kontaktArt === "selbst" ? (
                   <div className="mt-4 rounded-xl border border-[#0F4F68]/15 bg-[#f8fcfd] p-4 text-sm text-neutral-700">
                     <p className="font-semibold text-[#0F4F68]">Einfaches Kontaktformular</p>
-                    <p className="mt-2">Ihre ausgewaehlten Leistungen koennen Sie dort direkt im Anliegen einfuegen.</p>
+                    <p className="mt-2">Ihre ausgewählten Leistungen können Sie dort direkt im Anliegen einfügen.</p>
                     <div className="mt-2 flex flex-wrap gap-2">
                       {ausgewaehlteLeistungen.map((l) => (
                         <Link key={l.key} href={serviceZuLink[l.key]} className="inline-flex min-h-[38px] items-center rounded-lg border border-[#0F4F68]/35 px-3 py-1.5 text-xs font-semibold text-[#0F4F68] hover:bg-[#F2F9FA]">{l.label}</Link>
