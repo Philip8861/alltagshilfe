@@ -25,6 +25,15 @@ const BEITRAEGE: Beitrag[] = [
     views: 1284,
     tags: ["Entlastungsbetrag", "Pflegekasse", "Abrechnung", "Pflegegrad"],
   },
+  {
+    slug: "pflegegrad-1-der-ultimative-leitfaden",
+    title: "Pflegegrad 1: der ultimative Leitfaden (2026)",
+    excerpt: "Leistungen, Voraussetzungen & Experten-Tipps – inklusive Vorbereitung auf die MDK-Begutachtung.",
+    image: "/images/Ratgeber/ratgeber.webp",
+    imageAlt: "Vorschaubild Pflegegrad 1 Leitfaden",
+    views: 623,
+    tags: ["Pflegegrad 1", "MDK", "Begutachtung", "Leistungen", "Entlastungsbetrag"],
+  },
 ];
 
 export function RatgeberVerzeichnis() {
