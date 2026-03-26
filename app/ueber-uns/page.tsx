@@ -42,20 +42,20 @@ export default function UeberUnsPage() {
         </section>
 
         <section
-          className="relative z-20 left-1/2 right-1/2 mt-12 -ml-[50vw] -mr-[50vw] w-screen overflow-hidden bg-[#F2F9FA] px-4 pt-10 pb-10 sm:px-6 sm:pt-14 sm:pb-12 lg:px-8"
+          className="relative z-20 left-1/2 right-1/2 mt-12 -ml-[50vw] -mr-[50vw] w-screen bg-[#F2F9FA] px-4 pt-10 pb-10 sm:px-6 sm:pt-14 sm:pb-12 lg:px-8"
           aria-label="Unternehmensgeschichte Alltagshilfe-Süd"
         >
           <svg
-            className="pointer-events-none absolute left-0 top-0 h-16 w-full -translate-y-full sm:h-20"
+            className="pointer-events-none absolute left-0 top-0 h-14 w-full -translate-y-[68%] sm:h-16"
             viewBox="0 0 1200 120"
             preserveAspectRatio="none"
             fill="none"
             aria-hidden
           >
-            <path d="M0,120 C180,20 420,0 600,18 C820,40 1010,92 1200,120 L1200,120 L0,120 Z" fill="#F2F9FA" />
+            <path d="M0,120 C200,32 420,8 600,22 C800,38 1010,90 1200,120 L1200,120 L0,120 Z" fill="#F2F9FA" />
           </svg>
           <div
-            className="pointer-events-none absolute left-0 top-0 h-16 w-full -translate-y-full bg-gradient-to-b from-[#F2F9FA]/95 via-[#F2F9FA]/60 to-transparent"
+            className="pointer-events-none absolute left-0 top-0 h-10 w-full -translate-y-2 bg-gradient-to-b from-[#F2F9FA]/85 to-transparent"
             aria-hidden
           />
           <div className="mx-auto max-w-5xl space-y-5 text-neutral-700 opacity-0 animate-fade-in-up motion-reduce:opacity-100">
