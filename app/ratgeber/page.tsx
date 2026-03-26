@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
-import Image from "next/image";
-import Link from "next/link";
 import { Container } from "@/components/layout/Container";
+import { RatgeberVerzeichnis } from "@/components/ratgeber/RatgeberVerzeichnis";
 import { siteConfig } from "@/config/site";
 
 export const metadata: Metadata = {
@@ -19,36 +18,7 @@ export default function RatgeberPage() {
         <p className="mt-4 max-w-3xl text-neutral-600">
           Praxistipps, Erklärungen und konkrete Hilfen rund um Pflege, Betreuung und Entlastung im Alltag.
         </p>
-
-        <section className="mt-10 grid grid-cols-1 gap-5 sm:grid-cols-2">
-          <article className="rounded-2xl border border-[#efcba7]/40 bg-gradient-to-br from-white to-[#fff8f0] p-5 shadow-sm transition-shadow hover:shadow-md">
-            <div className="mb-3">
-              <div className="relative aspect-[16/9] w-full max-w-[220px] overflow-hidden rounded-lg">
-                <Image
-                  src="/images/Ratgeber/ratgeber.webp"
-                  alt="Vorschaubild Entlastungsbetrag 131 Euro"
-                  fill
-                  className="object-cover transition-transform duration-500 hover:scale-[1.02]"
-                  sizes="220px"
-                />
-              </div>
-            </div>
-            <p className="text-xs font-semibold uppercase tracking-wide text-[#0F4F68]/80">Blog-Beitrag</p>
-            <h2 className="mt-2 text-xl font-bold text-[#0F4F68]">
-              Entlastungsbetrag 131 Euro: so nutzen Sie Ihren Anspruch richtig
-            </h2>
-            <p className="mt-3 text-sm leading-relaxed text-neutral-700">
-              Wer Anspruch hat, welche Leistungen bezahlt werden, wie lange ungenutzte Beträge gültig sind und wie die
-              Abrechnung mit der Pflegekasse funktioniert.
-            </p>
-            <Link
-              href="/ratgeber/entlastungsbetrag-131-euro"
-              className="mt-4 inline-flex items-center rounded-lg bg-[#0F4F68] px-4 py-2 font-semibold text-white transition-colors hover:bg-[#0c3d52] focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2"
-            >
-              Beitrag lesen
-            </Link>
-          </article>
-        </section>
+        <RatgeberVerzeichnis />
       </Container>
     </article>
   );
