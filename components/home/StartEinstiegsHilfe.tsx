@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { findStandortByPlz, getOrtByPlz, ortToSlugSegment, type Standort } from "@/config/standorte";
 import { cn } from "@/lib/utils";
 
@@ -13,19 +13,21 @@ type ServiceKey =
   | "medizinisch"
   | "umbau"
   | "hausnotruf"
-  | "hilfsmittel";
+  | "hilfsmittel"
+  | "essen";
 
 type KontaktArt = "rueckruf" | "email" | "selbst";
 
 const SERVICE_OPTIONEN: { key: ServiceKey; label: string; verfuegbarkeit: "direkt" | "partner" }[] = [
-  { key: "haushalt", label: "Alltagsbegleitung & Haushaltsreinigung", verfuegbarkeit: "partner" },
-  { key: "pflegeberatung", label: "Halb-, vierteljaehrliche Pflegeberatung nach §37.3", verfuegbarkeit: "partner" },
-  { key: "pflegebox", label: "Kostenlose Pflegebox (Utensilien zur Pflege)", verfuegbarkeit: "partner" },
+  { key: "haushalt", label: "Alltagsbegleitung & Haushaltsreinigung", verfuegbarkeit: "direkt" },
+  { key: "pflegeberatung", label: "Halb-, vierteljaehrliche Pflegeberatung nach §37.3", verfuegbarkeit: "direkt" },
+  { key: "pflegebox", label: "Kostenlose Pflegebox (Utensilien zur Pflege)", verfuegbarkeit: "direkt" },
   { key: "koerperpflege", label: "Koerperliche Pflege", verfuegbarkeit: "partner" },
-  { key: "medizinisch", label: "Medizinische Versorgung (Verbandswechsel, Medikamentengabe)", verfuegbarkeit: "direkt" },
-  { key: "umbau", label: "Umbaumassnahmen im Haus (Barrierefreiheit)", verfuegbarkeit: "direkt" },
-  { key: "hausnotruf", label: "Hausnotruf", verfuegbarkeit: "direkt" },
-  { key: "hilfsmittel", label: "Pflegehilfsmittel (Rollator, Duschhocker, Haltegriffe usw.)", verfuegbarkeit: "direkt" },
+  { key: "medizinisch", label: "Medizinische Versorgung (Verbandswechsel, Medikamentengabe)", verfuegbarkeit: "partner" },
+  { key: "umbau", label: "Umbaumassnahmen im Haus (Barrierefreiheit)", verfuegbarkeit: "partner" },
+  { key: "hausnotruf", label: "Hausnotruf", verfuegbarkeit: "partner" },
+  { key: "hilfsmittel", label: "Pflegehilfsmittel (Rollator, Duschhocker usw.)", verfuegbarkeit: "partner" },
+  { key: "essen", label: "Essen auf Raedern", verfuegbarkeit: "partner" },
 ];
 
 const PFLEGEGRADE = [
@@ -47,13 +49,13 @@ const SCHRITT_MOTIVATION: Record<number, string> = {
   2: "Super, jetzt geht's weiter.",
   3: "Klasse, nur noch ein paar Fragen.",
   4: "Top, damit sind wir fast durch.",
-  5: "Stark! Hier ist Ihr Ergebnis.",
+  5: "Super, hier ist Ihr Ergebnis.",
   6: "Sehr gut, jetzt nur noch Ihren Standort finden.",
   7: "Geschafft! Wählen Sie Ihren bevorzugten Kontaktweg.",
 };
 
 const optionButtonClass =
-  "min-h-[48px] w-full rounded-xl border border-[#0F4F68]/18 bg-white px-4 py-3 text-left text-base font-medium text-[#0F4F68] transition-colors hover:border-[#0F4F68]/40 hover:bg-[#F2F9FA] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0F4F68]";
+  "min-h-[54px] w-full rounded-xl border border-[#0F4F68]/18 bg-white px-4 py-3.5 text-left text-[1.03rem] font-medium text-[#0F4F68] transition-colors hover:border-[#F78F2E]/60 hover:bg-[#fff8f2] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#F78F2E]";
 
 function SelectMark({ active }: { active: boolean }) {
   if (active) {
@@ -80,43 +82,69 @@ function SelectMark({ active }: { active: boolean }) {
 }
 
 function ServiceIcon({ service }: { service: ServiceKey }) {
-  if (service === "haushalt" || service === "umbau") {
+  if (service === "haushalt") {
     return (
-      <svg className="h-5 w-5 text-[#0F4F68]/75" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
-        <path d="M12 3.2 3.5 10v10.3h6.2v-6.3h4.6v6.3h6.2V10L12 3.2z" />
+      <svg className="h-5 w-5 text-[#F78F2E]" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+        <path d="M12 21s-7-4.35-7-10a4 4 0 0 1 7-2.65A4 4 0 0 1 19 11c0 5.65-7 10-7 10z" />
       </svg>
     );
   }
   if (service === "pflegeberatung") {
     return (
-      <svg className="h-5 w-5 text-[#0F4F68]/75" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+      <svg className="h-5 w-5 text-[#F78F2E]" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
         <path d="M4 4h16v11H7.6L4 18.6V4zm4 4v2h8V8H8zm0 4v2h5v-2H8z" />
       </svg>
     );
   }
   if (service === "pflegebox" || service === "hilfsmittel") {
     return (
-      <svg className="h-5 w-5 text-[#0F4F68]/75" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+      <svg className="h-5 w-5 text-[#F78F2E]" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
         <path d="M3 7.2 12 3l9 4.2v9.6L12 21l-9-4.2V7.2zm9 8.5 6.8-3.2V8.6L12 11.8 5.2 8.6v3.9l6.8 3.2z" />
       </svg>
     );
   }
   if (service === "koerperpflege") {
     return (
-      <svg className="h-5 w-5 text-[#0F4F68]/75" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+      <svg className="h-5 w-5 text-[#F78F2E]" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
         <path d="M12 2 4 5.2v6.1c0 5.1 3.4 9.8 8 10.7 4.6-.9 8-5.6 8-10.7V5.2L12 2zm-1 13.2-3-3 1.4-1.4 1.6 1.6 3.6-3.6 1.4 1.4-5 5z" />
       </svg>
     );
   }
   if (service === "medizinisch") {
     return (
-      <svg className="h-5 w-5 text-[#0F4F68]/75" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
-        <path d="M7 4H4v2h1.3l2 9.1h9.6l1.7-6.8H8.5L8 6h12V4H7zm2 13a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm8 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4z" />
+      <svg className="h-5 w-5 text-[#F78F2E]" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+        <path d="M19 10h-5V5h-4v5H5v4h5v5h4v-5h5z" />
+      </svg>
+    );
+  }
+  if (service === "hausnotruf") {
+    return (
+      <svg className="h-5 w-5 text-[#F78F2E]" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+        <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z" />
+      </svg>
+    );
+  }
+  if (service === "essen") {
+    return (
+      <svg className="h-5 w-5 text-[#F78F2E]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+        <path d="M4 3v7" />
+        <path d="M7 3v7" />
+        <path d="M4 7h3" />
+        <path d="M6 10v11" />
+        <path d="M15 3c2.2 0 4 1.8 4 4v14" />
+        <path d="M19 7h-4" />
+      </svg>
+    );
+  }
+  if (service === "umbau") {
+    return (
+      <svg className="h-5 w-5 text-[#F78F2E]" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+        <path d="M12 3.2 3.5 10v10.3h6.2v-6.3h4.6v6.3h6.2V10L12 3.2z" />
       </svg>
     );
   }
   return (
-    <svg className="h-5 w-5 text-[#0F4F68]/75" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+    <svg className="h-5 w-5 text-[#F78F2E]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
       <path d="M4 4v7" />
       <path d="M7 4v7" />
       <path d="M4 8h3" />
@@ -130,20 +158,20 @@ function ServiceIcon({ service }: { service: ServiceKey }) {
 function StepFlatIcon({ kind }: { kind: "pflegegrad" | "person" | "kontakt" }) {
   if (kind === "pflegegrad") {
     return (
-      <svg className="h-5 w-5 text-[#0F4F68]/75" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+      <svg className="h-5 w-5 text-[#F78F2E]" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
         <path d="M12 2 3 6v6c0 5 3.4 9.6 9 10 5.6-.4 9-5 9-10V6l-9-4zm-1 13-3-3 1.4-1.4 1.6 1.6 3.6-3.6L16 10l-5 5z" />
       </svg>
     );
   }
   if (kind === "person") {
     return (
-      <svg className="h-5 w-5 text-[#0F4F68]/75" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+      <svg className="h-5 w-5 text-[#F78F2E]" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
         <path d="M12 12a5 5 0 1 0-5-5 5 5 0 0 0 5 5zm0 2c-4.4 0-8 2-8 4.5V21h16v-2.5C20 16 16.4 14 12 14z" />
       </svg>
     );
   }
   return (
-    <svg className="h-5 w-5 text-[#0F4F68]/75" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+    <svg className="h-5 w-5 text-[#F78F2E]" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
       <path d="M4 4h16v11H7.6L4 18.6V4zm4 4v2h8V8H8zm0 4v2h5v-2H8z" />
     </svg>
   );
@@ -158,6 +186,7 @@ const serviceZuLink: Record<ServiceKey, string> = {
   umbau: "/kontakt",
   hausnotruf: "/kontakt",
   hilfsmittel: "/pflegeshop",
+  essen: "/leistungen/essen-auf-raeder",
 };
 
 export function StartEinstiegsHilfe() {
@@ -240,17 +269,15 @@ export function StartEinstiegsHilfe() {
     setStep((s) => Math.max(1, s - 1));
   };
 
+  useEffect(() => {
+    if (step === 6 && plzNorm.length === 5) {
+      setStep(7);
+    }
+  }, [plzNorm, step]);
+
   const ausgewaehlteLeistungen = useMemo(
     () => SERVICE_OPTIONEN.filter((s) => leistungen.includes(s.key)),
     [leistungen]
-  );
-  const direktVerfuegbar = useMemo(
-    () => ausgewaehlteLeistungen.filter((s) => s.verfuegbarkeit === "direkt"),
-    [ausgewaehlteLeistungen]
-  );
-  const partnerVerfuegbar = useMemo(
-    () => ausgewaehlteLeistungen.filter((s) => s.verfuegbarkeit === "partner"),
-    [ausgewaehlteLeistungen]
   );
   const leistungsText = useMemo(
     () => ausgewaehlteLeistungen.map((s) => `- ${s.label}`).join("\n"),
@@ -301,7 +328,7 @@ export function StartEinstiegsHilfe() {
         <div className="fixed inset-0 z-50 flex items-end justify-center bg-[#0F4F68]/45 p-3 backdrop-blur-[2px] sm:items-center sm:p-6">
           <div className="w-full max-w-4xl animate-fade-in-up rounded-2xl border border-[#0F4F68]/15 bg-white p-5 shadow-2xl sm:p-7">
             <div className="mb-3 flex items-center justify-between gap-3">
-              <p className="text-xs font-semibold uppercase tracking-wide text-[#0F4F68]/70">Schritt {Math.min(step, 7)} von 7</p>
+              <p className="text-sm font-bold uppercase tracking-wide text-[#0F4F68]/80">Schritt {Math.min(step, 7)} von 7</p>
               <button
                 type="button"
                 onClick={() => {
@@ -314,7 +341,7 @@ export function StartEinstiegsHilfe() {
                 Schließen
               </button>
             </div>
-            <p className="mb-2 text-sm font-semibold text-[#0F4F68]/75">{SCHRITT_MOTIVATION[step]}</p>
+            <p className="mb-3 text-center text-xl font-extrabold text-[#0F4F68] sm:text-2xl">{SCHRITT_MOTIVATION[step]}</p>
 
             {step === 1 ? (
               <div className="mt-3 animate-fade-in-up">
@@ -416,7 +443,10 @@ export function StartEinstiegsHilfe() {
                 <h3 className="text-lg font-bold text-[#0F4F68] sm:text-xl">Gute Nachricht!</h3>
                 <p className="text-neutral-700">Wir haben für folgende Dienstleistungen freie Kapazitäten:</p>
                 <ul className="space-y-2">
-                  {ausgewaehlteLeistungen.map((l, i) => (
+                  {ausgewaehlteLeistungen
+                    .filter((l) => l.verfuegbarkeit === "direkt")
+                    .concat(ausgewaehlteLeistungen.filter((l) => l.verfuegbarkeit === "partner"))
+                    .map((l, i) => (
                     <li
                       key={l.key}
                       className="flex items-start gap-2.5 rounded-xl border border-[#0F4F68]/12 bg-[#f8fcfd] px-3 py-2 opacity-0 animate-fade-in-up"
@@ -430,20 +460,22 @@ export function StartEinstiegsHilfe() {
                       <div>
                         <p className="text-sm font-semibold text-[#0F4F68] sm:text-base">{l.label}</p>
                         <p className={cn("text-xs sm:text-sm", l.verfuegbarkeit === "direkt" ? "text-emerald-700" : "text-[#c86d1f]")}>
-                          {l.verfuegbarkeit === "direkt" ? "Sofort verfügbar über uns" : "Freie Kapazitäten über unsere Kooperationspartner"}
+                          {l.verfuegbarkeit === "direkt" ? "Verfügbar über uns" : "Verfügbar über Kooperationspartner"}
                         </p>
                       </div>
                     </li>
                   ))}
                 </ul>
-                {direktVerfuegbar.length > 0 ? <p className="text-sm text-emerald-700">Sofort verfügbar über uns: {direktVerfuegbar.map((l) => l.label).join(", ")}.</p> : null}
-                {partnerVerfuegbar.length > 0 ? <p className="text-sm text-[#c86d1f]">Freie Kapazitäten über unsere Kooperationspartner: {partnerVerfuegbar.map((l) => l.label).join(", ")}.</p> : null}
               </div>
             ) : null}
 
             {step === 6 ? (
               <div className="mt-3 space-y-4 animate-fade-in-up">
                 <h3 className="text-lg font-bold text-[#0F4F68] sm:text-xl">Erhalten Sie sofort Ihren richtigen Ansprechpartner unserer Standorte</h3>
+                <div className="rounded-xl border border-[#F78F2E]/35 bg-[#fff8f2] p-4">
+                  <p className="text-sm font-bold text-[#c86d1f]">Ganz Neu! Unser Pflegeshop ist endlich da.</p>
+                  <p className="mt-1 text-sm text-[#7a4d28]">Erhalten Sie bei uns alle Pflegeartikel für die tägliche Pflege.</p>
+                </div>
                 <label htmlFor="hilfefinder-plz" className="block text-sm font-medium text-[#0F4F68]">PLZ</label>
                 <input
                   id="hilfefinder-plz"
@@ -570,11 +602,11 @@ export function StartEinstiegsHilfe() {
             {error ? <p className="mt-4 text-sm text-red-600" role="alert">{error}</p> : null}
 
             <div className="mt-6 flex flex-wrap gap-3">
-              {step > 1 && step < 7 ? (
+              {step > 1 ? (
                 <button
                   type="button"
                   onClick={zurueck}
-                  className="inline-flex min-h-[46px] items-center justify-center rounded-xl border border-[#0F4F68]/30 px-5 py-2 text-base font-semibold text-[#0F4F68] hover:bg-[#F2F9FA]"
+                  className="inline-flex min-h-[50px] items-center justify-center rounded-xl border border-[#0F4F68]/30 px-6 py-2.5 text-[1.03rem] font-semibold text-[#0F4F68] hover:bg-[#F2F9FA]"
                 >
                   Zurück
                 </button>
@@ -584,7 +616,7 @@ export function StartEinstiegsHilfe() {
                 <button
                   type="button"
                   onClick={weiter}
-                  className="inline-flex min-h-[46px] items-center justify-center rounded-xl bg-[#0F4F68] px-5 py-2 text-base font-semibold text-white hover:bg-[#0c3d52]"
+                  className="inline-flex min-h-[50px] items-center justify-center rounded-xl bg-[#0F4F68] px-6 py-2.5 text-[1.03rem] font-semibold text-white hover:bg-[#0c3d52]"
                 >
                   Weiter
                 </button>
@@ -594,7 +626,7 @@ export function StartEinstiegsHilfe() {
                 <button
                   type="button"
                   onClick={resetFlow}
-                  className="inline-flex min-h-[46px] items-center justify-center rounded-xl bg-[#F78F2E] px-5 py-2 text-base font-semibold text-white hover:bg-[#e67e22]"
+                  className="inline-flex min-h-[50px] items-center justify-center rounded-xl bg-[#F78F2E] px-6 py-2.5 text-[1.03rem] font-semibold text-white hover:bg-[#e67e22]"
                 >
                   Neu starten
                 </button>
