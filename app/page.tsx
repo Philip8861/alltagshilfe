@@ -83,14 +83,14 @@ const LEISTUNGS_LINKS: Record<(typeof LEISTUNGEN)[number]["icon"], string> = {
 };
 
 const VORTEILE = [
-  "Zugelassen bei allen Krankenkassen in Deutschland.",
-  "Schnelle Terminvergabe.",
-  "Volle Transparenz: Rechnungen und kommende Termine sind auf Wunsch per App einsehbar.",
-  "Ab Pflegegrad 1 können 131 EUR Entlastungsbetrag über uns genutzt werden.",
-  "Ab Pflegegrad 2 können Verhinderungspflege / Ersatzpflege über uns genutzt werden.",
-  "Wir bieten eine Vielzahl an Dienstleistungen - alles aus einer Hand.",
-  "Wir bieten eine Leistung nicht an? Profitieren Sie von unserem Netzwerk.",
-  "Wir sind auch in ländlichen Dörfern unterwegs.",
+  "Zugelassen bei allen Pflege- und Krankenkassen in Deutschland",
+  "Schnelle Terminvergabe für Alltagshilfe und Pflegeunterstützung",
+  "Volle Transparenz dank App: Rechnungen und Termine jederzeit einsehbar",
+  "Ab Pflegegrad 1: Nutzen Sie Ihren Entlastungsbetrag von 131 Euro für unsere Leistungen",
+  "Neu ab Pflegegrad 2: Bis zu 3.539 Euro Verhinderungspflege über uns abrechenbar",
+  "Umfangreiche Dienstleistungen rund um Betreuung, Entlastung und Alltagshilfe aus einer Hand",
+  "Auch wenn wir eine Leistung nicht direkt anbieten: Unser starkes Netzwerk hilft weiter",
+  "Wir sind nicht nur in Städten, sondern auch in ländlichen Regionen und Dörfern für Sie unterwegs",
 ] as const;
 
 export default function HomePage() {
@@ -269,8 +269,8 @@ export default function HomePage() {
           <ul className="mt-6 grid gap-4 sm:grid-cols-2">
             {VORTEILE.map((item) => (
               <li key={item} className="flex items-start gap-3 rounded-xl border-l-4 border-[#F78F2E] pl-3">
-                <span className="mt-0.5 inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-[#F78F2E]/45 text-[#F78F2E]" aria-hidden>
-                  <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <span className="mt-0.5 inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[#F78F2E] to-[#e67e22] text-white shadow-[0_4px_10px_rgba(247,143,46,0.35)] ring-2 ring-[#F78F2E]/25" aria-hidden>
+                  <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M20 6L9 17l-5-5" />
                   </svg>
                 </span>
