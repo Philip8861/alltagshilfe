@@ -26,17 +26,15 @@ export default function UeberUnsPage() {
                   unoptimized
                 />
               </div>
+              <p
+                className="pointer-events-none absolute right-2 bottom-3 max-w-[min(92%,38rem)] text-right text-xl font-extrabold leading-tight tracking-tight text-[#0F4F68] opacity-0 drop-shadow-[0_3px_10px_rgba(15,79,104,0.3)] animate-fade-in-up motion-reduce:opacity-100 sm:right-4 sm:bottom-4 sm:text-2xl lg:text-3xl"
+                style={{ animationDelay: "0.22s" }}
+              >
+                Unternehmen der Zukunft! Wir sagen{" "}
+                <span className="text-[#F78F2E] drop-shadow-[0_0_10px_rgba(247,143,46,0.55)] animate-pulse motion-reduce:animate-none">Danke</span>{" "}
+                für euer Vertrauen!
+              </p>
             </div>
-          </div>
-          <div className="flex justify-end">
-            <p
-              className="mt-4 mr-0 rounded-2xl bg-white/90 px-4 py-2 text-right text-sm font-bold text-[#0F4F68] opacity-0 shadow-[0_8px_20px_rgba(15,79,104,0.14)] animate-fade-in-up motion-reduce:opacity-100 sm:text-base lg:mr-[calc((100vw-100%)/-2)]"
-              style={{ animationDelay: "0.22s" }}
-            >
-              Unternehmen der Zukunft! Wir sagen{" "}
-              <span className="text-[#F78F2E] animate-pulse motion-reduce:animate-none">Danke</span>{" "}
-              für euer Vertrauen!
-            </p>
           </div>
 
           <header className="relative z-10 mt-8 max-w-2xl lg:absolute lg:left-0 lg:top-[46%] lg:mt-0 lg:-translate-y-1/2">
