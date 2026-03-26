@@ -106,11 +106,11 @@ export function KundenstimmenCarousel() {
               src="/images/star.png"
               alt=""
               aria-hidden
-              width={22}
-              height={22}
-              sizes="22px"
+              width={30}
+              height={30}
+              sizes="30px"
               className={cn(
-                "h-[22px] w-[22px] transition-all duration-300",
+                "h-[30px] w-[30px] transition-all duration-300",
                 i < starCount ? "scale-100 opacity-100" : "scale-75 opacity-25"
               )}
             />

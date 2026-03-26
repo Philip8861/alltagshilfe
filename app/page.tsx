@@ -187,7 +187,7 @@ export default function HomePage() {
               <Link
                 key={leistung.title}
                 href={LEISTUNGS_LINKS[leistung.icon]}
-                className="rounded-2xl px-4 py-4 opacity-0 transition-all duration-300 hover:-translate-y-1 animate-fade-in-up focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68] focus-visible:ring-offset-2"
+                className="rounded-2xl px-4 py-4 opacity-0 transition-all duration-300 hover:-translate-y-1 hover:bg-white/70 hover:shadow-[0_0_24px_rgba(15,79,104,0.15)] animate-fade-in-up focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68] focus-visible:ring-offset-2"
                 style={{ animationDelay: `${0.06 * (index + 1)}s` }}
               >
                 <article className="flex items-start gap-3">
@@ -273,7 +273,7 @@ export default function HomePage() {
           </p>
           <ul className="mt-6 grid gap-4 sm:grid-cols-2">
             {VORTEILE.map((item) => (
-              <li key={item} className="flex items-start gap-3 rounded-xl">
+              <li className="flex items-start gap-3 rounded-xl px-2 py-1.5 transition-all duration-300 hover:bg-white/75 hover:shadow-[0_0_20px_rgba(15,79,104,0.12)]" key={item}>
                 <img src="/images/haken.webp" alt="" aria-hidden width={52} height={52} className="mt-0.5 h-[52px] w-[52px] shrink-0 object-contain" />
                 <span className="text-[1.03rem] font-medium leading-relaxed text-neutral-800 sm:text-[1.08rem]">{item}</span>
               </li>
