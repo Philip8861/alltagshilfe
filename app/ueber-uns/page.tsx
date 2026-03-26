@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import { Container } from "@/components/layout/Container";
-import { siteConfig } from "@/config/site";
 
 export const metadata: Metadata = {
   title: "Über uns",
@@ -141,7 +140,7 @@ export default function UeberUnsPage() {
               <div className="p-5">
                 <h3 className="text-xl font-bold text-[#0F4F68]">Standort Allgäu stellt sich vor</h3>
                 <p className="mt-2 text-sm text-neutral-600">Standortleitung: Name folgt</p>
-                <p className="mt-3 text-neutral-700 italic">"Wir möchten Menschen in ihrer vertrauten Umgebung stärken und ihnen echte Sicherheit im Alltag geben."</p>
+                <p className="mt-3 text-neutral-700 italic">&bdquo;Wir möchten Menschen in ihrer vertrauten Umgebung stärken und ihnen echte Sicherheit im Alltag geben.&ldquo;</p>
               </div>
             </article>
             <article className="overflow-hidden rounded-2xl border border-[#0F4F68]/12 bg-white shadow-[0_10px_25px_rgba(15,79,104,0.12)]">
@@ -149,7 +148,7 @@ export default function UeberUnsPage() {
               <div className="p-5">
                 <h3 className="text-xl font-bold text-[#0F4F68]">Standort Wangen stellt sich vor</h3>
                 <p className="mt-2 text-sm text-neutral-600">Standortleitung: Name folgt</p>
-                <p className="mt-3 text-neutral-700 italic">"Wir tun, was wir tun, weil jede Familie schnelle, verlässliche und menschliche Unterstützung verdient."</p>
+                <p className="mt-3 text-neutral-700 italic">&bdquo;Wir tun, was wir tun, weil jede Familie schnelle, verlässliche und menschliche Unterstützung verdient.&ldquo;</p>
               </div>
             </article>
             <article className="overflow-hidden rounded-2xl border border-[#0F4F68]/12 bg-white shadow-[0_10px_25px_rgba(15,79,104,0.12)]">
@@ -157,7 +156,7 @@ export default function UeberUnsPage() {
               <div className="p-5">
                 <h3 className="text-xl font-bold text-[#0F4F68]">Standort Augsburg stellt sich vor</h3>
                 <p className="mt-2 text-sm text-neutral-600">Standortleitung: Name folgt</p>
-                <p className="mt-3 text-neutral-700 italic">"Unser Antrieb ist es, Pflegealltag leichter zu machen - professionell, herzlich und nah am Menschen."</p>
+                <p className="mt-3 text-neutral-700 italic">&bdquo;Unser Antrieb ist es, Pflegealltag leichter zu machen - professionell, herzlich und nah am Menschen.&ldquo;</p>
               </div>
             </article>
             <article className="overflow-hidden rounded-2xl border border-[#0F4F68]/12 bg-white shadow-[0_10px_25px_rgba(15,79,104,0.12)]">
@@ -165,7 +164,7 @@ export default function UeberUnsPage() {
               <div className="p-5">
                 <h3 className="text-xl font-bold text-[#0F4F68]">Standort Engen/Konstanz stellt sich vor</h3>
                 <p className="mt-2 text-sm text-neutral-600">Standortleitung: Name folgt</p>
-                <p className="mt-3 text-neutral-700 italic">"Wir begleiten mit Haltung und Herz, damit Selbstbestimmung und Lebensqualität erhalten bleiben."</p>
+                <p className="mt-3 text-neutral-700 italic">&bdquo;Wir begleiten mit Haltung und Herz, damit Selbstbestimmung und Lebensqualität erhalten bleiben.&ldquo;</p>
               </div>
             </article>
           </div>
