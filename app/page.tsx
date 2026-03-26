@@ -138,7 +138,10 @@ export default function HomePage() {
             </header>
           </div>
 
-          <div className="lg:-mt-[10%]">
+          <div
+            className="opacity-0 animate-fade-in-up motion-reduce:opacity-100 lg:-mt-[10%]"
+            style={{ animationDelay: "1.55s" }}
+          >
             <StartEinstiegsHilfe />
           </div>
         </div>
