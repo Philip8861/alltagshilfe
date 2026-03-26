@@ -46,13 +46,13 @@ export function Timeline() {
   }, []);
 
   return (
-    <section className="relative mt-12 w-full" aria-label="Timeline Meilensteine">
-      <h2 className="text-center text-4xl font-bold text-slate-800">Unsere Meilensteine</h2>
+    <section className="relative mt-10 w-full" aria-label="Timeline Meilensteine">
+      <h2 className="text-center text-4xl font-bold text-[#0F4F68]">Unsere Meilensteine</h2>
 
-      <div className="relative mx-auto mt-10 max-w-6xl">
-        <div className="absolute left-4 top-0 h-full w-1 rounded-full bg-blue-600 md:left-1/2 md:-translate-x-1/2" aria-hidden />
+      <div className="relative mx-auto mt-7 max-w-6xl">
+        <div className="absolute left-4 top-0 h-full w-[3px] rounded-full bg-[#0F4F68] md:left-1/2 md:-translate-x-1/2" aria-hidden />
 
-        <ul className="space-y-7 md:space-y-8">
+        <ul className="space-y-4 md:space-y-5">
           {MILESTONES.map((item, idx) => {
             const isOdd = idx % 2 === 1;
             const isVisible = visible[idx];
@@ -66,17 +66,20 @@ export function Timeline() {
                 }}
                 className={`relative md:flex ${isOdd ? "md:flex-row-reverse" : "md:flex-row"}`}
               >
-                <span className="absolute left-4 top-6 h-4 w-4 -translate-x-1/2 rounded-full border-4 border-white bg-blue-600 md:left-1/2 md:-translate-x-1/2" aria-hidden />
+                <span className="absolute left-4 top-5 h-4 w-4 -translate-x-1/2 rounded-full border-4 border-white bg-[#0F4F68] ring-2 ring-[#F78F2E]/45 md:left-1/2 md:-translate-x-1/2" aria-hidden />
 
-                <div className="ml-10 md:ml-0 md:w-1/2 md:px-10">
+                <div className="ml-10 md:ml-0 md:w-1/2 md:px-8">
                   <article
-                    className={`rounded-xl bg-white p-5 shadow-sm transition duration-500 hover:shadow-md ${
+                    className={`rounded-xl border border-[#0F4F68]/10 bg-white p-4 shadow-sm transition duration-500 hover:-translate-y-0.5 hover:shadow-md ${
                       isVisible ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"
                     }`}
                   >
-                    <p className="text-sm font-bold uppercase tracking-wide text-blue-600">{item.date}</p>
-                    <h3 className="mt-1 text-xl font-bold text-slate-800">{item.title}</h3>
-                    <p className="mt-2 text-slate-600">{item.description}</p>
+                    <div className="flex items-start justify-between gap-3">
+                      <p className="text-xs font-extrabold uppercase tracking-wide text-[#0F4F68]">{item.date}</p>
+                      <span className="rounded-full bg-[#F78F2E]/15 px-2 py-0.5 text-[11px] font-bold text-[#0F4F68]">#{idx + 1}</span>
+                    </div>
+                    <h3 className="mt-1 text-lg font-bold text-slate-800">{item.title}</h3>
+                    <p className="mt-1 text-sm text-slate-600">{item.description}</p>
                   </article>
                 </div>
               </li>

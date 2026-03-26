@@ -46,7 +46,7 @@ export default function UeberUnsPage() {
           aria-label="Unternehmensgeschichte Alltagshilfe-Süd"
         >
           <svg
-            className="pointer-events-none absolute left-0 top-0 h-12 w-full -translate-y-[68%] sm:h-16"
+            className="pointer-events-none absolute left-0 top-0 h-16 w-full -translate-y-[42%] sm:h-20 sm:-translate-y-[46%]"
             viewBox="0 0 1200 120"
             preserveAspectRatio="none"
             fill="none"
@@ -55,7 +55,7 @@ export default function UeberUnsPage() {
             <path d="M0,120 C200,32 420,8 600,22 C800,38 1010,90 1200,120 L1200,120 L0,120 Z" fill="#F2F9FA" />
           </svg>
           <div
-            className="pointer-events-none absolute left-0 top-0 h-10 w-full -translate-y-2 bg-gradient-to-b from-[#F2F9FA]/85 to-transparent"
+            className="pointer-events-none absolute left-0 top-0 h-14 w-full -translate-y-3 bg-gradient-to-b from-[#F2F9FA] via-[#F2F9FA]/70 to-transparent"
             aria-hidden
           />
           <div className="mx-auto max-w-5xl space-y-5 text-neutral-700">
