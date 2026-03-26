@@ -28,6 +28,16 @@ export default function UeberUnsPage() {
               </div>
             </div>
           </div>
+          <div className="flex justify-end">
+            <p
+              className="mt-4 mr-0 rounded-2xl bg-white/90 px-4 py-2 text-right text-sm font-bold text-[#0F4F68] opacity-0 shadow-[0_8px_20px_rgba(15,79,104,0.14)] animate-fade-in-up motion-reduce:opacity-100 sm:text-base lg:mr-[calc((100vw-100%)/-2)]"
+              style={{ animationDelay: "0.22s" }}
+            >
+              Unternehmen der Zukunft! Wir sagen{" "}
+              <span className="text-[#F78F2E] animate-pulse motion-reduce:animate-none">Danke</span>{" "}
+              für euer Vertrauen!
+            </p>
+          </div>
 
           <header className="relative z-10 mt-8 max-w-2xl lg:absolute lg:left-0 lg:top-[46%] lg:mt-0 lg:-translate-y-1/2">
             <h1 className="text-3xl font-bold tracking-tight text-[#0F4F68] opacity-0 animate-fade-in-up motion-reduce:opacity-100 sm:text-4xl">
@@ -89,7 +99,7 @@ export default function UeberUnsPage() {
           </p>
           <p>
             Zu Beginn des Jahres 2026 wurde die regionale Präsenz gezielt ausgebaut: Am 01.01.2026 eröffnete Frau
-            Reigel den neuen Standort Augsburg. Ebenfalls am 01.01.2026 wurde der Standort Konstanz/Engen unter der
+            Riegel den neuen Standort Augsburg. Ebenfalls am 01.01.2026 wurde der Standort Konstanz/Engen unter der
             Leitung von Frau Maucher eröffnet. Anfang 2026 folgte darüber hinaus der Umzug in größere Räumlichkeiten
             nach Bad Grönenbach, nachdem zuvor bereits 2024 der Umzug nach Sulzberg erfolgt war. Diese Entwicklung
             spiegelt das kontinuierliche Wachstum des Unternehmens und die steigende Bedeutung professioneller

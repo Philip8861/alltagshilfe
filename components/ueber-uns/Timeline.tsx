@@ -11,7 +11,7 @@ type Milestone = {
 const MILESTONES: Milestone[] = [
   { date: "01.08.2020", title: "Erste Idee und Firmengründung", description: "Zertifizierung als Grundlage für den Aufbau." },
   { date: "01.04.2021", title: "Eröffnung der Alltagshilfe-Allgäu", description: "Tag der Eröffnung und erster Einsatz beim Klienten Zuhause." },
-  { date: "01.04.2024", title: "Eröffnung Standort Wangen", description: "Eröffnung für die Bodenseeregion durch Frau Sonntag." },
+  { date: "01.04.2022", title: "Eröffnung Standort Wangen", description: "Eröffnung für die Bodenseeregion durch Frau Sonntag." },
   { date: "01.10.2023", title: "Neue Dienstleistung: Pflegehilfsmittel", description: "Zertifizierung zum Versenden von Pflegehilfsmitteln." },
   { date: "03.06.2024", title: "Pflegeberatungsstelle", description: "Anerkennung als offizielle Pflegeberatungsstelle." },
   { date: "2025", title: "Namensänderung", description: "Von Alltagshilfe-Allgäu zu Alltagshilfe-Süd." },
