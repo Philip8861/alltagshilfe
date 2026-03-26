@@ -84,7 +84,7 @@ export default function HomePage() {
           <div className="relative">
             <div className="flex justify-end">
               <div
-                className="relative ml-auto w-full max-w-[50rem] opacity-0 animate-fade-in-up motion-reduce:opacity-100"
+                className="relative ml-auto w-full max-w-[50rem] opacity-0 animate-fade-in-up motion-reduce:opacity-100 lg:mr-[calc((100vw-100%)/-2)]"
                 style={{ animationDelay: "0.08s" }}
               >
                 <div className="w-full [filter:drop-shadow(0_10px_22px_rgba(15,79,104,0.2))_drop-shadow(0_4px_12px_rgba(15,79,104,0.12))]">
@@ -138,7 +138,9 @@ export default function HomePage() {
             </header>
           </div>
 
-          <StartEinstiegsHilfe />
+          <div className="lg:-mt-[5%]">
+            <StartEinstiegsHilfe />
+          </div>
         </div>
       </section>
 
