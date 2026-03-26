@@ -76,7 +76,8 @@ const VORTEILE = [
   "Zugelassen bei allen Krankenkassen in Deutschland.",
   "Schnelle Terminvergabe.",
   "Volle Transparenz: Rechnungen und kommende Termine sind auf Wunsch per App einsehbar.",
-  "Ab Pflegegrad 1 können 131 EUR Entlastungsbetrag plus 3.539 EUR Verhinderungspflege über uns genutzt werden.",
+  "Ab Pflegegrad 1 können 131 EUR Entlastungsbetrag über uns genutzt werden.",
+  "Neue Leistung: Ab Pflegegrad 2 können 3.539 EUR Verhinderungspflege über uns genutzt werden.",
   "Wir bieten eine Vielzahl an Dienstleistungen - alles aus einer Hand.",
   "Wir bieten eine Leistung nicht an? Profitieren Sie von unserem Netzwerk.",
   "Wir sind auch in ländlichen Dörfern unterwegs.",
@@ -251,15 +252,18 @@ export default function HomePage() {
       <section className="relative z-20 mt-6 w-full px-4 sm:mt-8 sm:px-6 lg:px-8">
         <div className="mx-auto w-full max-w-6xl">
           <h3 className="text-2xl font-bold text-[#0F4F68] sm:text-3xl">Ihre Vorteile bei uns</h3>
-          <ul className="mt-4 grid gap-3">
+          <p className="mt-2 max-w-3xl text-sm text-neutral-600 sm:text-base">
+            Verlässlich, transparent und nah bei Ihnen - mit klaren Prozessen und echter Unterstützung im Alltag.
+          </p>
+          <ul className="mt-5 grid gap-4 sm:grid-cols-2">
             {VORTEILE.map((item) => (
-              <li key={item} className="flex items-start gap-3 text-base text-neutral-700 sm:text-lg">
-                <span className="mt-1 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#F78F2E] text-white" aria-hidden>
+              <li key={item} className="flex items-start gap-3">
+                <span className="mt-0.5 inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-[#F78F2E]/45 text-[#F78F2E]" aria-hidden>
                   <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M20 6L9 17l-5-5" />
                   </svg>
                 </span>
-                <span>{item}</span>
+                <span className="text-base leading-relaxed text-neutral-700 sm:text-[1.05rem]">{item}</span>
               </li>
             ))}
           </ul>
