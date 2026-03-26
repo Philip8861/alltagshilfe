@@ -30,10 +30,10 @@ export default function UeberUnsPage() {
           </div>
 
           <header className="relative z-10 mt-8 max-w-2xl lg:absolute lg:left-0 lg:top-[46%] lg:mt-0 lg:-translate-y-1/2">
-            <h1 className="text-3xl font-bold tracking-tight text-[#0F4F68] sm:text-4xl">
+            <h1 className="text-3xl font-bold tracking-tight text-[#0F4F68] opacity-0 animate-fade-in-up motion-reduce:opacity-100 sm:text-4xl">
               Die Alltagshilfe-Süd stellt sich vor
             </h1>
-            <p className="mt-4 text-lg leading-relaxed text-neutral-700">
+            <p className="mt-4 text-lg leading-relaxed text-neutral-700 opacity-0 animate-fade-in-up motion-reduce:opacity-100" style={{ animationDelay: "0.12s" }}>
               Grüß Gott und herzlich willkommen! Wir freuen uns sehr über Ihren Besuch auf unserer Homepage und über
               Ihr Interesse an unserem Unternehmen. Gerne möchten wir Ihnen die Alltagshilfe-Süd näher vorstellen und
               Ihnen einen Einblick in unsere Arbeit, unsere Werte und unser Angebot geben.
@@ -46,28 +46,19 @@ export default function UeberUnsPage() {
           aria-label="Unternehmensgeschichte Alltagshilfe-Süd"
         >
           <svg
-            className="pointer-events-none absolute left-0 top-0 h-16 w-full -translate-y-[42%] sm:h-20 sm:-translate-y-[46%]"
+            className="pointer-events-none absolute left-0 top-0 h-16 w-full -translate-y-full sm:h-20"
             viewBox="0 0 1200 120"
             preserveAspectRatio="none"
             fill="none"
             aria-hidden
           >
-            <path d="M0,120 C200,32 420,8 600,22 C800,38 1010,90 1200,120 L1200,120 L0,120 Z" fill="#F2F9FA" />
+            <path d="M0,120 C180,20 420,0 600,18 C820,40 1010,92 1200,120 L1200,120 L0,120 Z" fill="#F2F9FA" />
           </svg>
           <div
-            className="pointer-events-none absolute left-0 top-0 h-14 w-full -translate-y-3 bg-gradient-to-b from-[#F2F9FA] via-[#F2F9FA]/70 to-transparent"
+            className="pointer-events-none absolute left-0 top-0 h-16 w-full -translate-y-full bg-gradient-to-b from-[#F2F9FA]/95 via-[#F2F9FA]/60 to-transparent"
             aria-hidden
           />
-          <svg
-            className="pointer-events-none absolute bottom-0 left-0 h-14 w-full translate-y-[66%] sm:h-16 sm:translate-y-[62%]"
-            viewBox="0 0 1200 120"
-            preserveAspectRatio="none"
-            fill="none"
-            aria-hidden
-          >
-            <path d="M0,0 C210,84 430,108 600,96 C820,82 1010,30 1200,0 L1200,120 L0,120 Z" fill="#ffffff" />
-          </svg>
-          <div className="mx-auto max-w-5xl space-y-5 text-neutral-700">
+          <div className="mx-auto max-w-5xl space-y-5 text-neutral-700 opacity-0 animate-fade-in-up motion-reduce:opacity-100">
           <p>
             Die Alltagshilfe-Süd ist ein professioneller Hauswirtschafts-, Betreuungs- und Beratungsdienst für
             pflegebedürftige Menschen. Das Unternehmen entstand aus nahezu einem Jahrzehnt praktischer Erfahrung in der

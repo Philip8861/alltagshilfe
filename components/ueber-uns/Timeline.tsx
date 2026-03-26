@@ -10,14 +10,14 @@ type Milestone = {
 
 const MILESTONES: Milestone[] = [
   { date: "01.08.2020", title: "Erste Idee und Firmengründung", description: "Zertifizierung als Grundlage für den Aufbau." },
-  { date: "01.04.2021", title: "Offizielle Gründung", description: "Gründung durch Philip Sonntag und Valentin Maucher." },
-  { date: "01.04.2024", title: "Standort Wangen", description: "Tag der Eröffnung und erster Einsatz. Eröffnung für die Bodenseeregion durch Frau Sonntag." },
-  { date: "01.10.2023", title: "Pflegehilfsmittel", description: "Zertifizierung zum Versenden von Pflegehilfsmitteln." },
+  { date: "01.04.2021", title: "Eröffnung der Alltagshilfe-Allgäu", description: "Tag der Eröffnung und erster Einsatz beim Klienten Zuhause." },
+  { date: "01.04.2024", title: "Eröffnung Standort Wangen", description: "Eröffnung für die Bodenseeregion durch Frau Sonntag." },
+  { date: "01.10.2023", title: "Neue Dienstleistung: Pflegehilfsmittel", description: "Zertifizierung zum Versenden von Pflegehilfsmitteln." },
   { date: "03.06.2024", title: "Pflegeberatungsstelle", description: "Anerkennung als offizielle Pflegeberatungsstelle." },
   { date: "2025", title: "Namensänderung", description: "Von Alltagshilfe-Allgäu zu Alltagshilfe-Süd." },
   { date: "01.12.2025", title: "Neue Dienstleistung: Betriebliche Pflegeberatung", description: "Als neuer Benefit für Unternehmen." },
   { date: "01.01.2026", title: "Eröffnung neuer Standorte", description: "Eröffnung in Engen/Konstanz durch Frau Maucher und Augsburg durch Frau Riegel." },
-  { date: "01.01.2026", title: "Umzug", description: "Umzug nach Bad Grönenbach." },
+  { date: "01.01.2026", title: "Umzug", description: "Umzug von Sulzberg nach Bad Grönenbach." },
 ];
 
 export function Timeline() {
