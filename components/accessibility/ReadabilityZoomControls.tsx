@@ -1,7 +1,10 @@
 "use client";
 
+import { createPortal } from "react-dom";
 import { useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
 import { usePathname } from "next/navigation";
+
+const ICON_STROKE = "#F78F2E";
 
 const STORAGE_KEY_LEVEL = "ahs_readability_zoom_level";
 const STORAGE_KEY_CONTRAST = "ahs_readability_high_contrast";
@@ -22,6 +25,7 @@ function applyZoom(level: number) {
 
 export function ReadabilityZoomControls() {
   const pathname = usePathname();
+  const [mounted, setMounted] = useState(false);
   const [zoomLevel, setZoomLevel] = useState(100);
   const [highContrast, setHighContrast] = useState(false);
   const [reduceMotion, setReduceMotion] = useState(false);
@@ -30,6 +34,10 @@ export function ReadabilityZoomControls() {
   const panelRef = useRef<HTMLDivElement>(null);
   const [widgetHidden, setWidgetHidden] = useState(false);
   const [showUndo, setShowUndo] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     const storedLevel = window.localStorage.getItem(STORAGE_KEY_LEVEL);
@@ -88,12 +96,13 @@ export function ReadabilityZoomControls() {
   const buttonStyle: CSSProperties = isKontakt
     ? {
         right: "max(1.5rem, env(safe-area-inset-right))",
-        // Über dem Standort-Popup (Sprechblase + Button), damit „Kontaktdaten Ihres Standortes“ sichtbar bleibt
-        bottom: "calc(max(1.5rem, env(safe-area-inset-bottom)) + 200px - 5vh)",
+        // Über „Kontaktdaten …“, aber auf kurzen Viewports nicht aus dem Bildschirm schieben
+        bottom:
+          "min(50vh, calc(max(1.5rem, env(safe-area-inset-bottom)) + min(11rem, 28svh) + max(0px, 4rem - 5vh)))",
       }
     : {
-        right: "1rem",
-        bottom: "1rem",
+        right: "max(1rem, env(safe-area-inset-right))",
+        bottom: "max(1rem, env(safe-area-inset-bottom))",
       };
 
   useEffect(() => {
@@ -113,10 +122,10 @@ export function ReadabilityZoomControls() {
     return () => window.clearTimeout(t);
   }, [showUndo]);
 
-  return (
+  const ui = (
     <div ref={panelRef}>
       {widgetHidden ? (
-        <div className="fixed z-[90]" style={buttonStyle}>
+        <div className="fixed z-[10000]" style={buttonStyle}>
           <button
             type="button"
             onClick={() => {
@@ -124,14 +133,14 @@ export function ReadabilityZoomControls() {
               setShowUndo(false);
             }}
             aria-label="Lesbarkeits-Widget wieder einblenden"
-            className="flex h-11 w-11 items-center justify-center rounded-2xl border border-white/15 bg-[#2B2E33]/85 shadow-[0_12px_28px_rgba(0,0,0,0.28)] transition hover:bg-[#34383f] focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#2B2E33]"
+            className="flex h-12 w-12 items-center justify-center rounded-2xl border-2 border-[#F78F2E]/55 bg-[#2B2E33] shadow-[0_12px_28px_rgba(0,0,0,0.35)] transition hover:bg-[#34383f] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#F78F2E] focus-visible:ring-offset-2 focus-visible:ring-offset-[#2B2E33]"
           >
             <svg
-              className="h-5 w-5"
+              className="h-6 w-6"
               viewBox="0 0 24 24"
               fill="none"
-              stroke="#0F4F68"
-              strokeWidth="3"
+              stroke={ICON_STROKE}
+              strokeWidth="2.5"
               strokeLinecap="round"
               strokeLinejoin="round"
               aria-hidden
@@ -142,21 +151,21 @@ export function ReadabilityZoomControls() {
           </button>
         </div>
       ) : (
-        <div className="fixed z-[90] relative" style={buttonStyle}>
+        <div className="fixed z-[10000] relative" style={buttonStyle}>
         <button
           type="button"
           onClick={() => setOpen((v) => !v)}
           aria-haspopup="menu"
           aria-expanded={open}
           aria-label={`Lesbarkeit Einstellungen öffnen. Aktuelle Schriftgröße: ${zoomLevel}%`}
-          className="flex flex-col items-center justify-center gap-0.5 rounded-2xl border border-white/15 bg-[#2B2E33] px-3 py-2 shadow-[0_12px_28px_rgba(0,0,0,0.35)] transition hover:bg-[#34383f] focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#2B2E33] min-h-[52px] min-w-[52px]"
+          className="flex flex-col items-center justify-center gap-1 rounded-2xl border-2 border-[#F78F2E]/55 bg-[#2B2E33] px-3 py-2.5 shadow-[0_12px_28px_rgba(0,0,0,0.35)] transition hover:bg-[#34383f] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#F78F2E] focus-visible:ring-offset-2 focus-visible:ring-offset-[#2B2E33] min-h-[56px] min-w-[56px]"
         >
           <svg
-            className="h-[1.2rem] w-[1.2rem] shrink-0"
+            className="h-7 w-7 shrink-0"
             viewBox="0 0 24 24"
             fill="none"
-            stroke="#0F4F68"
-            strokeWidth="3"
+            stroke={ICON_STROKE}
+            strokeWidth="2.5"
             strokeLinecap="round"
             strokeLinejoin="round"
             aria-hidden
@@ -164,7 +173,7 @@ export function ReadabilityZoomControls() {
             <path d="M21 21l-4.35-4.35" />
             <circle cx="11" cy="11" r="7" />
           </svg>
-          <span className="text-[14px] font-extrabold tracking-wide text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.25)]">
+          <span className="text-[15px] font-extrabold tracking-wide text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.25)]">
             {zoomLevel}%
           </span>
         </button>
@@ -186,7 +195,10 @@ export function ReadabilityZoomControls() {
 
       {showUndo && (
         <div
-          className="fixed right-4 bottom-4 z-[95] w-[min(92vw,22rem)] rounded-2xl border border-[#0F4F68]/15 bg-white/95 p-4 shadow-[0_12px_30px_rgba(15,79,104,0.18)] backdrop-blur"
+          className="fixed right-4 z-[10001] w-[min(92vw,22rem)] rounded-2xl border border-[#0F4F68]/15 bg-white/95 p-4 shadow-[0_12px_30px_rgba(15,79,104,0.18)] backdrop-blur"
+          style={{
+            bottom: "max(1rem, calc(env(safe-area-inset-bottom, 0px) + 1rem))",
+          }}
           role="status"
           aria-live="polite"
         >
@@ -218,14 +230,18 @@ export function ReadabilityZoomControls() {
         <div
           role="menu"
           aria-label="Barrierefreie Einstellungen"
-          className="fixed z-[95] w-[min(92vw,26rem)] rounded-3xl border border-[#0F4F68]/25 bg-white/95 p-6 shadow-[0_12px_30px_rgba(15,79,104,0.18)] backdrop-blur"
+          className="fixed z-[10001] w-[min(92vw,26rem)] rounded-3xl border border-[#0F4F68]/25 bg-white/95 p-6 shadow-[0_12px_30px_rgba(15,79,104,0.18)] backdrop-blur"
           style={
             isKontakt
               ? {
                   right: "max(1.5rem, env(safe-area-inset-right))",
-                  bottom: "calc(max(1.5rem, env(safe-area-inset-bottom)) + 300px - 5vh)",
+                  bottom:
+                    "min(58vh, calc(max(1rem, env(safe-area-inset-bottom)) + min(13.5rem, 34svh) + max(0px, 4.5rem - 5vh)))",
                 }
-              : { right: "1rem", bottom: "5rem" }
+              : {
+                  right: "max(1rem, env(safe-area-inset-right))",
+                  bottom: "max(5.5rem, calc(env(safe-area-inset-bottom, 0px) + 5.5rem))",
+                }
           }
         >
           <div className="flex items-start justify-between gap-3">
@@ -342,4 +358,10 @@ export function ReadabilityZoomControls() {
       )}
     </div>
   );
+
+  if (!mounted || typeof document === "undefined") {
+    return null;
+  }
+
+  return createPortal(ui, document.body);
 }
