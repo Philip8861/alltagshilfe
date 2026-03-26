@@ -266,7 +266,10 @@ export default function HomePage() {
 
       <section className="relative z-20 mt-6 w-full px-4 sm:mt-8 sm:px-6 lg:px-8">
         <div className="mx-auto w-full max-w-6xl">
-          <div className="mb-5 h-px w-full bg-gradient-to-r from-transparent via-[#0F4F68]/28 to-transparent" aria-hidden />
+          <div
+            className="mx-auto mb-5 h-[2px] w-full max-w-5xl bg-gradient-to-r from-transparent via-[#0F4F68]/45 to-transparent"
+            aria-hidden
+          />
           <h3 className="text-3xl font-extrabold tracking-tight text-[#0F4F68] sm:text-4xl">Ihre Vorteile bei uns</h3>
           <p className="mt-2 max-w-3xl text-sm text-neutral-600 sm:text-base">
             Verlässlich, transparent und nah bei Ihnen - mit klaren Prozessen und echter Unterstützung im Alltag.
