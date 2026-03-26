@@ -54,17 +54,20 @@ export default function UeberUnsPage() {
           </header>
         </section>
 
-        <section className="relative mt-12 w-full overflow-hidden bg-[#F2F9FA] px-5 py-7 sm:px-8 sm:py-9" aria-label="Unternehmensgeschichte Alltagshilfe-Süd">
+        <section
+          className="relative z-20 mt-12 -mx-4 w-[calc(100%+2rem)] overflow-hidden bg-[#F2F9FA] px-4 pt-10 pb-10 sm:-mx-6 sm:w-[calc(100%+3rem)] sm:px-6 sm:pt-14 sm:pb-12 lg:-mx-8 lg:w-[calc(100%+4rem)] lg:px-8"
+          aria-label="Unternehmensgeschichte Alltagshilfe-Süd"
+        >
           <svg
-            className="pointer-events-none absolute left-0 top-0 h-10 w-full -translate-y-[70%] sm:h-14"
+            className="pointer-events-none absolute left-0 top-0 h-12 w-full -translate-y-[68%] sm:h-16"
             viewBox="0 0 1200 120"
             preserveAspectRatio="none"
             fill="none"
             aria-hidden
           >
-            <path d="M0,120 C240,36 430,12 600,25 C820,42 1015,94 1200,120 L1200,120 L0,120 Z" fill="#F2F9FA" />
+            <path d="M0,120 C200,32 420,8 600,22 C800,38 1010,90 1200,120 L1200,120 L0,120 Z" fill="#F2F9FA" />
           </svg>
-          <div className="space-y-5 text-neutral-700">
+          <div className="mx-auto max-w-5xl space-y-5 text-neutral-700">
           <p>
             Die Alltagshilfe-Süd ist ein professioneller Hauswirtschafts-, Betreuungs- und Beratungsdienst für
             pflegebedürftige Menschen. Das Unternehmen entstand aus nahezu einem Jahrzehnt praktischer Erfahrung in der
