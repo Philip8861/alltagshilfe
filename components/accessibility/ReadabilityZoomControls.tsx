@@ -7,6 +7,7 @@ const STORAGE_KEY_LEVEL = "ahs_readability_zoom_level";
 const STORAGE_KEY_CONTRAST = "ahs_readability_high_contrast";
 const STORAGE_KEY_REDUCE_MOTION = "ahs_readability_reduce_motion";
 const STORAGE_KEY_LINE_HEIGHT = "ahs_readability_line_height";
+const STORAGE_KEY_WIDGET_HIDDEN = "ahs_readability_zoom_widget_hidden";
 const MIN_ZOOM = 90;
 const MAX_ZOOM = 130;
 const STEP = 5;
@@ -28,6 +29,7 @@ export function ReadabilityZoomControls() {
   const [expandedLineHeight, setExpandedLineHeight] = useState(false);
   const [open, setOpen] = useState(false);
   const panelRef = useRef<HTMLDivElement>(null);
+  const [widgetHidden, setWidgetHidden] = useState(false);
 
   useEffect(() => {
     const storedLevel = window.localStorage.getItem(STORAGE_KEY_LEVEL);
@@ -41,6 +43,9 @@ export function ReadabilityZoomControls() {
     setHighContrast(storedContrast);
     setReduceMotion(storedReduceMotion);
     setExpandedLineHeight(storedLineHeight);
+
+    const storedHidden = window.localStorage.getItem(STORAGE_KEY_WIDGET_HIDDEN) === "1";
+    setWidgetHidden(storedHidden);
   }, []);
 
   useEffect(() => {
@@ -94,40 +99,56 @@ export function ReadabilityZoomControls() {
         bottom: "1rem",
       };
 
+  if (widgetHidden) return null;
+
   return (
     <div ref={panelRef}>
-      <button
-        type="button"
-        onClick={() => setOpen((v) => !v)}
-        aria-haspopup="menu"
-        aria-expanded={open}
-        aria-label={`Lesbarkeit Einstellungen öffnen. Aktuelle Schriftgröße: ${zoomLevel}%`}
-        className="fixed z-[90] flex flex-col items-center justify-center gap-0.5 rounded-2xl border border-white/15 bg-[#2B2E33] px-4 py-2.5 shadow-[0_12px_28px_rgba(0,0,0,0.35)] transition hover:bg-[#34383f] focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#2B2E33]"
-        style={buttonStyle}
-      >
-        <svg
-          className="h-[1.7rem] w-[1.7rem] shrink-0"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="#ffffff"
-          strokeWidth="3"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          aria-hidden
+      <div className="fixed z-[90] relative" style={buttonStyle}>
+        <button
+          type="button"
+          onClick={() => setOpen((v) => !v)}
+          aria-haspopup="menu"
+          aria-expanded={open}
+          aria-label={`Lesbarkeit Einstellungen öffnen. Aktuelle Schriftgröße: ${zoomLevel}%`}
+          className="flex flex-col items-center justify-center gap-0.5 rounded-2xl border border-white/15 bg-[#2B2E33] px-3 py-2 shadow-[0_12px_28px_rgba(0,0,0,0.35)] transition hover:bg-[#34383f] focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#2B2E33] min-h-[52px] min-w-[52px]"
         >
-          <path d="M21 21l-4.35-4.35" />
-          <circle cx="11" cy="11" r="7" />
-        </svg>
-        <span className="text-[14px] font-extrabold tracking-wide text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.25)]">
-          {zoomLevel}%
-        </span>
-      </button>
+          <svg
+            className="h-[1.2rem] w-[1.2rem] shrink-0"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="#0F4F68"
+            strokeWidth="3"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            aria-hidden
+          >
+            <path d="M21 21l-4.35-4.35" />
+            <circle cx="11" cy="11" r="7" />
+          </svg>
+          <span className="text-[14px] font-extrabold tracking-wide text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.25)]">
+            {zoomLevel}%
+          </span>
+        </button>
+
+        <button
+          type="button"
+          onClick={() => {
+            window.localStorage.setItem(STORAGE_KEY_WIDGET_HIDDEN, "1");
+            setWidgetHidden(true);
+            setOpen(false);
+          }}
+          aria-label="Lesbarkeits-Widget schließen"
+          className="absolute -top-2 -right-2 inline-flex h-9 w-9 items-center justify-center rounded-full bg-[#0F4F68] text-white shadow-[0_10px_20px_rgba(15,79,104,0.25)] transition hover:opacity-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#2B2E33]"
+        >
+          <span aria-hidden className="text-2xl leading-none font-extrabold">×</span>
+        </button>
+      </div>
 
       {open && (
         <div
           role="menu"
           aria-label="Barrierefreie Einstellungen"
-          className="fixed z-[95] w-[min(92vw,22rem)] rounded-2xl border border-[#0F4F68]/25 bg-white/95 p-4 shadow-[0_12px_30px_rgba(15,79,104,0.18)] backdrop-blur"
+          className="fixed z-[95] w-[min(92vw,26rem)] rounded-3xl border border-[#0F4F68]/25 bg-white/95 p-6 shadow-[0_12px_30px_rgba(15,79,104,0.18)] backdrop-blur"
           style={
             isKontakt
               ? {
