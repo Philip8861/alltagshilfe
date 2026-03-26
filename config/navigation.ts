@@ -17,7 +17,6 @@ export const navLinks: NavLink[] = [
     children: [
       { href: "/ueber-uns", label: "Über uns" },
       { href: "/kooperation", label: "Kooperation" },
-      { href: "/neuigkeiten", label: "Neuigkeiten" },
     ],
   },
   { href: "/karriere", label: "Karriere" },

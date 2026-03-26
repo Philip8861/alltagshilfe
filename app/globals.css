@@ -31,11 +31,11 @@
 }
 
 .animate-marker-pop-in {
-  animation: marker-pop-in 0.45s ease-out both;
+  animation: marker-pop-in 0.9s ease-out both;
 }
 
 .animate-marker-slide-in {
-  animation: marker-slide-in 0.5s ease-out both;
+  animation: marker-slide-in 1.05s ease-out both;
 }
 
 /* Standort-Teaser: Text erscheint beim Scrollen ins Sichtfeld */

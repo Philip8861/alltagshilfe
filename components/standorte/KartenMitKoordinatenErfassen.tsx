@@ -224,7 +224,7 @@ export function KartenMitKoordinatenErfassen({ hauptmarker, punkte, ortsLabels =
                 width: "clamp(3px, 0.65vw, 5px)",
                 height: "clamp(3px, 0.65vw, 5px)",
                 transform: "translate(-50%, -50%) translateZ(0)",
-                ...(playMarkerAnimation ? { animationDelay: `${Math.min(i * 35, 650)}ms` } : {}),
+                ...(playMarkerAnimation ? { animationDelay: `${Math.min(i * 90, 1800)}ms` } : {}),
               }}
             />
           ))}
@@ -314,7 +314,7 @@ export function KartenMitKoordinatenErfassen({ hauptmarker, punkte, ortsLabels =
               top: `${pos.top}%`,
               transform: "translate(-50%, 100%)",
             };
-            const animDelay = 400 + (i * 120);
+            const animDelay = 700 + (i * 220);
             const commonStyle = { ...style, ...(playMarkerAnimation ? { animationDelay: `${animDelay}ms` } : {}) };
             const animClass = playMarkerAnimation ? "animate-marker-slide-in" : "";
             const markerClassName = ENABLE_DRAG_AND_CAPTURE
