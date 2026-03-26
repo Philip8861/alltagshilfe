@@ -17,14 +17,15 @@ export default function UeberUnsPage() {
     { titel: "03.06.2024", text: "Anerkennung als Pflegeberatungsstelle mit eigenen Beraterinnen und Beratern.", icon: "beratung" },
     { titel: "2025", text: "Namensänderung von Alltagshilfe-Allgäu zu Alltagshilfe-Süd.", icon: "rename" },
     { titel: "01.12.2025", text: "Aufbau der betrieblichen Pflegeberatung für Unternehmen.", icon: "business" },
+    { titel: "01.01.2026", text: "Gründung der Standorte Engen/Konstanz und Augsburg.", icon: "standort" },
     { titel: "01.01.2026", text: "Eröffnung des Standortes Engen/Konstanz und Augsburg.", icon: "standort" },
     { titel: "Anfang 2026", text: "Umzug in größere Räumlichkeiten nach Bad Grönenbach.", icon: "move" },
   ] as const;
 
   return (
-    <article className="py-16 sm:py-24">
+    <article className="pt-0 pb-16 sm:pb-24">
       <Container>
-        <section className="relative">
+        <section className="relative pt-0">
           <div className="flex justify-end">
             <div className="relative ml-auto w-full max-w-[50rem] lg:mr-[calc((100vw-100%)/-2)]">
               <div className="w-full [filter:drop-shadow(0_10px_22px_rgba(15,79,104,0.2))_drop-shadow(0_4px_12px_rgba(15,79,104,0.12))]">
@@ -45,7 +46,7 @@ export default function UeberUnsPage() {
             <p className="inline-flex rounded-full bg-[#0F4F68]/8 px-4 py-1 text-sm font-semibold text-[#0F4F68]">
               Alltagshilfe Süd
             </p>
-            <h1 className="mt-4 text-3xl font-bold tracking-tight text-neutral-900 sm:text-4xl">
+            <h1 className="mt-4 text-3xl font-bold tracking-tight text-[#0F4F68] sm:text-4xl">
               Die Alltagshilfe-Süd stellt sich vor
             </h1>
             <p className="mt-4 text-lg leading-relaxed text-neutral-700">
@@ -100,6 +101,53 @@ export default function UeberUnsPage() {
           </div>
         </section>
 
+        <section className="relative mt-10 overflow-hidden rounded-3xl border border-[#0F4F68]/10 bg-[#F2F9FA] p-6 sm:p-8" aria-label="Unsere Standorte stellen sich vor">
+          <svg
+            className="pointer-events-none absolute left-0 top-0 h-10 w-full -translate-y-[60%] sm:h-14"
+            viewBox="0 0 1200 120"
+            preserveAspectRatio="none"
+            fill="none"
+            aria-hidden
+          >
+            <path d="M0,120 C230,34 430,12 620,24 C830,38 1015,88 1200,120 L1200,120 L0,120 Z" fill="#F2F9FA" />
+          </svg>
+          <h2 className="text-3xl font-bold text-[#0F4F68] sm:text-4xl">Unsere Standorte stellen sich vor</h2>
+          <div className="mt-7 grid grid-cols-1 gap-5 md:grid-cols-2">
+            <article className="overflow-hidden rounded-2xl border border-[#0F4F68]/12 bg-white shadow-[0_10px_25px_rgba(15,79,104,0.12)]">
+              <Image src="/images/standort_gemeinsam.webp" alt="Platzhalterbild Standort Allgäu" width={1200} height={700} className="h-44 w-full object-cover" />
+              <div className="p-5">
+                <h3 className="text-xl font-bold text-[#0F4F68]">Standort Allgäu stellt sich vor</h3>
+                <p className="mt-2 text-sm text-neutral-600">Standortleitung: Name folgt</p>
+                <p className="mt-3 text-neutral-700 italic">"Wir möchten Menschen in ihrer vertrauten Umgebung stärken und ihnen echte Sicherheit im Alltag geben."</p>
+              </div>
+            </article>
+            <article className="overflow-hidden rounded-2xl border border-[#0F4F68]/12 bg-white shadow-[0_10px_25px_rgba(15,79,104,0.12)]">
+              <Image src="/images/startseite_front.webp" alt="Platzhalterbild Standort Wangen" width={1200} height={700} className="h-44 w-full object-cover" unoptimized />
+              <div className="p-5">
+                <h3 className="text-xl font-bold text-[#0F4F68]">Standort Wangen stellt sich vor</h3>
+                <p className="mt-2 text-sm text-neutral-600">Standortleitung: Name folgt</p>
+                <p className="mt-3 text-neutral-700 italic">"Wir tun, was wir tun, weil jede Familie schnelle, verlässliche und menschliche Unterstützung verdient."</p>
+              </div>
+            </article>
+            <article className="overflow-hidden rounded-2xl border border-[#0F4F68]/12 bg-white shadow-[0_10px_25px_rgba(15,79,104,0.12)]">
+              <Image src="/images/Kontakt_Bild.webp" alt="Platzhalterbild Standort Augsburg" width={1200} height={700} className="h-44 w-full object-cover" unoptimized />
+              <div className="p-5">
+                <h3 className="text-xl font-bold text-[#0F4F68]">Standort Augsburg stellt sich vor</h3>
+                <p className="mt-2 text-sm text-neutral-600">Standortleitung: Name folgt</p>
+                <p className="mt-3 text-neutral-700 italic">"Unser Antrieb ist es, Pflegealltag leichter zu machen - professionell, herzlich und nah am Menschen."</p>
+              </div>
+            </article>
+            <article className="overflow-hidden rounded-2xl border border-[#0F4F68]/12 bg-white shadow-[0_10px_25px_rgba(15,79,104,0.12)]">
+              <Image src="/images/standort_gemeinsam.webp" alt="Platzhalterbild Standort Engen/Konstanz" width={1200} height={700} className="h-44 w-full object-cover" />
+              <div className="p-5">
+                <h3 className="text-xl font-bold text-[#0F4F68]">Standort Engen/Konstanz stellt sich vor</h3>
+                <p className="mt-2 text-sm text-neutral-600">Standortleitung: Name folgt</p>
+                <p className="mt-3 text-neutral-700 italic">"Wir begleiten mit Haltung und Herz, damit Selbstbestimmung und Lebensqualität erhalten bleiben."</p>
+              </div>
+            </article>
+          </div>
+        </section>
+
         <section className="relative mt-10 overflow-hidden rounded-3xl border border-[#0F4F68]/12 bg-white p-7 sm:p-9" aria-label="Meilensteine">
           <svg
             className="pointer-events-none absolute left-0 top-0 h-10 w-full -translate-y-[60%] sm:h-14"
@@ -117,18 +165,8 @@ export default function UeberUnsPage() {
                 key={`${punkt.titel}-${punkt.text}`}
                 className="relative flex items-start gap-4 rounded-2xl border border-[#0F4F68]/10 bg-[#F2F9FA]/55 px-4 py-4 text-neutral-700 shadow-[0_6px_16px_rgba(15,79,104,0.08)] sm:gap-5 sm:px-5"
               >
-                {idx < meilensteine.length - 1 && (
-                  <span className="absolute left-[20px] top-12 h-12 w-[4px] rounded-full bg-[#F78F2E]/75 sm:left-[22px]" aria-hidden />
-                )}
-                <span className="mt-0.5 inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#F78F2E]/20 text-[#0F4F68] ring-1 ring-[#F78F2E]/45 sm:h-12 sm:w-12">
-                  {punkt.icon === "start" && <svg viewBox="0 0 24 24" className="h-5 w-5 sm:h-6 sm:w-6" fill="none" stroke="currentColor" strokeWidth="2"><path d="M5 12h14M12 5l7 7-7 7" /></svg>}
-                  {punkt.icon === "gruendung" && <svg viewBox="0 0 24 24" className="h-5 w-5 sm:h-6 sm:w-6" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 10l8-6 8 6v10H4z" /></svg>}
-                  {punkt.icon === "standort" && <svg viewBox="0 0 24 24" className="h-5 w-5 sm:h-6 sm:w-6" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 21s6-6.7 6-11a6 6 0 1 0-12 0c0 4.3 6 11 6 11z" /></svg>}
-                  {punkt.icon === "box" && <svg viewBox="0 0 24 24" className="h-5 w-5 sm:h-6 sm:w-6" fill="none" stroke="currentColor" strokeWidth="2"><path d="M3 7l9-4 9 4-9 4-9-4zM3 7v10l9 4 9-4V7" /></svg>}
-                  {punkt.icon === "beratung" && <svg viewBox="0 0 24 24" className="h-5 w-5 sm:h-6 sm:w-6" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 5h16v10H7l-3 3V5z" /></svg>}
-                  {punkt.icon === "rename" && <svg viewBox="0 0 24 24" className="h-5 w-5 sm:h-6 sm:w-6" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 7h9M4 12h6M4 17h7M14 12h6M17 9l3 3-3 3" /></svg>}
-                  {punkt.icon === "business" && <svg viewBox="0 0 24 24" className="h-5 w-5 sm:h-6 sm:w-6" fill="none" stroke="currentColor" strokeWidth="2"><path d="M3 7h18v13H3zM9 7V4h6v3" /></svg>}
-                  {punkt.icon === "move" && <svg viewBox="0 0 24 24" className="h-5 w-5 sm:h-6 sm:w-6" fill="none" stroke="currentColor" strokeWidth="2"><path d="M3 12h18M16 5l5 7-5 7M8 5l-5 7 5 7" /></svg>}
+                <span className="mt-0.5 inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#F78F2E]/20 text-lg font-extrabold text-[#0F4F68] ring-1 ring-[#F78F2E]/45 sm:h-12 sm:w-12">
+                  {idx + 1}
                 </span>
                 <span className="pt-0.5 text-base sm:text-lg">
                   <strong className="text-[#0F4F68]">{punkt.titel}:</strong>{" "}
