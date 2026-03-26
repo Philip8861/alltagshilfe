@@ -93,36 +93,14 @@
   }
 }
 
-/* Moderne Scrollbars in Markenfarben (#0F4F68, #F2F9FA) */
+/* Scrollbar ausblenden, Scrollen bleibt möglich */
 * {
-  scrollbar-width: thin;
-  scrollbar-color: #0F4F68 #F2F9FA;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 
 *::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
-}
-
-*::-webkit-scrollbar-track {
-  background: #F2F9FA;
-  border-radius: 4px;
-}
-
-*::-webkit-scrollbar-thumb {
-  background: #0F4F68;
-  border-radius: 4px;
-}
-
-*::-webkit-scrollbar-thumb:hover {
-  background: #0c3d52;
-}
-
-*::-webkit-scrollbar-thumb:active {
-  background: #F78F2E;
-}
-
-/* Pfeile ausblenden (moderner Look) */
-*::-webkit-scrollbar-button {
+  width: 0;
+  height: 0;
   display: none;
 }
