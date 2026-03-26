@@ -7,7 +7,6 @@ const STORAGE_KEY_LEVEL = "ahs_readability_zoom_level";
 const STORAGE_KEY_CONTRAST = "ahs_readability_high_contrast";
 const STORAGE_KEY_REDUCE_MOTION = "ahs_readability_reduce_motion";
 const STORAGE_KEY_LINE_HEIGHT = "ahs_readability_line_height";
-const STORAGE_KEY_WIDGET_HIDDEN = "ahs_readability_zoom_widget_hidden";
 const MIN_ZOOM = 90;
 const MAX_ZOOM = 130;
 const STEP = 5;
@@ -30,6 +29,7 @@ export function ReadabilityZoomControls() {
   const [open, setOpen] = useState(false);
   const panelRef = useRef<HTMLDivElement>(null);
   const [widgetHidden, setWidgetHidden] = useState(false);
+  const [showUndo, setShowUndo] = useState(false);
 
   useEffect(() => {
     const storedLevel = window.localStorage.getItem(STORAGE_KEY_LEVEL);
@@ -43,9 +43,6 @@ export function ReadabilityZoomControls() {
     setHighContrast(storedContrast);
     setReduceMotion(storedReduceMotion);
     setExpandedLineHeight(storedLineHeight);
-
-    const storedHidden = window.localStorage.getItem(STORAGE_KEY_WIDGET_HIDDEN) === "1";
-    setWidgetHidden(storedHidden);
   }, []);
 
   useEffect(() => {
@@ -99,11 +96,29 @@ export function ReadabilityZoomControls() {
         bottom: "1rem",
       };
 
-  if (widgetHidden) return null;
+  useEffect(() => {
+    // Rückwärtskompatibilität: falls eine alte Version das Widget „dauerhaft“ versteckt hat,
+    // entfernen wir den Flag, damit es wieder sichtbar ist.
+    if (typeof window === "undefined") return;
+    try {
+      window.localStorage.removeItem("ahs_readability_zoom_widget_hidden");
+    } catch {
+      // ignore
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!showUndo) return;
+    const t = window.setTimeout(() => setShowUndo(false), 6500);
+    return () => window.clearTimeout(t);
+  }, [showUndo]);
+
+  if (widgetHidden && !showUndo) return null;
 
   return (
     <div ref={panelRef}>
-      <div className="fixed z-[90] relative" style={buttonStyle}>
+      {!widgetHidden && (
+        <div className="fixed z-[90] relative" style={buttonStyle}>
         <button
           type="button"
           onClick={() => setOpen((v) => !v)}
@@ -133,8 +148,8 @@ export function ReadabilityZoomControls() {
         <button
           type="button"
           onClick={() => {
-            window.localStorage.setItem(STORAGE_KEY_WIDGET_HIDDEN, "1");
             setWidgetHidden(true);
+            setShowUndo(true);
             setOpen(false);
           }}
           aria-label="Lesbarkeits-Widget schließen"
@@ -142,7 +157,38 @@ export function ReadabilityZoomControls() {
         >
           <span aria-hidden className="text-2xl leading-none font-extrabold">×</span>
         </button>
-      </div>
+        </div>
+      )}
+
+      {showUndo && (
+        <div
+          className="fixed right-4 bottom-4 z-[95] w-[min(92vw,22rem)] rounded-2xl border border-[#0F4F68]/15 bg-white/95 p-4 shadow-[0_12px_30px_rgba(15,79,104,0.18)] backdrop-blur"
+          role="status"
+          aria-live="polite"
+        >
+          <p className="text-sm font-semibold text-[#0F4F68]">Lesbarkeits-Widget ausgeblendet</p>
+          <p className="mt-1 text-xs text-neutral-600">Sie können es jederzeit wieder einblenden.</p>
+          <div className="mt-3 flex gap-2">
+            <button
+              type="button"
+              onClick={() => {
+                setWidgetHidden(false);
+                setShowUndo(false);
+              }}
+              className="inline-flex min-h-11 flex-1 items-center justify-center rounded-xl bg-[#0F4F68] px-3 py-2 text-sm font-semibold text-white transition hover:bg-[#0c3d52] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68] focus-visible:ring-offset-2"
+            >
+              Rückgängig
+            </button>
+            <button
+              type="button"
+              onClick={() => setShowUndo(false)}
+              className="inline-flex min-h-11 flex-1 items-center justify-center rounded-xl border border-[#0F4F68]/20 bg-white px-3 py-2 text-sm font-semibold text-[#0F4F68] transition hover:bg-[#F2F9FA] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68] focus-visible:ring-offset-2"
+            >
+              OK
+            </button>
+          </div>
+        </div>
+      )}
 
       {open && (
         <div
