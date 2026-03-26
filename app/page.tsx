@@ -68,6 +68,10 @@ const LEISTUNGEN = [
     icon: "cart",
   },
   {
+    title: "Betriebliche Pflegeberatung",
+    icon: "briefcase",
+  },
+  {
     title: "Essen auf Räder (im Raum Kempten)",
     icon: "meal",
   },
@@ -79,6 +83,7 @@ const LEISTUNGS_LINKS: Record<(typeof LEISTUNGEN)[number]["icon"], string> = {
   box: "/leistungen/pflegehilfsmittelbox",
   shield: "/inkontinenzversorgung",
   cart: "/pflegeshop",
+  briefcase: "/leistungen/betriebliche-pflegeberatung",
   meal: "/leistungen/essen-auf-raeder",
 };
 
@@ -239,6 +244,11 @@ export default function HomePage() {
                     {leistung.icon === "cart" && (
                       <svg className="h-6 w-6" viewBox="0 0 24 24" fill="currentColor">
                         <path d="M7 4H4v2h1.3l2 9.1h9.6l1.7-6.8H8.5L8 6h12V4H7zm2 13a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm8 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4z" />
+                      </svg>
+                    )}
+                    {leistung.icon === "briefcase" && (
+                      <svg className="h-6 w-6" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M9 4h6a2 2 0 0 1 2 2v1h3a2 2 0 0 1 2 2v3H2V9a2 2 0 0 1 2-2h3V6a2 2 0 0 1 2-2zm6 3V6H9v1h6zM2 13h20v6a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-6z" />
                       </svg>
                     )}
                     {leistung.icon === "meal" && (

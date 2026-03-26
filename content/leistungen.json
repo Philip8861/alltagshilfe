@@ -121,5 +121,24 @@
         "text": "Wir sind zugelassene Partner bei allen Krankenkassen, und eine Übernahme der Kosten ist durch die Krankenkasse möglich! Wir beraten Sie gerne und unterstützen Sie bei der Antragstellung."
       }
     ]
+  },
+  {
+    "slug": "betriebliche-pflegeberatung",
+    "title": "Betriebliche Pflegeberatung",
+    "description": "Pflegeberatung für Mitarbeitende und Unternehmen – wir entlasten im Berufsalltag.",
+    "intro": "Mit unserer betrieblichen Pflegeberatung unterstützen wir Unternehmen und Beschäftigte bei Fragen rund um Pflege, Vereinbarkeit von Beruf und Familie sowie passende Entlastungsleistungen.",
+    "sections": [
+      {
+        "bullets": [
+          "Beratung für Mitarbeitende in akuten Pflegesituationen.",
+          "Unterstützung bei Anträgen und Leistungen der Pflegekasse.",
+          "Informationen zu Entlastungsmöglichkeiten für Angehörige.",
+          "Praxisnahe Empfehlungen für eine bessere Vereinbarkeit von Beruf und Pflege."
+        ]
+      },
+      {
+        "text": "Gerne entwickeln wir mit Ihnen ein passendes Beratungsangebot für Ihr Unternehmen."
+      }
+    ]
   }
 ]
