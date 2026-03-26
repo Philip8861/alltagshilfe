@@ -17,6 +17,7 @@ import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { CookieBanner } from "@/components/CookieBanner";
 import { OrganizationJsonLd } from "@/components/seo/JsonLd";
+import { DesktopLupe } from "@/components/ui/DesktopLupe";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.baseUrl),
@@ -59,6 +60,7 @@ export default function RootLayout({
           <Footer />
         </div>
         <CookieBanner />
+        <DesktopLupe />
       </body>
     </html>
   );
