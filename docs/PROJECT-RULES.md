@@ -160,6 +160,7 @@ Mehrsprachigkeit, CMS-Anbindung, Download-Seiten, E2E-Tests, Redis Rate-Limiting
 
 ### Content & Platzhalter
 - **Inhalte von Code trennen.** Platzhalter so gestalten, dass Layout und SEO prüfbar sind (z. B. realistische Längen, echte Überschriftenstruktur). Keine „Lorem ipsum“-Blöcke ohne semantische Struktur; Platzhalter in content/ oder config, nicht im Komponenten-Code.
+- **Umlaute immer korrekt schreiben.** Sichtbare Texte im Frontend müssen konsequent echte deutsche Zeichen verwenden (`ä`, `ö`, `ü`, `Ä`, `Ö`, `Ü`, `ß`) – bei neuen und bestehenden Inhalten. Keine Umschreibungen wie `ae/oe/ue` in UI-Texten.
 
 ### Browser & Geräte
 - **Support definieren:** z. B. letzte 2 Versionen der gängigen Browser (Chrome, Firefox, Safari, Edge). In diesen und auf typischen Viewports (Mobile, Tablet, Desktop) testen. Keine Annahme „funktioniert überall gleich“ ohne Check.

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { findStandortByPlz, getOrtByPlz, ortToSlugSegment, type Standort } from "@/config/standorte";
 import { cn } from "@/lib/utils";
 
@@ -20,14 +20,14 @@ type KontaktArt = "rueckruf" | "email" | "selbst";
 
 const SERVICE_OPTIONEN: { key: ServiceKey; label: string; verfuegbarkeit: "direkt" | "partner" }[] = [
   { key: "haushalt", label: "Alltagsbegleitung & Haushaltsreinigung", verfuegbarkeit: "direkt" },
-  { key: "pflegeberatung", label: "Halb-, vierteljaehrliche Pflegeberatung nach §37.3", verfuegbarkeit: "direkt" },
-  { key: "pflegebox", label: "Kostenlose Pflegebox (Utensilien zur Pflege)", verfuegbarkeit: "direkt" },
-  { key: "koerperpflege", label: "Koerperliche Pflege", verfuegbarkeit: "partner" },
-  { key: "medizinisch", label: "Medizinische Versorgung (Verbandswechsel, Medikamentengabe)", verfuegbarkeit: "partner" },
-  { key: "umbau", label: "Umbaumassnahmen im Haus (Barrierefreiheit)", verfuegbarkeit: "partner" },
+  { key: "pflegeberatung", label: "Halb-, vierteljährliche Pflegeberatung nach §37.3", verfuegbarkeit: "direkt" },
+  { key: "pflegebox", label: "Kostenlose Pflegebox (Einmalhandschuhe, Händedesinfektionsmittel usw.)", verfuegbarkeit: "direkt" },
+  { key: "koerperpflege", label: "Körperliche Pflege", verfuegbarkeit: "direkt" },
+  { key: "medizinisch", label: "Medizinische Versorgung (Verbandswechsel, Medikamentengabe)", verfuegbarkeit: "direkt" },
+  { key: "umbau", label: "Umbaumaßnahmen im Haus (Barrierefreiheit)", verfuegbarkeit: "partner" },
   { key: "hausnotruf", label: "Hausnotruf", verfuegbarkeit: "partner" },
-  { key: "hilfsmittel", label: "Pflegehilfsmittel (Rollator, Duschhocker usw.)", verfuegbarkeit: "partner" },
-  { key: "essen", label: "Essen auf Raedern", verfuegbarkeit: "partner" },
+  { key: "hilfsmittel", label: "Pflegehilfsmittel (Rollator, Duschhocker usw.)", verfuegbarkeit: "direkt" },
+  { key: "essen", label: "Essen auf Rädern", verfuegbarkeit: "direkt" },
 ];
 
 const PFLEGEGRADE = [
@@ -84,67 +84,66 @@ function SelectMark({ active }: { active: boolean }) {
 function ServiceIcon({ service }: { service: ServiceKey }) {
   if (service === "haushalt") {
     return (
-      <svg className="h-5 w-5 text-[#F78F2E]" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+      <svg className="h-5 w-5 text-[#0F4F68]/75" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
         <path d="M12 21s-7-4.35-7-10a4 4 0 0 1 7-2.65A4 4 0 0 1 19 11c0 5.65-7 10-7 10z" />
       </svg>
     );
   }
   if (service === "pflegeberatung") {
     return (
-      <svg className="h-5 w-5 text-[#F78F2E]" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+      <svg className="h-5 w-5 text-[#0F4F68]/75" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
         <path d="M4 4h16v11H7.6L4 18.6V4zm4 4v2h8V8H8zm0 4v2h5v-2H8z" />
       </svg>
     );
   }
   if (service === "pflegebox" || service === "hilfsmittel") {
     return (
-      <svg className="h-5 w-5 text-[#F78F2E]" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+      <svg className="h-5 w-5 text-[#0F4F68]/75" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
         <path d="M3 7.2 12 3l9 4.2v9.6L12 21l-9-4.2V7.2zm9 8.5 6.8-3.2V8.6L12 11.8 5.2 8.6v3.9l6.8 3.2z" />
       </svg>
     );
   }
   if (service === "koerperpflege") {
     return (
-      <svg className="h-5 w-5 text-[#F78F2E]" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+      <svg className="h-5 w-5 text-[#0F4F68]/75" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
         <path d="M12 2 4 5.2v6.1c0 5.1 3.4 9.8 8 10.7 4.6-.9 8-5.6 8-10.7V5.2L12 2zm-1 13.2-3-3 1.4-1.4 1.6 1.6 3.6-3.6 1.4 1.4-5 5z" />
       </svg>
     );
   }
   if (service === "medizinisch") {
     return (
-      <svg className="h-5 w-5 text-[#F78F2E]" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+      <svg className="h-5 w-5 text-[#0F4F68]/75" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
         <path d="M19 10h-5V5h-4v5H5v4h5v5h4v-5h5z" />
       </svg>
     );
   }
   if (service === "hausnotruf") {
     return (
-      <svg className="h-5 w-5 text-[#F78F2E]" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+      <svg className="h-5 w-5 text-[#0F4F68]/75" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
         <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z" />
       </svg>
     );
   }
   if (service === "essen") {
     return (
-      <svg className="h-5 w-5 text-[#F78F2E]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-        <path d="M4 3v7" />
-        <path d="M7 3v7" />
-        <path d="M4 7h3" />
-        <path d="M6 10v11" />
-        <path d="M15 3c2.2 0 4 1.8 4 4v14" />
-        <path d="M19 7h-4" />
+      <svg className="h-5 w-5 text-[#0F4F68]/75" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+        <path d="M7 3v8" />
+        <path d="M4.5 3v5.5" />
+        <path d="M9.5 3v5.5" />
+        <path d="M4.5 8.5h5" />
+        <path d="M7 11v10" />
       </svg>
     );
   }
   if (service === "umbau") {
     return (
-      <svg className="h-5 w-5 text-[#F78F2E]" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+      <svg className="h-5 w-5 text-[#0F4F68]/75" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
         <path d="M12 3.2 3.5 10v10.3h6.2v-6.3h4.6v6.3h6.2V10L12 3.2z" />
       </svg>
     );
   }
   return (
-    <svg className="h-5 w-5 text-[#F78F2E]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+    <svg className="h-5 w-5 text-[#0F4F68]/75" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
       <path d="M4 4v7" />
       <path d="M7 4v7" />
       <path d="M4 8h3" />
@@ -158,20 +157,20 @@ function ServiceIcon({ service }: { service: ServiceKey }) {
 function StepFlatIcon({ kind }: { kind: "pflegegrad" | "person" | "kontakt" }) {
   if (kind === "pflegegrad") {
     return (
-      <svg className="h-5 w-5 text-[#F78F2E]" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+      <svg className="h-5 w-5 text-[#0F4F68]/75" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
         <path d="M12 2 3 6v6c0 5 3.4 9.6 9 10 5.6-.4 9-5 9-10V6l-9-4zm-1 13-3-3 1.4-1.4 1.6 1.6 3.6-3.6L16 10l-5 5z" />
       </svg>
     );
   }
   if (kind === "person") {
     return (
-      <svg className="h-5 w-5 text-[#F78F2E]" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+      <svg className="h-5 w-5 text-[#0F4F68]/75" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
         <path d="M12 12a5 5 0 1 0-5-5 5 5 0 0 0 5 5zm0 2c-4.4 0-8 2-8 4.5V21h16v-2.5C20 16 16.4 14 12 14z" />
       </svg>
     );
   }
   return (
-    <svg className="h-5 w-5 text-[#F78F2E]" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+    <svg className="h-5 w-5 text-[#0F4F68]/75" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
       <path d="M4 4h16v11H7.6L4 18.6V4zm4 4v2h8V8H8zm0 4v2h5v-2H8z" />
     </svg>
   );
@@ -269,16 +268,27 @@ export function StartEinstiegsHilfe() {
     setStep((s) => Math.max(1, s - 1));
   };
 
-  useEffect(() => {
-    if (step === 6 && plzNorm.length === 5) {
-      setStep(7);
-    }
-  }, [plzNorm, step]);
-
   const ausgewaehlteLeistungen = useMemo(
     () => SERVICE_OPTIONEN.filter((s) => leistungen.includes(s.key)),
     [leistungen]
   );
+  const leistungenFuerErgebnis = useMemo(() => {
+    const hasKoerper = ausgewaehlteLeistungen.some((l) => l.key === "koerperpflege");
+    const hasMed = ausgewaehlteLeistungen.some((l) => l.key === "medizinisch");
+    const base = ausgewaehlteLeistungen.filter((l) => l.key !== "koerperpflege" && l.key !== "medizinisch");
+
+    if (hasKoerper && hasMed) {
+      return [
+        ...base,
+        {
+          key: "koerper-medizinisch" as const,
+          label: "Körperliche Pflege und Medizinische Versorgung",
+          verfuegbarkeit: "direkt" as const,
+        },
+      ];
+    }
+    return ausgewaehlteLeistungen;
+  }, [ausgewaehlteLeistungen]);
   const leistungsText = useMemo(
     () => ausgewaehlteLeistungen.map((s) => `- ${s.label}`).join("\n"),
     [ausgewaehlteLeistungen]
@@ -344,16 +354,21 @@ export function StartEinstiegsHilfe() {
             </div>
 
             {step === 1 ? (
-              <div className="mt-3 animate-fade-in-up">
+              <div className="mt-6 animate-fade-in-up">
                 <h3 className="text-lg font-bold text-[#0F4F68] sm:text-xl">Kurze Information vor dem Start</h3>
-                <p className="mt-2 text-neutral-700">
-                  Sie müssen für das Ergebnis keine persönlichen Daten eingeben. Sie erhalten das Ergebnis direkt am Ende in wenigen Schritten.
+                <p className="mt-3 flex items-start gap-2 text-neutral-700">
+                  <span className="mt-0.5 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#F78F2E] text-white" aria-hidden>
+                    <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M20 6L9 17l-5-5" />
+                    </svg>
+                  </span>
+                  <span>Sie müssen für das Ergebnis keine persönlichen Daten eingeben. Sie erhalten das Ergebnis direkt am Ende.</span>
                 </p>
               </div>
             ) : null}
 
             {step === 2 ? (
-              <div className="mt-3 animate-fade-in-up">
+              <div className="mt-6 animate-fade-in-up">
               <h3 className="text-lg font-bold text-[#0F4F68] sm:text-xl">Welchen Pflegegrad gibt es aktuell?</h3>
               <ul className="mt-4 grid list-none gap-2 sm:grid-cols-2">
                 {PFLEGEGRADE.map((p) => (
@@ -380,7 +395,7 @@ export function StartEinstiegsHilfe() {
             ) : null}
 
             {step === 3 ? (
-              <div className="mt-3 animate-fade-in-up">
+              <div className="mt-6 animate-fade-in-up">
               <h3 className="text-lg font-bold text-[#0F4F68] sm:text-xl">Für wen suchen Sie Unterstützung?</h3>
               <ul className="mt-4 grid list-none gap-2 sm:grid-cols-2">
                 {FUER_WEN_OPTIONEN.map((f) => (
@@ -407,7 +422,7 @@ export function StartEinstiegsHilfe() {
             ) : null}
 
             {step === 4 ? (
-              <div className="mt-3 animate-fade-in-up">
+              <div className="mt-6 animate-fade-in-up">
                 <h3 className="text-lg font-bold text-[#0F4F68] sm:text-xl">Was für Hilfsleistungen benötigen Sie aktuell?</h3>
                 <p className="mt-2 text-neutral-700">Mehrfachauswahl ist möglich.</p>
                 <ul className="mt-4 grid list-none gap-2 sm:grid-cols-2">
@@ -439,13 +454,14 @@ export function StartEinstiegsHilfe() {
             ) : null}
 
             {step === 5 ? (
-              <div className="mt-3 animate-fade-in-up space-y-4">
+              <div className="mt-6 animate-fade-in-up space-y-4">
                 <h3 className="text-lg font-bold text-[#0F4F68] sm:text-xl">Gute Nachricht!</h3>
                 <p className="text-neutral-700">Wir haben für folgende Dienstleistungen freie Kapazitäten:</p>
                 <ul className="space-y-2">
-                  {ausgewaehlteLeistungen
+                  {leistungenFuerErgebnis
                     .filter((l) => l.verfuegbarkeit === "direkt")
-                    .concat(ausgewaehlteLeistungen.filter((l) => l.verfuegbarkeit === "partner"))
+                    .concat(leistungenFuerErgebnis.filter((l) => l.verfuegbarkeit === "partner"))
+                    .sort((a, b) => (a.key === "koerper-medizinisch" ? 1 : b.key === "koerper-medizinisch" ? -1 : 0))
                     .map((l, i) => (
                     <li
                       key={l.key}
@@ -460,7 +476,7 @@ export function StartEinstiegsHilfe() {
                       <div>
                         <p className="text-sm font-semibold text-[#0F4F68] sm:text-base">{l.label}</p>
                         <p className={cn("text-xs sm:text-sm", l.verfuegbarkeit === "direkt" ? "text-emerald-700" : "text-[#c86d1f]")}>
-                          {l.verfuegbarkeit === "direkt" ? "Verfügbar über uns" : "Verfügbar über Kooperationspartner"}
+                          {l.verfuegbarkeit === "direkt" ? "Verfügbar direkt über uns" : "Verfügbar über Kooperationspartner"}
                         </p>
                       </div>
                     </li>
@@ -470,7 +486,7 @@ export function StartEinstiegsHilfe() {
             ) : null}
 
             {step === 6 ? (
-              <div className="mt-3 space-y-4 animate-fade-in-up">
+              <div className="mt-6 space-y-4 animate-fade-in-up">
                 <h3 className="text-lg font-bold text-[#0F4F68] sm:text-xl">Erhalten Sie sofort Ihren richtigen Ansprechpartner unserer Standorte</h3>
                 <div className="rounded-xl border border-[#F78F2E]/35 bg-[#fff8f2] p-4">
                   <p className="text-sm font-bold text-[#c86d1f]">Ganz Neu! Unser Pflegeshop ist endlich da.</p>
@@ -483,7 +499,13 @@ export function StartEinstiegsHilfe() {
                   autoComplete="postal-code"
                   maxLength={5}
                   value={plz}
-                  onChange={(e) => setPlz(e.target.value.replace(/\D/g, "").slice(0, 5))}
+                  onChange={(e) => {
+                    const next = e.target.value.replace(/\D/g, "").slice(0, 5);
+                    setPlz(next);
+                    if (step === 6 && next.length === 5) {
+                      setStep(7);
+                    }
+                  }}
                   className="w-full max-w-xs rounded-xl border border-[#0F4F68]/20 px-4 py-3 text-base outline-none ring-0 transition focus:border-[#0F4F68]/45"
                   placeholder="z. B. 87700"
                 />
@@ -508,7 +530,7 @@ export function StartEinstiegsHilfe() {
             ) : null}
 
             {step === 7 ? (
-              <div className="mt-3 animate-fade-in-up">
+              <div className="mt-6 animate-fade-in-up">
                 <h3 className="text-lg font-bold text-[#0F4F68] sm:text-xl">Wie möchten Sie den Kontakt?</h3>
                 <div className="mt-4 grid gap-2 sm:grid-cols-3">
                   <button
@@ -616,7 +638,7 @@ export function StartEinstiegsHilfe() {
                 <button
                   type="button"
                   onClick={weiter}
-                  className="inline-flex min-h-[50px] items-center justify-center rounded-xl bg-[#0F4F68] px-6 py-2.5 text-[1.03rem] font-semibold text-white hover:bg-[#0c3d52]"
+                  className="inline-flex min-h-[50px] items-center justify-center rounded-xl bg-[#F78F2E] px-6 py-2.5 text-[1.03rem] font-semibold text-white hover:bg-[#e67e22]"
                 >
                   Weiter
                 </button>
