@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { Container } from "@/components/layout/Container";
-import { siteConfig } from "@/config/site";
+import { VerwandteRatgeberBeitraege } from "@/components/ratgeber/VerwandteRatgeberBeitraege";
 
 export const metadata: Metadata = {
   title: "Entlastungsbetrag 131 Euro richtig nutzen",
@@ -172,6 +172,8 @@ export default function EntlastungsbetragRatgeberPage() {
             </Link>
           </div>
         </section>
+
+        <VerwandteRatgeberBeitraege currentSlug="entlastungsbetrag-131-euro" />
       </Container>
     </article>
   );

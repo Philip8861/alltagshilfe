@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { Container } from "@/components/layout/Container";
+import { VerwandteRatgeberBeitraege } from "@/components/ratgeber/VerwandteRatgeberBeitraege";
 
 export const metadata: Metadata = {
   title: "Pflegegrad 1: Leistungen, Voraussetzungen & Experten-Tipps (2026)",
@@ -269,6 +270,8 @@ export default function Pflegegrad1RatgeberPage() {
             </Link>
           </div>
         </section>
+
+        <VerwandteRatgeberBeitraege currentSlug="pflegegrad-1-der-ultimative-leitfaden" />
       </Container>
     </article>
   );
