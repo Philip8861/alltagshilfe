@@ -9,46 +9,15 @@ export const metadata: Metadata = {
 };
 
 export default function UeberUnsPage() {
-  const staerken = [
-    {
-      title: "Menschlich & nah",
-      text: "Wir begleiten Familien auf Augenhöhe - empathisch, verlässlich und mit festen Ansprechpartnern.",
-      icon: (
-        <svg viewBox="0 0 24 24" className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
-          <path d="M12 21s-7-4.5-7-10a4 4 0 0 1 7-2.5A4 4 0 0 1 19 11c0 5.5-7 10-7 10z" />
-        </svg>
-      ),
-    },
-    {
-      title: "Pflegekompetenz",
-      text: "Gegründet von examinierten Krankenpflegern mit langjähriger Praxiserfahrung in der Versorgung.",
-      icon: (
-        <svg viewBox="0 0 24 24" className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
-          <path d="M12 3v18M3 12h18" />
-          <path d="M5 5h14v14H5z" />
-        </svg>
-      ),
-    },
-    {
-      title: "Regional stark",
-      text: "Allgäu, Bodenseeregion, Augsburg und Engen/Konstanz - kurze Wege, schnelle Hilfe, echte Nähe.",
-      icon: (
-        <svg viewBox="0 0 24 24" className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
-          <path d="M12 21s6-6.7 6-11a6 6 0 1 0-12 0c0 4.3 6 11 6 11z" />
-          <circle cx="12" cy="10" r="2.5" />
-        </svg>
-      ),
-    },
-  ] as const;
-
   const meilensteine = [
-    "2020: Erste Idee und Zertifizierung als Grundlage für den Aufbau.",
-    "01.04.2021: Offizielle Gründung durch Philip Sonntag und Valentin Maucher.",
-    "01.04.2022: Eröffnung des Standorts Wangen für die Bodenseeregion.",
-    "01.10.2023: Start der kostenfreien Pflegeboxen aus eigenem Lager im Allgäu.",
-    "03.06.2024: Anerkennung als Pflegeberatungsstelle mit eigenen Beraterinnen und Beratern.",
-    "01.12.2025: Aufbau der betrieblichen Pflegeberatung für Unternehmen.",
-    "Anfang 2026: Umzug in größere Räumlichkeiten nach Bad Grönenbach.",
+    { titel: "2020", text: "Erste Idee und Zertifizierung als Grundlage für den Aufbau.", icon: "start" },
+    { titel: "01.04.2021", text: "Offizielle Gründung durch Philip Sonntag und Valentin Maucher.", icon: "gruendung" },
+    { titel: "01.04.2022", text: "Eröffnung des Standorts Wangen für die Bodenseeregion.", icon: "standort" },
+    { titel: "01.10.2023", text: "Start der kostenfreien Pflegeboxen aus eigenem Lager im Allgäu.", icon: "box" },
+    { titel: "03.06.2024", text: "Anerkennung als Pflegeberatungsstelle mit eigenen Beraterinnen und Beratern.", icon: "beratung" },
+    { titel: "2025", text: "Namensänderung von Alltagshilfe-Allgäu zu Alltagshilfe-Süd.", icon: "rename" },
+    { titel: "01.12.2025", text: "Aufbau der betrieblichen Pflegeberatung für Unternehmen.", icon: "business" },
+    { titel: "Anfang 2026", text: "Umzug in größere Räumlichkeiten nach Bad Grönenbach.", icon: "move" },
   ] as const;
 
   return (
@@ -67,19 +36,17 @@ export default function UeberUnsPage() {
           </p>
         </header>
 
-        <section className="mt-8 grid grid-cols-1 gap-4 md:grid-cols-3" aria-label="Unsere Stärken">
-          {staerken.map((item) => (
-            <article key={item.title} className="rounded-2xl border border-[#0F4F68]/12 bg-white p-5 shadow-sm">
-              <span className="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-[#F78F2E]/15 text-[#0F4F68]">
-                {item.icon}
-              </span>
-              <h2 className="mt-3 text-lg font-bold text-[#0F4F68]">{item.title}</h2>
-              <p className="mt-1 text-sm leading-relaxed text-neutral-700">{item.text}</p>
-            </article>
-          ))}
-        </section>
-
-        <section className="mt-10 max-w-4xl space-y-5 text-neutral-700" aria-label="Unternehmensgeschichte Alltagshilfe Süd">
+        <section className="relative mt-10 max-w-5xl overflow-hidden rounded-3xl border border-[#0F4F68]/10 bg-[#F2F9FA] p-6 sm:p-8" aria-label="Unternehmensgeschichte Alltagshilfe Süd">
+          <svg
+            className="pointer-events-none absolute left-0 top-0 h-10 w-full -translate-y-[70%] sm:h-14"
+            viewBox="0 0 1200 120"
+            preserveAspectRatio="none"
+            fill="none"
+            aria-hidden
+          >
+            <path d="M0,120 C240,36 430,12 600,25 C820,42 1015,94 1200,120 L1200,120 L0,120 Z" fill="#F2F9FA" />
+          </svg>
+          <div className="space-y-5 text-neutral-700">
           <p>
             Die Alltagshilfe Süd ist ein professioneller Hauswirtschaftsdienst und Betreuungsdienst, der 2021 aus
             fast einem Jahrzehnt praktischer Erfahrung in der Pflege entstanden ist. Unser Ziel ist klar: Menschen
@@ -88,7 +55,7 @@ export default function UeberUnsPage() {
           </p>
           <p>
             Die erste Idee und Zertifizierung erfolgte bereits 2020. Am 01.04.2021 wurde die Alltagshilfe Süd
-            offiziell von Philip Sonntag und Valentin Maucher gegründet - beide gelernte Krankenpfleger mit dem
+            offiziell von Philip Sonntag und Valentin Maucher gegründet - beide Gesundheits- und Krankenpfleger mit dem
             Anspruch, den Pflegealltag von Familien spürbar zu entlasten. In den Anfangsjahren waren die Gründer
             täglich selbst im Einsatz und konnten so die Bedürfnisse in der Region sehr genau kennenlernen.
           </p>
@@ -101,7 +68,8 @@ export default function UeberUnsPage() {
           <p>
             Unser Leistungsportfolio wurde gezielt erweitert: Seit 01.10.2023 bieten wir kostenfreie Pflegeboxen an,
             seit 03.06.2024 sind wir offiziell anerkannte Pflegeberatungsstelle mit eigenen Pflegeberaterinnen und
-            Pflegeberatern an allen Standorten. Mit der betrieblichen Pflegeberatung unterstützen wir seit 01.12.2025
+            Pflegeberatern an allen Standorten. 2025 erfolgte außerdem die Namensänderung von Alltagshilfe-Allgäu zu
+            Alltagshilfe-Süd. Mit der betrieblichen Pflegeberatung unterstützen wir seit 01.12.2025
             zusätzlich Unternehmen dabei, Beruf und Pflege besser zu vereinbaren.
           </p>
           <p>
@@ -109,19 +77,39 @@ export default function UeberUnsPage() {
             entwickeln wir unsere Angebote stetig weiter. Dabei bleibt unser Anspruch unverändert: verlässlich,
             menschlich und hochprofessionell im Pflegealltag für Familien in Süddeutschland.
           </p>
+          </div>
         </section>
 
-        <section className="mt-10 rounded-2xl border border-[#0F4F68]/12 bg-[#F2F9FA] p-6 sm:p-7" aria-label="Meilensteine">
+        <section className="relative mt-10 overflow-hidden rounded-3xl border border-[#0F4F68]/12 bg-white p-6 sm:p-7" aria-label="Meilensteine">
+          <svg
+            className="pointer-events-none absolute left-0 top-0 h-10 w-full -translate-y-[60%] sm:h-14"
+            viewBox="0 0 1200 120"
+            preserveAspectRatio="none"
+            fill="none"
+            aria-hidden
+          >
+            <path d="M0,120 C230,34 430,12 620,24 C830,38 1015,88 1200,120 L1200,120 L0,120 Z" fill="#F2F9FA" />
+          </svg>
           <h2 className="text-2xl font-bold text-[#0F4F68]">Unsere Meilensteine</h2>
-          <ul className="mt-4 space-y-2.5">
-            {meilensteine.map((punkt) => (
-              <li key={punkt} className="flex items-start gap-3 text-neutral-700">
-                <span className="mt-1 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#F78F2E] text-white">
-                  <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden>
-                    <path d="M20 6L9 17l-5-5" />
-                  </svg>
+          <ul className="mt-5 space-y-4">
+            {meilensteine.map((punkt, idx) => (
+              <li key={`${punkt.titel}-${punkt.text}`} className="relative flex items-start gap-4 text-neutral-700">
+                {idx < meilensteine.length - 1 && (
+                  <span className="absolute left-[19px] top-11 h-10 w-[3px] rounded-full bg-[#F78F2E]/70" aria-hidden />
+                )}
+                <span className="mt-0.5 inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#F78F2E]/15 text-[#0F4F68] ring-1 ring-[#F78F2E]/40">
+                  {punkt.icon === "start" && <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2"><path d="M5 12h14M12 5l7 7-7 7" /></svg>}
+                  {punkt.icon === "gruendung" && <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 10l8-6 8 6v10H4z" /></svg>}
+                  {punkt.icon === "standort" && <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 21s6-6.7 6-11a6 6 0 1 0-12 0c0 4.3 6 11 6 11z" /></svg>}
+                  {punkt.icon === "box" && <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2"><path d="M3 7l9-4 9 4-9 4-9-4zM3 7v10l9 4 9-4V7" /></svg>}
+                  {punkt.icon === "beratung" && <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 5h16v10H7l-3 3V5z" /></svg>}
+                  {punkt.icon === "rename" && <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 7h9M4 12h6M4 17h7M14 12h6M17 9l3 3-3 3" /></svg>}
+                  {punkt.icon === "business" && <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2"><path d="M3 7h18v13H3zM9 7V4h6v3" /></svg>}
+                  {punkt.icon === "move" && <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2"><path d="M3 12h18M16 5l5 7-5 7M8 5l-5 7 5 7" /></svg>}
                 </span>
-                <span>{punkt}</span>
+                <span className="pt-0.5">
+                  <strong className="text-[#0F4F68]">{punkt.titel}:</strong> {punkt.text}
+                </span>
               </li>
             ))}
           </ul>
