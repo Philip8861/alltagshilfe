@@ -3,7 +3,6 @@
 import Image from "next/image";
 import { useEffect, useMemo, useState } from "react";
 import { findStandortByPlz, type Standort } from "@/config/standorte";
-import { ContactForm } from "@/components/forms/ContactForm";
 import { cn } from "@/lib/utils";
 
 type ServiceKey =
@@ -18,6 +17,7 @@ type ServiceKey =
   | "essen";
 
 type KontaktArt = "rueckruf" | "email" | "selbst";
+type StandortInfo = Standort;
 
 const SERVICE_OPTIONEN: { key: ServiceKey; label: string; verfuegbarkeit: "direkt" | "partner" }[] = [
   { key: "haushalt", label: "Alltagsbegleitung & Haushaltsreinigung", verfuegbarkeit: "direkt" },
@@ -53,6 +53,16 @@ const SCHRITT_MOTIVATION: Record<number, string> = {
   5: "Super, hier ist Ihr Ergebnis.",
   6: "Sehr gut, jetzt nur noch Ihren Standort finden.",
   7: "Geschafft! Wählen Sie Ihren bevorzugten Kontaktweg.",
+};
+
+const BAD_GROENENBACH_STANDORT: StandortInfo = {
+  name: "Standort Bad Grönenbach",
+  address: "Hinter den Gärten 10, 87730 Bad Grönenbach",
+  phone: "08334 / 9893330",
+  phoneHref: "tel:+4983349893330",
+  email: "info@alltagshilfe-sued.de",
+  hours: "Mo-Do 08:30-12:00 & 13:00-16:00, Fr 08:30-12:00",
+  plzList: [],
 };
 
 const optionButtonClass =
@@ -195,6 +205,7 @@ export function StartEinstiegsHilfe() {
   const [besteZeit, setBesteZeit] = useState("");
   const [email, setEmail] = useState("");
   const [kontaktWunsch, setKontaktWunsch] = useState("");
+  const [nachricht, setNachricht] = useState("");
 
   const [error, setError] = useState("");
 
@@ -212,6 +223,7 @@ export function StartEinstiegsHilfe() {
     () => (plzNorm.length === 5 ? findStandortByPlz(plzNorm) : undefined),
     [plzNorm]
   );
+  const finalerStandort: StandortInfo = standort ?? BAD_GROENENBACH_STANDORT;
 
   const toggleLeistung = (key: ServiceKey) => {
     setLeistungen((prev) => (prev.includes(key) ? prev.filter((v) => v !== key) : [...prev, key]));
@@ -230,6 +242,7 @@ export function StartEinstiegsHilfe() {
     setBesteZeit("");
     setEmail("");
     setKontaktWunsch("");
+    setNachricht("");
     setError("");
   };
 
@@ -290,17 +303,14 @@ export function StartEinstiegsHilfe() {
       `E-Mail: ${email || "-"}`,
       `Passender Tag/Uhrzeit: ${besteZeit || "-"}`,
       `Hinweis: ${kontaktWunsch || "-"}`,
+      `Nachricht: ${nachricht || "-"}`,
     ].join("\n");
     return `mailto:info@alltagshilfe-sued.de?subject=${encodeURIComponent("Anfrage über Hilfe-Finder")}&body=${encodeURIComponent(body)}`;
-  }, [besteZeit, email, fuerWen, kontaktWunsch, leistungsText, pflegegrad, plzNorm, nachname, telefon, vorname]);
+  }, [besteZeit, email, fuerWen, kontaktWunsch, leistungsText, nachricht, pflegegrad, plzNorm, nachname, telefon, vorname]);
 
   const absenden = () => {
-    if (kontaktArt === "selbst") {
-      setStarted(false);
-      resetFlow();
-      return;
-    }
-    window.location.href = mailtoHref;
+    if (kontaktArt !== "selbst") window.location.href = mailtoHref;
+    setStep(8);
   };
 
   return (
@@ -325,7 +335,19 @@ export function StartEinstiegsHilfe() {
         </div>
       ) : (
         <div className="fixed inset-0 z-50 flex items-end justify-center overflow-y-auto bg-[#0F4F68]/45 p-3 backdrop-blur-[2px] sm:items-center sm:p-6">
-          <div className="max-h-[92vh] w-full max-w-4xl overflow-y-auto animate-fade-in-up rounded-2xl border border-[#0F4F68]/15 bg-white p-5 shadow-2xl sm:p-7">
+          <div className="flex w-full max-w-[70rem] items-start justify-center gap-4">
+            <div className="hidden lg:block lg:w-[260px] xl:w-[300px]">
+              <div className="relative aspect-[4/5] w-full overflow-hidden rounded-2xl border border-white/35 bg-white/90 shadow-2xl">
+                <Image
+                  src="/images/Kontakt_Bild.webp"
+                  alt="Kontakt – Alltagshilfe-Süd"
+                  fill
+                  className="object-contain p-3"
+                  sizes="300px"
+                />
+              </div>
+            </div>
+            <div className="max-h-[92vh] w-full max-w-4xl overflow-y-auto animate-fade-in-up rounded-2xl border border-[#0F4F68]/15 bg-white p-5 shadow-2xl sm:p-7">
             <div className="mb-4 grid grid-cols-[1fr_auto_1fr] items-center gap-3">
               <p className="justify-self-start text-sm font-bold uppercase tracking-wide text-[#0F4F68]/80">Schritt {Math.min(step, 7)} von 7</p>
               <p className="text-center text-xl font-extrabold text-[#0F4F68] sm:text-2xl">{SCHRITT_MOTIVATION[step]}</p>
@@ -464,7 +486,7 @@ export function StartEinstiegsHilfe() {
                       <div>
                         <p className="text-sm font-semibold text-[#0F4F68] sm:text-base">{l.label}</p>
                         <p className={cn("text-xs sm:text-sm", l.verfuegbarkeit === "direkt" ? "text-emerald-700" : "text-[#c86d1f]")}>
-                          {l.verfuegbarkeit === "direkt" ? "Verfügbar direkt über uns" : "Verfügbar über Kooperationspartner"}
+                          {l.verfuegbarkeit === "direkt" ? "Verfügbar direkt über uns" : "Verfügbar über unsere Kooperationspartner"}
                         </p>
                       </div>
                     </li>
@@ -524,7 +546,7 @@ export function StartEinstiegsHilfe() {
                     <span className="flex items-center gap-2.5">
                       <SelectMark active={kontaktArt === "selbst"} />
                       <StepFlatIcon kind="kontakt" />
-                      <span>Ich möchte selbst kontaktieren</span>
+                  <span>Ich möchte Sie kontaktieren</span>
                     </span>
                   </button>
                 </div>
@@ -546,55 +568,59 @@ export function StartEinstiegsHilfe() {
                   </div>
                 ) : null}
 
-                {kontaktArt ? (
-                  <textarea
-                    value={kontaktWunsch}
-                    onChange={(e) => setKontaktWunsch(e.target.value)}
-                    placeholder="Hinweis (optional)"
-                    className="mt-3 min-h-[90px] w-full rounded-xl border border-[#0F4F68]/20 px-4 py-3"
-                  />
-                ) : null}
-
                 {kontaktArt === "selbst" ? (
                   <div className="mt-4 rounded-xl border border-[#0F4F68]/15 bg-[#f8fcfd] p-4 text-sm text-neutral-700">
                     <p className="font-semibold text-[#0F4F68]">Ihr passender Standort</p>
-                    {standort ? (
-                      <div className="mt-2 space-y-1">
-                        <p className="font-medium text-[#0F4F68]">{standort.name}</p>
-                        <p>{standort.address}</p>
-                        <p>
-                          Telefon: <a className="text-[#0F4F68] underline" href={standort.phoneHref}>{standort.phone}</a>
-                        </p>
-                        <p>
-                          E-Mail: <a className="text-[#0F4F68] underline" href={`mailto:${standort.email}`}>{standort.email}</a>
-                        </p>
-                      </div>
-                    ) : (
-                      <p className="mt-2">Bitte geben Sie zuerst eine gültige PLZ in Schritt 6 ein.</p>
-                    )}
-                    <div className="mt-4">
-                      <div className="relative mx-auto aspect-[4/3] w-full max-w-[360px]">
-                        <Image
-                          src="/images/Kontakt_Bild.webp"
-                          alt="Kontakt – Alltagshilfe-Süd"
-                          fill
-                          className="object-contain"
-                          sizes="(max-width: 640px) 80vw, 360px"
-                        />
-                      </div>
+                    <div className="mt-2 space-y-1">
+                      <p className="font-medium text-[#0F4F68]">{finalerStandort.name}</p>
+                      <p>{finalerStandort.address}</p>
+                      <p>
+                        Telefon: <a className="text-[#0F4F68] underline" href={finalerStandort.phoneHref}>{finalerStandort.phone}</a>
+                      </p>
+                      <p>
+                        E-Mail: <a className="text-[#0F4F68] underline" href={`mailto:${finalerStandort.email}`}>{finalerStandort.email}</a>
+                      </p>
                     </div>
-                    <div className="mt-4">
-                      <ContactForm />
+                    <div className="mt-4 grid gap-3 sm:grid-cols-2">
+                      <input value={vorname} onChange={(e) => setVorname(e.target.value)} placeholder="Vorname *" className="rounded-xl border border-[#0F4F68]/20 px-4 py-3" />
+                      <input value={nachname} onChange={(e) => setNachname(e.target.value)} placeholder="Nachname *" className="rounded-xl border border-[#0F4F68]/20 px-4 py-3" />
+                      <input value={email} onChange={(e) => setEmail(e.target.value)} placeholder="E-Mail *" type="email" className="rounded-xl border border-[#0F4F68]/20 px-4 py-3 sm:col-span-2" />
+                      <input value={telefon} onChange={(e) => setTelefon(e.target.value)} placeholder="Telefonnummer" className="rounded-xl border border-[#0F4F68]/20 px-4 py-3 sm:col-span-2" />
+                      <textarea value={nachricht} onChange={(e) => setNachricht(e.target.value)} placeholder="Ihre Nachricht *" className="min-h-[96px] rounded-xl border border-[#0F4F68]/20 px-4 py-3 sm:col-span-2" />
                     </div>
                   </div>
                 ) : null}
               </div>
             ) : null}
 
+            {step === 8 ? (
+              <div className="mt-6 animate-fade-in-up space-y-4">
+                <div className="rounded-xl border border-emerald-200 bg-emerald-50 p-4">
+                  <p className="font-semibold text-emerald-800">Ihre Anfrage ist erfolgreich bei uns eingegangen.</p>
+                  <p className="mt-1 text-emerald-700">Wir melden uns in Kürze bei Ihnen zurück.</p>
+                </div>
+                <div className="rounded-xl border border-[#F78F2E]/35 bg-[#fff8f2] p-4">
+                  <p className="flex items-start gap-2 font-semibold text-[#c86d1f]">
+                    <span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-[#F78F2E] text-white" aria-hidden>
+                      <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M12 8h.01" />
+                        <path d="M11 12h1v4h1" />
+                        <circle cx="12" cy="12" r="9" />
+                      </svg>
+                    </span>
+                    <span>Jetzt neu: Unser Onlineshop ist ab sofort für Sie verfügbar.</span>
+                  </p>
+                  <p className="mt-1 text-[#7a4d28]">
+                    Entdecken Sie hochwertige Produkte, die Sie bei der täglichen Pflege zuverlässig unterstützen. Geprüfte Qualität und von Pflegekräften empfohlen.
+                  </p>
+                </div>
+              </div>
+            ) : null}
+
             {error ? <p className="mt-4 text-sm text-red-600" role="alert">{error}</p> : null}
 
             <div className="mt-6 flex flex-wrap gap-3">
-              {step > 1 ? (
+              {step > 1 && step < 8 ? (
                 <button
                   type="button"
                   onClick={zurueck}
@@ -623,6 +649,16 @@ export function StartEinstiegsHilfe() {
                   Anfrage senden
                 </button>
               ) : null}
+              {step === 8 ? (
+                <button
+                  type="button"
+                  onClick={resetFlow}
+                  className="inline-flex min-h-[50px] items-center justify-center rounded-xl bg-[#F78F2E] px-6 py-2.5 text-[1.03rem] font-semibold text-white hover:bg-[#e67e22]"
+                >
+                  Neu starten
+                </button>
+              ) : null}
+            </div>
             </div>
           </div>
         </div>
