@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import { Container } from "@/components/layout/Container";
+import { Timeline } from "@/components/ueber-uns/Timeline";
 
 export const metadata: Metadata = {
   title: "Über uns",
@@ -8,20 +9,6 @@ export const metadata: Metadata = {
 };
 
 export default function UeberUnsPage() {
-  const meilensteine = [
-    { titel: "2020", text: "Erste Idee und Zertifizierung als Grundlage für den Aufbau.", icon: "start" },
-    { titel: "01.04.2021", text: "Offizielle Gründung durch Philip Sonntag und Valentin Maucher.", icon: "gruendung" },
-    { titel: "01.04.2022", text: "Eröffnung des Standorts Wangen für die Bodenseeregion.", icon: "standort" },
-    { titel: "01.10.2023", text: "Start der Pflegehilfsmittel aus eigenem Lager im Allgäu.", icon: "box" },
-    { titel: "03.06.2024", text: "Anerkennung als Pflegeberatungsstelle mit eigenen Beraterinnen und Beratern.", icon: "beratung" },
-    { titel: "2025", text: "Namensänderung von Alltagshilfe-Allgäu zu Alltagshilfe-Süd.", icon: "rename" },
-    { titel: "01.12.2025", text: "Aufbau der betrieblichen Pflegeberatung für Unternehmen.", icon: "business" },
-    { titel: "01.01.2026", text: "Gründung der Standorte Engen/Konstanz und Augsburg.", icon: "standort" },
-    { titel: "01.01.2026", text: "Eröffnung des Standortes Engen/Konstanz und Augsburg.", icon: "standort" },
-    { titel: "01.05.2026", text: "Eröffnung unseres Pflegeshops.", icon: "shop" },
-    { titel: "Anfang 2026", text: "Umzug in größere Räumlichkeiten nach Bad Grönenbach.", icon: "move" },
-  ] as const;
-
   return (
     <article className="pt-0 pb-16 sm:pb-24">
       <Container>
@@ -67,6 +54,10 @@ export default function UeberUnsPage() {
           >
             <path d="M0,120 C200,32 420,8 600,22 C800,38 1010,90 1200,120 L1200,120 L0,120 Z" fill="#F2F9FA" />
           </svg>
+          <div
+            className="pointer-events-none absolute left-0 top-0 h-10 w-full -translate-y-2 bg-gradient-to-b from-[#F2F9FA]/85 to-transparent"
+            aria-hidden
+          />
           <div className="mx-auto max-w-5xl space-y-5 text-neutral-700">
           <p>
             Die Alltagshilfe-Süd ist ein professioneller Hauswirtschafts-, Betreuungs- und Beratungsdienst für
@@ -161,34 +152,7 @@ export default function UeberUnsPage() {
           </div>
         </section>
 
-        <section className="relative mt-10 overflow-hidden rounded-3xl border border-[#0F4F68]/12 bg-white p-7 sm:p-9" aria-label="Meilensteine">
-          <svg
-            className="pointer-events-none absolute left-0 top-0 h-10 w-full -translate-y-[60%] sm:h-14"
-            viewBox="0 0 1200 120"
-            preserveAspectRatio="none"
-            fill="none"
-            aria-hidden
-          >
-            <path d="M0,120 C230,34 430,12 620,24 C830,38 1015,88 1200,120 L1200,120 L0,120 Z" fill="#F2F9FA" />
-          </svg>
-          <h2 className="text-3xl font-bold text-[#0F4F68] sm:text-4xl">Unsere Meilensteine</h2>
-          <ul className="mt-7 space-y-6">
-            {meilensteine.map((punkt, idx) => (
-              <li
-                key={`${punkt.titel}-${punkt.text}`}
-                className="relative flex items-start gap-4 rounded-2xl border border-[#0F4F68]/10 bg-[#F2F9FA]/55 px-4 py-4 text-neutral-700 shadow-[0_6px_16px_rgba(15,79,104,0.08)] sm:gap-5 sm:px-5"
-              >
-                <span className="mt-0.5 inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#F78F2E]/20 text-lg font-extrabold text-[#0F4F68] ring-1 ring-[#F78F2E]/45 sm:h-12 sm:w-12">
-                  {idx + 1}
-                </span>
-                <span className="pt-0.5 text-base sm:text-lg">
-                  <strong className="text-[#0F4F68]">{punkt.titel}:</strong>{" "}
-                  <span className="leading-relaxed">{punkt.text}</span>
-                </span>
-              </li>
-            ))}
-          </ul>
-        </section>
+        <Timeline />
       </Container>
     </article>
   );
