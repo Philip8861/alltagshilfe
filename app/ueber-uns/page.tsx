@@ -23,20 +23,39 @@ export default function UeberUnsPage() {
   return (
     <article className="py-16 sm:py-24">
       <Container>
-        <header className="max-w-5xl">
-          <p className="inline-flex rounded-full bg-[#0F4F68]/8 px-4 py-1 text-sm font-semibold text-[#0F4F68]">
-            Alltagshilfe Süd
-          </p>
-          <h1 className="mt-4 text-3xl font-bold tracking-tight text-neutral-900 sm:text-4xl">
-            Über uns
-          </h1>
-          <p className="mt-4 max-w-4xl text-lg leading-relaxed text-neutral-700">
-            Als Hauswirtschaftsdienst, Betreuungsdienst und Pflegeberatung begleiten wir Menschen im Alltag mit dem
-            Ziel, Selbstbestimmung, Sicherheit und Lebensqualität im gewohnten Zuhause zu erhalten.
-          </p>
-        </header>
+        <section className="relative">
+          <div className="flex justify-end">
+            <div className="relative ml-auto w-full max-w-[50rem] lg:mr-[calc((100vw-100%)/-2)]">
+              <div className="w-full [filter:drop-shadow(0_10px_22px_rgba(15,79,104,0.2))_drop-shadow(0_4px_12px_rgba(15,79,104,0.12))]">
+                <Image
+                  src="/images/über_uns.webp"
+                  alt="Alltagshilfe-Süd Teamvorstellung"
+                  width={900}
+                  height={700}
+                  className="block h-auto w-full object-contain object-right"
+                  priority
+                  unoptimized
+                />
+              </div>
+            </div>
+          </div>
 
-        <section className="relative mt-10 max-w-5xl overflow-hidden rounded-3xl border border-[#0F4F68]/10 bg-[#F2F9FA] p-6 sm:p-8" aria-label="Unternehmensgeschichte Alltagshilfe Süd">
+          <header className="relative z-10 mt-8 max-w-2xl lg:absolute lg:left-0 lg:top-[46%] lg:mt-0 lg:-translate-y-1/2">
+            <p className="inline-flex rounded-full bg-[#0F4F68]/8 px-4 py-1 text-sm font-semibold text-[#0F4F68]">
+              Alltagshilfe Süd
+            </p>
+            <h1 className="mt-4 text-3xl font-bold tracking-tight text-neutral-900 sm:text-4xl">
+              Die Alltagshilfe-Süd stellt sich vor
+            </h1>
+            <p className="mt-4 text-lg leading-relaxed text-neutral-700">
+              Grüß Gott und herzlich willkommen! Wir freuen uns sehr über Ihren Besuch auf unserer Homepage und über
+              Ihr Interesse an unserem Unternehmen. Gerne möchten wir Ihnen die Alltagshilfe-Süd näher vorstellen und
+              Ihnen einen Einblick in unsere Arbeit, unsere Werte und unser Angebot geben.
+            </p>
+          </header>
+        </section>
+
+        <section className="relative mt-12 max-w-5xl overflow-hidden rounded-3xl border border-[#0F4F68]/10 bg-[#F2F9FA] p-6 sm:p-8" aria-label="Unternehmensgeschichte Alltagshilfe Süd">
           <svg
             className="pointer-events-none absolute left-0 top-0 h-10 w-full -translate-y-[70%] sm:h-14"
             viewBox="0 0 1200 120"
@@ -80,7 +99,7 @@ export default function UeberUnsPage() {
           </div>
         </section>
 
-        <section className="relative mt-10 overflow-hidden rounded-3xl border border-[#0F4F68]/12 bg-white p-6 sm:p-7" aria-label="Meilensteine">
+        <section className="relative mt-10 overflow-hidden rounded-3xl border border-[#0F4F68]/12 bg-white p-7 sm:p-9" aria-label="Meilensteine">
           <svg
             className="pointer-events-none absolute left-0 top-0 h-10 w-full -translate-y-[60%] sm:h-14"
             viewBox="0 0 1200 120"
@@ -90,61 +109,33 @@ export default function UeberUnsPage() {
           >
             <path d="M0,120 C230,34 430,12 620,24 C830,38 1015,88 1200,120 L1200,120 L0,120 Z" fill="#F2F9FA" />
           </svg>
-          <h2 className="text-2xl font-bold text-[#0F4F68]">Unsere Meilensteine</h2>
-          <ul className="mt-5 space-y-4">
+          <h2 className="text-3xl font-bold text-[#0F4F68] sm:text-4xl">Unsere Meilensteine</h2>
+          <ul className="mt-7 space-y-6">
             {meilensteine.map((punkt, idx) => (
-              <li key={`${punkt.titel}-${punkt.text}`} className="relative flex items-start gap-4 text-neutral-700">
+              <li
+                key={`${punkt.titel}-${punkt.text}`}
+                className="relative flex items-start gap-4 rounded-2xl border border-[#0F4F68]/10 bg-[#F2F9FA]/55 px-4 py-4 text-neutral-700 shadow-[0_6px_16px_rgba(15,79,104,0.08)] sm:gap-5 sm:px-5"
+              >
                 {idx < meilensteine.length - 1 && (
-                  <span className="absolute left-[19px] top-11 h-10 w-[3px] rounded-full bg-[#F78F2E]/70" aria-hidden />
+                  <span className="absolute left-[20px] top-12 h-12 w-[4px] rounded-full bg-[#F78F2E]/75 sm:left-[22px]" aria-hidden />
                 )}
-                <span className="mt-0.5 inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#F78F2E]/15 text-[#0F4F68] ring-1 ring-[#F78F2E]/40">
-                  {punkt.icon === "start" && <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2"><path d="M5 12h14M12 5l7 7-7 7" /></svg>}
-                  {punkt.icon === "gruendung" && <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 10l8-6 8 6v10H4z" /></svg>}
-                  {punkt.icon === "standort" && <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 21s6-6.7 6-11a6 6 0 1 0-12 0c0 4.3 6 11 6 11z" /></svg>}
-                  {punkt.icon === "box" && <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2"><path d="M3 7l9-4 9 4-9 4-9-4zM3 7v10l9 4 9-4V7" /></svg>}
-                  {punkt.icon === "beratung" && <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 5h16v10H7l-3 3V5z" /></svg>}
-                  {punkt.icon === "rename" && <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 7h9M4 12h6M4 17h7M14 12h6M17 9l3 3-3 3" /></svg>}
-                  {punkt.icon === "business" && <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2"><path d="M3 7h18v13H3zM9 7V4h6v3" /></svg>}
-                  {punkt.icon === "move" && <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2"><path d="M3 12h18M16 5l5 7-5 7M8 5l-5 7 5 7" /></svg>}
+                <span className="mt-0.5 inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#F78F2E]/20 text-[#0F4F68] ring-1 ring-[#F78F2E]/45 sm:h-12 sm:w-12">
+                  {punkt.icon === "start" && <svg viewBox="0 0 24 24" className="h-5 w-5 sm:h-6 sm:w-6" fill="none" stroke="currentColor" strokeWidth="2"><path d="M5 12h14M12 5l7 7-7 7" /></svg>}
+                  {punkt.icon === "gruendung" && <svg viewBox="0 0 24 24" className="h-5 w-5 sm:h-6 sm:w-6" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 10l8-6 8 6v10H4z" /></svg>}
+                  {punkt.icon === "standort" && <svg viewBox="0 0 24 24" className="h-5 w-5 sm:h-6 sm:w-6" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 21s6-6.7 6-11a6 6 0 1 0-12 0c0 4.3 6 11 6 11z" /></svg>}
+                  {punkt.icon === "box" && <svg viewBox="0 0 24 24" className="h-5 w-5 sm:h-6 sm:w-6" fill="none" stroke="currentColor" strokeWidth="2"><path d="M3 7l9-4 9 4-9 4-9-4zM3 7v10l9 4 9-4V7" /></svg>}
+                  {punkt.icon === "beratung" && <svg viewBox="0 0 24 24" className="h-5 w-5 sm:h-6 sm:w-6" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 5h16v10H7l-3 3V5z" /></svg>}
+                  {punkt.icon === "rename" && <svg viewBox="0 0 24 24" className="h-5 w-5 sm:h-6 sm:w-6" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 7h9M4 12h6M4 17h7M14 12h6M17 9l3 3-3 3" /></svg>}
+                  {punkt.icon === "business" && <svg viewBox="0 0 24 24" className="h-5 w-5 sm:h-6 sm:w-6" fill="none" stroke="currentColor" strokeWidth="2"><path d="M3 7h18v13H3zM9 7V4h6v3" /></svg>}
+                  {punkt.icon === "move" && <svg viewBox="0 0 24 24" className="h-5 w-5 sm:h-6 sm:w-6" fill="none" stroke="currentColor" strokeWidth="2"><path d="M3 12h18M16 5l5 7-5 7M8 5l-5 7 5 7" /></svg>}
                 </span>
-                <span className="pt-0.5">
-                  <strong className="text-[#0F4F68]">{punkt.titel}:</strong> {punkt.text}
+                <span className="pt-0.5 text-base sm:text-lg">
+                  <strong className="text-[#0F4F68]">{punkt.titel}:</strong>{" "}
+                  <span className="leading-relaxed">{punkt.text}</span>
                 </span>
               </li>
             ))}
           </ul>
-        </section>
-
-        <section className="mt-10 grid grid-cols-1 gap-6 md:grid-cols-3" aria-label="Einblicke in die Alltagshilfe Süd">
-          <figure className="overflow-hidden rounded-2xl bg-white shadow-[0_10px_25px_rgba(15,79,104,0.18)]">
-            <Image
-              src="/images/startseite_front.webp"
-              alt="Platzhalterbild: Alltagshilfe Süd im Einsatz"
-              width={1200}
-              height={900}
-              className="h-52 w-full object-cover"
-              unoptimized
-            />
-          </figure>
-          <figure className="overflow-hidden rounded-2xl bg-white shadow-[0_10px_25px_rgba(15,79,104,0.18)]">
-            <Image
-              src="/images/standort_gemeinsam.webp"
-              alt="Platzhalterbild: Team und Betreuung vor Ort"
-              width={1200}
-              height={900}
-              className="h-52 w-full object-cover"
-            />
-          </figure>
-          <figure className="overflow-hidden rounded-2xl bg-white shadow-[0_10px_25px_rgba(15,79,104,0.18)]">
-            <Image
-              src="/images/Kontakt_Bild.webp"
-              alt="Platzhalterbild: Persönliche Beratung und Kontakt"
-              width={1200}
-              height={900}
-              className="h-52 w-full object-cover"
-              unoptimized
-            />
-          </figure>
         </section>
       </Container>
     </article>
