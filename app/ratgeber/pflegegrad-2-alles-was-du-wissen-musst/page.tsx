@@ -1,0 +1,192 @@
+import type { Metadata } from "next";
+import Image from "next/image";
+import Link from "next/link";
+import { Container } from "@/components/layout/Container";
+import { VerwandteRatgeberBeitraege } from "@/components/ratgeber/VerwandteRatgeberBeitraege";
+
+export const metadata: Metadata = {
+  title: "Pflegegrad 2: Leistungen, Voraussetzungen & Pflichten (2026)",
+  description:
+    "Ratgeber: Pflegegrad 2 verständlich erklärt – Budgets 2026, Voraussetzungen, Pflegegeld/Pflegesachleistungen und Pflicht zum Beratungseinsatz nach §37.3.",
+};
+
+export default function Pflegegrad2RatgeberPage() {
+  return (
+    <article className="py-14 sm:py-20">
+      <Container className="max-w-4xl">
+        <header className="rounded-2xl border border-[#efcba7]/45 bg-gradient-to-br from-[#fffaf4] via-white to-[#f7fbfc] p-5 sm:p-7">
+          <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1.15fr_0.85fr] lg:items-center">
+            <div>
+              <p className="text-sm font-semibold text-[#0F4F68]">Ratgeber-Beitrag</p>
+              <h1 className="mt-2 text-3xl font-bold leading-tight text-[#0F4F68] sm:text-4xl">
+                Pflegegrad 2: alles, was Sie wissen müssen (2026)
+              </h1>
+              <p className="mt-4 text-base leading-relaxed text-neutral-700 sm:text-lg">
+                Mit Pflegegrad 2 ändert sich die finanzielle Situation spürbar: Es gibt erstmals frei verfügbares
+                Pflegegeld, Budgets für Pflegesachleistungen und ein großes Jahresbudget für Ersatzpflege. In diesem
+                Leitfaden finden Sie die wichtigsten Zahlen für 2026, die Voraussetzungen sowie die Pflicht zum
+                Beratungseinsatz nach §37.3 SGB XI.
+              </p>
+              <div className="mt-5 flex flex-wrap gap-3">
+                <Link
+                  href="/kontakt"
+                  className="inline-flex items-center rounded-lg bg-[#0F4F68] px-4 py-2 font-semibold text-white transition-colors hover:bg-[#0c3d52] focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2"
+                >
+                  Jetzt beraten lassen
+                </Link>
+                <a
+                  href="/images/Ratgeber/Pflegegrad%202_%20alles%20was%20du%20Wissen%20musst.pdf"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center rounded-lg border border-[#0F4F68]/25 px-4 py-2 font-semibold text-[#0F4F68] transition-colors hover:bg-[#f2f9fa] focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2"
+                >
+                  PDF herunterladen
+                </a>
+              </div>
+            </div>
+
+            <div className="mx-auto w-full max-w-[260px]">
+              <div className="relative aspect-[4/3] overflow-hidden rounded-lg">
+                <Image
+                  src="/images/Ratgeber/ratgeber.webp"
+                  alt="Ratgeber-Vorschaubild Pflegegrad 2"
+                  fill
+                  className="object-cover transition-transform duration-700 hover:scale-[1.02]"
+                  sizes="260px"
+                  priority
+                />
+              </div>
+
+              <div className="mt-4 grid grid-cols-1 gap-3">
+                <div className="rounded-xl border border-[#0F4F68]/12 bg-white/95 p-3 text-[#0F4F68] shadow-sm">
+                  <p className="font-semibold">Anerkennung</p>
+                  <p className="mt-1 text-sm text-neutral-700">mind. 27 bis &lt; 47,5 Punkte</p>
+                </div>
+                <div className="rounded-xl border border-[#0F4F68]/12 bg-white/95 p-3 text-[#0F4F68] shadow-sm">
+                  <p className="font-semibold">Pflegegeld</p>
+                  <p className="mt-1 text-sm text-neutral-700">347 Euro pro Monat</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </header>
+
+        <section className="mt-10 space-y-4 text-neutral-700">
+          <h2 className="text-2xl font-bold text-[#0F4F68]">Wann wird Pflegegrad 2 bewilligt?</h2>
+          <p>
+            Pflegegrad 2 wird bewilligt, wenn der Medizinische Dienst (MD) eine <strong>erhebliche Beeinträchtigung der
+            Selbstständigkeit</strong> feststellt. Im Alltag bedeutet das häufig: Einige Dinge funktionieren noch
+            eigenständig – aber bei Körperpflege, Anziehen oder im Haushalt ist regelmäßige Unterstützung nötig.
+          </p>
+          <p>
+            Grundlage ist das Neue Begutachtungsassessment. Für Pflegegrad 2 braucht es insgesamt{" "}
+            <strong>mindestens 27 bis unter 47,5 Punkte</strong>.
+          </p>
+        </section>
+
+        <section className="mt-8 space-y-4 text-neutral-700">
+          <h2 className="text-2xl font-bold text-[#0F4F68]">Finanzielle Leistungen bei Pflegegrad 2 (Überblick 2026)</h2>
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+            {[
+              { label: "Pflegegeld (häusliche Pflege)", value: "347 € monatlich" },
+              { label: "Pflegesachleistungen (ambulanter Dienst)", value: "796 € monatlich" },
+              { label: "Tages-/Nachtpflege", value: "721 € monatlich" },
+              { label: "Entlastungsbetrag", value: "131 € monatlich" },
+              { label: "Jahresbudget Ersatzpflege (Kurzzeit + Verhinderung)", value: "3.539 € jährlich" },
+              { label: "Wohnumfeldverbesserung", value: "bis zu 4.180 € je Maßnahme" },
+              { label: "Pflegehilfsmittel zum Verbrauch", value: "bis zu 42 € monatlich" },
+              { label: "Hausnotruf-Zuschuss", value: "bis zu 25,50 € monatlich" },
+              { label: "Zuschuss Pflegeheim", value: "805 € monatlich" },
+            ].map((item) => (
+              <div key={item.label} className="rounded-xl border border-[#0F4F68]/12 bg-white/95 p-4 shadow-sm">
+                <p className="text-sm font-semibold text-[#0F4F68]">{item.label}</p>
+                <p className="mt-2 text-lg font-extrabold text-neutral-800">{item.value}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section className="mt-8 space-y-4 text-neutral-700">
+          <h2 className="text-2xl font-bold text-[#0F4F68]">Die größten Vorteile im Detail</h2>
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+            {[
+              {
+                title: "1) Pflegegeld oder Pflegesachleistungen",
+                text: "Privat durch Angehörige: 347 € Pflegegeld monatlich. Ambulante Pflege: bis zu 796 € monatlich. Beides ist auch kombinierbar (Kombinationsleistung).",
+              },
+              {
+                title: "2) Jahresbudget 3.539 €",
+                text: "Für Ersatzpflege, wenn Angehörige ausfallen oder eine Auszeit brauchen. Seit 2025 flexibler Topf aus Kurzzeit- und Verhinderungspflege.",
+              },
+              {
+                title: "3) Rentenpunkte für pflegende Angehörige",
+                text: "Unter Bedingungen zahlt die Pflegekasse Beiträge in die Rentenversicherung – das kann die spätere Rente spürbar stärken.",
+              },
+            ].map((card, idx) => (
+              <div key={card.title} className="relative rounded-xl border border-[#0F4F68]/12 bg-gradient-to-br from-white to-[#fff8f0] p-4">
+                <div className="absolute right-3 top-3 inline-flex h-10 w-10 items-center justify-center rounded-full bg-[#F78F2E]/15 text-[#F78F2E]">
+                  <span className="text-xs font-extrabold">{idx + 1}</span>
+                </div>
+                <p className="mt-2 text-sm font-bold text-[#0F4F68]">{card.title}</p>
+                <p className="mt-2 text-sm text-neutral-700">{card.text}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section className="mt-8 space-y-4 text-neutral-700">
+          <h2 className="text-2xl font-bold text-[#0F4F68]">Wichtige Pflicht: Beratungseinsatz nach §37.3 SGB XI</h2>
+          <div className="rounded-2xl border border-[#0F4F68]/12 bg-[#F2F9FA]/35 p-5">
+            <p className="text-sm text-neutral-700">
+              Wer <strong>Pflegegeld</strong> bezieht, muss regelmäßig einen Beratungseinsatz durch einen Pflegedienst
+              oder eine anerkannte Beratungsstelle nachweisen.
+            </p>
+            <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-3">
+              <div className="rounded-xl border border-[#0F4F68]/12 bg-white/95 p-4">
+                <p className="text-sm font-semibold text-[#0F4F68]">Häufigkeit</p>
+                <p className="mt-1 text-sm text-neutral-700">1× pro Halbjahr</p>
+              </div>
+              <div className="rounded-xl border border-[#0F4F68]/12 bg-white/95 p-4">
+                <p className="text-sm font-semibold text-[#0F4F68]">Kosten</p>
+                <p className="mt-1 text-sm text-neutral-700">kostenfrei (Kasse rechnet ab)</p>
+              </div>
+              <div className="rounded-xl border border-[#0F4F68]/12 bg-white/95 p-4">
+                <p className="text-sm font-semibold text-[#0F4F68]">Risiko</p>
+                <p className="mt-1 text-sm text-neutral-700">Kürzung/Stop des Pflegegelds</p>
+              </div>
+            </div>
+            <p className="mt-4 text-sm text-neutral-700">
+              Tipp: Planen Sie den nächsten Termin direkt nach dem Einsatz ein – so vermeiden Sie Fristprobleme.
+            </p>
+          </div>
+        </section>
+
+        <section className="mt-10 rounded-xl border border-[#0F4F68]/12 bg-[#f8fcfd] p-5">
+          <h2 className="text-xl font-bold text-[#0F4F68]">Fazit</h2>
+          <p className="mt-2 text-neutral-700">
+            Pflegegrad 2 bringt spürbare finanzielle Entlastung – aber auch Pflichten. Wenn Sie Pflegegeld beziehen,
+            denken Sie unbedingt an den Beratungseinsatz nach §37.3. Nutzen Sie Ihre Budgets konsequent, um den
+            Pflegealltag einfacher und planbarer zu machen.
+          </p>
+          <div className="mt-4 flex flex-wrap gap-3">
+            <Link
+              href="/kontakt"
+              className="inline-flex items-center rounded-lg bg-[#0F4F68] px-4 py-2 font-semibold text-white transition-colors hover:bg-[#0c3d52] focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2"
+            >
+              Jetzt Kontakt aufnehmen
+            </Link>
+            <Link
+              href="/ratgeber"
+              className="inline-flex items-center rounded-lg border border-[#0F4F68]/25 px-4 py-2 font-semibold text-[#0F4F68] transition-colors hover:bg-[#f2f9fa] focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2"
+            >
+              Zurück zum Ratgeber
+            </Link>
+          </div>
+        </section>
+
+        <VerwandteRatgeberBeitraege currentSlug="pflegegrad-2-alles-was-du-wissen-musst" />
+      </Container>
+    </article>
+  );
+}
+

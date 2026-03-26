@@ -32,6 +32,16 @@ export const RATGEBER_BEITRAEGE: RatgeberBeitragMeta[] = [
     views: 623,
     tags: ["Pflegegrad 1", "MDK", "Begutachtung", "Leistungen", "Entlastungsbetrag"],
   },
+  {
+    slug: "pflegegrad-2-alles-was-du-wissen-musst",
+    title: "Pflegegrad 2: alles, was Sie wissen müssen (2026)",
+    excerpt:
+      "Leistungen, Voraussetzungen und wichtige Pflichten – inkl. Pflegegeld, Pflegesachleistungen und Beratungseinsatz nach §37.3.",
+    image: "/images/Ratgeber/ratgeber.webp",
+    imageAlt: "Vorschaubild Pflegegrad 2",
+    views: 512,
+    tags: ["Pflegegrad 2", "Pflegegeld", "Pflegesachleistungen", "Ersatzpflege", "§37.3"],
+  },
 ];
 
 export function getVerwandteRatgeberBeitraege(currentSlug: string, limit = 4): RatgeberBeitragMeta[] {
