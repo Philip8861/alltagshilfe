@@ -2,27 +2,30 @@
 
 import Link from "next/link";
 import { useMemo, useState } from "react";
-import { findStandortByPlz, getOrtByPlz, type Standort } from "@/config/standorte";
-import { serviceLinks } from "@/config/start-einstieg";
+import { findStandortByPlz, getOrtByPlz, ortToSlugSegment, type Standort } from "@/config/standorte";
 import { cn } from "@/lib/utils";
 
 type ServiceKey =
   | "haushalt"
   | "pflegeberatung"
-  | "pflegehilfsmittel"
-  | "inkontinenz"
-  | "pflegeshop"
-  | "essen";
+  | "pflegebox"
+  | "koerperpflege"
+  | "medizinisch"
+  | "umbau"
+  | "hausnotruf"
+  | "hilfsmittel";
 
-type KontaktArt = "rueckruf" | "email" | "keine_daten";
+type KontaktArt = "rueckruf" | "email" | "selbst";
 
-const SERVICE_OPTIONEN: { key: ServiceKey; label: string; hinweis?: string }[] = [
-  { key: "haushalt", label: "Haushaltshilfe & Alltagsbegleitung" },
-  { key: "pflegeberatung", label: "Kostenfreie Pflegeberatung nach §37.3 SGB XI" },
-  { key: "pflegehilfsmittel", label: "Kostenfreie Pflegehilfsmittel" },
-  { key: "inkontinenz", label: "Inkontinenzversorgung" },
-  { key: "pflegeshop", label: "Pflegeutensilien für Körperpflege" },
-  { key: "essen", label: "Essen auf Rädern", hinweis: "Nur im Raum Kempten" },
+const SERVICE_OPTIONEN: { key: ServiceKey; label: string; verfuegbarkeit: "direkt" | "partner" }[] = [
+  { key: "haushalt", label: "Alltagsbegleitung & Haushaltsreinigung", verfuegbarkeit: "partner" },
+  { key: "pflegeberatung", label: "Halb-, vierteljaehrliche Pflegeberatung nach §37.3", verfuegbarkeit: "partner" },
+  { key: "pflegebox", label: "Kostenlose Pflegebox (Utensilien zur Pflege)", verfuegbarkeit: "partner" },
+  { key: "koerperpflege", label: "Koerperliche Pflege", verfuegbarkeit: "partner" },
+  { key: "medizinisch", label: "Medizinische Versorgung (Verbandswechsel, Medikamentengabe)", verfuegbarkeit: "direkt" },
+  { key: "umbau", label: "Umbaumassnahmen im Haus (Barrierefreiheit)", verfuegbarkeit: "direkt" },
+  { key: "hausnotruf", label: "Hausnotruf", verfuegbarkeit: "direkt" },
+  { key: "hilfsmittel", label: "Pflegehilfsmittel (Rollator, Duschhocker, Haltegriffe usw.)", verfuegbarkeit: "direkt" },
 ];
 
 const PFLEGEGRADE = [
@@ -36,7 +39,7 @@ const PFLEGEGRADE = [
 
 const FUER_WEN_OPTIONEN = [
   { id: "selbst", label: "Für mich" },
-  { id: "andere", label: "Für eine andere Person" },
+  { id: "andere", label: "Für Angehörige/Bekannte" },
 ] as const;
 
 const optionButtonClass =
@@ -67,7 +70,7 @@ function SelectMark({ active }: { active: boolean }) {
 }
 
 function ServiceIcon({ service }: { service: ServiceKey }) {
-  if (service === "haushalt") {
+  if (service === "haushalt" || service === "umbau") {
     return (
       <svg className="h-5 w-5 text-[#0F4F68]/75" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
         <path d="M12 3.2 3.5 10v10.3h6.2v-6.3h4.6v6.3h6.2V10L12 3.2z" />
@@ -81,21 +84,21 @@ function ServiceIcon({ service }: { service: ServiceKey }) {
       </svg>
     );
   }
-  if (service === "pflegehilfsmittel") {
+  if (service === "pflegebox" || service === "hilfsmittel") {
     return (
       <svg className="h-5 w-5 text-[#0F4F68]/75" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
         <path d="M3 7.2 12 3l9 4.2v9.6L12 21l-9-4.2V7.2zm9 8.5 6.8-3.2V8.6L12 11.8 5.2 8.6v3.9l6.8 3.2z" />
       </svg>
     );
   }
-  if (service === "inkontinenz") {
+  if (service === "koerperpflege") {
     return (
       <svg className="h-5 w-5 text-[#0F4F68]/75" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
         <path d="M12 2 4 5.2v6.1c0 5.1 3.4 9.8 8 10.7 4.6-.9 8-5.6 8-10.7V5.2L12 2zm-1 13.2-3-3 1.4-1.4 1.6 1.6 3.6-3.6 1.4 1.4-5 5z" />
       </svg>
     );
   }
-  if (service === "pflegeshop") {
+  if (service === "medizinisch") {
     return (
       <svg className="h-5 w-5 text-[#0F4F68]/75" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
         <path d="M7 4H4v2h1.3l2 9.1h9.6l1.7-6.8H8.5L8 6h12V4H7zm2 13a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm8 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4z" />
@@ -137,12 +140,14 @@ function StepFlatIcon({ kind }: { kind: "pflegegrad" | "person" | "kontakt" }) {
 }
 
 const serviceZuLink: Record<ServiceKey, string> = {
-  haushalt: serviceLinks.haushalt.mehr ?? "/leistungen/haushaltshilfe",
-  pflegeberatung: serviceLinks.pflegeberatung.mehr ?? "/pflegeberatung",
-  pflegehilfsmittel: serviceLinks.pflegehilfsmittel.mehr ?? "/pflegebox",
-  inkontinenz: serviceLinks.inkontinenz.mehr ?? "/inkontinenzversorgung",
-  pflegeshop: serviceLinks.pflegeshop.shop ?? "/pflegeshop",
-  essen: serviceLinks.essen.mehr ?? "/leistungen/essen-auf-raeder",
+  haushalt: "/leistungen/haushaltshilfe",
+  pflegeberatung: "/pflegeberatung",
+  pflegebox: "/pflegebox",
+  koerperpflege: "/leistungen/betreuung-beschaeftigung",
+  medizinisch: "/kontakt",
+  umbau: "/kontakt",
+  hausnotruf: "/kontakt",
+  hilfsmittel: "/pflegeshop",
 };
 
 export function StartEinstiegsHilfe() {
@@ -154,12 +159,14 @@ export function StartEinstiegsHilfe() {
   const [fuerWen, setFuerWen] = useState<string>("");
   const [plz, setPlz] = useState("");
   const [kontaktArt, setKontaktArt] = useState<KontaktArt | "">("");
+  const [showStandort, setShowStandort] = useState(false);
 
   const [vorname, setVorname] = useState("");
   const [nachname, setNachname] = useState("");
   const [telefon, setTelefon] = useState("");
   const [besteZeit, setBesteZeit] = useState("");
   const [email, setEmail] = useState("");
+  const [kontaktWunsch, setKontaktWunsch] = useState("");
 
   const [error, setError] = useState("");
 
@@ -181,21 +188,19 @@ export function StartEinstiegsHilfe() {
     setFuerWen("");
     setPlz("");
     setKontaktArt("");
+    setShowStandort(false);
     setVorname("");
     setNachname("");
     setTelefon("");
     setBesteZeit("");
     setEmail("");
+    setKontaktWunsch("");
     setError("");
   };
 
   const weiter = () => {
     setError("");
 
-    if (step === 1 && leistungen.length === 0) {
-      setError("Bitte wählen Sie mindestens eine Leistung aus.");
-      return;
-    }
     if (step === 2 && !pflegegrad) {
       setError("Bitte wählen Sie Ihren Pflegegrad aus.");
       return;
@@ -204,16 +209,20 @@ export function StartEinstiegsHilfe() {
       setError("Bitte wählen Sie aus, für wen Sie Unterstützung suchen.");
       return;
     }
-    if (step === 4 && plzNorm.length !== 5) {
+    if (step === 4 && leistungen.length === 0) {
+      setError("Bitte wählen Sie mindestens eine Hilfsleistung aus.");
+      return;
+    }
+    if (step === 6 && plzNorm.length !== 5) {
       setError("Bitte geben Sie eine gültige 5-stellige PLZ ein.");
       return;
     }
-    if (step === 5 && !kontaktArt) {
+    if (step === 7 && !kontaktArt) {
       setError("Bitte wählen Sie eine Kontaktart aus.");
       return;
     }
 
-    setStep((s) => Math.min(6, s + 1));
+    setStep((s) => Math.min(7, s + 1));
   };
 
   const zurueck = () => {
@@ -225,6 +234,38 @@ export function StartEinstiegsHilfe() {
     () => SERVICE_OPTIONEN.filter((s) => leistungen.includes(s.key)),
     [leistungen]
   );
+  const direktVerfuegbar = useMemo(
+    () => ausgewaehlteLeistungen.filter((s) => s.verfuegbarkeit === "direkt"),
+    [ausgewaehlteLeistungen]
+  );
+  const partnerVerfuegbar = useMemo(
+    () => ausgewaehlteLeistungen.filter((s) => s.verfuegbarkeit === "partner"),
+    [ausgewaehlteLeistungen]
+  );
+  const leistungsText = useMemo(
+    () => ausgewaehlteLeistungen.map((s) => `- ${s.label}`).join("\n"),
+    [ausgewaehlteLeistungen]
+  );
+  const mailtoHref = useMemo(() => {
+    const body = [
+      "Anfrage aus dem Hilfe-Finder",
+      "",
+      `Pflegegrad: ${pflegegrad || "-"}`,
+      `Fuer wen: ${fuerWen === "selbst" ? "Fuer mich" : fuerWen === "andere" ? "Fuer Angehoerige/Bekannte" : "-"}`,
+      `PLZ: ${plzNorm || "-"}`,
+      "",
+      "Ausgewaehlte Leistungen:",
+      leistungsText || "-",
+      "",
+      `Vorname: ${vorname || "-"}`,
+      `Nachname: ${nachname || "-"}`,
+      `Telefon: ${telefon || "-"}`,
+      `E-Mail: ${email || "-"}`,
+      `Passender Tag/Uhrzeit: ${besteZeit || "-"}`,
+      `Hinweis: ${kontaktWunsch || "-"}`,
+    ].join("\n");
+    return `mailto:info@alltagshilfe-sued.de?subject=${encodeURIComponent("Anfrage ueber Hilfe-Finder")}&body=${encodeURIComponent(body)}`;
+  }, [besteZeit, email, fuerWen, kontaktWunsch, leistungsText, pflegegrad, plzNorm, nachname, telefon, vorname]);
 
   return (
     <section className="mt-12 w-full sm:mt-14 lg:mt-16" aria-labelledby="hilfefinder-headline">
@@ -250,7 +291,7 @@ export function StartEinstiegsHilfe() {
         <div className="fixed inset-0 z-50 flex items-end justify-center bg-[#0F4F68]/45 p-3 backdrop-blur-[2px] sm:items-center sm:p-6">
           <div className="w-full max-w-4xl animate-fade-in-up rounded-2xl border border-[#0F4F68]/15 bg-white p-5 shadow-2xl sm:p-7">
             <div className="mb-3 flex items-center justify-between gap-3">
-              <p className="text-xs font-semibold uppercase tracking-wide text-[#0F4F68]/70">Schritt {Math.min(step, 5)} von 5</p>
+              <p className="text-xs font-semibold uppercase tracking-wide text-[#0F4F68]/70">Schritt {Math.min(step, 7)} von 7</p>
               <button
                 type="button"
                 onClick={() => {
@@ -266,34 +307,10 @@ export function StartEinstiegsHilfe() {
 
             {step === 1 ? (
               <div className="mt-3 animate-fade-in-up">
-              <h3 className="text-lg font-bold text-[#0F4F68] sm:text-xl">Welche Leistungen brauchen Sie gerade?</h3>
-              <p className="mt-2 text-neutral-700">Mehrfachauswahl ist möglich.</p>
-              <ul className="mt-4 grid list-none gap-2 sm:grid-cols-2">
-                {SERVICE_OPTIONEN.map((opt) => {
-                  const active = leistungen.includes(opt.key);
-                  return (
-                    <li key={opt.key}>
-                      <button
-                        type="button"
-                        aria-pressed={active}
-                        onClick={() => toggleLeistung(opt.key)}
-                        className={cn(
-                          optionButtonClass,
-                          "transition-all duration-300",
-                          active && "border-[#F78F2E]/65 bg-[#fff8f2] shadow-[0_6px_16px_rgba(247,143,46,0.14)]"
-                        )}
-                      >
-                        <span className="flex items-start gap-2.5">
-                          <SelectMark active={active} />
-                          <ServiceIcon service={opt.key} />
-                          <span className="block">{opt.label}</span>
-                        </span>
-                        {opt.hinweis ? <span className="mt-1 block text-sm text-neutral-500">{opt.hinweis}</span> : null}
-                      </button>
-                    </li>
-                  );
-                })}
-              </ul>
+                <h3 className="text-lg font-bold text-[#0F4F68] sm:text-xl">Kurze Information vor dem Start</h3>
+                <p className="mt-2 text-neutral-700">
+                  Sie muessen fuer das Ergebnis keine persoenlichen Daten eingeben. Sie erhalten das Ergebnis direkt am Ende in wenigen Schritten.
+                </p>
               </div>
             ) : null}
 
@@ -353,167 +370,196 @@ export function StartEinstiegsHilfe() {
 
             {step === 4 ? (
               <div className="mt-3 animate-fade-in-up">
-              <h3 className="text-lg font-bold text-[#0F4F68] sm:text-xl">Welche PLZ hat der Einsatzort?</h3>
-              <p className="mt-2 text-neutral-700">So zeigen wir Ihnen den passenden Ansprechpartner.</p>
-              <label htmlFor="hilfefinder-plz" className="mt-4 block text-sm font-medium text-[#0F4F68]">PLZ</label>
-              <input
-                id="hilfefinder-plz"
-                inputMode="numeric"
-                autoComplete="postal-code"
-                maxLength={5}
-                value={plz}
-                onChange={(e) => setPlz(e.target.value.replace(/\D/g, "").slice(0, 5))}
-                className="mt-1 w-full max-w-xs rounded-xl border border-[#0F4F68]/20 px-4 py-3 text-base outline-none ring-0 transition focus:border-[#0F4F68]/45"
-                placeholder="z. B. 87700"
-              />
-              {plzNorm.length === 5 ? (
-                <p className="mt-3 text-sm text-neutral-700">
-                  {standort ? (
-                    <>
-                      Zuständiger Bereich: <strong>{standort.name}</strong>
-                      {ort ? ` (${plzNorm} ${ort})` : ` (${plzNorm})`}
-                    </>
-                  ) : (
-                    <>Für {plzNorm}{ort ? ` ${ort}` : ""} finden wir Ihren Ansprechpartner gern persönlich.</>
-                  )}
-                </p>
-              ) : null}
+                <h3 className="text-lg font-bold text-[#0F4F68] sm:text-xl">Was fuer Hilfsleistungen benoetigen Sie aktuell?</h3>
+                <p className="mt-2 text-neutral-700">Mehrfachauswahl ist moeglich.</p>
+                <ul className="mt-4 grid list-none gap-2 sm:grid-cols-2">
+                  {SERVICE_OPTIONEN.map((opt) => {
+                    const active = leistungen.includes(opt.key);
+                    return (
+                      <li key={opt.key}>
+                        <button
+                          type="button"
+                          aria-pressed={active}
+                          onClick={() => toggleLeistung(opt.key)}
+                          className={cn(
+                            optionButtonClass,
+                            "transition-all duration-300",
+                            active && "border-[#F78F2E]/65 bg-[#fff8f2] shadow-[0_6px_16px_rgba(247,143,46,0.14)]"
+                          )}
+                        >
+                          <span className="flex items-start gap-2.5">
+                            <SelectMark active={active} />
+                            <ServiceIcon service={opt.key} />
+                            <span className="block">{opt.label}</span>
+                          </span>
+                        </button>
+                      </li>
+                    );
+                  })}
+                </ul>
               </div>
             ) : null}
 
             {step === 5 ? (
-              <div className="mt-3 animate-fade-in-up">
-              <h3 className="text-lg font-bold text-[#0F4F68] sm:text-xl">Wie möchten Sie jetzt weitermachen?</h3>
-              <div className="mt-4 grid gap-2 sm:grid-cols-3">
-                <button
-                  type="button"
-                  onClick={() => setKontaktArt("rueckruf")}
-                  className={cn(
-                    optionButtonClass,
-                    "transition-all duration-300",
-                    kontaktArt === "rueckruf" && "border-[#F78F2E]/65 bg-[#fff8f2] shadow-[0_6px_16px_rgba(247,143,46,0.14)]"
-                  )}
-                >
-                  <span className="flex items-center gap-2.5">
-                    <SelectMark active={kontaktArt === "rueckruf"} />
-                    <StepFlatIcon kind="kontakt" />
-                    <span>Ich bitte um Rückruf</span>
-                  </span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setKontaktArt("email")}
-                  className={cn(
-                    optionButtonClass,
-                    "transition-all duration-300",
-                    kontaktArt === "email" && "border-[#F78F2E]/65 bg-[#fff8f2] shadow-[0_6px_16px_rgba(247,143,46,0.14)]"
-                  )}
-                >
-                  <span className="flex items-center gap-2.5">
-                    <SelectMark active={kontaktArt === "email"} />
-                    <StepFlatIcon kind="kontakt" />
-                    <span>Ich möchte Kontakt per E-Mail</span>
-                  </span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setKontaktArt("keine_daten")}
-                  className={cn(
-                    optionButtonClass,
-                    "transition-all duration-300",
-                    kontaktArt === "keine_daten" && "border-[#F78F2E]/65 bg-[#fff8f2] shadow-[0_6px_16px_rgba(247,143,46,0.14)]"
-                  )}
-                >
-                  <span className="flex items-center gap-2.5">
-                    <SelectMark active={kontaktArt === "keine_daten"} />
-                    <StepFlatIcon kind="kontakt" />
-                    <span>Ich möchte keine Daten angeben</span>
-                  </span>
-                </button>
-              </div>
-
-              {kontaktArt === "rueckruf" ? (
-                <div className="mt-5 grid gap-3 sm:grid-cols-2">
-                  <input value={vorname} onChange={(e) => setVorname(e.target.value)} placeholder="Vorname" className="rounded-xl border border-[#0F4F68]/20 px-4 py-3" />
-                  <input value={nachname} onChange={(e) => setNachname(e.target.value)} placeholder="Nachname" className="rounded-xl border border-[#0F4F68]/20 px-4 py-3" />
-                  <input value={telefon} onChange={(e) => setTelefon(e.target.value)} placeholder="Telefonnummer" className="rounded-xl border border-[#0F4F68]/20 px-4 py-3 sm:col-span-2" />
-                  <input value={besteZeit} onChange={(e) => setBesteZeit(e.target.value)} placeholder="Beste Zeit für Rückruf" className="rounded-xl border border-[#0F4F68]/20 px-4 py-3 sm:col-span-2" />
-                </div>
-              ) : null}
-
-              {kontaktArt === "email" ? (
-                <div className="mt-5 grid gap-3 sm:grid-cols-2">
-                  <input value={vorname} onChange={(e) => setVorname(e.target.value)} placeholder="Vorname" className="rounded-xl border border-[#0F4F68]/20 px-4 py-3" />
-                  <input value={nachname} onChange={(e) => setNachname(e.target.value)} placeholder="Nachname" className="rounded-xl border border-[#0F4F68]/20 px-4 py-3" />
-                  <input value={email} onChange={(e) => setEmail(e.target.value)} placeholder="E-Mail" type="email" className="rounded-xl border border-[#0F4F68]/20 px-4 py-3 sm:col-span-2" />
-                </div>
-              ) : null}
+              <div className="mt-3 animate-fade-in-up space-y-4">
+                <h3 className="text-lg font-bold text-[#0F4F68] sm:text-xl">Gute Nachricht!</h3>
+                <p className="text-neutral-700">Wir haben fuer folgende Dienstleistungen freie Kapazitaeten:</p>
+                <ul className="space-y-2">
+                  {ausgewaehlteLeistungen.map((l, i) => (
+                    <li
+                      key={l.key}
+                      className="flex items-start gap-2.5 rounded-xl border border-[#0F4F68]/12 bg-[#f8fcfd] px-3 py-2 opacity-0 animate-fade-in-up"
+                      style={{ animationDelay: `${0.08 * (i + 1)}s` }}
+                    >
+                      <span className={cn("mt-0.5 inline-flex h-5 w-5 items-center justify-center rounded-full text-white", l.verfuegbarkeit === "direkt" ? "bg-emerald-600" : "bg-[#F78F2E]")}>
+                        <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M20 6L9 17l-5-5" />
+                        </svg>
+                      </span>
+                      <div>
+                        <p className="text-sm font-semibold text-[#0F4F68] sm:text-base">{l.label}</p>
+                        <p className={cn("text-xs sm:text-sm", l.verfuegbarkeit === "direkt" ? "text-emerald-700" : "text-[#c86d1f]")}>
+                          {l.verfuegbarkeit === "direkt" ? "Sofort verfuegbar ueber uns" : "Freie Kapazitaeten ueber unsere Kooperationspartner"}
+                        </p>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+                {direktVerfuegbar.length > 0 ? <p className="text-sm text-emerald-700">Sofort verfuegbar ueber uns: {direktVerfuegbar.map((l) => l.label).join(", ")}.</p> : null}
+                {partnerVerfuegbar.length > 0 ? <p className="text-sm text-[#c86d1f]">Freie Kapazitaeten ueber unsere Kooperationspartner: {partnerVerfuegbar.map((l) => l.label).join(", ")}.</p> : null}
               </div>
             ) : null}
 
             {step === 6 ? (
               <div className="mt-3 space-y-4 animate-fade-in-up">
-              <h3 className="text-lg font-bold text-[#0F4F68] sm:text-xl">Ihre nächsten Schritte</h3>
-              <p className="text-neutral-700">Vielen Dank. Auf Basis Ihrer Angaben schlagen wir Ihnen die passenden Wege vor.</p>
-
-              <div className="rounded-xl border border-[#0F4F68]/12 bg-[#f8fcfd] p-4">
-                <p className="text-sm text-neutral-600">Gewählte Leistungen</p>
-                <ul className="mt-2 list-disc pl-5 text-neutral-800">
-                  {ausgewaehlteLeistungen.map((l) => (
-                    <li key={l.key}>{l.label}</li>
-                  ))}
-                </ul>
+                <h3 className="text-lg font-bold text-[#0F4F68] sm:text-xl">Erhalten Sie sofort Ihren richtigen Ansprechpartner unserer Standorte</h3>
+                <label htmlFor="hilfefinder-plz" className="block text-sm font-medium text-[#0F4F68]">PLZ</label>
+                <input
+                  id="hilfefinder-plz"
+                  inputMode="numeric"
+                  autoComplete="postal-code"
+                  maxLength={5}
+                  value={plz}
+                  onChange={(e) => setPlz(e.target.value.replace(/\D/g, "").slice(0, 5))}
+                  className="w-full max-w-xs rounded-xl border border-[#0F4F68]/20 px-4 py-3 text-base outline-none ring-0 transition focus:border-[#0F4F68]/45"
+                  placeholder="z. B. 87700"
+                />
+                {plzNorm.length === 5 && standort ? (
+                  <div className="rounded-xl border border-[#0F4F68]/15 bg-[#f8fcfd] p-4">
+                    <p className="font-semibold text-[#0F4F68]">{standort.name}</p>
+                    <p className="text-sm text-neutral-700">{plzNorm}{ort ? ` ${ort}` : ""}</p>
+                    <button type="button" onClick={() => setShowStandort((v) => !v)} className="mt-3 inline-flex min-h-[40px] items-center rounded-lg bg-[#0F4F68] px-3 py-1.5 text-sm font-semibold text-white hover:bg-[#0c3d52]">
+                      Standort anzeigen
+                    </button>
+                    {showStandort ? (
+                      <div className="mt-3 space-y-1 text-sm text-neutral-700">
+                        <p>{standort.address}</p>
+                        <p>Telefon: <a className="text-[#0F4F68] underline" href={standort.phoneHref}>{standort.phone}</a></p>
+                        <p>E-Mail: <a className="text-[#0F4F68] underline" href={`mailto:${standort.email}`}>{standort.email}</a></p>
+                        <Link href={ort ? `/standorte/${plzNorm}-${ortToSlugSegment(ort)}` : "/standorte"} className="inline-flex min-h-[40px] items-center rounded-lg border border-[#0F4F68]/35 px-3 py-1.5 font-semibold text-[#0F4F68] hover:bg-[#F2F9FA]">Zur Standortseite</Link>
+                      </div>
+                    ) : null}
+                  </div>
+                ) : null}
               </div>
+            ) : null}
 
-              {kontaktArt === "keine_daten" ? (
-                <div className="rounded-xl border border-[#0F4F68]/15 bg-white p-4">
-                  <p className="font-semibold text-[#0F4F68]">Unsere Kontaktdaten für Ihren Bereich</p>
-                  {standort ? (
-                    <div className="mt-3 space-y-1 text-neutral-700">
-                      <p className="font-medium text-[#0F4F68]">{standort.name}</p>
-                      <p>{standort.address}</p>
-                      <p>
-                        Telefon: <a className="text-[#0F4F68] underline" href={standort.phoneHref}>{standort.phone}</a>
-                      </p>
-                      <p>
-                        E-Mail: <a className="text-[#0F4F68] underline" href={`mailto:${standort.email}`}>{standort.email}</a>
-                      </p>
-                      <p>{standort.hours}</p>
-                    </div>
-                  ) : (
-                    <div className="mt-3 space-y-1 text-neutral-700">
-                      <p>Für diese PLZ helfen wir Ihnen gern telefonisch oder per E-Mail weiter.</p>
-                      <p>
-                        Telefon: <a className="text-[#0F4F68] underline" href="tel:+4983349893330">08334 / 9893330</a>
-                      </p>
-                      <p>
-                        E-Mail: <a className="text-[#0F4F68] underline" href="mailto:info@alltagshilfe-sued.de">info@alltagshilfe-sued.de</a>
-                      </p>
-                    </div>
-                  )}
+            {step === 7 ? (
+              <div className="mt-3 animate-fade-in-up">
+                <h3 className="text-lg font-bold text-[#0F4F68] sm:text-xl">Wie moechten Sie den Kontakt?</h3>
+                <div className="mt-4 grid gap-2 sm:grid-cols-3">
+                  <button
+                    type="button"
+                    onClick={() => setKontaktArt("rueckruf")}
+                    className={cn(optionButtonClass, "transition-all duration-300", kontaktArt === "rueckruf" && "border-[#F78F2E]/65 bg-[#fff8f2] shadow-[0_6px_16px_rgba(247,143,46,0.14)]")}
+                  >
+                    <span className="flex items-center gap-2.5">
+                      <SelectMark active={kontaktArt === "rueckruf"} />
+                      <StepFlatIcon kind="kontakt" />
+                      <span>Ich wuensche einen Rueckruf</span>
+                    </span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setKontaktArt("email")}
+                    className={cn(optionButtonClass, "transition-all duration-300", kontaktArt === "email" && "border-[#F78F2E]/65 bg-[#fff8f2] shadow-[0_6px_16px_rgba(247,143,46,0.14)]")}
+                  >
+                    <span className="flex items-center gap-2.5">
+                      <SelectMark active={kontaktArt === "email"} />
+                      <StepFlatIcon kind="kontakt" />
+                      <span>Ich wuensche Kontakt per E-Mail</span>
+                    </span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setKontaktArt("selbst")}
+                    className={cn(optionButtonClass, "transition-all duration-300", kontaktArt === "selbst" && "border-[#F78F2E]/65 bg-[#fff8f2] shadow-[0_6px_16px_rgba(247,143,46,0.14)]")}
+                  >
+                    <span className="flex items-center gap-2.5">
+                      <SelectMark active={kontaktArt === "selbst"} />
+                      <StepFlatIcon kind="kontakt" />
+                      <span>Ich moechte selbst kontaktieren</span>
+                    </span>
+                  </button>
                 </div>
-              ) : (
-                <div className="rounded-xl border border-[#0F4F68]/15 bg-white p-4">
-                  <p className="font-semibold text-[#0F4F68]">Passende Leistungen direkt ansehen</p>
-                  <div className="mt-3 flex flex-wrap gap-2">
-                    {ausgewaehlteLeistungen.map((l) => (
-                      <Link key={l.key} href={serviceZuLink[l.key]} className="inline-flex min-h-[42px] items-center rounded-lg bg-[#0F4F68] px-4 py-2 text-sm font-semibold text-white hover:bg-[#0c3d52]">
-                        {l.label}
-                      </Link>
-                    ))}
-                    <Link href="/kontakt" className="inline-flex min-h-[42px] items-center rounded-lg border border-[#0F4F68]/35 px-4 py-2 text-sm font-semibold text-[#0F4F68] hover:bg-[#F2F9FA]">
-                      Kontakt aufnehmen
+
+                {kontaktArt === "rueckruf" ? (
+                  <div className="mt-5 grid gap-3 sm:grid-cols-2">
+                    <input value={vorname} onChange={(e) => setVorname(e.target.value)} placeholder="Vorname *" className="rounded-xl border border-[#0F4F68]/20 px-4 py-3" />
+                    <input value={nachname} onChange={(e) => setNachname(e.target.value)} placeholder="Nachname *" className="rounded-xl border border-[#0F4F68]/20 px-4 py-3" />
+                    <input value={telefon} onChange={(e) => setTelefon(e.target.value)} placeholder="Telefonnummer *" className="rounded-xl border border-[#0F4F68]/20 px-4 py-3 sm:col-span-2" />
+                    <input value={besteZeit} onChange={(e) => setBesteZeit(e.target.value)} placeholder="Passender Tag/Uhrzeit *" className="rounded-xl border border-[#0F4F68]/20 px-4 py-3 sm:col-span-2" />
+                  </div>
+                ) : null}
+
+                {kontaktArt === "email" ? (
+                  <div className="mt-5 grid gap-3 sm:grid-cols-2">
+                    <input value={vorname} onChange={(e) => setVorname(e.target.value)} placeholder="Vorname *" className="rounded-xl border border-[#0F4F68]/20 px-4 py-3" />
+                    <input value={nachname} onChange={(e) => setNachname(e.target.value)} placeholder="Nachname *" className="rounded-xl border border-[#0F4F68]/20 px-4 py-3" />
+                    <input value={email} onChange={(e) => setEmail(e.target.value)} placeholder="E-Mail *" type="email" className="rounded-xl border border-[#0F4F68]/20 px-4 py-3 sm:col-span-2" />
+                  </div>
+                ) : null}
+
+                {kontaktArt ? (
+                  <textarea
+                    value={kontaktWunsch}
+                    onChange={(e) => setKontaktWunsch(e.target.value)}
+                    placeholder="Hinweis (optional)"
+                    className="mt-3 min-h-[90px] w-full rounded-xl border border-[#0F4F68]/20 px-4 py-3"
+                  />
+                ) : null}
+
+                {kontaktArt && kontaktArt !== "selbst" ? (
+                  <div className="mt-4 rounded-xl border border-[#0F4F68]/15 bg-[#f8fcfd] p-4">
+                    <p className="text-sm font-semibold text-[#0F4F68]">Ausgewaehlte Leistungen (werden uebermittelt):</p>
+                    <pre className="mt-2 whitespace-pre-wrap text-sm text-neutral-700">{leistungsText || "-"}</pre>
+                    <a href={mailtoHref} className="mt-3 inline-flex min-h-[42px] items-center rounded-lg bg-[#0F4F68] px-4 py-2 text-sm font-semibold text-white hover:bg-[#0c3d52]">
+                      Anfrage senden
+                    </a>
+                  </div>
+                ) : null}
+
+                {kontaktArt === "selbst" ? (
+                  <div className="mt-4 rounded-xl border border-[#0F4F68]/15 bg-[#f8fcfd] p-4 text-sm text-neutral-700">
+                    <p className="font-semibold text-[#0F4F68]">Einfaches Kontaktformular</p>
+                    <p className="mt-2">Ihre ausgewaehlten Leistungen koennen Sie dort direkt im Anliegen einfuegen.</p>
+                    <div className="mt-2 flex flex-wrap gap-2">
+                      {ausgewaehlteLeistungen.map((l) => (
+                        <Link key={l.key} href={serviceZuLink[l.key]} className="inline-flex min-h-[38px] items-center rounded-lg border border-[#0F4F68]/35 px-3 py-1.5 text-xs font-semibold text-[#0F4F68] hover:bg-[#F2F9FA]">{l.label}</Link>
+                      ))}
+                    </div>
+                    <Link href={`/kontakt${plzNorm ? `?plz=${plzNorm}` : ""}`} className="mt-3 inline-flex min-h-[42px] items-center rounded-lg border border-[#0F4F68]/35 px-4 py-2 font-semibold text-[#0F4F68] hover:bg-[#F2F9FA]">
+                      Zum Kontaktformular
                     </Link>
                   </div>
-                </div>
-              )}
+                ) : null}
               </div>
             ) : null}
 
             {error ? <p className="mt-4 text-sm text-red-600" role="alert">{error}</p> : null}
 
             <div className="mt-6 flex flex-wrap gap-3">
-              {step > 1 && step < 6 ? (
+              {step > 1 && step < 7 ? (
                 <button
                   type="button"
                   onClick={zurueck}
@@ -523,7 +569,7 @@ export function StartEinstiegsHilfe() {
                 </button>
               ) : null}
 
-              {step < 6 ? (
+              {step < 7 ? (
                 <button
                   type="button"
                   onClick={weiter}
@@ -533,7 +579,7 @@ export function StartEinstiegsHilfe() {
                 </button>
               ) : null}
 
-              {step === 6 ? (
+              {step === 7 ? (
                 <button
                   type="button"
                   onClick={resetFlow}
