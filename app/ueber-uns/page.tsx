@@ -69,34 +69,57 @@ export default function UeberUnsPage() {
           </svg>
           <div className="space-y-5 text-neutral-700">
           <p>
-            Die Alltagshilfe Süd ist ein professioneller Hauswirtschaftsdienst und Betreuungsdienst, der 2021 aus
-            fast einem Jahrzehnt praktischer Erfahrung in der Pflege entstanden ist. Unser Ziel ist klar: Menschen
-            mit Unterstützungsbedarf ein sicheres, selbstbestimmtes und möglichst unabhängiges Leben im gewohnten
-            Zuhause zu ermöglichen.
+            Die Alltagshilfe Süd ist ein professioneller Hauswirtschafts-, Betreuungs- und Beratungsdienst für
+            pflegebedürftige Menschen. Das Unternehmen entstand aus nahezu einem Jahrzehnt praktischer Erfahrung in der
+            Pflege und verfolgt seit Beginn das Ziel, Menschen mit Unterstützungsbedarf eine verlässliche Versorgung,
+            persönliche Begleitung und fachkundige Beratung im häuslichen Umfeld zu ermöglichen.
           </p>
           <p>
-            Die erste Idee und Zertifizierung erfolgte bereits 2020. Am 01.04.2021 wurde die Alltagshilfe Süd
-            offiziell von Philip Sonntag und Valentin Maucher gegründet - beide Gesundheits- und Krankenpfleger mit dem
-            Anspruch, den Pflegealltag von Familien spürbar zu entlasten. In den Anfangsjahren waren die Gründer
-            täglich selbst im Einsatz und konnten so die Bedürfnisse in der Region sehr genau kennenlernen.
+            Die erste konzeptionelle Grundlage sowie die Zertifizierung erfolgten bereits im Jahr 2020. Am 01.04.2021
+            wurde die Alltagshilfe Süd offiziell von Philip Sonntag und Valentin Maucher gegründet. Beide sind
+            examinierte Gesundheits- und Krankenpfleger und brachten von Anfang an ihre pflegerische Fachkompetenz,
+            ihre Praxiserfahrung und ihr Verständnis für die tatsächlichen Bedürfnisse pflegebedürftiger Menschen in
+            den Aufbau des Unternehmens ein. In den ersten Jahren waren die Gründer selbst täglich im Einsatz und
+            konnten dadurch die Versorgungssituation in der Region unmittelbar mitgestalten.
           </p>
           <p>
-            Mit der steigenden Nachfrage wuchs unser Unternehmen kontinuierlich weiter: 2022 kam der Standort Wangen
-            für die Bodenseeregion hinzu, 2024 folgte der Umzug nach Sulzberg und Anfang 2026 der nächste Schritt in
-            größere Räumlichkeiten nach Bad Grönenbach. Heute verbinden wir lokale Nähe mit professionellen Prozessen
-            und persönlicher Betreuung.
+            Mit der steigenden Nachfrage entwickelte sich das Unternehmen kontinuierlich weiter. Im Jahr 2022 wurde der
+            Standort Wangen für die Bodenseeregion eröffnet. Am 01.10.2023 wurde das Angebot um kostenfreie
+            Pflegeboxen erweitert. Ein bedeutender Meilenstein folgte am 03.06.2024: Seit diesem Zeitpunkt ist die
+            Alltagshilfe Süd offiziell anerkannte Pflegeberatungsstelle mit eigenen Pflegeberaterinnen und
+            Pflegeberatern an allen Standorten.
           </p>
           <p>
-            Unser Leistungsportfolio wurde gezielt erweitert: Seit 01.10.2023 bieten wir kostenfreie Pflegeboxen an,
-            seit 03.06.2024 sind wir offiziell anerkannte Pflegeberatungsstelle mit eigenen Pflegeberaterinnen und
-            Pflegeberatern an allen Standorten. 2025 erfolgte außerdem die Namensänderung von Alltagshilfe-Allgäu zu
-            Alltagshilfe-Süd. Mit der betrieblichen Pflegeberatung unterstützen wir seit 01.12.2025
-            zusätzlich Unternehmen dabei, Beruf und Pflege besser zu vereinbaren.
+            Gerade dieser Ausbau der Pflegeberatung stellt einen zentralen Schritt in der Entwicklung des Unternehmens
+            dar. Pflegebedürftige Menschen und ihre Angehörigen stehen häufig vor komplexen organisatorischen,
+            finanziellen und pflegefachlichen Fragen. Die Alltagshilfe Süd bietet hier eine qualifizierte und
+            individuelle Beratung, um Leistungen der Pflegeversicherung verständlich zu machen, Versorgungsstrukturen
+            aufzuzeigen und passgenaue Unterstützungsangebote zu entwickeln. Ziel der Pflegeberatung ist es,
+            pflegebedürftigen Menschen eine möglichst stabile, bedarfsgerechte und gut organisierte Versorgung in ihrem
+            vertrauten Umfeld zu sichern. Dabei geht es nicht nur um Orientierung, sondern auch um konkrete Entlastung,
+            Struktur und Sicherheit in oft herausfordernden Lebenssituationen.
           </p>
           <p>
-            Auch in Zukunft bleiben wir in Bewegung: Mit der Inkontinenzversorgung und weiteren regionalen Projekten
-            entwickeln wir unsere Angebote stetig weiter. Dabei bleibt unser Anspruch unverändert: verlässlich,
-            menschlich und hochprofessionell im Pflegealltag für Familien in Süddeutschland.
+            Im Jahr 2025 erfolgte zudem die Umbenennung von Alltagshilfe-Allgäu zu Alltagshilfe-Süd. Damit wurde die
+            gewachsene regionale Ausrichtung des Unternehmens auch nach außen einheitlich sichtbar. Seit dem 01.12.2025
+            ergänzt außerdem die betriebliche Pflegeberatung das Angebot. Damit unterstützt die Alltagshilfe Süd
+            Unternehmen sowie Beschäftigte, die Pflegeverantwortung übernehmen, durch fachlich fundierte Beratung und
+            praxistaugliche Lösungen zur besseren Vereinbarkeit von Beruf und Pflegesituation.
+          </p>
+          <p>
+            Zu Beginn des Jahres 2026 wurde die regionale Präsenz gezielt ausgebaut: Am 01.01.2026 eröffnete Frau
+            Reigel den neuen Standort Augsburg. Ebenfalls am 01.01.2026 wurde der Standort Konstanz/Engen unter der
+            Leitung von Frau Maucher eröffnet. Anfang 2026 folgte darüber hinaus der Umzug in größere Räumlichkeiten
+            nach Bad Grönenbach, nachdem zuvor bereits 2024 der Umzug nach Sulzberg erfolgt war. Diese Entwicklung
+            spiegelt das kontinuierliche Wachstum des Unternehmens und die steigende Bedeutung professioneller
+            Unterstützungs- und Beratungsangebote für pflegebedürftige Menschen in Süddeutschland wider.
+          </p>
+          <p>
+            Heute steht die Alltagshilfe Süd für fachlich fundierte Dienstleistungen, regionale Nähe und eine
+            professionelle Pflegeberatung mit persönlichem Anspruch. Das Leistungsportfolio wird fortlaufend
+            weiterentwickelt, unter anderem durch den geplanten Ausbau der Inkontinenzversorgung und weitere regionale
+            Projekte. Der Anspruch bleibt dabei unverändert: pflegebedürftige Menschen kompetent, verlässlich und
+            menschlich zu begleiten und ihnen eine bestmögliche Versorgung im eigenen Zuhause zu ermöglichen.
           </p>
           </div>
         </section>
