@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import { KundenstimmenCarousel } from "@/components/home/KundenstimmenCarousel";
 import { StartEinstiegsHilfe } from "@/components/home/StartEinstiegsHilfe";
 import { StandortAnthrazitRule } from "@/components/standorte/StandortAnthrazitRule";
@@ -72,12 +73,21 @@ const LEISTUNGEN = [
   },
 ] as const;
 
+const LEISTUNGS_LINKS: Record<(typeof LEISTUNGEN)[number]["icon"], string> = {
+  home: "/leistungen/haushaltshilfe",
+  chat: "/leistungen/pflegeberatung-einsaetze",
+  box: "/leistungen/pflegehilfsmittelbox",
+  shield: "/inkontinenzversorgung",
+  cart: "/pflegeshop",
+  meal: "/leistungen/essen-auf-raeder",
+};
+
 const VORTEILE = [
   "Zugelassen bei allen Krankenkassen in Deutschland.",
   "Schnelle Terminvergabe.",
   "Volle Transparenz: Rechnungen und kommende Termine sind auf Wunsch per App einsehbar.",
   "Ab Pflegegrad 1 können 131 EUR Entlastungsbetrag über uns genutzt werden.",
-  "Neue Leistung: Ab Pflegegrad 2 können 3.539 EUR Verhinderungspflege über uns genutzt werden.",
+  "Ab Pflegegrad 2 können Verhinderungspflege / Ersatzpflege über uns genutzt werden.",
   "Wir bieten eine Vielzahl an Dienstleistungen - alles aus einer Hand.",
   "Wir bieten eine Leistung nicht an? Profitieren Sie von unserem Netzwerk.",
   "Wir sind auch in ländlichen Dörfern unterwegs.",
@@ -195,12 +205,13 @@ export default function HomePage() {
           <p className="mt-2 text-sm text-[#8a6a55] sm:text-base">Persoenlich, zuverlaessig und mit viel Herz im Alltag.</p>
           <div className="mt-6 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {LEISTUNGEN.map((leistung, index) => (
-              <article
+              <Link
                 key={leistung.title}
-                className="rounded-2xl px-4 py-4 opacity-0 transition-all duration-300 hover:-translate-y-1 animate-fade-in-up"
+                href={LEISTUNGS_LINKS[leistung.icon]}
+                className="rounded-2xl px-4 py-4 opacity-0 transition-all duration-300 hover:-translate-y-1 animate-fade-in-up focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68] focus-visible:ring-offset-2"
                 style={{ animationDelay: `${0.06 * (index + 1)}s` }}
               >
-                <div className="flex items-start gap-3">
+                <article className="flex items-start gap-3">
                   <span
                     className="mt-0.5 inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-[#0F4F68] text-white"
                     aria-hidden
@@ -242,8 +253,8 @@ export default function HomePage() {
                     )}
                   </span>
                   <p className="text-lg font-semibold leading-snug text-[#0F4F68]">{leistung.title}</p>
-                </div>
-              </article>
+                </article>
+              </Link>
             ))}
           </div>
         </div>
@@ -251,19 +262,19 @@ export default function HomePage() {
 
       <section className="relative z-20 mt-6 w-full px-4 sm:mt-8 sm:px-6 lg:px-8">
         <div className="mx-auto w-full max-w-6xl">
-          <h3 className="text-2xl font-bold text-[#0F4F68] sm:text-3xl">Ihre Vorteile bei uns</h3>
+          <h3 className="text-3xl font-extrabold tracking-tight text-[#0F4F68] sm:text-4xl">Ihre Vorteile bei uns</h3>
           <p className="mt-2 max-w-3xl text-sm text-neutral-600 sm:text-base">
             Verlässlich, transparent und nah bei Ihnen - mit klaren Prozessen und echter Unterstützung im Alltag.
           </p>
-          <ul className="mt-5 grid gap-4 sm:grid-cols-2">
+          <ul className="mt-6 grid gap-4 sm:grid-cols-2">
             {VORTEILE.map((item) => (
-              <li key={item} className="flex items-start gap-3">
+              <li key={item} className="flex items-start gap-3 rounded-xl border-l-4 border-[#F78F2E] pl-3">
                 <span className="mt-0.5 inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-[#F78F2E]/45 text-[#F78F2E]" aria-hidden>
                   <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M20 6L9 17l-5-5" />
                   </svg>
                 </span>
-                <span className="text-base leading-relaxed text-neutral-700 sm:text-[1.05rem]">{item}</span>
+                <span className="text-[1.03rem] font-medium leading-relaxed text-neutral-800 sm:text-[1.08rem]">{item}</span>
               </li>
             ))}
           </ul>
