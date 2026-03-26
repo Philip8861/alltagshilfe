@@ -2,7 +2,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { KundenstimmenCarousel } from "@/components/home/KundenstimmenCarousel";
 import { StartEinstiegsHilfe } from "@/components/home/StartEinstiegsHilfe";
-import { StandortAnthrazitRule } from "@/components/standorte/StandortAnthrazitRule";
 import { StandortNummerEinsReveal } from "@/components/standorte/StandortNummerEinsReveal";
 import { StandortWechselBild } from "@/components/standorte/StandortWechselBild";
 
@@ -170,21 +169,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      <div
-        className="mx-auto mt-12 w-full px-4 sm:mt-16 sm:px-6 lg:mt-20 lg:px-8"
-        role="presentation"
-      >
-        <div className="mx-auto w-full max-w-6xl space-y-2">
-          <div
-            className="h-px w-full bg-gradient-to-r from-transparent via-[#0F4F68]/28 to-transparent"
-            aria-hidden
-          />
-          {/* Frühere, gut sichtbare Strukturlinie (~2/3 Breite, weiche Enden); immediate = sofort sichtbar oberhalb der Falz */}
-          <StandortAnthrazitRule immediate className="px-0 sm:px-0 lg:px-0" />
-        </div>
-      </div>
-
-      <section className="relative z-20 mt-10 w-full bg-[#F2F9FA] px-4 pt-16 pb-10 sm:mt-12 sm:px-6 sm:pt-20 sm:pb-12 lg:px-8">
+      <section className="relative z-20 mt-2 w-full bg-[#F2F9FA] px-4 pt-8 pb-10 sm:mt-4 sm:px-6 sm:pt-12 sm:pb-12 lg:px-8">
         <svg
           className="pointer-events-none absolute left-0 top-0 h-12 w-full -translate-y-[68%] sm:h-16"
           viewBox="0 0 1200 120"
@@ -289,9 +274,7 @@ export default function HomePage() {
           <ul className="mt-6 grid gap-4 sm:grid-cols-2">
             {VORTEILE.map((item) => (
               <li key={item} className="flex items-start gap-3 rounded-xl">
-                <span className="mt-0.5 inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#0F4F68]/8">
-                  <Image src="/images/haken.webp" alt="" aria-hidden width={36} height={36} unoptimized className="h-9 w-9 object-contain opacity-100" />
-                </span>
+                <img src="/images/haken.webp" alt="" aria-hidden width={52} height={52} className="mt-0.5 h-[52px] w-[52px] shrink-0 object-contain" />
                 <span className="text-[1.03rem] font-medium leading-relaxed text-neutral-800 sm:text-[1.08rem]">{item}</span>
               </li>
             ))}
