@@ -1,8 +1,9 @@
 "use client";
 
-import Link from "next/link";
+import Image from "next/image";
 import { useMemo, useState } from "react";
-import { findStandortByPlz, getOrtByPlz, ortToSlugSegment, type Standort } from "@/config/standorte";
+import { findStandortByPlz, type Standort } from "@/config/standorte";
+import { ContactForm } from "@/components/forms/ContactForm";
 import { cn } from "@/lib/utils";
 
 type ServiceKey =
@@ -22,8 +23,8 @@ const SERVICE_OPTIONEN: { key: ServiceKey; label: string; verfuegbarkeit: "direk
   { key: "haushalt", label: "Alltagsbegleitung & Haushaltsreinigung", verfuegbarkeit: "direkt" },
   { key: "pflegeberatung", label: "Halb-, vierteljährliche Pflegeberatung nach §37.3", verfuegbarkeit: "direkt" },
   { key: "pflegebox", label: "Kostenlose Pflegebox (Einmalhandschuhe, Händedesinfektionsmittel usw.)", verfuegbarkeit: "direkt" },
-  { key: "koerperpflege", label: "Körperliche Pflege", verfuegbarkeit: "direkt" },
-  { key: "medizinisch", label: "Medizinische Versorgung (Verbandswechsel, Medikamentengabe)", verfuegbarkeit: "direkt" },
+  { key: "koerperpflege", label: "Körperliche Pflege", verfuegbarkeit: "partner" },
+  { key: "medizinisch", label: "Medizinische Versorgung (Verbandswechsel, Medikamentengabe)", verfuegbarkeit: "partner" },
   { key: "umbau", label: "Umbaumaßnahmen im Haus (Barrierefreiheit)", verfuegbarkeit: "partner" },
   { key: "hausnotruf", label: "Hausnotruf", verfuegbarkeit: "partner" },
   { key: "hilfsmittel", label: "Pflegehilfsmittel (Rollator, Duschhocker usw.)", verfuegbarkeit: "direkt" },
@@ -99,7 +100,7 @@ function ServiceIcon({ service }: { service: ServiceKey }) {
   if (service === "pflegebox" || service === "hilfsmittel") {
     return (
       <svg className="h-5 w-5 text-[#0F4F68]/75" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
-        <path d="M3 7.2 12 3l9 4.2v9.6L12 21l-9-4.2V7.2zm9 8.5 6.8-3.2V8.6L12 11.8 5.2 8.6v3.9l6.8 3.2z" />
+        <path d="M3 7.2 12 3l9 4.2v9.6L12 21l-9-4.2V7.2zm2.4 1.5 6.6 3.1 6.6-3.1-6.6-3.1-6.6 3.1z" />
       </svg>
     );
   }
@@ -113,7 +114,7 @@ function ServiceIcon({ service }: { service: ServiceKey }) {
   if (service === "medizinisch") {
     return (
       <svg className="h-5 w-5 text-[#0F4F68]/75" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
-        <path d="M19 10h-5V5h-4v5H5v4h5v5h4v-5h5z" />
+        <path d="M4 4h16v16H4zM10 7v3H7v4h3v3h4v-3h3v-4h-3V7z" />
       </svg>
     );
   }
@@ -132,6 +133,8 @@ function ServiceIcon({ service }: { service: ServiceKey }) {
         <path d="M9.5 3v5.5" />
         <path d="M4.5 8.5h5" />
         <path d="M7 11v10" />
+        <path d="M16 3c2.2 0 4 1.8 4 4v14" />
+        <path d="M20 7h-4" />
       </svg>
     );
   }
@@ -176,18 +179,6 @@ function StepFlatIcon({ kind }: { kind: "pflegegrad" | "person" | "kontakt" }) {
   );
 }
 
-const serviceZuLink: Record<ServiceKey, string> = {
-  haushalt: "/leistungen/haushaltshilfe",
-  pflegeberatung: "/pflegeberatung",
-  pflegebox: "/pflegebox",
-  koerperpflege: "/leistungen/betreuung-beschaeftigung",
-  medizinisch: "/kontakt",
-  umbau: "/kontakt",
-  hausnotruf: "/kontakt",
-  hilfsmittel: "/pflegeshop",
-  essen: "/leistungen/essen-auf-raeder",
-};
-
 export function StartEinstiegsHilfe() {
   const [started, setStarted] = useState(false);
   const [step, setStep] = useState(1);
@@ -197,7 +188,6 @@ export function StartEinstiegsHilfe() {
   const [fuerWen, setFuerWen] = useState<string>("");
   const [plz, setPlz] = useState("");
   const [kontaktArt, setKontaktArt] = useState<KontaktArt | "">("");
-  const [showStandort, setShowStandort] = useState(false);
 
   const [vorname, setVorname] = useState("");
   const [nachname, setNachname] = useState("");
@@ -209,7 +199,6 @@ export function StartEinstiegsHilfe() {
   const [error, setError] = useState("");
 
   const plzNorm = plz.replace(/\D/g, "").slice(0, 5);
-  const ort = useMemo(() => (plzNorm.length === 5 ? getOrtByPlz(plzNorm) : undefined), [plzNorm]);
   const standort: Standort | undefined = useMemo(
     () => (plzNorm.length === 5 ? findStandortByPlz(plzNorm) : undefined),
     [plzNorm]
@@ -226,7 +215,6 @@ export function StartEinstiegsHilfe() {
     setFuerWen("");
     setPlz("");
     setKontaktArt("");
-    setShowStandort(false);
     setVorname("");
     setNachname("");
     setTelefon("");
@@ -272,23 +260,6 @@ export function StartEinstiegsHilfe() {
     () => SERVICE_OPTIONEN.filter((s) => leistungen.includes(s.key)),
     [leistungen]
   );
-  const leistungenFuerErgebnis = useMemo(() => {
-    const hasKoerper = ausgewaehlteLeistungen.some((l) => l.key === "koerperpflege");
-    const hasMed = ausgewaehlteLeistungen.some((l) => l.key === "medizinisch");
-    const base = ausgewaehlteLeistungen.filter((l) => l.key !== "koerperpflege" && l.key !== "medizinisch");
-
-    if (hasKoerper && hasMed) {
-      return [
-        ...base,
-        {
-          key: "koerper-medizinisch" as const,
-          label: "Körperliche Pflege und Medizinische Versorgung",
-          verfuegbarkeit: "direkt" as const,
-        },
-      ];
-    }
-    return ausgewaehlteLeistungen;
-  }, [ausgewaehlteLeistungen]);
   const leistungsText = useMemo(
     () => ausgewaehlteLeistungen.map((s) => `- ${s.label}`).join("\n"),
     [ausgewaehlteLeistungen]
@@ -313,6 +284,15 @@ export function StartEinstiegsHilfe() {
     ].join("\n");
     return `mailto:info@alltagshilfe-sued.de?subject=${encodeURIComponent("Anfrage über Hilfe-Finder")}&body=${encodeURIComponent(body)}`;
   }, [besteZeit, email, fuerWen, kontaktWunsch, leistungsText, pflegegrad, plzNorm, nachname, telefon, vorname]);
+
+  const absenden = () => {
+    if (kontaktArt === "selbst") {
+      setStarted(false);
+      resetFlow();
+      return;
+    }
+    window.location.href = mailtoHref;
+  };
 
   return (
     <section className="mt-12 w-full sm:mt-14 lg:mt-16" aria-labelledby="hilfefinder-headline">
@@ -369,7 +349,7 @@ export function StartEinstiegsHilfe() {
 
             {step === 2 ? (
               <div className="mt-6 animate-fade-in-up">
-              <h3 className="text-lg font-bold text-[#0F4F68] sm:text-xl">Welchen Pflegegrad gibt es aktuell?</h3>
+              <h3 className="text-lg font-bold text-[#0F4F68] sm:text-xl">Welchen Pflegegrad haben Sie aktuell?</h3>
               <ul className="mt-4 grid list-none gap-2 sm:grid-cols-2">
                 {PFLEGEGRADE.map((p) => (
                   <li key={p}>
@@ -396,7 +376,7 @@ export function StartEinstiegsHilfe() {
 
             {step === 3 ? (
               <div className="mt-6 animate-fade-in-up">
-              <h3 className="text-lg font-bold text-[#0F4F68] sm:text-xl">Für wen suchen Sie Unterstützung?</h3>
+              <h3 className="text-lg font-bold text-[#0F4F68] sm:text-xl">Für wen suchen Sie die Unterstützung?</h3>
               <ul className="mt-4 grid list-none gap-2 sm:grid-cols-2">
                 {FUER_WEN_OPTIONEN.map((f) => (
                   <li key={f.id}>
@@ -458,10 +438,9 @@ export function StartEinstiegsHilfe() {
                 <h3 className="text-lg font-bold text-[#0F4F68] sm:text-xl">Gute Nachricht!</h3>
                 <p className="text-neutral-700">Wir haben für folgende Dienstleistungen freie Kapazitäten:</p>
                 <ul className="space-y-2">
-                  {leistungenFuerErgebnis
+                  {ausgewaehlteLeistungen
                     .filter((l) => l.verfuegbarkeit === "direkt")
-                    .concat(leistungenFuerErgebnis.filter((l) => l.verfuegbarkeit === "partner"))
-                    .sort((a, b) => (a.key === "koerper-medizinisch" ? 1 : b.key === "koerper-medizinisch" ? -1 : 0))
+                    .concat(ausgewaehlteLeistungen.filter((l) => l.verfuegbarkeit === "partner"))
                     .map((l, i) => (
                     <li
                       key={l.key}
@@ -488,10 +467,6 @@ export function StartEinstiegsHilfe() {
             {step === 6 ? (
               <div className="mt-6 space-y-4 animate-fade-in-up">
                 <h3 className="text-lg font-bold text-[#0F4F68] sm:text-xl">Erhalten Sie sofort Ihren richtigen Ansprechpartner unserer Standorte</h3>
-                <div className="rounded-xl border border-[#F78F2E]/35 bg-[#fff8f2] p-4">
-                  <p className="text-sm font-bold text-[#c86d1f]">Ganz Neu! Unser Pflegeshop ist endlich da.</p>
-                  <p className="mt-1 text-sm text-[#7a4d28]">Erhalten Sie bei uns alle Pflegeartikel für die tägliche Pflege.</p>
-                </div>
                 <label htmlFor="hilfefinder-plz" className="block text-sm font-medium text-[#0F4F68]">PLZ</label>
                 <input
                   id="hilfefinder-plz"
@@ -499,33 +474,10 @@ export function StartEinstiegsHilfe() {
                   autoComplete="postal-code"
                   maxLength={5}
                   value={plz}
-                  onChange={(e) => {
-                    const next = e.target.value.replace(/\D/g, "").slice(0, 5);
-                    setPlz(next);
-                    if (step === 6 && next.length === 5) {
-                      setStep(7);
-                    }
-                  }}
+                  onChange={(e) => setPlz(e.target.value.replace(/\D/g, "").slice(0, 5))}
                   className="w-full max-w-xs rounded-xl border border-[#0F4F68]/20 px-4 py-3 text-base outline-none ring-0 transition focus:border-[#0F4F68]/45"
                   placeholder="z. B. 87700"
                 />
-                {plzNorm.length === 5 && standort ? (
-                  <div className="rounded-xl border border-[#0F4F68]/15 bg-[#f8fcfd] p-4">
-                    <p className="font-semibold text-[#0F4F68]">{standort.name}</p>
-                    <p className="text-sm text-neutral-700">{plzNorm}{ort ? ` ${ort}` : ""}</p>
-                    <button type="button" onClick={() => setShowStandort((v) => !v)} className="mt-3 inline-flex min-h-[40px] items-center rounded-lg bg-[#0F4F68] px-3 py-1.5 text-sm font-semibold text-white hover:bg-[#0c3d52]">
-                      Standort anzeigen
-                    </button>
-                    {showStandort ? (
-                      <div className="mt-3 space-y-1 text-sm text-neutral-700">
-                        <p>{standort.address}</p>
-                        <p>Telefon: <a className="text-[#0F4F68] underline" href={standort.phoneHref}>{standort.phone}</a></p>
-                        <p>E-Mail: <a className="text-[#0F4F68] underline" href={`mailto:${standort.email}`}>{standort.email}</a></p>
-                        <Link href={ort ? `/standorte/${plzNorm}-${ortToSlugSegment(ort)}` : "/standorte"} className="inline-flex min-h-[40px] items-center rounded-lg border border-[#0F4F68]/35 px-3 py-1.5 font-semibold text-[#0F4F68] hover:bg-[#F2F9FA]">Zur Standortseite</Link>
-                      </div>
-                    ) : null}
-                  </div>
-                ) : null}
               </div>
             ) : null}
 
@@ -552,7 +504,7 @@ export function StartEinstiegsHilfe() {
                     <span className="flex items-center gap-2.5">
                       <SelectMark active={kontaktArt === "email"} />
                       <StepFlatIcon kind="kontakt" />
-                      <span>Ich wünsche Kontakt per E-Mail</span>
+                      <span>Ich wünsche eine Rückmeldung per E-Mail</span>
                     </span>
                   </button>
                   <button
@@ -594,28 +546,37 @@ export function StartEinstiegsHilfe() {
                   />
                 ) : null}
 
-                {kontaktArt && kontaktArt !== "selbst" ? (
-                  <div className="mt-4 rounded-xl border border-[#0F4F68]/15 bg-[#f8fcfd] p-4">
-                    <p className="text-sm font-semibold text-[#0F4F68]">Ausgewählte Leistungen (werden übermittelt):</p>
-                    <pre className="mt-2 whitespace-pre-wrap text-sm text-neutral-700">{leistungsText || "-"}</pre>
-                    <a href={mailtoHref} className="mt-3 inline-flex min-h-[42px] items-center rounded-lg bg-[#0F4F68] px-4 py-2 text-sm font-semibold text-white hover:bg-[#0c3d52]">
-                      Anfrage senden
-                    </a>
-                  </div>
-                ) : null}
-
                 {kontaktArt === "selbst" ? (
                   <div className="mt-4 rounded-xl border border-[#0F4F68]/15 bg-[#f8fcfd] p-4 text-sm text-neutral-700">
-                    <p className="font-semibold text-[#0F4F68]">Einfaches Kontaktformular</p>
-                    <p className="mt-2">Ihre ausgewählten Leistungen können Sie dort direkt im Anliegen einfügen.</p>
-                    <div className="mt-2 flex flex-wrap gap-2">
-                      {ausgewaehlteLeistungen.map((l) => (
-                        <Link key={l.key} href={serviceZuLink[l.key]} className="inline-flex min-h-[38px] items-center rounded-lg border border-[#0F4F68]/35 px-3 py-1.5 text-xs font-semibold text-[#0F4F68] hover:bg-[#F2F9FA]">{l.label}</Link>
-                      ))}
+                    <p className="font-semibold text-[#0F4F68]">Ihr passender Standort</p>
+                    {standort ? (
+                      <div className="mt-2 space-y-1">
+                        <p className="font-medium text-[#0F4F68]">{standort.name}</p>
+                        <p>{standort.address}</p>
+                        <p>
+                          Telefon: <a className="text-[#0F4F68] underline" href={standort.phoneHref}>{standort.phone}</a>
+                        </p>
+                        <p>
+                          E-Mail: <a className="text-[#0F4F68] underline" href={`mailto:${standort.email}`}>{standort.email}</a>
+                        </p>
+                      </div>
+                    ) : (
+                      <p className="mt-2">Bitte geben Sie zuerst eine gültige PLZ in Schritt 6 ein.</p>
+                    )}
+                    <div className="mt-4">
+                      <div className="relative mx-auto aspect-[4/3] w-full max-w-[360px]">
+                        <Image
+                          src="/images/Kontakt_Bild.webp"
+                          alt="Kontakt – Alltagshilfe-Süd"
+                          fill
+                          className="object-contain"
+                          sizes="(max-width: 640px) 80vw, 360px"
+                        />
+                      </div>
                     </div>
-                    <Link href={`/kontakt${plzNorm ? `?plz=${plzNorm}` : ""}`} className="mt-3 inline-flex min-h-[42px] items-center rounded-lg border border-[#0F4F68]/35 px-4 py-2 font-semibold text-[#0F4F68] hover:bg-[#F2F9FA]">
-                      Zum Kontaktformular
-                    </Link>
+                    <div className="mt-4">
+                      <ContactForm />
+                    </div>
                   </div>
                 ) : null}
               </div>
@@ -647,10 +608,10 @@ export function StartEinstiegsHilfe() {
               {step === 7 ? (
                 <button
                   type="button"
-                  onClick={resetFlow}
+                  onClick={absenden}
                   className="inline-flex min-h-[50px] items-center justify-center rounded-xl bg-[#F78F2E] px-6 py-2.5 text-[1.03rem] font-semibold text-white hover:bg-[#e67e22]"
                 >
-                  Neu starten
+                  Anfrage senden
                 </button>
               ) : null}
             </div>
