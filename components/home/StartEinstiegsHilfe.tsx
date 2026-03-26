@@ -279,6 +279,12 @@ export function StartEinstiegsHilfe() {
       setError("Bitte wählen Sie eine Kontaktart aus.");
       return;
     }
+    if (step === 7 && (kontaktArt === "rueckruf" || kontaktArt === "email" || kontaktArt === "selbst")) {
+      if (!vorname.trim() || !nachname.trim() || !telefon.trim() || !email.trim()) {
+        setError("Bitte füllen Sie Vorname, Nachname, Telefonnummer und E-Mail aus.");
+        return;
+      }
+    }
 
     setStep((s) => Math.min(7, s + 1));
   };
@@ -523,6 +529,16 @@ export function StartEinstiegsHilfe() {
                   className="w-full max-w-xs rounded-xl border border-[#0F4F68]/20 px-4 py-3 text-base outline-none ring-0 transition focus:border-[#0F4F68]/45"
                   placeholder="z. B. 87700"
                 />
+                <button
+                  type="button"
+                  onClick={() => {
+                    setPlz("");
+                    setStep(7);
+                  }}
+                  className="inline-flex min-h-[42px] items-center rounded-lg border border-[#0F4F68]/30 px-4 py-2 text-sm font-semibold text-[#0F4F68] hover:bg-[#F2F9FA]"
+                >
+                  Überspringen
+                </button>
               </div>
             ) : null}
 
@@ -567,19 +583,21 @@ export function StartEinstiegsHilfe() {
 
                 {kontaktArt === "rueckruf" ? (
                   <div className="mt-5 grid gap-3 sm:grid-cols-2">
-                    <input value={vorname} onChange={(e) => setVorname(e.target.value)} placeholder="Vorname *" className="rounded-xl border border-[#0F4F68]/20 px-4 py-3" />
-                    <input value={nachname} onChange={(e) => setNachname(e.target.value)} placeholder="Nachname *" className="rounded-xl border border-[#0F4F68]/20 px-4 py-3" />
-                    <input value={telefon} onChange={(e) => setTelefon(e.target.value)} placeholder="Telefonnummer *" className="rounded-xl border border-[#0F4F68]/20 px-4 py-3 sm:col-span-2" />
+                    <input required value={vorname} onChange={(e) => setVorname(e.target.value)} placeholder="Vorname *" className="rounded-xl border border-[#0F4F68]/20 px-4 py-3" />
+                    <input required value={nachname} onChange={(e) => setNachname(e.target.value)} placeholder="Nachname *" className="rounded-xl border border-[#0F4F68]/20 px-4 py-3" />
+                    <input required value={telefon} onChange={(e) => setTelefon(e.target.value)} placeholder="Telefonnummer *" className="rounded-xl border border-[#0F4F68]/20 px-4 py-3 sm:col-span-2" />
                     <input value={besteZeit} onChange={(e) => setBesteZeit(e.target.value)} placeholder="Passender Tag/Uhrzeit *" className="rounded-xl border border-[#0F4F68]/20 px-4 py-3 sm:col-span-2" />
+                    <input required value={email} onChange={(e) => setEmail(e.target.value)} placeholder="E-Mail *" type="email" className="rounded-xl border border-[#0F4F68]/20 px-4 py-3 sm:col-span-2" />
                     <textarea value={nachricht} onChange={(e) => setNachricht(e.target.value)} placeholder="Ihre Nachricht an uns (optional)" className="min-h-[92px] rounded-xl border border-[#0F4F68]/20 px-4 py-3 sm:col-span-2" />
                   </div>
                 ) : null}
 
                 {kontaktArt === "email" ? (
                   <div className="mt-5 grid gap-3 sm:grid-cols-2">
-                    <input value={vorname} onChange={(e) => setVorname(e.target.value)} placeholder="Vorname *" className="rounded-xl border border-[#0F4F68]/20 px-4 py-3" />
-                    <input value={nachname} onChange={(e) => setNachname(e.target.value)} placeholder="Nachname *" className="rounded-xl border border-[#0F4F68]/20 px-4 py-3" />
-                    <input value={email} onChange={(e) => setEmail(e.target.value)} placeholder="E-Mail *" type="email" className="rounded-xl border border-[#0F4F68]/20 px-4 py-3 sm:col-span-2" />
+                    <input required value={vorname} onChange={(e) => setVorname(e.target.value)} placeholder="Vorname *" className="rounded-xl border border-[#0F4F68]/20 px-4 py-3" />
+                    <input required value={nachname} onChange={(e) => setNachname(e.target.value)} placeholder="Nachname *" className="rounded-xl border border-[#0F4F68]/20 px-4 py-3" />
+                    <input required value={email} onChange={(e) => setEmail(e.target.value)} placeholder="E-Mail *" type="email" className="rounded-xl border border-[#0F4F68]/20 px-4 py-3 sm:col-span-2" />
+                    <input required value={telefon} onChange={(e) => setTelefon(e.target.value)} placeholder="Telefonnummer *" className="rounded-xl border border-[#0F4F68]/20 px-4 py-3 sm:col-span-2" />
                     <textarea value={nachricht} onChange={(e) => setNachricht(e.target.value)} placeholder="Ihre Nachricht an uns (optional)" className="min-h-[92px] rounded-xl border border-[#0F4F68]/20 px-4 py-3 sm:col-span-2" />
                   </div>
                 ) : null}
@@ -598,10 +616,10 @@ export function StartEinstiegsHilfe() {
                       </p>
                     </div>
                     <div className="mt-4 grid gap-3 sm:grid-cols-2">
-                      <input value={vorname} onChange={(e) => setVorname(e.target.value)} placeholder="Vorname *" className="rounded-xl border border-[#0F4F68]/20 px-4 py-3" />
-                      <input value={nachname} onChange={(e) => setNachname(e.target.value)} placeholder="Nachname *" className="rounded-xl border border-[#0F4F68]/20 px-4 py-3" />
-                      <input value={email} onChange={(e) => setEmail(e.target.value)} placeholder="E-Mail *" type="email" className="rounded-xl border border-[#0F4F68]/20 px-4 py-3 sm:col-span-2" />
-                      <input value={telefon} onChange={(e) => setTelefon(e.target.value)} placeholder="Telefonnummer" className="rounded-xl border border-[#0F4F68]/20 px-4 py-3 sm:col-span-2" />
+                      <input required value={vorname} onChange={(e) => setVorname(e.target.value)} placeholder="Vorname *" className="rounded-xl border border-[#0F4F68]/20 px-4 py-3" />
+                      <input required value={nachname} onChange={(e) => setNachname(e.target.value)} placeholder="Nachname *" className="rounded-xl border border-[#0F4F68]/20 px-4 py-3" />
+                      <input required value={email} onChange={(e) => setEmail(e.target.value)} placeholder="E-Mail *" type="email" className="rounded-xl border border-[#0F4F68]/20 px-4 py-3 sm:col-span-2" />
+                      <input required value={telefon} onChange={(e) => setTelefon(e.target.value)} placeholder="Telefonnummer *" className="rounded-xl border border-[#0F4F68]/20 px-4 py-3 sm:col-span-2" />
                       <textarea value={nachricht} onChange={(e) => setNachricht(e.target.value)} placeholder="Ihre Nachricht *" className="min-h-[96px] rounded-xl border border-[#0F4F68]/20 px-4 py-3 sm:col-span-2" />
                     </div>
                   </div>
@@ -611,7 +629,7 @@ export function StartEinstiegsHilfe() {
 
             {step === 8 ? (
               <div className="mt-6 animate-fade-in-up space-y-5">
-                <div className="rounded-2xl bg-white p-6 text-center">
+                <div className="rounded-2xl bg-white p-6 text-center opacity-0 animate-fade-in-up">
                   <h3 className="text-2xl font-extrabold text-[#0F4F68] sm:text-3xl">
                     Vielen Dank! Ihre Anfrage ist bei uns eingegangen.
                   </h3>
@@ -619,8 +637,8 @@ export function StartEinstiegsHilfe() {
                     Wir melden uns in Kürze bei Ihnen zurück.
                   </p>
                 </div>
-                <div className="rounded-2xl bg-white p-5">
-                  <p className="flex items-start gap-2 font-semibold text-[#c86d1f]">
+                <div className="rounded-2xl bg-white p-5 opacity-0 animate-fade-in-up" style={{ animationDelay: "0.22s" }}>
+                  <p className="flex items-start justify-center gap-2 text-center text-lg font-extrabold text-[#c86d1f]">
                     <span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-[#F78F2E] text-white" aria-hidden>
                       <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
                         <path d="M12 8h.01" />
@@ -630,12 +648,14 @@ export function StartEinstiegsHilfe() {
                     </span>
                     <span>Jetzt neu: Unser Onlineshop ist ab sofort für Sie verfügbar.</span>
                   </p>
-                  <p className="mt-1 text-[#7a4d28]">
+                  <p className="mt-2 text-center text-[#7a4d28]">
                     Entdecken Sie hochwertige Produkte, die Sie bei der täglichen Pflege zuverlässig unterstützen. Geprüfte Qualität und von Pflegekräften empfohlen.
                   </p>
                   <div className="mt-4 flex flex-wrap justify-center gap-3">
                     <a
-                      href="/pflegeshop"
+                      href="https://www.deinpflegebedarf.de"
+                      target="_blank"
+                      rel="noopener noreferrer"
                       className="inline-flex min-h-[44px] items-center justify-center rounded-xl bg-[#0F4F68] px-5 py-2.5 font-semibold text-white hover:bg-[#0c3d52]"
                     >
                       Zum Shop
