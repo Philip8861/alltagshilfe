@@ -93,6 +93,30 @@
   }
 }
 
+/* Zusätzliche Barrierefreiheits-Schalter (per Klasse auf <html>) */
+.high-contrast body {
+  background-color: #ffffff !important;
+  color: #111827 !important; /* neutral-900 */
+}
+
+.high-contrast a {
+  color: #0F4F68 !important;
+  text-decoration: underline !important;
+}
+
+.reduce-motion * {
+  animation-duration: 0.01ms !important;
+  animation-delay: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+  scroll-behavior: auto !important;
+}
+
+.readability-expanded-spacing body {
+  line-height: 1.75 !important;
+  letter-spacing: 0.01em !important;
+}
+
 /* Scrollbar ausblenden, Scrollen bleibt möglich */
 * {
   -ms-overflow-style: none;

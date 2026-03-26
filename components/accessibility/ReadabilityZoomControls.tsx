@@ -1,10 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
 import { usePathname } from "next/navigation";
 
 const STORAGE_KEY_LEVEL = "ahs_readability_zoom_level";
-const STORAGE_KEY_PROMPT_SEEN = "ahs_readability_zoom_prompt_seen";
+const STORAGE_KEY_CONTRAST = "ahs_readability_high_contrast";
+const STORAGE_KEY_REDUCE_MOTION = "ahs_readability_reduce_motion";
+const STORAGE_KEY_LINE_HEIGHT = "ahs_readability_line_height";
 const MIN_ZOOM = 90;
 const MAX_ZOOM = 130;
 const STEP = 5;
@@ -21,7 +23,11 @@ function applyZoom(level: number) {
 export function ReadabilityZoomControls() {
   const pathname = usePathname();
   const [zoomLevel, setZoomLevel] = useState(100);
-  const [showPrompt, setShowPrompt] = useState(false);
+  const [highContrast, setHighContrast] = useState(false);
+  const [reduceMotion, setReduceMotion] = useState(false);
+  const [expandedLineHeight, setExpandedLineHeight] = useState(false);
+  const [open, setOpen] = useState(false);
+  const panelRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const storedLevel = window.localStorage.getItem(STORAGE_KEY_LEVEL);
@@ -29,12 +35,42 @@ export function ReadabilityZoomControls() {
     const nextLevel = Number.isFinite(parsed) ? clampZoom(parsed) : 100;
     setZoomLevel(nextLevel);
     applyZoom(nextLevel);
+    const storedContrast = window.localStorage.getItem(STORAGE_KEY_CONTRAST) === "1";
+    const storedReduceMotion = window.localStorage.getItem(STORAGE_KEY_REDUCE_MOTION) === "1";
+    const storedLineHeight = window.localStorage.getItem(STORAGE_KEY_LINE_HEIGHT) === "1";
+    setHighContrast(storedContrast);
+    setReduceMotion(storedReduceMotion);
+    setExpandedLineHeight(storedLineHeight);
+  }, []);
 
-    const promptSeen = window.localStorage.getItem(STORAGE_KEY_PROMPT_SEEN) === "1";
-    if (!promptSeen && pathname === "/") {
-      setShowPrompt(true);
-    }
-  }, [pathname]);
+  useEffect(() => {
+    // Kontrast / Motion / Zeilenabstand als Klasse auf <html> schalten.
+    // So greift es zuverlässig auch auf Child-Elemente.
+    const root = document.documentElement;
+    root.classList.toggle("high-contrast", highContrast);
+    root.classList.toggle("reduce-motion", reduceMotion);
+    root.classList.toggle("readability-expanded-spacing", expandedLineHeight);
+  }, [highContrast, reduceMotion, expandedLineHeight]);
+
+  useEffect(() => {
+    if (!open) return;
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setOpen(false);
+    };
+    const onPointerDown = (e: PointerEvent) => {
+      const el = panelRef.current;
+      if (!el) return;
+      if (e.target instanceof Node && !el.contains(e.target)) {
+        setOpen(false);
+      }
+    };
+    window.addEventListener("keydown", onKeyDown);
+    window.addEventListener("pointerdown", onPointerDown);
+    return () => {
+      window.removeEventListener("keydown", onKeyDown);
+      window.removeEventListener("pointerdown", onPointerDown);
+    };
+  }, [open]);
 
   const updateZoom = (next: number) => {
     const level = clampZoom(next);
@@ -43,87 +79,173 @@ export function ReadabilityZoomControls() {
     window.localStorage.setItem(STORAGE_KEY_LEVEL, String(level));
   };
 
-  const markPromptSeen = () => {
-    window.localStorage.setItem(STORAGE_KEY_PROMPT_SEEN, "1");
-    setShowPrompt(false);
-  };
-
-  const increase = () => updateZoom(zoomLevel + STEP);
-  const decrease = () => updateZoom(zoomLevel - STEP);
   const reset = () => updateZoom(100);
 
+  const isKontakt = useMemo(() => pathname === "/kontakt", [pathname]);
+
+  const buttonStyle: CSSProperties = isKontakt
+    ? {
+        right: "max(1.5rem, env(safe-area-inset-right))",
+        bottom: "calc(max(1.5rem, env(safe-area-inset-bottom)) + 92px)",
+      }
+    : {
+        right: "1rem",
+        bottom: "1rem",
+      };
+
   return (
-    <>
-      {showPrompt && (
-        <div className="fixed left-4 top-1/2 z-[95] w-[min(92vw,22rem)] -translate-y-1/2 rounded-2xl border border-[#0F4F68]/25 bg-white/95 p-4 shadow-[0_12px_30px_rgba(15,79,104,0.18)] backdrop-blur">
-          <p className="text-sm font-semibold text-[#0F4F68]">Möchten Sie die Seite größer anzeigen?</p>
-          <p className="mt-1 text-xs text-neutral-600">
-            Für bessere Lesbarkeit können Sie die Ansicht mit einem Klick vergrößern.
-          </p>
-          <div className="mt-3 flex items-center gap-2">
+    <div ref={panelRef}>
+      <button
+        type="button"
+        onClick={() => setOpen((v) => !v)}
+        aria-haspopup="menu"
+        aria-expanded={open}
+        aria-label={`Lesbarkeit Einstellungen öffnen. Aktuelle Schriftgröße: ${zoomLevel}%`}
+        className="fixed z-[90] flex flex-col items-center justify-center gap-0.5 rounded-2xl border border-[#0F4F68]/20 bg-white/95 px-3 py-2 shadow-[0_10px_26px_rgba(15,79,104,0.2)] backdrop-blur transition hover:bg-white"
+        style={buttonStyle}
+      >
+        <svg
+          className="h-[1.35rem] w-[1.35rem] shrink-0"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="#0F4F68"
+          strokeWidth="2.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          aria-hidden
+        >
+          <path d="M21 21l-4.35-4.35" />
+          <circle cx="11" cy="11" r="7" />
+        </svg>
+        <span className="text-[11px] font-extrabold text-[#F78F2E]">{zoomLevel}%</span>
+      </button>
+
+      {open && (
+        <div
+          role="menu"
+          aria-label="Barrierefreie Einstellungen"
+          className="fixed z-[95] w-[min(92vw,22rem)] rounded-2xl border border-[#0F4F68]/25 bg-white/95 p-4 shadow-[0_12px_30px_rgba(15,79,104,0.18)] backdrop-blur"
+          style={
+            isKontakt
+              ? {
+                  right: "max(1.5rem, env(safe-area-inset-right))",
+                  bottom: "calc(max(1.5rem, env(safe-area-inset-bottom)) + 180px)",
+                }
+              : { right: "1rem", bottom: "5rem" }
+          }
+        >
+          <div className="flex items-start justify-between gap-3">
+            <div>
+              <p className="text-sm font-bold text-[#0F4F68]">Lesbarkeit</p>
+              <p className="mt-1 text-xs text-neutral-600">Einstellungen für bessere Sicht und weniger Aufwand.</p>
+            </div>
             <button
               type="button"
-              onClick={() => {
-                updateZoom(115);
-                markPromptSeen();
-              }}
-              className="inline-flex min-h-11 items-center justify-center rounded-lg bg-[#F78F2E] px-3 py-2 text-sm font-bold text-white transition hover:bg-[#e57f1f] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68] focus-visible:ring-offset-2"
+              onClick={() => setOpen(false)}
+              className="rounded-lg p-2 text-neutral-600 hover:bg-neutral-50 focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2"
+              aria-label="Einstellungen schließen"
             >
-              Ja, größer anzeigen
+              <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
+                <path d="M18 6L6 18M6 6l12 12" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
             </button>
-            <button
-              type="button"
-              onClick={markPromptSeen}
-              className="inline-flex min-h-11 items-center justify-center rounded-lg border border-[#0F4F68]/25 bg-white px-3 py-2 text-sm font-semibold text-[#0F4F68] transition hover:bg-[#F2F9FA] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68] focus-visible:ring-offset-2"
-            >
-              Nein, danke
-            </button>
+          </div>
+
+          <div className="mt-4 space-y-4">
+            <div>
+              <label className="block text-xs font-semibold text-[#0F4F68]" htmlFor="zoom-range">
+                Schriftgröße ({zoomLevel}%)
+              </label>
+              <input
+                id="zoom-range"
+                type="range"
+                min={MIN_ZOOM}
+                max={MAX_ZOOM}
+                step={STEP}
+                value={zoomLevel}
+                onChange={(e) => updateZoom(Number.parseInt(e.target.value, 10))}
+                className="mt-2 w-full accent-[#F78F2E]"
+              />
+              <div className="mt-2 flex gap-2">
+                <button
+                  type="button"
+                  onClick={() => updateZoom(zoomLevel - STEP)}
+                  className="flex-1 rounded-xl border border-[#0F4F68]/20 bg-white px-3 py-2 text-sm font-semibold text-[#0F4F68] transition hover:bg-[#F2F9FA] focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2"
+                >
+                  Kleiner
+                </button>
+                <button
+                  type="button"
+                  onClick={() => updateZoom(zoomLevel + STEP)}
+                  className="flex-1 rounded-xl bg-[#F78F2E] px-3 py-2 text-sm font-semibold text-white transition hover:bg-[#e57f1f] focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2"
+                >
+                  Größer
+                </button>
+              </div>
+              <button
+                type="button"
+                onClick={reset}
+                className="mt-2 w-full rounded-xl border border-[#0F4F68]/20 bg-white px-3 py-2 text-sm font-semibold text-[#0F4F68] transition hover:bg-[#F2F9FA] focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2"
+              >
+                Zurücksetzen
+              </button>
+            </div>
+
+            <div className="space-y-3">
+              <label className="flex cursor-pointer items-start gap-3 rounded-xl border border-[#0F4F68]/10 bg-[#F2F9FA]/40 p-3">
+                <input
+                  type="checkbox"
+                  checked={highContrast}
+                  onChange={(e) => {
+                    const v = e.target.checked;
+                    setHighContrast(v);
+                    window.localStorage.setItem(STORAGE_KEY_CONTRAST, v ? "1" : "0");
+                  }}
+                  className="mt-1 h-5 w-5 accent-[#F78F2E]"
+                />
+                <span>
+                  <span className="block text-sm font-bold text-[#0F4F68]">Hoher Kontrast</span>
+                  <span className="block text-xs text-neutral-600">Für mehr Lesbarkeit bei hellem/unklarem Hintergrund.</span>
+                </span>
+              </label>
+
+              <label className="flex cursor-pointer items-start gap-3 rounded-xl border border-[#0F4F68]/10 bg-[#F2F9FA]/40 p-3">
+                <input
+                  type="checkbox"
+                  checked={reduceMotion}
+                  onChange={(e) => {
+                    const v = e.target.checked;
+                    setReduceMotion(v);
+                    window.localStorage.setItem(STORAGE_KEY_REDUCE_MOTION, v ? "1" : "0");
+                  }}
+                  className="mt-1 h-5 w-5 accent-[#F78F2E]"
+                />
+                <span>
+                  <span className="block text-sm font-bold text-[#0F4F68]">Animation reduzieren</span>
+                  <span className="block text-xs text-neutral-600">Weniger Bewegung, mehr Ruhe beim Lesen.</span>
+                </span>
+              </label>
+
+              <label className="flex cursor-pointer items-start gap-3 rounded-xl border border-[#0F4F68]/10 bg-[#F2F9FA]/40 p-3">
+                <input
+                  type="checkbox"
+                  checked={expandedLineHeight}
+                  onChange={(e) => {
+                    const v = e.target.checked;
+                    setExpandedLineHeight(v);
+                    window.localStorage.setItem(STORAGE_KEY_LINE_HEIGHT, v ? "1" : "0");
+                  }}
+                  className="mt-1 h-5 w-5 accent-[#F78F2E]"
+                />
+                <span>
+                  <span className="block text-sm font-bold text-[#0F4F68]">Mehr Zeilenabstand</span>
+                  <span className="block text-xs text-neutral-600">Hilft beim Mitlesen und Verstehen.</span>
+                </span>
+              </label>
+            </div>
           </div>
         </div>
       )}
-
-      <div className="fixed left-4 top-1/2 z-[90] flex -translate-y-1/2 flex-col items-center gap-2 rounded-3xl border border-[#0F4F68]/20 bg-white/95 px-2 py-2 shadow-[0_10px_26px_rgba(15,79,104,0.2)] backdrop-blur">
-        <button
-          type="button"
-          onClick={decrease}
-          aria-label="Ansicht verkleinern"
-          className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-[#0F4F68] text-2xl font-bold leading-none text-white transition hover:bg-[#0c3d52] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#F78F2E] focus-visible:ring-offset-2 order-3"
-        >
-          -
-        </button>
-        <button
-          type="button"
-          onClick={reset}
-          aria-label="Ansicht zurücksetzen"
-          className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-[#F2F9FA] text-[#0F4F68] transition hover:bg-[#e4f1f4] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#F78F2E] focus-visible:ring-offset-2 order-2"
-        >
-          <span className="sr-only">Ansicht zurücksetzen</span>
-          <span className="flex flex-col items-center justify-center leading-none">
-            <svg
-              className="h-[1.05rem] w-[1.05rem]"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              aria-hidden
-            >
-              <path d="M21 21l-4.35-4.35" />
-              <circle cx="11" cy="11" r="7" />
-            </svg>
-            <span className="mt-0.5 text-[10px] font-extrabold">{zoomLevel}%</span>
-          </span>
-        </button>
-        <button
-          type="button"
-          onClick={increase}
-          aria-label="Ansicht vergrößern"
-          className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-[#F78F2E] text-2xl font-bold leading-none text-white transition hover:bg-[#e57f1f] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68] focus-visible:ring-offset-2 order-1"
-        >
-          +
-        </button>
-      </div>
-    </>
+    </div>
   );
 }
