@@ -113,11 +113,35 @@ export function ReadabilityZoomControls() {
     return () => window.clearTimeout(t);
   }, [showUndo]);
 
-  if (widgetHidden && !showUndo) return null;
-
   return (
     <div ref={panelRef}>
-      {!widgetHidden && (
+      {widgetHidden ? (
+        <div className="fixed z-[90]" style={buttonStyle}>
+          <button
+            type="button"
+            onClick={() => {
+              setWidgetHidden(false);
+              setShowUndo(false);
+            }}
+            aria-label="Lesbarkeits-Widget wieder einblenden"
+            className="flex h-11 w-11 items-center justify-center rounded-2xl border border-white/15 bg-[#2B2E33]/85 shadow-[0_12px_28px_rgba(0,0,0,0.28)] transition hover:bg-[#34383f] focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#2B2E33]"
+          >
+            <svg
+              className="h-5 w-5"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="#0F4F68"
+              strokeWidth="3"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden
+            >
+              <path d="M21 21l-4.35-4.35" />
+              <circle cx="11" cy="11" r="7" />
+            </svg>
+          </button>
+        </div>
+      ) : (
         <div className="fixed z-[90] relative" style={buttonStyle}>
         <button
           type="button"
