@@ -360,7 +360,7 @@ export function StartEinstiegsHilfe() {
           <p className="mt-3 text-sm text-neutral-600">Sie müssen nicht alles schon wissen - wir führen Sie Schritt für Schritt.</p>
         </div>
       ) : (
-        <div className="fixed inset-0 z-50 flex items-end justify-center overflow-y-auto bg-[#0F4F68]/45 p-3 backdrop-blur-[2px] sm:items-center sm:p-6">
+        <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-[#0F4F68]/45 p-3 backdrop-blur-[2px] sm:p-6">
           <div className="max-h-[92vh] w-full max-w-4xl overflow-y-auto animate-fade-in-up rounded-2xl border border-[#0F4F68]/15 bg-white p-5 shadow-2xl sm:p-7">
             <div className="mb-4 grid grid-cols-[1fr_auto_1fr] items-center gap-3">
               <p className="justify-self-start text-sm font-bold uppercase tracking-wide text-[#0F4F68]/80">Schritt {Math.min(step, 7)} von 7</p>
@@ -584,7 +584,7 @@ export function StartEinstiegsHilfe() {
 
                 {kontaktArt === "selbst" ? (
                   <div className="mt-4 rounded-xl border border-[#0F4F68]/15 bg-[#f8fcfd] p-4 text-sm text-neutral-700">
-                    <p className="font-semibold text-[#0F4F68]">Ihr passender Standort</p>
+                    <p className="font-semibold text-[#0F4F68]">Ihr Ansprechpartner für Ihre PLZ</p>
                     <div className="mt-2 space-y-1">
                       <p className="font-medium text-[#0F4F68]">{finalerStandort.name}</p>
                       <p>{finalerStandort.address}</p>
@@ -609,7 +609,7 @@ export function StartEinstiegsHilfe() {
 
             {step === 8 ? (
               <div className="mt-6 animate-fade-in-up space-y-5">
-                <div className="rounded-2xl border border-emerald-200 bg-gradient-to-br from-emerald-50 to-white p-6 text-center">
+                <div className="rounded-2xl border border-[#0F4F68]/15 bg-white p-6 text-center">
                   <h3 className="text-2xl font-extrabold text-[#0F4F68] sm:text-3xl">
                     Vielen Dank! Ihre Anfrage ist bei uns eingegangen.
                   </h3>
@@ -617,7 +617,7 @@ export function StartEinstiegsHilfe() {
                     Wir melden uns in Kürze bei Ihnen zurück.
                   </p>
                 </div>
-                <div className="rounded-2xl border border-[#F78F2E]/35 bg-gradient-to-br from-[#fff8f2] to-white p-5">
+                <div className="rounded-2xl border border-[#F78F2E]/35 bg-white p-5">
                   <p className="flex items-start gap-2 font-semibold text-[#c86d1f]">
                     <span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-[#F78F2E] text-white" aria-hidden>
                       <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
