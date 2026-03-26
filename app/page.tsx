@@ -72,6 +72,16 @@ const LEISTUNGEN = [
   },
 ] as const;
 
+const VORTEILE = [
+  "Zugelassen bei allen Krankenkassen in Deutschland.",
+  "Schnelle Terminvergabe.",
+  "Volle Transparenz: Rechnungen und kommende Termine sind auf Wunsch per App einsehbar.",
+  "Ab Pflegegrad 1 können 131 EUR Entlastungsbetrag plus 3.539 EUR Verhinderungspflege über uns genutzt werden.",
+  "Wir bieten eine Vielzahl an Dienstleistungen - alles aus einer Hand.",
+  "Wir bieten eine Leistung nicht an? Profitieren Sie von unserem Netzwerk.",
+  "Wir sind auch in ländlichen Dörfern unterwegs.",
+] as const;
+
 export default function HomePage() {
   return (
     <article
@@ -179,48 +189,48 @@ export default function HomePage() {
       </section>
 
       <section className="relative z-20 mt-10 w-full px-4 sm:mt-12 sm:px-6 lg:px-8">
-        <div className="mx-auto w-full max-w-6xl rounded-3xl border border-[#f2c9a3]/20 bg-gradient-to-br from-[#fffbf8] via-[#fffefd] to-white p-5 shadow-[0_10px_24px_rgba(120,78,45,0.06)] sm:p-7">
+        <div className="mx-auto w-full max-w-6xl p-1 sm:p-2">
           <h2 className="text-2xl font-bold text-[#0F4F68] sm:text-3xl">Unsere Leistungen im Überblick</h2>
           <p className="mt-2 text-sm text-[#8a6a55] sm:text-base">Persoenlich, zuverlaessig und mit viel Herz im Alltag.</p>
-          <div className="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="mt-6 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {LEISTUNGEN.map((leistung, index) => (
               <article
                 key={leistung.title}
-                className="rounded-2xl border border-[#e9c8a8]/35 bg-gradient-to-r from-white to-[#fffdfa] px-4 py-4 opacity-0 shadow-[0_5px_12px_rgba(120,78,45,0.05)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_8px_18px_rgba(120,78,45,0.09)] animate-fade-in-up"
+                className="rounded-2xl px-4 py-4 opacity-0 transition-all duration-300 hover:-translate-y-1 animate-fade-in-up"
                 style={{ animationDelay: `${0.06 * (index + 1)}s` }}
               >
                 <div className="flex items-start gap-3">
                   <span
-                    className="mt-0.5 inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#0F4F68] text-white shadow-sm"
+                    className="mt-0.5 inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-[#0F4F68] text-white"
                     aria-hidden
                   >
                     {leistung.icon === "home" && (
-                      <svg className="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M12 3.2 3.5 10v10.3h6.2v-6.3h4.6v6.3h6.2V10L12 3.2z" />
+                      <svg className="h-6 w-6" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 21s-7-4.35-7-10a4 4 0 0 1 7-2.65A4 4 0 0 1 19 11c0 5.65-7 10-7 10z" />
                       </svg>
                     )}
                     {leistung.icon === "chat" && (
-                      <svg className="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
+                      <svg className="h-6 w-6" viewBox="0 0 24 24" fill="currentColor">
                         <path d="M4 4h16v11H7.6L4 18.6V4zm4 4v2h8V8H8zm0 4v2h5v-2H8z" />
                       </svg>
                     )}
                     {leistung.icon === "box" && (
-                      <svg className="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
+                      <svg className="h-6 w-6" viewBox="0 0 24 24" fill="currentColor">
                         <path d="M3 7.2 12 3l9 4.2v9.6L12 21l-9-4.2V7.2zm9 8.5 6.8-3.2V8.6L12 11.8 5.2 8.6v3.9l6.8 3.2z" />
                       </svg>
                     )}
                     {leistung.icon === "shield" && (
-                      <svg className="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
+                      <svg className="h-6 w-6" viewBox="0 0 24 24" fill="currentColor">
                         <path d="M12 2 4 5.2v6.1c0 5.1 3.4 9.8 8 10.7 4.6-.9 8-5.6 8-10.7V5.2L12 2zm-1 13.2-3-3 1.4-1.4 1.6 1.6 3.6-3.6 1.4 1.4-5 5z" />
                       </svg>
                     )}
                     {leistung.icon === "cart" && (
-                      <svg className="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
+                      <svg className="h-6 w-6" viewBox="0 0 24 24" fill="currentColor">
                         <path d="M7 4H4v2h1.3l2 9.1h9.6l1.7-6.8H8.5L8 6h12V4H7zm2 13a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm8 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4z" />
                       </svg>
                     )}
                     {leistung.icon === "meal" && (
-                      <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <svg className="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                         <path d="M4 4v7" />
                         <path d="M7 4v7" />
                         <path d="M4 8h3" />
@@ -230,11 +240,29 @@ export default function HomePage() {
                       </svg>
                     )}
                   </span>
-                  <p className="text-base font-semibold leading-snug text-[#0F4F68]">{leistung.title}</p>
+                  <p className="text-lg font-semibold leading-snug text-[#0F4F68]">{leistung.title}</p>
                 </div>
               </article>
             ))}
           </div>
+        </div>
+      </section>
+
+      <section className="relative z-20 mt-6 w-full px-4 sm:mt-8 sm:px-6 lg:px-8">
+        <div className="mx-auto w-full max-w-6xl">
+          <h3 className="text-2xl font-bold text-[#0F4F68] sm:text-3xl">Ihre Vorteile bei uns</h3>
+          <ul className="mt-4 grid gap-3">
+            {VORTEILE.map((item) => (
+              <li key={item} className="flex items-start gap-3 text-base text-neutral-700 sm:text-lg">
+                <span className="mt-1 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#F78F2E] text-white" aria-hidden>
+                  <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M20 6L9 17l-5-5" />
+                  </svg>
+                </span>
+                <span>{item}</span>
+              </li>
+            ))}
+          </ul>
         </div>
       </section>
 
