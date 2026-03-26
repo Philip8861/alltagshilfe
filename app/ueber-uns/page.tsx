@@ -30,9 +30,12 @@ export default function UeberUnsPage() {
                 className="pointer-events-none absolute right-2 bottom-3 max-w-[min(92%,38rem)] text-right text-xl font-extrabold leading-tight tracking-tight text-[#0F4F68] opacity-0 drop-shadow-[0_3px_10px_rgba(15,79,104,0.3)] animate-fade-in-up motion-reduce:opacity-100 sm:right-4 sm:bottom-4 sm:text-2xl lg:text-3xl"
                 style={{ animationDelay: "0.22s" }}
               >
-                Unternehmen der Zukunft! Wir sagen{" "}
-                <span className="text-[#F78F2E] drop-shadow-[0_0_10px_rgba(247,143,46,0.55)] animate-pulse motion-reduce:animate-none">Danke</span>{" "}
-                für euer Vertrauen!
+                <span className="block">Auszeichnung zum Unternehmen der Zukunft!</span>
+                <span className="mt-1 block">
+                  Wir sagen{" "}
+                  <span className="text-[#F78F2E] drop-shadow-[0_0_10px_rgba(247,143,46,0.55)] animate-pulse motion-reduce:animate-none">Danke</span>{" "}
+                  für euer Vertrauen!
+                </span>
               </p>
             </div>
           </div>
