@@ -74,8 +74,8 @@ export default function UeberUnsPage() {
             konnten dadurch die Versorgungssituation in der Region unmittelbar mitgestalten.
           </p>
           <p>
-            Mit der steigenden Nachfrage entwickelte sich das Unternehmen kontinuierlich weiter. Im Jahr 2022 wurde der
-            Standort Wangen für die Bodenseeregion eröffnet. Am 01.10.2023 wurde das Angebot um
+            Mit der steigenden Nachfrage entwickelte sich das Unternehmen kontinuierlich weiter. Im Jahr 2022 eröffnete
+            Frau Sonntag den Standort Wangen für die Bodenseeregion. Am 01.10.2023 wurde das Angebot um
             Pflegehilfsmittel erweitert. Ein bedeutender Meilenstein folgte am 03.06.2024: Seit diesem Zeitpunkt ist die
             Alltagshilfe-Süd offiziell anerkannte Pflegeberatungsstelle mit eigenen Pflegeberaterinnen und
             Pflegeberatern an allen Standorten.

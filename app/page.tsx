@@ -112,7 +112,7 @@ export default function HomePage() {
                 className="relative ml-auto w-full max-w-[50rem] opacity-0 animate-fade-in-up motion-reduce:opacity-100 lg:mr-[calc((100vw-100%)/-2)]"
                 style={{ animationDelay: "0.08s" }}
               >
-                <div className="w-full [filter:drop-shadow(0_10px_22px_rgba(15,79,104,0.2))_drop-shadow(0_4px_12px_rgba(15,79,104,0.12))]">
+                <div className="w-full pb-3 sm:pb-4">
                   {/* Hero: unoptimized — Next/Image-Wrapper würde die feste horizontale Einordnung verschieben. */}
                   <Image
                     src="/images/startseite_front.webp"
@@ -120,6 +120,7 @@ export default function HomePage() {
                     width={900}
                     height={700}
                     className="block h-auto w-full object-contain object-right"
+                    style={{ boxShadow: "0 10px 22px rgba(15,79,104,0.2), 0 4px 12px rgba(15,79,104,0.12)" }}
                     priority
                     unoptimized
                   />
@@ -248,7 +249,7 @@ export default function HomePage() {
         <div className="mx-auto flex w-full max-w-6xl flex-col gap-6 sm:flex-row sm:items-start sm:gap-8 lg:gap-10">
           <div className="relative z-20 order-3 flex w-full max-w-full justify-center pb-2 pt-1 sm:order-1 lg:w-[50%] lg:max-w-3xl lg:shrink-0 lg:justify-center lg:px-6 lg:pb-4 lg:pt-2 sm:px-4">
             <div className="w-full max-w-full" style={{ width: "min(491px, calc(100vw - 3rem))" }}>
-              <div className="[filter:drop-shadow(0_10px_22px_rgba(15,79,104,0.2))_drop-shadow(0_4px_12px_rgba(15,79,104,0.12))]">
+              <div className="pb-3 sm:pb-4" style={{ boxShadow: "0 10px 22px rgba(15,79,104,0.2), 0 4px 12px rgba(15,79,104,0.12)", borderRadius: "0.75rem" }}>
                 <StandortWechselBild
                   alt="Betreuung und Zuwendung: Team Alltagshilfe-Süd mit Seniorin im Freien"
                   sizes="(max-width: 640px) min(491px, 88vw), 491px"
