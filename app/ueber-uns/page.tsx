@@ -17,6 +17,7 @@ export default function UeberUnsPage() {
     { titel: "03.06.2024", text: "Anerkennung als Pflegeberatungsstelle mit eigenen Beraterinnen und Beratern.", icon: "beratung" },
     { titel: "2025", text: "Namensänderung von Alltagshilfe-Allgäu zu Alltagshilfe-Süd.", icon: "rename" },
     { titel: "01.12.2025", text: "Aufbau der betrieblichen Pflegeberatung für Unternehmen.", icon: "business" },
+    { titel: "01.01.2026", text: "Eröffnung des Standortes Engen/Konstanz und Augsburg.", icon: "standort" },
     { titel: "Anfang 2026", text: "Umzug in größere Räumlichkeiten nach Bad Grönenbach.", icon: "move" },
   ] as const;
 
