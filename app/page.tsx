@@ -88,11 +88,11 @@ const LEISTUNGS_LINKS: Record<(typeof LEISTUNGEN)[number]["icon"], string> = {
 
 const VORTEILE = [
   "Zugelassen bei allen Pflege- und Krankenkassen in Deutschland",
-  "Schnelle Terminvergabe für Alltagshilfe und Pflegeunterstützung",
-  "Volle Transparenz dank App: Rechnungen und Termine jederzeit einsehbar",
+  "Schnelle Terminvergabe bei all unseren Dienstleistungen",
+  "Volle Transparenz dank App: Rechnungen und kommende Termine jederzeit einsehbar",
   "Ab Pflegegrad 1: Nutzen Sie Ihren Entlastungsbetrag von 131 Euro für unsere Leistungen",
-  "Neu ab Pflegegrad 2: Bis zu 3.539 Euro Verhinderungspflege über uns abrechenbar",
-  "Umfangreiche Dienstleistungen rund um Betreuung, Entlastung und Alltagshilfe aus einer Hand",
+  "Neu ab Pflegegrad 2: Bis zu 3.539 Euro Ersatzpflege / Verhinderungspflege über uns abrechenbar",
+  "Umfangreiche Dienstleistungen rund um Betreuung, Entlastung, Alltagshilfe und Pflegeberatung aus einer Hand.",
   "Auch wenn wir eine Leistung nicht direkt anbieten: Unser starkes Netzwerk hilft weiter",
   "Wir sind nicht nur in Städten, sondern auch in ländlichen Regionen und Dörfern für Sie unterwegs",
 ] as const;
@@ -266,7 +266,22 @@ export default function HomePage() {
 
       <section className="relative z-20 mt-6 w-full px-4 sm:mt-8 sm:px-6 lg:px-8">
         <div className="mx-auto w-full max-w-6xl">
-          <div className="mb-5 h-px w-full bg-gradient-to-r from-transparent via-[#0F4F68]/28 to-transparent" aria-hidden />
+          <svg
+            className="mb-6 h-4 w-full"
+            viewBox="0 0 1200 24"
+            preserveAspectRatio="none"
+            fill="none"
+            aria-hidden
+          >
+            <path d="M0,12 L600,2 L1200,12 L600,22 Z" fill="url(#vorteileDivider)" />
+            <defs>
+              <linearGradient id="vorteileDivider" x1="0" y1="0" x2="1200" y2="0" gradientUnits="userSpaceOnUse">
+                <stop offset="0" stopColor="#0F4F68" stopOpacity="0" />
+                <stop offset="0.5" stopColor="#0F4F68" stopOpacity="0.42" />
+                <stop offset="1" stopColor="#0F4F68" stopOpacity="0" />
+              </linearGradient>
+            </defs>
+          </svg>
           <h3 className="text-3xl font-extrabold tracking-tight text-[#0F4F68] sm:text-4xl">Ihre Vorteile bei uns</h3>
           <p className="mt-2 max-w-3xl text-sm text-neutral-600 sm:text-base">
             Verlässlich, transparent und nah bei Ihnen - mit klaren Prozessen und echter Unterstützung im Alltag.

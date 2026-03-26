@@ -99,18 +99,18 @@ export function KundenstimmenCarousel() {
   return (
     <section className="relative z-20 mt-10 w-full px-4 sm:mt-12 sm:px-6 lg:px-8" aria-label="Kundenstimmen">
       <div className="mx-auto w-full max-w-6xl p-5 text-center sm:p-7">
-        <div className="flex flex-wrap items-center justify-center gap-2">
+        <div className="flex flex-wrap items-center justify-center gap-2.5">
           {Array.from({ length: 5 }).map((_, i) => (
             <Image
               key={`star-${i}`}
               src="/images/star.png"
               alt=""
               aria-hidden
-              width={30}
-              height={30}
-              sizes="30px"
+              width={39}
+              height={39}
+              sizes="39px"
               className={cn(
-                "h-[30px] w-[30px] transition-all duration-300",
+                "h-[39px] w-[39px] transition-all duration-300",
                 i < starCount ? "scale-100 opacity-100" : "scale-75 opacity-25"
               )}
             />
