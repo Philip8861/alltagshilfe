@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { findStandortByPlz, type Standort } from "@/config/standorte";
 import { ContactForm } from "@/components/forms/ContactForm";
 import { cn } from "@/lib/utils";
@@ -198,6 +198,15 @@ export function StartEinstiegsHilfe() {
 
   const [error, setError] = useState("");
 
+  useEffect(() => {
+    if (!started) return;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [started]);
+
   const plzNorm = plz.replace(/\D/g, "").slice(0, 5);
   const standort: Standort | undefined = useMemo(
     () => (plzNorm.length === 5 ? findStandortByPlz(plzNorm) : undefined),
@@ -315,8 +324,8 @@ export function StartEinstiegsHilfe() {
           <p className="mt-3 text-sm text-neutral-600">Sie müssen nicht alles schon wissen - wir führen Sie Schritt für Schritt.</p>
         </div>
       ) : (
-        <div className="fixed inset-0 z-50 flex items-end justify-center bg-[#0F4F68]/45 p-3 backdrop-blur-[2px] sm:items-center sm:p-6">
-          <div className="w-full max-w-4xl animate-fade-in-up rounded-2xl border border-[#0F4F68]/15 bg-white p-5 shadow-2xl sm:p-7">
+        <div className="fixed inset-0 z-50 flex items-end justify-center overflow-y-auto bg-[#0F4F68]/45 p-3 backdrop-blur-[2px] sm:items-center sm:p-6">
+          <div className="max-h-[92vh] w-full max-w-4xl overflow-y-auto animate-fade-in-up rounded-2xl border border-[#0F4F68]/15 bg-white p-5 shadow-2xl sm:p-7">
             <div className="mb-4 grid grid-cols-[1fr_auto_1fr] items-center gap-3">
               <p className="justify-self-start text-sm font-bold uppercase tracking-wide text-[#0F4F68]/80">Schritt {Math.min(step, 7)} von 7</p>
               <p className="text-center text-xl font-extrabold text-[#0F4F68] sm:text-2xl">{SCHRITT_MOTIVATION[step]}</p>
