@@ -19,6 +19,7 @@ import { CookieBanner } from "@/components/CookieBanner";
 import { OrganizationJsonLd } from "@/components/seo/JsonLd";
 import { ReadabilityZoomControls } from "@/components/accessibility/ReadabilityZoomControls";
 import { GoogleTranslateBootstrap } from "@/components/layout/GoogleTranslateBootstrap";
+import { LocalHomepageTranslator } from "@/components/layout/LocalHomepageTranslator";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.baseUrl),
@@ -62,6 +63,7 @@ export default function RootLayout({
           <CookieBanner />
         </div>
         <GoogleTranslateBootstrap />
+        <LocalHomepageTranslator />
         <ReadabilityZoomControls />
       </body>
     </html>
