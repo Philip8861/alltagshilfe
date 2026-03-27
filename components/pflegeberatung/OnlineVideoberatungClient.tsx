@@ -36,7 +36,7 @@ export function OnlineVideoberatungClient() {
   const [roomCode, setRoomCode] = useState(queryRoom);
   const [displayName, setDisplayName] = useState("");
   const [identityConfirmed, setIdentityConfirmed] = useState(false);
-  const [mediaReady, setMediaReady] = useState(false);
+  const [allowJoinWithoutPreview, setAllowJoinWithoutPreview] = useState(false);
   const [joining, setJoining] = useState(false);
   const [joined, setJoined] = useState(false);
   const [error, setError] = useState("");
@@ -115,13 +115,26 @@ export function OnlineVideoberatungClient() {
         previewRef.current.srcObject = stream;
         await previewRef.current.play();
       }
-      setMediaReady(true);
+      setAllowJoinWithoutPreview(false);
     } catch {
-      setError("Kamera oder Mikrofon konnte nicht aktiviert werden. Bitte Browser-Berechtigung prüfen.");
+      setAllowJoinWithoutPreview(true);
+      setError("Kamera oder Mikrofon konnte lokal nicht aktiviert werden. Sie können trotzdem direkt dem Call beitreten und die Berechtigung dort erlauben.");
     }
   };
 
   const startCall = async () => {
+    if (!roomCode) {
+      setError("Bitte zuerst einen Gesprächscode erstellen oder eingeben.");
+      return;
+    }
+    if (!displayName.trim()) {
+      setError("Bitte Ihren Namen eingeben.");
+      return;
+    }
+    if (!identityConfirmed) {
+      setError("Bitte bestätigen Sie, dass Sie die richtige Person sind.");
+      return;
+    }
     if (!callRef.current) return;
     setError("");
     setJoining(true);
@@ -226,12 +239,17 @@ export function OnlineVideoberatungClient() {
               <button
                 type="button"
                 onClick={startCall}
-                disabled={!mediaReady || joining || joined}
+                disabled={joining || joined}
                 className="inline-flex min-h-[44px] items-center justify-center rounded-xl border border-[#0F4F68]/25 px-4 py-2 text-sm font-semibold text-[#0F4F68] disabled:cursor-not-allowed disabled:opacity-50"
               >
                 {joining ? "Startet..." : joined ? "Gespräch läuft" : "Gespräch starten"}
               </button>
             </div>
+            {allowJoinWithoutPreview ? (
+              <p className="mt-2 text-xs text-neutral-600">
+                Hinweis: Browser-Berechtigungen können im nächsten Schritt direkt im Videocall erlaubt werden.
+              </p>
+            ) : null}
           </div>
 
           {error ? <p className="text-sm font-semibold text-[#b42318]">{error}</p> : null}
