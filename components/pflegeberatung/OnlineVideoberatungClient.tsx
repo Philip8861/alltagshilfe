@@ -37,6 +37,9 @@ export function OnlineVideoberatungClient() {
   const [displayName, setDisplayName] = useState("");
   const [identityConfirmed, setIdentityConfirmed] = useState(false);
   const [allowJoinWithoutPreview, setAllowJoinWithoutPreview] = useState(false);
+  const [enableVideo, setEnableVideo] = useState(true);
+  const [enableAudio, setEnableAudio] = useState(true);
+  const [mediaChoiceConfirmed, setMediaChoiceConfirmed] = useState(false);
   const [joining, setJoining] = useState(false);
   const [joined, setJoined] = useState(false);
   const [error, setError] = useState("");
@@ -108,8 +111,17 @@ export function OnlineVideoberatungClient() {
       setError("Bitte bestätigen Sie, dass Sie die richtige Person sind.");
       return;
     }
+    if (!mediaChoiceConfirmed) {
+      setError("Bitte bestätigen Sie zuerst Ihre Video-/Ton-Auswahl.");
+      return;
+    }
+    if (!enableVideo && !enableAudio) {
+      setAllowJoinWithoutPreview(true);
+      setError("");
+      return;
+    }
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+      const stream = await navigator.mediaDevices.getUserMedia({ video: enableVideo, audio: enableAudio });
       previewStreamRef.current = stream;
       if (previewRef.current) {
         previewRef.current.srcObject = stream;
@@ -135,6 +147,10 @@ export function OnlineVideoberatungClient() {
       setError("Bitte bestätigen Sie, dass Sie die richtige Person sind.");
       return;
     }
+    if (!mediaChoiceConfirmed) {
+      setError("Bitte bestätigen Sie zuerst Ihre Video-/Ton-Auswahl.");
+      return;
+    }
     if (!callRef.current) return;
     setError("");
     setJoining(true);
@@ -153,8 +169,8 @@ export function OnlineVideoberatungClient() {
         userInfo: { displayName: displayName.trim() },
         configOverwrite: {
           prejoinPageEnabled: false,
-          startWithAudioMuted: false,
-          startWithVideoMuted: false,
+          startWithAudioMuted: !enableAudio,
+          startWithVideoMuted: !enableVideo,
           disableModeratorIndicator: true,
           enableNoisyMicDetection: true,
         },
@@ -228,13 +244,56 @@ export function OnlineVideoberatungClient() {
 
           <div className="rounded-xl border border-[#0F4F68]/10 bg-[#F2F9FA]/45 p-4">
             <p className="text-sm font-semibold text-[#0F4F68]">3) Kamera & Ton aktivieren</p>
+            <div className="mt-3 grid gap-2 sm:grid-cols-2">
+              <label className="flex items-center gap-2 rounded-lg border border-[#0F4F68]/15 bg-white px-3 py-2 text-sm text-neutral-700">
+                <input
+                  type="checkbox"
+                  checked={enableVideo}
+                  onChange={(e) => {
+                    setEnableVideo(e.target.checked);
+                    setMediaChoiceConfirmed(false);
+                  }}
+                  className="h-4 w-4 accent-[#F78F2E]"
+                />
+                <span>Video anmachen</span>
+              </label>
+              <label className="flex items-center gap-2 rounded-lg border border-[#0F4F68]/15 bg-white px-3 py-2 text-sm text-neutral-700">
+                <input
+                  type="checkbox"
+                  checked={enableAudio}
+                  onChange={(e) => {
+                    setEnableAudio(e.target.checked);
+                    setMediaChoiceConfirmed(false);
+                  }}
+                  className="h-4 w-4 accent-[#F78F2E]"
+                />
+                <span>Ton anmachen</span>
+              </label>
+            </div>
+            <button
+              type="button"
+              onClick={() => {
+                setMediaChoiceConfirmed(true);
+                setError("");
+              }}
+              className="mt-2 inline-flex min-h-[40px] items-center justify-center rounded-lg border border-[#0F4F68]/25 px-3 py-2 text-sm font-semibold text-[#0F4F68] hover:bg-[#F2F9FA]"
+            >
+              Auswahl bestätigen
+            </button>
+            {mediaChoiceConfirmed ? (
+              <p className="mt-2 text-xs text-emerald-700">
+                Auswahl gespeichert: {enableVideo ? "Video an" : "Video aus"} / {enableAudio ? "Ton an" : "Ton aus"}.
+              </p>
+            ) : (
+              <p className="mt-2 text-xs text-neutral-600">Bitte Auswahl bestätigen, damit die Einstellungen aktiv sind.</p>
+            )}
             <div className="mt-3 flex flex-wrap gap-2">
               <button
                 type="button"
                 onClick={activateMedia}
                 className="inline-flex min-h-[44px] items-center justify-center rounded-xl bg-[#F78F2E] px-4 py-2 text-sm font-semibold text-white hover:bg-[#e67e22]"
               >
-                Kamera und Ton anmachen
+                Vorschau mit Auswahl starten
               </button>
               <button
                 type="button"
