@@ -18,6 +18,7 @@ import { Footer } from "@/components/layout/Footer";
 import { CookieBanner } from "@/components/CookieBanner";
 import { OrganizationJsonLd } from "@/components/seo/JsonLd";
 import { ReadabilityZoomControls } from "@/components/accessibility/ReadabilityZoomControls";
+import { GoogleTranslateBootstrap } from "@/components/layout/GoogleTranslateBootstrap";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.baseUrl),
@@ -60,6 +61,7 @@ export default function RootLayout({
           <Footer />
           <CookieBanner />
         </div>
+        <GoogleTranslateBootstrap />
         <ReadabilityZoomControls />
       </body>
     </html>
