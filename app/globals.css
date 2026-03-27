@@ -104,6 +104,10 @@
   text-decoration: underline !important;
 }
 
+.bw-mode body {
+  filter: grayscale(1) contrast(1.03);
+}
+
 .reduce-motion * {
   animation-duration: 0.01ms !important;
   animation-delay: 0.01ms !important;
