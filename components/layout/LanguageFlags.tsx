@@ -35,9 +35,6 @@ function applyLanguage(lang: "de" | "en") {
     attempts += 1;
     if (setGoogleCombo(lang) || attempts >= 20) {
       window.clearInterval(timer);
-      if (attempts >= 20) {
-        window.location.reload();
-      }
     }
   }, 150);
 }

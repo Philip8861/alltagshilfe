@@ -29,7 +29,14 @@ export function GoogleTranslateBootstrap() {
     };
 
     if (document.getElementById("google-translate-script")) {
-      applyStoredLanguage();
+      if (applyStoredLanguage()) return;
+      let attempts = 0;
+      const timer = window.setInterval(() => {
+        attempts += 1;
+        if (applyStoredLanguage() || attempts >= 20) {
+          window.clearInterval(timer);
+        }
+      }, 150);
       return;
     }
     window.googleTranslateElementInit = () => {
@@ -51,5 +58,5 @@ export function GoogleTranslateBootstrap() {
     document.body.appendChild(script);
   }, []);
 
-  return <div id="google_translate_element_hidden" className="hidden" aria-hidden />;
+  return <div id="google_translate_element_hidden" className="absolute -left-[9999px] top-0 h-px w-px overflow-hidden" aria-hidden />;
 }
