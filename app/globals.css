@@ -94,21 +94,21 @@
 }
 
 /* Zusätzliche Barrierefreiheits-Schalter (per Klasse auf <html>) */
-.high-contrast body {
+.high-contrast #app-shell {
   background-color: #ffffff !important;
   color: #111827 !important; /* neutral-900 */
 }
 
-.high-contrast a {
+.high-contrast #app-shell a {
   color: #0F4F68 !important;
   text-decoration: underline !important;
 }
 
-.bw-mode body {
+.bw-mode #app-shell {
   filter: grayscale(1) contrast(1.03);
 }
 
-.reduce-motion * {
+.reduce-motion #app-shell * {
   animation-duration: 0.01ms !important;
   animation-delay: 0.01ms !important;
   animation-iteration-count: 1 !important;
@@ -116,9 +116,9 @@
   scroll-behavior: auto !important;
 }
 
-.readability-expanded-spacing body {
-  line-height: 1.75 !important;
-  letter-spacing: 0.01em !important;
+.readability-adjusted-spacing #app-shell {
+  line-height: var(--ahs-line-height, 1.6) !important;
+  letter-spacing: var(--ahs-letter-spacing, 0.01em) !important;
 }
 
 /* Scrollbar ausblenden, Scrollen bleibt möglich */

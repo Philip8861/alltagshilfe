@@ -16,6 +16,9 @@ const STORAGE_KEY_BW_MODE = "ahs_readability_bw_mode";
 const MIN_ZOOM = 90;
 const MAX_ZOOM = 130;
 const STEP = 5;
+const MIN_LINE_HEIGHT = 100;
+const MAX_LINE_HEIGHT = 145;
+const LINE_HEIGHT_STEP = 5;
 
 function clampZoom(value: number) {
   return Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, value));
@@ -44,7 +47,7 @@ export function ReadabilityZoomControls() {
   const [highContrast, setHighContrast] = useState(false);
   const [bwMode, setBwMode] = useState(false);
   const [reduceMotion, setReduceMotion] = useState(false);
-  const [expandedLineHeight, setExpandedLineHeight] = useState(false);
+  const [lineHeightLevel, setLineHeightLevel] = useState(100);
   const [open, setOpen] = useState(false);
   const panelRef = useRef<HTMLDivElement>(null);
   const [widgetHidden, setWidgetHidden] = useState(false);
@@ -87,11 +90,15 @@ export function ReadabilityZoomControls() {
     const storedContrast = window.localStorage.getItem(STORAGE_KEY_CONTRAST) === "1";
     const storedBwMode = window.localStorage.getItem(STORAGE_KEY_BW_MODE) === "1";
     const storedReduceMotion = window.localStorage.getItem(STORAGE_KEY_REDUCE_MOTION) === "1";
-    const storedLineHeight = window.localStorage.getItem(STORAGE_KEY_LINE_HEIGHT) === "1";
+    const storedLineHeightRaw = window.localStorage.getItem(STORAGE_KEY_LINE_HEIGHT);
+    const parsedLineHeight = storedLineHeightRaw ? Number.parseInt(storedLineHeightRaw, 10) : 100;
+    const nextLineHeight = Number.isFinite(parsedLineHeight)
+      ? Math.min(MAX_LINE_HEIGHT, Math.max(MIN_LINE_HEIGHT, parsedLineHeight))
+      : 100;
     setHighContrast(storedContrast);
     setBwMode(storedBwMode);
     setReduceMotion(storedReduceMotion);
-    setExpandedLineHeight(storedLineHeight);
+    setLineHeightLevel(nextLineHeight);
   }, []);
 
   useEffect(() => {
@@ -101,8 +108,10 @@ export function ReadabilityZoomControls() {
     root.classList.toggle("high-contrast", highContrast);
     root.classList.toggle("bw-mode", bwMode);
     root.classList.toggle("reduce-motion", reduceMotion);
-    root.classList.toggle("readability-expanded-spacing", expandedLineHeight);
-  }, [highContrast, bwMode, reduceMotion, expandedLineHeight]);
+    root.classList.toggle("readability-adjusted-spacing", lineHeightLevel !== 100);
+    root.style.setProperty("--ahs-line-height", `${lineHeightLevel / 100}`);
+    root.style.setProperty("--ahs-letter-spacing", `${(lineHeightLevel - 100) / 1000}em`);
+  }, [highContrast, bwMode, reduceMotion, lineHeightLevel]);
 
   useEffect(() => {
     if (!open) return;
@@ -128,11 +137,11 @@ export function ReadabilityZoomControls() {
     setHighContrast(false);
     setBwMode(false);
     setReduceMotion(false);
-    setExpandedLineHeight(false);
+    setLineHeightLevel(100);
     window.localStorage.setItem(STORAGE_KEY_CONTRAST, "0");
     window.localStorage.setItem(STORAGE_KEY_BW_MODE, "0");
     window.localStorage.setItem(STORAGE_KEY_REDUCE_MOTION, "0");
-    window.localStorage.setItem(STORAGE_KEY_LINE_HEIGHT, "0");
+    window.localStorage.setItem(STORAGE_KEY_LINE_HEIGHT, "100");
   };
 
   const isKontakt = useMemo(() => pathname === "/kontakt", [pathname]);
@@ -405,13 +414,14 @@ export function ReadabilityZoomControls() {
 
                 <div className="mt-3 rounded-xl border border-[#0F4F68]/10 bg-[#F2F9FA]/40 p-4">
                   <p className="text-sm font-bold text-[#0F4F68]">Zeilenabstand</p>
-                  <p className="mt-1 text-sm text-neutral-600">Erhöhen oder reduzieren Sie den Zeilenabstand.</p>
+                  <p className="mt-1 text-sm text-neutral-600">Aktuell: {lineHeightLevel}%</p>
                   <div className="mt-2 flex gap-2">
                     <button
                       type="button"
                       onClick={() => {
-                        setExpandedLineHeight(false);
-                        window.localStorage.setItem(STORAGE_KEY_LINE_HEIGHT, "0");
+                        const next = Math.max(MIN_LINE_HEIGHT, lineHeightLevel - LINE_HEIGHT_STEP);
+                        setLineHeightLevel(next);
+                        window.localStorage.setItem(STORAGE_KEY_LINE_HEIGHT, String(next));
                       }}
                       className="flex-1 rounded-xl border border-[#0F4F68]/20 bg-white px-3 py-2 text-sm font-semibold text-[#0F4F68] transition hover:bg-[#F2F9FA] focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2"
                     >
@@ -420,8 +430,9 @@ export function ReadabilityZoomControls() {
                     <button
                       type="button"
                       onClick={() => {
-                        setExpandedLineHeight(true);
-                        window.localStorage.setItem(STORAGE_KEY_LINE_HEIGHT, "1");
+                        const next = Math.min(MAX_LINE_HEIGHT, lineHeightLevel + LINE_HEIGHT_STEP);
+                        setLineHeightLevel(next);
+                        window.localStorage.setItem(STORAGE_KEY_LINE_HEIGHT, String(next));
                       }}
                       className="flex-1 rounded-xl bg-[#F78F2E] px-3 py-2 text-sm font-semibold text-white transition hover:bg-[#e57f1f] focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2"
                     >

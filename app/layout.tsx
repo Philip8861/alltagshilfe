@@ -50,7 +50,7 @@ export default function RootLayout({
         >
           Zum Inhalt springen
         </a>
-        <div className="flex min-h-screen flex-col">
+        <div id="app-shell" className="flex min-h-screen flex-col">
           <div className="flex flex-1 flex-col">
             <Header nunitoClass={nunitoSans.className} balooClass={baloo2.className} />
             <main id="main-content" className="flex-1">
@@ -58,8 +58,8 @@ export default function RootLayout({
             </main>
           </div>
           <Footer />
+          <CookieBanner />
         </div>
-        <CookieBanner />
         <ReadabilityZoomControls />
       </body>
     </html>
