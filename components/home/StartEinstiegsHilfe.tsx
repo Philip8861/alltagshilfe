@@ -228,6 +228,15 @@ export function StartEinstiegsHilfe() {
     };
   }, [started]);
 
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    window.dispatchEvent(
+      new CustomEvent("ahs-konfigurator-open-state", {
+        detail: { open: started },
+      }),
+    );
+  }, [started]);
+
   const plzNorm = plz.replace(/\D/g, "").slice(0, 5);
   const standort: Standort | undefined = useMemo(
     () => (plzNorm.length === 5 ? findStandortByPlz(plzNorm) : undefined),

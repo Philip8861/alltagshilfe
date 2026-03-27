@@ -47,6 +47,7 @@ export function ReadabilityZoomControls() {
   const panelRef = useRef<HTMLDivElement>(null);
   const [widgetHidden, setWidgetHidden] = useState(false);
   const [showUndo, setShowUndo] = useState(false);
+  const [isKonfiguratorOpen, setIsKonfiguratorOpen] = useState(false);
 
   useEffect(() => {
     setMounted(true);
@@ -60,6 +61,19 @@ export function ReadabilityZoomControls() {
     };
     window.addEventListener(AHS_READABILITY_OPEN_EVENT, onOpenFromFooter);
     return () => window.removeEventListener(AHS_READABILITY_OPEN_EVENT, onOpenFromFooter);
+  }, []);
+
+  useEffect(() => {
+    const onKonfiguratorState = (event: Event) => {
+      const custom = event as CustomEvent<{ open?: boolean }>;
+      const openState = Boolean(custom.detail?.open);
+      setIsKonfiguratorOpen(openState);
+      if (openState) {
+        setOpen(false);
+      }
+    };
+    window.addEventListener("ahs-konfigurator-open-state", onKonfiguratorState as EventListener);
+    return () => window.removeEventListener("ahs-konfigurator-open-state", onKonfiguratorState as EventListener);
   }, []);
 
   useEffect(() => {
@@ -115,6 +129,7 @@ export function ReadabilityZoomControls() {
   const reset = () => updateZoom(100);
 
   const isKontakt = useMemo(() => pathname === "/kontakt", [pathname]);
+  const hideLauncher = isKontakt || isKonfiguratorOpen;
 
   const buttonWrapStyle = useMemo(
     () =>
@@ -146,7 +161,7 @@ export function ReadabilityZoomControls() {
 
   const ui = (
     <div ref={panelRef}>
-      {widgetHidden ? (
+      {!hideLauncher && widgetHidden ? (
         <div style={buttonWrapStyle}>
           <button
             type="button"
@@ -173,7 +188,7 @@ export function ReadabilityZoomControls() {
             </svg>
           </button>
         </div>
-      ) : (
+      ) : !hideLauncher ? (
         <div style={buttonWrapStyle}>
           <button
             type="button"
@@ -215,9 +230,9 @@ export function ReadabilityZoomControls() {
             </span>
           </button>
         </div>
-      )}
+      ) : null}
 
-      {showUndo && (
+      {!hideLauncher && showUndo && (
         <div
           className="fixed right-4 w-[min(92vw,22rem)] rounded-2xl border border-[#0F4F68]/15 bg-white/95 p-4 shadow-[0_12px_30px_rgba(15,79,104,0.18)] backdrop-blur"
           style={{
@@ -253,135 +268,127 @@ export function ReadabilityZoomControls() {
 
       {open && (
         <div
-          role="menu"
-          aria-label="Barrierefreie Einstellungen"
-          className="fixed w-[min(92vw,26rem)] rounded-3xl border border-[#0F4F68]/25 bg-white/95 p-6 shadow-[0_12px_30px_rgba(15,79,104,0.18)] backdrop-blur"
-          style={{
-            zIndex: 2147483647,
-            visibility: "visible",
-            opacity: 1,
-            pointerEvents: "auto",
-            ...(isKontakt
-              ? {
-                  right: "max(1rem, env(safe-area-inset-right, 0px))",
-                  bottom:
-                    "min(50vh, calc(env(safe-area-inset-bottom, 0px) + max(6rem, 15rem)))",
-                }
-              : {
-                  right: "max(1rem, env(safe-area-inset-right, 0px))",
-                  bottom: "max(5.5rem, calc(env(safe-area-inset-bottom, 0px) + 5.5rem))",
-                }),
-          }}
+          className="fixed inset-0 flex items-center justify-center bg-[#0F4F68]/66 p-4 backdrop-blur-[2px]"
+          style={{ zIndex: 2147483647 }}
+          onClick={() => setOpen(false)}
+          aria-hidden
         >
-          <div className="flex items-start justify-between gap-3">
-            <div>
-              <p className="text-sm font-bold text-[#0F4F68]">Lesbarkeit</p>
-              <p className="mt-1 text-xs text-neutral-600">Einstellungen für bessere Sicht und weniger Aufwand.</p>
-            </div>
-            <button
-              type="button"
-              onClick={() => setOpen(false)}
-              className="rounded-lg p-2 text-neutral-600 hover:bg-neutral-50 focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2"
-              aria-label="Einstellungen schließen"
-            >
-              <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
-                <path d="M18 6L6 18M6 6l12 12" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-            </button>
-          </div>
-
-          <div className="mt-4 space-y-4">
-            <div>
-              <label className="block text-xs font-semibold text-[#0F4F68]" htmlFor="zoom-range">
-                Schriftgröße ({zoomLevel}%)
-              </label>
-              <input
-                id="zoom-range"
-                type="range"
-                min={MIN_ZOOM}
-                max={MAX_ZOOM}
-                step={STEP}
-                value={zoomLevel}
-                onChange={(e) => updateZoom(Number.parseInt(e.target.value, 10))}
-                className="mt-2 w-full accent-[#F78F2E]"
-              />
-              <div className="mt-2 flex gap-2">
-                <button
-                  type="button"
-                  onClick={() => updateZoom(zoomLevel - STEP)}
-                  className="flex-1 rounded-xl border border-[#0F4F68]/20 bg-white px-3 py-2 text-sm font-semibold text-[#0F4F68] transition hover:bg-[#F2F9FA] focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2"
-                >
-                  Kleiner
-                </button>
-                <button
-                  type="button"
-                  onClick={() => updateZoom(zoomLevel + STEP)}
-                  className="flex-1 rounded-xl bg-[#F78F2E] px-3 py-2 text-sm font-semibold text-white transition hover:bg-[#e57f1f] focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2"
-                >
-                  Größer
-                </button>
+          <div
+            role="menu"
+            aria-label="Barrierefreie Einstellungen"
+            className="w-full max-w-md rounded-3xl border border-[#0F4F68]/25 bg-white/95 p-6 shadow-[0_12px_30px_rgba(15,79,104,0.18)] backdrop-blur"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-start justify-between gap-3">
+              <div>
+                <p className="text-sm font-bold text-[#0F4F68]">Lesbarkeit</p>
+                <p className="mt-1 text-xs text-neutral-600">Einstellungen für bessere Sicht und weniger Aufwand.</p>
               </div>
               <button
                 type="button"
-                onClick={reset}
-                className="mt-2 w-full rounded-xl border border-[#0F4F68]/20 bg-white px-3 py-2 text-sm font-semibold text-[#0F4F68] transition hover:bg-[#F2F9FA] focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2"
+                onClick={() => setOpen(false)}
+                className="rounded-lg p-2 text-neutral-600 hover:bg-neutral-50 focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2"
+                aria-label="Einstellungen schließen"
               >
-                Zurücksetzen
+                <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
+                  <path d="M18 6L6 18M6 6l12 12" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
               </button>
             </div>
 
-            <div className="space-y-3">
-              <label className="flex cursor-pointer items-start gap-3 rounded-xl border border-[#0F4F68]/10 bg-[#F2F9FA]/40 p-3">
+            <div className="mt-4 space-y-4">
+              <div>
+                <label className="block text-xs font-semibold text-[#0F4F68]" htmlFor="zoom-range">
+                  Schriftgröße ({zoomLevel}%)
+                </label>
                 <input
-                  type="checkbox"
-                  checked={highContrast}
-                  onChange={(e) => {
-                    const v = e.target.checked;
-                    setHighContrast(v);
-                    window.localStorage.setItem(STORAGE_KEY_CONTRAST, v ? "1" : "0");
-                  }}
-                  className="mt-1 h-5 w-5 accent-[#F78F2E]"
+                  id="zoom-range"
+                  type="range"
+                  min={MIN_ZOOM}
+                  max={MAX_ZOOM}
+                  step={STEP}
+                  value={zoomLevel}
+                  onChange={(e) => updateZoom(Number.parseInt(e.target.value, 10))}
+                  className="mt-2 w-full accent-[#F78F2E]"
                 />
-                <span>
-                  <span className="block text-sm font-bold text-[#0F4F68]">Hoher Kontrast</span>
-                  <span className="block text-xs text-neutral-600">Für mehr Lesbarkeit bei hellem/unklarem Hintergrund.</span>
-                </span>
-              </label>
+                <div className="mt-2 flex gap-2">
+                  <button
+                    type="button"
+                    onClick={() => updateZoom(zoomLevel - STEP)}
+                    className="flex-1 rounded-xl border border-[#0F4F68]/20 bg-white px-3 py-2 text-sm font-semibold text-[#0F4F68] transition hover:bg-[#F2F9FA] focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2"
+                  >
+                    Kleiner
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => updateZoom(zoomLevel + STEP)}
+                    className="flex-1 rounded-xl bg-[#F78F2E] px-3 py-2 text-sm font-semibold text-white transition hover:bg-[#e57f1f] focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2"
+                  >
+                    Größer
+                  </button>
+                </div>
+                <button
+                  type="button"
+                  onClick={reset}
+                  className="mt-2 w-full rounded-xl border border-[#0F4F68]/20 bg-white px-3 py-2 text-sm font-semibold text-[#0F4F68] transition hover:bg-[#F2F9FA] focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2"
+                >
+                  Zurücksetzen
+                </button>
+              </div>
 
-              <label className="flex cursor-pointer items-start gap-3 rounded-xl border border-[#0F4F68]/10 bg-[#F2F9FA]/40 p-3">
-                <input
-                  type="checkbox"
-                  checked={reduceMotion}
-                  onChange={(e) => {
-                    const v = e.target.checked;
-                    setReduceMotion(v);
-                    window.localStorage.setItem(STORAGE_KEY_REDUCE_MOTION, v ? "1" : "0");
-                  }}
-                  className="mt-1 h-5 w-5 accent-[#F78F2E]"
-                />
-                <span>
-                  <span className="block text-sm font-bold text-[#0F4F68]">Animation reduzieren</span>
-                  <span className="block text-xs text-neutral-600">Weniger Bewegung, mehr Ruhe beim Lesen.</span>
-                </span>
-              </label>
+              <div className="space-y-3">
+                <label className="flex cursor-pointer items-start gap-3 rounded-xl border border-[#0F4F68]/10 bg-[#F2F9FA]/40 p-3">
+                  <input
+                    type="checkbox"
+                    checked={highContrast}
+                    onChange={(e) => {
+                      const v = e.target.checked;
+                      setHighContrast(v);
+                      window.localStorage.setItem(STORAGE_KEY_CONTRAST, v ? "1" : "0");
+                    }}
+                    className="mt-1 h-5 w-5 accent-[#F78F2E]"
+                  />
+                  <span>
+                    <span className="block text-sm font-bold text-[#0F4F68]">Hoher Kontrast</span>
+                    <span className="block text-xs text-neutral-600">Für mehr Lesbarkeit bei hellem/unklarem Hintergrund.</span>
+                  </span>
+                </label>
 
-              <label className="flex cursor-pointer items-start gap-3 rounded-xl border border-[#0F4F68]/10 bg-[#F2F9FA]/40 p-3">
-                <input
-                  type="checkbox"
-                  checked={expandedLineHeight}
-                  onChange={(e) => {
-                    const v = e.target.checked;
-                    setExpandedLineHeight(v);
-                    window.localStorage.setItem(STORAGE_KEY_LINE_HEIGHT, v ? "1" : "0");
-                  }}
-                  className="mt-1 h-5 w-5 accent-[#F78F2E]"
-                />
-                <span>
-                  <span className="block text-sm font-bold text-[#0F4F68]">Mehr Zeilenabstand</span>
-                  <span className="block text-xs text-neutral-600">Hilft beim Mitlesen und Verstehen.</span>
-                </span>
-              </label>
-            </div>
+                <label className="flex cursor-pointer items-start gap-3 rounded-xl border border-[#0F4F68]/10 bg-[#F2F9FA]/40 p-3">
+                  <input
+                    type="checkbox"
+                    checked={reduceMotion}
+                    onChange={(e) => {
+                      const v = e.target.checked;
+                      setReduceMotion(v);
+                      window.localStorage.setItem(STORAGE_KEY_REDUCE_MOTION, v ? "1" : "0");
+                    }}
+                    className="mt-1 h-5 w-5 accent-[#F78F2E]"
+                  />
+                  <span>
+                    <span className="block text-sm font-bold text-[#0F4F68]">Animation reduzieren</span>
+                    <span className="block text-xs text-neutral-600">Weniger Bewegung, mehr Ruhe beim Lesen.</span>
+                  </span>
+                </label>
+
+                <label className="flex cursor-pointer items-start gap-3 rounded-xl border border-[#0F4F68]/10 bg-[#F2F9FA]/40 p-3">
+                  <input
+                    type="checkbox"
+                    checked={expandedLineHeight}
+                    onChange={(e) => {
+                      const v = e.target.checked;
+                      setExpandedLineHeight(v);
+                      window.localStorage.setItem(STORAGE_KEY_LINE_HEIGHT, v ? "1" : "0");
+                    }}
+                    className="mt-1 h-5 w-5 accent-[#F78F2E]"
+                  />
+                  <span>
+                    <span className="block text-sm font-bold text-[#0F4F68]">Mehr Zeilenabstand</span>
+                    <span className="block text-xs text-neutral-600">Hilft beim Mitlesen und Verstehen.</span>
+                  </span>
+                </label>
+              </div>
+          </div>
           </div>
         </div>
       )}
