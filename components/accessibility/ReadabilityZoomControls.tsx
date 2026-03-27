@@ -15,6 +15,7 @@ const STORAGE_KEY_LINE_HEIGHT = "ahs_readability_line_height";
 const STORAGE_KEY_BW_MODE = "ahs_readability_bw_mode";
 const STORAGE_KEY_FONT = "ahs_readability_font_family";
 const STORAGE_KEY_READ_ALOUD = "ahs_readability_read_aloud_mode";
+const STORAGE_KEY_VOICE_URI = "ahs_readability_voice_uri";
 const MIN_ZOOM = 90;
 const MAX_ZOOM = 130;
 const STEP = 5;
@@ -68,6 +69,8 @@ export function ReadabilityZoomControls() {
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [hasReadOnce, setHasReadOnce] = useState(false);
   const [readAloudError, setReadAloudError] = useState("");
+  const [availableVoices, setAvailableVoices] = useState<SpeechSynthesisVoice[]>([]);
+  const [selectedVoiceURI, setSelectedVoiceURI] = useState<string>("");
   const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
   const stopRequestedRef = useRef(false);
   const speakingRef = useRef(false);
@@ -114,12 +117,30 @@ export function ReadabilityZoomControls() {
     const storedFont = window.localStorage.getItem(STORAGE_KEY_FONT);
     const validFont = FONT_OPTIONS.some((f) => f.id === storedFont) ? (storedFont as (typeof FONT_OPTIONS)[number]["id"]) : "nunito";
     const storedReadAloud = window.localStorage.getItem(STORAGE_KEY_READ_ALOUD) === "1";
+    const storedVoiceURI = window.localStorage.getItem(STORAGE_KEY_VOICE_URI) ?? "";
     setHighContrast(storedContrast);
     setBwMode(storedBwMode);
     setReduceMotion(storedReduceMotion);
     setLineHeightLevel(nextLineHeight);
     setSelectedFont(validFont);
     setReadAloudMode(storedReadAloud);
+    setSelectedVoiceURI(storedVoiceURI);
+  }, []);
+
+  useEffect(() => {
+    if (typeof window === "undefined" || !("speechSynthesis" in window)) return;
+    const synth = window.speechSynthesis;
+    const loadVoices = () => {
+      const voices = synth.getVoices();
+      if (voices.length > 0) {
+        setAvailableVoices(voices);
+      }
+    };
+    loadVoices();
+    synth.onvoiceschanged = loadVoices;
+    return () => {
+      synth.onvoiceschanged = null;
+    };
   }, []);
 
   useEffect(() => {
@@ -219,11 +240,37 @@ export function ReadabilityZoomControls() {
     const getGermanVoice = () => {
       const voices = window.speechSynthesis.getVoices();
       if (!voices || voices.length === 0) return undefined;
-      return (
-        voices.find((v) => v.lang?.toLowerCase().startsWith("de")) ??
-        voices.find((v) => v.default) ??
-        voices[0]
-      );
+
+      if (selectedVoiceURI) {
+        const selected = voices.find((v) => v.voiceURI === selectedVoiceURI);
+        if (selected) return selected;
+      }
+
+      const deVoices = voices.filter((v) => v.lang?.toLowerCase().startsWith("de"));
+      if (deVoices.length === 0) {
+        return voices.find((v) => v.default) ?? voices[0];
+      }
+
+      const preferredPatterns = [
+        /katja|heda|conrad|stefan|vicki|helena/i, // häufig natürliche DE-Stimmen
+        /microsoft|google/i,
+        /natural|neural|premium|enhanced/i,
+      ];
+
+      const scored = deVoices
+        .map((voice) => {
+          const name = `${voice.name} ${voice.voiceURI}`.toLowerCase();
+          let score = 0;
+          preferredPatterns.forEach((pattern, idx) => {
+            if (pattern.test(name)) score += 12 - idx * 3;
+          });
+          if (voice.localService) score += 4;
+          if (voice.default) score += 3;
+          return { voice, score };
+        })
+        .sort((a, b) => b.score - a.score);
+
+      return scored[0]?.voice ?? deVoices[0];
     };
     const speakNext = () => {
       if (stopRequestedRef.current || idx >= chunks.length) {
@@ -233,8 +280,8 @@ export function ReadabilityZoomControls() {
       }
       const utterance = new SpeechSynthesisUtterance(chunks[idx]);
       utterance.lang = "de-DE";
-      utterance.rate = 0.82;
-      utterance.pitch = 1;
+      utterance.rate = 0.92;
+      utterance.pitch = 1.03;
       utterance.volume = 1;
       const voice = getGermanVoice();
       if (voice) utterance.voice = voice;
@@ -452,6 +499,31 @@ export function ReadabilityZoomControls() {
                   <input type="checkbox" checked={bwMode} onChange={(e) => { const v = e.target.checked; setBwMode(v); window.localStorage.setItem(STORAGE_KEY_BW_MODE, v ? "1" : "0"); }} className="mt-1 h-5 w-5 accent-[#F78F2E]" />
                   <span><span className="block text-sm font-bold text-[#0F4F68]">Schwarz/Weiß-Modus</span><span className="block text-sm text-neutral-600">Reduziert Farben auf Graustufen für ruhigere Darstellung.</span></span>
                 </label>
+                <label className="mt-3 block text-xs font-semibold text-[#0F4F68]" htmlFor="read-voice-select">
+                  Stimme
+                </label>
+                <select
+                  id="read-voice-select"
+                  value={selectedVoiceURI}
+                  onChange={(e) => {
+                    const next = e.target.value;
+                    setSelectedVoiceURI(next);
+                    window.localStorage.setItem(STORAGE_KEY_VOICE_URI, next);
+                    if (isSpeaking) {
+                      stopReading();
+                    }
+                  }}
+                  className="mt-2 w-full rounded-xl border border-[#0F4F68]/20 bg-white px-3 py-2 text-sm text-[#0F4F68]"
+                >
+                  <option value="">Automatisch beste deutsche Stimme</option>
+                  {availableVoices
+                    .filter((voice) => voice.lang?.toLowerCase().startsWith("de"))
+                    .map((voice) => (
+                      <option key={voice.voiceURI} value={voice.voiceURI}>
+                        {voice.name} ({voice.lang})
+                      </option>
+                    ))}
+                </select>
               </section>
 
               <section className="rounded-2xl border border-[#0F4F68]/10 bg-[#F2F9FA]/45 p-3">
