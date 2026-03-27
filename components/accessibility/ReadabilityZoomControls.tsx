@@ -419,12 +419,12 @@ export function ReadabilityZoomControls() {
       ) : null}
 
       {open ? (
-        <div className="fixed inset-0 flex items-center justify-end bg-[#0F4F68]/38 p-3 sm:p-4" style={{ zIndex: 2147483647 }} onClick={() => setOpen(false)} aria-hidden>
+        <div className="fixed inset-0 bg-[#0F4F68]/38" style={{ zIndex: 2147483647 }} onClick={() => setOpen(false)} aria-hidden>
           <div
             role="menu"
             aria-label="Barrierefreie Einstellungen"
-            className="w-[min(96vw,42rem)] max-h-[92vh] overflow-y-auto rounded-3xl border border-[#0F4F68]/18 bg-white p-6 shadow-[0_18px_48px_rgba(15,79,104,0.26)] sm:p-8"
-            style={{ transform: `scale(${100 / zoomLevel})`, transformOrigin: "right center" }}
+            className="absolute right-3 top-1/2 w-[min(96vw,42rem)] max-h-[92vh] -translate-y-1/2 overflow-y-auto rounded-3xl border border-[#0F4F68]/18 bg-white p-6 shadow-[0_18px_48px_rgba(15,79,104,0.26)] sm:right-4 sm:p-8"
+            style={{ transform: `translateY(-50%) scale(${100 / zoomLevel})`, transformOrigin: "top right" }}
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-start justify-between gap-3">

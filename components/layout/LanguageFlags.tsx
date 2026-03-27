@@ -25,7 +25,11 @@ export function LanguageFlags() {
         aria-label="Sprache Deutsch"
         title="Deutsch"
       >
-        🇩🇪
+        <svg viewBox="0 0 24 16" className="h-4 w-6 rounded-[2px] shadow-sm" aria-hidden>
+          <rect width="24" height="16" fill="#000000" />
+          <rect y="5.33" width="24" height="5.34" fill="#DD0000" />
+          <rect y="10.67" width="24" height="5.33" fill="#FFCE00" />
+        </svg>
       </button>
       <button
         type="button"
@@ -34,7 +38,15 @@ export function LanguageFlags() {
         aria-label="Language English"
         title="English"
       >
-        🇬🇧
+        <svg viewBox="0 0 24 16" className="h-4 w-6 rounded-[2px] shadow-sm" aria-hidden>
+          <rect width="24" height="16" fill="#012169" />
+          <path d="M0 0l24 16M24 0L0 16" stroke="#FFFFFF" strokeWidth="3.2" />
+          <path d="M0 0l24 16M24 0L0 16" stroke="#C8102E" strokeWidth="1.4" />
+          <rect x="10" width="4" height="16" fill="#FFFFFF" />
+          <rect y="6" width="24" height="4" fill="#FFFFFF" />
+          <rect x="10.7" width="2.6" height="16" fill="#C8102E" />
+          <rect y="6.7" width="24" height="2.6" fill="#C8102E" />
+        </svg>
       </button>
     </div>
   );
