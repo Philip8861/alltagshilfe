@@ -5,7 +5,7 @@ import { useState } from "react";
 const STORAGE_KEY_SITE_LANG = "ahs_site_lang";
 
 function setTranslateCookie(lang: "de" | "en") {
-  const value = `/auto/${lang}`;
+  const value = `/de/${lang}`;
   const host = window.location.hostname;
   document.cookie = `googtrans=${value};path=/;max-age=31536000`;
   if (host.includes(".")) {

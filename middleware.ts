@@ -22,12 +22,12 @@ export function middleware(request: NextRequest) {
 
     const csp = [
       "default-src 'self'",
-      "script-src 'self' 'unsafe-inline' https://translate.google.com https://translate.googleapis.com",
-      "style-src 'self' 'unsafe-inline' https://translate.googleapis.com https://translate.google.com",
+      "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://translate.google.com https://translate.googleapis.com https://www.google.com https://www.gstatic.com",
+      "style-src 'self' 'unsafe-inline' https://translate.googleapis.com https://translate.google.com https://www.google.com",
       "img-src 'self' data: https:",
-      "font-src 'self' https://fonts.gstatic.com",
-      "connect-src 'self' https://translate.google.com https://translate.googleapis.com",
-      "frame-src 'self' https://translate.google.com https://*.google.com",
+      "font-src 'self' https://fonts.gstatic.com https://www.gstatic.com",
+      "connect-src 'self' https://translate.google.com https://translate.googleapis.com https://www.google.com https://www.gstatic.com",
+      "frame-src 'self' https://translate.google.com https://translate.googleapis.com https://*.google.com",
       "frame-ancestors 'self'",
       "base-uri 'self'",
       "form-action 'self'",

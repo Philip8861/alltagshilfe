@@ -8,7 +8,10 @@ declare global {
   interface Window {
     google?: {
       translate?: {
-        TranslateElement: new (options: { pageLanguage: string; autoDisplay?: boolean }, id: string) => unknown;
+        TranslateElement: new (
+          options: { pageLanguage: string; autoDisplay?: boolean; includedLanguages?: string },
+          id: string,
+        ) => unknown;
       };
     };
     googleTranslateElementInit?: () => void;
@@ -58,7 +61,10 @@ export function GoogleTranslateBootstrap() {
     }
     window.googleTranslateElementInit = () => {
       if (!window.google?.translate?.TranslateElement) return;
-      new window.google.translate.TranslateElement({ pageLanguage: "de", autoDisplay: false }, "google_translate_element_hidden");
+      new window.google.translate.TranslateElement(
+        { pageLanguage: "de", autoDisplay: false, includedLanguages: "de,en" },
+        "google_translate_element_hidden",
+      );
       if (applyStoredLanguage()) return;
       let attempts = 0;
       const timer = window.setInterval(() => {
@@ -72,6 +78,9 @@ export function GoogleTranslateBootstrap() {
     script.id = "google-translate-script";
     script.src = "https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit";
     script.async = true;
+    script.onerror = () => {
+      window.dispatchEvent(new CustomEvent("ahs-translate-script-error"));
+    };
     document.body.appendChild(script);
 
     return () => {
