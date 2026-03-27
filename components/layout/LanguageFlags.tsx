@@ -4,16 +4,47 @@ const STORAGE_KEY_SITE_LANG = "ahs_site_lang";
 
 function setTranslateCookie(lang: "de" | "en") {
   const value = `/de/${lang}`;
-  document.cookie = `googtrans=${value};path=/`;
-  document.cookie = `googtrans=${value};domain=${window.location.hostname};path=/`;
+  const host = window.location.hostname;
+  document.cookie = `googtrans=${value};path=/;max-age=31536000`;
+  if (host.includes(".")) {
+    document.cookie = `googtrans=${value};domain=.${host};path=/;max-age=31536000`;
+  }
+}
+
+function dispatchNativeChange(el: HTMLSelectElement) {
+  el.dispatchEvent(new Event("change", { bubbles: true }));
+}
+
+function setGoogleCombo(lang: "de" | "en") {
+  const combo = document.querySelector<HTMLSelectElement>(".goog-te-combo");
+  if (!combo) return false;
+  combo.value = lang;
+  dispatchNativeChange(combo);
+  return true;
+}
+
+function applyLanguage(lang: "de" | "en") {
+  if (typeof window === "undefined") return;
+  localStorage.setItem(STORAGE_KEY_SITE_LANG, lang);
+  setTranslateCookie(lang);
+  document.documentElement.lang = lang;
+
+  if (setGoogleCombo(lang)) return;
+  let attempts = 0;
+  const timer = window.setInterval(() => {
+    attempts += 1;
+    if (setGoogleCombo(lang) || attempts >= 20) {
+      window.clearInterval(timer);
+      if (attempts >= 20) {
+        window.location.reload();
+      }
+    }
+  }, 150);
 }
 
 export function LanguageFlags() {
   const switchLang = (lang: "de" | "en") => {
-    if (typeof window === "undefined") return;
-    localStorage.setItem(STORAGE_KEY_SITE_LANG, lang);
-    setTranslateCookie(lang);
-    window.location.reload();
+    applyLanguage(lang);
   };
 
   return (
