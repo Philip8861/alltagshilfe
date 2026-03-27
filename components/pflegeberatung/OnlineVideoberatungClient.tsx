@@ -16,11 +16,17 @@ declare global {
       },
     ) => {
       dispose: () => void;
+      executeCommand?: (name: string, ...args: unknown[]) => void;
     };
   }
 }
 
 const JITSI_DOMAIN = "meet.jit.si";
+
+type JitsiApiInstance = {
+  dispose: () => void;
+  executeCommand?: (name: string, ...args: unknown[]) => void;
+};
 
 function sanitizeRoomCode(value: string) {
   return value.replace(/[^a-zA-Z0-9-_]/g, "").slice(0, 40);
@@ -47,7 +53,7 @@ export function OnlineVideoberatungClient() {
   const previewRef = useRef<HTMLVideoElement | null>(null);
   const previewStreamRef = useRef<MediaStream | null>(null);
   const callRef = useRef<HTMLDivElement | null>(null);
-  const jitsiRef = useRef<{ dispose: () => void } | null>(null);
+  const jitsiRef = useRef<JitsiApiInstance | null>(null);
 
   const inviteLink = useMemo(() => {
     if (!roomCode || typeof window === "undefined") return "";
@@ -253,6 +259,15 @@ export function OnlineVideoberatungClient() {
     }
   };
 
+  const openJitsiChat = () => {
+    if (!jitsiRef.current?.executeCommand) {
+      setError("Chat ist erst verfügbar, wenn der Call gestartet ist.");
+      return;
+    }
+    setError("");
+    jitsiRef.current.executeCommand("toggleChat");
+  };
+
   return (
     <section className="mt-8 rounded-3xl border border-[#0F4F68]/10 bg-gradient-to-b from-[#f7fcfd] via-white to-white p-4 shadow-[0_18px_36px_rgba(15,79,104,0.12)] sm:p-6">
       <div className="mb-5 rounded-2xl border border-[#0F4F68]/10 bg-white/90 p-4 sm:p-5">
@@ -417,6 +432,17 @@ export function OnlineVideoberatungClient() {
               <p className="mt-2 text-xs text-neutral-600">Nach dem Start können genau zwei Personen im selben Code-Raum sprechen.</p>
             </div>
           ) : null}
+          <div className="mt-4 rounded-xl border border-[#0F4F68]/10 bg-[#F2F9FA]/50 p-3">
+            <p className="text-sm font-semibold text-[#0F4F68]">Chat im Videofenster</p>
+            <p className="mt-1 text-xs text-neutral-600">Öffnet den Nachrichten-Chat im laufenden Gespräch.</p>
+            <button
+              type="button"
+              onClick={openJitsiChat}
+              className="mt-2 inline-flex min-h-[40px] items-center justify-center rounded-lg border border-[#0F4F68]/25 bg-white px-3 py-2 text-sm font-semibold text-[#0F4F68] hover:bg-[#F2F9FA]"
+            >
+              Chat öffnen
+            </button>
+          </div>
         </div>
       </div>
     </section>
