@@ -3,7 +3,17 @@ import type { NextRequest } from "next/server";
 
 export function middleware(request: NextRequest) {
   try {
-    const response = NextResponse.next();
+    const { pathname, search } = request.nextUrl;
+    const isEnPath = pathname === "/en" || pathname.startsWith("/en/");
+    const isSkippable =
+      pathname.startsWith("/api") ||
+      pathname.startsWith("/_next") ||
+      pathname.startsWith("/images") ||
+      pathname === "/favicon.ico";
+    const normalizedPath = isEnPath ? pathname.replace(/^\/en(?=\/|$)/, "") || "/" : pathname;
+    const rewriteUrl = request.nextUrl.clone();
+    rewriteUrl.pathname = normalizedPath;
+    const response = isEnPath && !isSkippable ? NextResponse.rewrite(rewriteUrl) : NextResponse.next();
 
     response.headers.set("X-Frame-Options", "SAMEORIGIN");
     response.headers.set("X-Content-Type-Options", "nosniff");
@@ -33,6 +43,14 @@ export function middleware(request: NextRequest) {
       "form-action 'self'",
     ].join("; ");
     response.headers.set("Content-Security-Policy", csp);
+
+    const deUrl = `${request.nextUrl.origin}${normalizedPath}${search}`;
+    const enPath = normalizedPath === "/" ? "/en" : `/en${normalizedPath}`;
+    const enUrl = `${request.nextUrl.origin}${enPath}${search}`;
+    response.headers.set(
+      "Link",
+      `<${deUrl}>; rel="alternate"; hreflang="de", <${enUrl}>; rel="alternate"; hreflang="en", <${deUrl}>; rel="alternate"; hreflang="x-default"`,
+    );
 
     return response;
   } catch {

@@ -39,6 +39,16 @@ function applyLanguage(lang: "de" | "en") {
   document.documentElement.lang = lang;
   window.dispatchEvent(new CustomEvent("ahs-apply-language", { detail: { lang } }));
 
+  const path = window.location.pathname;
+  const isEnPath = path === "/en" || path.startsWith("/en/");
+  const normalizedPath = isEnPath ? path.replace(/^\/en(?=\/|$)/, "") || "/" : path;
+  const targetPath = lang === "en" ? (normalizedPath === "/" ? "/en" : `/en${normalizedPath}`) : normalizedPath;
+  const targetUrl = `${targetPath}${window.location.search}${window.location.hash}`;
+  if (targetUrl !== `${window.location.pathname}${window.location.search}${window.location.hash}`) {
+    window.location.assign(targetUrl);
+    return;
+  }
+
   if (setGoogleCombo(lang)) return;
   let attempts = 0;
   const timer = window.setInterval(() => {

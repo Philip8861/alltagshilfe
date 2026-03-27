@@ -51,6 +51,7 @@ export function LocalSiteTranslator() {
     if (!root) return;
 
     const getLang = (): "de" | "en" => {
+      if (pathname === "/en" || pathname.startsWith("/en/")) return "en";
       try {
         return localStorage.getItem(STORAGE_KEY_SITE_LANG) === "en" ? "en" : "de";
       } catch {

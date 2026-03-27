@@ -83,6 +83,10 @@ export function ReadabilityZoomControls() {
 
   useEffect(() => {
     const readLang = () => {
+      if (pathname === "/en" || pathname.startsWith("/en/")) {
+        setUiLang("en");
+        return;
+      }
       try {
         setUiLang(localStorage.getItem(STORAGE_KEY_SITE_LANG) === "en" ? "en" : "de");
       } catch {
@@ -107,7 +111,7 @@ export function ReadabilityZoomControls() {
       window.removeEventListener("ahs-apply-language", onLangEvent as EventListener);
       window.removeEventListener("storage", onStorage);
     };
-  }, []);
+  }, [pathname]);
 
   useEffect(() => {
     const onOpenFromFooter = () => {
