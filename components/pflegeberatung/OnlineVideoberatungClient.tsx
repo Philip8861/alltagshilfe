@@ -202,6 +202,24 @@ export function OnlineVideoberatungClient() {
           startWithVideoMuted: !enableVideo,
           disableModeratorIndicator: true,
           enableNoisyMicDetection: true,
+          toolbarButtons: [
+            "microphone",
+            "camera",
+            "desktop",
+            "hangup",
+            "chat",
+            "fullscreen",
+            "tileview",
+          ],
+          hideConferenceSubject: true,
+          disableProfile: true,
+          disableInviteFunctions: true,
+        },
+        interfaceConfigOverwrite: {
+          MOBILE_APP_PROMO: false,
+          SHOW_JITSI_WATERMARK: false,
+          SHOW_WATERMARK_FOR_GUESTS: false,
+          APP_NAME: "Alltagshilfe-Süd Videoberatung",
         },
       });
       jitsiRef.current = api;
@@ -216,15 +234,22 @@ export function OnlineVideoberatungClient() {
   };
 
   return (
-    <section className="mt-8 grid gap-6 lg:grid-cols-[1.1fr_1fr]">
-      <div className="rounded-2xl border border-[#0F4F68]/15 bg-white p-5 shadow-sm">
-        <h2 className="text-xl font-bold text-[#0F4F68] sm:text-2xl">Online Videoberatung</h2>
-        <p className="mt-2 text-sm text-neutral-600 sm:text-base">
+    <section className="mt-8 rounded-3xl border border-[#0F4F68]/10 bg-gradient-to-b from-[#f7fcfd] via-white to-white p-4 shadow-[0_18px_36px_rgba(15,79,104,0.12)] sm:p-6">
+      <div className="mb-5 rounded-2xl border border-[#0F4F68]/10 bg-white/90 p-4 sm:p-5">
+        <p className="text-xs font-bold uppercase tracking-[0.12em] text-[#0F4F68]/70">Alltagshilfe-Süd</p>
+        <h2 className="mt-1 text-xl font-extrabold text-[#0F4F68] sm:text-3xl">Online Videoberatung</h2>
+        <p className="mt-2 text-sm leading-relaxed text-neutral-600 sm:text-base">
           Für eine sichere 1:1-Beratung: Einladungslink erstellen, Person bestätigen, Kamera & Ton aktivieren und direkt starten.
         </p>
+      </div>
 
-        <div className="mt-5 space-y-4">
-          <div className="rounded-xl border border-[#0F4F68]/10 bg-[#F2F9FA]/45 p-4">
+      <div className="grid gap-6 lg:grid-cols-[1.05fr_1fr]">
+        <div className="rounded-2xl border border-[#0F4F68]/15 bg-white p-5 shadow-sm">
+          <p className="text-sm font-semibold text-[#0F4F68]">Ihr Setup vor dem Gespräch</p>
+
+          <div className="mt-4 space-y-4">
+            <div className="rounded-xl border border-[#0F4F68]/10 bg-[#F2F9FA]/45 p-4">
+              <p className="mb-2 inline-flex items-center rounded-full bg-[#0F4F68] px-2.5 py-1 text-xs font-bold text-white">Schritt 1</p>
             <p className="text-sm font-semibold text-[#0F4F68]">1) Gesprächscode / Einladungslink</p>
             <div className="mt-3 flex flex-wrap gap-2">
               <button
@@ -252,9 +277,10 @@ export function OnlineVideoberatungClient() {
             {inviteLink ? (
               <p className="mt-2 break-all text-xs text-neutral-600">{inviteLink}</p>
             ) : null}
-          </div>
+            </div>
 
-          <div className="rounded-xl border border-[#0F4F68]/10 bg-[#F2F9FA]/45 p-4">
+            <div className="rounded-xl border border-[#0F4F68]/10 bg-[#F2F9FA]/45 p-4">
+              <p className="mb-2 inline-flex items-center rounded-full bg-[#0F4F68] px-2.5 py-1 text-xs font-bold text-white">Schritt 2</p>
             <p className="text-sm font-semibold text-[#0F4F68]">2) Name & Bestätigung</p>
             <input
               value={displayName}
@@ -271,9 +297,10 @@ export function OnlineVideoberatungClient() {
               />
               <span>Ich bestätige, dass ich die richtige Person für dieses Gespräch bin.</span>
             </label>
-          </div>
+            </div>
 
-          <div className="rounded-xl border border-[#0F4F68]/10 bg-[#F2F9FA]/45 p-4">
+            <div className="rounded-xl border border-[#0F4F68]/10 bg-[#F2F9FA]/45 p-4">
+              <p className="mb-2 inline-flex items-center rounded-full bg-[#0F4F68] px-2.5 py-1 text-xs font-bold text-white">Schritt 3</p>
             <p className="text-sm font-semibold text-[#0F4F68]">3) Kamera & Ton aktivieren</p>
             <div className="mt-3 grid gap-2 sm:grid-cols-2">
               <label className="flex items-center gap-2 rounded-lg border border-[#0F4F68]/15 bg-white px-3 py-2 text-sm text-neutral-700">
@@ -340,21 +367,27 @@ export function OnlineVideoberatungClient() {
                 Hinweis: Browser-Berechtigungen können im nächsten Schritt direkt im Videocall erlaubt werden.
               </p>
             ) : null}
-          </div>
+            </div>
 
-          {error ? <p className="text-sm font-semibold text-[#b42318]">{error}</p> : null}
+            {error ? <p className="text-sm font-semibold text-[#b42318]">{error}</p> : null}
+          </div>
         </div>
-      </div>
 
-      <div className="rounded-2xl border border-[#0F4F68]/15 bg-white p-4 shadow-sm">
-        <div ref={callRef} className={`w-full overflow-hidden rounded-xl ${joined ? "min-h-[420px]" : "hidden"}`} />
-        {!joined ? (
-          <div>
-            <p className="text-sm font-semibold text-[#0F4F68]">Vorschau (Ihr Bild)</p>
-            <video ref={previewRef} autoPlay muted playsInline className="mt-3 aspect-video w-full rounded-xl bg-[#0f4f68]/10 object-cover" />
-            <p className="mt-2 text-xs text-neutral-600">Nach dem Start können genau zwei Personen im selben Code-Raum sprechen.</p>
+        <div className="rounded-2xl border border-[#0F4F68]/15 bg-white p-4 shadow-sm">
+          <div className="mb-3 flex items-center justify-between rounded-xl bg-[#F2F9FA] px-3 py-2">
+            <p className="text-sm font-semibold text-[#0F4F68]">{joined ? "Videocall läuft" : "Vorschau & Gespräch"}</p>
+            <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-bold ${joined ? "bg-emerald-100 text-emerald-700" : "bg-[#0F4F68]/10 text-[#0F4F68]"}`}>
+              {joined ? "Verbunden" : "Bereit"}
+            </span>
           </div>
-        ) : null}
+          <div ref={callRef} className={`w-full overflow-hidden rounded-xl border border-[#0F4F68]/10 ${joined ? "min-h-[420px]" : "hidden"}`} />
+          {!joined ? (
+            <div>
+              <video ref={previewRef} autoPlay muted playsInline className="aspect-video w-full rounded-xl border border-[#0F4F68]/10 bg-[#0f4f68]/10 object-cover" />
+              <p className="mt-2 text-xs text-neutral-600">Nach dem Start können genau zwei Personen im selben Code-Raum sprechen.</p>
+            </div>
+          ) : null}
+        </div>
       </div>
     </section>
   );
