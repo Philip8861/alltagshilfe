@@ -13,6 +13,16 @@ export type RatgeberBeitragMeta = {
 
 export const RATGEBER_BEITRAEGE: RatgeberBeitragMeta[] = [
   {
+    slug: "hausnotruf-ratgeber",
+    title: "Hausnotruf-Ratgeber: Sicherheit zu Hause einfach erklärt",
+    excerpt:
+      "Für wen ein Hausnotruf sinnvoll ist, was die Pflegekasse übernimmt und wie Sie das passende System für den Alltag auswählen.",
+    image: "/images/Ratgeber/ratgeber.webp",
+    imageAlt: "Vorschaubild Hausnotruf-Ratgeber",
+    views: 489,
+    tags: ["Hausnotruf", "Sicherheit", "Pflegekasse", "Pflegegrad", "Notfallhilfe"],
+  },
+  {
     slug: "entlastungsbetrag-131-euro",
     title: "Entlastungsbetrag 131 Euro: so nutzen Sie Ihren Anspruch richtig",
     excerpt:
