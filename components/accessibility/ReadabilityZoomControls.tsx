@@ -559,7 +559,7 @@ export function ReadabilityZoomControls() {
                     }}
                     className="mt-1 h-5 w-5 accent-[#F78F2E]"
                   />
-                  <span><span className="block text-sm font-bold text-[#0F4F68]">{uiLang === "en" ? "Enlarge mouse cursor" : "Maus Cursor vergrößern"}</span><span className="block text-sm text-neutral-600">{uiLang === "en" ? "Cursor becomes larger and highlighted with glow." : "Cursor wird deutlich größer und mit Leuchteffekt dargestellt."}</span></span>
+                  <span><span className="block text-sm font-bold text-[#0F4F68]">{uiLang === "en" ? "Enlarge mouse cursor" : "Maus Cursor vergrößern"}</span><span className="block text-sm text-neutral-600">{uiLang === "en" ? "Same arrow shape as usual, only scaled up for easier visibility." : "Gleiche Pfeil-Form wie gewohnt, nur größer dargestellt."}</span></span>
                 </label>
               </section>
 

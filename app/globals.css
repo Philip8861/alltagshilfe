@@ -130,11 +130,39 @@
   font-family: var(--ahs-font-family, "Nunito Sans", system-ui, sans-serif) !important;
 }
 
+/* Klassischer Pfeil-Cursor wie System-Standard, nur vergrößert (ohne Glow/Zusatzgrafik) */
 .cursor-enhanced,
 .cursor-enhanced * {
-  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='66' height='66' viewBox='0 0 66 66'%3E%3Cdefs%3E%3CradialGradient id='halo' cx='50%25' cy='50%25' r='50%25'%3E%3Cstop offset='0%25' stop-color='%23F7A347' stop-opacity='0.9'/%3E%3Cstop offset='62%25' stop-color='%23F7A347' stop-opacity='0.22'/%3E%3Cstop offset='100%25' stop-color='%23F7A347' stop-opacity='0'/%3E%3C/radialGradient%3E%3Cfilter id='s' x='-30%25' y='-30%25' width='160%25' height='160%25'%3E%3CfeDropShadow dx='0' dy='1' stdDeviation='1.2' flood-color='%230F4F68' flood-opacity='0.42'/%3E%3C/filter%3E%3C/defs%3E%3Ccircle cx='33' cy='33' r='30' fill='url(%23halo)'/%3E%3Cg filter='url(%23s)'%3E%3Cpath d='M17 9l22 24-10 2.4-2.5 10L17 9z' fill='%23FFFFFF' stroke='%230F4F68' stroke-width='2.8' stroke-linejoin='round'/%3E%3Cpath d='M30.8 35.6l7.2 8.2' stroke='%23F78F2E' stroke-width='2.3' stroke-linecap='round'/%3E%3C/g%3E%3C/svg%3E")
-      17 9,
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='56' viewBox='0 0 28 28'%3E%3Cpath d='M2 2 L2 21 L9 14 L13 24 L17 22 L13 10 L23 10 Z' fill='%23222' stroke='%23fff' stroke-width='1.35' stroke-linejoin='round'/%3E%3C/svg%3E")
+      4 4,
     auto !important;
+}
+
+/* Google Translate: Banner, Tooltips, Bewertungs-Leiste („Diese Übersetzung bewerten“) ausblenden */
+.goog-te-ftab,
+.goog-te-spinner-pos,
+.goog-te-banner-frame,
+iframe.goog-te-banner-frame,
+#goog-gt-tt,
+.goog-te-balloon-frame,
+.goog-te-menu-frame,
+.goog-tooltip,
+.goog-tooltip:hover {
+  display: none !important;
+  visibility: hidden !important;
+  height: 0 !important;
+  max-height: 0 !important;
+  overflow: hidden !important;
+  pointer-events: none !important;
+  opacity: 0 !important;
+}
+
+/* Abstand durch ausgeblendeten Banner zurücksetzen */
+html.translated-ltr body,
+html.translated-rtl body {
+  top: 0 !important;
+  margin-top: 0 !important;
+  padding-top: 0 !important;
 }
 
 /* Scrollbar ausblenden, Scrollen bleibt möglich */

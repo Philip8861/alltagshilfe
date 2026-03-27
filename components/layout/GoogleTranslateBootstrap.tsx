@@ -4,14 +4,16 @@ import { useEffect } from "react";
 
 const STORAGE_KEY_SITE_LANG = "ahs_site_lang";
 
+type TranslateElementCtor = new (
+  options: { pageLanguage: string; autoDisplay?: boolean; includedLanguages?: string; layout?: number },
+  id: string,
+) => unknown;
+
 declare global {
   interface Window {
     google?: {
       translate?: {
-        TranslateElement: new (
-          options: { pageLanguage: string; autoDisplay?: boolean; includedLanguages?: string },
-          id: string,
-        ) => unknown;
+        TranslateElement: TranslateElementCtor & { InlineLayout?: { SIMPLE?: number } };
       };
     };
     googleTranslateElementInit?: () => void;
@@ -60,9 +62,16 @@ export function GoogleTranslateBootstrap() {
       return;
     }
     window.googleTranslateElementInit = () => {
-      if (!window.google?.translate?.TranslateElement) return;
-      new window.google.translate.TranslateElement(
-        { pageLanguage: "de", autoDisplay: false, includedLanguages: "de,en" },
+      const Ctor = window.google?.translate?.TranslateElement;
+      if (!Ctor) return;
+      const simpleLayout = Ctor.InlineLayout?.SIMPLE;
+      new Ctor(
+        {
+          pageLanguage: "de",
+          autoDisplay: false,
+          includedLanguages: "de,en",
+          ...(typeof simpleLayout === "number" ? { layout: simpleLayout } : {}),
+        },
         "google_translate_element_hidden",
       );
       if (applyStoredLanguage()) return;
