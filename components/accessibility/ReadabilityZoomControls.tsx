@@ -223,7 +223,7 @@ export function ReadabilityZoomControls() {
               setOpen(false);
             }}
             aria-label="Lesbarkeits-Widget schließen"
-          className="absolute -top-5 left-1/2 inline-flex h-7 w-7 -translate-x-1/2 items-center justify-center rounded-full bg-[#0F4F68] text-white shadow-[0_10px_20px_rgba(15,79,104,0.25)] transition hover:opacity-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68] focus-visible:ring-offset-2"
+            className="absolute -left-2 -top-8 inline-flex h-7 w-7 items-center justify-center rounded-full bg-[#0F4F68] text-white shadow-[0_10px_20px_rgba(15,79,104,0.25)] transition hover:opacity-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68] focus-visible:ring-offset-2"
           >
           <span aria-hidden className="text-lg leading-none font-extrabold">
               ×
@@ -268,7 +268,7 @@ export function ReadabilityZoomControls() {
 
       {open && (
         <div
-          className="fixed inset-0 flex items-center justify-center bg-[#0F4F68]/66 p-4 backdrop-blur-[2px]"
+          className="fixed inset-0 flex items-center justify-center bg-[#0F4F68]/78 p-4 backdrop-blur-[3px]"
           style={{ zIndex: 2147483647 }}
           onClick={() => setOpen(false)}
           aria-hidden
@@ -276,13 +276,13 @@ export function ReadabilityZoomControls() {
           <div
             role="menu"
             aria-label="Barrierefreie Einstellungen"
-            className="w-full max-w-md rounded-3xl border border-[#0F4F68]/25 bg-white/95 p-6 shadow-[0_12px_30px_rgba(15,79,104,0.18)] backdrop-blur"
+            className="w-full max-h-[88vh] max-w-3xl overflow-y-auto rounded-3xl border border-[#0F4F68]/22 bg-white p-8 shadow-[0_18px_55px_rgba(15,79,104,0.26)] sm:p-10"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-start justify-between gap-3">
               <div>
-                <p className="text-sm font-bold text-[#0F4F68]">Lesbarkeit</p>
-                <p className="mt-1 text-xs text-neutral-600">Einstellungen für bessere Sicht und weniger Aufwand.</p>
+                <p className="text-lg font-extrabold text-[#0F4F68] sm:text-xl">Lesbarkeit</p>
+                <p className="mt-1 text-sm text-neutral-600 sm:text-base">Einstellungen für bessere Sicht und weniger Aufwand.</p>
               </div>
               <button
                 type="button"
@@ -296,9 +296,9 @@ export function ReadabilityZoomControls() {
               </button>
             </div>
 
-            <div className="mt-4 space-y-4">
+            <div className="mt-6 space-y-6">
               <div>
-                <label className="block text-xs font-semibold text-[#0F4F68]" htmlFor="zoom-range">
+                <label className="block text-sm font-semibold text-[#0F4F68]" htmlFor="zoom-range">
                   Schriftgröße ({zoomLevel}%)
                 </label>
                 <input
@@ -311,18 +311,18 @@ export function ReadabilityZoomControls() {
                   onChange={(e) => updateZoom(Number.parseInt(e.target.value, 10))}
                   className="mt-2 w-full accent-[#F78F2E]"
                 />
-                <div className="mt-2 flex gap-2">
+                <div className="mt-3 flex gap-3">
                   <button
                     type="button"
                     onClick={() => updateZoom(zoomLevel - STEP)}
-                    className="flex-1 rounded-xl border border-[#0F4F68]/20 bg-white px-3 py-2 text-sm font-semibold text-[#0F4F68] transition hover:bg-[#F2F9FA] focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2"
+                    className="flex-1 rounded-xl border border-[#0F4F68]/20 bg-white px-4 py-3 text-base font-semibold text-[#0F4F68] transition hover:bg-[#F2F9FA] focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2"
                   >
                     Kleiner
                   </button>
                   <button
                     type="button"
                     onClick={() => updateZoom(zoomLevel + STEP)}
-                    className="flex-1 rounded-xl bg-[#F78F2E] px-3 py-2 text-sm font-semibold text-white transition hover:bg-[#e57f1f] focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2"
+                    className="flex-1 rounded-xl bg-[#F78F2E] px-4 py-3 text-base font-semibold text-white transition hover:bg-[#e57f1f] focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2"
                   >
                     Größer
                   </button>
@@ -330,14 +330,14 @@ export function ReadabilityZoomControls() {
                 <button
                   type="button"
                   onClick={reset}
-                  className="mt-2 w-full rounded-xl border border-[#0F4F68]/20 bg-white px-3 py-2 text-sm font-semibold text-[#0F4F68] transition hover:bg-[#F2F9FA] focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2"
+                  className="mt-3 w-full rounded-xl border border-[#0F4F68]/20 bg-white px-4 py-3 text-base font-semibold text-[#0F4F68] transition hover:bg-[#F2F9FA] focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2"
                 >
                   Zurücksetzen
                 </button>
               </div>
 
-              <div className="space-y-3">
-                <label className="flex cursor-pointer items-start gap-3 rounded-xl border border-[#0F4F68]/10 bg-[#F2F9FA]/40 p-3">
+              <div className="space-y-4">
+                <label className="flex cursor-pointer items-start gap-3 rounded-xl border border-[#0F4F68]/10 bg-[#F2F9FA]/40 p-4">
                   <input
                     type="checkbox"
                     checked={highContrast}
@@ -349,12 +349,12 @@ export function ReadabilityZoomControls() {
                     className="mt-1 h-5 w-5 accent-[#F78F2E]"
                   />
                   <span>
-                    <span className="block text-sm font-bold text-[#0F4F68]">Hoher Kontrast</span>
-                    <span className="block text-xs text-neutral-600">Für mehr Lesbarkeit bei hellem/unklarem Hintergrund.</span>
+                    <span className="block text-base font-bold text-[#0F4F68]">Hoher Kontrast</span>
+                    <span className="block text-sm text-neutral-600">Für mehr Lesbarkeit bei hellem/unklarem Hintergrund.</span>
                   </span>
                 </label>
 
-                <label className="flex cursor-pointer items-start gap-3 rounded-xl border border-[#0F4F68]/10 bg-[#F2F9FA]/40 p-3">
+                <label className="flex cursor-pointer items-start gap-3 rounded-xl border border-[#0F4F68]/10 bg-[#F2F9FA]/40 p-4">
                   <input
                     type="checkbox"
                     checked={reduceMotion}
@@ -366,12 +366,12 @@ export function ReadabilityZoomControls() {
                     className="mt-1 h-5 w-5 accent-[#F78F2E]"
                   />
                   <span>
-                    <span className="block text-sm font-bold text-[#0F4F68]">Animation reduzieren</span>
-                    <span className="block text-xs text-neutral-600">Weniger Bewegung, mehr Ruhe beim Lesen.</span>
+                    <span className="block text-base font-bold text-[#0F4F68]">Animation reduzieren</span>
+                    <span className="block text-sm text-neutral-600">Weniger Bewegung, mehr Ruhe beim Lesen.</span>
                   </span>
                 </label>
 
-                <label className="flex cursor-pointer items-start gap-3 rounded-xl border border-[#0F4F68]/10 bg-[#F2F9FA]/40 p-3">
+                <label className="flex cursor-pointer items-start gap-3 rounded-xl border border-[#0F4F68]/10 bg-[#F2F9FA]/40 p-4">
                   <input
                     type="checkbox"
                     checked={expandedLineHeight}
@@ -383,8 +383,8 @@ export function ReadabilityZoomControls() {
                     className="mt-1 h-5 w-5 accent-[#F78F2E]"
                   />
                   <span>
-                    <span className="block text-sm font-bold text-[#0F4F68]">Mehr Zeilenabstand</span>
-                    <span className="block text-xs text-neutral-600">Hilft beim Mitlesen und Verstehen.</span>
+                    <span className="block text-base font-bold text-[#0F4F68]">Mehr Zeilenabstand</span>
+                    <span className="block text-sm text-neutral-600">Hilft beim Mitlesen und Verstehen.</span>
                   </span>
                 </label>
               </div>
