@@ -5,9 +5,8 @@ import { useEffect, useMemo, useRef, useState, type CSSProperties } from "react"
 import { usePathname } from "next/navigation";
 import { AHS_READABILITY_OPEN_EVENT } from "@/components/accessibility/ReadabilityLaunchLink";
 
-/** Kräftiges Blau auf heller Kachel — maximal sichtbar */
-const ICON_STROKE = "#0F4F68";
-const ACCENT_BORDER = "#F78F2E";
+const ICON_STROKE = "#FFFFFF";
+const ICON_BG = "#0F4F68";
 
 const STORAGE_KEY_LEVEL = "ahs_readability_zoom_level";
 const STORAGE_KEY_CONTRAST = "ahs_readability_high_contrast";
@@ -156,15 +155,15 @@ export function ReadabilityZoomControls() {
               setShowUndo(false);
             }}
             aria-label="Lesbarkeits-Widget wieder einblenden"
-            className="flex h-14 w-14 items-center justify-center rounded-2xl border-[3px] bg-white shadow-[0_10px_36px_rgba(15,79,104,0.28)] transition hover:bg-[#F2F9FA] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68] focus-visible:ring-offset-2"
-            style={{ borderColor: ACCENT_BORDER }}
+            className="flex h-7 w-7 items-center justify-center rounded-lg shadow-[0_8px_18px_rgba(15,79,104,0.34)] transition hover:opacity-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68] focus-visible:ring-offset-2"
+            style={{ backgroundColor: ICON_BG }}
           >
             <svg
-              className="h-8 w-8"
+              className="h-4 w-4"
               viewBox="0 0 24 24"
               fill="none"
               stroke={ICON_STROKE}
-              strokeWidth="2.75"
+              strokeWidth="2.5"
               strokeLinecap="round"
               strokeLinejoin="round"
               aria-hidden
@@ -182,11 +181,11 @@ export function ReadabilityZoomControls() {
             aria-haspopup="menu"
             aria-expanded={open}
             aria-label={`Lesbarkeit Einstellungen öffnen. Aktuelle Schriftgröße: ${zoomLevel}%`}
-            className="flex min-h-[60px] min-w-[60px] flex-col items-center justify-center gap-0.5 rounded-2xl border-[3px] bg-white px-3 py-2 shadow-[0_10px_36px_rgba(15,79,104,0.28)] transition hover:bg-[#F2F9FA] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68] focus-visible:ring-offset-2"
-            style={{ borderColor: ACCENT_BORDER }}
+            className="flex min-h-[60px] min-w-[60px] flex-col items-center justify-center gap-0.5 rounded-2xl px-3 py-2 shadow-[0_10px_36px_rgba(15,79,104,0.34)] transition hover:opacity-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68] focus-visible:ring-offset-2"
+            style={{ backgroundColor: ICON_BG }}
           >
             <svg
-              className="h-8 w-8 shrink-0"
+              className="h-7 w-7 shrink-0"
               viewBox="0 0 24 24"
               fill="none"
               stroke={ICON_STROKE}
@@ -198,10 +197,7 @@ export function ReadabilityZoomControls() {
               <path d="M21 21l-4.35-4.35" />
               <circle cx="11" cy="11" r="7" />
             </svg>
-            <span className="text-[16px] font-extrabold tracking-wide text-[#0F4F68]">{zoomLevel}%</span>
-            <span className="max-w-[5.5rem] text-center text-[10px] font-semibold leading-tight text-neutral-600">
-              Lesbarkeit
-            </span>
+            <span className="text-[15px] font-extrabold tracking-wide text-white">{zoomLevel}%</span>
           </button>
 
           <button
@@ -212,9 +208,9 @@ export function ReadabilityZoomControls() {
               setOpen(false);
             }}
             aria-label="Lesbarkeits-Widget schließen"
-            className="absolute -right-1 -top-1 inline-flex h-9 w-9 items-center justify-center rounded-full bg-[#0F4F68] text-white shadow-[0_10px_20px_rgba(15,79,104,0.25)] transition hover:opacity-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68] focus-visible:ring-offset-2"
+          className="absolute -top-5 left-1/2 inline-flex h-7 w-7 -translate-x-1/2 items-center justify-center rounded-full bg-[#0F4F68] text-white shadow-[0_10px_20px_rgba(15,79,104,0.25)] transition hover:opacity-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68] focus-visible:ring-offset-2"
           >
-            <span aria-hidden className="text-2xl leading-none font-extrabold">
+          <span aria-hidden className="text-lg leading-none font-extrabold">
               ×
             </span>
           </button>
