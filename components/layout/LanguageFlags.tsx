@@ -3,6 +3,7 @@
 import { useState } from "react";
 
 const STORAGE_KEY_SITE_LANG = "ahs_site_lang";
+const STORAGE_KEY_REOPEN_READABILITY = "ahs_reopen_readability_popup";
 
 function setTranslateCookie(lang: "de" | "en") {
   const value = `/de/${lang}`;
@@ -45,6 +46,11 @@ function applyLanguage(lang: "de" | "en") {
   const targetPath = lang === "en" ? (normalizedPath === "/" ? "/en" : `/en${normalizedPath}`) : normalizedPath;
   const targetUrl = `${targetPath}${window.location.search}${window.location.hash}`;
   if (targetUrl !== `${window.location.pathname}${window.location.search}${window.location.hash}`) {
+    try {
+      sessionStorage.setItem(STORAGE_KEY_REOPEN_READABILITY, "1");
+    } catch {
+      // ignore session storage errors
+    }
     window.location.assign(targetUrl);
     return;
   }

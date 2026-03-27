@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { Container } from "@/components/layout/Container";
 import { siteConfig } from "@/config/site";
 
@@ -29,6 +30,18 @@ export default function PflegeberatungPage() {
             <p className="mt-4 max-w-3xl text-neutral-600">
               In der privaten Pflegeberatung beraten wir Sie und Ihre Angehörigen zu allen Themen der Pflege: von der Antragstellung über Leistungen der Pflegekasse bis zur Organisation der Pflege zu Hause oder in einer Einrichtung. Wir nehmen uns Zeit für Ihre individuelle Situation.
             </p>
+            <div className="mt-6 rounded-xl border border-[#0F4F68]/15 bg-[#F2F9FA]/45 p-4">
+              <p className="text-sm font-semibold text-[#0F4F68]">Neu: Online Videoberatung</p>
+              <p className="mt-1 text-sm text-neutral-700">
+                Beratungsgespräch per sicherem Videocall mit Einladungslink und persönlichem Gesprächscode.
+              </p>
+              <Link
+                href="/pflegeberatung/online-videoberatung"
+                className="mt-3 inline-flex min-h-[42px] items-center justify-center rounded-xl bg-[#0F4F68] px-4 py-2 text-sm font-semibold text-white hover:bg-[#0c3d52]"
+              >
+                Online Videoberatung starten
+              </Link>
+            </div>
           </section>
 
           <section id="betriebliche-pflegeberatung" aria-labelledby="betrieblich-heading">

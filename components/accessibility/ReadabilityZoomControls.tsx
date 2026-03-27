@@ -18,6 +18,7 @@ const STORAGE_KEY_READ_ALOUD = "ahs_readability_read_aloud_mode";
 const STORAGE_KEY_BRIGHT_PAGE = "ahs_readability_bright_page";
 const STORAGE_KEY_CURSOR_ENHANCED = "ahs_readability_cursor_enhanced";
 const STORAGE_KEY_SITE_LANG = "ahs_site_lang";
+const STORAGE_KEY_REOPEN_READABILITY = "ahs_reopen_readability_popup";
 const MIN_ZOOM = 90;
 const MAX_ZOOM = 150;
 const STEP = 5;
@@ -79,6 +80,16 @@ export function ReadabilityZoomControls() {
 
   useEffect(() => {
     setMounted(true);
+    try {
+      if (sessionStorage.getItem(STORAGE_KEY_REOPEN_READABILITY) === "1") {
+        sessionStorage.removeItem(STORAGE_KEY_REOPEN_READABILITY);
+        setWidgetHidden(false);
+        setShowUndo(false);
+        setOpen(true);
+      }
+    } catch {
+      // ignore session storage errors
+    }
   }, []);
 
   useEffect(() => {
