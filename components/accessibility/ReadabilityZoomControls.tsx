@@ -268,7 +268,7 @@ export function ReadabilityZoomControls() {
 
       {open && (
         <div
-          className="fixed inset-0 flex items-center justify-center bg-[#0F4F68]/78 p-4 backdrop-blur-[3px]"
+          className="fixed inset-0 flex items-center justify-end bg-[#0F4F68]/38 p-3 sm:p-4"
           style={{ zIndex: 2147483647 }}
           onClick={() => setOpen(false)}
           aria-hidden
@@ -276,13 +276,13 @@ export function ReadabilityZoomControls() {
           <div
             role="menu"
             aria-label="Barrierefreie Einstellungen"
-            className="w-full max-h-[88vh] max-w-3xl overflow-y-auto rounded-3xl border border-[#0F4F68]/22 bg-white p-8 shadow-[0_18px_55px_rgba(15,79,104,0.26)] sm:p-10"
+            className="w-[min(94vw,34rem)] max-h-[92vh] overflow-y-auto rounded-3xl border border-[#0F4F68]/18 bg-white/96 p-5 shadow-[0_12px_35px_rgba(15,79,104,0.2)] sm:p-6"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-start justify-between gap-3">
               <div>
-                <p className="text-lg font-extrabold text-[#0F4F68] sm:text-xl">Lesbarkeit</p>
-                <p className="mt-1 text-sm text-neutral-600 sm:text-base">Einstellungen für bessere Sicht und weniger Aufwand.</p>
+                <p className="text-lg font-extrabold text-[#0F4F68] sm:text-xl">Barrierefreie Homepage</p>
+                <p className="mt-1 text-sm text-neutral-600">Passen Sie die Darstellung so an, dass Veränderungen im Hintergrund gut sichtbar bleiben.</p>
               </div>
               <button
                 type="button"
@@ -296,9 +296,10 @@ export function ReadabilityZoomControls() {
               </button>
             </div>
 
-            <div className="mt-6 space-y-6">
-              <div>
-                <label className="block text-sm font-semibold text-[#0F4F68]" htmlFor="zoom-range">
+            <div className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-3">
+              <section className="rounded-2xl border border-[#0F4F68]/10 bg-[#F2F9FA]/45 p-3">
+                <h4 className="text-sm font-bold text-[#0F4F68]">Schriftgröße & Art</h4>
+                <label className="mt-3 block text-xs font-semibold text-[#0F4F68]" htmlFor="zoom-range">
                   Schriftgröße ({zoomLevel}%)
                 </label>
                 <input
@@ -311,18 +312,18 @@ export function ReadabilityZoomControls() {
                   onChange={(e) => updateZoom(Number.parseInt(e.target.value, 10))}
                   className="mt-2 w-full accent-[#F78F2E]"
                 />
-                <div className="mt-3 flex gap-3">
+                <div className="mt-2 flex gap-2">
                   <button
                     type="button"
                     onClick={() => updateZoom(zoomLevel - STEP)}
-                    className="flex-1 rounded-xl border border-[#0F4F68]/20 bg-white px-4 py-3 text-base font-semibold text-[#0F4F68] transition hover:bg-[#F2F9FA] focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2"
+                    className="flex-1 rounded-xl border border-[#0F4F68]/20 bg-white px-3 py-2 text-sm font-semibold text-[#0F4F68] transition hover:bg-[#F2F9FA] focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2"
                   >
                     Kleiner
                   </button>
                   <button
                     type="button"
                     onClick={() => updateZoom(zoomLevel + STEP)}
-                    className="flex-1 rounded-xl bg-[#F78F2E] px-4 py-3 text-base font-semibold text-white transition hover:bg-[#e57f1f] focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2"
+                    className="flex-1 rounded-xl bg-[#F78F2E] px-3 py-2 text-sm font-semibold text-white transition hover:bg-[#e57f1f] focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2"
                   >
                     Größer
                   </button>
@@ -330,13 +331,14 @@ export function ReadabilityZoomControls() {
                 <button
                   type="button"
                   onClick={reset}
-                  className="mt-3 w-full rounded-xl border border-[#0F4F68]/20 bg-white px-4 py-3 text-base font-semibold text-[#0F4F68] transition hover:bg-[#F2F9FA] focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2"
+                  className="mt-2 w-full rounded-xl border border-[#0F4F68]/20 bg-white px-3 py-2 text-sm font-semibold text-[#0F4F68] transition hover:bg-[#F2F9FA] focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2"
                 >
                   Zurücksetzen
                 </button>
-              </div>
+              </section>
 
-              <div className="space-y-4">
+              <section className="rounded-2xl border border-[#0F4F68]/10 bg-[#F2F9FA]/45 p-3">
+                <h4 className="text-sm font-bold text-[#0F4F68]">Farben</h4>
                 <label className="flex cursor-pointer items-start gap-3 rounded-xl border border-[#0F4F68]/10 bg-[#F2F9FA]/40 p-4">
                   <input
                     type="checkbox"
@@ -349,11 +351,14 @@ export function ReadabilityZoomControls() {
                     className="mt-1 h-5 w-5 accent-[#F78F2E]"
                   />
                   <span>
-                    <span className="block text-base font-bold text-[#0F4F68]">Hoher Kontrast</span>
+                    <span className="block text-sm font-bold text-[#0F4F68]">Hoher Kontrast</span>
                     <span className="block text-sm text-neutral-600">Für mehr Lesbarkeit bei hellem/unklarem Hintergrund.</span>
                   </span>
                 </label>
+              </section>
 
+              <section className="rounded-2xl border border-[#0F4F68]/10 bg-[#F2F9FA]/45 p-3">
+                <h4 className="text-sm font-bold text-[#0F4F68]">Ton</h4>
                 <label className="flex cursor-pointer items-start gap-3 rounded-xl border border-[#0F4F68]/10 bg-[#F2F9FA]/40 p-4">
                   <input
                     type="checkbox"
@@ -366,8 +371,8 @@ export function ReadabilityZoomControls() {
                     className="mt-1 h-5 w-5 accent-[#F78F2E]"
                   />
                   <span>
-                    <span className="block text-base font-bold text-[#0F4F68]">Animation reduzieren</span>
-                    <span className="block text-sm text-neutral-600">Weniger Bewegung, mehr Ruhe beim Lesen.</span>
+                    <span className="block text-sm font-bold text-[#0F4F68]">Ruhiger Modus</span>
+                    <span className="block text-sm text-neutral-600">Weniger Bewegung und visuelle Reize für konzentrierteres Lesen.</span>
                   </span>
                 </label>
 
@@ -383,11 +388,11 @@ export function ReadabilityZoomControls() {
                     className="mt-1 h-5 w-5 accent-[#F78F2E]"
                   />
                   <span>
-                    <span className="block text-base font-bold text-[#0F4F68]">Mehr Zeilenabstand</span>
+                    <span className="block text-sm font-bold text-[#0F4F68]">Mehr Zeilenabstand</span>
                     <span className="block text-sm text-neutral-600">Hilft beim Mitlesen und Verstehen.</span>
                   </span>
                 </label>
-              </div>
+              </section>
           </div>
           </div>
         </div>
