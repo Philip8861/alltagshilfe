@@ -68,6 +68,7 @@ export function ReadabilityZoomControls() {
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [hasReadOnce, setHasReadOnce] = useState(false);
   const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
+  const stopRequestedRef = useRef(false);
 
   useEffect(() => {
     setMounted(true);
@@ -173,28 +174,60 @@ export function ReadabilityZoomControls() {
   const startReading = () => {
     const text = getReadablePageText();
     if (!text) return;
+    stopRequestedRef.current = false;
     window.speechSynthesis.cancel();
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = "de-DE";
-    utterance.rate = 0.82;
-    utterance.pitch = 1;
-    utterance.volume = 1;
-    utterance.onend = () => {
-      setIsSpeaking(false);
-      setHasReadOnce(true);
-      utteranceRef.current = null;
+    window.speechSynthesis.resume();
+
+    // Lange Texte in stabile, kurze Abschnitte teilen.
+    const rawSentences = text
+      .replace(/\s+/g, " ")
+      .split(/(?<=[.!?])\s+/)
+      .map((s) => s.trim())
+      .filter(Boolean);
+    const chunks: string[] = [];
+    let current = "";
+    for (const sentence of rawSentences) {
+      const next = current ? `${current} ${sentence}` : sentence;
+      if (next.length > 220 && current) {
+        chunks.push(current);
+        current = sentence;
+      } else {
+        current = next;
+      }
+    }
+    if (current) chunks.push(current);
+    if (chunks.length === 0) return;
+
+    let idx = 0;
+    const speakNext = () => {
+      if (stopRequestedRef.current || idx >= chunks.length) {
+        setIsSpeaking(false);
+        utteranceRef.current = null;
+        return;
+      }
+      const utterance = new SpeechSynthesisUtterance(chunks[idx]);
+      utterance.lang = "de-DE";
+      utterance.rate = 0.82;
+      utterance.pitch = 1;
+      utterance.volume = 1;
+      utterance.onend = () => {
+        idx += 1;
+        speakNext();
+      };
+      utterance.onerror = () => {
+        setIsSpeaking(false);
+        utteranceRef.current = null;
+      };
+      utteranceRef.current = utterance;
+      window.speechSynthesis.speak(utterance);
     };
-    utterance.onerror = () => {
-      setIsSpeaking(false);
-      utteranceRef.current = null;
-    };
-    utteranceRef.current = utterance;
-    window.speechSynthesis.speak(utterance);
+    speakNext();
     setIsSpeaking(true);
     setHasReadOnce(true);
   };
 
   const stopReading = () => {
+    stopRequestedRef.current = true;
     window.speechSynthesis.cancel();
     utteranceRef.current = null;
     setIsSpeaking(false);
