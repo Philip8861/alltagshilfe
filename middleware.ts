@@ -32,12 +32,12 @@ export function middleware(request: NextRequest) {
 
     const csp = [
       "default-src 'self'",
-      "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://translate.google.com https://translate.googleapis.com https://www.google.com https://www.gstatic.com",
+      "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://translate.google.com https://translate.googleapis.com https://www.google.com https://www.gstatic.com https://meet.jit.si",
       "style-src 'self' 'unsafe-inline' https://translate.googleapis.com https://translate.google.com https://www.google.com",
       "img-src 'self' data: https:",
       "font-src 'self' https://fonts.gstatic.com https://www.gstatic.com",
-      "connect-src 'self' https://translate.google.com https://translate.googleapis.com https://www.google.com https://www.gstatic.com",
-      "frame-src 'self' https://translate.google.com https://translate.googleapis.com https://*.google.com",
+      "connect-src 'self' https://translate.google.com https://translate.googleapis.com https://www.google.com https://www.gstatic.com https://meet.jit.si wss://meet.jit.si",
+      "frame-src 'self' https://translate.google.com https://translate.googleapis.com https://*.google.com https://meet.jit.si",
       "frame-ancestors 'self'",
       "base-uri 'self'",
       "form-action 'self'",

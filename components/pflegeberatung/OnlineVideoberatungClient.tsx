@@ -70,29 +70,42 @@ export function OnlineVideoberatungClient() {
   const ensureScript = async () => {
     if (window.JitsiMeetExternalAPI) return;
     await new Promise<void>((resolve, reject) => {
+      let settled = false;
+      const finish = (fn: () => void) => {
+        if (settled) return;
+        settled = true;
+        window.clearTimeout(timeout);
+        window.clearInterval(poll);
+        fn();
+      };
+
       const timeout = window.setTimeout(() => {
-        reject(new Error("Jitsi-Laden Timeout"));
+        finish(() => reject(new Error("Jitsi-Laden Timeout")));
       }, 20000);
+
+      const poll = window.setInterval(() => {
+        if (window.JitsiMeetExternalAPI) {
+          finish(() => resolve());
+        }
+      }, 200);
+
       const existing = document.getElementById("jitsi-api-script") as HTMLScriptElement | null;
       if (existing) {
         if (window.JitsiMeetExternalAPI || existing.getAttribute("data-loaded") === "1") {
-          window.clearTimeout(timeout);
-          resolve();
+          finish(() => resolve());
           return;
         }
         existing.addEventListener(
           "load",
           () => {
-            window.clearTimeout(timeout);
-            resolve();
+            finish(() => resolve());
           },
           { once: true },
         );
         existing.addEventListener(
           "error",
           () => {
-            window.clearTimeout(timeout);
-            reject(new Error("Jitsi konnte nicht geladen werden."));
+            finish(() => reject(new Error("Jitsi konnte nicht geladen werden.")));
           },
           { once: true },
         );
@@ -104,12 +117,10 @@ export function OnlineVideoberatungClient() {
       script.async = true;
       script.onload = () => {
         script.setAttribute("data-loaded", "1");
-        window.clearTimeout(timeout);
-        resolve();
+        finish(() => resolve());
       };
       script.onerror = () => {
-        window.clearTimeout(timeout);
-        reject(new Error("Jitsi konnte nicht geladen werden."));
+        finish(() => reject(new Error("Jitsi konnte nicht geladen werden.")));
       };
       document.body.appendChild(script);
     });
@@ -185,6 +196,12 @@ export function OnlineVideoberatungClient() {
     setError("");
     setExternalJoinUrl("");
     setJoining(true);
+    const fallbackUrl = `https://meet.jit.si/${encodeURIComponent(roomCode)}#userInfo.displayName=${encodeURIComponent(displayName.trim())}`;
+    const joinWatchdog = window.setTimeout(() => {
+      setJoining(false);
+      setExternalJoinUrl(fallbackUrl);
+      setError("Der Start dauert zu lange. Bitte den Call über den Button im neuen Tab öffnen.");
+    }, 25000);
     try {
       await ensureScript();
       if (!window.JitsiMeetExternalAPI) throw new Error("Video-API nicht verfügbar.");
@@ -226,8 +243,9 @@ export function OnlineVideoberatungClient() {
       });
       jitsiRef.current = api;
       setJoined(true);
+      window.clearTimeout(joinWatchdog);
     } catch {
-      const fallbackUrl = `https://meet.jit.si/${encodeURIComponent(roomCode)}#userInfo.displayName=${encodeURIComponent(displayName.trim())}`;
+      window.clearTimeout(joinWatchdog);
       setExternalJoinUrl(fallbackUrl);
       setError("Der eingebettete Start wurde blockiert. Sie können den Call unten manuell im neuen Tab öffnen.");
     } finally {
