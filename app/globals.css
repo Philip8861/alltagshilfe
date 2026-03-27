@@ -108,6 +108,10 @@
   filter: grayscale(1) contrast(1.03);
 }
 
+.bright-page #app-shell {
+  filter: brightness(1.12) contrast(1.08);
+}
+
 .reduce-motion #app-shell * {
   animation-duration: 0.01ms !important;
   animation-delay: 0.01ms !important;
@@ -119,6 +123,18 @@
 .readability-adjusted-spacing #app-shell {
   line-height: var(--ahs-line-height, 1.6) !important;
   letter-spacing: var(--ahs-letter-spacing, 0.01em) !important;
+}
+
+.readability-adjusted-spacing #app-shell,
+.readability-adjusted-spacing #app-shell * {
+  font-family: var(--ahs-font-family, "Nunito Sans", system-ui, sans-serif) !important;
+}
+
+.cursor-enhanced,
+.cursor-enhanced * {
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='46' height='46' viewBox='0 0 46 46'%3E%3Cdefs%3E%3CradialGradient id='g' cx='50%25' cy='50%25' r='50%25'%3E%3Cstop offset='0%25' stop-color='%23F78F2E' stop-opacity='0.95'/%3E%3Cstop offset='70%25' stop-color='%23F78F2E' stop-opacity='0.28'/%3E%3Cstop offset='100%25' stop-color='%23F78F2E' stop-opacity='0'/%3E%3C/radialGradient%3E%3C/defs%3E%3Ccircle cx='23' cy='23' r='20' fill='url(%23g)'/%3E%3Ccircle cx='23' cy='23' r='8' fill='none' stroke='%230F4F68' stroke-width='3'/%3E%3Ccircle cx='23' cy='23' r='2.4' fill='%230F4F68'/%3E%3C/svg%3E")
+      23 23,
+    auto !important;
 }
 
 /* Scrollbar ausblenden, Scrollen bleibt möglich */

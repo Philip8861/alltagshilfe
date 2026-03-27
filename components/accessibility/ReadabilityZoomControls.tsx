@@ -15,12 +15,13 @@ const STORAGE_KEY_LINE_HEIGHT = "ahs_readability_line_height";
 const STORAGE_KEY_BW_MODE = "ahs_readability_bw_mode";
 const STORAGE_KEY_FONT = "ahs_readability_font_family";
 const STORAGE_KEY_READ_ALOUD = "ahs_readability_read_aloud_mode";
-const STORAGE_KEY_VOICE_URI = "ahs_readability_voice_uri";
+const STORAGE_KEY_BRIGHT_PAGE = "ahs_readability_bright_page";
+const STORAGE_KEY_CURSOR_ENHANCED = "ahs_readability_cursor_enhanced";
 const MIN_ZOOM = 90;
-const MAX_ZOOM = 130;
+const MAX_ZOOM = 150;
 const STEP = 5;
 const MIN_LINE_HEIGHT = 100;
-const MAX_LINE_HEIGHT = 145;
+const MAX_LINE_HEIGHT = 200;
 const LINE_HEIGHT_STEP = 5;
 
 const FONT_OPTIONS = [
@@ -61,6 +62,8 @@ export function ReadabilityZoomControls() {
   const [lineHeightLevel, setLineHeightLevel] = useState(100);
   const [selectedFont, setSelectedFont] = useState<(typeof FONT_OPTIONS)[number]["id"]>("nunito");
   const [readAloudMode, setReadAloudMode] = useState(false);
+  const [brightPage, setBrightPage] = useState(false);
+  const [enhancedCursor, setEnhancedCursor] = useState(false);
   const [open, setOpen] = useState(false);
   const panelRef = useRef<HTMLDivElement>(null);
   const [widgetHidden, setWidgetHidden] = useState(false);
@@ -69,8 +72,6 @@ export function ReadabilityZoomControls() {
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [hasReadOnce, setHasReadOnce] = useState(false);
   const [readAloudError, setReadAloudError] = useState("");
-  const [availableVoices, setAvailableVoices] = useState<SpeechSynthesisVoice[]>([]);
-  const [selectedVoiceURI, setSelectedVoiceURI] = useState<string>("");
   const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
   const stopRequestedRef = useRef(false);
   const speakingRef = useRef(false);
@@ -108,7 +109,6 @@ export function ReadabilityZoomControls() {
     applyZoom(nextLevel);
     const storedContrast = window.localStorage.getItem(STORAGE_KEY_CONTRAST) === "1";
     const storedBwMode = window.localStorage.getItem(STORAGE_KEY_BW_MODE) === "1";
-    const storedReduceMotion = window.localStorage.getItem(STORAGE_KEY_REDUCE_MOTION) === "1";
     const storedLineHeightRaw = window.localStorage.getItem(STORAGE_KEY_LINE_HEIGHT);
     const parsedLineHeight = storedLineHeightRaw ? Number.parseInt(storedLineHeightRaw, 10) : 100;
     const nextLineHeight = Number.isFinite(parsedLineHeight)
@@ -117,42 +117,30 @@ export function ReadabilityZoomControls() {
     const storedFont = window.localStorage.getItem(STORAGE_KEY_FONT);
     const validFont = FONT_OPTIONS.some((f) => f.id === storedFont) ? (storedFont as (typeof FONT_OPTIONS)[number]["id"]) : "nunito";
     const storedReadAloud = window.localStorage.getItem(STORAGE_KEY_READ_ALOUD) === "1";
-    const storedVoiceURI = window.localStorage.getItem(STORAGE_KEY_VOICE_URI) ?? "";
+    const storedBrightPage = window.localStorage.getItem(STORAGE_KEY_BRIGHT_PAGE) === "1";
+    const storedEnhancedCursor = window.localStorage.getItem(STORAGE_KEY_CURSOR_ENHANCED) === "1";
     setHighContrast(storedContrast);
     setBwMode(storedBwMode);
-    setReduceMotion(storedReduceMotion);
+    setReduceMotion(false);
     setLineHeightLevel(nextLineHeight);
     setSelectedFont(validFont);
     setReadAloudMode(storedReadAloud);
-    setSelectedVoiceURI(storedVoiceURI);
-  }, []);
-
-  useEffect(() => {
-    if (typeof window === "undefined" || !("speechSynthesis" in window)) return;
-    const synth = window.speechSynthesis;
-    const loadVoices = () => {
-      const voices = synth.getVoices();
-      if (voices.length > 0) {
-        setAvailableVoices(voices);
-      }
-    };
-    loadVoices();
-    synth.onvoiceschanged = loadVoices;
-    return () => {
-      synth.onvoiceschanged = null;
-    };
+    setBrightPage(storedBrightPage);
+    setEnhancedCursor(storedEnhancedCursor);
   }, []);
 
   useEffect(() => {
     const root = document.documentElement;
     root.classList.toggle("high-contrast", highContrast);
     root.classList.toggle("bw-mode", bwMode);
+    root.classList.toggle("bright-page", brightPage);
+    root.classList.toggle("cursor-enhanced", enhancedCursor);
     root.classList.toggle("reduce-motion", reduceMotion);
     root.classList.toggle("readability-adjusted-spacing", lineHeightLevel !== 100);
     root.style.setProperty("--ahs-line-height", `${lineHeightLevel / 100}`);
     root.style.setProperty("--ahs-letter-spacing", `${(lineHeightLevel - 100) / 1000}em`);
     root.style.setProperty("--ahs-font-family", FONT_OPTIONS.find((f) => f.id === selectedFont)?.value ?? FONT_OPTIONS[0].value);
-  }, [highContrast, bwMode, reduceMotion, lineHeightLevel, selectedFont]);
+  }, [highContrast, bwMode, brightPage, enhancedCursor, reduceMotion, lineHeightLevel, selectedFont]);
 
   useEffect(() => {
     if (!open) return;
@@ -240,37 +228,17 @@ export function ReadabilityZoomControls() {
     const getGermanVoice = () => {
       const voices = window.speechSynthesis.getVoices();
       if (!voices || voices.length === 0) return undefined;
-
-      if (selectedVoiceURI) {
-        const selected = voices.find((v) => v.voiceURI === selectedVoiceURI);
-        if (selected) return selected;
-      }
-
       const deVoices = voices.filter((v) => v.lang?.toLowerCase().startsWith("de"));
       if (deVoices.length === 0) {
         return voices.find((v) => v.default) ?? voices[0];
       }
-
-      const preferredPatterns = [
-        /katja|heda|conrad|stefan|vicki|helena/i, // häufig natürliche DE-Stimmen
-        /microsoft|google/i,
-        /natural|neural|premium|enhanced/i,
-      ];
-
-      const scored = deVoices
-        .map((voice) => {
-          const name = `${voice.name} ${voice.voiceURI}`.toLowerCase();
-          let score = 0;
-          preferredPatterns.forEach((pattern, idx) => {
-            if (pattern.test(name)) score += 12 - idx * 3;
-          });
-          if (voice.localService) score += 4;
-          if (voice.default) score += 3;
-          return { voice, score };
-        })
-        .sort((a, b) => b.score - a.score);
-
-      return scored[0]?.voice ?? deVoices[0];
+      const googleDeutsch = deVoices.find(
+        (v) =>
+          v.lang.toLowerCase() === "de-de" &&
+          `${v.name} ${v.voiceURI}`.toLowerCase().includes("google deutsch"),
+      );
+      if (googleDeutsch) return googleDeutsch;
+      return deVoices.find((v) => v.lang.toLowerCase() === "de-de") ?? deVoices[0];
     };
     const speakNext = () => {
       if (stopRequestedRef.current || idx >= chunks.length) {
@@ -334,6 +302,8 @@ export function ReadabilityZoomControls() {
     setLineHeightLevel(100);
     setSelectedFont("nunito");
     setReadAloudMode(false);
+    setBrightPage(false);
+    setEnhancedCursor(false);
     stopReading();
     setHasReadOnce(false);
     window.localStorage.setItem(STORAGE_KEY_CONTRAST, "0");
@@ -342,10 +312,19 @@ export function ReadabilityZoomControls() {
     window.localStorage.setItem(STORAGE_KEY_LINE_HEIGHT, "100");
     window.localStorage.setItem(STORAGE_KEY_FONT, "nunito");
     window.localStorage.setItem(STORAGE_KEY_READ_ALOUD, "0");
+    window.localStorage.setItem(STORAGE_KEY_BRIGHT_PAGE, "0");
+    window.localStorage.setItem(STORAGE_KEY_CURSOR_ENHANCED, "0");
   };
 
   const isKontakt = useMemo(() => pathname === "/kontakt", [pathname]);
   const hideLauncher = isKontakt || isKonfiguratorOpen;
+  const selectedFontIndex = FONT_OPTIONS.findIndex((f) => f.id === selectedFont);
+  const cycleFont = (direction: -1 | 1) => {
+    const nextIndex = (selectedFontIndex + direction + FONT_OPTIONS.length) % FONT_OPTIONS.length;
+    const nextFont = FONT_OPTIONS[nextIndex].id;
+    setSelectedFont(nextFont);
+    window.localStorage.setItem(STORAGE_KEY_FONT, nextFont);
+  };
 
   const buttonWrapStyle = useMemo(
     () =>
@@ -452,7 +431,7 @@ export function ReadabilityZoomControls() {
             <div className="flex items-start justify-between gap-3">
               <div>
                 <p className="text-lg font-extrabold text-[#0F4F68] sm:text-xl">Barrierefreie Homepage</p>
-                <p className="mt-1 text-sm text-neutral-600">Passen Sie die Darstellung so an, dass Veränderungen im Hintergrund gut sichtbar bleiben.</p>
+                <p className="mt-1 text-sm text-neutral-600">Hier können Sie ihre Darstellung ändern.</p>
               </div>
               <button type="button" onClick={() => setOpen(false)} className="rounded-lg p-2 text-neutral-600 hover:bg-neutral-50" aria-label="Einstellungen schließen">
                 <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden><path d="M18 6L6 18M6 6l12 12" strokeLinecap="round" strokeLinejoin="round" /></svg>
@@ -469,23 +448,36 @@ export function ReadabilityZoomControls() {
                   <button type="button" onClick={() => updateZoom(zoomLevel + STEP)} className="flex-1 rounded-xl bg-[#F78F2E] px-3 py-2 text-sm font-semibold text-white">+</button>
                 </div>
                 <button type="button" onClick={() => updateZoom(100)} className="mt-2 w-full rounded-xl border border-[#0F4F68]/20 bg-white px-3 py-2 text-sm font-semibold text-[#0F4F68]">Zurücksetzen</button>
-                <label className="mt-3 block text-xs font-semibold text-[#0F4F68]" htmlFor="font-family-select">Schriftart</label>
-                <select
-                  id="font-family-select"
-                  value={selectedFont}
-                  onChange={(e) => {
-                    const next = e.target.value as (typeof FONT_OPTIONS)[number]["id"];
-                    setSelectedFont(next);
-                    window.localStorage.setItem(STORAGE_KEY_FONT, next);
-                  }}
-                  className="mt-2 w-full rounded-xl border border-[#0F4F68]/20 bg-white px-3 py-2 text-sm text-[#0F4F68]"
-                >
-                  {FONT_OPTIONS.map((font) => (
-                    <option key={font.id} value={font.id}>{font.label}</option>
-                  ))}
-                </select>
-                <div className="mt-2 rounded-xl border border-[#0F4F68]/12 bg-white px-3 py-2 text-sm text-[#0F4F68]" style={{ fontFamily: FONT_OPTIONS.find((f) => f.id === selectedFont)?.value }}>
-                  Test
+                <label className="mt-3 block text-xs font-semibold text-[#0F4F68]">Schriftart</label>
+                <div className="mt-2 flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => cycleFont(-1)}
+                    aria-label="Vorherige Schriftart"
+                    className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-[#0F4F68]/20 bg-white text-[#0F4F68]"
+                  >
+                    ←
+                  </button>
+                  <p className="flex-1 text-center text-sm font-semibold text-[#0F4F68]">{FONT_OPTIONS[selectedFontIndex]?.label}</p>
+                  <button
+                    type="button"
+                    onClick={() => cycleFont(1)}
+                    aria-label="Nächste Schriftart"
+                    className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-[#0F4F68]/20 bg-white text-[#0F4F68]"
+                  >
+                    →
+                  </button>
+                </div>
+                <div className="mt-3 text-center text-2xl font-bold text-[#0F4F68]" style={{ fontFamily: FONT_OPTIONS.find((f) => f.id === selectedFont)?.value }}>
+                  Schriftart Test
+                </div>
+                <div className="mt-3 rounded-xl border border-[#0F4F68]/10 bg-[#F2F9FA]/40 p-4">
+                  <p className="text-sm font-bold text-[#0F4F68]">Zeilenabstand</p>
+                  <p className="mt-1 text-sm text-neutral-600">Aktuell: {lineHeightLevel}%</p>
+                  <div className="mt-2 flex gap-2">
+                    <button type="button" onClick={() => { const next = Math.max(MIN_LINE_HEIGHT, lineHeightLevel - LINE_HEIGHT_STEP); setLineHeightLevel(next); window.localStorage.setItem(STORAGE_KEY_LINE_HEIGHT, String(next)); }} className="flex-1 rounded-xl border border-[#0F4F68]/20 bg-white px-3 py-2 text-sm font-semibold text-[#0F4F68]">-</button>
+                    <button type="button" onClick={() => { const next = Math.min(MAX_LINE_HEIGHT, lineHeightLevel + LINE_HEIGHT_STEP); setLineHeightLevel(next); window.localStorage.setItem(STORAGE_KEY_LINE_HEIGHT, String(next)); }} className="flex-1 rounded-xl bg-[#F78F2E] px-3 py-2 text-sm font-semibold text-white">+</button>
+                  </div>
                 </div>
               </section>
 
@@ -499,47 +491,36 @@ export function ReadabilityZoomControls() {
                   <input type="checkbox" checked={bwMode} onChange={(e) => { const v = e.target.checked; setBwMode(v); window.localStorage.setItem(STORAGE_KEY_BW_MODE, v ? "1" : "0"); }} className="mt-1 h-5 w-5 accent-[#F78F2E]" />
                   <span><span className="block text-sm font-bold text-[#0F4F68]">Schwarz/Weiß-Modus</span><span className="block text-sm text-neutral-600">Reduziert Farben auf Graustufen für ruhigere Darstellung.</span></span>
                 </label>
-                <label className="mt-3 block text-xs font-semibold text-[#0F4F68]" htmlFor="read-voice-select">
-                  Stimme
+                <label className="mt-3 flex cursor-pointer items-start gap-3 rounded-xl border border-[#0F4F68]/10 bg-[#F2F9FA]/40 p-4">
+                  <input
+                    type="checkbox"
+                    checked={brightPage}
+                    onChange={(e) => {
+                      const v = e.target.checked;
+                      setBrightPage(v);
+                      window.localStorage.setItem(STORAGE_KEY_BRIGHT_PAGE, v ? "1" : "0");
+                    }}
+                    className="mt-1 h-5 w-5 accent-[#F78F2E]"
+                  />
+                  <span><span className="block text-sm font-bold text-[#0F4F68]">Seite heller machen</span><span className="block text-sm text-neutral-600">Erhöht Helligkeit und Kontrast für bessere Sichtbarkeit.</span></span>
                 </label>
-                <select
-                  id="read-voice-select"
-                  value={selectedVoiceURI}
-                  onChange={(e) => {
-                    const next = e.target.value;
-                    setSelectedVoiceURI(next);
-                    window.localStorage.setItem(STORAGE_KEY_VOICE_URI, next);
-                    if (isSpeaking) {
-                      stopReading();
-                    }
-                  }}
-                  className="mt-2 w-full rounded-xl border border-[#0F4F68]/20 bg-white px-3 py-2 text-sm text-[#0F4F68]"
-                >
-                  <option value="">Automatisch beste deutsche Stimme</option>
-                  {availableVoices
-                    .filter((voice) => voice.lang?.toLowerCase().startsWith("de"))
-                    .map((voice) => (
-                      <option key={voice.voiceURI} value={voice.voiceURI}>
-                        {voice.name} ({voice.lang})
-                      </option>
-                    ))}
-                </select>
+                <label className="mt-3 flex cursor-pointer items-start gap-3 rounded-xl border border-[#0F4F68]/10 bg-[#F2F9FA]/40 p-4">
+                  <input
+                    type="checkbox"
+                    checked={enhancedCursor}
+                    onChange={(e) => {
+                      const v = e.target.checked;
+                      setEnhancedCursor(v);
+                      window.localStorage.setItem(STORAGE_KEY_CURSOR_ENHANCED, v ? "1" : "0");
+                    }}
+                    className="mt-1 h-5 w-5 accent-[#F78F2E]"
+                  />
+                  <span><span className="block text-sm font-bold text-[#0F4F68]">Maus Cursor vergrößern</span><span className="block text-sm text-neutral-600">Cursor wird deutlich größer und mit Leuchteffekt dargestellt.</span></span>
+                </label>
               </section>
 
               <section className="rounded-2xl border border-[#0F4F68]/10 bg-[#F2F9FA]/45 p-3">
                 <h4 className="text-lg font-extrabold text-[#0F4F68]">Ton</h4>
-                <label className="flex cursor-pointer items-start gap-3 rounded-xl border border-[#0F4F68]/10 bg-[#F2F9FA]/40 p-4">
-                  <input type="checkbox" checked={reduceMotion} onChange={(e) => { const v = e.target.checked; setReduceMotion(v); window.localStorage.setItem(STORAGE_KEY_REDUCE_MOTION, v ? "1" : "0"); }} className="mt-1 h-5 w-5 accent-[#F78F2E]" />
-                  <span><span className="block text-sm font-bold text-[#0F4F68]">Ruhiger Modus</span><span className="block text-sm text-neutral-600">Weniger Bewegung und visuelle Reize.</span></span>
-                </label>
-                <div className="mt-3 rounded-xl border border-[#0F4F68]/10 bg-[#F2F9FA]/40 p-4">
-                  <p className="text-sm font-bold text-[#0F4F68]">Zeilenabstand</p>
-                  <p className="mt-1 text-sm text-neutral-600">Aktuell: {lineHeightLevel}%</p>
-                  <div className="mt-2 flex gap-2">
-                    <button type="button" onClick={() => { const next = Math.max(MIN_LINE_HEIGHT, lineHeightLevel - LINE_HEIGHT_STEP); setLineHeightLevel(next); window.localStorage.setItem(STORAGE_KEY_LINE_HEIGHT, String(next)); }} className="flex-1 rounded-xl border border-[#0F4F68]/20 bg-white px-3 py-2 text-sm font-semibold text-[#0F4F68]">-</button>
-                    <button type="button" onClick={() => { const next = Math.min(MAX_LINE_HEIGHT, lineHeightLevel + LINE_HEIGHT_STEP); setLineHeightLevel(next); window.localStorage.setItem(STORAGE_KEY_LINE_HEIGHT, String(next)); }} className="flex-1 rounded-xl bg-[#F78F2E] px-3 py-2 text-sm font-semibold text-white">+</button>
-                  </div>
-                </div>
                 <label className="mt-3 flex cursor-pointer items-start gap-3 rounded-xl border border-[#0F4F68]/10 bg-[#F2F9FA]/40 p-4">
                   <input
                     type="checkbox"
@@ -552,7 +533,15 @@ export function ReadabilityZoomControls() {
                     }}
                     className="mt-1 h-5 w-5 accent-[#F78F2E]"
                   />
-                  <span><span className="block text-sm font-bold text-[#0F4F68]">Vorlese Modus</span><span className="block text-sm text-neutral-600">Großer Vorlesen-Button auf allen Seiten.</span></span>
+                  <span>
+                    <span className="flex items-center gap-2 text-sm font-bold text-[#0F4F68]">
+                      <svg className="h-4 w-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+                        <path d="M3 10v4h4l5 4V6L7 10H3zm13.5 2a3.5 3.5 0 0 0-2.1-3.2v6.4a3.5 3.5 0 0 0 2.1-3.2zm0-7.5v2.1a6 6 0 0 1 0 10.8v2.1a8.5 8.5 0 0 0 0-15z" />
+                      </svg>
+                      Vorlese Modus
+                    </span>
+                    <span className="block text-sm text-neutral-600">Nutzt standardmäßig Google Deutsch (de-DE), falls vorhanden.</span>
+                  </span>
                 </label>
               </section>
             </div>
@@ -568,7 +557,19 @@ export function ReadabilityZoomControls() {
 
       {readAloudMode ? (
         <div className="fixed left-1/2 z-[2147483647] w-[min(92vw,28rem)] -translate-x-1/2" style={{ bottom: "max(1rem, calc(env(safe-area-inset-bottom, 0px) + 1rem))" }}>
-          <div className="rounded-2xl border border-[#0F4F68]/15 bg-white p-3 shadow-[0_12px_34px_rgba(15,79,104,0.22)]">
+          <div className="relative rounded-2xl border border-[#0F4F68]/15 bg-white p-3 shadow-[0_12px_34px_rgba(15,79,104,0.22)]">
+            <button
+              type="button"
+              onClick={() => {
+                setReadAloudMode(false);
+                window.localStorage.setItem(STORAGE_KEY_READ_ALOUD, "0");
+                stopReading();
+              }}
+              aria-label="Vorlesemodus schließen"
+              className="absolute -right-2 -top-2 inline-flex h-7 w-7 items-center justify-center rounded-full bg-[#0F4F68] text-white"
+            >
+              <span aria-hidden className="text-lg leading-none font-extrabold">×</span>
+            </button>
             {readAloudError ? (
               <p className="mb-2 text-xs font-semibold text-[#b42318]">{readAloudError}</p>
             ) : null}
