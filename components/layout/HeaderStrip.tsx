@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { LanguageFlags } from "./LanguageFlags";
 
 const TAGLINE = "Ihr Begleiter im Alltag";
 const TAGLINE_CHAR_MS = 55;
@@ -37,6 +38,9 @@ export function HeaderStrip(_props: HeaderStripProps) {
         {taglineLength < TAGLINE.length && <span className="animate-pulse" aria-hidden>|</span>}
       </span>
       <div className="flex flex-1 items-center justify-center md:justify-end">
+        <div className="mr-3 hidden md:block">
+          <LanguageFlags />
+        </div>
         <span className="whitespace-nowrap text-center text-lg md:text-base">
           Kostenlose Telefonnummer{" "}
           <a
@@ -47,6 +51,9 @@ export function HeaderStrip(_props: HeaderStripProps) {
             08334/9893330
           </a>
         </span>
+      </div>
+      <div className="md:hidden">
+        <LanguageFlags />
       </div>
     </div>
   );

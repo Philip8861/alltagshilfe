@@ -17,6 +17,7 @@ const STORAGE_KEY_FONT = "ahs_readability_font_family";
 const STORAGE_KEY_READ_ALOUD = "ahs_readability_read_aloud_mode";
 const STORAGE_KEY_BRIGHT_PAGE = "ahs_readability_bright_page";
 const STORAGE_KEY_CURSOR_ENHANCED = "ahs_readability_cursor_enhanced";
+const STORAGE_KEY_SITE_LANG = "ahs_site_lang";
 const MIN_ZOOM = 90;
 const MAX_ZOOM = 150;
 const STEP = 5;
@@ -38,7 +39,9 @@ function clampZoom(value: number) {
 
 function applyZoom(level: number) {
   if (typeof document === "undefined") return;
-  document.documentElement.style.fontSize = `${level}%`;
+  const root = document.documentElement;
+  root.style.setProperty("--ahs-page-zoom", `${level / 100}`);
+  root.classList.toggle("readability-page-zoom", level !== 100);
 }
 
 function fixedLaunchStyle(partial: Pick<CSSProperties, "right" | "bottom">): CSSProperties {
@@ -225,20 +228,23 @@ export function ReadabilityZoomControls() {
     }
 
     let idx = 0;
-    const getGermanVoice = () => {
+    const activeLang = localStorage.getItem(STORAGE_KEY_SITE_LANG) === "en" ? "en-US" : "de-DE";
+
+    const getBestVoice = () => {
       const voices = window.speechSynthesis.getVoices();
       if (!voices || voices.length === 0) return undefined;
-      const deVoices = voices.filter((v) => v.lang?.toLowerCase().startsWith("de"));
-      if (deVoices.length === 0) {
+      const baseLang = activeLang.startsWith("en") ? "en" : "de";
+      const scoped = voices.filter((v) => v.lang?.toLowerCase().startsWith(baseLang));
+      if (scoped.length === 0) {
         return voices.find((v) => v.default) ?? voices[0];
       }
-      const googleDeutsch = deVoices.find(
+      const preferredGoogle = scoped.find(
         (v) =>
-          v.lang.toLowerCase() === "de-de" &&
-          `${v.name} ${v.voiceURI}`.toLowerCase().includes("google deutsch"),
+          v.lang.toLowerCase() === activeLang.toLowerCase() &&
+          `${v.name} ${v.voiceURI}`.toLowerCase().includes("google"),
       );
-      if (googleDeutsch) return googleDeutsch;
-      return deVoices.find((v) => v.lang.toLowerCase() === "de-de") ?? deVoices[0];
+      if (preferredGoogle) return preferredGoogle;
+      return scoped.find((v) => v.lang.toLowerCase() === activeLang.toLowerCase()) ?? scoped[0];
     };
     const speakNext = () => {
       if (stopRequestedRef.current || idx >= chunks.length) {
@@ -247,11 +253,11 @@ export function ReadabilityZoomControls() {
         return;
       }
       const utterance = new SpeechSynthesisUtterance(chunks[idx]);
-      utterance.lang = "de-DE";
+      utterance.lang = activeLang;
       utterance.rate = 0.92;
       utterance.pitch = 1.03;
       utterance.volume = 1;
-      const voice = getGermanVoice();
+      const voice = getBestVoice();
       if (voice) utterance.voice = voice;
       utterance.onend = () => {
         idx += 1;
@@ -425,7 +431,6 @@ export function ReadabilityZoomControls() {
             role="menu"
             aria-label="Barrierefreie Einstellungen"
             className="w-[min(96vw,42rem)] max-h-[92vh] overflow-y-auto rounded-3xl border border-[#0F4F68]/18 bg-white p-6 shadow-[0_18px_48px_rgba(15,79,104,0.26)] sm:p-8"
-            style={{ transform: `scale(${100 / zoomLevel})`, transformOrigin: "right center" }}
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-start justify-between gap-3">
