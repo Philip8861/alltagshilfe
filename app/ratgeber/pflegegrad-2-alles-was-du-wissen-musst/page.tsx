@@ -56,17 +56,6 @@ export default function Pflegegrad2RatgeberPage() {
                   priority
                 />
               </div>
-
-              <div className="mt-4 grid grid-cols-1 gap-3">
-                <div className="rounded-xl border border-[#0F4F68]/12 bg-white/95 p-3 text-[#0F4F68] shadow-sm">
-                  <p className="font-semibold">Anerkennung</p>
-                  <p className="mt-1 text-sm text-neutral-700">mind. 27 bis &lt; 47,5 Punkte</p>
-                </div>
-                <div className="rounded-xl border border-[#0F4F68]/12 bg-white/95 p-3 text-[#0F4F68] shadow-sm">
-                  <p className="font-semibold">Pflegegeld</p>
-                  <p className="mt-1 text-sm text-neutral-700">347 Euro pro Monat</p>
-                </div>
-              </div>
             </div>
           </div>
         </header>
@@ -86,52 +75,52 @@ export default function Pflegegrad2RatgeberPage() {
 
         <section className="mt-8 space-y-4 text-neutral-700">
           <h2 className="text-2xl font-bold text-[#0F4F68]">Finanzielle Leistungen bei Pflegegrad 2 (Überblick 2026)</h2>
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-            {[
-              { label: "Pflegegeld (häusliche Pflege)", value: "347 € monatlich" },
-              { label: "Pflegesachleistungen (ambulanter Dienst)", value: "796 € monatlich" },
-              { label: "Tages-/Nachtpflege", value: "721 € monatlich" },
-              { label: "Entlastungsbetrag", value: "131 € monatlich" },
-              { label: "Jahresbudget Ersatzpflege (Kurzzeit + Verhinderung)", value: "3.539 € jährlich" },
-              { label: "Wohnumfeldverbesserung", value: "bis zu 4.180 € je Maßnahme" },
-              { label: "Pflegehilfsmittel zum Verbrauch", value: "bis zu 42 € monatlich" },
-              { label: "Hausnotruf-Zuschuss", value: "bis zu 25,50 € monatlich" },
-              { label: "Zuschuss Pflegeheim", value: "805 € monatlich" },
-            ].map((item) => (
-              <div key={item.label} className="rounded-xl border border-[#0F4F68]/12 bg-white/95 p-4 shadow-sm">
-                <p className="text-sm font-semibold text-[#0F4F68]">{item.label}</p>
-                <p className="mt-2 text-lg font-extrabold text-neutral-800">{item.value}</p>
-              </div>
-            ))}
+          <div className="overflow-x-auto rounded-xl border border-[#0F4F68]/12 bg-white">
+            <table className="min-w-full text-sm">
+              <thead className="bg-[#0F4F68] text-white">
+                <tr>
+                  <th className="px-4 py-3 text-left font-semibold">Leistungsart</th>
+                  <th className="px-4 py-3 text-left font-semibold">Anspruch (2026)</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-[#0F4F68]/10">
+                {[
+                  ["Pflegegeld (häusliche Pflege)", "347 € monatlich"],
+                  ["Pflegesachleistungen (ambulanter Dienst)", "796 € monatlich"],
+                  ["Tages-/Nachtpflege", "721 € monatlich"],
+                  ["Entlastungsbetrag", "131 € monatlich"],
+                  ["Jahresbudget Kurzzeit- & Verhinderungspflege", "3.539 € jährlich"],
+                  ["Wohnumfeldverbesserung", "bis zu 4.180 € je Maßnahme"],
+                  ["Pflegehilfsmittel zum Verbrauch", "bis zu 42 € monatlich"],
+                  ["Hausnotruf-Zuschuss", "bis zu 25,50 € monatlich"],
+                  ["Zuschuss Pflegeheim", "805 € monatlich"],
+                ].map(([label, value]) => (
+                  <tr key={label}>
+                    <td className="px-4 py-3 text-neutral-700">{label}</td>
+                    <td className="px-4 py-3 font-semibold text-[#0F4F68]">{value}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         </section>
 
         <section className="mt-8 space-y-4 text-neutral-700">
           <h2 className="text-2xl font-bold text-[#0F4F68]">Die größten Vorteile im Detail</h2>
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-            {[
-              {
-                title: "1) Pflegegeld oder Pflegesachleistungen",
-                text: "Privat durch Angehörige: 347 € Pflegegeld monatlich. Ambulante Pflege: bis zu 796 € monatlich. Beides ist auch kombinierbar (Kombinationsleistung).",
-              },
-              {
-                title: "2) Jahresbudget 3.539 €",
-                text: "Für Ersatzpflege, wenn Angehörige ausfallen oder eine Auszeit brauchen. Seit 2025 flexibler Topf aus Kurzzeit- und Verhinderungspflege.",
-              },
-              {
-                title: "3) Rentenpunkte für pflegende Angehörige",
-                text: "Unter Bedingungen zahlt die Pflegekasse Beiträge in die Rentenversicherung – das kann die spätere Rente spürbar stärken.",
-              },
-            ].map((card, idx) => (
-              <div key={card.title} className="relative rounded-xl border border-[#0F4F68]/12 bg-gradient-to-br from-white to-[#fff8f0] p-4">
-                <div className="absolute right-3 top-3 inline-flex h-10 w-10 items-center justify-center rounded-full bg-[#F78F2E]/15 text-[#F78F2E]">
-                  <span className="text-xs font-extrabold">{idx + 1}</span>
-                </div>
-                <p className="mt-2 text-sm font-bold text-[#0F4F68]">{card.title}</p>
-                <p className="mt-2 text-sm text-neutral-700">{card.text}</p>
-              </div>
-            ))}
-          </div>
+          <ol className="list-decimal space-y-2 pl-5">
+            <li>
+              <strong>Wahl zwischen Pflegegeld und Pflegesachleistungen:</strong> 347 € monatlich bei privater Pflege
+              oder bis zu 796 € für den ambulanten Pflegedienst.
+            </li>
+            <li>
+              <strong>Jahresbudget 3.539 €:</strong> flexibel einsetzbar für Ersatzpflege, wenn Angehörige ausfallen
+              oder Entlastung brauchen.
+            </li>
+            <li>
+              <strong>Rentenpunkte für pflegende Angehörige:</strong> unter Voraussetzungen zahlt die Pflegekasse
+              Rentenbeiträge.
+            </li>
+          </ol>
         </section>
 
         <section className="mt-8 space-y-4 text-neutral-700">
@@ -141,20 +130,11 @@ export default function Pflegegrad2RatgeberPage() {
               Wer <strong>Pflegegeld</strong> bezieht, muss regelmäßig einen Beratungseinsatz durch einen Pflegedienst
               oder eine anerkannte Beratungsstelle nachweisen.
             </p>
-            <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-3">
-              <div className="rounded-xl border border-[#0F4F68]/12 bg-white/95 p-4">
-                <p className="text-sm font-semibold text-[#0F4F68]">Häufigkeit</p>
-                <p className="mt-1 text-sm text-neutral-700">1× pro Halbjahr</p>
-              </div>
-              <div className="rounded-xl border border-[#0F4F68]/12 bg-white/95 p-4">
-                <p className="text-sm font-semibold text-[#0F4F68]">Kosten</p>
-                <p className="mt-1 text-sm text-neutral-700">kostenfrei (Kasse rechnet ab)</p>
-              </div>
-              <div className="rounded-xl border border-[#0F4F68]/12 bg-white/95 p-4">
-                <p className="text-sm font-semibold text-[#0F4F68]">Risiko</p>
-                <p className="mt-1 text-sm text-neutral-700">Kürzung/Stop des Pflegegelds</p>
-              </div>
-            </div>
+            <ul className="mt-4 list-disc space-y-1 pl-5 text-sm text-neutral-700">
+              <li>Häufigkeit: 1x pro Halbjahr</li>
+              <li>Kosten: vollständig von der Pflegekasse übernommen</li>
+              <li>Risiko bei Nichtbeachtung: Kürzung oder Stop des Pflegegelds</li>
+            </ul>
             <p className="mt-4 text-sm text-neutral-700">
               Tipp: Planen Sie den nächsten Termin direkt nach dem Einsatz ein – so vermeiden Sie Fristprobleme.
             </p>

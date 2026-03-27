@@ -82,27 +82,10 @@ export default function Pflegegrad1RatgeberPage() {
 
         <section className="mt-8 space-y-4 text-neutral-700">
           <h2 className="text-2xl font-bold text-[#0F4F68]">Welche Voraussetzungen gelten?</h2>
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-            <div className="rounded-xl border border-[#0F4F68]/12 bg-gradient-to-br from-white to-[#fff8f0] p-4">
-              <div className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-[#0F4F68] text-white" aria-hidden>
-                <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none">
-                  <path d="M12 2 4 5.2v6.1c0 5.1 3.4 9.8 8 10.7 4.6-.9 8-5.6 8-10.7V5.2L12 2z" stroke="white" strokeWidth="2" />
-                </svg>
-              </div>
-              <p className="mt-3 text-sm font-semibold">Punkte im Assessment</p>
-              <p className="mt-1 text-sm text-neutral-600">mind. 12,5 bis unter 27 Punkte</p>
-            </div>
-            <div className="rounded-xl border border-[#0F4F68]/12 bg-gradient-to-br from-white to-[#fff8f0] p-4">
-              <div className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-[#0F4F68] text-white" aria-hidden>
-                <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none">
-                  <path d="M12 7v5l3 2" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                  <path d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" stroke="white" strokeWidth="2" />
-                </svg>
-              </div>
-              <p className="mt-3 text-sm font-semibold">Dauer der Beeinträchtigung</p>
-              <p className="mt-1 text-sm text-neutral-600">mind. voraussichtlich 6 Monate</p>
-            </div>
-          </div>
+          <ul className="list-disc space-y-2 pl-5">
+            <li>Im Begutachtungsassessment: mindestens 12,5 bis unter 27 Punkte.</li>
+            <li>Einschränkung der Selbstständigkeit voraussichtlich für mindestens 6 Monate.</li>
+          </ul>
         </section>
 
         <section className="mt-8 space-y-4 text-neutral-700">
@@ -110,55 +93,49 @@ export default function Pflegegrad1RatgeberPage() {
           <p className="text-sm text-neutral-600">
             Die folgenden Beträge sind eine kompakte Orientierung. Details können je nach Situation variieren.
           </p>
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-            {[
-              { label: "Entlastungsbetrag", value: "131 € monatlich" },
-              { label: "Pflegehilfsmittel zum Verbrauch", value: "bis zu 42 € monatlich" },
-              { label: "Wohnumfeldverbesserung", value: "bis zu 4.180 € je Maßnahme" },
-              { label: "Wohngruppenzuschlag", value: "224 € monatlich" },
-              { label: "Digitale Pflegeanwendungen (DiPA)", value: "bis zu 53 € monatlich" },
-              { label: "Zuschuss zum Pflegeheim", value: "131 € monatlich" },
-            ].map((item) => (
-              <div
-                key={item.label}
-                className="rounded-xl border border-[#0F4F68]/12 bg-white/95 p-4 shadow-sm"
-              >
-                <p className="text-sm font-semibold text-[#0F4F68]">{item.label}</p>
-                <p className="mt-2 text-lg font-extrabold text-neutral-800">{item.value}</p>
-              </div>
-            ))}
+          <div className="overflow-x-auto rounded-xl border border-[#0F4F68]/12 bg-white">
+            <table className="min-w-full text-sm">
+              <thead className="bg-[#0F4F68] text-white">
+                <tr>
+                  <th className="px-4 py-3 text-left font-semibold">Leistungsart</th>
+                  <th className="px-4 py-3 text-left font-semibold">Anspruch (2026)</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-[#0F4F68]/10">
+                {[
+                  ["Entlastungsbetrag", "131 € monatlich"],
+                  ["Pflegehilfsmittel zum Verbrauch", "bis zu 42 € monatlich"],
+                  ["Wohnumfeldverbesserung", "bis zu 4.180 € je Maßnahme"],
+                  ["Wohngruppenzuschlag", "224 € monatlich"],
+                  ["Digitale Pflegeanwendungen (DiPA)", "bis zu 53 € monatlich"],
+                  ["Zuschuss zum Pflegeheim", "131 € monatlich"],
+                ].map(([label, value]) => (
+                  <tr key={label}>
+                    <td className="px-4 py-3 text-neutral-700">{label}</td>
+                    <td className="px-4 py-3 font-semibold text-[#0F4F68]">{value}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         </section>
 
         <section className="mt-8 space-y-4 text-neutral-700">
           <h2 className="text-2xl font-bold text-[#0F4F68]">Die 3 wichtigsten Vorteile im Detail</h2>
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-            {[
-              {
-                title: "1) Entlastungsbetrag (131 €)",
-                text: "Sie erhalten jeden Monat 131 Euro für qualifizierte Dienstleistungen. Das kann je nach Konstellation auch Unterstützung im Alltag und hauswirtschaftliche Hilfe umfassen.",
-              },
-              {
-                title: "2) Zuschuss für Umbauten",
-                text: "Wenn eine bodengleiche Dusche, ein Treppenlift oder eine ähnliche Maßnahme nötig ist, kann ein Zuschuss bis zu 4.180 Euro pro Maßnahme anfallen – auf Antrag.",
-              },
-              {
-                title: "3) Pflegehilfsmittel (42 €)",
-                text: "Für Verbrauchsmittel wie Desinfektionsmittel, Einmalhandschuhe oder Bettschutzeinlagen stehen monatlich bis zu 42 Euro zur Verfügung.",
-              },
-            ].map((card, idx) => (
-              <div
-                key={card.title}
-                className="relative rounded-xl border border-[#0F4F68]/12 bg-gradient-to-br from-white to-[#fff8f0] p-4"
-              >
-                <div className="absolute right-3 top-3 inline-flex h-10 w-10 items-center justify-center rounded-full bg-[#F78F2E]/15 text-[#F78F2E]">
-                  <span className="text-xs font-extrabold">{idx + 1}</span>
-                </div>
-                <p className="mt-2 text-sm font-bold text-[#0F4F68]">{card.title}</p>
-                <p className="mt-2 text-sm text-neutral-700">{card.text}</p>
-              </div>
-            ))}
-          </div>
+          <ol className="list-decimal space-y-2 pl-5">
+            <li>
+              <strong>Entlastungsbetrag (131 €):</strong> monatlich für anerkannte Unterstützungsangebote wie
+              Alltagsbegleitung und Haushalt.
+            </li>
+            <li>
+              <strong>Wohnumfeld-Zuschuss (4.180 €):</strong> z. B. für bodengleiche Dusche oder Treppenlift, wenn
+              beantragt und medizinisch begründet.
+            </li>
+            <li>
+              <strong>Pflegehilfsmittel (42 €):</strong> für Verbrauchsmittel wie Handschuhe, Desinfektion und
+              Bettschutzeinlagen.
+            </li>
+          </ol>
         </section>
 
         <section className="mt-8 space-y-4 text-neutral-700">
@@ -170,7 +147,7 @@ export default function Pflegegrad1RatgeberPage() {
               ["Begutachtungstermin", "Ein Gutachter des MD (oder Medicproof) prüft Ihre Selbstständigkeit zu Hause oder (seltener) per Video-Call."],
               ["Bescheid erhalten", "Die Pflegekasse stellt nach Antragseingang den schriftlichen Bescheid zu. Zeitliche Abläufe folgen gesetzlichen Vorgaben."],
             ].map(([title, text], i) => (
-              <li key={title} className="rounded-xl border border-[#0F4F68]/12 bg-white/95 p-4 shadow-sm">
+              <li key={title} className="rounded-xl border border-[#0F4F68]/10 bg-white p-4">
                 <div className="flex items-start gap-3">
                   <div className="flex h-9 w-9 items-center justify-center rounded-full bg-[#0F4F68] text-white" aria-hidden>
                     <span className="text-sm font-extrabold">{i + 1}</span>
@@ -187,32 +164,18 @@ export default function Pflegegrad1RatgeberPage() {
 
         <section className="mt-8 space-y-4 text-neutral-700">
           <h2 className="text-2xl font-bold text-[#0F4F68]">3 Goldene Tipps für den Gutachter-Besuch</h2>
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-            {[
-              {
-                title: "Tipp 1: Pflegetagebuch führen",
-                text: "Dokumentieren Sie über mindestens 1–2 Wochen sehr konkret: wann, wie oft und wobei Sie Unterstützung brauchen. Das erhöht die Aussagekraft.",
-              },
-              {
-                title: "Tipp 2: Keine „Fassadenhaltung“",
-                text: "Viele berichten, sie würden sich beim Termin zusammenreißen. Wichtig ist: zeigen Sie den Alltag möglichst realistisch – auch an einem schwierigen Tag.",
-              },
-              {
-                title: "Tipp 3: Unterstützung dabei haben",
-                text: "Planen Sie eine zweite Person ein (Angehörige, Vertraute oder professionelle Beratung). So gehen wichtige Punkte weniger schnell verloren.",
-              },
-            ].map((card) => (
-              <div key={card.title} className="rounded-xl border border-[#0F4F68]/12 bg-gradient-to-br from-white to-[#fff8f0] p-4">
-                <div className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-[#0F4F68]/10 text-[#0F4F68]" aria-hidden>
-                  <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M20 6 9 17l-5-5" />
-                  </svg>
-                </div>
-                <p className="mt-3 text-sm font-bold text-[#0F4F68]">{card.title}</p>
-                <p className="mt-2 text-sm text-neutral-700">{card.text}</p>
-              </div>
-            ))}
-          </div>
+          <ul className="list-disc space-y-2 pl-5">
+            <li>
+              <strong>Pflegetagebuch führen:</strong> mindestens 1-2 Wochen dokumentieren, wann und wobei Hilfe nötig
+              ist.
+            </li>
+            <li>
+              <strong>Alltag realistisch zeigen:</strong> Einschränkungen nicht herunterspielen.
+            </li>
+            <li>
+              <strong>Begleitperson dabei haben:</strong> für Vollständigkeit und Sicherheit im Gespräch.
+            </li>
+          </ul>
         </section>
 
         <section className="mt-8 space-y-4 text-neutral-700">

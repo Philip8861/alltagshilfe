@@ -22,9 +22,8 @@ export default function HausnotrufRatgeberPage() {
                 Hausnotruf-Ratgeber: Sicherheit zu Hause einfach erklärt
               </h1>
               <p className="mt-4 text-base leading-relaxed text-neutral-700 sm:text-lg">
-                Ein Hausnotruf gibt Sicherheit im Alltag - für pflegebedürftige Menschen und für Angehörige. In diesem
-                Ratgeber erfahren Sie, wann ein Hausnotruf sinnvoll ist, was die Pflegekasse übernimmt und worauf Sie
-                bei Auswahl und Einrichtung achten sollten.
+                Ein selbstbestimmtes Leben im eigenen Zuhause ist für viele Menschen zentral. Ein Hausnotruf sorgt für
+                schnelle Hilfe bei Stürzen oder akuten Schwächeanfällen und entlastet gleichzeitig Angehörige.
               </p>
               <div className="mt-5 flex flex-wrap gap-3">
                 <Link
@@ -33,6 +32,14 @@ export default function HausnotrufRatgeberPage() {
                 >
                   Jetzt beraten lassen
                 </Link>
+                <a
+                  href="/images/Ratgeber/Blog-Autor_%20Hausnotruf-Ratgeber%20Erstellung.pdf"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center rounded-lg border border-[#0F4F68]/25 px-4 py-2 font-semibold text-[#0F4F68] transition-colors hover:bg-[#f2f9fa] focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2"
+                >
+                  PDF herunterladen
+                </a>
               </div>
             </div>
 
@@ -54,66 +61,84 @@ export default function HausnotrufRatgeberPage() {
         <section className="mt-10 space-y-4 text-neutral-700">
           <h2 className="text-2xl font-bold text-[#0F4F68]">Was ist ein Hausnotruf?</h2>
           <p>
-            Der Hausnotruf ist ein Notrufsystem, das per Knopfdruck schnelle Hilfe organisiert. Üblicherweise trägt
-            die betroffene Person einen Notrufsender am Handgelenk oder als Kette. Im Notfall wird sofort eine
-            Notrufzentrale informiert, die Angehörige, Pflegedienst oder Rettungsdienst kontaktiert.
+            Ein Hausnotruf ist ein technisches Notrufsystem, das in Notsituationen per Knopfdruck Hilfe organisiert.
+            Das System ist bewusst einfach aufgebaut und auch unter Stress intuitiv bedienbar.
+          </p>
+          <ol className="list-decimal space-y-2 pl-5">
+            <li>
+              <strong>Basisstation:</strong> zentral in der Wohnung, Stromanschluss, häufig mit integrierter SIM-Karte
+              und Akku bei Stromausfall.
+            </li>
+            <li>
+              <strong>Mobiler Sender:</strong> als Armband oder Kette tragbar, mit gut tastbarem Alarmknopf - ideal auch
+              beim Duschen oder Baden.
+            </li>
+          </ol>
+          <p>
+            Nach dem Auslösen wird sofort eine Sprechverbindung zur 24h-Notrufzentrale aufgebaut. Wenn keine Antwort
+            möglich ist, wird direkt Hilfe organisiert.
           </p>
         </section>
 
         <section className="mt-8 space-y-4 text-neutral-700">
-          <h2 className="text-2xl font-bold text-[#0F4F68]">Für wen ist ein Hausnotruf besonders sinnvoll?</h2>
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-            {[
-              "Menschen mit Sturzrisiko oder Gangunsicherheit",
-              "Alleinlebende mit Pflegegrad",
-              "Personen mit chronischen Erkrankungen",
-              "Seniorinnen und Senioren mit erhöhtem Sicherheitsbedürfnis",
-            ].map((item) => (
-              <div key={item} className="rounded-xl border border-[#0F4F68]/12 bg-white/95 p-4 shadow-sm">
-                <p className="text-sm font-semibold text-[#0F4F68]">{item}</p>
-              </div>
-            ))}
-          </div>
+          <h2 className="text-2xl font-bold text-[#0F4F68]">Kosten und Zuschüsse der Pflegekasse</h2>
+          <p>
+            Bei anerkanntem Pflegegrad übernimmt die Pflegekasse häufig die Grundversorgung des Hausnotrufs. Der
+            monatliche Zuschuss liegt in der Regel bei <strong>25,50 Euro</strong>, einmalig kommen{" "}
+            <strong>10,49 Euro</strong> für die Installation hinzu.
+          </p>
+          <p>Typische Voraussetzungen für die Kostenübernahme:</p>
+          <ul className="list-disc space-y-1 pl-5">
+            <li>anerkannter Pflegegrad (bereits ab Pflegegrad 1),</li>
+            <li>alleinlebend oder über weite Tageszeiten ohne sofortige Hilfe,</li>
+            <li>eingeschränkte Möglichkeit, im Notfall ein normales Telefon zu bedienen.</li>
+          </ul>
+          <p>
+            Zusatzleistungen wie Schlüsseltresor, mobile Ortung oder erweiterte Servicepakete sind meist privat zu
+            zahlen.
+          </p>
+          <p className="rounded-xl border border-[#0F4F68]/12 bg-[#F2F9FA]/45 p-4">
+            <strong>Wichtiger Steuerhinweis:</strong> Laut BFH-Urteil (2023) ist ein klassischer Hausnotruf in der
+            eigenen Wohnung in der Regel nicht als haushaltsnahe Dienstleistung steuerlich absetzbar.
+          </p>
         </section>
 
         <section className="mt-8 space-y-4 text-neutral-700">
-          <h2 className="text-2xl font-bold text-[#0F4F68]">Kosten und Zuschuss der Pflegekasse</h2>
-          <div className="rounded-2xl border border-[#0F4F68]/12 bg-[#F2F9FA]/35 p-5">
+          <h2 className="text-2xl font-bold text-[#0F4F68]">Die perfekte Ergänzung: Notfalldose</h2>
+          <p>
+            Die Notfalldose enthält wichtige medizinische Informationen (Medikamente, Allergien, Vorerkrankungen,
+            Notfallkontakte) und liegt in der Kühlschranktür. Aufkleber an Haustür und Kühlschrank zeigen dem
+            Rettungsdienst sofort, wo die Daten zu finden sind.
+          </p>
+        </section>
+
+        <section className="mt-8 space-y-4 text-neutral-700">
+          <h2 className="text-2xl font-bold text-[#0F4F68]">Häufige Fragen (FAQ)</h2>
+          <div className="space-y-3">
             <p>
-              Bei anerkanntem Pflegegrad kann die Pflegekasse den Hausnotruf im Regelfall mit einem monatlichen
-              Zuschuss unterstützen (typisch bis zu 25,50 Euro). Voraussetzung ist, dass ein anerkannter Anbieter
-              genutzt wird und die Versorgung zu Hause erfolgt.
+              <strong>Übernimmt die Krankenkasse die Kosten?</strong>
+              <br />
+              In der Regel nicht. Zuständig ist fast immer die Pflegekasse.
             </p>
-            <p className="mt-3">
-              Wichtig: Zusatzleistungen wie Schlüsseltresor, mobile Ortung oder erweitertes Servicepaket können
-              zusätzliche Kosten verursachen. Lassen Sie sich vor Vertragsabschluss die Preisstruktur klar auflisten.
+            <p>
+              <strong>Was passiert bei versehentlichem Knopfdruck?</strong>
+              <br />
+              Die Zentrale meldet sich über Freisprechen, Sie geben kurz Entwarnung.
             </p>
-          </div>
-        </section>
-
-        <section className="mt-8 space-y-4 text-neutral-700">
-          <h2 className="text-2xl font-bold text-[#0F4F68]">Checkliste: So wählen Sie den passenden Hausnotruf</h2>
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-            {[
-              "24/7 besetzte Notrufzentrale",
-              "Einfache Bedienung und gut tragbarer Sender",
-              "Klare Regelung für Schlüsselhinterlegung",
-              "Kurze Reaktionszeiten im Notfall",
-              "Transparente Monatskosten ohne versteckte Gebühren",
-              "Testphase oder kürzere Kündigungsfrist",
-            ].map((item) => (
-              <div key={item} className="rounded-xl border border-[#0F4F68]/12 bg-white/95 p-4 shadow-sm">
-                <p className="text-sm font-semibold text-[#0F4F68]">{item}</p>
-              </div>
-            ))}
+            <p>
+              <strong>Funktioniert der Notruf während eines Telefonats?</strong>
+              <br />
+              Moderne Systeme priorisieren den Notruf und stellen die Verbindung trotzdem her.
+            </p>
           </div>
         </section>
 
         <section className="mt-10 rounded-xl border border-[#0F4F68]/12 bg-[#f8fcfd] p-5">
           <h2 className="text-xl font-bold text-[#0F4F68]">Fazit</h2>
           <p className="mt-2 text-neutral-700">
-            Ein Hausnotruf ist eine praktische Sicherheitslösung für den Alltag und kann Familien deutlich entlasten.
-            Wer frühzeitig das passende System wählt, verbessert die Versorgungssicherheit zu Hause nachhaltig.
+            Ein Hausnotruf ist weit mehr als Technik: Er erhöht die Sicherheit im Alltag, stärkt Selbstständigkeit und
+            entlastet Angehörige. In Kombination mit einer Notfalldose entsteht ein sehr wirksames Sicherheitsnetz für
+            zu Hause.
           </p>
           <div className="mt-4 flex flex-wrap gap-3">
             <Link
@@ -129,6 +154,11 @@ export default function HausnotrufRatgeberPage() {
               Zurück zum Ratgeber
             </Link>
           </div>
+        </section>
+
+        <section className="mt-8 space-y-2 text-sm text-neutral-600">
+          <h3 className="text-base font-bold text-[#0F4F68]">Quellen (Auszug)</h3>
+          <p>Bundesverband Hausnotruf, Pflegekassen-Informationen, BFH-Urteil VI R 14/21, Pflege.de, Caritas.</p>
         </section>
 
         <VerwandteRatgeberBeitraege currentSlug="hausnotruf-ratgeber" />

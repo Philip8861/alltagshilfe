@@ -26,19 +26,11 @@ export default function EntlastungsbetragRatgeberPage() {
                 (1.572 Euro pro Jahr). Dieser Beitrag erklärt kompakt, wie Sie den Betrag richtig einsetzen und worauf Sie
                 achten sollten.
               </p>
-              <div className="mt-5 grid grid-cols-1 gap-3 text-sm sm:grid-cols-3">
-                <div className="rounded-xl border border-[#0F4F68]/12 bg-white/95 p-3 text-[#0F4F68] shadow-sm">
-                  <p className="font-semibold">Monatlich</p>
-                  <p className="mt-1 text-neutral-700">131 Euro</p>
-                </div>
-                <div className="rounded-xl border border-[#0F4F68]/12 bg-white/95 p-3 text-[#0F4F68] shadow-sm">
-                  <p className="font-semibold">Jährlich</p>
-                  <p className="mt-1 text-neutral-700">1.572 Euro</p>
-                </div>
-                <div className="rounded-xl border border-[#0F4F68]/12 bg-white/95 p-3 text-[#0F4F68] shadow-sm">
-                  <p className="font-semibold">Frist</p>
-                  <p className="mt-1 text-neutral-700">bis 30.06. Folgejahr</p>
-                </div>
+              <div className="mt-5 rounded-xl border border-[#0F4F68]/12 bg-[#F2F9FA]/40 p-4 text-sm text-neutral-700">
+                <p>
+                  <strong className="text-[#0F4F68]">Kurzüberblick:</strong> 131 Euro monatlich, 1.572 Euro jährlich,
+                  Übertrag ungenutzter Beträge bis 30.06. des Folgejahres.
+                </p>
               </div>
             </div>
             <div className="mx-auto w-full max-w-[240px] lg:max-w-[260px]">
@@ -58,26 +50,11 @@ export default function EntlastungsbetragRatgeberPage() {
 
         <section className="mt-10 space-y-4 text-neutral-700">
           <h2 className="text-2xl font-bold text-[#0F4F68]">Voraussetzungen</h2>
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-            <div className="rounded-xl border border-[#0F4F68]/12 bg-gradient-to-br from-white to-[#fff8f0] p-4">
-              <div className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-[#0F4F68] text-white" aria-hidden>
-                <svg className="h-4 w-4" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2 4 5.2v6.1c0 5.1 3.4 9.8 8 10.7 4.6-.9 8-5.6 8-10.7V5.2L12 2z" /></svg>
-              </div>
-              <p className="mt-2 text-sm">Anerkannter Pflegegrad (1 bis 5)</p>
-            </div>
-            <div className="rounded-xl border border-[#0F4F68]/12 bg-gradient-to-br from-white to-[#fff8f0] p-4">
-              <div className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-[#0F4F68] text-white" aria-hidden>
-                <svg className="h-4 w-4" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3.2 3.5 10v10.3h6.2v-6.3h4.6v6.3h6.2V10L12 3.2z" /></svg>
-              </div>
-              <p className="mt-2 text-sm">Häusliche Versorgung</p>
-            </div>
-            <div className="rounded-xl border border-[#0F4F68]/12 bg-gradient-to-br from-white to-[#fff8f0] p-4">
-              <div className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-[#0F4F68] text-white" aria-hidden>
-                <svg className="h-4 w-4" viewBox="0 0 24 24" fill="currentColor"><path d="M4 4h16v11H7.6L4 18.6V4z" /></svg>
-              </div>
-              <p className="mt-2 text-sm">Leistung über anerkannten Anbieter</p>
-            </div>
-          </div>
+          <ul className="list-disc space-y-2 pl-5">
+            <li>Anerkannter Pflegegrad (1 bis 5)</li>
+            <li>Häusliche Versorgung</li>
+            <li>Abrechnung über anerkannte Anbieter</li>
+          </ul>
         </section>
 
         <section className="mt-8 space-y-4 text-neutral-700">
@@ -95,22 +72,13 @@ export default function EntlastungsbetragRatgeberPage() {
 
         <section className="mt-8 space-y-4 text-neutral-700">
           <h2 className="text-2xl font-bold text-[#0F4F68]">Wofür kann der Betrag genutzt werden?</h2>
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-            {[
-              "Haushaltsnahe Dienstleistungen (z. B. Reinigung, Wäsche, Einkaufen)",
-              "Alltagsbegleitung und Betreuung",
-              "Begleitung zu Arztterminen oder Behördengängen",
-              "Tages- und Nachtpflege",
-              "Kurzzeitpflege (anteilig)",
-            ].map((item) => (
-              <div key={item} className="flex items-start gap-3 rounded-xl border border-[#eac8a6]/40 bg-gradient-to-r from-[#fffdfa] to-[#f7fcfd] p-3">
-                <span className="mt-0.5 inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#0F4F68] text-white" aria-hidden>
-                  <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z" /></svg>
-                </span>
-                <p className="text-sm">{item}</p>
-              </div>
-            ))}
-          </div>
+          <ul className="list-disc space-y-2 pl-5">
+            <li>Haushaltsnahe Dienstleistungen (z. B. Reinigung, Wäsche, Einkaufen)</li>
+            <li>Alltagsbegleitung und Betreuung</li>
+            <li>Begleitung zu Arztterminen oder Behördengängen</li>
+            <li>Tages- und Nachtpflege</li>
+            <li>Kurzzeitpflege (anteilig)</li>
+          </ul>
           <p>Wichtig: Die Abrechnung ist nur mit anerkannten Anbietern möglich.</p>
         </section>
 
