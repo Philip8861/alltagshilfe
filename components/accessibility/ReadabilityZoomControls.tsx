@@ -67,8 +67,10 @@ export function ReadabilityZoomControls() {
   const [isKonfiguratorOpen, setIsKonfiguratorOpen] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [hasReadOnce, setHasReadOnce] = useState(false);
+  const [readAloudError, setReadAloudError] = useState("");
   const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
   const stopRequestedRef = useRef(false);
+  const speakingRef = useRef(false);
 
   useEffect(() => {
     setMounted(true);
@@ -149,11 +151,15 @@ export function ReadabilityZoomControls() {
   }, [readAloudMode, isSpeaking]);
 
   useEffect(() => {
-    if (!isSpeaking) return;
+    speakingRef.current = isSpeaking;
+  }, [isSpeaking]);
+
+  useEffect(() => {
+    if (!speakingRef.current) return;
     window.speechSynthesis.cancel();
     utteranceRef.current = null;
     setIsSpeaking(false);
-  }, [pathname, isSpeaking]); // Seite gewechselt -> neu starten möglich
+  }, [pathname]); // Nur bei Seitenwechsel stoppen, nicht bei jedem Start.
 
   const updateZoom = (next: number) => {
     const level = clampZoom(next);
@@ -172,8 +178,16 @@ export function ReadabilityZoomControls() {
   };
 
   const startReading = () => {
+    setReadAloudError("");
+    if (typeof window === "undefined" || !("speechSynthesis" in window) || typeof SpeechSynthesisUtterance === "undefined") {
+      setReadAloudError("Vorlesen wird in diesem Browser nicht unterstützt.");
+      return;
+    }
     const text = getReadablePageText();
-    if (!text) return;
+    if (!text) {
+      setReadAloudError("Kein vorlesbarer Seiteninhalt gefunden.");
+      return;
+    }
     stopRequestedRef.current = false;
     window.speechSynthesis.cancel();
     window.speechSynthesis.resume();
@@ -196,9 +210,21 @@ export function ReadabilityZoomControls() {
       }
     }
     if (current) chunks.push(current);
-    if (chunks.length === 0) return;
+    if (chunks.length === 0) {
+      setReadAloudError("Kein vorlesbarer Textabschnitt vorhanden.");
+      return;
+    }
 
     let idx = 0;
+    const getGermanVoice = () => {
+      const voices = window.speechSynthesis.getVoices();
+      if (!voices || voices.length === 0) return undefined;
+      return (
+        voices.find((v) => v.lang?.toLowerCase().startsWith("de")) ??
+        voices.find((v) => v.default) ??
+        voices[0]
+      );
+    };
     const speakNext = () => {
       if (stopRequestedRef.current || idx >= chunks.length) {
         setIsSpeaking(false);
@@ -210,18 +236,37 @@ export function ReadabilityZoomControls() {
       utterance.rate = 0.82;
       utterance.pitch = 1;
       utterance.volume = 1;
+      const voice = getGermanVoice();
+      if (voice) utterance.voice = voice;
       utterance.onend = () => {
         idx += 1;
         speakNext();
       };
       utterance.onerror = () => {
+        setReadAloudError("Vorlesen konnte nicht gestartet werden. Bitte prüfen Sie Browser-Sound und Sprachausgabe.");
         setIsSpeaking(false);
         utteranceRef.current = null;
       };
       utteranceRef.current = utterance;
       window.speechSynthesis.speak(utterance);
     };
-    speakNext();
+    // In einigen Browsern werden Stimmen asynchron geladen.
+    if (window.speechSynthesis.getVoices().length === 0) {
+      let triggered = false;
+      window.speechSynthesis.onvoiceschanged = () => {
+        if (triggered) return;
+        triggered = true;
+        speakNext();
+      };
+      window.setTimeout(() => {
+        if (!triggered) {
+          triggered = true;
+          speakNext();
+        }
+      }, 450);
+    } else {
+      speakNext();
+    }
     setIsSpeaking(true);
     setHasReadOnce(true);
   };
@@ -231,6 +276,7 @@ export function ReadabilityZoomControls() {
     window.speechSynthesis.cancel();
     utteranceRef.current = null;
     setIsSpeaking(false);
+    setReadAloudError("");
   };
 
   const resetAllSettings = () => {
@@ -451,6 +497,9 @@ export function ReadabilityZoomControls() {
       {readAloudMode ? (
         <div className="fixed left-1/2 z-[2147483647] w-[min(92vw,28rem)] -translate-x-1/2" style={{ bottom: "max(1rem, calc(env(safe-area-inset-bottom, 0px) + 1rem))" }}>
           <div className="rounded-2xl border border-[#0F4F68]/15 bg-white p-3 shadow-[0_12px_34px_rgba(15,79,104,0.22)]">
+            {readAloudError ? (
+              <p className="mb-2 text-xs font-semibold text-[#b42318]">{readAloudError}</p>
+            ) : null}
             <button
               type="button"
               onClick={() => (isSpeaking ? stopReading() : startReading())}
