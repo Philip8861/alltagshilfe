@@ -69,18 +69,47 @@ export function OnlineVideoberatungClient() {
   const ensureScript = async () => {
     if (window.JitsiMeetExternalAPI) return;
     await new Promise<void>((resolve, reject) => {
+      const timeout = window.setTimeout(() => {
+        reject(new Error("Jitsi-Laden Timeout"));
+      }, 8000);
       const existing = document.getElementById("jitsi-api-script") as HTMLScriptElement | null;
       if (existing) {
-        existing.addEventListener("load", () => resolve(), { once: true });
-        existing.addEventListener("error", () => reject(new Error("Jitsi konnte nicht geladen werden.")), { once: true });
+        if (window.JitsiMeetExternalAPI || existing.getAttribute("data-loaded") === "1") {
+          window.clearTimeout(timeout);
+          resolve();
+          return;
+        }
+        existing.addEventListener(
+          "load",
+          () => {
+            window.clearTimeout(timeout);
+            resolve();
+          },
+          { once: true },
+        );
+        existing.addEventListener(
+          "error",
+          () => {
+            window.clearTimeout(timeout);
+            reject(new Error("Jitsi konnte nicht geladen werden."));
+          },
+          { once: true },
+        );
         return;
       }
       const script = document.createElement("script");
       script.id = "jitsi-api-script";
       script.src = "https://meet.jit.si/external_api.js";
       script.async = true;
-      script.onload = () => resolve();
-      script.onerror = () => reject(new Error("Jitsi konnte nicht geladen werden."));
+      script.onload = () => {
+        script.setAttribute("data-loaded", "1");
+        window.clearTimeout(timeout);
+        resolve();
+      };
+      script.onerror = () => {
+        window.clearTimeout(timeout);
+        reject(new Error("Jitsi konnte nicht geladen werden."));
+      };
       document.body.appendChild(script);
     });
   };
@@ -178,7 +207,9 @@ export function OnlineVideoberatungClient() {
       jitsiRef.current = api;
       setJoined(true);
     } catch {
-      setError("Der Video-Call konnte nicht gestartet werden. Bitte erneut versuchen.");
+      const fallbackUrl = `https://meet.jit.si/${encodeURIComponent(roomCode)}#userInfo.displayName=${encodeURIComponent(displayName.trim())}`;
+      window.open(fallbackUrl, "_blank", "noopener,noreferrer");
+      setError("Direkter Fallback geöffnet. Falls der eingebettete Start blockiert ist, bitte den neuen Tab für den Call verwenden.");
     } finally {
       setJoining(false);
     }
