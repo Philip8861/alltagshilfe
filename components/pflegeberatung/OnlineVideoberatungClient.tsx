@@ -43,6 +43,7 @@ export function OnlineVideoberatungClient() {
   const [joining, setJoining] = useState(false);
   const [joined, setJoined] = useState(false);
   const [error, setError] = useState("");
+  const [externalJoinUrl, setExternalJoinUrl] = useState("");
   const previewRef = useRef<HTMLVideoElement | null>(null);
   const previewStreamRef = useRef<MediaStream | null>(null);
   const callRef = useRef<HTMLDivElement | null>(null);
@@ -71,7 +72,7 @@ export function OnlineVideoberatungClient() {
     await new Promise<void>((resolve, reject) => {
       const timeout = window.setTimeout(() => {
         reject(new Error("Jitsi-Laden Timeout"));
-      }, 8000);
+      }, 20000);
       const existing = document.getElementById("jitsi-api-script") as HTMLScriptElement | null;
       if (existing) {
         if (window.JitsiMeetExternalAPI || existing.getAttribute("data-loaded") === "1") {
@@ -182,6 +183,7 @@ export function OnlineVideoberatungClient() {
     }
     if (!callRef.current) return;
     setError("");
+    setExternalJoinUrl("");
     setJoining(true);
     try {
       await ensureScript();
@@ -226,8 +228,8 @@ export function OnlineVideoberatungClient() {
       setJoined(true);
     } catch {
       const fallbackUrl = `https://meet.jit.si/${encodeURIComponent(roomCode)}#userInfo.displayName=${encodeURIComponent(displayName.trim())}`;
-      window.open(fallbackUrl, "_blank", "noopener,noreferrer");
-      setError("Direkter Fallback geöffnet. Falls der eingebettete Start blockiert ist, bitte den neuen Tab für den Call verwenden.");
+      setExternalJoinUrl(fallbackUrl);
+      setError("Der eingebettete Start wurde blockiert. Sie können den Call unten manuell im neuen Tab öffnen.");
     } finally {
       setJoining(false);
     }
@@ -370,6 +372,16 @@ export function OnlineVideoberatungClient() {
             </div>
 
             {error ? <p className="text-sm font-semibold text-[#b42318]">{error}</p> : null}
+            {externalJoinUrl ? (
+              <a
+                href={externalJoinUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex min-h-[44px] items-center justify-center rounded-xl bg-[#0F4F68] px-4 py-2 text-sm font-semibold text-white hover:bg-[#0c3d52]"
+              >
+                Call im neuen Tab öffnen
+              </a>
+            ) : null}
           </div>
         </div>
 
