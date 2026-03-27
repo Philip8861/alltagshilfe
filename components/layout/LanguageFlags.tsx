@@ -1,9 +1,11 @@
 "use client";
 
+import { useState } from "react";
+
 const STORAGE_KEY_SITE_LANG = "ahs_site_lang";
 
 function setTranslateCookie(lang: "de" | "en") {
-  const value = `/de/${lang}`;
+  const value = `/auto/${lang}`;
   const host = window.location.hostname;
   document.cookie = `googtrans=${value};path=/;max-age=31536000`;
   if (host.includes(".")) {
@@ -13,6 +15,9 @@ function setTranslateCookie(lang: "de" | "en") {
 
 function dispatchNativeChange(el: HTMLSelectElement) {
   el.dispatchEvent(new Event("change", { bubbles: true }));
+  const ev = document.createEvent("HTMLEvents");
+  ev.initEvent("change", true, true);
+  el.dispatchEvent(ev);
 }
 
 function setGoogleCombo(lang: "de" | "en") {
@@ -25,9 +30,14 @@ function setGoogleCombo(lang: "de" | "en") {
 
 function applyLanguage(lang: "de" | "en") {
   if (typeof window === "undefined") return;
-  localStorage.setItem(STORAGE_KEY_SITE_LANG, lang);
+  try {
+    localStorage.setItem(STORAGE_KEY_SITE_LANG, lang);
+  } catch {
+    // ignore storage errors
+  }
   setTranslateCookie(lang);
   document.documentElement.lang = lang;
+  window.dispatchEvent(new CustomEvent("ahs-apply-language", { detail: { lang } }));
 
   if (setGoogleCombo(lang)) return;
   let attempts = 0;
@@ -35,17 +45,26 @@ function applyLanguage(lang: "de" | "en") {
     attempts += 1;
     if (setGoogleCombo(lang) || attempts >= 20) {
       window.clearInterval(timer);
+      if (attempts >= 20) {
+        window.location.assign(window.location.pathname + window.location.search + window.location.hash);
+      }
     }
   }, 150);
 }
 
 export function LanguageFlags() {
+  const [isSwitching, setIsSwitching] = useState(false);
   const switchLang = (lang: "de" | "en") => {
-    applyLanguage(lang);
+    setIsSwitching(true);
+    try {
+      applyLanguage(lang);
+    } finally {
+      window.setTimeout(() => setIsSwitching(false), 900);
+    }
   };
 
   return (
-    <div className="flex items-center gap-2">
+    <div className={`flex items-center gap-2 ${isSwitching ? "opacity-70" : ""}`}>
       <button
         type="button"
         onClick={() => switchLang("de")}

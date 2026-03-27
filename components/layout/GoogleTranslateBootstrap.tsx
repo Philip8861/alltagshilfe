@@ -17,8 +17,8 @@ declare global {
 
 export function GoogleTranslateBootstrap() {
   useEffect(() => {
-    const applyStoredLanguage = () => {
-      const storedLang = window.localStorage.getItem(STORAGE_KEY_SITE_LANG);
+    const applyLanguage = (explicitLang?: "de" | "en") => {
+      const storedLang = explicitLang ?? (window.localStorage.getItem(STORAGE_KEY_SITE_LANG) === "en" ? "en" : "de");
       const lang = storedLang === "en" ? "en" : "de";
       document.documentElement.lang = lang;
       const combo = document.querySelector<HTMLSelectElement>(".goog-te-combo");
@@ -27,6 +27,23 @@ export function GoogleTranslateBootstrap() {
       combo.dispatchEvent(new Event("change", { bubbles: true }));
       return true;
     };
+
+    const applyStoredLanguage = () => {
+      let storedLang: string | null = null;
+      try {
+        storedLang = window.localStorage.getItem(STORAGE_KEY_SITE_LANG);
+      } catch {
+        storedLang = null;
+      }
+      const lang = storedLang === "en" ? "en" : "de";
+      return applyLanguage(lang);
+    };
+
+    const onApplyLanguage = (event: Event) => {
+      const custom = event as CustomEvent<{ lang?: "de" | "en" }>;
+      applyLanguage(custom.detail?.lang === "en" ? "en" : "de");
+    };
+    window.addEventListener("ahs-apply-language", onApplyLanguage as EventListener);
 
     if (document.getElementById("google-translate-script")) {
       if (applyStoredLanguage()) return;
@@ -56,6 +73,10 @@ export function GoogleTranslateBootstrap() {
     script.src = "https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit";
     script.async = true;
     document.body.appendChild(script);
+
+    return () => {
+      window.removeEventListener("ahs-apply-language", onApplyLanguage as EventListener);
+    };
   }, []);
 
   return <div id="google_translate_element_hidden" className="absolute -left-[9999px] top-0 h-px w-px overflow-hidden" aria-hidden />;
