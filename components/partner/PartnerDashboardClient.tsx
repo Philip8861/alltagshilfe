@@ -11,17 +11,13 @@ import {
 import { orderContactLine } from "@/lib/partner/dashboard-order-utils";
 import { PARTNER_TIP_STATUS_PARTNER_LABELS } from "@/lib/partner/partner-tip-admin";
 import { PARTNER_TIP_STATUS_BADGE_CLASS } from "@/lib/partner/partner-tip-status-ui";
-import { partnerTipPayloadSummary } from "@/lib/partner/partner-tip-summary";
+import { tipTableFields } from "@/lib/partner/partner-tip-table-fields";
 import {
   PARTNER_RESPONSIBILITY_SLUGS,
   PARTNER_RESPONSIBILITY_LABELS,
   type PartnerResponsibilitySlug,
 } from "@/lib/partner/responsibility-areas";
-import {
-  SERVICE_SLUG_ORDER,
-  serviceBadgeClass,
-} from "@/lib/partner/service-slug-styles";
-import type { PartnerDashboardTipSerial } from "@/lib/partner/types";
+import type { PartnerDashboardTipSerial, PartnerTipAdminStatus } from "@/lib/partner/types";
 
 export type PartnerDashboardOrderSerial = {
   id: string;
@@ -32,6 +28,8 @@ export type PartnerDashboardOrderSerial = {
 };
 
 type Panel = "statistik" | "status";
+type SortDir = "asc" | "desc";
+type TipSortKey = "firma" | "vorname" | "nachname" | "status" | "serviceLabel" | "created_at";
 
 type Props = {
   welcomeHeadline: string;
@@ -39,9 +37,19 @@ type Props = {
   payoutLabel: string;
   payoutIso: string;
   responsibilityAreaSlugs: string[];
-  stats: { total: number; last30: number; last7: number };
   orders: PartnerDashboardOrderSerial[];
   tips: PartnerDashboardTipSerial[];
+};
+
+type TipTableRow = {
+  id: string;
+  firma: string;
+  vorname: string;
+  nachname: string;
+  serviceSlug: string;
+  serviceLabel: string;
+  admin_status: PartnerTipAdminStatus;
+  created_at: string;
 };
 
 const slugSet = new Set<string>(PARTNER_RESPONSIBILITY_SLUGS);
@@ -76,10 +84,7 @@ function HorizontalStatBars({ stats }: { stats: DashboardAuftragStats }) {
           <span className="w-full shrink-0 text-sm font-semibold text-neutral-800 sm:w-40">{r.label}</span>
           <div className="flex min-w-0 flex-1 items-center gap-3">
             <div className="h-9 min-w-0 flex-1 overflow-hidden rounded-lg bg-neutral-100 ring-1 ring-neutral-200/80">
-              <div
-                className={`h-full rounded-lg ${r.barClass}`}
-                style={{ width: `${(r.value / max) * 100}%` }}
-              />
+              <div className={`h-full rounded-lg ${r.barClass}`} style={{ width: `${(r.value / max) * 100}%` }} />
             </div>
             <span className="w-10 shrink-0 text-right text-base font-bold tabular-nums text-neutral-900">{r.value}</span>
           </div>
@@ -151,13 +156,37 @@ function YearMonthOverviewChart({
   );
 }
 
+function TableSortButton({
+  label,
+  active,
+  dir,
+  onClick,
+}: {
+  label: string;
+  active: boolean;
+  dir: SortDir;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={`inline-flex items-center gap-1 text-left font-bold uppercase tracking-wide hover:text-[#0c3d52] ${
+        active ? "text-[#0F4F68]" : "text-[#0F4F68]/75"
+      }`}
+    >
+      {label}
+      {active ? (dir === "asc" ? " ↑" : " ↓") : ""}
+    </button>
+  );
+}
+
 export function PartnerDashboardClient({
   welcomeHeadline,
   partnerCode,
   payoutLabel,
   payoutIso,
   responsibilityAreaSlugs,
-  stats,
   orders,
   tips,
 }: Props) {
@@ -166,28 +195,56 @@ export function PartnerDashboardClient({
   const [periodMode, setPeriodMode] = useState<"month" | "year">("month");
   const [monthInput, setMonthInput] = useState(currentMonthValue);
   const [yearInput, setYearInput] = useState(() => String(new Date().getFullYear()));
+  const [tipSort, setTipSort] = useState<{ key: TipSortKey; dir: SortDir }>({
+    key: "created_at",
+    dir: "desc",
+  });
 
   const allowedSlugs = useMemo(() => {
     return responsibilityAreaSlugs.filter((s): s is PartnerResponsibilitySlug => slugSet.has(s));
   }, [responsibilityAreaSlugs]);
 
-  const tipsBySlug = useMemo(() => {
-    const map = new Map<string, PartnerDashboardTipSerial[]>();
-    for (const t of tips) {
-      const list = map.get(t.service_slug) ?? [];
-      list.push(t);
-      map.set(t.service_slug, list);
-    }
-    for (const [, list] of map) {
-      list.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
-    }
-    return map;
+  const tipRows: TipTableRow[] = useMemo(() => {
+    return tips.map((t) => {
+      const f = tipTableFields(t.payload, t.service_slug);
+      const slug = t.service_slug as PartnerResponsibilitySlug;
+      const serviceLabel = PARTNER_RESPONSIBILITY_LABELS[slug] ?? t.service_slug.replace(/_/g, " ");
+      return {
+        id: t.id,
+        firma: f.firma,
+        vorname: f.vorname,
+        nachname: f.nachname,
+        serviceSlug: t.service_slug,
+        serviceLabel,
+        admin_status: t.admin_status,
+        created_at: t.created_at,
+      };
+    });
   }, [tips]);
 
-  const extraSlugs = useMemo(() => {
-    const ordered = new Set<string>(SERVICE_SLUG_ORDER);
-    return [...tipsBySlug.keys()].filter((k) => !ordered.has(k)).sort();
-  }, [tipsBySlug]);
+  const sortedTipRows = useMemo(() => {
+    const rows = [...tipRows];
+    const { key, dir } = tipSort;
+    const mul = dir === "asc" ? 1 : -1;
+    rows.sort((a, b) => {
+      if (key === "status") {
+        return mul * a.admin_status.localeCompare(b.admin_status, "de");
+      }
+      if (key === "created_at") {
+        return mul * (new Date(a.created_at).getTime() - new Date(b.created_at).getTime());
+      }
+      const va = a[key];
+      const vb = b[key];
+      return mul * String(va).localeCompare(String(vb), "de", { sensitivity: "base" });
+    });
+    return rows;
+  }, [tipRows, tipSort]);
+
+  const toggleTipSort = (key: TipSortKey) => {
+    setTipSort((s) =>
+      s.key === key ? { key, dir: s.dir === "asc" ? "desc" : "asc" } : { key, dir: "asc" },
+    );
+  };
 
   const periodStats = useMemo(() => {
     const orderLikes = orders.map((o) => ({ created_at: o.created_at, status: o.status }));
@@ -208,79 +265,82 @@ export function PartnerDashboardClient({
     return monthlyStatsForYear(tips, orderLikes, year);
   }, [yearInput, tips, orders]);
 
-  const panelBtn =
-    "shrink-0 min-h-14 min-w-[11rem] rounded-xl border-2 px-8 py-3.5 text-base font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68] focus-visible:ring-offset-2";
-  const panelInactive = "border-[#0F4F68]/25 bg-white text-[#0F4F68] hover:bg-[#F2F9FA]";
-  const panelActive = "border-[#0F4F68] bg-[#0F4F68] text-white";
+  const glowBtn =
+    "shrink-0 min-h-14 min-w-[10.5rem] rounded-xl border-2 px-7 py-3.5 text-base font-semibold transition-shadow duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68] focus-visible:ring-offset-2";
+  const glowInactive =
+    "border-[#0F4F68]/35 bg-white text-[#0F4F68] shadow-[0_0_22px_-8px_rgba(15,79,104,0.38),0_4px_14px_-10px_rgba(15,79,104,0.22)] hover:shadow-[0_0_30px_-6px_rgba(15,79,104,0.48)]";
+  const glowActive =
+    "border-[#0F4F68] bg-[#0F4F68] text-white shadow-[0_0_32px_-4px_rgba(15,79,104,0.58),0_6px_22px_-8px_rgba(15,79,104,0.35)] hover:shadow-[0_0_36px_-4px_rgba(15,79,104,0.55)]";
+
+  const provisionCard =
+    "flex min-h-[7.5rem] min-w-[min(100%,14rem)] flex-1 flex-col justify-center rounded-2xl border border-[#0F4F68]/15 bg-gradient-to-br from-white to-[#F2F9FA]/80 p-5 text-center shadow-sm ring-1 ring-[#0F4F68]/5 sm:max-w-xs";
 
   return (
-    <div className="grid grid-cols-1 gap-6 lg:grid-cols-12 lg:gap-x-10 lg:gap-y-5">
-      <div className="text-center lg:col-span-8 lg:col-start-1 lg:row-start-1">
-        <h1 className="text-balance text-3xl font-extrabold leading-tight tracking-tight text-[#0F4F68] sm:text-4xl md:text-5xl">
+    <div className="mx-auto w-full max-w-[min(100%,90rem)] space-y-10">
+      <div className="partner-dash-animate text-center">
+        <h1 className="text-balance text-3xl font-semibold leading-tight text-[#0F4F68] sm:text-4xl md:text-5xl">
           {welcomeHeadline}
         </h1>
-        <hr className="mx-auto mt-6 max-w-xs border-t-2 border-[#0F4F68]/30 sm:max-w-md lg:mx-0 lg:ml-0" />
+        <hr className="mx-auto mt-6 max-w-lg border-t border-[#0F4F68]/25" />
       </div>
 
-      <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4 lg:col-span-8 lg:col-start-1 lg:row-start-2 lg:justify-start">
+      <div className="partner-dash-animate partner-dash-delay-1 flex flex-wrap items-center justify-center gap-3 sm:gap-4">
         <button
           type="button"
-          className={`${panelBtn} ${panel === "statistik" ? panelActive : panelInactive}`}
+          className={`${glowBtn} ${panel === "statistik" ? glowActive : glowInactive}`}
           onClick={() => setPanel("statistik")}
         >
           Statistik
         </button>
         <button
           type="button"
-          className="shrink-0 min-h-16 min-w-[12.5rem] rounded-2xl bg-[#F78F2E] px-10 py-4 text-lg font-bold text-white hover:bg-[#ea8324] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68] focus-visible:ring-offset-2"
+          className={`${glowBtn} min-h-16 min-w-[12rem] text-lg font-bold ${glowInactive}`}
           onClick={() => setTipOpen(true)}
         >
           Tipp geben
         </button>
         <button
           type="button"
-          className={`${panelBtn} ${panel === "status" ? panelActive : panelInactive}`}
+          className={`${glowBtn} ${panel === "status" ? glowActive : glowInactive}`}
           onClick={() => setPanel("status")}
         >
           Statusliste
         </button>
       </div>
 
-      <aside
-        className="order-3 space-y-3 lg:order-none lg:col-span-4 lg:col-start-9 lg:row-start-2 lg:self-start"
-        aria-labelledby="partner-code-auszahlung"
-      >
-        <h2 id="partner-code-auszahlung" className="sr-only">
-          Partner-Code und Auszahlungen
-        </h2>
-        {partnerCode ? (
-          <div className="rounded-xl border border-[#0F4F68]/20 bg-gradient-to-br from-[#E8F4F7] to-white p-4 shadow-sm ring-1 ring-[#0F4F68]/5">
-            <p className="text-[0.65rem] font-bold uppercase tracking-[0.14em] text-[#0F4F68]/65">Ihr Partner-Code</p>
-            <p className="mt-1.5 font-mono text-2xl font-black tracking-[0.15em] text-[#0F4F68] sm:text-3xl">{partnerCode}</p>
-          </div>
-        ) : null}
-        <div className="rounded-xl border border-[#0F4F68]/16 bg-gradient-to-br from-[#E8F4F7]/80 via-[#F2F9FA] to-white p-4 shadow-sm ring-1 ring-[#0F4F68]/5">
-          <p className="text-[0.65rem] font-bold uppercase tracking-[0.12em] text-[#0F4F68]/70">Monatliche Tippgeberprovision</p>
-          <p className="mt-2 text-xl font-bold tabular-nums text-[#0F4F68]">128,50 €</p>
-          <p className="mt-1 text-xs leading-snug text-neutral-600">Platzhalter bis Anbindung der Abrechnung.</p>
+      <div className="partner-dash-animate partner-dash-delay-2 flex flex-wrap items-stretch justify-center gap-4 sm:gap-5">
+        <div className={provisionCard}>
+          <p className="text-[0.65rem] font-bold uppercase tracking-[0.14em] text-[#0F4F68]/65">Partner-Code</p>
+          {partnerCode ? (
+            <p className="mt-2 font-mono text-2xl font-black tracking-[0.12em] text-[#0F4F68] sm:text-3xl">{partnerCode}</p>
+          ) : (
+            <p className="mt-2 text-sm text-neutral-500">Wird vergeben …</p>
+          )}
         </div>
-        <div className="rounded-xl border border-[#F78F2E]/30 bg-gradient-to-br from-[#FFF5ED] to-white p-4 shadow-sm ring-1 ring-[#F78F2E]/12">
-          <p className="text-[0.65rem] font-bold uppercase tracking-[0.12em] text-[#C45A0A]">Einmalprovision</p>
-          <p className="mt-2 text-xl font-bold tabular-nums text-[#B45309]">420,00 €</p>
+        <div className={provisionCard}>
+          <p className="text-[0.65rem] font-bold uppercase tracking-[0.12em] text-[#0F4F68]/70">Monatliche Tippgeberprovision</p>
+          <p className="mt-2 text-2xl font-bold tabular-nums text-[#0F4F68] sm:text-3xl">128,50 €</p>
+          <p className="mt-1 text-xs text-neutral-600">Platzhalter bis Anbindung der Abrechnung.</p>
+        </div>
+        <div className={provisionCard}>
+          <p className="text-[0.65rem] font-bold uppercase tracking-[0.12em] text-[#0F4F68]/70">Einmalprovision</p>
+          <p className="mt-2 text-2xl font-bold tabular-nums text-[#0F4F68] sm:text-3xl">420,00 €</p>
           <p className="mt-1 text-xs text-neutral-600">Platzhalter.</p>
         </div>
-        <div className="rounded-lg border border-[#0F4F68]/12 bg-white px-4 py-3 shadow-sm">
-          <p className="text-[0.65rem] font-bold uppercase tracking-[0.1em] text-[#0F4F68]/65">Auszahlung</p>
-          <p className="mt-1 text-sm font-semibold text-neutral-900">
-            Nächste am <time dateTime={payoutIso}>{payoutLabel}</time>
-          </p>
-          <p className="mt-0.5 text-[0.7rem] text-neutral-500">Zum Monatsersten (Hinweis).</p>
-        </div>
-      </aside>
+      </div>
 
-      <div className="order-4 min-w-0 lg:col-span-8 lg:col-start-1 lg:row-start-3">
+      <p className="partner-dash-animate partner-dash-delay-2 text-center text-sm text-neutral-600">
+        <span className="font-semibold text-[#0F4F68]">Auszahlung:</span>{" "}
+        <time dateTime={payoutIso}>{payoutLabel}</time>
+        <span className="text-neutral-500"> (Hinweis: zum Monatsersten)</span>
+      </p>
+
+      <div className="partner-dash-animate partner-dash-delay-3 min-w-0">
         {panel === "statistik" ? (
-          <section aria-labelledby="statistik-panel" className="space-y-8 rounded-2xl border border-[#0F4F68]/10 bg-white p-5 shadow-sm sm:p-7 lg:p-8">
+          <section
+            aria-labelledby="statistik-panel"
+            className="space-y-8 rounded-2xl border border-[#0F4F68]/10 bg-white p-5 shadow-sm sm:p-8 lg:p-10"
+          >
             <div className="flex flex-col gap-4 border-b border-[#0F4F68]/10 pb-6 sm:flex-row sm:items-end sm:justify-between">
               <h2 id="statistik-panel" className="text-xl font-bold text-[#0F4F68] sm:text-2xl">
                 Statistik
@@ -347,137 +407,115 @@ export function PartnerDashboardClient({
               <div className="rounded-2xl border border-neutral-200/80 bg-white p-5 sm:p-6">
                 <YearMonthOverviewChart
                   monthly={monthlyForYear}
-                  year={Number(yearInput) >= 2000 && Number(yearInput) <= 2100 ? Number(yearInput) : new Date().getFullYear()}
+                  year={
+                    Number(yearInput) >= 2000 && Number(yearInput) <= 2100
+                      ? Number(yearInput)
+                      : new Date().getFullYear()
+                  }
                 />
               </div>
             ) : null}
-
-            <div>
-              <h3 className="text-base font-bold text-[#0F4F68]">Konfigurator (Übersicht)</h3>
-              <ul className="mt-4 grid gap-4 sm:grid-cols-3">
-                <li className="rounded-2xl border border-[#0F4F68]/12 bg-[#F2F9FA]/50 p-5 text-center">
-                  <p className="text-xs font-bold uppercase tracking-[0.1em] text-[#0F4F68]/65">Gesamt</p>
-                  <p className="mt-2 text-3xl font-bold tabular-nums text-[#0F4F68]">{stats.total}</p>
-                  <p className="mt-1 text-sm text-neutral-600">Abschlüsse</p>
-                </li>
-                <li className="rounded-2xl border border-[#F78F2E]/25 bg-[#FFF8F0]/70 p-5 text-center">
-                  <p className="text-xs font-bold uppercase tracking-[0.1em] text-[#C45A0A]">30 Tage</p>
-                  <p className="mt-2 text-3xl font-bold tabular-nums text-[#B45309]">{stats.last30}</p>
-                  <p className="mt-1 text-sm text-neutral-600">Neu</p>
-                </li>
-                <li className="rounded-2xl border border-[#0F4F68]/12 bg-white p-5 text-center">
-                  <p className="text-xs font-bold uppercase tracking-[0.1em] text-[#0F4F68]/65">7 Tage</p>
-                  <p className="mt-2 text-3xl font-bold tabular-nums text-[#0F4F68]">{stats.last7}</p>
-                  <p className="mt-1 text-sm text-neutral-600">Neu</p>
-                </li>
-              </ul>
-            </div>
           </section>
         ) : (
           <section aria-labelledby="status-panel" className="space-y-10">
-            <div className="rounded-2xl border border-[#0F4F68]/12 bg-white p-5 shadow-sm sm:p-7 lg:p-8">
+            <div className="rounded-2xl border border-[#0F4F68]/12 bg-white p-5 shadow-sm sm:p-8 lg:p-10">
               <h2 id="status-panel" className="text-xl font-bold text-[#0F4F68] sm:text-2xl">
                 Statusliste
               </h2>
               <p className="mt-2 text-sm text-neutral-600">
-                Ihre Tippgeber-Meldungen nach Leistungsbereich. Statusfarben entsprechen der Bearbeitung durch
-                Alltagshilfe-Süd.
+                Ihre Tippgeber-Meldungen. Spaltenköpfe zum Sortieren anklicken.
               </p>
 
-              <div className="mt-6 space-y-8">
-                {SERVICE_SLUG_ORDER.map((slug) => {
-                  const rows = tipsBySlug.get(slug) ?? [];
-                  if (rows.length === 0) return null;
-                  const label = PARTNER_RESPONSIBILITY_LABELS[slug];
-                  return (
-                    <div key={slug} className="overflow-hidden rounded-2xl border border-neutral-200/90 shadow-sm">
-                      <div
-                        className={`flex flex-wrap items-center justify-between gap-2 border-b px-4 py-3 sm:px-5 ${serviceBadgeClass(slug)}`}
-                      >
-                        <h3 className="text-sm font-bold sm:text-base">{label}</h3>
-                        <span className="rounded-full bg-white/70 px-2 py-0.5 text-xs font-bold text-neutral-800">
-                          {rows.length} {rows.length === 1 ? "Eintrag" : "Einträge"}
-                        </span>
-                      </div>
-                      <ul className="divide-y divide-neutral-100 bg-white">
-                        {rows.map((t) => (
-                          <li key={t.id} className="px-4 py-4 sm:px-5">
-                            <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-                              <div className="min-w-0 flex-1">
-                                <p className="text-sm font-medium text-neutral-900">
-                                  {partnerTipPayloadSummary(t.payload, t.service_slug)}
-                                </p>
-                                <p className="mt-1 text-xs text-neutral-500">
-                                  Eingang:{" "}
-                                  {new Date(t.created_at).toLocaleString("de-DE", {
-                                    dateStyle: "medium",
-                                    timeStyle: "short",
-                                  })}
-                                </p>
-                              </div>
-                              <span
-                                className={`inline-flex shrink-0 rounded-full border px-3 py-1 text-xs font-bold ${PARTNER_TIP_STATUS_BADGE_CLASS[t.admin_status]}`}
-                              >
-                                {PARTNER_TIP_STATUS_PARTNER_LABELS[t.admin_status]}
-                              </span>
-                            </div>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  );
-                })}
-                {extraSlugs.map((slug) => {
-                  const rows = tipsBySlug.get(slug) ?? [];
-                  if (rows.length === 0) return null;
-                  const label = PARTNER_RESPONSIBILITY_LABELS[slug as PartnerResponsibilitySlug] ?? slug.replace(/_/g, " ");
-                  return (
-                    <div key={slug} className="overflow-hidden rounded-2xl border border-neutral-200/90 shadow-sm">
-                      <div
-                        className={`flex flex-wrap items-center justify-between gap-2 border-b px-4 py-3 sm:px-5 ${serviceBadgeClass(slug)}`}
-                      >
-                        <h3 className="text-sm font-bold sm:text-base">{label}</h3>
-                        <span className="rounded-full bg-white/70 px-2 py-0.5 text-xs font-bold text-neutral-800">
-                          {rows.length} {rows.length === 1 ? "Eintrag" : "Einträge"}
-                        </span>
-                      </div>
-                      <ul className="divide-y divide-neutral-100 bg-white">
-                        {rows.map((t) => (
-                          <li key={t.id} className="px-4 py-4 sm:px-5">
-                            <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-                              <div className="min-w-0 flex-1">
-                                <p className="text-sm font-medium text-neutral-900">
-                                  {partnerTipPayloadSummary(t.payload, t.service_slug)}
-                                </p>
-                                <p className="mt-1 text-xs text-neutral-500">
-                                  Eingang:{" "}
-                                  {new Date(t.created_at).toLocaleString("de-DE", {
-                                    dateStyle: "medium",
-                                    timeStyle: "short",
-                                  })}
-                                </p>
-                              </div>
-                              <span
-                                className={`inline-flex shrink-0 rounded-full border px-3 py-1 text-xs font-bold ${PARTNER_TIP_STATUS_BADGE_CLASS[t.admin_status]}`}
-                              >
-                                {PARTNER_TIP_STATUS_PARTNER_LABELS[t.admin_status]}
-                              </span>
-                            </div>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  );
-                })}
-                {tips.length === 0 ? (
-                  <p className="rounded-2xl border border-dashed border-[#0F4F68]/25 bg-[#F2F9FA]/30 p-8 text-center text-sm text-neutral-600">
-                    Noch keine Tippgeber-Eingänge. Nutzen Sie „Tipp geben“, um Kontakte zu melden.
-                  </p>
-                ) : null}
+              <div className="mt-6 overflow-x-auto rounded-xl border border-[#0F4F68]/10 shadow-sm">
+                <table className="min-w-[720px] w-full text-left text-sm">
+                  <thead className="border-b border-[#0F4F68]/10 bg-[#F2F9FA]/70 text-xs">
+                    <tr>
+                      <th className="px-4 py-3">
+                        <TableSortButton
+                          label="Firma"
+                          active={tipSort.key === "firma"}
+                          dir={tipSort.dir}
+                          onClick={() => toggleTipSort("firma")}
+                        />
+                      </th>
+                      <th className="px-4 py-3">
+                        <TableSortButton
+                          label="Vorname"
+                          active={tipSort.key === "vorname"}
+                          dir={tipSort.dir}
+                          onClick={() => toggleTipSort("vorname")}
+                        />
+                      </th>
+                      <th className="px-4 py-3">
+                        <TableSortButton
+                          label="Nachname"
+                          active={tipSort.key === "nachname"}
+                          dir={tipSort.dir}
+                          onClick={() => toggleTipSort("nachname")}
+                        />
+                      </th>
+                      <th className="px-4 py-3">
+                        <TableSortButton
+                          label="Leistung"
+                          active={tipSort.key === "serviceLabel"}
+                          dir={tipSort.dir}
+                          onClick={() => toggleTipSort("serviceLabel")}
+                        />
+                      </th>
+                      <th className="px-4 py-3">
+                        <TableSortButton
+                          label="Status"
+                          active={tipSort.key === "status"}
+                          dir={tipSort.dir}
+                          onClick={() => toggleTipSort("status")}
+                        />
+                      </th>
+                      <th className="px-4 py-3">
+                        <TableSortButton
+                          label="Eingang"
+                          active={tipSort.key === "created_at"}
+                          dir={tipSort.dir}
+                          onClick={() => toggleTipSort("created_at")}
+                        />
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-neutral-100">
+                    {sortedTipRows.length === 0 ? (
+                      <tr>
+                        <td colSpan={6} className="px-4 py-10 text-center text-neutral-600">
+                          Noch keine Tippgeber-Eingänge. Nutzen Sie „Tipp geben“, um Kontakte zu melden.
+                        </td>
+                      </tr>
+                    ) : (
+                      sortedTipRows.map((row) => (
+                        <tr key={row.id} className="bg-white hover:bg-[#fafcfb]">
+                          <td className="px-4 py-3 font-medium text-neutral-900">{row.firma}</td>
+                          <td className="px-4 py-3 text-neutral-800">{row.vorname}</td>
+                          <td className="px-4 py-3 text-neutral-800">{row.nachname}</td>
+                          <td className="px-4 py-3 text-neutral-700">{row.serviceLabel}</td>
+                          <td className="px-4 py-3">
+                            <span
+                              className={`inline-flex rounded-full border px-2.5 py-1 text-xs font-bold ${PARTNER_TIP_STATUS_BADGE_CLASS[row.admin_status]}`}
+                            >
+                              {PARTNER_TIP_STATUS_PARTNER_LABELS[row.admin_status]}
+                            </span>
+                          </td>
+                          <td className="whitespace-nowrap px-4 py-3 text-xs text-neutral-600">
+                            {new Date(row.created_at).toLocaleString("de-DE", {
+                              dateStyle: "short",
+                              timeStyle: "short",
+                            })}
+                          </td>
+                        </tr>
+                      ))
+                    )}
+                  </tbody>
+                </table>
               </div>
             </div>
 
-            <div className="rounded-2xl border border-[#0F4F68]/10 bg-white p-5 shadow-sm sm:p-7 lg:p-8">
+            <div className="rounded-2xl border border-[#0F4F68]/10 bg-white p-5 shadow-sm sm:p-8 lg:p-10">
               <h3 className="text-lg font-bold text-[#0F4F68]">Pflegebox-Konfigurationen</h3>
               <p className="mt-1 text-sm text-neutral-600">
                 Abschlüsse über Ihren Link (<code className="rounded bg-neutral-100 px-1 text-xs">?partner=…</code>).

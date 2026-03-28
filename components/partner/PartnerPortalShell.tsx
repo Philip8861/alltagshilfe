@@ -12,6 +12,7 @@ type Props = {
 const nav = [
   { href: "/partner/dashboard", label: "Übersicht" },
   { href: "/partner/einstellungen", label: "Einstellungen" },
+  { href: "/partner/kontakt", label: "Kontakt" },
 ] as const;
 
 function navClass(active: boolean) {
@@ -29,35 +30,32 @@ export function PartnerPortalShell({ children }: Props) {
 
   return (
     <div className="min-h-[70vh]">
-      <header className="mb-6 flex flex-col gap-4 border-b border-[#0F4F68]/10 pb-5 sm:mb-8 sm:flex-row sm:items-center sm:justify-between sm:pb-6">
-        <div className="flex items-start justify-between gap-3 sm:block">
-          <div>
-            <p className="text-xs font-bold uppercase tracking-[0.12em] text-[#0F4F68]/65">Kooperationspartner</p>
-            <p className="mt-1 text-lg font-bold text-[#0F4F68] sm:text-xl">Partnerportal</p>
+      <header className="partner-dash-animate mb-8 border-b border-[#0F4F68]/10 pb-5 sm:mb-10 sm:pb-6">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex items-center justify-end gap-2 sm:order-2 sm:shrink-0">
+            <button
+              type="button"
+              className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-xl border border-[#0F4F68]/20 text-[#0F4F68] sm:hidden"
+              aria-expanded={menuOpen}
+              aria-controls="partner-nav-mobile"
+              onClick={() => setMenuOpen((o) => !o)}
+            >
+              <span className="sr-only">Menü</span>
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden>
+                <path
+                  d="M4 7h16M4 12h16M4 17h16"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                />
+              </svg>
+            </button>
+            <PartnerLogoutButton />
           </div>
-          <button
-            type="button"
-            className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-xl border border-[#0F4F68]/20 text-[#0F4F68] sm:hidden"
-            aria-expanded={menuOpen}
-            aria-controls="partner-nav-mobile"
-            onClick={() => setMenuOpen((o) => !o)}
-          >
-            <span className="sr-only">Menü</span>
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden>
-              <path
-                d="M4 7h16M4 12h16M4 17h16"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-              />
-            </svg>
-          </button>
-        </div>
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
           <nav
             id="partner-nav-mobile"
             className={[
-              "flex flex-col gap-1 sm:flex sm:flex-row sm:flex-wrap sm:items-center sm:gap-1",
+              "flex w-full flex-col gap-1 sm:order-1 sm:flex sm:flex-1 sm:flex-row sm:flex-wrap sm:items-center sm:justify-center sm:gap-2",
               menuOpen ? "flex" : "hidden sm:flex",
             ].join(" ")}
             aria-label="Partnerbereich"
@@ -74,7 +72,6 @@ export function PartnerPortalShell({ children }: Props) {
               );
             })}
           </nav>
-          <PartnerLogoutButton />
         </div>
       </header>
       {children}

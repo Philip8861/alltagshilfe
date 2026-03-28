@@ -28,21 +28,20 @@ export default async function PartnerLoginPage({ searchParams }: Props) {
 
   return (
     <PartnerAuthModalShell titleId="partner-login-heading">
-      <article>
-        <p className="text-xs font-bold uppercase tracking-[0.12em] text-[#0F4F68]/70">Kooperationspartner</p>
+      <article className="text-center">
         <h1
           id="partner-login-heading"
-          className="mt-2 text-2xl font-bold tracking-tight text-[#0F4F68] sm:text-3xl"
+          className="text-2xl font-semibold tracking-tight text-[#0F4F68] sm:text-3xl"
         >
           Partner-Login
         </h1>
-        <p className="mt-3 max-w-2xl text-sm text-neutral-600 sm:text-base">
+        <p className="mx-auto mt-3 max-w-md text-sm text-neutral-600 sm:text-base">
           Melden Sie sich an, um Fortschritte und abgeschlossene Konfigurationen einzusehen.
         </p>
 
         {(session && !session.profile) || reason === "no_profile" ? (
           <div
-            className="mt-6 rounded-2xl border border-amber-200 bg-amber-50 p-5 text-sm text-amber-950 sm:mt-8"
+            className="mt-6 rounded-2xl border border-amber-200 bg-amber-50 p-5 text-left text-sm text-amber-950 sm:mt-8"
             role="status"
           >
           <p className="font-semibold">Angemeldet, aber kein Partnerprofil</p>
@@ -83,7 +82,7 @@ export default async function PartnerLoginPage({ searchParams }: Props) {
 
         {!configured ? (
           <div
-            className="mt-6 rounded-2xl border border-amber-200 bg-amber-50 p-5 text-sm text-amber-950 sm:mt-8"
+            className="mt-6 rounded-2xl border border-amber-200 bg-amber-50 p-5 text-left text-sm text-amber-950 sm:mt-8"
             role="status"
           >
           <p className="font-semibold">Anmeldung: Supabase fehlt noch</p>
@@ -125,7 +124,7 @@ export default async function PartnerLoginPage({ searchParams }: Props) {
           <>
             {error === "auth" ? (
               <div
-                className="mt-6 min-h-[5rem] rounded-xl border border-amber-300/80 bg-amber-50 px-4 py-3 text-sm text-amber-950"
+                className="mt-6 min-h-[5rem] rounded-xl border border-amber-300/80 bg-amber-50 px-4 py-3 text-left text-sm text-amber-950"
                 role="alert"
               >
                 <p className="text-[0.65rem] font-bold uppercase tracking-[0.14em] text-amber-800/90">
@@ -137,7 +136,9 @@ export default async function PartnerLoginPage({ searchParams }: Props) {
                 </p>
               </div>
             ) : null}
-            <PartnerLoginForm />
+            <div className="mt-6 text-left">
+              <PartnerLoginForm />
+            </div>
             <p className="mt-5 text-sm text-neutral-600">
               <Link
                 href="/partner/admin-login"

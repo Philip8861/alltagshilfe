@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { PartnerDashboardClient } from "@/components/partner/PartnerDashboardClient";
 import { requirePartnerLogin } from "@/lib/partner/auth";
-import { partnerOrderStats } from "@/lib/partner/dashboard-order-utils";
 import { normalizePartnerTipAdminStatus } from "@/lib/partner/partner-tip-admin";
 import { partnerDashboardWelcomeHeadline } from "@/lib/partner/partner-portal-greeting";
 import { nextPayoutDateInfo } from "@/lib/partner/partner-payout-date";
@@ -46,7 +45,6 @@ export default async function PartnerDashboardPage() {
     tips = [];
   }
 
-  const stats = partnerOrderStats(orders);
   const { labelDe: payoutLabel, isoDate: payoutIso } = nextPayoutDateInfo();
   const welcomeHeadline = partnerDashboardWelcomeHeadline(profile, email);
   const partnerCode = profile.partner_referral_code?.trim() || null;
@@ -67,7 +65,6 @@ export default async function PartnerDashboardPage() {
       payoutLabel={payoutLabel}
       payoutIso={payoutIso}
       responsibilityAreaSlugs={responsibilityAreaSlugs}
-      stats={stats}
       orders={ordersSerial}
       tips={tips}
     />
