@@ -66,6 +66,8 @@ export function PartnerPasswordChangeForm() {
               setMessage("Passwort konnte nicht geändert werden. Bitte Anforderungen von Supabase prüfen.");
               return;
             }
+            const changedAt = new Date().toISOString();
+            await supabase.from("partner_profiles").update({ password_changed_at: changedAt }).eq("id", user.id);
             (e.target as HTMLFormElement).reset();
             setSuccess(true);
             setMessage(null);

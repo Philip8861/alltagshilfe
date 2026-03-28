@@ -147,7 +147,7 @@ Nach Änderungen an Env-Variablen: **Deployments** → bei dem letzten Deploymen
 
 ## Kurz-Checkliste
 
-- [ ] SQL `001_partner_portal.sql` (und ggf. `002_…`) in Supabase ausgeführt  
+- [ ] SQL `001_partner_portal.sql` (und ggf. `002_…`, `004_partner_profiles_admin_fields.sql` für Admin-Stammdaten) in Supabase ausgeführt  
 - [ ] E-Mail-Provider an, **Sign-ups aus**  
 - [ ] `.env.local` mit URL, Anon, **Service Role**, `PARTNER_SYSTEM_ADMIN_*`  
 - [ ] `npm run check:partner-env` ohne Fehler  

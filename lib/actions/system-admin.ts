@@ -13,7 +13,7 @@ import {
   getSystemAdminSession,
 } from "@/lib/partner/system-admin-session";
 import { createPartnerUserSchema, deletePartnerUserIdSchema } from "@/lib/validations/system-admin";
-import { resolvePartnerLoginToEmail } from "@/lib/partner/resolve-partner-login-email";
+import { generatePartnerInitialPassword } from "@/lib/partner/generate-partner-password";
 
 async function clientIp(): Promise<string> {
   try {
@@ -63,7 +63,7 @@ export async function systemAdminLogoutAction(): Promise<void> {
 }
 
 export type CreatePartnerUserState =
-  | { ok: true; message: string }
+  | { ok: true; message: string; generatedPassword: string }
   | { ok: false; message: string };
 
 export async function createPartnerUserAction(
@@ -74,13 +74,16 @@ export async function createPartnerUserAction(
     return { ok: false, message: "Nicht autorisiert." };
   }
 
-  const display = String(formData.get("display_name") ?? "").trim();
   const org = String(formData.get("organization_name") ?? "").trim();
+  const recruited = String(formData.get("recruited_by") ?? "").trim();
   const parsed = createPartnerUserSchema.safeParse({
-    login: formData.get("login"),
-    password: formData.get("password"),
-    display_name: display || undefined,
+    email: formData.get("email"),
+    first_name: formData.get("first_name"),
+    last_name: formData.get("last_name"),
+    phone: formData.get("phone"),
     organization_name: org || undefined,
+    recruited_by: recruited || undefined,
+    responsibility_areas: formData.getAll("responsibility_areas").map(String),
     role: formData.get("role") ?? "partner",
   });
 
@@ -88,52 +91,64 @@ export async function createPartnerUserAction(
     const e = parsed.error.flatten().fieldErrors;
     return {
       ok: false,
-      message: e.login?.[0] ?? e.password?.[0] ?? e.role?.[0] ?? "Eingaben prüfen.",
+      message:
+        e.email?.[0] ??
+        e.first_name?.[0] ??
+        e.last_name?.[0] ??
+        e.phone?.[0] ??
+        e.responsibility_areas?.[0] ??
+        e.role?.[0] ??
+        "Eingaben prüfen.",
     };
   }
 
-  const resolved = resolvePartnerLoginToEmail(parsed.data.login);
-  if (!resolved.ok) {
-    return { ok: false, message: resolved.message };
-  }
-  const authEmail = resolved.email;
+  const authEmail = parsed.data.email.trim().toLowerCase();
+  const displayName = `${parsed.data.first_name} ${parsed.data.last_name}`.trim();
 
   const svc = createSupabaseServiceRoleClient();
   if (!svc) {
     return { ok: false, message: "SUPABASE_SERVICE_ROLE_KEY fehlt – Nutzer können nur in Supabase angelegt werden." };
   }
 
+  const initialPassword = generatePartnerInitialPassword();
+
   const { data, error } = await svc.auth.admin.createUser({
     email: authEmail,
-    password: parsed.data.password,
+    password: initialPassword,
     email_confirm: true,
     user_metadata: {
-      display_name: parsed.data.display_name || undefined,
+      first_name: parsed.data.first_name,
+      last_name: parsed.data.last_name,
+      display_name: displayName,
       organization_name: parsed.data.organization_name || undefined,
+      phone: parsed.data.phone,
+      recruited_by: parsed.data.recruited_by || undefined,
+      responsibility_areas: parsed.data.responsibility_areas,
     },
   });
 
   if (error || !data.user) {
     const msg = error?.message?.toLowerCase() ?? "";
     if (msg.includes("already") || msg.includes("registered")) {
-      return { ok: false, message: "Dieser Anmeldename bzw. diese E-Mail ist bereits registriert." };
+      return { ok: false, message: "Diese E-Mail ist bereits registriert." };
     }
     return { ok: false, message: "Nutzer konnte nicht angelegt werden. Bitte Supabase-Logs prüfen." };
   }
 
   const uid = data.user.id;
+  const role = parsed.data.role === "admin" ? "admin" : "partner";
 
-  const profileRow: {
-    id: string;
-    role: "partner" | "admin";
-    display_name?: string;
-    organization_name?: string;
-  } = {
+  const profileRow = {
     id: uid,
-    role: parsed.data.role === "admin" ? "admin" : "partner",
+    role,
+    first_name: parsed.data.first_name,
+    last_name: parsed.data.last_name,
+    display_name: displayName,
+    organization_name: parsed.data.organization_name ?? null,
+    recruited_by: parsed.data.recruited_by ?? null,
+    phone: parsed.data.phone,
+    responsibility_areas: parsed.data.responsibility_areas,
   };
-  if (parsed.data.display_name) profileRow.display_name = parsed.data.display_name;
-  if (parsed.data.organization_name) profileRow.organization_name = parsed.data.organization_name;
 
   const { error: profileInsErr } = await svc.from("partner_profiles").insert(profileRow);
   if (
@@ -144,26 +159,30 @@ export async function createPartnerUserAction(
     return {
       ok: false,
       message:
-        "Nutzer wurde in Auth angelegt, partner_profiles konnte nicht geschrieben werden. Migration, RLS und SUPABASE_SERVICE_ROLE_KEY prüfen.",
+        "Nutzer wurde in Auth angelegt, partner_profiles konnte nicht geschrieben werden. Migration 004_partner_profiles_admin_fields.sql und RLS prüfen.",
     };
   }
 
-  const patch: { display_name?: string; organization_name?: string; role?: string } = {};
-  if (parsed.data.display_name) patch.display_name = parsed.data.display_name;
-  if (parsed.data.organization_name) patch.organization_name = parsed.data.organization_name;
-  if (parsed.data.role === "admin") patch.role = "admin";
+  const fullUpdate = {
+    first_name: parsed.data.first_name,
+    last_name: parsed.data.last_name,
+    display_name: displayName,
+    organization_name: parsed.data.organization_name ?? null,
+    recruited_by: parsed.data.recruited_by ?? null,
+    phone: parsed.data.phone,
+    responsibility_areas: parsed.data.responsibility_areas,
+    role,
+  };
 
-  if (Object.keys(patch).length > 0) {
-    await svc.from("partner_profiles").update(patch).eq("id", uid);
-  } else if (parsed.data.role === "admin") {
-    await svc.from("partner_profiles").update({ role: "admin" }).eq("id", uid);
-  }
+  await svc.from("partner_profiles").update(fullUpdate).eq("id", uid);
 
   revalidatePath("/partner/admin");
 
   return {
     ok: true,
-    message: `Partner-Konto angelegt (${authEmail}). Zum Login: Kurzname oder volle E-Mail wie angelegt; Zugangsdaten sicher mitteilen.`,
+    generatedPassword: initialPassword,
+    message:
+      `Konto für ${authEmail} angelegt. Das generierte Passwort unten einmalig kopieren und dem Partner sicher übermitteln (nicht per unverschlüsselter E-Mail).`,
   };
 }
 

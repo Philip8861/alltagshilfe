@@ -3,8 +3,35 @@ import { CreatePartnerAccountForm } from "@/components/partner/CreatePartnerAcco
 import { DeletePartnerUserButton } from "@/components/partner/DeletePartnerUserButton";
 import { SystemAdminLogoutButton } from "@/components/partner/SystemAdminLogoutButton";
 import { requireSystemAdmin } from "@/lib/partner/system-admin-guard";
+import { formatResponsibilityAreasList } from "@/lib/partner/responsibility-areas";
 import type { PartnerProfile } from "@/lib/partner/types";
 import { createSupabaseServiceRoleClient } from "@/lib/supabase/service";
+
+type AuthUserInfo = {
+  email: string;
+  created_at?: string;
+  last_sign_in_at?: string | null;
+};
+
+function partnerPasswordNote(profile: PartnerProfile): string {
+  if (profile.password_changed_at) {
+    return `Partner hat geändert: ${new Date(profile.password_changed_at).toLocaleString("de-DE", {
+      dateStyle: "short",
+      timeStyle: "short",
+    })}`;
+  }
+  return "Noch nicht vom Partner geändert (Initialpasswort)";
+}
+
+function shortContact(s: Record<string, unknown> | null): string {
+  if (!s?.contact || typeof s.contact !== "object") return "—";
+  const c = s.contact as Record<string, unknown>;
+  const fn = typeof c.firstName === "string" ? c.firstName : "";
+  const ln = typeof c.lastName === "string" ? c.lastName : "";
+  const em = typeof c.email === "string" ? c.email : "";
+  const t = `${fn} ${ln}`.trim();
+  return t ? `${t} (${em})` : em || "—";
+}
 
 export default async function PartnerAdminPage() {
   await requireSystemAdmin();
@@ -12,6 +39,7 @@ export default async function PartnerAdminPage() {
   const svc = createSupabaseServiceRoleClient();
 
   let profiles: PartnerProfile[] = [];
+  const authById = new Map<string, AuthUserInfo>();
   let orders: {
     id: string;
     partner_id: string | null;
@@ -22,33 +50,35 @@ export default async function PartnerAdminPage() {
 
   if (svc) {
     try {
-      const [profRes, ordRes] = await Promise.all([
+      const [profRes, ordRes, listRes] = await Promise.all([
         svc
           .from("partner_profiles")
-          .select("id, display_name, organization_name, role, created_at")
+          .select(
+            "id, display_name, organization_name, role, created_at, updated_at, first_name, last_name, recruited_by, phone, responsibility_areas, password_changed_at",
+          )
           .order("created_at", { ascending: false }),
         svc
           .from("pflegebox_orders")
           .select("id, partner_id, external_reference, created_at, summary_json")
           .order("created_at", { ascending: false })
           .limit(100),
+        svc.auth.admin.listUsers({ page: 1, perPage: 1000 }),
       ]);
       profiles = (profRes.data as PartnerProfile[] | null) ?? [];
       orders = (ordRes.data as typeof orders | null) ?? [];
+      if (!listRes.error && listRes.data?.users) {
+        for (const u of listRes.data.users) {
+          authById.set(u.id, {
+            email: u.email ?? "",
+            created_at: u.created_at,
+            last_sign_in_at: u.last_sign_in_at ?? null,
+          });
+        }
+      }
     } catch {
       profiles = [];
       orders = [];
     }
-  }
-
-  function shortContact(s: Record<string, unknown> | null): string {
-    if (!s?.contact || typeof s.contact !== "object") return "—";
-    const c = s.contact as Record<string, unknown>;
-    const fn = typeof c.firstName === "string" ? c.firstName : "";
-    const ln = typeof c.lastName === "string" ? c.lastName : "";
-    const em = typeof c.email === "string" ? c.email : "";
-    const t = `${fn} ${ln}`.trim();
-    return t ? `${t} (${em})` : em || "—";
   }
 
   return (
@@ -58,7 +88,8 @@ export default async function PartnerAdminPage() {
           <p className="text-xs font-bold uppercase tracking-[0.12em] text-[#0F4F68]/70">Administration</p>
           <h1 className="mt-1 text-2xl font-bold text-[#0F4F68] sm:text-3xl">Partner-Verwaltung</h1>
           <p className="mt-1 text-sm text-neutral-600">
-            Partner-Konten anlegen und Listen einsehen. Zugang nur über System-Login (
+            Partner anlegen, alle Stammdaten einsehen, Passwort-Änderungen nachvollziehen (kein Klartext — nur
+            Zeitstempel). Zugang nur über System-Login (
             <Link href="/partner/admin-login" className="font-semibold underline underline-offset-2">
               neu anmelden
             </Link>
@@ -87,45 +118,95 @@ export default async function PartnerAdminPage() {
         <CreatePartnerAccountForm />
       )}
 
-      <section
-        className="mt-10 overflow-x-auto rounded-2xl border border-[#0F4F68]/10 bg-white shadow-sm"
-        aria-label="Partnerliste"
-      >
-        <table className="min-w-full text-left text-sm">
-          <thead className="border-b border-[#0F4F68]/10 bg-[#F2F9FA]/50 text-xs font-bold uppercase tracking-wide text-[#0F4F68]">
-            <tr>
-              <th className="px-4 py-3">Organisation / Name</th>
-              <th className="px-4 py-3">Rolle</th>
-              <th className="px-4 py-3">Nutzer-ID</th>
-              <th className="px-4 py-3">Aktion</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-neutral-100">
-            {!svc || profiles.length === 0 ? (
+      <section className="mt-10" aria-labelledby="partner-bereich-heading">
+        <h2 id="partner-bereich-heading" className="text-xl font-bold text-[#0F4F68]">
+          Partner-Bereich — Übersicht
+        </h2>
+        <p className="mt-2 max-w-3xl text-sm text-neutral-600">
+          Alle angelegten Partner mit Login-E-Mail aus Supabase Auth, Kontaktdaten und Zuständigkeiten. Passwörter
+          werden nicht gespeichert; nach Passwortwechsel durch den Partner erscheint das Datum der Änderung.
+        </p>
+        <div
+          className="mt-4 overflow-x-auto rounded-2xl border border-[#0F4F68]/10 bg-white shadow-sm"
+          role="region"
+          aria-label="Partnerliste Detail"
+        >
+          <table className="min-w-[1100px] w-full text-left text-sm">
+            <thead className="border-b border-[#0F4F68]/10 bg-[#F2F9FA]/50 text-xs font-bold uppercase tracking-wide text-[#0F4F68]">
               <tr>
-                <td colSpan={4} className="px-4 py-8 text-center text-neutral-600">
-                  Keine Profile gefunden oder Supabase nicht erreichbar.
-                </td>
+                <th className="whitespace-nowrap px-3 py-3">E-Mail</th>
+                <th className="whitespace-nowrap px-3 py-3">Ansprechpartner</th>
+                <th className="px-3 py-3">Firma</th>
+                <th className="whitespace-nowrap px-3 py-3">Telefon</th>
+                <th className="px-3 py-3">Angeworben von</th>
+                <th className="min-w-[10rem] px-3 py-3">Zuständigkeit</th>
+                <th className="min-w-[11rem] px-3 py-3">Passwort</th>
+                <th className="whitespace-nowrap px-3 py-3">Rolle</th>
+                <th className="whitespace-nowrap px-3 py-3">Profil seit</th>
+                <th className="whitespace-nowrap px-3 py-3">Letzter Login</th>
+                <th className="px-3 py-3">Nutzer-ID</th>
+                <th className="whitespace-nowrap px-3 py-3">Aktion</th>
               </tr>
-            ) : (
-              profiles.map((p) => {
-                const label = p.organization_name ?? p.display_name ?? p.id.slice(0, 8) + "…";
-                return (
-                  <tr key={p.id} className="hover:bg-neutral-50/80">
-                    <td className="px-4 py-3 font-medium text-neutral-900">
-                      {p.organization_name ?? p.display_name ?? "—"}
-                    </td>
-                    <td className="px-4 py-3 text-neutral-700">{p.role}</td>
-                    <td className="px-4 py-3 font-mono text-xs text-neutral-500">{p.id}</td>
-                    <td className="px-4 py-3">
-                      <DeletePartnerUserButton userId={p.id} displayLabel={label} />
-                    </td>
-                  </tr>
-                );
-              })
-            )}
-          </tbody>
-        </table>
+            </thead>
+            <tbody className="divide-y divide-neutral-100">
+              {!svc || profiles.length === 0 ? (
+                <tr>
+                  <td colSpan={12} className="px-4 py-8 text-center text-neutral-600">
+                    Keine Partner-Profile gefunden. SQL-Migration{" "}
+                    <code className="rounded bg-neutral-100 px-1 text-xs">004_partner_profiles_admin_fields.sql</code>{" "}
+                    in Supabase ausführen, falls Spalten fehlen.
+                  </td>
+                </tr>
+              ) : (
+                profiles.map((p) => {
+                  const auth = authById.get(p.id);
+                  const email = auth?.email ?? "—";
+                  const name =
+                    [p.first_name?.trim(), p.last_name?.trim()].filter(Boolean).join(" ") ||
+                    p.display_name?.trim() ||
+                    "—";
+                  const label = p.organization_name ?? name ?? p.id.slice(0, 8);
+                  return (
+                    <tr key={p.id} className="align-top hover:bg-neutral-50/80">
+                      <td className="max-w-[14rem] px-3 py-3">
+                        <span className="break-all font-medium text-neutral-900">{email}</span>
+                      </td>
+                      <td className="px-3 py-3 text-neutral-800">{name}</td>
+                      <td className="max-w-[10rem] px-3 py-3 text-neutral-700">{p.organization_name ?? "—"}</td>
+                      <td className="whitespace-nowrap px-3 py-3 text-neutral-700">{p.phone ?? "—"}</td>
+                      <td className="max-w-[10rem] px-3 py-3 text-neutral-700">{p.recruited_by ?? "—"}</td>
+                      <td className="px-3 py-3 text-xs text-neutral-700">
+                        {formatResponsibilityAreasList(p.responsibility_areas ?? [])}
+                      </td>
+                      <td className="px-3 py-3 text-xs leading-snug text-neutral-700">{partnerPasswordNote(p)}</td>
+                      <td className="px-3 py-3 text-neutral-700">{p.role}</td>
+                      <td className="whitespace-nowrap px-3 py-3 text-neutral-600">
+                        {p.created_at
+                          ? new Date(p.created_at).toLocaleString("de-DE", {
+                              dateStyle: "short",
+                              timeStyle: "short",
+                            })
+                          : "—"}
+                      </td>
+                      <td className="whitespace-nowrap px-3 py-3 text-neutral-600">
+                        {auth?.last_sign_in_at
+                          ? new Date(auth.last_sign_in_at).toLocaleString("de-DE", {
+                              dateStyle: "short",
+                              timeStyle: "short",
+                            })
+                          : "—"}
+                      </td>
+                      <td className="px-3 py-3 font-mono text-[0.65rem] text-neutral-500">{p.id}</td>
+                      <td className="px-3 py-3">
+                        <DeletePartnerUserButton userId={p.id} displayLabel={label} />
+                      </td>
+                    </tr>
+                  );
+                })
+              )}
+            </tbody>
+          </table>
+        </div>
       </section>
 
       <section
@@ -190,21 +271,21 @@ export default async function PartnerAdminPage() {
         <p className="font-semibold text-[#0F4F68]">Hinweise</p>
         <ul className="mt-2 list-disc space-y-1 pl-5">
           <li>
-            Öffentliche Selbstregistrierung ist deaktiviert – neue Partner nur über dieses Formular oder manuell in
-            Supabase Auth.
+            Neue Spalten:{" "}
+            <code className="rounded bg-white px-1">supabase/migrations/004_partner_profiles_admin_fields.sql</code> im
+            SQL-Editor ausführen.
           </li>
           <li>
-            In Supabase: Authentication → Providers → E-Mail → „Sign ups“ abschalten, damit niemand ohne Ihr Konto
-            registriert.
+            Öffentliche Selbstregistrierung abschalten – neue Partner nur über dieses Formular oder manuell in Supabase
+            Auth.
           </li>
           <li>
             Konfigurator-Link: <code className="rounded bg-white px-1">/pflegebox?partner=PARTNER_UUID</code>
           </li>
           <li>
-            <strong>Löschen:</strong> Entfernt den Nutzer in Supabase Auth; die Zeile in{" "}
-            <code className="rounded bg-white px-1">partner_profiles</code> fällt mit weg (Kaskade). Bestehende
-            Pflegebox-Abschlüsse bleiben erhalten, die Partner-Zuordnung wird aufgehoben (
-            <code className="rounded bg-white px-1">partner_id</code> = leer).
+            <strong>Löschen:</strong> Entfernt den Nutzer in Supabase Auth;{" "}
+            <code className="rounded bg-white px-1">partner_profiles</code> per Kaskade. Pflegebox-Abschlüsse bleiben,
+            Partner-Zuordnung wird aufgehoben.
           </li>
         </ul>
       </div>

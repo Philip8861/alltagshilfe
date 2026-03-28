@@ -175,15 +175,33 @@ export async function ensurePartnerProfileWithUserClient(
     const meta = user.user_metadata as Record<string, unknown> | null | undefined;
     const displayName = typeof meta?.display_name === "string" ? meta.display_name.trim() : undefined;
     const orgName = typeof meta?.organization_name === "string" ? meta.organization_name.trim() : undefined;
+    const firstName = typeof meta?.first_name === "string" ? meta.first_name.trim() : undefined;
+    const lastName = typeof meta?.last_name === "string" ? meta.last_name.trim() : undefined;
+    const phone = typeof meta?.phone === "string" ? meta.phone.trim() : undefined;
+    const recruitedBy = typeof meta?.recruited_by === "string" ? meta.recruited_by.trim() : undefined;
+    const rawAreas = meta?.responsibility_areas;
+    const responsibilityAreas = Array.isArray(rawAreas)
+      ? rawAreas.filter((a): a is string => typeof a === "string")
+      : undefined;
 
     const payload: {
       id: string;
       role: "partner";
       display_name?: string;
       organization_name?: string;
+      first_name?: string;
+      last_name?: string;
+      phone?: string;
+      recruited_by?: string;
+      responsibility_areas?: string[];
     } = { id: user.id, role: "partner" };
     if (displayName) payload.display_name = displayName;
     if (orgName) payload.organization_name = orgName;
+    if (firstName) payload.first_name = firstName;
+    if (lastName) payload.last_name = lastName;
+    if (phone) payload.phone = phone;
+    if (recruitedBy) payload.recruited_by = recruitedBy;
+    if (responsibilityAreas?.length) payload.responsibility_areas = responsibilityAreas;
 
     /**
      * Idempotent wie:

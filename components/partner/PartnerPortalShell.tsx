@@ -90,6 +90,10 @@ export function partnerPortalGreetingName(
   profile: PartnerProfile,
   email: string | undefined,
 ): string {
+  const fn = profile.first_name?.trim();
+  const ln = profile.last_name?.trim();
+  if (fn && ln) return `${fn} ${ln}`;
+  if (fn) return fn;
   const d = profile.display_name?.trim();
   if (d) return d;
   const o = profile.organization_name?.trim();

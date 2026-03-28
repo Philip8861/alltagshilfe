@@ -1,10 +1,20 @@
 import { z } from "zod";
 
+const responsibilitySlug = z.enum([
+  "betriebliche_pflegeberatung",
+  "pflegehilfsmittel",
+  "hauswirtschaft_betreuung",
+  "pflegeberatung",
+]);
+
 export const createPartnerUserSchema = z.object({
-  login: z.string().trim().min(1, "Anmeldename oder E-Mail erforderlich.").max(320),
-  password: z.string().min(8, "Passwort mindestens 8 Zeichen.").max(72, "Passwort zu lang."),
-  display_name: z.string().trim().max(120).optional(),
+  email: z.string().trim().email("Gültige E-Mail-Adresse erforderlich.").max(320),
+  first_name: z.string().trim().min(1, "Vorname erforderlich.").max(80),
+  last_name: z.string().trim().min(1, "Nachname erforderlich.").max(80),
+  phone: z.string().trim().min(5, "Telefonnummer erforderlich.").max(40),
   organization_name: z.string().trim().max(200).optional(),
+  recruited_by: z.string().trim().max(200).optional(),
+  responsibility_areas: z.array(responsibilitySlug).default([]),
   role: z.enum(["partner", "admin"]),
 });
 

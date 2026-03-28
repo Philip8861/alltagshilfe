@@ -6,6 +6,14 @@ export type PartnerProfile = {
   organization_name: string | null;
   role: PartnerRole;
   created_at?: string;
+  updated_at?: string;
+  first_name?: string | null;
+  last_name?: string | null;
+  recruited_by?: string | null;
+  phone?: string | null;
+  responsibility_areas?: string[] | null;
+  /** Gesetzt, wenn der Partner das Passwort selbst geändert hat (kein Klartext). */
+  password_changed_at?: string | null;
 };
 
 export type PflegeboxOrderRow = {

@@ -22,7 +22,9 @@ export async function getPartnerSession(): Promise<{
 
   const { data: profileRow, error: profileErr } = await supabase
     .from("partner_profiles")
-    .select("id, display_name, organization_name, role, created_at")
+    .select(
+      "id, display_name, organization_name, role, created_at, first_name, last_name, recruited_by, phone, responsibility_areas, password_changed_at",
+    )
     .eq("id", user.id)
     .maybeSingle();
 
@@ -41,7 +43,9 @@ export async function getPartnerSession(): Promise<{
     if (svc) {
       const { data: svcRow, error: svcErr } = await svc
         .from("partner_profiles")
-        .select("id, display_name, organization_name, role, created_at")
+        .select(
+          "id, display_name, organization_name, role, created_at, first_name, last_name, recruited_by, phone, responsibility_areas, password_changed_at",
+        )
         .eq("id", user.id)
         .maybeSingle();
       if (svcErr) {
