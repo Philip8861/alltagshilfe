@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { PartnerPortalShell } from "@/components/partner/PartnerPortalShell";
 import { requirePartnerLogin } from "@/lib/partner/auth";
-import { partnerPortalSidebarInitials } from "@/lib/partner/partner-portal-avatar-initials";
 
 export const metadata: Metadata = {
   title: "Partnerportal",
@@ -9,11 +8,6 @@ export const metadata: Metadata = {
 };
 
 export default async function PartnerPortalLayout({ children }: { children: React.ReactNode }) {
-  const { profile, email } = await requirePartnerLogin();
-  const av = partnerPortalSidebarInitials(profile, email);
-  return (
-    <PartnerPortalShell avatarGreen={av.green} avatarBlue={av.blue}>
-      {children}
-    </PartnerPortalShell>
-  );
+  await requirePartnerLogin();
+  return <PartnerPortalShell>{children}</PartnerPortalShell>;
 }

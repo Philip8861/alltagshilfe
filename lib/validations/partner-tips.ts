@@ -11,7 +11,8 @@ const betriebPayloadSchema = z.object({
 });
 
 const standardPayloadSchema = z.object({
-  ansprechpartner: z.string().trim().min(1, "Ansprechpartner erforderlich.").max(120),
+  vorname: z.string().trim().min(1, "Vorname erforderlich.").max(80),
+  nachname: z.string().trim().min(1, "Nachname erforderlich.").max(80),
   telefon: z.string().trim().min(5, "Telefonnummer erforderlich.").max(40),
   email: z.string().trim().email("Gültige E-Mail.").max(320),
   wohnort: z.string().trim().min(1, "Wohnort erforderlich.").max(200),

@@ -9,10 +9,14 @@ export function tipTableFields(
     serviceSlug === "betriebliche_pflegeberatung"
       ? String(typeof payload.firmenname === "string" ? payload.firmenname.trim() : "")
       : "";
-  const ap = typeof payload.ansprechpartner === "string" ? payload.ansprechpartner.trim() : "";
-  const parts = ap.split(/\s+/).filter(Boolean);
-  const vorname = parts[0] ?? "";
-  const nachname = parts.length > 1 ? parts.slice(1).join(" ") : "";
+  let vorname = typeof payload.vorname === "string" ? payload.vorname.trim() : "";
+  let nachname = typeof payload.nachname === "string" ? payload.nachname.trim() : "";
+  if (!vorname && !nachname) {
+    const ap = typeof payload.ansprechpartner === "string" ? payload.ansprechpartner.trim() : "";
+    const parts = ap.split(/\s+/).filter(Boolean);
+    vorname = parts[0] ?? "";
+    nachname = parts.length > 1 ? parts.slice(1).join(" ") : "";
+  }
   return {
     firma: firma || "—",
     vorname: vorname || "—",

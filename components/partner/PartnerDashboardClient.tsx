@@ -3,7 +3,8 @@
 import { useMemo, useState, useEffect } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { PartnerTipModal } from "@/components/partner/PartnerTipModal";
-import { tipPayloadKontaktEmail } from "@/lib/partner/partner-tip-kontakt";
+import { tipPayloadNotiz } from "@/lib/partner/partner-tip-notiz";
+import { tipTableFields } from "@/lib/partner/partner-tip-table-fields";
 import {
   PARTNER_RESPONSIBILITY_SLUGS,
   PARTNER_RESPONSIBILITY_LABELS,
@@ -22,30 +23,29 @@ type Props = {
 
 const slugSet = new Set<string>(PARTNER_RESPONSIBILITY_SLUGS);
 
+const iconWrap =
+  "flex h-11 w-11 shrink-0 items-center justify-center rounded-md bg-[#0F4F68]/10 text-[#0F4F68]";
+
 function statusPill(admin: PartnerTipAdminStatus): { label: string; className: string } {
   switch (admin) {
     case "neu":
-      return {
-        label: "Eingegangen",
-        className: "bg-[#0F4F68] text-white",
-      };
     case "in_bearbeitung":
       return {
         label: "In Bearbeitung",
-        className: "bg-[#ea580c] text-white",
+        className: "bg-amber-400 text-amber-950",
       };
     case "erledigt":
       return {
-        label: "Abgeschlossen",
-        className: "bg-[#dc2626] text-white",
+        label: "Erfolgreich Abgeschlossen",
+        className: "bg-emerald-600 text-white",
       };
     case "abgelehnt":
       return {
         label: "Abgelehnt",
-        className: "bg-neutral-600 text-white",
+        className: "bg-red-600 text-white",
       };
     default:
-      return { label: admin, className: "bg-neutral-500 text-white" };
+      return { label: String(admin), className: "bg-neutral-500 text-white" };
   }
 }
 
@@ -74,27 +74,43 @@ export function PartnerDashboardClient({
     return tips.map((t) => {
       const slug = t.service_slug as PartnerResponsibilitySlug;
       const typ = PARTNER_RESPONSIBILITY_LABELS[slug] ?? t.service_slug.replace(/_/g, " ");
-      const kontakt = tipPayloadKontaktEmail(t.payload);
+      const f = tipTableFields(t.payload, t.service_slug);
       const datum = new Date(t.created_at).toLocaleDateString("de-DE", {
         day: "2-digit",
         month: "2-digit",
         year: "numeric",
       });
       const pill = statusPill(t.admin_status);
-      return { id: t.id, typ, kontakt, datum, pill };
+      const notiz = tipPayloadNotiz(t.payload);
+      return {
+        id: t.id,
+        typ,
+        vorname: f.vorname,
+        nachname: f.nachname,
+        firma: f.firma,
+        datum,
+        pill,
+        notiz,
+      };
     });
   }, [tips]);
 
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase();
     if (!q) return rows;
-    return rows.filter(
-      (r) =>
+    return rows.filter((r) => {
+      const notiz = r.notiz.toLowerCase();
+      return (
         r.typ.toLowerCase().includes(q) ||
-        r.kontakt.toLowerCase().includes(q) ||
+        r.vorname.toLowerCase().includes(q) ||
+        r.nachname.toLowerCase().includes(q) ||
+        `${r.vorname} ${r.nachname}`.toLowerCase().includes(q) ||
+        r.firma.toLowerCase().includes(q) ||
         r.datum.includes(q) ||
-        r.pill.label.toLowerCase().includes(q),
-    );
+        r.pill.label.toLowerCase().includes(q) ||
+        notiz.includes(q)
+      );
+    });
   }, [rows, search]);
 
   const closeTipModal = () => {
@@ -141,10 +157,7 @@ export function PartnerDashboardClient({
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <div className={cardBase}>
           <div className="flex items-start gap-4">
-            <div
-              className="flex h-11 w-11 shrink-0 items-center justify-center rounded-md bg-teal-100 text-teal-800"
-              aria-hidden
-            >
+            <div className={iconWrap} aria-hidden>
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path
                   d="M15.5 7.5l2.3 2.3a1 1 0 010 1.4l-7.1 7.1H9v-3.1l7.1-7.1a1 1 0 011.4 0z"
@@ -155,8 +168,8 @@ export function PartnerDashboardClient({
               </svg>
             </div>
             <div className="min-w-0">
-              <p className="text-[0.65rem] font-semibold uppercase text-teal-800">Ihr Partner-Code</p>
-              <p className="mt-1 text-2xl font-semibold tabular-nums text-teal-900 sm:text-3xl">
+              <p className="text-[0.65rem] font-semibold uppercase text-[#0F4F68]">Ihr Partner-Code</p>
+              <p className="mt-1 text-2xl font-semibold tabular-nums text-[#0F4F68] sm:text-3xl">
                 {partnerCode ?? "—"}
               </p>
             </div>
@@ -164,27 +177,22 @@ export function PartnerDashboardClient({
         </div>
 
         <div className={cardBase}>
-          <p className="text-[0.65rem] font-bold uppercase tracking-[0.12em] text-neutral-600">
-            Monatliche Tippgeberpr…
-          </p>
-          <p className="text-2xl font-bold tabular-nums text-neutral-900 sm:text-3xl">128,50 €</p>
+          <p className="text-[0.65rem] font-semibold uppercase text-[#0F4F68]">Monatliche Tippgeberpr…</p>
+          <p className="text-2xl font-semibold tabular-nums text-[#0F4F68] sm:text-3xl">128,50 €</p>
           <p className="text-xs text-neutral-600">Auszahlung in Bearbeitung</p>
         </div>
 
         <div className={cardBase}>
           <div className="flex items-start gap-4">
-            <div
-              className="flex h-11 w-11 shrink-0 items-center justify-center rounded-md bg-sky-100 text-sky-700"
-              aria-hidden
-            >
+            <div className={iconWrap} aria-hidden>
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <rect x="3" y="6" width="18" height="12" rx="2" />
                 <path d="M7 10h4M7 14h10" strokeLinecap="round" />
               </svg>
             </div>
             <div className="min-w-0">
-              <p className="text-[0.65rem] font-semibold uppercase text-neutral-600">Einmalprovision</p>
-              <p className="mt-1 text-2xl font-semibold tabular-nums text-neutral-900 sm:text-3xl">420,00 €</p>
+              <p className="text-[0.65rem] font-semibold uppercase text-[#0F4F68]">Einmalprovision</p>
+              <p className="mt-1 text-2xl font-semibold tabular-nums text-[#0F4F68] sm:text-3xl">420,00 €</p>
               <p className="mt-0.5 text-xs text-neutral-600">Zahlung bereit</p>
             </div>
           </div>
@@ -192,18 +200,15 @@ export function PartnerDashboardClient({
 
         <div className={cardBase}>
           <div className="flex items-start gap-4">
-            <div
-              className="flex h-11 w-11 shrink-0 items-center justify-center rounded-md bg-sky-100 text-sky-700"
-              aria-hidden
-            >
+            <div className={iconWrap} aria-hidden>
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <rect x="3" y="4" width="18" height="18" rx="2" />
                 <path d="M16 2v4M8 2v4M3 10h18" strokeLinecap="round" />
               </svg>
             </div>
             <div className="min-w-0">
-              <p className="text-[0.65rem] font-semibold uppercase text-neutral-600">Nächste Auszahlung</p>
-              <p className="mt-1 text-xl font-semibold tabular-nums text-neutral-900 sm:text-2xl">
+              <p className="text-[0.65rem] font-semibold uppercase text-[#0F4F68]">Nächste Auszahlung</p>
+              <p className="mt-1 text-xl font-semibold tabular-nums text-[#0F4F68] sm:text-2xl">
                 am {payoutLabel}
               </p>
               <p className="mt-0.5 text-xs text-neutral-600">Zum Monatsende</p>
@@ -218,12 +223,12 @@ export function PartnerDashboardClient({
         aria-labelledby="partner-statusliste-heading"
       >
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <h2 id="partner-statusliste-heading" className="text-lg font-semibold text-neutral-900 sm:text-xl">
+          <h2 id="partner-statusliste-heading" className="text-lg font-semibold text-[#0F4F68] sm:text-xl">
             Statusliste
           </h2>
           <label className="relative block w-full sm:max-w-xs">
             <span className="sr-only">Suchen</span>
-            <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400" aria-hidden>
+            <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[#0F4F68]/40" aria-hidden>
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <circle cx="11" cy="11" r="7" />
                 <path d="M20 20l-3-3" strokeLinecap="round" />
@@ -240,16 +245,16 @@ export function PartnerDashboardClient({
         </div>
 
         <div className="mt-6 overflow-x-auto rounded-md border border-neutral-200">
-          <table className="min-w-[56rem] w-full text-left text-sm">
+          <table className="min-w-[64rem] w-full text-left text-sm">
             <thead>
-              <tr className="border-b border-neutral-200 bg-[#F2F9FA] text-xs font-semibold uppercase text-neutral-600">
-                <th className="whitespace-nowrap px-3 py-3 sm:px-4">Typ</th>
-                <th className="whitespace-nowrap px-3 py-3 sm:px-4">Kontakt</th>
+              <tr className="border-b border-neutral-200 bg-[#F2F9FA] text-xs font-semibold uppercase text-[#0F4F68]">
+                <th className="whitespace-nowrap px-3 py-3 sm:px-4">Vorname</th>
+                <th className="whitespace-nowrap px-3 py-3 sm:px-4">Nachname</th>
+                <th className="whitespace-nowrap px-3 py-3 sm:px-4">Firma</th>
                 <th className="whitespace-nowrap px-3 py-3 sm:px-4">Datum</th>
-                <th className="whitespace-nowrap px-3 py-3 sm:px-4">Priorität</th>
                 <th className="whitespace-nowrap px-3 py-3 sm:px-4">Status</th>
-                <th className="whitespace-nowrap px-3 py-3 sm:px-4">Notizen</th>
-                <th className="whitespace-nowrap px-3 py-3 sm:px-4">Aktion</th>
+                <th className="min-w-[8rem] px-3 py-3 sm:px-4">Notiz</th>
+                <th className="whitespace-nowrap px-3 py-3 sm:px-4">Typ</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-neutral-100">
@@ -262,24 +267,35 @@ export function PartnerDashboardClient({
               ) : (
                 filtered.map((r) => (
                   <tr key={r.id} className="bg-white hover:bg-neutral-50/80">
-                    <td className="whitespace-nowrap px-3 py-3 font-medium text-neutral-900 sm:px-4">{r.typ}</td>
-                    <td className="max-w-[14rem] truncate px-3 py-3 text-neutral-800 sm:max-w-xs sm:px-4">{r.kontakt}</td>
+                    <td className="whitespace-nowrap px-3 py-3 text-neutral-900 sm:px-4">{r.vorname}</td>
+                    <td className="whitespace-nowrap px-3 py-3 text-neutral-900 sm:px-4">{r.nachname}</td>
+                    <td className="max-w-[12rem] truncate px-3 py-3 text-neutral-800 sm:max-w-[14rem] sm:px-4">
+                      {r.firma}
+                    </td>
                     <td className="whitespace-nowrap px-3 py-3 text-neutral-800 sm:px-4">{r.datum}</td>
-                    <td className="whitespace-nowrap px-3 py-3 text-neutral-700 sm:px-4">Priorität</td>
                     <td className="px-3 py-3 sm:px-4">
-                      <span className={`inline-flex rounded px-2.5 py-0.5 text-xs font-normal ${r.pill.className}`}>
+                      <span className={`inline-flex rounded px-2.5 py-0.5 text-xs font-medium ${r.pill.className}`}>
                         {r.pill.label}
                       </span>
                     </td>
-                    <td className="px-3 py-3 text-neutral-400 sm:px-4"> </td>
-                    <td className="px-3 py-3 sm:px-4">
-                      <button
-                        type="button"
-                        className="rounded border border-neutral-400 bg-neutral-200 px-3 py-1.5 text-xs font-normal text-neutral-900 hover:bg-neutral-300 focus:outline-none focus-visible:ring-1 focus-visible:ring-[#0F4F68]"
-                      >
-                        Details
-                      </button>
+                    <td className="max-w-[14rem] px-3 py-3 align-top text-neutral-800 sm:px-4">
+                      {r.notiz ? (
+                        <details className="text-sm">
+                          <summary className="cursor-pointer list-none font-medium text-[#0F4F68] hover:underline [&::-webkit-details-marker]:hidden">
+                            <span className="inline-flex items-center gap-1">
+                              Notiz lesen
+                              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
+                                <path d="M6 9l6 6 6-6" strokeLinecap="round" strokeLinejoin="round" />
+                              </svg>
+                            </span>
+                          </summary>
+                          <p className="mt-2 whitespace-pre-wrap text-neutral-700">{r.notiz}</p>
+                        </details>
+                      ) : (
+                        <span className="text-neutral-400">—</span>
+                      )}
                     </td>
+                    <td className="whitespace-nowrap px-3 py-3 font-medium text-neutral-900 sm:px-4">{r.typ}</td>
                   </tr>
                 ))
               )}

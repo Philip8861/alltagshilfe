@@ -26,7 +26,8 @@ const emptyBetrieb = {
 };
 
 const emptyStandard = {
-  ansprechpartner: "",
+  vorname: "",
+  nachname: "",
   telefon: "",
   email: "",
   wohnort: "",
@@ -65,7 +66,8 @@ export function PartnerTipModal({ open, onClose, allowedSlugs }: Props) {
     setMessage(null);
     let body: PartnerTipSubmissionInput;
     const stdPayload = {
-      ansprechpartner: standard.ansprechpartner,
+      vorname: standard.vorname,
+      nachname: standard.nachname,
       telefon: standard.telefon,
       email: standard.email,
       wohnort: standard.wohnort,
@@ -206,9 +208,14 @@ export function PartnerTipModal({ open, onClose, allowedSlugs }: Props) {
               ) : (
                 <div className="space-y-3">
                   <Field
-                    label="Ansprechpartner"
-                    value={standard.ansprechpartner}
-                    onChange={(v) => setStandard((s) => ({ ...s, ansprechpartner: v }))}
+                    label="Vorname"
+                    value={standard.vorname}
+                    onChange={(v) => setStandard((s) => ({ ...s, vorname: v }))}
+                  />
+                  <Field
+                    label="Nachname"
+                    value={standard.nachname}
+                    onChange={(v) => setStandard((s) => ({ ...s, nachname: v }))}
                   />
                   <Field
                     label="Telefonnummer"
