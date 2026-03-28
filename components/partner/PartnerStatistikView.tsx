@@ -74,7 +74,7 @@ function YearMonthOverviewChart({
   const chartMaxPx = 132;
   return (
     <div>
-      <p className="text-sm font-semibold text-[#134e4a]">Verteilung {year} (nach Eingangsdatum)</p>
+      <p className="text-sm font-semibold text-[#0F4F68]">Verteilung {year} (nach Eingangsdatum)</p>
       <p className="mt-1 text-xs text-neutral-500">Gestapelte Balken: grün abgeschlossen, rot abgelehnt, gelb in Bearbeitung.</p>
       <div className="mt-4 flex h-44 items-end justify-between gap-1 sm:gap-1.5" role="img" aria-label="Jahresübersicht nach Monaten">
         {monthly.map((st, i) => {
@@ -135,14 +135,14 @@ export function PartnerStatistikView({ tips, orders }: Props) {
 
   return (
     <section className="rounded-lg border border-neutral-300 bg-white p-5 sm:p-8">
-      <div className="flex flex-col gap-4 border-b border-[#134e4a]/15 pb-6 sm:flex-row sm:items-end sm:justify-between">
-        <h1 className="text-xl font-semibold text-[#134e4a] sm:text-2xl">Statistik</h1>
+      <div className="flex flex-col gap-4 border-b border-[#0F4F68]/15 pb-6 sm:flex-row sm:items-end sm:justify-between">
+        <h1 className="text-xl font-semibold text-[#0F4F68] sm:text-2xl">Statistik</h1>
         <div className="flex flex-wrap items-center gap-2">
-          <div className="flex rounded-lg border border-[#134e4a]/20 p-0.5">
+          <div className="flex rounded-lg border border-[#0F4F68]/20 p-0.5">
             <button
               type="button"
               className={`rounded-md px-3 py-2 text-sm font-semibold ${
-                periodMode === "month" ? "bg-[#134e4a] text-white" : "text-[#134e4a] hover:bg-neutral-50"
+                periodMode === "month" ? "bg-[#0F4F68] text-white" : "text-[#0F4F68] hover:bg-neutral-50"
               }`}
               onClick={() => setPeriodMode("month")}
             >
@@ -151,7 +151,7 @@ export function PartnerStatistikView({ tips, orders }: Props) {
             <button
               type="button"
               className={`rounded-md px-3 py-2 text-sm font-semibold ${
-                periodMode === "year" ? "bg-[#134e4a] text-white" : "text-[#134e4a] hover:bg-neutral-50"
+                periodMode === "year" ? "bg-[#0F4F68] text-white" : "text-[#0F4F68] hover:bg-neutral-50"
               }`}
               onClick={() => setPeriodMode("year")}
             >
@@ -163,7 +163,7 @@ export function PartnerStatistikView({ tips, orders }: Props) {
               type="month"
               value={monthInput}
               onChange={(e) => setMonthInput(e.target.value)}
-              className="rounded-lg border border-neutral-200 px-3 py-2 text-sm font-medium text-neutral-900 hover:border-[#134e4a]/30 focus:border-[#134e4a] focus:outline-none focus:ring-1 focus:ring-[#134e4a]"
+              className="rounded-lg border border-neutral-200 px-3 py-2 text-sm font-medium text-neutral-900 hover:border-[#0F4F68]/30 focus:border-[#0F4F68] focus:outline-none focus:ring-1 focus:ring-[#0F4F68]"
             />
           ) : (
             <input
@@ -172,17 +172,17 @@ export function PartnerStatistikView({ tips, orders }: Props) {
               max={2100}
               value={yearInput}
               onChange={(e) => setYearInput(e.target.value)}
-              className="w-24 rounded-lg border border-neutral-200 px-3 py-2 text-sm font-medium text-neutral-900 hover:border-[#134e4a]/30 focus:border-[#134e4a] focus:outline-none focus:ring-1 focus:ring-[#134e4a]"
+              className="w-24 rounded-lg border border-neutral-200 px-3 py-2 text-sm font-medium text-neutral-900 hover:border-[#0F4F68]/30 focus:border-[#0F4F68] focus:outline-none focus:ring-1 focus:ring-[#0F4F68]"
             />
           )}
         </div>
       </div>
       <div className="mt-8">
-        <h2 className="text-base font-semibold text-[#134e4a]">Aufträge nach Status</h2>
+        <h2 className="text-base font-semibold text-[#0F4F68]">Aufträge nach Status</h2>
         <p className="mt-1 text-sm text-neutral-600">
           Tippgeber-Eingänge und abgeschlossene Konfigurationen im gewählten Zeitraum.
         </p>
-        <div className="mt-6 rounded-lg border border-neutral-200 bg-[#F2F9FA] p-5 sm:p-6">
+        <div className="mt-6 rounded-lg border border-neutral-200 bg-[#FAFBFC] p-5 sm:p-6">
           <HorizontalStatBars stats={periodStats} />
         </div>
       </div>

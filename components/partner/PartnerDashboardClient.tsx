@@ -27,7 +27,7 @@ function statusPill(admin: PartnerTipAdminStatus): { label: string; className: s
     case "neu":
       return {
         label: "Eingegangen",
-        className: "bg-[#134e4a] text-white",
+        className: "bg-[#0F4F68] text-white",
       };
     case "in_bearbeitung":
       return {
@@ -109,7 +109,7 @@ export function PartnerDashboardClient({
 
   return (
     <div className="mx-auto w-full max-w-[min(100%,90rem)] space-y-6 sm:space-y-8">
-      <header className="flex flex-col gap-4 rounded-lg border border-[#0f3d34] bg-[#134e4a] px-6 py-6 text-white sm:flex-row sm:items-start sm:justify-between sm:px-8 sm:py-7">
+      <header className="flex flex-col gap-4 rounded-lg border border-[#0c3d52] bg-[#0F4F68] px-6 py-6 text-white sm:flex-row sm:items-start sm:justify-between sm:px-8 sm:py-7">
         <div>
           <h1 className="text-2xl font-semibold leading-snug sm:text-3xl">
             {welcomeLine},
@@ -223,7 +223,7 @@ export function PartnerDashboardClient({
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Suchen"
-              className="w-full rounded-md border border-neutral-300 bg-white py-2 pl-10 pr-3 text-sm text-neutral-900 placeholder:text-neutral-500 hover:border-neutral-400 focus:border-[#134e4a] focus:outline-none focus:ring-1 focus:ring-[#134e4a]"
+              className="w-full rounded-md border border-neutral-300 bg-white py-2 pl-10 pr-3 text-sm text-neutral-900 placeholder:text-neutral-500 hover:border-neutral-400 focus:border-[#0F4F68] focus:outline-none focus:ring-1 focus:ring-[#0F4F68]"
             />
           </label>
         </div>
@@ -231,7 +231,7 @@ export function PartnerDashboardClient({
         <div className="mt-6 overflow-x-auto rounded-md border border-neutral-200">
           <table className="min-w-[56rem] w-full text-left text-sm">
             <thead>
-              <tr className="border-b border-neutral-200 bg-[#F2F9FA] text-xs font-semibold uppercase text-neutral-600">
+              <tr className="border-b border-neutral-200 bg-[#FAFBFC] text-xs font-semibold uppercase text-neutral-600">
                 <th className="whitespace-nowrap px-3 py-3 sm:px-4">Typ</th>
                 <th className="whitespace-nowrap px-3 py-3 sm:px-4">Kontakt</th>
                 <th className="whitespace-nowrap px-3 py-3 sm:px-4">Datum</th>
@@ -264,7 +264,7 @@ export function PartnerDashboardClient({
                     <td className="px-3 py-3 sm:px-4">
                       <button
                         type="button"
-                        className="rounded border border-neutral-400 bg-neutral-200 px-3 py-1.5 text-xs font-normal text-neutral-900 hover:bg-neutral-300 focus:outline-none focus-visible:ring-1 focus-visible:ring-[#134e4a]"
+                        className="rounded border border-neutral-400 bg-neutral-200 px-3 py-1.5 text-xs font-normal text-neutral-900 hover:bg-neutral-300 focus:outline-none focus-visible:ring-1 focus-visible:ring-[#0F4F68]"
                       >
                         Details
                       </button>
