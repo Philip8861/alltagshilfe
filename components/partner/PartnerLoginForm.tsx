@@ -76,8 +76,11 @@ export function PartnerLoginForm({
               router.refresh();
               return;
             }
-            router.refresh();
-            router.push("/partner/dashboard");
+            if (typeof window !== "undefined") {
+              window.location.assign("/partner/dashboard");
+            } else {
+              router.push("/partner/dashboard");
+            }
           } catch {
             setMessage("Anmeldung fehlgeschlagen. Bitte später erneut versuchen.");
           }

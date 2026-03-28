@@ -1,3 +1,4 @@
+import { unstable_noStore as noStore } from "next/cache";
 import { redirect } from "next/navigation";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
@@ -8,6 +9,7 @@ export async function getPartnerSession(): Promise<{
   email: string | undefined;
   profile: PartnerProfile | null;
 } | null> {
+  noStore();
   if (!isSupabaseConfigured()) return null;
 
   const supabase = await createSupabaseServerClient();

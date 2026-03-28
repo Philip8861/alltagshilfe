@@ -1,5 +1,6 @@
 "use server";
 
+import { revalidatePath } from "next/cache";
 import { headers } from "next/headers";
 import { rateLimitPartnerLogin } from "@/lib/rate-limit";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
@@ -60,6 +61,8 @@ export async function ensurePartnerProfileForSessionAction(): Promise<EnsurePart
     .eq("id", user.id)
     .maybeSingle();
   if (existing?.id) {
+    revalidatePath("/partner/login");
+    revalidatePath("/partner/dashboard");
     return { ok: true, created: false };
   }
 
@@ -87,10 +90,27 @@ export async function ensurePartnerProfileForSessionAction(): Promise<EnsurePart
   const { error } = await svc.from("partner_profiles").insert(row);
   if (error) {
     if (error.code === "23505" || String(error.message ?? "").toLowerCase().includes("duplicate")) {
+      revalidatePath("/partner/login");
+      revalidatePath("/partner/dashboard");
       return { ok: true, created: false };
     }
-    return { ok: false, message: "Profil konnte nicht angelegt werden. Bitte später erneut versuchen." };
+    const hint = error.code ? ` (Code ${error.code})` : "";
+    return {
+      ok: false,
+      message: `Profil konnte nicht angelegt werden${hint}. Prüfen Sie SUPABASE_SERVICE_ROLE_KEY und die Tabelle partner_profiles in Supabase.`,
+    };
   }
+
+  const { data: verify } = await svc.from("partner_profiles").select("id").eq("id", user.id).maybeSingle();
+  if (!verify?.id) {
+    return {
+      ok: false,
+      message: "Eintrag in partner_profiles wurde nicht bestätigt. Bitte Supabase-Logs und Berechtigungen prüfen.",
+    };
+  }
+
+  revalidatePath("/partner/login");
+  revalidatePath("/partner/dashboard");
 
   return { ok: true, created: true };
 }
