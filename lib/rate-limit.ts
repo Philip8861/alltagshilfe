@@ -41,6 +41,11 @@ export function rateLimitPartnerLogin(identifier: string): { success: boolean; r
   return rateLimitWithConfig(`partner-login:${identifier}`, 12, 15 * 60 * 1000);
 }
 
+/** Partner-Registrierung: Missbrauchsschutz (Spam-Konten). */
+export function rateLimitPartnerRegister(identifier: string): { success: boolean; remaining: number } {
+  return rateLimitWithConfig(`partner-register:${identifier}`, 8, 60 * 60 * 1000);
+}
+
 /** Pflegebox-Abschluss per API (öffentlich, Service-Role-Insert). */
 export function rateLimitPflegeboxOrder(identifier: string): { success: boolean; remaining: number } {
   return rateLimitWithConfig(`pflegebox-order:${identifier}`, 20, 60 * 60 * 1000);

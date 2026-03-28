@@ -1,6 +1,8 @@
 -- Partnerportal (Alltagshilfe-Süd): einmal im Supabase SQL-Editor ausführen.
 -- Projekt in der EU anlegen, z. B. Region „Frankfurt (eu-central-1)“ — DSGVO-freundlich.
 -- Auth: E-Mail/Passwort unter Authentication → Providers aktivieren.
+-- Öffentliche Registrierung (Website /partner/registrieren): Sign ups in Supabase erlauben; Redirect-URL
+-- https://IHRE-DOMAIN/auth/callback (und Vorschau-URLs) unter Authentication → URL Configuration eintragen.
 --
 -- Nach diesem Skript: Jede NEUE Registrierung (neuer Eintrag in auth.users) bekommt automatisch
 -- eine Zeile in partner_profiles (Trigger unten). Bestehende Nutzer von vorher: einmalig

@@ -1,7 +1,7 @@
 "use server";
 
 import { headers } from "next/headers";
-import { rateLimitPartnerLogin } from "@/lib/rate-limit";
+import { rateLimitPartnerLogin, rateLimitPartnerRegister } from "@/lib/rate-limit";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 
 async function clientIp(): Promise<string> {
@@ -26,6 +26,19 @@ export async function checkPartnerLoginRateLimitAction(): Promise<{ ok: true } |
   const limited = rateLimitPartnerLogin(ip);
   if (!limited.success) {
     return { ok: false, message: "Zu viele Versuche. Bitte später erneut versuchen." };
+  }
+  return { ok: true };
+}
+
+/** Vor Browser-Registrierung (Rate-Limit nur serverseitig). */
+export async function checkPartnerRegisterRateLimitAction(): Promise<{ ok: true } | { ok: false; message: string }> {
+  if (!isSupabaseConfigured()) {
+    return { ok: false, message: "Der Partnerbereich ist hier noch nicht eingerichtet." };
+  }
+  const ip = await clientIp();
+  const limited = rateLimitPartnerRegister(ip);
+  if (!limited.success) {
+    return { ok: false, message: "Zu viele Registrierungsversuche. Bitte in einer Stunde erneut versuchen." };
   }
   return { ok: true };
 }

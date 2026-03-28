@@ -5,12 +5,12 @@ import { PartnerLogoutButton } from "@/components/partner/PartnerLogoutButton";
 import { getPartnerSession } from "@/lib/partner/auth";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 
-type Props = { searchParams: Promise<{ reason?: string }> };
+type Props = { searchParams: Promise<{ reason?: string; error?: string }> };
 
 export default async function PartnerLoginPage({ searchParams }: Props) {
   const configured = isSupabaseConfigured();
   const session = configured ? await getPartnerSession() : null;
-  const { reason } = await searchParams;
+  const { reason, error } = await searchParams;
 
   if (session?.profile) {
     redirect("/partner/dashboard");
@@ -81,7 +81,24 @@ export default async function PartnerLoginPage({ searchParams }: Props) {
           </p>
         </div>
       ) : session && !session.profile ? null : (
-        <PartnerLoginForm emailFieldLabel="E-Mail-Adresse (Anmeldename)" />
+        <>
+          <PartnerLoginForm emailFieldLabel="E-Mail-Adresse (Anmeldename)" />
+          {error === "auth" ? (
+            <p className="mt-4 max-w-md text-sm font-medium text-[#b42318]" role="alert">
+              Anmeldung über den E-Mail-Link ist fehlgeschlagen. Bitte erneut auf den Link klicken oder sich mit E-Mail
+              und Passwort anmelden.
+            </p>
+          ) : null}
+          <p className="mt-6 text-sm text-neutral-600">
+            Noch kein Konto?{" "}
+            <Link
+              href="/partner/registrieren"
+              className="font-semibold text-[#0F4F68] underline underline-offset-2 hover:text-[#0c3d52]"
+            >
+              Jetzt registrieren
+            </Link>
+          </p>
+        </>
       )}
 
       <p className="mt-8 text-sm text-neutral-600">

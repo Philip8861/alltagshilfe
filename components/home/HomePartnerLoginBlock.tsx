@@ -34,9 +34,15 @@ export async function HomePartnerLoginBlock() {
               Anmeldung für Partner
             </h2>
             <p className="mt-3 text-sm leading-relaxed text-neutral-600 sm:text-base">
-              Melden Sie sich mit Ihrer <strong className="font-semibold text-neutral-800">E-Mail-Adresse</strong> (als
-              Anmeldename) und Ihrem <strong className="font-semibold text-neutral-800">Passwort</strong> an. Zugänge
-              werden von Alltagshilfe-Süd vergeben.
+              <Link
+                href="/partner/registrieren"
+                className="font-semibold text-[#0F4F68] underline underline-offset-2 hover:text-[#0c3d52]"
+              >
+                Registrieren
+              </Link>{" "}
+              Sie sich einmalig – das Partnerprofil wird automatisch angelegt. Danach mit{" "}
+              <strong className="font-semibold text-neutral-800">E-Mail</strong> und{" "}
+              <strong className="font-semibold text-neutral-800">Passwort</strong> anmelden.
             </p>
             <p className="mt-3 text-sm text-neutral-600">
               <Link
@@ -44,6 +50,13 @@ export async function HomePartnerLoginBlock() {
                 className="font-semibold text-[#0F4F68] underline underline-offset-2 hover:text-[#0c3d52]"
               >
                 Zur Vollseite Partner-Login
+              </Link>
+              {" · "}
+              <Link
+                href="/partner/registrieren"
+                className="font-semibold text-[#0F4F68] underline underline-offset-2 hover:text-[#0c3d52]"
+              >
+                Registrierung
               </Link>
             </p>
           </div>
