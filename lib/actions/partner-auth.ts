@@ -38,7 +38,11 @@ export async function checkPartnerRegisterRateLimitAction(): Promise<{ ok: true 
   const ip = await clientIp();
   const limited = rateLimitPartnerRegister(ip);
   if (!limited.success) {
-    return { ok: false, message: "Zu viele Registrierungsversuche. Bitte in einer Stunde erneut versuchen." };
+    return {
+      ok: false,
+      message:
+        "Zu viele Registrierungsversuche von dieser Seite. Bitte etwa eine Stunde warten oder den Entwicklungsserver neu starten (lokal).",
+    };
   }
   return { ok: true };
 }

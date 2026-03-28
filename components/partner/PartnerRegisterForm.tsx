@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { checkPartnerRegisterRateLimitAction } from "@/lib/actions/partner-auth";
-import { mapSupabaseRegisterError } from "@/lib/partner/map-register-error";
+import { isRegisterRateLimitedError, mapSupabaseRegisterError } from "@/lib/partner/map-register-error";
 import { getAuthCallbackUrl } from "@/lib/partner/register-redirect";
 import { createSupabaseBrowserClient } from "@/lib/supabase/client";
 import { partnerRegisterSchema } from "@/lib/validations/partner";
@@ -109,7 +109,7 @@ export function PartnerRegisterForm({ disabled, formClassName }: PartnerRegister
               Boolean(error) &&
               errMsg.includes("redirect") &&
               (errMsg.includes("not allowed") || errMsg.includes("invalid") || errMsg.includes("whitelist"));
-            if (error && redirectBlocked) {
+            if (error && redirectBlocked && !isRegisterRateLimitedError(error)) {
               ({ data, error } = await supabase.auth.signUp({
                 email: parsed.data.email,
                 password: parsed.data.password,
