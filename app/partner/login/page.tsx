@@ -1,12 +1,16 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { PartnerLoginForm } from "@/components/partner/PartnerLoginForm";
+import { PartnerLogoutButton } from "@/components/partner/PartnerLogoutButton";
 import { getPartnerSession } from "@/lib/partner/auth";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 
-export default async function PartnerLoginPage() {
+type Props = { searchParams: Promise<{ reason?: string }> };
+
+export default async function PartnerLoginPage({ searchParams }: Props) {
   const configured = isSupabaseConfigured();
   const session = configured ? await getPartnerSession() : null;
+  const { reason } = await searchParams;
 
   if (session?.profile) {
     redirect("/partner/dashboard");
@@ -20,6 +24,26 @@ export default async function PartnerLoginPage() {
         Melden Sie sich an, um Fortschritte und abgeschlossene Konfigurationen einzusehen. Zugänge werden von
         Alltagshilfe-Süd vergeben.
       </p>
+
+      {(session && !session.profile) || reason === "no_profile" ? (
+        <div
+          className="mt-8 rounded-2xl border border-amber-200 bg-amber-50 p-6 text-sm text-amber-950"
+          role="status"
+        >
+          <p className="font-semibold">Angemeldet, aber kein Partnerprofil</p>
+          <p className="mt-2">
+            Das Supabase-Konto ist gültig, in der Tabelle{" "}
+            <code className="rounded bg-white/80 px-1">partner_profiles</code> fehlt jedoch noch ein passender Eintrag
+            (z. B. Migration <code className="rounded bg-white/80 px-1">001_partner_portal.sql</code> nach der
+            Registrierung ausführen oder Zeile manuell anlegen). Bitte wenden Sie sich an Alltagshilfe-Süd.
+          </p>
+          {session && !session.profile ? (
+            <div className="mt-4">
+              <PartnerLogoutButton />
+            </div>
+          ) : null}
+        </div>
+      ) : null}
 
       {!configured ? (
         <div

@@ -1,9 +1,10 @@
 "use client";
 
-import { useActionState } from "react";
-import { partnerLoginAction, type PartnerLoginState } from "@/lib/actions/partner-auth";
-
-const initial: PartnerLoginState = { ok: true };
+import { useRouter } from "next/navigation";
+import { useState, useTransition } from "react";
+import { checkPartnerLoginRateLimitAction } from "@/lib/actions/partner-auth";
+import { createSupabaseBrowserClient } from "@/lib/supabase/client";
+import { partnerLoginSchema } from "@/lib/validations/partner";
 
 type PartnerLoginFormProps = {
   disabled?: boolean;
@@ -17,15 +18,53 @@ export function PartnerLoginForm({
   emailFieldLabel = "E-Mail",
   formClassName,
 }: PartnerLoginFormProps) {
-  const [state, formAction, pending] = useActionState(partnerLoginAction, initial);
+  const router = useRouter();
+  const [pending, startTransition] = useTransition();
+  const [message, setMessage] = useState<string | null>(null);
 
   return (
     <form
-      action={formAction}
       className={
         formClassName ??
         "mt-8 max-w-md space-y-5 rounded-2xl border border-[#0F4F68]/12 bg-white p-6 shadow-sm sm:p-8"
       }
+      onSubmit={(e) => {
+        e.preventDefault();
+        setMessage(null);
+        const fd = new FormData(e.currentTarget);
+        const parsed = partnerLoginSchema.safeParse({
+          email: fd.get("email"),
+          password: fd.get("password"),
+        });
+        if (!parsed.success) {
+          const first = parsed.error.flatten().fieldErrors;
+          setMessage(first.email?.[0] ?? first.password?.[0] ?? "Bitte Eingaben prüfen.");
+          return;
+        }
+
+        startTransition(async () => {
+          const allowed = await checkPartnerLoginRateLimitAction();
+          if (!allowed.ok) {
+            setMessage(allowed.message);
+            return;
+          }
+          try {
+            const supabase = createSupabaseBrowserClient();
+            const { error } = await supabase.auth.signInWithPassword({
+              email: parsed.data.email,
+              password: parsed.data.password,
+            });
+            if (error) {
+              setMessage("Anmeldung fehlgeschlagen. Bitte Zugangsdaten prüfen.");
+              return;
+            }
+            router.refresh();
+            router.push("/partner/dashboard");
+          } catch {
+            setMessage("Anmeldung fehlgeschlagen. Bitte später erneut versuchen.");
+          }
+        });
+      }}
     >
       <div>
         <label htmlFor="partner-email" className="block text-sm font-semibold text-[#0F4F68]">
@@ -55,9 +94,9 @@ export function PartnerLoginForm({
           className="mt-2 w-full rounded-xl border border-neutral-200 px-4 py-3 text-neutral-900 outline-none ring-[#0F4F68] focus:ring-2 disabled:opacity-60"
         />
       </div>
-      {!state.ok ? (
+      {message ? (
         <p className="text-sm font-medium text-[#b42318]" role="alert">
-          {state.message}
+          {message}
         </p>
       ) : null}
       <button

@@ -36,8 +36,11 @@ export async function requirePartnerLogin(): Promise<{
   profile: PartnerProfile;
 }> {
   const session = await getPartnerSession();
-  if (!session?.profile) {
+  if (!session) {
     redirect("/partner/login");
+  }
+  if (!session.profile) {
+    redirect("/partner/login?reason=no_profile");
   }
   return {
     userId: session.userId,
