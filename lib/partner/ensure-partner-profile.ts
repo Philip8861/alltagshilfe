@@ -1,4 +1,5 @@
 import { revalidatePath } from "next/cache";
+import type { SupabaseClient } from "@supabase/supabase-js";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { createSupabaseServiceRoleClient } from "@/lib/supabase/service";
@@ -8,16 +9,11 @@ export type EnsurePartnerProfileResult =
   | { ok: false; message: string };
 
 /**
- * Legt partner_profiles für die aktuelle Supabase-Session nach (Service Role).
- * Wird von Server Actions und der Route GET /partner/sync-profile genutzt — voller Seitenaufruf
- * liefert Cookies zuverlässiger als manche Server-Action-Aufrufe aus useEffect.
+ * Kernlogik mit einem bereits gebauten Browser-Session-Client (Anon-Key + User-Cookies).
  */
-export async function ensurePartnerProfileForCurrentSession(): Promise<EnsurePartnerProfileResult> {
-  if (!isSupabaseConfigured()) {
-    return { ok: false, message: "Supabase ist nicht konfiguriert." };
-  }
-
-  const supabase = await createSupabaseServerClient();
+export async function ensurePartnerProfileWithUserClient(
+  supabase: SupabaseClient,
+): Promise<EnsurePartnerProfileResult> {
   const {
     data: { user },
     error: userErr,
@@ -84,4 +80,16 @@ export async function ensurePartnerProfileForCurrentSession(): Promise<EnsurePar
   revalidatePath("/partner/dashboard");
 
   return { ok: true, created: true };
+}
+
+/**
+ * Wie ensurePartnerProfileWithUserClient, aber mit createSupabaseServerClient() (Server Actions, RSC).
+ */
+export async function ensurePartnerProfileForCurrentSession(): Promise<EnsurePartnerProfileResult> {
+  if (!isSupabaseConfigured()) {
+    return { ok: false, message: "Supabase ist nicht konfiguriert." };
+  }
+
+  const supabase = await createSupabaseServerClient();
+  return ensurePartnerProfileWithUserClient(supabase);
 }
