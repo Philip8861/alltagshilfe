@@ -49,6 +49,7 @@ Diese Datei ist die verbindliche Referenz für Architektur, Tech-Stack, Seitenst
 | `/impressum`, `/datenschutz` | SSG | Rechtliche Seiten |
 | `/partner`, `/partner/login`, `/partner/dashboard`, `/partner/einstellungen`, `/partner/einstellungen/vertraege`, `/partner/admin` | dynamisch | Kooperationspartner (Supabase Auth, **noindex** / robots disallow) |
 | `POST /api/pflegebox-order` | API Route | Abschluss Pflegebox-Konfigurator → Supabase (`SUPABASE_SERVICE_ROLE_KEY`, Rate-Limit, Zod) |
+| `GET /api/partner/session` | API Route | Partner-Session für Startseiten-Block (JSON, `no-store`; keine userId im Body) |
 | `/download/[slug]` | optional | Leadmagnet-Seiten |
 | 404 | SSG | not-found |
 

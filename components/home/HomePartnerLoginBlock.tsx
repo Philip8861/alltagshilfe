@@ -1,25 +1,59 @@
+"use client";
+
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import { PartnerLoginForm } from "@/components/partner/PartnerLoginForm";
 import { PartnerLogoutButton } from "@/components/partner/PartnerLogoutButton";
-import { getPartnerSession } from "@/lib/partner/auth";
-import { isSupabaseConfigured } from "@/lib/supabase/config";
 
-export async function HomePartnerLoginBlock() {
-  const configured = isSupabaseConfigured();
-  let session: Awaited<ReturnType<typeof getPartnerSession>> = null;
-  if (configured) {
-    try {
-      session = await getPartnerSession();
-    } catch {
-      session = null;
-    }
-  }
+type SessionPayload = {
+  configured: boolean;
+  authenticated: boolean;
+  hasProfile: boolean;
+  displayName: string | null;
+  email: string | null;
+};
 
+const emptyPayload: SessionPayload = {
+  configured: false,
+  authenticated: false,
+  hasProfile: false,
+  displayName: null,
+  email: null,
+};
+
+export function HomePartnerLoginBlock() {
+  const [data, setData] = useState<SessionPayload | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    void (async () => {
+      try {
+        const res = await fetch("/api/partner/session", {
+          credentials: "same-origin",
+          cache: "no-store",
+        });
+        const json = (await res.json()) as Partial<SessionPayload>;
+        if (cancelled) return;
+        setData({
+          configured: Boolean(json.configured),
+          authenticated: Boolean(json.authenticated),
+          hasProfile: Boolean(json.hasProfile),
+          displayName: typeof json.displayName === "string" ? json.displayName : null,
+          email: typeof json.email === "string" ? json.email : null,
+        });
+      } catch {
+        if (!cancelled) setData(emptyPayload);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const configured = data?.configured ?? false;
+  const showLoggedIn = configured && data?.authenticated && data?.hasProfile;
   const displayName =
-    session?.profile?.display_name ??
-    session?.profile?.organization_name ??
-    session?.email ??
-    "Partner";
+    data?.displayName ?? data?.email ?? "Partner";
 
   return (
     <section
@@ -49,7 +83,15 @@ export async function HomePartnerLoginBlock() {
           </div>
 
           <div className="w-full min-w-0 lg:max-w-md lg:shrink-0">
-            {!configured ? (
+            {data === null ? (
+              <div
+                className="min-h-[200px] rounded-2xl border border-[#0F4F68]/10 bg-white/60 p-6 shadow-inner sm:p-8"
+                role="status"
+                aria-live="polite"
+              >
+                <p className="text-sm text-neutral-500">Partnerbereich wird geladen…</p>
+              </div>
+            ) : !configured ? (
               <div
                 className="rounded-2xl border border-amber-200 bg-amber-50/90 p-5 text-sm text-amber-950"
                 role="status"
@@ -66,7 +108,7 @@ export async function HomePartnerLoginBlock() {
                   <code className="rounded bg-white/80 px-1 text-xs">npm run dev</code> neu starten.
                 </p>
               </div>
-            ) : session?.profile ? (
+            ) : showLoggedIn ? (
               <div className="rounded-2xl border border-[#0F4F68]/15 bg-white p-6 shadow-sm">
                 <p className="text-sm font-semibold text-[#0F4F68]">Sie sind angemeldet</p>
                 <p className="mt-2 text-sm text-neutral-700">{displayName}</p>
