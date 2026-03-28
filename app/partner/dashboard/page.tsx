@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { PartnerLogoutButton } from "@/components/partner/PartnerLogoutButton";
 import { requirePartnerLogin } from "@/lib/partner/auth";
 import type { PflegeboxOrderRow } from "@/lib/partner/types";
@@ -45,14 +44,6 @@ export default async function PartnerDashboardPage() {
           <p className="mt-1 text-sm text-neutral-600">Angemeldet als {displayName}</p>
         </div>
         <div className="flex flex-wrap gap-2">
-          {profile.role === "admin" ? (
-            <Link
-              href="/partner/admin"
-              className="inline-flex min-h-[44px] items-center justify-center rounded-xl bg-[#F78F2E] px-4 py-2 text-sm font-semibold text-white hover:bg-[#e67e22]"
-            >
-              Admin-Einstellungen
-            </Link>
-          ) : null}
           <PartnerLogoutButton />
         </div>
       </div>

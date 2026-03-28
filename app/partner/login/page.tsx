@@ -104,12 +104,11 @@ export default async function PartnerLoginPage({ searchParams }: Props) {
             ) : null}
             <PartnerLoginForm emailFieldLabel="E-Mail-Adresse (Anmeldename)" />
             <p className="mt-5 text-sm text-neutral-600">
-              Noch kein Konto?{" "}
               <Link
-                href="/partner/registrieren"
+                href="/partner/admin-login"
                 className="font-semibold text-[#0F4F68] underline underline-offset-2 hover:text-[#0c3d52]"
               >
-                Jetzt registrieren
+                Partner-Verwaltung (Betrieb)
               </Link>
             </p>
           </>

@@ -41,9 +41,9 @@ export function rateLimitPartnerLogin(identifier: string): { success: boolean; r
   return rateLimitWithConfig(`partner-login:${identifier}`, 12, 15 * 60 * 1000);
 }
 
-/** Partner-Registrierung: Missbrauchsschutz (Spam-Konten). Großzügiger, damit Tests/Retries nicht sofort blockieren. */
-export function rateLimitPartnerRegister(identifier: string): { success: boolean; remaining: number } {
-  return rateLimitWithConfig(`partner-register:${identifier}`, 24, 60 * 60 * 1000);
+/** Verwaltungs-Login (Partner-System-Admin, env-Zugang). */
+export function rateLimitSystemAdminLogin(identifier: string): { success: boolean; remaining: number } {
+  return rateLimitWithConfig(`partner-sys-admin-login:${identifier}`, 10, 15 * 60 * 1000);
 }
 
 /** Pflegebox-Abschluss per API (öffentlich, Service-Role-Insert). */

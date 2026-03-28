@@ -48,15 +48,3 @@ export async function requirePartnerLogin(): Promise<{
     profile: session.profile,
   };
 }
-
-export async function requirePartnerAdmin(): Promise<{
-  userId: string;
-  email: string | undefined;
-  profile: PartnerProfile;
-}> {
-  const ctx = await requirePartnerLogin();
-  if (ctx.profile.role !== "admin") {
-    redirect("/partner/dashboard");
-  }
-  return ctx;
-}
