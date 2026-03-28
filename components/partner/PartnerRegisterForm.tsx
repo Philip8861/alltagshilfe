@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { checkPartnerRegisterRateLimitAction } from "@/lib/actions/partner-auth";
+import { PartnerAuthStatusBox } from "@/components/partner/PartnerAuthStatusBox";
 import { isRegisterRateLimitedError, mapSupabaseRegisterError } from "@/lib/partner/map-register-error";
 import { getAuthCallbackUrl } from "@/lib/partner/register-redirect";
 import { createSupabaseBrowserClient } from "@/lib/supabase/client";
@@ -25,10 +26,15 @@ export function PartnerRegisterForm({ disabled, formClassName }: PartnerRegister
       <div
         className={
           formClassName ??
-          "mt-8 max-w-md space-y-4 rounded-2xl border border-emerald-200 bg-emerald-50/90 p-6 text-sm text-emerald-950 shadow-sm sm:p-8"
+          "mt-6 max-w-md space-y-4 rounded-2xl border border-emerald-200 bg-emerald-50/90 p-5 text-sm text-emerald-950 shadow-sm sm:mt-8 sm:p-8"
         }
         role="status"
       >
+        <PartnerAuthStatusBox
+          message={null}
+          pending={false}
+          successHighlight={`Bestätigungs-E-Mail wurde an ${successEmail} gesendet. Bitte Postfach prüfen.`}
+        />
         <p className="font-semibold">Fast geschafft</p>
         <p>
           Wir haben eine Bestätigungs-E-Mail an <strong className="font-semibold">{successEmail}</strong> gesendet.
@@ -145,6 +151,7 @@ export function PartnerRegisterForm({ disabled, formClassName }: PartnerRegister
         });
       }}
     >
+      <PartnerAuthStatusBox message={message} pending={pending} />
       <div>
         <label htmlFor="partner-reg-org" className="block text-sm font-semibold text-[#0F4F68]">
           Organisation / Betrieb <span className="font-normal text-neutral-500">(optional)</span>
@@ -238,11 +245,6 @@ export function PartnerRegisterForm({ disabled, formClassName }: PartnerRegister
           zur Kenntnis genommen.
         </label>
       </div>
-      {message ? (
-        <p className="text-sm font-medium text-[#b42318]" role="alert">
-          {message}
-        </p>
-      ) : null}
       <button
         type="submit"
         disabled={disabled || pending}

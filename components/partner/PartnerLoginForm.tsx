@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { checkPartnerLoginRateLimitAction } from "@/lib/actions/partner-auth";
+import { PartnerAuthStatusBox } from "@/components/partner/PartnerAuthStatusBox";
 import { createSupabaseBrowserClient } from "@/lib/supabase/client";
 import { partnerLoginSchema } from "@/lib/validations/partner";
 
@@ -66,6 +67,7 @@ export function PartnerLoginForm({
         });
       }}
     >
+      <PartnerAuthStatusBox message={message} pending={pending} />
       <div>
         <label htmlFor="partner-email" className="block text-sm font-semibold text-[#0F4F68]">
           {emailFieldLabel}
@@ -94,11 +96,6 @@ export function PartnerLoginForm({
           className="mt-2 w-full rounded-xl border border-neutral-200 px-4 py-3 text-neutral-900 outline-none ring-[#0F4F68] focus:ring-2 disabled:opacity-60"
         />
       </div>
-      {message ? (
-        <p className="text-sm font-medium text-[#b42318]" role="alert">
-          {message}
-        </p>
-      ) : null}
       <button
         type="submit"
         disabled={disabled || pending}

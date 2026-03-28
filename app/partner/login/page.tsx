@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import { PartnerAuthModalShell } from "@/components/partner/PartnerAuthModalShell";
 import { PartnerLoginForm } from "@/components/partner/PartnerLoginForm";
 import { PartnerLogoutButton } from "@/components/partner/PartnerLogoutButton";
 import { getPartnerSession } from "@/lib/partner/auth";
@@ -17,19 +18,24 @@ export default async function PartnerLoginPage({ searchParams }: Props) {
   }
 
   return (
-    <article>
-      <p className="text-xs font-bold uppercase tracking-[0.12em] text-[#0F4F68]/70">Kooperationspartner</p>
-      <h1 className="mt-2 text-3xl font-bold tracking-tight text-[#0F4F68] sm:text-4xl">Partner-Login</h1>
-      <p className="mt-4 max-w-2xl text-neutral-600">
-        Melden Sie sich an, um Fortschritte und abgeschlossene Konfigurationen einzusehen. Zugänge werden von
-        Alltagshilfe-Süd vergeben.
-      </p>
-
-      {(session && !session.profile) || reason === "no_profile" ? (
-        <div
-          className="mt-8 rounded-2xl border border-amber-200 bg-amber-50 p-6 text-sm text-amber-950"
-          role="status"
+    <PartnerAuthModalShell titleId="partner-login-heading">
+      <article>
+        <p className="text-xs font-bold uppercase tracking-[0.12em] text-[#0F4F68]/70">Kooperationspartner</p>
+        <h1
+          id="partner-login-heading"
+          className="mt-2 text-2xl font-bold tracking-tight text-[#0F4F68] sm:text-3xl"
         >
+          Partner-Login
+        </h1>
+        <p className="mt-3 max-w-2xl text-sm text-neutral-600 sm:text-base">
+          Melden Sie sich an, um Fortschritte und abgeschlossene Konfigurationen einzusehen.
+        </p>
+
+        {(session && !session.profile) || reason === "no_profile" ? (
+          <div
+            className="mt-6 rounded-2xl border border-amber-200 bg-amber-50 p-5 text-sm text-amber-950 sm:mt-8"
+            role="status"
+          >
           <p className="font-semibold">Angemeldet, aber kein Partnerprofil</p>
           <p className="mt-2">
             Das Supabase-Konto ist gültig, in der Tabelle{" "}
@@ -55,14 +61,14 @@ export default async function PartnerLoginPage({ searchParams }: Props) {
               <PartnerLogoutButton />
             </div>
           ) : null}
-        </div>
-      ) : null}
+          </div>
+        ) : null}
 
-      {!configured ? (
-        <div
-          className="mt-8 rounded-2xl border border-amber-200 bg-amber-50 p-6 text-sm text-amber-950"
-          role="status"
-        >
+        {!configured ? (
+          <div
+            className="mt-6 rounded-2xl border border-amber-200 bg-amber-50 p-5 text-sm text-amber-950 sm:mt-8"
+            role="status"
+          >
           <p className="font-semibold">Anmeldung: Supabase fehlt noch</p>
           <p className="mt-2">
             In <code className="rounded bg-white/80 px-1">.env.local</code> müssen mindestens{" "}
@@ -79,33 +85,42 @@ export default async function PartnerLoginPage({ searchParams }: Props) {
             <code className="rounded bg-white/80 px-1">npm run dev</code>). Prüfen:{" "}
             <code className="rounded bg-white/80 px-1">npm run check:partner-env</code>.
           </p>
-        </div>
-      ) : session && !session.profile ? null : (
-        <>
-          <PartnerLoginForm emailFieldLabel="E-Mail-Adresse (Anmeldename)" />
-          {error === "auth" ? (
-            <p className="mt-4 max-w-md text-sm font-medium text-[#b42318]" role="alert">
-              Anmeldung über den E-Mail-Link ist fehlgeschlagen. Bitte erneut auf den Link klicken oder sich mit E-Mail
-              und Passwort anmelden.
+          </div>
+        ) : session && !session.profile ? null : (
+          <>
+            {error === "auth" ? (
+              <div
+                className="mt-6 min-h-[5rem] rounded-xl border border-amber-300/80 bg-amber-50 px-4 py-3 text-sm text-amber-950"
+                role="alert"
+              >
+                <p className="text-[0.65rem] font-bold uppercase tracking-[0.14em] text-amber-800/90">
+                  Status / Fehlermeldungen
+                </p>
+                <p className="mt-2 font-medium leading-snug">
+                  Anmeldung über den E-Mail-Link ist fehlgeschlagen. Bitte erneut auf den Link klicken oder sich mit
+                  E-Mail und Passwort anmelden.
+                </p>
+              </div>
+            ) : null}
+            <PartnerLoginForm emailFieldLabel="E-Mail-Adresse (Anmeldename)" />
+            <p className="mt-5 text-sm text-neutral-600">
+              Noch kein Konto?{" "}
+              <Link
+                href="/partner/registrieren"
+                className="font-semibold text-[#0F4F68] underline underline-offset-2 hover:text-[#0c3d52]"
+              >
+                Jetzt registrieren
+              </Link>
             </p>
-          ) : null}
-          <p className="mt-6 text-sm text-neutral-600">
-            Noch kein Konto?{" "}
-            <Link
-              href="/partner/registrieren"
-              className="font-semibold text-[#0F4F68] underline underline-offset-2 hover:text-[#0c3d52]"
-            >
-              Jetzt registrieren
-            </Link>
-          </p>
-        </>
-      )}
+          </>
+        )}
 
-      <p className="mt-8 text-sm text-neutral-600">
-        <Link href="/" className="font-semibold text-[#0F4F68] underline underline-offset-2 hover:text-[#0c3d52]">
-          Zur Startseite
-        </Link>
-      </p>
-    </article>
+        <p className="mt-8 text-sm text-neutral-600">
+          <Link href="/" className="font-semibold text-[#0F4F68] underline underline-offset-2 hover:text-[#0c3d52]">
+            Zur Startseite
+          </Link>
+        </p>
+      </article>
+    </PartnerAuthModalShell>
   );
 }
