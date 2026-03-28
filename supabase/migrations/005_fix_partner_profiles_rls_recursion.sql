@@ -1,6 +1,14 @@
--- Optional: Nur ausführen, wenn partner_profiles zwar Daten hat, die App aber „kein Profil“ meldet
--- (Row Level Security / Policies weichen von der Vorlage ab).
--- Idempotent: Policies + Hilfsfunktion wie in 001_partner_portal.sql (ohne RLS-Rekursion).
+-- Behebt: „infinite recursion detected in policy for relation partner_profiles“
+--
+-- Ursache: In partner_profiles_select (und analog in pflegebox_orders_select) stand
+--   EXISTS (SELECT 1 FROM partner_profiles ap WHERE …)
+-- Beim Auswerten der Policy auf partner_profiles wird dieselbe SELECT-Policy erneut
+-- angewendet → Endlosschleife.
+--
+-- Lösung: Admin-Prüfung in eine STABLE SECURITY DEFINER-Funktion auslagern.
+-- Sie läuft mit Rechten des Funktionsowners (postgres) und umgeht RLS auf der Leseseite.
+--
+-- Im Supabase SQL-Editor einmal ausführen (nach 001 / 003 / 004).
 
 create or replace function public.is_partner_admin()
 returns boolean
@@ -36,5 +44,3 @@ using (
   partner_id = (select auth.uid())
   or public.is_partner_admin()
 );
-
-grant select, update on table public.partner_profiles to authenticated;

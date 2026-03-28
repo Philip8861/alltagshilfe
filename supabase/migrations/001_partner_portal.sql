@@ -32,16 +32,31 @@ create index if not exists pflegebox_orders_created_at_idx on public.pflegebox_o
 alter table public.partner_profiles enable row level security;
 alter table public.pflegebox_orders enable row level security;
 
+-- Admin-Check ohne Rekursion: EXISTS auf partner_profiles in der Policy würde RLS erneut auslösen.
+create or replace function public.is_partner_admin()
+returns boolean
+language sql
+stable
+security definer
+set search_path = public
+as $$
+  select exists (
+    select 1
+    from public.partner_profiles p
+    where p.id = auth.uid() and p.role = 'admin'
+  );
+$$;
+
+revoke all on function public.is_partner_admin() from public;
+grant execute on function public.is_partner_admin() to authenticated;
+
 drop policy if exists "partner_profiles_select" on public.partner_profiles;
 create policy "partner_profiles_select"
 on public.partner_profiles for select
 to authenticated
 using (
   id = (select auth.uid())
-  or exists (
-    select 1 from public.partner_profiles ap
-    where ap.id = (select auth.uid()) and ap.role = 'admin'
-  )
+  or public.is_partner_admin()
 );
 
 drop policy if exists "partner_profiles_update_own" on public.partner_profiles;
@@ -57,10 +72,7 @@ on public.pflegebox_orders for select
 to authenticated
 using (
   partner_id = (select auth.uid())
-  or exists (
-    select 1 from public.partner_profiles ap
-    where ap.id = (select auth.uid()) and ap.role = 'admin'
-  )
+  or public.is_partner_admin()
 );
 
 -- Neues Auth-Konto -> Zeile in partner_profiles (Rolle Standard: partner)

@@ -4,7 +4,6 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { PartnerLogoutButton } from "@/components/partner/PartnerLogoutButton";
-import type { PartnerProfile } from "@/lib/partner/types";
 
 type Props = {
   greetingName: string;
@@ -83,26 +82,4 @@ export function PartnerPortalShell({ greetingName, children }: Props) {
       {children}
     </div>
   );
-}
-
-/** Server-seitig Namen aus Profil ableiten (ohne Client-Bundle). */
-export function partnerPortalGreetingName(
-  profile: PartnerProfile,
-  email: string | undefined,
-): string {
-  const fn = profile.first_name?.trim();
-  const ln = profile.last_name?.trim();
-  if (fn && ln) return `${fn} ${ln}`;
-  if (fn) return fn;
-  const d = profile.display_name?.trim();
-  if (d) return d;
-  const o = profile.organization_name?.trim();
-  if (o) return o;
-  const e = email?.trim();
-  if (e) {
-    const at = e.indexOf("@");
-    if (at > 0) return e.slice(0, at);
-    return e;
-  }
-  return "Partner";
 }

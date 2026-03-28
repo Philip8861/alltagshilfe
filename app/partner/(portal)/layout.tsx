@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
-import { PartnerPortalShell, partnerPortalGreetingName } from "@/components/partner/PartnerPortalShell";
+import { PartnerPortalShell } from "@/components/partner/PartnerPortalShell";
+import { partnerPortalGreetingName } from "@/lib/partner/partner-portal-greeting";
 import { requirePartnerLogin } from "@/lib/partner/auth";
 
 export const metadata: Metadata = {
