@@ -7,12 +7,15 @@ import { PartnerProfileEnsureClient } from "@/components/partner/PartnerProfileE
 import { getPartnerSession } from "@/lib/partner/auth";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 
-type Props = { searchParams: Promise<{ reason?: string; error?: string }> };
+type Props = {
+  searchParams: Promise<{ reason?: string; error?: string; ensure_failed?: string }>;
+};
 
 export default async function PartnerLoginPage({ searchParams }: Props) {
   const configured = isSupabaseConfigured();
   const session = configured ? await getPartnerSession() : null;
-  const { reason, error } = await searchParams;
+  const { reason, error, ensure_failed } = await searchParams;
+  const ensureFailed = ensure_failed === "1";
 
   if (session?.profile) {
     redirect("/partner/dashboard");
@@ -41,10 +44,12 @@ export default async function PartnerLoginPage({ searchParams }: Props) {
           <p className="mt-2">
             Das Supabase-Konto ist gültig, in der Tabelle{" "}
             <code className="rounded bg-white/80 px-1">partner_profiles</code> fehlt jedoch noch ein passender Eintrag.
-            Die App versucht automatisch, die Zeile serverseitig nachzutragen (benötigt{" "}
-            <code className="rounded bg-white/80 px-1">SUPABASE_SERVICE_ROLE_KEY</code> in der Umgebung).
+            Die App leitet Sie zu{" "}
+            <code className="rounded bg-white/80 px-1">/partner/sync-profile</code> weiter — dort wird die Zeile mit
+            dem <code className="rounded bg-white/80 px-1">SUPABASE_SERVICE_ROLE_KEY</code> nachgetragen (muss in
+            Vercel für Production gesetzt sein).
           </p>
-          {session && !session.profile ? <PartnerProfileEnsureClient /> : null}
+          {session && !session.profile ? <PartnerProfileEnsureClient ensureFailed={ensureFailed} /> : null}
           <p className="mt-4 text-neutral-800">
             <strong>Manuell (Fallback):</strong> Migration{" "}
             <code className="rounded bg-white/80 px-1">002_backfill_partner_profiles.sql</code> im SQL-Editor ausführen

@@ -2,10 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
-import {
-  checkPartnerLoginRateLimitAction,
-  ensurePartnerProfileForSessionAction,
-} from "@/lib/actions/partner-auth";
+import { checkPartnerLoginRateLimitAction } from "@/lib/actions/partner-auth";
 import { PartnerAuthStatusBox } from "@/components/partner/PartnerAuthStatusBox";
 import { createSupabaseBrowserClient } from "@/lib/supabase/client";
 import { partnerLoginSchema } from "@/lib/validations/partner";
@@ -68,18 +65,10 @@ export function PartnerLoginForm({
               setMessage("Anmeldung fehlgeschlagen. Bitte Zugangsdaten prüfen.");
               return;
             }
-            const ensured = await ensurePartnerProfileForSessionAction();
-            if (!ensured.ok) {
-              setMessage(
-                `${ensured.message} Bitte Seite neu laden oder Administrator informieren.`,
-              );
-              router.refresh();
-              return;
-            }
             if (typeof window !== "undefined") {
-              window.location.assign("/partner/dashboard");
+              window.location.assign("/partner/sync-profile");
             } else {
-              router.push("/partner/dashboard");
+              router.push("/partner/sync-profile");
             }
           } catch {
             setMessage("Anmeldung fehlgeschlagen. Bitte später erneut versuchen.");
