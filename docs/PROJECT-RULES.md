@@ -47,6 +47,7 @@ Diese Datei ist die verbindliche Referenz für Architektur, Tech-Stack, Seitenst
 | `/referenzen`, `/team` | SSG | Referenzen, Team |
 | `/konfigurator`, `/konfigurator/zusammenfassung` | Hybrid | Konfigurator + Lead-Erfassung |
 | `/impressum`, `/datenschutz` | SSG | Rechtliche Seiten |
+| `/partner`, `/partner/login`, `/partner/dashboard`, `/partner/admin` | dynamisch | Kooperationspartner (Supabase Auth, **noindex** / robots disallow) |
 | `/download/[slug]` | optional | Leadmagnet-Seiten |
 | 404 | SSG | not-found |
 
@@ -84,12 +85,16 @@ Diese Datei ist die verbindliche Referenz für Architektur, Tech-Stack, Seitenst
 - **components/seo**: JsonLd, Breadcrumbs, Metadata-Helfer.
 - **components/consent**: Cookie-Banner (Platzhalter).
 - **lib/validations**: Zod-Schemas.
-- **lib/actions**: Server Actions (contact, configurator).
+- **lib/actions**: Server Actions (contact, configurator, partner-auth).
+- **lib/supabase/**: Server-/Middleware-Clients für Partnerportal (nur aktiv mit Env-Vars).
+- **lib/partner/**: Session- und Rollenprüfung (Partner/Admin).
+- **components/partner/**: Login, Logout (geschützter Bereich).
+- **supabase/migrations/**: SQL für PostgreSQL (Supabase EU), siehe `001_partner_portal.sql`.
 - **lib/**: rate-limit.ts, security.ts, utils.ts.
 - **content/**: pages, leistungen, landing, blog, faq, site.json.
 - **config/**: site.ts, navigation.ts, features.ts, **start-einstieg.ts** (Startseite: Texte/Links für den geführten Einstiegsbereich unter dem Hero).
 - **config/standorte.ts** + **config/standorte-plz-generated.json**: PLZ-Zuordnung zu den vier Hauptstandorten (Quelle: `public/Standortlisten.pdf`). PLZ-Suche nutzt `findStandortByPlz` und `getOrtByPlz` (Ortsnamen zeilenweise aus der PDF). Bei PDF-Update: Text extrahieren (`npx pdf-parse text public/Standortlisten.pdf`), UTF-8 in `scripts/standortlisten-extract.txt`, dann `node scripts/parse-standort-pdf-text.js --ts`.
-- **middleware.ts**: Security-Headers, ggf. Rate-Limit-Route.
+- **middleware.ts**: Security-Headers, CSP (inkl. Supabase für Partnerportal), i18n-Rewrites `/en/*`, Session-Refresh nur unter `/partner/*` wenn Supabase konfiguriert.
 
 ---
 

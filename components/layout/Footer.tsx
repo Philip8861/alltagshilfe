@@ -95,6 +95,14 @@ export function Footer() {
                   Barrierefreie Homepage
                 </Link>
               </li>
+              <li>
+                <Link
+                  href="/partner/login"
+                  className="text-sm text-neutral-600 hover:text-neutral-900 focus:outline-none focus:ring-2 focus:ring-neutral-500 focus:ring-offset-2 rounded"
+                >
+                  Partner-Login
+                </Link>
+              </li>
               <CookieSettingsLink />
             </ul>
           </div>

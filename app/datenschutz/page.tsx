@@ -157,7 +157,36 @@ export default function DatenschutzPage() {
           </section>
 
           <section className="space-y-2">
-            <h2 className="text-xl font-bold text-[#0F4F68]">12. Stand und Aktualisierung</h2>
+            <h2 className="text-xl font-bold text-[#0F4F68]">12. Geschützter Partnerbereich (Kooperationspartner)</h2>
+            <p>
+              Für angeschlossene Kooperationspartner stellen wir einen passwortgeschützten Bereich zur Verfügung
+              (Anmeldung per E-Mail und Passwort). Dort können je nach Freigabe Informationen zu gemeinsamen
+              Projekten (z. B. abgeschlossene Pflegebox-Konfigurationen) angezeigt werden.
+            </p>
+            <p>
+              <strong className="text-neutral-900">Auftragsverarbeitung / Hosting der Daten:</strong> Die technische
+              Bereitstellung (Authentifizierung und Datenbank) kann über den Dienst{" "}
+              <strong className="text-neutral-900">Supabase</strong> (PostgreSQL, EU-Rechenzentrum, z. B. Frankfurt)
+              erfolgen. Es besteht mit dem Anbieter ein Auftragsverarbeitungsvertrag (Standardvertragsklauseln /
+              DPA), soweit personenbezogene Daten im Partnerkontext verarbeitet werden. Verarbeitete Daten können
+              insbesondere sein: Nutzerkennung (UUID), E-Mail-Adresse zur Anmeldung, ggf. Anzeige- und
+              Organisationsbezeichnung sowie fachliche Metadaten zu Konfigurationen, soweit diese dem Partner
+              zugeordnet sind.
+            </p>
+            <p>
+              Rechtsgrundlage ist Art. 6 Abs. 1 lit. b DSGVO (Durchführung der Kooperation / vorvertragliche und
+              vertragliche Maßnahmen) bzw. Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse an sicherem Zugang und
+              Missbrauchsschutz), soweit keine andere Grundlage greift.
+            </p>
+            <p>
+              Die öffentliche Website bleibt ohne diese Zugangsdaten nutzbar; der Partnerbereich ist für Suchmaschinen
+              ausgeschlossen (<code className="rounded bg-neutral-100 px-1 text-sm">robots.txt</code>,{" "}
+              <code className="rounded bg-neutral-100 px-1 text-sm">noindex</code>).
+            </p>
+          </section>
+
+          <section className="space-y-2">
+            <h2 className="text-xl font-bold text-[#0F4F68]">13. Stand und Aktualisierung</h2>
             <p>
               Diese Datenschutzerklärung hat den Stand: {new Date().toLocaleDateString("de-DE")}. Wir behalten uns vor,
               den Inhalt bei Änderungen der Rechtslage oder der eingesetzten Dienste anzupassen.
