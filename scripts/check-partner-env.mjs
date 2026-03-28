@@ -56,3 +56,24 @@ if (!String(vars.NEXT_PUBLIC_SUPABASE_URL).startsWith("http")) {
 }
 
 console.log("OK: .env.local enthält URL, Anon-Key und Service-Role-Key.");
+
+const verwaltung = [
+  "PARTNER_SYSTEM_ADMIN_USER",
+  "PARTNER_SYSTEM_ADMIN_PASSWORD",
+  "PARTNER_SYSTEM_ADMIN_SECRET",
+];
+const missV = verwaltung.filter((k) => !vars[k] || !String(vars[k]).trim());
+console.log("\n--- Partner-Verwaltung (/partner/admin-login) ---");
+if (missV.length) {
+  console.warn("Noch nicht gesetzt (ohne diese geht die Verwaltung nicht):");
+  missV.forEach((k) => console.warn("  -", k));
+  console.warn('\nSECRET erzeugen: npm run partner:admin-secret');
+  console.warn("Siehe auch .env.example");
+} else {
+  const sec = String(vars.PARTNER_SYSTEM_ADMIN_SECRET).trim();
+  if (sec.length < 24) {
+    console.error("PARTNER_SYSTEM_ADMIN_SECRET muss mindestens 24 Zeichen haben.");
+    process.exit(1);
+  }
+  console.log("OK: Verwaltungs-Login (USER, PASSWORD, SECRET) ist gesetzt.");
+}

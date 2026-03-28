@@ -9,6 +9,7 @@
     "start:4000": "next start -p 4000",
     "lint": "next lint",
     "check:partner-env": "node scripts/check-partner-env.mjs",
+    "partner:admin-secret": "node scripts/print-partner-admin-secret.mjs",
     "vercel:push-partner-env": "node scripts/vercel-push-partner-env.mjs"
   },
   "dependencies": {
