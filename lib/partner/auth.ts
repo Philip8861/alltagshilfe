@@ -1,6 +1,7 @@
 import { unstable_noStore as noStore } from "next/cache";
 import { redirect } from "next/navigation";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
+import { loadPartnerProfileRow } from "@/lib/partner/load-partner-profile-row";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { createSupabaseServiceRoleClient } from "@/lib/supabase/service";
 import type { PartnerProfile } from "@/lib/partner/types";
@@ -13,57 +14,53 @@ export async function getPartnerSession(): Promise<{
   noStore();
   if (!isSupabaseConfigured()) return null;
 
-  const supabase = await createSupabaseServerClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  try {
+    const supabase = await createSupabaseServerClient();
+    const {
+      data: { user },
+      error: userErr,
+    } = await supabase.auth.getUser();
 
-  if (!user) return null;
+    if (userErr) {
+      console.error("[getPartnerSession] auth.getUser:", userErr.message);
+      return null;
+    }
+    if (!user) return null;
 
-  const { data: profileRow, error: profileErr } = await supabase
-    .from("partner_profiles")
-    .select(
-      "id, display_name, organization_name, role, created_at, first_name, last_name, recruited_by, phone, responsibility_areas, password_changed_at",
-    )
-    .eq("id", user.id)
-    .maybeSingle();
+    const { profile: loaded, errorMessage } = await loadPartnerProfileRow(supabase, user.id);
+    if (errorMessage) {
+      console.error("[getPartnerSession] partner_profiles:", errorMessage);
+    }
 
-  if (profileErr) {
-    console.error("[getPartnerSession] partner_profiles:", profileErr.message);
-  }
+    let profile = loaded;
 
-  let profile = (profileRow as PartnerProfile | null) ?? null;
-
-  /**
-   * Fallback nur serverseitig: user.id stammt aus verifiziertem JWT (getUser), nicht aus Client-Input.
-   * Hilft, wenn RLS für authenticated fälschlich blockiert — Policies sollten trotzdem repariert werden (003).
-   */
-  if (!profile?.id) {
-    const svc = createSupabaseServiceRoleClient();
-    if (svc) {
-      const { data: svcRow, error: svcErr } = await svc
-        .from("partner_profiles")
-        .select(
-          "id, display_name, organization_name, role, created_at, first_name, last_name, recruited_by, phone, responsibility_areas, password_changed_at",
-        )
-        .eq("id", user.id)
-        .maybeSingle();
-      if (svcErr) {
-        console.error("[getPartnerSession] partner_profiles service fallback:", svcErr.message);
-      } else if (svcRow?.id) {
-        profile = svcRow as PartnerProfile;
-        console.warn(
-          "[getPartnerSession] partner_profiles per Service-Role gelesen — RLS für authenticated auf partner_profiles prüfen (supabase/migrations/003_repair_partner_profiles_rls.sql).",
-        );
+    /**
+     * Fallback nur serverseitig: user.id stammt aus verifiziertem JWT (getUser), nicht aus Client-Input.
+     */
+    if (!profile?.id) {
+      const svc = createSupabaseServiceRoleClient();
+      if (svc) {
+        const svcLoad = await loadPartnerProfileRow(svc, user.id);
+        if (svcLoad.errorMessage) {
+          console.error("[getPartnerSession] partner_profiles service fallback:", svcLoad.errorMessage);
+        } else if (svcLoad.profile?.id) {
+          profile = svcLoad.profile;
+          console.warn(
+            "[getPartnerSession] partner_profiles per Service-Role gelesen — RLS für authenticated prüfen (003_repair).",
+          );
+        }
       }
     }
-  }
 
-  return {
-    userId: user.id,
-    email: user.email,
-    profile,
-  };
+    return {
+      userId: user.id,
+      email: user.email,
+      profile,
+    };
+  } catch (e) {
+    console.error("[getPartnerSession] unerwarteter Fehler:", e);
+    return null;
+  }
 }
 
 export async function requirePartnerLogin(): Promise<{
