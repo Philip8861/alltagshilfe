@@ -54,6 +54,8 @@ export async function middleware(request: NextRequest) {
       pathname === "/favicon.ico";
     const normalizedPath = isEnPath ? pathname.replace(/^\/en(?=\/|$)/, "") || "/" : pathname;
     const isPartnerRoute = normalizedPath.startsWith("/partner");
+    /** Sync-Route baut Session + Profil selbst; Middleware-Refresh hier auslassen (sonst oft „angemeldet“ ohne lesbare Session in der Route). */
+    const skipPartnerMiddlewareAuth = normalizedPath === "/partner/sync-profile";
 
     const createBase = () =>
       isEnPath && !isSkippable
@@ -67,7 +69,7 @@ export async function middleware(request: NextRequest) {
         : NextResponse.next({ request });
 
     let response: NextResponse;
-    if (isPartnerRoute && isSupabaseConfigured()) {
+    if (isPartnerRoute && isSupabaseConfigured() && !skipPartnerMiddlewareAuth) {
       response = await applyPartnerSupabaseSession(request, createBase);
     } else {
       response = createBase();

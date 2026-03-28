@@ -8,13 +8,18 @@ import { getPartnerSession } from "@/lib/partner/auth";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 
 type Props = {
-  searchParams: Promise<{ reason?: string; error?: string; ensure_failed?: string }>;
+  searchParams: Promise<{
+    reason?: string;
+    error?: string;
+    ensure_failed?: string;
+    sync_reason?: string;
+  }>;
 };
 
 export default async function PartnerLoginPage({ searchParams }: Props) {
   const configured = isSupabaseConfigured();
   const session = configured ? await getPartnerSession() : null;
-  const { reason, error, ensure_failed } = await searchParams;
+  const { reason, error, ensure_failed, sync_reason } = await searchParams;
   const ensureFailed = ensure_failed === "1";
 
   if (session?.profile) {
@@ -49,7 +54,9 @@ export default async function PartnerLoginPage({ searchParams }: Props) {
             dem <code className="rounded bg-white/80 px-1">SUPABASE_SERVICE_ROLE_KEY</code> nachgetragen (muss in
             Vercel für Production gesetzt sein).
           </p>
-          {session && !session.profile ? <PartnerProfileEnsureClient ensureFailed={ensureFailed} /> : null}
+          {session && !session.profile ? (
+            <PartnerProfileEnsureClient ensureFailed={ensureFailed} syncReason={sync_reason} />
+          ) : null}
           <p className="mt-4 text-neutral-800">
             <strong>Manuell (Fallback):</strong> Migration{" "}
             <code className="rounded bg-white/80 px-1">002_backfill_partner_profiles.sql</code> im SQL-Editor ausführen
