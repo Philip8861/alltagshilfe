@@ -26,3 +26,16 @@ export function serviceBadgeClass(slug: string): string {
   const s = slug as PartnerResponsibilitySlug;
   return SERVICE_SLUG_BADGE_CLASS[s] ?? "border-neutral-200 bg-neutral-100 text-neutral-800";
 }
+
+/** Vertikaler Farbstreifen / Punkt in Listen (Modal „Tipp geben“) — getrennt von Statusfarben */
+export const SERVICE_SLUG_ACCENT: Record<PartnerResponsibilitySlug, string> = {
+  betriebliche_pflegeberatung: "bg-sky-500",
+  pflegehilfsmittel: "bg-cyan-500",
+  hauswirtschaft_betreuung: "bg-indigo-500",
+  pflegeberatung: "bg-fuchsia-500",
+};
+
+export function serviceAccentClass(slug: string): string {
+  const s = slug as PartnerResponsibilitySlug;
+  return SERVICE_SLUG_ACCENT[s] ?? "bg-neutral-400";
+}
