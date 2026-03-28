@@ -16,6 +16,28 @@ import { createPartnerUserSchema, deletePartnerUserIdSchema } from "@/lib/valida
 import { generatePartnerInitialPassword } from "@/lib/partner/generate-partner-password";
 import { assignUniquePartnerReferralCode } from "@/lib/partner/generate-partner-referral-code";
 
+function formatPartnerProfileWriteError(err: { code?: string; message?: string }): string {
+  const code = String(err.code ?? "");
+  const msg = String(err.message ?? "").toLowerCase();
+  if (code === "42703" || (msg.includes("column") && msg.includes("does not exist"))) {
+    return (
+      "Datenbank-Spalten fehlen. Bitte in Supabase die Migrationen 004, 006 und 007 für partner_profiles ausführen."
+    );
+  }
+  if (code === "23514" || msg.includes("violates check constraint")) {
+    return "Profil konnte nicht gespeichert werden (Prüfregel in der Datenbank). Eingaben prüfen oder Supabase-Logs einsehen.";
+  }
+  if (code === "23505" && (msg.includes("partner_referral_code") || msg.includes("referral"))) {
+    return "Partner-Referenzcode ist bereits vergeben. Bitte erneut versuchen (es wird ein neuer Code erzeugt).";
+  }
+  if (code === "23503" || msg.includes("foreign key")) {
+    return "Profil konnte nicht verknüpft werden (Auth-Nutzer fehlt oder falsches Projekt). Supabase-URL und Service-Role-Key prüfen.";
+  }
+  return (
+    "Das Partnerprofil konnte nicht gespeichert werden. Supabase SQL-Logs prüfen; Migration 009 (service_role-Rechte) ausführen, falls nötig."
+  );
+}
+
 async function clientIp(): Promise<string> {
   try {
     const h = await headers();
@@ -163,33 +185,30 @@ export async function createPartnerUserAction(
     responsibility_areas: parsed.data.responsibility_areas,
   };
 
-  const { error: profileInsErr } = await svc.from("partner_profiles").insert(profileRow);
-  if (
-    profileInsErr &&
-    profileInsErr.code !== "23505" &&
-    !String(profileInsErr.message ?? "").toLowerCase().includes("duplicate")
-  ) {
+  /**
+   * Auth-Trigger legt oft schon (id, role) an → reines INSERT ergibt PK 23505.
+   * UPSERT (onConflict: id) schreibt oder aktualisiert die Zeile zuverlässig.
+   */
+  const { error: profileUpsertErr } = await svc.from("partner_profiles").upsert(profileRow, {
+    onConflict: "id",
+  });
+
+  if (profileUpsertErr) {
+    console.error(
+      "[createPartnerUser] partner_profiles upsert:",
+      profileUpsertErr.code,
+      profileUpsertErr.message,
+      profileUpsertErr.details,
+    );
+    const { error: rollbackErr } = await svc.auth.admin.deleteUser(uid);
+    if (rollbackErr) {
+      console.error("[createPartnerUser] Auth-Rollback nach Profil-Fehler fehlgeschlagen:", rollbackErr.message);
+    }
     return {
       ok: false,
-      message:
-        "Nutzer wurde in Auth angelegt, partner_profiles konnte nicht geschrieben werden. Migrationen 004, 006, 007 und RLS prüfen.",
+      message: formatPartnerProfileWriteError(profileUpsertErr),
     };
   }
-
-  const fullUpdate = {
-    salutation: parsed.data.salutation,
-    partner_referral_code: referralCode,
-    first_name: parsed.data.first_name,
-    last_name: parsed.data.last_name,
-    display_name: displayName,
-    organization_name: parsed.data.organization_name ?? null,
-    recruited_by: parsed.data.recruited_by ?? null,
-    phone: parsed.data.phone,
-    responsibility_areas: parsed.data.responsibility_areas,
-    role,
-  };
-
-  await svc.from("partner_profiles").update(fullUpdate).eq("id", uid);
 
   revalidatePath("/partner/admin");
 
