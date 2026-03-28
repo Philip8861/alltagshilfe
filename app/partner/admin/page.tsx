@@ -1,6 +1,7 @@
 import { PartnerAdminDashboard } from "@/components/partner/admin/PartnerAdminDashboard";
 import { requireSystemAdmin } from "@/lib/partner/system-admin-guard";
-import type { PartnerTipAdminStatus, PartnerProfile, PartnerTipSubmissionRow } from "@/lib/partner/types";
+import { normalizePartnerTipAdminStatus } from "@/lib/partner/partner-tip-admin";
+import type { PartnerProfile, PartnerTipSubmissionRow } from "@/lib/partner/types";
 import { createSupabaseServiceRoleClient } from "@/lib/supabase/service";
 
 type AuthUserInfo = {
@@ -8,11 +9,6 @@ type AuthUserInfo = {
   created_at?: string;
   last_sign_in_at?: string | null;
 };
-
-function normalizeTipStatus(v: unknown): PartnerTipAdminStatus {
-  if (v === "in_bearbeitung" || v === "erledigt" || v === "abgelehnt" || v === "neu") return v;
-  return "neu";
-}
 
 export default async function PartnerAdminPage() {
   await requireSystemAdmin();
@@ -61,7 +57,7 @@ export default async function PartnerAdminPage() {
           service_slug: String(row.service_slug),
           payload: (row.payload as Record<string, unknown>) ?? {},
           created_at: String(row.created_at),
-          admin_status: normalizeTipStatus(row.admin_status),
+          admin_status: normalizePartnerTipAdminStatus(row.admin_status),
         }));
       }
       orders = (ordRes.data as typeof orders | null) ?? [];

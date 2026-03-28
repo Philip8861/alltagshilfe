@@ -33,6 +33,12 @@ export type PartnerTipSubmissionRow = {
   admin_status: PartnerTipAdminStatus;
 };
 
+/** Partner-Dashboard: eigene Tippgeber-Einträge ohne partner_id im Client. */
+export type PartnerDashboardTipSerial = Pick<
+  PartnerTipSubmissionRow,
+  "id" | "service_slug" | "payload" | "created_at" | "admin_status"
+>;
+
 export type PflegeboxOrderRow = {
   id: string;
   partner_id: string | null;
