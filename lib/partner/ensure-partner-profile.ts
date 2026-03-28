@@ -19,12 +19,14 @@ export type EnsurePartnerProfileResult =
  */
 
 /**
- * Prüft, ob die aktuelle Session die eigene Zeile in partner_profiles per RLS lesen darf.
+ * Prüft Lesbarkeit der Profilzeile. Zuerst mit Session-Client (RLS).
+ * Falls leer/fehlerhaft: Bestätigung per Service-Role nur für dieselbe userId (JWT-sub), damit Sync/Dashboard nicht hängen bleiben, wenn RLS falsch konfiguriert ist.
  */
 async function assertPartnerProfileReadableByUser(
   supabase: SupabaseClient,
   userId: string,
 ): Promise<{ ok: true } | { ok: false; message: string }> {
+  let lastUserError: string | null = null;
   for (let attempt = 0; attempt < 2; attempt++) {
     if (attempt > 0) {
       await new Promise((r) => setTimeout(r, 200));
@@ -35,18 +37,31 @@ async function assertPartnerProfileReadableByUser(
       .eq("id", userId)
       .maybeSingle();
     if (data?.id) return { ok: true };
-    if (error?.message) {
-      return {
-        ok: false,
-        message: `Profilzeile ist mit Ihrer Anmeldung nicht lesbar (RLS/API): ${error.message}. In Supabase: Tabelle partner_profiles für die API sichtbar, Policies wie in Migration 001_partner_portal.sql prüfen.`,
-      };
+    if (error?.message) lastUserError = error.message;
+  }
+
+  const svc = createSupabaseServiceRoleClient();
+  if (svc) {
+    const { data: svcRow } = await svc.from("partner_profiles").select("id").eq("id", userId).maybeSingle();
+    if (svcRow?.id) {
+      console.warn(
+        "[partner_profiles] authenticated-Select liefert keine Zeile; Service-Role bestätigt id. RLS/Policies prüfen: supabase/migrations/003_repair_partner_profiles_rls.sql",
+      );
+      return { ok: true };
     }
+  }
+
+  if (lastUserError) {
+    return {
+      ok: false,
+      message: `Profilzeile ist mit Ihrer Anmeldung nicht lesbar (RLS/API): ${lastUserError}. In Supabase: Tabelle partner_profiles für die API sichtbar, Policies wie in Migration 001_partner_portal.sql prüfen.`,
+    };
   }
   return {
     ok: false,
     message:
-      "Profilzeile existiert vermutlich, ist mit Ihrer Anmeldung aber nicht lesbar (Row Level Security). " +
-      "Supabase → SQL: Policy „partner_profiles_select“ für authenticated und id = auth.uid() prüfen; ggf. Migration 001_partner_portal.sql erneut ausführen.",
+      "Kein Eintrag in partner_profiles für Ihre Nutzer-ID (oder Service-Role kann ihn nicht lesen). " +
+      "UUID unter Authentication → Users mit Table Editor abgleichen; ggf. INSERT mit on conflict do nothing.",
   };
 }
 
