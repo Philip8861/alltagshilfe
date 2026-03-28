@@ -17,7 +17,7 @@ export default function KooperationPage() {
               <div className="relative ml-auto w-full max-w-[50rem] lg:mr-[calc((100vw-100%)/-2)]">
                 <div className="w-full">
                   <Image
-                    src="/images/startseite_front.webp"
+                    src="/images/kooperation.webp"
                     alt="Kooperation und verlässliche Partnerschaft im Alltag"
                     width={900}
                     height={700}
