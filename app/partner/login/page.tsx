@@ -81,19 +81,37 @@ export default async function PartnerLoginPage({ searchParams }: Props) {
           >
           <p className="font-semibold">Anmeldung: Supabase fehlt noch</p>
           <p className="mt-2">
-            In <code className="rounded bg-white/80 px-1">.env.local</code> müssen mindestens{" "}
-            <code className="rounded bg-white/80 px-1">NEXT_PUBLIC_SUPABASE_URL</code> und der vollständige{" "}
-            <code className="rounded bg-white/80 px-1">NEXT_PUBLIC_SUPABASE_ANON_KEY</code> (aus Supabase →
-            Project Settings → API, „anon“ oder „publishable“) stehen – beide Zeilen ohne Leerzeichen am Anfang.
-            Für das Speichern von Pflegebox-Abschlüssen zusätzlich{" "}
-            <code className="rounded bg-white/80 px-1">SUPABASE_SERVICE_ROLE_KEY</code> (nur serverseitig).
+            Die Website „sieht“ zum Laufzeitpunkt keine gültige Supabase-Konfiguration. Es müssen exakt diese Namen
+            gesetzt sein: <code className="rounded bg-white/80 px-1">NEXT_PUBLIC_SUPABASE_URL</code> (beginnt mit{" "}
+            <code className="rounded bg-white/80 px-1">https://</code>) und{" "}
+            <code className="rounded bg-white/80 px-1">NEXT_PUBLIC_SUPABASE_ANON_KEY</code> (kompletter Key aus
+            Supabase → Project Settings → API: „anon“/JWT oder „publishable“/langer Key — Wert in{" "}
+            <strong>diese</strong> Variable kopieren, nicht umbenennen). Zeilen in{" "}
+            <code className="rounded bg-white/80 px-1">.env.local</code> ohne Leerzeichen vor dem Namen, Format{" "}
+            <code className="rounded bg-white/80 px-1">NAME=wert</code>.
+          </p>
+          <p className="mt-2 font-medium">
+            <strong>Lokal:</strong> Datei <code className="rounded bg-white/80 px-1">.env.local</code> im Projektroot
+            (gleicher Ordner wie <code className="rounded bg-white/80 px-1">package.json</code>), dann{" "}
+            <code className="rounded bg-white/80 px-1">npm run dev</code> beenden und neu starten. Prüfen:{" "}
+            <code className="rounded bg-white/80 px-1">npm run check:partner-env</code>.
+          </p>
+          <p className="mt-2 font-medium">
+            <strong>Vercel / Live:</strong> Project → Settings → Environment Variables — dieselben beiden Variablen für{" "}
+            <strong>Production</strong> (und ggf. Preview) eintragen. Wichtig:{" "}
+            <code className="rounded bg-white/80 px-1">NEXT_PUBLIC_*</code> wird beim{" "}
+            <strong>Build</strong> eingebaut; nach dem Anlegen oder Ändern immer{" "}
+            <strong>Redeploy</strong> auslösen, sonst bleibt die alte (leere) Konfiguration.
+          </p>
+          <p className="mt-2">
+            Für Verwaltung und Profil-Nachzug zusätzlich{" "}
+            <code className="rounded bg-white/80 px-1">SUPABASE_SERVICE_ROLE_KEY</code> (nur serverseitig, nie{" "}
+            <code className="rounded bg-white/80 px-1">NEXT_PUBLIC</code>).
           </p>
           <p className="mt-2">
             Datenbanktabellen: SQL aus{" "}
             <code className="rounded bg-white/80 px-1">supabase/migrations/001_partner_portal.sql</code> im
-            Supabase-SQL-Editor ausführen. Danach Entwicklungsserver beenden und neu starten (
-            <code className="rounded bg-white/80 px-1">npm run dev</code>). Prüfen:{" "}
-            <code className="rounded bg-white/80 px-1">npm run check:partner-env</code>.
+            Supabase-SQL-Editor ausführen.
           </p>
           </div>
         ) : session && !session.profile ? null : (
