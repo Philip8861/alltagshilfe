@@ -1,6 +1,10 @@
 -- Partnerportal (Alltagshilfe-Süd): einmal im Supabase SQL-Editor ausführen.
 -- Projekt in der EU anlegen, z. B. Region „Frankfurt (eu-central-1)“ — DSGVO-freundlich.
 -- Auth: E-Mail/Passwort unter Authentication → Providers aktivieren.
+--
+-- Nach diesem Skript: Jede NEUE Registrierung (neuer Eintrag in auth.users) bekommt automatisch
+-- eine Zeile in partner_profiles (Trigger unten). Bestehende Nutzer von vorher: einmalig
+-- supabase/migrations/002_backfill_partner_profiles.sql ausführen oder einzeln per INSERT.
 
 create table if not exists public.partner_profiles (
   id uuid primary key references auth.users (id) on delete cascade,

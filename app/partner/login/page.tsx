@@ -34,7 +34,10 @@ export default async function PartnerLoginPage({ searchParams }: Props) {
           <p className="mt-2">
             Das Supabase-Konto ist gültig, in der Tabelle{" "}
             <code className="rounded bg-white/80 px-1">partner_profiles</code> fehlt jedoch noch ein passender Eintrag.
-            Häufig: Benutzer wurde angelegt, bevor die Migration mit Trigger lief – dann einmalig per SQL ergänzen.
+            Für <strong>neue</strong> Registrierungen legt der Trigger aus der Migration automatisch eine Zeile an; bei
+            <strong> älteren</strong> Konten einmalig{" "}
+            <code className="rounded bg-white/80 px-1">002_backfill_partner_profiles.sql</code> im SQL-Editor ausführen
+            oder die UUID manuell einfügen.
           </p>
           <p className="mt-3 rounded-lg bg-white/70 p-3 font-mono text-xs text-neutral-800">
             insert into public.partner_profiles (id, role)
