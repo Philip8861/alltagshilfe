@@ -1,5 +1,6 @@
 "use server";
 
+import { revalidatePath } from "next/cache";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { rateLimitSystemAdminLogin } from "@/lib/rate-limit";
@@ -11,7 +12,7 @@ import {
   isSystemAdminConfigured,
   getSystemAdminSession,
 } from "@/lib/partner/system-admin-session";
-import { createPartnerUserSchema } from "@/lib/validations/system-admin";
+import { createPartnerUserSchema, deletePartnerUserIdSchema } from "@/lib/validations/system-admin";
 import { resolvePartnerLoginToEmail } from "@/lib/partner/resolve-partner-login-email";
 
 async function clientIp(): Promise<string> {
@@ -158,8 +159,45 @@ export async function createPartnerUserAction(
     await svc.from("partner_profiles").update({ role: "admin" }).eq("id", uid);
   }
 
+  revalidatePath("/partner/admin");
+
   return {
     ok: true,
     message: `Partner-Konto angelegt (${authEmail}). Zum Login: Kurzname oder volle E-Mail wie angelegt; Zugangsdaten sicher mitteilen.`,
   };
+}
+
+export type DeletePartnerUserState =
+  | { ok: true; message: string }
+  | { ok: false; message: string };
+
+export async function deletePartnerUserAction(
+  _prev: DeletePartnerUserState | null,
+  formData: FormData,
+): Promise<DeletePartnerUserState> {
+  if (!(await getSystemAdminSession())) {
+    return { ok: false, message: "Nicht autorisiert." };
+  }
+
+  const parsed = deletePartnerUserIdSchema.safeParse({
+    user_id: formData.get("user_id"),
+  });
+  if (!parsed.success) {
+    const err = parsed.error.flatten().fieldErrors.user_id?.[0];
+    return { ok: false, message: err ?? "Ungültige Nutzer-ID." };
+  }
+
+  const svc = createSupabaseServiceRoleClient();
+  if (!svc) {
+    return { ok: false, message: "SUPABASE_SERVICE_ROLE_KEY fehlt." };
+  }
+
+  const { error } = await svc.auth.admin.deleteUser(parsed.data.user_id);
+  if (error) {
+    return { ok: false, message: error.message || "Löschen in Supabase fehlgeschlagen." };
+  }
+
+  revalidatePath("/partner/admin");
+
+  return { ok: true, message: "Das Partner-Konto wurde gelöscht (Auth und Profil per Kaskade)." };
 }

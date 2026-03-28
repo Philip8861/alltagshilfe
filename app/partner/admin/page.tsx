@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { CreatePartnerAccountForm } from "@/components/partner/CreatePartnerAccountForm";
+import { DeletePartnerUserButton } from "@/components/partner/DeletePartnerUserButton";
 import { SystemAdminLogoutButton } from "@/components/partner/SystemAdminLogoutButton";
 import { requireSystemAdmin } from "@/lib/partner/system-admin-guard";
 import type { PartnerProfile } from "@/lib/partner/types";
@@ -96,25 +97,32 @@ export default async function PartnerAdminPage() {
               <th className="px-4 py-3">Organisation / Name</th>
               <th className="px-4 py-3">Rolle</th>
               <th className="px-4 py-3">Nutzer-ID</th>
+              <th className="px-4 py-3">Aktion</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-neutral-100">
             {!svc || profiles.length === 0 ? (
               <tr>
-                <td colSpan={3} className="px-4 py-8 text-center text-neutral-600">
+                <td colSpan={4} className="px-4 py-8 text-center text-neutral-600">
                   Keine Profile gefunden oder Supabase nicht erreichbar.
                 </td>
               </tr>
             ) : (
-              profiles.map((p) => (
-                <tr key={p.id} className="hover:bg-neutral-50/80">
-                  <td className="px-4 py-3 font-medium text-neutral-900">
-                    {p.organization_name ?? p.display_name ?? "—"}
-                  </td>
-                  <td className="px-4 py-3 text-neutral-700">{p.role}</td>
-                  <td className="px-4 py-3 font-mono text-xs text-neutral-500">{p.id}</td>
-                </tr>
-              ))
+              profiles.map((p) => {
+                const label = p.organization_name ?? p.display_name ?? p.id.slice(0, 8) + "…";
+                return (
+                  <tr key={p.id} className="hover:bg-neutral-50/80">
+                    <td className="px-4 py-3 font-medium text-neutral-900">
+                      {p.organization_name ?? p.display_name ?? "—"}
+                    </td>
+                    <td className="px-4 py-3 text-neutral-700">{p.role}</td>
+                    <td className="px-4 py-3 font-mono text-xs text-neutral-500">{p.id}</td>
+                    <td className="px-4 py-3">
+                      <DeletePartnerUserButton userId={p.id} displayLabel={label} />
+                    </td>
+                  </tr>
+                );
+              })
             )}
           </tbody>
         </table>
@@ -191,6 +199,12 @@ export default async function PartnerAdminPage() {
           </li>
           <li>
             Konfigurator-Link: <code className="rounded bg-white px-1">/pflegebox?partner=PARTNER_UUID</code>
+          </li>
+          <li>
+            <strong>Löschen:</strong> Entfernt den Nutzer in Supabase Auth; die Zeile in{" "}
+            <code className="rounded bg-white px-1">partner_profiles</code> fällt mit weg (Kaskade). Bestehende
+            Pflegebox-Abschlüsse bleiben erhalten, die Partner-Zuordnung wird aufgehoben (
+            <code className="rounded bg-white px-1">partner_id</code> = leer).
           </li>
         </ul>
       </div>

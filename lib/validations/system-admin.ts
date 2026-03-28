@@ -9,3 +9,7 @@ export const createPartnerUserSchema = z.object({
 });
 
 export type CreatePartnerUserInput = z.infer<typeof createPartnerUserSchema>;
+
+export const deletePartnerUserIdSchema = z.object({
+  user_id: z.string().uuid("Ungültige Nutzer-ID."),
+});
