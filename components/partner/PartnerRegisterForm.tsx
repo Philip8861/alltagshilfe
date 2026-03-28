@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { checkPartnerRegisterRateLimitAction } from "@/lib/actions/partner-auth";
+import { mapSupabaseRegisterError } from "@/lib/partner/map-register-error";
 import { getAuthCallbackUrl } from "@/lib/partner/register-redirect";
 import { createSupabaseBrowserClient } from "@/lib/supabase/client";
 import { partnerRegisterSchema } from "@/lib/validations/partner";
@@ -92,21 +93,36 @@ export function PartnerRegisterForm({ disabled, formClassName }: PartnerRegister
             const supabase = createSupabaseBrowserClient();
             const redirectTo =
               typeof window !== "undefined" ? getAuthCallbackUrl(window.location.origin) : undefined;
-            const { data, error } = await supabase.auth.signUp({
+            const meta = {
+              data: {
+                display_name: parsed.data.display_name,
+                organization_name: parsed.data.organization_name,
+              },
+            };
+            let { data, error } = await supabase.auth.signUp({
               email: parsed.data.email,
               password: parsed.data.password,
-              options: {
-                emailRedirectTo: redirectTo,
-                data: {
-                  display_name: parsed.data.display_name,
-                  organization_name: parsed.data.organization_name,
-                },
-              },
+              options: { ...meta, emailRedirectTo: redirectTo },
             });
+            const errMsg = (error?.message ?? "").toLowerCase();
+            const redirectBlocked =
+              Boolean(error) &&
+              errMsg.includes("redirect") &&
+              (errMsg.includes("not allowed") || errMsg.includes("invalid") || errMsg.includes("whitelist"));
+            if (error && redirectBlocked) {
+              ({ data, error } = await supabase.auth.signUp({
+                email: parsed.data.email,
+                password: parsed.data.password,
+                options: meta,
+              }));
+            }
             if (error) {
-              setMessage(
-                "Registrierung fehlgeschlagen. Bitte Eingaben prüfen – oder anmelden, falls Sie bereits ein Konto haben.",
-              );
+              const hint = mapSupabaseRegisterError(error);
+              const dev =
+                process.env.NODE_ENV === "development" && error.message
+                  ? ` Technisch: ${error.message}`
+                  : "";
+              setMessage(`${hint}${dev}`);
               return;
             }
             const user = data.user;
