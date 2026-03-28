@@ -3,6 +3,23 @@ import { requirePartnerLogin } from "@/lib/partner/auth";
 import type { PflegeboxOrderRow } from "@/lib/partner/types";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
+function partnerGreetingName(
+  profile: { display_name: string | null; organization_name: string | null },
+  email: string | undefined,
+): string {
+  const d = profile.display_name?.trim();
+  if (d) return d;
+  const o = profile.organization_name?.trim();
+  if (o) return o;
+  const e = email?.trim();
+  if (e) {
+    const at = e.indexOf("@");
+    if (at > 0) return e.slice(0, at);
+    return e;
+  }
+  return "Partner";
+}
+
 function orderContactLine(summary: Record<string, unknown> | null): string | null {
   if (!summary || typeof summary !== "object") return null;
   const c = summary.contact as Record<string, unknown> | undefined;
@@ -34,14 +51,33 @@ export default async function PartnerDashboardPage() {
   }
 
   const displayName = profile.display_name ?? profile.organization_name ?? email ?? "Partner";
+  const greetingName = partnerGreetingName(profile, email);
 
   return (
     <article>
+      <div
+        className="mb-6 rounded-2xl border border-emerald-200/80 bg-emerald-50/90 px-4 py-4 text-emerald-950 shadow-sm sm:px-6 sm:py-5"
+        role="status"
+        aria-live="polite"
+      >
+        <p className="text-base font-semibold sm:text-lg">
+          Hallo, {greetingName}! — Sie sind angemeldet.
+        </p>
+        <p className="mt-1 text-sm text-emerald-900/85">
+          Angemeldet als <span className="font-medium">{displayName}</span>
+          {email ? (
+            <>
+              {" "}
+              (<span className="break-all">{email}</span>)
+            </>
+          ) : null}
+        </p>
+      </div>
+
       <div className="flex flex-col gap-4 border-b border-[#0F4F68]/10 pb-6 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <p className="text-xs font-bold uppercase tracking-[0.12em] text-[#0F4F68]/70">Partnerbereich</p>
           <h1 className="mt-1 text-2xl font-bold text-[#0F4F68] sm:text-3xl">Übersicht</h1>
-          <p className="mt-1 text-sm text-neutral-600">Angemeldet als {displayName}</p>
         </div>
         <div className="flex flex-wrap gap-2">
           <PartnerLogoutButton />
