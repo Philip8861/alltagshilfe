@@ -33,9 +33,19 @@ export default async function PartnerLoginPage({ searchParams }: Props) {
           <p className="font-semibold">Angemeldet, aber kein Partnerprofil</p>
           <p className="mt-2">
             Das Supabase-Konto ist gültig, in der Tabelle{" "}
-            <code className="rounded bg-white/80 px-1">partner_profiles</code> fehlt jedoch noch ein passender Eintrag
-            (z. B. Migration <code className="rounded bg-white/80 px-1">001_partner_portal.sql</code> nach der
-            Registrierung ausführen oder Zeile manuell anlegen). Bitte wenden Sie sich an Alltagshilfe-Süd.
+            <code className="rounded bg-white/80 px-1">partner_profiles</code> fehlt jedoch noch ein passender Eintrag.
+            Häufig: Benutzer wurde angelegt, bevor die Migration mit Trigger lief – dann einmalig per SQL ergänzen.
+          </p>
+          <p className="mt-3 rounded-lg bg-white/70 p-3 font-mono text-xs text-neutral-800">
+            insert into public.partner_profiles (id, role)
+            <br />
+            values (&apos;UUID_AUS_AUTHENTICATION_USERS&apos;, &apos;partner&apos;)
+            <br />
+            on conflict (id) do nothing;
+          </p>
+          <p className="mt-2">
+            Die UUID steht in Supabase unter <strong>Authentication → Users</strong> bei Ihrem Konto. Danach diese Seite
+            neu laden oder abmelden und erneut anmelden.
           </p>
           {session && !session.profile ? (
             <div className="mt-4">
@@ -67,7 +77,7 @@ export default async function PartnerLoginPage({ searchParams }: Props) {
             <code className="rounded bg-white/80 px-1">npm run check:partner-env</code>.
           </p>
         </div>
-      ) : (
+      ) : session && !session.profile ? null : (
         <PartnerLoginForm emailFieldLabel="E-Mail-Adresse (Anmeldename)" />
       )}
 
