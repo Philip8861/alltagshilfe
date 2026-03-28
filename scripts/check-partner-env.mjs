@@ -1,6 +1,8 @@
 /**
  * Prüft, ob .env.local die Variablen für Partnerportal + Pflegebox-API enthält.
  * Aufruf: npm run check:partner-env
+ *
+ * Hinweis: NEXT_PUBLIC_* wird auf Vercel beim Build eingebaut — nach Änderung dort immer Redeploy.
  */
 import fs from "fs";
 import path from "path";
@@ -50,9 +52,13 @@ if (missing.length) {
   process.exit(1);
 }
 
-if (!String(vars.NEXT_PUBLIC_SUPABASE_URL).startsWith("http")) {
-  console.error("NEXT_PUBLIC_SUPABASE_URL muss mit http beginnen.");
+const urlRaw = String(vars.NEXT_PUBLIC_SUPABASE_URL).trim();
+if (!urlRaw.startsWith("http")) {
+  console.error("NEXT_PUBLIC_SUPABASE_URL muss mit https:// beginnen (Supabase Project URL).");
   process.exit(1);
+}
+if (urlRaw.includes(" ") || String(vars.NEXT_PUBLIC_SUPABASE_ANON_KEY).includes(" ")) {
+  console.warn("Warnung: URL oder Anon-Key enthält Leerzeichen — Anführungszeichen in .env prüfen.");
 }
 
 console.log("OK: .env.local enthält URL, Anon-Key und Service-Role-Key.");
@@ -77,3 +83,9 @@ if (missV.length) {
   }
   console.log("OK: Verwaltungs-Login (USER, PASSWORD, SECRET) ist gesetzt.");
 }
+
+console.log("\n--- Was Sie noch selbst tun müssen (nicht automatisierbar) ---");
+console.log("1) Vercel: dieselben Variablen wie in .env.local unter Environment Variables (Production).");
+console.log("2) Vercel: Nach jeder Änderung an NEXT_PUBLIC_* → Deployments → Redeploy (neuer Build).");
+console.log("3) Optional: Variablen per Skript: VERCEL_TOKEN=... npm run vercel:push-partner-env");
+console.log("4) Supabase: Sign-ups aus; SQL 001_partner_portal.sql ausgeführt.");
