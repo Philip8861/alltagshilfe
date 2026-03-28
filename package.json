@@ -8,7 +8,8 @@
     "start": "next start",
     "start:4000": "next start -p 4000",
     "lint": "next lint",
-    "check:partner-env": "node scripts/check-partner-env.mjs"
+    "check:partner-env": "node scripts/check-partner-env.mjs",
+    "vercel:push-partner-env": "node scripts/vercel-push-partner-env.mjs"
   },
   "dependencies": {
     "@supabase/ssr": "^0.9.0",
