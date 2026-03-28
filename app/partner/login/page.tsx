@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { PartnerAuthModalShell } from "@/components/partner/PartnerAuthModalShell";
 import { PartnerLoginForm } from "@/components/partner/PartnerLoginForm";
 import { PartnerLogoutButton } from "@/components/partner/PartnerLogoutButton";
+import { PartnerProfileEnsureClient } from "@/components/partner/PartnerProfileEnsureClient";
 import { getPartnerSession } from "@/lib/partner/auth";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 
@@ -40,10 +41,14 @@ export default async function PartnerLoginPage({ searchParams }: Props) {
           <p className="mt-2">
             Das Supabase-Konto ist gültig, in der Tabelle{" "}
             <code className="rounded bg-white/80 px-1">partner_profiles</code> fehlt jedoch noch ein passender Eintrag.
-            Für <strong>neue</strong> Registrierungen legt der Trigger aus der Migration automatisch eine Zeile an; bei
-            <strong> älteren</strong> Konten einmalig{" "}
+            Die App versucht automatisch, die Zeile serverseitig nachzutragen (benötigt{" "}
+            <code className="rounded bg-white/80 px-1">SUPABASE_SERVICE_ROLE_KEY</code> in der Umgebung).
+          </p>
+          {session && !session.profile ? <PartnerProfileEnsureClient /> : null}
+          <p className="mt-4 text-neutral-800">
+            <strong>Manuell (Fallback):</strong> Migration{" "}
             <code className="rounded bg-white/80 px-1">002_backfill_partner_profiles.sql</code> im SQL-Editor ausführen
-            oder die UUID manuell einfügen.
+            oder einzeln:
           </p>
           <p className="mt-3 rounded-lg bg-white/70 p-3 font-mono text-xs text-neutral-800">
             insert into public.partner_profiles (id, role)

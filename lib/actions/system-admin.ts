@@ -121,6 +121,32 @@ export async function createPartnerUserAction(
   }
 
   const uid = data.user.id;
+
+  const profileRow: {
+    id: string;
+    role: "partner" | "admin";
+    display_name?: string;
+    organization_name?: string;
+  } = {
+    id: uid,
+    role: parsed.data.role === "admin" ? "admin" : "partner",
+  };
+  if (parsed.data.display_name) profileRow.display_name = parsed.data.display_name;
+  if (parsed.data.organization_name) profileRow.organization_name = parsed.data.organization_name;
+
+  const { error: profileInsErr } = await svc.from("partner_profiles").insert(profileRow);
+  if (
+    profileInsErr &&
+    profileInsErr.code !== "23505" &&
+    !String(profileInsErr.message ?? "").toLowerCase().includes("duplicate")
+  ) {
+    return {
+      ok: false,
+      message:
+        "Nutzer wurde in Auth angelegt, partner_profiles konnte nicht geschrieben werden. Migration, RLS und SUPABASE_SERVICE_ROLE_KEY prüfen.",
+    };
+  }
+
   const patch: { display_name?: string; organization_name?: string; role?: string } = {};
   if (parsed.data.display_name) patch.display_name = parsed.data.display_name;
   if (parsed.data.organization_name) patch.organization_name = parsed.data.organization_name;
