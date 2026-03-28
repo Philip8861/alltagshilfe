@@ -19,11 +19,15 @@ export async function getPartnerSession(): Promise<{
 
   if (!user) return null;
 
-  const { data: profile } = await supabase
+  const { data: profile, error: profileErr } = await supabase
     .from("partner_profiles")
     .select("id, display_name, organization_name, role, created_at")
     .eq("id", user.id)
     .maybeSingle();
+
+  if (profileErr) {
+    console.error("[getPartnerSession] partner_profiles:", profileErr.message);
+  }
 
   return {
     userId: user.id,

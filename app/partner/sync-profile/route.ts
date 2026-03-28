@@ -45,6 +45,8 @@ export async function GET(request: NextRequest) {
     else if (m.includes("service_role") || m.includes("service role")) code = "no_service_role";
     else if (m.includes("nicht bestätigt")) code = "verify_failed";
     else if (m.includes("nicht angelegt") || m.includes("profil konnte")) code = "insert_failed";
+    else if (m.includes("nicht lesbar") || m.includes("row level security") || m.includes("rls/api"))
+      code = "not_readable";
     target.searchParams.set("sync_reason", code);
   }
 

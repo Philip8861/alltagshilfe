@@ -9,6 +9,39 @@ export type EnsurePartnerProfileResult =
   | { ok: false; message: string };
 
 /**
+ * Prüft, ob die aktuelle Session die eigene Zeile in partner_profiles per RLS lesen darf.
+ * Ohne das könnte ein Insert (Service Role) „erfolgreich“ sein, das Dashboard aber leer bleiben.
+ */
+async function assertPartnerProfileReadableByUser(
+  supabase: SupabaseClient,
+  userId: string,
+): Promise<{ ok: true } | { ok: false; message: string }> {
+  for (let attempt = 0; attempt < 2; attempt++) {
+    if (attempt > 0) {
+      await new Promise((r) => setTimeout(r, 200));
+    }
+    const { data, error } = await supabase
+      .from("partner_profiles")
+      .select("id")
+      .eq("id", userId)
+      .maybeSingle();
+    if (data?.id) return { ok: true };
+    if (error?.message) {
+      return {
+        ok: false,
+        message: `Profilzeile ist mit Ihrer Anmeldung nicht lesbar (RLS/API): ${error.message}. In Supabase: Tabelle partner_profiles für die API sichtbar, Policies wie in Migration 001_partner_portal.sql prüfen.`,
+      };
+    }
+  }
+  return {
+    ok: false,
+    message:
+      "Profilzeile existiert vermutlich, ist mit Ihrer Anmeldung aber nicht lesbar (Row Level Security). " +
+      "Supabase → SQL: Policy „partner_profiles_select“ für authenticated und id = auth.uid() prüfen; ggf. Migration 001_partner_portal.sql erneut ausführen.",
+  };
+}
+
+/**
  * Kernlogik mit einem bereits gebauten Browser-Session-Client (Anon-Key + User-Cookies).
  */
 export async function ensurePartnerProfileWithUserClient(
@@ -57,6 +90,10 @@ export async function ensurePartnerProfileWithUserClient(
   const { error } = await svc.from("partner_profiles").insert(row);
   if (error) {
     if (error.code === "23505" || String(error.message ?? "").toLowerCase().includes("duplicate")) {
+      const readable = await assertPartnerProfileReadableByUser(supabase, user.id);
+      if (!readable.ok) {
+        return { ok: false, message: readable.message };
+      }
       revalidatePath("/partner/login");
       revalidatePath("/partner/dashboard");
       return { ok: true, created: false };
@@ -74,6 +111,11 @@ export async function ensurePartnerProfileWithUserClient(
       ok: false,
       message: "Eintrag in partner_profiles wurde nicht bestätigt. Bitte Supabase-Logs und Berechtigungen prüfen.",
     };
+  }
+
+  const readable = await assertPartnerProfileReadableByUser(supabase, user.id);
+  if (!readable.ok) {
+    return { ok: false, message: readable.message };
   }
 
   revalidatePath("/partner/login");

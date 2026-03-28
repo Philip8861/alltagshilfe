@@ -18,6 +18,8 @@ const SYNC_REASON_HINT: Record<string, string> = {
     "Einfügen in partner_profiles wurde von der Datenbank abgelehnt (Migration, RLS oder Key zum falschen Projekt). Supabase → Logs prüfen.",
   verify_failed:
     "Nach dem Einfügen wurde die Zeile nicht gefunden — bitte Supabase Table Editor und Logs prüfen.",
+  not_readable:
+    "Die Zeile ist in der Datenbank, Ihre Anmeldung darf sie aber nicht lesen (RLS). Supabase → Table Editor: Zeile zu Ihrer User-UUID vorhanden? Dann im SQL-Editor supabase/migrations/003_repair_partner_profiles_rls.sql ausführen oder 001_partner_portal.sql (Policies + Grants) erneut anwenden.",
   unknown: "Bitte erneut versuchen oder SQL-Fallback unten nutzen.",
 };
 
