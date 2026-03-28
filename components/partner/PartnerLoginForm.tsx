@@ -27,7 +27,7 @@ export function PartnerLoginForm({
     <form
       className={
         formClassName ??
-        "mt-6 w-full space-y-5 rounded-2xl border border-[#0F4F68]/10 bg-white/90 p-6 shadow-[0_4px_24px_rgba(15,79,104,0.06)] backdrop-blur-sm sm:rounded-3xl sm:p-8"
+        "mt-6 w-full space-y-5 rounded-2xl border border-[#0F4F68]/12 bg-[#fafcfd] p-6 shadow-inner sm:rounded-2xl sm:p-7"
       }
       onSubmit={(e) => {
         e.preventDefault();
@@ -108,7 +108,7 @@ export function PartnerLoginForm({
       <button
         type="submit"
         disabled={disabled || pending}
-        className="inline-flex min-h-[48px] w-full items-center justify-center rounded-xl bg-[#0F4F68] px-4 py-3 text-sm font-semibold text-white hover:bg-[#0c3d52] disabled:cursor-not-allowed disabled:opacity-60"
+        className="inline-flex min-h-[48px] w-full items-center justify-center rounded-xl bg-[#0F4F68] px-4 py-3 text-sm font-semibold text-white shadow-md shadow-[#0F4F68]/25 transition hover:bg-[#0c3d52] hover:shadow-lg disabled:cursor-not-allowed disabled:opacity-60"
       >
         {pending ? "Anmeldung…" : "Anmelden"}
       </button>

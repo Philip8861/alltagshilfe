@@ -41,6 +41,11 @@ export function rateLimitPartnerLogin(identifier: string): { success: boolean; r
   return rateLimitWithConfig(`partner-login:${identifier}`, 12, 15 * 60 * 1000);
 }
 
+/** Passwort ändern (Partnerportal). */
+export function rateLimitPartnerPasswordChange(identifier: string): { success: boolean; remaining: number } {
+  return rateLimitWithConfig(`partner-password:${identifier}`, 8, 60 * 60 * 1000);
+}
+
 /** Verwaltungs-Login (Partner-System-Admin, env-Zugang). */
 export function rateLimitSystemAdminLogin(identifier: string): { success: boolean; remaining: number } {
   return rateLimitWithConfig(`partner-sys-admin-login:${identifier}`, 10, 15 * 60 * 1000);

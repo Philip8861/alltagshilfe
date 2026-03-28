@@ -47,7 +47,7 @@ Diese Datei ist die verbindliche Referenz für Architektur, Tech-Stack, Seitenst
 | `/referenzen`, `/team` | SSG | Referenzen, Team |
 | `/konfigurator`, `/konfigurator/zusammenfassung` | Hybrid | Konfigurator + Lead-Erfassung |
 | `/impressum`, `/datenschutz` | SSG | Rechtliche Seiten |
-| `/partner`, `/partner/login`, `/partner/dashboard`, `/partner/admin` | dynamisch | Kooperationspartner (Supabase Auth, **noindex** / robots disallow) |
+| `/partner`, `/partner/login`, `/partner/dashboard`, `/partner/einstellungen`, `/partner/einstellungen/vertraege`, `/partner/admin` | dynamisch | Kooperationspartner (Supabase Auth, **noindex** / robots disallow) |
 | `POST /api/pflegebox-order` | API Route | Abschluss Pflegebox-Konfigurator → Supabase (`SUPABASE_SERVICE_ROLE_KEY`, Rate-Limit, Zod) |
 | `/download/[slug]` | optional | Leadmagnet-Seiten |
 | 404 | SSG | not-found |

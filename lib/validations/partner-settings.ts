@@ -1,0 +1,19 @@
+import { z } from "zod";
+
+export const partnerPasswordChangeSchema = z
+  .object({
+    currentPassword: z.string().min(1, "Aktuelles Passwort erforderlich.").max(256),
+    newPassword: z
+      .string()
+      .min(10, "Neues Passwort: mindestens 10 Zeichen.")
+      .max(256, "Passwort zu lang.")
+      .regex(/[A-Za-zÄÖÜäöüß]/, "Mind. einen Buchstaben verwenden.")
+      .regex(/[0-9]/, "Mind. eine Ziffer verwenden."),
+    confirmPassword: z.string().min(1, "Bestätigung erforderlich.").max(256),
+  })
+  .refine((d) => d.newPassword === d.confirmPassword, {
+    message: "Die neuen Passwörter stimmen nicht überein.",
+    path: ["confirmPassword"],
+  });
+
+export type PartnerPasswordChangeInput = z.infer<typeof partnerPasswordChangeSchema>;
