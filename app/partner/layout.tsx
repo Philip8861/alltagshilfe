@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 
 export default function PartnerLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="min-h-[60vh] bg-[#f7fafb]" data-no-local-translate>
+    <div className="notranslate min-h-[60vh] bg-[#f7fafb]" data-no-local-translate>
       <Container className="py-10 sm:py-14">{children}</Container>
     </div>
   );

@@ -23,14 +23,18 @@ const SYNC_REASON_HINT: Record<string, string> = {
 
 const syncProfileHref = "/partner/sync-profile";
 
-function SyncProfileButton({ children }: { children: ReactNode }) {
+function SyncProfileButton({ children, label }: { children: ReactNode; label: string }) {
   return (
-    <a
-      href={syncProfileHref}
-      className="inline-flex min-h-11 min-w-[12rem] items-center justify-center rounded-xl bg-[#0F4F68] px-5 py-2.5 text-center text-sm font-semibold text-white shadow-sm transition hover:bg-[#0c3d52] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0F4F68]"
+    <button
+      type="button"
+      className="inline-flex min-h-11 min-w-[12rem] cursor-pointer items-center justify-center rounded-xl border-0 bg-[#0F4F68] px-5 py-2.5 text-center text-sm font-semibold text-white shadow-sm transition hover:bg-[#0c3d52] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0F4F68]"
+      aria-label={label}
+      onClick={() => {
+        window.location.assign(syncProfileHref);
+      }}
     >
       {children}
-    </a>
+    </button>
   );
 }
 
@@ -47,7 +51,7 @@ export function PartnerProfileEnsureClient({ ensureFailed = false, syncReason }:
         <p className="font-medium text-red-900">Automatische Einrichtung ist fehlgeschlagen.</p>
         <p className="text-red-950/90">{hint}</p>
         <div className="flex flex-wrap items-center gap-3 pt-1">
-          <SyncProfileButton>Erneut versuchen</SyncProfileButton>
+          <SyncProfileButton label="Profil-Sync erneut ausführen">Erneut versuchen</SyncProfileButton>
           <span className="text-neutral-700">oder SQL unten ausführen.</span>
         </div>
       </div>
@@ -61,11 +65,13 @@ export function PartnerProfileEnsureClient({ ensureFailed = false, syncReason }:
         Zeile in <code className="rounded bg-white/80 px-1 text-xs">partner_profiles</code> nachgetragen (Server
         mit Service-Role-Key).
       </p>
-      <div>
-        <SyncProfileButton>Profil jetzt einrichten</SyncProfileButton>
+      <div className="relative z-20">
+        <SyncProfileButton label="Partnerprofil jetzt einrichten (Seite aufrufen)">
+          Profil jetzt einrichten
+        </SyncProfileButton>
       </div>
       <p className="text-xs text-neutral-600">
-        Öffnet die Einrichtung in einem vollen Seitenaufruf (zuverlässig für Session-Cookies).
+        Startet einen vollen Seitenaufruf (Session-Cookies) — unabhängig von Übersetzungs-Widgets.
       </p>
     </div>
   );

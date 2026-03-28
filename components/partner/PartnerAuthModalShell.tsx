@@ -35,10 +35,10 @@ export function PartnerAuthModalShell({ children, titleId }: PartnerAuthModalShe
   }, []);
 
   return (
-    <div className="fixed inset-0 z-[200] flex items-center justify-center p-3 sm:p-6 md:p-10">
+    <div className="notranslate fixed inset-0 z-[200] flex items-center justify-center p-3 sm:p-6 md:p-10">
       <button
         type="button"
-        className="absolute inset-0 bg-slate-950/65 backdrop-blur-md transition-opacity"
+        className="absolute inset-0 z-0 bg-slate-950/65 backdrop-blur-md transition-opacity"
         aria-label="Schließen und zur Startseite"
         onClick={close}
       />
