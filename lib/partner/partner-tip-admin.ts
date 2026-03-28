@@ -2,9 +2,9 @@ import type { PartnerTipAdminStatus } from "@/lib/partner/types";
 
 /** Partnerportal: Lesbare Status-Bezeichnungen (z. B. „Abgeschlossen“ statt „Erledigt“). */
 export const PARTNER_TIP_STATUS_PARTNER_LABELS: Record<PartnerTipAdminStatus, string> = {
-  neu: "Neu",
+  neu: "In Bearbeitung",
   in_bearbeitung: "In Bearbeitung",
-  erledigt: "Abgeschlossen",
+  erledigt: "Erfolgreich Abgeschlossen",
   abgelehnt: "Abgelehnt",
 };
 
