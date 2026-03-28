@@ -631,5 +631,7 @@ export function ReadabilityZoomControls() {
   );
 
   if (!mounted || typeof document === "undefined") return null;
+  /* Partner- und Admin-Bereich: kein Lesbarkeits-Launcher (eigenes UI). */
+  if (pathname.startsWith("/partner")) return null;
   return createPortal(ui, document.body);
 }

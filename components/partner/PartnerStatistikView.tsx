@@ -134,9 +134,9 @@ export function PartnerStatistikView({ tips, orders }: Props) {
   }, [yearInput, tips, orderLikes]);
 
   return (
-    <section className="rounded-2xl border border-neutral-200/90 bg-white p-5 shadow-sm sm:p-8">
-      <div className="flex flex-col gap-4 border-b border-[#134e4a]/10 pb-6 sm:flex-row sm:items-end sm:justify-between">
-        <h1 className="text-xl font-bold text-[#134e4a] sm:text-2xl">Statistik</h1>
+    <section className="rounded-lg border border-neutral-300 bg-white p-5 sm:p-8">
+      <div className="flex flex-col gap-4 border-b border-[#134e4a]/15 pb-6 sm:flex-row sm:items-end sm:justify-between">
+        <h1 className="text-xl font-semibold text-[#134e4a] sm:text-2xl">Statistik</h1>
         <div className="flex flex-wrap items-center gap-2">
           <div className="flex rounded-lg border border-[#134e4a]/20 p-0.5">
             <button
@@ -178,16 +178,16 @@ export function PartnerStatistikView({ tips, orders }: Props) {
         </div>
       </div>
       <div className="mt-8">
-        <h2 className="text-base font-bold text-[#134e4a]">Aufträge nach Status</h2>
+        <h2 className="text-base font-semibold text-[#134e4a]">Aufträge nach Status</h2>
         <p className="mt-1 text-sm text-neutral-600">
           Tippgeber-Eingänge und abgeschlossene Konfigurationen im gewählten Zeitraum.
         </p>
-        <div className="mt-6 rounded-2xl border border-neutral-200/80 bg-[#f7f9f8] p-5 sm:p-6">
+        <div className="mt-6 rounded-lg border border-neutral-200 bg-[#F2F9FA] p-5 sm:p-6">
           <HorizontalStatBars stats={periodStats} />
         </div>
       </div>
       {periodMode === "year" ? (
-        <div className="mt-8 rounded-2xl border border-neutral-200/80 bg-white p-5 sm:p-6">
+        <div className="mt-8 rounded-lg border border-neutral-200 bg-white p-5 sm:p-6">
           <YearMonthOverviewChart
             monthly={monthlyForYear}
             year={

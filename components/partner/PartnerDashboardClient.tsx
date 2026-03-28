@@ -105,22 +105,33 @@ export function PartnerDashboardClient({
   };
 
   const cardBase =
-    "flex min-h-[7.5rem] flex-1 flex-col justify-center gap-2 rounded-2xl border border-neutral-200/90 bg-white p-5 shadow-sm transition-shadow hover:shadow-md sm:min-w-[12rem]";
+    "flex min-h-[7.5rem] flex-1 flex-col justify-center gap-2 rounded-lg border border-neutral-300 bg-white p-5 sm:min-w-[12rem]";
 
   return (
     <div className="mx-auto w-full max-w-[min(100%,90rem)] space-y-6 sm:space-y-8">
-      <header className="rounded-2xl bg-[#134e4a] px-6 py-7 text-white shadow-sm sm:px-10 sm:py-9">
-        <h1 className="text-balance text-2xl font-bold leading-tight sm:text-3xl md:text-4xl">
-          {welcomeLine},
-        </h1>
-        <p className="mt-2 text-sm font-normal text-white/90 sm:text-base">Dein persönliches Partnerportal-Dashboard.</p>
+      <header className="flex flex-col gap-4 rounded-lg border border-[#0f3d34] bg-[#134e4a] px-6 py-6 text-white sm:flex-row sm:items-start sm:justify-between sm:px-8 sm:py-7">
+        <div>
+          <h1 className="text-2xl font-semibold leading-snug sm:text-3xl">
+            {welcomeLine},
+          </h1>
+          <p className="mt-2 text-sm text-white/90 sm:text-base">
+            Dein persönliches Partnerportal-Dashboard.
+          </p>
+        </div>
+        <button
+          type="button"
+          onClick={() => setTipOpen(true)}
+          className="inline-flex w-full shrink-0 items-center justify-center border border-white/50 bg-white/10 px-4 py-2 text-sm font-normal text-white hover:bg-white/20 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/70 sm:mt-0 sm:w-auto"
+        >
+          Tipp geben
+        </button>
       </header>
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <div className={cardBase}>
           <div className="flex items-start gap-4">
             <div
-              className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-teal-100 text-teal-700"
+              className="flex h-11 w-11 shrink-0 items-center justify-center rounded-md bg-teal-100 text-teal-800"
               aria-hidden
             >
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -133,8 +144,8 @@ export function PartnerDashboardClient({
               </svg>
             </div>
             <div className="min-w-0">
-              <p className="text-[0.65rem] font-bold uppercase tracking-[0.12em] text-teal-700">Ihr Partner-Code</p>
-              <p className="mt-1 font-mono text-2xl font-bold tracking-wide text-teal-800 sm:text-3xl">
+              <p className="text-[0.65rem] font-semibold uppercase text-teal-800">Ihr Partner-Code</p>
+              <p className="mt-1 text-2xl font-semibold tabular-nums text-teal-900 sm:text-3xl">
                 {partnerCode ?? "—"}
               </p>
             </div>
@@ -152,7 +163,7 @@ export function PartnerDashboardClient({
         <div className={cardBase}>
           <div className="flex items-start gap-4">
             <div
-              className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-sky-100 text-sky-600"
+              className="flex h-11 w-11 shrink-0 items-center justify-center rounded-md bg-sky-100 text-sky-700"
               aria-hidden
             >
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -161,8 +172,8 @@ export function PartnerDashboardClient({
               </svg>
             </div>
             <div className="min-w-0">
-              <p className="text-[0.65rem] font-bold uppercase tracking-[0.12em] text-neutral-600">Einmalprovision</p>
-              <p className="mt-1 text-2xl font-bold tabular-nums text-neutral-900 sm:text-3xl">420,00 €</p>
+              <p className="text-[0.65rem] font-semibold uppercase text-neutral-600">Einmalprovision</p>
+              <p className="mt-1 text-2xl font-semibold tabular-nums text-neutral-900 sm:text-3xl">420,00 €</p>
               <p className="mt-0.5 text-xs text-neutral-600">Zahlung bereit</p>
             </div>
           </div>
@@ -171,7 +182,7 @@ export function PartnerDashboardClient({
         <div className={cardBase}>
           <div className="flex items-start gap-4">
             <div
-              className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-sky-100 text-sky-600"
+              className="flex h-11 w-11 shrink-0 items-center justify-center rounded-md bg-sky-100 text-sky-700"
               aria-hidden
             >
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -180,8 +191,8 @@ export function PartnerDashboardClient({
               </svg>
             </div>
             <div className="min-w-0">
-              <p className="text-[0.65rem] font-bold uppercase tracking-[0.12em] text-neutral-600">Nächste Auszahlung</p>
-              <p className="mt-1 text-xl font-bold tabular-nums text-neutral-900 sm:text-2xl">
+              <p className="text-[0.65rem] font-semibold uppercase text-neutral-600">Nächste Auszahlung</p>
+              <p className="mt-1 text-xl font-semibold tabular-nums text-neutral-900 sm:text-2xl">
                 am {payoutLabel}
               </p>
               <p className="mt-0.5 text-xs text-neutral-600">Zum Monatsende</p>
@@ -192,11 +203,11 @@ export function PartnerDashboardClient({
 
       <section
         id="partner-statusliste"
-        className="scroll-mt-28 rounded-2xl border border-neutral-200/90 bg-white p-4 shadow-sm sm:p-6 lg:p-8"
+        className="scroll-mt-28 rounded-lg border border-neutral-300 bg-white p-4 sm:p-6 lg:p-8"
         aria-labelledby="partner-statusliste-heading"
       >
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <h2 id="partner-statusliste-heading" className="text-lg font-bold text-neutral-900 sm:text-xl">
+          <h2 id="partner-statusliste-heading" className="text-lg font-semibold text-neutral-900 sm:text-xl">
             Statusliste
           </h2>
           <label className="relative block w-full sm:max-w-xs">
@@ -212,15 +223,15 @@ export function PartnerDashboardClient({
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Suchen"
-              className="w-full rounded-xl border border-neutral-200 bg-neutral-50 py-2.5 pl-10 pr-3 text-sm text-neutral-900 placeholder:text-neutral-400 transition hover:border-neutral-300 focus:border-[#134e4a] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#134e4a]/25"
+              className="w-full rounded-md border border-neutral-300 bg-white py-2 pl-10 pr-3 text-sm text-neutral-900 placeholder:text-neutral-500 hover:border-neutral-400 focus:border-[#134e4a] focus:outline-none focus:ring-1 focus:ring-[#134e4a]"
             />
           </label>
         </div>
 
-        <div className="mt-6 overflow-x-auto rounded-xl border border-neutral-100">
+        <div className="mt-6 overflow-x-auto rounded-md border border-neutral-200">
           <table className="min-w-[56rem] w-full text-left text-sm">
             <thead>
-              <tr className="border-b border-neutral-200 bg-neutral-50/80 text-xs font-bold uppercase tracking-wide text-neutral-600">
+              <tr className="border-b border-neutral-200 bg-[#F2F9FA] text-xs font-semibold uppercase text-neutral-600">
                 <th className="whitespace-nowrap px-3 py-3 sm:px-4">Typ</th>
                 <th className="whitespace-nowrap px-3 py-3 sm:px-4">Kontakt</th>
                 <th className="whitespace-nowrap px-3 py-3 sm:px-4">Datum</th>
@@ -245,9 +256,7 @@ export function PartnerDashboardClient({
                     <td className="whitespace-nowrap px-3 py-3 text-neutral-800 sm:px-4">{r.datum}</td>
                     <td className="whitespace-nowrap px-3 py-3 text-neutral-700 sm:px-4">Priorität</td>
                     <td className="px-3 py-3 sm:px-4">
-                      <span
-                        className={`inline-flex rounded-full px-3 py-1 text-xs font-semibold ${r.pill.className}`}
-                      >
+                      <span className={`inline-flex rounded px-2.5 py-0.5 text-xs font-normal ${r.pill.className}`}>
                         {r.pill.label}
                       </span>
                     </td>
@@ -255,7 +264,7 @@ export function PartnerDashboardClient({
                     <td className="px-3 py-3 sm:px-4">
                       <button
                         type="button"
-                        className="rounded-lg border border-neutral-300 bg-neutral-100 px-3 py-1.5 text-xs font-semibold text-neutral-800 transition hover:border-neutral-400 hover:bg-neutral-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#134e4a]/40"
+                        className="rounded border border-neutral-400 bg-neutral-200 px-3 py-1.5 text-xs font-normal text-neutral-900 hover:bg-neutral-300 focus:outline-none focus-visible:ring-1 focus-visible:ring-[#134e4a]"
                       >
                         Details
                       </button>

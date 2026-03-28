@@ -11,7 +11,7 @@ export function PartnerLogoutButton({ variant = "default" }: Props) {
   const [pending, setPending] = useState(false);
 
   const sidebar =
-    "flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-white/15 text-white hover:bg-white/10 disabled:opacity-50";
+    "flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border border-white/15 text-white hover:bg-white/10 disabled:opacity-50";
   const def =
     "inline-flex min-h-[44px] items-center justify-center rounded-xl border border-[#0F4F68]/25 px-4 py-2 text-sm font-semibold text-[#0F4F68] hover:bg-white disabled:opacity-60";
 
