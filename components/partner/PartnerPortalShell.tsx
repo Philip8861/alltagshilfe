@@ -2,79 +2,117 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
 import { PartnerLogoutButton } from "@/components/partner/PartnerLogoutButton";
 
 type Props = {
   children: React.ReactNode;
+  avatarGreen: string;
+  avatarBlue: string;
 };
 
-const nav = [
-  { href: "/partner/dashboard", label: "Übersicht" },
-  { href: "/partner/einstellungen", label: "Einstellungen" },
-  { href: "/partner/kontakt", label: "Kontakt" },
-] as const;
+const shell = "bg-[#134e4a]";
 
-function navClass(active: boolean) {
+function iconButtonClass(active: boolean) {
   return [
-    "rounded-lg px-3 py-2 text-sm font-semibold transition",
-    active
-      ? "bg-[#0F4F68] text-white shadow-sm"
-      : "text-[#0F4F68]/85 hover:bg-[#0F4F68]/10 hover:text-[#0F4F68]",
+    "flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-white transition",
+    active ? "bg-white/20 ring-1 ring-white/35" : "hover:bg-white/10",
   ].join(" ");
 }
 
-export function PartnerPortalShell({ children }: Props) {
+export function PartnerPortalShell({ children, avatarGreen, avatarBlue }: Props) {
   const pathname = usePathname();
-  const [menuOpen, setMenuOpen] = useState(false);
+  const dashActive = pathname === "/partner/dashboard" || pathname === "/partner";
+  const statActive = pathname === "/partner/statistik" || pathname.startsWith("/partner/statistik/");
+  const settingsActive = pathname === "/partner/einstellungen" || pathname.startsWith("/partner/einstellungen/");
 
   return (
-    <div className="min-h-[70vh]">
-      <header className="partner-dash-animate mb-8 border-b border-[#0F4F68]/10 pb-5 sm:mb-10 sm:pb-6">
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-          <div className="flex items-center justify-end gap-2 sm:order-2 sm:shrink-0">
-            <button
-              type="button"
-              className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-xl border border-[#0F4F68]/20 text-[#0F4F68] sm:hidden"
-              aria-expanded={menuOpen}
-              aria-controls="partner-nav-mobile"
-              onClick={() => setMenuOpen((o) => !o)}
-            >
-              <span className="sr-only">Menü</span>
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden>
-                <path
-                  d="M4 7h16M4 12h16M4 17h16"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                />
-              </svg>
-            </button>
-            <PartnerLogoutButton />
-          </div>
-          <nav
-            id="partner-nav-mobile"
-            className={[
-              "flex w-full flex-col gap-1 sm:order-1 sm:flex sm:flex-1 sm:flex-row sm:flex-wrap sm:items-center sm:justify-center sm:gap-2",
-              menuOpen ? "flex" : "hidden sm:flex",
-            ].join(" ")}
-            aria-label="Partnerbereich"
+    <div className="flex min-h-screen flex-col bg-[#eef1f3] md:flex-row">
+      <aside
+        className={`${shell} order-2 fixed bottom-0 left-0 right-0 z-40 flex flex-row items-center justify-between gap-1 border-t border-white/10 px-2 py-2 md:order-1 md:sticky md:top-0 md:h-screen md:w-[4.5rem] md:shrink-0 md:flex-col md:justify-between md:border-r md:border-t-0 md:px-0 md:py-5`}
+        aria-label="Partnerportal-Navigation"
+      >
+        <nav className="flex flex-1 flex-row items-center justify-center gap-1 sm:gap-2 md:flex-none md:flex-col md:justify-start md:gap-3">
+          <Link
+            href="/partner/dashboard"
+            className={iconButtonClass(dashActive)}
+            aria-current={dashActive ? "page" : undefined}
+            title="Übersicht"
           >
-            {nav.map(({ href, label }) => {
-              const active =
-                href === "/partner/dashboard"
-                  ? pathname === "/partner/dashboard" || pathname === "/partner"
-                  : pathname === href || pathname.startsWith(`${href}/`);
-              return (
-                <Link key={href} href={href} className={navClass(active)} onClick={() => setMenuOpen(false)}>
-                  {label}
-                </Link>
-              );
-            })}
-          </nav>
+            <span className="sr-only">Übersicht</span>
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
+              <path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1h-5v-8H9v8H4a1 1 0 01-1-1V9.5z" strokeLinejoin="round" />
+            </svg>
+          </Link>
+          <Link
+            href="/partner/statistik"
+            className={iconButtonClass(statActive)}
+            aria-current={statActive ? "page" : undefined}
+            title="Statistik"
+          >
+            <span className="sr-only">Statistik</span>
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
+              <path d="M4 19V5M10 19V9M16 19v-6M22 19V11" strokeLinecap="round" />
+            </svg>
+          </Link>
+          <Link
+            href="/partner/dashboard?tip=1"
+            className={iconButtonClass(false)}
+            title="Tipp geben"
+          >
+            <span className="sr-only">Tipp geben</span>
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
+              <path d="M12 5v14M5 12h14" strokeLinecap="round" />
+            </svg>
+          </Link>
+          <Link
+            href="/partner/dashboard#partner-statusliste"
+            className={iconButtonClass(false)}
+            title="Zur Statusliste"
+          >
+            <span className="sr-only">Statusliste</span>
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
+              <path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01" strokeLinecap="round" />
+            </svg>
+          </Link>
+          <Link
+            href="/partner/einstellungen"
+            className={iconButtonClass(settingsActive)}
+            aria-current={settingsActive ? "page" : undefined}
+            title="Einstellungen"
+          >
+            <span className="sr-only">Einstellungen</span>
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
+              <circle cx="12" cy="12" r="3" />
+              <path
+                d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"
+                strokeLinecap="round"
+              />
+            </svg>
+          </Link>
+        </nav>
+
+        <div className="flex shrink-0 flex-row items-center gap-2 pr-1 md:flex-col md:gap-3 md:pr-0">
+          <div
+            className="flex h-9 w-9 items-center justify-center rounded-full bg-[#2d7a4f] text-xs font-bold text-white md:h-10 md:w-10 md:text-sm"
+            title="Profil"
+            aria-hidden
+          >
+            {avatarGreen.slice(0, 2)}
+          </div>
+          <div
+            className="flex h-9 w-9 items-center justify-center rounded-full bg-[#3b82f6] text-xs font-bold text-white md:h-10 md:w-10 md:text-sm"
+            title="Konto"
+            aria-hidden
+          >
+            {avatarBlue.slice(0, 1)}
+          </div>
+          <PartnerLogoutButton variant="sidebar" />
         </div>
-      </header>
-      {children}
+      </aside>
+
+      <main className="order-1 min-w-0 flex-1 pb-[4.5rem] md:pb-0">
+        <div className="mx-auto w-full max-w-[min(100%,96rem)] px-4 py-6 sm:px-6 lg:px-10 lg:py-8">{children}</div>
+      </main>
     </div>
   );
 }

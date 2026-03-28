@@ -78,12 +78,14 @@ export default async function PartnerAdminPage() {
   }
 
   return (
-    <PartnerAdminDashboard
-      hasServiceRole={Boolean(svc)}
-      tips={tips}
-      orders={orders}
-      profiles={profiles}
-      authById={authById}
-    />
+    <div className="px-4 py-10 sm:px-6 lg:px-10">
+      <PartnerAdminDashboard
+        hasServiceRole={Boolean(svc)}
+        tips={tips}
+        orders={orders}
+        profiles={profiles}
+        authById={authById}
+      />
+    </div>
   );
 }

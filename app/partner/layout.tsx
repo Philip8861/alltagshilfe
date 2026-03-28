@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { Container } from "@/components/layout/Container";
 
 /** Session/Cookies — niemals statisch cachen */
 export const dynamic = "force-dynamic";
@@ -12,8 +11,8 @@ export const metadata: Metadata = {
 
 export default function PartnerLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="notranslate min-h-[60vh] bg-[#f7fafb]" data-no-local-translate>
-      <Container className="max-w-none px-4 sm:px-6 lg:px-10 xl:px-12 py-10 sm:py-14">{children}</Container>
+    <div className="notranslate min-h-[60vh] bg-[#eef1f3]" data-no-local-translate>
+      {children}
     </div>
   );
 }
