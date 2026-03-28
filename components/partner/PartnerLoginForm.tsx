@@ -27,7 +27,7 @@ export function PartnerLoginForm({
     <form
       className={
         formClassName ??
-        "mt-8 max-w-md space-y-5 rounded-2xl border border-[#0F4F68]/12 bg-white p-6 shadow-sm sm:p-8"
+        "mt-6 w-full space-y-5 rounded-2xl border border-[#0F4F68]/10 bg-white/90 p-6 shadow-[0_4px_24px_rgba(15,79,104,0.06)] backdrop-blur-sm sm:rounded-3xl sm:p-8"
       }
       onSubmit={(e) => {
         e.preventDefault();

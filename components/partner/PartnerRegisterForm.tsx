@@ -26,7 +26,7 @@ export function PartnerRegisterForm({ disabled, formClassName }: PartnerRegister
       <div
         className={
           formClassName ??
-          "mt-6 max-w-md space-y-4 rounded-2xl border border-emerald-200 bg-emerald-50/90 p-5 text-sm text-emerald-950 shadow-sm sm:mt-8 sm:p-8"
+          "mt-6 w-full space-y-4 rounded-2xl border border-emerald-200/80 bg-emerald-50/95 p-6 text-sm text-emerald-950 shadow-[0_4px_24px_rgba(16,185,129,0.12)] sm:mt-8 sm:rounded-3xl sm:p-8"
         }
         role="status"
       >
@@ -59,7 +59,7 @@ export function PartnerRegisterForm({ disabled, formClassName }: PartnerRegister
     <form
       className={
         formClassName ??
-        "mt-8 max-w-md space-y-5 rounded-2xl border border-[#0F4F68]/12 bg-white p-6 shadow-sm sm:p-8"
+        "mt-6 w-full space-y-5 rounded-2xl border border-[#0F4F68]/10 bg-white/90 p-6 shadow-[0_4px_24px_rgba(15,79,104,0.06)] backdrop-blur-sm sm:mt-8 sm:rounded-3xl sm:p-8"
       }
       onSubmit={(e) => {
         e.preventDefault();
