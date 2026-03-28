@@ -12,8 +12,9 @@ const shell = "bg-[#F2F9FA]";
 
 function iconButtonClass(active: boolean) {
   return [
-    "flex h-11 w-11 shrink-0 items-center justify-center rounded-lg text-[#0F4F68] transition",
-    active ? "bg-[#0F4F68]/12 ring-1 ring-[#0F4F68]/25" : "hover:bg-[#0F4F68]/10",
+    "flex h-11 w-11 shrink-0 items-center justify-center rounded-lg text-[#0F4F68] transition-all duration-200 ease-out",
+    active ? "bg-[#0F4F68]/12 ring-1 ring-[#0F4F68]/25 shadow-[0_2px_8px_rgba(15,79,104,0.12)]" : "hover:bg-[#0F4F68]/10",
+    "motion-safe:hover:scale-110 motion-safe:active:scale-[0.94] motion-safe:hover:-translate-y-0.5",
   ].join(" ");
 }
 

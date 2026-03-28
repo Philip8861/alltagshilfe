@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 export default function PartnerEinstellungenPage() {
   return (
     <div className="space-y-10">
-      <div>
+      <div className="partner-dash-animate">
         <h1 className="text-2xl font-bold text-[#0F4F68] sm:text-3xl">Einstellungen</h1>
         <p className="mt-2 max-w-2xl text-sm text-neutral-600">
           Zugangsdaten und Unterlagen für die Zusammenarbeit.
@@ -17,7 +17,7 @@ export default function PartnerEinstellungenPage() {
       </div>
 
       <section
-        className="rounded-2xl border border-[#0F4F68]/10 bg-white p-6 shadow-sm sm:p-8"
+        className="partner-dash-animate partner-dash-delay-1 rounded-2xl border border-[#0F4F68]/10 bg-white p-6 shadow-sm sm:p-8"
         aria-labelledby="pw-heading"
       >
         <h2 id="pw-heading" className="text-lg font-bold text-[#0F4F68]">
@@ -32,7 +32,7 @@ export default function PartnerEinstellungenPage() {
       </section>
 
       <section
-        className="rounded-2xl border border-[#0F4F68]/10 bg-white p-6 shadow-sm sm:p-8"
+        className="partner-dash-animate partner-dash-delay-2 rounded-2xl border border-[#0F4F68]/10 bg-white p-6 shadow-sm sm:p-8"
         aria-labelledby="vertraege-teaser"
       >
         <h2 id="vertraege-teaser" className="text-lg font-bold text-[#0F4F68]">

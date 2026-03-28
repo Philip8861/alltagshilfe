@@ -2,6 +2,7 @@
 
 import { useMemo, useState, useEffect } from "react";
 import { usePathname, useRouter } from "next/navigation";
+import { PartnerAnimatedEuro } from "@/components/partner/PartnerAnimatedEuro";
 import { PartnerTipModal } from "@/components/partner/PartnerTipModal";
 import { tipPayloadNotiz } from "@/lib/partner/partner-tip-notiz";
 import { tipTableFields } from "@/lib/partner/partner-tip-table-fields";
@@ -121,23 +122,30 @@ export function PartnerDashboardClient({
   };
 
   const cardBase =
-    "flex min-h-[7.5rem] flex-1 flex-col justify-center gap-2 rounded-lg border border-neutral-300 bg-white p-5 sm:min-w-[12rem]";
+    "partner-metric-card partner-dash-animate flex min-h-[7.5rem] flex-1 flex-col justify-center gap-2 rounded-lg border border-neutral-300 bg-white p-5 sm:min-w-[12rem]";
 
   return (
     <div className="mx-auto w-full max-w-[min(100%,90rem)] space-y-6 sm:space-y-8">
       <header className="flex flex-col gap-4 rounded-xl border border-[#0F4F68]/12 bg-[#F2F9FA] px-6 py-6 shadow-[0_10px_22px_rgba(15,79,104,0.2),0_4px_12px_rgba(15,79,104,0.12)] sm:flex-row sm:items-center sm:justify-between sm:px-8 sm:py-7">
-        <div>
+        <div className="partner-dash-animate min-w-0">
           <h1 className="text-2xl font-semibold leading-snug text-[#0F4F68] sm:text-3xl">
             {welcomeLine},
           </h1>
-          <p className="mt-2 text-sm text-neutral-700 sm:text-base">
+          <div className="mt-2 h-1 w-full max-w-[10rem] overflow-hidden rounded-full bg-[#0F4F68]/15">
+            <div
+              className="h-full w-full origin-left scale-x-0 animate-partner-bar-fill rounded-full bg-gradient-to-r from-[#0F4F68] to-[#3DB8C9]"
+              style={{ animationDelay: "0.2s" }}
+              aria-hidden
+            />
+          </div>
+          <p className="mt-3 text-sm text-neutral-700 sm:text-base">
             Dein persönliches Partnerportal-Dashboard.
           </p>
         </div>
         <button
           type="button"
           onClick={() => setTipOpen(true)}
-          className="group inline-flex w-full shrink-0 items-center justify-center gap-2 rounded-2xl bg-gradient-to-b from-[#0F4F68] to-[#0c3d52] px-5 py-3 text-sm font-semibold text-white shadow-[0_10px_22px_rgba(15,79,104,0.22),0_4px_12px_rgba(15,79,104,0.14)] ring-1 ring-[#0F4F68]/30 transition hover:from-[#0c3d52] hover:to-[#0a3446] hover:shadow-[0_14px_28px_rgba(15,79,104,0.28),0_6px_14px_rgba(15,79,104,0.16)] active:translate-y-px focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68] focus-visible:ring-offset-2 focus-visible:ring-offset-[#F2F9FA] sm:mt-0 sm:w-auto"
+          className="partner-dash-animate partner-dash-delay-2 group inline-flex w-full shrink-0 items-center justify-center gap-2 rounded-2xl bg-gradient-to-b from-[#0F4F68] to-[#0c3d52] px-5 py-3 text-sm font-semibold text-white shadow-[0_10px_22px_rgba(15,79,104,0.22),0_4px_12px_rgba(15,79,104,0.14)] ring-1 ring-[#0F4F68]/30 transition hover:from-[#0c3d52] hover:to-[#0a3446] hover:shadow-[0_14px_28px_rgba(15,79,104,0.28),0_6px_14px_rgba(15,79,104,0.16)] active:translate-y-px focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68] focus-visible:ring-offset-2 focus-visible:ring-offset-[#F2F9FA] sm:mt-0 sm:w-auto"
         >
           <svg
             className="h-5 w-5 shrink-0 opacity-95 transition group-hover:scale-105"
@@ -155,7 +163,7 @@ export function PartnerDashboardClient({
       </header>
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        <div className={cardBase}>
+        <div className={`${cardBase} partner-dash-delay-1 relative z-[1]`}>
           <div className="flex items-start gap-4">
             <div className={iconWrap} aria-hidden>
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -169,22 +177,26 @@ export function PartnerDashboardClient({
             </div>
             <div className="min-w-0">
               <p className="text-[0.65rem] font-semibold uppercase text-[#0F4F68]">Ihr Partner-Code</p>
-              <p className="mt-1 text-2xl font-semibold tabular-nums text-[#0F4F68] sm:text-3xl">
+              <p
+                className={`mt-1 text-2xl font-semibold tabular-nums text-[#0F4F68] sm:text-3xl ${partnerCode ? "partner-code-settle" : ""}`}
+              >
                 {partnerCode ?? "—"}
               </p>
             </div>
           </div>
         </div>
 
-        <div className={cardBase}>
+        <div className={`${cardBase} partner-dash-delay-2 relative z-[1]`}>
           <p className="text-[0.65rem] font-semibold uppercase text-[#0F4F68]">Monatliche Tippgeberpr…</p>
-          <p className="text-2xl font-semibold tabular-nums text-[#0F4F68] sm:text-3xl">128,50 €</p>
+          <p className="mt-1 text-2xl font-semibold text-[#0F4F68] sm:text-3xl">
+            <PartnerAnimatedEuro value={128.5} durationMs={1600} />
+          </p>
           <p className="text-xs text-neutral-600">Auszahlung in Bearbeitung</p>
         </div>
 
-        <div className={cardBase}>
+        <div className={`${cardBase} partner-dash-delay-3 relative z-[1]`}>
           <div className="flex items-start gap-4">
-            <div className={iconWrap} aria-hidden>
+            <div className={`${iconWrap} motion-safe:animate-partner-soft-float`} aria-hidden>
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <rect x="3" y="6" width="18" height="12" rx="2" />
                 <path d="M7 10h4M7 14h10" strokeLinecap="round" />
@@ -192,15 +204,17 @@ export function PartnerDashboardClient({
             </div>
             <div className="min-w-0">
               <p className="text-[0.65rem] font-semibold uppercase text-[#0F4F68]">Einmalprovision</p>
-              <p className="mt-1 text-2xl font-semibold tabular-nums text-[#0F4F68] sm:text-3xl">420,00 €</p>
+              <p className="mt-1 text-2xl font-semibold text-[#0F4F68] sm:text-3xl">
+                <PartnerAnimatedEuro value={420} durationMs={1750} />
+              </p>
               <p className="mt-0.5 text-xs text-neutral-600">Zahlung bereit</p>
             </div>
           </div>
         </div>
 
-        <div className={cardBase}>
+        <div className={`${cardBase} partner-dash-delay-4 relative z-[1]`}>
           <div className="flex items-start gap-4">
-            <div className={iconWrap} aria-hidden>
+            <div className={`${iconWrap} motion-safe:animate-partner-icon-nudge`} aria-hidden>
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <rect x="3" y="4" width="18" height="18" rx="2" />
                 <path d="M16 2v4M8 2v4M3 10h18" strokeLinecap="round" />
@@ -219,7 +233,7 @@ export function PartnerDashboardClient({
 
       <section
         id="partner-statusliste"
-        className="scroll-mt-28 rounded-lg border border-neutral-300 bg-white p-4 sm:p-6 lg:p-8"
+        className="partner-dash-animate partner-dash-delay-5 scroll-mt-28 rounded-lg border border-neutral-300 bg-white p-4 sm:p-6 lg:p-8"
         aria-labelledby="partner-statusliste-heading"
       >
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">

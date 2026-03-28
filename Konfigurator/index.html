@@ -90,10 +90,10 @@
   <div id="flow-step-2" class="flow-step-wrap" hidden>
     <main class="layout layout--single">
       <section class="panel">
-        <h2>Ihre Kontaktdaten</h2>
+        <h2>Schritt 2: Ihre Angaben</h2>
         <p class="panel-subtitle">
-          Bitte füllen Sie die Felder aus, damit wir Ihre Pflegebox-Konfiguration zuordnen und bei Bedarf
-          Kontakt aufnehmen können. Es gelten unsere
+          Vor- und Nachname sind Pflicht. Den Partner-Code tragen Sie nur ein, wenn Sie über eine Pflegefachkraft oder
+          einen Kooperationspartner auf uns aufmerksam wurden. Es gelten unsere
           <a href="/datenschutz" target="_blank" rel="noopener noreferrer" class="inline-link">Datenschutzhinweise</a>.
         </p>
         <form id="pflegebox-finish-form" class="contact-form" autocomplete="on" novalidate>
@@ -109,31 +109,31 @@
           <div class="form-row-inline">
             <div class="form-row">
               <label for="pflegebox-firstname">Vorname *</label>
-              <input type="text" id="pflegebox-firstname" name="firstName" required maxlength="80" />
+              <input type="text" id="pflegebox-firstname" name="firstName" required maxlength="80" autocomplete="given-name" />
             </div>
             <div class="form-row">
               <label for="pflegebox-lastname">Nachname *</label>
-              <input type="text" id="pflegebox-lastname" name="lastName" required maxlength="80" />
+              <input type="text" id="pflegebox-lastname" name="lastName" required maxlength="80" autocomplete="family-name" />
             </div>
           </div>
           <div class="form-row">
-            <label for="pflegebox-email">E-Mail *</label>
-            <input type="email" id="pflegebox-email" name="email" required maxlength="320" />
-          </div>
-          <div class="form-row-inline">
-            <div class="form-row">
-              <label for="pflegebox-phone">Telefon (optional)</label>
-              <input type="tel" id="pflegebox-phone" name="phone" maxlength="40" />
-            </div>
-            <div class="form-row">
-              <label for="pflegebox-plz">PLZ (optional)</label>
-              <input type="text" id="pflegebox-plz" name="plz" maxlength="12" inputmode="numeric" />
-            </div>
+            <label for="pflegebox-partner-code">Partner-Code (optional)</label>
+            <input
+              type="text"
+              id="pflegebox-partner-code"
+              name="partnerCode"
+              maxlength="40"
+              autocomplete="off"
+              placeholder="z. B. aus Flyer oder QR-Code"
+            />
+            <p class="panel-subtitle" style="margin-top: 0.5rem; font-size: 0.85rem">
+              Wird auch aus dem Link übernommen, falls Sie mit <code>?partner=…</code> oder <code>?ref=…</code> gekommen sind.
+            </p>
           </div>
           <div class="form-row">
             <label class="form-label-inline">
               <input type="checkbox" id="pflegebox-privacy" name="privacy" required />
-              Ich habe die{" "}
+              Ich habe die
               <a href="/datenschutz" target="_blank" rel="noopener noreferrer">Datenschutzerklärung</a> zur Kenntnis
               genommen. *
             </label>
@@ -141,9 +141,7 @@
           <p id="pflegebox-form-error" class="form-error-text" role="alert" hidden></p>
           <div class="form-actions-row">
             <button type="button" class="admin-btn" id="btn-flow-back">Zurück zur Auswahl</button>
-            <button type="submit" class="btn-primary" id="btn-pflegebox-submit">
-              Konfiguration abschließen
-            </button>
+            <button type="submit" class="btn-primary" id="btn-pflegebox-submit">Absenden</button>
           </div>
         </form>
       </section>
@@ -155,8 +153,7 @@
       <section class="panel panel--success">
         <h2>Vielen Dank!</h2>
         <p class="panel-subtitle" id="flow-step-3-message">
-          Ihre Pflegebox-Konfiguration wurde übermittelt. Wir melden uns bei Bedarf über die angegebene
-          E-Mail-Adresse.
+          Ihre Pflegebox-Konfiguration wurde übermittelt. Wir bearbeiten Ihre Angaben und melden uns bei Bedarf bei Ihnen.
         </p>
         <p class="panel-subtitle text-muted" id="flow-step-3-ref" hidden></p>
         <button type="button" class="btn-primary" id="btn-flow-new">Neue Konfiguration starten</button>

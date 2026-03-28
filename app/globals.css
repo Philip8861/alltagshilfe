@@ -103,12 +103,122 @@
   animation-delay: 0.28s;
 }
 
+.partner-dash-delay-5 {
+  animation-delay: 0.35s;
+}
+
+.partner-dash-delay-6 {
+  animation-delay: 0.42s;
+}
+
+/* Partnerportal: kurzer Lichtblitz nach Zähler-Ende */
+@keyframes partner-euro-highlight {
+  0%,
+  100% {
+    color: inherit;
+    text-shadow: none;
+  }
+  40% {
+    color: rgb(10 90 122);
+    text-shadow: 0 0 14px rgba(15, 79, 104, 0.35);
+  }
+  65% {
+    color: inherit;
+    text-shadow: none;
+  }
+}
+
+.partner-euro-highlight {
+  animation: partner-euro-highlight 0.85s ease-in-out 1 both;
+}
+
+/* Partner-Kacheln: einmaliger Lichtstreifen */
+@keyframes partner-card-shine {
+  0% {
+    background-position: 120% 0;
+  }
+  100% {
+    background-position: -20% 0;
+  }
+}
+
+.partner-metric-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.partner-metric-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image: linear-gradient(
+    105deg,
+    transparent 0%,
+    transparent 38%,
+    rgba(255, 255, 255, 0.65) 50%,
+    transparent 62%,
+    transparent 100%
+  );
+  background-size: 220% 100%;
+  animation: partner-card-shine 1.35s ease-out 0.4s 1 both;
+}
+
+/* Partner-Code: kurzes „Einschnappen“ */
+@keyframes partner-code-settle {
+  0% {
+    transform: scale(0.94);
+    opacity: 0.65;
+    letter-spacing: 0.12em;
+  }
+  70% {
+    transform: scale(1.02);
+    opacity: 1;
+    letter-spacing: 0.02em;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+    letter-spacing: 0;
+  }
+}
+
+.partner-code-settle {
+  animation: partner-code-settle 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.15s both;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .partner-dash-animate,
   .partner-dash-delay-1,
   .partner-dash-delay-2,
   .partner-dash-delay-3,
-  .partner-dash-delay-4 {
+  .partner-dash-delay-4,
+  .partner-dash-delay-5,
+  .partner-dash-delay-6 {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+  .partner-euro-highlight,
+  .partner-code-settle,
+  .animate-partner-soft-float,
+  .animate-partner-icon-nudge {
+    animation: none !important;
+    text-shadow: none !important;
+    background: none !important;
+    transform: none !important;
+    letter-spacing: normal !important;
+    opacity: 1 !important;
+  }
+  .partner-metric-card::after {
+    animation: none !important;
+    opacity: 0 !important;
+  }
+  .animate-partner-bar-fill {
+    animation: none !important;
+    transform: scaleX(1) !important;
+  }
+  .animate-partner-col-enter {
     animation: none !important;
     opacity: 1 !important;
     transform: none !important;

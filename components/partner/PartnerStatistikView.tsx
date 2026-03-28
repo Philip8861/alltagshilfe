@@ -35,7 +35,7 @@ function parseMonthValue(v: string): { year: number; month0: number } | null {
   return { year, month0: month - 1 };
 }
 
-function HorizontalStatBars({ stats }: { stats: DashboardAuftragStats }) {
+function HorizontalStatBars({ stats, animKey }: { stats: DashboardAuftragStats; animKey: string }) {
   const max = Math.max(1, stats.abgeschlossen, stats.abgelehnt, stats.inBearbeitung);
   const rows: { label: string; value: number; barClass: string }[] = [
     { label: "Abgeschlossen", value: stats.abgeschlossen, barClass: "bg-emerald-500" },
@@ -43,13 +43,19 @@ function HorizontalStatBars({ stats }: { stats: DashboardAuftragStats }) {
     { label: "In Bearbeitung", value: stats.inBearbeitung, barClass: "bg-amber-500" },
   ];
   return (
-    <div className="space-y-4" role="img" aria-label="Balkendiagramm Auftragsstatus">
-      {rows.map((r) => (
+    <div key={animKey} className="space-y-4" role="img" aria-label="Balkendiagramm Auftragsstatus">
+      {rows.map((r, idx) => (
         <div key={r.label} className="flex flex-col gap-1.5 sm:flex-row sm:items-center sm:gap-4">
           <span className="w-full shrink-0 text-sm font-semibold text-neutral-800 sm:w-40">{r.label}</span>
           <div className="flex min-w-0 flex-1 items-center gap-3">
             <div className="h-9 min-w-0 flex-1 overflow-hidden rounded-lg bg-neutral-100 ring-1 ring-neutral-200/80">
-              <div className={`h-full rounded-lg ${r.barClass}`} style={{ width: `${(r.value / max) * 100}%` }} />
+              <div
+                className={`h-full origin-left rounded-lg motion-safe:animate-partner-bar-fill ${r.barClass}`}
+                style={{
+                  width: `${(r.value / max) * 100}%`,
+                  animationDelay: `${idx * 0.1}s`,
+                }}
+              />
             </div>
             <span className="w-10 shrink-0 text-right text-base font-bold tabular-nums text-neutral-900">{r.value}</span>
           </div>
@@ -62,9 +68,11 @@ function HorizontalStatBars({ stats }: { stats: DashboardAuftragStats }) {
 function YearMonthOverviewChart({
   monthly,
   year,
+  chartKey,
 }: {
   monthly: DashboardAuftragStats[];
   year: number;
+  chartKey: string;
 }) {
   const maxTotal = useMemo(
     () => Math.max(1, ...monthly.map((m) => m.abgeschlossen + m.abgelehnt + m.inBearbeitung)),
@@ -76,12 +84,21 @@ function YearMonthOverviewChart({
     <div>
       <p className="text-sm font-semibold text-[#0F4F68]">Verteilung {year} (nach Eingangsdatum)</p>
       <p className="mt-1 text-xs text-neutral-500">Gestapelte Balken: grün abgeschlossen, rot abgelehnt, gelb in Bearbeitung.</p>
-      <div className="mt-4 flex h-44 items-end justify-between gap-1 sm:gap-1.5" role="img" aria-label="Jahresübersicht nach Monaten">
+      <div
+        key={chartKey}
+        className="mt-4 flex h-44 items-end justify-between gap-1 sm:gap-1.5"
+        role="img"
+        aria-label="Jahresübersicht nach Monaten"
+      >
         {monthly.map((st, i) => {
           const total = st.abgeschlossen + st.abgelehnt + st.inBearbeitung;
           const colPx = total === 0 ? 4 : Math.round(10 + (total / maxTotal) * chartMaxPx);
           return (
-            <div key={i} className="flex min-w-0 flex-1 flex-col items-center justify-end gap-1">
+            <div
+              key={i}
+              className="motion-safe:animate-partner-col-enter flex min-w-0 flex-1 flex-col items-center justify-end gap-1"
+              style={{ animationDelay: `${i * 0.045}s` }}
+            >
               <div
                 className="flex w-full max-w-[2.25rem] flex-col justify-end overflow-hidden rounded-t-md border border-neutral-200/90 bg-neutral-100 sm:max-w-[2.75rem]"
                 style={{ height: colPx }}
@@ -133,11 +150,13 @@ export function PartnerStatistikView({ tips, orders }: Props) {
     return monthlyStatsForYear(tips, orderLikes, year);
   }, [yearInput, tips, orderLikes]);
 
+  const barsAnimKey = `${periodMode}-${monthInput}-${yearInput}-${periodStats.abgeschlossen}-${periodStats.abgelehnt}-${periodStats.inBearbeitung}`;
+
   return (
-    <section className="rounded-lg border border-neutral-300 bg-white p-5 sm:p-8">
+    <section className="partner-dash-animate rounded-lg border border-neutral-300 bg-white p-5 sm:p-8">
       <div className="flex flex-col gap-4 border-b border-[#0F4F68]/15 pb-6 sm:flex-row sm:items-end sm:justify-between">
         <h1 className="text-xl font-semibold text-[#0F4F68] sm:text-2xl">Statistik</h1>
-        <div className="flex flex-wrap items-center gap-2">
+        <div className="partner-dash-animate partner-dash-delay-1 flex flex-wrap items-center gap-2">
           <div className="flex rounded-lg border border-[#0F4F68]/20 p-0.5">
             <button
               type="button"
@@ -177,22 +196,23 @@ export function PartnerStatistikView({ tips, orders }: Props) {
           )}
         </div>
       </div>
-      <div className="mt-8">
+      <div className="partner-dash-animate partner-dash-delay-2 mt-8">
         <h2 className="text-base font-semibold text-[#0F4F68]">Aufträge nach Status</h2>
         <p className="mt-1 text-sm text-neutral-600">
           Tippgeber-Eingänge und abgeschlossene Konfigurationen im gewählten Zeitraum.
         </p>
         <div className="mt-6 rounded-lg border border-neutral-200 bg-[#F2F9FA] p-5 sm:p-6">
-          <HorizontalStatBars stats={periodStats} />
+          <HorizontalStatBars stats={periodStats} animKey={barsAnimKey} />
         </div>
       </div>
       {periodMode === "year" ? (
-        <div className="mt-8 rounded-lg border border-neutral-200 bg-white p-5 sm:p-6">
+        <div className="partner-dash-animate partner-dash-delay-3 mt-8 rounded-lg border border-neutral-200 bg-white p-5 sm:p-6">
           <YearMonthOverviewChart
             monthly={monthlyForYear}
             year={
               Number(yearInput) >= 2000 && Number(yearInput) <= 2100 ? Number(yearInput) : new Date().getFullYear()
             }
+            chartKey={`${yearInput}-${monthlyForYear.map((m) => m.abgeschlossen + m.abgelehnt + m.inBearbeitung).join(",")}`}
           />
         </div>
       ) : null}

@@ -950,16 +950,15 @@ document.addEventListener("DOMContentLoaded", () => {
       if (honeypot && honeypot.value) return;
 
       const privacy = document.getElementById("pflegebox-privacy");
+      const codeField = document.getElementById("pflegebox-partner-code")?.value.trim() ?? "";
+      const storedRef = getPartnerRef().trim();
       const payload = {
         cartLines: buildCartLinesForApi(),
         totalBudgetUsed: calculateCartTotal(),
-        partnerRef: getPartnerRef(),
+        partnerRef: codeField || storedRef,
         contact: {
           firstName: document.getElementById("pflegebox-firstname")?.value.trim() ?? "",
           lastName: document.getElementById("pflegebox-lastname")?.value.trim() ?? "",
-          email: document.getElementById("pflegebox-email")?.value.trim() ?? "",
-          phone: document.getElementById("pflegebox-phone")?.value.trim() ?? "",
-          plz: document.getElementById("pflegebox-plz")?.value.trim() ?? "",
         },
         website: "",
         privacyAccepted: privacy?.checked === true,
@@ -985,7 +984,8 @@ document.addEventListener("DOMContentLoaded", () => {
             msg = "Der Speicherdienst ist noch nicht eingerichtet. Bitte kontaktieren Sie uns telefonisch.";
           }
           if (res.status === 400) {
-            msg = "Bitte füllen Sie alle Pflichtfelder aus und bestätigen Sie die Datenschutzhinweise.";
+            msg =
+              "Bitte Vor- und Nachname ausfüllen, die Datenschutzerklärung bestätigen und prüfen, ob Ihre Pflegebox Artikel enthält.";
           }
           if (errEl) {
             errEl.textContent = msg;
@@ -1014,7 +1014,7 @@ document.addEventListener("DOMContentLoaded", () => {
       } finally {
         if (submitBtn) {
           submitBtn.disabled = false;
-          submitBtn.textContent = "Konfiguration abschließen";
+          submitBtn.textContent = "Absenden";
         }
       }
     });

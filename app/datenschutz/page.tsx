@@ -74,11 +74,11 @@ export default function DatenschutzPage() {
               von Ihnen eingegebenen Daten zur Bearbeitung Ihrer Anfrage.
             </p>
             <p>
-              Beim <strong className="text-neutral-900">Abschluss des Pflegebox-Konfigurators</strong> werden Ihre
-              Kontaktdaten sowie die von Ihnen gewählte Produktzusammenstellung (Konfiguration) gespeichert, damit wir die
-              Anfrage bearbeiten und – soweit erforderlich – einer regionalen Zuordnung oder einem Kooperationspartner
-              zuordnen können. Die Speicherung erfolgt in einer Datenbank bei unserem Auftragsverarbeiter (Supabase, EU),
-              soweit der Dienst eingerichtet ist.
+              Beim <strong className="text-neutral-900">Abschluss des Pflegebox-Konfigurators</strong> werden Ihr
+              Vor- und Nachname, gegebenenfalls ein freiwilliger Kooperationspartner-Code sowie die von Ihnen gewählte
+              Produktzusammenstellung (Konfiguration) gespeichert, damit wir die Anfrage bearbeiten und – soweit angegeben –
+              einem Kooperationspartner zuordnen können. Die Speicherung erfolgt in einer Datenbank bei unserem
+              Auftragsverarbeiter (Supabase, EU), soweit der Dienst eingerichtet ist.
             </p>
             <p>Je nach Formular können insbesondere folgende Daten verarbeitet werden:</p>
             <ul className="list-disc pl-6">
@@ -87,7 +87,10 @@ export default function DatenschutzPage() {
               <li>Telefonnummer</li>
               <li>Thema und Nachricht</li>
               <li>weitere freiwillige Angaben (z. B. Rückrufzeit, PLZ, Leistungswünsche)</li>
-              <li>beim Pflegebox-Konfigurator: gewählte Artikel und Budgetnutzung (Konfigurationsdaten)</li>
+              <li>
+                beim Pflegebox-Konfigurator: gewählte Artikel und Budgetnutzung (Konfigurationsdaten); optional ein
+                Partner-Code zur Zuordnung
+              </li>
             </ul>
             <p>
               Rechtsgrundlage ist Art. 6 Abs. 1 lit. b DSGVO (vorvertragliche Kommunikation) bzw. Art. 6 Abs. 1 lit. f DSGVO

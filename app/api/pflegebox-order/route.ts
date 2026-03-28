@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { headers } from "next/headers";
 import { rateLimitPflegeboxOrder } from "@/lib/rate-limit";
-import { pflegeboxOrderBodySchema } from "@/lib/validations/pflegebox-order";
+import { pflegeboxOrderBodySchema, type PflegeboxOrderBody } from "@/lib/validations/pflegebox-order";
 import { createSupabaseServiceRoleClient, resolvePartnerProfileId } from "@/lib/supabase/service";
 
 async function clientIp(): Promise<string> {
@@ -13,6 +13,16 @@ async function clientIp(): Promise<string> {
   } catch {
     return "unknown";
   }
+}
+
+function buildTipNotiz(lines: PflegeboxOrderBody["cartLines"], totalBudgetUsed: number): string {
+  const budget = totalBudgetUsed.toLocaleString("de-DE", {
+    style: "currency",
+    currency: "EUR",
+  });
+  const head = `Pflegebox-Konfigurator · genutztes Budget ${budget}`;
+  const body = lines.map((l) => `${l.count}× ${l.name}`).join("\n");
+  return `${head}\n${body}`;
 }
 
 export async function POST(request: Request) {
@@ -47,14 +57,14 @@ export async function POST(request: Request) {
   const externalRef = `PB-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 10)}`;
 
   const summary_json = {
-    version: 1,
+    version: 2,
     cartLines: parsed.data.cartLines,
     totalBudgetUsed: parsed.data.totalBudgetUsed,
     partnerRefRaw: (parsed.data.partnerRef ?? "").trim() || null,
     contact: {
       firstName: parsed.data.contact.firstName,
       lastName: parsed.data.contact.lastName,
-      email: parsed.data.contact.email,
+      email: parsed.data.contact.email?.trim() || null,
       phone: parsed.data.contact.phone?.trim() || null,
       plz: parsed.data.contact.plz?.trim() || null,
     },
@@ -66,7 +76,7 @@ export async function POST(request: Request) {
     .insert({
       partner_id: partnerId,
       external_reference: externalRef,
-      status: "completed",
+      status: "in_bearbeitung",
       summary_json,
     })
     .select("id")
@@ -76,5 +86,31 @@ export async function POST(request: Request) {
     return NextResponse.json({ ok: false, error: "save_failed" }, { status: 500 });
   }
 
-  return NextResponse.json({ ok: true, id: data?.id, reference: externalRef });
+  const orderId = data?.id as string | undefined;
+
+  if (partnerId && orderId) {
+    const notiz = buildTipNotiz(parsed.data.cartLines, parsed.data.totalBudgetUsed);
+    const tipPayload: Record<string, unknown> = {
+      vorname: parsed.data.contact.firstName,
+      nachname: parsed.data.contact.lastName,
+      telefon: parsed.data.contact.phone?.trim() || "",
+      email: parsed.data.contact.email?.trim() || "",
+      wohnort: parsed.data.contact.plz?.trim() || "",
+      notiz,
+      pflegebox_order_id: orderId,
+      external_reference: externalRef,
+      partner_referral_raw: (parsed.data.partnerRef ?? "").trim() || null,
+    };
+    const { error: tipErr } = await service.from("partner_tip_submissions").insert({
+      partner_id: partnerId,
+      service_slug: "pflegehilfsmittel",
+      payload: tipPayload,
+      admin_status: "in_bearbeitung",
+    });
+    if (tipErr) {
+      console.error("[pflegebox-order] partner_tip_submissions insert failed", tipErr.message);
+    }
+  }
+
+  return NextResponse.json({ ok: true, id: orderId, reference: externalRef });
 }

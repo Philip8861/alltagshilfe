@@ -14,7 +14,7 @@ export default function PartnerKontaktPage() {
           Schreiben Sie uns – wir melden uns zeitnah bei Ihnen.
         </p>
       </div>
-      <div className="rounded-2xl border border-[#0F4F68]/10 bg-white p-6 shadow-sm sm:p-8">
+      <div className="partner-dash-animate partner-dash-delay-1 rounded-2xl border border-[#0F4F68]/10 bg-white p-6 shadow-sm sm:p-8">
         <ContactForm />
       </div>
     </article>

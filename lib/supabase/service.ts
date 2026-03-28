@@ -22,8 +22,17 @@ export async function resolvePartnerProfileId(
   ref: string | undefined,
 ): Promise<string | null> {
   const trimmed = (ref ?? "").trim();
-  if (!trimmed || !UUID_RE.test(trimmed)) return null;
-  const { data, error } = await client.from("partner_profiles").select("id").eq("id", trimmed).maybeSingle();
+  if (!trimmed) return null;
+  if (UUID_RE.test(trimmed)) {
+    const { data, error } = await client.from("partner_profiles").select("id").eq("id", trimmed).maybeSingle();
+    if (error || !data?.id) return null;
+    return data.id as string;
+  }
+  const { data, error } = await client
+    .from("partner_profiles")
+    .select("id")
+    .ilike("partner_referral_code", trimmed)
+    .maybeSingle();
   if (error || !data?.id) return null;
   return data.id as string;
 }

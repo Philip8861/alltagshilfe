@@ -28,7 +28,7 @@ export default async function PartnerLoginPage({ searchParams }: Props) {
 
   return (
     <PartnerAuthModalShell titleId="partner-login-heading">
-      <article className="text-center">
+      <article className="partner-dash-animate text-center">
         <h1
           id="partner-login-heading"
           className="text-2xl font-semibold tracking-tight text-[#0F4F68] sm:text-3xl"
@@ -136,7 +136,7 @@ export default async function PartnerLoginPage({ searchParams }: Props) {
                 </p>
               </div>
             ) : null}
-            <div className="mt-6 text-left">
+            <div className="partner-dash-animate partner-dash-delay-1 mt-6 text-left">
               <PartnerLoginForm />
             </div>
             <p className="mt-5 text-sm text-neutral-600">

@@ -20,7 +20,14 @@ export const pflegeboxOrderBodySchema = z.object({
   contact: z.object({
     firstName: z.string().trim().min(1).max(80),
     lastName: z.string().trim().min(1).max(80),
-    email: z.string().trim().email().max(320),
+    email: z.preprocess(
+      (val) => {
+        if (val === undefined || val === null) return undefined;
+        const s = String(val).trim();
+        return s.length === 0 ? undefined : s;
+      },
+      z.string().email("Gültige E-Mail.").max(320).optional(),
+    ),
     phone: z.string().trim().max(40).optional(),
     plz: z.string().trim().max(12).optional(),
   }),
