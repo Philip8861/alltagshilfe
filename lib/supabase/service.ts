@@ -1,8 +1,9 @@
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 
 /**
- * Server-only: Service-Role (umgeht RLS für kontrollierte Inserts).
- * Niemals im Client oder in NEXT_PUBLIC_ verwenden.
+ * Server-only: eigener Supabase-Client mit Service-Role-Key (keine Request-Cookies, kein User-JWT).
+ * Umgeht RLS für kontrollierte Schreibvorgänge — niemals mit dem Cookie-/Session-Client verwechseln.
+ * Niemals im Client oder als NEXT_PUBLIC_* verwenden.
  */
 export function createSupabaseServiceRoleClient(): SupabaseClient | null {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL?.trim();
