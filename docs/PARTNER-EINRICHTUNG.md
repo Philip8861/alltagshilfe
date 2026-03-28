@@ -53,6 +53,8 @@ SUPABASE_SERVICE_ROLE_KEY=eyJ...
 
 Ohne **Service Role** funktioniert die **Verwaltung** (`/partner/admin`, Partner anlegen) nicht.
 
+**Kurzname statt E-Mail:** Trägt jemand nur einen Namen ohne `@` ein (Login und Verwaltung), wird intern `name@<Domain>` an Supabase geschickt. Standard-Domain: `partners.invalid`. Optional in `.env.local` und Vercel identisch setzen: `NEXT_PUBLIC_PARTNER_AUTH_EMAIL_DOMAIN=ihre-subdomain.intern` (nur Hostname, kein `https://`). Mit `@` eingegebene echte E-Mail-Adressen bleiben unverändert.
+
 ### Schritt 7: Verwaltungs-Login (System-Admin)
 
 Wähle einen **Benutzernamen** und ein **starkes Passwort** nur für die interne Verwaltung (nicht dasselbe wie dein Supabase-Login).

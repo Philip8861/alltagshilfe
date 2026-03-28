@@ -98,11 +98,11 @@ export default async function PartnerLoginPage({ searchParams }: Props) {
                 </p>
                 <p className="mt-2 font-medium leading-snug">
                   Anmeldung über den E-Mail-Link ist fehlgeschlagen. Bitte erneut auf den Link klicken oder sich mit
-                  E-Mail und Passwort anmelden.
+                  Anmeldename (bzw. E-Mail) und Passwort anmelden.
                 </p>
               </div>
             ) : null}
-            <PartnerLoginForm emailFieldLabel="E-Mail-Adresse (Anmeldename)" />
+            <PartnerLoginForm />
             <p className="mt-5 text-sm text-neutral-600">
               <Link
                 href="/partner/admin-login"

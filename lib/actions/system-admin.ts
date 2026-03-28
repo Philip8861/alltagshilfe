@@ -12,6 +12,7 @@ import {
   getSystemAdminSession,
 } from "@/lib/partner/system-admin-session";
 import { createPartnerUserSchema } from "@/lib/validations/system-admin";
+import { resolvePartnerLoginToEmail } from "@/lib/partner/resolve-partner-login-email";
 
 async function clientIp(): Promise<string> {
   try {
@@ -75,7 +76,7 @@ export async function createPartnerUserAction(
   const display = String(formData.get("display_name") ?? "").trim();
   const org = String(formData.get("organization_name") ?? "").trim();
   const parsed = createPartnerUserSchema.safeParse({
-    email: formData.get("email"),
+    login: formData.get("login"),
     password: formData.get("password"),
     display_name: display || undefined,
     organization_name: org || undefined,
@@ -86,9 +87,15 @@ export async function createPartnerUserAction(
     const e = parsed.error.flatten().fieldErrors;
     return {
       ok: false,
-      message: e.email?.[0] ?? e.password?.[0] ?? e.role?.[0] ?? "Eingaben prüfen.",
+      message: e.login?.[0] ?? e.password?.[0] ?? e.role?.[0] ?? "Eingaben prüfen.",
     };
   }
+
+  const resolved = resolvePartnerLoginToEmail(parsed.data.login);
+  if (!resolved.ok) {
+    return { ok: false, message: resolved.message };
+  }
+  const authEmail = resolved.email;
 
   const svc = createSupabaseServiceRoleClient();
   if (!svc) {
@@ -96,7 +103,7 @@ export async function createPartnerUserAction(
   }
 
   const { data, error } = await svc.auth.admin.createUser({
-    email: parsed.data.email,
+    email: authEmail,
     password: parsed.data.password,
     email_confirm: true,
     user_metadata: {
@@ -108,7 +115,7 @@ export async function createPartnerUserAction(
   if (error || !data.user) {
     const msg = error?.message?.toLowerCase() ?? "";
     if (msg.includes("already") || msg.includes("registered")) {
-      return { ok: false, message: "Diese E-Mail ist bereits registriert." };
+      return { ok: false, message: "Dieser Anmeldename bzw. diese E-Mail ist bereits registriert." };
     }
     return { ok: false, message: "Nutzer konnte nicht angelegt werden. Bitte Supabase-Logs prüfen." };
   }
@@ -127,6 +134,6 @@ export async function createPartnerUserAction(
 
   return {
     ok: true,
-    message: `Partner-Konto angelegt: ${parsed.data.email}. Zugangsdaten dem Partner sicher mitteilen.`,
+    message: `Partner-Konto angelegt (${authEmail}). Zum Login: Kurzname oder volle E-Mail wie angelegt; Zugangsdaten sicher mitteilen.`,
   };
 }

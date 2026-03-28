@@ -136,6 +136,16 @@ async function main() {
     });
   }
 
+  const partnerAuthDomain = vars.NEXT_PUBLIC_PARTNER_AUTH_EMAIL_DOMAIN?.trim();
+  if (partnerAuthDomain) {
+    items.push({
+      key: "NEXT_PUBLIC_PARTNER_AUTH_EMAIL_DOMAIN",
+      value: partnerAuthDomain,
+      type: "plain",
+      target: allTargets,
+    });
+  }
+
   const serviceRole = vars.SUPABASE_SERVICE_ROLE_KEY?.trim();
   if (serviceRole) {
     items.push({

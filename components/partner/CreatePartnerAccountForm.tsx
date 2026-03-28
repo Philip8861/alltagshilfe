@@ -29,7 +29,8 @@ export function CreatePartnerAccountForm() {
     >
       <h2 className="text-lg font-bold text-[#0F4F68]">Neues Partner-Konto anlegen</h2>
       <p className="text-sm text-neutral-600">
-        Es wird ein Supabase-Nutzer mit E-Mail/Passwort erstellt; das Profil in{" "}
+        Es wird ein Supabase-Nutzer mit Passwort erstellt (technisch mit E-Mail: Kurzname wird bei Bedarf mit der
+        konfigurierten Domain ergänzt). Das Profil in{" "}
         <code className="rounded bg-neutral-100 px-1 text-xs">partner_profiles</code> legt der Datenbank-Trigger an.
         Passwort dem Partner sicher übermitteln (nicht per unverschlüsselter E-Mail).
       </p>
@@ -40,13 +41,13 @@ export function CreatePartnerAccountForm() {
       />
       <div className="grid gap-5 sm:grid-cols-2">
         <div className="sm:col-span-2">
-          <label htmlFor="new-partner-email" className="block text-sm font-semibold text-[#0F4F68]">
-            E-Mail (Login)
+          <label htmlFor="new-partner-login" className="block text-sm font-semibold text-[#0F4F68]">
+            Anmeldename oder E-Mail
           </label>
           <input
-            id="new-partner-email"
-            name="email"
-            type="email"
+            id="new-partner-login"
+            name="login"
+            type="text"
             required
             autoComplete="off"
             disabled={pending}

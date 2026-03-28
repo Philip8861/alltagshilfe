@@ -1,7 +1,8 @@
 import { z } from "zod";
 
+/** Roh-Eingabe; technische E-Mail kommt aus resolvePartnerLoginToEmail(). */
 export const partnerLoginSchema = z.object({
-  email: z.string().trim().email("Bitte eine gültige E-Mail eingeben.").max(320),
+  login: z.string().trim().min(1, "Anmeldename oder E-Mail erforderlich.").max(320),
   password: z.string().min(1, "Passwort erforderlich.").max(256),
 });
 

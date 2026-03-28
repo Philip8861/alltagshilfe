@@ -82,7 +82,7 @@ export async function HomePartnerLoginBlock() {
               </div>
             ) : (
               <PartnerLoginForm
-                emailFieldLabel="E-Mail-Adresse (Anmeldename)"
+                loginFieldLabel="Anmeldename oder E-Mail"
                 formClassName="space-y-5 rounded-2xl border border-[#0F4F68]/12 bg-white p-6 shadow-sm sm:p-8"
               />
             )}

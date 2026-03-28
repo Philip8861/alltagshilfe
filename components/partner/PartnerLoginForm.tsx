@@ -6,17 +6,17 @@ import { checkPartnerLoginRateLimitAction } from "@/lib/actions/partner-auth";
 import { PartnerAuthStatusBox } from "@/components/partner/PartnerAuthStatusBox";
 import { createSupabaseBrowserClient } from "@/lib/supabase/client";
 import { partnerLoginSchema } from "@/lib/validations/partner";
+import { resolvePartnerLoginToEmail } from "@/lib/partner/resolve-partner-login-email";
 
 type PartnerLoginFormProps = {
   disabled?: boolean;
-  /** Standard: „E-Mail“; z. B. Startseite: Anmeldename-Hinweis (weiterhin E-Mail für Supabase). */
-  emailFieldLabel?: string;
+  loginFieldLabel?: string;
   formClassName?: string;
 };
 
 export function PartnerLoginForm({
   disabled,
-  emailFieldLabel = "E-Mail",
+  loginFieldLabel = "Anmeldename oder E-Mail",
   formClassName,
 }: PartnerLoginFormProps) {
   const router = useRouter();
@@ -34,12 +34,18 @@ export function PartnerLoginForm({
         setMessage(null);
         const fd = new FormData(e.currentTarget);
         const parsed = partnerLoginSchema.safeParse({
-          email: fd.get("email"),
+          login: fd.get("login"),
           password: fd.get("password"),
         });
         if (!parsed.success) {
           const first = parsed.error.flatten().fieldErrors;
-          setMessage(first.email?.[0] ?? first.password?.[0] ?? "Bitte Eingaben prüfen.");
+          setMessage(first.login?.[0] ?? first.password?.[0] ?? "Bitte Eingaben prüfen.");
+          return;
+        }
+
+        const resolved = resolvePartnerLoginToEmail(parsed.data.login);
+        if (!resolved.ok) {
+          setMessage(resolved.message);
           return;
         }
 
@@ -52,7 +58,7 @@ export function PartnerLoginForm({
           try {
             const supabase = createSupabaseBrowserClient();
             const { error } = await supabase.auth.signInWithPassword({
-              email: parsed.data.email,
+              email: resolved.email,
               password: parsed.data.password,
             });
             if (error) {
@@ -69,13 +75,13 @@ export function PartnerLoginForm({
     >
       <PartnerAuthStatusBox message={message} pending={pending} />
       <div>
-        <label htmlFor="partner-email" className="block text-sm font-semibold text-[#0F4F68]">
-          {emailFieldLabel}
+        <label htmlFor="partner-login" className="block text-sm font-semibold text-[#0F4F68]">
+          {loginFieldLabel}
         </label>
         <input
-          id="partner-email"
-          name="email"
-          type="email"
+          id="partner-login"
+          name="login"
+          type="text"
           autoComplete="username"
           required
           disabled={disabled || pending}
