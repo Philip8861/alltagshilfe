@@ -26,13 +26,21 @@ export default async function PartnerLoginPage() {
           className="mt-8 rounded-2xl border border-amber-200 bg-amber-50 p-6 text-sm text-amber-950"
           role="status"
         >
-          <p className="font-semibold">Hinweis für Entwicklung / Test</p>
+          <p className="font-semibold">Anmeldung: Supabase fehlt noch</p>
           <p className="mt-2">
-            Supabase ist noch nicht konfiguriert. Tragen Sie{" "}
-            <code className="rounded bg-white/80 px-1">NEXT_PUBLIC_SUPABASE_URL</code> und{" "}
-            <code className="rounded bg-white/80 px-1">NEXT_PUBLIC_SUPABASE_ANON_KEY</code> in{" "}
-            <code className="rounded bg-white/80 px-1">.env.local</code> ein und führen Sie das SQL aus{" "}
-            <code className="rounded bg-white/80 px-1">supabase/migrations/001_partner_portal.sql</code> aus.
+            In <code className="rounded bg-white/80 px-1">.env.local</code> müssen mindestens{" "}
+            <code className="rounded bg-white/80 px-1">NEXT_PUBLIC_SUPABASE_URL</code> und der vollständige{" "}
+            <code className="rounded bg-white/80 px-1">NEXT_PUBLIC_SUPABASE_ANON_KEY</code> (aus Supabase →
+            Project Settings → API, „anon“ oder „publishable“) stehen – beide Zeilen ohne Leerzeichen am Anfang.
+            Für das Speichern von Pflegebox-Abschlüssen zusätzlich{" "}
+            <code className="rounded bg-white/80 px-1">SUPABASE_SERVICE_ROLE_KEY</code> (nur serverseitig).
+          </p>
+          <p className="mt-2">
+            Datenbanktabellen: SQL aus{" "}
+            <code className="rounded bg-white/80 px-1">supabase/migrations/001_partner_portal.sql</code> im
+            Supabase-SQL-Editor ausführen. Danach Entwicklungsserver beenden und neu starten (
+            <code className="rounded bg-white/80 px-1">npm run dev</code>). Prüfen:{" "}
+            <code className="rounded bg-white/80 px-1">npm run check:partner-env</code>.
           </p>
         </div>
       ) : (

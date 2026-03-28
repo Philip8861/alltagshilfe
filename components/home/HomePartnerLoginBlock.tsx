@@ -54,11 +54,16 @@ export async function HomePartnerLoginBlock() {
                 className="rounded-2xl border border-amber-200 bg-amber-50/90 p-5 text-sm text-amber-950"
                 role="status"
               >
-                <p className="font-semibold">Anmeldung noch nicht aktiv</p>
+                <p className="font-semibold">Anmeldung: Supabase fehlt noch</p>
                 <p className="mt-2 text-amber-900/90">
-                  Tragen Sie in <code className="rounded bg-white/80 px-1 text-xs">.env.local</code> die Supabase-Keys
-                  ein und führen Sie das SQL aus <code className="rounded bg-white/80 px-1 text-xs">001_partner_portal.sql</code>{" "}
-                  aus. Prüfen mit <code className="rounded bg-white/80 px-1 text-xs">npm run check:partner-env</code>.
+                  In <code className="rounded bg-white/80 px-1 text-xs">.env.local</code>:{" "}
+                  <code className="rounded bg-white/80 px-1 text-xs">NEXT_PUBLIC_SUPABASE_URL</code> und den
+                  vollständigen <code className="rounded bg-white/80 px-1 text-xs">NEXT_PUBLIC_SUPABASE_ANON_KEY</code>{" "}
+                  (Supabase → API). Ohne ausgefüllten Anon-Key erscheint dieser Hinweis. Optional für Pflegebox:{" "}
+                  <code className="rounded bg-white/80 px-1 text-xs">SUPABASE_SERVICE_ROLE_KEY</code>. SQL:{" "}
+                  <code className="rounded bg-white/80 px-1 text-xs">001_partner_portal.sql</code>. Dann{" "}
+                  <code className="rounded bg-white/80 px-1 text-xs">npm run check:partner-env</code> und{" "}
+                  <code className="rounded bg-white/80 px-1 text-xs">npm run dev</code> neu starten.
                 </p>
               </div>
             ) : session?.profile ? (
