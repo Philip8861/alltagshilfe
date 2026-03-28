@@ -110,7 +110,9 @@ export function PartnerPasswordChangeForm() {
           disabled={pending}
           className="mt-1.5 w-full rounded-xl border border-neutral-200 px-4 py-3 text-neutral-900 outline-none ring-[#0F4F68] focus:ring-2 disabled:opacity-60"
         />
-        <p className="mt-1 text-xs text-neutral-500">Mindestens 10 Zeichen, Buchstabe und Ziffer.</p>
+        <p className="mt-1 text-xs text-neutral-500">
+          Mindestens 6 Zeichen, mind. ein Buchstabe, eine Ziffer und ein Sonderzeichen.
+        </p>
       </div>
       <div>
         <label htmlFor="pw-confirm" className="block text-sm font-semibold text-[#0F4F68]">

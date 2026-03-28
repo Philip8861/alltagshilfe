@@ -78,6 +78,7 @@ export async function createPartnerUserAction(
   const recruited = String(formData.get("recruited_by") ?? "").trim();
   const parsed = createPartnerUserSchema.safeParse({
     email: formData.get("email"),
+    salutation: formData.get("salutation"),
     first_name: formData.get("first_name"),
     last_name: formData.get("last_name"),
     phone: formData.get("phone"),
@@ -93,6 +94,7 @@ export async function createPartnerUserAction(
       ok: false,
       message:
         e.email?.[0] ??
+        e.salutation?.[0] ??
         e.first_name?.[0] ??
         e.last_name?.[0] ??
         e.phone?.[0] ??
@@ -141,6 +143,7 @@ export async function createPartnerUserAction(
   const profileRow = {
     id: uid,
     role,
+    salutation: parsed.data.salutation,
     first_name: parsed.data.first_name,
     last_name: parsed.data.last_name,
     display_name: displayName,
@@ -159,11 +162,12 @@ export async function createPartnerUserAction(
     return {
       ok: false,
       message:
-        "Nutzer wurde in Auth angelegt, partner_profiles konnte nicht geschrieben werden. Migration 004_partner_profiles_admin_fields.sql und RLS prüfen.",
+        "Nutzer wurde in Auth angelegt, partner_profiles konnte nicht geschrieben werden. Migrationen 004_partner_profiles_admin_fields.sql, 006_partner_salutation.sql und RLS prüfen.",
     };
   }
 
   const fullUpdate = {
+    salutation: parsed.data.salutation,
     first_name: parsed.data.first_name,
     last_name: parsed.data.last_name,
     display_name: displayName,

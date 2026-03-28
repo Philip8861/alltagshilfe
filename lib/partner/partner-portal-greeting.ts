@@ -1,5 +1,25 @@
 import type { PartnerProfile } from "@/lib/partner/types";
 
+/** Formale Ansprache für Begrüßung (Nachname bevorzugt, sonst Vorname). */
+function ansprechpartnerKurzname(profile: PartnerProfile, email: string | undefined): string {
+  const ln = profile.last_name?.trim();
+  const fn = profile.first_name?.trim();
+  if (ln) return ln;
+  if (fn) return fn;
+  return partnerPortalGreetingName(profile, email);
+}
+
+/**
+ * Begrüßungszeile im Partnerportal-Kopf.
+ * Mit Anrede (Migration 006): „Willkommen, Herr/Frau …“.
+ */
+export function partnerPortalWelcomeLine(profile: PartnerProfile, email: string | undefined): string {
+  const name = ansprechpartnerKurzname(profile, email);
+  if (profile.salutation === "herr") return `Willkommen, Herr ${name}`;
+  if (profile.salutation === "frau") return `Willkommen, Frau ${name}`;
+  return `Willkommen, ${partnerPortalGreetingName(profile, email)}`;
+}
+
 /** Reine Logik, server- und clientnutzbar (nicht in „use client“-Dateien exportieren). */
 export function partnerPortalGreetingName(
   profile: PartnerProfile,

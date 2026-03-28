@@ -71,6 +71,22 @@ export function CreatePartnerAccountForm() {
           </div>
         </div>
       ) : null}
+      <fieldset className="space-y-2">
+        <legend className="text-sm font-semibold text-[#0F4F68]">
+          Anrede <span className="text-red-700">*</span>
+        </legend>
+        <p className="text-xs text-neutral-500">Für die Begrüßung im Partnerportal („Willkommen, Herr/Frau …“).</p>
+        <div className="flex flex-wrap gap-4 text-sm">
+          <label className="flex cursor-pointer items-center gap-2">
+            <input type="radio" name="salutation" value="herr" required disabled={pending} className="h-4 w-4" />
+            Herr
+          </label>
+          <label className="flex cursor-pointer items-center gap-2">
+            <input type="radio" name="salutation" value="frau" disabled={pending} className="h-4 w-4" />
+            Frau
+          </label>
+        </div>
+      </fieldset>
       <div className="grid gap-5 sm:grid-cols-2">
         <div className="sm:col-span-2">
           <label htmlFor="new-partner-email" className="block text-sm font-semibold text-[#0F4F68]">

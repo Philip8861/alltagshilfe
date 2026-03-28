@@ -54,7 +54,7 @@ export default async function PartnerAdminPage() {
         svc
           .from("partner_profiles")
           .select(
-            "id, display_name, organization_name, role, created_at, updated_at, first_name, last_name, recruited_by, phone, responsibility_areas, password_changed_at",
+            "id, display_name, organization_name, role, created_at, updated_at, salutation, first_name, last_name, recruited_by, phone, responsibility_areas, password_changed_at",
           )
           .order("created_at", { ascending: false }),
         svc
@@ -151,10 +151,11 @@ export default async function PartnerAdminPage() {
             <tbody className="divide-y divide-neutral-100">
               {!svc || profiles.length === 0 ? (
                 <tr>
-                  <td colSpan={12} className="px-4 py-8 text-center text-neutral-600">
-                    Keine Partner-Profile gefunden. SQL-Migration{" "}
-                    <code className="rounded bg-neutral-100 px-1 text-xs">004_partner_profiles_admin_fields.sql</code>{" "}
-                    in Supabase ausführen, falls Spalten fehlen.
+                  <td colSpan={13} className="px-4 py-8 text-center text-neutral-600">
+                    Keine Partner-Profile gefunden. SQL-Migrationen{" "}
+                    <code className="rounded bg-neutral-100 px-1 text-xs">004_partner_profiles_admin_fields.sql</code>,{" "}
+                    <code className="rounded bg-neutral-100 px-1 text-xs">006_partner_salutation.sql</code> in Supabase
+                    ausführen, falls Spalten fehlen.
                   </td>
                 </tr>
               ) : (
@@ -172,6 +173,9 @@ export default async function PartnerAdminPage() {
                         <span className="break-all font-medium text-neutral-900">{email}</span>
                       </td>
                       <td className="px-3 py-3 text-neutral-800">{name}</td>
+                      <td className="whitespace-nowrap px-3 py-3 text-neutral-700">
+                        {p.salutation === "herr" ? "Herr" : p.salutation === "frau" ? "Frau" : "—"}
+                      </td>
                       <td className="max-w-[10rem] px-3 py-3 text-neutral-700">{p.organization_name ?? "—"}</td>
                       <td className="whitespace-nowrap px-3 py-3 text-neutral-700">{p.phone ?? "—"}</td>
                       <td className="max-w-[10rem] px-3 py-3 text-neutral-700">{p.recruited_by ?? "—"}</td>

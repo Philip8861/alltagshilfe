@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { PartnerPortalShell } from "@/components/partner/PartnerPortalShell";
-import { partnerPortalGreetingName } from "@/lib/partner/partner-portal-greeting";
+import { partnerPortalWelcomeLine } from "@/lib/partner/partner-portal-greeting";
 import { requirePartnerLogin } from "@/lib/partner/auth";
 
 export const metadata: Metadata = {
@@ -10,6 +10,6 @@ export const metadata: Metadata = {
 
 export default async function PartnerPortalLayout({ children }: { children: React.ReactNode }) {
   const { profile, email } = await requirePartnerLogin();
-  const greetingName = partnerPortalGreetingName(profile, email);
-  return <PartnerPortalShell greetingName={greetingName}>{children}</PartnerPortalShell>;
+  const welcomeLine = partnerPortalWelcomeLine(profile, email);
+  return <PartnerPortalShell welcomeLine={welcomeLine}>{children}</PartnerPortalShell>;
 }

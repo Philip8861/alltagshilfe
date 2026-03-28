@@ -175,6 +175,9 @@ export async function ensurePartnerProfileWithUserClient(
     const meta = user.user_metadata as Record<string, unknown> | null | undefined;
     const displayName = typeof meta?.display_name === "string" ? meta.display_name.trim() : undefined;
     const orgName = typeof meta?.organization_name === "string" ? meta.organization_name.trim() : undefined;
+    const rawSalutation = meta?.salutation;
+    const salutation =
+      rawSalutation === "herr" || rawSalutation === "frau" ? rawSalutation : undefined;
     const firstName = typeof meta?.first_name === "string" ? meta.first_name.trim() : undefined;
     const lastName = typeof meta?.last_name === "string" ? meta.last_name.trim() : undefined;
     const phone = typeof meta?.phone === "string" ? meta.phone.trim() : undefined;
@@ -189,6 +192,7 @@ export async function ensurePartnerProfileWithUserClient(
       role: "partner";
       display_name?: string;
       organization_name?: string;
+      salutation?: "herr" | "frau";
       first_name?: string;
       last_name?: string;
       phone?: string;
@@ -196,6 +200,7 @@ export async function ensurePartnerProfileWithUserClient(
       responsibility_areas?: string[];
     } = { id: user.id, role: "partner" };
     if (displayName) payload.display_name = displayName;
+    if (salutation) payload.salutation = salutation;
     if (orgName) payload.organization_name = orgName;
     if (firstName) payload.first_name = firstName;
     if (lastName) payload.last_name = lastName;

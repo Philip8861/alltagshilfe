@@ -1,5 +1,7 @@
 export type PartnerRole = "partner" | "admin";
 
+export type PartnerSalutation = "herr" | "frau";
+
 export type PartnerProfile = {
   id: string;
   display_name: string | null;
@@ -7,6 +9,8 @@ export type PartnerProfile = {
   role: PartnerRole;
   created_at?: string;
   updated_at?: string;
+  /** Anrede für Begrüßung „Willkommen, Herr/Frau …“ (Migration 006). */
+  salutation?: PartnerSalutation | null;
   first_name?: string | null;
   last_name?: string | null;
   recruited_by?: string | null;

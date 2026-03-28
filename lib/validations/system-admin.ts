@@ -9,6 +9,7 @@ const responsibilitySlug = z.enum([
 
 export const createPartnerUserSchema = z.object({
   email: z.string().trim().email("Gültige E-Mail-Adresse erforderlich.").max(320),
+  salutation: z.enum(["herr", "frau"], { message: "Anrede wählen (Herr oder Frau)." }),
   first_name: z.string().trim().min(1, "Vorname erforderlich.").max(80),
   last_name: z.string().trim().min(1, "Nachname erforderlich.").max(80),
   phone: z.string().trim().min(5, "Telefonnummer erforderlich.").max(40),
