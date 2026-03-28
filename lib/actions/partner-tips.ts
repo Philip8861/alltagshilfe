@@ -15,7 +15,8 @@ export async function submitPartnerTipAction(raw: unknown): Promise<SubmitPartne
 
   const parsed = partnerTipSubmissionSchema.safeParse(raw);
   if (!parsed.success) {
-    return { ok: false, message: "Bitte alle Pflichtfelder ausfüllen." };
+    const issue = parsed.error.issues[0];
+    return { ok: false, message: issue?.message || "Bitte alle Pflichtfelder ausfüllen." };
   }
 
   try {

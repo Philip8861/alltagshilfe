@@ -13,13 +13,13 @@ export const SERVICE_SLUG_ORDER: PartnerResponsibilitySlug[] = [
 
 export const SERVICE_SLUG_BADGE_CLASS: Record<PartnerResponsibilitySlug, string> = {
   betriebliche_pflegeberatung:
-    "border-[#0F4F68]/35 bg-[#E8F4F7] text-[#0a3d52] ring-1 ring-[#0F4F68]/15",
+    "border-sky-300/80 bg-sky-50 text-sky-900 ring-1 ring-sky-200/80",
   pflegehilfsmittel:
-    "border-[#F78F2E]/40 bg-[#FFF5ED] text-[#9a4a0a] ring-1 ring-[#F78F2E]/20",
+    "border-cyan-300/80 bg-cyan-50 text-cyan-900 ring-1 ring-cyan-200/80",
   hauswirtschaft_betreuung:
-    "border-emerald-300/60 bg-emerald-50 text-emerald-950 ring-1 ring-emerald-200/80",
+    "border-indigo-300/80 bg-indigo-50 text-indigo-900 ring-1 ring-indigo-200/80",
   pflegeberatung:
-    "border-violet-300/70 bg-violet-50 text-violet-950 ring-1 ring-violet-200/80",
+    "border-fuchsia-300/80 bg-fuchsia-50 text-fuchsia-900 ring-1 ring-fuchsia-200/80",
 };
 
 export function serviceBadgeClass(slug: string): string {

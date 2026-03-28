@@ -1,14 +1,38 @@
 import { z } from "zod";
 
-const betriebPayloadSchema = z.object({
-  ansprechpartner: z.string().trim().min(1, "Ansprechpartner erforderlich.").max(120),
-  firmenposition: z.string().trim().min(1, "Firmenposition erforderlich.").max(120),
-  email: z.string().trim().email("Gültige E-Mail.").max(320),
-  telefon: z.string().trim().min(5, "Telefonnummer erforderlich.").max(40),
-  firmenname: z.string().trim().min(1, "Firmenname erforderlich.").max(200),
-  firmensitz: z.string().trim().min(1, "Firmensitz erforderlich.").max(200),
-  notizen: z.string().trim().max(2000).optional(),
-});
+const betriebPayloadSchema = z
+  .object({
+    ansprechpartner: z.string().trim().min(1, "Ansprechpartner erforderlich.").max(120),
+    firmenposition: z.string().trim().max(120).optional(),
+    email: z.preprocess(
+      (val) => {
+        if (val === undefined || val === null) return undefined;
+        const s = String(val).trim();
+        return s.length === 0 ? undefined : s;
+      },
+      z.string().email("Gültige E-Mail.").max(320).optional(),
+    ),
+    telefon: z.preprocess(
+      (val) => {
+        if (val === undefined || val === null) return undefined;
+        const s = String(val).trim();
+        return s.length === 0 ? undefined : s;
+      },
+      z.string().min(5, "Telefonnummer zu kurz.").max(40).optional(),
+    ),
+    firmenname: z.string().trim().min(1, "Firmenname erforderlich.").max(200),
+    firmensitz: z.string().trim().max(200).optional(),
+    notizen: z.string().trim().max(2000).optional(),
+  })
+  .superRefine((val, ctx) => {
+    if (!val.email && !val.telefon) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["email"],
+        message: "Bitte mindestens E-Mail oder Telefonnummer angeben.",
+      });
+    }
+  });
 
 const standardPayloadSchema = z.object({
   vorname: z.string().trim().min(1, "Vorname erforderlich.").max(80),

@@ -6,6 +6,7 @@ import { PartnerAnimatedEuro } from "@/components/partner/PartnerAnimatedEuro";
 import { PartnerTipModal } from "@/components/partner/PartnerTipModal";
 import { tipPayloadNotiz } from "@/lib/partner/partner-tip-notiz";
 import { tipTableFields } from "@/lib/partner/partner-tip-table-fields";
+import { serviceBadgeClass } from "@/lib/partner/service-slug-styles";
 import {
   PARTNER_RESPONSIBILITY_SLUGS,
   PARTNER_RESPONSIBILITY_LABELS,
@@ -86,6 +87,7 @@ export function PartnerDashboardClient({
       return {
         id: t.id,
         typ,
+        typeClass: serviceBadgeClass(t.service_slug),
         vorname: f.vorname,
         nachname: f.nachname,
         firma: f.firma,
@@ -309,7 +311,11 @@ export function PartnerDashboardClient({
                         <span className="text-neutral-400">—</span>
                       )}
                     </td>
-                    <td className="whitespace-nowrap px-3 py-3 font-medium text-neutral-900 sm:px-4">{r.typ}</td>
+                    <td className="whitespace-nowrap px-3 py-3 sm:px-4">
+                      <span className={`inline-flex rounded-full border px-2.5 py-1 text-xs font-semibold ${r.typeClass}`}>
+                        {r.typ}
+                      </span>
+                    </td>
                   </tr>
                 ))
               )}
