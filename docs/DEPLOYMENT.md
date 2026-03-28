@@ -39,14 +39,17 @@ git push -u origin main
    - **Partnerportal / Supabase** (sonst funktioniert der Login online nicht): dieselben Werte wie lokal in `.env.local`:
      - `NEXT_PUBLIC_SUPABASE_URL`
      - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
-     - Optional (nur wenn Sie die Pflegebox-Abschluss-API nutzen): `SUPABASE_SERVICE_ROLE_KEY` — nur serverseitig, niemals als `NEXT_PUBLIC_`.
+     - `SUPABASE_SERVICE_ROLE_KEY` — nur serverseitig (Verwaltung „Partner anlegen“, Pflegebox-API); niemals als `NEXT_PUBLIC_`.
+   - **Partner-Verwaltung** (`/partner/admin-login`): `PARTNER_SYSTEM_ADMIN_USER`, `PARTNER_SYSTEM_ADMIN_PASSWORD`, `PARTNER_SYSTEM_ADMIN_SECRET` (≥24 Zeichen; Secret z. B. mit `npm run partner:admin-secret` erzeugen).
 6. **Deploy** klicken.
+
+**Ausführliche Schritt-für-Schritt-Anleitung** (Supabase, `.env.local`, Sign-ups abschalten, Tests): [docs/PARTNER-EINRICHTUNG.md](PARTNER-EINRICHTUNG.md).
 
 **Automatisch aus `.env.local` nach Vercel übernehmen (CLI):** Einmal [Vercel-Token](https://vercel.com/account/tokens) erzeugen, im Projektroot `npx vercel link` ausführen (falls noch nicht geschehen), dann z. B. in PowerShell:
 
 `$env:VERCEL_TOKEN="IHR_TOKEN"; npm run vercel:push-partner-env`
 
-Das Skript setzt/aktualisiert die Supabase-Variablen (und `NEXT_PUBLIC_SITE_URL`, falls in `.env.local` gesetzt). Anschließend in Vercel ein **Redeploy** auslösen oder erneut pushen.
+Das Skript setzt/aktualisiert die Supabase-Variablen, optional `NEXT_PUBLIC_SITE_URL`, `SUPABASE_SERVICE_ROLE_KEY` und — wenn alle drei Werte in `.env.local` stehen — `PARTNER_SYSTEM_ADMIN_USER`, `PARTNER_SYSTEM_ADMIN_PASSWORD`, `PARTNER_SYSTEM_ADMIN_SECRET`. Anschließend in Vercel ein **Redeploy** auslösen oder erneut pushen.
 
 Nach dem ersten Build erhalten Sie eine URL wie `https://homepage-xxx.vercel.app`.
 
@@ -82,7 +85,7 @@ In Vercel: **Project → Settings → Domains** → Domain hinzufügen (z. B. `w
 
 - [ ] `npm run build` läuft lokal ohne Fehler.
 - [ ] In der Hosting-Plattform **Environment Variable** `NEXT_PUBLIC_SITE_URL` auf die finale URL setzen (z. B. `https://ihr-projekt.vercel.app`).
-- [ ] **Partnerportal:** `NEXT_PUBLIC_SUPABASE_URL` und `NEXT_PUBLIC_SUPABASE_ANON_KEY` in der Hosting-Plattform setzen (oder `npm run vercel:push-partner-env` mit Token, siehe oben).
+- [ ] **Partnerportal:** `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY` und die drei `PARTNER_SYSTEM_ADMIN_*` in der Hosting-Plattform setzen (oder `npm run vercel:push-partner-env` mit Token, siehe oben). Details: [PARTNER-EINRICHTUNG.md](PARTNER-EINRICHTUNG.md).
 - [ ] Optional: Eigene Domain in der Plattform eintragen und DNS wie beschrieben konfigurieren.
 
 ---

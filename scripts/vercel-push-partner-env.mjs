@@ -6,6 +6,9 @@
  * 2. Projekt: einmal `npx vercel link` im Projektroot (legt .vercel/project.json an),
  *    oder VERCEL_PROJECT_ID und optional VERCEL_TEAM_ID setzen.
  *
+ * Überträgt außerdem PARTNER_SYSTEM_ADMIN_USER, PASSWORD, SECRET, wenn alle drei
+ * in .env.local gesetzt sind (SECRET min. 24 Zeichen) — sonst Hinweis ohne Abbruch.
+ *
  * Aufruf: npm run vercel:push-partner-env
  */
 import fs from "fs";
@@ -143,7 +146,46 @@ async function main() {
     });
   } else {
     console.warn(
-      "Hinweis: SUPABASE_SERVICE_ROLE_KEY ist leer — wird nicht nach Vercel übertragen (Partner-Login reicht mit URL + Anon-Key).",
+      "Hinweis: SUPABASE_SERVICE_ROLE_KEY ist leer — wird nicht nach Vercel übertragen. Ohne Service Role funktioniert /partner/admin (Partner anlegen) online nicht.",
+    );
+  }
+
+  const adminUser = vars.PARTNER_SYSTEM_ADMIN_USER?.trim();
+  const adminPass = vars.PARTNER_SYSTEM_ADMIN_PASSWORD?.trim();
+  const adminSecret = vars.PARTNER_SYSTEM_ADMIN_SECRET?.trim();
+  const anyAdmin = Boolean(adminUser || adminPass || adminSecret);
+  const allAdmin = Boolean(adminUser && adminPass && adminSecret);
+
+  if (allAdmin) {
+    if (adminSecret.length < 24) {
+      console.error("PARTNER_SYSTEM_ADMIN_SECRET muss mindestens 24 Zeichen haben.");
+      process.exit(1);
+    }
+    items.push({
+      key: "PARTNER_SYSTEM_ADMIN_USER",
+      value: adminUser,
+      type: "encrypted",
+      target: serverTargets,
+    });
+    items.push({
+      key: "PARTNER_SYSTEM_ADMIN_PASSWORD",
+      value: adminPass,
+      type: "sensitive",
+      target: serverTargets,
+    });
+    items.push({
+      key: "PARTNER_SYSTEM_ADMIN_SECRET",
+      value: adminSecret,
+      type: "sensitive",
+      target: serverTargets,
+    });
+  } else if (anyAdmin) {
+    console.warn(
+      "Hinweis: PARTNER_SYSTEM_ADMIN_* unvollständig — Verwaltungs-Variablen werden nicht nach Vercel gepusht (alle drei müssen gesetzt sein).",
+    );
+  } else {
+    console.warn(
+      "Hinweis: keine PARTNER_SYSTEM_ADMIN_* in .env.local — /partner/admin-login online erst nach manuellem Setzen in Vercel oder Ergänzung der .env.local.",
     );
   }
 
