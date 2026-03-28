@@ -22,6 +22,7 @@ export function PartnerLoginForm({
   const router = useRouter();
   const [pending, startTransition] = useTransition();
   const [message, setMessage] = useState<string | null>(null);
+  const [showPassword, setShowPassword] = useState(false);
 
   return (
     <form
@@ -95,15 +96,48 @@ export function PartnerLoginForm({
         <label htmlFor="partner-password" className="block text-sm font-semibold text-[#0F4F68]">
           Passwort
         </label>
-        <input
-          id="partner-password"
-          name="password"
-          type="password"
-          autoComplete="current-password"
-          required
-          disabled={disabled || pending}
-          className="mt-2 w-full rounded-xl border border-neutral-200 px-4 py-3 text-neutral-900 outline-none ring-[#0F4F68] focus:ring-2 disabled:opacity-60"
-        />
+        <div className="relative mt-2">
+          <input
+            id="partner-password"
+            name="password"
+            type={showPassword ? "text" : "password"}
+            autoComplete="current-password"
+            required
+            disabled={disabled || pending}
+            className="w-full rounded-xl border border-neutral-200 py-3 pl-4 pr-12 text-neutral-900 outline-none ring-[#0F4F68] focus:ring-2 disabled:opacity-60"
+          />
+          <button
+            type="button"
+            className="absolute right-1 top-1/2 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-lg text-[#0F4F68]/70 transition hover:bg-[#0F4F68]/[0.08] hover:text-[#0F4F68] disabled:opacity-40"
+            onClick={() => setShowPassword((v) => !v)}
+            disabled={disabled || pending}
+            aria-label={showPassword ? "Passwort verbergen" : "Passwort anzeigen"}
+            aria-pressed={showPassword}
+          >
+            {showPassword ? (
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden>
+                <path
+                  d="M3 3l18 18M10.58 10.58a2 2 0 002.83 2.83M9.88 9.88A3 3 0 0112 7c4 0 7 5 7 5a12.4 12.4 0 01-2.57 3.18M6.12 6.12A12.4 12.4 0 003 12s3 5 7 5c.94 0 1.83-.15 2.65-.42"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            ) : (
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden>
+                <path
+                  d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+                <circle cx="12" cy="12" r="3" stroke="currentColor" strokeWidth="2" />
+              </svg>
+            )}
+          </button>
+        </div>
       </div>
       <button
         type="submit"
