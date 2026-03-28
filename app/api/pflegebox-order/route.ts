@@ -52,7 +52,11 @@ export async function POST(request: Request) {
     return NextResponse.json({ ok: false, error: "validation" }, { status: 400 });
   }
 
-  const partnerId = await resolvePartnerProfileId(service, parsed.data.partnerRef);
+  const partnerRefRaw = (parsed.data.partnerRef ?? "").trim();
+  const partnerId = await resolvePartnerProfileId(service, partnerRefRaw);
+  if (partnerRefRaw.length > 0 && !partnerId) {
+    return NextResponse.json({ ok: false, error: "invalid_partner_code" }, { status: 400 });
+  }
 
   const externalRef = `PB-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 10)}`;
 
@@ -60,7 +64,7 @@ export async function POST(request: Request) {
     version: 2,
     cartLines: parsed.data.cartLines,
     totalBudgetUsed: parsed.data.totalBudgetUsed,
-    partnerRefRaw: (parsed.data.partnerRef ?? "").trim() || null,
+    partnerRefRaw: partnerRefRaw || null,
     contact: {
       firstName: parsed.data.contact.firstName,
       lastName: parsed.data.contact.lastName,
@@ -99,7 +103,7 @@ export async function POST(request: Request) {
       notiz,
       pflegebox_order_id: orderId,
       external_reference: externalRef,
-      partner_referral_raw: (parsed.data.partnerRef ?? "").trim() || null,
+      partner_referral_raw: partnerRefRaw || null,
     };
     const { error: tipErr } = await service.from("partner_tip_submissions").insert({
       partner_id: partnerId,

@@ -93,9 +93,6 @@ export function PartnerPortalShell({ children }: Props) {
               <path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01" strokeLinecap="round" />
             </svg>
           </Link>
-        </nav>
-
-        <div className="flex shrink-0 flex-row items-center gap-1 md:flex-col md:gap-2">
           <Link
             href="/partner/einstellungen"
             className={iconButtonClass(settingsActive)}
@@ -106,7 +103,7 @@ export function PartnerPortalShell({ children }: Props) {
             <SettingsGearIcon />
           </Link>
           <PartnerLogoutButton variant="sidebar" />
-        </div>
+        </nav>
       </aside>
 
       <main className="order-1 min-w-0 flex-1 bg-[#FAFBFC] pb-[4.5rem] md:pb-0">

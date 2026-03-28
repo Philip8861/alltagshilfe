@@ -983,7 +983,9 @@ document.addEventListener("DOMContentLoaded", () => {
           if (res.status === 503 || data.error === "not_configured") {
             msg = "Der Speicherdienst ist noch nicht eingerichtet. Bitte kontaktieren Sie uns telefonisch.";
           }
-          if (res.status === 400) {
+          if (res.status === 400 && data.error === "invalid_partner_code") {
+            msg = "Der eingegebene Partner-Code ist ungültig. Bitte prüfen Sie den Code.";
+          } else if (res.status === 400) {
             msg =
               "Bitte Vor- und Nachname ausfüllen, die Datenschutzerklärung bestätigen und prüfen, ob Ihre Pflegebox Artikel enthält.";
           }
