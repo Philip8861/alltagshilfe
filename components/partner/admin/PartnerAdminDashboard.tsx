@@ -40,6 +40,17 @@ type OrderRow = {
 };
 
 type SortDir = "asc" | "desc";
+type AdminSection = "auftraege" | "anlegen" | "liste" | "statistik";
+type StatSortKey =
+  | "name"
+  | "email"
+  | "profile"
+  | "tipsTotal"
+  | "tipsNeu"
+  | "tipsBearbeitung"
+  | "tipsErledigt"
+  | "tipsAbgelehnt"
+  | "boxOrders";
 
 type Props = {
   hasServiceRole: boolean;
@@ -76,14 +87,35 @@ function SortButton({
   );
 }
 
-function shortContact(s: Record<string, unknown> | null): string {
-  if (!s?.contact || typeof s.contact !== "object") return "—";
-  const c = s.contact as Record<string, unknown>;
-  const fn = typeof c.firstName === "string" ? c.firstName : "";
-  const ln = typeof c.lastName === "string" ? c.lastName : "";
-  const em = typeof c.email === "string" ? c.email : "";
-  const t = `${fn} ${ln}`.trim();
-  return t ? `${t} (${em})` : em || "—";
+function SectionNavTile({
+  title,
+  description,
+  active,
+  onSelect,
+}: {
+  title: string;
+  description: string;
+  active: boolean;
+  onSelect: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onSelect}
+      aria-current={active ? "page" : undefined}
+      className={[
+        "group relative flex min-h-[5.5rem] flex-col justify-center rounded-2xl border-2 px-5 py-4 text-left transition-all duration-200 sm:min-h-[6.25rem] sm:px-6 sm:py-5",
+        active
+          ? "border-[#0F4F68] bg-gradient-to-br from-[#0F4F68] to-[#0c3d52] text-white shadow-[0_12px_40px_-12px_rgba(15,79,104,0.55)] ring-2 ring-[#0F4F68]/20"
+          : "border-[#0F4F68]/12 bg-white text-[#0F4F68] shadow-sm hover:border-[#0F4F68]/28 hover:shadow-md",
+      ].join(" ")}
+    >
+      <span className={`text-base font-bold sm:text-lg ${active ? "" : "group-hover:text-[#0c3d52]"}`}>{title}</span>
+      <span className={`mt-1 text-xs leading-snug sm:text-sm ${active ? "text-white/85" : "text-neutral-600"}`}>
+        {description}
+      </span>
+    </button>
+  );
 }
 
 function partnerPasswordNote(profile: PartnerProfile): string {
@@ -136,20 +168,32 @@ function compareNum(a: number, b: number, dir: SortDir): number {
   return dir === "asc" ? a - b : b - a;
 }
 
+type PartnerStatRow = {
+  profile: PartnerProfile;
+  email: string;
+  tipsTotal: number;
+  tipsNeu: number;
+  tipsBearbeitung: number;
+  tipsErledigt: number;
+  tipsAbgelehnt: number;
+  boxOrders: number;
+  lastSignIn: string | null;
+};
+
 export function PartnerAdminDashboard({ hasServiceRole, tips, orders, profiles, authById }: Props) {
+  const [section, setSection] = useState<AdminSection>("auftraege");
   const [editProfile, setEditProfile] = useState<PartnerProfile | null>(null);
-  const [showCreate, setShowCreate] = useState(false);
 
   const [tipSort, setTipSort] = useState<{ key: string; dir: SortDir }>({
     key: "created_at",
     dir: "desc",
   });
-  const [orderSort, setOrderSort] = useState<{ key: string; dir: SortDir }>({
+  const [partnerSort, setPartnerSort] = useState<{ key: string; dir: SortDir }>({
     key: "created_at",
     dir: "desc",
   });
-  const [partnerSort, setPartnerSort] = useState<{ key: string; dir: SortDir }>({
-    key: "created_at",
+  const [statSort, setStatSort] = useState<{ key: StatSortKey; dir: SortDir }>({
+    key: "tipsTotal",
     dir: "desc",
   });
 
@@ -194,29 +238,6 @@ export function PartnerAdminDashboard({ hasServiceRole, tips, orders, profiles, 
     return rows;
   }, [tips, tipSort, partnerDisplay]);
 
-  const sortedOrders = useMemo(() => {
-    const rows = [...orders];
-    const { key, dir } = orderSort;
-    rows.sort((a, b) => {
-      if (key === "created_at") {
-        return compareNum(new Date(a.created_at).getTime(), new Date(b.created_at).getTime(), dir);
-      }
-      if (key === "reference") {
-        return compareStr(a.external_reference ?? a.id, b.external_reference ?? b.id, dir);
-      }
-      if (key === "status") {
-        return compareStr(a.status, b.status, dir);
-      }
-      if (key === "partner") {
-        const pa = a.partner_id ? partnerDisplay(a.partner_id).name : "";
-        const pb = b.partner_id ? partnerDisplay(b.partner_id).name : "";
-        return compareStr(pa, pb, dir);
-      }
-      return 0;
-    });
-    return rows;
-  }, [orders, orderSort, partnerDisplay]);
-
   const sortedProfiles = useMemo(() => {
     const rows = [...profiles];
     const { key, dir } = partnerSort;
@@ -242,13 +263,82 @@ export function PartnerAdminDashboard({ hasServiceRole, tips, orders, profiles, 
     return rows;
   }, [profiles, partnerSort, authById]);
 
+  const globalStats = useMemo(() => {
+    const partners = profiles.filter((p) => p.role === "partner").length;
+    const admins = profiles.filter((p) => p.role === "admin").length;
+    const tipsByStatus: Record<PartnerTipAdminStatus, number> = {
+      neu: 0,
+      in_bearbeitung: 0,
+      erledigt: 0,
+      abgelehnt: 0,
+    };
+    for (const t of tips) {
+      tipsByStatus[t.admin_status] += 1;
+    }
+    const boxTotal = orders.length;
+    const boxUnassigned = orders.filter((o) => !o.partner_id).length;
+    return { partners, admins, totalProfiles: profiles.length, tipsByStatus, tipsTotal: tips.length, boxTotal, boxUnassigned };
+  }, [profiles, tips, orders]);
+
+  const partnerStatRows: PartnerStatRow[] = useMemo(() => {
+    const tipsByPartner = new Map<string, PartnerTipSubmissionRow[]>();
+    for (const t of tips) {
+      const list = tipsByPartner.get(t.partner_id) ?? [];
+      list.push(t);
+      tipsByPartner.set(t.partner_id, list);
+    }
+    const ordersByPartner = new Map<string, number>();
+    for (const o of orders) {
+      if (o.partner_id) {
+        ordersByPartner.set(o.partner_id, (ordersByPartner.get(o.partner_id) ?? 0) + 1);
+      }
+    }
+    return profiles.map((p) => {
+      const ts = tipsByPartner.get(p.id) ?? [];
+      const neu = ts.filter((x) => x.admin_status === "neu").length;
+      const inB = ts.filter((x) => x.admin_status === "in_bearbeitung").length;
+      const erl = ts.filter((x) => x.admin_status === "erledigt").length;
+      const abg = ts.filter((x) => x.admin_status === "abgelehnt").length;
+      const last = authById[p.id]?.last_sign_in_at ?? null;
+      return {
+        profile: p,
+        email: authById[p.id]?.email ?? "—",
+        tipsTotal: ts.length,
+        tipsNeu: neu,
+        tipsBearbeitung: inB,
+        tipsErledigt: erl,
+        tipsAbgelehnt: abg,
+        boxOrders: ordersByPartner.get(p.id) ?? 0,
+        lastSignIn: last,
+      };
+    });
+  }, [profiles, tips, orders, authById]);
+
+  const sortedStatRows = useMemo(() => {
+    const rows = [...partnerStatRows];
+    const { key, dir } = statSort;
+    const mul = dir === "asc" ? 1 : -1;
+    rows.sort((a, b) => {
+      if (key === "name") {
+        const na = [a.profile.first_name, a.profile.last_name].filter(Boolean).join(" ");
+        const nb = [b.profile.first_name, b.profile.last_name].filter(Boolean).join(" ");
+        return mul * na.localeCompare(nb, "de", { sensitivity: "base" });
+      }
+      if (key === "email") {
+        return mul * a.email.localeCompare(b.email, "de", { sensitivity: "base" });
+      }
+      if (key === "profile") {
+        return mul * (new Date(a.profile.created_at ?? 0).getTime() - new Date(b.profile.created_at ?? 0).getTime());
+      }
+      const va = a[key] as number;
+      const vb = b[key] as number;
+      return mul * (va - vb);
+    });
+    return rows;
+  }, [partnerStatRows, statSort]);
+
   const toggleTipSort = (key: string) => {
     setTipSort((s) =>
-      s.key === key ? { key, dir: s.dir === "asc" ? "desc" : "asc" } : { key, dir: "asc" },
-    );
-  };
-  const toggleOrderSort = (key: string) => {
-    setOrderSort((s) =>
       s.key === key ? { key, dir: s.dir === "asc" ? "desc" : "asc" } : { key, dir: "asc" },
     );
   };
@@ -257,78 +347,95 @@ export function PartnerAdminDashboard({ hasServiceRole, tips, orders, profiles, 
       s.key === key ? { key, dir: s.dir === "asc" ? "desc" : "asc" } : { key, dir: "asc" },
     );
   };
-
-  const scrollToCreate = () => {
-    setShowCreate(true);
-    window.setTimeout(() => {
-      document.getElementById("partner-neu-anlegen")?.scrollIntoView({ behavior: "smooth", block: "start" });
-    }, 50);
+  const toggleStatSort = (key: StatSortKey) => {
+    setStatSort((s) =>
+      s.key === key ? { key, dir: s.dir === "asc" ? "desc" : "asc" } : { key, dir: "desc" },
+    );
   };
 
   return (
-    <article>
-      <div className="flex flex-col gap-4 border-b border-[#0F4F68]/10 pb-6 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <p className="text-xs font-bold uppercase tracking-[0.12em] text-[#0F4F68]/70">Administration</p>
-          <h1 className="mt-1 text-2xl font-bold text-[#0F4F68] sm:text-3xl">Partner-Verwaltung</h1>
-          <p className="mt-1 text-sm text-neutral-600">
-            Aufträge, Tippgeber-Eingänge und Partnerstammdaten. Zugang nur mit System-Login.
-          </p>
-        </div>
-        <div className="flex flex-wrap gap-2">
-          <button
-            type="button"
-            onClick={scrollToCreate}
-            className="inline-flex min-h-[44px] items-center justify-center rounded-xl bg-[#0F4F68] px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-[#0c3d52]"
-          >
-            Partner anlegen
-          </button>
+    <article className="mx-auto max-w-6xl">
+      <header className="mb-10 text-center">
+        <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#0F4F68]/55">Administration</p>
+        <h1 className="mt-2 text-3xl font-bold tracking-tight text-[#0F4F68] sm:text-4xl">Partner-Verwaltung</h1>
+        <p className="mx-auto mt-3 max-w-lg text-sm text-neutral-600 sm:text-base">
+          Zentrale Übersicht: Tippgeber-Eingänge, neue Partner und Stammdaten. Nur mit System-Login.
+        </p>
+        <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
           <Link
             href="/partner/login"
-            className="inline-flex min-h-[44px] items-center justify-center rounded-xl border border-[#0F4F68]/25 px-4 py-2 text-sm font-semibold text-[#0F4F68] hover:bg-white"
+            className="inline-flex min-h-11 items-center justify-center rounded-xl border border-[#0F4F68]/20 bg-white px-5 py-2.5 text-sm font-semibold text-[#0F4F68] shadow-sm transition hover:bg-[#F2F9FA]"
           >
             Zum Partner-Login
           </Link>
           <SystemAdminLogoutButton />
         </div>
-      </div>
+      </header>
 
       {!hasServiceRole ? (
-        <div className="mt-8 rounded-2xl border border-amber-200 bg-amber-50 p-5 text-sm text-amber-950" role="status">
+        <div className="rounded-2xl border border-amber-200/90 bg-gradient-to-br from-amber-50 to-white p-6 text-center text-sm text-amber-950 shadow-sm" role="status">
           <p className="font-semibold">SUPABASE_SERVICE_ROLE_KEY fehlt</p>
-          <p className="mt-2">Ohne Service-Role sind keine Datenabfragen und kein Partner-Anlegen möglich.</p>
+          <p className="mt-2 text-neutral-700">Ohne Service-Role sind keine Datenabfragen und kein Partner-Anlegen möglich.</p>
         </div>
       ) : null}
 
       {hasServiceRole ? (
         <>
-          <section className="mt-10" aria-labelledby="auftraege-heading">
-            <h2 id="auftraege-heading" className="text-xl font-bold text-[#0F4F68]">
-              Aktuelle Aufträge
-            </h2>
-            <p className="mt-1 max-w-3xl text-sm text-neutral-600">
-              Tippgeber-Meldungen aus dem Partnerportal und Pflegebox-Konfigurationen. Spaltenköpfe zum Sortieren
-              anklicken.
-            </p>
+          <nav
+            className="mb-10 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4"
+            aria-label="Bereiche Partner-Verwaltung"
+          >
+            <SectionNavTile
+              title="Aktuelle Aufträge"
+              description="Tippgeber-Eingänge bearbeiten und Status setzen"
+              active={section === "auftraege"}
+              onSelect={() => setSection("auftraege")}
+            />
+            <SectionNavTile
+              title="Partner anlegen"
+              description="Neues Konto mit Zugangsdaten erstellen"
+              active={section === "anlegen"}
+              onSelect={() => setSection("anlegen")}
+            />
+            <SectionNavTile
+              title="Partnerliste"
+              description="Alle Partner, bearbeiten oder löschen"
+              active={section === "liste"}
+              onSelect={() => setSection("liste")}
+            />
+            <SectionNavTile
+              title="Statistik"
+              description="Gesamtübersicht und Kennzahlen je Partner"
+              active={section === "statistik"}
+              onSelect={() => setSection("statistik")}
+            />
+          </nav>
 
-            <div className="mt-4 rounded-2xl border border-[#0F4F68]/10 bg-white shadow-sm">
-              <h3 className="border-b border-[#0F4F68]/10 bg-[#F2F9FA]/70 px-4 py-3 text-sm font-bold text-[#0F4F68]">
-                Tippgeber-Eingänge
-              </h3>
-              <p className="border-b border-neutral-100 px-4 py-2 text-xs text-neutral-600">
-                Leistungs-Farben:{" "}
+          {section === "auftraege" ? (
+            <section
+              className="partner-dash-animate rounded-3xl border border-[#0F4F68]/10 bg-white p-5 shadow-[0_20px_50px_-24px_rgba(15,79,104,0.25)] sm:p-8"
+              aria-labelledby="auftraege-heading"
+            >
+              <h2 id="auftraege-heading" className="text-xl font-bold text-[#0F4F68] sm:text-2xl">
+                Aktuelle Aufträge
+              </h2>
+              <p className="mt-2 text-sm text-neutral-600">
+                Tippgeber-Meldungen aus dem Partnerportal. Spaltenköpfe sortieren.
+              </p>
+              <p className="mt-3 flex flex-wrap gap-2 text-xs text-neutral-600">
+                <span className="font-semibold text-[#0F4F68]">Leistungen:</span>
                 {SERVICE_SLUG_ORDER.map((slug) => (
                   <span
                     key={slug}
-                    className={`mr-2 mb-1 inline-block rounded-full border px-2 py-0.5 text-[0.65rem] font-semibold ${SERVICE_SLUG_BADGE_CLASS[slug]}`}
+                    className={`inline-block rounded-full border px-2 py-0.5 text-[0.65rem] font-semibold ${SERVICE_SLUG_BADGE_CLASS[slug]}`}
                   >
                     {PARTNER_RESPONSIBILITY_LABELS[slug]}
                   </span>
                 ))}
               </p>
-              <div className="overflow-x-auto">
+              <div className="mt-6 overflow-x-auto rounded-2xl border border-neutral-200/80">
                 <table className="min-w-[900px] w-full text-left text-sm">
-                  <thead className="border-b border-[#0F4F68]/10 bg-[#F2F9FA]/40 text-xs">
+                  <thead className="border-b border-[#0F4F68]/10 bg-[#F2F9FA]/70 text-xs">
                     <tr>
                       <th className="px-3 py-3">
                         <SortButton
@@ -368,10 +475,8 @@ export function PartnerAdminDashboard({ hasServiceRole, tips, orders, profiles, 
                   <tbody className="divide-y divide-neutral-100">
                     {sortedTips.length === 0 ? (
                       <tr>
-                        <td colSpan={5} className="px-4 py-8 text-center text-neutral-600">
-                          Keine Tippgeber-Eingänge. Migration{" "}
-                          <code className="rounded bg-neutral-100 px-1 text-xs">007</code> /{" "}
-                          <code className="rounded bg-neutral-100 px-1 text-xs">008</code> prüfen.
+                        <td colSpan={5} className="px-4 py-12 text-center text-neutral-600">
+                          Keine Tippgeber-Eingänge.
                         </td>
                       </tr>
                     ) : (
@@ -381,7 +486,7 @@ export function PartnerAdminDashboard({ hasServiceRole, tips, orders, profiles, 
                           PARTNER_RESPONSIBILITY_LABELS[t.service_slug as PartnerResponsibilitySlug] ??
                           t.service_slug;
                         return (
-                          <tr key={t.id} className="align-top hover:bg-neutral-50/80">
+                          <tr key={t.id} className="align-top transition-colors hover:bg-[#f8fbfc]">
                             <td className="whitespace-nowrap px-3 py-3 text-neutral-700">
                               {new Date(t.created_at).toLocaleString("de-DE", {
                                 dateStyle: "short",
@@ -415,264 +520,320 @@ export function PartnerAdminDashboard({ hasServiceRole, tips, orders, profiles, 
                   </tbody>
                 </table>
               </div>
-            </div>
+            </section>
+          ) : null}
 
-            <div className="mt-8 rounded-2xl border border-[#0F4F68]/10 bg-white shadow-sm">
-              <h3 className="border-b border-[#0F4F68]/10 bg-[#F2F9FA]/70 px-4 py-3 text-sm font-bold text-[#0F4F68]">
-                Pflegebox-Konfigurationen
-              </h3>
-              <div className="overflow-x-auto">
-                <table className="min-w-[800px] w-full text-left text-sm">
-                  <thead className="border-b border-[#0F4F68]/10 bg-[#F2F9FA]/40 text-xs">
+          {section === "anlegen" ? (
+            <section
+              className="partner-dash-animate rounded-3xl border border-[#0F4F68]/10 bg-white p-5 shadow-[0_20px_50px_-24px_rgba(15,79,104,0.25)] sm:p-8"
+              aria-labelledby="anlegen-heading"
+            >
+              <h2 id="anlegen-heading" className="text-xl font-bold text-[#0F4F68] sm:text-2xl">
+                Partner anlegen
+              </h2>
+              <p className="mt-2 text-sm text-neutral-600">Neues Partnerkonto inkl. einmalig angezeigtem Passwort und Code.</p>
+              <div className="mt-6">
+                <CreatePartnerAccountForm />
+              </div>
+            </section>
+          ) : null}
+
+          {section === "liste" ? (
+            <section
+              className="partner-dash-animate rounded-3xl border border-[#0F4F68]/10 bg-white p-5 shadow-[0_20px_50px_-24px_rgba(15,79,104,0.25)] sm:p-8"
+              aria-labelledby="partner-liste-heading"
+            >
+              <h2 id="partner-liste-heading" className="text-xl font-bold text-[#0F4F68] sm:text-2xl">
+                Partnerliste
+              </h2>
+              <p className="mt-2 text-sm text-neutral-600">Alle Details, bearbeiten oder löschen. Sortierung über die Spaltenköpfe.</p>
+              <div className="mt-6 overflow-x-auto rounded-2xl border border-neutral-200/80">
+                <table className="min-w-[1180px] w-full text-left text-sm">
+                  <thead className="border-b border-[#0F4F68]/10 bg-[#F2F9FA]/60 text-xs">
                     <tr>
-                      <th className="px-4 py-3">
+                      <th className="px-3 py-3">
                         <SortButton
-                          label="Referenz"
-                          active={orderSort.key === "reference"}
-                          dir={orderSort.dir}
-                          onClick={() => toggleOrderSort("reference")}
+                          label="E-Mail"
+                          active={partnerSort.key === "email"}
+                          dir={partnerSort.dir}
+                          onClick={() => togglePartnerSort("email")}
                         />
                       </th>
-                      <th className="px-4 py-3">
+                      <th className="px-3 py-3">
                         <SortButton
-                          label="Datum"
-                          active={orderSort.key === "created_at"}
-                          dir={orderSort.dir}
-                          onClick={() => toggleOrderSort("created_at")}
+                          label="Name"
+                          active={partnerSort.key === "name"}
+                          dir={partnerSort.dir}
+                          onClick={() => togglePartnerSort("name")}
                         />
                       </th>
-                      <th className="px-4 py-3">
+                      <th className="whitespace-nowrap px-3 py-3">Anrede</th>
+                      <th className="px-3 py-3">
                         <SortButton
-                          label="Partner"
-                          active={orderSort.key === "partner"}
-                          dir={orderSort.dir}
-                          onClick={() => toggleOrderSort("partner")}
+                          label="Code"
+                          active={partnerSort.key === "code"}
+                          dir={partnerSort.dir}
+                          onClick={() => togglePartnerSort("code")}
                         />
                       </th>
-                      <th className="px-4 py-3">
+                      <th className="px-3 py-3">Firma</th>
+                      <th className="px-3 py-3">Telefon</th>
+                      <th className="px-3 py-3">Zuständigkeit</th>
+                      <th className="px-3 py-3">Passwort</th>
+                      <th className="px-3 py-3">Rolle</th>
+                      <th className="px-3 py-3">
                         <SortButton
-                          label="Status"
-                          active={orderSort.key === "status"}
-                          dir={orderSort.dir}
-                          onClick={() => toggleOrderSort("status")}
+                          label="Profil seit"
+                          active={partnerSort.key === "created_at"}
+                          dir={partnerSort.dir}
+                          onClick={() => togglePartnerSort("created_at")}
                         />
                       </th>
-                      <th className="px-4 py-3">Kontakt</th>
+                      <th className="whitespace-nowrap px-3 py-3">Aktionen</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-neutral-100">
-                    {sortedOrders.length === 0 ? (
+                    {sortedProfiles.length === 0 ? (
                       <tr>
-                        <td colSpan={5} className="px-4 py-8 text-center text-neutral-600">
-                          Keine Konfigurator-Abschlüsse.
+                        <td colSpan={11} className="px-4 py-12 text-center text-neutral-600">
+                          Keine Partner-Profile.
                         </td>
                       </tr>
                     ) : (
-                      sortedOrders.map((o) => (
-                        <tr key={o.id} className="hover:bg-neutral-50/80">
-                          <td className="px-4 py-3 font-mono text-xs text-neutral-800">
-                            {o.external_reference ?? o.id.slice(0, 8)}
-                          </td>
-                          <td className="whitespace-nowrap px-4 py-3 text-neutral-700">
-                            {new Date(o.created_at).toLocaleString("de-DE", {
-                              dateStyle: "short",
-                              timeStyle: "short",
-                            })}
-                          </td>
-                          <td className="px-4 py-3 text-xs text-neutral-700">
-                            {o.partner_id ? (
-                              <>
-                                <span className="font-medium">
-                                  {partnerDisplay(o.partner_id).name}
+                      sortedProfiles.map((p) => {
+                        const auth = authById[p.id];
+                        const email = auth?.email ?? "—";
+                        const name =
+                          [p.first_name?.trim(), p.last_name?.trim()].filter(Boolean).join(" ") ||
+                          p.display_name?.trim() ||
+                          "—";
+                        const label = p.organization_name ?? name ?? p.id.slice(0, 8);
+                        return (
+                          <tr key={p.id} className="align-top transition-colors hover:bg-[#f8fbfc]">
+                            <td className="max-w-[12rem] px-3 py-3">
+                              <span className="break-all font-medium text-neutral-900">{email}</span>
+                            </td>
+                            <td className="px-3 py-3 text-neutral-800">{name}</td>
+                            <td className="whitespace-nowrap px-3 py-3 text-neutral-700">
+                              {p.salutation === "herr" ? "Herr" : p.salutation === "frau" ? "Frau" : "—"}
+                            </td>
+                            <td className="whitespace-nowrap px-3 py-3 font-mono text-xs font-bold text-[#0F4F68]">
+                              {p.partner_referral_code?.trim() || "—"}
+                            </td>
+                            <td className="max-w-[8rem] px-3 py-3 text-neutral-700">{p.organization_name ?? "—"}</td>
+                            <td className="whitespace-nowrap px-3 py-3 text-neutral-700">{p.phone ?? "—"}</td>
+                            <td className="max-w-[10rem] px-3 py-3 text-xs text-neutral-700">
+                              {(p.responsibility_areas ?? []).map((slug) => (
+                                <span
+                                  key={slug}
+                                  className={`mb-1 mr-1 inline-block rounded-full border px-1.5 py-0.5 text-[0.65rem] font-medium ${serviceBadgeClass(slug)}`}
+                                >
+                                  {PARTNER_RESPONSIBILITY_LABELS[slug as PartnerResponsibilitySlug] ?? slug}
                                 </span>
-                                {partnerDisplay(o.partner_id).code ? (
-                                  <span className="ml-1 font-mono font-bold text-[#0F4F68]">
-                                    {partnerDisplay(o.partner_id).code}
-                                  </span>
-                                ) : null}
-                              </>
-                            ) : (
-                              <span className="text-amber-800">nicht zugeordnet</span>
-                            )}
-                          </td>
-                          <td className="px-4 py-3">
-                            <span className="rounded-full bg-neutral-100 px-2 py-0.5 text-xs font-semibold text-neutral-800">
-                              {o.status}
-                            </span>
-                          </td>
-                          <td
-                            className="max-w-[200px] truncate px-4 py-3 text-neutral-700"
-                            title={shortContact(o.summary_json)}
-                          >
-                            {shortContact(o.summary_json)}
-                          </td>
-                        </tr>
-                      ))
+                              ))}
+                              {!p.responsibility_areas?.length ? "—" : null}
+                            </td>
+                            <td className="px-3 py-3 text-xs text-neutral-700">{partnerPasswordNote(p)}</td>
+                            <td className="px-3 py-3 text-neutral-700">{p.role}</td>
+                            <td className="whitespace-nowrap px-3 py-3 text-xs text-neutral-600">
+                              {p.created_at
+                                ? new Date(p.created_at).toLocaleString("de-DE", {
+                                    dateStyle: "short",
+                                    timeStyle: "short",
+                                  })
+                                : "—"}
+                            </td>
+                            <td className="px-3 py-3">
+                              <div className="flex flex-col gap-2">
+                                <button
+                                  type="button"
+                                  onClick={() => setEditProfile(p)}
+                                  className="min-h-9 rounded-xl border border-[#0F4F68]/25 bg-white px-2 py-1 text-xs font-semibold text-[#0F4F68] hover:bg-[#F2F9FA]"
+                                >
+                                  Bearbeiten
+                                </button>
+                                <DeletePartnerUserButton userId={p.id} displayLabel={label} />
+                              </div>
+                            </td>
+                          </tr>
+                        );
+                      })
                     )}
                   </tbody>
                 </table>
               </div>
-            </div>
-          </section>
+            </section>
+          ) : null}
 
-          <section id="partner-neu-anlegen" className="mt-12 scroll-mt-8">
-            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-              <h2 className="text-xl font-bold text-[#0F4F68]">Partner anlegen</h2>
-              <button
-                type="button"
-                onClick={() => setShowCreate((v) => !v)}
-                className="text-sm font-semibold text-[#0F4F68] underline underline-offset-2"
-                aria-expanded={showCreate}
-              >
-                {showCreate ? "Formular ausblenden" : "Formular einblenden"}
-              </button>
-            </div>
-            {showCreate ? (
-              <div className="mt-4">
-                <CreatePartnerAccountForm />
+          {section === "statistik" ? (
+            <section
+              className="partner-dash-animate space-y-8 rounded-3xl border border-[#0F4F68]/10 bg-white p-5 shadow-[0_20px_50px_-24px_rgba(15,79,104,0.25)] sm:p-8"
+              aria-labelledby="stat-heading"
+            >
+              <div>
+                <h2 id="stat-heading" className="text-xl font-bold text-[#0F4F68] sm:text-2xl">
+                  Statistik
+                </h2>
+                <p className="mt-2 text-sm text-neutral-600">Gesamtübersicht und Kennzahlen je registriertem Profil.</p>
               </div>
-            ) : (
-              <p className="mt-2 text-sm text-neutral-500">Formular ist eingeklappt — oben auf „Partner anlegen“ klicken.</p>
-            )}
-          </section>
 
-          <section className="mt-12" aria-labelledby="partner-liste-heading">
-            <h2 id="partner-liste-heading" className="text-xl font-bold text-[#0F4F68]">
-              Partnerliste
-            </h2>
-            <p className="mt-1 max-w-3xl text-sm text-neutral-600">
-              Alle Details, bearbeiten oder löschen. Sortierung über die Spaltenköpfe.
-            </p>
-            <div className="mt-4 overflow-x-auto rounded-2xl border border-[#0F4F68]/10 bg-white shadow-sm">
-              <table className="min-w-[1180px] w-full text-left text-sm">
-                <thead className="border-b border-[#0F4F68]/10 bg-[#F2F9FA]/50 text-xs">
-                  <tr>
-                    <th className="px-3 py-3">
-                      <SortButton
-                        label="E-Mail"
-                        active={partnerSort.key === "email"}
-                        dir={partnerSort.dir}
-                        onClick={() => togglePartnerSort("email")}
-                      />
-                    </th>
-                    <th className="px-3 py-3">
-                      <SortButton
-                        label="Name"
-                        active={partnerSort.key === "name"}
-                        dir={partnerSort.dir}
-                        onClick={() => togglePartnerSort("name")}
-                      />
-                    </th>
-                    <th className="whitespace-nowrap px-3 py-3">Anrede</th>
-                    <th className="px-3 py-3">
-                      <SortButton
-                        label="Code"
-                        active={partnerSort.key === "code"}
-                        dir={partnerSort.dir}
-                        onClick={() => togglePartnerSort("code")}
-                      />
-                    </th>
-                    <th className="px-3 py-3">Firma</th>
-                    <th className="px-3 py-3">Telefon</th>
-                    <th className="px-3 py-3">Zuständigkeit</th>
-                    <th className="px-3 py-3">Passwort</th>
-                    <th className="px-3 py-3">Rolle</th>
-                    <th className="px-3 py-3">
-                      <SortButton
-                        label="Profil seit"
-                        active={partnerSort.key === "created_at"}
-                        dir={partnerSort.dir}
-                        onClick={() => togglePartnerSort("created_at")}
-                      />
-                    </th>
-                    <th className="whitespace-nowrap px-3 py-3">Aktionen</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-neutral-100">
-                  {sortedProfiles.length === 0 ? (
-                    <tr>
-                      <td colSpan={11} className="px-4 py-8 text-center text-neutral-600">
-                        Keine Partner-Profile.
-                      </td>
-                    </tr>
-                  ) : (
-                    sortedProfiles.map((p) => {
-                      const auth = authById[p.id];
-                      const email = auth?.email ?? "—";
-                      const name =
-                        [p.first_name?.trim(), p.last_name?.trim()].filter(Boolean).join(" ") ||
-                        p.display_name?.trim() ||
-                        "—";
-                      const label = p.organization_name ?? name ?? p.id.slice(0, 8);
-                      return (
-                        <tr key={p.id} className="align-top hover:bg-neutral-50/80">
-                          <td className="max-w-[12rem] px-3 py-3">
-                            <span className="break-all font-medium text-neutral-900">{email}</span>
-                          </td>
-                          <td className="px-3 py-3 text-neutral-800">{name}</td>
-                          <td className="whitespace-nowrap px-3 py-3 text-neutral-700">
-                            {p.salutation === "herr" ? "Herr" : p.salutation === "frau" ? "Frau" : "—"}
-                          </td>
-                          <td className="whitespace-nowrap px-3 py-3 font-mono text-xs font-bold text-[#0F4F68]">
-                            {p.partner_referral_code?.trim() || "—"}
-                          </td>
-                          <td className="max-w-[8rem] px-3 py-3 text-neutral-700">{p.organization_name ?? "—"}</td>
-                          <td className="whitespace-nowrap px-3 py-3 text-neutral-700">{p.phone ?? "—"}</td>
-                          <td className="max-w-[10rem] px-3 py-3 text-xs text-neutral-700">
-                            {(p.responsibility_areas ?? []).map((slug) => (
-                              <span
-                                key={slug}
-                                className={`mb-1 mr-1 inline-block rounded-full border px-1.5 py-0.5 text-[0.65rem] font-medium ${serviceBadgeClass(slug)}`}
-                              >
-                                {PARTNER_RESPONSIBILITY_LABELS[slug as PartnerResponsibilitySlug] ?? slug}
-                              </span>
-                            ))}
-                            {!p.responsibility_areas?.length ? "—" : null}
-                          </td>
-                          <td className="px-3 py-3 text-xs text-neutral-700">{partnerPasswordNote(p)}</td>
-                          <td className="px-3 py-3 text-neutral-700">{p.role}</td>
-                          <td className="whitespace-nowrap px-3 py-3 text-xs text-neutral-600">
-                            {p.created_at
-                              ? new Date(p.created_at).toLocaleString("de-DE", {
-                                  dateStyle: "short",
-                                  timeStyle: "short",
-                                })
-                              : "—"}
-                          </td>
-                          <td className="px-3 py-3">
-                            <div className="flex flex-col gap-2">
-                              <button
-                                type="button"
-                                onClick={() => setEditProfile(p)}
-                                className="min-h-9 rounded-lg border border-[#0F4F68]/25 bg-white px-2 py-1 text-xs font-semibold text-[#0F4F68] hover:bg-[#F2F9FA]"
-                              >
-                                Bearbeiten
-                              </button>
-                              <DeletePartnerUserButton userId={p.id} displayLabel={label} />
-                            </div>
-                          </td>
-                        </tr>
-                      );
-                    })
-                  )}
-                </tbody>
-              </table>
-            </div>
-          </section>
+              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                <div className="rounded-2xl border border-[#0F4F68]/12 bg-gradient-to-br from-[#F2F9FA] to-white p-5">
+                  <p className="text-xs font-bold uppercase tracking-wide text-[#0F4F68]/65">Profile gesamt</p>
+                  <p className="mt-2 text-3xl font-bold tabular-nums text-[#0F4F68]">{globalStats.totalProfiles}</p>
+                  <p className="mt-1 text-xs text-neutral-600">
+                    Partner: {globalStats.partners} · Admin-Rolle: {globalStats.admins}
+                  </p>
+                </div>
+                <div className="rounded-2xl border border-[#0F4F68]/12 bg-gradient-to-br from-white to-[#F2F9FA]/80 p-5">
+                  <p className="text-xs font-bold uppercase tracking-wide text-[#0F4F68]/65">Tippgeber-Eingänge</p>
+                  <p className="mt-2 text-3xl font-bold tabular-nums text-[#0F4F68]">{globalStats.tipsTotal}</p>
+                  <p className="mt-2 flex flex-wrap gap-2 text-[0.7rem] text-neutral-600">
+                    <span>Neu: {globalStats.tipsByStatus.neu}</span>
+                    <span>In Bearbeitung: {globalStats.tipsByStatus.in_bearbeitung}</span>
+                    <span>Erledigt: {globalStats.tipsByStatus.erledigt}</span>
+                    <span>Abgelehnt: {globalStats.tipsByStatus.abgelehnt}</span>
+                  </p>
+                </div>
+                <div className="rounded-2xl border border-[#0F4F68]/12 bg-gradient-to-br from-[#F2F9FA]/60 to-white p-5 sm:col-span-2 lg:col-span-1">
+                  <p className="text-xs font-bold uppercase tracking-wide text-[#0F4F68]/65">Pflegebox-Abschlüsse (DB)</p>
+                  <p className="mt-2 text-3xl font-bold tabular-nums text-[#0F4F68]">{globalStats.boxTotal}</p>
+                  <p className="mt-1 text-xs text-neutral-600">
+                    Ohne Partner-Zuordnung: {globalStats.boxUnassigned}
+                  </p>
+                </div>
+              </div>
 
-          <div className="mt-8 rounded-2xl border border-[#0F4F68]/10 bg-[#F2F9FA]/40 p-5 text-sm text-neutral-700">
-            <p className="font-semibold text-[#0F4F68]">Hinweise</p>
-            <ul className="mt-2 list-disc space-y-1 pl-5">
-              <li>
-                SQL:{" "}
-                <code className="rounded bg-white px-1">004</code>, <code className="rounded bg-white px-1">006</code>,{" "}
-                <code className="rounded bg-white px-1">007</code>, <code className="rounded bg-white px-1">008</code>
-              </li>
-              <li>
-                Konfigurator: <code className="rounded bg-white px-1">/pflegebox?partner=PARTNER_UUID</code>
-              </li>
-            </ul>
-          </div>
+              <div>
+                <h3 className="text-lg font-bold text-[#0F4F68]">Je Partner</h3>
+                <p className="mt-1 text-sm text-neutral-600">Tipps nach Status und Anzahl Konfigurator-Aufträge mit Partner-ID.</p>
+                <div className="mt-4 overflow-x-auto rounded-2xl border border-neutral-200/80">
+                  <table className="min-w-[960px] w-full text-left text-sm">
+                    <thead className="border-b border-[#0F4F68]/10 bg-[#F2F9FA]/60 text-xs">
+                      <tr>
+                        <th className="px-3 py-3">
+                          <SortButton
+                            label="Name"
+                            active={statSort.key === "name"}
+                            dir={statSort.dir}
+                            onClick={() => toggleStatSort("name")}
+                          />
+                        </th>
+                        <th className="px-3 py-3">
+                          <SortButton
+                            label="E-Mail"
+                            active={statSort.key === "email"}
+                            dir={statSort.dir}
+                            onClick={() => toggleStatSort("email")}
+                          />
+                        </th>
+                        <th className="px-3 py-3">Code</th>
+                        <th className="px-3 py-3">Rolle</th>
+                        <th className="px-3 py-3">
+                          <SortButton
+                            label="Tipps"
+                            active={statSort.key === "tipsTotal"}
+                            dir={statSort.dir}
+                            onClick={() => toggleStatSort("tipsTotal")}
+                          />
+                        </th>
+                        <th className="px-3 py-3">
+                          <SortButton
+                            label="Neu"
+                            active={statSort.key === "tipsNeu"}
+                            dir={statSort.dir}
+                            onClick={() => toggleStatSort("tipsNeu")}
+                          />
+                        </th>
+                        <th className="px-3 py-3">
+                          <SortButton
+                            label="Bearb."
+                            active={statSort.key === "tipsBearbeitung"}
+                            dir={statSort.dir}
+                            onClick={() => toggleStatSort("tipsBearbeitung")}
+                          />
+                        </th>
+                        <th className="px-3 py-3">
+                          <SortButton
+                            label="Erledigt"
+                            active={statSort.key === "tipsErledigt"}
+                            dir={statSort.dir}
+                            onClick={() => toggleStatSort("tipsErledigt")}
+                          />
+                        </th>
+                        <th className="px-3 py-3">
+                          <SortButton
+                            label="Abgelehnt"
+                            active={statSort.key === "tipsAbgelehnt"}
+                            dir={statSort.dir}
+                            onClick={() => toggleStatSort("tipsAbgelehnt")}
+                          />
+                        </th>
+                        <th className="px-3 py-3">
+                          <SortButton
+                            label="Box"
+                            active={statSort.key === "boxOrders"}
+                            dir={statSort.dir}
+                            onClick={() => toggleStatSort("boxOrders")}
+                          />
+                        </th>
+                        <th className="px-3 py-3">
+                          <SortButton
+                            label="Profil seit"
+                            active={statSort.key === "profile"}
+                            dir={statSort.dir}
+                            onClick={() => toggleStatSort("profile")}
+                          />
+                        </th>
+                        <th className="px-3 py-3">Letzte Anmeldung</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-neutral-100">
+                      {sortedStatRows.map((row) => {
+                        const p = row.profile;
+                        const name =
+                          [p.first_name?.trim(), p.last_name?.trim()].filter(Boolean).join(" ") ||
+                          p.display_name?.trim() ||
+                          "—";
+                        return (
+                          <tr key={p.id} className="transition-colors hover:bg-[#f8fbfc]">
+                            <td className="px-3 py-3 font-medium text-neutral-900">{name}</td>
+                            <td className="max-w-[11rem] break-all px-3 py-3 text-xs text-neutral-700">{row.email}</td>
+                            <td className="whitespace-nowrap px-3 py-3 font-mono text-xs font-bold text-[#0F4F68]">
+                              {p.partner_referral_code?.trim() || "—"}
+                            </td>
+                            <td className="px-3 py-3 text-neutral-700">{p.role}</td>
+                            <td className="px-3 py-3 tabular-nums font-semibold text-neutral-900">{row.tipsTotal}</td>
+                            <td className="px-3 py-3 tabular-nums text-neutral-700">{row.tipsNeu}</td>
+                            <td className="px-3 py-3 tabular-nums text-neutral-700">{row.tipsBearbeitung}</td>
+                            <td className="px-3 py-3 tabular-nums text-emerald-800">{row.tipsErledigt}</td>
+                            <td className="px-3 py-3 tabular-nums text-rose-800">{row.tipsAbgelehnt}</td>
+                            <td className="px-3 py-3 tabular-nums text-neutral-800">{row.boxOrders}</td>
+                            <td className="whitespace-nowrap px-3 py-3 text-xs text-neutral-600">
+                              {p.created_at
+                                ? new Date(p.created_at).toLocaleString("de-DE", {
+                                    dateStyle: "short",
+                                    timeStyle: "short",
+                                  })
+                                : "—"}
+                            </td>
+                            <td className="whitespace-nowrap px-3 py-3 text-xs text-neutral-600">
+                              {row.lastSignIn
+                                ? new Date(row.lastSignIn).toLocaleString("de-DE", {
+                                    dateStyle: "short",
+                                    timeStyle: "short",
+                                  })
+                                : "—"}
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </section>
+          ) : null}
         </>
       ) : null}
 
