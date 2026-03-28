@@ -1,9 +1,9 @@
 "use client";
 
-import { useEffect } from "react";
+import type { ReactNode } from "react";
 
 type Props = {
-  /** Nach fehlgeschlagenem GET /partner/sync-profile: kein Redirect, Hinweis + Link „Erneut versuchen“. */
+  /** Nach fehlgeschlagenem GET /partner/sync-profile: Hinweis + Button „Erneut versuchen“. */
   ensureFailed?: boolean;
   /** Kurzcode aus URL (?sync_reason=), nur bei ensureFailed */
   syncReason?: string;
@@ -11,7 +11,7 @@ type Props = {
 
 const SYNC_REASON_HINT: Record<string, string> = {
   no_session:
-    "Die Server-Anfrage hat keine gültige Supabase-Session gesehen (Cookies). Einmal abmelden, neu anmelden, oder den Link unten klicken.",
+    "Die Server-Anfrage hat keine gültige Supabase-Session gesehen (Cookies). Einmal abmelden, neu anmelden, oder den Button unten erneut nutzen.",
   no_service_role:
     "SUPABASE_SERVICE_ROLE_KEY fehlt oder ist auf dem Server nicht lesbar — obwohl die Verwaltung manchmal trotzdem klappt, prüfen Sie Vercel → Environment Variables → Production und Redeploy.",
   insert_failed:
@@ -21,48 +21,51 @@ const SYNC_REASON_HINT: Record<string, string> = {
   unknown: "Bitte erneut versuchen oder SQL-Fallback unten nutzen.",
 };
 
+const syncProfileHref = "/partner/sync-profile";
+
+function SyncProfileButton({ children }: { children: ReactNode }) {
+  return (
+    <a
+      href={syncProfileHref}
+      className="inline-flex min-h-11 min-w-[12rem] items-center justify-center rounded-xl bg-[#0F4F68] px-5 py-2.5 text-center text-sm font-semibold text-white shadow-sm transition hover:bg-[#0c3d52] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0F4F68]"
+    >
+      {children}
+    </a>
+  );
+}
+
 /**
- * Leitet per vollem Seitenaufruf zu /partner/sync-profile weiter (zuverlässiger als Server Action aus useEffect).
+ * Kein automatischer Redirect mehr: Der wiederholte replace() hat bei fehlendem/verzögertem
+ * Profil-Read (z. B. nach Redirect vom Dashboard) eine Reload-Schleife erzeugt und Klicks auf
+ * Links überschrieben. Stattdessen: klarer Button mit vollem Seitenaufruf.
  */
 export function PartnerProfileEnsureClient({ ensureFailed = false, syncReason }: Props) {
-  useEffect(() => {
-    if (ensureFailed) return;
-    window.location.replace("/partner/sync-profile");
-  }, [ensureFailed]);
-
   if (ensureFailed) {
     const hint = (syncReason && SYNC_REASON_HINT[syncReason]) || SYNC_REASON_HINT.unknown;
     return (
       <div className="mt-4 space-y-3 text-sm" role="alert">
         <p className="font-medium text-red-900">Automatische Einrichtung ist fehlgeschlagen.</p>
         <p className="text-red-950/90">{hint}</p>
-        <p>
-          <a
-            href="/partner/sync-profile"
-            className="font-semibold text-[#0F4F68] underline underline-offset-2"
-          >
-            Erneut versuchen
-          </a>{" "}
-          oder SQL unten ausführen.
-        </p>
+        <div className="flex flex-wrap items-center gap-3 pt-1">
+          <SyncProfileButton>Erneut versuchen</SyncProfileButton>
+          <span className="text-neutral-700">oder SQL unten ausführen.</span>
+        </div>
       </div>
     );
   }
 
   return (
     <div className="mt-4 space-y-3">
-      <p className="text-sm font-medium text-[#0F4F68]" role="status">
-        Weiterleitung zum Einrichten des Partnerprofils…
+      <p className="text-sm text-neutral-800" role="status">
+        Als Nächstes wird in <code className="rounded bg-white/80 px-1 text-xs">{syncProfileHref}</code> die
+        Zeile in <code className="rounded bg-white/80 px-1 text-xs">partner_profiles</code> nachgetragen (Server
+        mit Service-Role-Key).
       </p>
-      <p className="text-sm text-neutral-700">
-        Wenn nichts passiert:{" "}
-        <a
-          href="/partner/sync-profile"
-          className="font-semibold text-[#0F4F68] underline underline-offset-2"
-        >
-          Profil jetzt einrichten
-        </a>{" "}
-        (Link manuell öffnen).
+      <div>
+        <SyncProfileButton>Profil jetzt einrichten</SyncProfileButton>
+      </div>
+      <p className="text-xs text-neutral-600">
+        Öffnet die Einrichtung in einem vollen Seitenaufruf (zuverlässig für Session-Cookies).
       </p>
     </div>
   );

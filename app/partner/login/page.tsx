@@ -49,10 +49,10 @@ export default async function PartnerLoginPage({ searchParams }: Props) {
           <p className="mt-2">
             Das Supabase-Konto ist gültig, in der Tabelle{" "}
             <code className="rounded bg-white/80 px-1">partner_profiles</code> fehlt jedoch noch ein passender Eintrag.
-            Die App leitet Sie zu{" "}
-            <code className="rounded bg-white/80 px-1">/partner/sync-profile</code> weiter — dort wird die Zeile mit
-            dem <code className="rounded bg-white/80 px-1">SUPABASE_SERVICE_ROLE_KEY</code> nachgetragen (muss in
-            Vercel für Production gesetzt sein).
+            Über den Button unten öffnen Sie{" "}
+            <code className="rounded bg-white/80 px-1">/partner/sync-profile</code> — dort wird die Zeile mit dem{" "}
+            <code className="rounded bg-white/80 px-1">SUPABASE_SERVICE_ROLE_KEY</code> nachgetragen (muss in Vercel
+            für Production gesetzt sein).
           </p>
           {session && !session.profile ? (
             <PartnerProfileEnsureClient ensureFailed={ensureFailed} syncReason={sync_reason} />
