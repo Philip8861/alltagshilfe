@@ -22,6 +22,17 @@ export type PartnerProfile = {
   password_changed_at?: string | null;
 };
 
+export type PartnerTipAdminStatus = "neu" | "in_bearbeitung" | "erledigt" | "abgelehnt";
+
+export type PartnerTipSubmissionRow = {
+  id: string;
+  partner_id: string;
+  service_slug: string;
+  payload: Record<string, unknown>;
+  created_at: string;
+  admin_status: PartnerTipAdminStatus;
+};
+
 export type PflegeboxOrderRow = {
   id: string;
   partner_id: string | null;
