@@ -7,8 +7,17 @@ import { createPortal } from "react-dom";
 import { navLinks } from "@/config/navigation";
 import { cn } from "@/lib/utils";
 
+function isPartnerLoginActive(pathname: string) {
+  return (
+    pathname.startsWith("/partner") ||
+    pathname.startsWith("/en/partner")
+  );
+}
+
 export function HeaderNav() {
   const pathname = usePathname();
+  const partnerActive = isPartnerLoginActive(pathname);
+  const partnerLoginHref = pathname.startsWith("/en") ? "/en/partner/login" : "/partner/login";
   const [mobileOpen, setMobileOpen] = useState(false);
   const [openDropdownHref, setOpenDropdownHref] = useState<string | null>(null);
   const [openMobileDropdown, setOpenMobileDropdown] = useState<string | null>(null);
@@ -97,6 +106,18 @@ export function HeaderNav() {
           )}
         </div>
         <Link
+          href={partnerLoginHref}
+          className={cn(
+            "shrink-0 whitespace-nowrap rounded-lg border px-2 py-1.5 font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2 lg:px-3 xl:px-4 xl:py-2",
+            partnerActive
+              ? "border-[#0F4F68] bg-[#F2F9FA] text-[#0F4F68]"
+              : "border-[#0F4F68]/30 bg-white text-[#0F4F68] hover:border-[#0F4F68]/55 hover:bg-[#F2F9FA]/60"
+          )}
+          style={{ fontSize: "clamp(0.6875rem, 1.1vw, 1rem)" }}
+        >
+          Partner-Login
+        </Link>
+        <Link
           href="/kontakt"
           className="shrink-0 whitespace-nowrap rounded-lg px-2 py-1.5 font-semibold text-white transition-colors hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-[#F78F2E] focus:ring-offset-2 lg:px-3 xl:px-4 xl:py-2"
           style={{ backgroundColor: "#F78F2E", fontSize: "clamp(0.6875rem, 1.1vw, 1rem)" }}
@@ -105,7 +126,18 @@ export function HeaderNav() {
         </Link>
       </nav>
 
-      <div className="flex md:hidden">
+      <div className="flex items-center gap-2 md:hidden">
+        <Link
+          href={partnerLoginHref}
+          className={cn(
+            "min-h-[44px] shrink-0 whitespace-nowrap rounded-lg border px-3 py-2 text-sm font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2",
+            partnerActive
+              ? "border-[#0F4F68] bg-[#F2F9FA] text-[#0F4F68]"
+              : "border-[#0F4F68]/30 text-[#0F4F68] hover:bg-[#F2F9FA]/60"
+          )}
+        >
+          Partner-Login
+        </Link>
         <button
           type="button"
           onClick={() => setMobileOpen((o) => !o)}
@@ -232,6 +264,20 @@ export function HeaderNav() {
                 )}
               </li>
             ))}
+            <li className="mt-2">
+              <Link
+                href={partnerLoginHref}
+                onClick={() => setMobileOpen(false)}
+                className={cn(
+                  "block rounded-lg border px-4 py-3 text-center text-base font-semibold focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-inset",
+                  partnerActive
+                    ? "border-[#0F4F68] bg-[#F2F9FA] text-[#0F4F68]"
+                    : "border-[#0F4F68]/30 text-[#0F4F68] hover:bg-[#F2F9FA]/50"
+                )}
+              >
+                Partner-Login
+              </Link>
+            </li>
             <li className="mt-3 border-t border-[#0F4F68]/15 pt-3">
               <Link
                 href="/kontakt"
