@@ -11,6 +11,8 @@ export type PartnerProfile = {
   updated_at?: string;
   /** Anrede für Begrüßung „Willkommen, Herr/Frau …“ (Migration 006). */
   salutation?: PartnerSalutation | null;
+  /** Individueller Partnercode, z. B. HM4827 (Migration 007). */
+  partner_referral_code?: string | null;
   first_name?: string | null;
   last_name?: string | null;
   recruited_by?: string | null;

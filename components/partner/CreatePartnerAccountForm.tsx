@@ -13,12 +13,14 @@ const initial: CreatePartnerUserState = { ok: false, message: "" };
 export function CreatePartnerAccountForm() {
   const [state, formAction, pending] = useActionState(createPartnerUserAction, initial);
   const formRef = useRef<HTMLFormElement>(null);
-  const [copied, setCopied] = useState(false);
+  const [copiedPw, setCopiedPw] = useState(false);
+  const [copiedCode, setCopiedCode] = useState(false);
 
   useEffect(() => {
     if (state.ok) {
       formRef.current?.reset();
-      setCopied(false);
+      setCopiedPw(false);
+      setCopiedCode(false);
     }
   }, [state.ok]);
 
@@ -62,11 +64,31 @@ export function CreatePartnerAccountForm() {
               className="inline-flex min-h-11 shrink-0 items-center justify-center rounded-lg bg-[#0F4F68] px-4 py-2 text-sm font-semibold text-white hover:bg-[#0c3d52]"
               onClick={() => {
                 void navigator.clipboard.writeText(state.generatedPassword);
-                setCopied(true);
-                window.setTimeout(() => setCopied(false), 2500);
+                setCopiedPw(true);
+                window.setTimeout(() => setCopiedPw(false), 2500);
               }}
             >
-              {copied ? "Kopiert" : "Kopieren"}
+              {copiedPw ? "Kopiert" : "Kopieren"}
+            </button>
+          </div>
+          <p className="mt-4 font-semibold">Einmalig sichtbar: Partner-Code</p>
+          <div className="mt-2 flex flex-col gap-2 sm:flex-row sm:items-center">
+            <input
+              readOnly
+              value={state.referralCode}
+              className="w-full min-w-0 flex-1 rounded-lg border border-amber-200/90 bg-white px-3 py-2 font-mono text-lg font-bold tracking-widest text-neutral-900"
+              aria-label="Partner-Code"
+            />
+            <button
+              type="button"
+              className="inline-flex min-h-11 shrink-0 items-center justify-center rounded-lg border border-[#0F4F68]/30 bg-white px-4 py-2 text-sm font-semibold text-[#0F4F68] hover:bg-[#F2F9FA]"
+              onClick={() => {
+                void navigator.clipboard.writeText(state.referralCode);
+                setCopiedCode(true);
+                window.setTimeout(() => setCopiedCode(false), 2500);
+              }}
+            >
+              {copiedCode ? "Kopiert" : "Code kopieren"}
             </button>
           </div>
         </div>

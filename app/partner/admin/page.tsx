@@ -54,7 +54,7 @@ export default async function PartnerAdminPage() {
         svc
           .from("partner_profiles")
           .select(
-            "id, display_name, organization_name, role, created_at, updated_at, salutation, first_name, last_name, recruited_by, phone, responsibility_areas, password_changed_at",
+            "id, display_name, organization_name, role, created_at, updated_at, salutation, partner_referral_code, first_name, last_name, recruited_by, phone, responsibility_areas, password_changed_at",
           )
           .order("created_at", { ascending: false }),
         svc
@@ -136,6 +136,8 @@ export default async function PartnerAdminPage() {
               <tr>
                 <th className="whitespace-nowrap px-3 py-3">E-Mail</th>
                 <th className="whitespace-nowrap px-3 py-3">Ansprechpartner</th>
+                <th className="whitespace-nowrap px-3 py-3">Anrede</th>
+                <th className="whitespace-nowrap px-3 py-3">Partner-Code</th>
                 <th className="px-3 py-3">Firma</th>
                 <th className="whitespace-nowrap px-3 py-3">Telefon</th>
                 <th className="px-3 py-3">Angeworben von</th>
@@ -151,11 +153,12 @@ export default async function PartnerAdminPage() {
             <tbody className="divide-y divide-neutral-100">
               {!svc || profiles.length === 0 ? (
                 <tr>
-                  <td colSpan={13} className="px-4 py-8 text-center text-neutral-600">
+                  <td colSpan={14} className="px-4 py-8 text-center text-neutral-600">
                     Keine Partner-Profile gefunden. SQL-Migrationen{" "}
                     <code className="rounded bg-neutral-100 px-1 text-xs">004_partner_profiles_admin_fields.sql</code>,{" "}
-                    <code className="rounded bg-neutral-100 px-1 text-xs">006_partner_salutation.sql</code> in Supabase
-                    ausführen, falls Spalten fehlen.
+                    <code className="rounded bg-neutral-100 px-1 text-xs">006_partner_salutation.sql</code>,{" "}
+                    <code className="rounded bg-neutral-100 px-1 text-xs">007_partner_referral_code_and_tips.sql</code>{" "}
+                    in Supabase ausführen, falls Spalten fehlen.
                   </td>
                 </tr>
               ) : (
@@ -175,6 +178,9 @@ export default async function PartnerAdminPage() {
                       <td className="px-3 py-3 text-neutral-800">{name}</td>
                       <td className="whitespace-nowrap px-3 py-3 text-neutral-700">
                         {p.salutation === "herr" ? "Herr" : p.salutation === "frau" ? "Frau" : "—"}
+                      </td>
+                      <td className="whitespace-nowrap px-3 py-3 font-mono text-sm font-bold tracking-wide text-[#0F4F68]">
+                        {p.partner_referral_code?.trim() || "—"}
                       </td>
                       <td className="max-w-[10rem] px-3 py-3 text-neutral-700">{p.organization_name ?? "—"}</td>
                       <td className="whitespace-nowrap px-3 py-3 text-neutral-700">{p.phone ?? "—"}</td>

@@ -14,6 +14,7 @@ import {
 } from "@/lib/partner/system-admin-session";
 import { createPartnerUserSchema, deletePartnerUserIdSchema } from "@/lib/validations/system-admin";
 import { generatePartnerInitialPassword } from "@/lib/partner/generate-partner-password";
+import { assignUniquePartnerReferralCode } from "@/lib/partner/generate-partner-referral-code";
 
 async function clientIp(): Promise<string> {
   try {
@@ -63,7 +64,7 @@ export async function systemAdminLogoutAction(): Promise<void> {
 }
 
 export type CreatePartnerUserState =
-  | { ok: true; message: string; generatedPassword: string }
+  | { ok: true; message: string; generatedPassword: string; referralCode: string }
   | { ok: false; message: string };
 
 export async function createPartnerUserAction(
@@ -113,12 +114,19 @@ export async function createPartnerUserAction(
   }
 
   const initialPassword = generatePartnerInitialPassword();
+  let referralCode: string;
+  try {
+    referralCode = await assignUniquePartnerReferralCode(svc, parsed.data.first_name, parsed.data.last_name);
+  } catch {
+    return { ok: false, message: "Partner-Code konnte nicht vergeben werden. Bitte erneut versuchen." };
+  }
 
   const { data, error } = await svc.auth.admin.createUser({
     email: authEmail,
     password: initialPassword,
     email_confirm: true,
     user_metadata: {
+      salutation: parsed.data.salutation,
       first_name: parsed.data.first_name,
       last_name: parsed.data.last_name,
       display_name: displayName,
@@ -126,6 +134,7 @@ export async function createPartnerUserAction(
       phone: parsed.data.phone,
       recruited_by: parsed.data.recruited_by || undefined,
       responsibility_areas: parsed.data.responsibility_areas,
+      partner_referral_code: referralCode,
     },
   });
 
@@ -144,6 +153,7 @@ export async function createPartnerUserAction(
     id: uid,
     role,
     salutation: parsed.data.salutation,
+    partner_referral_code: referralCode,
     first_name: parsed.data.first_name,
     last_name: parsed.data.last_name,
     display_name: displayName,
@@ -162,12 +172,13 @@ export async function createPartnerUserAction(
     return {
       ok: false,
       message:
-        "Nutzer wurde in Auth angelegt, partner_profiles konnte nicht geschrieben werden. Migrationen 004_partner_profiles_admin_fields.sql, 006_partner_salutation.sql und RLS prüfen.",
+        "Nutzer wurde in Auth angelegt, partner_profiles konnte nicht geschrieben werden. Migrationen 004, 006, 007 und RLS prüfen.",
     };
   }
 
   const fullUpdate = {
     salutation: parsed.data.salutation,
+    partner_referral_code: referralCode,
     first_name: parsed.data.first_name,
     last_name: parsed.data.last_name,
     display_name: displayName,
@@ -185,8 +196,9 @@ export async function createPartnerUserAction(
   return {
     ok: true,
     generatedPassword: initialPassword,
+    referralCode,
     message:
-      `Konto für ${authEmail} angelegt. Das generierte Passwort unten einmalig kopieren und dem Partner sicher übermitteln (nicht per unverschlüsselter E-Mail).`,
+      `Konto für ${authEmail} angelegt. Passwort und Partner-Code unten einmalig kopieren und dem Partner sicher übermitteln (nicht per unverschlüsselter E-Mail).`,
   };
 }
 

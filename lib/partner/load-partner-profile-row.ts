@@ -1,8 +1,12 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { PartnerProfile } from "@/lib/partner/types";
 
-/** Alle Spalten inkl. 004 + 006 (salutation). */
+/** Alle Spalten inkl. 004 + 006 + 007 (partner_referral_code). */
 const SELECT_FULL =
+  "id, display_name, organization_name, role, created_at, updated_at, salutation, first_name, last_name, recruited_by, phone, responsibility_areas, password_changed_at, partner_referral_code";
+
+/** Ohne partner_referral_code (Migration 007 fehlt noch). */
+const SELECT_NO_REFERRAL =
   "id, display_name, organization_name, role, created_at, updated_at, salutation, first_name, last_name, recruited_by, phone, responsibility_areas, password_changed_at";
 
 /** 004 ohne 006 (Spalte salutation fehlt noch). */
@@ -21,37 +25,34 @@ function isMissingColumnOrSchemaError(err: { message?: string; code?: string } |
   return false;
 }
 
+async function trySelect(
+  client: SupabaseClient,
+  userId: string,
+  columns: string,
+): Promise<{ data: unknown; error: { message?: string; code?: string } | null }> {
+  return client.from("partner_profiles").select(columns).eq("id", userId).maybeSingle();
+}
+
 /**
- * Liest partner_profiles für eine User-ID; bei fehlenden Spalten (ohne Migration 004) Fallback auf minimale SELECT-Liste.
+ * Liest partner_profiles für eine User-ID; bei fehlenden Spalten gestaffelte Fallback-Listen.
  */
 export async function loadPartnerProfileRow(
   client: SupabaseClient,
   userId: string,
 ): Promise<{ profile: PartnerProfile | null; errorMessage?: string }> {
-  const full = await client.from("partner_profiles").select(SELECT_FULL).eq("id", userId).maybeSingle();
+  const attempts = [SELECT_FULL, SELECT_NO_REFERRAL, SELECT_WITHOUT_SALUTATION, SELECT_MIN];
 
-  if (!full.error) {
-    return { profile: (full.data as PartnerProfile | null) ?? null };
+  let lastError: string | undefined;
+  for (const cols of attempts) {
+    const { data, error } = await trySelect(client, userId, cols);
+    if (!error) {
+      return { profile: (data as PartnerProfile | null) ?? null };
+    }
+    lastError = error.message;
+    if (!isMissingColumnOrSchemaError(error)) {
+      return { profile: null, errorMessage: error.message };
+    }
   }
 
-  if (isMissingColumnOrSchemaError(full.error)) {
-    const mid = await client
-      .from("partner_profiles")
-      .select(SELECT_WITHOUT_SALUTATION)
-      .eq("id", userId)
-      .maybeSingle();
-    if (!mid.error) {
-      return { profile: (mid.data as PartnerProfile | null) ?? null };
-    }
-    if (isMissingColumnOrSchemaError(mid.error)) {
-      const min = await client.from("partner_profiles").select(SELECT_MIN).eq("id", userId).maybeSingle();
-      if (!min.error) {
-        return { profile: (min.data as PartnerProfile | null) ?? null };
-      }
-      return { profile: null, errorMessage: min.error.message };
-    }
-    return { profile: null, errorMessage: mid.error.message };
-  }
-
-  return { profile: null, errorMessage: full.error.message };
+  return { profile: null, errorMessage: lastError };
 }

@@ -20,6 +20,14 @@ export function partnerPortalWelcomeLine(profile: PartnerProfile, email: string 
   return `Willkommen, ${partnerPortalGreetingName(profile, email)}`;
 }
 
+/** Große Überschrift auf der Partner-Übersicht („du“-Ansprache). */
+export function partnerDashboardWelcomeHeadline(profile: PartnerProfile, email: string | undefined): string {
+  const name = ansprechpartnerKurzname(profile, email);
+  if (profile.salutation === "herr") return `Willkommen, Herr ${name} in deinem Partnerportal.`;
+  if (profile.salutation === "frau") return `Willkommen, Frau ${name} in deinem Partnerportal.`;
+  return `Willkommen, ${partnerPortalGreetingName(profile, email)} in deinem Partnerportal.`;
+}
+
 /** Reine Logik, server- und clientnutzbar (nicht in „use client“-Dateien exportieren). */
 export function partnerPortalGreetingName(
   profile: PartnerProfile,

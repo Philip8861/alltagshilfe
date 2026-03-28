@@ -6,7 +6,6 @@ import { useState } from "react";
 import { PartnerLogoutButton } from "@/components/partner/PartnerLogoutButton";
 
 type Props = {
-  welcomeLine: string;
   children: React.ReactNode;
 };
 
@@ -24,7 +23,7 @@ function navClass(active: boolean) {
   ].join(" ");
 }
 
-export function PartnerPortalShell({ welcomeLine, children }: Props) {
+export function PartnerPortalShell({ children }: Props) {
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -35,7 +34,6 @@ export function PartnerPortalShell({ welcomeLine, children }: Props) {
           <div>
             <p className="text-xs font-bold uppercase tracking-[0.12em] text-[#0F4F68]/65">Kooperationspartner</p>
             <p className="mt-1 text-lg font-bold text-[#0F4F68] sm:text-xl">Partnerportal</p>
-            <p className="mt-0.5 text-sm font-medium text-neutral-700">{welcomeLine}</p>
           </div>
           <button
             type="button"
