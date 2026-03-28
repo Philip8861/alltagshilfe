@@ -82,3 +82,9 @@ grant select on table public.pflegebox_orders to authenticated;
 
 -- Ersten Admin setzen (nach dem ersten Login): z. B.
 -- update public.partner_profiles set role = 'admin' where id = 'UUID_DES_NUTZERS';
+
+-- Pflegebox-Abschlüsse: Next.js Route POST /api/pflegebox-order schreibt mit Service-Role-Key in diese Tabelle.
+-- Hosting: SUPABASE_SERVICE_ROLE_KEY in .env / Vercel setzen (niemals im Browser).
+
+-- Nachträgliche Zuordnung zu einem Partner:
+-- update public.pflegebox_orders set partner_id = 'PARTNER_PROFIL_UUID' where id = 'ORDER_UUID';

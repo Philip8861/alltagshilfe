@@ -14,25 +14,20 @@
 </head>
 <body>
   <div class="hero-wrapper">
-    <img
-      src="Hintergrundbild_Konfigurator.jpg"
-      alt="Alltagshilfe-Süd Kopfbereich"
-      class="hero-image"
-    />
     <div class="hero-overlay">
       <header class="header">
-    <div class="steps">
-      <div class="step step--active">
+    <div class="steps" id="flow-step-indicator" aria-hidden="true">
+      <div class="step step--active" data-flow-step="1">
         <div class="step-text">
           <span class="step-title">1. Produktauswahl</span>
         </div>
       </div>
-      <div class="step">
+      <div class="step" data-flow-step="2">
         <div class="step-text">
           <span class="step-title">2. Dateneingabe</span>
         </div>
       </div>
-      <div class="step">
+      <div class="step" data-flow-step="3">
         <div class="step-text">
           <span class="step-title">3. Fertig</span>
         </div>
@@ -40,6 +35,7 @@
     </div>
   </header>
 
+  <div id="flow-step-1">
   <main class="layout">
     <div class="budget-progress-mobile-wrapper">
       <div class="budget-progress budget-progress-mobile">
@@ -70,7 +66,7 @@
         <div class="box-title-row">
           <h2>Meine Pflegebox</h2>
           <div class="box-icon-wrapper">
-            <img src="Box.png" alt="Pflegebox-Icon" class="box-icon" id="box-icon" />
+            <img src="images/box.webp" alt="Pflegebox-Icon" class="box-icon" id="box-icon" onerror="this.onerror=null;this.src='images/box.png';" />
             <span class="box-icon-badge" id="box-icon-badge">0</span>
           </div>
         </div>
@@ -89,6 +85,84 @@
       <button type="button" class="btn-next-step" id="btn-next-step">Nächster Schritt</button>
     </section>
   </main>
+  </div>
+
+  <div id="flow-step-2" class="flow-step-wrap" hidden>
+    <main class="layout layout--single">
+      <section class="panel">
+        <h2>Ihre Kontaktdaten</h2>
+        <p class="panel-subtitle">
+          Bitte füllen Sie die Felder aus, damit wir Ihre Pflegebox-Konfiguration zuordnen und bei Bedarf
+          Kontakt aufnehmen können. Es gelten unsere
+          <a href="/datenschutz" target="_blank" rel="noopener noreferrer" class="inline-link">Datenschutzhinweise</a>.
+        </p>
+        <form id="pflegebox-finish-form" class="contact-form" autocomplete="on" novalidate>
+          <input
+            type="text"
+            name="website"
+            id="pflegebox-honeypot"
+            class="konfig-honeypot"
+            tabindex="-1"
+            autocomplete="off"
+            aria-hidden="true"
+          />
+          <div class="form-row-inline">
+            <div class="form-row">
+              <label for="pflegebox-firstname">Vorname *</label>
+              <input type="text" id="pflegebox-firstname" name="firstName" required maxlength="80" />
+            </div>
+            <div class="form-row">
+              <label for="pflegebox-lastname">Nachname *</label>
+              <input type="text" id="pflegebox-lastname" name="lastName" required maxlength="80" />
+            </div>
+          </div>
+          <div class="form-row">
+            <label for="pflegebox-email">E-Mail *</label>
+            <input type="email" id="pflegebox-email" name="email" required maxlength="320" />
+          </div>
+          <div class="form-row-inline">
+            <div class="form-row">
+              <label for="pflegebox-phone">Telefon (optional)</label>
+              <input type="tel" id="pflegebox-phone" name="phone" maxlength="40" />
+            </div>
+            <div class="form-row">
+              <label for="pflegebox-plz">PLZ (optional)</label>
+              <input type="text" id="pflegebox-plz" name="plz" maxlength="12" inputmode="numeric" />
+            </div>
+          </div>
+          <div class="form-row">
+            <label class="form-label-inline">
+              <input type="checkbox" id="pflegebox-privacy" name="privacy" required />
+              Ich habe die{" "}
+              <a href="/datenschutz" target="_blank" rel="noopener noreferrer">Datenschutzerklärung</a> zur Kenntnis
+              genommen. *
+            </label>
+          </div>
+          <p id="pflegebox-form-error" class="form-error-text" role="alert" hidden></p>
+          <div class="form-actions-row">
+            <button type="button" class="admin-btn" id="btn-flow-back">Zurück zur Auswahl</button>
+            <button type="submit" class="btn-primary" id="btn-pflegebox-submit">
+              Konfiguration abschließen
+            </button>
+          </div>
+        </form>
+      </section>
+    </main>
+  </div>
+
+  <div id="flow-step-3" class="flow-step-wrap" hidden>
+    <main class="layout layout--single">
+      <section class="panel panel--success">
+        <h2>Vielen Dank!</h2>
+        <p class="panel-subtitle" id="flow-step-3-message">
+          Ihre Pflegebox-Konfiguration wurde übermittelt. Wir melden uns bei Bedarf über die angegebene
+          E-Mail-Adresse.
+        </p>
+        <p class="panel-subtitle text-muted" id="flow-step-3-ref" hidden></p>
+        <button type="button" class="btn-primary" id="btn-flow-new">Neue Konfiguration starten</button>
+      </section>
+    </main>
+  </div>
 
   <button type="button" class="admin-toggle-btn" id="admin-toggle-btn" aria-label="Artikel-Tool ein- oder ausblenden">
     Artikel-Tool ein-/ausblenden
@@ -213,8 +287,8 @@
     <button type="button" class="box-chatbot-close" id="box-chatbot-close" aria-label="Chat schließen">×</button>
     <div class="box-chatbot-avatar">
       <img
-        src="pflegeboxi.png"
-        onerror="this.onerror=null;this.src='Pflegeboxi.jpg';"
+        src="images/pflegeboxi.webp"
+        onerror="this.onerror=null;this.src='images/pflegeboxi.png';"
         alt="Pflegeboxi"
         class="box-chatbot-image"
       />

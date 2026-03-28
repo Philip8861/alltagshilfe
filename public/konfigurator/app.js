@@ -782,6 +782,61 @@ function getPartnerRef() {
   }
 }
 
+function updateFlowStepIndicator(step) {
+  const root = document.getElementById("flow-step-indicator");
+  if (!root) return;
+  root.querySelectorAll(".step").forEach((el) => {
+    const n = Number(el.getAttribute("data-flow-step"));
+    el.classList.toggle("step--active", n === step);
+  });
+}
+
+function setFlowStep(step) {
+  const s1 = document.getElementById("flow-step-1");
+  const s2 = document.getElementById("flow-step-2");
+  const s3 = document.getElementById("flow-step-3");
+  if (s1) s1.hidden = step !== 1;
+  if (s2) s2.hidden = step !== 2;
+  if (s3) s3.hidden = step !== 3;
+  updateFlowStepIndicator(step);
+  const adminPanel = document.getElementById("admin-panel");
+  const adminBtn = document.getElementById("admin-toggle-btn");
+  const hideAdmin = step !== 1;
+  if (adminPanel) adminPanel.hidden = hideAdmin;
+  if (adminBtn) adminBtn.hidden = hideAdmin;
+}
+
+function buildCartLinesForApi() {
+  const groups = new Map();
+  cart.forEach((entry) => {
+    const key = `${entry.id}|${entry.selectedSize || ""}|${entry.material || ""}`;
+    if (!groups.has(key)) {
+      groups.set(key, { entry, count: 0 });
+    }
+    groups.get(key).count += 1;
+  });
+  const lines = [];
+  groups.forEach(({ entry, count }) => {
+    lines.push({
+      id: entry.id,
+      name: String(entry.name || "Artikel").slice(0, 200),
+      price: typeof entry.price === "number" && !Number.isNaN(entry.price) ? entry.price : 0,
+      selectedSize: entry.selectedSize || null,
+      material: entry.material || null,
+      pieces: entry.pieces || null,
+      quantity: entry.quantity || null,
+      ml: (() => {
+        if (entry.ml == null || entry.ml === "") return null;
+        const n = Number(entry.ml);
+        return Number.isFinite(n) ? n : null;
+      })(),
+      bettschutzeinlage: Boolean(entry.bettschutzeinlage),
+      count,
+    });
+  });
+  return lines;
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   readAndStorePartnerRef();
 
@@ -852,6 +907,116 @@ document.addEventListener("DOMContentLoaded", () => {
       pendingGloveItemId = null;
       pendingGloveMaterial = null;
       pendingGloveSize = null;
+    });
+  }
+
+  const btnNext = document.getElementById("btn-next-step");
+  if (btnNext) {
+    btnNext.addEventListener("click", () => {
+      if (cart.length === 0) {
+        window.alert("Bitte wählen Sie zuerst Artikel für Ihre Pflegebox.");
+        return;
+      }
+      setFlowStep(2);
+      document.getElementById("pflegebox-firstname")?.focus();
+    });
+  }
+
+  const btnFlowBack = document.getElementById("btn-flow-back");
+  if (btnFlowBack) {
+    btnFlowBack.addEventListener("click", () => setFlowStep(1));
+  }
+
+  const btnFlowNew = document.getElementById("btn-flow-new");
+  if (btnFlowNew) {
+    btnFlowNew.addEventListener("click", () => {
+      setFlowStep(1);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    });
+  }
+
+  const finishForm = document.getElementById("pflegebox-finish-form");
+  if (finishForm) {
+    finishForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const errEl = document.getElementById("pflegebox-form-error");
+      const submitBtn = document.getElementById("btn-pflegebox-submit");
+      if (errEl) {
+        errEl.hidden = true;
+        errEl.textContent = "";
+      }
+
+      const honeypot = document.getElementById("pflegebox-honeypot");
+      if (honeypot && honeypot.value) return;
+
+      const privacy = document.getElementById("pflegebox-privacy");
+      const payload = {
+        cartLines: buildCartLinesForApi(),
+        totalBudgetUsed: calculateCartTotal(),
+        partnerRef: getPartnerRef(),
+        contact: {
+          firstName: document.getElementById("pflegebox-firstname")?.value.trim() ?? "",
+          lastName: document.getElementById("pflegebox-lastname")?.value.trim() ?? "",
+          email: document.getElementById("pflegebox-email")?.value.trim() ?? "",
+          phone: document.getElementById("pflegebox-phone")?.value.trim() ?? "",
+          plz: document.getElementById("pflegebox-plz")?.value.trim() ?? "",
+        },
+        website: "",
+        privacyAccepted: privacy?.checked === true,
+      };
+
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.textContent = "Wird gesendet…";
+      }
+
+      try {
+        const res = await fetch("/api/pflegebox-order", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+        const data = await res.json().catch(() => ({}));
+
+        if (!res.ok || !data.ok) {
+          let msg = "Die Übermittlung ist fehlgeschlagen. Bitte prüfen Sie Ihre Eingaben oder versuchen Sie es später erneut.";
+          if (res.status === 429) msg = "Zu viele Anfragen. Bitte warten Sie einen Moment.";
+          if (res.status === 503 || data.error === "not_configured") {
+            msg = "Der Speicherdienst ist noch nicht eingerichtet. Bitte kontaktieren Sie uns telefonisch.";
+          }
+          if (res.status === 400) {
+            msg = "Bitte füllen Sie alle Pflichtfelder aus und bestätigen Sie die Datenschutzhinweise.";
+          }
+          if (errEl) {
+            errEl.textContent = msg;
+            errEl.hidden = false;
+          }
+          return;
+        }
+
+        const refEl = document.getElementById("flow-step-3-ref");
+        if (refEl) {
+          if (data.reference) {
+            refEl.textContent = "Ihre Referenz: " + data.reference;
+            refEl.hidden = false;
+          } else {
+            refEl.hidden = true;
+          }
+        }
+        setFlowStep(3);
+        finishForm.reset();
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      } catch {
+        if (errEl) {
+          errEl.textContent = "Netzwerkfehler. Bitte prüfen Sie Ihre Verbindung und versuchen Sie es erneut.";
+          errEl.hidden = false;
+        }
+      } finally {
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.textContent = "Konfiguration abschließen";
+        }
+      }
     });
   }
 });

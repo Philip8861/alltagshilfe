@@ -1132,3 +1132,58 @@ body {
   }
 }
 
+/* Mehrschritt-Flow & Pflegebox-Abschluss */
+.flow-step-wrap {
+  width: 100%;
+}
+
+.layout--single {
+  max-width: 640px;
+  margin: 0 auto;
+  grid-template-columns: 1fr;
+}
+
+.contact-form {
+  position: relative;
+}
+
+.konfig-honeypot {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.form-error-text {
+  color: #b42318;
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin: 0.75rem 0 0;
+}
+
+.form-actions-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 1.25rem;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.inline-link {
+  color: #0f4f68;
+  font-weight: 700;
+  text-decoration: underline;
+}
+
+.panel--success .panel-subtitle {
+  margin-bottom: 1rem;
+}
+
+.text-muted {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+

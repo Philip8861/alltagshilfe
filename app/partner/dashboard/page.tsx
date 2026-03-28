@@ -4,6 +4,20 @@ import { requirePartnerLogin } from "@/lib/partner/auth";
 import type { PflegeboxOrderRow } from "@/lib/partner/types";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
+function orderContactLine(summary: Record<string, unknown> | null): string | null {
+  if (!summary || typeof summary !== "object") return null;
+  const c = summary.contact as Record<string, unknown> | undefined;
+  if (!c || typeof c !== "object") return null;
+  const first = typeof c.firstName === "string" ? c.firstName : "";
+  const last = typeof c.lastName === "string" ? c.lastName : "";
+  const mail = typeof c.email === "string" ? c.email : "";
+  const name = `${first} ${last}`.trim();
+  if (name && mail) return `${name} · ${mail}`;
+  if (mail) return mail;
+  if (name) return name;
+  return null;
+}
+
 export default async function PartnerDashboardPage() {
   const { profile, email } = await requirePartnerLogin();
 
@@ -48,8 +62,9 @@ export default async function PartnerDashboardPage() {
           Abgeschlossene Pflegebox-Konfigurationen
         </h2>
         <p className="mt-2 max-w-2xl text-sm text-neutral-600">
-          Hier erscheinen Einträge aus dem Pflegebox-Konfigurator, sobald die Anbindung an die Datenbank eingerichtet
-          ist. Aktuell sehen Sie nur Ihre zugeordneten Datensätze.
+          Einträge entstehen, wenn Kundinnen und Kunden den Konfigurator abschließen. Sichtbar sind nur Konfigurationen,
+          die Ihrer Partner-ID zugeordnet sind (z. B. Link mit{" "}
+          <code className="rounded bg-neutral-100 px-1 text-xs">?partner=Ihre-UUID</code>).
         </p>
 
         {orders.length === 0 ? (
@@ -58,27 +73,38 @@ export default async function PartnerDashboardPage() {
           </p>
         ) : (
           <ul className="mt-6 space-y-3">
-            {orders.map((row) => (
-              <li
-                key={row.id}
-                className="rounded-2xl border border-[#0F4F68]/10 bg-white p-4 shadow-sm sm:p-5"
-              >
-                <div className="flex flex-wrap items-center justify-between gap-2">
-                  <span className="font-semibold text-neutral-900">
-                    {row.external_reference ?? `Konfiguration ${row.id.slice(0, 8)}…`}
-                  </span>
-                  <span className="rounded-full bg-emerald-50 px-2.5 py-0.5 text-xs font-bold text-emerald-800">
-                    {row.status}
-                  </span>
-                </div>
-                <p className="mt-2 text-xs text-neutral-500">
-                  {new Date(row.created_at).toLocaleString("de-DE", {
-                    dateStyle: "medium",
-                    timeStyle: "short",
-                  })}
-                </p>
-              </li>
-            ))}
+            {orders.map((row) => {
+              const summary = row.summary_json as Record<string, unknown> | null;
+              const contact = orderContactLine(summary);
+              const lines = Array.isArray(summary?.cartLines) ? summary.cartLines.length : null;
+              return (
+                <li
+                  key={row.id}
+                  className="rounded-2xl border border-[#0F4F68]/10 bg-white p-4 shadow-sm sm:p-5"
+                >
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <span className="font-semibold text-neutral-900">
+                      {row.external_reference ?? `Konfiguration ${row.id.slice(0, 8)}…`}
+                    </span>
+                    <span className="rounded-full bg-emerald-50 px-2.5 py-0.5 text-xs font-bold text-emerald-800">
+                      {row.status}
+                    </span>
+                  </div>
+                  {contact ? (
+                    <p className="mt-2 text-sm text-neutral-700">{contact}</p>
+                  ) : null}
+                  {lines != null ? (
+                    <p className="mt-1 text-xs text-neutral-500">{lines} Position(en) in der Box</p>
+                  ) : null}
+                  <p className="mt-2 text-xs text-neutral-500">
+                    {new Date(row.created_at).toLocaleString("de-DE", {
+                      dateStyle: "medium",
+                      timeStyle: "short",
+                    })}
+                  </p>
+                </li>
+              );
+            })}
           </ul>
         )}
       </section>
