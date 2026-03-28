@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { HomePartnerLoginBlock } from "@/components/home/HomePartnerLoginBlock";
 import { KundenstimmenCarousel } from "@/components/home/KundenstimmenCarousel";
 import { StartEinstiegsHilfe } from "@/components/home/StartEinstiegsHilfe";
 import { StandortNummerEinsReveal } from "@/components/standorte/StandortNummerEinsReveal";
@@ -280,6 +281,8 @@ export default function HomePage() {
           </ul>
         </div>
       </section>
+
+      <HomePartnerLoginBlock />
 
       <KundenstimmenCarousel />
 

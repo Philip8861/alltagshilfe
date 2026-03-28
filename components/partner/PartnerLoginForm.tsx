@@ -5,20 +5,37 @@ import { partnerLoginAction, type PartnerLoginState } from "@/lib/actions/partne
 
 const initial: PartnerLoginState = { ok: true };
 
-export function PartnerLoginForm({ disabled }: { disabled?: boolean }) {
+type PartnerLoginFormProps = {
+  disabled?: boolean;
+  /** Standard: „E-Mail“; z. B. Startseite: Anmeldename-Hinweis (weiterhin E-Mail für Supabase). */
+  emailFieldLabel?: string;
+  formClassName?: string;
+};
+
+export function PartnerLoginForm({
+  disabled,
+  emailFieldLabel = "E-Mail",
+  formClassName,
+}: PartnerLoginFormProps) {
   const [state, formAction, pending] = useActionState(partnerLoginAction, initial);
 
   return (
-    <form action={formAction} className="mt-8 max-w-md space-y-5 rounded-2xl border border-[#0F4F68]/12 bg-white p-6 shadow-sm sm:p-8">
+    <form
+      action={formAction}
+      className={
+        formClassName ??
+        "mt-8 max-w-md space-y-5 rounded-2xl border border-[#0F4F68]/12 bg-white p-6 shadow-sm sm:p-8"
+      }
+    >
       <div>
         <label htmlFor="partner-email" className="block text-sm font-semibold text-[#0F4F68]">
-          E-Mail
+          {emailFieldLabel}
         </label>
         <input
           id="partner-email"
           name="email"
           type="email"
-          autoComplete="email"
+          autoComplete="username"
           required
           disabled={disabled || pending}
           className="mt-2 w-full rounded-xl border border-neutral-200 px-4 py-3 text-neutral-900 outline-none ring-[#0F4F68] focus:ring-2 disabled:opacity-60"

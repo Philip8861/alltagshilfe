@@ -36,7 +36,7 @@ export default async function PartnerLoginPage() {
           </p>
         </div>
       ) : (
-        <PartnerLoginForm />
+        <PartnerLoginForm emailFieldLabel="E-Mail-Adresse (Anmeldename)" />
       )}
 
       <p className="mt-8 text-sm text-neutral-600">
