@@ -37,8 +37,19 @@ export default function RatgeberPage() {
               <div className="flex flex-col items-stretch gap-3 sm:flex-row sm:flex-wrap sm:items-center">
                 <Link
                   href="/partner/dashboard?tip=1"
-                  className="inline-flex min-h-11 items-center justify-center rounded-2xl bg-[#0F4F68] px-5 py-2.5 text-center text-sm font-semibold text-white shadow-[0_10px_22px_rgba(15,79,104,0.2),0_4px_12px_rgba(15,79,104,0.12)] transition hover:bg-[#0c3d52] hover:shadow-[0_12px_26px_rgba(15,79,104,0.22),0_5px_14px_rgba(15,79,104,0.14)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68] focus-visible:ring-offset-2"
+                  className="group inline-flex min-h-11 items-center justify-center gap-2 rounded-2xl bg-gradient-to-b from-[#0F4F68] to-[#0c3d52] px-5 py-3 text-center text-sm font-semibold text-white shadow-[0_10px_22px_rgba(15,79,104,0.22),0_4px_12px_rgba(15,79,104,0.14)] ring-1 ring-[#0F4F68]/30 transition hover:from-[#0c3d52] hover:to-[#0a3446] hover:shadow-[0_14px_28px_rgba(15,79,104,0.28),0_6px_14px_rgba(15,79,104,0.16)] active:translate-y-px focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68] focus-visible:ring-offset-2"
                 >
+                  <svg
+                    className="h-5 w-5 shrink-0 opacity-95 transition group-hover:scale-105"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2.25"
+                    strokeLinecap="round"
+                    aria-hidden
+                  >
+                    <path d="M12 5v14M5 12h14" />
+                  </svg>
                   Tipp geben
                 </Link>
                 <div className="flex flex-wrap gap-2">

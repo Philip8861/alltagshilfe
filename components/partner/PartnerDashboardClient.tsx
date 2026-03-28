@@ -109,20 +109,31 @@ export function PartnerDashboardClient({
 
   return (
     <div className="mx-auto w-full max-w-[min(100%,90rem)] space-y-6 sm:space-y-8">
-      <header className="flex flex-col gap-4 rounded-lg border border-[#0c3d52] bg-[#0F4F68] px-6 py-6 text-white sm:flex-row sm:items-start sm:justify-between sm:px-8 sm:py-7">
+      <header className="flex flex-col gap-4 rounded-xl border border-[#0F4F68]/12 bg-[#F2F9FA] px-6 py-6 shadow-[0_10px_22px_rgba(15,79,104,0.2),0_4px_12px_rgba(15,79,104,0.12)] sm:flex-row sm:items-center sm:justify-between sm:px-8 sm:py-7">
         <div>
-          <h1 className="text-2xl font-semibold leading-snug sm:text-3xl">
+          <h1 className="text-2xl font-semibold leading-snug text-[#0F4F68] sm:text-3xl">
             {welcomeLine},
           </h1>
-          <p className="mt-2 text-sm text-white/90 sm:text-base">
+          <p className="mt-2 text-sm text-neutral-700 sm:text-base">
             Dein persönliches Partnerportal-Dashboard.
           </p>
         </div>
         <button
           type="button"
           onClick={() => setTipOpen(true)}
-          className="inline-flex w-full shrink-0 items-center justify-center border border-white/50 bg-white/10 px-4 py-2 text-sm font-normal text-white hover:bg-white/20 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/70 sm:mt-0 sm:w-auto"
+          className="group inline-flex w-full shrink-0 items-center justify-center gap-2 rounded-2xl bg-gradient-to-b from-[#0F4F68] to-[#0c3d52] px-5 py-3 text-sm font-semibold text-white shadow-[0_10px_22px_rgba(15,79,104,0.22),0_4px_12px_rgba(15,79,104,0.14)] ring-1 ring-[#0F4F68]/30 transition hover:from-[#0c3d52] hover:to-[#0a3446] hover:shadow-[0_14px_28px_rgba(15,79,104,0.28),0_6px_14px_rgba(15,79,104,0.16)] active:translate-y-px focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68] focus-visible:ring-offset-2 focus-visible:ring-offset-[#F2F9FA] sm:mt-0 sm:w-auto"
         >
+          <svg
+            className="h-5 w-5 shrink-0 opacity-95 transition group-hover:scale-105"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2.25"
+            strokeLinecap="round"
+            aria-hidden
+          >
+            <path d="M12 5v14M5 12h14" />
+          </svg>
           Tipp geben
         </button>
       </header>
@@ -231,7 +242,7 @@ export function PartnerDashboardClient({
         <div className="mt-6 overflow-x-auto rounded-md border border-neutral-200">
           <table className="min-w-[56rem] w-full text-left text-sm">
             <thead>
-              <tr className="border-b border-neutral-200 bg-[#FAFBFC] text-xs font-semibold uppercase text-neutral-600">
+              <tr className="border-b border-neutral-200 bg-[#F2F9FA] text-xs font-semibold uppercase text-neutral-600">
                 <th className="whitespace-nowrap px-3 py-3 sm:px-4">Typ</th>
                 <th className="whitespace-nowrap px-3 py-3 sm:px-4">Kontakt</th>
                 <th className="whitespace-nowrap px-3 py-3 sm:px-4">Datum</th>

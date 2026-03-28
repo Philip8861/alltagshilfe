@@ -10,12 +10,12 @@ type Props = {
   avatarBlue: string;
 };
 
-const shell = "bg-[#0F4F68]";
+const shell = "bg-[#F2F9FA]";
 
 function iconButtonClass(active: boolean) {
   return [
-    "flex h-11 w-11 shrink-0 items-center justify-center rounded-lg text-white transition",
-    active ? "bg-white/20 ring-1 ring-white/35" : "hover:bg-white/10",
+    "flex h-11 w-11 shrink-0 items-center justify-center rounded-lg text-[#0F4F68] transition",
+    active ? "bg-[#0F4F68]/12 ring-1 ring-[#0F4F68]/25" : "hover:bg-[#0F4F68]/10",
   ].join(" ");
 }
 
@@ -26,9 +26,9 @@ export function PartnerPortalShell({ children, avatarGreen, avatarBlue }: Props)
   const settingsActive = pathname === "/partner/einstellungen" || pathname.startsWith("/partner/einstellungen/");
 
   return (
-    <div className="flex min-h-screen flex-col bg-[#FAFBFC] md:flex-row">
+    <div className="flex min-h-screen flex-col bg-[#F2F9FA] md:flex-row">
       <aside
-        className={`${shell} order-2 fixed bottom-0 left-0 right-0 z-40 flex flex-row items-center justify-between gap-1 border-t border-white/10 px-2 py-2 shadow-[0_-10px_22px_rgba(15,79,104,0.2),0_-4px_12px_rgba(15,79,104,0.12)] md:order-1 md:sticky md:top-0 md:h-screen md:w-[4.5rem] md:shrink-0 md:flex-col md:justify-between md:border-r md:border-t-0 md:px-0 md:py-5 md:shadow-[4px_0_22px_rgba(15,79,104,0.2),2px_0_12px_rgba(15,79,104,0.12)]`}
+        className={`${shell} order-2 fixed bottom-0 left-0 right-0 z-40 flex flex-row items-center justify-between gap-1 border-t border-[#0F4F68]/12 px-2 py-2 shadow-[0_-10px_22px_rgba(15,79,104,0.2),0_-4px_12px_rgba(15,79,104,0.12)] md:order-1 md:sticky md:top-0 md:h-screen md:w-[4.5rem] md:shrink-0 md:flex-col md:justify-between md:border-r md:border-t-0 md:px-0 md:py-5 md:shadow-[4px_0_22px_rgba(15,79,104,0.2),2px_0_12px_rgba(15,79,104,0.12)]`}
         aria-label="Partnerportal-Navigation"
       >
         <nav className="flex flex-1 flex-row items-center justify-center gap-1 sm:gap-2 md:flex-none md:flex-col md:justify-start md:gap-3">

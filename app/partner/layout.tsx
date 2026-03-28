@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 
 export default function PartnerLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="notranslate min-h-[60vh] bg-[#FAFBFC]" data-no-local-translate>
+    <div className="notranslate min-h-[60vh] bg-[#F2F9FA]" data-no-local-translate>
       {children}
     </div>
   );

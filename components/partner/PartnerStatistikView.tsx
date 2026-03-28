@@ -182,7 +182,7 @@ export function PartnerStatistikView({ tips, orders }: Props) {
         <p className="mt-1 text-sm text-neutral-600">
           Tippgeber-Eingänge und abgeschlossene Konfigurationen im gewählten Zeitraum.
         </p>
-        <div className="mt-6 rounded-lg border border-neutral-200 bg-[#FAFBFC] p-5 sm:p-6">
+        <div className="mt-6 rounded-lg border border-neutral-200 bg-[#F2F9FA] p-5 sm:p-6">
           <HorizontalStatBars stats={periodStats} />
         </div>
       </div>
