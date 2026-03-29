@@ -15,7 +15,7 @@ export type PayoutSettlementResult = {
 /**
  * Monatsabrechnung: Bericht für periodKey (Standard: Vormonat Europe/Berlin).
  * Einmal: nur noch nicht abgerechnete bezahlte Tipps → Summe, dann Archiv + payout_settled_period_key.
- * Monatlich: alle bezahlten Monats-Tipps → Summe im Bericht; Zeilen in der DB unverändert (kein Archiv).
+ * Monatlich: laufende Verträge mit erledigt/bezahlt → Summe; Admin-archivierte Tipps zählen nicht.
  * Idempotent: wenn bereits Zeilen in partner_payout_reports für periodKey existieren → überspringen.
  */
 export async function runPartnerMonthlyPayoutSettlement(options?: {
@@ -48,7 +48,7 @@ export async function runPartnerMonthlyPayoutSettlement(options?: {
 
   const { data: tips, error: tipsErr } = await svc
     .from("partner_tip_submissions")
-    .select("id, partner_id, service_slug, admin_status, paid_amount_eur, payout_settled_period_key");
+    .select("id, partner_id, service_slug, admin_status, paid_amount_eur, payout_settled_period_key, archived_at");
 
   if (tipsErr) {
     return { ok: false, message: tipsErr.message };
@@ -67,6 +67,8 @@ export async function runPartnerMonthlyPayoutSettlement(options?: {
     const bucket = provisionBucketForServiceSlug(String(row.service_slug));
 
     if (bucket === "monatlich") {
+      const arch = row.archived_at;
+      if (arch != null && String(arch).trim() !== "") continue;
       if (st !== "erledigt" && st !== "bezahlt") continue;
     } else if (st !== "bezahlt") {
       continue;

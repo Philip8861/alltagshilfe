@@ -223,13 +223,27 @@ export async function archivePartnerTipAction(
   }
 
   const archivedAt = parsed.data.archived === "true" ? new Date().toISOString() : null;
-  const { error } = await svc
-    .from("partner_tip_submissions")
-    .update({ archived_at: archivedAt })
-    .eq("id", parsed.data.tip_id);
+  const updateFull =
+    archivedAt != null
+      ? { archived_at: archivedAt, former_active_company_at: null as string | null }
+      : { archived_at: archivedAt };
+
+  let { error } = await svc.from("partner_tip_submissions").update(updateFull).eq("id", parsed.data.tip_id);
+
+  if (
+    error &&
+    archivedAt != null &&
+    isSupabaseMissingColumnError(error) &&
+    "former_active_company_at" in updateFull
+  ) {
+    ({ error } = await svc
+      .from("partner_tip_submissions")
+      .update({ archived_at: archivedAt })
+      .eq("id", parsed.data.tip_id));
+  }
 
   if (error) {
-    return { ok: false, message: "Archiv-Status konnte nicht gespeichert werden." };
+    return { ok: false, message: error.message || "Archiv-Status konnte nicht gespeichert werden." };
   }
 
   revalidatePath("/partner/admin");

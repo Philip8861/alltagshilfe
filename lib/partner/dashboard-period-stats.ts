@@ -1,3 +1,4 @@
+import { PARTNER_TIP_ADMIN_STATUSES } from "@/lib/partner/partner-tip-admin";
 import type { PartnerTipAdminStatus } from "@/lib/partner/types";
 
 export type DashboardAuftragStats = {
@@ -5,6 +6,27 @@ export type DashboardAuftragStats = {
   abgelehnt: number;
   inBearbeitung: number;
 };
+
+/** Zählung je Verwaltungsstatus im Zeitraum (nur Tippgeber, keine Pflegebox). */
+export function periodTipStatusCounts(
+  tips: readonly { created_at: string; admin_status: PartnerTipAdminStatus }[],
+  start: Date,
+  end: Date,
+): Record<PartnerTipAdminStatus, number> {
+  const a = start.getTime();
+  const b = end.getTime();
+  const out = Object.fromEntries(PARTNER_TIP_ADMIN_STATUSES.map((s) => [s, 0])) as Record<
+    PartnerTipAdminStatus,
+    number
+  >;
+  for (const t of tips) {
+    const ti = new Date(t.created_at).getTime();
+    if (!Number.isFinite(ti) || ti < a || ti >= b) continue;
+    if (out[t.admin_status] !== undefined) out[t.admin_status] += 1;
+    else out.in_bearbeitung += 1;
+  }
+  return out;
+}
 
 type TipLike = { created_at: string; admin_status: PartnerTipAdminStatus };
 type OrderLike = { created_at: string; status: string };

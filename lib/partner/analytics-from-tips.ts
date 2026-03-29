@@ -1,3 +1,4 @@
+import { PARTNER_TIP_ADMIN_STATUSES } from "@/lib/partner/partner-tip-admin";
 import type { PartnerTipAdminStatus } from "@/lib/partner/types";
 import { provisionBucketForServiceSlug } from "@/lib/partner/partner-tip-provision-bucket";
 import { normalizePaidAmountEur } from "@/lib/partner/partner-tip-payout";
@@ -161,6 +162,103 @@ export function countOrdersInLocalMonth(orders: readonly { created_at: string }[
 export function countOrdersInLocalYear(orders: readonly { created_at: string }[], year: number) {
   const start = new Date(year, 0, 1, 0, 0, 0, 0).getTime();
   const end = new Date(year + 1, 0, 1, 0, 0, 0, 0).getTime();
+  let n = 0;
+  for (const o of orders) {
+    if (inLocalRange(o.created_at, start, end)) n += 1;
+  }
+  return n;
+}
+
+function emptyStatusRow(name: string): { name: string } & Record<PartnerTipAdminStatus, number> {
+  const row = { name } as { name: string } & Record<PartnerTipAdminStatus, number>;
+  for (const s of PARTNER_TIP_ADMIN_STATUSES) row[s] = 0;
+  return row;
+}
+
+/** Liniendiagramm: je Monat alle Admin-Status-Zähler (nach Eingangsdatum). */
+export function monthlyStatusCountLinesForYear(
+  tips: readonly { created_at: string; admin_status: PartnerTipAdminStatus }[],
+  year: number,
+): Array<{ name: string } & Record<PartnerTipAdminStatus, number>> {
+  return Array.from({ length: 12 }, (_, m) => {
+    const start = new Date(year, m, 1, 0, 0, 0, 0).getTime();
+    const end = new Date(year, m + 1, 1, 0, 0, 0, 0).getTime();
+    const row = emptyStatusRow(MONTH_SHORT_DE[m]);
+    for (const t of tips) {
+      const ti = new Date(t.created_at).getTime();
+      if (!Number.isFinite(ti) || ti < start || ti >= end) continue;
+      row[t.admin_status] += 1;
+    }
+    return row;
+  });
+}
+
+export function monthlyStatusCountLinesForPoints(
+  tips: readonly { created_at: string; admin_status: PartnerTipAdminStatus }[],
+  points: MonthlyCountPoint[],
+): Array<{ name: string } & Record<PartnerTipAdminStatus, number>> {
+  return points.map((pt) => {
+    const parts = pt.key.split("-").map(Number);
+    const y = parts[0];
+    const mo = parts[1];
+    if (!Number.isFinite(y) || !Number.isFinite(mo)) return emptyStatusRow(pt.label);
+    const start = new Date(y, mo - 1, 1, 0, 0, 0, 0).getTime();
+    const end = new Date(y, mo, 1, 0, 0, 0, 0).getTime();
+    const row = emptyStatusRow(pt.label);
+    for (const t of tips) {
+      const ti = new Date(t.created_at).getTime();
+      if (!Number.isFinite(ti) || ti < start || ti >= end) continue;
+      row[t.admin_status] += 1;
+    }
+    return row;
+  });
+}
+
+/** Geschätzte Provision (EUR) nach Eingangsmonat des Tipps. */
+export function monthlyProvisionEuroLinesForYear(tips: readonly TipLike[], year: number) {
+  return Array.from({ length: 12 }, (_, m) => {
+    const start = new Date(year, m, 1, 0, 0, 0, 0).getTime();
+    const end = new Date(year, m + 1, 1, 0, 0, 0, 0).getTime();
+    const subset = tips.filter((t) => {
+      const ti = new Date(t.created_at).getTime();
+      return Number.isFinite(ti) && ti >= start && ti < end;
+    });
+    const p = provisionEuroTotalsForTips(subset);
+    return { name: MONTH_SHORT_DE[m], monatlich: p.monatlich, einmal: p.einmal, gesamt: p.total };
+  });
+}
+
+export function monthlyProvisionEuroLinesForPoints(tips: readonly TipLike[], points: MonthlyCountPoint[]) {
+  return points.map((pt) => {
+    const parts = pt.key.split("-").map(Number);
+    const y = parts[0];
+    const mo = parts[1];
+    if (!Number.isFinite(y) || !Number.isFinite(mo)) {
+      return { name: pt.label, monatlich: 0, einmal: 0, gesamt: 0 };
+    }
+    const start = new Date(y, mo - 1, 1, 0, 0, 0, 0).getTime();
+    const end = new Date(y, mo, 1, 0, 0, 0, 0).getTime();
+    const subset = tips.filter((t) => {
+      const ti = new Date(t.created_at).getTime();
+      return Number.isFinite(ti) && ti >= start && ti < end;
+    });
+    const p = provisionEuroTotalsForTips(subset);
+    return { name: pt.label, monatlich: p.monatlich, einmal: p.einmal, gesamt: p.total };
+  });
+}
+
+export function filterTipsByPartnerId<T extends { partner_id: string }>(tips: readonly T[], partnerId: string): T[] {
+  return tips.filter((t) => t.partner_id === partnerId);
+}
+
+/** Zählt Bestellungen im Kalendermonat `key` (YYYY-MM). */
+export function countOrdersInMonthKey(orders: readonly { created_at: string }[], key: string): number {
+  const m = /^(\d{4})-(\d{2})$/.exec(key.trim());
+  if (!m) return 0;
+  const y = Number(m[1]);
+  const mo = Number(m[2]) - 1;
+  const start = new Date(y, mo, 1, 0, 0, 0, 0).getTime();
+  const end = new Date(y, mo + 1, 1, 0, 0, 0, 0).getTime();
   let n = 0;
   for (const o of orders) {
     if (inLocalRange(o.created_at, start, end)) n += 1;

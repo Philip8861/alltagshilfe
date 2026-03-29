@@ -15,6 +15,7 @@ import type {
   PartnerProfile,
   PartnerTipSubmissionRow,
 } from "@/lib/partner/types";
+import { fetchPartnerTipSubmissionRows } from "@/lib/partner/partner-tip-submissions-select";
 import { createSupabaseServiceRoleClient } from "@/lib/supabase/service";
 
 type AuthUserInfo = {
@@ -72,7 +73,7 @@ export default async function PartnerAdminPage({
 
   if (svc) {
     try {
-      const [profRes, tipsRes, ordRes, listRes, repRes] = await Promise.all([
+      const [profRes, ordRes, listRes, repRes, tipPack] = await Promise.all([
         svc
           .from("partner_profiles")
           .select(
@@ -80,39 +81,36 @@ export default async function PartnerAdminPage({
           )
           .order("created_at", { ascending: false }),
         svc
-          .from("partner_tip_submissions")
-          .select("*")
-          .order("created_at", { ascending: false })
-          .limit(500),
-        svc
           .from("pflegebox_orders")
           .select("id, partner_id, external_reference, status, created_at, summary_json")
           .order("created_at", { ascending: false })
           .limit(200),
         svc.auth.admin.listUsers({ page: 1, perPage: 1000 }),
         svc.from("partner_payout_reports").select("*").order("period_key", { ascending: false }).limit(5000),
+        fetchPartnerTipSubmissionRows((sel) =>
+          svc.from("partner_tip_submissions").select(sel).order("created_at", { ascending: false }).limit(500),
+        ),
       ]);
 
       profiles = (profRes.data as PartnerProfile[] | null) ?? [];
-      if (tipsRes.error) {
-        console.error("[PartnerAdminPage] partner_tip_submissions:", tipsRes.error.message);
-      }
-      if (!tipsRes.error && tipsRes.data) {
-        tips = (tipsRes.data as Record<string, unknown>[]).map((row) => ({
-          id: String(row.id),
-          partner_id: String(row.partner_id),
-          service_slug: String(row.service_slug),
-          payload: (row.payload as Record<string, unknown>) ?? {},
-          created_at: String(row.created_at),
-          admin_status: normalizePartnerTipAdminStatus(row.admin_status),
-          admin_visible_note: normalizeAdminVisibleNote(row.admin_visible_note),
-          archived_at: normalizeArchivedAt(row.archived_at),
-          partner_archived_at: normalizePartnerArchivedAt(row.partner_archived_at),
-          former_active_company_at: normalizeFormerActiveCompanyAt(row.former_active_company_at),
-          paid_amount_eur: normalizePaidAmountEur(row.paid_amount_eur),
-          payout_settled_period_key: normalizePayoutPeriodKey(row.payout_settled_period_key),
-        }));
-      }
+      tips = tipPack.rows.map((row) => ({
+        id: String(row.id),
+        partner_id: String(row.partner_id),
+        service_slug: String(row.service_slug),
+        payload: (row.payload as Record<string, unknown>) ?? {},
+        created_at: String(row.created_at),
+        admin_status: normalizePartnerTipAdminStatus(row.admin_status),
+        admin_visible_note: normalizeAdminVisibleNote(row.admin_visible_note),
+        archived_at: normalizeArchivedAt(row.archived_at),
+        partner_archived_at: tipPack.hasM012Columns
+          ? normalizePartnerArchivedAt(row.partner_archived_at)
+          : null,
+        former_active_company_at: tipPack.hasM012Columns
+          ? normalizeFormerActiveCompanyAt(row.former_active_company_at)
+          : null,
+        paid_amount_eur: normalizePaidAmountEur(row.paid_amount_eur),
+        payout_settled_period_key: normalizePayoutPeriodKey(row.payout_settled_period_key),
+      }));
       orders = (ordRes.data as typeof orders | null) ?? [];
       if (!listRes.error && listRes.data?.users) {
         for (const u of listRes.data.users) {

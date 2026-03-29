@@ -1095,7 +1095,13 @@ export function PartnerAdminDashboard({
                   />
                 </div>
               </div>
-              <AdminStatisticsCharts tips={tips} orders={orders} chartYear={chartYear} />
+              <AdminStatisticsCharts
+                tips={tips}
+                orders={orders}
+                chartYear={chartYear}
+                profiles={profiles}
+                authById={authById}
+              />
 
               <div>
                 <h3 className="text-lg font-bold text-[#0F4F68]">Je Partner</h3>
