@@ -55,7 +55,21 @@ export function normalizeAdminVisibleNote(v: unknown): string | null {
 }
 
 export function normalizeArchivedAt(v: unknown): string | null {
-  if (v === null || v === undefined) return null;
+  if (v == null) return null;
+  const s = String(v).trim();
+  return s.length > 0 ? s : null;
+}
+
+/** Migration 012: Partner-Listen-Archiv. */
+export function normalizePartnerArchivedAt(v: unknown): string | null {
+  if (v == null) return null;
+  const s = String(v).trim();
+  return s.length > 0 ? s : null;
+}
+
+/** Migration 012: Admin „Ehemalige Unternehmen“. */
+export function normalizeFormerActiveCompanyAt(v: unknown): string | null {
+  if (v == null) return null;
   const s = String(v).trim();
   return s.length > 0 ? s : null;
 }

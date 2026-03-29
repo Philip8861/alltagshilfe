@@ -44,6 +44,10 @@ export type PartnerTipSubmissionRow = {
   /** Vom Admin für den Partner sichtbare Notiz (nicht Payload). */
   admin_visible_note: string | null;
   archived_at: string | null;
+  /** Partner-Archiv nur für Übersicht (Migration 012); ohne Einfluss auf Abrechnung. */
+  partner_archived_at: string | null;
+  /** Admin: Betriebskunde als ehemalig markiert (Migration 012). */
+  former_active_company_at: string | null;
   /** Auszahlungsbetrag EUR bei Status bezahlt (Migration 010). */
   paid_amount_eur: number | null;
   /** Abgerechneter Kalendermonat YYYY-MM nach Monatslauf (Migration 011). */
@@ -60,6 +64,7 @@ export type PartnerDashboardTipSerial = Pick<
   | "admin_status"
   | "admin_visible_note"
   | "archived_at"
+  | "partner_archived_at"
   | "paid_amount_eur"
   | "payout_settled_period_key"
 >;

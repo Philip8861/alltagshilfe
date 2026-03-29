@@ -42,11 +42,18 @@ export async function archiveOwnPartnerTipAction(
   const archivedAt = parsed.data.archived === "true" ? new Date().toISOString() : null;
   const { error } = await svc
     .from("partner_tip_submissions")
-    .update({ archived_at: archivedAt })
+    .update({ partner_archived_at: archivedAt })
     .eq("id", parsed.data.tip_id)
     .eq("partner_id", userId);
 
   if (error) {
+    const msg = (error.message ?? "").toLowerCase();
+    if (msg.includes("partner_archived_at") && msg.includes("does not exist")) {
+      return {
+        ok: false,
+        message: "Migration 012 (partner_archived_at) in Supabase ausführen.",
+      };
+    }
     return { ok: false, message: "Archiv konnte nicht gespeichert werden." };
   }
 

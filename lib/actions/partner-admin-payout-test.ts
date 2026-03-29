@@ -22,7 +22,17 @@ export async function adminTestPartnerPayoutRerunAction(
   }
 
   const raw = String(formData.get("period_key") ?? "").trim();
-  const periodKey = raw.length > 0 ? raw : previousMonthPeriodKeyBerlin();
+  const refDateRaw = String(formData.get("reference_date") ?? "").trim();
+  let referenceInstant = new Date();
+  if (refDateRaw.length > 0) {
+    const parsed = new Date(`${refDateRaw}T12:00:00`);
+    if (!Number.isFinite(parsed.getTime())) {
+      return { ok: false, message: "Ungültiges Referenzdatum (YYYY-MM-DD)." };
+    }
+    referenceInstant = parsed;
+  }
+
+  const periodKey = raw.length > 0 ? raw : previousMonthPeriodKeyBerlin(referenceInstant);
   if (!PERIOD_RE.test(periodKey)) {
     return { ok: false, message: "Ungültiger Abrechnungsmonat (YYYY-MM)." };
   }
@@ -62,8 +72,9 @@ export async function adminTestPartnerPayoutRerunAction(
   if (!result.ok) {
     return { ok: false, message: result.message };
   }
+  const refHint = refDateRaw.length > 0 ? `; Referenzdatum ${refDateRaw}` : "";
   return {
     ok: true,
-    message: `${result.message} (Test-Lauf für ${periodKey})`,
+    message: `${result.message} (Test-Lauf für ${periodKey}${refHint})`,
   };
 }

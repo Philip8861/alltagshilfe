@@ -1,6 +1,7 @@
 import {
   normalizeAdminVisibleNote,
   normalizeArchivedAt,
+  normalizePartnerArchivedAt,
   normalizePartnerTipAdminStatus,
 } from "@/lib/partner/partner-tip-admin";
 import { normalizePaidAmountEur } from "@/lib/partner/partner-tip-payout";
@@ -26,6 +27,7 @@ function mapRows(data: Record<string, unknown>[]): PartnerDashboardTipSerial[] {
     admin_status: normalizePartnerTipAdminStatus(row.admin_status),
     admin_visible_note: normalizeAdminVisibleNote(row.admin_visible_note),
     archived_at: normalizeArchivedAt(row.archived_at),
+    partner_archived_at: normalizePartnerArchivedAt(row.partner_archived_at),
     paid_amount_eur: normalizePaidAmountEur(row.paid_amount_eur),
     payout_settled_period_key: normalizePayoutPeriodKey(row.payout_settled_period_key),
   }));

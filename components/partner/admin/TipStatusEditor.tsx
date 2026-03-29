@@ -131,7 +131,8 @@ export function TipStatusEditor({ tipId, status, adminVisibleNote, serviceSlug, 
             Ablehnungsgrund <span className="text-rose-700">*</span>
           </label>
           <p className="mt-0.5 text-[0.6rem] leading-snug text-rose-900/85">
-            Wird dem Partner als Notiz angezeigt. Der Auftrag wandert ins Admin-Archiv.
+            Wird dem Partner als Notiz angezeigt. Die Listen des Partners bleiben unverändert (kein automatisches
+            Archiv).
           </p>
           <textarea
             id={`tip-grund-${tipId}`}

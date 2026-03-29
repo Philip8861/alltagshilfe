@@ -4,6 +4,7 @@ import { useActionState, useCallback, useEffect, useMemo, useState } from "react
 import Link from "next/link";
 import { ArchiveTipButton } from "@/components/partner/admin/ArchiveTipButton";
 import { DeleteTipButton } from "@/components/partner/admin/DeleteTipButton";
+import { FormerBetriebCompanyButton } from "@/components/partner/admin/FormerBetriebCompanyButton";
 import { CreatePartnerAccountForm } from "@/components/partner/CreatePartnerAccountForm";
 import { DeletePartnerUserButton } from "@/components/partner/DeletePartnerUserButton";
 import { PartnerEditModal } from "@/components/partner/admin/PartnerEditModal";
@@ -27,7 +28,11 @@ import {
 } from "@/lib/actions/partner-admin-payout-test";
 import { formatProvisionEur } from "@/lib/partner/partner-tip-payout";
 import { maskIban } from "@/lib/partner/iban-display";
-import { inAdminAktiveUnternehmen, inAdminAuftraegeQueue } from "@/lib/partner/partner-tip-betrieblich-queue";
+import {
+  inAdminAktiveUnternehmen,
+  inAdminAuftraegeQueue,
+  inAdminEhemaligeUnternehmen,
+} from "@/lib/partner/partner-tip-betrieblich-queue";
 import type {
   PartnerAdminPayoutPeriod,
   PartnerProfile,
@@ -216,6 +221,7 @@ export function PartnerAdminDashboard({
   const activeTips = useMemo(() => tips.filter((t) => !t.archived_at), [tips]);
   const auftraegeQueueTips = useMemo(() => activeTips.filter(inAdminAuftraegeQueue), [activeTips]);
   const aktiveUnternehmenTips = useMemo(() => activeTips.filter(inAdminAktiveUnternehmen), [activeTips]);
+  const ehemaligeUnternehmenTips = useMemo(() => activeTips.filter(inAdminEhemaligeUnternehmen), [activeTips]);
   const archivedTips = useMemo(() => tips.filter((t) => t.archived_at), [tips]);
 
   const sortTipRows = useCallback(
@@ -253,6 +259,10 @@ export function PartnerAdminDashboard({
   const sortedAktiveUnternehmenTips = useMemo(
     () => sortTipRows(aktiveUnternehmenTips),
     [aktiveUnternehmenTips, sortTipRows],
+  );
+  const sortedEhemaligeUnternehmenTips = useMemo(
+    () => sortTipRows(ehemaligeUnternehmenTips),
+    [ehemaligeUnternehmenTips, sortTipRows],
   );
   const sortedArchivedTips = useMemo(() => sortTipRows(archivedTips), [archivedTips, sortTipRows]);
 
@@ -534,129 +544,264 @@ export function PartnerAdminDashboard({
           ) : null}
 
           {section === "aktive_unternehmen" ? (
-            <section
-              className="partner-dash-animate rounded-3xl border border-emerald-200/90 bg-white p-5 shadow-[0_20px_50px_-24px_rgba(15,79,104,0.25)] sm:p-8"
-              aria-labelledby="aktive-unternehmen-heading"
-            >
-              <h2 id="aktive-unternehmen-heading" className="text-xl font-bold text-[#0F4F68] sm:text-2xl">
-                Aktive Unternehmen
-              </h2>
-              <p className="mt-2 text-sm text-neutral-600">
-                Betriebliche Pflegeberatung mit Vertragsabschluss und hinterlegter monatlicher Provision. Status und
-                Betrag sind weiter bearbeitbar.
-              </p>
-              <div className="mt-6 overflow-x-auto rounded-2xl border border-neutral-200/80">
-                <table className="min-w-[900px] w-full text-left text-sm">
-                  <thead className="border-b border-[#0F4F68]/10 bg-emerald-50/80 text-xs">
-                    <tr>
-                      <th className="px-3 py-3">
-                        <SortButton
-                          label="Datum"
-                          active={tipSort.key === "created_at"}
-                          dir={tipSort.dir}
-                          onClick={() => toggleTipSort("created_at")}
-                        />
-                      </th>
-                      <th className="px-3 py-3">
-                        <SortButton
-                          label="Partner"
-                          active={tipSort.key === "partner"}
-                          dir={tipSort.dir}
-                          onClick={() => toggleTipSort("partner")}
-                        />
-                      </th>
-                      <th className="px-3 py-3">
-                        <SortButton
-                          label="Dienstleistung"
-                          active={tipSort.key === "service"}
-                          dir={tipSort.dir}
-                          onClick={() => toggleTipSort("service")}
-                        />
-                      </th>
-                      <th className="px-3 py-3">Kurzinfo</th>
-                      <th className="whitespace-nowrap px-3 py-3">Monatliche Provision</th>
-                      <th className="px-3 py-3">
-                        <SortButton
-                          label="Status"
-                          active={tipSort.key === "status"}
-                          dir={tipSort.dir}
-                          onClick={() => toggleTipSort("status")}
-                        />
-                      </th>
-                      <th className="whitespace-nowrap px-3 py-3">Archiv</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-neutral-100">
-                    {sortedAktiveUnternehmenTips.length === 0 ? (
+            <div className="space-y-10">
+              <section
+                className="partner-dash-animate rounded-3xl border border-emerald-200/90 bg-white p-5 shadow-[0_20px_50px_-24px_rgba(15,79,104,0.25)] sm:p-8"
+                aria-labelledby="aktive-unternehmen-heading"
+              >
+                <h2 id="aktive-unternehmen-heading" className="text-xl font-bold text-[#0F4F68] sm:text-2xl">
+                  Aktive Unternehmen
+                </h2>
+                <p className="mt-2 text-sm text-neutral-600">
+                  Betriebliche Pflegeberatung mit Vertragsabschluss und hinterlegter monatlicher Provision. Status und
+                  Betrag sind weiter bearbeitbar. „Ehemalig“ verschiebt den Eintrag nur in die Liste unten (kein
+                  Partner-Archiv).
+                </p>
+                <div className="mt-6 overflow-x-auto rounded-2xl border border-neutral-200/80">
+                  <table className="min-w-[960px] w-full text-left text-sm">
+                    <thead className="border-b border-[#0F4F68]/10 bg-emerald-50/80 text-xs">
                       <tr>
-                        <td colSpan={7} className="px-4 py-12 text-center text-neutral-600">
-                          Keine aktiven Unternehmen mit erfasster Monatsprovision.
-                        </td>
+                        <th className="px-3 py-3">
+                          <SortButton
+                            label="Datum"
+                            active={tipSort.key === "created_at"}
+                            dir={tipSort.dir}
+                            onClick={() => toggleTipSort("created_at")}
+                          />
+                        </th>
+                        <th className="px-3 py-3">
+                          <SortButton
+                            label="Partner"
+                            active={tipSort.key === "partner"}
+                            dir={tipSort.dir}
+                            onClick={() => toggleTipSort("partner")}
+                          />
+                        </th>
+                        <th className="px-3 py-3">
+                          <SortButton
+                            label="Dienstleistung"
+                            active={tipSort.key === "service"}
+                            dir={tipSort.dir}
+                            onClick={() => toggleTipSort("service")}
+                          />
+                        </th>
+                        <th className="px-3 py-3">Kurzinfo</th>
+                        <th className="whitespace-nowrap px-3 py-3">Monatliche Provision</th>
+                        <th className="px-3 py-3">
+                          <SortButton
+                            label="Status"
+                            active={tipSort.key === "status"}
+                            dir={tipSort.dir}
+                            onClick={() => toggleTipSort("status")}
+                          />
+                        </th>
+                        <th className="whitespace-nowrap px-3 py-3">Liste</th>
+                        <th className="whitespace-nowrap px-3 py-3">Admin-Archiv</th>
                       </tr>
-                    ) : (
-                      sortedAktiveUnternehmenTips.map((t) => {
-                        const pd = partnerDisplay(t.partner_id);
-                        const label =
-                          PARTNER_RESPONSIBILITY_LABELS[t.service_slug as PartnerResponsibilitySlug] ??
-                          t.service_slug;
-                        const prov =
-                          t.paid_amount_eur != null && Number.isFinite(Number(t.paid_amount_eur))
-                            ? formatProvisionEur(Number(t.paid_amount_eur))
-                            : "—";
-                        return (
-                          <tr
-                            key={t.id}
-                            className={`align-top transition-colors hover:bg-[#f8fbfc] ${serviceRowAccentBorderClass(t.service_slug)}`}
-                          >
-                            <td className="whitespace-nowrap px-3 py-3 text-neutral-700">
-                              {new Date(t.created_at).toLocaleString("de-DE", {
-                                dateStyle: "short",
-                                timeStyle: "short",
-                              })}
-                            </td>
-                            <td className="px-3 py-3">
-                              <span className="font-medium text-neutral-900">{pd.name}</span>
-                              {pd.code ? (
-                                <span className="ml-1 font-mono text-xs font-bold text-[#0F4F68]">{pd.code}</span>
-                              ) : null}
-                              <div className="break-all text-xs text-neutral-500">{pd.email}</div>
-                            </td>
-                            <td className="px-3 py-3">
-                              <span
-                                className={`inline-block rounded-full border px-2.5 py-1 text-xs font-semibold ${serviceBadgeClass(t.service_slug)}`}
-                              >
-                                {label}
-                              </span>
-                            </td>
-                            <td className="max-w-[240px] px-3 py-3 text-xs text-neutral-700">
-                              {partnerTipPayloadSummary(t.payload, t.service_slug)}
-                            </td>
-                            <td className="whitespace-nowrap px-3 py-3 text-sm font-semibold tabular-nums text-emerald-900">
-                              {prov}
-                            </td>
-                            <td className="px-3 py-3">
-                              <TipStatusEditor
-                                tipId={t.id}
-                                status={t.admin_status}
-                                adminVisibleNote={t.admin_visible_note}
-                                serviceSlug={t.service_slug}
-                                paidAmountEur={t.paid_amount_eur}
-                              />
-                            </td>
-                            <td className="px-3 py-3 align-top">
-                              <div className="flex flex-col gap-2">
-                                <ArchiveTipButton tipId={t.id} isArchived={false} />
-                                <DeleteTipButton tipId={t.id} />
-                              </div>
-                            </td>
-                          </tr>
-                        );
-                      })
-                    )}
-                  </tbody>
-                </table>
-              </div>
-            </section>
+                    </thead>
+                    <tbody className="divide-y divide-neutral-100">
+                      {sortedAktiveUnternehmenTips.length === 0 ? (
+                        <tr>
+                          <td colSpan={8} className="px-4 py-12 text-center text-neutral-600">
+                            Keine aktiven Unternehmen mit erfasster Monatsprovision.
+                          </td>
+                        </tr>
+                      ) : (
+                        sortedAktiveUnternehmenTips.map((t) => {
+                          const pd = partnerDisplay(t.partner_id);
+                          const label =
+                            PARTNER_RESPONSIBILITY_LABELS[t.service_slug as PartnerResponsibilitySlug] ??
+                            t.service_slug;
+                          const prov =
+                            t.paid_amount_eur != null && Number.isFinite(Number(t.paid_amount_eur))
+                              ? formatProvisionEur(Number(t.paid_amount_eur))
+                              : "—";
+                          return (
+                            <tr
+                              key={t.id}
+                              className={`align-top transition-colors hover:bg-[#f8fbfc] ${serviceRowAccentBorderClass(t.service_slug)}`}
+                            >
+                              <td className="whitespace-nowrap px-3 py-3 text-neutral-700">
+                                {new Date(t.created_at).toLocaleString("de-DE", {
+                                  dateStyle: "short",
+                                  timeStyle: "short",
+                                })}
+                              </td>
+                              <td className="px-3 py-3">
+                                <span className="font-medium text-neutral-900">{pd.name}</span>
+                                {pd.code ? (
+                                  <span className="ml-1 font-mono text-xs font-bold text-[#0F4F68]">{pd.code}</span>
+                                ) : null}
+                                <div className="break-all text-xs text-neutral-500">{pd.email}</div>
+                              </td>
+                              <td className="px-3 py-3">
+                                <span
+                                  className={`inline-block rounded-full border px-2.5 py-1 text-xs font-semibold ${serviceBadgeClass(t.service_slug)}`}
+                                >
+                                  {label}
+                                </span>
+                              </td>
+                              <td className="max-w-[240px] px-3 py-3 text-xs text-neutral-700">
+                                {partnerTipPayloadSummary(t.payload, t.service_slug)}
+                              </td>
+                              <td className="whitespace-nowrap px-3 py-3 text-sm font-semibold tabular-nums text-emerald-900">
+                                {prov}
+                              </td>
+                              <td className="px-3 py-3">
+                                <TipStatusEditor
+                                  tipId={t.id}
+                                  status={t.admin_status}
+                                  adminVisibleNote={t.admin_visible_note}
+                                  serviceSlug={t.service_slug}
+                                  paidAmountEur={t.paid_amount_eur}
+                                />
+                              </td>
+                              <td className="px-3 py-3 align-top">
+                                <FormerBetriebCompanyButton tipId={t.id} isFormer={false} />
+                              </td>
+                              <td className="px-3 py-3 align-top">
+                                <div className="flex flex-col gap-2">
+                                  <ArchiveTipButton tipId={t.id} isArchived={false} />
+                                  <DeleteTipButton tipId={t.id} />
+                                </div>
+                              </td>
+                            </tr>
+                          );
+                        })
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+              </section>
+
+              <section
+                className="partner-dash-animate rounded-3xl border border-amber-200/90 bg-amber-50/40 p-5 shadow-[0_20px_50px_-24px_rgba(15,79,104,0.2)] sm:p-8"
+                aria-labelledby="ehemalige-unternehmen-heading"
+              >
+                <h2 id="ehemalige-unternehmen-heading" className="text-xl font-bold text-[#0F4F68] sm:text-2xl">
+                  Ehemalige Unternehmen
+                </h2>
+                <p className="mt-2 text-sm text-neutral-600">
+                  Vertrag beendet oder kein aktives Unternehmen mehr – nur für die Admin-Übersicht. Provision und
+                  Auszahlungslogik laufen unverändert weiter.
+                </p>
+                <div className="mt-6 overflow-x-auto rounded-2xl border border-neutral-200/80 bg-white">
+                  <table className="min-w-[960px] w-full text-left text-sm">
+                    <thead className="border-b border-[#0F4F68]/10 bg-amber-50/90 text-xs">
+                      <tr>
+                        <th className="px-3 py-3">
+                          <SortButton
+                            label="Datum"
+                            active={tipSort.key === "created_at"}
+                            dir={tipSort.dir}
+                            onClick={() => toggleTipSort("created_at")}
+                          />
+                        </th>
+                        <th className="px-3 py-3">
+                          <SortButton
+                            label="Partner"
+                            active={tipSort.key === "partner"}
+                            dir={tipSort.dir}
+                            onClick={() => toggleTipSort("partner")}
+                          />
+                        </th>
+                        <th className="px-3 py-3">
+                          <SortButton
+                            label="Dienstleistung"
+                            active={tipSort.key === "service"}
+                            dir={tipSort.dir}
+                            onClick={() => toggleTipSort("service")}
+                          />
+                        </th>
+                        <th className="px-3 py-3">Kurzinfo</th>
+                        <th className="whitespace-nowrap px-3 py-3">Monatliche Provision</th>
+                        <th className="px-3 py-3">
+                          <SortButton
+                            label="Status"
+                            active={tipSort.key === "status"}
+                            dir={tipSort.dir}
+                            onClick={() => toggleTipSort("status")}
+                          />
+                        </th>
+                        <th className="whitespace-nowrap px-3 py-3">Liste</th>
+                        <th className="whitespace-nowrap px-3 py-3">Admin-Archiv</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-neutral-100">
+                      {sortedEhemaligeUnternehmenTips.length === 0 ? (
+                        <tr>
+                          <td colSpan={8} className="px-4 py-12 text-center text-neutral-600">
+                            Keine ehemaligen Unternehmen.
+                          </td>
+                        </tr>
+                      ) : (
+                        sortedEhemaligeUnternehmenTips.map((t) => {
+                          const pd = partnerDisplay(t.partner_id);
+                          const label =
+                            PARTNER_RESPONSIBILITY_LABELS[t.service_slug as PartnerResponsibilitySlug] ??
+                            t.service_slug;
+                          const prov =
+                            t.paid_amount_eur != null && Number.isFinite(Number(t.paid_amount_eur))
+                              ? formatProvisionEur(Number(t.paid_amount_eur))
+                              : "—";
+                          return (
+                            <tr
+                              key={t.id}
+                              className={`align-top transition-colors hover:bg-[#f8fbfc] ${serviceRowAccentBorderClass(t.service_slug)}`}
+                            >
+                              <td className="whitespace-nowrap px-3 py-3 text-neutral-700">
+                                {new Date(t.created_at).toLocaleString("de-DE", {
+                                  dateStyle: "short",
+                                  timeStyle: "short",
+                                })}
+                              </td>
+                              <td className="px-3 py-3">
+                                <span className="font-medium text-neutral-900">{pd.name}</span>
+                                {pd.code ? (
+                                  <span className="ml-1 font-mono text-xs font-bold text-[#0F4F68]">{pd.code}</span>
+                                ) : null}
+                                <div className="break-all text-xs text-neutral-500">{pd.email}</div>
+                              </td>
+                              <td className="px-3 py-3">
+                                <span
+                                  className={`inline-block rounded-full border px-2.5 py-1 text-xs font-semibold ${serviceBadgeClass(t.service_slug)}`}
+                                >
+                                  {label}
+                                </span>
+                              </td>
+                              <td className="max-w-[240px] px-3 py-3 text-xs text-neutral-700">
+                                {partnerTipPayloadSummary(t.payload, t.service_slug)}
+                              </td>
+                              <td className="whitespace-nowrap px-3 py-3 text-sm font-semibold tabular-nums text-emerald-900">
+                                {prov}
+                              </td>
+                              <td className="px-3 py-3">
+                                <TipStatusEditor
+                                  tipId={t.id}
+                                  status={t.admin_status}
+                                  adminVisibleNote={t.admin_visible_note}
+                                  serviceSlug={t.service_slug}
+                                  paidAmountEur={t.paid_amount_eur}
+                                />
+                              </td>
+                              <td className="px-3 py-3 align-top">
+                                <FormerBetriebCompanyButton tipId={t.id} isFormer />
+                              </td>
+                              <td className="px-3 py-3 align-top">
+                                <div className="flex flex-col gap-2">
+                                  <ArchiveTipButton tipId={t.id} isArchived={false} />
+                                  <DeleteTipButton tipId={t.id} />
+                                </div>
+                              </td>
+                            </tr>
+                          );
+                        })
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+              </section>
+            </div>
           ) : null}
 
           {section === "archiv" ? (
@@ -668,8 +813,8 @@ export function PartnerAdminDashboard({
                 Aufträge Archiv
               </h2>
               <p className="mt-2 text-sm text-neutral-600">
-                Abgelegte Tippgeber-Eingänge (manuell, durch Partner oder bei Ablehnung betrieblicher Pflegeberatung mit
-                Grund). Status und Notiz bleiben bearbeitbar; „Reaktivieren“ holt den Eintrag zurück.
+                Nur Einträge, die Sie hier ins Admin-Archiv legen („Ins Archiv“). Status und Notiz bleiben bearbeitbar;
+                „Reaktivieren“ holt den Eintrag zurück. Partner-Archiv und Ablehnung betrieblich verschieben hier nichts.
               </p>
               <div className="mt-6 overflow-x-auto rounded-2xl border border-neutral-200/80">
                 <table className="min-w-[900px] w-full text-left text-sm">
@@ -1267,11 +1412,27 @@ function PartnerAdminTestPayoutForm() {
           name="period_key"
           type="text"
           inputMode="numeric"
-          placeholder="Leer lassen = Vormonat (Europe/Berlin)"
+          placeholder="Leer lassen = Vormonat relativ zum Referenzdatum"
           disabled={pending}
           className="mt-1 w-full rounded-xl border border-neutral-200 px-3 py-2 font-mono text-sm text-neutral-900"
           autoComplete="off"
         />
+      </div>
+      <div className="min-w-0">
+        <label htmlFor="test-payout-reference-date" className="text-xs font-semibold text-neutral-600">
+          Referenzdatum (optional, Europe/Berlin)
+        </label>
+        <input
+          id="test-payout-reference-date"
+          name="reference_date"
+          type="date"
+          disabled={pending}
+          className="mt-1 w-full max-w-xs rounded-xl border border-neutral-200 px-3 py-2 text-sm text-neutral-900"
+        />
+        <p className="mt-1 text-xs text-neutral-500">
+          Wenn der Abrechnungsmonat leer ist, gilt der Vormonat zu diesem Tag (zum Experimentieren mit anderen
+          „heute“-Monaten).
+        </p>
       </div>
       <button
         type="submit"

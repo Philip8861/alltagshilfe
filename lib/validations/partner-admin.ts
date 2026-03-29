@@ -38,6 +38,11 @@ export const archivePartnerTipSchema = z.object({
   archived: z.enum(["true", "false"]),
 });
 
+export const formerActiveCompanyTipSchema = z.object({
+  tip_id: z.string().uuid(),
+  former: z.enum(["true", "false"]),
+});
+
 const optionalIbanAdmin = z
   .string()
   .max(48)

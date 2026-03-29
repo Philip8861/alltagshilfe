@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { PartnerNoteDetails } from "@/components/partner/PartnerNoteDetails";
 import { usePathname, useRouter } from "next/navigation";
 import { PartnerAnimatedEuro } from "@/components/partner/PartnerAnimatedEuro";
 import { PartnerTipModal } from "@/components/partner/PartnerTipModal";
@@ -66,7 +67,6 @@ export function PartnerDashboardClient({
   const router = useRouter();
   const pathname = usePathname();
   const [tipOpen, setTipOpen] = useState(initialTipModalOpen);
-  const [search, setSearch] = useState("");
 
   useEffect(() => {
     setTipOpen(initialTipModalOpen);
@@ -76,16 +76,22 @@ export function PartnerDashboardClient({
     return responsibilityAreaSlugs.filter((s): s is PartnerResponsibilitySlug => slugSet.has(s));
   }, [responsibilityAreaSlugs]);
 
-  const activeTips = useMemo(() => tips.filter((t) => !t.archived_at), [tips]);
-  const archivedTips = useMemo(() => tips.filter((t) => t.archived_at), [tips]);
+  const visiblePartnerTips = useMemo(
+    () => tips.filter((t) => !t.partner_archived_at),
+    [tips],
+  );
+  const partnerArchivedTips = useMemo(
+    () => tips.filter((t) => Boolean(t.partner_archived_at)),
+    [tips],
+  );
 
   const activeMonatlichTips = useMemo(
-    () => activeTips.filter((t) => provisionBucketForServiceSlug(t.service_slug) === "monatlich"),
-    [activeTips],
+    () => visiblePartnerTips.filter((t) => provisionBucketForServiceSlug(t.service_slug) === "monatlich"),
+    [visiblePartnerTips],
   );
   const activeEinmalTips = useMemo(
-    () => activeTips.filter((t) => provisionBucketForServiceSlug(t.service_slug) === "einmal"),
-    [activeTips],
+    () => visiblePartnerTips.filter((t) => provisionBucketForServiceSlug(t.service_slug) === "einmal"),
+    [visiblePartnerTips],
   );
 
   const toRows = useCallback((list: typeof tips) => {
@@ -114,7 +120,7 @@ export function PartnerDashboardClient({
       return {
         id: t.id,
         tipId: t.id,
-        isArchived: Boolean(t.archived_at),
+        isArchived: Boolean(t.partner_archived_at),
         typ,
         typeClass: serviceBadgeClass(t.service_slug),
         typCellClass: serviceTipTableTypCellClass(t.service_slug),
@@ -131,33 +137,7 @@ export function PartnerDashboardClient({
 
   const monatlichRows = useMemo(() => toRows(activeMonatlichTips), [activeMonatlichTips, toRows]);
   const einmalRows = useMemo(() => toRows(activeEinmalTips), [activeEinmalTips, toRows]);
-  const archivedRows = useMemo(() => toRows(archivedTips), [archivedTips, toRows]);
-
-  const filterRows = useCallback(
-    (rows: ReturnType<typeof toRows>) => {
-      const q = search.trim().toLowerCase();
-      if (!q) return rows;
-      return rows.filter((r) => {
-        const note = r.adminNote.toLowerCase();
-        return (
-          r.typ.toLowerCase().includes(q) ||
-          r.vorname.toLowerCase().includes(q) ||
-          r.nachname.toLowerCase().includes(q) ||
-          `${r.vorname} ${r.nachname}`.toLowerCase().includes(q) ||
-          r.firma.toLowerCase().includes(q) ||
-          r.datum.includes(q) ||
-          r.pill.label.toLowerCase().includes(q) ||
-          note.includes(q) ||
-          r.betrag.toLowerCase().includes(q)
-        );
-      });
-    },
-    [search],
-  );
-
-  const filteredMonatlich = useMemo(() => filterRows(monatlichRows), [monatlichRows, filterRows]);
-  const filteredEinmal = useMemo(() => filterRows(einmalRows), [einmalRows, filterRows]);
-  const filteredArchived = useMemo(() => filterRows(archivedRows), [archivedRows, filterRows]);
+  const archivedRows = useMemo(() => toRows(partnerArchivedTips), [partnerArchivedTips, toRows]);
 
   const closeTipModal = () => {
     setTipOpen(false);
@@ -293,25 +273,10 @@ export function PartnerDashboardClient({
         <div className="rounded-xl border border-[#0F4F68]/12 bg-white p-4 shadow-sm sm:p-5">
           <p className="text-sm font-medium text-[#0F4F68]">Ihre Tippgeber-Statuslisten</p>
           <p className="mt-1 text-sm text-neutral-600">
-            Suche durchsucht alle drei Listen gleichzeitig. Betriebliche Pflegeberatung erscheint unter Monatsprovision,
-            alle anderen Leistungen unter Einmalprovision.
+            Betriebliche Pflegeberatung unter Monatsprovision, alle anderen Leistungen unter Einmalprovision. Änderungen
+            durch die Verwaltung verschieben Ihre Einträge nicht zwischen den Listen — nur „Mein Archiv“ blendet für Sie
+            ab.
           </p>
-          <label className="relative mt-4 block w-full sm:max-w-md">
-            <span className="sr-only">Suchen in allen Statuslisten</span>
-            <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[#0F4F68]/40" aria-hidden>
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <circle cx="11" cy="11" r="7" />
-                <path d="M20 20l-3-3" strokeLinecap="round" />
-              </svg>
-            </span>
-            <input
-              type="search"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              placeholder="Suchen in allen Listen"
-              className="w-full rounded-lg border border-neutral-300 bg-white py-2.5 pl-10 pr-3 text-sm text-neutral-900 placeholder:text-neutral-500 hover:border-neutral-400 focus:border-[#0F4F68] focus:outline-none focus:ring-1 focus:ring-[#0F4F68]"
-            />
-          </label>
         </div>
 
         <section
@@ -331,8 +296,8 @@ export function PartnerDashboardClient({
           <div className="p-4 sm:p-6">
             <StatuslisteTable
               variant="monatlich"
-              rows={filteredMonatlich}
-              emptyHint={`Keine Einträge${search.trim() ? " für diese Suche." : "."}`}
+              rows={monatlichRows}
+              emptyHint="Keine Einträge."
               theadClass="bg-amber-50 text-amber-950"
             />
           </div>
@@ -350,15 +315,14 @@ export function PartnerDashboardClient({
             <p className="mt-1 text-sm text-emerald-900/85">
               Tipps zu <strong className="font-medium text-emerald-950">Hauswirtschaft & Betreuung</strong>,{" "}
               <strong className="font-medium text-emerald-950">Pflegehilfsmittel</strong> und{" "}
-              <strong className="font-medium text-emerald-950">Pflegeberatung</strong>. „Mein Archiv“ verschiebt nur Ihre
-              Ansicht, der Admin bleibt unverändert.
+              <strong className="font-medium text-emerald-950">Pflegeberatung</strong>.
             </p>
           </header>
           <div className="p-4 sm:p-6">
             <StatuslisteTable
               variant="einmal"
-              rows={filteredEinmal}
-              emptyHint={`Keine Einträge${search.trim() ? " für diese Suche." : "."}`}
+              rows={einmalRows}
+              emptyHint="Keine Einträge."
               theadClass="bg-emerald-50 text-emerald-900"
             />
           </div>
@@ -374,14 +338,14 @@ export function PartnerDashboardClient({
               Statusliste Archiv
             </h2>
             <p className="mt-1 text-sm text-white/85">
-              Von Ihnen abgelegte Fälle aus beiden Provisionslisten. Die Suche oben gilt auch hier.
+              Von Ihnen abgelegte Fälle aus beiden Provisionslisten — ohne Einfluss auf Provision oder Auszahlung.
             </p>
           </header>
           <div className="p-4 sm:p-6">
             <StatuslisteTable
               variant="archiv"
-              rows={filteredArchived}
-              emptyHint={`Keine archivierten Einträge${search.trim() ? " für diese Suche." : "."}`}
+              rows={archivedRows}
+              emptyHint="Keine archivierten Einträge."
               theadClass="bg-[#e8f2f6] text-[#0F4F68]"
             />
           </div>
@@ -466,27 +430,7 @@ function StatuslisteTable({
                 </td>
                 <td className="whitespace-nowrap px-3 py-3 tabular-nums text-neutral-900 sm:px-4">{r.betrag}</td>
                 <td className="max-w-[14rem] px-3 py-3 align-top text-neutral-800 sm:px-4">
-                  {r.adminNote ? (
-                    <details className="text-sm">
-                      <summary className="cursor-pointer list-none font-medium text-[#0F4F68] hover:underline [&::-webkit-details-marker]:hidden">
-                        <span className="inline-flex items-center gap-2">
-                          <span
-                            className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-amber-400 text-[11px] font-black leading-none text-amber-950 shadow-[0_0_14px_rgba(251,191,36,0.95)] ring-2 ring-amber-200/80 motion-safe:animate-pulse"
-                            aria-hidden
-                          >
-                            !
-                          </span>
-                          <span>Notiz lesen</span>
-                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
-                            <path d="M6 9l6 6 6-6" strokeLinecap="round" strokeLinejoin="round" />
-                          </svg>
-                        </span>
-                      </summary>
-                      <p className="mt-2 whitespace-pre-wrap text-neutral-700">{r.adminNote}</p>
-                    </details>
-                  ) : (
-                    <span className="text-neutral-300">—</span>
-                  )}
+                  <PartnerNoteDetails tipId={r.tipId} note={r.adminNote} />
                 </td>
                 <td className="px-3 py-3 align-top sm:px-4">
                   <PartnerOwnArchiveTipButton tipId={r.tipId} isArchived={r.isArchived} />

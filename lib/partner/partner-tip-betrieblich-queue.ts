@@ -21,8 +21,16 @@ export function inAdminAuftraegeQueue(t: PartnerTipSubmissionRow): boolean {
   return !isBetrieblichMitMonatsprovisionRow(t);
 }
 
-/** Admin „Aktive Unternehmen“. */
+/** Admin „Aktive Unternehmen“ (laufender Vertrag). */
 export function inAdminAktiveUnternehmen(t: PartnerTipSubmissionRow): boolean {
   if (t.archived_at) return false;
-  return isBetrieblichMitMonatsprovisionRow(t);
+  if (!isBetrieblichMitMonatsprovisionRow(t)) return false;
+  return !t.former_active_company_at;
+}
+
+/** Admin „Ehemalige Unternehmen“ (gleicher Vertragsstand, historisch geführt). */
+export function inAdminEhemaligeUnternehmen(t: PartnerTipSubmissionRow): boolean {
+  if (t.archived_at) return false;
+  if (!isBetrieblichMitMonatsprovisionRow(t)) return false;
+  return Boolean(t.former_active_company_at);
 }

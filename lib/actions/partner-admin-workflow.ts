@@ -10,10 +10,14 @@ import {
   normalizePaidAmountEur,
   parsePayoutAmountGerman,
 } from "@/lib/partner/partner-tip-payout";
-import { BETRIEBLICHE_PFLEGEBERATUNG_SLUG } from "@/lib/partner/partner-tip-betrieblich-queue";
+import {
+  BETRIEBLICHE_PFLEGEBERATUNG_SLUG,
+  isBetrieblichMitMonatsprovisionRow,
+} from "@/lib/partner/partner-tip-betrieblich-queue";
 import {
   archivePartnerTipSchema,
   deletePartnerTipSchema,
+  formerActiveCompanyTipSchema,
   updatePartnerProfileAdminSchema,
   updatePartnerTipStatusSchema,
 } from "@/lib/validations/partner-admin";
@@ -115,15 +119,6 @@ export async function updatePartnerTipStatusAction(
     paidUpdate = null;
   }
 
-  let archivedAtUpdate: string | null | undefined = undefined;
-  if (isBetrieblich) {
-    if (newStatus === "abgelehnt") {
-      archivedAtUpdate = new Date().toISOString();
-    } else if (prevStatus === "abgelehnt") {
-      archivedAtUpdate = null;
-    }
-  }
-
   const payloadFull: Record<string, unknown> = {
     admin_status: newStatus,
     admin_visible_note: parsed.data.admin_visible_note,
@@ -131,8 +126,8 @@ export async function updatePartnerTipStatusAction(
   if (paidUpdate !== undefined) {
     payloadFull.paid_amount_eur = paidUpdate;
   }
-  if (archivedAtUpdate !== undefined) {
-    payloadFull.archived_at = archivedAtUpdate;
+  if (isBetrieblich && newStatus !== "erledigt" && newStatus !== "bezahlt") {
+    payloadFull.former_active_company_at = null;
   }
 
   let { error } = await svc.from("partner_tip_submissions").update(payloadFull).eq("id", tipId);
@@ -140,6 +135,7 @@ export async function updatePartnerTipStatusAction(
   if (error && isSupabaseMissingColumnError(error)) {
     const retryPayload: Record<string, unknown> = { ...payloadFull };
     delete retryPayload.paid_amount_eur;
+    delete retryPayload.former_active_company_at;
     const retry = await svc.from("partner_tip_submissions").update(retryPayload).eq("id", tipId);
     error = retry.error;
     if (!error) {
@@ -329,4 +325,69 @@ export async function updatePartnerProfileAdminAction(
 
   revalidatePath("/partner/admin");
   return { ok: true, message: "Partnerdaten gespeichert." };
+}
+
+export async function setFormerActiveCompanyAction(
+  _prev: AdminWorkflowState | null,
+  formData: FormData,
+): Promise<AdminWorkflowState> {
+  if (!(await getSystemAdminSession())) {
+    return { ok: false, message: "Nicht autorisiert." };
+  }
+
+  const parsed = formerActiveCompanyTipSchema.safeParse({
+    tip_id: formData.get("tip_id"),
+    former: formData.get("former"),
+  });
+  if (!parsed.success) {
+    return { ok: false, message: "Ungültige Eingabe." };
+  }
+
+  const svc = createSupabaseServiceRoleClient();
+  if (!svc) {
+    return { ok: false, message: "SUPABASE_SERVICE_ROLE_KEY fehlt." };
+  }
+
+  const { data: cur, error: fetchErr } = await svc
+    .from("partner_tip_submissions")
+    .select("service_slug, admin_status, paid_amount_eur")
+    .eq("id", parsed.data.tip_id)
+    .maybeSingle();
+
+  if (fetchErr || !cur) {
+    return { ok: false, message: "Tipp nicht gefunden." };
+  }
+
+  const slug = String(cur.service_slug);
+  const st = normalizePartnerTipAdminStatus(cur.admin_status);
+  const paid = normalizePaidAmountEur(cur.paid_amount_eur);
+  if (
+    !isBetrieblichMitMonatsprovisionRow({
+      service_slug: slug,
+      admin_status: st,
+      paid_amount_eur: paid,
+    })
+  ) {
+    return { ok: false, message: "Nur für betriebliche Pflegeberatung mit hinterlegter Monatsprovision." };
+  }
+
+  const at = parsed.data.former === "true" ? new Date().toISOString() : null;
+  const { error } = await svc
+    .from("partner_tip_submissions")
+    .update({ former_active_company_at: at })
+    .eq("id", parsed.data.tip_id);
+
+  if (error) {
+    const m = String(error.message ?? "").toLowerCase();
+    if (m.includes("former_active_company_at") && m.includes("does not exist")) {
+      return { ok: false, message: "Migration 012 (former_active_company_at) in Supabase ausführen." };
+    }
+    return { ok: false, message: error.message || "Speichern fehlgeschlagen." };
+  }
+
+  revalidatePath("/partner/admin");
+  return {
+    ok: true,
+    message: at ? "Als ehemaliges Unternehmen geführt." : "Wieder unter aktiven Unternehmen.",
+  };
 }

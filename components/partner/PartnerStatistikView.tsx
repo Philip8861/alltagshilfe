@@ -133,7 +133,7 @@ export function PartnerStatistikView({ tips, orders }: Props) {
 
   const orderLikes = useMemo(() => orders.map((o) => ({ created_at: o.created_at, status: o.status })), [orders]);
 
-  const tipsForStats = useMemo(() => tips.filter((t) => !t.archived_at), [tips]);
+  const tipsForStats = useMemo(() => tips, [tips]);
 
   const periodStats = useMemo(() => {
     if (periodMode === "month") {

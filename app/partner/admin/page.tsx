@@ -4,6 +4,8 @@ import { requireSystemAdmin } from "@/lib/partner/system-admin-guard";
 import {
   normalizeAdminVisibleNote,
   normalizeArchivedAt,
+  normalizeFormerActiveCompanyAt,
+  normalizePartnerArchivedAt,
   normalizePartnerTipAdminStatus,
 } from "@/lib/partner/partner-tip-admin";
 import { normalizePaidAmountEur } from "@/lib/partner/partner-tip-payout";
@@ -105,6 +107,8 @@ export default async function PartnerAdminPage({
           admin_status: normalizePartnerTipAdminStatus(row.admin_status),
           admin_visible_note: normalizeAdminVisibleNote(row.admin_visible_note),
           archived_at: normalizeArchivedAt(row.archived_at),
+          partner_archived_at: normalizePartnerArchivedAt(row.partner_archived_at),
+          former_active_company_at: normalizeFormerActiveCompanyAt(row.former_active_company_at),
           paid_amount_eur: normalizePaidAmountEur(row.paid_amount_eur),
           payout_settled_period_key: normalizePayoutPeriodKey(row.payout_settled_period_key),
         }));
