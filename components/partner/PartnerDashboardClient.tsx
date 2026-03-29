@@ -270,15 +270,6 @@ export function PartnerDashboardClient({
         id="partner-statuslisten"
         className="partner-dash-animate partner-dash-delay-5 scroll-mt-28 space-y-6 sm:space-y-8"
       >
-        <div className="rounded-xl border border-[#0F4F68]/12 bg-white p-4 shadow-sm sm:p-5">
-          <p className="text-sm font-medium text-[#0F4F68]">Ihre Tippgeber-Statuslisten</p>
-          <p className="mt-1 text-sm text-neutral-600">
-            Betriebliche Pflegeberatung unter Monatsprovision, alle anderen Leistungen unter Einmalprovision. Änderungen
-            durch die Verwaltung verschieben Ihre Einträge nicht zwischen den Listen — nur „Mein Archiv“ blendet für Sie
-            ab.
-          </p>
-        </div>
-
         <section
           id="partner-statusliste-monatlich"
           className="scroll-mt-28 overflow-hidden rounded-xl border border-amber-300/90 bg-white shadow-[0_8px_30px_-12px_rgba(202,138,4,0.22)] ring-1 ring-amber-200/60"

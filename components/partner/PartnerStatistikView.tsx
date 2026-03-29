@@ -1,12 +1,19 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { PartnerPortalStatisticsCharts } from "@/components/partner/PartnerPortalStatisticsCharts";
 import {
-  monthlyStatsForYear,
+  countOrdersInLocalMonth,
+  countOrdersInLocalYear,
+  filterTipsCreatedInMonth,
+  filterTipsCreatedInYear,
+  provisionEuroTotalsForTips,
+} from "@/lib/partner/analytics-from-tips";
+import {
   statsForMonth,
   statsForYear,
-  type DashboardAuftragStats,
 } from "@/lib/partner/dashboard-period-stats";
+import { formatProvisionEur } from "@/lib/partner/partner-tip-payout";
 import type { PartnerDashboardTipSerial } from "@/lib/partner/types";
 
 export type PartnerStatistikOrderSerial = {
@@ -35,97 +42,6 @@ function parseMonthValue(v: string): { year: number; month0: number } | null {
   return { year, month0: month - 1 };
 }
 
-function HorizontalStatBars({ stats, animKey }: { stats: DashboardAuftragStats; animKey: string }) {
-  const max = Math.max(1, stats.abgeschlossen, stats.abgelehnt, stats.inBearbeitung);
-  const rows: { label: string; value: number; barClass: string }[] = [
-    { label: "Abgeschlossen", value: stats.abgeschlossen, barClass: "bg-emerald-500" },
-    { label: "Abgelehnt", value: stats.abgelehnt, barClass: "bg-rose-500" },
-    { label: "In Bearbeitung", value: stats.inBearbeitung, barClass: "bg-amber-500" },
-  ];
-  return (
-    <div key={animKey} className="space-y-4" role="img" aria-label="Balkendiagramm Auftragsstatus">
-      {rows.map((r, idx) => (
-        <div key={r.label} className="flex flex-col gap-1.5 sm:flex-row sm:items-center sm:gap-4">
-          <span className="w-full shrink-0 text-sm font-semibold text-neutral-800 sm:w-40">{r.label}</span>
-          <div className="flex min-w-0 flex-1 items-center gap-3">
-            <div className="h-9 min-w-0 flex-1 overflow-hidden rounded-lg bg-neutral-100 ring-1 ring-neutral-200/80">
-              <div
-                className={`h-full origin-left rounded-lg motion-safe:animate-partner-bar-fill ${r.barClass}`}
-                style={{
-                  width: `${(r.value / max) * 100}%`,
-                  animationDelay: `${idx * 0.1}s`,
-                }}
-              />
-            </div>
-            <span className="w-10 shrink-0 text-right text-base font-bold tabular-nums text-neutral-900">{r.value}</span>
-          </div>
-        </div>
-      ))}
-    </div>
-  );
-}
-
-function YearMonthOverviewChart({
-  monthly,
-  year,
-  chartKey,
-}: {
-  monthly: DashboardAuftragStats[];
-  year: number;
-  chartKey: string;
-}) {
-  const maxTotal = useMemo(
-    () => Math.max(1, ...monthly.map((m) => m.abgeschlossen + m.abgelehnt + m.inBearbeitung)),
-    [monthly],
-  );
-  const monthLabels = ["J", "F", "M", "A", "M", "J", "J", "A", "S", "O", "N", "D"];
-  const chartMaxPx = 132;
-  return (
-    <div>
-      <p className="text-sm font-semibold text-[#0F4F68]">Verteilung {year} (nach Eingangsdatum)</p>
-      <p className="mt-1 text-xs text-neutral-500">Gestapelte Balken: grün abgeschlossen, rot abgelehnt, gelb in Bearbeitung.</p>
-      <div
-        key={chartKey}
-        className="mt-4 flex h-44 items-end justify-between gap-1 sm:gap-1.5"
-        role="img"
-        aria-label="Jahresübersicht nach Monaten"
-      >
-        {monthly.map((st, i) => {
-          const total = st.abgeschlossen + st.abgelehnt + st.inBearbeitung;
-          const colPx = total === 0 ? 4 : Math.round(10 + (total / maxTotal) * chartMaxPx);
-          return (
-            <div
-              key={i}
-              className="motion-safe:animate-partner-col-enter flex min-w-0 flex-1 flex-col items-center justify-end gap-1"
-              style={{ animationDelay: `${i * 0.045}s` }}
-            >
-              <div
-                className="flex w-full max-w-[2.25rem] flex-col justify-end overflow-hidden rounded-t-md border border-neutral-200/90 bg-neutral-100 sm:max-w-[2.75rem]"
-                style={{ height: colPx }}
-              >
-                {total > 0 ? (
-                  <div className="flex h-full w-full flex-col overflow-hidden rounded-t-md">
-                    {st.abgeschlossen > 0 ? (
-                      <div className="min-h-[3px] w-full bg-emerald-500" style={{ flex: st.abgeschlossen }} />
-                    ) : null}
-                    {st.abgelehnt > 0 ? (
-                      <div className="min-h-[3px] w-full bg-rose-500" style={{ flex: st.abgelehnt }} />
-                    ) : null}
-                    {st.inBearbeitung > 0 ? (
-                      <div className="min-h-[3px] w-full bg-amber-400" style={{ flex: st.inBearbeitung }} />
-                    ) : null}
-                  </div>
-                ) : null}
-              </div>
-              <span className="text-[0.65rem] font-semibold text-neutral-500">{monthLabels[i]}</span>
-            </div>
-          );
-        })}
-      </div>
-    </div>
-  );
-}
-
 export function PartnerStatistikView({ tips, orders }: Props) {
   const [periodMode, setPeriodMode] = useState<"month" | "year">("month");
   const [monthInput, setMonthInput] = useState(currentMonthValue);
@@ -148,24 +64,49 @@ export function PartnerStatistikView({ tips, orders }: Props) {
     return statsForYear(tipsForStats, orderLikes, y);
   }, [periodMode, monthInput, yearInput, tipsForStats, orderLikes]);
 
-  const monthlyForYear = useMemo(() => {
+  const tipsInPeriod = useMemo(() => {
+    if (periodMode === "month") {
+      const p = parseMonthValue(monthInput);
+      if (!p) return filterTipsCreatedInMonth(tipsForStats, new Date().getFullYear(), new Date().getMonth());
+      return filterTipsCreatedInMonth(tipsForStats, p.year, p.month0);
+    }
     const y = Number(yearInput);
     const year = Number.isFinite(y) && y >= 2000 && y <= 2100 ? y : new Date().getFullYear();
-    return monthlyStatsForYear(tipsForStats, orderLikes, year);
-  }, [yearInput, tipsForStats, orderLikes]);
+    return filterTipsCreatedInYear(tipsForStats, year);
+  }, [periodMode, monthInput, yearInput, tipsForStats]);
 
-  const barsAnimKey = `${periodMode}-${monthInput}-${yearInput}-${periodStats.abgeschlossen}-${periodStats.abgelehnt}-${periodStats.inBearbeitung}`;
+  const provisionInPeriod = useMemo(() => provisionEuroTotalsForTips(tipsInPeriod), [tipsInPeriod]);
+
+  const ordersInPeriodCount = useMemo(() => {
+    if (periodMode === "month") {
+      const p = parseMonthValue(monthInput);
+      if (!p) return countOrdersInLocalMonth(orders, new Date().getFullYear(), new Date().getMonth());
+      return countOrdersInLocalMonth(orders, p.year, p.month0);
+    }
+    const y = Number(yearInput);
+    const year = Number.isFinite(y) && y >= 2000 && y <= 2100 ? y : new Date().getFullYear();
+    return countOrdersInLocalYear(orders, year);
+  }, [periodMode, monthInput, yearInput, orders]);
+
+  const tipsInPeriodCount = tipsInPeriod.length;
+  const totalAuftraege = periodStats.abgeschlossen + periodStats.abgelehnt + periodStats.inBearbeitung;
 
   return (
-    <section className="partner-dash-animate rounded-lg border border-neutral-300 bg-white p-5 sm:p-8">
-      <div className="flex flex-col gap-4 border-b border-[#0F4F68]/15 pb-6 sm:flex-row sm:items-end sm:justify-between">
-        <h1 className="text-xl font-semibold text-[#0F4F68] sm:text-2xl">Statistik</h1>
+    <section className="partner-dash-animate rounded-2xl border border-[#0F4F68]/12 bg-white p-5 shadow-[0_12px_40px_-20px_rgba(15,79,104,0.2)] sm:p-8">
+      <div className="flex flex-col gap-4 border-b border-[#0F4F68]/12 pb-6 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+          <h1 className="text-xl font-semibold text-[#0F4F68] sm:text-2xl">Statistik</h1>
+          <p className="mt-2 max-w-xl text-sm text-neutral-600">
+            Kennzahlen und Diagramme aus Ihren Tippgeber-Eingängen und Pflegebox-Bestellungen. Provisionsbeträge wie auf
+            dem Dashboard (ohne Admin-Archiv).
+          </p>
+        </div>
         <div className="partner-dash-animate partner-dash-delay-1 flex flex-wrap items-center gap-2">
-          <div className="flex rounded-lg border border-[#0F4F68]/20 p-0.5">
+          <div className="flex rounded-xl border border-[#0F4F68]/20 p-0.5">
             <button
               type="button"
-              className={`rounded-md px-3 py-2 text-sm font-semibold ${
-                periodMode === "month" ? "bg-[#0F4F68] text-white" : "text-[#0F4F68] hover:bg-neutral-50"
+              className={`rounded-lg px-3 py-2 text-sm font-semibold transition ${
+                periodMode === "month" ? "bg-[#0F4F68] text-white shadow-sm" : "text-[#0F4F68] hover:bg-[#F2F9FA]"
               }`}
               onClick={() => setPeriodMode("month")}
             >
@@ -173,8 +114,8 @@ export function PartnerStatistikView({ tips, orders }: Props) {
             </button>
             <button
               type="button"
-              className={`rounded-md px-3 py-2 text-sm font-semibold ${
-                periodMode === "year" ? "bg-[#0F4F68] text-white" : "text-[#0F4F68] hover:bg-neutral-50"
+              className={`rounded-lg px-3 py-2 text-sm font-semibold transition ${
+                periodMode === "year" ? "bg-[#0F4F68] text-white shadow-sm" : "text-[#0F4F68] hover:bg-[#F2F9FA]"
               }`}
               onClick={() => setPeriodMode("year")}
             >
@@ -186,7 +127,7 @@ export function PartnerStatistikView({ tips, orders }: Props) {
               type="month"
               value={monthInput}
               onChange={(e) => setMonthInput(e.target.value)}
-              className="rounded-lg border border-neutral-200 px-3 py-2 text-sm font-medium text-neutral-900 hover:border-[#0F4F68]/30 focus:border-[#0F4F68] focus:outline-none focus:ring-1 focus:ring-[#0F4F68]"
+              className="rounded-xl border border-neutral-200 px-3 py-2 text-sm font-medium text-neutral-900 hover:border-[#0F4F68]/30 focus:border-[#0F4F68] focus:outline-none focus:ring-2 focus:ring-[#0F4F68]/25"
             />
           ) : (
             <input
@@ -195,31 +136,47 @@ export function PartnerStatistikView({ tips, orders }: Props) {
               max={2100}
               value={yearInput}
               onChange={(e) => setYearInput(e.target.value)}
-              className="w-24 rounded-lg border border-neutral-200 px-3 py-2 text-sm font-medium text-neutral-900 hover:border-[#0F4F68]/30 focus:border-[#0F4F68] focus:outline-none focus:ring-1 focus:ring-[#0F4F68]"
+              className="w-28 rounded-xl border border-neutral-200 px-3 py-2 text-sm font-medium text-neutral-900 hover:border-[#0F4F68]/30 focus:border-[#0F4F68] focus:outline-none focus:ring-2 focus:ring-[#0F4F68]/25"
             />
           )}
         </div>
       </div>
-      <div className="partner-dash-animate partner-dash-delay-2 mt-8">
-        <h2 className="text-base font-semibold text-[#0F4F68]">Aufträge nach Status</h2>
-        <p className="mt-1 text-sm text-neutral-600">
-          Tippgeber-Eingänge und abgeschlossene Konfigurationen im gewählten Zeitraum.
-        </p>
-        <div className="mt-6 rounded-lg border border-neutral-200 bg-[#F2F9FA] p-5 sm:p-6">
-          <HorizontalStatBars stats={periodStats} animKey={barsAnimKey} />
+
+      <div className="partner-dash-animate partner-dash-delay-2 mt-8 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        <div className="rounded-2xl border border-[#0F4F68]/10 bg-gradient-to-br from-[#F2F9FA] to-white p-4">
+          <p className="text-[0.65rem] font-bold uppercase tracking-wide text-[#0F4F68]/65">Tippgeber (Zeitraum)</p>
+          <p className="mt-1 text-2xl font-bold tabular-nums text-[#0F4F68]">{tipsInPeriodCount}</p>
+          <p className="mt-1 text-xs text-neutral-500">Neue Eingänge nach Datum</p>
+        </div>
+        <div className="rounded-2xl border border-emerald-200/70 bg-gradient-to-br from-emerald-50/80 to-white p-4">
+          <p className="text-[0.65rem] font-bold uppercase tracking-wide text-emerald-900/70">Aufträge gesamt</p>
+          <p className="mt-1 text-2xl font-bold tabular-nums text-emerald-900">{totalAuftraege}</p>
+          <p className="mt-1 text-xs text-neutral-600">
+            Abg. {periodStats.abgeschlossen} · Abgl. {periodStats.abgelehnt} · Offen {periodStats.inBearbeitung}
+          </p>
+        </div>
+        <div className="rounded-2xl border border-amber-200/70 bg-gradient-to-br from-amber-50/70 to-white p-4">
+          <p className="text-[0.65rem] font-bold uppercase tracking-wide text-amber-950/75">Provision (geschätzt)</p>
+          <p className="mt-1 text-lg font-bold tabular-nums text-amber-950">{formatProvisionEur(provisionInPeriod.total)}</p>
+          <p className="mt-1 text-xs text-neutral-600">
+            Monatlich {formatProvisionEur(provisionInPeriod.monatlich)} · Einmal {formatProvisionEur(provisionInPeriod.einmal)}
+          </p>
+        </div>
+        <div className="rounded-2xl border border-sky-200/70 bg-gradient-to-br from-sky-50/60 to-white p-4">
+          <p className="text-[0.65rem] font-bold uppercase tracking-wide text-sky-900/70">Pflegebox</p>
+          <p className="mt-1 text-2xl font-bold tabular-nums text-sky-900">{ordersInPeriodCount}</p>
+          <p className="mt-1 text-xs text-neutral-500">Bestellungen im Zeitraum</p>
         </div>
       </div>
-      {periodMode === "year" ? (
-        <div className="partner-dash-animate partner-dash-delay-3 mt-8 rounded-lg border border-neutral-200 bg-white p-5 sm:p-6">
-          <YearMonthOverviewChart
-            monthly={monthlyForYear}
-            year={
-              Number(yearInput) >= 2000 && Number(yearInput) <= 2100 ? Number(yearInput) : new Date().getFullYear()
-            }
-            chartKey={`${yearInput}-${monthlyForYear.map((m) => m.abgeschlossen + m.abgelehnt + m.inBearbeitung).join(",")}`}
-          />
-        </div>
-      ) : null}
+
+      <PartnerPortalStatisticsCharts
+        tips={tipsForStats}
+        periodMode={periodMode}
+        monthInput={monthInput}
+        yearInput={yearInput}
+        periodStats={periodStats}
+        tipsInPeriod={tipsInPeriod}
+      />
     </section>
   );
 }

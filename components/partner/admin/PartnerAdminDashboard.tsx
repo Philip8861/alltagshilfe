@@ -1,6 +1,7 @@
 "use client";
 
-import { useActionState, useCallback, useEffect, useMemo, useState } from "react";
+import dynamic from "next/dynamic";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { ArchiveTipButton } from "@/components/partner/admin/ArchiveTipButton";
 import { DeleteTipButton } from "@/components/partner/admin/DeleteTipButton";
@@ -22,12 +23,16 @@ import {
   serviceBadgeClass,
   serviceRowAccentBorderClass,
 } from "@/lib/partner/service-slug-styles";
-import {
-  adminTestPartnerPayoutRerunAction,
-  type PartnerPayoutTestState,
-} from "@/lib/actions/partner-admin-payout-test";
 import { formatProvisionEur } from "@/lib/partner/partner-tip-payout";
-import { maskIban } from "@/lib/partner/iban-display";
+import { PartnerAdminPayoutSection } from "@/components/partner/admin/PartnerAdminPayoutSection";
+
+const AdminStatisticsCharts = dynamic(
+  () => import("./AdminStatisticsCharts").then((m) => ({ default: m.AdminStatisticsCharts })),
+  {
+    ssr: false,
+    loading: () => <p className="text-sm text-neutral-500">Diagramme werden geladen…</p>,
+  },
+);
 import {
   inAdminAktiveUnternehmen,
   inAdminAuftraegeQueue,
@@ -155,42 +160,12 @@ export function PartnerAdminDashboard({
   initialBereich,
 }: Props) {
   const [section, setSection] = useState<AdminSection>(initialBereich);
-  const [payoutPeriodKey, setPayoutPeriodKey] = useState<string>(() => payoutPeriods[0]?.periodKey ?? "");
-
   useEffect(() => {
     setSection(initialBereich);
   }, [initialBereich]);
 
-  useEffect(() => {
-    if (payoutPeriods.length === 0) {
-      setPayoutPeriodKey("");
-      return;
-    }
-    if (!payoutPeriodKey || !payoutPeriods.some((p) => p.periodKey === payoutPeriodKey)) {
-      setPayoutPeriodKey(payoutPeriods[0].periodKey);
-    }
-  }, [payoutPeriods, payoutPeriodKey]);
-
-  const activePayoutPeriod = useMemo(
-    () => payoutPeriods.find((p) => p.periodKey === payoutPeriodKey) ?? null,
-    [payoutPeriods, payoutPeriodKey],
-  );
-
-  const payoutTotals = useMemo(() => {
-    if (!activePayoutPeriod) return { einmal: 0, monatlich: 0, sum: 0 };
-    let einmal = 0;
-    let monatlich = 0;
-    for (const r of activePayoutPeriod.rows) {
-      einmal += r.einmal_eur;
-      monatlich += r.monatlich_eur;
-    }
-    return {
-      einmal: Math.round(einmal * 100) / 100,
-      monatlich: Math.round(monatlich * 100) / 100,
-      sum: Math.round((einmal + monatlich) * 100) / 100,
-    };
-  }, [activePayoutPeriod]);
   const [editProfile, setEditProfile] = useState<PartnerProfile | null>(null);
+  const [chartYear, setChartYear] = useState(() => new Date().getFullYear());
 
   const [tipSort, setTipSort] = useState<{ key: string; dir: SortDir }>({
     key: "created_at",
@@ -386,7 +361,7 @@ export function PartnerAdminDashboard({
 
   return (
     <article className="mx-auto w-full max-w-[min(100%,90rem)] space-y-6 sm:space-y-8">
-      <header className="flex flex-col gap-4 rounded-xl border border-[#0F4F68]/12 bg-[#F2F9FA] px-6 py-6 shadow-[0_10px_22px_rgba(15,79,104,0.2),0_4px_12px_rgba(15,79,104,0.12)] sm:flex-row sm:items-center sm:justify-between sm:px-8 sm:py-7">
+      <header className="partner-payout-print-hide flex flex-col gap-4 rounded-xl border border-[#0F4F68]/12 bg-[#F2F9FA] px-6 py-6 shadow-[0_10px_22px_rgba(15,79,104,0.2),0_4px_12px_rgba(15,79,104,0.12)] sm:flex-row sm:items-center sm:justify-between sm:px-8 sm:py-7">
         <div className="min-w-0">
           <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#0F4F68]/55">Administration</p>
           <h1 className="mt-2 text-2xl font-semibold tracking-tight text-[#0F4F68] sm:text-3xl">Partner-Verwaltung</h1>
@@ -1104,6 +1079,24 @@ export function PartnerAdminDashboard({
                 </div>
               </div>
 
+              <div className="mt-6 flex flex-wrap items-end gap-4">
+                <div>
+                  <label htmlFor="admin-chart-year" className="block text-xs font-bold uppercase text-[#0F4F68]/75">
+                    Jahr für Verlaufsdiagramm
+                  </label>
+                  <input
+                    id="admin-chart-year"
+                    type="number"
+                    min={2000}
+                    max={2100}
+                    value={chartYear}
+                    onChange={(e) => setChartYear(Number(e.target.value))}
+                    className="mt-2 w-28 rounded-xl border border-neutral-200 px-3 py-2 text-sm font-semibold text-neutral-900 focus:border-[#0F4F68] focus:outline-none focus:ring-2 focus:ring-[#0F4F68]/20"
+                  />
+                </div>
+              </div>
+              <AdminStatisticsCharts tips={tips} orders={orders} chartYear={chartYear} />
+
               <div>
                 <h3 className="text-lg font-bold text-[#0F4F68]">Je Partner</h3>
                 <p className="mt-1 text-sm text-neutral-600">Tipps nach Status und Anzahl Konfigurator-Aufträge mit Partner-ID.</p>
@@ -1254,133 +1247,7 @@ export function PartnerAdminDashboard({
           ) : null}
 
           {section === "auszahlen" ? (
-            <section
-              className="partner-dash-animate rounded-3xl border border-[#0F4F68]/10 bg-white p-5 shadow-[0_20px_50px_-24px_rgba(15,79,104,0.25)] sm:p-8"
-              aria-labelledby="auszahlen-heading"
-            >
-              <h2 id="auszahlen-heading" className="text-xl font-bold text-[#0F4F68] sm:text-2xl">
-                Partner auszahlen
-              </h2>
-              <p className="mt-2 text-sm text-neutral-600">
-                Abgeschlossene Monatsberichte (Kalendermonat Europe/Berlin). Der automatische Lauf erfolgt am 1. jedes
-                Monats; Einmalprovisionen werden danach in der aktiven Partnerliste zurückgesetzt (archiviert),
-                monatliche Provisionen bleiben sichtbar und summieren sich weiter.
-              </p>
-              {payoutPeriods.length === 0 ? (
-                <p className="mt-8 rounded-2xl border border-neutral-200 bg-neutral-50/80 px-4 py-8 text-center text-sm text-neutral-600">
-                  Noch keine abgeschlossenen Auszahlungsläufe. Nach Migration 011 und Cron/Secret: Lauf am 1. des Monats
-                  oder manuell per API mit <span className="font-mono text-xs">periodKey</span>.
-                </p>
-              ) : (
-                <>
-                  <div className="mt-6 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-                    <div className="min-w-0">
-                      <label htmlFor="payout-period-select" className="block text-xs font-bold uppercase text-[#0F4F68]/80">
-                        Abrechnungsmonat
-                      </label>
-                      <select
-                        id="payout-period-select"
-                        value={payoutPeriodKey}
-                        onChange={(e) => setPayoutPeriodKey(e.target.value)}
-                        className="mt-2 w-full max-w-md rounded-xl border border-neutral-200 bg-white px-4 py-3 text-sm font-medium text-neutral-900 outline-none ring-[#0F4F68] focus:ring-2 sm:w-auto"
-                      >
-                        {payoutPeriods.map((p) => (
-                          <option key={p.periodKey} value={p.periodKey}>
-                            {p.labelDe} ({p.periodKey})
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-                    {activePayoutPeriod ? (
-                      <div className="rounded-2xl border border-[#0F4F68]/15 bg-[#F2F9FA]/60 px-4 py-3 text-sm text-neutral-800">
-                        <p className="text-xs font-bold uppercase text-[#0F4F68]/70">Summen (alle Partner in diesem Monat)</p>
-                        <p className="mt-2 tabular-nums">
-                          Einmal: <span className="font-semibold">{formatProvisionEur(payoutTotals.einmal)}</span>
-                          {" · "}
-                          Monatlich:{" "}
-                          <span className="font-semibold">{formatProvisionEur(payoutTotals.monatlich)}</span>
-                          {" · "}
-                          Gesamt: <span className="font-semibold text-[#0F4F68]">{formatProvisionEur(payoutTotals.sum)}</span>
-                        </p>
-                      </div>
-                    ) : null}
-                  </div>
-                  {activePayoutPeriod ? (
-                    <div className="mt-6 overflow-x-auto rounded-2xl border border-neutral-200/80">
-                      <table className="min-w-[960px] w-full text-left text-sm">
-                        <thead className="border-b border-[#0F4F68]/10 bg-[#F2F9FA]/70 text-xs">
-                          <tr>
-                            <th className="px-3 py-3">Partner</th>
-                            <th className="px-3 py-3">E-Mail</th>
-                            <th className="px-3 py-3">IBAN (maskiert)</th>
-                            <th className="px-3 py-3">BIC</th>
-                            <th className="px-3 py-3">Kontoinhaber</th>
-                            <th className="whitespace-nowrap px-3 py-3">Einmal</th>
-                            <th className="whitespace-nowrap px-3 py-3">Monatlich</th>
-                            <th className="whitespace-nowrap px-3 py-3">Gesamt</th>
-                          </tr>
-                        </thead>
-                        <tbody className="divide-y divide-neutral-100">
-                          {activePayoutPeriod.rows.length === 0 ? (
-                            <tr>
-                              <td colSpan={8} className="px-4 py-10 text-center text-neutral-600">
-                                Keine Zeilen für diesen Monat.
-                              </td>
-                            </tr>
-                          ) : (
-                            activePayoutPeriod.rows.map((r) => {
-                              const pr = r.profile;
-                              const name =
-                                pr != null
-                                  ? [pr.first_name?.trim(), pr.last_name?.trim()].filter(Boolean).join(" ") ||
-                                    pr.display_name?.trim() ||
-                                    "—"
-                                  : "—";
-                              const bic = pr?.bic?.trim();
-                              const holder = pr?.account_holder?.trim();
-                              return (
-                                <tr key={`${r.period_key}-${r.partner_id}`} className="align-top hover:bg-[#f8fbfc]">
-                                  <td className="px-3 py-3 font-medium text-neutral-900">{name}</td>
-                                  <td className="max-w-[14rem] break-all px-3 py-3 text-xs text-neutral-600">
-                                    {r.email}
-                                  </td>
-                                  <td className="whitespace-nowrap px-3 py-3 font-mono text-xs text-neutral-800">
-                                    {maskIban(pr?.iban ?? null)}
-                                  </td>
-                                  <td className="whitespace-nowrap px-3 py-3 font-mono text-xs text-neutral-700">
-                                    {bic && bic.length > 0 ? bic : "—"}
-                                  </td>
-                                  <td className="max-w-[10rem] px-3 py-3 text-xs text-neutral-700">
-                                    {holder && holder.length > 0 ? holder : "—"}
-                                  </td>
-                                  <td className="whitespace-nowrap px-3 py-3 tabular-nums font-medium text-neutral-900">
-                                    {formatProvisionEur(r.einmal_eur)}
-                                  </td>
-                                  <td className="whitespace-nowrap px-3 py-3 tabular-nums font-medium text-neutral-900">
-                                    {formatProvisionEur(r.monatlich_eur)}
-                                  </td>
-                                  <td className="whitespace-nowrap px-3 py-3 tabular-nums font-bold text-[#0F4F68]">
-                                    {formatProvisionEur(r.total_eur)}
-                                  </td>
-                                </tr>
-                              );
-                            })
-                          )}
-                        </tbody>
-                      </table>
-                    </div>
-                  ) : null}
-                </>
-              )}
-              <div className="mt-10 border-t border-amber-200/90 pt-6">
-                <h3 className="text-sm font-bold text-amber-950">Test: Monatsabrechnung</h3>
-                <p className="mt-1 text-xs text-amber-950/85">
-                  Löscht die gespeicherte Abrechnung für den Monat, setzt zugehörige Einmal-Tipps zurück und führt den
-                  Lauf erneut aus. Nur zum Testen — greift auf echte Daten zu.
-                </p>
-                <PartnerAdminTestPayoutForm />
-              </div>
-            </section>
+            <PartnerAdminPayoutSection payoutPeriods={payoutPeriods} authById={authById} />
           ) : null}
         </>
       ) : null}
@@ -1397,55 +1264,3 @@ export function PartnerAdminDashboard({
   );
 }
 
-const payoutTestInitial: PartnerPayoutTestState = { ok: false, message: "" };
-
-function PartnerAdminTestPayoutForm() {
-  const [state, formAction, pending] = useActionState(adminTestPartnerPayoutRerunAction, payoutTestInitial);
-  return (
-    <form action={formAction} className="mt-4 flex max-w-2xl flex-col gap-3">
-      <div className="min-w-0">
-        <label htmlFor="test-payout-period" className="text-xs font-semibold text-neutral-600">
-          Abrechnungsmonat (YYYY-MM)
-        </label>
-        <input
-          id="test-payout-period"
-          name="period_key"
-          type="text"
-          inputMode="numeric"
-          placeholder="Leer lassen = Vormonat relativ zum Referenzdatum"
-          disabled={pending}
-          className="mt-1 w-full rounded-xl border border-neutral-200 px-3 py-2 font-mono text-sm text-neutral-900"
-          autoComplete="off"
-        />
-      </div>
-      <div className="min-w-0">
-        <label htmlFor="test-payout-reference-date" className="text-xs font-semibold text-neutral-600">
-          Referenzdatum (optional, Europe/Berlin)
-        </label>
-        <input
-          id="test-payout-reference-date"
-          name="reference_date"
-          type="date"
-          disabled={pending}
-          className="mt-1 w-full max-w-xs rounded-xl border border-neutral-200 px-3 py-2 text-sm text-neutral-900"
-        />
-        <p className="mt-1 text-xs text-neutral-500">
-          Wenn der Abrechnungsmonat leer ist, gilt der Vormonat zu diesem Tag (zum Experimentieren mit anderen
-          „heute“-Monaten).
-        </p>
-      </div>
-      <button
-        type="submit"
-        disabled={pending}
-        className="inline-flex min-h-11 w-full max-w-md items-center justify-center rounded-xl bg-amber-700 px-4 py-2 text-sm font-semibold text-white hover:bg-amber-800 disabled:opacity-50 sm:w-auto"
-      >
-        {pending ? "Läuft…" : "Test: Monat zurücksetzen und Abrechnung neu ausführen"}
-      </button>
-      {state.message ? (
-        <p className={`text-sm ${state.ok ? "text-emerald-800" : "text-rose-800"}`} role="status">
-          {state.message}
-        </p>
-      ) : null}
-    </form>
-  );
-}

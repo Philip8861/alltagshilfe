@@ -71,6 +71,7 @@ export type PartnerDashboardTipSerial = Pick<
 
 /** Eine Zeile aus partner_payout_reports (Admin-Auszahlungsbericht). */
 export type PartnerPayoutReportRow = {
+  id: string;
   period_key: string;
   partner_id: string;
   einmal_eur: number;

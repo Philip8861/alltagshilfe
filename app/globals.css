@@ -324,3 +324,18 @@ html.translated-rtl body {
   height: 0;
   display: none;
 }
+
+/* Admin Auszahlen: fokussierter Druck (Klasse kurz vor window.print() auf <html>) */
+@media print {
+  html.partner-payout-print-mode .partner-admin-print-aside,
+  html.partner-payout-print-mode .partner-payout-print-hide {
+    display: none !important;
+  }
+  html.partner-payout-print-mode .partner-payout-print-main {
+    padding: 0 !important;
+  }
+  html.partner-payout-print-mode .partner-payout-print-root {
+    box-shadow: none !important;
+    border: none !important;
+  }
+}

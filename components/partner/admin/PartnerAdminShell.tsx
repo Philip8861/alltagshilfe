@@ -38,7 +38,7 @@ export function PartnerAdminShell({ children }: Props) {
   return (
     <div className="flex min-h-screen flex-col bg-[#FAFBFC] md:flex-row">
       <aside
-        className={`${shell} order-2 fixed bottom-0 left-0 right-0 z-40 flex flex-row items-center justify-between gap-1 border-t border-[#0F4F68]/12 px-1 py-2 shadow-[0_-10px_22px_rgba(15,79,104,0.2),0_-4px_12px_rgba(15,79,104,0.12)] sm:gap-2 md:order-1 md:sticky md:top-0 md:h-screen md:w-[4.5rem] md:shrink-0 md:flex-col md:justify-between md:border-r md:border-t-0 md:px-0 md:py-5 md:shadow-[4px_0_22px_rgba(15,79,104,0.2),2px_0_12px_rgba(15,79,104,0.12)]`}
+        className={`partner-admin-print-aside ${shell} order-2 fixed bottom-0 left-0 right-0 z-40 flex flex-row items-center justify-between gap-1 border-t border-[#0F4F68]/12 px-1 py-2 shadow-[0_-10px_22px_rgba(15,79,104,0.2),0_-4px_12px_rgba(15,79,104,0.12)] sm:gap-2 md:order-1 md:sticky md:top-0 md:h-screen md:w-[4.5rem] md:shrink-0 md:flex-col md:justify-between md:border-r md:border-t-0 md:px-0 md:py-5 md:shadow-[4px_0_22px_rgba(15,79,104,0.2),2px_0_12px_rgba(15,79,104,0.12)]`}
         aria-label="Admin-Navigation"
       >
         <nav className="flex flex-1 flex-row items-center justify-center gap-0.5 overflow-x-auto px-1 sm:gap-1 md:flex-none md:flex-col md:justify-start md:gap-3 md:overflow-visible md:px-0">
@@ -71,7 +71,7 @@ export function PartnerAdminShell({ children }: Props) {
         </nav>
       </aside>
 
-      <main className="order-1 min-w-0 flex-1 bg-[#FAFBFC] pb-[4.5rem] md:pb-0">
+      <main className="partner-payout-print-main order-1 min-w-0 flex-1 bg-[#FAFBFC] pb-[4.5rem] md:pb-0">
         <div className="mx-auto w-full max-w-[min(100%,96rem)] px-4 py-6 sm:px-6 lg:px-10 lg:py-8">{children}</div>
       </main>
     </div>

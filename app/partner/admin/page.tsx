@@ -142,6 +142,7 @@ export default async function PartnerAdminPage({
             periodKey,
             labelDe: formatPayoutPeriodLabelDe(periodKey),
             rows: list.map((r) => ({
+              id: String(r.id),
               period_key: String(r.period_key),
               partner_id: String(r.partner_id),
               einmal_eur: Number(r.einmal_eur),
