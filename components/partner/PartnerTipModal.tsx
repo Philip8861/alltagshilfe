@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useId, useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
 import {
   PARTNER_RESPONSIBILITY_LABELS,
   PARTNER_RESPONSIBILITY_SLUGS,
@@ -122,19 +123,37 @@ function ServiceChoiceIcon({ slug }: { slug: PartnerResponsibilitySlug }) {
   }
 }
 
-function progressForPhase(phase: FlowPhase, slug: PartnerResponsibilitySlug | null): { pct: number; hint: string } {
-  if (phase === "thanks") return { pct: 100, hint: "Erledigt" };
-  if (phase === "service") return { pct: 14, hint: "Leistung wählen" };
-  if (phase === "pflegeProximity") return { pct: 36, hint: "Kurze Rückfrage" };
-  if (phase === "pflegeNearHint") return { pct: 44, hint: "Hinweis" };
-  if (phase === "form") {
-    const extended = slug === "pflegehilfsmittel";
-    return { pct: extended ? 78 : 62, hint: "Angaben" };
-  }
-  return { pct: 0, hint: "" };
+type WizardStep = { id: string; label: string };
+
+function wizardStepState(phase: FlowPhase, slug: PartnerResponsibilitySlug | null): {
+  steps: WizardStep[];
+  activeIndex: number;
+} {
+  const isPflege = slug === "pflegehilfsmittel";
+  const steps: WizardStep[] = isPflege
+    ? [
+        { id: "leistung", label: "Leistung" },
+        { id: "rueckfrage", label: "Rückfrage" },
+        { id: "angaben", label: "Angaben" },
+        { id: "fertig", label: "Fertig" },
+      ]
+    : [
+        { id: "leistung", label: "Leistung" },
+        { id: "angaben", label: "Angaben" },
+        { id: "fertig", label: "Fertig" },
+      ];
+
+  let activeIndex = 0;
+  if (phase === "service") activeIndex = 0;
+  else if (phase === "pflegeProximity" || phase === "pflegeNearHint") activeIndex = 1;
+  else if (phase === "form") activeIndex = isPflege ? 2 : 1;
+  else if (phase === "thanks") activeIndex = steps.length - 1;
+
+  return { steps, activeIndex };
 }
 
 export function PartnerTipModal({ open, onClose, allowedSlugs }: Props) {
+  const router = useRouter();
   const uid = useId();
   const choices =
     allowedSlugs.length > 0 ? allowedSlugs : [...PARTNER_RESPONSIBILITY_SLUGS];
@@ -189,8 +208,8 @@ export function PartnerTipModal({ open, onClose, allowedSlugs }: Props) {
     return "Bitte füllen Sie die Felder aus – wir kümmern uns um die Zuordnung.";
   }, [phase]);
 
-  const { pct: progressPct, hint: progressHint } = useMemo(
-    () => progressForPhase(phase, slug),
+  const { steps: wizardSteps, activeIndex: wizardActiveIndex } = useMemo(
+    () => wizardStepState(phase, slug),
     [phase, slug],
   );
 
@@ -239,6 +258,7 @@ export function PartnerTipModal({ open, onClose, allowedSlugs }: Props) {
     const res = await submitPartnerTipAction(body);
     setPending(false);
     if (res.ok) {
+      router.refresh();
       setPhase("thanks");
       return;
     }
@@ -257,13 +277,16 @@ export function PartnerTipModal({ open, onClose, allowedSlugs }: Props) {
         role="dialog"
         aria-modal="true"
         aria-labelledby="partner-tip-title"
-        className="relative z-10 flex max-h-[min(92dvh,760px)] w-full max-w-xl flex-col overflow-hidden rounded-t-2xl border border-neutral-200/90 bg-white shadow-[0_-12px_48px_rgba(15,79,104,0.14),0_25px_50px_-12px_rgba(0,0,0,0.2)] sm:max-h-[min(88vh,760px)] sm:rounded-2xl sm:shadow-2xl"
+        className="relative z-10 flex max-h-[min(92dvh,820px)] w-full max-w-xl flex-col overflow-hidden rounded-t-2xl border border-neutral-200/90 bg-white shadow-[0_-12px_48px_rgba(15,79,104,0.14),0_25px_50px_-12px_rgba(0,0,0,0.2)] sm:max-h-[min(88vh,820px)] sm:rounded-2xl sm:shadow-2xl"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="pointer-events-none absolute left-0 top-0 h-full w-1 bg-[#0F4F68]" aria-hidden />
+        <div
+          className="h-1 w-full shrink-0 bg-gradient-to-r from-[#0F4F68] via-[#3DB8C9] to-[#0F4F68]/40"
+          aria-hidden
+        />
 
-        <header className="shrink-0 border-b border-neutral-100 bg-gradient-to-b from-[#f8fbfc] to-white px-5 pb-4 pt-5 sm:px-6">
-          <div className="flex items-start justify-between gap-3 pl-2">
+        <header className="shrink-0 border-b border-neutral-100 bg-white px-5 pb-4 pt-5 sm:px-6">
+          <div className="flex items-start justify-between gap-3">
             <div className="min-w-0 flex-1">
               {canGoBack ? (
                 <button
@@ -279,26 +302,55 @@ export function PartnerTipModal({ open, onClose, allowedSlugs }: Props) {
                 Tipp geben
               </h2>
               <p className="mt-1.5 text-sm leading-relaxed text-neutral-600">{headerSubtitle}</p>
-              <div className="mt-3 flex flex-wrap items-center gap-2 text-xs text-neutral-500">
-                <span className="font-medium text-[#0F4F68]">{progressHint}</span>
-                <span className="text-neutral-300" aria-hidden>
-                  ·
-                </span>
-                <span className="text-neutral-500">Fortschritt</span>
-              </div>
-              <div
-                className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-neutral-100"
-                role="progressbar"
-                aria-valuenow={progressPct}
-                aria-valuemin={0}
-                aria-valuemax={100}
-                aria-label="Fortschritt"
+
+              <nav
+                className="mt-4 rounded-xl border border-[#0F4F68]/10 bg-[#f6fafc] px-2 py-3 sm:px-3"
+                aria-label="Schritte"
               >
-                <div
-                  className="h-full rounded-full bg-gradient-to-r from-[#0F4F68] to-[#127a9e] transition-[width] duration-300 ease-out"
-                  style={{ width: `${progressPct}%` }}
-                />
-              </div>
+                <ol className="flex w-full list-none items-start justify-center p-0 sm:items-center">
+                  {wizardSteps.map((s, i) => {
+                    const done = i < wizardActiveIndex;
+                    const current = i === wizardActiveIndex;
+                    const lineDone = i > 0 && i - 1 < wizardActiveIndex;
+                    return (
+                      <li key={s.id} className="flex min-w-0 flex-1 items-start">
+                        {i > 0 ? (
+                          <div
+                            className="mx-0.5 mt-[1.125rem] hidden min-h-px min-w-[0.25rem] flex-1 sm:mx-1 sm:block"
+                            aria-hidden
+                          >
+                            <div
+                              className={`h-px w-full rounded-full ${lineDone ? "bg-[#0F4F68]/45" : "bg-neutral-200"}`}
+                            />
+                          </div>
+                        ) : null}
+                        <div className="flex w-[4.25rem] shrink-0 flex-col items-center gap-1.5 sm:w-auto sm:min-w-[4.5rem] sm:flex-1">
+                          <span
+                            className={[
+                              "flex h-9 w-9 items-center justify-center rounded-full text-xs font-bold transition",
+                              done
+                                ? "bg-[#0F4F68] text-white shadow-sm"
+                                : current
+                                  ? "bg-white text-[#0F4F68] ring-2 ring-[#0F4F68] ring-offset-2 ring-offset-[#f6fafc]"
+                                  : "bg-white/80 text-neutral-400 ring-1 ring-neutral-200",
+                            ].join(" ")}
+                            aria-current={current ? "step" : undefined}
+                          >
+                            {done ? "✓" : i + 1}
+                          </span>
+                          <span
+                            className={`text-center text-[0.65rem] font-semibold leading-tight sm:text-xs ${
+                              current ? "text-[#0F4F68]" : "text-neutral-500"
+                            }`}
+                          >
+                            {s.label}
+                          </span>
+                        </div>
+                      </li>
+                    );
+                  })}
+                </ol>
+              </nav>
             </div>
             <button
               type="button"

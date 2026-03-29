@@ -25,11 +25,16 @@ export async function submitPartnerTipAction(raw: unknown): Promise<SubmitPartne
       partner_id: session.profile.id,
       service_slug: parsed.data.service_slug,
       payload: parsed.data.payload as Record<string, unknown>,
+      /** Neu eingereichte Tipps erscheinen bei Admin unter Aufträgen; Partner sieht „In Bearbeitung“. */
+      admin_status: "in_bearbeitung",
     });
     if (error) {
-      return { ok: false, message: "Speichern fehlgeschlagen. Migration 007 und RLS prüfen." };
+      console.error("[submitPartnerTipAction]", error.message, error.code, error.details);
+      return { ok: false, message: "Speichern fehlgeschlagen. Bitte Seite neu laden oder Support informieren." };
     }
     revalidatePath("/partner/dashboard");
+    revalidatePath("/partner/statistik");
+    revalidatePath("/partner/admin");
     return { ok: true };
   } catch {
     return { ok: false, message: "Unerwarteter Fehler." };
