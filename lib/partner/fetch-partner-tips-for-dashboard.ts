@@ -1,0 +1,57 @@
+import {
+  normalizeAdminVisibleNote,
+  normalizeArchivedAt,
+  normalizePartnerTipAdminStatus,
+} from "@/lib/partner/partner-tip-admin";
+import type { PartnerDashboardTipSerial } from "@/lib/partner/types";
+import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { createSupabaseServiceRoleClient } from "@/lib/supabase/service";
+
+const TIP_COLUMNS =
+  "id, service_slug, payload, created_at, admin_status, admin_visible_note, archived_at" as const;
+
+function mapRows(data: Record<string, unknown>[]): PartnerDashboardTipSerial[] {
+  return data.map((row) => ({
+    id: String(row.id),
+    service_slug: String(row.service_slug),
+    payload: (row.payload as Record<string, unknown>) ?? {},
+    created_at: String(row.created_at),
+    admin_status: normalizePartnerTipAdminStatus(row.admin_status),
+    admin_visible_note: normalizeAdminVisibleNote(row.admin_visible_note),
+    archived_at: normalizeArchivedAt(row.archived_at),
+  }));
+}
+
+/**
+ * Tipps für das Partner-Dashboard: zuerst Service-Role (umgeht RLS/Cookie-Probleme bei Server Components),
+ * sonst Session-Client. Nur nach erfolgreicher Auth mit dieser partnerId aufrufen.
+ */
+export async function fetchPartnerTipsForDashboard(partnerId: string): Promise<PartnerDashboardTipSerial[]> {
+  const svc = createSupabaseServiceRoleClient();
+  if (svc) {
+    const res = await svc
+      .from("partner_tip_submissions")
+      .select(TIP_COLUMNS)
+      .eq("partner_id", partnerId)
+      .order("created_at", { ascending: false });
+    if (res.error) {
+      console.error("[fetchPartnerTipsForDashboard] service_role:", res.error.message, res.error.code);
+    } else if (res.data?.length !== undefined) {
+      return mapRows(res.data as Record<string, unknown>[]);
+    }
+  }
+
+  const supabase = await createSupabaseServerClient();
+  const res = await supabase
+    .from("partner_tip_submissions")
+    .select(TIP_COLUMNS)
+    .eq("partner_id", partnerId)
+    .order("created_at", { ascending: false });
+
+  if (res.error) {
+    console.error("[fetchPartnerTipsForDashboard] user client:", res.error.message, res.error.code);
+    return [];
+  }
+  if (!res.data) return [];
+  return mapRows(res.data as Record<string, unknown>[]);
+}

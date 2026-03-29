@@ -1,11 +1,7 @@
 import type { Metadata } from "next";
 import { PartnerStatistikView } from "@/components/partner/PartnerStatistikView";
 import { requirePartnerLogin } from "@/lib/partner/auth";
-import {
-  normalizeAdminVisibleNote,
-  normalizeArchivedAt,
-  normalizePartnerTipAdminStatus,
-} from "@/lib/partner/partner-tip-admin";
+import { fetchPartnerTipsForDashboard } from "@/lib/partner/fetch-partner-tips-for-dashboard";
 import type { PartnerDashboardTipSerial, PflegeboxOrderRow } from "@/lib/partner/types";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
@@ -20,30 +16,16 @@ export default async function PartnerStatistikPage() {
   let tips: PartnerDashboardTipSerial[] = [];
   try {
     const supabase = await createSupabaseServerClient();
-    const [ordRes, tipRes] = await Promise.all([
+    const [ordRes, tipsResult] = await Promise.all([
       supabase
         .from("pflegebox_orders")
         .select("id, partner_id, status, created_at")
         .eq("partner_id", profile.id)
         .order("created_at", { ascending: false }),
-      supabase
-        .from("partner_tip_submissions")
-        .select("id, service_slug, payload, created_at, admin_status, admin_visible_note, archived_at")
-        .eq("partner_id", profile.id)
-        .order("created_at", { ascending: false }),
+      fetchPartnerTipsForDashboard(profile.id),
     ]);
     orders = (ordRes.data as PflegeboxOrderRow[] | null) ?? [];
-    if (!tipRes.error && tipRes.data) {
-      tips = (tipRes.data as Record<string, unknown>[]).map((row) => ({
-        id: String(row.id),
-        service_slug: String(row.service_slug),
-        payload: (row.payload as Record<string, unknown>) ?? {},
-        created_at: String(row.created_at),
-        admin_status: normalizePartnerTipAdminStatus(row.admin_status),
-        admin_visible_note: normalizeAdminVisibleNote(row.admin_visible_note),
-        archived_at: normalizeArchivedAt(row.archived_at),
-      }));
-    }
+    tips = tipsResult;
   } catch {
     orders = [];
     tips = [];

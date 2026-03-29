@@ -22,8 +22,8 @@ export async function submitPartnerTipAction(raw: unknown): Promise<SubmitPartne
 
   try {
     const row = {
-      /** partner_id muss auth.uid() entsprechen (RLS); userId ist die verifizierte Session-ID. */
-      partner_id: session.userId,
+      /** Gleiche ID wie in partner_profiles und wie beim Dashboard-Select (.eq partner_id, profile.id). */
+      partner_id: session.profile.id,
       service_slug: parsed.data.service_slug,
       payload: parsed.data.payload as Record<string, unknown>,
       admin_status: "in_bearbeitung" as const,

@@ -288,57 +288,57 @@ export function PartnerDashboardClient({
 
         <section
           id="partner-statusliste-monatlich"
-          className="scroll-mt-28 overflow-hidden rounded-xl border border-[#0F4F68]/25 bg-white shadow-[0_8px_30px_-12px_rgba(15,79,104,0.2)] ring-1 ring-[#0F4F68]/10"
+          className="scroll-mt-28 overflow-hidden rounded-xl border border-amber-300/90 bg-white shadow-[0_8px_30px_-12px_rgba(202,138,4,0.22)] ring-1 ring-amber-200/60"
           aria-labelledby="partner-statusliste-monatlich-heading"
         >
-          <header className="border-b border-[#0F4F68]/15 bg-gradient-to-r from-[#e2f0f4] via-[#f2f9fa] to-white px-4 py-4 sm:px-6 sm:py-5">
-            <h2 id="partner-statusliste-monatlich-heading" className="text-lg font-semibold text-[#0F4F68] sm:text-xl">
+          <header className="border-b border-amber-300/70 bg-gradient-to-r from-amber-100 via-[#fff8dc] to-amber-50/80 px-4 py-4 sm:px-6 sm:py-5">
+            <h2 id="partner-statusliste-monatlich-heading" className="text-lg font-semibold text-amber-950 sm:text-xl">
               Statusliste Monatliche Tippgeberprovision
             </h2>
-            <p className="mt-1 text-sm text-neutral-600">
-              Tipps zur <strong className="font-medium text-neutral-800">betrieblichen Pflegeberatung</strong>.
+            <p className="mt-1 text-sm text-amber-950/80">
+              Tipps zur <strong className="font-medium text-amber-950">betrieblichen Pflegeberatung</strong>.
             </p>
           </header>
           <div className="p-4 sm:p-6">
-            <StatuslisteTable rows={filteredMonatlich} emptyHint={`Keine Einträge${search.trim() ? " für diese Suche." : "."}`} theadClass="bg-[#F2F9FA] text-[#0F4F68]" />
+            <StatuslisteTable rows={filteredMonatlich} emptyHint={`Keine Einträge${search.trim() ? " für diese Suche." : "."}`} theadClass="bg-amber-50 text-amber-950" />
           </div>
         </section>
 
         <section
           id="partner-statusliste-einmal"
-          className="scroll-mt-28 overflow-hidden rounded-xl border border-[#3DB8C9]/35 bg-white shadow-[0_8px_30px_-12px_rgba(61,184,201,0.18)] ring-1 ring-[#3DB8C9]/15"
+          className="scroll-mt-28 overflow-hidden rounded-xl border border-emerald-300/80 bg-white shadow-[0_8px_30px_-12px_rgba(16,185,129,0.18)] ring-1 ring-emerald-200/50"
           aria-labelledby="partner-statusliste-einmal-heading"
         >
-          <header className="border-b border-[#3DB8C9]/25 bg-gradient-to-r from-[#dff8fb] via-[#f0fcfd] to-white px-4 py-4 sm:px-6 sm:py-5">
-            <h2 id="partner-statusliste-einmal-heading" className="text-lg font-semibold text-[#0b5c66] sm:text-xl">
+          <header className="border-b border-emerald-200/80 bg-gradient-to-r from-emerald-50 via-[#ecfdf5] to-green-50/90 px-4 py-4 sm:px-6 sm:py-5">
+            <h2 id="partner-statusliste-einmal-heading" className="text-lg font-semibold text-emerald-900 sm:text-xl">
               Statusliste Einmalprovision
             </h2>
-            <p className="mt-1 text-sm text-neutral-600">
-              Tipps zu <strong className="font-medium text-neutral-800">Hauswirtschaft & Betreuung</strong>,{" "}
-              <strong className="font-medium text-neutral-800">Pflegehilfsmittel</strong> und{" "}
-              <strong className="font-medium text-neutral-800">Pflegeberatung</strong>.
+            <p className="mt-1 text-sm text-emerald-900/85">
+              Tipps zu <strong className="font-medium text-emerald-950">Hauswirtschaft & Betreuung</strong>,{" "}
+              <strong className="font-medium text-emerald-950">Pflegehilfsmittel</strong> und{" "}
+              <strong className="font-medium text-emerald-950">Pflegeberatung</strong>.
             </p>
           </header>
           <div className="p-4 sm:p-6">
-            <StatuslisteTable rows={filteredEinmal} emptyHint={`Keine Einträge${search.trim() ? " für diese Suche." : "."}`} theadClass="bg-[#f0fcfd] text-[#0b5c66]" />
+            <StatuslisteTable rows={filteredEinmal} emptyHint={`Keine Einträge${search.trim() ? " für diese Suche." : "."}`} theadClass="bg-emerald-50 text-emerald-900" />
           </div>
         </section>
 
         <section
           id="partner-statusliste-archiv"
-          className="scroll-mt-28 overflow-hidden rounded-xl border border-amber-200/80 bg-white shadow-[0_8px_30px_-12px_rgba(180,83,9,0.12)] ring-1 ring-amber-100"
+          className="scroll-mt-28 overflow-hidden rounded-xl border border-[#0F4F68]/45 bg-white shadow-[0_8px_30px_-12px_rgba(15,79,104,0.25)] ring-1 ring-[#0F4F68]/15"
           aria-labelledby="partner-statusliste-archiv-heading"
         >
-          <header className="border-b border-amber-200/70 bg-gradient-to-r from-amber-50/90 via-[#fffbeb] to-white px-4 py-4 sm:px-6 sm:py-5">
-            <h2 id="partner-statusliste-archiv-heading" className="text-lg font-semibold text-amber-950 sm:text-xl">
+          <header className="border-b border-[#0c3d52] bg-[#0F4F68] px-4 py-4 sm:px-6 sm:py-5">
+            <h2 id="partner-statusliste-archiv-heading" className="text-lg font-semibold text-white sm:text-xl">
               Statusliste Archiv
             </h2>
-            <p className="mt-1 text-sm text-neutral-600">
+            <p className="mt-1 text-sm text-white/85">
               Abgelegte Fälle aus beiden Provisionslisten. Die Suche oben gilt auch hier.
             </p>
           </header>
           <div className="p-4 sm:p-6">
-            <StatuslisteTable rows={filteredArchived} emptyHint={`Keine archivierten Einträge${search.trim() ? " für diese Suche." : "."}`} theadClass="bg-amber-50/80 text-amber-950" />
+            <StatuslisteTable rows={filteredArchived} emptyHint={`Keine archivierten Einträge${search.trim() ? " für diese Suche." : "."}`} theadClass="bg-[#e8f2f6] text-[#0F4F68]" />
           </div>
         </section>
       </div>
