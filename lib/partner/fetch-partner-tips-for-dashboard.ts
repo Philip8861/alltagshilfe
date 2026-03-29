@@ -11,6 +11,12 @@ import { createSupabaseServiceRoleClient } from "@/lib/supabase/service";
 /** Alle Spalten: funktioniert auch wenn Migration 009 (Notiz/Archiv) auf der DB noch fehlt. */
 const TIP_SELECT = "*" as const;
 
+function normalizePayoutPeriodKey(v: unknown): string | null {
+  if (v == null) return null;
+  const s = String(v).trim();
+  return s.length > 0 ? s : null;
+}
+
 function mapRows(data: Record<string, unknown>[]): PartnerDashboardTipSerial[] {
   return data.map((row) => ({
     id: String(row.id),
@@ -21,6 +27,7 @@ function mapRows(data: Record<string, unknown>[]): PartnerDashboardTipSerial[] {
     admin_visible_note: normalizeAdminVisibleNote(row.admin_visible_note),
     archived_at: normalizeArchivedAt(row.archived_at),
     paid_amount_eur: normalizePaidAmountEur(row.paid_amount_eur),
+    payout_settled_period_key: normalizePayoutPeriodKey(row.payout_settled_period_key),
   }));
 }
 

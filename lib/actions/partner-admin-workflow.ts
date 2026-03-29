@@ -220,6 +220,9 @@ export async function updatePartnerProfileAdminAction(
     organization_name: formData.get("organization_name") || undefined,
     recruited_by: formData.get("recruited_by") || undefined,
     display_name: formData.get("display_name") || undefined,
+    iban: formData.get("iban"),
+    bic: formData.get("bic"),
+    account_holder: formData.get("account_holder"),
     role: formData.get("role"),
     responsibility_areas: formData.getAll("responsibility_areas").map(String),
   });
@@ -232,6 +235,9 @@ export async function updatePartnerProfileAdminAction(
         e.first_name?.[0] ??
         e.last_name?.[0] ??
         e.phone?.[0] ??
+        e.iban?.[0] ??
+        e.bic?.[0] ??
+        e.account_holder?.[0] ??
         e.salutation?.[0] ??
         e.role?.[0] ??
         "Eingaben prüfen.",
@@ -259,6 +265,9 @@ export async function updatePartnerProfileAdminAction(
       display_name: displayName,
       role: d.role,
       responsibility_areas: d.responsibility_areas,
+      iban: d.iban ?? null,
+      bic: d.bic ?? null,
+      account_holder: d.account_holder ?? null,
     })
     .eq("id", d.user_id);
 

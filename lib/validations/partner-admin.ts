@@ -38,6 +38,34 @@ export const archivePartnerTipSchema = z.object({
   archived: z.enum(["true", "false"]),
 });
 
+const optionalIbanAdmin = z
+  .string()
+  .max(48)
+  .transform((s) => {
+    const t = s.trim().replace(/\s+/g, "").toUpperCase();
+    return t.length === 0 ? undefined : t;
+  })
+  .refine((t) => t === undefined || t.length <= 34, "IBAN maximal 34 Zeichen.")
+  .refine((t) => t === undefined || /^[A-Z0-9]+$/.test(t), "IBAN nur Buchstaben und Ziffern.");
+
+const optionalBicAdmin = z
+  .string()
+  .max(20)
+  .transform((s) => {
+    const t = s.trim().replace(/\s+/g, "").toUpperCase();
+    return t.length === 0 ? undefined : t;
+  })
+  .refine((t) => t === undefined || t.length <= 11, "BIC maximal 11 Zeichen.");
+
+const optionalAccountHolderAdmin = z
+  .string()
+  .max(140)
+  .transform((s) => {
+    const t = s.trim();
+    return t.length === 0 ? undefined : t;
+  })
+  .refine((t) => t === undefined || t.length <= 120, "Kontoinhaber maximal 120 Zeichen.");
+
 export const updatePartnerProfileAdminSchema = z.object({
   user_id: z.string().uuid(),
   salutation: z.enum(["herr", "frau"]),
@@ -47,6 +75,9 @@ export const updatePartnerProfileAdminSchema = z.object({
   organization_name: z.string().trim().max(200).optional(),
   recruited_by: z.string().trim().max(200).optional(),
   display_name: z.string().trim().max(200).optional(),
+  iban: z.preprocess((v) => (v == null ? "" : String(v)), optionalIbanAdmin),
+  bic: z.preprocess((v) => (v == null ? "" : String(v)), optionalBicAdmin),
+  account_holder: z.preprocess((v) => (v == null ? "" : String(v)), optionalAccountHolderAdmin),
   role: z.enum(["partner", "admin"]),
   responsibility_areas: z.array(responsibilitySlug).default([]),
 });

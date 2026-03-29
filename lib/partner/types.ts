@@ -20,6 +20,10 @@ export type PartnerProfile = {
   responsibility_areas?: string[] | null;
   /** Gesetzt, wenn der Partner das Passwort selbst geändert hat (kein Klartext). */
   password_changed_at?: string | null;
+  /** Auszahlung (Migration 011). */
+  iban?: string | null;
+  bic?: string | null;
+  account_holder?: string | null;
 };
 
 export type PartnerTipAdminStatus =
@@ -42,6 +46,8 @@ export type PartnerTipSubmissionRow = {
   archived_at: string | null;
   /** Auszahlungsbetrag EUR bei Status bezahlt (Migration 010). */
   paid_amount_eur: number | null;
+  /** Abgerechneter Kalendermonat YYYY-MM nach Monatslauf (Migration 011). */
+  payout_settled_period_key: string | null;
 };
 
 /** Partner-Dashboard: eigene Tippgeber-Einträge ohne partner_id im Client. */
@@ -55,7 +61,30 @@ export type PartnerDashboardTipSerial = Pick<
   | "admin_visible_note"
   | "archived_at"
   | "paid_amount_eur"
+  | "payout_settled_period_key"
 >;
+
+/** Eine Zeile aus partner_payout_reports (Admin-Auszahlungsbericht). */
+export type PartnerPayoutReportRow = {
+  period_key: string;
+  partner_id: string;
+  einmal_eur: number;
+  monatlich_eur: number;
+  total_eur: number;
+  created_at?: string;
+};
+
+/** Gruppierter Auszahlungsbericht für die Partner-Verwaltung. */
+export type PartnerAdminPayoutPeriod = {
+  periodKey: string;
+  labelDe: string;
+  rows: Array<
+    PartnerPayoutReportRow & {
+      email: string;
+      profile: PartnerProfile | null;
+    }
+  >;
+};
 
 export type PflegeboxOrderRow = {
   id: string;

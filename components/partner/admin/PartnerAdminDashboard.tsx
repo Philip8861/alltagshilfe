@@ -21,7 +21,14 @@ import {
   serviceBadgeClass,
   serviceRowAccentBorderClass,
 } from "@/lib/partner/service-slug-styles";
-import type { PartnerProfile, PartnerTipAdminStatus, PartnerTipSubmissionRow } from "@/lib/partner/types";
+import { formatProvisionEur } from "@/lib/partner/partner-tip-payout";
+import { maskIban } from "@/lib/partner/iban-display";
+import type {
+  PartnerAdminPayoutPeriod,
+  PartnerProfile,
+  PartnerTipAdminStatus,
+  PartnerTipSubmissionRow,
+} from "@/lib/partner/types";
 
 type AuthInfo = {
   email: string;
@@ -39,7 +46,7 @@ type OrderRow = {
 };
 
 type SortDir = "asc" | "desc";
-type AdminSection = "auftraege" | "archiv" | "anlegen" | "liste" | "statistik";
+type AdminSection = "auftraege" | "archiv" | "anlegen" | "liste" | "statistik" | "auszahlen";
 type StatSortKey =
   | "name"
   | "email"
@@ -59,6 +66,7 @@ type Props = {
   orders: OrderRow[];
   profiles: PartnerProfile[];
   authById: Record<string, AuthInfo>;
+  payoutPeriods: PartnerAdminPayoutPeriod[];
   initialBereich: AdminSection;
 };
 
@@ -126,13 +134,45 @@ export function PartnerAdminDashboard({
   orders,
   profiles,
   authById,
+  payoutPeriods,
   initialBereich,
 }: Props) {
   const [section, setSection] = useState<AdminSection>(initialBereich);
+  const [payoutPeriodKey, setPayoutPeriodKey] = useState<string>(() => payoutPeriods[0]?.periodKey ?? "");
 
   useEffect(() => {
     setSection(initialBereich);
   }, [initialBereich]);
+
+  useEffect(() => {
+    if (payoutPeriods.length === 0) {
+      setPayoutPeriodKey("");
+      return;
+    }
+    if (!payoutPeriodKey || !payoutPeriods.some((p) => p.periodKey === payoutPeriodKey)) {
+      setPayoutPeriodKey(payoutPeriods[0].periodKey);
+    }
+  }, [payoutPeriods, payoutPeriodKey]);
+
+  const activePayoutPeriod = useMemo(
+    () => payoutPeriods.find((p) => p.periodKey === payoutPeriodKey) ?? null,
+    [payoutPeriods, payoutPeriodKey],
+  );
+
+  const payoutTotals = useMemo(() => {
+    if (!activePayoutPeriod) return { einmal: 0, monatlich: 0, sum: 0 };
+    let einmal = 0;
+    let monatlich = 0;
+    for (const r of activePayoutPeriod.rows) {
+      einmal += r.einmal_eur;
+      monatlich += r.monatlich_eur;
+    }
+    return {
+      einmal: Math.round(einmal * 100) / 100,
+      monatlich: Math.round(monatlich * 100) / 100,
+      sum: Math.round((einmal + monatlich) * 100) / 100,
+    };
+  }, [activePayoutPeriod]);
   const [editProfile, setEditProfile] = useState<PartnerProfile | null>(null);
 
   const [tipSort, setTipSort] = useState<{ key: string; dir: SortDir }>({
@@ -323,7 +363,8 @@ export function PartnerAdminDashboard({
           <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#0F4F68]/55">Administration</p>
           <h1 className="mt-2 text-2xl font-semibold tracking-tight text-[#0F4F68] sm:text-3xl">Partner-Verwaltung</h1>
           <p className="mt-3 max-w-xl text-sm text-neutral-700 sm:text-base">
-            Tippgeber-Eingänge, Archiv, Partner anlegen und Stammdaten. Navigation links in der Leiste.
+            Tippgeber-Eingänge, Archiv, Partner anlegen, Auszahlungsberichte und Stammdaten. Navigation links in der
+            Leiste.
           </p>
         </div>
         <div className="flex shrink-0 flex-wrap gap-3">
@@ -920,6 +961,128 @@ export function PartnerAdminDashboard({
                   </table>
                 </div>
               </div>
+            </section>
+          ) : null}
+
+          {section === "auszahlen" ? (
+            <section
+              className="partner-dash-animate rounded-3xl border border-[#0F4F68]/10 bg-white p-5 shadow-[0_20px_50px_-24px_rgba(15,79,104,0.25)] sm:p-8"
+              aria-labelledby="auszahlen-heading"
+            >
+              <h2 id="auszahlen-heading" className="text-xl font-bold text-[#0F4F68] sm:text-2xl">
+                Partner auszahlen
+              </h2>
+              <p className="mt-2 text-sm text-neutral-600">
+                Abgeschlossene Monatsberichte (Kalendermonat Europe/Berlin). Der automatische Lauf erfolgt am 1. jedes
+                Monats; Einmalprovisionen werden danach in der aktiven Partnerliste zurückgesetzt (archiviert),
+                monatliche Provisionen bleiben sichtbar und summieren sich weiter.
+              </p>
+              {payoutPeriods.length === 0 ? (
+                <p className="mt-8 rounded-2xl border border-neutral-200 bg-neutral-50/80 px-4 py-8 text-center text-sm text-neutral-600">
+                  Noch keine abgeschlossenen Auszahlungsläufe. Nach Migration 011 und Cron/Secret: Lauf am 1. des Monats
+                  oder manuell per API mit <span className="font-mono text-xs">periodKey</span>.
+                </p>
+              ) : (
+                <>
+                  <div className="mt-6 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+                    <div className="min-w-0">
+                      <label htmlFor="payout-period-select" className="block text-xs font-bold uppercase text-[#0F4F68]/80">
+                        Abrechnungsmonat
+                      </label>
+                      <select
+                        id="payout-period-select"
+                        value={payoutPeriodKey}
+                        onChange={(e) => setPayoutPeriodKey(e.target.value)}
+                        className="mt-2 w-full max-w-md rounded-xl border border-neutral-200 bg-white px-4 py-3 text-sm font-medium text-neutral-900 outline-none ring-[#0F4F68] focus:ring-2 sm:w-auto"
+                      >
+                        {payoutPeriods.map((p) => (
+                          <option key={p.periodKey} value={p.periodKey}>
+                            {p.labelDe} ({p.periodKey})
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                    {activePayoutPeriod ? (
+                      <div className="rounded-2xl border border-[#0F4F68]/15 bg-[#F2F9FA]/60 px-4 py-3 text-sm text-neutral-800">
+                        <p className="text-xs font-bold uppercase text-[#0F4F68]/70">Summen (alle Partner in diesem Monat)</p>
+                        <p className="mt-2 tabular-nums">
+                          Einmal: <span className="font-semibold">{formatProvisionEur(payoutTotals.einmal)}</span>
+                          {" · "}
+                          Monatlich:{" "}
+                          <span className="font-semibold">{formatProvisionEur(payoutTotals.monatlich)}</span>
+                          {" · "}
+                          Gesamt: <span className="font-semibold text-[#0F4F68]">{formatProvisionEur(payoutTotals.sum)}</span>
+                        </p>
+                      </div>
+                    ) : null}
+                  </div>
+                  {activePayoutPeriod ? (
+                    <div className="mt-6 overflow-x-auto rounded-2xl border border-neutral-200/80">
+                      <table className="min-w-[960px] w-full text-left text-sm">
+                        <thead className="border-b border-[#0F4F68]/10 bg-[#F2F9FA]/70 text-xs">
+                          <tr>
+                            <th className="px-3 py-3">Partner</th>
+                            <th className="px-3 py-3">E-Mail</th>
+                            <th className="px-3 py-3">IBAN (maskiert)</th>
+                            <th className="px-3 py-3">BIC</th>
+                            <th className="px-3 py-3">Kontoinhaber</th>
+                            <th className="whitespace-nowrap px-3 py-3">Einmal</th>
+                            <th className="whitespace-nowrap px-3 py-3">Monatlich</th>
+                            <th className="whitespace-nowrap px-3 py-3">Gesamt</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-neutral-100">
+                          {activePayoutPeriod.rows.length === 0 ? (
+                            <tr>
+                              <td colSpan={8} className="px-4 py-10 text-center text-neutral-600">
+                                Keine Zeilen für diesen Monat.
+                              </td>
+                            </tr>
+                          ) : (
+                            activePayoutPeriod.rows.map((r) => {
+                              const pr = r.profile;
+                              const name =
+                                pr != null
+                                  ? [pr.first_name?.trim(), pr.last_name?.trim()].filter(Boolean).join(" ") ||
+                                    pr.display_name?.trim() ||
+                                    "—"
+                                  : "—";
+                              const bic = pr?.bic?.trim();
+                              const holder = pr?.account_holder?.trim();
+                              return (
+                                <tr key={`${r.period_key}-${r.partner_id}`} className="align-top hover:bg-[#f8fbfc]">
+                                  <td className="px-3 py-3 font-medium text-neutral-900">{name}</td>
+                                  <td className="max-w-[14rem] break-all px-3 py-3 text-xs text-neutral-600">
+                                    {r.email}
+                                  </td>
+                                  <td className="whitespace-nowrap px-3 py-3 font-mono text-xs text-neutral-800">
+                                    {maskIban(pr?.iban ?? null)}
+                                  </td>
+                                  <td className="whitespace-nowrap px-3 py-3 font-mono text-xs text-neutral-700">
+                                    {bic && bic.length > 0 ? bic : "—"}
+                                  </td>
+                                  <td className="max-w-[10rem] px-3 py-3 text-xs text-neutral-700">
+                                    {holder && holder.length > 0 ? holder : "—"}
+                                  </td>
+                                  <td className="whitespace-nowrap px-3 py-3 tabular-nums font-medium text-neutral-900">
+                                    {formatProvisionEur(r.einmal_eur)}
+                                  </td>
+                                  <td className="whitespace-nowrap px-3 py-3 tabular-nums font-medium text-neutral-900">
+                                    {formatProvisionEur(r.monatlich_eur)}
+                                  </td>
+                                  <td className="whitespace-nowrap px-3 py-3 tabular-nums font-bold text-[#0F4F68]">
+                                    {formatProvisionEur(r.total_eur)}
+                                  </td>
+                                </tr>
+                              );
+                            })
+                          )}
+                        </tbody>
+                      </table>
+                    </div>
+                  ) : null}
+                </>
+              )}
             </section>
           ) : null}
         </>

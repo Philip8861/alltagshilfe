@@ -23,6 +23,7 @@ const BEREICHE = [
   { id: "archiv", title: "Archiv", href: "/partner/admin?bereich=archiv" },
   { id: "anlegen", title: "Anlegen", href: "/partner/admin?bereich=anlegen" },
   { id: "liste", title: "Partnerliste", href: "/partner/admin?bereich=liste" },
+  { id: "auszahlen", title: "Auszahlen", href: "/partner/admin?bereich=auszahlen" },
   { id: "statistik", title: "Statistik", href: "/partner/admin?bereich=statistik" },
 ] as const;
 
@@ -101,6 +102,13 @@ function AdminNavIcon({ kind }: { kind: (typeof BEREICHE)[number]["id"] }) {
       return (
         <svg {...common}>
           <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2M9 7a4 4 0 100-8 4 4 0 000 8zM23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      );
+    case "auszahlen":
+      return (
+        <svg {...common}>
+          <rect x="2" y="7" width="20" height="10" rx="2" strokeLinejoin="round" />
+          <path d="M12 7v10M8 12h8" strokeLinecap="round" />
         </svg>
       );
     case "statistik":

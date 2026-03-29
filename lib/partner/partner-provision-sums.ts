@@ -9,6 +9,7 @@ export function partnerProvisionSumsFromTips(tips: PartnerDashboardTipSerial[]):
   let provisionMonatlichEur = 0;
   let provisionEinmalEur = 0;
   for (const t of tips) {
+    if (t.archived_at) continue;
     if (t.admin_status !== "bezahlt" || t.paid_amount_eur == null) continue;
     const n = Number(t.paid_amount_eur);
     if (!Number.isFinite(n)) continue;

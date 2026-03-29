@@ -7,6 +7,34 @@ const responsibilitySlug = z.enum([
   "pflegeberatung",
 ]);
 
+const optionalIban = z
+  .string()
+  .max(48)
+  .transform((s) => {
+    const t = s.trim().replace(/\s+/g, "").toUpperCase();
+    return t.length === 0 ? undefined : t;
+  })
+  .refine((t) => t === undefined || t.length <= 34, "IBAN maximal 34 Zeichen.")
+  .refine((t) => t === undefined || /^[A-Z0-9]+$/.test(t), "IBAN nur Buchstaben und Ziffern (ohne Leerzeichen).");
+
+const optionalBic = z
+  .string()
+  .max(20)
+  .transform((s) => {
+    const t = s.trim().replace(/\s+/g, "").toUpperCase();
+    return t.length === 0 ? undefined : t;
+  })
+  .refine((t) => t === undefined || t.length <= 11, "BIC maximal 11 Zeichen.");
+
+const optionalAccountHolder = z
+  .string()
+  .max(140)
+  .transform((s) => {
+    const t = s.trim();
+    return t.length === 0 ? undefined : t;
+  })
+  .refine((t) => t === undefined || t.length <= 120, "Kontoinhaber maximal 120 Zeichen.");
+
 export const createPartnerUserSchema = z.object({
   email: z.string().trim().email("Gültige E-Mail-Adresse erforderlich.").max(320),
   salutation: z.enum(["herr", "frau"], { message: "Anrede wählen (Herr oder Frau)." }),
@@ -15,6 +43,9 @@ export const createPartnerUserSchema = z.object({
   phone: z.string().trim().min(5, "Telefonnummer erforderlich.").max(40),
   organization_name: z.string().trim().max(200).optional(),
   recruited_by: z.string().trim().max(200).optional(),
+  iban: z.preprocess((v) => (v == null ? "" : String(v)), optionalIban),
+  bic: z.preprocess((v) => (v == null ? "" : String(v)), optionalBic),
+  account_holder: z.preprocess((v) => (v == null ? "" : String(v)), optionalAccountHolder),
   responsibility_areas: z.array(responsibilitySlug).default([]),
   role: z.enum(["partner", "admin"]),
 });

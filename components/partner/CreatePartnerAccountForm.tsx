@@ -166,6 +166,55 @@ export function CreatePartnerAccountForm() {
             className="mt-2 w-full rounded-xl border border-neutral-200 px-4 py-3 text-neutral-900 outline-none ring-[#0F4F68] focus:ring-2 disabled:opacity-60"
           />
         </div>
+        <div className="sm:col-span-2">
+          <h3 className="text-sm font-semibold text-[#0F4F68]">Bankverbindung für Auszahlungen</h3>
+          <p className="mt-1 text-xs text-neutral-500">
+            Für die monatliche Überweisung der Provisionen. Leer lassen und später im Partner bearbeiten möglich.
+          </p>
+        </div>
+        <div className="sm:col-span-2">
+          <label htmlFor="new-partner-iban" className="block text-sm font-semibold text-[#0F4F68]">
+            IBAN <span className="font-normal text-neutral-500">(optional)</span>
+          </label>
+          <input
+            id="new-partner-iban"
+            name="iban"
+            type="text"
+            inputMode="text"
+            autoComplete="off"
+            disabled={pending}
+            spellCheck={false}
+            className="mt-2 w-full rounded-xl border border-neutral-200 px-4 py-3 font-mono text-sm text-neutral-900 outline-none ring-[#0F4F68] focus:ring-2 disabled:opacity-60"
+            placeholder="DE89 …"
+          />
+        </div>
+        <div>
+          <label htmlFor="new-partner-bic" className="block text-sm font-semibold text-[#0F4F68]">
+            BIC <span className="font-normal text-neutral-500">(optional)</span>
+          </label>
+          <input
+            id="new-partner-bic"
+            name="bic"
+            type="text"
+            autoComplete="off"
+            disabled={pending}
+            spellCheck={false}
+            className="mt-2 w-full rounded-xl border border-neutral-200 px-4 py-3 font-mono text-sm text-neutral-900 outline-none ring-[#0F4F68] focus:ring-2 disabled:opacity-60"
+          />
+        </div>
+        <div>
+          <label htmlFor="new-partner-acc-holder" className="block text-sm font-semibold text-[#0F4F68]">
+            Kontoinhaber <span className="font-normal text-neutral-500">(optional)</span>
+          </label>
+          <input
+            id="new-partner-acc-holder"
+            name="account_holder"
+            type="text"
+            autoComplete="name"
+            disabled={pending}
+            className="mt-2 w-full rounded-xl border border-neutral-200 px-4 py-3 text-neutral-900 outline-none ring-[#0F4F68] focus:ring-2 disabled:opacity-60"
+          />
+        </div>
         <div>
           <label htmlFor="new-partner-org" className="block text-sm font-semibold text-[#0F4F68]">
             Zugehörige Firma <span className="font-normal text-neutral-500">(optional)</span>

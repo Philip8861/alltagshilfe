@@ -7,7 +7,12 @@ import {
   normalizePartnerTipAdminStatus,
 } from "@/lib/partner/partner-tip-admin";
 import { normalizePaidAmountEur } from "@/lib/partner/partner-tip-payout";
-import type { PartnerProfile, PartnerTipSubmissionRow } from "@/lib/partner/types";
+import { formatPayoutPeriodLabelDe } from "@/lib/partner/payout-period";
+import type {
+  PartnerAdminPayoutPeriod,
+  PartnerProfile,
+  PartnerTipSubmissionRow,
+} from "@/lib/partner/types";
 import { createSupabaseServiceRoleClient } from "@/lib/supabase/service";
 
 type AuthUserInfo = {
@@ -16,8 +21,14 @@ type AuthUserInfo = {
   last_sign_in_at?: string | null;
 };
 
-const VALID_BEREICH = ["auftraege", "archiv", "anlegen", "liste", "statistik"] as const;
+const VALID_BEREICH = ["auftraege", "archiv", "anlegen", "liste", "statistik", "auszahlen"] as const;
 type PartnerAdminInitialBereich = (typeof VALID_BEREICH)[number];
+
+function normalizePayoutPeriodKey(v: unknown): string | null {
+  if (v == null) return null;
+  const s = String(v).trim();
+  return s.length > 0 ? s : null;
+}
 
 function parseBereich(v: string | undefined): PartnerAdminInitialBereich {
   if (v && (VALID_BEREICH as readonly string[]).includes(v)) return v as PartnerAdminInitialBereich;
@@ -39,6 +50,7 @@ export default async function PartnerAdminPage({
   let profiles: PartnerProfile[] = [];
   const authById: Record<string, AuthUserInfo> = {};
   let tips: PartnerTipSubmissionRow[] = [];
+  let payoutPeriods: PartnerAdminPayoutPeriod[] = [];
   let orders: {
     id: string;
     partner_id: string | null;
@@ -50,11 +62,11 @@ export default async function PartnerAdminPage({
 
   if (svc) {
     try {
-      const [profRes, tipsRes, ordRes, listRes] = await Promise.all([
+      const [profRes, tipsRes, ordRes, listRes, repRes] = await Promise.all([
         svc
           .from("partner_profiles")
           .select(
-            "id, display_name, organization_name, role, created_at, updated_at, salutation, partner_referral_code, first_name, last_name, recruited_by, phone, responsibility_areas, password_changed_at",
+            "id, display_name, organization_name, role, created_at, updated_at, salutation, partner_referral_code, first_name, last_name, recruited_by, phone, responsibility_areas, password_changed_at, iban, bic, account_holder",
           )
           .order("created_at", { ascending: false }),
         svc
@@ -68,6 +80,7 @@ export default async function PartnerAdminPage({
           .order("created_at", { ascending: false })
           .limit(200),
         svc.auth.admin.listUsers({ page: 1, perPage: 1000 }),
+        svc.from("partner_payout_reports").select("*").order("period_key", { ascending: false }).limit(5000),
       ]);
 
       profiles = (profRes.data as PartnerProfile[] | null) ?? [];
@@ -85,6 +98,7 @@ export default async function PartnerAdminPage({
           admin_visible_note: normalizeAdminVisibleNote(row.admin_visible_note),
           archived_at: normalizeArchivedAt(row.archived_at),
           paid_amount_eur: normalizePaidAmountEur(row.paid_amount_eur),
+          payout_settled_period_key: normalizePayoutPeriodKey(row.payout_settled_period_key),
         }));
       }
       orders = (ordRes.data as typeof orders | null) ?? [];
@@ -97,10 +111,41 @@ export default async function PartnerAdminPage({
           };
         }
       }
+      if (repRes.error) {
+        console.error("[PartnerAdminPage] partner_payout_reports:", repRes.error.message);
+      } else if (repRes.data?.length !== undefined) {
+        const raw = repRes.data as Record<string, unknown>[];
+        const byPeriod = new Map<string, Record<string, unknown>[]>();
+        for (const r of raw) {
+          const pk = String(r.period_key ?? "");
+          if (!pk) continue;
+          const list = byPeriod.get(pk) ?? [];
+          list.push(r);
+          byPeriod.set(pk, list);
+        }
+        const profileMap = new Map(profiles.map((p) => [p.id, p]));
+        payoutPeriods = Array.from(byPeriod.entries())
+          .sort((a, b) => b[0].localeCompare(a[0]))
+          .map(([periodKey, list]) => ({
+            periodKey,
+            labelDe: formatPayoutPeriodLabelDe(periodKey),
+            rows: list.map((r) => ({
+              period_key: String(r.period_key),
+              partner_id: String(r.partner_id),
+              einmal_eur: Number(r.einmal_eur),
+              monatlich_eur: Number(r.monatlich_eur),
+              total_eur: Number(r.total_eur),
+              created_at: r.created_at != null ? String(r.created_at) : undefined,
+              email: authById[String(r.partner_id)]?.email ?? "—",
+              profile: profileMap.get(String(r.partner_id)) ?? null,
+            })),
+          }));
+      }
     } catch {
       profiles = [];
       tips = [];
       orders = [];
+      payoutPeriods = [];
     }
   }
 
@@ -111,6 +156,7 @@ export default async function PartnerAdminPage({
       orders={orders}
       profiles={profiles}
       authById={authById}
+      payoutPeriods={payoutPeriods}
       initialBereich={initialBereich}
     />
   );

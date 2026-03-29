@@ -1,6 +1,10 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { PartnerProfile } from "@/lib/partner/types";
 
+/** Alle Spalten inkl. Bankdaten (Migration 011). */
+const SELECT_FULL_BANK =
+  "id, display_name, organization_name, role, created_at, updated_at, salutation, first_name, last_name, recruited_by, phone, responsibility_areas, password_changed_at, partner_referral_code, iban, bic, account_holder";
+
 /** Alle Spalten inkl. 004 + 006 + 007 (partner_referral_code). */
 const SELECT_FULL =
   "id, display_name, organization_name, role, created_at, updated_at, salutation, first_name, last_name, recruited_by, phone, responsibility_areas, password_changed_at, partner_referral_code";
@@ -40,7 +44,7 @@ export async function loadPartnerProfileRow(
   client: SupabaseClient,
   userId: string,
 ): Promise<{ profile: PartnerProfile | null; errorMessage?: string }> {
-  const attempts = [SELECT_FULL, SELECT_NO_REFERRAL, SELECT_WITHOUT_SALUTATION, SELECT_MIN];
+  const attempts = [SELECT_FULL_BANK, SELECT_FULL, SELECT_NO_REFERRAL, SELECT_WITHOUT_SALUTATION, SELECT_MIN];
 
   let lastError: string | undefined;
   for (const cols of attempts) {

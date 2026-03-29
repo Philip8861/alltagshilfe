@@ -107,6 +107,9 @@ export async function createPartnerUserAction(
     phone: formData.get("phone"),
     organization_name: org || undefined,
     recruited_by: recruited || undefined,
+    iban: formData.get("iban"),
+    bic: formData.get("bic"),
+    account_holder: formData.get("account_holder"),
     responsibility_areas: formData.getAll("responsibility_areas").map(String),
     role: formData.get("role") ?? "partner",
   });
@@ -121,6 +124,9 @@ export async function createPartnerUserAction(
         e.first_name?.[0] ??
         e.last_name?.[0] ??
         e.phone?.[0] ??
+        e.iban?.[0] ??
+        e.bic?.[0] ??
+        e.account_holder?.[0] ??
         e.responsibility_areas?.[0] ??
         e.role?.[0] ??
         "Eingaben prüfen.",
@@ -183,6 +189,9 @@ export async function createPartnerUserAction(
     recruited_by: parsed.data.recruited_by ?? null,
     phone: parsed.data.phone,
     responsibility_areas: parsed.data.responsibility_areas,
+    iban: parsed.data.iban ?? null,
+    bic: parsed.data.bic ?? null,
+    account_holder: parsed.data.account_holder ?? null,
   };
 
   /**

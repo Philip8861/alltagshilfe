@@ -171,6 +171,46 @@ export function PartnerEditModal({ open, onClose, profile, email }: Props) {
               className="mt-1 w-full rounded-lg border border-neutral-200 px-3 py-2 text-sm"
             />
           </div>
+          <div className="border-t border-neutral-100 pt-4">
+            <p className="text-xs font-bold uppercase text-[#0F4F68]/80">Bankverbindung (Auszahlung)</p>
+            <div className="mt-3 grid gap-3">
+              <div>
+                <label className="text-xs font-semibold text-neutral-600">IBAN</label>
+                <input
+                  name="iban"
+                  type="text"
+                  defaultValue={profile.iban ?? ""}
+                  disabled={pending}
+                  spellCheck={false}
+                  className="mt-1 w-full rounded-lg border border-neutral-200 px-3 py-2 font-mono text-sm"
+                  autoComplete="off"
+                />
+              </div>
+              <div>
+                <label className="text-xs font-semibold text-neutral-600">BIC</label>
+                <input
+                  name="bic"
+                  type="text"
+                  defaultValue={profile.bic ?? ""}
+                  disabled={pending}
+                  spellCheck={false}
+                  className="mt-1 w-full rounded-lg border border-neutral-200 px-3 py-2 font-mono text-sm"
+                  autoComplete="off"
+                />
+              </div>
+              <div>
+                <label className="text-xs font-semibold text-neutral-600">Kontoinhaber</label>
+                <input
+                  name="account_holder"
+                  type="text"
+                  defaultValue={profile.account_holder ?? ""}
+                  disabled={pending}
+                  className="mt-1 w-full rounded-lg border border-neutral-200 px-3 py-2 text-sm"
+                  autoComplete="name"
+                />
+              </div>
+            </div>
+          </div>
           <fieldset>
             <legend className="text-xs font-bold uppercase text-[#0F4F68]/80">Zuständigkeit</legend>
             <ul className="mt-2 max-h-40 space-y-2 overflow-y-auto">
