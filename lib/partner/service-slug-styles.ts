@@ -39,3 +39,16 @@ export function serviceAccentClass(slug: string): string {
   const s = slug as PartnerResponsibilitySlug;
   return SERVICE_SLUG_ACCENT[s] ?? "bg-neutral-400";
 }
+
+/** Linker Akzent an Tabellenzeilen (Admin Aufträge), passend zu den Leistungs-Badges */
+export const SERVICE_SLUG_ROW_ACCENT: Record<PartnerResponsibilitySlug, string> = {
+  betriebliche_pflegeberatung: "border-l-4 border-l-sky-500",
+  pflegehilfsmittel: "border-l-4 border-l-cyan-500",
+  hauswirtschaft_betreuung: "border-l-4 border-l-indigo-500",
+  pflegeberatung: "border-l-4 border-l-fuchsia-500",
+};
+
+export function serviceRowAccentBorderClass(slug: string): string {
+  const s = slug as PartnerResponsibilitySlug;
+  return SERVICE_SLUG_ROW_ACCENT[s] ?? "border-l-4 border-l-neutral-300";
+}

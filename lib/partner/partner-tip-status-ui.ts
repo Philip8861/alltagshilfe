@@ -10,3 +10,14 @@ export const PARTNER_TIP_STATUS_BADGE_CLASS: Record<PartnerTipAdminStatus, strin
   erledigt: "border-emerald-400/80 bg-emerald-50 text-emerald-950 ring-1 ring-emerald-200/90",
   abgelehnt: "border-rose-400/80 bg-rose-50 text-rose-950 ring-1 ring-rose-200/90",
 };
+
+/** Rahmen/Fokus für Status-Dropdown im Admin (sichtbare Status-Farben) */
+export const PARTNER_TIP_STATUS_SELECT_CLASS: Record<PartnerTipAdminStatus, string> = {
+  neu: "border-sky-300 bg-sky-50/40 focus:border-sky-500 focus:ring-sky-500/25",
+  in_bearbeitung: "border-amber-300 bg-amber-50/50 focus:border-amber-500 focus:ring-amber-500/25",
+  termin_vereinbart: "border-indigo-300 bg-indigo-50/40 focus:border-indigo-500 focus:ring-indigo-500/25",
+  warten_auf_rueckmeldung: "border-violet-300 bg-violet-50/40 focus:border-violet-500 focus:ring-violet-500/25",
+  bezahlt: "border-teal-300 bg-teal-50/40 focus:border-teal-600 focus:ring-teal-500/25",
+  erledigt: "border-emerald-300 bg-emerald-50/40 focus:border-emerald-600 focus:ring-emerald-500/25",
+  abgelehnt: "border-rose-300 bg-rose-50/40 focus:border-rose-600 focus:ring-rose-500/25",
+};

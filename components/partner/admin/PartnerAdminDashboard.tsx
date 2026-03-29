@@ -18,6 +18,7 @@ import {
   SERVICE_SLUG_ORDER,
   SERVICE_SLUG_BADGE_CLASS,
   serviceBadgeClass,
+  serviceRowAccentBorderClass,
 } from "@/lib/partner/service-slug-styles";
 import type { PartnerProfile, PartnerTipAdminStatus, PartnerTipSubmissionRow } from "@/lib/partner/types";
 
@@ -424,7 +425,10 @@ export function PartnerAdminDashboard({
                           PARTNER_RESPONSIBILITY_LABELS[t.service_slug as PartnerResponsibilitySlug] ??
                           t.service_slug;
                         return (
-                          <tr key={t.id} className="align-top transition-colors hover:bg-[#f8fbfc]">
+                          <tr
+                            key={t.id}
+                            className={`align-top transition-colors hover:bg-[#f8fbfc] ${serviceRowAccentBorderClass(t.service_slug)}`}
+                          >
                             <td className="whitespace-nowrap px-3 py-3 text-neutral-700">
                               {new Date(t.created_at).toLocaleString("de-DE", {
                                 dateStyle: "short",
@@ -534,7 +538,10 @@ export function PartnerAdminDashboard({
                           PARTNER_RESPONSIBILITY_LABELS[t.service_slug as PartnerResponsibilitySlug] ??
                           t.service_slug;
                         return (
-                          <tr key={t.id} className="align-top transition-colors hover:bg-[#f8fbfc]">
+                          <tr
+                            key={t.id}
+                            className={`align-top transition-colors hover:bg-[#f8fbfc] ${serviceRowAccentBorderClass(t.service_slug)}`}
+                          >
                             <td className="whitespace-nowrap px-3 py-3 text-neutral-700">
                               {new Date(t.created_at).toLocaleString("de-DE", {
                                 dateStyle: "short",

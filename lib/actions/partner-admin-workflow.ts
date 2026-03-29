@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { getSystemAdminSession } from "@/lib/partner/system-admin-session";
+import { isSupabaseMissingColumnError } from "@/lib/partner/supabase-schema-errors";
 import { createSupabaseServiceRoleClient } from "@/lib/supabase/service";
 import {
   archivePartnerTipSchema,
@@ -35,19 +36,43 @@ export async function updatePartnerTipStatusAction(
     return { ok: false, message: "SUPABASE_SERVICE_ROLE_KEY fehlt." };
   }
 
-  const { error } = await svc
-    .from("partner_tip_submissions")
-    .update({
-      admin_status: parsed.data.admin_status,
-      admin_visible_note: parsed.data.admin_visible_note,
-    })
-    .eq("id", parsed.data.tip_id);
+  const tipId = parsed.data.tip_id;
+  const payloadFull = {
+    admin_status: parsed.data.admin_status,
+    admin_visible_note: parsed.data.admin_visible_note,
+  };
+
+  let { error } = await svc.from("partner_tip_submissions").update(payloadFull).eq("id", tipId);
+
+  if (error && isSupabaseMissingColumnError(error)) {
+    const retry = await svc
+      .from("partner_tip_submissions")
+      .update({ admin_status: parsed.data.admin_status })
+      .eq("id", tipId);
+    error = retry.error;
+  }
 
   if (error) {
-    return { ok: false, message: "Speichern fehlgeschlagen. Migration und Spalten prüfen." };
+    const code = String(error.code ?? "");
+    if (code === "23514") {
+      return {
+        ok: false,
+        message:
+          "Dieser Status ist in der Datenbank noch nicht erlaubt. Bitte Migration 009 (erweiterte Status inkl. Bezahlt) in Supabase ausführen.",
+      };
+    }
+    return {
+      ok: false,
+      message:
+        error.message?.includes("check constraint") || error.message?.toLowerCase().includes("violates check")
+          ? "Status von der Datenbank abgelehnt – Migration 009 prüfen."
+          : "Speichern fehlgeschlagen. Spalten admin_visible_note / admin_status und Migrationen prüfen.",
+    };
   }
 
   revalidatePath("/partner/admin");
+  revalidatePath("/partner/dashboard");
+  revalidatePath("/partner/statistik");
   return { ok: true, message: "Gespeichert." };
 }
 
@@ -83,6 +108,8 @@ export async function archivePartnerTipAction(
   }
 
   revalidatePath("/partner/admin");
+  revalidatePath("/partner/dashboard");
+  revalidatePath("/partner/statistik");
   return { ok: true, message: archivedAt ? "In Archiv verschoben." : "Wieder in aktive Aufträge." };
 }
 
