@@ -4,15 +4,15 @@ import { useMemo, useState } from "react";
 import { PartnerPortalStatisticsCharts } from "@/components/partner/PartnerPortalStatisticsCharts";
 import {
   countOrdersInLocalMonth,
-  countOrdersInLocalYear,
   filterTipsCreatedInMonth,
-  filterTipsCreatedInYear,
+  partnerStatsEpochMonth,
+  partnerStatsMinMonthInputValue,
   provisionEuroTotalsForTips,
 } from "@/lib/partner/analytics-from-tips";
 import { periodTipStatusCounts } from "@/lib/partner/dashboard-period-stats";
 import { formatProvisionEur } from "@/lib/partner/partner-tip-payout";
-import { PARTNER_TIP_STATUS_LABELS, PARTNER_TIP_ADMIN_STATUSES } from "@/lib/partner/partner-tip-admin";
-import type { PartnerDashboardTipSerial, PartnerTipAdminStatus } from "@/lib/partner/types";
+import { PARTNER_TIP_STATUS_LABELS } from "@/lib/partner/partner-tip-admin";
+import type { PartnerDashboardTipSerial } from "@/lib/partner/types";
 
 export type PartnerStatistikOrderSerial = {
   created_at: string;
@@ -22,6 +22,8 @@ export type PartnerStatistikOrderSerial = {
 type Props = {
   tips: PartnerDashboardTipSerial[];
   orders: PartnerStatistikOrderSerial[];
+  /** Profil `created_at`: Statistik beginnt erst ab diesem Kalendermonat. */
+  partnerCreatedAt: string | null | undefined;
 };
 
 function currentMonthValue(): string {
@@ -40,10 +42,24 @@ function parseMonthValue(v: string): { year: number; month0: number } | null {
   return { year, month0: month - 1 };
 }
 
-export function PartnerStatistikView({ tips, orders }: Props) {
+function initialMonthForPartner(partnerCreatedAt: string | null | undefined): string {
+  const cur = currentMonthValue();
+  const min = partnerStatsMinMonthInputValue(partnerCreatedAt);
+  return cur < min ? min : cur;
+}
+
+function initialYearForPartner(partnerCreatedAt: string | null | undefined): string {
+  const { year: py } = partnerStatsEpochMonth(partnerCreatedAt);
+  return String(Math.max(new Date().getFullYear(), py));
+}
+
+export function PartnerStatistikView({ tips, orders, partnerCreatedAt }: Props) {
   const [periodMode, setPeriodMode] = useState<"month" | "year">("month");
-  const [monthInput, setMonthInput] = useState(currentMonthValue);
-  const [yearInput, setYearInput] = useState(() => String(new Date().getFullYear()));
+  const [monthInput, setMonthInput] = useState(() => initialMonthForPartner(partnerCreatedAt));
+  const [yearInput, setYearInput] = useState(() => initialYearForPartner(partnerCreatedAt));
+
+  const minMonthValue = partnerStatsMinMonthInputValue(partnerCreatedAt);
+  const { year: partnerYear, month0: partnerMonth0 } = partnerStatsEpochMonth(partnerCreatedAt);
 
   const tipsForStats = useMemo(() => tips, [tips]);
 
@@ -59,11 +75,19 @@ export function PartnerStatistikView({ tips, orders }: Props) {
     }
     const y = Number(yearInput);
     const year = Number.isFinite(y) && y >= 2000 && y <= 2100 ? y : new Date().getFullYear();
+    if (year < partnerYear) {
+      const s = new Date(year, 0, 1, 0, 0, 0, 0);
+      return { start: s, end: s };
+    }
+    const start =
+      year === partnerYear
+        ? new Date(year, partnerMonth0, 1, 0, 0, 0, 0)
+        : new Date(year, 0, 1, 0, 0, 0, 0);
     return {
-      start: new Date(year, 0, 1, 0, 0, 0, 0),
+      start,
       end: new Date(year + 1, 0, 1, 0, 0, 0, 0),
     };
-  }, [periodMode, monthInput, yearInput]);
+  }, [periodMode, monthInput, yearInput, partnerYear, partnerMonth0]);
 
   const statusInPeriod = useMemo(
     () => periodTipStatusCounts(tipsForStats, periodRange.start, periodRange.end),
@@ -78,8 +102,17 @@ export function PartnerStatistikView({ tips, orders }: Props) {
     }
     const y = Number(yearInput);
     const year = Number.isFinite(y) && y >= 2000 && y <= 2100 ? y : new Date().getFullYear();
-    return filterTipsCreatedInYear(tipsForStats, year);
-  }, [periodMode, monthInput, yearInput, tipsForStats]);
+    if (year < partnerYear) return [];
+    const start =
+      year === partnerYear
+        ? new Date(year, partnerMonth0, 1, 0, 0, 0, 0).getTime()
+        : new Date(year, 0, 1, 0, 0, 0, 0).getTime();
+    const end = new Date(year + 1, 0, 1, 0, 0, 0, 0).getTime();
+    return tipsForStats.filter((t) => {
+      const ti = new Date(t.created_at).getTime();
+      return Number.isFinite(ti) && ti >= start && ti < end;
+    });
+  }, [periodMode, monthInput, yearInput, tipsForStats, partnerYear, partnerMonth0]);
 
   const provisionInPeriod = useMemo(() => provisionEuroTotalsForTips(tipsInPeriod), [tipsInPeriod]);
 
@@ -91,22 +124,24 @@ export function PartnerStatistikView({ tips, orders }: Props) {
     }
     const y = Number(yearInput);
     const year = Number.isFinite(y) && y >= 2000 && y <= 2100 ? y : new Date().getFullYear();
-    return countOrdersInLocalYear(orders, year);
-  }, [periodMode, monthInput, yearInput, orders]);
+    if (year < partnerYear) return 0;
+    const start =
+      year === partnerYear
+        ? new Date(year, partnerMonth0, 1, 0, 0, 0, 0).getTime()
+        : new Date(year, 0, 1, 0, 0, 0, 0).getTime();
+    const end = new Date(year + 1, 0, 1, 0, 0, 0, 0).getTime();
+    let n = 0;
+    for (const o of orders) {
+      const t = new Date(o.created_at).getTime();
+      if (Number.isFinite(t) && t >= start && t < end) n += 1;
+    }
+    return n;
+  }, [periodMode, monthInput, yearInput, orders, partnerYear, partnerMonth0]);
 
   const tipsInPeriodCount = tipsInPeriod.length;
   const abgeschlossen = statusInPeriod.erledigt + statusInPeriod.bezahlt;
   const inPipeline =
     statusInPeriod.in_bearbeitung + statusInPeriod.termin_vereinbart + statusInPeriod.warten_auf_rueckmeldung;
-
-  const statusAccent: Partial<Record<PartnerTipAdminStatus, string>> = {
-    in_bearbeitung: "border-amber-200 bg-amber-50/80",
-    termin_vereinbart: "border-sky-200 bg-sky-50/70",
-    warten_auf_rueckmeldung: "border-violet-200 bg-violet-50/60",
-    bezahlt: "border-teal-200 bg-teal-50/70",
-    erledigt: "border-emerald-200 bg-emerald-50/80",
-    abgelehnt: "border-rose-200 bg-rose-50/70",
-  };
 
   return (
     <section className="partner-dash-animate rounded-2xl border border-[#0F4F68]/12 bg-white p-5 shadow-[0_12px_40px_-20px_rgba(15,79,104,0.2)] sm:p-8">
@@ -115,7 +150,8 @@ export function PartnerStatistikView({ tips, orders }: Props) {
           <h1 className="text-xl font-semibold text-[#0F4F68] sm:text-2xl">Ihre Statistik</h1>
           <p className="mt-2 max-w-xl text-sm text-neutral-600">
             Nur Ihre Tippgeber und Ihre Pflegebox-Bestellungen — keine fremden Partnerdaten. Provisionswerte wie auf dem
-            Dashboard (ohne Admin-Archiv).
+            Dashboard (ohne Admin-Archiv). Ausgewertet wird ab dem Monat Ihrer Partner-Anlage; frühere Monate erscheinen
+            nicht.
           </p>
         </div>
         <div className="partner-dash-animate partner-dash-delay-1 flex flex-wrap items-center gap-2">
@@ -143,13 +179,14 @@ export function PartnerStatistikView({ tips, orders }: Props) {
             <input
               type="month"
               value={monthInput}
+              min={minMonthValue}
               onChange={(e) => setMonthInput(e.target.value)}
               className="rounded-xl border border-neutral-200 px-3 py-2 text-sm font-medium text-neutral-900 hover:border-[#0F4F68]/30 focus:border-[#0F4F68] focus:outline-none focus:ring-2 focus:ring-[#0F4F68]/25"
             />
           ) : (
             <input
               type="number"
-              min={2000}
+              min={partnerYear}
               max={2100}
               value={yearInput}
               onChange={(e) => setYearInput(e.target.value)}
@@ -200,29 +237,13 @@ export function PartnerStatistikView({ tips, orders }: Props) {
         </div>
       </div>
 
-      <div className="partner-dash-animate partner-dash-delay-3 mt-8">
-        <h2 className="text-sm font-bold text-[#0F4F68]">Alle Verwaltungsstatus im Zeitraum</h2>
-        <div className="mt-3 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
-          {PARTNER_TIP_ADMIN_STATUSES.map((st) => (
-            <div
-              key={st}
-              className={`rounded-xl border px-3 py-2.5 ${statusAccent[st] ?? "border-neutral-200 bg-neutral-50/80"}`}
-            >
-              <p className="text-[0.65rem] font-semibold uppercase tracking-wide text-neutral-600">
-                {PARTNER_TIP_STATUS_LABELS[st]}
-              </p>
-              <p className="mt-0.5 text-xl font-bold tabular-nums text-neutral-900">{statusInPeriod[st]}</p>
-            </div>
-          ))}
-        </div>
-      </div>
-
       <PartnerPortalStatisticsCharts
         tips={tipsForStats}
         orders={orders}
         periodMode={periodMode}
         monthInput={monthInput}
         yearInput={yearInput}
+        partnerCreatedAt={partnerCreatedAt}
       />
     </section>
   );

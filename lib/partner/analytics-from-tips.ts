@@ -80,6 +80,23 @@ export function monthlyCreatedCountsForYear(
   return points;
 }
 
+/** Erster Monat, für den Statistik angezeigt wird (Kalendermonat der Partner-Anlage, lokale Zeit). */
+export function partnerStatsEpochMonth(createdAtIso: string | undefined | null): { year: number; month0: number } {
+  if (createdAtIso) {
+    const d = new Date(createdAtIso);
+    if (Number.isFinite(d.getTime())) {
+      return { year: d.getFullYear(), month0: d.getMonth() };
+    }
+  }
+  const n = new Date();
+  return { year: n.getFullYear(), month0: n.getMonth() };
+}
+
+export function partnerStatsMinMonthInputValue(createdAtIso: string | undefined | null): string {
+  const { year, month0 } = partnerStatsEpochMonth(createdAtIso);
+  return `${year}-${String(month0 + 1).padStart(2, "0")}`;
+}
+
 /** Letzte `months` Monate inkl. Anker-Monat (lokales Datum). */
 export function rollingMonthlyCreatedCounts(
   tips: readonly { created_at: string }[],
@@ -101,6 +118,48 @@ export function rollingMonthlyCreatedCounts(
       if (inLocalRange(t.created_at, start, end)) count += 1;
     }
     points.push({ key, label: `${MONTH_SHORT_DE[m]} ${y}`, count });
+  }
+  return points;
+}
+
+/**
+ * Wie rollingMonthlyCreatedCounts, aber ohne Monate vor dem Partner-Anlagemonat
+ * (höchstens `maxMonths` bis zum Anker, gekappt am Anlagemonat).
+ */
+export function rollingMonthlyCreatedCountsSincePartner(
+  tips: readonly { created_at: string }[],
+  anchorYear: number,
+  anchorMonth0: number,
+  partnerYear: number,
+  partnerMonth0: number,
+  maxMonths: number,
+): MonthlyCountPoint[] {
+  const anchorIdx = anchorYear * 12 + anchorMonth0;
+  const partnerIdx = partnerYear * 12 + partnerMonth0;
+  const span = anchorIdx - partnerIdx + 1;
+  const months = span < 1 ? 1 : Math.min(maxMonths, span);
+  return rollingMonthlyCreatedCounts(tips, anchorYear, anchorMonth0, months);
+}
+
+/** Januar–Dezember des Jahres, aber nur ab dem Anlagemonat im Anlagejahr; leer wenn Jahr vor Anlage. */
+export function monthlyCreatedCountsForYearSincePartner(
+  tips: readonly { created_at: string }[],
+  year: number,
+  partnerYear: number,
+  partnerMonth0: number,
+): MonthlyCountPoint[] {
+  if (year < partnerYear) return [];
+  const startM = year === partnerYear ? partnerMonth0 : 0;
+  const points: MonthlyCountPoint[] = [];
+  for (let m = startM; m < 12; m++) {
+    const start = new Date(year, m, 1, 0, 0, 0, 0).getTime();
+    const end = new Date(year, m + 1, 1, 0, 0, 0, 0).getTime();
+    const key = `${year}-${String(m + 1).padStart(2, "0")}`;
+    let count = 0;
+    for (const t of tips) {
+      if (inLocalRange(t.created_at, start, end)) count += 1;
+    }
+    points.push({ key, label: MONTH_SHORT_DE[m], count });
   }
   return points;
 }

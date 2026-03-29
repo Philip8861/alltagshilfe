@@ -13,10 +13,11 @@ import {
 } from "recharts";
 import {
   countOrdersInMonthKey,
-  monthlyCreatedCountsForYear,
+  monthlyCreatedCountsForYearSincePartner,
   monthlyProvisionEuroLinesForPoints,
   monthlyStatusCountLinesForPoints,
-  rollingMonthlyCreatedCounts,
+  partnerStatsEpochMonth,
+  rollingMonthlyCreatedCountsSincePartner,
 } from "@/lib/partner/analytics-from-tips";
 import { PARTNER_TIP_STATUS_LABELS, PARTNER_TIP_ADMIN_STATUSES } from "@/lib/partner/partner-tip-admin";
 import {
@@ -37,27 +38,36 @@ type Props = {
   periodMode: PeriodMode;
   monthInput: string;
   yearInput: string;
+  partnerCreatedAt: string | null | undefined;
 };
 
 const euroFmt = (v: number) =>
   `${v.toLocaleString("de-DE", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} €`;
 
-export function PartnerPortalStatisticsCharts({ tips, orders, periodMode, monthInput, yearInput }: Props) {
+export function PartnerPortalStatisticsCharts({
+  tips,
+  orders,
+  periodMode,
+  monthInput,
+  yearInput,
+  partnerCreatedAt,
+}: Props) {
   const monthPoints = useMemo(() => {
+    const { year: py, month0: pm0 } = partnerStatsEpochMonth(partnerCreatedAt);
     const y = Number(yearInput);
     const year = Number.isFinite(y) && y >= 2000 && y <= 2100 ? y : new Date().getFullYear();
     if (periodMode === "year") {
-      return monthlyCreatedCountsForYear(tips, year);
+      return monthlyCreatedCountsForYearSincePartner(tips, year, py, pm0);
     }
     const m = /^(\d{4})-(\d{2})$/.exec(monthInput.trim());
     if (!m) {
       const d = new Date();
-      return rollingMonthlyCreatedCounts(tips, d.getFullYear(), d.getMonth(), 12);
+      return rollingMonthlyCreatedCountsSincePartner(tips, d.getFullYear(), d.getMonth(), py, pm0, 12);
     }
     const yM = Number(m[1]);
     const mo = Number(m[2]) - 1;
-    return rollingMonthlyCreatedCounts(tips, yM, mo, 12);
-  }, [tips, periodMode, monthInput, yearInput]);
+    return rollingMonthlyCreatedCountsSincePartner(tips, yM, mo, py, pm0, 12);
+  }, [tips, periodMode, monthInput, yearInput, partnerCreatedAt]);
 
   const lineEingaengeOrders = useMemo(
     () =>
@@ -78,8 +88,9 @@ export function PartnerPortalStatisticsCharts({ tips, orders, periodMode, monthI
       <div>
         <h2 className="text-base font-semibold text-[#0F4F68]">Ihre Verläufe (Liniendiagramme)</h2>
         <p className="mt-1 text-sm text-neutral-600">
-          Nur Ihre eigenen Tippgeber und Pflegebox-Bestellungen. Bei Monatsansicht: letzte 12 Monate bis zum gewählten
-          Monat; bei Jahresansicht: Januar–Dezember des gewählten Jahres.
+          Nur Ihre eigenen Tippgeber und Pflegebox-Bestellungen. Monate vor Ihrer Partner-Anlage werden nicht angezeigt. Bei
+          Monatsansicht: bis zu 12 Monate bis zum gewählten Monat; bei Jahresansicht: nur ab dem Anlagemonat im jeweiligen
+          Jahr.
         </p>
       </div>
 
