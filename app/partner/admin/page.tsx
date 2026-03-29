@@ -1,6 +1,10 @@
 import { PartnerAdminDashboard } from "@/components/partner/admin/PartnerAdminDashboard";
 import { requireSystemAdmin } from "@/lib/partner/system-admin-guard";
-import { normalizePartnerTipAdminStatus } from "@/lib/partner/partner-tip-admin";
+import {
+  normalizeAdminVisibleNote,
+  normalizeArchivedAt,
+  normalizePartnerTipAdminStatus,
+} from "@/lib/partner/partner-tip-admin";
 import type { PartnerProfile, PartnerTipSubmissionRow } from "@/lib/partner/types";
 import { createSupabaseServiceRoleClient } from "@/lib/supabase/service";
 
@@ -10,8 +14,22 @@ type AuthUserInfo = {
   last_sign_in_at?: string | null;
 };
 
-export default async function PartnerAdminPage() {
+const VALID_BEREICH = ["auftraege", "archiv", "anlegen", "liste", "statistik"] as const;
+type PartnerAdminInitialBereich = (typeof VALID_BEREICH)[number];
+
+function parseBereich(v: string | undefined): PartnerAdminInitialBereich {
+  if (v && (VALID_BEREICH as readonly string[]).includes(v)) return v as PartnerAdminInitialBereich;
+  return "auftraege";
+}
+
+export default async function PartnerAdminPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ bereich?: string }>;
+}) {
   await requireSystemAdmin();
+  const { bereich } = await searchParams;
+  const initialBereich = parseBereich(bereich);
 
   const svc = createSupabaseServiceRoleClient();
 
@@ -38,7 +56,7 @@ export default async function PartnerAdminPage() {
           .order("created_at", { ascending: false }),
         svc
           .from("partner_tip_submissions")
-          .select("id, partner_id, service_slug, payload, created_at, admin_status")
+          .select("id, partner_id, service_slug, payload, created_at, admin_status, admin_visible_note, archived_at")
           .order("created_at", { ascending: false })
           .limit(500),
         svc
@@ -58,6 +76,8 @@ export default async function PartnerAdminPage() {
           payload: (row.payload as Record<string, unknown>) ?? {},
           created_at: String(row.created_at),
           admin_status: normalizePartnerTipAdminStatus(row.admin_status),
+          admin_visible_note: normalizeAdminVisibleNote(row.admin_visible_note),
+          archived_at: normalizeArchivedAt(row.archived_at),
         }));
       }
       orders = (ordRes.data as typeof orders | null) ?? [];
@@ -78,14 +98,13 @@ export default async function PartnerAdminPage() {
   }
 
   return (
-    <div className="px-4 py-10 sm:px-6 lg:px-10">
-      <PartnerAdminDashboard
-        hasServiceRole={Boolean(svc)}
-        tips={tips}
-        orders={orders}
-        profiles={profiles}
-        authById={authById}
-      />
-    </div>
+    <PartnerAdminDashboard
+      hasServiceRole={Boolean(svc)}
+      tips={tips}
+      orders={orders}
+      profiles={profiles}
+      authById={authById}
+      initialBereich={initialBereich}
+    />
   );
 }

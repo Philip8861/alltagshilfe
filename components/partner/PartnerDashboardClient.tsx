@@ -1,10 +1,10 @@
 "use client";
 
-import { useMemo, useState, useEffect } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { PartnerAnimatedEuro } from "@/components/partner/PartnerAnimatedEuro";
 import { PartnerTipModal } from "@/components/partner/PartnerTipModal";
-import { tipPayloadNotiz } from "@/lib/partner/partner-tip-notiz";
+import { PARTNER_TIP_STATUS_PARTNER_LABELS } from "@/lib/partner/partner-tip-admin";
 import { tipTableFields } from "@/lib/partner/partner-tip-table-fields";
 import { serviceBadgeClass } from "@/lib/partner/service-slug-styles";
 import {
@@ -29,25 +29,24 @@ const iconWrap =
   "flex h-11 w-11 shrink-0 items-center justify-center rounded-md bg-[#0F4F68]/10 text-[#0F4F68]";
 
 function statusPill(admin: PartnerTipAdminStatus): { label: string; className: string } {
+  const label = PARTNER_TIP_STATUS_PARTNER_LABELS[admin] ?? String(admin);
   switch (admin) {
     case "neu":
+      return { label, className: "bg-sky-600 text-white" };
     case "in_bearbeitung":
-      return {
-        label: "In Bearbeitung",
-        className: "bg-amber-400 text-amber-950",
-      };
+      return { label, className: "bg-amber-400 text-amber-950" };
+    case "termin_vereinbart":
+      return { label, className: "bg-indigo-600 text-white" };
+    case "warten_auf_rueckmeldung":
+      return { label, className: "bg-violet-600 text-white" };
+    case "bezahlt":
+      return { label, className: "bg-teal-600 text-white" };
     case "erledigt":
-      return {
-        label: "Erfolgreich Abgeschlossen",
-        className: "bg-emerald-600 text-white",
-      };
+      return { label, className: "bg-emerald-600 text-white" };
     case "abgelehnt":
-      return {
-        label: "Abgelehnt",
-        className: "bg-red-600 text-white",
-      };
+      return { label, className: "bg-red-600 text-white" };
     default:
-      return { label: String(admin), className: "bg-neutral-500 text-white" };
+      return { label, className: "bg-neutral-500 text-white" };
   }
 }
 
@@ -72,8 +71,11 @@ export function PartnerDashboardClient({
     return responsibilityAreaSlugs.filter((s): s is PartnerResponsibilitySlug => slugSet.has(s));
   }, [responsibilityAreaSlugs]);
 
-  const rows = useMemo(() => {
-    return tips.map((t) => {
+  const activeTips = useMemo(() => tips.filter((t) => !t.archived_at), [tips]);
+  const archivedTips = useMemo(() => tips.filter((t) => t.archived_at), [tips]);
+
+  const toRows = useCallback((list: typeof tips) => {
+    return list.map((t) => {
       const slug = t.service_slug as PartnerResponsibilitySlug;
       const typ = PARTNER_RESPONSIBILITY_LABELS[slug] ?? t.service_slug.replace(/_/g, " ");
       const f = tipTableFields(t.payload, t.service_slug);
@@ -83,7 +85,7 @@ export function PartnerDashboardClient({
         year: "numeric",
       });
       const pill = statusPill(t.admin_status);
-      const notiz = tipPayloadNotiz(t.payload);
+      const adminNote = t.admin_visible_note?.trim() ?? "";
       return {
         id: t.id,
         typ,
@@ -93,28 +95,37 @@ export function PartnerDashboardClient({
         firma: f.firma,
         datum,
         pill,
-        notiz,
+        adminNote,
       };
     });
-  }, [tips]);
+  }, []);
 
-  const filtered = useMemo(() => {
-    const q = search.trim().toLowerCase();
-    if (!q) return rows;
-    return rows.filter((r) => {
-      const notiz = r.notiz.toLowerCase();
-      return (
-        r.typ.toLowerCase().includes(q) ||
-        r.vorname.toLowerCase().includes(q) ||
-        r.nachname.toLowerCase().includes(q) ||
-        `${r.vorname} ${r.nachname}`.toLowerCase().includes(q) ||
-        r.firma.toLowerCase().includes(q) ||
-        r.datum.includes(q) ||
-        r.pill.label.toLowerCase().includes(q) ||
-        notiz.includes(q)
-      );
-    });
-  }, [rows, search]);
+  const activeRows = useMemo(() => toRows(activeTips), [activeTips, toRows]);
+  const archivedRows = useMemo(() => toRows(archivedTips), [archivedTips, toRows]);
+
+  const filterRows = useCallback(
+    (rows: ReturnType<typeof toRows>) => {
+      const q = search.trim().toLowerCase();
+      if (!q) return rows;
+      return rows.filter((r) => {
+        const note = r.adminNote.toLowerCase();
+        return (
+          r.typ.toLowerCase().includes(q) ||
+          r.vorname.toLowerCase().includes(q) ||
+          r.nachname.toLowerCase().includes(q) ||
+          `${r.vorname} ${r.nachname}`.toLowerCase().includes(q) ||
+          r.firma.toLowerCase().includes(q) ||
+          r.datum.includes(q) ||
+          r.pill.label.toLowerCase().includes(q) ||
+          note.includes(q)
+        );
+      });
+    },
+    [search],
+  );
+
+  const filteredActive = useMemo(() => filterRows(activeRows), [activeRows, filterRows]);
+  const filteredArchived = useMemo(() => filterRows(archivedRows), [archivedRows, filterRows]);
 
   const closeTipModal = () => {
     setTipOpen(false);
@@ -274,14 +285,14 @@ export function PartnerDashboardClient({
               </tr>
             </thead>
             <tbody className="divide-y divide-neutral-100">
-              {filtered.length === 0 ? (
+              {filteredActive.length === 0 ? (
                 <tr>
                   <td colSpan={7} className="px-4 py-12 text-center text-neutral-600">
-                    Keine Einträge{search.trim() ? " für diese Suche." : "."}
+                    Keine aktiven Einträge{search.trim() ? " für diese Suche." : "."}
                   </td>
                 </tr>
               ) : (
-                filtered.map((r) => (
+                filteredActive.map((r) => (
                   <tr key={r.id} className="bg-white hover:bg-neutral-50/80">
                     <td className="whitespace-nowrap px-3 py-3 text-neutral-900 sm:px-4">{r.vorname}</td>
                     <td className="whitespace-nowrap px-3 py-3 text-neutral-900 sm:px-4">{r.nachname}</td>
@@ -295,20 +306,110 @@ export function PartnerDashboardClient({
                       </span>
                     </td>
                     <td className="max-w-[14rem] px-3 py-3 align-top text-neutral-800 sm:px-4">
-                      {r.notiz ? (
+                      {r.adminNote ? (
                         <details className="text-sm">
                           <summary className="cursor-pointer list-none font-medium text-[#0F4F68] hover:underline [&::-webkit-details-marker]:hidden">
-                            <span className="inline-flex items-center gap-1">
-                              Notiz lesen
+                            <span className="inline-flex items-center gap-2">
+                              <span
+                                className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-amber-400 text-[11px] font-black leading-none text-amber-950 shadow-[0_0_14px_rgba(251,191,36,0.95)] ring-2 ring-amber-200/80 motion-safe:animate-pulse"
+                                aria-hidden
+                              >
+                                !
+                              </span>
+                              <span>Notiz lesen</span>
                               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
                                 <path d="M6 9l6 6 6-6" strokeLinecap="round" strokeLinejoin="round" />
                               </svg>
                             </span>
                           </summary>
-                          <p className="mt-2 whitespace-pre-wrap text-neutral-700">{r.notiz}</p>
+                          <p className="mt-2 whitespace-pre-wrap text-neutral-700">{r.adminNote}</p>
                         </details>
                       ) : (
-                        <span className="text-neutral-400">—</span>
+                        <span className="text-neutral-300">—</span>
+                      )}
+                    </td>
+                    <td className="whitespace-nowrap px-3 py-3 sm:px-4">
+                      <span className={`inline-flex rounded-full border px-2.5 py-1 text-xs font-semibold ${r.typeClass}`}>
+                        {r.typ}
+                      </span>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section
+        id="partner-statusliste-archiv"
+        className="partner-dash-animate partner-dash-delay-5 scroll-mt-28 rounded-lg border border-neutral-300 bg-white p-4 sm:p-6 lg:p-8"
+        aria-labelledby="partner-statusliste-archiv-heading"
+      >
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <h2 id="partner-statusliste-archiv-heading" className="text-lg font-semibold text-[#0F4F68] sm:text-xl">
+            Statusliste Archiv
+          </h2>
+          <p className="text-sm text-neutral-600 sm:max-w-md sm:text-right">
+            Hier erscheinen abgelegte Fälle. Die gleiche Suche oben filtert auch dieses Archiv.
+          </p>
+        </div>
+
+        <div className="mt-6 overflow-x-auto rounded-md border border-neutral-200">
+          <table className="min-w-[64rem] w-full text-left text-sm">
+            <thead>
+              <tr className="border-b border-neutral-200 bg-[#F2F9FA] text-xs font-semibold uppercase text-[#0F4F68]">
+                <th className="whitespace-nowrap px-3 py-3 sm:px-4">Vorname</th>
+                <th className="whitespace-nowrap px-3 py-3 sm:px-4">Nachname</th>
+                <th className="whitespace-nowrap px-3 py-3 sm:px-4">Firma</th>
+                <th className="whitespace-nowrap px-3 py-3 sm:px-4">Datum</th>
+                <th className="whitespace-nowrap px-3 py-3 sm:px-4">Status</th>
+                <th className="min-w-[8rem] px-3 py-3 sm:px-4">Notiz</th>
+                <th className="whitespace-nowrap px-3 py-3 sm:px-4">Typ</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-neutral-100">
+              {filteredArchived.length === 0 ? (
+                <tr>
+                  <td colSpan={7} className="px-4 py-12 text-center text-neutral-600">
+                    Keine archivierten Einträge{search.trim() ? " für diese Suche." : "."}
+                  </td>
+                </tr>
+              ) : (
+                filteredArchived.map((r) => (
+                  <tr key={r.id} className="bg-white hover:bg-neutral-50/80">
+                    <td className="whitespace-nowrap px-3 py-3 text-neutral-900 sm:px-4">{r.vorname}</td>
+                    <td className="whitespace-nowrap px-3 py-3 text-neutral-900 sm:px-4">{r.nachname}</td>
+                    <td className="max-w-[12rem] truncate px-3 py-3 text-neutral-800 sm:max-w-[14rem] sm:px-4">
+                      {r.firma}
+                    </td>
+                    <td className="whitespace-nowrap px-3 py-3 text-neutral-800 sm:px-4">{r.datum}</td>
+                    <td className="px-3 py-3 sm:px-4">
+                      <span className={`inline-flex rounded px-2.5 py-0.5 text-xs font-medium ${r.pill.className}`}>
+                        {r.pill.label}
+                      </span>
+                    </td>
+                    <td className="max-w-[14rem] px-3 py-3 align-top text-neutral-800 sm:px-4">
+                      {r.adminNote ? (
+                        <details className="text-sm">
+                          <summary className="cursor-pointer list-none font-medium text-[#0F4F68] hover:underline [&::-webkit-details-marker]:hidden">
+                            <span className="inline-flex items-center gap-2">
+                              <span
+                                className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-amber-400 text-[11px] font-black leading-none text-amber-950 shadow-[0_0_14px_rgba(251,191,36,0.95)] ring-2 ring-amber-200/80 motion-safe:animate-pulse"
+                                aria-hidden
+                              >
+                                !
+                              </span>
+                              <span>Notiz lesen</span>
+                              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
+                                <path d="M6 9l6 6 6-6" strokeLinecap="round" strokeLinejoin="round" />
+                              </svg>
+                            </span>
+                          </summary>
+                          <p className="mt-2 whitespace-pre-wrap text-neutral-700">{r.adminNote}</p>
+                        </details>
+                      ) : (
+                        <span className="text-neutral-300">—</span>
                       )}
                     </td>
                     <td className="whitespace-nowrap px-3 py-3 sm:px-4">

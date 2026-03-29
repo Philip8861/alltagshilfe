@@ -1,7 +1,11 @@
 import type { Metadata } from "next";
 import { PartnerStatistikView } from "@/components/partner/PartnerStatistikView";
 import { requirePartnerLogin } from "@/lib/partner/auth";
-import { normalizePartnerTipAdminStatus } from "@/lib/partner/partner-tip-admin";
+import {
+  normalizeAdminVisibleNote,
+  normalizeArchivedAt,
+  normalizePartnerTipAdminStatus,
+} from "@/lib/partner/partner-tip-admin";
 import type { PartnerDashboardTipSerial, PflegeboxOrderRow } from "@/lib/partner/types";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
@@ -24,7 +28,7 @@ export default async function PartnerStatistikPage() {
         .order("created_at", { ascending: false }),
       supabase
         .from("partner_tip_submissions")
-        .select("id, service_slug, payload, created_at, admin_status")
+        .select("id, service_slug, payload, created_at, admin_status, admin_visible_note, archived_at")
         .eq("partner_id", profile.id)
         .order("created_at", { ascending: false }),
     ]);
@@ -36,6 +40,8 @@ export default async function PartnerStatistikPage() {
         payload: (row.payload as Record<string, unknown>) ?? {},
         created_at: String(row.created_at),
         admin_status: normalizePartnerTipAdminStatus(row.admin_status),
+        admin_visible_note: normalizeAdminVisibleNote(row.admin_visible_note),
+        archived_at: normalizeArchivedAt(row.archived_at),
       }));
     }
   } catch {

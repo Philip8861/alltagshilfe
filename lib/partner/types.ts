@@ -22,7 +22,14 @@ export type PartnerProfile = {
   password_changed_at?: string | null;
 };
 
-export type PartnerTipAdminStatus = "neu" | "in_bearbeitung" | "erledigt" | "abgelehnt";
+export type PartnerTipAdminStatus =
+  | "neu"
+  | "in_bearbeitung"
+  | "termin_vereinbart"
+  | "warten_auf_rueckmeldung"
+  | "bezahlt"
+  | "erledigt"
+  | "abgelehnt";
 
 export type PartnerTipSubmissionRow = {
   id: string;
@@ -31,12 +38,15 @@ export type PartnerTipSubmissionRow = {
   payload: Record<string, unknown>;
   created_at: string;
   admin_status: PartnerTipAdminStatus;
+  /** Vom Admin für den Partner sichtbare Notiz (nicht Payload). */
+  admin_visible_note: string | null;
+  archived_at: string | null;
 };
 
 /** Partner-Dashboard: eigene Tippgeber-Einträge ohne partner_id im Client. */
 export type PartnerDashboardTipSerial = Pick<
   PartnerTipSubmissionRow,
-  "id" | "service_slug" | "payload" | "created_at" | "admin_status"
+  "id" | "service_slug" | "payload" | "created_at" | "admin_status" | "admin_visible_note" | "archived_at"
 >;
 
 export type PflegeboxOrderRow = {

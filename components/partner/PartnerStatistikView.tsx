@@ -133,22 +133,26 @@ export function PartnerStatistikView({ tips, orders }: Props) {
 
   const orderLikes = useMemo(() => orders.map((o) => ({ created_at: o.created_at, status: o.status })), [orders]);
 
+  const tipsForStats = useMemo(() => tips.filter((t) => !t.archived_at), [tips]);
+
   const periodStats = useMemo(() => {
     if (periodMode === "month") {
       const p = parseMonthValue(monthInput);
-      if (!p) return statsForMonth(tips, orderLikes, new Date().getFullYear(), new Date().getMonth());
-      return statsForMonth(tips, orderLikes, p.year, p.month0);
+      if (!p)
+        return statsForMonth(tipsForStats, orderLikes, new Date().getFullYear(), new Date().getMonth());
+      return statsForMonth(tipsForStats, orderLikes, p.year, p.month0);
     }
     const y = Number(yearInput);
-    if (!Number.isFinite(y) || y < 2000 || y > 2100) return statsForYear(tips, orderLikes, new Date().getFullYear());
-    return statsForYear(tips, orderLikes, y);
-  }, [periodMode, monthInput, yearInput, tips, orderLikes]);
+    if (!Number.isFinite(y) || y < 2000 || y > 2100)
+      return statsForYear(tipsForStats, orderLikes, new Date().getFullYear());
+    return statsForYear(tipsForStats, orderLikes, y);
+  }, [periodMode, monthInput, yearInput, tipsForStats, orderLikes]);
 
   const monthlyForYear = useMemo(() => {
     const y = Number(yearInput);
     const year = Number.isFinite(y) && y >= 2000 && y <= 2100 ? y : new Date().getFullYear();
-    return monthlyStatsForYear(tips, orderLikes, year);
-  }, [yearInput, tips, orderLikes]);
+    return monthlyStatsForYear(tipsForStats, orderLikes, year);
+  }, [yearInput, tipsForStats, orderLikes]);
 
   const barsAnimKey = `${periodMode}-${monthInput}-${yearInput}-${periodStats.abgeschlossen}-${periodStats.abgelehnt}-${periodStats.inBearbeitung}`;
 

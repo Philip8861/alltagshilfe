@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { getSystemAdminSession } from "@/lib/partner/system-admin-session";
 import { createSupabaseServiceRoleClient } from "@/lib/supabase/service";
 import {
+  archivePartnerTipSchema,
   updatePartnerProfileAdminSchema,
   updatePartnerTipStatusSchema,
 } from "@/lib/validations/partner-admin";
@@ -18,9 +19,49 @@ export async function updatePartnerTipStatusAction(
     return { ok: false, message: "Nicht autorisiert." };
   }
 
+  const noteRaw = formData.get("admin_visible_note");
   const parsed = updatePartnerTipStatusSchema.safeParse({
     tip_id: formData.get("tip_id"),
     admin_status: formData.get("admin_status"),
+    admin_visible_note: typeof noteRaw === "string" ? noteRaw : "",
+  });
+  if (!parsed.success) {
+    const msg = parsed.error.issues[0]?.message;
+    return { ok: false, message: msg || "Ungültige Eingabe." };
+  }
+
+  const svc = createSupabaseServiceRoleClient();
+  if (!svc) {
+    return { ok: false, message: "SUPABASE_SERVICE_ROLE_KEY fehlt." };
+  }
+
+  const { error } = await svc
+    .from("partner_tip_submissions")
+    .update({
+      admin_status: parsed.data.admin_status,
+      admin_visible_note: parsed.data.admin_visible_note,
+    })
+    .eq("id", parsed.data.tip_id);
+
+  if (error) {
+    return { ok: false, message: "Speichern fehlgeschlagen. Migration und Spalten prüfen." };
+  }
+
+  revalidatePath("/partner/admin");
+  return { ok: true, message: "Gespeichert." };
+}
+
+export async function archivePartnerTipAction(
+  _prev: AdminWorkflowState | null,
+  formData: FormData,
+): Promise<AdminWorkflowState> {
+  if (!(await getSystemAdminSession())) {
+    return { ok: false, message: "Nicht autorisiert." };
+  }
+
+  const parsed = archivePartnerTipSchema.safeParse({
+    tip_id: formData.get("tip_id"),
+    archived: formData.get("archived"),
   });
   if (!parsed.success) {
     return { ok: false, message: "Ungültige Eingabe." };
@@ -31,17 +72,18 @@ export async function updatePartnerTipStatusAction(
     return { ok: false, message: "SUPABASE_SERVICE_ROLE_KEY fehlt." };
   }
 
+  const archivedAt = parsed.data.archived === "true" ? new Date().toISOString() : null;
   const { error } = await svc
     .from("partner_tip_submissions")
-    .update({ admin_status: parsed.data.admin_status })
+    .update({ archived_at: archivedAt })
     .eq("id", parsed.data.tip_id);
 
   if (error) {
-    return { ok: false, message: "Status konnte nicht gespeichert werden. Migration 008 prüfen." };
+    return { ok: false, message: "Archiv-Status konnte nicht gespeichert werden." };
   }
 
   revalidatePath("/partner/admin");
-  return { ok: true, message: "Status aktualisiert." };
+  return { ok: true, message: archivedAt ? "In Archiv verschoben." : "Wieder in aktive Aufträge." };
 }
 
 export async function updatePartnerProfileAdminAction(

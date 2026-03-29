@@ -94,6 +94,16 @@ export function PartnerPortalShell({ children }: Props) {
             </svg>
           </Link>
           <Link
+            href="/partner/dashboard#partner-statusliste-archiv"
+            className={iconButtonClass(false)}
+            title="Statusliste Archiv"
+          >
+            <span className="sr-only">Statusliste Archiv</span>
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
+              <path d="M21 8v13H3V8M1 3h22v5H1V3zM10 12h4" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </Link>
+          <Link
             href="/partner/einstellungen"
             className={iconButtonClass(settingsActive)}
             aria-current={settingsActive ? "page" : undefined}

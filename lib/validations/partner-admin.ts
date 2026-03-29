@@ -7,9 +7,31 @@ const responsibilitySlug = z.enum([
   "pflegeberatung",
 ]);
 
+const partnerTipAdminStatusEnum = z.enum([
+  "neu",
+  "in_bearbeitung",
+  "termin_vereinbart",
+  "warten_auf_rueckmeldung",
+  "bezahlt",
+  "erledigt",
+  "abgelehnt",
+]);
+
 export const updatePartnerTipStatusSchema = z.object({
   tip_id: z.string().uuid(),
-  admin_status: z.enum(["neu", "in_bearbeitung", "erledigt", "abgelehnt"]),
+  admin_status: partnerTipAdminStatusEnum,
+  admin_visible_note: z.preprocess(
+    (v) => (v == null ? "" : String(v)),
+    z.string().max(2000, "Notiz maximal 2000 Zeichen."),
+  ).transform((s) => {
+    const t = s.trim();
+    return t.length === 0 ? null : t;
+  }),
+});
+
+export const archivePartnerTipSchema = z.object({
+  tip_id: z.string().uuid(),
+  archived: z.enum(["true", "false"]),
 });
 
 export const updatePartnerProfileAdminSchema = z.object({

@@ -1,16 +1,14 @@
 "use client";
 
-import { useActionState, useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { ArchiveTipButton } from "@/components/partner/admin/ArchiveTipButton";
 import { CreatePartnerAccountForm } from "@/components/partner/CreatePartnerAccountForm";
 import { DeletePartnerUserButton } from "@/components/partner/DeletePartnerUserButton";
 import { PartnerEditModal } from "@/components/partner/admin/PartnerEditModal";
+import { TipStatusEditor } from "@/components/partner/admin/TipStatusEditor";
 import { SystemAdminLogoutButton } from "@/components/partner/SystemAdminLogoutButton";
-import {
-  PARTNER_TIP_ADMIN_STATUSES,
-  PARTNER_TIP_STATUS_LABELS,
-} from "@/lib/partner/partner-tip-admin";
+import { PARTNER_TIP_ADMIN_STATUSES, PARTNER_TIP_STATUS_LABELS } from "@/lib/partner/partner-tip-admin";
 import { partnerTipPayloadSummary } from "@/lib/partner/partner-tip-summary";
 import {
   PARTNER_RESPONSIBILITY_LABELS,
@@ -22,7 +20,6 @@ import {
   serviceBadgeClass,
 } from "@/lib/partner/service-slug-styles";
 import type { PartnerProfile, PartnerTipAdminStatus, PartnerTipSubmissionRow } from "@/lib/partner/types";
-import { updatePartnerTipStatusAction, type AdminWorkflowState } from "@/lib/actions/partner-admin-workflow";
 
 type AuthInfo = {
   email: string;
@@ -40,7 +37,7 @@ type OrderRow = {
 };
 
 type SortDir = "asc" | "desc";
-type AdminSection = "auftraege" | "anlegen" | "liste" | "statistik";
+type AdminSection = "auftraege" | "archiv" | "anlegen" | "liste" | "statistik";
 type StatSortKey =
   | "name"
   | "email"
@@ -48,6 +45,9 @@ type StatSortKey =
   | "tipsTotal"
   | "tipsNeu"
   | "tipsBearbeitung"
+  | "tipsTermin"
+  | "tipsWarten"
+  | "tipsBezahlt"
   | "tipsErledigt"
   | "tipsAbgelehnt"
   | "boxOrders";
@@ -58,9 +58,8 @@ type Props = {
   orders: OrderRow[];
   profiles: PartnerProfile[];
   authById: Record<string, AuthInfo>;
+  initialBereich: AdminSection;
 };
-
-const tipInitial: AdminWorkflowState = { ok: false, message: "" };
 
 function SortButton({
   label,
@@ -87,37 +86,6 @@ function SortButton({
   );
 }
 
-function SectionNavTile({
-  title,
-  description,
-  active,
-  onSelect,
-}: {
-  title: string;
-  description: string;
-  active: boolean;
-  onSelect: () => void;
-}) {
-  return (
-    <button
-      type="button"
-      onClick={onSelect}
-      aria-current={active ? "page" : undefined}
-      className={[
-        "group relative flex min-h-[5.5rem] flex-col justify-center rounded-2xl border-2 px-5 py-4 text-left transition-all duration-200 sm:min-h-[6.25rem] sm:px-6 sm:py-5",
-        active
-          ? "border-[#0F4F68] bg-gradient-to-br from-[#0F4F68] to-[#0c3d52] text-white shadow-[0_12px_40px_-12px_rgba(15,79,104,0.55)] ring-2 ring-[#0F4F68]/20"
-          : "border-[#0F4F68]/12 bg-white text-[#0F4F68] shadow-sm hover:border-[#0F4F68]/28 hover:shadow-md",
-      ].join(" ")}
-    >
-      <span className={`text-base font-bold sm:text-lg ${active ? "" : "group-hover:text-[#0c3d52]"}`}>{title}</span>
-      <span className={`mt-1 text-xs leading-snug sm:text-sm ${active ? "text-white/85" : "text-neutral-600"}`}>
-        {description}
-      </span>
-    </button>
-  );
-}
-
 function partnerPasswordNote(profile: PartnerProfile): string {
   if (profile.password_changed_at) {
     return `Geändert: ${new Date(profile.password_changed_at).toLocaleString("de-DE", {
@@ -126,37 +94,6 @@ function partnerPasswordNote(profile: PartnerProfile): string {
     })}`;
   }
   return "Initialpasswort";
-}
-
-function TipStatusSelect({ tipId, status }: { tipId: string; status: PartnerTipAdminStatus }) {
-  const router = useRouter();
-  const [state, formAction, pending] = useActionState(updatePartnerTipStatusAction, tipInitial);
-  useEffect(() => {
-    if (state.ok) router.refresh();
-  }, [state.ok, router]);
-  return (
-    <form action={formAction} className="flex min-w-[10rem] flex-col gap-1">
-      <input type="hidden" name="tip_id" value={tipId} />
-      <select
-        name="admin_status"
-        defaultValue={status}
-        disabled={pending}
-        onChange={(e) => {
-          e.currentTarget.form?.requestSubmit();
-        }}
-        className="w-full rounded-lg border border-neutral-200 bg-white px-2 py-1.5 text-xs font-semibold text-neutral-900 disabled:opacity-60"
-        aria-label="Status Tippgeber-Eingang"
-      >
-        {PARTNER_TIP_ADMIN_STATUSES.map((s) => (
-          <option key={s} value={s}>
-            {PARTNER_TIP_STATUS_LABELS[s]}
-          </option>
-        ))}
-      </select>
-      {state.ok ? <span className="text-[0.65rem] text-emerald-700">Gespeichert</span> : null}
-      {!state.ok && state.message ? <span className="text-[0.65rem] text-red-700">{state.message}</span> : null}
-    </form>
-  );
 }
 
 function compareStr(a: string, b: string, dir: SortDir): number {
@@ -174,14 +111,28 @@ type PartnerStatRow = {
   tipsTotal: number;
   tipsNeu: number;
   tipsBearbeitung: number;
+  tipsTermin: number;
+  tipsWarten: number;
+  tipsBezahlt: number;
   tipsErledigt: number;
   tipsAbgelehnt: number;
   boxOrders: number;
   lastSignIn: string | null;
 };
 
-export function PartnerAdminDashboard({ hasServiceRole, tips, orders, profiles, authById }: Props) {
-  const [section, setSection] = useState<AdminSection>("auftraege");
+export function PartnerAdminDashboard({
+  hasServiceRole,
+  tips,
+  orders,
+  profiles,
+  authById,
+  initialBereich,
+}: Props) {
+  const [section, setSection] = useState<AdminSection>(initialBereich);
+
+  useEffect(() => {
+    setSection(initialBereich);
+  }, [initialBereich]);
   const [editProfile, setEditProfile] = useState<PartnerProfile | null>(null);
 
   const [tipSort, setTipSort] = useState<{ key: string; dir: SortDir }>({
@@ -210,33 +161,42 @@ export function PartnerAdminDashboard({ hasServiceRole, tips, orders, profiles, 
     [profileById, authById],
   );
 
-  const sortedTips = useMemo(() => {
-    const rows = [...tips];
-    const { key, dir } = tipSort;
-    const slugOrder = new Map(SERVICE_SLUG_ORDER.map((s, i) => [s, i]));
-    rows.sort((a, b) => {
-      if (key === "created_at") {
-        return compareNum(new Date(a.created_at).getTime(), new Date(b.created_at).getTime(), dir);
-      }
-      if (key === "service") {
-        const ia = slugOrder.get(a.service_slug as PartnerResponsibilitySlug) ?? 99;
-        const ib = slugOrder.get(b.service_slug as PartnerResponsibilitySlug) ?? 99;
-        const byColor = compareNum(ia, ib, dir);
-        if (byColor !== 0) return byColor;
-        return compareStr(a.service_slug, b.service_slug, "asc");
-      }
-      if (key === "status") {
-        return compareStr(a.admin_status, b.admin_status, dir);
-      }
-      if (key === "partner") {
-        const pa = partnerDisplay(a.partner_id).name + partnerDisplay(a.partner_id).email;
-        const pb = partnerDisplay(b.partner_id).name + partnerDisplay(b.partner_id).email;
-        return compareStr(pa, pb, dir);
-      }
-      return 0;
-    });
-    return rows;
-  }, [tips, tipSort, partnerDisplay]);
+  const activeTips = useMemo(() => tips.filter((t) => !t.archived_at), [tips]);
+  const archivedTips = useMemo(() => tips.filter((t) => t.archived_at), [tips]);
+
+  const sortTipRows = useCallback(
+    (rows: PartnerTipSubmissionRow[]) => {
+      const copy = [...rows];
+      const { key, dir } = tipSort;
+      const slugOrder = new Map(SERVICE_SLUG_ORDER.map((s, i) => [s, i]));
+      copy.sort((a, b) => {
+        if (key === "created_at") {
+          return compareNum(new Date(a.created_at).getTime(), new Date(b.created_at).getTime(), dir);
+        }
+        if (key === "service") {
+          const ia = slugOrder.get(a.service_slug as PartnerResponsibilitySlug) ?? 99;
+          const ib = slugOrder.get(b.service_slug as PartnerResponsibilitySlug) ?? 99;
+          const byColor = compareNum(ia, ib, dir);
+          if (byColor !== 0) return byColor;
+          return compareStr(a.service_slug, b.service_slug, "asc");
+        }
+        if (key === "status") {
+          return compareStr(a.admin_status, b.admin_status, dir);
+        }
+        if (key === "partner") {
+          const pa = partnerDisplay(a.partner_id).name + partnerDisplay(a.partner_id).email;
+          const pb = partnerDisplay(b.partner_id).name + partnerDisplay(b.partner_id).email;
+          return compareStr(pa, pb, dir);
+        }
+        return 0;
+      });
+      return copy;
+    },
+    [tipSort, partnerDisplay],
+  );
+
+  const sortedActiveTips = useMemo(() => sortTipRows(activeTips), [activeTips, sortTipRows]);
+  const sortedArchivedTips = useMemo(() => sortTipRows(archivedTips), [archivedTips, sortTipRows]);
 
   const sortedProfiles = useMemo(() => {
     const rows = [...profiles];
@@ -266,14 +226,13 @@ export function PartnerAdminDashboard({ hasServiceRole, tips, orders, profiles, 
   const globalStats = useMemo(() => {
     const partners = profiles.filter((p) => p.role === "partner").length;
     const admins = profiles.filter((p) => p.role === "admin").length;
-    const tipsByStatus: Record<PartnerTipAdminStatus, number> = {
-      neu: 0,
-      in_bearbeitung: 0,
-      erledigt: 0,
-      abgelehnt: 0,
-    };
+    const tipsByStatus = Object.fromEntries(PARTNER_TIP_ADMIN_STATUSES.map((s) => [s, 0])) as Record<
+      PartnerTipAdminStatus,
+      number
+    >;
     for (const t of tips) {
-      tipsByStatus[t.admin_status] += 1;
+      if (tipsByStatus[t.admin_status] !== undefined) tipsByStatus[t.admin_status] += 1;
+      else tipsByStatus.neu += 1;
     }
     const boxTotal = orders.length;
     const boxUnassigned = orders.filter((o) => !o.partner_id).length;
@@ -297,6 +256,9 @@ export function PartnerAdminDashboard({ hasServiceRole, tips, orders, profiles, 
       const ts = tipsByPartner.get(p.id) ?? [];
       const neu = ts.filter((x) => x.admin_status === "neu").length;
       const inB = ts.filter((x) => x.admin_status === "in_bearbeitung").length;
+      const term = ts.filter((x) => x.admin_status === "termin_vereinbart").length;
+      const wart = ts.filter((x) => x.admin_status === "warten_auf_rueckmeldung").length;
+      const bez = ts.filter((x) => x.admin_status === "bezahlt").length;
       const erl = ts.filter((x) => x.admin_status === "erledigt").length;
       const abg = ts.filter((x) => x.admin_status === "abgelehnt").length;
       const last = authById[p.id]?.last_sign_in_at ?? null;
@@ -306,6 +268,9 @@ export function PartnerAdminDashboard({ hasServiceRole, tips, orders, profiles, 
         tipsTotal: ts.length,
         tipsNeu: neu,
         tipsBearbeitung: inB,
+        tipsTermin: term,
+        tipsWarten: wart,
+        tipsBezahlt: bez,
         tipsErledigt: erl,
         tipsAbgelehnt: abg,
         boxOrders: ordersByPartner.get(p.id) ?? 0,
@@ -354,17 +319,19 @@ export function PartnerAdminDashboard({ hasServiceRole, tips, orders, profiles, 
   };
 
   return (
-    <article className="mx-auto max-w-6xl">
-      <header className="mb-10 text-center">
-        <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#0F4F68]/55">Administration</p>
-        <h1 className="mt-2 text-3xl font-bold tracking-tight text-[#0F4F68] sm:text-4xl">Partner-Verwaltung</h1>
-        <p className="mx-auto mt-3 max-w-lg text-sm text-neutral-600 sm:text-base">
-          Zentrale Übersicht: Tippgeber-Eingänge, neue Partner und Stammdaten. Nur mit System-Login.
-        </p>
-        <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
+    <article className="mx-auto w-full max-w-[min(100%,90rem)] space-y-6 sm:space-y-8">
+      <header className="flex flex-col gap-4 rounded-xl border border-[#0F4F68]/12 bg-[#F2F9FA] px-6 py-6 shadow-[0_10px_22px_rgba(15,79,104,0.2),0_4px_12px_rgba(15,79,104,0.12)] sm:flex-row sm:items-center sm:justify-between sm:px-8 sm:py-7">
+        <div className="min-w-0">
+          <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#0F4F68]/55">Administration</p>
+          <h1 className="mt-2 text-2xl font-semibold tracking-tight text-[#0F4F68] sm:text-3xl">Partner-Verwaltung</h1>
+          <p className="mt-3 max-w-xl text-sm text-neutral-700 sm:text-base">
+            Tippgeber-Eingänge, Archiv, Partner anlegen und Stammdaten. Navigation links in der Leiste.
+          </p>
+        </div>
+        <div className="flex shrink-0 flex-wrap gap-3">
           <Link
             href="/partner/login"
-            className="inline-flex min-h-11 items-center justify-center rounded-xl border border-[#0F4F68]/20 bg-white px-5 py-2.5 text-sm font-semibold text-[#0F4F68] shadow-sm transition hover:bg-[#F2F9FA]"
+            className="inline-flex min-h-11 items-center justify-center rounded-2xl border border-[#0F4F68]/20 bg-white px-5 py-2.5 text-sm font-semibold text-[#0F4F68] shadow-sm transition hover:bg-white/90"
           >
             Zum Partner-Login
           </Link>
@@ -381,36 +348,6 @@ export function PartnerAdminDashboard({ hasServiceRole, tips, orders, profiles, 
 
       {hasServiceRole ? (
         <>
-          <nav
-            className="mb-10 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4"
-            aria-label="Bereiche Partner-Verwaltung"
-          >
-            <SectionNavTile
-              title="Aktuelle Aufträge"
-              description="Tippgeber-Eingänge bearbeiten und Status setzen"
-              active={section === "auftraege"}
-              onSelect={() => setSection("auftraege")}
-            />
-            <SectionNavTile
-              title="Partner anlegen"
-              description="Neues Konto mit Zugangsdaten erstellen"
-              active={section === "anlegen"}
-              onSelect={() => setSection("anlegen")}
-            />
-            <SectionNavTile
-              title="Partnerliste"
-              description="Alle Partner, bearbeiten oder löschen"
-              active={section === "liste"}
-              onSelect={() => setSection("liste")}
-            />
-            <SectionNavTile
-              title="Statistik"
-              description="Gesamtübersicht und Kennzahlen je Partner"
-              active={section === "statistik"}
-              onSelect={() => setSection("statistik")}
-            />
-          </nav>
-
           {section === "auftraege" ? (
             <section
               className="partner-dash-animate rounded-3xl border border-[#0F4F68]/10 bg-white p-5 shadow-[0_20px_50px_-24px_rgba(15,79,104,0.25)] sm:p-8"
@@ -470,17 +407,18 @@ export function PartnerAdminDashboard({ hasServiceRole, tips, orders, profiles, 
                           onClick={() => toggleTipSort("status")}
                         />
                       </th>
+                      <th className="whitespace-nowrap px-3 py-3">Archiv</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-neutral-100">
-                    {sortedTips.length === 0 ? (
+                    {sortedActiveTips.length === 0 ? (
                       <tr>
-                        <td colSpan={5} className="px-4 py-12 text-center text-neutral-600">
-                          Keine Tippgeber-Eingänge.
+                        <td colSpan={6} className="px-4 py-12 text-center text-neutral-600">
+                          Keine aktiven Tippgeber-Eingänge.
                         </td>
                       </tr>
                     ) : (
-                      sortedTips.map((t) => {
+                      sortedActiveTips.map((t) => {
                         const pd = partnerDisplay(t.partner_id);
                         const label =
                           PARTNER_RESPONSIBILITY_LABELS[t.service_slug as PartnerResponsibilitySlug] ??
@@ -511,7 +449,124 @@ export function PartnerAdminDashboard({ hasServiceRole, tips, orders, profiles, 
                               {partnerTipPayloadSummary(t.payload, t.service_slug)}
                             </td>
                             <td className="px-3 py-3">
-                              <TipStatusSelect tipId={t.id} status={t.admin_status} />
+                              <TipStatusEditor
+                                tipId={t.id}
+                                status={t.admin_status}
+                                adminVisibleNote={t.admin_visible_note}
+                              />
+                            </td>
+                            <td className="px-3 py-3 align-top">
+                              <ArchiveTipButton tipId={t.id} isArchived={false} />
+                            </td>
+                          </tr>
+                        );
+                      })
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            </section>
+          ) : null}
+
+          {section === "archiv" ? (
+            <section
+              className="partner-dash-animate rounded-3xl border border-[#0F4F68]/10 bg-white p-5 shadow-[0_20px_50px_-24px_rgba(15,79,104,0.25)] sm:p-8"
+              aria-labelledby="archiv-heading"
+            >
+              <h2 id="archiv-heading" className="text-xl font-bold text-[#0F4F68] sm:text-2xl">
+                Aufträge Archiv
+              </h2>
+              <p className="mt-2 text-sm text-neutral-600">
+                Abgelegte Tippgeber-Eingänge. Status und Notiz für den Partner bleiben bearbeitbar; „Reaktivieren“
+                holt den Eintrag zurück in die aktuelle Auftragsliste.
+              </p>
+              <div className="mt-6 overflow-x-auto rounded-2xl border border-neutral-200/80">
+                <table className="min-w-[900px] w-full text-left text-sm">
+                  <thead className="border-b border-[#0F4F68]/10 bg-[#F2F9FA]/70 text-xs">
+                    <tr>
+                      <th className="px-3 py-3">
+                        <SortButton
+                          label="Datum"
+                          active={tipSort.key === "created_at"}
+                          dir={tipSort.dir}
+                          onClick={() => toggleTipSort("created_at")}
+                        />
+                      </th>
+                      <th className="px-3 py-3">
+                        <SortButton
+                          label="Partner"
+                          active={tipSort.key === "partner"}
+                          dir={tipSort.dir}
+                          onClick={() => toggleTipSort("partner")}
+                        />
+                      </th>
+                      <th className="px-3 py-3">
+                        <SortButton
+                          label="Dienstleistung"
+                          active={tipSort.key === "service"}
+                          dir={tipSort.dir}
+                          onClick={() => toggleTipSort("service")}
+                        />
+                      </th>
+                      <th className="px-3 py-3">Kurzinfo</th>
+                      <th className="px-3 py-3">
+                        <SortButton
+                          label="Status"
+                          active={tipSort.key === "status"}
+                          dir={tipSort.dir}
+                          onClick={() => toggleTipSort("status")}
+                        />
+                      </th>
+                      <th className="whitespace-nowrap px-3 py-3">Archiv</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-neutral-100">
+                    {sortedArchivedTips.length === 0 ? (
+                      <tr>
+                        <td colSpan={6} className="px-4 py-12 text-center text-neutral-600">
+                          Keine archivierten Aufträge.
+                        </td>
+                      </tr>
+                    ) : (
+                      sortedArchivedTips.map((t) => {
+                        const pd = partnerDisplay(t.partner_id);
+                        const label =
+                          PARTNER_RESPONSIBILITY_LABELS[t.service_slug as PartnerResponsibilitySlug] ??
+                          t.service_slug;
+                        return (
+                          <tr key={t.id} className="align-top transition-colors hover:bg-[#f8fbfc]">
+                            <td className="whitespace-nowrap px-3 py-3 text-neutral-700">
+                              {new Date(t.created_at).toLocaleString("de-DE", {
+                                dateStyle: "short",
+                                timeStyle: "short",
+                              })}
+                            </td>
+                            <td className="px-3 py-3">
+                              <span className="font-medium text-neutral-900">{pd.name}</span>
+                              {pd.code ? (
+                                <span className="ml-1 font-mono text-xs font-bold text-[#0F4F68]">{pd.code}</span>
+                              ) : null}
+                              <div className="break-all text-xs text-neutral-500">{pd.email}</div>
+                            </td>
+                            <td className="px-3 py-3">
+                              <span
+                                className={`inline-block rounded-full border px-2.5 py-1 text-xs font-semibold ${serviceBadgeClass(t.service_slug)}`}
+                              >
+                                {label}
+                              </span>
+                            </td>
+                            <td className="max-w-[240px] px-3 py-3 text-xs text-neutral-700">
+                              {partnerTipPayloadSummary(t.payload, t.service_slug)}
+                            </td>
+                            <td className="px-3 py-3">
+                              <TipStatusEditor
+                                tipId={t.id}
+                                status={t.admin_status}
+                                adminVisibleNote={t.admin_visible_note}
+                              />
+                            </td>
+                            <td className="px-3 py-3 align-top">
+                              <ArchiveTipButton tipId={t.id} isArchived />
                             </td>
                           </tr>
                         );
@@ -688,11 +743,12 @@ export function PartnerAdminDashboard({ hasServiceRole, tips, orders, profiles, 
                 <div className="rounded-2xl border border-[#0F4F68]/12 bg-gradient-to-br from-white to-[#F2F9FA]/80 p-5">
                   <p className="text-xs font-bold uppercase tracking-wide text-[#0F4F68]/65">Tippgeber-Eingänge</p>
                   <p className="mt-2 text-3xl font-bold tabular-nums text-[#0F4F68]">{globalStats.tipsTotal}</p>
-                  <p className="mt-2 flex flex-wrap gap-2 text-[0.7rem] text-neutral-600">
-                    <span>Neu: {globalStats.tipsByStatus.neu}</span>
-                    <span>In Bearbeitung: {globalStats.tipsByStatus.in_bearbeitung}</span>
-                    <span>Erledigt: {globalStats.tipsByStatus.erledigt}</span>
-                    <span>Abgelehnt: {globalStats.tipsByStatus.abgelehnt}</span>
+                  <p className="mt-2 flex flex-wrap gap-x-2 gap-y-1 text-[0.65rem] leading-snug text-neutral-600">
+                    {PARTNER_TIP_ADMIN_STATUSES.map((s) => (
+                      <span key={s}>
+                        {PARTNER_TIP_STATUS_LABELS[s]}: {globalStats.tipsByStatus[s]}
+                      </span>
+                    ))}
                   </p>
                 </div>
                 <div className="rounded-2xl border border-[#0F4F68]/12 bg-gradient-to-br from-[#F2F9FA]/60 to-white p-5 sm:col-span-2 lg:col-span-1">
@@ -708,7 +764,7 @@ export function PartnerAdminDashboard({ hasServiceRole, tips, orders, profiles, 
                 <h3 className="text-lg font-bold text-[#0F4F68]">Je Partner</h3>
                 <p className="mt-1 text-sm text-neutral-600">Tipps nach Status und Anzahl Konfigurator-Aufträge mit Partner-ID.</p>
                 <div className="mt-4 overflow-x-auto rounded-2xl border border-neutral-200/80">
-                  <table className="min-w-[960px] w-full text-left text-sm">
+                  <table className="min-w-[1180px] w-full text-left text-sm">
                     <thead className="border-b border-[#0F4F68]/10 bg-[#F2F9FA]/60 text-xs">
                       <tr>
                         <th className="px-3 py-3">
@@ -755,7 +811,31 @@ export function PartnerAdminDashboard({ hasServiceRole, tips, orders, profiles, 
                         </th>
                         <th className="px-3 py-3">
                           <SortButton
-                            label="Erledigt"
+                            label="Termin"
+                            active={statSort.key === "tipsTermin"}
+                            dir={statSort.dir}
+                            onClick={() => toggleStatSort("tipsTermin")}
+                          />
+                        </th>
+                        <th className="px-3 py-3">
+                          <SortButton
+                            label="Warten"
+                            active={statSort.key === "tipsWarten"}
+                            dir={statSort.dir}
+                            onClick={() => toggleStatSort("tipsWarten")}
+                          />
+                        </th>
+                        <th className="px-3 py-3">
+                          <SortButton
+                            label="Bezahlt"
+                            active={statSort.key === "tipsBezahlt"}
+                            dir={statSort.dir}
+                            onClick={() => toggleStatSort("tipsBezahlt")}
+                          />
+                        </th>
+                        <th className="px-3 py-3">
+                          <SortButton
+                            label="Vertrag"
                             active={statSort.key === "tipsErledigt"}
                             dir={statSort.dir}
                             onClick={() => toggleStatSort("tipsErledigt")}
@@ -806,6 +886,9 @@ export function PartnerAdminDashboard({ hasServiceRole, tips, orders, profiles, 
                             <td className="px-3 py-3 tabular-nums font-semibold text-neutral-900">{row.tipsTotal}</td>
                             <td className="px-3 py-3 tabular-nums text-neutral-700">{row.tipsNeu}</td>
                             <td className="px-3 py-3 tabular-nums text-neutral-700">{row.tipsBearbeitung}</td>
+                            <td className="px-3 py-3 tabular-nums text-indigo-800">{row.tipsTermin}</td>
+                            <td className="px-3 py-3 tabular-nums text-violet-800">{row.tipsWarten}</td>
+                            <td className="px-3 py-3 tabular-nums text-teal-800">{row.tipsBezahlt}</td>
                             <td className="px-3 py-3 tabular-nums text-emerald-800">{row.tipsErledigt}</td>
                             <td className="px-3 py-3 tabular-nums text-rose-800">{row.tipsAbgelehnt}</td>
                             <td className="px-3 py-3 tabular-nums text-neutral-800">{row.boxOrders}</td>
