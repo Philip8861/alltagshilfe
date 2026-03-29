@@ -233,10 +233,6 @@ export function PartnerDashboardClient({
               <h2 id="partner-statusliste-monatlich-heading" className="text-lg font-semibold text-amber-950 sm:text-xl">
                 Statusliste Monatliche Tippgeberprovision
               </h2>
-              <p className="mt-1 text-sm text-amber-950/80">
-                Tipps zur <strong className="font-medium text-amber-950">betrieblichen Pflegeberatung</strong>. Über „Mein
-                Archiv“ können Sie Einträge bei Bedarf ausblenden oder zurückholen.
-              </p>
             </header>
             <div className="p-4 sm:p-6">
               <PartnerStatuslisteTable
@@ -260,11 +256,6 @@ export function PartnerDashboardClient({
               <h2 id="partner-statusliste-einmal-heading" className="text-lg font-semibold text-emerald-900 sm:text-xl">
                 Statusliste Einmalprovision
               </h2>
-              <p className="mt-1 text-sm text-emerald-900/85">
-                Tipps zu <strong className="font-medium text-emerald-950">Hauswirtschaft & Betreuung</strong>,{" "}
-                <strong className="font-medium text-emerald-950">Pflegehilfsmittel</strong> und{" "}
-                <strong className="font-medium text-emerald-950">Pflegeberatung</strong>.
-              </p>
             </header>
             <div className="p-4 sm:p-6">
               <PartnerStatuslisteTable

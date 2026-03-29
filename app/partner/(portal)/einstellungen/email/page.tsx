@@ -28,9 +28,6 @@ export default async function PartnerEinstellungenEmailPage() {
         <h1 id="email-heading" className="text-xl font-bold text-[#0F4F68] sm:text-2xl">
           E-Mail ändern
         </h1>
-        <p className="mt-2 text-sm text-neutral-600">
-          Nach einer Änderung bestätigen Sie die neue Adresse ggf. über den Link in der E-Mail von Supabase.
-        </p>
         <div className="mt-6 max-w-md">
           <PartnerEmailChangeForm currentEmail={currentEmail} />
         </div>

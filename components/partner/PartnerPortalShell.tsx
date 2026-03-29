@@ -63,15 +63,6 @@ export function PartnerPortalShell({ children }: Props) {
             </svg>
           </Link>
           <Link
-            href="/partner/einstellungen"
-            className={iconButtonClass(settingsActive)}
-            aria-current={settingsActive ? "page" : undefined}
-            title="Einstellungen"
-          >
-            <span className="sr-only">Einstellungen</span>
-            <SettingsGearIcon />
-          </Link>
-          <Link
             href="/partner/statistik"
             className={iconButtonClass(statActive)}
             aria-current={statActive ? "page" : undefined}
@@ -81,6 +72,15 @@ export function PartnerPortalShell({ children }: Props) {
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
               <path d="M4 19V5M10 19V9M16 19v-6M22 19V11" strokeLinecap="round" />
             </svg>
+          </Link>
+          <Link
+            href="/partner/einstellungen"
+            className={iconButtonClass(settingsActive)}
+            aria-current={settingsActive ? "page" : undefined}
+            title="Einstellungen"
+          >
+            <span className="sr-only">Einstellungen</span>
+            <SettingsGearIcon />
           </Link>
           <PartnerLogoutButton variant="sidebar" />
         </nav>

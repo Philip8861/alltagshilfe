@@ -42,16 +42,13 @@ export function PartnerEmailChangeForm({ currentEmail }: { currentEmail: string 
           disabled={pending}
           className="mt-1.5 w-full max-w-md rounded-xl border border-neutral-200 px-4 py-3 text-neutral-900 outline-none ring-[#0F4F68] focus:ring-2 disabled:opacity-60"
         />
-        <p className="mt-1 text-xs text-neutral-500">
-          Sie erhalten ggf. eine Bestätigungs-E-Mail (je nach Supabase-Konfiguration).
-        </p>
       </div>
       <button
         type="submit"
         disabled={pending}
         className="inline-flex min-h-11 items-center justify-center rounded-xl bg-[#0F4F68] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#0c3d52] disabled:opacity-60 sm:w-auto"
       >
-        {pending ? "Senden…" : "E-Mail-Änderung anstoßen"}
+        {pending ? "Wird eingereicht…" : "Neue E-Mail einreichen"}
       </button>
     </form>
   );

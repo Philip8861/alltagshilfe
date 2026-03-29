@@ -63,6 +63,12 @@ export function PartnerPortalPreferencesForm({ initial }: Props) {
         </p>
       ) : null}
 
+      <p className="rounded-xl border border-[#0F4F68]/12 bg-[#F2F9FA]/70 px-4 py-3 text-sm text-neutral-700">
+        Ausblenden gilt nur für die <strong className="font-semibold text-neutral-800">Anzeige</strong> auf der Übersicht.
+        Ihre Tipps und Daten werden nicht gelöscht — sobald Sie eine Liste wieder aktivieren, erscheinen die Einträge wie
+        zuvor.
+      </p>
+
       <fieldset className="space-y-3" disabled={pending}>
         <legend className="text-sm font-bold text-[#0F4F68]">Statuslisten auf der Übersicht</legend>
         <label className="flex cursor-pointer items-start gap-3 rounded-xl border border-neutral-200/80 bg-[#F2F9FA]/40 px-4 py-3">
