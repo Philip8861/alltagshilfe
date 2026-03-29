@@ -1,3 +1,4 @@
+import { unstable_noStore as noStore } from "next/cache";
 import { PartnerAdminDashboard } from "@/components/partner/admin/PartnerAdminDashboard";
 import { requireSystemAdmin } from "@/lib/partner/system-admin-guard";
 import {
@@ -27,6 +28,7 @@ export default async function PartnerAdminPage({
 }: {
   searchParams: Promise<{ bereich?: string }>;
 }) {
+  noStore();
   await requireSystemAdmin();
   const { bereich } = await searchParams;
   const initialBereich = parseBereich(bereich);
@@ -68,6 +70,9 @@ export default async function PartnerAdminPage({
       ]);
 
       profiles = (profRes.data as PartnerProfile[] | null) ?? [];
+      if (tipsRes.error) {
+        console.error("[PartnerAdminPage] partner_tip_submissions:", tipsRes.error.message);
+      }
       if (!tipsRes.error && tipsRes.data) {
         tips = (tipsRes.data as Record<string, unknown>[]).map((row) => ({
           id: String(row.id),

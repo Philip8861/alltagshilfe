@@ -7,6 +7,11 @@ import {
   PARTNER_RESPONSIBILITY_SLUGS,
   type PartnerResponsibilitySlug,
 } from "@/lib/partner/responsibility-areas";
+import {
+  PROVISION_STATUS_LIST_ANCHOR,
+  PROVISION_STATUS_LIST_FULL_NAME,
+  provisionBucketForServiceSlug,
+} from "@/lib/partner/partner-tip-provision-bucket";
 import { serviceAccentClass, serviceBadgeClass } from "@/lib/partner/service-slug-styles";
 import { submitPartnerTipAction } from "@/lib/actions/partner-tips";
 import type { PartnerTipSubmissionInput } from "@/lib/validations/partner-tips";
@@ -163,6 +168,7 @@ export function PartnerTipModal({ open, onClose, allowedSlugs }: Props) {
   const [standard, setStandard] = useState(emptyStandard);
   const [pending, setPending] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
+  const [thanksSlug, setThanksSlug] = useState<PartnerResponsibilitySlug | null>(null);
 
   const reset = useCallback(() => {
     setPhase("service");
@@ -171,6 +177,7 @@ export function PartnerTipModal({ open, onClose, allowedSlugs }: Props) {
     setStandard(emptyStandard);
     setMessage(null);
     setPending(false);
+    setThanksSlug(null);
   }, []);
 
   const handleClose = useCallback(() => {
@@ -212,6 +219,20 @@ export function PartnerTipModal({ open, onClose, allowedSlugs }: Props) {
     () => wizardStepState(phase, slug),
     [phase, slug],
   );
+
+  const thanksListFullName = useMemo(() => {
+    if (!thanksSlug) return PROVISION_STATUS_LIST_FULL_NAME.einmal;
+    const bucket = provisionBucketForServiceSlug(thanksSlug);
+    return PROVISION_STATUS_LIST_FULL_NAME[bucket];
+  }, [thanksSlug]);
+
+  const goToThanksStatusList = useCallback(() => {
+    const anchor = thanksSlug
+      ? PROVISION_STATUS_LIST_ANCHOR[provisionBucketForServiceSlug(thanksSlug)]
+      : "partner-statuslisten";
+    handleClose();
+    router.push(`/partner/dashboard#${anchor}`);
+  }, [thanksSlug, handleClose, router]);
 
   const selectService = (s: PartnerResponsibilitySlug) => {
     setSlug(s);
@@ -259,6 +280,7 @@ export function PartnerTipModal({ open, onClose, allowedSlugs }: Props) {
     setPending(false);
     if (res.ok) {
       router.refresh();
+      if (slug) setThanksSlug(slug);
       setPhase("thanks");
       return;
     }
@@ -601,10 +623,17 @@ export function PartnerTipModal({ open, onClose, allowedSlugs }: Props) {
               <CheckCircleIcon />
               <h3 className="mt-5 text-lg font-semibold text-neutral-900 sm:text-xl">Vielen Dank für Ihren Tipp</h3>
               <p className="mt-3 max-w-md text-sm leading-relaxed text-neutral-600">
-                Wir haben Ihre Angaben sicher übermittelt und werden sie in den nächsten Werktagen bearbeiten. Sobald es
-                etwas Neues gibt, informieren wir Sie{" "}
-                <strong className="font-medium text-neutral-800">hier im Partnerportal</strong> – Sie müssen nichts
-                weiter vorbereiten.
+                Wir haben Ihre Angaben sicher übermittelt. Unser Team bearbeitet den Fall in den nächsten Werktagen.
+              </p>
+              <p className="mt-3 max-w-md text-sm leading-relaxed text-neutral-700">
+                <strong className="font-medium text-neutral-900">Wo Sie den Status finden:</strong> Auf dieser Seite
+                weiter unten in der{" "}
+                <span className="font-semibold text-[#0F4F68]">„{thanksListFullName}“</span>. Dort sehen Sie den
+                aktuellen Bearbeitungsstand; sobald es von uns eine Rückmeldung gibt, erscheint sie dort bzw. unter
+                „Notiz“.
+              </p>
+              <p className="mt-2 max-w-md text-xs leading-relaxed text-neutral-500">
+                Mit dem Button unten springen Sie direkt zur passenden farbigen Statusliste auf dem Dashboard.
               </p>
             </div>
           ) : null}
@@ -632,7 +661,14 @@ export function PartnerTipModal({ open, onClose, allowedSlugs }: Props) {
         ) : null}
 
         {phase === "thanks" ? (
-          <div className="shrink-0 border-t border-neutral-100 bg-neutral-50/90 px-5 py-4 sm:px-6">
+          <div className="shrink-0 space-y-3 border-t border-neutral-100 bg-neutral-50/90 px-5 py-4 sm:px-6">
+            <button
+              type="button"
+              onClick={() => void goToThanksStatusList()}
+              className="flex w-full min-h-12 items-center justify-center rounded-xl bg-[#0F4F68] px-4 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-[#0c3d52]"
+            >
+              Zur „{thanksListFullName}“
+            </button>
             <button
               type="button"
               onClick={handleClose}

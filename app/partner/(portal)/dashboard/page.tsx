@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { unstable_noStore as noStore } from "next/cache";
 import { PartnerDashboardClient } from "@/components/partner/PartnerDashboardClient";
 import { requirePartnerLogin } from "@/lib/partner/auth";
 import {
@@ -18,6 +19,7 @@ export const metadata: Metadata = {
 type Search = { tip?: string };
 
 export default async function PartnerDashboardPage({ searchParams }: { searchParams: Promise<Search> }) {
+  noStore();
   const { tip } = await searchParams;
   const { profile, email } = await requirePartnerLogin();
 
@@ -29,6 +31,9 @@ export default async function PartnerDashboardPage({ searchParams }: { searchPar
       .select("id, service_slug, payload, created_at, admin_status, admin_visible_note, archived_at")
       .eq("partner_id", profile.id)
       .order("created_at", { ascending: false });
+    if (tipRes.error) {
+      console.error("[PartnerDashboardPage] partner_tip_submissions:", tipRes.error.message);
+    }
     if (!tipRes.error && tipRes.data) {
       tips = (tipRes.data as Record<string, unknown>[]).map((row) => ({
         id: String(row.id),

@@ -84,11 +84,11 @@ export function PartnerPortalShell({ children }: Props) {
             </svg>
           </Link>
           <Link
-            href="/partner/dashboard#partner-statusliste"
+            href="/partner/dashboard#partner-statuslisten"
             className={iconButtonClass(false)}
-            title="Zur Statusliste"
+            title="Zu den Statuslisten"
           >
-            <span className="sr-only">Statusliste</span>
+            <span className="sr-only">Statuslisten</span>
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
               <path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01" strokeLinecap="round" />
             </svg>
