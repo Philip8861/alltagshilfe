@@ -13,7 +13,6 @@ import {
   provisionBucketForServiceSlug,
 } from "@/lib/partner/partner-tip-provision-bucket";
 import { serviceAccentClass, serviceBadgeClass } from "@/lib/partner/service-slug-styles";
-import { submitPartnerTipAction } from "@/lib/actions/partner-tips";
 import type { PartnerTipSubmissionInput } from "@/lib/validations/partner-tips";
 
 type Props = {
@@ -276,15 +275,30 @@ export function PartnerTipModal({ open, onClose, allowedSlugs }: Props) {
     } else {
       body = { service_slug: "pflegeberatung", payload: stdPayload };
     }
-    const res = await submitPartnerTipAction(body);
+    let resJson: { ok?: boolean; message?: string };
+    try {
+      const res = await fetch("/api/partner/tip-submission", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "same-origin",
+        cache: "no-store",
+        body: JSON.stringify(body),
+      });
+      resJson = (await res.json()) as { ok?: boolean; message?: string };
+      if (!res.ok && !resJson.message) {
+        resJson = { ok: false, message: "Übermittlung fehlgeschlagen. Bitte erneut versuchen." };
+      }
+    } catch {
+      resJson = { ok: false, message: "Netzwerkfehler. Bitte Verbindung prüfen und erneut versuchen." };
+    }
     setPending(false);
-    if (res.ok) {
+    if (resJson.ok) {
       router.refresh();
       if (slug) setThanksSlug(slug);
       setPhase("thanks");
       return;
     }
-    setMessage(res.message);
+    setMessage(resJson.message ?? "Speichern fehlgeschlagen.");
   };
 
   return (

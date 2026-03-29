@@ -58,7 +58,7 @@ export default async function PartnerAdminPage({
           .order("created_at", { ascending: false }),
         svc
           .from("partner_tip_submissions")
-          .select("id, partner_id, service_slug, payload, created_at, admin_status, admin_visible_note, archived_at")
+          .select("*")
           .order("created_at", { ascending: false })
           .limit(500),
         svc
