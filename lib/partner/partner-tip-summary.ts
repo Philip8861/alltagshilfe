@@ -12,5 +12,6 @@ export function partnerTipPayloadSummary(payload: Record<string, unknown>, servi
   }
   const wo = typeof payload.wohnort === "string" ? payload.wohnort.trim() : "";
   const em = typeof payload.email === "string" ? payload.email.trim() : "";
-  return [displayName, wo, em].filter(Boolean).join(" · ") || "—";
+  const tel = typeof payload.telefon === "string" ? payload.telefon.trim() : "";
+  return [displayName, wo, em || tel].filter(Boolean).join(" · ") || "—";
 }

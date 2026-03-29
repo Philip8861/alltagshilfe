@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useId, useState } from "react";
+import { useCallback, useId, useMemo, useState } from "react";
 import {
   PARTNER_RESPONSIBILITY_LABELS,
   PARTNER_RESPONSIBILITY_SLUGS,
@@ -15,6 +15,8 @@ type Props = {
   onClose: () => void;
   allowedSlugs: PartnerResponsibilitySlug[];
 };
+
+type FlowPhase = "service" | "pflegeProximity" | "pflegeNearHint" | "form" | "thanks";
 
 const emptyBetrieb = {
   ansprechpartner: "",
@@ -43,6 +45,14 @@ function CloseIcon() {
   );
 }
 
+function ChevronLeftIcon() {
+  return (
+    <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
+      <path d="M15 18l-6-6 6-6" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
 function ChevronRightIcon() {
   return (
     <svg
@@ -58,11 +68,77 @@ function ChevronRightIcon() {
   );
 }
 
+function CheckCircleIcon() {
+  return (
+    <svg className="h-14 w-14 text-emerald-600" viewBox="0 0 24 24" fill="none" aria-hidden>
+      <circle cx="12" cy="12" r="10" className="stroke-emerald-600/25" strokeWidth="2" fill="rgb(236 253 245)" />
+      <path
+        d="M8 12.5l2.5 2.5L16 9"
+        className="stroke-emerald-600"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+function ServiceChoiceIcon({ slug }: { slug: PartnerResponsibilitySlug }) {
+  const common = "h-6 w-6 text-[#0F4F68]";
+  switch (slug) {
+    case "betriebliche_pflegeberatung":
+      return (
+        <svg className={common} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" aria-hidden>
+          <path d="M4 21V8l8-4 8 4v13" strokeLinecap="round" strokeLinejoin="round" />
+          <path d="M9 21v-6h6v6" strokeLinecap="round" />
+        </svg>
+      );
+    case "pflegehilfsmittel":
+      return (
+        <svg className={common} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" aria-hidden>
+          <path d="M12 3l8 4.5v9L12 21l-8-4.5v-9L12 3z" strokeLinejoin="round" />
+          <path d="M12 12l8-4.5M12 12v9M12 12L4 7.5" strokeLinecap="round" />
+        </svg>
+      );
+    case "hauswirtschaft_betreuung":
+      return (
+        <svg className={common} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" aria-hidden>
+          <path d="M3 10.5L12 3l9 7.5V21H3V10.5z" strokeLinejoin="round" />
+          <path d="M9 21v-6h6v6" strokeLinecap="round" />
+        </svg>
+      );
+    case "pflegeberatung":
+      return (
+        <svg className={common} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" aria-hidden>
+          <path
+            d="M12 21a8 8 0 008-8c0-5-8-11-8-11S4 8 4 13a8 8 0 008 8z"
+            strokeLinejoin="round"
+          />
+          <path d="M12 13a2.5 2.5 0 100-5 2.5 2.5 0 000 5z" />
+        </svg>
+      );
+    default:
+      return null;
+  }
+}
+
+function progressForPhase(phase: FlowPhase, slug: PartnerResponsibilitySlug | null): { pct: number; hint: string } {
+  if (phase === "thanks") return { pct: 100, hint: "Erledigt" };
+  if (phase === "service") return { pct: 14, hint: "Leistung wählen" };
+  if (phase === "pflegeProximity") return { pct: 36, hint: "Kurze Rückfrage" };
+  if (phase === "pflegeNearHint") return { pct: 44, hint: "Hinweis" };
+  if (phase === "form") {
+    const extended = slug === "pflegehilfsmittel";
+    return { pct: extended ? 78 : 62, hint: "Angaben" };
+  }
+  return { pct: 0, hint: "" };
+}
+
 export function PartnerTipModal({ open, onClose, allowedSlugs }: Props) {
   const uid = useId();
   const choices =
     allowedSlugs.length > 0 ? allowedSlugs : [...PARTNER_RESPONSIBILITY_SLUGS];
-  const [step, setStep] = useState<1 | 2>(1);
+  const [phase, setPhase] = useState<FlowPhase>("service");
   const [slug, setSlug] = useState<PartnerResponsibilitySlug | null>(null);
   const [betrieb, setBetrieb] = useState(emptyBetrieb);
   const [standard, setStandard] = useState(emptyStandard);
@@ -70,7 +146,7 @@ export function PartnerTipModal({ open, onClose, allowedSlugs }: Props) {
   const [message, setMessage] = useState<string | null>(null);
 
   const reset = useCallback(() => {
-    setStep(1);
+    setPhase("service");
     setSlug(null);
     setBetrieb(emptyBetrieb);
     setStandard(emptyStandard);
@@ -82,6 +158,48 @@ export function PartnerTipModal({ open, onClose, allowedSlugs }: Props) {
     reset();
     onClose();
   }, [onClose, reset]);
+
+  const goBack = useCallback(() => {
+    setMessage(null);
+    if (phase === "form") {
+      if (slug === "pflegehilfsmittel") setPhase("pflegeProximity");
+      else {
+        setPhase("service");
+        setSlug(null);
+      }
+      return;
+    }
+    if (phase === "pflegeNearHint") {
+      setPhase("pflegeProximity");
+      return;
+    }
+    if (phase === "pflegeProximity") {
+      setPhase("service");
+      setSlug(null);
+    }
+  }, [phase, slug]);
+
+  const canGoBack = phase !== "service" && phase !== "thanks";
+
+  const headerSubtitle = useMemo(() => {
+    if (phase === "thanks") return "Ihr Tipp wurde übermittelt.";
+    if (phase === "service") return "Wählen Sie zuerst die passende Leistung.";
+    if (phase === "pflegeProximity") return "Damit wir Sie richtig beraten können.";
+    if (phase === "pflegeNearHint") return "So geht es am schnellsten.";
+    return "Bitte füllen Sie die Felder aus – wir kümmern uns um die Zuordnung.";
+  }, [phase]);
+
+  const { pct: progressPct, hint: progressHint } = useMemo(
+    () => progressForPhase(phase, slug),
+    [phase, slug],
+  );
+
+  const selectService = (s: PartnerResponsibilitySlug) => {
+    setSlug(s);
+    setMessage(null);
+    if (s === "pflegehilfsmittel") setPhase("pflegeProximity");
+    else setPhase("form");
+  };
 
   if (!open) return null;
 
@@ -121,19 +239,17 @@ export function PartnerTipModal({ open, onClose, allowedSlugs }: Props) {
     const res = await submitPartnerTipAction(body);
     setPending(false);
     if (res.ok) {
-      handleClose();
+      setPhase("thanks");
       return;
     }
     setMessage(res.message);
   };
 
-  const progressPct = step === 1 ? 50 : 100;
-
   return (
     <div className="notranslate fixed inset-0 z-[220] flex items-end justify-center sm:items-center sm:p-6">
       <button
         type="button"
-        className="absolute inset-0 z-0 bg-neutral-900/40 backdrop-blur-[2px]"
+        className="absolute inset-0 z-0 bg-neutral-900/45 backdrop-blur-[3px]"
         aria-label="Dialog schließen"
         onClick={handleClose}
       />
@@ -141,32 +257,45 @@ export function PartnerTipModal({ open, onClose, allowedSlugs }: Props) {
         role="dialog"
         aria-modal="true"
         aria-labelledby="partner-tip-title"
-        className="relative z-10 flex max-h-[min(92dvh,720px)] w-full max-w-lg flex-col overflow-hidden rounded-t-2xl border border-neutral-200 bg-white shadow-[0_-8px_40px_rgba(15,79,104,0.12),0_25px_50px_-12px_rgba(0,0,0,0.18)] sm:max-h-[min(88vh,720px)] sm:rounded-2xl sm:shadow-xl"
+        className="relative z-10 flex max-h-[min(92dvh,760px)] w-full max-w-xl flex-col overflow-hidden rounded-t-2xl border border-neutral-200/90 bg-white shadow-[0_-12px_48px_rgba(15,79,104,0.14),0_25px_50px_-12px_rgba(0,0,0,0.2)] sm:max-h-[min(88vh,760px)] sm:rounded-2xl sm:shadow-2xl"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="pointer-events-none absolute left-0 top-0 h-full w-1 bg-[#0F4F68]" aria-hidden />
 
-        <header className="shrink-0 border-b border-neutral-200 bg-white px-5 pb-4 pt-5 sm:px-6">
+        <header className="shrink-0 border-b border-neutral-100 bg-gradient-to-b from-[#f8fbfc] to-white px-5 pb-4 pt-5 sm:px-6">
           <div className="flex items-start justify-between gap-3 pl-2">
-            <div className="min-w-0">
-              <h2 id="partner-tip-title" className="text-lg font-semibold tracking-tight text-[#0F4F68]">
+            <div className="min-w-0 flex-1">
+              {canGoBack ? (
+                <button
+                  type="button"
+                  onClick={goBack}
+                  className="mb-3 inline-flex items-center gap-1.5 rounded-lg px-2 py-1.5 text-sm font-medium text-[#0F4F68] transition hover:bg-[#0F4F68]/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68] focus-visible:ring-offset-2"
+                >
+                  <ChevronLeftIcon />
+                  Zurück
+                </button>
+              ) : null}
+              <h2 id="partner-tip-title" className="text-xl font-semibold tracking-tight text-[#0F4F68]">
                 Tipp geben
               </h2>
-              <p className="mt-1 text-sm text-neutral-600">
-                {step === 1
-                  ? "Wählen Sie die passende Leistung."
-                  : "Erfassen Sie die Kontaktdaten – wir übernehmen die Zuordnung."}
-              </p>
-              <div className="mt-3 flex items-center gap-2 text-xs text-neutral-500">
-                <span className="font-medium text-[#0F4F68]">Schritt {step} von 2</span>
+              <p className="mt-1.5 text-sm leading-relaxed text-neutral-600">{headerSubtitle}</p>
+              <div className="mt-3 flex flex-wrap items-center gap-2 text-xs text-neutral-500">
+                <span className="font-medium text-[#0F4F68]">{progressHint}</span>
                 <span className="text-neutral-300" aria-hidden>
                   ·
                 </span>
-                <span>{step === 1 ? "Leistung" : "Angaben"}</span>
+                <span className="text-neutral-500">Fortschritt</span>
               </div>
-              <div className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-neutral-100" role="progressbar" aria-valuenow={progressPct} aria-valuemin={0} aria-valuemax={100} aria-label="Fortschritt">
+              <div
+                className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-neutral-100"
+                role="progressbar"
+                aria-valuenow={progressPct}
+                aria-valuemin={0}
+                aria-valuemax={100}
+                aria-label="Fortschritt"
+              >
                 <div
-                  className="h-full rounded-full bg-[#0F4F68] transition-[width] duration-300 ease-out"
+                  className="h-full rounded-full bg-gradient-to-r from-[#0F4F68] to-[#127a9e] transition-[width] duration-300 ease-out"
                   style={{ width: `${progressPct}%` }}
                 />
               </div>
@@ -174,7 +303,7 @@ export function PartnerTipModal({ open, onClose, allowedSlugs }: Props) {
             <button
               type="button"
               onClick={handleClose}
-              className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg text-neutral-500 transition hover:bg-neutral-100 hover:text-neutral-800"
+              className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-neutral-500 transition hover:bg-neutral-100 hover:text-neutral-800"
               aria-label="Schließen"
             >
               <CloseIcon />
@@ -183,52 +312,125 @@ export function PartnerTipModal({ open, onClose, allowedSlugs }: Props) {
         </header>
 
         <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-5 py-5 sm:px-6">
-          {step === 1 ? (
-            <div className="space-y-3 pl-2">
-              <ul className="space-y-2">
+          {phase === "service" ? (
+            <div className="space-y-5 pl-0 sm:pl-1">
+              <h3 className="text-lg font-semibold leading-snug text-neutral-900 sm:text-xl">
+                Für welche Leistung möchten Sie uns einen Tipp geben?
+              </h3>
+              <p className="-mt-2 text-sm text-neutral-600">
+                Tippen Sie auf eine Karte – anschließend erfassen wir die nötigen Angaben.
+              </p>
+              <ul className="grid gap-3 sm:grid-cols-2">
                 {choices.map((s) => (
                   <li key={s}>
                     <button
                       type="button"
-                      onClick={() => {
-                        setSlug(s);
-                        setStep(2);
-                      }}
-                      className="group flex w-full items-center gap-3 rounded-xl border border-neutral-200 bg-white px-3 py-3.5 text-left transition hover:border-[#0F4F68]/30 hover:bg-[#fafcfd] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68] focus-visible:ring-offset-2"
+                      onClick={() => selectService(s)}
+                      className="group flex h-full min-h-[5.5rem] w-full items-center gap-3 rounded-2xl border border-neutral-200/90 bg-white p-4 text-left shadow-sm transition hover:border-[#0F4F68]/35 hover:bg-[#f6fafc] hover:shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68] focus-visible:ring-offset-2"
                     >
                       <span
-                        className={`h-10 w-1 shrink-0 rounded-full ${serviceAccentClass(s)}`}
+                        className={`h-12 w-1.5 shrink-0 self-stretch rounded-full ${serviceAccentClass(s)}`}
                         aria-hidden
                       />
-                      <span className="min-w-0 flex-1 text-sm font-semibold text-neutral-900">
-                        {PARTNER_RESPONSIBILITY_LABELS[s]}
+                      <span
+                        className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-neutral-50 text-[#0F4F68] ring-1 ring-neutral-100 transition group-hover:bg-white"
+                        aria-hidden
+                      >
+                        <ServiceChoiceIcon slug={s} />
                       </span>
-                      <ChevronRightIcon />
+                      <span className="min-w-0 flex-1">
+                        <span className="flex items-center justify-between gap-2">
+                          <span className="text-sm font-semibold leading-snug text-neutral-900">
+                            {PARTNER_RESPONSIBILITY_LABELS[s]}
+                          </span>
+                          <ChevronRightIcon />
+                        </span>
+                      </span>
                     </button>
                   </li>
                 ))}
               </ul>
             </div>
-          ) : slug ? (
-            <div className="space-y-5 pl-2">
-              <div className="flex flex-wrap items-center gap-2">
+          ) : null}
+
+          {phase === "pflegeProximity" && slug === "pflegehilfsmittel" ? (
+            <div className="space-y-6 pl-0 sm:pl-1">
+              <div className="rounded-2xl border border-[#0F4F68]/15 bg-[#f4f9fb] px-4 py-4 sm:px-5">
+                <p className="text-base font-semibold text-[#0F4F68]">
+                  Ist der Kunde oder die Kundin, um den bzw. die es geht, bei Ihnen vor Ort?
+                </p>
+                <p className="mt-2 text-sm leading-relaxed text-neutral-600">
+                  Gemeint ist: Sie sind gerade bei der Person oder diese ist unmittelbar in Ihrer Nähe (z. B. im selben
+                  Haushalt).
+                </p>
+              </div>
+              <div className="grid gap-3 sm:grid-cols-2">
                 <button
                   type="button"
-                  onClick={() => {
-                    setStep(1);
-                    setMessage(null);
-                  }}
-                  className="text-sm font-medium text-[#0F4F68] underline-offset-2 hover:underline"
+                  onClick={() => setPhase("pflegeNearHint")}
+                  className="min-h-12 rounded-xl border-2 border-[#0F4F68]/20 bg-white px-4 py-3.5 text-sm font-semibold text-[#0F4F68] transition hover:border-[#0F4F68]/40 hover:bg-[#f6fafc] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68] focus-visible:ring-offset-2"
                 >
-                  Andere Leistung wählen
+                  Ja, vor Ort
                 </button>
-                <span className="text-neutral-300" aria-hidden>
-                  ·
-                </span>
-                <span className={`inline-flex max-w-full items-center rounded-md border px-2.5 py-1 text-xs font-semibold ${serviceBadgeClass(slug)}`}>
+                <button
+                  type="button"
+                  onClick={() => setPhase("form")}
+                  className="min-h-12 rounded-xl border border-neutral-200 bg-neutral-50 px-4 py-3.5 text-sm font-semibold text-neutral-800 transition hover:bg-neutral-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68] focus-visible:ring-offset-2"
+                >
+                  Nein, nicht vor Ort
+                </button>
+              </div>
+            </div>
+          ) : null}
+
+          {phase === "pflegeNearHint" && slug === "pflegehilfsmittel" ? (
+            <div className="space-y-5 pl-0 sm:pl-1">
+              <div className="rounded-2xl border border-emerald-200/80 bg-emerald-50/80 px-4 py-4 sm:px-5">
+                <p className="text-sm font-semibold text-emerald-950">Empfehlung</p>
+                <p className="mt-2 text-sm leading-relaxed text-emerald-950/90">
+                  Wenn die betreffende Person bei Ihnen ist, können Sie die{" "}
+                  <strong className="font-semibold">
+                    Pflegebox gemeinsam mit dem Kunden oder der Kundin direkt im Konfigurator
+                  </strong>{" "}
+                  abschließen. Die Box wird dann sofort korrekt zugeordnet – ohne Umweg über dieses Formular.
+                </p>
+              </div>
+              <p className="text-sm text-neutral-600">
+                Wenn das gerade nicht möglich ist, gehen Sie mit „Zurück“ einen Schritt zurück und wählen Sie „Nein,
+                nicht vor Ort“, um uns den Tipp hier schriftlich zu melden.
+              </p>
+            </div>
+          ) : null}
+
+          {phase === "form" && slug ? (
+            <div className="space-y-5 pl-0 sm:pl-1">
+              <div className="flex flex-wrap items-center gap-2">
+                <span
+                  className={`inline-flex max-w-full items-center rounded-lg border px-2.5 py-1 text-xs font-semibold ${serviceBadgeClass(slug)}`}
+                >
                   {PARTNER_RESPONSIBILITY_LABELS[slug]}
                 </span>
               </div>
+
+              {slug === "pflegehilfsmittel" ? (
+                <p className="text-sm leading-relaxed text-neutral-600">
+                  Bitte tragen Sie die Daten der Person ein, für die Sie uns einen Tipp geben möchten (Name, Erreichbarkeit,
+                  Wohnort). So können wir den Fall zuordnen und uns bei Ihnen melden.
+                </p>
+              ) : slug !== "betriebliche_pflegeberatung" ? (
+                <p className="text-sm leading-relaxed text-neutral-600">
+                  Mit den folgenden Angaben bearbeiten wir Ihren Tipp zuverlässig. Pflicht sind Vor- und Nachname,
+                  Wohnort sowie{" "}
+                  <strong className="font-medium text-neutral-800">mindestens eine Telefonnummer oder eine E-Mail</strong>
+                  .
+                </p>
+              ) : (
+                <p className="text-sm leading-relaxed text-neutral-600">
+                  Erfassen Sie die Kontaktdaten zum Betrieb. Es muss{" "}
+                  <strong className="font-medium text-neutral-800">mindestens eine Telefonnummer oder eine E-Mail</strong>{" "}
+                  angegeben werden.
+                </p>
+              )}
 
               {slug === "betriebliche_pflegeberatung" ? (
                 <div className="space-y-4">
@@ -309,19 +511,19 @@ export function PartnerTipModal({ open, onClose, allowedSlugs }: Props) {
                       id={`${uid}-st-tel`}
                       label="Telefon"
                       type="tel"
-                      requiredMark
                       autoComplete="tel"
                       value={standard.telefon}
                       onChange={(v) => setStandard((s) => ({ ...s, telefon: v }))}
+                      hint="Eines von beiden: Telefon oder E-Mail."
                     />
                     <Field
                       id={`${uid}-st-mail`}
                       label="E-Mail"
                       type="email"
-                      requiredMark
                       autoComplete="email"
                       value={standard.email}
                       onChange={(v) => setStandard((s) => ({ ...s, email: v }))}
+                      hint="Eines von beiden: Telefon oder E-Mail."
                     />
                   </div>
                   <Field
@@ -341,12 +543,28 @@ export function PartnerTipModal({ open, onClose, allowedSlugs }: Props) {
               )}
             </div>
           ) : null}
+
+          {phase === "thanks" ? (
+            <div className="flex flex-col items-center px-2 py-6 text-center sm:px-6 sm:py-8">
+              <CheckCircleIcon />
+              <h3 className="mt-5 text-lg font-semibold text-neutral-900 sm:text-xl">Vielen Dank für Ihren Tipp</h3>
+              <p className="mt-3 max-w-md text-sm leading-relaxed text-neutral-600">
+                Wir haben Ihre Angaben sicher übermittelt und werden sie in den nächsten Werktagen bearbeiten. Sobald es
+                etwas Neues gibt, informieren wir Sie{" "}
+                <strong className="font-medium text-neutral-800">hier im Partnerportal</strong> – Sie müssen nichts
+                weiter vorbereiten.
+              </p>
+            </div>
+          ) : null}
         </div>
 
-        {step === 2 && slug ? (
-          <div className="shrink-0 border-t border-neutral-200 bg-neutral-50 px-5 py-4 sm:px-6">
+        {phase === "form" && slug ? (
+          <div className="shrink-0 border-t border-neutral-100 bg-neutral-50/90 px-5 py-4 sm:px-6">
             {message ? (
-              <p className="mb-3 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-950" role="alert">
+              <p
+                className="mb-3 rounded-xl border border-amber-200 bg-amber-50 px-3 py-2.5 text-sm text-amber-950"
+                role="alert"
+              >
                 {message}
               </p>
             ) : null}
@@ -354,10 +572,28 @@ export function PartnerTipModal({ open, onClose, allowedSlugs }: Props) {
               type="button"
               disabled={pending}
               onClick={() => void submit()}
-              className="flex w-full min-h-12 items-center justify-center rounded-lg bg-[#0F4F68] px-4 py-3 text-sm font-semibold text-white transition hover:bg-[#0c3d52] disabled:opacity-50"
+              className="flex w-full min-h-12 items-center justify-center rounded-xl bg-[#0F4F68] px-4 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-[#0c3d52] disabled:opacity-50"
             >
               {pending ? "Wird gesendet…" : "Tipp absenden"}
             </button>
+          </div>
+        ) : null}
+
+        {phase === "thanks" ? (
+          <div className="shrink-0 border-t border-neutral-100 bg-neutral-50/90 px-5 py-4 sm:px-6">
+            <button
+              type="button"
+              onClick={handleClose}
+              className="flex w-full min-h-12 items-center justify-center rounded-xl border border-neutral-200 bg-white px-4 py-3 text-sm font-semibold text-neutral-800 transition hover:bg-neutral-50"
+            >
+              Schließen
+            </button>
+          </div>
+        ) : null}
+
+        {phase === "pflegeNearHint" ? (
+          <div className="shrink-0 border-t border-neutral-100 bg-neutral-50/90 px-5 py-4 sm:px-6">
+            <p className="mb-3 text-center text-xs text-neutral-500">Zurück bringt Sie zur vorherigen Frage.</p>
           </div>
         ) : null}
       </div>
@@ -396,7 +632,7 @@ function Field({
         value={value}
         autoComplete={autoComplete}
         onChange={(e) => onChange(e.target.value)}
-        className="w-full rounded-lg border border-neutral-300 bg-white px-3 py-2.5 text-sm text-neutral-900 outline-none transition placeholder:text-neutral-400 hover:border-neutral-400 focus:border-[#0F4F68] focus:ring-1 focus:ring-[#0F4F68]"
+        className="w-full rounded-xl border border-neutral-300 bg-white px-3 py-2.5 text-sm text-neutral-900 outline-none transition placeholder:text-neutral-400 hover:border-neutral-400 focus:border-[#0F4F68] focus:ring-1 focus:ring-[#0F4F68]"
       />
       {hint ? <p className="text-xs text-neutral-500">{hint}</p> : null}
     </div>
@@ -427,7 +663,7 @@ function TextArea({
         value={value}
         onChange={(e) => onChange(e.target.value)}
         rows={3}
-        className="w-full resize-y rounded-lg border border-neutral-300 bg-white px-3 py-2.5 text-sm text-neutral-900 outline-none transition placeholder:text-neutral-400 hover:border-neutral-400 focus:border-[#0F4F68] focus:ring-1 focus:ring-[#0F4F68]"
+        className="w-full resize-y rounded-xl border border-neutral-300 bg-white px-3 py-2.5 text-sm text-neutral-900 outline-none transition placeholder:text-neutral-400 hover:border-neutral-400 focus:border-[#0F4F68] focus:ring-1 focus:ring-[#0F4F68]"
       />
     </div>
   );

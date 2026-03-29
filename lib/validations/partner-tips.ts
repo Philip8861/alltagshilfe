@@ -34,14 +34,38 @@ const betriebPayloadSchema = z
     }
   });
 
-const standardPayloadSchema = z.object({
-  vorname: z.string().trim().min(1, "Vorname erforderlich.").max(80),
-  nachname: z.string().trim().min(1, "Nachname erforderlich.").max(80),
-  telefon: z.string().trim().min(5, "Telefonnummer erforderlich.").max(40),
-  email: z.string().trim().email("Gültige E-Mail.").max(320),
-  wohnort: z.string().trim().min(1, "Wohnort erforderlich.").max(200),
-  notiz: z.string().trim().max(2000).optional(),
-});
+const standardPayloadSchema = z
+  .object({
+    vorname: z.string().trim().min(1, "Vorname erforderlich.").max(80),
+    nachname: z.string().trim().min(1, "Nachname erforderlich.").max(80),
+    email: z.preprocess(
+      (val) => {
+        if (val === undefined || val === null) return undefined;
+        const s = String(val).trim();
+        return s.length === 0 ? undefined : s;
+      },
+      z.string().email("Gültige E-Mail.").max(320).optional(),
+    ),
+    telefon: z.preprocess(
+      (val) => {
+        if (val === undefined || val === null) return undefined;
+        const s = String(val).trim();
+        return s.length === 0 ? undefined : s;
+      },
+      z.string().min(5, "Telefonnummer zu kurz.").max(40).optional(),
+    ),
+    wohnort: z.string().trim().min(1, "Wohnort erforderlich.").max(200),
+    notiz: z.string().trim().max(2000).optional(),
+  })
+  .superRefine((val, ctx) => {
+    if (!val.email && !val.telefon) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["email"],
+        message: "Bitte geben Sie mindestens eine Telefonnummer oder eine E-Mail-Adresse an.",
+      });
+    }
+  });
 
 export const partnerTipSubmissionSchema = z.discriminatedUnion("service_slug", [
   z.object({
