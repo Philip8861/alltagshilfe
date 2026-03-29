@@ -11,6 +11,7 @@ import {
   PARTNER_RESPONSIBILITY_LABELS,
   type PartnerResponsibilitySlug,
 } from "@/lib/partner/responsibility-areas";
+import { PartnerOwnArchiveTipButton } from "@/components/partner/PartnerOwnArchiveTipButton";
 import { formatProvisionEur } from "@/lib/partner/partner-tip-payout";
 import { provisionBucketForServiceSlug } from "@/lib/partner/partner-tip-provision-bucket";
 import type { PartnerDashboardTipSerial, PartnerTipAdminStatus } from "@/lib/partner/types";
@@ -100,10 +101,20 @@ export function PartnerDashboardClient({
       const pill = statusPill(t.admin_status);
       const adminNote = t.admin_visible_note?.trim() ?? "";
       const paid = t.paid_amount_eur;
-      const showPaid = t.admin_status === "bezahlt" && paid != null && Number.isFinite(Number(paid));
-      const betrag = showPaid ? formatProvisionEur(Number(paid)) : "—";
+      const monatlichBucket = provisionBucketForServiceSlug(t.service_slug) === "monatlich";
+      const showPaidMonatlich =
+        monatlichBucket &&
+        (t.admin_status === "erledigt" || t.admin_status === "bezahlt") &&
+        paid != null &&
+        Number.isFinite(Number(paid));
+      const showPaidEinmal =
+        !monatlichBucket && t.admin_status === "bezahlt" && paid != null && Number.isFinite(Number(paid));
+      const betrag =
+        showPaidMonatlich || showPaidEinmal ? formatProvisionEur(Number(paid)) : "—";
       return {
         id: t.id,
+        tipId: t.id,
+        isArchived: Boolean(t.archived_at),
         typ,
         typeClass: serviceBadgeClass(t.service_slug),
         typCellClass: serviceTipTableTypCellClass(t.service_slug),
@@ -229,8 +240,8 @@ export function PartnerDashboardClient({
           </p>
           <p className="text-xs text-neutral-600">
             {provisionMonatlichEur > 0
-              ? "Summe bezahlter Monatsprovisionen (betriebliche Pflegeberatung)"
-              : "Noch keine Monatsprovision ausgezahlt"}
+              ? "Summe Monatsprovisionen (betriebliche Pflegeberatung, vertraglich erfasst)"
+              : "Noch keine Monatsprovision erfasst"}
           </p>
         </div>
 
@@ -313,7 +324,8 @@ export function PartnerDashboardClient({
               Statusliste Monatliche Tippgeberprovision
             </h2>
             <p className="mt-1 text-sm text-amber-950/80">
-              Tipps zur <strong className="font-medium text-amber-950">betrieblichen Pflegeberatung</strong>.
+              Tipps zur <strong className="font-medium text-amber-950">betrieblichen Pflegeberatung</strong>. Über „Mein
+              Archiv“ können Sie Einträge bei Bedarf ausblenden oder zurückholen.
             </p>
           </header>
           <div className="p-4 sm:p-6">
@@ -338,7 +350,8 @@ export function PartnerDashboardClient({
             <p className="mt-1 text-sm text-emerald-900/85">
               Tipps zu <strong className="font-medium text-emerald-950">Hauswirtschaft & Betreuung</strong>,{" "}
               <strong className="font-medium text-emerald-950">Pflegehilfsmittel</strong> und{" "}
-              <strong className="font-medium text-emerald-950">Pflegeberatung</strong>.
+              <strong className="font-medium text-emerald-950">Pflegeberatung</strong>. „Mein Archiv“ verschiebt nur Ihre
+              Ansicht, der Admin bleibt unverändert.
             </p>
           </header>
           <div className="p-4 sm:p-6">
@@ -361,7 +374,7 @@ export function PartnerDashboardClient({
               Statusliste Archiv
             </h2>
             <p className="mt-1 text-sm text-white/85">
-              Abgelegte Fälle aus beiden Provisionslisten. Die Suche oben gilt auch hier.
+              Von Ihnen abgelegte Fälle aus beiden Provisionslisten. Die Suche oben gilt auch hier.
             </p>
           </header>
           <div className="p-4 sm:p-6">
@@ -384,6 +397,8 @@ type StatuslisteVariant = "monatlich" | "einmal" | "archiv";
 
 type StatuslisteRow = {
   id: string;
+  tipId: string;
+  isArchived: boolean;
   typ: string;
   typeClass: string;
   typCellClass: string;
@@ -408,7 +423,7 @@ function StatuslisteTable({
   theadClass: string;
 }) {
   const showFirma = variant !== "einmal";
-  const colCount = showFirma ? 8 : 7;
+  const colCount = showFirma ? 9 : 8;
 
   return (
     <div className="overflow-x-auto rounded-lg border border-neutral-200/90">
@@ -422,6 +437,7 @@ function StatuslisteTable({
             <th className="whitespace-nowrap px-3 py-3 sm:px-4">Status</th>
             <th className="whitespace-nowrap px-3 py-3 sm:px-4">Betrag</th>
             <th className="min-w-[8rem] px-3 py-3 sm:px-4">Notiz</th>
+            <th className="whitespace-nowrap px-3 py-3 sm:px-4">Mein Archiv</th>
             <th className="whitespace-nowrap px-3 py-3 sm:px-4">Typ</th>
           </tr>
         </thead>
@@ -471,6 +487,9 @@ function StatuslisteTable({
                   ) : (
                     <span className="text-neutral-300">—</span>
                   )}
+                </td>
+                <td className="px-3 py-3 align-top sm:px-4">
+                  <PartnerOwnArchiveTipButton tipId={r.tipId} isArchived={r.isArchived} />
                 </td>
                 <td className={`px-3 py-3 sm:px-4 ${r.typCellClass}`}>
                   <span className={`inline-flex rounded-full border px-2.5 py-1 text-xs font-semibold ${r.typeClass}`}>

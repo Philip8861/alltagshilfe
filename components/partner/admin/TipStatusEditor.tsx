@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useEffect, useRef, useState } from "react";
+import { useActionState, useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { updatePartnerTipStatusAction, type AdminWorkflowState } from "@/lib/actions/partner-admin-workflow";
 import { PARTNER_TIP_ADMIN_STATUSES, PARTNER_TIP_STATUS_LABELS } from "@/lib/partner/partner-tip-admin";
@@ -33,7 +33,13 @@ export function TipStatusEditor({ tipId, status, adminVisibleNote, serviceSlug, 
   const [state, formAction, pending] = useActionState(updatePartnerTipStatusAction, initial);
 
   const isBetrieblich = serviceSlug === "betriebliche_pflegeberatung";
-  const showPayoutField = selectedStatus === "bezahlt" && isBetrieblich;
+  const showPayoutField = selectedStatus === "erledigt" && isBetrieblich;
+  const showRejectionGrund = selectedStatus === "abgelehnt" && isBetrieblich;
+
+  const statusOptions = useMemo(() => {
+    if (!isBetrieblich) return PARTNER_TIP_ADMIN_STATUSES;
+    return PARTNER_TIP_ADMIN_STATUSES.filter((s) => s !== "bezahlt" || status === "bezahlt");
+  }, [isBetrieblich, status]);
 
   useEffect(() => {
     setSelectedStatus(status);
@@ -48,6 +54,10 @@ export function TipStatusEditor({ tipId, status, adminVisibleNote, serviceSlug, 
   useEffect(() => {
     setPayoutInput(formatPayoutInputHint(paidAmountEur));
   }, [paidAmountEur]);
+
+  useEffect(() => {
+    if (showRejectionGrund) setNoteOpen(true);
+  }, [showRejectionGrund]);
 
   useEffect(() => {
     if (wasPending.current && !pending) {
@@ -83,7 +93,7 @@ export function TipStatusEditor({ tipId, status, adminVisibleNote, serviceSlug, 
         className={`w-full rounded-xl border px-2.5 py-2 text-xs font-semibold text-neutral-900 shadow-sm outline-none ring-0 transition focus:ring-2 disabled:opacity-60 ${selectStyle}`}
         aria-label="Status Tippgeber-Eingang"
       >
-        {PARTNER_TIP_ADMIN_STATUSES.map((s) => (
+        {statusOptions.map((s) => (
           <option key={s} value={s}>
             {PARTNER_TIP_STATUS_LABELS[s]}
           </option>
@@ -96,7 +106,7 @@ export function TipStatusEditor({ tipId, status, adminVisibleNote, serviceSlug, 
             Monatliche Provision (EUR)
           </label>
           <p className="mt-0.5 text-[0.6rem] leading-snug text-amber-900/85">
-            Wie hoch ist die monatliche Provision für diesen bezahlten Fall?
+            Erforderlich bei „Vertragsabschluss erfolgreich“. Der Auftrag erscheint unter „Aktive Unternehmen“.
           </p>
           <input
             id={`tip-payout-${tipId}`}
@@ -115,7 +125,29 @@ export function TipStatusEditor({ tipId, status, adminVisibleNote, serviceSlug, 
         <input type="hidden" name="payout_amount_eur" value="" />
       )}
 
-      {noteOpen ? (
+      {showRejectionGrund ? (
+        <div className="rounded-xl border border-rose-200/90 bg-rose-50/60 px-2.5 py-2">
+          <label className="text-[0.65rem] font-semibold text-rose-950" htmlFor={`tip-grund-${tipId}`}>
+            Ablehnungsgrund <span className="text-rose-700">*</span>
+          </label>
+          <p className="mt-0.5 text-[0.6rem] leading-snug text-rose-900/85">
+            Wird dem Partner als Notiz angezeigt. Der Auftrag wandert ins Admin-Archiv.
+          </p>
+          <textarea
+            id={`tip-grund-${tipId}`}
+            name="admin_visible_note"
+            rows={3}
+            maxLength={2000}
+            required
+            minLength={3}
+            value={note}
+            onChange={(e) => setNote(e.target.value)}
+            disabled={pending}
+            placeholder="Kurz begründen …"
+            className="mt-1.5 w-full resize-y rounded-lg border border-rose-300/80 bg-white px-2 py-1.5 text-xs text-neutral-900 placeholder:text-rose-900/35 focus:border-rose-500 focus:outline-none focus:ring-1 focus:ring-rose-400/30 disabled:opacity-60"
+          />
+        </div>
+      ) : noteOpen ? (
         <>
           <label className="text-[0.65rem] font-semibold uppercase tracking-wide text-[#0F4F68]/80" htmlFor={`tip-note-${tipId}`}>
             Notiz für Partner

@@ -59,12 +59,19 @@ export async function runPartnerMonthlyPayoutSettlement(options?: {
   const einmalTipIds: string[] = [];
 
   for (const row of rows) {
-    if (normalizePartnerTipAdminStatus(row.admin_status) !== "bezahlt") continue;
+    const st = normalizePartnerTipAdminStatus(row.admin_status);
     const paid = normalizePaidAmountEur(row.paid_amount_eur);
     if (paid == null || paid <= 0) continue;
 
     const partnerId = String(row.partner_id);
     const bucket = provisionBucketForServiceSlug(String(row.service_slug));
+
+    if (bucket === "monatlich") {
+      if (st !== "erledigt" && st !== "bezahlt") continue;
+    } else if (st !== "bezahlt") {
+      continue;
+    }
+
     const cur = partnerAgg.get(partnerId) ?? { einmal: 0, monatlich: 0 };
 
     if (bucket === "monatlich") {

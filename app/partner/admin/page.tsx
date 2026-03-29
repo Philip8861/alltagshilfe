@@ -21,7 +21,15 @@ type AuthUserInfo = {
   last_sign_in_at?: string | null;
 };
 
-const VALID_BEREICH = ["auftraege", "archiv", "anlegen", "liste", "statistik", "auszahlen"] as const;
+const VALID_BEREICH = [
+  "auftraege",
+  "aktive_unternehmen",
+  "archiv",
+  "anlegen",
+  "liste",
+  "statistik",
+  "auszahlen",
+] as const;
 type PartnerAdminInitialBereich = (typeof VALID_BEREICH)[number];
 
 function normalizePayoutPeriodKey(v: unknown): string | null {

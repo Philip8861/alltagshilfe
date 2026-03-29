@@ -27,7 +27,7 @@ export function statsForPeriod(
   let inBearbeitung = 0;
   for (const t of tips) {
     if (!inRange(t.created_at, a, b)) continue;
-    if (t.admin_status === "erledigt") abgeschlossen += 1;
+    if (t.admin_status === "erledigt" || t.admin_status === "bezahlt") abgeschlossen += 1;
     else if (t.admin_status === "abgelehnt") abgelehnt += 1;
     else inBearbeitung += 1;
   }

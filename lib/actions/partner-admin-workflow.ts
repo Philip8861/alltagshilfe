@@ -10,6 +10,7 @@ import {
   normalizePaidAmountEur,
   parsePayoutAmountGerman,
 } from "@/lib/partner/partner-tip-payout";
+import { BETRIEBLICHE_PFLEGEBERATUNG_SLUG } from "@/lib/partner/partner-tip-betrieblich-queue";
 import {
   archivePartnerTipSchema,
   deletePartnerTipSchema,
@@ -61,30 +62,65 @@ export async function updatePartnerTipStatusAction(
   const slug = String(cur.service_slug);
   const prevStatus = normalizePartnerTipAdminStatus(cur.admin_status);
   const prevPaid = normalizePaidAmountEur(cur.paid_amount_eur);
+  const isBetrieblich = slug === BETRIEBLICHE_PFLEGEBERATUNG_SLUG;
 
-  let paidToSet: number | undefined;
+  if (isBetrieblich && newStatus === "bezahlt") {
+    return {
+      ok: false,
+      message:
+        "Bei betrieblicher Pflegeberatung ist „Bezahlt“ nicht vorgesehen. Bitte „Vertragsabschluss erfolgreich“ wählen und die monatliche Provision eintragen.",
+    };
+  }
 
-  if (newStatus === "bezahlt") {
-    if (slug === "betriebliche_pflegeberatung") {
-      const entered = parsePayoutAmountGerman(parsed.data.payout_amount_eur ?? "");
-      const needsAmount = prevStatus !== "bezahlt" || prevPaid == null;
-      if (needsAmount && entered == null) {
-        return {
-          ok: false,
-          message: "Bitte die monatliche Provision in EUR eintragen (z. B. 128,50).",
-        };
-      }
-      const amount = entered ?? prevPaid;
-      if (amount == null || amount <= 0) {
-        return { ok: false, message: "Monatliche Provision muss größer als 0 sein." };
-      }
-      paidToSet = amount;
-    } else {
-      const fixed = einmalProvisionForSlug(slug);
-      if (fixed == null) {
-        return { ok: false, message: "Für diese Leistung ist keine Einmalprovision hinterlegt." };
-      }
-      paidToSet = fixed;
+  if (isBetrieblich && newStatus === "abgelehnt") {
+    const grund = (parsed.data.admin_visible_note ?? "").trim();
+    if (grund.length < 3) {
+      return {
+        ok: false,
+        message: "Bitte einen Ablehnungsgrund angeben (mind. 3 Zeichen, wird dem Partner als Notiz angezeigt).",
+      };
+    }
+  }
+
+  let paidUpdate: number | null | undefined = undefined;
+
+  if (!isBetrieblich && newStatus === "bezahlt") {
+    const fixed = einmalProvisionForSlug(slug);
+    if (fixed == null) {
+      return { ok: false, message: "Für diese Leistung ist keine Einmalprovision hinterlegt." };
+    }
+    paidUpdate = fixed;
+  }
+
+  if (isBetrieblich && newStatus === "erledigt") {
+    const entered = parsePayoutAmountGerman(parsed.data.payout_amount_eur ?? "");
+    const hadProvision =
+      prevPaid != null &&
+      prevPaid > 0 &&
+      (prevStatus === "erledigt" || prevStatus === "bezahlt");
+    if (!hadProvision && entered == null) {
+      return {
+        ok: false,
+        message: "Bitte die monatliche Provision in EUR eintragen (z. B. 128,50).",
+      };
+    }
+    const amount = entered ?? prevPaid;
+    if (amount == null || amount <= 0) {
+      return { ok: false, message: "Monatliche Provision muss größer als 0 sein." };
+    }
+    paidUpdate = amount;
+  }
+
+  if (isBetrieblich && newStatus !== "erledigt" && newStatus !== "bezahlt") {
+    paidUpdate = null;
+  }
+
+  let archivedAtUpdate: string | null | undefined = undefined;
+  if (isBetrieblich) {
+    if (newStatus === "abgelehnt") {
+      archivedAtUpdate = new Date().toISOString();
+    } else if (prevStatus === "abgelehnt") {
+      archivedAtUpdate = null;
     }
   }
 
@@ -92,8 +128,11 @@ export async function updatePartnerTipStatusAction(
     admin_status: newStatus,
     admin_visible_note: parsed.data.admin_visible_note,
   };
-  if (paidToSet !== undefined) {
-    payloadFull.paid_amount_eur = paidToSet;
+  if (paidUpdate !== undefined) {
+    payloadFull.paid_amount_eur = paidUpdate;
+  }
+  if (archivedAtUpdate !== undefined) {
+    payloadFull.archived_at = archivedAtUpdate;
   }
 
   let { error } = await svc.from("partner_tip_submissions").update(payloadFull).eq("id", tipId);

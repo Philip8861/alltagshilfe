@@ -20,6 +20,7 @@ function iconButtonClass(active: boolean) {
 
 const BEREICHE = [
   { id: "auftraege", title: "Aufträge", href: "/partner/admin?bereich=auftraege" },
+  { id: "aktive_unternehmen", title: "Aktive Unternehmen", href: "/partner/admin?bereich=aktive_unternehmen" },
   { id: "archiv", title: "Archiv", href: "/partner/admin?bereich=archiv" },
   { id: "anlegen", title: "Anlegen", href: "/partner/admin?bereich=anlegen" },
   { id: "liste", title: "Partnerliste", href: "/partner/admin?bereich=liste" },
@@ -84,6 +85,12 @@ function AdminNavIcon({ kind }: { kind: (typeof BEREICHE)[number]["id"] }) {
       return (
         <svg {...common}>
           <path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01" strokeLinecap="round" />
+        </svg>
+      );
+    case "aktive_unternehmen":
+      return (
+        <svg {...common}>
+          <path d="M3 21h18M5 21V7l8-4 8 4v14M9 21v-6h6v6" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
       );
     case "archiv":
