@@ -46,6 +46,16 @@ export function rateLimitPartnerPasswordChange(identifier: string): { success: b
   return rateLimitWithConfig(`partner-password:${identifier}`, 8, 60 * 60 * 1000);
 }
 
+/** E-Mail-Adresse ändern (Partnerportal). */
+export function rateLimitPartnerEmailChange(identifier: string): { success: boolean; remaining: number } {
+  return rateLimitWithConfig(`partner-email:${identifier}`, 5, 60 * 60 * 1000);
+}
+
+/** Portal-Präferenzen speichern. */
+export function rateLimitPartnerPortalPrefs(identifier: string): { success: boolean; remaining: number } {
+  return rateLimitWithConfig(`partner-prefs:${identifier}`, 30, 60 * 60 * 1000);
+}
+
 /** Verwaltungs-Login (Partner-System-Admin, env-Zugang). */
 export function rateLimitSystemAdminLogin(identifier: string): { success: boolean; remaining: number } {
   return rateLimitWithConfig(`partner-sys-admin-login:${identifier}`, 10, 15 * 60 * 1000);

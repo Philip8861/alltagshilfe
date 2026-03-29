@@ -24,6 +24,8 @@ export type PartnerProfile = {
   iban?: string | null;
   bic?: string | null;
   account_holder?: string | null;
+  /** Anzeige-Einstellungen Partnerportal (Migration 013). */
+  portal_preferences?: Record<string, unknown> | null;
 };
 
 export type PartnerTipAdminStatus =

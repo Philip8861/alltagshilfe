@@ -1,22 +1,21 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
-import { PartnerNoteDetails } from "@/components/partner/PartnerNoteDetails";
+import { useEffect, useMemo, useState } from "react";
+import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { PartnerAnimatedEuro } from "@/components/partner/PartnerAnimatedEuro";
+import { PartnerStatuslisteTable } from "@/components/partner/PartnerStatuslisteTable";
 import { PartnerTipModal } from "@/components/partner/PartnerTipModal";
-import { PARTNER_TIP_STATUS_PARTNER_LABELS } from "@/lib/partner/partner-tip-admin";
-import { tipTableFields } from "@/lib/partner/partner-tip-table-fields";
+import {
+  mapTipsToStatuslisteRows,
+  type PartnerPortalPreferences,
+} from "@/lib/partner/portal-preferences";
+import { provisionBucketForServiceSlug } from "@/lib/partner/partner-tip-provision-bucket";
+import type { PartnerDashboardTipSerial } from "@/lib/partner/types";
 import {
   PARTNER_RESPONSIBILITY_SLUGS,
-  PARTNER_RESPONSIBILITY_LABELS,
   type PartnerResponsibilitySlug,
 } from "@/lib/partner/responsibility-areas";
-import { PartnerOwnArchiveTipButton } from "@/components/partner/PartnerOwnArchiveTipButton";
-import { formatProvisionEur } from "@/lib/partner/partner-tip-payout";
-import { provisionBucketForServiceSlug } from "@/lib/partner/partner-tip-provision-bucket";
-import type { PartnerDashboardTipSerial, PartnerTipAdminStatus } from "@/lib/partner/types";
-import { serviceBadgeClass, serviceTipTableTypCellClass } from "@/lib/partner/service-slug-styles";
 
 type Props = {
   welcomeLine: string;
@@ -27,32 +26,13 @@ type Props = {
   initialTipModalOpen: boolean;
   provisionMonatlichEur: number;
   provisionEinmalEur: number;
+  portalPreferences: PartnerPortalPreferences;
 };
 
 const slugSet = new Set<string>(PARTNER_RESPONSIBILITY_SLUGS);
 
 const iconWrap =
   "flex h-11 w-11 shrink-0 items-center justify-center rounded-md bg-[#0F4F68]/10 text-[#0F4F68]";
-
-function statusPill(admin: PartnerTipAdminStatus): { label: string; className: string } {
-  const label = PARTNER_TIP_STATUS_PARTNER_LABELS[admin] ?? String(admin);
-  switch (admin) {
-    case "in_bearbeitung":
-      return { label, className: "bg-amber-400 text-amber-950" };
-    case "termin_vereinbart":
-      return { label, className: "bg-indigo-600 text-white" };
-    case "warten_auf_rueckmeldung":
-      return { label, className: "bg-violet-600 text-white" };
-    case "bezahlt":
-      return { label, className: "bg-teal-600 text-white" };
-    case "erledigt":
-      return { label, className: "bg-emerald-600 text-white" };
-    case "abgelehnt":
-      return { label, className: "bg-red-600 text-white" };
-    default:
-      return { label, className: "bg-neutral-500 text-white" };
-  }
-}
 
 export function PartnerDashboardClient({
   welcomeLine,
@@ -63,6 +43,7 @@ export function PartnerDashboardClient({
   initialTipModalOpen,
   provisionMonatlichEur,
   provisionEinmalEur,
+  portalPreferences: prefs,
 }: Props) {
   const router = useRouter();
   const pathname = usePathname();
@@ -94,50 +75,9 @@ export function PartnerDashboardClient({
     [visiblePartnerTips],
   );
 
-  const toRows = useCallback((list: typeof tips) => {
-    return list.map((t) => {
-      const slug = t.service_slug as PartnerResponsibilitySlug;
-      const typ = PARTNER_RESPONSIBILITY_LABELS[slug] ?? t.service_slug.replace(/_/g, " ");
-      const f = tipTableFields(t.payload, t.service_slug);
-      const datum = new Date(t.created_at).toLocaleDateString("de-DE", {
-        day: "2-digit",
-        month: "2-digit",
-        year: "numeric",
-      });
-      const pill = statusPill(t.admin_status);
-      const adminNote = t.admin_visible_note?.trim() ?? "";
-      const paid = t.paid_amount_eur;
-      const monatlichBucket = provisionBucketForServiceSlug(t.service_slug) === "monatlich";
-      const showPaidMonatlich =
-        monatlichBucket &&
-        (t.admin_status === "erledigt" || t.admin_status === "bezahlt") &&
-        paid != null &&
-        Number.isFinite(Number(paid));
-      const showPaidEinmal =
-        !monatlichBucket && t.admin_status === "bezahlt" && paid != null && Number.isFinite(Number(paid));
-      const betrag =
-        showPaidMonatlich || showPaidEinmal ? formatProvisionEur(Number(paid)) : "—";
-      return {
-        id: t.id,
-        tipId: t.id,
-        isArchived: Boolean(t.partner_archived_at),
-        typ,
-        typeClass: serviceBadgeClass(t.service_slug),
-        typCellClass: serviceTipTableTypCellClass(t.service_slug),
-        vorname: f.vorname,
-        nachname: f.nachname,
-        firma: f.firma,
-        datum,
-        pill,
-        adminNote,
-        betrag,
-      };
-    });
-  }, []);
-
-  const monatlichRows = useMemo(() => toRows(activeMonatlichTips), [activeMonatlichTips, toRows]);
-  const einmalRows = useMemo(() => toRows(activeEinmalTips), [activeEinmalTips, toRows]);
-  const archivedRows = useMemo(() => toRows(partnerArchivedTips), [partnerArchivedTips, toRows]);
+  const monatlichRows = useMemo(() => mapTipsToStatuslisteRows(activeMonatlichTips), [activeMonatlichTips]);
+  const einmalRows = useMemo(() => mapTipsToStatuslisteRows(activeEinmalTips), [activeEinmalTips]);
+  const archivedRows = useMemo(() => mapTipsToStatuslisteRows(partnerArchivedTips), [partnerArchivedTips]);
 
   const closeTipModal = () => {
     setTipOpen(false);
@@ -148,6 +88,9 @@ export function PartnerDashboardClient({
 
   const cardBase =
     "partner-metric-card partner-dash-animate flex min-h-[7.5rem] flex-1 flex-col justify-center gap-2 rounded-lg border border-neutral-300 bg-white p-5 sm:min-w-[12rem]";
+
+  const anyListOnDashboard =
+    prefs.showListMonatlich || prefs.showListEinmal || prefs.showArchivOnDashboard;
 
   return (
     <div className="mx-auto w-full max-w-[min(100%,90rem)] space-y-6 sm:space-y-8">
@@ -266,176 +209,108 @@ export function PartnerDashboardClient({
         </div>
       </div>
 
+      {!anyListOnDashboard ? (
+        <p className="rounded-xl border border-amber-200 bg-amber-50/90 px-4 py-3 text-sm text-amber-950">
+          Sie haben alle Statuslisten auf der Übersicht ausgeblendet. Ändern Sie das unter{" "}
+          <Link href="/partner/einstellungen" className="font-semibold text-[#0F4F68] underline">
+            Einstellungen
+          </Link>
+          . Ihr Archiv finden Sie dort ebenfalls.
+        </p>
+      ) : null}
+
       <div
         id="partner-statuslisten"
         className="partner-dash-animate partner-dash-delay-5 scroll-mt-28 space-y-6 sm:space-y-8"
       >
-        <section
-          id="partner-statusliste-monatlich"
-          className="scroll-mt-28 overflow-hidden rounded-xl border border-amber-300/90 bg-white shadow-[0_8px_30px_-12px_rgba(202,138,4,0.22)] ring-1 ring-amber-200/60"
-          aria-labelledby="partner-statusliste-monatlich-heading"
-        >
-          <header className="border-b border-amber-300/70 bg-gradient-to-r from-amber-100 via-[#fff8dc] to-amber-50/80 px-4 py-4 sm:px-6 sm:py-5">
-            <h2 id="partner-statusliste-monatlich-heading" className="text-lg font-semibold text-amber-950 sm:text-xl">
-              Statusliste Monatliche Tippgeberprovision
-            </h2>
-            <p className="mt-1 text-sm text-amber-950/80">
-              Tipps zur <strong className="font-medium text-amber-950">betrieblichen Pflegeberatung</strong>. Über „Mein
-              Archiv“ können Sie Einträge bei Bedarf ausblenden oder zurückholen.
-            </p>
-          </header>
-          <div className="p-4 sm:p-6">
-            <StatuslisteTable
-              variant="monatlich"
-              rows={monatlichRows}
-              emptyHint="Keine Einträge."
-              theadClass="bg-amber-50 text-amber-950"
-            />
-          </div>
-        </section>
+        {prefs.showListMonatlich ? (
+          <section
+            id="partner-statusliste-monatlich"
+            className="scroll-mt-28 overflow-hidden rounded-xl border border-amber-300/90 bg-white shadow-[0_8px_30px_-12px_rgba(202,138,4,0.22)] ring-1 ring-amber-200/60"
+            aria-labelledby="partner-statusliste-monatlich-heading"
+          >
+            <header className="border-b border-amber-300/70 bg-gradient-to-r from-amber-100 via-[#fff8dc] to-amber-50/80 px-4 py-4 sm:px-6 sm:py-5">
+              <h2 id="partner-statusliste-monatlich-heading" className="text-lg font-semibold text-amber-950 sm:text-xl">
+                Statusliste Monatliche Tippgeberprovision
+              </h2>
+              <p className="mt-1 text-sm text-amber-950/80">
+                Tipps zur <strong className="font-medium text-amber-950">betrieblichen Pflegeberatung</strong>. Über „Mein
+                Archiv“ können Sie Einträge bei Bedarf ausblenden oder zurückholen.
+              </p>
+            </header>
+            <div className="p-4 sm:p-6">
+              <PartnerStatuslisteTable
+                variant="monatlich"
+                rows={monatlichRows}
+                emptyHint="Keine Einträge."
+                theadClass="bg-amber-50 text-amber-950"
+                columns={prefs.columns}
+              />
+            </div>
+          </section>
+        ) : null}
 
-        <section
-          id="partner-statusliste-einmal"
-          className="scroll-mt-28 overflow-hidden rounded-xl border border-emerald-300/80 bg-white shadow-[0_8px_30px_-12px_rgba(16,185,129,0.18)] ring-1 ring-emerald-200/50"
-          aria-labelledby="partner-statusliste-einmal-heading"
-        >
-          <header className="border-b border-emerald-200/80 bg-gradient-to-r from-emerald-50 via-[#ecfdf5] to-green-50/90 px-4 py-4 sm:px-6 sm:py-5">
-            <h2 id="partner-statusliste-einmal-heading" className="text-lg font-semibold text-emerald-900 sm:text-xl">
-              Statusliste Einmalprovision
-            </h2>
-            <p className="mt-1 text-sm text-emerald-900/85">
-              Tipps zu <strong className="font-medium text-emerald-950">Hauswirtschaft & Betreuung</strong>,{" "}
-              <strong className="font-medium text-emerald-950">Pflegehilfsmittel</strong> und{" "}
-              <strong className="font-medium text-emerald-950">Pflegeberatung</strong>.
-            </p>
-          </header>
-          <div className="p-4 sm:p-6">
-            <StatuslisteTable
-              variant="einmal"
-              rows={einmalRows}
-              emptyHint="Keine Einträge."
-              theadClass="bg-emerald-50 text-emerald-900"
-            />
-          </div>
-        </section>
+        {prefs.showListEinmal ? (
+          <section
+            id="partner-statusliste-einmal"
+            className="scroll-mt-28 overflow-hidden rounded-xl border border-emerald-300/80 bg-white shadow-[0_8px_30px_-12px_rgba(16,185,129,0.18)] ring-1 ring-emerald-200/50"
+            aria-labelledby="partner-statusliste-einmal-heading"
+          >
+            <header className="border-b border-emerald-200/80 bg-gradient-to-r from-emerald-50 via-[#ecfdf5] to-green-50/90 px-4 py-4 sm:px-6 sm:py-5">
+              <h2 id="partner-statusliste-einmal-heading" className="text-lg font-semibold text-emerald-900 sm:text-xl">
+                Statusliste Einmalprovision
+              </h2>
+              <p className="mt-1 text-sm text-emerald-900/85">
+                Tipps zu <strong className="font-medium text-emerald-950">Hauswirtschaft & Betreuung</strong>,{" "}
+                <strong className="font-medium text-emerald-950">Pflegehilfsmittel</strong> und{" "}
+                <strong className="font-medium text-emerald-950">Pflegeberatung</strong>.
+              </p>
+            </header>
+            <div className="p-4 sm:p-6">
+              <PartnerStatuslisteTable
+                variant="einmal"
+                rows={einmalRows}
+                emptyHint="Keine Einträge."
+                theadClass="bg-emerald-50 text-emerald-900"
+                columns={prefs.columns}
+              />
+            </div>
+          </section>
+        ) : null}
 
-        <section
-          id="partner-statusliste-archiv"
-          className="scroll-mt-28 overflow-hidden rounded-xl border border-[#0F4F68]/45 bg-white shadow-[0_8px_30px_-12px_rgba(15,79,104,0.25)] ring-1 ring-[#0F4F68]/15"
-          aria-labelledby="partner-statusliste-archiv-heading"
-        >
-          <header className="border-b border-[#0c3d52] bg-[#0F4F68] px-4 py-4 sm:px-6 sm:py-5">
-            <h2 id="partner-statusliste-archiv-heading" className="text-lg font-semibold text-white sm:text-xl">
-              Statusliste Archiv
-            </h2>
-            <p className="mt-1 text-sm text-white/85">
-              Von Ihnen abgelegte Fälle aus beiden Provisionslisten — ohne Einfluss auf Provision oder Auszahlung.
-            </p>
-          </header>
-          <div className="p-4 sm:p-6">
-            <StatuslisteTable
-              variant="archiv"
-              rows={archivedRows}
-              emptyHint="Keine archivierten Einträge."
-              theadClass="bg-[#e8f2f6] text-[#0F4F68]"
-            />
-          </div>
-        </section>
+        {prefs.showArchivOnDashboard ? (
+          <section
+            id="partner-statusliste-archiv"
+            className="scroll-mt-28 overflow-hidden rounded-xl border border-[#0F4F68]/45 bg-white shadow-[0_8px_30px_-12px_rgba(15,79,104,0.25)] ring-1 ring-[#0F4F68]/15"
+            aria-labelledby="partner-statusliste-archiv-heading"
+          >
+            <header className="border-b border-[#0c3d52] bg-[#0F4F68] px-4 py-4 sm:px-6 sm:py-5">
+              <h2 id="partner-statusliste-archiv-heading" className="text-lg font-semibold text-white sm:text-xl">
+                Statusliste Archiv
+              </h2>
+              <p className="mt-1 text-sm text-white/85">
+                Von Ihnen abgelegte Fälle aus beiden Provisionslisten — ohne Einfluss auf Provision oder Auszahlung. Vollständige
+                Übersicht auch unter{" "}
+                <Link href="/partner/einstellungen#partner-archiv-section" className="font-semibold underline">
+                  Einstellungen
+                </Link>
+                .
+              </p>
+            </header>
+            <div className="p-4 sm:p-6">
+              <PartnerStatuslisteTable
+                variant="archiv"
+                rows={archivedRows}
+                emptyHint="Keine archivierten Einträge."
+                theadClass="bg-[#e8f2f6] text-[#0F4F68]"
+                columns={prefs.columns}
+              />
+            </div>
+          </section>
+        ) : null}
       </div>
 
       <PartnerTipModal open={tipOpen} onClose={closeTipModal} allowedSlugs={allowedSlugs} />
-    </div>
-  );
-}
-
-type StatuslisteVariant = "monatlich" | "einmal" | "archiv";
-
-type StatuslisteRow = {
-  id: string;
-  tipId: string;
-  isArchived: boolean;
-  typ: string;
-  typeClass: string;
-  typCellClass: string;
-  vorname: string;
-  nachname: string;
-  firma: string;
-  datum: string;
-  pill: { label: string; className: string };
-  adminNote: string;
-  betrag: string;
-};
-
-function StatuslisteTable({
-  variant,
-  rows,
-  emptyHint,
-  theadClass,
-}: {
-  variant: StatuslisteVariant;
-  rows: StatuslisteRow[];
-  emptyHint: string;
-  theadClass: string;
-}) {
-  const showFirma = variant !== "einmal";
-  const colCount = showFirma ? 9 : 8;
-
-  return (
-    <div className="overflow-x-auto rounded-lg border border-neutral-200/90">
-      <table className="min-w-[64rem] w-full text-left text-sm">
-        <thead>
-          <tr className={`border-b border-neutral-200 text-xs font-semibold uppercase ${theadClass}`}>
-            <th className="whitespace-nowrap px-3 py-3 sm:px-4">Vorname</th>
-            <th className="whitespace-nowrap px-3 py-3 sm:px-4">Nachname</th>
-            {showFirma ? <th className="whitespace-nowrap px-3 py-3 sm:px-4">Firma</th> : null}
-            <th className="whitespace-nowrap px-3 py-3 sm:px-4">Datum</th>
-            <th className="whitespace-nowrap px-3 py-3 sm:px-4">Status</th>
-            <th className="whitespace-nowrap px-3 py-3 sm:px-4">Betrag</th>
-            <th className="min-w-[8rem] px-3 py-3 sm:px-4">Notiz</th>
-            <th className="whitespace-nowrap px-3 py-3 sm:px-4">Mein Archiv</th>
-            <th className="whitespace-nowrap px-3 py-3 sm:px-4">Typ</th>
-          </tr>
-        </thead>
-        <tbody className="divide-y divide-neutral-100">
-          {rows.length === 0 ? (
-            <tr>
-              <td colSpan={colCount} className="px-4 py-12 text-center text-neutral-600">
-                {emptyHint}
-              </td>
-            </tr>
-          ) : (
-            rows.map((r) => (
-              <tr key={r.id} className="bg-white hover:bg-neutral-50/80">
-                <td className="whitespace-nowrap px-3 py-3 text-neutral-900 sm:px-4">{r.vorname}</td>
-                <td className="whitespace-nowrap px-3 py-3 text-neutral-900 sm:px-4">{r.nachname}</td>
-                {showFirma ? (
-                  <td className="max-w-[12rem] truncate px-3 py-3 text-neutral-800 sm:max-w-[14rem] sm:px-4">
-                    {r.firma || "—"}
-                  </td>
-                ) : null}
-                <td className="whitespace-nowrap px-3 py-3 text-neutral-800 sm:px-4">{r.datum}</td>
-                <td className="px-3 py-3 sm:px-4">
-                  <span className={`inline-flex rounded px-2.5 py-0.5 text-xs font-medium ${r.pill.className}`}>
-                    {r.pill.label}
-                  </span>
-                </td>
-                <td className="whitespace-nowrap px-3 py-3 tabular-nums text-neutral-900 sm:px-4">{r.betrag}</td>
-                <td className="max-w-[14rem] px-3 py-3 align-top text-neutral-800 sm:px-4">
-                  <PartnerNoteDetails tipId={r.tipId} note={r.adminNote} />
-                </td>
-                <td className="px-3 py-3 align-top sm:px-4">
-                  <PartnerOwnArchiveTipButton tipId={r.tipId} isArchived={r.isArchived} />
-                </td>
-                <td className={`px-3 py-3 sm:px-4 ${r.typCellClass}`}>
-                  <span className={`inline-flex rounded-full border px-2.5 py-1 text-xs font-semibold ${r.typeClass}`}>
-                    {r.typ}
-                  </span>
-                </td>
-              </tr>
-            ))
-          )}
-        </tbody>
-      </table>
     </div>
   );
 }

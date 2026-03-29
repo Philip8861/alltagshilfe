@@ -6,6 +6,7 @@ import { fetchPartnerTipsForDashboard } from "@/lib/partner/fetch-partner-tips-f
 import { partnerProvisionSumsFromTips } from "@/lib/partner/partner-provision-sums";
 import { partnerPortalWelcomeLine } from "@/lib/partner/partner-portal-greeting";
 import { nextPayoutDateInfo } from "@/lib/partner/partner-payout-date";
+import { normalizePortalPreferences, parsePortalPreferences } from "@/lib/partner/portal-preferences";
 import type { PartnerDashboardTipSerial } from "@/lib/partner/types";
 
 export const metadata: Metadata = {
@@ -31,6 +32,7 @@ export default async function PartnerDashboardPage({ searchParams }: { searchPar
   const partnerCode = profile.partner_referral_code?.trim() || null;
   const responsibilityAreaSlugs = profile.responsibility_areas ?? [];
   const { provisionMonatlichEur, provisionEinmalEur } = partnerProvisionSumsFromTips(tips);
+  const portalPreferences = normalizePortalPreferences(parsePortalPreferences(profile.portal_preferences));
 
   return (
     <PartnerDashboardClient
@@ -42,6 +44,7 @@ export default async function PartnerDashboardPage({ searchParams }: { searchPar
       initialTipModalOpen={tip === "1"}
       provisionMonatlichEur={provisionMonatlichEur}
       provisionEinmalEur={provisionEinmalEur}
+      portalPreferences={portalPreferences}
     />
   );
 }
