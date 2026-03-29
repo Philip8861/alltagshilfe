@@ -13,16 +13,27 @@ type Props = {
   tipId: string;
   status: PartnerTipAdminStatus;
   adminVisibleNote: string | null;
+  serviceSlug: string;
+  paidAmountEur: number | null;
 };
 
-export function TipStatusEditor({ tipId, status, adminVisibleNote }: Props) {
+function formatPayoutInputHint(eur: number | null): string {
+  if (eur == null || !Number.isFinite(eur)) return "";
+  return String(eur).includes(".") ? String(eur).replace(".", ",") : String(eur);
+}
+
+export function TipStatusEditor({ tipId, status, adminVisibleNote, serviceSlug, paidAmountEur }: Props) {
   const router = useRouter();
   const [selectedStatus, setSelectedStatus] = useState<PartnerTipAdminStatus>(status);
   const [note, setNote] = useState(adminVisibleNote ?? "");
   const [noteOpen, setNoteOpen] = useState(Boolean((adminVisibleNote ?? "").trim()));
+  const [payoutInput, setPayoutInput] = useState(() => formatPayoutInputHint(paidAmountEur));
   const wasPending = useRef(false);
 
   const [state, formAction, pending] = useActionState(updatePartnerTipStatusAction, initial);
+
+  const isBetrieblich = serviceSlug === "betriebliche_pflegeberatung";
+  const showPayoutField = selectedStatus === "bezahlt" && isBetrieblich;
 
   useEffect(() => {
     setSelectedStatus(status);
@@ -35,14 +46,19 @@ export function TipStatusEditor({ tipId, status, adminVisibleNote }: Props) {
   }, [adminVisibleNote]);
 
   useEffect(() => {
+    setPayoutInput(formatPayoutInputHint(paidAmountEur));
+  }, [paidAmountEur]);
+
+  useEffect(() => {
     if (wasPending.current && !pending) {
       if (!state.ok && state.message) {
         setSelectedStatus(status);
         setNote(adminVisibleNote ?? "");
+        setPayoutInput(formatPayoutInputHint(paidAmountEur));
       }
     }
     wasPending.current = pending;
-  }, [pending, state.ok, state.message, status, adminVisibleNote]);
+  }, [pending, state.ok, state.message, status, adminVisibleNote, paidAmountEur]);
 
   useEffect(() => {
     if (state.ok) router.refresh();
@@ -73,6 +89,31 @@ export function TipStatusEditor({ tipId, status, adminVisibleNote }: Props) {
           </option>
         ))}
       </select>
+
+      {showPayoutField ? (
+        <div className="rounded-xl border border-amber-200/90 bg-amber-50/60 px-2.5 py-2">
+          <label className="text-[0.65rem] font-semibold text-amber-950" htmlFor={`tip-payout-${tipId}`}>
+            Monatliche Provision (EUR)
+          </label>
+          <p className="mt-0.5 text-[0.6rem] leading-snug text-amber-900/85">
+            Wie hoch ist die monatliche Provision für diesen bezahlten Fall?
+          </p>
+          <input
+            id={`tip-payout-${tipId}`}
+            name="payout_amount_eur"
+            type="text"
+            inputMode="decimal"
+            value={payoutInput}
+            onChange={(e) => setPayoutInput(e.target.value)}
+            disabled={pending}
+            placeholder="z. B. 128,50"
+            className="mt-1.5 w-full rounded-lg border border-amber-300/80 bg-white px-2 py-1.5 text-xs font-semibold tabular-nums text-neutral-900 focus:border-amber-600 focus:outline-none focus:ring-1 focus:ring-amber-500/30 disabled:opacity-60"
+            autoComplete="off"
+          />
+        </div>
+      ) : (
+        <input type="hidden" name="payout_amount_eur" value="" />
+      )}
 
       {noteOpen ? (
         <>
@@ -123,7 +164,7 @@ export function TipStatusEditor({ tipId, status, adminVisibleNote }: Props) {
       </button>
       {state.ok ? (
         <span className="rounded-lg bg-emerald-50 px-2 py-1.5 text-[0.65rem] font-medium text-emerald-800 ring-1 ring-emerald-200/80">
-          Gespeichert.
+          {state.message ?? "Gespeichert."}
         </span>
       ) : null}
       {!state.ok && state.message ? (

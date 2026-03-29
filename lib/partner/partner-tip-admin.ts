@@ -1,7 +1,6 @@
 import type { PartnerTipAdminStatus } from "@/lib/partner/types";
 
 const STATUS_SET = new Set<string>([
-  "neu",
   "in_bearbeitung",
   "termin_vereinbart",
   "warten_auf_rueckmeldung",
@@ -12,7 +11,6 @@ const STATUS_SET = new Set<string>([
 
 /** Admin-Dropdown / interne Bezeichnungen */
 export const PARTNER_TIP_STATUS_LABELS: Record<PartnerTipAdminStatus, string> = {
-  neu: "Neu",
   in_bearbeitung: "In Bearbeitung",
   termin_vereinbart: "Termin vereinbart",
   warten_auf_rueckmeldung: "Warten auf Rückmeldung",
@@ -23,7 +21,6 @@ export const PARTNER_TIP_STATUS_LABELS: Record<PartnerTipAdminStatus, string> = 
 
 /** Partnerportal Statusliste: was der Partner sieht */
 export const PARTNER_TIP_STATUS_PARTNER_LABELS: Record<PartnerTipAdminStatus, string> = {
-  neu: "Neu",
   in_bearbeitung: "In Bearbeitung",
   termin_vereinbart: "Termin vereinbart",
   warten_auf_rueckmeldung: "Warten auf Rückmeldung",
@@ -33,7 +30,6 @@ export const PARTNER_TIP_STATUS_PARTNER_LABELS: Record<PartnerTipAdminStatus, st
 };
 
 export const PARTNER_TIP_ADMIN_STATUSES: PartnerTipAdminStatus[] = [
-  "neu",
   "in_bearbeitung",
   "termin_vereinbart",
   "warten_auf_rueckmeldung",
@@ -42,9 +38,13 @@ export const PARTNER_TIP_ADMIN_STATUSES: PartnerTipAdminStatus[] = [
   "abgelehnt",
 ];
 
+/** Legacy „neu“ und unbekannte Werte → In Bearbeitung (neue Tipps starten dort). */
 export function normalizePartnerTipAdminStatus(v: unknown): PartnerTipAdminStatus {
-  if (typeof v === "string" && STATUS_SET.has(v)) return v as PartnerTipAdminStatus;
-  return "neu";
+  if (typeof v === "string") {
+    if (v === "neu") return "in_bearbeitung";
+    if (STATUS_SET.has(v)) return v as PartnerTipAdminStatus;
+  }
+  return "in_bearbeitung";
 }
 
 /** Null/leer aus DB / API */

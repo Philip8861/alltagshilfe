@@ -6,6 +6,7 @@ import {
   normalizeArchivedAt,
   normalizePartnerTipAdminStatus,
 } from "@/lib/partner/partner-tip-admin";
+import { normalizePaidAmountEur } from "@/lib/partner/partner-tip-payout";
 import type { PartnerProfile, PartnerTipSubmissionRow } from "@/lib/partner/types";
 import { createSupabaseServiceRoleClient } from "@/lib/supabase/service";
 
@@ -83,6 +84,7 @@ export default async function PartnerAdminPage({
           admin_status: normalizePartnerTipAdminStatus(row.admin_status),
           admin_visible_note: normalizeAdminVisibleNote(row.admin_visible_note),
           archived_at: normalizeArchivedAt(row.archived_at),
+          paid_amount_eur: normalizePaidAmountEur(row.paid_amount_eur),
         }));
       }
       orders = (ordRes.data as typeof orders | null) ?? [];

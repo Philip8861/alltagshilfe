@@ -23,7 +23,6 @@ export type PartnerProfile = {
 };
 
 export type PartnerTipAdminStatus =
-  | "neu"
   | "in_bearbeitung"
   | "termin_vereinbart"
   | "warten_auf_rueckmeldung"
@@ -41,12 +40,21 @@ export type PartnerTipSubmissionRow = {
   /** Vom Admin für den Partner sichtbare Notiz (nicht Payload). */
   admin_visible_note: string | null;
   archived_at: string | null;
+  /** Auszahlungsbetrag EUR bei Status bezahlt (Migration 010). */
+  paid_amount_eur: number | null;
 };
 
 /** Partner-Dashboard: eigene Tippgeber-Einträge ohne partner_id im Client. */
 export type PartnerDashboardTipSerial = Pick<
   PartnerTipSubmissionRow,
-  "id" | "service_slug" | "payload" | "created_at" | "admin_status" | "admin_visible_note" | "archived_at"
+  | "id"
+  | "service_slug"
+  | "payload"
+  | "created_at"
+  | "admin_status"
+  | "admin_visible_note"
+  | "archived_at"
+  | "paid_amount_eur"
 >;
 
 export type PflegeboxOrderRow = {

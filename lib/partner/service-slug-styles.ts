@@ -52,3 +52,16 @@ export function serviceRowAccentBorderClass(slug: string): string {
   const s = slug as PartnerResponsibilitySlug;
   return SERVICE_SLUG_ROW_ACCENT[s] ?? "border-l-4 border-l-neutral-300";
 }
+
+/** Hintergrund + linker Streifen für Spalte „Typ“ in Partner-Statuslisten */
+export const SERVICE_SLUG_TIP_TABLE_CELL: Record<PartnerResponsibilitySlug, string> = {
+  betriebliche_pflegeberatung: "border-l-[3px] border-l-sky-500 bg-sky-50/90",
+  pflegehilfsmittel: "border-l-[3px] border-l-cyan-500 bg-cyan-50/90",
+  hauswirtschaft_betreuung: "border-l-[3px] border-l-indigo-500 bg-indigo-50/90",
+  pflegeberatung: "border-l-[3px] border-l-fuchsia-500 bg-fuchsia-50/90",
+};
+
+export function serviceTipTableTypCellClass(slug: string): string {
+  const s = slug as PartnerResponsibilitySlug;
+  return SERVICE_SLUG_TIP_TABLE_CELL[s] ?? "border-l-[3px] border-l-neutral-400 bg-neutral-50/90";
+}

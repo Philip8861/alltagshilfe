@@ -3,6 +3,7 @@ import { unstable_noStore as noStore } from "next/cache";
 import { PartnerDashboardClient } from "@/components/partner/PartnerDashboardClient";
 import { requirePartnerLogin } from "@/lib/partner/auth";
 import { fetchPartnerTipsForDashboard } from "@/lib/partner/fetch-partner-tips-for-dashboard";
+import { partnerProvisionSumsFromTips } from "@/lib/partner/partner-provision-sums";
 import { partnerPortalWelcomeLine } from "@/lib/partner/partner-portal-greeting";
 import { nextPayoutDateInfo } from "@/lib/partner/partner-payout-date";
 import type { PartnerDashboardTipSerial } from "@/lib/partner/types";
@@ -29,6 +30,7 @@ export default async function PartnerDashboardPage({ searchParams }: { searchPar
   const welcomeLine = partnerPortalWelcomeLine(profile, email);
   const partnerCode = profile.partner_referral_code?.trim() || null;
   const responsibilityAreaSlugs = profile.responsibility_areas ?? [];
+  const { provisionMonatlichEur, provisionEinmalEur } = partnerProvisionSumsFromTips(tips);
 
   return (
     <PartnerDashboardClient
@@ -38,6 +40,8 @@ export default async function PartnerDashboardPage({ searchParams }: { searchPar
       responsibilityAreaSlugs={responsibilityAreaSlugs}
       tips={tips}
       initialTipModalOpen={tip === "1"}
+      provisionMonatlichEur={provisionMonatlichEur}
+      provisionEinmalEur={provisionEinmalEur}
     />
   );
 }

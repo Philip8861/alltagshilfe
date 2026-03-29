@@ -8,7 +8,6 @@ const responsibilitySlug = z.enum([
 ]);
 
 const partnerTipAdminStatusEnum = z.enum([
-  "neu",
   "in_bearbeitung",
   "termin_vereinbart",
   "warten_auf_rueckmeldung",
@@ -27,6 +26,11 @@ export const updatePartnerTipStatusSchema = z.object({
     const t = s.trim();
     return t.length === 0 ? null : t;
   }),
+  payout_amount_eur: z.string().optional(),
+});
+
+export const deletePartnerTipSchema = z.object({
+  tip_id: z.string().uuid(),
 });
 
 export const archivePartnerTipSchema = z.object({

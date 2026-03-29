@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { ArchiveTipButton } from "@/components/partner/admin/ArchiveTipButton";
+import { DeleteTipButton } from "@/components/partner/admin/DeleteTipButton";
 import { CreatePartnerAccountForm } from "@/components/partner/CreatePartnerAccountForm";
 import { DeletePartnerUserButton } from "@/components/partner/DeletePartnerUserButton";
 import { PartnerEditModal } from "@/components/partner/admin/PartnerEditModal";
@@ -44,7 +45,6 @@ type StatSortKey =
   | "email"
   | "profile"
   | "tipsTotal"
-  | "tipsNeu"
   | "tipsBearbeitung"
   | "tipsTermin"
   | "tipsWarten"
@@ -110,7 +110,6 @@ type PartnerStatRow = {
   profile: PartnerProfile;
   email: string;
   tipsTotal: number;
-  tipsNeu: number;
   tipsBearbeitung: number;
   tipsTermin: number;
   tipsWarten: number;
@@ -233,7 +232,7 @@ export function PartnerAdminDashboard({
     >;
     for (const t of tips) {
       if (tipsByStatus[t.admin_status] !== undefined) tipsByStatus[t.admin_status] += 1;
-      else tipsByStatus.neu += 1;
+      else tipsByStatus.in_bearbeitung += 1;
     }
     const boxTotal = orders.length;
     const boxUnassigned = orders.filter((o) => !o.partner_id).length;
@@ -255,7 +254,6 @@ export function PartnerAdminDashboard({
     }
     return profiles.map((p) => {
       const ts = tipsByPartner.get(p.id) ?? [];
-      const neu = ts.filter((x) => x.admin_status === "neu").length;
       const inB = ts.filter((x) => x.admin_status === "in_bearbeitung").length;
       const term = ts.filter((x) => x.admin_status === "termin_vereinbart").length;
       const wart = ts.filter((x) => x.admin_status === "warten_auf_rueckmeldung").length;
@@ -267,7 +265,6 @@ export function PartnerAdminDashboard({
         profile: p,
         email: authById[p.id]?.email ?? "—",
         tipsTotal: ts.length,
-        tipsNeu: neu,
         tipsBearbeitung: inB,
         tipsTermin: term,
         tipsWarten: wart,
@@ -457,10 +454,15 @@ export function PartnerAdminDashboard({
                                 tipId={t.id}
                                 status={t.admin_status}
                                 adminVisibleNote={t.admin_visible_note}
+                                serviceSlug={t.service_slug}
+                                paidAmountEur={t.paid_amount_eur}
                               />
                             </td>
                             <td className="px-3 py-3 align-top">
-                              <ArchiveTipButton tipId={t.id} isArchived={false} />
+                              <div className="flex flex-col gap-2">
+                                <ArchiveTipButton tipId={t.id} isArchived={false} />
+                                <DeleteTipButton tipId={t.id} />
+                              </div>
                             </td>
                           </tr>
                         );
@@ -570,10 +572,15 @@ export function PartnerAdminDashboard({
                                 tipId={t.id}
                                 status={t.admin_status}
                                 adminVisibleNote={t.admin_visible_note}
+                                serviceSlug={t.service_slug}
+                                paidAmountEur={t.paid_amount_eur}
                               />
                             </td>
                             <td className="px-3 py-3 align-top">
-                              <ArchiveTipButton tipId={t.id} isArchived />
+                              <div className="flex flex-col gap-2">
+                                <ArchiveTipButton tipId={t.id} isArchived />
+                                <DeleteTipButton tipId={t.id} />
+                              </div>
                             </td>
                           </tr>
                         );
@@ -771,7 +778,7 @@ export function PartnerAdminDashboard({
                 <h3 className="text-lg font-bold text-[#0F4F68]">Je Partner</h3>
                 <p className="mt-1 text-sm text-neutral-600">Tipps nach Status und Anzahl Konfigurator-Aufträge mit Partner-ID.</p>
                 <div className="mt-4 overflow-x-auto rounded-2xl border border-neutral-200/80">
-                  <table className="min-w-[1180px] w-full text-left text-sm">
+                  <table className="min-w-[1100px] w-full text-left text-sm">
                     <thead className="border-b border-[#0F4F68]/10 bg-[#F2F9FA]/60 text-xs">
                       <tr>
                         <th className="px-3 py-3">
@@ -798,14 +805,6 @@ export function PartnerAdminDashboard({
                             active={statSort.key === "tipsTotal"}
                             dir={statSort.dir}
                             onClick={() => toggleStatSort("tipsTotal")}
-                          />
-                        </th>
-                        <th className="px-3 py-3">
-                          <SortButton
-                            label="Neu"
-                            active={statSort.key === "tipsNeu"}
-                            dir={statSort.dir}
-                            onClick={() => toggleStatSort("tipsNeu")}
                           />
                         </th>
                         <th className="px-3 py-3">
@@ -891,7 +890,6 @@ export function PartnerAdminDashboard({
                             </td>
                             <td className="px-3 py-3 text-neutral-700">{p.role}</td>
                             <td className="px-3 py-3 tabular-nums font-semibold text-neutral-900">{row.tipsTotal}</td>
-                            <td className="px-3 py-3 tabular-nums text-neutral-700">{row.tipsNeu}</td>
                             <td className="px-3 py-3 tabular-nums text-neutral-700">{row.tipsBearbeitung}</td>
                             <td className="px-3 py-3 tabular-nums text-indigo-800">{row.tipsTermin}</td>
                             <td className="px-3 py-3 tabular-nums text-violet-800">{row.tipsWarten}</td>

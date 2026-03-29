@@ -4,8 +4,15 @@ import { revalidatePath } from "next/cache";
 import { getSystemAdminSession } from "@/lib/partner/system-admin-session";
 import { isSupabaseMissingColumnError } from "@/lib/partner/supabase-schema-errors";
 import { createSupabaseServiceRoleClient } from "@/lib/supabase/service";
+import { normalizePartnerTipAdminStatus } from "@/lib/partner/partner-tip-admin";
+import {
+  einmalProvisionForSlug,
+  normalizePaidAmountEur,
+  parsePayoutAmountGerman,
+} from "@/lib/partner/partner-tip-payout";
 import {
   archivePartnerTipSchema,
+  deletePartnerTipSchema,
   updatePartnerProfileAdminSchema,
   updatePartnerTipStatusSchema,
 } from "@/lib/validations/partner-admin";
@@ -21,10 +28,12 @@ export async function updatePartnerTipStatusAction(
   }
 
   const noteRaw = formData.get("admin_visible_note");
+  const payoutRaw = formData.get("payout_amount_eur");
   const parsed = updatePartnerTipStatusSchema.safeParse({
     tip_id: formData.get("tip_id"),
     admin_status: formData.get("admin_status"),
     admin_visible_note: typeof noteRaw === "string" ? noteRaw : "",
+    payout_amount_eur: typeof payoutRaw === "string" ? payoutRaw : "",
   });
   if (!parsed.success) {
     const msg = parsed.error.issues[0]?.message;
@@ -37,19 +46,70 @@ export async function updatePartnerTipStatusAction(
   }
 
   const tipId = parsed.data.tip_id;
-  const payloadFull = {
-    admin_status: parsed.data.admin_status,
+  const newStatus = parsed.data.admin_status;
+
+  const { data: cur, error: fetchErr } = await svc
+    .from("partner_tip_submissions")
+    .select("admin_status, paid_amount_eur, service_slug")
+    .eq("id", tipId)
+    .maybeSingle();
+
+  if (fetchErr || !cur) {
+    return { ok: false, message: "Tipp nicht gefunden." };
+  }
+
+  const slug = String(cur.service_slug);
+  const prevStatus = normalizePartnerTipAdminStatus(cur.admin_status);
+  const prevPaid = normalizePaidAmountEur(cur.paid_amount_eur);
+
+  let paidToSet: number | undefined;
+
+  if (newStatus === "bezahlt") {
+    if (slug === "betriebliche_pflegeberatung") {
+      const entered = parsePayoutAmountGerman(parsed.data.payout_amount_eur ?? "");
+      const needsAmount = prevStatus !== "bezahlt" || prevPaid == null;
+      if (needsAmount && entered == null) {
+        return {
+          ok: false,
+          message: "Bitte die monatliche Provision in EUR eintragen (z. B. 128,50).",
+        };
+      }
+      const amount = entered ?? prevPaid;
+      if (amount == null || amount <= 0) {
+        return { ok: false, message: "Monatliche Provision muss größer als 0 sein." };
+      }
+      paidToSet = amount;
+    } else {
+      const fixed = einmalProvisionForSlug(slug);
+      if (fixed == null) {
+        return { ok: false, message: "Für diese Leistung ist keine Einmalprovision hinterlegt." };
+      }
+      paidToSet = fixed;
+    }
+  }
+
+  const payloadFull: Record<string, unknown> = {
+    admin_status: newStatus,
     admin_visible_note: parsed.data.admin_visible_note,
   };
+  if (paidToSet !== undefined) {
+    payloadFull.paid_amount_eur = paidToSet;
+  }
 
   let { error } = await svc.from("partner_tip_submissions").update(payloadFull).eq("id", tipId);
 
   if (error && isSupabaseMissingColumnError(error)) {
-    const retry = await svc
-      .from("partner_tip_submissions")
-      .update({ admin_status: parsed.data.admin_status })
-      .eq("id", tipId);
+    const retryPayload: Record<string, unknown> = { ...payloadFull };
+    delete retryPayload.paid_amount_eur;
+    const retry = await svc.from("partner_tip_submissions").update(retryPayload).eq("id", tipId);
     error = retry.error;
+    if (!error) {
+      return {
+        ok: true,
+        message:
+          "Gespeichert. Betrag nicht in der DB: Migration 010 (paid_amount_eur) in Supabase ausführen.",
+      };
+    }
   }
 
   if (error) {
@@ -66,7 +126,7 @@ export async function updatePartnerTipStatusAction(
       message:
         error.message?.includes("check constraint") || error.message?.toLowerCase().includes("violates check")
           ? "Status von der Datenbank abgelehnt – Migration 009 prüfen."
-          : "Speichern fehlgeschlagen. Spalten admin_visible_note / admin_status und Migrationen prüfen.",
+          : "Speichern fehlgeschlagen. Spalten admin_visible_note / admin_status / paid_amount_eur und Migrationen prüfen.",
     };
   }
 
@@ -74,6 +134,36 @@ export async function updatePartnerTipStatusAction(
   revalidatePath("/partner/dashboard");
   revalidatePath("/partner/statistik");
   return { ok: true, message: "Gespeichert." };
+}
+
+export async function deletePartnerTipAction(
+  _prev: AdminWorkflowState | null,
+  formData: FormData,
+): Promise<AdminWorkflowState> {
+  if (!(await getSystemAdminSession())) {
+    return { ok: false, message: "Nicht autorisiert." };
+  }
+
+  const parsed = deletePartnerTipSchema.safeParse({ tip_id: formData.get("tip_id") });
+  if (!parsed.success) {
+    return { ok: false, message: "Ungültige Eingabe." };
+  }
+
+  const svc = createSupabaseServiceRoleClient();
+  if (!svc) {
+    return { ok: false, message: "SUPABASE_SERVICE_ROLE_KEY fehlt." };
+  }
+
+  const { error } = await svc.from("partner_tip_submissions").delete().eq("id", parsed.data.tip_id);
+
+  if (error) {
+    return { ok: false, message: "Löschen fehlgeschlagen." };
+  }
+
+  revalidatePath("/partner/admin");
+  revalidatePath("/partner/dashboard");
+  revalidatePath("/partner/statistik");
+  return { ok: true, message: "Gelöscht." };
 }
 
 export async function archivePartnerTipAction(

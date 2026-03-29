@@ -3,6 +3,7 @@ import {
   normalizeArchivedAt,
   normalizePartnerTipAdminStatus,
 } from "@/lib/partner/partner-tip-admin";
+import { normalizePaidAmountEur } from "@/lib/partner/partner-tip-payout";
 import type { PartnerDashboardTipSerial } from "@/lib/partner/types";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { createSupabaseServiceRoleClient } from "@/lib/supabase/service";
@@ -19,6 +20,7 @@ function mapRows(data: Record<string, unknown>[]): PartnerDashboardTipSerial[] {
     admin_status: normalizePartnerTipAdminStatus(row.admin_status),
     admin_visible_note: normalizeAdminVisibleNote(row.admin_visible_note),
     archived_at: normalizeArchivedAt(row.archived_at),
+    paid_amount_eur: normalizePaidAmountEur(row.paid_amount_eur),
   }));
 }
 

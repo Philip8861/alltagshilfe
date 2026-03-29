@@ -6,14 +6,15 @@ import { PartnerAnimatedEuro } from "@/components/partner/PartnerAnimatedEuro";
 import { PartnerTipModal } from "@/components/partner/PartnerTipModal";
 import { PARTNER_TIP_STATUS_PARTNER_LABELS } from "@/lib/partner/partner-tip-admin";
 import { tipTableFields } from "@/lib/partner/partner-tip-table-fields";
-import { serviceBadgeClass } from "@/lib/partner/service-slug-styles";
 import {
   PARTNER_RESPONSIBILITY_SLUGS,
   PARTNER_RESPONSIBILITY_LABELS,
   type PartnerResponsibilitySlug,
 } from "@/lib/partner/responsibility-areas";
+import { formatProvisionEur } from "@/lib/partner/partner-tip-payout";
 import { provisionBucketForServiceSlug } from "@/lib/partner/partner-tip-provision-bucket";
 import type { PartnerDashboardTipSerial, PartnerTipAdminStatus } from "@/lib/partner/types";
+import { serviceBadgeClass, serviceTipTableTypCellClass } from "@/lib/partner/service-slug-styles";
 
 type Props = {
   welcomeLine: string;
@@ -22,6 +23,8 @@ type Props = {
   responsibilityAreaSlugs: string[];
   tips: PartnerDashboardTipSerial[];
   initialTipModalOpen: boolean;
+  provisionMonatlichEur: number;
+  provisionEinmalEur: number;
 };
 
 const slugSet = new Set<string>(PARTNER_RESPONSIBILITY_SLUGS);
@@ -32,8 +35,6 @@ const iconWrap =
 function statusPill(admin: PartnerTipAdminStatus): { label: string; className: string } {
   const label = PARTNER_TIP_STATUS_PARTNER_LABELS[admin] ?? String(admin);
   switch (admin) {
-    case "neu":
-      return { label, className: "bg-sky-600 text-white" };
     case "in_bearbeitung":
       return { label, className: "bg-amber-400 text-amber-950" };
     case "termin_vereinbart":
@@ -58,6 +59,8 @@ export function PartnerDashboardClient({
   responsibilityAreaSlugs,
   tips,
   initialTipModalOpen,
+  provisionMonatlichEur,
+  provisionEinmalEur,
 }: Props) {
   const router = useRouter();
   const pathname = usePathname();
@@ -96,16 +99,21 @@ export function PartnerDashboardClient({
       });
       const pill = statusPill(t.admin_status);
       const adminNote = t.admin_visible_note?.trim() ?? "";
+      const paid = t.paid_amount_eur;
+      const showPaid = t.admin_status === "bezahlt" && paid != null && Number.isFinite(Number(paid));
+      const betrag = showPaid ? formatProvisionEur(Number(paid)) : "—";
       return {
         id: t.id,
         typ,
         typeClass: serviceBadgeClass(t.service_slug),
+        typCellClass: serviceTipTableTypCellClass(t.service_slug),
         vorname: f.vorname,
         nachname: f.nachname,
         firma: f.firma,
         datum,
         pill,
         adminNote,
+        betrag,
       };
     });
   }, []);
@@ -128,7 +136,8 @@ export function PartnerDashboardClient({
           r.firma.toLowerCase().includes(q) ||
           r.datum.includes(q) ||
           r.pill.label.toLowerCase().includes(q) ||
-          note.includes(q)
+          note.includes(q) ||
+          r.betrag.toLowerCase().includes(q)
         );
       });
     },
@@ -216,9 +225,13 @@ export function PartnerDashboardClient({
             Monatliche Tippgeberprovision
           </p>
           <p className="mt-1 text-2xl font-semibold text-[#0F4F68] sm:text-3xl">
-            <PartnerAnimatedEuro value={128.5} durationMs={1600} />
+            <PartnerAnimatedEuro value={provisionMonatlichEur} durationMs={1600} />
           </p>
-          <p className="text-xs text-neutral-600">Auszahlung in Bearbeitung</p>
+          <p className="text-xs text-neutral-600">
+            {provisionMonatlichEur > 0
+              ? "Summe bezahlter Monatsprovisionen (betriebliche Pflegeberatung)"
+              : "Noch keine Monatsprovision ausgezahlt"}
+          </p>
         </div>
 
         <div className={`${cardBase} partner-dash-delay-3 relative z-[1]`}>
@@ -232,9 +245,13 @@ export function PartnerDashboardClient({
             <div className="min-w-0">
               <p className="text-[0.65rem] font-semibold uppercase text-[#0F4F68]">Einmalprovision</p>
               <p className="mt-1 text-2xl font-semibold text-[#0F4F68] sm:text-3xl">
-                <PartnerAnimatedEuro value={420} durationMs={1750} />
+                <PartnerAnimatedEuro value={provisionEinmalEur} durationMs={1750} />
               </p>
-              <p className="mt-0.5 text-xs text-neutral-600">Zahlung bereit</p>
+              <p className="mt-0.5 text-xs text-neutral-600">
+                {provisionEinmalEur > 0
+                  ? "Summe bezahlter Einmalprovisionen"
+                  : "Noch keine Einmalprovision ausgezahlt"}
+              </p>
             </div>
           </div>
         </div>
@@ -300,7 +317,12 @@ export function PartnerDashboardClient({
             </p>
           </header>
           <div className="p-4 sm:p-6">
-            <StatuslisteTable rows={filteredMonatlich} emptyHint={`Keine Einträge${search.trim() ? " für diese Suche." : "."}`} theadClass="bg-amber-50 text-amber-950" />
+            <StatuslisteTable
+              variant="monatlich"
+              rows={filteredMonatlich}
+              emptyHint={`Keine Einträge${search.trim() ? " für diese Suche." : "."}`}
+              theadClass="bg-amber-50 text-amber-950"
+            />
           </div>
         </section>
 
@@ -320,7 +342,12 @@ export function PartnerDashboardClient({
             </p>
           </header>
           <div className="p-4 sm:p-6">
-            <StatuslisteTable rows={filteredEinmal} emptyHint={`Keine Einträge${search.trim() ? " für diese Suche." : "."}`} theadClass="bg-emerald-50 text-emerald-900" />
+            <StatuslisteTable
+              variant="einmal"
+              rows={filteredEinmal}
+              emptyHint={`Keine Einträge${search.trim() ? " für diese Suche." : "."}`}
+              theadClass="bg-emerald-50 text-emerald-900"
+            />
           </div>
         </section>
 
@@ -338,7 +365,12 @@ export function PartnerDashboardClient({
             </p>
           </header>
           <div className="p-4 sm:p-6">
-            <StatuslisteTable rows={filteredArchived} emptyHint={`Keine archivierten Einträge${search.trim() ? " für diese Suche." : "."}`} theadClass="bg-[#e8f2f6] text-[#0F4F68]" />
+            <StatuslisteTable
+              variant="archiv"
+              rows={filteredArchived}
+              emptyHint={`Keine archivierten Einträge${search.trim() ? " für diese Suche." : "."}`}
+              theadClass="bg-[#e8f2f6] text-[#0F4F68]"
+            />
           </div>
         </section>
       </div>
@@ -348,27 +380,36 @@ export function PartnerDashboardClient({
   );
 }
 
+type StatuslisteVariant = "monatlich" | "einmal" | "archiv";
+
 type StatuslisteRow = {
   id: string;
   typ: string;
   typeClass: string;
+  typCellClass: string;
   vorname: string;
   nachname: string;
   firma: string;
   datum: string;
   pill: { label: string; className: string };
   adminNote: string;
+  betrag: string;
 };
 
 function StatuslisteTable({
+  variant,
   rows,
   emptyHint,
   theadClass,
 }: {
+  variant: StatuslisteVariant;
   rows: StatuslisteRow[];
   emptyHint: string;
   theadClass: string;
 }) {
+  const showFirma = variant !== "einmal";
+  const colCount = showFirma ? 8 : 7;
+
   return (
     <div className="overflow-x-auto rounded-lg border border-neutral-200/90">
       <table className="min-w-[64rem] w-full text-left text-sm">
@@ -376,9 +417,10 @@ function StatuslisteTable({
           <tr className={`border-b border-neutral-200 text-xs font-semibold uppercase ${theadClass}`}>
             <th className="whitespace-nowrap px-3 py-3 sm:px-4">Vorname</th>
             <th className="whitespace-nowrap px-3 py-3 sm:px-4">Nachname</th>
-            <th className="whitespace-nowrap px-3 py-3 sm:px-4">Firma</th>
+            {showFirma ? <th className="whitespace-nowrap px-3 py-3 sm:px-4">Firma</th> : null}
             <th className="whitespace-nowrap px-3 py-3 sm:px-4">Datum</th>
             <th className="whitespace-nowrap px-3 py-3 sm:px-4">Status</th>
+            <th className="whitespace-nowrap px-3 py-3 sm:px-4">Betrag</th>
             <th className="min-w-[8rem] px-3 py-3 sm:px-4">Notiz</th>
             <th className="whitespace-nowrap px-3 py-3 sm:px-4">Typ</th>
           </tr>
@@ -386,7 +428,7 @@ function StatuslisteTable({
         <tbody className="divide-y divide-neutral-100">
           {rows.length === 0 ? (
             <tr>
-              <td colSpan={7} className="px-4 py-12 text-center text-neutral-600">
+              <td colSpan={colCount} className="px-4 py-12 text-center text-neutral-600">
                 {emptyHint}
               </td>
             </tr>
@@ -395,15 +437,18 @@ function StatuslisteTable({
               <tr key={r.id} className="bg-white hover:bg-neutral-50/80">
                 <td className="whitespace-nowrap px-3 py-3 text-neutral-900 sm:px-4">{r.vorname}</td>
                 <td className="whitespace-nowrap px-3 py-3 text-neutral-900 sm:px-4">{r.nachname}</td>
-                <td className="max-w-[12rem] truncate px-3 py-3 text-neutral-800 sm:max-w-[14rem] sm:px-4">
-                  {r.firma}
-                </td>
+                {showFirma ? (
+                  <td className="max-w-[12rem] truncate px-3 py-3 text-neutral-800 sm:max-w-[14rem] sm:px-4">
+                    {r.firma || "—"}
+                  </td>
+                ) : null}
                 <td className="whitespace-nowrap px-3 py-3 text-neutral-800 sm:px-4">{r.datum}</td>
                 <td className="px-3 py-3 sm:px-4">
                   <span className={`inline-flex rounded px-2.5 py-0.5 text-xs font-medium ${r.pill.className}`}>
                     {r.pill.label}
                   </span>
                 </td>
+                <td className="whitespace-nowrap px-3 py-3 tabular-nums text-neutral-900 sm:px-4">{r.betrag}</td>
                 <td className="max-w-[14rem] px-3 py-3 align-top text-neutral-800 sm:px-4">
                   {r.adminNote ? (
                     <details className="text-sm">
@@ -427,7 +472,7 @@ function StatuslisteTable({
                     <span className="text-neutral-300">—</span>
                   )}
                 </td>
-                <td className="whitespace-nowrap px-3 py-3 sm:px-4">
+                <td className={`px-3 py-3 sm:px-4 ${r.typCellClass}`}>
                   <span className={`inline-flex rounded-full border px-2.5 py-1 text-xs font-semibold ${r.typeClass}`}>
                     {r.typ}
                   </span>
