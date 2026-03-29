@@ -291,7 +291,7 @@ export function PartnerDashboardClient({
               <p className="mt-1 text-sm text-white/85">
                 Von Ihnen abgelegte Fälle aus beiden Provisionslisten — ohne Einfluss auf Provision oder Auszahlung. Vollständige
                 Übersicht auch unter{" "}
-                <Link href="/partner/einstellungen#partner-archiv-section" className="font-semibold underline">
+                <Link href="/partner/einstellungen/statuslisten#partner-archiv-section" className="font-semibold underline">
                   Einstellungen
                 </Link>
                 .

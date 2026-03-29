@@ -67,5 +67,6 @@ export async function savePartnerPortalPreferencesAction(
 
   revalidatePath("/partner/dashboard");
   revalidatePath("/partner/einstellungen");
+  revalidatePath("/partner/einstellungen/statuslisten");
   return { ok: true, message: "Anzeige-Einstellungen gespeichert." };
 }

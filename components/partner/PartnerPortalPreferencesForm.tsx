@@ -91,7 +91,7 @@ export function PartnerPortalPreferencesForm({ initial }: Props) {
         </label>
         <p className="text-xs text-neutral-500">
           Sie können beide Listen ausblenden; die Übersicht zeigt dann nur noch die Kacheln. Ihr Archiv bleibt unter
-          Einstellungen erreichbar.
+          Einstellungen → Statuslisten einstellen erreichbar.
         </p>
       </fieldset>
 
@@ -107,7 +107,7 @@ export function PartnerPortalPreferencesForm({ initial }: Props) {
           <span>
             <span className="font-semibold text-neutral-900">„Mein Archiv“ auch auf der Übersicht anzeigen</span>
             <span className="mt-0.5 block text-xs text-neutral-600">
-              Ausgeblendete Einträge finden Sie zusätzlich immer unterhalb auf dieser Einstellungsseite.
+              Ausgeblendete Einträge finden Sie zusätzlich weiter unten auf derselben Seite („Mein Archiv“).
             </span>
           </span>
         </label>

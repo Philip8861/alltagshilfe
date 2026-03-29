@@ -10,7 +10,7 @@ export default function PartnerVertraegePage() {
     <div className="space-y-6">
       <nav className="partner-dash-animate text-sm text-neutral-600">
         <Link href="/partner/einstellungen" className="font-semibold text-[#0F4F68] hover:underline">
-          ← Einstellungen
+          ← Zurück zu Einstellungen
         </Link>
       </nav>
       <div className="partner-dash-animate partner-dash-delay-1">

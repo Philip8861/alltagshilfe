@@ -63,6 +63,15 @@ export function PartnerPortalShell({ children }: Props) {
             </svg>
           </Link>
           <Link
+            href="/partner/einstellungen"
+            className={iconButtonClass(settingsActive)}
+            aria-current={settingsActive ? "page" : undefined}
+            title="Einstellungen"
+          >
+            <span className="sr-only">Einstellungen</span>
+            <SettingsGearIcon />
+          </Link>
+          <Link
             href="/partner/statistik"
             className={iconButtonClass(statActive)}
             aria-current={statActive ? "page" : undefined}
@@ -72,45 +81,6 @@ export function PartnerPortalShell({ children }: Props) {
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
               <path d="M4 19V5M10 19V9M16 19v-6M22 19V11" strokeLinecap="round" />
             </svg>
-          </Link>
-          <Link
-            href="/partner/dashboard?tip=1"
-            className={iconButtonClass(false)}
-            title="Tipp geben"
-          >
-            <span className="sr-only">Tipp geben</span>
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
-              <path d="M12 5v14M5 12h14" strokeLinecap="round" />
-            </svg>
-          </Link>
-          <Link
-            href="/partner/dashboard#partner-statuslisten"
-            className={iconButtonClass(false)}
-            title="Zu den Statuslisten"
-          >
-            <span className="sr-only">Statuslisten</span>
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
-              <path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01" strokeLinecap="round" />
-            </svg>
-          </Link>
-          <Link
-            href="/partner/einstellungen#partner-archiv-section"
-            className={iconButtonClass(false)}
-            title="Mein Archiv"
-          >
-            <span className="sr-only">Mein Archiv</span>
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
-              <path d="M21 8v13H3V8M1 3h22v5H1V3zM10 12h4" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-          </Link>
-          <Link
-            href="/partner/einstellungen"
-            className={iconButtonClass(settingsActive)}
-            aria-current={settingsActive ? "page" : undefined}
-            title="Einstellungen"
-          >
-            <span className="sr-only">Einstellungen</span>
-            <SettingsGearIcon />
           </Link>
           <PartnerLogoutButton variant="sidebar" />
         </nav>
