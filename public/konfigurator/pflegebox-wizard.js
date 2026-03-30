@@ -783,12 +783,18 @@
     config = null;
   }
 
+  /** Schließen-Button (X): immer ganzen Vorgang beenden – mit Rückfrage. */
+  function requestCloseWizard() {
+    const ok = window.confirm("Möchten Sie den Vorgang wirklich abbrechen?");
+    if (!ok) return;
+    close();
+    window.dispatchEvent(new CustomEvent("pflegebox-wizard-cancel"));
+  }
+
   function wireNav() {
     $("pflege-wizard-next")?.addEventListener("click", () => void goNext());
     $("pflege-wizard-back")?.addEventListener("click", goBack);
-    $("pflege-wizard-close")?.addEventListener("click", () => {
-      goBack();
-    });
+    $("pflege-wizard-close")?.addEventListener("click", requestCloseWizard);
   }
 
   document.addEventListener("DOMContentLoaded", wireNav);
