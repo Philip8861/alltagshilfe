@@ -412,9 +412,9 @@ export function ReadabilityZoomControls() {
             setShowUndo(false);
           }}
           aria-label={uiLang === "en" ? "Show readability widget again" : "Lesbarkeits-Widget wieder einblenden"}
-          className="flex h-9 w-9 items-center justify-center rounded-lg border border-white/35 bg-white/10 text-white shadow-sm transition hover:bg-white/20 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#0F4F68]"
+          className="flex h-8 w-8 items-center justify-center rounded-md border border-white/35 bg-white/10 text-white shadow-sm transition hover:bg-white/20 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#0F4F68]"
         >
-          <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+          <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
             <path d="M21 21l-4.35-4.35" />
             <circle cx="11" cy="11" r="7" />
           </svg>
@@ -440,7 +440,7 @@ export function ReadabilityZoomControls() {
       )
     ) : (
       launcherInHeader ? (
-        <div className="flex items-center gap-1.5">
+        <div className="flex items-center gap-1">
           <button
             type="button"
             onClick={() => setOpen((v) => !v)}
@@ -451,13 +451,13 @@ export function ReadabilityZoomControls() {
                 ? `Open readability settings. Current font size: ${zoomLevel}%`
                 : `Lesbarkeit Einstellungen öffnen. Aktuelle Schriftgröße: ${zoomLevel}%`
             }
-            className="flex min-h-[44px] min-w-[44px] flex-col items-center justify-center gap-0.5 rounded-xl border border-white/35 bg-white/10 px-2.5 py-1 shadow-sm transition hover:bg-white/20 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#0F4F68]"
+            className="flex min-h-[36px] min-w-[36px] flex-col items-center justify-center gap-0 rounded-lg border border-white/35 bg-white/10 px-1.5 py-0.5 shadow-sm transition hover:bg-white/20 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#0F4F68]"
           >
-            <svg className="h-6 w-6 shrink-0 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.75" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+            <svg className="h-4 w-4 shrink-0 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
               <path d="M21 21l-4.35-4.35" />
               <circle cx="11" cy="11" r="7" />
             </svg>
-            <span className="text-[13px] font-extrabold tracking-wide text-white">{zoomLevel}%</span>
+            <span className="text-[10px] font-extrabold leading-tight tracking-wide text-white">{zoomLevel}%</span>
           </button>
           <button
             type="button"
@@ -467,9 +467,9 @@ export function ReadabilityZoomControls() {
               setOpen(false);
             }}
             aria-label={uiLang === "en" ? "Close readability widget" : "Lesbarkeits-Widget schließen"}
-            className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-white/40 bg-white/15 text-white shadow-sm transition hover:bg-white/25 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#0F4F68]"
+            className="inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-white/40 bg-white/15 text-white shadow-sm transition hover:bg-white/25 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#0F4F68]"
           >
-            <span aria-hidden className="text-lg leading-none font-extrabold">
+            <span aria-hidden className="text-sm leading-none font-extrabold">
               ×
             </span>
           </button>
