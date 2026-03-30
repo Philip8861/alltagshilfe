@@ -278,15 +278,17 @@
       class="pflege-wizard-modal"
       role="dialog"
       aria-modal="true"
-      aria-labelledby="pflege-wizard-title"
+      aria-labelledby="pflege-wizard-section pflege-wizard-title"
       aria-describedby="pflege-wizard-motivation"
     >
       <button type="button" class="pflege-wizard-close" id="pflege-wizard-close" aria-label="Schließen">
         ×
       </button>
-      <p class="pflege-wizard-section" id="pflege-wizard-section"></p>
-      <p class="pflege-wizard-motivation" id="pflege-wizard-motivation"></p>
-      <h2 class="pflege-wizard-title" id="pflege-wizard-title"></h2>
+      <div class="pflege-wizard-heading">
+        <p class="pflege-wizard-section" id="pflege-wizard-section"></p>
+        <h2 class="pflege-wizard-title" id="pflege-wizard-title"></h2>
+        <p class="pflege-wizard-motivation" id="pflege-wizard-motivation"></p>
+      </div>
       <div id="pflege-wizard-body" class="pflege-wizard-body"></div>
       <p id="pflege-wizard-error" class="pflege-wizard-error" role="alert" hidden></p>
       <div class="pflege-wizard-nav">
