@@ -74,6 +74,18 @@ const BUNDLED_CATALOG_ITEMS = [
     isGlove: false,
     bettschutzeinlage: false,
   },
+  {
+    id: 9107,
+    name: "maske123",
+    pieces: null,
+    quantity: null,
+    ml: null,
+    price: 5,
+    imageUrl: "images/EUMEPRO_OP-Maske_Typ_IIR.png",
+    sizes: [],
+    isGlove: false,
+    bettschutzeinlage: false,
+  },
 ];
 
 /** Partner-Referrer aus URL (?ref=PARTNER_ID oder ?partner=PARTNER_ID) – für Belohnung/Flyer */
