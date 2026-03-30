@@ -17,14 +17,14 @@
 
   /** Pflegeboxi: kündigt an, was nach „Weiter“ kommt (letzter Schritt: Absenden). */
   const BOXI_NEXT_HINTS = [
-    "Als Nächstes: Adresse und Geburtsdatum – dann sind Ihre Personendaten komplett.",
+    "Als Nächstes: Adresse und Geburtsdatum. Dann sind Ihre Personendaten komplett.",
     "Super! Gleich geht es um Ihre Krankenversicherung.",
-    "Danach nur noch der Pflegegrad – das geht schnell.",
+    "Danach nur noch der Pflegegrad, das geht schnell.",
     "Weiter geht es mit der Frage zur persönlichen Beratung.",
     "Dann dürfen Sie optional eine Anmerkung zur Bestellung schreiben.",
-    "Gleich folgen AGB und Datenschutz – wir sind schon sehr nah dran.",
-    "Als Nächstes: Partner-Code, falls Sie empfohlen wurden – oder einfach überspringen.",
-    "Zum Schluss nur noch unterschreiben – dann ist Ihre Bestellung fertig!",
+    "Gleich folgen AGB und Datenschutz. Wir sind schon sehr nah dran.",
+    "Als Nächstes: Partner-Code, falls Sie empfohlen wurden, oder einfach überspringen.",
+    "Zum Schluss nur noch unterschreiben, dann ist Ihre Bestellung fertig!",
     "Weiter so, gleich sind wir fertig! Unterschreiben Sie unten und tippen Sie auf „Bestellung absenden“.",
   ];
 
@@ -159,6 +159,21 @@
     } catch {
       kkList = [];
     }
+  }
+
+  /** Nach erfolgreichem „Weiter“: Pflegeboxi freudig hüpfen lassen. */
+  function triggerBoxiHop() {
+    const bd = $("pflegebox-wizard-backdrop");
+    const img = bd?.querySelector(".pflege-wizard-boxi-img");
+    if (!img) return;
+    img.classList.remove("pflege-wizard-boxi-hop");
+    void img.offsetWidth;
+    img.classList.add("pflege-wizard-boxi-hop");
+    function onEnd() {
+      img.classList.remove("pflege-wizard-boxi-hop");
+      img.removeEventListener("animationend", onEnd);
+    }
+    img.addEventListener("animationend", onEnd);
   }
 
   function buildKkDatalist() {
@@ -654,6 +669,7 @@
     }
     stepIndex += 1;
     render();
+    triggerBoxiHop();
   }
 
   function goBack() {

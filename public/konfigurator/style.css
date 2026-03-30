@@ -1241,19 +1241,12 @@ body.pflege-wizard-open {
   color: var(--text-main);
 }
 
-.pflege-wizard-modal::before {
-  content: "";
-  display: block;
-  height: 4px;
-  background: var(--primary);
-}
-
 /* Pflegeboxi + Sprechblase (nächster Schritt) */
 .pflege-wizard-boxi {
   display: flex;
   align-items: flex-end;
   gap: 0.65rem;
-  padding: 0.65rem 1.35rem 0.25rem;
+  padding: 0.55rem 3.35rem 0.35rem 1.35rem;
   border-bottom: 1px solid rgba(15, 79, 104, 0.08);
   background: var(--surface-muted);
 }
@@ -1264,11 +1257,22 @@ body.pflege-wizard-open {
 }
 
 .pflege-wizard-boxi-img {
-  width: 72px;
-  height: 72px;
+  width: 96px;
+  height: 96px;
   object-fit: contain;
   display: block;
   filter: drop-shadow(0 2px 8px rgba(15, 79, 104, 0.15));
+}
+
+/* Nach erfolgreichem Schritt: mehrfach hüpfen (Keyframes wie Chatbot-Pflegeboxi) */
+.pflege-wizard-boxi-img.pflege-wizard-boxi-hop {
+  animation: pflegeboxi-jump 0.7s ease-out 2;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pflege-wizard-boxi-img.pflege-wizard-boxi-hop {
+    animation: none;
+  }
 }
 
 .pflege-wizard-boxi-bubble {
@@ -1309,9 +1313,14 @@ body.pflege-wizard-open {
 }
 
 @media (max-width: 380px) {
+  .pflege-wizard-boxi {
+    padding-right: 3.1rem;
+    padding-left: 1rem;
+  }
+
   .pflege-wizard-boxi-img {
-    width: 56px;
-    height: 56px;
+    width: 72px;
+    height: 72px;
   }
 
   .pflege-wizard-boxi-bubble {
@@ -1400,9 +1409,9 @@ body.pflege-wizard-open {
 
 .pflege-wizard-close {
   position: absolute;
-  top: 0.85rem;
-  right: 0.85rem;
-  z-index: 2;
+  top: 0.5rem;
+  right: 0.5rem;
+  z-index: 5;
   width: 2.75rem;
   height: 2.75rem;
   border: 1px solid rgba(15, 79, 104, 0.12);
