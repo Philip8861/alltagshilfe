@@ -1457,6 +1457,63 @@ body.pflege-wizard-open {
   outline-offset: 2px;
 }
 
+/* Bestellung erfolgreich (Pflegeboxi groß) */
+.pflege-wizard-success-layer[hidden] {
+  display: none !important;
+}
+
+.pflege-wizard-success-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 10002;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  padding-top: max(1rem, env(safe-area-inset-top));
+  background: rgba(15, 79, 104, 0.45);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+}
+
+.pflege-wizard-success-dialog {
+  width: 100%;
+  max-width: 26rem;
+  padding: 1.5rem 1.35rem 1.35rem;
+  border-radius: 1.1rem;
+  background: var(--surface);
+  border: 1px solid rgba(15, 79, 104, 0.16);
+  box-shadow: 0 20px 50px -12px rgba(15, 79, 104, 0.35);
+  text-align: center;
+}
+
+.pflege-wizard-success-boxi {
+  width: min(260px, 62vw);
+  max-width: 100%;
+  height: auto;
+  margin: 0 auto 1rem;
+  display: block;
+  object-fit: contain;
+}
+
+.pflege-wizard-success-boxi.pflege-wizard-success-boxi--hop {
+  animation: pflegeboxi-jump 0.7s ease-out 2;
+}
+
+.pflege-wizard-success-message {
+  margin: 0 0 1.25rem;
+  font-size: 1.08rem;
+  line-height: 1.5;
+  font-weight: 800;
+  color: var(--primary);
+}
+
+.pflege-wizard-success-ok {
+  min-height: 2.75rem;
+  padding: 0.55rem 1.35rem;
+  font-weight: 700;
+}
+
 .pflege-wizard-close {
   position: absolute;
   top: 0.5rem;
@@ -1599,88 +1656,6 @@ body.pflege-wizard-open {
 
 .wiz-beihilfe-inner .wiz-radio-row input {
   accent-color: var(--primary);
-}
-
-/* „Keine Beratung“ – hervorgehobene Eingabe */
-.wiz-ber-grund-card {
-  position: relative;
-  display: flex;
-  gap: 0;
-  margin-top: 0.35rem;
-  border-radius: 1rem;
-  overflow: hidden;
-  background: var(--surface);
-  border: 1px solid rgba(15, 79, 104, 0.1);
-  box-shadow:
-    0 1px 2px rgba(15, 79, 104, 0.04),
-    0 12px 32px -16px rgba(15, 79, 104, 0.12);
-}
-
-.wiz-ber-grund-card__accent {
-  width: 5px;
-  flex-shrink: 0;
-  background: var(--primary);
-  opacity: 1;
-}
-
-.wiz-ber-grund-card__body {
-  flex: 1;
-  padding: 1rem 1.05rem 1.05rem 1rem;
-  min-width: 0;
-}
-
-.wiz-ber-grund-lead {
-  margin: 0 0 0.75rem;
-  font-size: 0.88rem;
-  line-height: 1.5;
-  color: var(--text-muted);
-}
-
-.wiz-ber-grund-label {
-  display: block;
-  font-weight: 700;
-  font-size: 0.9rem;
-  color: var(--text-main);
-  margin-bottom: 0.45rem;
-}
-
-textarea.wiz-textarea-premium {
-  display: block;
-  width: 100%;
-  min-height: 7.5rem;
-  margin: 0;
-  padding: 0.85rem 1rem;
-  font: inherit;
-  font-size: 1rem;
-  line-height: 1.55;
-  resize: vertical;
-  border-radius: 0.75rem;
-  border: 1px solid rgba(15, 79, 104, 0.14);
-  background: var(--surface);
-  color: var(--text-main);
-  transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
-}
-
-textarea.wiz-textarea-premium::placeholder {
-  color: #94a3b8;
-}
-
-textarea.wiz-textarea-premium:hover {
-  border-color: rgba(15, 79, 104, 0.22);
-}
-
-textarea.wiz-textarea-premium:focus-visible {
-  outline: none;
-  border-color: var(--primary);
-  background: #ffffff;
-  box-shadow: 0 0 0 3px rgba(15, 79, 104, 0.14);
-}
-
-.wiz-ber-grund-foot {
-  margin: 0.5rem 0 0;
-  font-size: 0.78rem;
-  color: #64748b;
-  letter-spacing: 0.01em;
 }
 
 .wiz-birth-fieldset {

@@ -309,6 +309,32 @@
         </div>
       </div>
     </div>
+
+    <div id="pflege-wizard-success-layer" class="pflege-wizard-success-layer" hidden>
+      <div
+        class="pflege-wizard-success-dialog"
+        role="alertdialog"
+        aria-modal="true"
+        aria-labelledby="pflege-wizard-success-title"
+      >
+        <img
+          id="pflege-wizard-success-boxi"
+          class="pflege-wizard-success-boxi"
+          src="images/pflegeboxi.webp"
+          onerror="this.onerror=null;this.src='images/pflegeboxi.png';"
+          width="260"
+          height="260"
+          alt="Pflegeboxi"
+          decoding="async"
+        />
+        <p class="pflege-wizard-success-message" id="pflege-wizard-success-title">
+          Hura! Deine Bestellung ist erfolgreich bei uns eingegangen und wird bald versendet.
+        </p>
+        <button type="button" class="btn-primary pflege-wizard-success-ok" id="pflege-wizard-success-ok">
+          Weiter
+        </button>
+      </div>
+    </div>
   </div>
 
   <script src="pflegebox-wizard.js"></script>

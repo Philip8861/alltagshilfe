@@ -35,6 +35,8 @@
   let config = null;
   let stepIndex = 0;
   let kkList = [];
+  /** Referenz für Event nach Schließen des Erfolgs-Overlays */
+  let pendingOrderReference = null;
 
   function pad2(n) {
     return String(n).padStart(2, "0");
@@ -125,7 +127,6 @@
     pflegegrad: 1,
     beihilfeberechtigt: false,
     personalBeratungWunsch: false,
-    keinBeratungGrund: "",
     beratungKanal: "",
     orderNote: "",
     agbAccepted: false,
@@ -211,9 +212,7 @@
       if (!data.krankenkasse.trim()) return "Bitte Krankenkasse auswählen oder eintragen.";
     }
     if (s.key === "b1") {
-      if (!data.personalBeratungWunsch) {
-        if (data.keinBeratungGrund.trim().length < 5) return "Bitte geben Sie einen kurzen Grund an.";
-      } else if (!data.beratungKanal) {
+      if (data.personalBeratungWunsch && !data.beratungKanal) {
         return "Bitte wählen Sie eine Beratungsform.";
       }
     }
@@ -279,7 +278,6 @@
     }
     if (s.key === "b1") {
       data.personalBeratungWunsch = $("wiz-ber-ja")?.checked === true;
-      data.keinBeratungGrund = $("wiz-ber-grund")?.value ?? "";
       const kanal = document.querySelector('input[name="wiz-ber-kanal"]:checked');
       data.beratungKanal = kanal?.value ?? "";
     }
@@ -424,15 +422,6 @@
             <label><input type="radio" name="wiz-ber-wunsch" id="wiz-ber-ja" value="ja" ${w ? "checked" : ""}/> Ja</label>
           </div>
         </div>
-        <div id="wiz-ber-block-nein" class="wiz-conditional wiz-ber-grund-card" ${w ? 'style="display:none"' : ""}>
-          <div class="wiz-ber-grund-card__accent" aria-hidden="true"></div>
-          <div class="wiz-ber-grund-card__body">
-            <p class="wiz-ber-grund-lead">Ihre Angabe hilft uns, Ihre Bestellung passend zu bearbeiten.</p>
-            <label for="wiz-ber-grund" class="wiz-ber-grund-label">Warum wünschen Sie keine Beratung? *</label>
-            <textarea id="wiz-ber-grund" class="wiz-textarea-premium" rows="4" maxlength="2000" spellcheck="true" placeholder="Kurz beschreiben, z. B. bereits beraten worden, bewusst ohne Beratung …">${escHtml(data.keinBeratungGrund)}</textarea>
-            <p class="wiz-ber-grund-foot">Mindestens 5 Zeichen · maximal 2.000 Zeichen</p>
-          </div>
-        </div>
         <div id="wiz-ber-block-ja" class="wiz-conditional" ${w ? "" : 'style="display:none"'}>
           <span class="wiz-label">Wie dürfen wir beraten?</span>
           <div class="wiz-radio-col">
@@ -566,15 +555,14 @@
   function wireBeratungToggles() {
     const nein = $("wiz-ber-nein");
     const ja = $("wiz-ber-ja");
-    const bn = $("wiz-ber-block-nein");
     const bj = $("wiz-ber-block-ja");
     function sync() {
       const w = ja && ja.checked;
-      if (bn) bn.style.display = w ? "none" : "block";
       if (bj) bj.style.display = w ? "block" : "none";
     }
     nein?.addEventListener("change", sync);
     ja?.addEventListener("change", sync);
+    sync();
   }
 
   function wirePartnerField() {
@@ -708,6 +696,7 @@
     }
     showError("");
 
+    let orderEndedWithSuccessScreen = false;
     const storedRef = typeof config.getPartnerRef === "function" ? config.getPartnerRef().trim() : "";
     const code = data.partnerCode.trim();
     const partnerRef = code || storedRef;
@@ -729,8 +718,6 @@
     };
     if (data.personalBeratungWunsch) {
       contact.beratungKanal = data.beratungKanal;
-    } else {
-      contact.keinBeratungGrund = data.keinBeratungGrund.trim();
     }
     const note = data.orderNote.trim();
     if (note) contact.orderNote = note;
@@ -766,16 +753,13 @@
         showError(msg);
         return;
       }
-      close();
-      window.dispatchEvent(
-        new CustomEvent("pflegebox-wizard-success", {
-          detail: { reference: j.reference || null },
-        }),
-      );
+      orderEndedWithSuccessScreen = true;
+      showWizardOrderSuccess(j.reference || null);
+      return;
     } catch {
       showError("Netzwerkfehler. Bitte prüfen Sie Ihre Verbindung und versuchen Sie es erneut.");
     } finally {
-      if (nextBtn) {
+      if (nextBtn && !orderEndedWithSuccessScreen) {
         nextBtn.disabled = false;
         nextBtn.textContent = "Bestellung absenden";
       }
@@ -798,7 +782,6 @@
       pflegegrad: 1,
       beihilfeberechtigt: false,
       personalBeratungWunsch: false,
-      keinBeratungGrund: "",
       beratungKanal: "",
       orderNote: "",
       agbAccepted: false,
@@ -809,6 +792,8 @@
     });
     const bd = $("pflegebox-wizard-backdrop");
     if (bd) bd.hidden = false;
+    hideWizardSuccessLayer();
+    pendingOrderReference = null;
     showError("");
     render();
     void loadKrankenkassen().then(() => {
@@ -816,6 +801,48 @@
     });
     document.body.classList.add("pflege-wizard-open");
     document.addEventListener("keydown", onDocKeydown);
+  }
+
+  function hideWizardSuccessLayer() {
+    const layer = $("pflege-wizard-success-layer");
+    const modal = document.querySelector("#pflegebox-wizard-backdrop .pflege-wizard-modal");
+    if (layer) layer.hidden = true;
+    if (modal) modal.removeAttribute("inert");
+    const img = $("pflege-wizard-success-boxi");
+    if (img) img.classList.remove("pflege-wizard-success-boxi--hop");
+  }
+
+  function showWizardOrderSuccess(reference) {
+    pendingOrderReference = reference ?? null;
+    const layer = $("pflege-wizard-success-layer");
+    const modal = document.querySelector("#pflegebox-wizard-backdrop .pflege-wizard-modal");
+    if (layer) layer.hidden = false;
+    if (modal) modal.setAttribute("inert", "");
+    const img = $("pflege-wizard-success-boxi");
+    if (img) {
+      img.classList.remove("pflege-wizard-success-boxi--hop");
+      void img.offsetWidth;
+      if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        img.classList.add("pflege-wizard-success-boxi--hop");
+        function onHopEnd() {
+          img.classList.remove("pflege-wizard-success-boxi--hop");
+          img.removeEventListener("animationend", onHopEnd);
+        }
+        img.addEventListener("animationend", onHopEnd);
+      }
+    }
+    requestAnimationFrame(() => $("pflege-wizard-success-ok")?.focus());
+  }
+
+  function finishWizardAfterSuccess() {
+    const ref = pendingOrderReference;
+    pendingOrderReference = null;
+    close();
+    window.dispatchEvent(
+      new CustomEvent("pflegebox-wizard-success", {
+        detail: { reference: ref },
+      }),
+    );
   }
 
   function hideCancelConfirm() {
@@ -850,6 +877,14 @@
   function onDocKeydown(e) {
     const bd = $("pflegebox-wizard-backdrop");
     if (!bd || bd.hidden) return;
+    const successLayer = $("pflege-wizard-success-layer");
+    if (successLayer && !successLayer.hidden) {
+      if (e.key === "Escape") {
+        e.preventDefault();
+        finishWizardAfterSuccess();
+      }
+      return;
+    }
     if (e.key !== "Escape") return;
     const layer = $("pflege-wizard-cancel-layer");
     if (layer && !layer.hidden) {
@@ -864,7 +899,9 @@
 
   function close() {
     document.removeEventListener("keydown", onDocKeydown);
+    hideWizardSuccessLayer();
     hideCancelConfirm();
+    pendingOrderReference = null;
     const bd = $("pflegebox-wizard-backdrop");
     if (bd) bd.hidden = true;
     document.body.classList.remove("pflege-wizard-open");
@@ -891,11 +928,20 @@
     });
   }
 
+  function wireSuccessDialog() {
+    const layer = $("pflege-wizard-success-layer");
+    $("pflege-wizard-success-ok")?.addEventListener("click", finishWizardAfterSuccess);
+    layer?.addEventListener("click", (e) => {
+      if (e.target === layer) finishWizardAfterSuccess();
+    });
+  }
+
   function wireNav() {
     $("pflege-wizard-next")?.addEventListener("click", () => void goNext());
     $("pflege-wizard-back")?.addEventListener("click", goBack);
     $("pflege-wizard-close")?.addEventListener("click", requestCloseWizard);
     wireCancelDialog();
+    wireSuccessDialog();
   }
 
   document.addEventListener("DOMContentLoaded", wireNav);
