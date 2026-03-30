@@ -43,10 +43,14 @@ export function HeaderStrip(_props: HeaderStripProps) {
       className="grid w-full grid-cols-1 items-center gap-y-2 px-4 py-2.5 text-base font-semibold text-white md:grid-cols-[1fr_auto_1fr] md:gap-x-4 md:gap-y-0"
       style={{ backgroundColor: "#0F4F68", minHeight: "3.25rem" }}
     >
-      <span className="hidden text-white/95 md:block md:justify-self-start" aria-live="polite">
-        {TAGLINE.slice(0, taglineLength)}
-        {taglineLength < TAGLINE.length && <span className="animate-pulse" aria-hidden>|</span>}
-      </span>
+      <div className="flex w-full items-center justify-center gap-3 md:justify-self-start">
+        <span className="hidden text-white/95 md:inline" aria-live="polite">
+          {TAGLINE.slice(0, taglineLength)}
+          {taglineLength < TAGLINE.length && <span className="animate-pulse" aria-hidden>|</span>}
+        </span>
+        {/* Lesbarkeits-Lupe (ReadabilityZoomControls portaliert hierher) */}
+        <div id="ahs-readability-launcher-root" className="flex shrink-0 items-center" />
+      </div>
 
       <div className="flex justify-center md:col-start-2">
         <Link

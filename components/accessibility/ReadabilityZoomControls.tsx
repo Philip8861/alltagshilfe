@@ -1,7 +1,7 @@
 "use client";
 
 import { createPortal } from "react-dom";
-import { useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState, type CSSProperties } from "react";
 import { usePathname } from "next/navigation";
 import { AHS_READABILITY_OPEN_EVENT } from "@/components/accessibility/ReadabilityLaunchLink";
 import { LanguageFlags } from "@/components/layout/LanguageFlags";
@@ -56,6 +56,7 @@ function fixedLaunchStyle(partial: Pick<CSSProperties, "right" | "bottom">): CSS
 
 export function ReadabilityZoomControls() {
   const pathname = usePathname();
+  const [launchSlot, setLaunchSlot] = useState<HTMLElement | null>(null);
   const [uiLang, setUiLang] = useState<"de" | "en">("de");
   const [mounted, setMounted] = useState(false);
   const [zoomLevel, setZoomLevel] = useState(100);
@@ -90,6 +91,11 @@ export function ReadabilityZoomControls() {
     } catch {
       // ignore session storage errors
     }
+  }, []);
+
+  useLayoutEffect(() => {
+    const el = document.getElementById("ahs-readability-launcher-root");
+    setLaunchSlot(el);
   }, []);
 
   useEffect(() => {
@@ -394,9 +400,26 @@ export function ReadabilityZoomControls() {
     return () => window.clearTimeout(t);
   }, [showUndo]);
 
-  const ui = (
-    <div ref={panelRef}>
-      {!hideLauncher && widgetHidden ? (
+  const launcherInHeader = Boolean(launchSlot);
+
+  const launcherNode =
+    hideLauncher ? null : widgetHidden ? (
+      launcherInHeader ? (
+        <button
+          type="button"
+          onClick={() => {
+            setWidgetHidden(false);
+            setShowUndo(false);
+          }}
+          aria-label={uiLang === "en" ? "Show readability widget again" : "Lesbarkeits-Widget wieder einblenden"}
+          className="flex h-9 w-9 items-center justify-center rounded-lg border border-white/35 bg-white/10 text-white shadow-sm transition hover:bg-white/20 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#0F4F68]"
+        >
+          <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+            <path d="M21 21l-4.35-4.35" />
+            <circle cx="11" cy="11" r="7" />
+          </svg>
+        </button>
+      ) : (
         <div style={buttonWrapStyle}>
           <button
             type="button"
@@ -414,7 +437,44 @@ export function ReadabilityZoomControls() {
             </svg>
           </button>
         </div>
-      ) : !hideLauncher ? (
+      )
+    ) : (
+      launcherInHeader ? (
+        <div className="flex items-center gap-1.5">
+          <button
+            type="button"
+            onClick={() => setOpen((v) => !v)}
+            aria-haspopup="menu"
+            aria-expanded={open}
+            aria-label={
+              uiLang === "en"
+                ? `Open readability settings. Current font size: ${zoomLevel}%`
+                : `Lesbarkeit Einstellungen öffnen. Aktuelle Schriftgröße: ${zoomLevel}%`
+            }
+            className="flex min-h-[44px] min-w-[44px] flex-col items-center justify-center gap-0.5 rounded-xl border border-white/35 bg-white/10 px-2.5 py-1 shadow-sm transition hover:bg-white/20 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#0F4F68]"
+          >
+            <svg className="h-6 w-6 shrink-0 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.75" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+              <path d="M21 21l-4.35-4.35" />
+              <circle cx="11" cy="11" r="7" />
+            </svg>
+            <span className="text-[13px] font-extrabold tracking-wide text-white">{zoomLevel}%</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              setWidgetHidden(true);
+              setShowUndo(true);
+              setOpen(false);
+            }}
+            aria-label={uiLang === "en" ? "Close readability widget" : "Lesbarkeits-Widget schließen"}
+            className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-white/40 bg-white/15 text-white shadow-sm transition hover:bg-white/25 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#0F4F68]"
+          >
+            <span aria-hidden className="text-lg leading-none font-extrabold">
+              ×
+            </span>
+          </button>
+        </div>
+      ) : (
         <div style={buttonWrapStyle}>
           <button
             type="button"
@@ -445,11 +505,16 @@ export function ReadabilityZoomControls() {
             aria-label={uiLang === "en" ? "Close readability widget" : "Lesbarkeits-Widget schließen"}
             className="absolute -right-2 -top-8 inline-flex h-7 w-7 items-center justify-center rounded-full bg-[#0F4F68] text-white shadow-[0_10px_20px_rgba(15,79,104,0.25)] transition hover:opacity-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68] focus-visible:ring-offset-2"
           >
-            <span aria-hidden className="text-lg leading-none font-extrabold">×</span>
+            <span aria-hidden className="text-lg leading-none font-extrabold">
+              ×
+            </span>
           </button>
         </div>
-      ) : null}
+      )
+    );
 
+  const overlayNode = (
+    <div ref={panelRef}>
       {!hideLauncher && showUndo ? (
         <div
           className="fixed right-4 w-[min(92vw,22rem)] rounded-2xl border border-[#0F4F68]/15 bg-white/95 p-4 shadow-[0_12px_30px_rgba(15,79,104,0.18)] backdrop-blur"
@@ -633,5 +698,15 @@ export function ReadabilityZoomControls() {
   if (!mounted || typeof document === "undefined") return null;
   /* Partner- und Admin-Bereich: kein Lesbarkeits-Launcher (eigenes UI). */
   if (pathname.startsWith("/partner")) return null;
-  return createPortal(ui, document.body);
+
+  return (
+    <>
+      {createPortal(overlayNode, document.body)}
+      {launcherNode
+        ? launchSlot
+          ? createPortal(launcherNode, launchSlot)
+          : createPortal(launcherNode, document.body)
+        : null}
+    </>
+  );
 }
