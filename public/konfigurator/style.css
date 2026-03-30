@@ -1205,6 +1205,7 @@ body.pflege-wizard-open {
   overflow: hidden;
 }
 
+/* Wie Startseite „Passende Hilfe finden“: leichte Petrol-Tönung, wenig Blur (Seite bleibt erkennbar) */
 .pflege-wizard-backdrop {
   position: fixed;
   inset: 0;
@@ -1214,9 +1215,9 @@ body.pflege-wizard-open {
   justify-content: center;
   padding: 1rem;
   padding-top: max(1rem, env(safe-area-inset-top));
-  background: rgba(15, 79, 104, 0.4);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  background: rgba(15, 79, 104, 0.45);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
 }
@@ -1348,9 +1349,9 @@ body.pflege-wizard-open {
   justify-content: center;
   padding: 1rem;
   padding-top: max(1rem, env(safe-area-inset-top));
-  background: rgba(15, 23, 42, 0.35);
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
+  background: rgba(15, 79, 104, 0.45);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
 }
 
 .pflege-wizard-cancel-dialog {
