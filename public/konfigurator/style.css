@@ -1232,8 +1232,9 @@ body.pflege-wizard-open {
   max-width: min(40rem, calc(100vw - 2rem));
   margin: 0.75rem auto 2rem;
   border-radius: 1.25rem;
-  /* Einheitlich wie Fußleiste (.pflege-wizard-nav): helles Grau */
-  background: var(--surface-muted);
+  --wiz-band: #f2f9fa;
+  --wiz-mid: #fafbfc;
+  background: var(--wiz-mid);
   border: 1px solid rgba(15, 79, 104, 0.14);
   box-shadow: 0 12px 40px -12px rgba(15, 79, 104, 0.25);
   padding: 0;
@@ -1245,11 +1246,11 @@ body.pflege-wizard-open {
 /* Pflegeboxi + Sprechblase (aktueller Schritt) */
 .pflege-wizard-boxi {
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   gap: 0.65rem;
   padding: 0.55rem 3.35rem 0.35rem 1.35rem;
   border-bottom: 1px solid rgba(15, 79, 104, 0.08);
-  background: var(--surface-muted);
+  background: var(--wiz-band);
 }
 
 .pflege-wizard-boxi-figure {
@@ -1292,11 +1293,13 @@ body.pflege-wizard-open {
   box-shadow: 0 2px 10px rgba(15, 79, 104, 0.1);
 }
 
+/* Schwanz mittig an der linken Kante (zeigt zur rechten Mitte von Pflegeboxi) */
 .pflege-wizard-boxi-bubble::after {
   content: "";
   position: absolute;
   left: -10px;
-  bottom: 16px;
+  top: 50%;
+  margin-top: -7px;
   border-width: 7px 10px 7px 0;
   border-style: solid;
   border-color: transparent var(--primary) transparent transparent;
@@ -1306,7 +1309,8 @@ body.pflege-wizard-open {
   content: "";
   position: absolute;
   left: -6px;
-  bottom: 17px;
+  top: 50%;
+  margin-top: -5px;
   border-width: 5px 7px 5px 0;
   border-style: solid;
   border-color: transparent #ffffff transparent transparent;
@@ -1449,7 +1453,7 @@ body.pflege-wizard-open {
 .pflege-wizard-heading {
   text-align: center;
   padding: 1.15rem 2.85rem 0.35rem 1.35rem;
-  background: var(--surface-muted);
+  background: var(--wiz-mid);
 }
 
 .pflege-wizard-section {
@@ -1481,7 +1485,7 @@ body.pflege-wizard-open {
 .pflege-wizard-body {
   min-height: 4rem;
   padding: 0.5rem 1.35rem 0.25rem;
-  background: var(--surface-muted);
+  background: var(--wiz-mid);
 }
 
 .pflege-wizard-body .wiz-field {
@@ -1789,7 +1793,7 @@ textarea.wiz-textarea-premium:focus-visible {
   margin-top: 1rem;
   padding: 1rem 1.35rem 1.35rem;
   border-top: 1px solid rgba(15, 79, 104, 0.1);
-  background: var(--surface-muted);
+  background: var(--wiz-band);
 }
 
 .pflege-wizard-nav .admin-btn {
