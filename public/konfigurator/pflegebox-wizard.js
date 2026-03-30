@@ -4,29 +4,19 @@
  */
 (function () {
   const STEPS = [
-    { key: "p1", section: "Persönliche Daten", title: "Ihre Person", motivation: "Los geht’s – nur wenige Angaben zu Ihrer Person." },
-    { key: "p2", section: "Persönliche Daten", title: "Adresse & Geburtsdatum", motivation: "Super – gleich geht’s weiter!" },
-    { key: "v1", section: "Versichertendaten", title: "Krankenversicherung", motivation: "Versichertendaten – dieser Teil ist gleich erledigt." },
-    { key: "v2", section: "Versichertendaten", title: "Pflegegrad", motivation: "Noch eine Angabe zu Ihrem Pflegegrad – dann geht es weiter." },
-    { key: "b1", section: "Beratung", title: "Persönliche Beratung", motivation: "Noch ein Schritt – Sie sind schon sehr weit." },
-    { key: "n1", section: "Bestellung", title: "Anmerkung", motivation: "Fast am Ziel – nur noch Formalien." },
-    { key: "l1", section: "Rechtliches", title: "AGB & Datenschutz", motivation: "Bitte bestätigen Sie die rechtlichen Hinweise." },
-    { key: "r1", section: "Empfehlung", title: "Partner-Code (optional)", motivation: "Wurden Sie empfohlen? Optional – Sie können überspringen." },
-    { key: "s1", section: "Unterschrift", title: "Unterschrift", motivation: "Zum Schluss: bitte unterschreiben Sie hier." },
+    { key: "p1", section: "Persönliche Daten", title: "Ihre Person", motivation: "" },
+    { key: "p2", section: "Persönliche Daten", title: "Adresse & Geburtsdatum", motivation: "" },
+    { key: "v1", section: "Versichertendaten", title: "Krankenversicherung", motivation: "" },
+    { key: "v2", section: "Versichertendaten", title: "Pflegegrad", motivation: "" },
+    { key: "b1", section: "Beratung", title: "Persönliche Beratung", motivation: "" },
+    { key: "n1", section: "Bestellung", title: "Anmerkung", motivation: "" },
+    { key: "l1", section: "Rechtliches", title: "AGB & Datenschutz", motivation: "" },
+    { key: "r1", section: "Empfehlung", title: "Partner-Code (optional)", motivation: "" },
+    { key: "s1", section: "Unterschrift", title: "Unterschrift", motivation: "" },
   ];
 
-  /** Pflegeboxi: beschreibt die gerade geöffnete Seite (nicht den nächsten Schritt). */
-  const BOXI_STEP_INTROS = [
-    "Hier noch schnell Ihre persönlichen Daten: Anrede, Vor- und Nachname.",
-    "Jetzt Ihre Adresse, PLZ, Ort und Ihr Geburtsdatum.",
-    "Hier geht es um Ihre Krankenversicherung, gesetzlich oder privat.",
-    "Auf dieser Seite wählen Sie Ihren Pflegegrad.",
-    "Hier sagen Sie, ob Sie eine persönliche Beratung wünschen und wie wir Sie erreichen dürfen.",
-    "Optional: Hier dürfen Sie eine Anmerkung zu Ihrer Bestellung schreiben.",
-    "Bitte lesen und bestätigen Sie die AGB und die Datenschutzhinweise.",
-    "Optional: Tragen Sie einen Partner-Code ein, falls Sie empfohlen wurden.",
-    "Zum Schluss unterschreiben Sie bitte im Feld, dann können wir Ihre Bestellung entgegennehmen.",
-  ];
+  /** Pflegeboxi-Sprechblasen (optional pro Schritt); leer = Blase ausgeblendet. */
+  const BOXI_STEP_INTROS = ["", "", "", "", "", "", "", "", ""];
 
   function $(id) {
     return document.getElementById(id);
@@ -308,10 +298,22 @@
 
     if (sec) sec.textContent = meta.section;
     if (title) title.textContent = meta.title;
-    if (mot) mot.textContent = meta.motivation;
+    if (mot) {
+      if (meta.motivation.trim()) {
+        mot.textContent = meta.motivation;
+        mot.hidden = false;
+      } else {
+        mot.textContent = "";
+        mot.hidden = true;
+      }
+    }
 
     const boxiBubble = q("#pflege-wizard-boxi-bubble");
-    if (boxiBubble) boxiBubble.textContent = BOXI_STEP_INTROS[stepIndex] ?? "";
+    if (boxiBubble) {
+      const intro = BOXI_STEP_INTROS[stepIndex] ?? "";
+      boxiBubble.textContent = intro;
+      boxiBubble.hidden = !intro.trim();
+    }
 
     if (backBtn) backBtn.textContent = stepIndex === 0 ? "Abbrechen" : "Zurück";
     if (nextBtn) nextBtn.textContent = meta.key === "s1" ? "Bestellung absenden" : "Weiter";
@@ -452,7 +454,10 @@
         </div>`;
     } else if (meta.key === "r1") {
       html = `
-        <p class="wiz-hint">Wurden wir von einer Person empfohlen? Optional.</p>
+        <div class="wiz-partner-prominent" role="status">
+          <p class="wiz-partner-prominent__main"><strong>Wurden wir von einer Person empfohlen?</strong></p>
+          <p class="wiz-partner-prominent__hint">Falls nein, drücken Sie einfach auf Weiter.</p>
+        </div>
         <div class="wiz-field">
           <label for="wiz-partner">Partner-Code</label>
           <input type="text" id="wiz-partner" maxlength="40" autocomplete="off" placeholder="Optional z.B. MM1234" value="${escapeAttr(data.partnerCode)}" />
@@ -460,9 +465,9 @@
         </div>`;
     } else if (meta.key === "s1") {
       html = `
-        <p class="wiz-hint">Unterschreiben Sie mit Maus, Touch oder Stift im Kasten.</p>
+        <p class="wiz-hint">Unterschreiben Sie mit Maus, Touch oder Stift im Feld.</p>
         <div class="wiz-sig-wrap">
-          <canvas id="wiz-signature" width="400" height="160" class="wiz-signature-canvas"></canvas>
+          <canvas id="wiz-signature" class="wiz-signature-canvas" role="img" aria-label="Unterschrift"></canvas>
         </div>
         <button type="button" class="admin-btn wiz-sig-clear" id="wiz-sig-clear">Unterschrift löschen</button>`;
     }
@@ -587,18 +592,26 @@
   function initSignature() {
     sigCanvas = $("wiz-signature");
     if (!sigCanvas || !sigCanvas.getContext) return;
-    sigCtx = sigCanvas.getContext("2d");
+    const W = 560;
+    const H = 224;
+    const dpr = Math.min(typeof window !== "undefined" ? window.devicePixelRatio || 1 : 1, 2.5);
+    sigCtx = sigCanvas.getContext("2d", { alpha: false });
+    sigCanvas.width = Math.round(W * dpr);
+    sigCanvas.height = Math.round(H * dpr);
     sigHadStroke = false;
-    sigCtx.fillStyle = "#fff";
-    sigCtx.fillRect(0, 0, sigCanvas.width, sigCanvas.height);
+    sigCtx.setTransform(1, 0, 0, 1, 0, 0);
+    sigCtx.scale(dpr, dpr);
+    sigCtx.fillStyle = "#ffffff";
+    sigCtx.fillRect(0, 0, W, H);
     sigCtx.strokeStyle = "#0f172a";
-    sigCtx.lineWidth = 2;
+    sigCtx.lineWidth = 2.25;
     sigCtx.lineCap = "round";
+    sigCtx.lineJoin = "round";
 
     function pos(e) {
       const r = sigCanvas.getBoundingClientRect();
-      const scaleX = sigCanvas.width / r.width;
-      const scaleY = sigCanvas.height / r.height;
+      const scaleX = W / r.width;
+      const scaleY = H / r.height;
       const clientX = e.touches ? e.touches[0].clientX : e.clientX;
       const clientY = e.touches ? e.touches[0].clientY : e.clientY;
       return { x: (clientX - r.left) * scaleX, y: (clientY - r.top) * scaleY };
@@ -633,8 +646,8 @@
     sigCanvas.addEventListener("touchend", end);
 
     $("wiz-sig-clear")?.addEventListener("click", () => {
-      sigCtx.fillStyle = "#fff";
-      sigCtx.fillRect(0, 0, sigCanvas.width, sigCanvas.height);
+      sigCtx.fillStyle = "#ffffff";
+      sigCtx.fillRect(0, 0, W, H);
       sigHadStroke = false;
     });
   }
@@ -749,6 +762,10 @@
         }
         if (res.status === 400 && j.error === "invalid_partner_code") {
           msg = "Partner konnte nicht zugeteilt werden.";
+        }
+        if (res.status === 400 && j.error === "validation") {
+          msg =
+            "Die Daten wurden nicht akzeptiert. Bitte prüfen Sie Ihre Eingaben (z. B. Versichertennummer, Krankenkasse, Beratungskanal) und versuchen Sie es erneut.";
         }
         showError(msg);
         return;

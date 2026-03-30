@@ -1584,6 +1584,14 @@ body.pflege-wizard-open {
   line-height: 1.55;
 }
 
+.pflege-wizard-motivation[hidden] {
+  display: none !important;
+}
+
+.pflege-wizard-boxi-bubble[hidden] {
+  display: none !important;
+}
+
 .pflege-wizard-body {
   min-height: 4rem;
   padding: 0.5rem 1.35rem 0.25rem;
@@ -1793,6 +1801,30 @@ body.pflege-wizard-open {
   margin: 0.35rem 0 0;
 }
 
+.wiz-partner-prominent {
+  margin: 0 0 1rem;
+  padding: 1rem 1.1rem;
+  border-radius: 0.9rem;
+  background: linear-gradient(135deg, rgba(15, 79, 104, 0.09) 0%, rgba(15, 79, 104, 0.04) 100%);
+  border: 1px solid rgba(15, 79, 104, 0.22);
+  box-shadow: 0 4px 20px rgba(15, 79, 104, 0.08);
+}
+
+.wiz-partner-prominent__main {
+  margin: 0 0 0.45rem;
+  font-size: 1.02rem;
+  line-height: 1.4;
+  color: var(--primary);
+}
+
+.wiz-partner-prominent__hint {
+  margin: 0;
+  font-size: 0.92rem;
+  font-weight: 700;
+  line-height: 1.45;
+  color: #0f172a;
+}
+
 .pflege-wizard-error {
   color: #b42318;
   font-size: 0.88rem;
@@ -1855,19 +1887,23 @@ body.pflege-wizard-open {
 }
 
 .wiz-sig-wrap {
-  border: 2px dashed rgba(15, 79, 104, 0.28);
-  border-radius: 0.85rem;
+  border: 1px solid rgba(15, 79, 104, 0.2);
+  border-radius: 0.95rem;
   overflow: hidden;
-  background: var(--surface);
+  background: #fafbfc;
   touch-action: none;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.85),
+    0 6px 28px rgba(15, 79, 104, 0.1);
 }
 
 .wiz-signature-canvas {
   display: block;
   width: 100%;
   height: auto;
-  max-height: 180px;
+  max-height: 200px;
   cursor: crosshair;
+  vertical-align: middle;
 }
 
 .wiz-sig-clear {

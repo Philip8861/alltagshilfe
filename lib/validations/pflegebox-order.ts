@@ -6,8 +6,10 @@ const cartLineSchema = z.object({
   price: z.number().finite().nonnegative().max(1000),
   selectedSize: z.string().max(20).nullable(),
   material: z.string().max(40).nullable(),
-  pieces: z.string().max(80).nullable(),
-  quantity: z.string().max(80).nullable(),
+  pieces: z
+    .preprocess((v) => (v == null || v === "" ? null : String(v)), z.string().max(80).nullable()),
+  quantity: z
+    .preprocess((v) => (v == null || v === "" ? null : String(v)), z.string().max(80).nullable()),
   ml: z.number().finite().nonnegative().max(1_000_000).nullable(),
   bettschutzeinlage: z.boolean(),
   count: z.number().int().positive().max(50),
@@ -36,7 +38,7 @@ const contactSchema = z
     beihilfeberechtigt: z.boolean(),
     /** true = persönliche Beratung gewünscht */
     personalBeratungWunsch: z.boolean(),
-    /** Pflicht wenn personalBeratungWunsch === false */
+    /** optional, historisch / Kompatibilität */
     keinBeratungGrund: z.string().trim().max(2000).optional(),
     /** Pflicht wenn personalBeratungWunsch === true */
     beratungKanal: z.enum(["telefon", "video", "vor_ort"]).optional(),
@@ -77,16 +79,7 @@ const contactSchema = z
         path: ["beihilfeberechtigt"],
       });
     }
-    if (!c.personalBeratungWunsch) {
-      const g = c.keinBeratungGrund?.trim() ?? "";
-      if (g.length < 5) {
-        ctx.addIssue({
-          code: z.ZodIssueCode.custom,
-          message: "Bitte geben Sie einen Grund an.",
-          path: ["keinBeratungGrund"],
-        });
-      }
-    } else if (!c.beratungKanal) {
+    if (c.personalBeratungWunsch && !c.beratungKanal) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
         message: "Bitte wählen Sie eine Beratungsart.",

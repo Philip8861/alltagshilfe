@@ -1007,10 +1007,10 @@ function buildCartLinesForApi() {
       id: entry.id,
       name: String(entry.name || "Artikel").slice(0, 200),
       price: typeof entry.price === "number" && !Number.isNaN(entry.price) ? entry.price : 0,
-      selectedSize: entry.selectedSize || null,
-      material: entry.material || null,
-      pieces: entry.pieces || null,
-      quantity: entry.quantity || null,
+      selectedSize: entry.selectedSize != null && entry.selectedSize !== "" ? String(entry.selectedSize).slice(0, 20) : null,
+      material: entry.material != null && entry.material !== "" ? String(entry.material).slice(0, 40) : null,
+      pieces: entry.pieces != null && entry.pieces !== "" ? String(entry.pieces).slice(0, 80) : null,
+      quantity: entry.quantity != null && entry.quantity !== "" ? String(entry.quantity).slice(0, 80) : null,
       ml: (() => {
         if (entry.ml == null || entry.ml === "") return null;
         const n = Number(entry.ml);
