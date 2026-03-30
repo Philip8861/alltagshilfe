@@ -87,18 +87,6 @@ const BUNDLED_CATALOG_ITEMS = [
     bettschutzeinlage: false,
   },
   {
-    id: 9108,
-    name: "Wiederverwendbare Bettschutzeinlage",
-    pieces: null,
-    quantity: null,
-    ml: null,
-    price: 0,
-    imageUrl: "images/Bettschutzeinlage_wiederverwendbar.webp",
-    sizes: [],
-    isGlove: false,
-    bettschutzeinlage: true,
-  },
-  {
     id: 9109,
     name: "Einmalhandschuhe",
     pieces: null,
@@ -157,6 +145,18 @@ const BUNDLED_CATALOG_ITEMS = [
     sizes: [],
     isGlove: false,
     bettschutzeinlage: false,
+  },
+  {
+    id: 9108,
+    name: "Wiederverwendbare Bettschutzeinlage",
+    pieces: null,
+    quantity: null,
+    ml: null,
+    price: 0,
+    imageUrl: "images/Bettschutzeinlage_wiederverwendbar.webp",
+    sizes: [],
+    isGlove: false,
+    bettschutzeinlage: true,
   },
 ];
 
@@ -289,7 +289,12 @@ function renderItemList() {
   if (!container) return;
   container.innerHTML = "";
 
-  ITEMS.forEach((item) => {
+  const displayItems = [
+    ...ITEMS.filter((item) => !item.bettschutzeinlage),
+    ...ITEMS.filter((item) => item.bettschutzeinlage),
+  ];
+
+  displayItems.forEach((item) => {
     const hasSizes = Array.isArray(item.sizes) && item.sizes.length > 0;
 
     const element = document.createElement("div");
