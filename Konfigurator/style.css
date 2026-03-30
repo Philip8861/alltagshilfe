@@ -6,8 +6,8 @@
   --primary-strong: #0f4f68;
   --text-main: #0f172a;
   --text-muted: #6b7280;
-  /* Einheitliche Produktkachel-Vorschau (alle Karten gleich groß) */
-  --item-thumb-size: 140px;
+  /* Produktvorschau: volle Kartenbreite, min. Höhe für einheitliche Kacheln */
+  --item-image-min-height: 108px;
 }
 
 *,
@@ -155,11 +155,6 @@ body {
   grid-column: span 2;
 }
 
-.item--double-width .item-image-frame {
-  width: var(--item-thumb-size);
-  height: var(--item-thumb-size);
-}
-
 .item {
   position: relative;
   min-width: 0;
@@ -198,16 +193,16 @@ body {
   text-align: center;
 }
 
-/* Fester Rahmen; Bild vollständig sichtbar (kein Beschnitt) */
+/* Volle Breite der Kachel; Bild komplett sichtbar (contain), kein grauer Hintergrund */
 .item-image-frame {
-  width: var(--item-thumb-size);
-  height: var(--item-thumb-size);
-  min-width: var(--item-thumb-size);
-  min-height: var(--item-thumb-size);
-  margin: 0 auto 6px;
+  width: 100%;
+  margin: 0 0 8px;
   flex-shrink: 0;
+  align-self: stretch;
+  aspect-ratio: 1;
+  min-height: var(--item-image-min-height);
   border-radius: 12px;
-  background: #eef2f6;
+  background: transparent;
   overflow: hidden;
   display: flex;
   align-items: center;
