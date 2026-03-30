@@ -6,6 +6,10 @@
   --primary-strong: #0f4f68;
   --text-main: #0f172a;
   --text-muted: #6b7280;
+  /* Dezentes Orange / Amber – wie Akzente auf der Hauptseite (Partner-Dashboard, Marker) */
+  --accent-warm: #d97706;
+  --accent-warm-soft: rgba(217, 119, 6, 0.12);
+  --accent-warm-border: rgba(217, 119, 6, 0.35);
 }
 
 *,
@@ -1214,9 +1218,9 @@ body.pflege-wizard-open {
   justify-content: center;
   padding: 1rem;
   padding-top: max(1rem, env(safe-area-inset-top));
-  background: rgba(15, 79, 104, 0.4);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  background: rgba(15, 23, 42, 0.45);
+  backdrop-filter: blur(14px) saturate(1.05);
+  -webkit-backdrop-filter: blur(14px) saturate(1.05);
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
 }
@@ -1231,13 +1235,14 @@ body.pflege-wizard-open {
   width: 100%;
   max-width: min(40rem, calc(100vw - 2rem));
   margin: 0.75rem auto 2rem;
-  border-radius: 1.5rem;
-  background: linear-gradient(180deg, var(--surface-muted) 0%, var(--surface) 18%);
-  border: 1px solid rgba(15, 79, 104, 0.14);
+  border-radius: 1.25rem;
+  background: linear-gradient(165deg, #ffffff 0%, #f8fafc 42%, #f1f5f9 100%);
+  border: 1px solid rgba(15, 79, 104, 0.1);
   box-shadow:
-    0 4px 6px -1px rgba(15, 79, 104, 0.06),
-    0 24px 56px -12px rgba(15, 79, 104, 0.28),
-    inset 0 1px 0 rgba(255, 255, 255, 0.75);
+    0 0 0 1px rgba(255, 255, 255, 0.8) inset,
+    0 4px 6px -1px rgba(15, 79, 104, 0.05),
+    0 20px 50px -12px rgba(15, 79, 104, 0.22),
+    0 40px 80px -24px rgba(15, 23, 42, 0.12);
   padding: 0;
   overflow: hidden;
   font-family: "Nunito Sans", "Baloo 2", system-ui, sans-serif;
@@ -1247,8 +1252,14 @@ body.pflege-wizard-open {
 .pflege-wizard-modal::before {
   content: "";
   display: block;
-  height: 4px;
-  background: linear-gradient(90deg, var(--primary) 0%, #0a3d52 45%, var(--primary) 100%);
+  height: 5px;
+  background: linear-gradient(
+    90deg,
+    var(--primary) 0%,
+    #0a3d52 38%,
+    rgba(217, 119, 6, 0.55) 72%,
+    var(--primary) 100%
+  );
 }
 
 .pflege-wizard-close {
@@ -1258,9 +1269,9 @@ body.pflege-wizard-open {
   z-index: 2;
   width: 2.75rem;
   height: 2.75rem;
-  border: 1px solid rgba(15, 79, 104, 0.14);
+  border: 1px solid rgba(15, 79, 104, 0.12);
   border-radius: 999px;
-  background: var(--surface);
+  background: rgba(255, 255, 255, 0.92);
   color: var(--primary);
   font-size: 1.35rem;
   line-height: 1;
@@ -1270,12 +1281,19 @@ body.pflege-wizard-open {
     border-color 0.2s ease,
     transform 0.15s ease,
     box-shadow 0.2s ease;
-  box-shadow: 0 2px 10px rgba(15, 79, 104, 0.1);
+  box-shadow: 0 2px 12px rgba(15, 79, 104, 0.08);
 }
 
 .pflege-wizard-close:hover {
-  background: rgba(15, 79, 104, 0.06);
-  border-color: rgba(15, 79, 104, 0.28);
+  background: rgba(15, 79, 104, 0.05);
+  border-color: rgba(15, 79, 104, 0.22);
+  box-shadow: 0 4px 16px rgba(15, 79, 104, 0.1);
+}
+
+.pflege-wizard-close:focus-visible {
+  outline: none;
+  border-color: var(--accent-warm-border);
+  box-shadow: 0 0 0 3px var(--accent-warm-soft);
 }
 
 .pflege-wizard-close:active {
@@ -1284,7 +1302,8 @@ body.pflege-wizard-open {
 
 .pflege-wizard-heading {
   text-align: center;
-  padding: 1.35rem 2.85rem 0.35rem 1.35rem;
+  padding: 1.5rem 2.85rem 0.5rem 1.35rem;
+  background: radial-gradient(120% 80% at 50% -20%, rgba(15, 79, 104, 0.06) 0%, transparent 55%);
 }
 
 .pflege-wizard-section {
@@ -1315,7 +1334,7 @@ body.pflege-wizard-open {
 
 .pflege-wizard-body {
   min-height: 4rem;
-  padding: 0.35rem 1.35rem 0.15rem;
+  padding: 0.5rem 1.35rem 0.25rem;
 }
 
 .pflege-wizard-body .wiz-field {
@@ -1351,7 +1370,127 @@ body.pflege-wizard-open {
 .pflege-wizard-body .wiz-field textarea:focus-visible {
   outline: none;
   border-color: var(--primary);
-  box-shadow: 0 0 0 3px rgba(15, 79, 104, 0.18);
+  box-shadow:
+    0 0 0 3px rgba(15, 79, 104, 0.16),
+    0 0 0 1px rgba(217, 119, 6, 0.15);
+}
+
+/* Beihilfe nur bei Privatversichert */
+.wiz-beihilfe-block[hidden] {
+  display: none !important;
+}
+
+.wiz-beihilfe-block {
+  margin-bottom: 1.1rem;
+}
+
+.wiz-beihilfe-inner {
+  margin-bottom: 0;
+  padding: 0.95rem 1.05rem;
+  border-radius: 0.95rem;
+  background: linear-gradient(135deg, rgba(15, 79, 104, 0.05) 0%, rgba(217, 119, 6, 0.06) 100%);
+  border: 1px solid rgba(15, 79, 104, 0.12);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.85) inset;
+}
+
+.wiz-beihilfe-inner .wiz-label {
+  margin-bottom: 0.25rem;
+  color: var(--primary);
+}
+
+.wiz-beihilfe-hint {
+  margin: 0 0 0.65rem !important;
+  font-size: 0.8rem;
+  line-height: 1.45;
+}
+
+.wiz-beihilfe-inner .wiz-radio-row input {
+  accent-color: var(--primary);
+}
+
+/* „Keine Beratung“ – hervorgehobene Eingabe */
+.wiz-ber-grund-card {
+  position: relative;
+  display: flex;
+  gap: 0;
+  margin-top: 0.35rem;
+  border-radius: 1rem;
+  overflow: hidden;
+  background: var(--surface);
+  border: 1px solid rgba(15, 79, 104, 0.1);
+  box-shadow:
+    0 1px 2px rgba(15, 79, 104, 0.04),
+    0 12px 32px -16px rgba(15, 79, 104, 0.12);
+}
+
+.wiz-ber-grund-card__accent {
+  width: 5px;
+  flex-shrink: 0;
+  background: linear-gradient(180deg, var(--accent-warm) 0%, rgba(217, 119, 6, 0.45) 50%, var(--primary) 100%);
+  opacity: 0.85;
+}
+
+.wiz-ber-grund-card__body {
+  flex: 1;
+  padding: 1rem 1.05rem 1.05rem 1rem;
+  min-width: 0;
+}
+
+.wiz-ber-grund-lead {
+  margin: 0 0 0.75rem;
+  font-size: 0.88rem;
+  line-height: 1.5;
+  color: var(--text-muted);
+}
+
+.wiz-ber-grund-label {
+  display: block;
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: var(--text-main);
+  margin-bottom: 0.45rem;
+}
+
+textarea.wiz-textarea-premium {
+  display: block;
+  width: 100%;
+  min-height: 7.5rem;
+  margin: 0;
+  padding: 0.85rem 1rem;
+  font: inherit;
+  font-size: 1rem;
+  line-height: 1.55;
+  resize: vertical;
+  border-radius: 0.75rem;
+  border: 1px solid rgba(15, 79, 104, 0.14);
+  background: linear-gradient(180deg, #fafbfc 0%, #ffffff 100%);
+  color: var(--text-main);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+textarea.wiz-textarea-premium::placeholder {
+  color: #94a3b8;
+}
+
+textarea.wiz-textarea-premium:hover {
+  border-color: rgba(15, 79, 104, 0.22);
+}
+
+textarea.wiz-textarea-premium:focus-visible {
+  outline: none;
+  border-color: var(--primary);
+  background: #ffffff;
+  box-shadow:
+    0 0 0 3px rgba(15, 79, 104, 0.14),
+    0 0 0 1px var(--accent-warm-border),
+    0 8px 24px -10px rgba(15, 79, 104, 0.15);
+}
+
+.wiz-ber-grund-foot {
+  margin: 0.5rem 0 0;
+  font-size: 0.78rem;
+  color: #64748b;
+  letter-spacing: 0.01em;
 }
 
 .wiz-birth-fieldset {
@@ -1529,12 +1668,14 @@ body.pflege-wizard-open {
   min-height: 2.75rem;
   padding: 0.55rem 1.35rem;
   font-weight: 700;
-  background: linear-gradient(180deg, #126a8a 0%, var(--primary) 100%);
-  box-shadow: 0 4px 14px rgba(15, 79, 104, 0.28);
+  background: linear-gradient(180deg, #157194 0%, var(--primary) 55%, #0a3d52 100%);
+  box-shadow:
+    0 4px 14px rgba(15, 79, 104, 0.26),
+    0 1px 0 rgba(255, 255, 255, 0.12) inset;
 }
 
 .pflege-wizard-nav .btn-primary:hover {
-  background: linear-gradient(180deg, #147fa5 0%, #0d5a78 100%);
+  background: linear-gradient(180deg, #1780a8 0%, #0d5a78 50%, #083445 100%);
   filter: brightness(1.02);
 }
 

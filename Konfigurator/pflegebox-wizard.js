@@ -7,7 +7,7 @@
     { key: "p1", section: "Persönliche Daten", title: "Ihre Person", motivation: "Los geht’s – nur wenige Angaben zu Ihrer Person." },
     { key: "p2", section: "Persönliche Daten", title: "Adresse & Geburtsdatum", motivation: "Super – gleich geht’s weiter!" },
     { key: "v1", section: "Versichertendaten", title: "Krankenversicherung", motivation: "Versichertendaten – dieser Teil ist gleich erledigt." },
-    { key: "v2", section: "Versichertendaten", title: "Pflegegrad & Beihilfe", motivation: "Fast geschafft mit den Versichertendaten!" },
+    { key: "v2", section: "Versichertendaten", title: "Pflegegrad", motivation: "Noch eine Angabe zu Ihrem Pflegegrad – dann geht es weiter." },
     { key: "b1", section: "Beratung", title: "Persönliche Beratung", motivation: "Noch ein Schritt – Sie sind schon sehr weit." },
     { key: "n1", section: "Bestellung", title: "Anmerkung", motivation: "Fast am Ziel – nur noch Formalien." },
     { key: "l1", section: "Rechtliches", title: "AGB & Datenschutz", motivation: "Bitte bestätigen Sie die rechtlichen Hinweise." },
@@ -238,10 +238,15 @@
       data.privatversichert = pv?.value === "ja";
       data.versichertennummer = $("wiz-vsnr")?.value ?? "";
       data.krankenkasse = $("wiz-kk")?.value ?? "";
+      if (data.privatversichert) {
+        const bh = document.querySelector('input[name="wiz-beihilfe"]:checked');
+        data.beihilfeberechtigt = bh?.value === "ja";
+      } else {
+        data.beihilfeberechtigt = false;
+      }
     }
     if (s.key === "v2") {
       data.pflegegrad = Number($("wiz-pg")?.value ?? "1");
-      data.beihilfeberechtigt = ($("wiz-beihilfe")?.value ?? "nein") === "ja";
     }
     if (s.key === "b1") {
       data.personalBeratungWunsch = $("wiz-ber-ja")?.checked === true;
@@ -337,12 +342,23 @@
         </fieldset>`;
     } else if (meta.key === "v1") {
       const gkvHidden = data.privatversichert ? "hidden" : "";
+      const beihHidden = data.privatversichert ? "" : "hidden";
       html = `
         <div class="wiz-field-group wiz-privat-wrap">
           <span class="wiz-label wiz-label--prominent" id="wiz-privat-legend">Privatversichert?</span>
           <div class="wiz-radio-row wiz-radio-row--emphasis" role="group" aria-labelledby="wiz-privat-legend">
             <label><input type="radio" name="wiz-privat" id="wiz-privat-nein" value="nein" ${!data.privatversichert ? "checked" : ""}/> Nein</label>
             <label><input type="radio" name="wiz-privat" id="wiz-privat-ja" value="ja" ${data.privatversichert ? "checked" : ""}/> Ja</label>
+          </div>
+        </div>
+        <div id="wiz-beihilfe-block" class="wiz-beihilfe-block" ${beihHidden}>
+          <div class="wiz-field-group wiz-beihilfe-inner">
+            <span class="wiz-label" id="wiz-beihilfe-legend">Beihilfeberechtigt?</span>
+            <p class="wiz-hint wiz-beihilfe-hint">Nur relevant, wenn Sie privat versichert sind und Anspruch auf Beihilfe haben.</p>
+            <div class="wiz-radio-row" role="group" aria-labelledby="wiz-beihilfe-legend">
+              <label><input type="radio" name="wiz-beihilfe" id="wiz-beihilfe-nein" value="nein" ${!data.beihilfeberechtigt ? "checked" : ""}/> Nein</label>
+              <label><input type="radio" name="wiz-beihilfe" id="wiz-beihilfe-ja" value="ja" ${data.beihilfeberechtigt ? "checked" : ""}/> Ja</label>
+            </div>
           </div>
         </div>
         <div id="wiz-gkv-block" class="wiz-gkv-block" ${gkvHidden}>
@@ -365,13 +381,6 @@
           <select id="wiz-pg">
             ${[1, 2, 3, 4, 5].map((n) => `<option value="${n}" ${data.pflegegrad === n ? "selected" : ""}>Pflegegrad ${n}</option>`).join("")}
           </select>
-        </div>
-        <div class="wiz-field-group">
-          <span class="wiz-label">Beihilfeberechtigt?</span>
-          <div class="wiz-radio-row">
-            <label><input type="radio" name="wiz-beihilfe" id="wiz-beihilfe-nein" value="nein" ${!data.beihilfeberechtigt ? "checked" : ""}/> Nein</label>
-            <label><input type="radio" name="wiz-beihilfe" id="wiz-beihilfe-ja" value="ja" ${data.beihilfeberechtigt ? "checked" : ""}/> Ja</label>
-          </div>
         </div>`;
     } else if (meta.key === "b1") {
       const w = data.personalBeratungWunsch;
@@ -383,9 +392,14 @@
             <label><input type="radio" name="wiz-ber-wunsch" id="wiz-ber-ja" value="ja" ${w ? "checked" : ""}/> Ja</label>
           </div>
         </div>
-        <div id="wiz-ber-block-nein" class="wiz-conditional" ${w ? 'style="display:none"' : ""}>
-          <label for="wiz-ber-grund">Warum wünschen Sie keine Beratung? *</label>
-          <textarea id="wiz-ber-grund" rows="3" maxlength="2000" placeholder="z. B. Ich habe bereits eine ausführliche Beratung erhalten">${escHtml(data.keinBeratungGrund)}</textarea>
+        <div id="wiz-ber-block-nein" class="wiz-conditional wiz-ber-grund-card" ${w ? 'style="display:none"' : ""}>
+          <div class="wiz-ber-grund-card__accent" aria-hidden="true"></div>
+          <div class="wiz-ber-grund-card__body">
+            <p class="wiz-ber-grund-lead">Ihre Angabe hilft uns, Ihre Bestellung passend zu bearbeiten.</p>
+            <label for="wiz-ber-grund" class="wiz-ber-grund-label">Warum wünschen Sie keine Beratung? *</label>
+            <textarea id="wiz-ber-grund" class="wiz-textarea-premium" rows="4" maxlength="2000" spellcheck="true" placeholder="Kurz beschreiben, z. B. bereits beraten worden, bewusst ohne Beratung …">${escHtml(data.keinBeratungGrund)}</textarea>
+            <p class="wiz-ber-grund-foot">Mindestens 5 Zeichen · maximal 2.000 Zeichen</p>
+          </div>
         </div>
         <div id="wiz-ber-block-ja" class="wiz-conditional" ${w ? "" : 'style="display:none"'}>
           <span class="wiz-label">Wie dürfen wir beraten?</span>
@@ -489,13 +503,23 @@
 
   function wirePrivatToggle() {
     const block = $("wiz-gkv-block");
+    const beihBlock = $("wiz-beihilfe-block");
     const ja = $("wiz-privat-ja");
-    if (!block || !ja) return;
+    const nein = $("wiz-privat-nein");
+    if (!ja) return;
     function sync() {
-      block.hidden = ja.checked === true;
+      const isPriv = ja.checked === true;
+      if (block) block.hidden = isPriv;
+      if (beihBlock) beihBlock.hidden = !isPriv;
+      if (!isPriv) {
+        const rNein = $("wiz-beihilfe-nein");
+        const rJa = $("wiz-beihilfe-ja");
+        if (rNein) rNein.checked = true;
+        if (rJa) rJa.checked = false;
+      }
     }
     ja.addEventListener("change", sync);
-    $("wiz-privat-nein")?.addEventListener("change", sync);
+    nein?.addEventListener("change", sync);
     sync();
   }
 
@@ -659,7 +683,7 @@
       versichertennummer: data.privatversichert ? "" : data.versichertennummer.trim().toUpperCase(),
       krankenkasse: data.privatversichert ? "Privatversichert" : data.krankenkasse.trim(),
       pflegegrad: data.pflegegrad,
-      beihilfeberechtigt: data.beihilfeberechtigt,
+      beihilfeberechtigt: data.privatversichert ? data.beihilfeberechtigt : false,
       personalBeratungWunsch: data.personalBeratungWunsch,
     };
     if (data.personalBeratungWunsch) {

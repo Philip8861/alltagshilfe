@@ -70,6 +70,13 @@ const contactSchema = z
         });
       }
     }
+    if (!c.privatversichert && c.beihilfeberechtigt) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Beihilfeberechtigung ist nur bei Privatversicherung zulässig.",
+        path: ["beihilfeberechtigt"],
+      });
+    }
     if (!c.personalBeratungWunsch) {
       const g = c.keinBeratungGrund?.trim() ?? "";
       if (g.length < 5) {

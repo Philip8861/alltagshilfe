@@ -35,11 +35,14 @@ function buildTipNotiz(
     ? "Versicherung: Privatversichert"
     : `Versicherten-Nr.: ${contact.versichertennummer}`;
   const kkRow = contact.privatversichert ? null : `KK: ${kk}`;
+  const beihilfeRow = contact.privatversichert
+    ? `Beihilfe: ${contact.beihilfeberechtigt ? "ja" : "nein"}`
+    : null;
   const tail = [
     versRow,
     kkRow,
     `Pflegegrad: ${pg}`,
-    `Beihilfe: ${contact.beihilfeberechtigt ? "ja" : "nein"}`,
+    beihilfeRow,
     ber,
     contact.orderNote ? `Anmerkung: ${contact.orderNote}` : null,
   ]
@@ -81,9 +84,15 @@ export async function POST(request: Request) {
     return NextResponse.json({ ok: false, error: "invalid_partner_code" }, { status: 400 });
   }
 
+  const contactNormalized = {
+    ...parsed.data.contact,
+    beihilfeberechtigt:
+      parsed.data.contact.privatversichert && parsed.data.contact.beihilfeberechtigt,
+  };
+
   const externalRef = `PB-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 10)}`;
 
-  const c = parsed.data.contact;
+  const c = contactNormalized;
   const summary_json = {
     version: 3,
     cartLines: parsed.data.cartLines,
@@ -131,23 +140,23 @@ export async function POST(request: Request) {
   const orderId = data?.id as string | undefined;
 
   if (partnerId && orderId) {
-    const notiz = buildTipNotiz(parsed.data.cartLines, parsed.data.totalBudgetUsed, parsed.data.contact);
+    const notiz = buildTipNotiz(parsed.data.cartLines, parsed.data.totalBudgetUsed, c);
     const tipPayload: Record<string, unknown> = {
-      vorname: parsed.data.contact.firstName,
-      nachname: parsed.data.contact.lastName,
-      telefon: parsed.data.contact.phone?.trim() || "",
-      email: parsed.data.contact.email?.trim() || "",
-      wohnort: `${parsed.data.contact.postalCode} ${parsed.data.contact.city}`.trim(),
-      strasse: parsed.data.contact.street,
-      geburtsdatum: parsed.data.contact.birthDate,
-      versichertennummer: parsed.data.contact.versichertennummer,
-      krankenkasse: parsed.data.contact.krankenkasse,
-      pflegegrad: parsed.data.contact.pflegegrad,
-      beihilfeberechtigt: parsed.data.contact.beihilfeberechtigt,
-      personal_beratung: parsed.data.contact.personalBeratungWunsch,
-      beratung_kanal: parsed.data.contact.beratungKanal ?? null,
-      kein_beratung_grund: parsed.data.contact.keinBeratungGrund ?? null,
-      bestell_anmerkung: parsed.data.contact.orderNote ?? null,
+      vorname: c.firstName,
+      nachname: c.lastName,
+      telefon: c.phone?.trim() || "",
+      email: c.email?.trim() || "",
+      wohnort: `${c.postalCode} ${c.city}`.trim(),
+      strasse: c.street,
+      geburtsdatum: c.birthDate,
+      versichertennummer: c.versichertennummer,
+      krankenkasse: c.krankenkasse,
+      pflegegrad: c.pflegegrad,
+      beihilfeberechtigt: c.beihilfeberechtigt,
+      personal_beratung: c.personalBeratungWunsch,
+      beratung_kanal: c.beratungKanal ?? null,
+      kein_beratung_grund: c.keinBeratungGrund ?? null,
+      bestell_anmerkung: c.orderNote ?? null,
       notiz,
       pflegebox_order_id: orderId,
       external_reference: externalRef,
