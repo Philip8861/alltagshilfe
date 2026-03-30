@@ -183,7 +183,6 @@ let cart = [];
 let editingItemId = null;
 
 let pendingGloveItemId = null;
-let pendingGloveMaterial = null;
 let pendingGloveSize = null;
 
 let boxIconElement = null;
@@ -320,6 +319,9 @@ function renderItemList() {
     contentWrap.className = "item-inner-content";
     inner.appendChild(contentWrap);
 
+    const textCol = document.createElement("div");
+    textCol.className = "item-text-col";
+
     const countInCart = cart.filter((c) => c.id === item.id).length;
 
     if (item.imageUrl) {
@@ -339,7 +341,7 @@ function renderItemList() {
     nameSpan.className = "item-name";
     nameSpan.textContent = formatProductDisplayName(item.name);
     header.appendChild(nameSpan);
-    contentWrap.appendChild(header);
+    textCol.appendChild(header);
 
     if (item.pieces || item.quantity || item.ml) {
       const meta = document.createElement("div");
@@ -349,14 +351,14 @@ function renderItemList() {
       if (item.quantity) parts.push(`Menge: ${item.quantity}`);
       if (item.ml) parts.push(`ml: ${item.ml}`);
       meta.textContent = parts.join(" · ");
-      contentWrap.appendChild(meta);
+      textCol.appendChild(meta);
     }
 
     if (item.description) {
       const desc = document.createElement("p");
       desc.className = "item-description";
       desc.textContent = item.description;
-      contentWrap.appendChild(desc);
+      textCol.appendChild(desc);
     }
 
     let sizeSelect = null;
@@ -369,8 +371,10 @@ function renderItemList() {
         opt.textContent = size;
         sizeSelect.appendChild(opt);
       });
-      contentWrap.appendChild(sizeSelect);
+      textCol.appendChild(sizeSelect);
     }
+
+    contentWrap.appendChild(textCol);
 
     const totalBefore = calculateCartTotal();
     const remainingBefore = MAX_BUDGET - totalBefore;
@@ -492,16 +496,7 @@ function handleAddFromList(itemId, selectedSize = null) {
 
 function updateGloveConfirmButton() {
   const btn = document.getElementById("glove-confirm");
-  if (btn) btn.disabled = !pendingGloveMaterial || !pendingGloveSize;
-}
-
-function syncGloveMaterialHighlight() {
-  const root = document.getElementById("glove-material-options");
-  if (!root) return;
-  root.querySelectorAll(".handschuh-option").forEach((lab) => {
-    const inp = lab.querySelector('input[type="radio"]');
-    lab.classList.toggle("handschuh-option--checked", Boolean(inp && inp.checked));
-  });
+  if (btn) btn.disabled = !pendingGloveSize;
 }
 
 function closeGloveModal() {
@@ -513,7 +508,6 @@ function closeGloveModal() {
   document.documentElement.style.overflow = "";
   document.body.style.overflow = "";
   pendingGloveItemId = null;
-  pendingGloveMaterial = null;
   pendingGloveSize = null;
   updateGloveConfirmButton();
 }
@@ -522,16 +516,11 @@ function openGloveModal(itemId) {
   const modal = document.getElementById("glove-modal");
   if (!modal) return;
   pendingGloveItemId = itemId;
-  pendingGloveMaterial = null;
   pendingGloveSize = null;
 
-  document.querySelectorAll('input[name="glove-material"]').forEach((r) => {
-    r.checked = false;
-  });
   document.querySelectorAll("#glove-size-buttons button").forEach((btn) => {
     btn.classList.remove("is-selected");
   });
-  syncGloveMaterialHighlight();
 
   updateGloveConfirmButton();
   modal.classList.add("is-open");
@@ -1159,10 +1148,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (gloveConfirm) {
     gloveConfirm.addEventListener("click", () => {
-      if (!pendingGloveItemId || !pendingGloveMaterial || !pendingGloveSize) {
+      if (!pendingGloveItemId || !pendingGloveSize) {
         return;
       }
-      tryAddToCart(pendingGloveItemId, pendingGloveSize, pendingGloveMaterial);
+      tryAddToCart(pendingGloveItemId, pendingGloveSize, null);
       closeGloveModal();
       renderItemList();
     });

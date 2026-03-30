@@ -190,7 +190,7 @@
     aria-hidden="true"
   >
     <div
-      class="handschuh-dialog"
+      class="handschuh-dialog handschuh-dialog--size-only"
       role="dialog"
       aria-modal="true"
       aria-labelledby="handschuh-dialog-title"
@@ -200,30 +200,11 @@
         ×
       </button>
       <h2 id="handschuh-dialog-title" class="handschuh-dialog-title">Handschuhe konfigurieren</h2>
-      <p class="handschuh-dialog-lead">
-        Wählen Sie Material und Größe – wir legen die Einmalhandschuhe in Ihre Pflegebox.
-      </p>
+      <p class="handschuh-dialog-lead">Wählen Sie Ihre Größe.</p>
       <div class="handschuh-dialog-body">
         <fieldset class="handschuh-fieldset">
-          <legend class="handschuh-legend">Material</legend>
-          <div class="handschuh-options" id="glove-material-options">
-            <label class="handschuh-option">
-              <input type="radio" name="glove-material" value="Latex" />
-              Latex
-            </label>
-            <label class="handschuh-option">
-              <input type="radio" name="glove-material" value="Vinyl" />
-              Vinyl
-            </label>
-            <label class="handschuh-option">
-              <input type="radio" name="glove-material" value="Nitril" />
-              Nitril
-            </label>
-          </div>
-        </fieldset>
-        <fieldset class="handschuh-fieldset">
-          <legend class="handschuh-legend">Größe</legend>
-          <div class="handschuh-size-row" id="glove-size-buttons">
+          <legend class="handschuh-legend handschuh-legend--centered">Größe</legend>
+          <div class="handschuh-size-row handschuh-size-row--centered" id="glove-size-buttons">
             <button type="button" class="handschuh-size-btn" data-size="S">S</button>
             <button type="button" class="handschuh-size-btn" data-size="M">M</button>
             <button type="button" class="handschuh-size-btn" data-size="L">L</button>
@@ -231,9 +212,11 @@
           </div>
         </fieldset>
       </div>
-      <div class="handschuh-dialog-actions">
+      <div class="handschuh-dialog-actions handschuh-dialog-actions--centered">
+        <button type="button" class="handschuh-btn-primary handschuh-btn-primary--prominent" id="glove-confirm" disabled>
+          Ab in die Box
+        </button>
         <button type="button" class="handschuh-btn-secondary" id="glove-cancel">Abbrechen</button>
-        <button type="button" class="handschuh-btn-primary" id="glove-confirm" disabled>In die Box legen</button>
       </div>
     </div>
   </div>
