@@ -30,7 +30,7 @@ function buildTipNotiz(
   const pg = contact.pflegegrad;
   const ber = contact.personalBeratungWunsch
     ? `Beratung: ja (${contact.beratungKanal ?? "—"})`
-    : `Beratung: nein — ${(contact.keinBeratungGrund ?? "").slice(0, 500)}`;
+    : "Beratung: nein";
   const versRow = contact.privatversichert
     ? "Versicherung: Privatversichert"
     : `Versicherten-Nr.: ${contact.versichertennummer}`;
