@@ -11,7 +11,11 @@ export default function PflegeboxPage() {
     <iframe
       src="/konfigurator/index.html?embed=1"
       title="Pflegebox-Konfigurator – Produkte auswählen"
-      className="block min-h-0 w-full min-w-0 flex-1 border-0"
+      className="block w-full max-w-full border-0"
+      style={{
+        /* Explizite Höhe: flex-1 auf iframe kollabiert oft → Footer-Welle überdeckt den Inhalt */
+        height: "max(520px, calc(100dvh - 10.5rem))",
+      }}
     />
   );
 }

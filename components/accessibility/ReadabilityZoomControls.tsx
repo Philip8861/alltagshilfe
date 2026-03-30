@@ -96,7 +96,7 @@ export function ReadabilityZoomControls() {
   useLayoutEffect(() => {
     const el = document.getElementById("ahs-readability-launcher-root");
     setLaunchSlot(el);
-  }, []);
+  }, [pathname]);
 
   useEffect(() => {
     const readLang = () => {
