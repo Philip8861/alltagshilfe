@@ -33,7 +33,7 @@ const BUNDLED_CATALOG_ITEMS = [
     quantity: null,
     ml: null,
     price: 5,
-    imageUrl: null,
+    imageUrl: "images/Hygostar_Latzschuerze_115x90cm_wiederverwendbar.webp",
     sizes: [],
     isGlove: false,
     bettschutzeinlage: false,
@@ -95,8 +95,12 @@ function loadItemsFromStorage() {
 function mergeBundledCatalogItems() {
   let changed = false;
   for (const b of BUNDLED_CATALOG_ITEMS) {
-    if (!ITEMS.some((it) => Number(it.id) === Number(b.id))) {
+    const idx = ITEMS.findIndex((it) => Number(it.id) === Number(b.id));
+    if (idx === -1) {
       ITEMS.push({ ...b });
+      changed = true;
+    } else if (b.imageUrl && !ITEMS[idx].imageUrl) {
+      ITEMS[idx] = { ...ITEMS[idx], imageUrl: b.imageUrl };
       changed = true;
     }
   }
