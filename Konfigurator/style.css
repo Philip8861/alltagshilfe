@@ -1232,7 +1232,8 @@ body.pflege-wizard-open {
   max-width: min(40rem, calc(100vw - 2rem));
   margin: 0.75rem auto 2rem;
   border-radius: 1.25rem;
-  background: var(--surface);
+  /* Einheitlich wie Fußleiste (.pflege-wizard-nav): helles Grau */
+  background: var(--surface-muted);
   border: 1px solid rgba(15, 79, 104, 0.14);
   box-shadow: 0 12px 40px -12px rgba(15, 79, 104, 0.25);
   padding: 0;
@@ -1448,7 +1449,7 @@ body.pflege-wizard-open {
 .pflege-wizard-heading {
   text-align: center;
   padding: 1.15rem 2.85rem 0.35rem 1.35rem;
-  background: var(--surface);
+  background: var(--surface-muted);
 }
 
 .pflege-wizard-section {
@@ -1480,6 +1481,7 @@ body.pflege-wizard-open {
 .pflege-wizard-body {
   min-height: 4rem;
   padding: 0.5rem 1.35rem 0.25rem;
+  background: var(--surface-muted);
 }
 
 .pflege-wizard-body .wiz-field {
