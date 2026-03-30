@@ -1,6 +1,6 @@
 const MAX_BUDGET = 42;
 
-/** Im Repo gepflegte Artikel (feste IDs); werden einmalig in die lokale Liste gemerged, falls noch nicht vorhanden. */
+/** Im Repo gepflegte Artikel (feste IDs 9101–9113); ersetzen bei jedem Laden die gesamte Artikelliste. */
 const BUNDLED_CATALOG_ITEMS = [
   {
     id: 9101,
@@ -160,6 +160,9 @@ const BUNDLED_CATALOG_ITEMS = [
   },
 ];
 
+/** Nur diese IDs sind erlaubt; alles andere wird aus Speicher und Warenkorb entfernt. */
+const BUNDLED_CATALOG_IDS = new Set(BUNDLED_CATALOG_ITEMS.map((b) => Number(b.id)));
+
 /** Partner-Referrer aus URL (?ref=PARTNER_ID oder ?partner=PARTNER_ID) – für Belohnung/Flyer */
 const PARTNER_REF_STORAGE_KEY = "konfigurator_partner_ref";
 
@@ -212,32 +215,17 @@ function loadItemsFromStorage() {
   } catch (_) {}
 }
 
+/** Ersetzt die Artikelliste vollständig durch das Bundle (keine zusätzlichen Admin-/Alt-Artikel). */
 function mergeBundledCatalogItems() {
-  let changed = false;
-  for (const b of BUNDLED_CATALOG_ITEMS) {
-    const idx = ITEMS.findIndex((it) => Number(it.id) === Number(b.id));
-    if (idx === -1) {
-      ITEMS.push({ ...b });
-      changed = true;
-      continue;
-    }
-    const cur = ITEMS[idx];
-    const next = { ...cur };
-    let itemChanged = false;
-    if (b.imageUrl && cur.imageUrl !== b.imageUrl) {
-      next.imageUrl = b.imageUrl;
-      itemChanged = true;
-    }
-    if (b.price != null && Number(cur.price) !== Number(b.price)) {
-      next.price = b.price;
-      itemChanged = true;
-    }
-    if (itemChanged) {
-      ITEMS[idx] = next;
-      changed = true;
-    }
-  }
-  if (changed) saveItemsToStorage();
+  ITEMS = BUNDLED_CATALOG_ITEMS.map((b) => ({ ...b }));
+  saveItemsToStorage();
+}
+
+/** Entfernt Warenkorb-Zeilen zu Artikeln, die nicht mehr im Bundle existieren. */
+function pruneCartToBundledCatalog() {
+  const before = cart.length;
+  cart = cart.filter((entry) => BUNDLED_CATALOG_IDS.has(Number(entry.id)));
+  if (cart.length !== before) saveCartToStorage();
 }
 
 function saveCartToStorage() {
@@ -715,27 +703,15 @@ function initAdminTool() {
     if (!name) return;
     if (!bettschutzeinlage && (!Number.isFinite(price) || price < 0)) return;
 
-    if (editingItemId != null) {
-      const idx = ITEMS.findIndex((it) => it.id === editingItemId);
-      if (idx !== -1) {
-        ITEMS[idx] = {
-          ...ITEMS[idx],
-          name,
-          pieces,
-          quantity,
-          ml,
-          price: effectivePrice,
-          imageUrl,
-          sizes,
-          isGlove,
-          bettschutzeinlage,
-        };
-      }
-    } else {
-      const newId =
-        ITEMS.length > 0 ? Math.max(...ITEMS.map((it) => Number(it.id))) + 1 : 1;
-      ITEMS.push({
-        id: newId,
+    if (editingItemId == null) {
+      window.alert("Neue Artikel können nicht angelegt werden. Es gilt nur der feste Katalog mit 13 Produkten.");
+      return;
+    }
+
+    const idx = ITEMS.findIndex((it) => it.id === editingItemId);
+    if (idx !== -1) {
+      ITEMS[idx] = {
+        ...ITEMS[idx],
         name,
         pieces,
         quantity,
@@ -745,7 +721,7 @@ function initAdminTool() {
         sizes,
         isGlove,
         bettschutzeinlage,
-      });
+      };
     }
 
     editingItemId = null;
@@ -832,36 +808,39 @@ function renderAdminItemList() {
     });
     actions.appendChild(editBtn);
 
-    const deleteBtn = document.createElement("button");
-    deleteBtn.type = "button";
-    deleteBtn.className = "admin-btn";
-    deleteBtn.textContent = "Löschen";
-    deleteBtn.addEventListener("click", () => {
-      ITEMS = ITEMS.filter((it) => it.id !== item.id);
-      saveItemsToStorage();
-      renderItemList();
-      renderAdminItemList();
-    });
-    actions.appendChild(deleteBtn);
+    const idNum = Number(item.id);
+    if (!BUNDLED_CATALOG_IDS.has(idNum)) {
+      const deleteBtn = document.createElement("button");
+      deleteBtn.type = "button";
+      deleteBtn.className = "admin-btn";
+      deleteBtn.textContent = "Löschen";
+      deleteBtn.addEventListener("click", () => {
+        ITEMS = ITEMS.filter((it) => it.id !== item.id);
+        saveItemsToStorage();
+        renderItemList();
+        renderAdminItemList();
+      });
+      actions.appendChild(deleteBtn);
 
-    const copyBtn = document.createElement("button");
-    copyBtn.type = "button";
-    copyBtn.className = "admin-btn";
-    copyBtn.textContent = "Kopieren";
-    copyBtn.addEventListener("click", () => {
-      const newId =
-        ITEMS.length > 0 ? Math.max(...ITEMS.map((it) => Number(it.id))) + 1 : 1;
-      const clone = {
-        ...item,
-        id: newId,
-        name: `${item.name} (Kopie)`,
-      };
-      ITEMS.push(clone);
-      saveItemsToStorage();
-      renderItemList();
-      renderAdminItemList();
-    });
-    actions.appendChild(copyBtn);
+      const copyBtn = document.createElement("button");
+      copyBtn.type = "button";
+      copyBtn.className = "admin-btn";
+      copyBtn.textContent = "Kopieren";
+      copyBtn.addEventListener("click", () => {
+        const newId =
+          ITEMS.length > 0 ? Math.max(...ITEMS.map((it) => Number(it.id))) + 1 : 1;
+        const clone = {
+          ...item,
+          id: newId,
+          name: `${item.name} (Kopie)`,
+        };
+        ITEMS.push(clone);
+        saveItemsToStorage();
+        renderItemList();
+        renderAdminItemList();
+      });
+      actions.appendChild(copyBtn);
+    }
 
     row.appendChild(actions);
     list.appendChild(row);
@@ -1048,6 +1027,7 @@ document.addEventListener("DOMContentLoaded", () => {
   loadItemsFromStorage();
   mergeBundledCatalogItems();
   loadCartFromStorage();
+  pruneCartToBundledCatalog();
 
   initAdminTool();
   renderItemList();
