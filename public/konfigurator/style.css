@@ -30,17 +30,26 @@ body {
 .hero-wrapper {
   position: relative;
   min-height: 100dvh;
-  /* Nur horizontal begrenzen – overflow-y sichtbar, damit position:sticky im Layout funktioniert */
-  overflow-x: hidden;
+  /*
+   * NICHT overflow-x: hidden + overflow-y: visible — das verwandelt y in „auto“ (Scroll-Container).
+   * Dann scrollt die Seite „doppelt“ und klemmt oft bei der breiten Bettschutzeinlage-Zeile.
+   */
+  overflow-x: clip;
   overflow-y: visible;
   background: #f1f9fb;
+}
+
+@supports not (overflow: clip) {
+  .hero-wrapper {
+    overflow-x: visible;
+  }
 }
 
 /* Zoom nur hier: nicht auf body — sonst kaputt: position:fixed, Scrollen */
 .hero-overlay {
   position: relative;
   z-index: 1;
-  max-width: 1100px;
+  max-width: min(100%, 1240px);
   margin: 0 auto;
   padding: 16px 16px 32px max(40px, 6.5vw);
   zoom: 0.823;
@@ -167,10 +176,8 @@ body {
 .item-list {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 10px;
+  gap: 12px;
   margin-top: 3%;
-  /* Vorher 0,5625; mit 15 %-Reduktion */
-  zoom: 0.526;
 }
 
 .item.item--double-width {
@@ -214,20 +221,19 @@ body {
 
 .item-header {
   display: flex;
-  justify-content: flex-start;
-  align-items: flex-start;
+  justify-content: center;
+  align-items: center;
   gap: 8px;
   min-width: 0;
-  text-align: left;
+  text-align: center;
 }
 
-/* Breiteres Bild (quer) */
+/* Volle Kartenbreite, quer (breiter als hoch) — gleiche „Wucht“ wie früher, nicht schmaler Seitenstreifen */
 .item-image-frame {
-  flex: 0 0 48%;
-  width: 48%;
-  max-width: 48%;
-  margin: 0;
-  align-self: flex-start;
+  width: 100%;
+  max-width: 100%;
+  flex: 0 0 auto;
+  margin: 0 0 6px;
   aspect-ratio: 4 / 3;
   border-radius: 14px;
   background: #ffffff;
@@ -236,12 +242,6 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-}
-
-.item.item--double-width .item-image-frame {
-  flex-basis: 34%;
-  width: 34%;
-  max-width: 34%;
 }
 
 .item-image {
@@ -274,7 +274,7 @@ body {
 .item-meta-row {
   font-size: 0.82rem;
   color: var(--text-muted);
-  text-align: left;
+  text-align: center;
   line-height: 1.4;
 }
 
@@ -361,30 +361,13 @@ body {
   letter-spacing: -0.02em;
 }
 
-/* Quer-Rechteck: Bild links, Text rechts */
 .item-inner-content {
-  display: flex;
-  flex-direction: row;
-  align-items: flex-start;
-  gap: 12px;
-  flex: 1 1 auto;
-  min-width: 0;
-  min-height: 0;
-  overflow: visible;
-}
-
-.item-text-col {
-  flex: 1 1 0;
-  min-width: 0;
   display: flex;
   flex-direction: column;
   gap: 4px;
-  justify-content: flex-start;
-}
-
-.item-inner-content > .item-text-col:only-child {
-  flex: 1 1 auto;
-  width: 100%;
+  min-width: 0;
+  min-height: 0;
+  overflow: visible;
 }
 
 .item-unavailable .item-inner-content {
@@ -1450,37 +1433,8 @@ body {
   }
 
   .item-list {
-    zoom: 0.655;
     gap: 12px;
     margin-top: 2%;
-  }
-
-  .item-inner-content {
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  .item-image-frame {
-    flex: 0 0 auto;
-    width: 100%;
-    max-width: 100%;
-    aspect-ratio: 16 / 10;
-  }
-
-  .item.item--double-width .item-image-frame {
-    width: 100%;
-    max-width: 100%;
-    flex-basis: auto;
-  }
-
-  .item-text-col {
-    width: 100%;
-  }
-
-  .item-header,
-  .item-meta-row {
-    text-align: center;
-    justify-content: center;
   }
 
   .layout > .panel:last-of-type {
@@ -2264,6 +2218,8 @@ body.pflege-wizard-open {
 }
 
 .pflege-wizard-body .wiz-field input[type="text"],
+.pflege-wizard-body .wiz-field input[type="email"],
+.pflege-wizard-body .wiz-field input[type="tel"],
 .pflege-wizard-body .wiz-field input[type="date"],
 .pflege-wizard-body .wiz-field select,
 .pflege-wizard-body .wiz-field textarea {
@@ -2278,12 +2234,96 @@ body.pflege-wizard-open {
 }
 
 .pflege-wizard-body .wiz-field input[type="text"]:focus-visible,
+.pflege-wizard-body .wiz-field input[type="email"]:focus-visible,
+.pflege-wizard-body .wiz-field input[type="tel"]:focus-visible,
 .pflege-wizard-body .wiz-field input[type="date"]:focus-visible,
 .pflege-wizard-body .wiz-field select:focus-visible,
 .pflege-wizard-body .wiz-field textarea:focus-visible {
   outline: none;
   border-color: var(--primary);
   box-shadow: 0 0 0 3px rgba(15, 79, 104, 0.16);
+}
+
+/* Schritt Kontakt: E-Mail / Telefon */
+.wiz-kontakt-panel {
+  padding: 1rem 1.15rem 1.1rem;
+  border-radius: 1rem;
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid rgba(15, 79, 104, 0.14);
+  box-shadow: 0 4px 18px rgba(15, 79, 104, 0.07);
+}
+
+.wiz-kontakt-panel .wiz-kontakt-intro {
+  margin: 0 0 0.85rem;
+  font-size: 0.88rem;
+  line-height: 1.45;
+  color: var(--text-muted);
+}
+
+.wiz-field-group--kontakt .wiz-label {
+  margin-bottom: 0.5rem;
+  color: var(--primary);
+}
+
+.wiz-radio-col--kontakt {
+  gap: 0.65rem;
+}
+
+.wiz-kontakt-choice {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.65rem 0.85rem;
+  border-radius: 0.75rem;
+  border: 2px solid rgba(15, 79, 104, 0.16);
+  background: rgba(241, 249, 251, 0.65);
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    border-color 0.15s ease,
+    background 0.15s ease;
+}
+
+.wiz-kontakt-choice.wiz-kontakt-choice--checked {
+  border-color: var(--primary);
+  background: rgba(15, 79, 104, 0.08);
+}
+
+.wiz-kontakt-choice input {
+  accent-color: var(--primary);
+  width: 1.1rem;
+  height: 1.1rem;
+  flex-shrink: 0;
+}
+
+.pflege-wizard-body .wiz-field--kontakt-input {
+  margin-bottom: 0.35rem;
+}
+
+.pflege-wizard-body .wiz-field--kontakt-input label {
+  font-size: 0.82rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: rgba(15, 79, 104, 0.95);
+  margin-bottom: 0.45rem;
+}
+
+.pflege-wizard-body .wiz-field--kontakt-input input[type="email"],
+.pflege-wizard-body .wiz-field--kontakt-input input[type="tel"] {
+  padding: 0.9rem 1rem;
+  font-size: 1.05rem;
+  border-radius: 0.85rem;
+  border: 2px solid rgba(15, 79, 104, 0.22);
+  background: #ffffff;
+  box-shadow: inset 0 1px 2px rgba(15, 23, 42, 0.04);
+}
+
+.pflege-wizard-body .wiz-field--kontakt-input input[type="email"]:focus-visible,
+.pflege-wizard-body .wiz-field--kontakt-input input[type="tel"]:focus-visible {
+  border-color: var(--primary);
+  box-shadow:
+    inset 0 1px 2px rgba(15, 23, 42, 0.04),
+    0 0 0 3px rgba(15, 79, 104, 0.2);
 }
 
 /* Beihilfe nur bei Privatversichert */

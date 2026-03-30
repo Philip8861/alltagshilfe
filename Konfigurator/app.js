@@ -319,9 +319,6 @@ function renderItemList() {
     contentWrap.className = "item-inner-content";
     inner.appendChild(contentWrap);
 
-    const textCol = document.createElement("div");
-    textCol.className = "item-text-col";
-
     const countInCart = cart.filter((c) => c.id === item.id).length;
 
     if (item.imageUrl) {
@@ -341,7 +338,7 @@ function renderItemList() {
     nameSpan.className = "item-name";
     nameSpan.textContent = formatProductDisplayName(item.name);
     header.appendChild(nameSpan);
-    textCol.appendChild(header);
+    contentWrap.appendChild(header);
 
     if (item.pieces || item.quantity || item.ml) {
       const meta = document.createElement("div");
@@ -351,14 +348,14 @@ function renderItemList() {
       if (item.quantity) parts.push(`Menge: ${item.quantity}`);
       if (item.ml) parts.push(`ml: ${item.ml}`);
       meta.textContent = parts.join(" · ");
-      textCol.appendChild(meta);
+      contentWrap.appendChild(meta);
     }
 
     if (item.description) {
       const desc = document.createElement("p");
       desc.className = "item-description";
       desc.textContent = item.description;
-      textCol.appendChild(desc);
+      contentWrap.appendChild(desc);
     }
 
     let sizeSelect = null;
@@ -371,10 +368,8 @@ function renderItemList() {
         opt.textContent = size;
         sizeSelect.appendChild(opt);
       });
-      textCol.appendChild(sizeSelect);
+      contentWrap.appendChild(sizeSelect);
     }
-
-    contentWrap.appendChild(textCol);
 
     const totalBefore = calculateCartTotal();
     const remainingBefore = MAX_BUDGET - totalBefore;

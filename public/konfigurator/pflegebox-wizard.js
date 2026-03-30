@@ -46,10 +46,6 @@
     return String(n).padStart(2, "0");
   }
 
-  function digitCount(str) {
-    return (String(str || "").match(/\d/g) || []).length;
-  }
-
   function splitBirthDate(iso) {
     const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(iso || "").trim());
     if (!m) return { y: "", mo: "", d: "" };
@@ -251,12 +247,10 @@
       if (data.personalBeratungWunsch && !data.beratungKanal) {
         return "Bitte wählen Sie eine Beratungsform.";
       }
-      if (
-        data.personalBeratungWunsch &&
-        data.beratungKanal === "telefon" &&
-        (digitCount(data.beratungTelefon) < 8 || String(data.beratungTelefon).trim().length > 40)
-      ) {
-        return "Bitte eine gültige Telefonnummer für die telefonische Beratung angeben (mind. 8 Ziffern).";
+      if (data.personalBeratungWunsch && data.beratungKanal === "telefon") {
+        const bt = String(data.beratungTelefon).trim();
+        if (!bt) return "Bitte Telefonnummer für die telefonische Beratung angeben.";
+        if (bt.length > 40) return "Telefonnummer zu lang.";
       }
     }
     if (s.key === "k1") {
@@ -269,10 +263,9 @@
         if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em)) return "Bitte eine gültige E-Mail-Adresse angeben.";
       }
       if (data.kontaktArt === "telefon") {
-        if (digitCount(data.contactPhone) < 8) {
-          return "Bitte eine gültige Telefonnummer angeben (mind. 8 Ziffern).";
-        }
-        if (String(data.contactPhone).trim().length > 40) return "Telefonnummer zu lang.";
+        const cp = String(data.contactPhone).trim();
+        if (!cp) return "Bitte Ihre Telefonnummer angeben.";
+        if (cp.length > 40) return "Telefonnummer zu lang.";
       }
     }
     if (s.key === "l1") {
@@ -521,21 +514,23 @@
       const showEm = ka === "email";
       const showPh = ka === "telefon";
       html = `
-        <p class="wiz-hint wiz-kontakt-intro">Geben Sie eine gültige Kontaktmöglichkeit an.</p>
-        <div class="wiz-field-group">
-          <span class="wiz-label">Wie dürfen wir Sie erreichen?</span>
-          <div class="wiz-radio-col">
-            <label><input type="radio" name="wiz-kontakt-art" id="wiz-kontakt-email-radio" value="email" ${ka === "email" ? "checked" : ""}/> E-Mail</label>
-            <label><input type="radio" name="wiz-kontakt-art" id="wiz-kontakt-tel-radio" value="telefon" ${ka === "telefon" ? "checked" : ""}/> Telefonisch</label>
+        <div class="wiz-kontakt-panel">
+          <p class="wiz-hint wiz-kontakt-intro">Geben Sie eine gültige Kontaktmöglichkeit an.</p>
+          <div class="wiz-field-group wiz-field-group--kontakt">
+            <span class="wiz-label">Wie dürfen wir Sie erreichen?</span>
+            <div class="wiz-radio-col wiz-radio-col--kontakt">
+              <label class="wiz-kontakt-choice"><input type="radio" name="wiz-kontakt-art" id="wiz-kontakt-email-radio" value="email" ${ka === "email" ? "checked" : ""}/> E-Mail</label>
+              <label class="wiz-kontakt-choice"><input type="radio" name="wiz-kontakt-art" id="wiz-kontakt-tel-radio" value="telefon" ${ka === "telefon" ? "checked" : ""}/> Telefonisch</label>
+            </div>
           </div>
-        </div>
-        <div id="wiz-kontakt-email-wrap" class="wiz-field" ${showEm ? "" : 'style="display:none"'}>
-          <label for="wiz-kontakt-email">E-Mail-Adresse *</label>
-          <input type="email" id="wiz-kontakt-email" maxlength="320" autocomplete="email" value="${escapeAttr(data.contactEmail)}" />
-        </div>
-        <div id="wiz-kontakt-phone-wrap" class="wiz-field" ${showPh ? "" : 'style="display:none"'}>
-          <label for="wiz-kontakt-phone">Telefonnummer *</label>
-          <input type="tel" id="wiz-kontakt-phone" maxlength="40" autocomplete="tel" value="${escapeAttr(data.contactPhone)}" />
+          <div id="wiz-kontakt-email-wrap" class="wiz-field wiz-field--kontakt-input" ${showEm ? "" : 'style="display:none"'}>
+            <label for="wiz-kontakt-email">E-Mail-Adresse *</label>
+            <input type="email" id="wiz-kontakt-email" maxlength="320" autocomplete="email" placeholder="name@beispiel.de" value="${escapeAttr(data.contactEmail)}" />
+          </div>
+          <div id="wiz-kontakt-phone-wrap" class="wiz-field wiz-field--kontakt-input" ${showPh ? "" : 'style="display:none"'}>
+            <label for="wiz-kontakt-phone">Telefonnummer *</label>
+            <input type="tel" id="wiz-kontakt-phone" maxlength="40" autocomplete="tel" placeholder="z. B. 0170 1234567" value="${escapeAttr(data.contactPhone)}" />
+          </div>
         </div>`;
     } else if (meta.key === "n1") {
       html = `
@@ -700,11 +695,18 @@
     const phW = $("wiz-kontakt-phone-wrap");
     const rEm = $("wiz-kontakt-email-radio");
     const rPh = $("wiz-kontakt-tel-radio");
+    function syncKontaktChoiceHighlight() {
+      document.querySelectorAll(".wiz-kontakt-choice").forEach((lab) => {
+        const inp = lab.querySelector("input");
+        lab.classList.toggle("wiz-kontakt-choice--checked", Boolean(inp && inp.checked));
+      });
+    }
     function sync() {
       const emailChk = rEm?.checked === true;
       const telChk = rPh?.checked === true;
       if (emW) emW.style.display = emailChk ? "" : "none";
       if (phW) phW.style.display = telChk ? "" : "none";
+      syncKontaktChoiceHighlight();
     }
     rEm?.addEventListener("change", sync);
     rPh?.addEventListener("change", sync);
