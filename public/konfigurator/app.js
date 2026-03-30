@@ -924,12 +924,11 @@ function updateFlowStepIndicator(step) {
 
 function setFlowStep(step) {
   const s1 = document.getElementById("flow-step-1");
-  const s2 = document.getElementById("flow-step-2");
   const s3 = document.getElementById("flow-step-3");
   if (s1) s1.hidden = step !== 1;
-  if (s2) s2.hidden = step !== 2;
   if (s3) s3.hidden = step !== 3;
-  updateFlowStepIndicator(step);
+  /* Schritt 2 ist nur das Pflegebox-Pop-up über Schritt 1 – keine eigene Seite. */
+  updateFlowStepIndicator(step === 3 ? 3 : 1);
   const adminPanel = document.getElementById("admin-panel");
   const adminBtn = document.getElementById("admin-toggle-btn");
   const hideAdmin = step !== 1;
@@ -1062,22 +1061,8 @@ document.addEventListener("DOMContentLoaded", () => {
         window.alert("Bitte wählen Sie zuerst Artikel für Ihre Pflegebox.");
         return;
       }
-      setFlowStep(2);
       openPflegeboxWizard();
     });
-  }
-
-  const btnFlowBack = document.getElementById("btn-flow-back");
-  if (btnFlowBack) {
-    btnFlowBack.addEventListener("click", () => {
-      window.PflegeboxWizard?.close?.();
-      setFlowStep(1);
-    });
-  }
-
-  const btnReopenWizard = document.getElementById("btn-reopen-wizard");
-  if (btnReopenWizard) {
-    btnReopenWizard.addEventListener("click", () => openPflegeboxWizard());
   }
 
   document.addEventListener("pflegebox-wizard-cancel", () => {

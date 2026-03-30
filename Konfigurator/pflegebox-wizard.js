@@ -1,5 +1,5 @@
 /**
- * Pflegebox Schritt 2: mehrteiliger Dialog (Persönliche Daten, Versichertendaten, Beratung, AGB, Partner-Code, Unterschrift).
+ * Pflegebox Dateneingabe: mehrteiliger Dialog über Schritt 1 (Persönliche Daten, Versichertendaten, Beratung, AGB, Partner-Code, Unterschrift).
  * Erwartet im DOM: #pflegebox-wizard-backdrop und Kinder (siehe index.html).
  */
 (function () {
