@@ -404,6 +404,7 @@ function renderItemList() {
 
     minusBtn.addEventListener("click", (ev) => {
       ev.stopPropagation();
+      if (minusBtn.disabled) return;
       const selectedSize = sizeSelect ? sizeSelect.value : null;
       decrementItemInCart(item.id, selectedSize);
     });
@@ -414,9 +415,12 @@ function renderItemList() {
       handleAddFromList(item.id, selectedSize);
     });
 
-    if (countInCart > 0) {
-      footer.appendChild(minusBtn);
+    if (countInCart === 0) {
+      minusBtn.disabled = true;
+      minusBtn.classList.add("item-qty-btn--disabled");
+      minusBtn.setAttribute("aria-label", "Menge verringern (aktuell nicht im Warenkorb)");
     }
+    footer.appendChild(minusBtn);
     footer.appendChild(qtyValue);
     footer.appendChild(plusBtn);
     inner.appendChild(footer);
@@ -629,10 +633,23 @@ function updateItemAvailability(remainingBudget) {
     if (!item) return;
 
     const plusBtn = el.querySelector(".item-qty-btn--plus");
+    const minusBtn = el.querySelector(".item-qty-btn--minus");
     if (!plusBtn) return;
 
+    const countInCart = cart.filter((c) => c.id === itemId).length;
+    if (minusBtn) {
+      if (countInCart === 0) {
+        minusBtn.disabled = true;
+        minusBtn.classList.add("item-qty-btn--disabled");
+        minusBtn.setAttribute("aria-label", "Menge verringern (aktuell nicht im Warenkorb)");
+      } else {
+        minusBtn.disabled = false;
+        minusBtn.classList.remove("item-qty-btn--disabled");
+        minusBtn.setAttribute("aria-label", "Menge verringern");
+      }
+    }
+
     if (item.bettschutzeinlage) {
-      const countInCart = cart.filter((c) => c.id === itemId).length;
       if (countInCart >= MAX_BETTSCHUTZEINLAGE) {
         plusBtn.disabled = true;
         plusBtn.classList.add("item-qty-btn--disabled");

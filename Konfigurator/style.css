@@ -40,15 +40,15 @@ body {
   z-index: 1;
   max-width: 1100px;
   margin: 0 auto;
-  padding: 32px 16px 40px;
+  padding: 16px 16px 32px;
 }
 
 .header {
-  margin-top: 12.5%;
-  margin-bottom: 16px;
+  margin-top: max(0.75rem, 2.5vh);
+  margin-bottom: 10px;
   margin-left: auto;
   margin-right: auto;
-  padding: 16px 20px;
+  padding: 12px 20px;
 }
 
 .steps {
@@ -146,7 +146,7 @@ body {
 }
 
 .layout > .panel:first-of-type > h2 {
-  min-height: 94px;
+  min-height: 141px;
   display: flex;
   align-items: center;
 }
@@ -564,9 +564,8 @@ body {
   align-items: center;
   justify-content: flex-start;
   gap: 8px;
-  /* Gleiche Kopfzeilenhöhe wie „Wählen Sie Ihre Produkte“ (94px) */
-  min-height: 94px;
-  max-height: 94px;
+  /* Gleiche Höhe wie Überschrift links; Platz für Box-Grafik in Originalgröße */
+  min-height: 141px;
 }
 
 .box-icon-wrapper {
@@ -576,9 +575,8 @@ body {
 }
 
 .box-icon {
-  width: auto;
-  height: 76px;
-  max-width: 100px;
+  width: 141px;
+  height: 141px;
   object-fit: contain;
   display: block;
 }
