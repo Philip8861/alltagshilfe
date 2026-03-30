@@ -88,15 +88,15 @@ const BUNDLED_CATALOG_ITEMS = [
   },
   {
     id: 9108,
-    name: "Bettschutzeinlage wiederverwendbar",
+    name: "Wiederverwendbare Bettschutzeinlage",
     pieces: null,
     quantity: null,
     ml: null,
-    price: 8,
+    price: 0,
     imageUrl: "images/Bettschutzeinlage_wiederverwendbar.webp",
     sizes: [],
     isGlove: false,
-    bettschutzeinlage: false,
+    bettschutzeinlage: true,
   },
   {
     id: 9109,
