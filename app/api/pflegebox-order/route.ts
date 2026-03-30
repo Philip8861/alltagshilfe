@@ -15,14 +15,32 @@ async function clientIp(): Promise<string> {
   }
 }
 
-function buildTipNotiz(lines: PflegeboxOrderBody["cartLines"], totalBudgetUsed: number): string {
+function buildTipNotiz(
+  lines: PflegeboxOrderBody["cartLines"],
+  totalBudgetUsed: number,
+  contact: PflegeboxOrderBody["contact"],
+): string {
   const budget = totalBudgetUsed.toLocaleString("de-DE", {
     style: "currency",
     currency: "EUR",
   });
   const head = `Pflegebox-Konfigurator · genutztes Budget ${budget}`;
   const body = lines.map((l) => `${l.count}× ${l.name}`).join("\n");
-  return `${head}\n${body}`;
+  const kk = contact.krankenkasse;
+  const pg = contact.pflegegrad;
+  const ber = contact.personalBeratungWunsch
+    ? `Beratung: ja (${contact.beratungKanal ?? "—"})`
+    : `Beratung: nein — ${(contact.keinBeratungGrund ?? "").slice(0, 500)}`;
+  const tail = [
+    `KK: ${kk}`,
+    `Pflegegrad: ${pg}`,
+    `Beihilfe: ${contact.beihilfeberechtigt ? "ja" : "nein"}`,
+    ber,
+    contact.orderNote ? `Anmerkung: ${contact.orderNote}` : null,
+  ]
+    .filter(Boolean)
+    .join("\n");
+  return `${head}\n${body}\n---\n${tail}`;
 }
 
 export async function POST(request: Request) {
@@ -60,18 +78,32 @@ export async function POST(request: Request) {
 
   const externalRef = `PB-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 10)}`;
 
+  const c = parsed.data.contact;
   const summary_json = {
-    version: 2,
+    version: 3,
     cartLines: parsed.data.cartLines,
     totalBudgetUsed: parsed.data.totalBudgetUsed,
     partnerRefRaw: partnerRefRaw || null,
     contact: {
-      firstName: parsed.data.contact.firstName,
-      lastName: parsed.data.contact.lastName,
-      email: parsed.data.contact.email?.trim() || null,
-      phone: parsed.data.contact.phone?.trim() || null,
-      plz: parsed.data.contact.plz?.trim() || null,
+      salutation: c.salutation,
+      firstName: c.firstName,
+      lastName: c.lastName,
+      street: c.street,
+      postalCode: c.postalCode,
+      city: c.city,
+      birthDate: c.birthDate,
+      versichertennummer: c.versichertennummer,
+      krankenkasse: c.krankenkasse,
+      pflegegrad: c.pflegegrad,
+      beihilfeberechtigt: c.beihilfeberechtigt,
+      personalBeratungWunsch: c.personalBeratungWunsch,
+      keinBeratungGrund: c.keinBeratungGrund ?? null,
+      beratungKanal: c.beratungKanal ?? null,
+      orderNote: c.orderNote ?? null,
+      email: c.email?.trim() || null,
+      phone: c.phone?.trim() || null,
     },
+    signatureDataUrl: parsed.data.signatureDataUrl,
     submittedAt: new Date().toISOString(),
   };
 
@@ -93,13 +125,23 @@ export async function POST(request: Request) {
   const orderId = data?.id as string | undefined;
 
   if (partnerId && orderId) {
-    const notiz = buildTipNotiz(parsed.data.cartLines, parsed.data.totalBudgetUsed);
+    const notiz = buildTipNotiz(parsed.data.cartLines, parsed.data.totalBudgetUsed, parsed.data.contact);
     const tipPayload: Record<string, unknown> = {
       vorname: parsed.data.contact.firstName,
       nachname: parsed.data.contact.lastName,
       telefon: parsed.data.contact.phone?.trim() || "",
       email: parsed.data.contact.email?.trim() || "",
-      wohnort: parsed.data.contact.plz?.trim() || "",
+      wohnort: `${parsed.data.contact.postalCode} ${parsed.data.contact.city}`.trim(),
+      strasse: parsed.data.contact.street,
+      geburtsdatum: parsed.data.contact.birthDate,
+      versichertennummer: parsed.data.contact.versichertennummer,
+      krankenkasse: parsed.data.contact.krankenkasse,
+      pflegegrad: parsed.data.contact.pflegegrad,
+      beihilfeberechtigt: parsed.data.contact.beihilfeberechtigt,
+      personal_beratung: parsed.data.contact.personalBeratungWunsch,
+      beratung_kanal: parsed.data.contact.beratungKanal ?? null,
+      kein_beratung_grund: parsed.data.contact.keinBeratungGrund ?? null,
+      bestell_anmerkung: parsed.data.contact.orderNote ?? null,
       notiz,
       pflegebox_order_id: orderId,
       external_reference: externalRef,

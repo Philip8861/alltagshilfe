@@ -90,60 +90,19 @@
   <div id="flow-step-2" class="flow-step-wrap" hidden>
     <main class="layout layout--single">
       <section class="panel">
-        <h2>Schritt 2: Ihre Angaben</h2>
+        <h2>Schritt 2: Ihre Daten</h2>
         <p class="panel-subtitle">
-          Vor- und Nachname sind Pflicht. Den Partner-Code tragen Sie nur ein, wenn Sie über eine Pflegefachkraft oder
-          einen Kooperationspartner auf uns aufmerksam wurden. Es gelten unsere
+          Ein geführtes Fenster führt Sie durch persönliche Angaben, Versichertendaten und den Abschluss. Sie können
+          jederzeit einen Schritt zurückgehen. Es gelten unsere
           <a href="/datenschutz" target="_blank" rel="noopener noreferrer" class="inline-link">Datenschutzhinweise</a>.
         </p>
-        <form id="pflegebox-finish-form" class="contact-form" autocomplete="on" novalidate>
-          <input
-            type="text"
-            name="website"
-            id="pflegebox-honeypot"
-            class="konfig-honeypot"
-            tabindex="-1"
-            autocomplete="off"
-            aria-hidden="true"
-          />
-          <div class="form-row-inline">
-            <div class="form-row">
-              <label for="pflegebox-firstname">Vorname *</label>
-              <input type="text" id="pflegebox-firstname" name="firstName" required maxlength="80" autocomplete="given-name" />
-            </div>
-            <div class="form-row">
-              <label for="pflegebox-lastname">Nachname *</label>
-              <input type="text" id="pflegebox-lastname" name="lastName" required maxlength="80" autocomplete="family-name" />
-            </div>
-          </div>
-          <div class="form-row">
-            <label for="pflegebox-partner-code">Partner-Code (optional)</label>
-            <input
-              type="text"
-              id="pflegebox-partner-code"
-              name="partnerCode"
-              maxlength="40"
-              autocomplete="off"
-              placeholder="z. B. aus Flyer oder QR-Code"
-            />
-            <p class="panel-subtitle" style="margin-top: 0.5rem; font-size: 0.85rem">
-              Wird auch aus dem Link übernommen, falls Sie mit <code>?partner=…</code> oder <code>?ref=…</code> gekommen sind.
-            </p>
-          </div>
-          <div class="form-row">
-            <label class="form-label-inline">
-              <input type="checkbox" id="pflegebox-privacy" name="privacy" required />
-              Ich habe die
-              <a href="/datenschutz" target="_blank" rel="noopener noreferrer">Datenschutzerklärung</a> zur Kenntnis
-              genommen. *
-            </label>
-          </div>
-          <p id="pflegebox-form-error" class="form-error-text" role="alert" hidden></p>
-          <div class="form-actions-row">
-            <button type="button" class="admin-btn" id="btn-flow-back">Zurück zur Auswahl</button>
-            <button type="submit" class="btn-primary" id="btn-pflegebox-submit">Absenden</button>
-          </div>
-        </form>
+        <p class="panel-subtitle" id="pflegebox-step2-hint">
+          Das Eingabefenster öffnet sich automatisch. Falls nicht sichtbar, aktivieren Sie Pop-ups nicht für diese Seite.
+        </p>
+        <div class="form-actions-row">
+          <button type="button" class="admin-btn" id="btn-flow-back">Zurück zur Auswahl</button>
+          <button type="button" class="btn-primary" id="btn-reopen-wizard">Eingabe fortsetzen</button>
+        </div>
       </section>
     </main>
   </div>
@@ -313,6 +272,31 @@
     </div>
   </div>
 
+  <!-- Mehrstufige Dateneingabe (Pflegebox) -->
+  <div id="pflegebox-wizard-backdrop" class="pflege-wizard-backdrop" hidden>
+    <div
+      class="pflege-wizard-modal"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="pflege-wizard-title"
+      aria-describedby="pflege-wizard-motivation"
+    >
+      <button type="button" class="pflege-wizard-close" id="pflege-wizard-close" aria-label="Schließen">
+        ×
+      </button>
+      <p class="pflege-wizard-section" id="pflege-wizard-section"></p>
+      <p class="pflege-wizard-motivation" id="pflege-wizard-motivation"></p>
+      <h2 class="pflege-wizard-title" id="pflege-wizard-title"></h2>
+      <div id="pflege-wizard-body" class="pflege-wizard-body"></div>
+      <p id="pflege-wizard-error" class="pflege-wizard-error" role="alert" hidden></p>
+      <div class="pflege-wizard-nav">
+        <button type="button" class="admin-btn" id="pflege-wizard-back">Zurück</button>
+        <button type="button" class="btn-primary" id="pflege-wizard-next">Weiter</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="pflegebox-wizard.js"></script>
   <script src="app.js"></script>
 </body>
 </html>

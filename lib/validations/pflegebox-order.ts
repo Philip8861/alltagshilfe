@@ -13,13 +13,26 @@ const cartLineSchema = z.object({
   count: z.number().int().positive().max(50),
 });
 
-export const pflegeboxOrderBodySchema = z.object({
-  cartLines: z.array(cartLineSchema).min(1).max(80),
-  totalBudgetUsed: z.number().finite().nonnegative().max(1000),
-  partnerRef: z.string().max(200).optional(),
-  contact: z.object({
+const contactSchema = z
+  .object({
+    salutation: z.enum(["herr", "frau", "divers"]),
     firstName: z.string().trim().min(1).max(80),
     lastName: z.string().trim().min(1).max(80),
+    street: z.string().trim().min(1).max(120),
+    postalCode: z.string().trim().min(1).max(12),
+    city: z.string().trim().min(1).max(80),
+    birthDate: z.string().trim().regex(/^\d{4}-\d{2}-\d{2}$/),
+    versichertennummer: z.string().trim().min(1).max(30),
+    krankenkasse: z.string().trim().min(1).max(200),
+    pflegegrad: z.number().int().min(1).max(5),
+    beihilfeberechtigt: z.boolean(),
+    /** true = persönliche Beratung gewünscht */
+    personalBeratungWunsch: z.boolean(),
+    /** Pflicht wenn personalBeratungWunsch === false */
+    keinBeratungGrund: z.string().trim().max(2000).optional(),
+    /** Pflicht wenn personalBeratungWunsch === true */
+    beratungKanal: z.enum(["telefon", "video", "vor_ort"]).optional(),
+    orderNote: z.string().trim().max(2000).optional(),
     email: z.preprocess(
       (val) => {
         if (val === undefined || val === null) return undefined;
@@ -29,14 +42,47 @@ export const pflegeboxOrderBodySchema = z.object({
       z.string().email("Gültige E-Mail.").max(320).optional(),
     ),
     phone: z.string().trim().max(40).optional(),
-    plz: z.string().trim().max(12).optional(),
-  }),
+  })
+  .superRefine((c, ctx) => {
+    if (!c.personalBeratungWunsch) {
+      const g = c.keinBeratungGrund?.trim() ?? "";
+      if (g.length < 5) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "Bitte geben Sie einen Grund an.",
+          path: ["keinBeratungGrund"],
+        });
+      }
+    } else if (!c.beratungKanal) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Bitte wählen Sie eine Beratungsart.",
+        path: ["beratungKanal"],
+      });
+    }
+  });
+
+export const pflegeboxOrderBodySchema = z.object({
+  cartLines: z.array(cartLineSchema).min(1).max(80),
+  totalBudgetUsed: z.number().finite().nonnegative().max(1000),
+  partnerRef: z.string().max(200).optional(),
+  contact: contactSchema,
   /** Honeypot — muss fehlen oder leer sein */
   website: z.string().max(0).optional(),
+  agbAccepted: z.preprocess(
+    (val) => val === true || val === "true" || val === 1 || val === "1",
+    z.literal(true),
+  ),
   privacyAccepted: z.preprocess(
     (val) => val === true || val === "true" || val === 1 || val === "1",
     z.literal(true),
   ),
+  /** PNG data URL der Unterschrift */
+  signatureDataUrl: z
+    .string()
+    .min(30)
+    .max(2_500_000)
+    .refine((s) => s.startsWith("data:image/"), "Ungültige Signatur."),
 });
 
 export type PflegeboxOrderBody = z.infer<typeof pflegeboxOrderBodySchema>;

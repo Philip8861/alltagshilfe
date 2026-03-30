@@ -1187,3 +1187,206 @@ body {
   color: var(--text-muted);
 }
 
+/* Pflegebox Wizard (Modal) */
+body.pflege-wizard-open {
+  overflow: hidden;
+}
+
+.pflege-wizard-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 1rem;
+  padding-top: max(1rem, env(safe-area-inset-top));
+  background: rgba(15, 23, 42, 0.45);
+  backdrop-filter: blur(4px);
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.pflege-wizard-modal {
+  position: relative;
+  width: 100%;
+  max-width: 32rem;
+  margin: 0.5rem auto 2rem;
+  border-radius: 1.25rem;
+  background: #ffffff;
+  border: 2px solid #0f4f68;
+  box-shadow: 0 20px 50px rgba(15, 79, 104, 0.25);
+  padding: 1.25rem 1.25rem 1rem;
+}
+
+.pflege-wizard-close {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.6rem;
+  width: 2.5rem;
+  height: 2.5rem;
+  border: none;
+  border-radius: 999px;
+  background: #f1f5f9;
+  color: #0f172a;
+  font-size: 1.5rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.pflege-wizard-close:hover {
+  background: #e2e8f0;
+}
+
+.pflege-wizard-section {
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #0f4f68;
+  opacity: 0.85;
+  margin: 0 0 0.35rem;
+}
+
+.pflege-wizard-motivation {
+  font-size: 0.95rem;
+  color: #475569;
+  margin: 0 0 0.5rem;
+  line-height: 1.45;
+}
+
+.pflege-wizard-title {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: #0f4f68;
+  margin: 0 0 1rem;
+  line-height: 1.25;
+}
+
+.pflege-wizard-body {
+  min-height: 4rem;
+}
+
+.pflege-wizard-body .wiz-field {
+  margin-bottom: 1rem;
+}
+
+.pflege-wizard-body .wiz-field label,
+.pflege-wizard-body .wiz-label {
+  display: block;
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: #0f172a;
+  margin-bottom: 0.35rem;
+}
+
+.pflege-wizard-body .wiz-field input[type="text"],
+.pflege-wizard-body .wiz-field input[type="date"],
+.pflege-wizard-body .wiz-field select,
+.pflege-wizard-body .wiz-field textarea {
+  width: 100%;
+  border: 1px solid #cbd5e1;
+  border-radius: 0.65rem;
+  padding: 0.55rem 0.75rem;
+  font: inherit;
+  font-size: 1rem;
+}
+
+.pflege-wizard-body .wiz-field-row {
+  display: grid;
+  gap: 0.75rem;
+}
+
+@media (min-width: 480px) {
+  .pflege-wizard-body .wiz-field-row {
+    grid-template-columns: 1fr 1fr;
+  }
+  .pflege-wizard-body .wiz-field--narrow {
+    max-width: 8rem;
+  }
+}
+
+.pflege-wizard-body .wiz-radio-row,
+.pflege-wizard-body .wiz-radio-col {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 1.25rem;
+}
+
+.pflege-wizard-body .wiz-radio-col {
+  flex-direction: column;
+}
+
+.pflege-wizard-body .wiz-field-group {
+  margin-bottom: 1rem;
+}
+
+.pflege-wizard-body .wiz-hint {
+  font-size: 0.8rem;
+  color: #64748b;
+  margin: 0.35rem 0 0;
+  line-height: 1.4;
+}
+
+.pflege-wizard-body .wiz-check-row {
+  margin-bottom: 0.85rem;
+}
+
+.pflege-wizard-body .wiz-check {
+  display: flex;
+  gap: 0.5rem;
+  align-items: flex-start;
+  font-size: 0.88rem;
+  line-height: 1.45;
+  color: #334155;
+}
+
+.pflege-wizard-body .wiz-check input {
+  margin-top: 0.2rem;
+  flex-shrink: 0;
+}
+
+.wiz-partner-msg {
+  color: #b42318;
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin: 0.35rem 0 0;
+}
+
+.pflege-wizard-error {
+  color: #b42318;
+  font-size: 0.88rem;
+  font-weight: 600;
+  margin: 0.75rem 0 0;
+}
+
+.pflege-wizard-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+  justify-content: space-between;
+  margin-top: 1.25rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid #e2e8f0;
+}
+
+.wiz-sig-wrap {
+  border: 2px dashed #94a3b8;
+  border-radius: 0.75rem;
+  overflow: hidden;
+  background: #fff;
+  touch-action: none;
+}
+
+.wiz-signature-canvas {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 180px;
+  cursor: crosshair;
+}
+
+.wiz-sig-clear {
+  margin-top: 0.65rem;
+}
+

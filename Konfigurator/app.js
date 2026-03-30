@@ -910,6 +910,15 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  function openPflegeboxWizard() {
+    if (!window.PflegeboxWizard || typeof window.PflegeboxWizard.open !== "function") return;
+    window.PflegeboxWizard.open({
+      getCartLines: buildCartLinesForApi,
+      getTotal: calculateCartTotal,
+      getPartnerRef: getPartnerRef,
+    });
+  }
+
   const btnNext = document.getElementById("btn-next-step");
   if (btnNext) {
     btnNext.addEventListener("click", () => {
@@ -918,14 +927,41 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
       setFlowStep(2);
-      document.getElementById("pflegebox-firstname")?.focus();
+      openPflegeboxWizard();
     });
   }
 
   const btnFlowBack = document.getElementById("btn-flow-back");
   if (btnFlowBack) {
-    btnFlowBack.addEventListener("click", () => setFlowStep(1));
+    btnFlowBack.addEventListener("click", () => {
+      window.PflegeboxWizard?.close?.();
+      setFlowStep(1);
+    });
   }
+
+  const btnReopenWizard = document.getElementById("btn-reopen-wizard");
+  if (btnReopenWizard) {
+    btnReopenWizard.addEventListener("click", () => openPflegeboxWizard());
+  }
+
+  document.addEventListener("pflegebox-wizard-cancel", () => {
+    setFlowStep(1);
+  });
+
+  document.addEventListener("pflegebox-wizard-success", (ev) => {
+    const ref = ev.detail && ev.detail.reference;
+    const refEl = document.getElementById("flow-step-3-ref");
+    if (refEl) {
+      if (ref) {
+        refEl.textContent = "Ihre Referenz: " + ref;
+        refEl.hidden = false;
+      } else {
+        refEl.hidden = true;
+      }
+    }
+    setFlowStep(3);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  });
 
   const btnFlowNew = document.getElementById("btn-flow-new");
   if (btnFlowNew) {
@@ -935,91 +971,5 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  const finishForm = document.getElementById("pflegebox-finish-form");
-  if (finishForm) {
-    finishForm.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const errEl = document.getElementById("pflegebox-form-error");
-      const submitBtn = document.getElementById("btn-pflegebox-submit");
-      if (errEl) {
-        errEl.hidden = true;
-        errEl.textContent = "";
-      }
-
-      const honeypot = document.getElementById("pflegebox-honeypot");
-      if (honeypot && honeypot.value) return;
-
-      const privacy = document.getElementById("pflegebox-privacy");
-      const codeField = document.getElementById("pflegebox-partner-code")?.value.trim() ?? "";
-      const storedRef = getPartnerRef().trim();
-      const payload = {
-        cartLines: buildCartLinesForApi(),
-        totalBudgetUsed: calculateCartTotal(),
-        partnerRef: codeField || storedRef,
-        contact: {
-          firstName: document.getElementById("pflegebox-firstname")?.value.trim() ?? "",
-          lastName: document.getElementById("pflegebox-lastname")?.value.trim() ?? "",
-        },
-        website: "",
-        privacyAccepted: privacy?.checked === true,
-      };
-
-      if (submitBtn) {
-        submitBtn.disabled = true;
-        submitBtn.textContent = "Wird gesendet…";
-      }
-
-      try {
-        const res = await fetch("/api/pflegebox-order", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload),
-        });
-        const data = await res.json().catch(() => ({}));
-
-        if (!res.ok || !data.ok) {
-          let msg = "Die Übermittlung ist fehlgeschlagen. Bitte prüfen Sie Ihre Eingaben oder versuchen Sie es später erneut.";
-          if (res.status === 429) msg = "Zu viele Anfragen. Bitte warten Sie einen Moment.";
-          if (res.status === 503 || data.error === "not_configured") {
-            msg = "Der Speicherdienst ist noch nicht eingerichtet. Bitte kontaktieren Sie uns telefonisch.";
-          }
-          if (res.status === 400 && data.error === "invalid_partner_code") {
-            msg = "Der eingegebene Partner-Code ist ungültig. Bitte prüfen Sie den Code.";
-          } else if (res.status === 400) {
-            msg =
-              "Bitte Vor- und Nachname ausfüllen, die Datenschutzerklärung bestätigen und prüfen, ob Ihre Pflegebox Artikel enthält.";
-          }
-          if (errEl) {
-            errEl.textContent = msg;
-            errEl.hidden = false;
-          }
-          return;
-        }
-
-        const refEl = document.getElementById("flow-step-3-ref");
-        if (refEl) {
-          if (data.reference) {
-            refEl.textContent = "Ihre Referenz: " + data.reference;
-            refEl.hidden = false;
-          } else {
-            refEl.hidden = true;
-          }
-        }
-        setFlowStep(3);
-        finishForm.reset();
-        window.scrollTo({ top: 0, behavior: "smooth" });
-      } catch {
-        if (errEl) {
-          errEl.textContent = "Netzwerkfehler. Bitte prüfen Sie Ihre Verbindung und versuchen Sie es erneut.";
-          errEl.hidden = false;
-        }
-      } finally {
-        if (submitBtn) {
-          submitBtn.disabled = false;
-          submitBtn.textContent = "Absenden";
-        }
-      }
-    });
-  }
 });
 
