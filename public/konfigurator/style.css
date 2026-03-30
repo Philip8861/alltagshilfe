@@ -164,17 +164,21 @@ body {
 .item {
   position: relative;
   min-width: 0;
-  border-radius: 18px;
-  padding: 12px 14px 14px;
-  border: 1px solid rgba(15, 79, 104, 0.45);
-  background: #ffffff;
+  border-radius: 20px;
+  padding: 14px 16px 16px;
+  border: 1px solid rgba(15, 79, 104, 0.14);
+  background: linear-gradient(180deg, #ffffff 0%, #fafcfd 100%);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.9) inset,
+    0 4px 22px rgba(15, 79, 104, 0.07),
+    0 2px 8px rgba(15, 23, 42, 0.04);
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 6px;
   transition:
-    transform 0.08s ease-out,
-    box-shadow 0.08s ease-out,
-    border-color 0.08s ease-out,
+    transform 0.12s ease-out,
+    box-shadow 0.12s ease-out,
+    border-color 0.12s ease-out,
     background 0.15s ease-out;
 }
 
@@ -186,8 +190,12 @@ body {
 }
 
 .item:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 12px 32px rgba(15, 23, 42, 0.18);
+  transform: translateY(-2px);
+  border-color: rgba(15, 79, 104, 0.28);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.95) inset,
+    0 12px 36px rgba(15, 79, 104, 0.12),
+    0 4px 14px rgba(15, 23, 42, 0.06);
 }
 
 .item-header {
@@ -202,13 +210,14 @@ body {
 /* Volle Breite der Kachel; Bild komplett sichtbar (contain), kein grauer Hintergrund */
 .item-image-frame {
   width: 100%;
-  margin: 0 0 8px;
+  margin: 0 0 10px;
   flex-shrink: 0;
   align-self: stretch;
   aspect-ratio: 1;
   min-height: var(--item-image-min-height);
-  border-radius: 12px;
-  background: transparent;
+  border-radius: 14px;
+  background: linear-gradient(145deg, #f4f9fb 0%, #eef5f8 100%);
+  border: 1px solid rgba(15, 79, 104, 0.08);
   overflow: hidden;
   display: flex;
   align-items: center;
@@ -227,7 +236,10 @@ body {
 
 .item-name {
   font-weight: 700;
-  font-size: 1.05rem;
+  font-size: clamp(1.12rem, 2.8vw, 1.28rem);
+  line-height: 1.32;
+  letter-spacing: -0.02em;
+  color: var(--primary);
   max-width: 100%;
   overflow-wrap: anywhere;
   word-break: break-word;
@@ -240,9 +252,10 @@ body {
 }
 
 .item-meta-row {
-  font-size: 0.78rem;
+  font-size: 0.82rem;
   color: var(--text-muted);
   text-align: center;
+  line-height: 1.4;
 }
 
 .item-size-select {
@@ -256,52 +269,75 @@ body {
 }
 
 .item-qty-row {
-  margin-top: 8px;
-  padding-top: 8px;
-  border-top: 1px solid rgba(148, 163, 184, 0.35);
+  margin-top: 6px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(15, 79, 104, 0.1);
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 18px;
+  gap: 14px;
 }
 
 .item-qty-btn {
-  width: 28px;
-  height: 28px;
-  border-radius: 999px;
-  border: 1px solid rgba(15, 79, 104, 0.85);
+  width: 48px;
+  height: 48px;
+  min-width: 48px;
+  min-height: 48px;
+  border-radius: 14px;
+  border: 2px solid rgba(15, 79, 104, 0.88);
   background: #ffffff;
   color: #0f4f68;
-  font-size: 1rem;
+  font-size: 1.55rem;
+  font-weight: 700;
+  line-height: 1;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  box-shadow: 0 2px 8px rgba(15, 79, 104, 0.1);
   transition:
-    background 0.12s ease-out,
-    color 0.12s ease-out,
-    transform 0.05s ease-out;
+    background 0.15s ease-out,
+    color 0.15s ease-out,
+    transform 0.1s ease-out,
+    box-shadow 0.15s ease-out,
+    border-color 0.15s ease-out;
 }
 
 .item-qty-btn:hover:not(.item-qty-btn--disabled):not(:disabled) {
-  background: #0f4f68;
+  background: var(--primary);
   color: #ffffff;
-  transform: translateY(-1px);
+  border-color: var(--primary);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(15, 79, 104, 0.28);
+}
+
+.item-qty-btn:active:not(.item-qty-btn--disabled):not(:disabled) {
+  transform: translateY(0);
+}
+
+.item-qty-btn:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
 }
 
 .item-qty-btn--disabled,
 .item-qty-btn:disabled {
-  border-color: rgba(148, 163, 184, 0.6);
-  color: rgba(148, 163, 184, 0.9);
-  background: #f3f4f6;
+  border-width: 2px;
+  border-color: rgba(148, 163, 184, 0.55);
+  color: rgba(148, 163, 184, 0.95);
+  background: #f1f5f9;
+  box-shadow: none;
   cursor: not-allowed;
 }
 
 .item-qty-value {
-  min-width: 18px;
+  min-width: 2rem;
   text-align: center;
-  font-size: 0.9rem;
-  font-weight: 600;
+  font-size: 1.2rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--primary);
+  letter-spacing: -0.02em;
 }
 
 .item-inner-content {
@@ -430,8 +466,10 @@ body {
 }
 
 .cart-item-name {
-  font-size: 1rem;
+  font-size: clamp(1.02rem, 2.2vw, 1.14rem);
   font-weight: 700;
+  line-height: 1.3;
+  letter-spacing: -0.02em;
   color: #0f4f68;
 }
 
@@ -443,14 +481,16 @@ body {
 .cart-qty-row {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
 }
 
 .cart-qty-value {
-  min-width: 18px;
+  min-width: 2rem;
   text-align: center;
-  font-size: 0.9rem;
-  font-weight: 600;
+  font-size: 1.05rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--primary);
 }
 
 .cart-item-remove {

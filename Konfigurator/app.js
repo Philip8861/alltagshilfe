@@ -1,5 +1,16 @@
 const MAX_BUDGET = 42;
 
+/** Internes Artikel-Tool (Admin-Panel): ausgeschaltet und unsichtbar. */
+const ARTICLE_ADMIN_TOOL_ENABLED = false;
+
+/** Lesbare Anzeigenamen (Unterstriche → Leerzeichen); API/Korb behalten `item.name`. */
+function formatProductDisplayName(name) {
+  return String(name || "")
+    .replace(/_/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
 /** Im Repo gepflegte Artikel (feste IDs 9101–9113); ersetzen bei jedem Laden die gesamte Artikelliste. */
 const BUNDLED_CATALOG_ITEMS = [
   {
@@ -317,7 +328,7 @@ function renderItemList() {
       const img = document.createElement("img");
       img.className = "item-image";
       img.src = item.imageUrl;
-      img.alt = item.name;
+      img.alt = formatProductDisplayName(item.name);
       frame.appendChild(img);
       contentWrap.appendChild(frame);
     }
@@ -326,7 +337,7 @@ function renderItemList() {
     header.className = "item-header";
     const nameSpan = document.createElement("span");
     nameSpan.className = "item-name";
-    nameSpan.textContent = item.name;
+    nameSpan.textContent = formatProductDisplayName(item.name);
     header.appendChild(nameSpan);
     contentWrap.appendChild(header);
 
@@ -374,6 +385,7 @@ function renderItemList() {
     minusBtn.type = "button";
     minusBtn.className = "item-qty-btn item-qty-btn--minus";
     minusBtn.textContent = "−";
+    minusBtn.setAttribute("aria-label", "Menge verringern");
 
     const qtyValue = document.createElement("span");
     qtyValue.className = "item-qty-value";
@@ -383,6 +395,7 @@ function renderItemList() {
     plusBtn.type = "button";
     plusBtn.className = "item-qty-btn item-qty-btn--plus";
     plusBtn.textContent = "+";
+    plusBtn.setAttribute("aria-label", "Menge erhöhen");
 
     if (!canAddOneMore) {
       plusBtn.disabled = true;
@@ -521,7 +534,7 @@ function renderCart() {
       const img = document.createElement("img");
       img.className = "cart-item-image";
       img.src = item.imageUrl;
-      img.alt = item.name;
+      img.alt = formatProductDisplayName(item.name);
       frame.appendChild(img);
       row.appendChild(frame);
     }
@@ -530,7 +543,7 @@ function renderCart() {
     main.className = "cart-item-main";
     const name = document.createElement("div");
     name.className = "cart-item-name";
-    name.textContent = item.name;
+    name.textContent = formatProductDisplayName(item.name);
     main.appendChild(name);
 
     const meta = document.createElement("div");
@@ -553,6 +566,7 @@ function renderCart() {
     minus.type = "button";
     minus.className = "item-qty-btn item-qty-btn--minus";
     minus.textContent = "−";
+    minus.setAttribute("aria-label", "Menge verringern");
 
     const qty = document.createElement("span");
     qty.className = "cart-qty-value";
@@ -562,6 +576,7 @@ function renderCart() {
     plus.type = "button";
     plus.className = "item-qty-btn item-qty-btn--plus";
     plus.textContent = "+";
+    plus.setAttribute("aria-label", "Menge erhöhen");
     if (item.bettschutzeinlage && count >= MAX_BETTSCHUTZEINLAGE) {
       plus.disabled = true;
       plus.classList.add("item-qty-btn--disabled");
@@ -673,6 +688,7 @@ function updateItemAvailability(remainingBudget) {
 }
 
 function initAdminTool() {
+  if (!ARTICLE_ADMIN_TOOL_ENABLED) return;
   const form = document.getElementById("admin-item-form");
   if (!form) return;
 
@@ -740,6 +756,7 @@ function initAdminTool() {
 }
 
 function renderAdminItemList() {
+  if (!ARTICLE_ADMIN_TOOL_ENABLED) return;
   const list = document.getElementById("admin-item-list");
   if (!list) return;
   list.innerHTML = "";
@@ -987,7 +1004,7 @@ function setFlowStep(step) {
   updateFlowStepIndicator(step === 3 ? 3 : 1);
   const adminPanel = document.getElementById("admin-panel");
   const adminBtn = document.getElementById("admin-toggle-btn");
-  const hideAdmin = step !== 1;
+  const hideAdmin = !ARTICLE_ADMIN_TOOL_ENABLED || step !== 1;
   if (adminPanel) adminPanel.hidden = hideAdmin;
   if (adminBtn) adminBtn.hidden = hideAdmin;
 }
@@ -1034,18 +1051,27 @@ document.addEventListener("DOMContentLoaded", () => {
   loadCartFromStorage();
   pruneCartToBundledCatalog();
 
-  initAdminTool();
+  if (ARTICLE_ADMIN_TOOL_ENABLED) {
+    initAdminTool();
+  } else {
+    const ap = document.getElementById("admin-panel");
+    const ab = document.getElementById("admin-toggle-btn");
+    if (ap) ap.hidden = true;
+    if (ab) ab.hidden = true;
+  }
   renderItemList();
   renderCart();
   updateBudgetDisplay();
   initBoxChatbot();
 
-  const adminToggleBtn = document.getElementById("admin-toggle-btn");
-  const adminPanel = document.getElementById("admin-panel");
-  if (adminToggleBtn && adminPanel) {
-    adminToggleBtn.addEventListener("click", () => {
-      adminPanel.classList.toggle("admin-panel--hidden");
-    });
+  if (ARTICLE_ADMIN_TOOL_ENABLED) {
+    const adminToggleBtn = document.getElementById("admin-toggle-btn");
+    const adminPanel = document.getElementById("admin-panel");
+    if (adminToggleBtn && adminPanel) {
+      adminToggleBtn.addEventListener("click", () => {
+        adminPanel.classList.toggle("admin-panel--hidden");
+      });
+    }
   }
 
   const gloveMaterialOptions = document.getElementById("glove-material-options");
