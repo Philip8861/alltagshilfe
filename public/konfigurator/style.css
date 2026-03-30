@@ -14,33 +14,36 @@
   box-sizing: border-box;
 }
 
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
 body {
   margin: 0;
-  min-height: 100vh;
+  min-height: 100dvh;
   font-family: "Nunito Sans", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   background: var(--background);
   color: var(--text-main);
-  /* Vorher 0,88; zusätzlich 15 % kleiner */
-  zoom: 0.748;
   -webkit-text-size-adjust: 100%;
 }
 
 .hero-wrapper {
   position: relative;
-  min-height: 100vh;
+  min-height: 100dvh;
   /* Nur horizontal begrenzen – overflow-y sichtbar, damit position:sticky im Layout funktioniert */
   overflow-x: hidden;
   overflow-y: visible;
   background: #f1f9fb;
 }
 
+/* Zoom nur hier: nicht auf body — sonst kaputt: position:fixed, Scrollen */
 .hero-overlay {
   position: relative;
   z-index: 1;
   max-width: 1100px;
   margin: 0 auto;
-  /* Mehr Luft links (Produktbereich) */
   padding: 16px 16px 32px max(32px, 5.5vw);
+  zoom: 0.823;
 }
 
 .header {
@@ -167,7 +170,7 @@ body {
   gap: 10px;
   margin-top: 3%;
   /* Vorher 0,5625; mit 15 %-Reduktion */
-  zoom: 0.478;
+  zoom: 0.526;
 }
 
 .item.item--double-width {
@@ -787,164 +790,289 @@ body {
   cursor: pointer;
 }
 
-.glove-modal-backdrop {
+/* Handschuh-Konfigurator (Dialog außerhalb .hero-overlay — kein Zoom-Vorfahr) */
+#glove-modal.handschuh-dialog-backdrop {
   position: fixed;
   inset: 0;
-  background: rgba(15, 23, 42, 0.45);
+  z-index: 200;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: max(16px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right))
+    max(16px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left));
+  box-sizing: border-box;
+  background: rgba(15, 23, 42, 0.5);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+#handschuh-dialog-root.handschuh-dialog-backdrop.is-open {
+  display: flex;
+}
+
+.handschuh-dialog {
+  position: relative;
+  width: 100%;
+  max-width: 440px;
+  max-height: min(90dvh, 640px);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin: auto;
+  padding: 1.35rem 1.25rem 1.25rem;
+  border-radius: 20px;
+  border: 1px solid rgba(15, 79, 104, 0.14);
+  background: #ffffff;
+  box-shadow:
+    0 4px 20px rgba(15, 79, 104, 0.08),
+    0 20px 50px rgba(15, 23, 42, 0.18);
+  font-family: inherit;
+}
+
+.handschuh-dialog-close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 2;
+  width: 40px;
+  height: 40px;
+  border: none;
+  border-radius: 999px;
+  background: rgba(241, 249, 251, 0.95);
+  color: var(--primary);
+  font-size: 1.5rem;
+  line-height: 1;
+  cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 60;
+  transition: background 0.15s ease;
 }
 
-.glove-modal {
-  max-width: 580px;
-  width: 96%;
-  background: #ffffff;
-  border-radius: 22px;
-  padding: 28px 26px 32px;
-  box-shadow: 0 20px 50px rgba(15, 23, 42, 0.35);
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
+.handschuh-dialog-close:hover {
+  background: rgba(15, 79, 104, 0.12);
 }
 
-.glove-modal h3 {
+.handschuh-dialog-close:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+.handschuh-dialog-title {
+  margin: 0 2.25rem 0 0;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--primary);
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+.handschuh-dialog-lead {
   margin: 0;
-  font-size: 1.9rem;
-  color: #0f4f68;
-}
-
-.glove-modal p {
-  margin: 0;
-  font-size: 1.25rem;
+  font-size: 0.95rem;
+  line-height: 1.45;
   color: var(--text-muted);
 }
 
-.glove-section {
-  margin-top: 8px;
+.handschuh-dialog-body {
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 1rem;
+  padding-right: 2px;
+  margin-top: 0.25rem;
 }
 
-.glove-options {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  font-size: 1.1rem;
+.handschuh-fieldset {
+  margin: 0;
+  padding: 0;
+  border: none;
+  min-width: 0;
 }
 
-.glove-size-buttons {
+.handschuh-legend {
+  display: block;
+  width: 100%;
+  margin-bottom: 0.5rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--primary);
+}
+
+.handschuh-options {
   display: flex;
+  flex-direction: column;
   gap: 8px;
 }
 
-.glove-size-buttons button {
+.handschuh-option {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  margin: 0;
+  padding: 12px 14px;
+  border-radius: 14px;
+  border: 2px solid rgba(15, 79, 104, 0.18);
+  background: #fafcfd;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-main);
+  transition:
+    border-color 0.15s ease,
+    background 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.handschuh-option.handschuh-option--checked {
+  border-color: var(--primary);
+  background: rgba(15, 79, 104, 0.06);
+  box-shadow: 0 2px 10px rgba(15, 79, 104, 0.12);
+}
+
+.handschuh-option input {
+  width: 1.1rem;
+  height: 1.1rem;
+  accent-color: var(--primary);
+  flex-shrink: 0;
+}
+
+.handschuh-size-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.handschuh-size-btn {
+  flex: 1 1 calc(33.333% - 6px);
+  min-width: 3.25rem;
+  min-height: 44px;
   border-radius: 999px;
-  border: 1px solid rgba(15, 79, 104, 0.9);
-  padding: 8px 18px;
-  font-size: 1.1rem;
+  border: 2px solid rgba(15, 79, 104, 0.85);
+  padding: 8px 12px;
+  font-family: inherit;
+  font-size: 1rem;
+  font-weight: 700;
   background: #ffffff;
-  color: #0f4f68;
+  color: var(--primary);
+  cursor: pointer;
+  transition:
+    background 0.15s ease,
+    color 0.15s ease,
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.handschuh-size-btn:hover {
+  border-color: var(--primary);
+  box-shadow: 0 4px 14px rgba(15, 79, 104, 0.15);
+}
+
+.handschuh-size-btn.is-selected {
+  background: var(--primary);
+  color: #ffffff;
+  border-color: var(--primary);
+  box-shadow: 0 6px 18px rgba(15, 79, 104, 0.28);
+}
+
+.handschuh-size-btn:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+.handschuh-dialog-actions {
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 10px;
+  margin-top: 0.25rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid rgba(15, 79, 104, 0.1);
+}
+
+.handschuh-btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 48px;
+  border: none;
+  border-radius: 12px;
+  padding: 12px 20px;
+  font-family: inherit;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #ffffff;
+  background: var(--primary);
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(15, 79, 104, 0.28);
+  transition: background 0.15s ease, transform 0.1s ease;
+}
+
+.handschuh-btn-primary:hover:not(:disabled) {
+  background: #0a3d52;
+}
+
+.handschuh-btn-primary:active:not(:disabled) {
+  transform: scale(0.99);
+}
+
+.handschuh-btn-primary:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.handschuh-btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 44px;
+  border-radius: 999px;
+  border: 1px solid rgba(148, 163, 184, 0.9);
+  padding: 10px 18px;
+  font-family: inherit;
+  font-size: 0.95rem;
+  font-weight: 600;
+  background: #ffffff;
+  color: var(--text-main);
   cursor: pointer;
 }
 
-.glove-size-buttons button.glove-size-selected {
-  background: #0f4f68;
-  color: #ffffff;
+.handschuh-btn-secondary:hover {
+  background: #f8fafc;
 }
 
-.glove-actions {
-  margin-top: 16px;
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-}
-
-.glove-actions .btn-primary#glove-confirm {
-  padding: 12px 30px;
-  font-size: 1.1rem;
-  border-radius: 999px;
-  background: #0f4f68;
-  box-shadow: 0 12px 28px rgba(15, 79, 104, 0.5);
-}
-
-@media (max-width: 640px) {
-  .glove-modal-backdrop {
-    align-items: flex-end;
-    justify-content: center;
-    padding: 0;
+@media (min-width: 480px) {
+  .handschuh-dialog {
+    padding: 1.5rem 1.5rem 1.35rem;
   }
 
-  .glove-modal {
-    width: 100%;
-    max-width: 100%;
-    margin: 0;
-    border-radius: 18px 18px 0 0;
-    max-height: min(88dvh, 100% - 8px);
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
-    padding: 18px 16px max(20px, env(safe-area-inset-bottom));
-    box-sizing: border-box;
+  .handschuh-dialog-title {
+    font-size: 1.65rem;
   }
 
-  .glove-modal h3 {
-    font-size: 1.35rem;
-    line-height: 1.25;
-    padding-right: 2rem;
+  .handschuh-dialog-actions {
+    flex-direction: row;
+    justify-content: flex-end;
   }
 
-  .glove-modal p {
-    font-size: 1rem;
-    line-height: 1.4;
+  .handschuh-btn-primary,
+  .handschuh-btn-secondary {
+    width: auto;
+    min-width: 140px;
   }
 
-  .glove-section {
-    margin-top: 4px;
+  .handschuh-btn-primary {
+    order: 1;
   }
 
-  .glove-options {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 8px;
-  }
-
-  .glove-options label {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 12px 14px;
-    border-radius: 12px;
-    border: 1px solid rgba(15, 79, 104, 0.22);
-    background: #fafcfd;
-    margin: 0;
-  }
-
-  .glove-size-buttons {
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 8px;
-  }
-
-  .glove-size-buttons button {
-    flex: 1 1 auto;
-    min-width: 3.25rem;
-    justify-content: center;
-  }
-
-  .glove-actions {
-    flex-direction: column-reverse;
-    width: 100%;
-    margin-top: 12px;
-    gap: 8px;
-  }
-
-  .glove-actions .admin-btn,
-  .glove-actions .btn-primary {
-    width: 100%;
-    justify-content: center;
-    min-height: 3rem;
+  .handschuh-btn-secondary {
+    order: 0;
   }
 }
 
@@ -1265,7 +1393,7 @@ body {
   }
 
   .item-list {
-    zoom: 0.595;
+    zoom: 0.655;
     gap: 12px;
     margin-top: 2%;
   }

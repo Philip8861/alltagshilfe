@@ -490,6 +490,33 @@ function handleAddFromList(itemId, selectedSize = null) {
   incrementCartItem(itemId, selectedSize);
 }
 
+function updateGloveConfirmButton() {
+  const btn = document.getElementById("glove-confirm");
+  if (btn) btn.disabled = !pendingGloveMaterial || !pendingGloveSize;
+}
+
+function syncGloveMaterialHighlight() {
+  const root = document.getElementById("glove-material-options");
+  if (!root) return;
+  root.querySelectorAll(".handschuh-option").forEach((lab) => {
+    const inp = lab.querySelector('input[type="radio"]');
+    lab.classList.toggle("handschuh-option--checked", Boolean(inp && inp.checked));
+  });
+}
+
+function closeGloveModal() {
+  const modal = document.getElementById("glove-modal");
+  if (modal) {
+    modal.classList.remove("is-open");
+    modal.setAttribute("aria-hidden", "true");
+  }
+  document.documentElement.style.overflow = "";
+  pendingGloveItemId = null;
+  pendingGloveMaterial = null;
+  pendingGloveSize = null;
+  updateGloveConfirmButton();
+}
+
 function openGloveModal(itemId) {
   const modal = document.getElementById("glove-modal");
   if (!modal) return;
@@ -497,13 +524,22 @@ function openGloveModal(itemId) {
   pendingGloveMaterial = null;
   pendingGloveSize = null;
 
-  const materialRadios = document.querySelectorAll('input[name="glove-material"]');
-  materialRadios.forEach((r) => (r.checked = false));
+  document.querySelectorAll('input[name="glove-material"]').forEach((r) => {
+    r.checked = false;
+  });
+  document.querySelectorAll("#glove-size-buttons button").forEach((btn) => {
+    btn.classList.remove("is-selected");
+  });
+  syncGloveMaterialHighlight();
 
-  const sizeButtons = document.querySelectorAll("#glove-size-buttons button");
-  sizeButtons.forEach((btn) => btn.classList.remove("glove-size-selected"));
+  updateGloveConfirmButton();
+  modal.classList.add("is-open");
+  modal.setAttribute("aria-hidden", "false");
+  document.documentElement.style.overflow = "hidden";
 
-  modal.style.display = "flex";
+  requestAnimationFrame(() => {
+    modal.querySelector(".handschuh-dialog")?.focus();
+  });
 }
 
 function renderCart() {
@@ -1102,6 +1138,8 @@ document.addEventListener("DOMContentLoaded", () => {
       const target = e.target;
       if (target && target.name === "glove-material") {
         pendingGloveMaterial = target.value;
+        syncGloveMaterialHighlight();
+        updateGloveConfirmButton();
       }
     });
   }
@@ -1109,11 +1147,10 @@ document.addEventListener("DOMContentLoaded", () => {
   if (gloveSizeButtons) {
     gloveSizeButtons.querySelectorAll("button").forEach((btn) => {
       btn.addEventListener("click", () => {
-        gloveSizeButtons.querySelectorAll("button").forEach((b) =>
-          b.classList.remove("glove-size-selected")
-        );
-        btn.classList.add("glove-size-selected");
+        gloveSizeButtons.querySelectorAll("button").forEach((b) => b.classList.remove("is-selected"));
+        btn.classList.add("is-selected");
         pendingGloveSize = btn.dataset.size || null;
+        updateGloveConfirmButton();
       });
     });
   }
@@ -1124,22 +1161,27 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
       tryAddToCart(pendingGloveItemId, pendingGloveSize, pendingGloveMaterial);
-      if (gloveModal) gloveModal.style.display = "none";
-      pendingGloveItemId = null;
-      pendingGloveMaterial = null;
-      pendingGloveSize = null;
+      closeGloveModal();
       renderItemList();
     });
   }
 
   if (gloveCancel) {
-    gloveCancel.addEventListener("click", () => {
-      if (gloveModal) gloveModal.style.display = "none";
-      pendingGloveItemId = null;
-      pendingGloveMaterial = null;
-      pendingGloveSize = null;
-    });
+    gloveCancel.addEventListener("click", () => closeGloveModal());
   }
+
+  document.getElementById("handschuh-close-btn")?.addEventListener("click", () => closeGloveModal());
+
+  gloveModal?.addEventListener("click", (e) => {
+    if (e.target === gloveModal) closeGloveModal();
+  });
+
+  document.addEventListener("keydown", (e) => {
+    if (e.key !== "Escape") return;
+    if (!gloveModal?.classList.contains("is-open")) return;
+    e.preventDefault();
+    closeGloveModal();
+  });
 
   function openPflegeboxWizard() {
     if (cart.length === 0) {

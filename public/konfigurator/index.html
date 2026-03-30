@@ -182,38 +182,58 @@
     </div>
   </div>
 
-  <!-- Handschuh-Auswahl-Popup -->
-  <div class="glove-modal-backdrop" id="glove-modal" style="display: none">
-    <div class="glove-modal">
-      <h3>Handschuhe konfigurieren</h3>
-      <p>Passt gleich perfekt! Bitte wählen Sie Material und Größe.</p>
-
-      <div class="glove-section">
-        <span class="form-label-inline">Material</span>
-        <div class="glove-options" id="glove-material-options">
-          <label><input type="radio" name="glove-material" value="Latex" /> Latex</label>
-          <label><input type="radio" name="glove-material" value="Vinyl" /> Vinyl</label>
-          <label><input type="radio" name="glove-material" value="Nitril" /> Nitril</label>
-        </div>
+  <!-- Handschuh-Konfigurator (außerhalb .hero-overlay: korrektes position:fixed) -->
+  <div
+    id="glove-modal"
+    class="handschuh-dialog-backdrop"
+    role="presentation"
+    aria-hidden="true"
+  >
+    <div
+      class="handschuh-dialog"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="handschuh-dialog-title"
+      tabindex="-1"
+    >
+      <button type="button" class="handschuh-dialog-close" id="handschuh-close-btn" aria-label="Schließen">
+        ×
+      </button>
+      <h2 id="handschuh-dialog-title" class="handschuh-dialog-title">Handschuhe konfigurieren</h2>
+      <p class="handschuh-dialog-lead">
+        Wählen Sie Material und Größe – wir legen die Einmalhandschuhe in Ihre Pflegebox.
+      </p>
+      <div class="handschuh-dialog-body">
+        <fieldset class="handschuh-fieldset">
+          <legend class="handschuh-legend">Material</legend>
+          <div class="handschuh-options" id="glove-material-options">
+            <label class="handschuh-option">
+              <input type="radio" name="glove-material" value="Latex" />
+              Latex
+            </label>
+            <label class="handschuh-option">
+              <input type="radio" name="glove-material" value="Vinyl" />
+              Vinyl
+            </label>
+            <label class="handschuh-option">
+              <input type="radio" name="glove-material" value="Nitril" />
+              Nitril
+            </label>
+          </div>
+        </fieldset>
+        <fieldset class="handschuh-fieldset">
+          <legend class="handschuh-legend">Größe</legend>
+          <div class="handschuh-size-row" id="glove-size-buttons">
+            <button type="button" class="handschuh-size-btn" data-size="S">S</button>
+            <button type="button" class="handschuh-size-btn" data-size="M">M</button>
+            <button type="button" class="handschuh-size-btn" data-size="L">L</button>
+            <button type="button" class="handschuh-size-btn" data-size="XL">XL</button>
+          </div>
+        </fieldset>
       </div>
-
-      <div class="glove-section">
-        <span class="form-label-inline">Größe</span>
-        <div class="glove-size-buttons" id="glove-size-buttons">
-          <button type="button" data-size="S">S</button>
-          <button type="button" data-size="M">M</button>
-          <button type="button" data-size="L">L</button>
-          <button type="button" data-size="XL">XL</button>
-        </div>
-      </div>
-
-      <div class="glove-actions">
-        <button type="button" class="btn-primary btn-small" id="glove-confirm">
-          Ab in die Box
-        </button>
-        <button type="button" class="admin-btn" id="glove-cancel">
-          Abbrechen
-        </button>
+      <div class="handschuh-dialog-actions">
+        <button type="button" class="handschuh-btn-secondary" id="glove-cancel">Abbrechen</button>
+        <button type="button" class="handschuh-btn-primary" id="glove-confirm" disabled>In die Box legen</button>
       </div>
     </div>
   </div>
