@@ -163,6 +163,7 @@
 
   /** Nach erfolgreichem „Weiter“: Pflegeboxi freudig hüpfen lassen. */
   function triggerBoxiHop() {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     const bd = $("pflegebox-wizard-backdrop");
     const img = bd?.querySelector(".pflege-wizard-boxi-img");
     if (!img) return;
