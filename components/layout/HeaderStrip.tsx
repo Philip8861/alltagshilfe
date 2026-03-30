@@ -17,8 +17,13 @@ function isPartnerArea(pathname: string) {
   return pathname.startsWith("/partner") || pathname.startsWith("/en/partner");
 }
 
+function isPflegeboxConfiguratorPage(pathname: string) {
+  return pathname === "/pflegebox" || pathname.startsWith("/pflegebox/");
+}
+
 export function HeaderStrip(_props: HeaderStripProps) {
   const pathname = usePathname();
+  const hideStripOnMobile = isPflegeboxConfiguratorPage(pathname);
   const partnerLoginHref = pathname.startsWith("/en") ? "/en/partner/login" : "/partner/login";
   const partnerActive = isPartnerArea(pathname);
 
@@ -40,7 +45,10 @@ export function HeaderStrip(_props: HeaderStripProps) {
 
   return (
     <div
-      className="grid w-full grid-cols-1 items-center gap-y-2 px-4 py-2.5 text-base font-semibold text-white md:grid-cols-[1fr_auto_1fr] md:gap-x-4 md:gap-y-0"
+      className={cn(
+        "w-full grid-cols-1 items-center gap-y-2 px-4 py-2.5 text-base font-semibold text-white md:grid-cols-[1fr_auto_1fr] md:gap-x-4 md:gap-y-0",
+        hideStripOnMobile ? "hidden md:grid" : "grid",
+      )}
       style={{ backgroundColor: "#0F4F68", minHeight: "3.25rem" }}
     >
       <div className="flex w-full items-center justify-center gap-3 md:justify-self-start">

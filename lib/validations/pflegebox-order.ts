@@ -104,17 +104,16 @@ const contactSchema = z
     }
     if (c.personalBeratungWunsch && c.beratungKanal === "telefon") {
       const t = (c.beratungTelefon ?? "").trim();
-      const digits = t.replace(/\D/g, "");
       if (!t) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
           message: "Bitte Telefonnummer für die telefonische Beratung angeben.",
           path: ["beratungTelefon"],
         });
-      } else if (digits.length < 8 || t.length > 40) {
+      } else if (t.length > 40) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
-          message: "Bitte eine gültige Telefonnummer für die Beratung angeben (mind. 8 Ziffern).",
+          message: "Telefonnummer darf höchstens 40 Zeichen haben.",
           path: ["beratungTelefon"],
         });
       }
@@ -124,7 +123,7 @@ const contactSchema = z
     if (!em && !ph) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
-        message: "Bitte geben Sie eine gültige E-Mail oder Telefonnummer als Kontaktmöglichkeit an.",
+        message: "Bitte geben Sie für Rückfragen eine E-Mail-Adresse oder eine Telefonnummer an.",
         path: ["email"],
       });
     }
@@ -135,15 +134,12 @@ const contactSchema = z
         path: ["email"],
       });
     }
-    if (ph) {
-      const digits = ph.replace(/\D/g, "");
-      if (digits.length < 8 || ph.length > 40) {
-        ctx.addIssue({
-          code: z.ZodIssueCode.custom,
-          message: "Bitte eine gültige Telefonnummer angeben (mind. 8 Ziffern).",
-          path: ["phone"],
-        });
-      }
+    if (ph && ph.length > 40) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Telefonnummer darf höchstens 40 Zeichen haben.",
+        path: ["phone"],
+      });
     }
   });
 

@@ -23,8 +23,8 @@
     "Jetzt Ihre Adresse, PLZ, Ort und Ihr Geburtsdatum.",
     "Hier geht es um Ihre Krankenversicherung, gesetzlich oder privat.",
     "Auf dieser Seite wählen Sie Ihren Pflegegrad.",
-    "Hier sagen Sie, ob Sie eine persönliche Beratung wünschen und wie wir Sie erreichen dürfen.",
-    "Geben Sie eine gültige Kontaktmöglichkeit an: per E-Mail oder telefonisch.",
+    "Hier sagen Sie, ob Sie eine persönliche Beratung wünschen und auf welche Weise diese erfolgen soll.",
+    "Wir gehen vertraulich mit Ihren Daten um. Wir melden uns nur im Falle von Rückfragen bei Ihnen.",
     "Optional: Hier dürfen Sie eine Anmerkung zu Ihrer Bestellung schreiben.",
     "Bitte lesen und bestätigen Sie die AGB und die Datenschutzhinweise.",
     "Optional: Tragen Sie einen Partner-Code ein, falls Sie empfohlen wurden.",
@@ -255,7 +255,7 @@
     }
     if (s.key === "k1") {
       if (!data.kontaktArt) {
-        return "Bitte wählen Sie eine Kontaktmöglichkeit (E-Mail oder telefonisch).";
+        return "Bitte wählen Sie E-Mail oder Telefon für Rückfragen.";
       }
       if (data.kontaktArt === "email") {
         const em = data.contactEmail.trim();
@@ -515,9 +515,9 @@
       const showPh = ka === "telefon";
       html = `
         <div class="wiz-kontakt-panel">
-          <p class="wiz-hint wiz-kontakt-intro">Geben Sie eine gültige Kontaktmöglichkeit an.</p>
+          <p class="wiz-hint wiz-kontakt-intro">Wir gehen vertraulich mit Ihren Daten um. Wir melden uns nur im Falle von Rückfragen bei Ihnen.</p>
           <div class="wiz-field-group wiz-field-group--kontakt">
-            <span class="wiz-label">Wie dürfen wir Sie erreichen?</span>
+            <span class="wiz-label">E-Mail oder Telefon (für Rückfragen zu Ihrer Bestellung)</span>
             <div class="wiz-radio-col wiz-radio-col--kontakt">
               <label class="wiz-kontakt-choice"><input type="radio" name="wiz-kontakt-art" id="wiz-kontakt-email-radio" value="email" ${ka === "email" ? "checked" : ""}/> E-Mail</label>
               <label class="wiz-kontakt-choice"><input type="radio" name="wiz-kontakt-art" id="wiz-kontakt-tel-radio" value="telefon" ${ka === "telefon" ? "checked" : ""}/> Telefonisch</label>
@@ -958,7 +958,7 @@
         }
         if (res.status === 400 && j.error === "validation") {
           msg =
-            "Die Daten wurden nicht akzeptiert. Bitte prüfen Sie Ihre Eingaben (z. B. Versichertennummer, Krankenkasse, Beratung, Kontaktmöglichkeit) und versuchen Sie es erneut.";
+            "Die Daten wurden nicht akzeptiert. Bitte prüfen Sie Ihre Eingaben (z. B. Versichertennummer, Krankenkasse, Beratung, E-Mail oder Telefon) und versuchen Sie es erneut.";
         }
         showError(msg);
         return;

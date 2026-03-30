@@ -8,12 +8,10 @@ export const metadata: Metadata = {
 
 export default function PflegeboxPage() {
   return (
-    <article className="min-h-[80vh] w-full">
-      <iframe
-        src="/konfigurator/index.html"
-        title="Pflegebox-Konfigurator – Produkte auswählen"
-        className="h-[calc(100vh-8rem)] min-h-[700px] w-full border-0"
-      />
-    </article>
+    <iframe
+      src="/konfigurator/index.html?embed=1"
+      title="Pflegebox-Konfigurator – Produkte auswählen"
+      className="block min-h-0 w-full min-w-0 flex-1 border-0"
+    />
   );
 }

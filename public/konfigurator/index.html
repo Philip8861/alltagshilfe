@@ -11,6 +11,15 @@
     rel="stylesheet"
   />
   <link rel="stylesheet" href="style.css" />
+  <script>
+    (function () {
+      try {
+        if (new URLSearchParams(location.search).get("embed") === "1") {
+          document.documentElement.classList.add("kfg-embed");
+        }
+      } catch (_) {}
+    })();
+  </script>
 </head>
 <body>
   <div class="hero-wrapper">

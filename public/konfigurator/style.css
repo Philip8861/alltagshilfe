@@ -45,6 +45,38 @@ body {
   }
 }
 
+/*
+ * Im Site-Iframe (?embed=1): nur .hero-wrapper scrollt — nicht html/body zusätzlich,
+ * damit es nicht „zwei Scrollbalken“ (Parent + Iframe-Dokument) gibt.
+ * position: sticky „Meine Pflegebox“ bezieht sich auf diesen Scroll-Container.
+ */
+html.kfg-embed {
+  height: 100%;
+  overflow: hidden;
+}
+
+html.kfg-embed body {
+  margin: 0;
+  min-height: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+html.kfg-embed .hero-wrapper {
+  min-height: 100%;
+  height: 100%;
+  max-height: 100%;
+  overflow-x: clip;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+@supports not (overflow: clip) {
+  html.kfg-embed .hero-wrapper {
+    overflow-x: hidden;
+  }
+}
+
 /* Zoom nur hier: nicht auf body — sonst kaputt: position:fixed, Scrollen */
 .hero-overlay {
   position: relative;
@@ -228,13 +260,13 @@ body {
   text-align: center;
 }
 
-/* Volle Kartenbreite, quer (breiter als hoch) — gleiche „Wucht“ wie früher, nicht schmaler Seitenstreifen */
+/* Quadratisches Bild in der Kachel */
 .item-image-frame {
   width: 100%;
   max-width: 100%;
   flex: 0 0 auto;
   margin: 0 0 6px;
-  aspect-ratio: 4 / 3;
+  aspect-ratio: 1;
   border-radius: 14px;
   background: #ffffff;
   border: none;

@@ -53,9 +53,9 @@ export default function RootLayout({
           Zum Inhalt springen
         </a>
         <div id="app-shell" className="flex min-h-screen flex-col">
-          <div className="flex flex-1 flex-col">
+          <div className="flex min-h-0 flex-1 flex-col">
             <Header nunitoClass={nunitoSans.className} balooClass={baloo2.className} />
-            <main id="main-content" className="flex-1">
+            <main id="main-content" className="flex min-h-0 flex-1 flex-col">
               {children}
             </main>
           </div>
