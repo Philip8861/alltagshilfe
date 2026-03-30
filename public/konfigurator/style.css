@@ -6,6 +6,8 @@
   --primary-strong: #0f4f68;
   --text-main: #0f172a;
   --text-muted: #6b7280;
+  /* Einheitliche Produktkachel-Vorschau (alle Karten gleich groß) */
+  --item-thumb-size: 140px;
 }
 
 *,
@@ -155,8 +157,8 @@ body {
 }
 
 .item--double-width .item-image {
-  width: 195px;
-  height: 195px;
+  width: var(--item-thumb-size);
+  height: var(--item-thumb-size);
 }
 
 .item {
@@ -195,10 +197,14 @@ body {
 }
 
 .item-image {
-  width: 130px;
-  height: 130px;
+  width: var(--item-thumb-size);
+  height: var(--item-thumb-size);
+  min-width: var(--item-thumb-size);
+  min-height: var(--item-thumb-size);
   object-fit: contain;
+  object-position: center;
   margin: 0 auto 6px;
+  flex-shrink: 0;
 }
 
 .item-name {

@@ -8,7 +8,7 @@ const BUNDLED_CATALOG_ITEMS = [
     pieces: null,
     quantity: null,
     ml: null,
-    price: 5,
+    price: 7,
     imageUrl: "images/EUMEPRO_OP-Maske_Typ_IIR.png",
     sizes: [],
     isGlove: false,
@@ -20,8 +20,8 @@ const BUNDLED_CATALOG_ITEMS = [
     pieces: null,
     quantity: null,
     ml: null,
-    price: 5,
-    imageUrl: "images/Duozid_Gebrauchsfertige_Desinfektionstücher_zur_Hände-und_Oberflächendesinfektion.webp",
+    price: 4,
+    imageUrl: "images/Duozid_Gebrauchsfertige_Desinfektionstuecher.webp",
     sizes: [],
     isGlove: false,
     bettschutzeinlage: false,
@@ -32,8 +32,44 @@ const BUNDLED_CATALOG_ITEMS = [
     pieces: "115 × 90 cm",
     quantity: null,
     ml: null,
-    price: 5,
-    imageUrl: "images/Hygostar_Latzschuerze_115x90cm_wiederverwendbar.webp",
+    price: 9,
+    imageUrl: "images/Hygostar_Latzschuerze_115x90cm_wiederverwendbar.png",
+    sizes: [],
+    isGlove: false,
+    bettschutzeinlage: false,
+  },
+  {
+    id: 9104,
+    name: "FFP2-Maske (EN 149)",
+    pieces: null,
+    quantity: null,
+    ml: null,
+    price: 3,
+    imageUrl: "images/FFP2-Maske.png",
+    sizes: [],
+    isGlove: false,
+    bettschutzeinlage: false,
+  },
+  {
+    id: 9105,
+    name: "BeeSana Krankenunterlagen ComCell 60 × 90 cm (25 St.)",
+    pieces: "60 × 90 cm",
+    quantity: 25,
+    ml: null,
+    price: 6,
+    imageUrl: "images/BeeSana_ComCell_60x90cm.png",
+    sizes: [],
+    isGlove: false,
+    bettschutzeinlage: false,
+  },
+  {
+    id: 9106,
+    name: "PE-Einmalschürze (Hygostar)",
+    pieces: null,
+    quantity: null,
+    ml: null,
+    price: 2,
+    imageUrl: "images/PE-Einmalschuerze.png",
     sizes: [],
     isGlove: false,
     bettschutzeinlage: false,
@@ -99,8 +135,21 @@ function mergeBundledCatalogItems() {
     if (idx === -1) {
       ITEMS.push({ ...b });
       changed = true;
-    } else if (b.imageUrl && !ITEMS[idx].imageUrl) {
-      ITEMS[idx] = { ...ITEMS[idx], imageUrl: b.imageUrl };
+      continue;
+    }
+    const cur = ITEMS[idx];
+    const next = { ...cur };
+    let itemChanged = false;
+    if (b.imageUrl && cur.imageUrl !== b.imageUrl) {
+      next.imageUrl = b.imageUrl;
+      itemChanged = true;
+    }
+    if (b.price != null && Number(cur.price) !== Number(b.price)) {
+      next.price = b.price;
+      itemChanged = true;
+    }
+    if (itemChanged) {
+      ITEMS[idx] = next;
       changed = true;
     }
   }
