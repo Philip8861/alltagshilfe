@@ -513,24 +513,32 @@
     const ms = $("wiz-birth-m");
     const ds = $("wiz-birth-d");
     if (!ys || !ms || !ds) return;
-    function rebuildDays() {
+    function birthDayDimForSelects() {
       const y = ys.value;
       const mo = ms.value;
+      if (y && mo) return daysInMonth(y, mo);
+      if (mo) return daysInMonth("2000", mo);
+      return 31;
+    }
+    function rebuildDays() {
       const cur = ds.value;
-      if (!y || !mo) {
-        ds.innerHTML = "<option value=\"\">—</option>";
-        return;
+      const dim = birthDayDimForSelects();
+      let pick = "";
+      if (cur) {
+        const n = parseInt(cur, 10);
+        if (Number.isFinite(n) && n >= 1 && n <= dim) pick = pad2(n);
+        else if (Number.isFinite(n) && n > dim) pick = pad2(dim);
       }
-      const dim = daysInMonth(y, mo);
       let s = "<option value=\"\">—</option>";
       for (let day = 1; day <= dim; day++) {
         const v = pad2(day);
-        s += "<option value=\"" + v + "\"" + (v === cur ? " selected" : "") + ">" + day + ".</option>";
+        s += "<option value=\"" + v + "\"" + (v === pick ? " selected" : "") + ">" + day + ".</option>";
       }
       ds.innerHTML = s;
     }
     ys.addEventListener("change", rebuildDays);
     ms.addEventListener("change", rebuildDays);
+    rebuildDays();
   }
 
   function wirePrivatToggle() {
