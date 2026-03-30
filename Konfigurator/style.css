@@ -77,14 +77,13 @@ html.kfg-embed .hero-wrapper {
   }
 }
 
-/* Zoom nur hier: nicht auf body — sonst kaputt: position:fixed, Scrollen */
+/* Kein zoom: verzerrt im iframe/aspect-ratio und wird oft aus Cache nie aktualisiert wahrgenommen */
 .hero-overlay {
   position: relative;
   z-index: 1;
   max-width: min(100%, 1240px);
   margin: 0 auto;
   padding: 16px 16px 32px max(40px, 6.5vw);
-  zoom: 0.823;
 }
 
 .header {
@@ -210,6 +209,7 @@ html.kfg-embed .hero-wrapper {
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 12px;
   margin-top: 3%;
+  align-items: start;
 }
 
 .item.item--double-width {
@@ -237,7 +237,7 @@ html.kfg-embed .hero-wrapper {
 }
 
 .item-inner {
-  flex: 1;
+  flex: 1 1 auto;
   min-width: 0;
   min-height: 0;
   display: flex;
@@ -260,30 +260,36 @@ html.kfg-embed .hero-wrapper {
   text-align: center;
 }
 
-/* Quadratisches Bild in der Kachel */
+/*
+ * Quadratischer Bildrahmen: Padding-Trick statt aspect-ratio (stabil trotz iframe/flex; zoom-bug-frei).
+ * box-sizing: content-box, damit 100 %-Padding sich auf die Breite bezieht und die Box wirklich quadratisch wird.
+ */
 .item-image-frame {
+  position: relative;
+  box-sizing: content-box;
   width: 100%;
   max-width: 100%;
   flex: 0 0 auto;
+  flex-shrink: 0;
   margin: 0 0 6px;
-  aspect-ratio: 1;
+  height: 0;
+  padding-bottom: 100%;
   border-radius: 14px;
   background: #ffffff;
   border: none;
   overflow: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  min-width: 0;
 }
 
-.item-image {
+.item-image-frame .item-image {
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
-  max-width: 100%;
-  max-height: 100%;
+  margin: 0;
+  display: block;
   object-fit: contain;
   object-position: center;
-  display: block;
 }
 
 .item-name {
