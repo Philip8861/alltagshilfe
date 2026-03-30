@@ -6,8 +6,6 @@
   --primary-strong: #0f4f68;
   --text-main: #0f172a;
   --text-muted: #6b7280;
-  /* Produktvorschau: volle Kartenbreite, min. Höhe für einheitliche Kacheln */
-  --item-image-min-height: 108px;
 }
 
 *,
@@ -22,7 +20,8 @@ body {
   font-family: "Nunito Sans", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   background: var(--background);
   color: var(--text-main);
-  zoom: 0.88;
+  /* Vorher 0,88; zusätzlich 15 % kleiner */
+  zoom: 0.748;
   -webkit-text-size-adjust: 100%;
 }
 
@@ -40,7 +39,8 @@ body {
   z-index: 1;
   max-width: 1100px;
   margin: 0 auto;
-  padding: 16px 16px 32px;
+  /* Mehr Luft links (Produktbereich) */
+  padding: 16px 16px 32px max(32px, 5.5vw);
 }
 
 .header {
@@ -133,6 +133,10 @@ body {
     align-self: start;
     z-index: 5;
   }
+
+  .layout > .panel:first-of-type {
+    padding-left: clamp(18px, 2.5vw, 36px);
+  }
 }
 
 .panel {
@@ -162,29 +166,28 @@ body {
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 10px;
   margin-top: 3%;
-  zoom: 0.5625;
+  /* Vorher 0,5625; mit 15 %-Reduktion */
+  zoom: 0.478;
 }
 
 .item.item--double-width {
   grid-column: span 2;
 }
 
-/* Volle Zeilenbreite, aber Bildhöhe wie bei einspaltiger Kachel (nicht quadratisch mit doppelter Kantenlänge) */
-.item.item--double-width .item-image-frame {
-  aspect-ratio: 2 / 1;
-}
-
 .item {
   position: relative;
   min-width: 0;
+  /* Quadratische Produktkacheln (weniger „hochrechteckig“) */
+  aspect-ratio: 1;
   border-radius: 20px;
-  padding: 14px 16px 16px;
+  padding: 10px 12px 12px;
   border: 1px solid rgba(15, 79, 104, 0.12);
   background: #ffffff;
   box-shadow: 0 4px 20px rgba(15, 79, 104, 0.06), 0 2px 8px rgba(15, 23, 42, 0.035);
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 4px;
+  min-height: 0;
   transition:
     transform 0.12s ease-out,
     box-shadow 0.12s ease-out,
@@ -193,10 +196,12 @@ body {
 }
 
 .item-inner {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
+  flex: 1;
   min-width: 0;
+  min-height: 0;
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto;
+  gap: 4px;
 }
 
 .item:hover {
@@ -214,14 +219,13 @@ body {
   text-align: center;
 }
 
-/* Volle Breite der Kachel; Bild komplett sichtbar (contain), kein grauer Hintergrund */
+/* Quadratisches Bildfeld (Seitenlänge = Kartenbreite) */
 .item-image-frame {
   width: 100%;
-  margin: 0 0 10px;
-  flex-shrink: 0;
+  margin: 0 0 4px;
+  flex: 0 0 auto;
   align-self: stretch;
   aspect-ratio: 1;
-  min-height: var(--item-image-min-height);
   border-radius: 14px;
   background: #ffffff;
   border: none;
@@ -243,14 +247,18 @@ body {
 
 .item-name {
   font-weight: 700;
-  font-size: clamp(1.22rem, 3.2vw, 1.48rem);
-  line-height: 1.32;
+  font-size: clamp(0.95rem, 2.6vw, 1.2rem);
+  line-height: 1.25;
   letter-spacing: -0.02em;
   color: var(--primary);
   max-width: 100%;
   overflow-wrap: anywhere;
   word-break: break-word;
   hyphens: auto;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
 }
 
 .item-description {
@@ -276,13 +284,14 @@ body {
 }
 
 .item-qty-row {
-  margin-top: 6px;
-  padding-top: 12px;
+  margin-top: 0;
+  padding-top: 8px;
   border-top: 1px solid rgba(15, 79, 104, 0.1);
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 14px;
+  gap: 10px;
+  flex-shrink: 0;
 }
 
 .item-qty-btn {
@@ -350,8 +359,10 @@ body {
 .item-inner-content {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 3px;
   min-width: 0;
+  min-height: 0;
+  overflow: hidden;
 }
 
 .item-unavailable .item-inner-content {
@@ -1254,7 +1265,7 @@ body {
   }
 
   .item-list {
-    zoom: 0.7;
+    zoom: 0.595;
     gap: 12px;
     margin-top: 2%;
   }
