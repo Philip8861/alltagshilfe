@@ -1,5 +1,6 @@
 import Image from "next/image";
 import type { Metadata } from "next";
+import { HomePartnerLoginBlock } from "@/components/home/HomePartnerLoginBlock";
 import { siteConfig } from "@/config/site";
 
 export const metadata: Metadata = {
@@ -45,6 +46,8 @@ export default function KooperationPage() {
           </div>
         </div>
       </section>
+
+      <HomePartnerLoginBlock />
     </article>
   );
 }

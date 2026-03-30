@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { Container } from "@/components/layout/Container";
 import { CookieSettingsLink } from "@/components/CookieSettingsLink";
-import { ReadabilityLaunchLink } from "@/components/accessibility/ReadabilityLaunchLink";
 import { navLinks } from "@/config/navigation";
 import { siteConfig } from "@/config/site";
 
@@ -83,9 +82,6 @@ export function Footer() {
                 >
                   Datenschutz
                 </Link>
-              </li>
-              <li>
-                <ReadabilityLaunchLink className="text-sm text-neutral-600 hover:text-neutral-900 focus:outline-none focus:ring-2 focus:ring-neutral-500 focus:ring-offset-2 rounded" />
               </li>
               <li>
                 <Link
