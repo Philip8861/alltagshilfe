@@ -1220,6 +1220,11 @@ body.pflege-wizard-open {
   -webkit-overflow-scrolling: touch;
 }
 
+/* Ohne !important gewinnt display:flex gegen das native [hidden]-Verhalten → Dialog war beim Laden sichtbar. */
+.pflege-wizard-backdrop[hidden] {
+  display: none !important;
+}
+
 .pflege-wizard-modal {
   position: relative;
   width: 100%;
