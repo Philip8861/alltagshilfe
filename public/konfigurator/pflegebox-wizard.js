@@ -689,7 +689,6 @@
     }
     nein?.addEventListener("change", sync);
     ja?.addEventListener("change", sync);
-    $("wiz-ber-tele")?.addEventListener("change", sync);
     document.querySelectorAll('input[name="wiz-ber-kanal"]').forEach((el) => {
       el.addEventListener("change", sync);
     });
