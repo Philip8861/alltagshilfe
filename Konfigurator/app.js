@@ -511,6 +511,7 @@ function closeGloveModal() {
     modal.setAttribute("aria-hidden", "true");
   }
   document.documentElement.style.overflow = "";
+  document.body.style.overflow = "";
   pendingGloveItemId = null;
   pendingGloveMaterial = null;
   pendingGloveSize = null;
@@ -536,6 +537,7 @@ function openGloveModal(itemId) {
   modal.classList.add("is-open");
   modal.setAttribute("aria-hidden", "false");
   document.documentElement.style.overflow = "hidden";
+  document.body.style.overflow = "hidden";
 
   requestAnimationFrame(() => {
     modal.querySelector(".handschuh-dialog")?.focus();
