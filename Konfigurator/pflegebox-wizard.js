@@ -12,7 +12,7 @@
     { key: "n1", section: "Bestellung", title: "Anmerkung", motivation: "" },
     { key: "l1", section: "Rechtliches", title: "AGB & Datenschutz", motivation: "" },
     { key: "r1", section: "Empfehlung", title: "Partner-Code (optional)", motivation: "" },
-    { key: "s1", section: "Unterschrift", title: "Unterschrift", motivation: "" },
+    { key: "s1", section: "Unterschrift", title: "", motivation: "" },
   ];
 
   /** Pflegeboxi: Kurztext zum aktuellen Schritt. */
@@ -472,7 +472,10 @@
     if (!body) return;
 
     if (sec) sec.textContent = meta.section;
-    if (title) title.textContent = meta.title;
+    if (title) {
+      title.textContent = meta.title;
+      title.hidden = !String(meta.title || "").trim();
+    }
     if (mot) {
       if (meta.motivation.trim()) {
         mot.textContent = meta.motivation;
@@ -504,7 +507,7 @@
           <div class="wiz-radio-row">
             <label><input type="radio" name="wiz-salutation" value="herr" ${data.salutation === "herr" ? "checked" : ""}/> Herr</label>
             <label><input type="radio" name="wiz-salutation" value="frau" ${data.salutation === "frau" ? "checked" : ""}/> Frau</label>
-            <label><input type="radio" name="wiz-salutation" value="divers" ${data.salutation === "divers" ? "checked" : ""}/> divers</label>
+            <label class="wiz-radio-label--divers"><input type="radio" name="wiz-salutation" value="divers" ${data.salutation === "divers" ? "checked" : ""}/> Divers</label>
           </div>
         </div>
         <div class="wiz-field-row">
@@ -648,6 +651,7 @@
     }
 
     body.innerHTML = html;
+    body.classList.toggle("pflege-wizard-body--sig-step", meta.key === "s1");
     if (meta.key === "p2") {
       wireBirthSelects();
     }
@@ -660,6 +664,13 @@
     }
     if (meta.key === "r1") {
       wirePartnerField();
+    }
+
+    const modalDlg = bd?.querySelector(".pflege-wizard-modal");
+    if (modalDlg) {
+      const parts = ["pflege-wizard-section"];
+      if (title && !title.hidden) parts.push("pflege-wizard-title");
+      modalDlg.setAttribute("aria-labelledby", parts.join(" "));
     }
   }
 

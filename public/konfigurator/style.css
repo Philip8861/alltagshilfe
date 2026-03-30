@@ -1,6 +1,6 @@
  :root {
-  --background: #fefefe;
-  --surface: #fefefe;
+  --background: #f1f9fb;
+  --surface: #ffffff;
   --surface-muted: #f3f4f6;
   --primary: #0f4f68;
   --primary-strong: #0f4f68;
@@ -30,7 +30,7 @@ body {
   position: relative;
   min-height: 100vh;
   overflow: hidden;
-  background: #fefefe;
+  background: #f1f9fb;
 }
 
 .hero-overlay {
@@ -167,7 +167,7 @@ body {
   border-radius: 20px;
   padding: 14px 16px 16px;
   border: 1px solid rgba(15, 79, 104, 0.12);
-  background: #fefefe;
+  background: #ffffff;
   box-shadow: 0 4px 20px rgba(15, 79, 104, 0.06), 0 2px 8px rgba(15, 23, 42, 0.035);
   display: flex;
   flex-direction: column;
@@ -210,7 +210,7 @@ body {
   aspect-ratio: 1;
   min-height: var(--item-image-min-height);
   border-radius: 14px;
-  background: #fefefe;
+  background: #ffffff;
   border: none;
   overflow: hidden;
   display: flex;
@@ -375,7 +375,7 @@ body {
   min-height: 60px;
   padding: 8px 6px 2px;
   border-radius: 10px;
-  background: #fefefe;
+  background: #ffffff;
 }
 
 .btn-next-step {
@@ -427,7 +427,7 @@ body {
   gap: 10px;
   padding: 8px 9px;
   border-radius: 10px;
-  background: #fefefe;
+  background: #ffffff;
 }
 
 .cart-item-image-frame {
@@ -437,7 +437,7 @@ body {
   flex-shrink: 0;
   margin-right: 6px;
   border-radius: 8px;
-  background: #fefefe;
+  background: #ffffff;
   overflow: hidden;
   align-self: center;
 }
@@ -1719,7 +1719,9 @@ body.pflege-wizard-open {
   max-height: min(94dvh, 100%);
   display: flex;
   flex-direction: column;
-  gap: 0.65rem;
+  align-items: stretch;
+  justify-content: flex-start;
+  gap: 0.75rem;
   padding: 1rem 1.1rem 1.1rem;
   border-radius: 1.05rem;
   background: var(--surface);
@@ -1727,30 +1729,25 @@ body.pflege-wizard-open {
   box-shadow: 0 24px 64px rgba(15, 23, 42, 0.38);
 }
 
-.pflege-wizard-sig-title {
-  margin: 0;
-  font-size: 1.12rem;
-  font-weight: 800;
-  color: var(--primary);
-}
-
 .pflege-wizard-sig-lead {
   margin: 0;
-  font-size: 0.9rem;
+  font-size: 1.02rem;
+  font-weight: 700;
   line-height: 1.45;
-  color: var(--text-muted);
+  color: var(--primary);
 }
 
 .pflege-wizard-sig-canvas-wrap {
   width: 100%;
-  height: min(66dvh, 66vh);
-  min-height: 240px;
-  max-height: min(66dvh, 720px);
+  height: auto;
+  aspect-ratio: 5 / 2;
+  min-height: 200px;
+  max-height: min(40dvh, 360px);
   border-radius: 0.85rem;
   overflow: hidden;
-  background: #f8fafc;
-  border: 1px solid rgba(15, 79, 104, 0.16);
-  box-shadow: inset 0 2px 14px rgba(15, 79, 104, 0.07);
+  background: #ffffff;
+  border: 2px solid var(--primary);
+  box-shadow: 0 2px 12px rgba(15, 79, 104, 0.08);
   touch-action: none;
 }
 
@@ -1793,16 +1790,20 @@ body.pflege-wizard-open {
 }
 
 .wiz-open-sig-btn {
-  margin-top: 0.45rem;
-  min-height: 2.9rem;
-  padding: 0.65rem 1.4rem;
+  display: block;
+  margin: 0.55rem auto 0;
+  min-height: 3.35rem;
+  padding: 0.85rem 2.25rem;
+  font-size: 1.12rem;
   font-weight: 700;
-  width: 100%;
-  max-width: 22rem;
+  width: auto;
+  min-width: min(18rem, 100%);
+  max-width: calc(100% - 0.5rem);
 }
 
 .wiz-sig-step-intro {
-  margin-bottom: 0.15rem;
+  margin: 0 0 0.35rem;
+  text-align: center;
 }
 
 .pflege-wizard-close {
@@ -1887,6 +1888,15 @@ body.pflege-wizard-open {
   min-height: 4rem;
   padding: 0.5rem 1.35rem 0.25rem;
   background: var(--wiz-mid);
+}
+
+.pflege-wizard-body--sig-step {
+  min-height: 0;
+  padding-top: 0.75rem;
+  padding-bottom: 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .pflege-wizard-body .wiz-field {
@@ -2050,6 +2060,12 @@ body.pflege-wizard-open {
   display: flex;
   flex-wrap: wrap;
   gap: 0.75rem 1.25rem;
+}
+
+.pflege-wizard-body .wiz-radio-label--divers {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--primary);
 }
 
 .pflege-wizard-body .wiz-radio-col {
