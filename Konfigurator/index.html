@@ -310,6 +310,26 @@
       </div>
     </div>
 
+    <div id="pflege-wizard-sig-layer" class="pflege-wizard-sig-layer" hidden>
+      <div
+        class="pflege-wizard-sig-panel"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="pflege-wizard-sig-title"
+      >
+        <h3 class="pflege-wizard-sig-title" id="pflege-wizard-sig-title">Unterschrift</h3>
+        <p class="pflege-wizard-sig-lead">Zeichnen Sie mit Maus, Finger oder Stift im weißen Feld.</p>
+        <div id="wiz-sig-canvas-wrap" class="pflege-wizard-sig-canvas-wrap">
+          <canvas id="wiz-signature" class="wiz-signature-canvas wiz-signature-canvas--overlay" width="1" height="1" aria-label="Unterschrift zeichnen"></canvas>
+        </div>
+        <p id="pflege-wizard-sig-error" class="pflege-wizard-sig-error" role="alert" hidden></p>
+        <div class="pflege-wizard-sig-actions">
+          <button type="button" class="admin-btn" id="wiz-sig-reset-overlay">Unterschrift Zurücksetzen</button>
+          <button type="button" class="btn-primary" id="wiz-sig-submit-overlay">Bestellung abschicken</button>
+        </div>
+      </div>
+    </div>
+
     <div id="pflege-wizard-success-layer" class="pflege-wizard-success-layer" hidden>
       <div
         class="pflege-wizard-success-dialog"

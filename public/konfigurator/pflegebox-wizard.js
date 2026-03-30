@@ -15,8 +15,18 @@
     { key: "s1", section: "Unterschrift", title: "Unterschrift", motivation: "" },
   ];
 
-  /** Pflegeboxi-Sprechblasen (optional pro Schritt); leer = Blase ausgeblendet. */
-  const BOXI_STEP_INTROS = ["", "", "", "", "", "", "", "", ""];
+  /** Pflegeboxi: Kurztext zum aktuellen Schritt. */
+  const BOXI_STEP_INTROS = [
+    "Hier noch schnell Ihre persönlichen Daten: Anrede, Vor- und Nachname.",
+    "Jetzt Ihre Adresse, PLZ, Ort und Ihr Geburtsdatum.",
+    "Hier geht es um Ihre Krankenversicherung, gesetzlich oder privat.",
+    "Auf dieser Seite wählen Sie Ihren Pflegegrad.",
+    "Hier sagen Sie, ob Sie eine persönliche Beratung wünschen und wie wir Sie erreichen dürfen.",
+    "Optional: Hier dürfen Sie eine Anmerkung zu Ihrer Bestellung schreiben.",
+    "Bitte lesen und bestätigen Sie die AGB und die Datenschutzhinweise.",
+    "Optional: Tragen Sie einen Partner-Code ein, falls Sie empfohlen wurden.",
+    "Zum Schluss fehlt nur noch Ihre Unterschrift. Tippen Sie auf „Jetzt unterschreiben“.",
+  ];
 
   function $(id) {
     return document.getElementById(id);
@@ -129,16 +139,40 @@
   let sigCtx = null;
   let sigDrawing = false;
   let sigHadStroke = false;
+  let sigLogicalW = 0;
+  let sigLogicalH = 0;
+  /** Letzte initiale Größe der Signaturfläche (bei Änderung wird neu initialisiert). */
+  let sigOverlayDims = null;
 
   function showError(msg) {
-    const el = $("pflege-wizard-error");
-    if (!el) return;
+    const sigLayer = $("pflege-wizard-sig-layer");
+    const sigErr = $("pflege-wizard-sig-error");
+    const mainEl = $("pflege-wizard-error");
+    if (sigLayer && !sigLayer.hidden && sigErr) {
+      if (msg) {
+        sigErr.textContent = msg;
+        sigErr.hidden = false;
+      } else {
+        sigErr.textContent = "";
+        sigErr.hidden = true;
+      }
+      if (mainEl) {
+        mainEl.textContent = "";
+        mainEl.hidden = true;
+      }
+      return;
+    }
+    if (sigErr) {
+      sigErr.textContent = "";
+      sigErr.hidden = true;
+    }
+    if (!mainEl) return;
     if (msg) {
-      el.textContent = msg;
-      el.hidden = false;
+      mainEl.textContent = msg;
+      mainEl.hidden = false;
     } else {
-      el.textContent = "";
-      el.hidden = true;
+      mainEl.textContent = "";
+      mainEl.hidden = true;
     }
   }
 
@@ -212,9 +246,6 @@
     if (s.key === "r1") {
       const c = data.partnerCode.trim();
       if (c && data.partnerLookupOk === false) return "Partner konnte nicht zugeteilt werden.";
-    }
-    if (s.key === "s1") {
-      if (!sigHadStroke) return "Bitte unterschreiben Sie im Feld.";
     }
     return "";
   }
@@ -316,7 +347,10 @@
     }
 
     if (backBtn) backBtn.textContent = stepIndex === 0 ? "Abbrechen" : "Zurück";
-    if (nextBtn) nextBtn.textContent = meta.key === "s1" ? "Bestellung absenden" : "Weiter";
+    if (nextBtn) {
+      nextBtn.hidden = meta.key === "s1";
+      if (!nextBtn.hidden) nextBtn.textContent = "Weiter";
+    }
 
     let html = "";
     if (meta.key === "p1") {
@@ -465,11 +499,8 @@
         </div>`;
     } else if (meta.key === "s1") {
       html = `
-        <p class="wiz-hint">Unterschreiben Sie mit Maus, Touch oder Stift im Feld.</p>
-        <div class="wiz-sig-wrap">
-          <canvas id="wiz-signature" class="wiz-signature-canvas" role="img" aria-label="Unterschrift"></canvas>
-        </div>
-        <button type="button" class="admin-btn wiz-sig-clear" id="wiz-sig-clear">Unterschrift löschen</button>`;
+        <p class="wiz-hint wiz-sig-step-intro">Hier bestätigen Sie Ihre Bestellung mit einer Unterschrift.</p>
+        <button type="button" class="btn-primary wiz-open-sig-btn" id="wiz-open-sig-overlay">Jetzt unterschreiben</button>`;
     }
 
     body.innerHTML = html;
@@ -485,9 +516,6 @@
     }
     if (meta.key === "r1") {
       wirePartnerField();
-    }
-    if (meta.key === "s1") {
-      initSignature();
     }
   }
 
@@ -589,16 +617,62 @@
     };
   }
 
-  function initSignature() {
+  function sigPos(e) {
+    if (!sigCanvas || !sigLogicalW) return { x: 0, y: 0 };
+    const r = sigCanvas.getBoundingClientRect();
+    if (r.width < 1 || r.height < 1) return { x: 0, y: 0 };
+    const scaleX = sigLogicalW / r.width;
+    const scaleY = sigLogicalH / r.height;
+    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+    const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+    return { x: (clientX - r.left) * scaleX, y: (clientY - r.top) * scaleY };
+  }
+
+  function sigStart(e) {
+    if (!sigCtx) return;
+    e.preventDefault();
+    sigDrawing = true;
+    const p = sigPos(e);
+    sigCtx.beginPath();
+    sigCtx.moveTo(p.x, p.y);
+  }
+
+  function sigMove(e) {
+    if (!sigDrawing || !sigCtx) return;
+    e.preventDefault();
+    const p = sigPos(e);
+    sigCtx.lineTo(p.x, p.y);
+    sigCtx.stroke();
+    sigHadStroke = true;
+  }
+
+  function sigEnd(e) {
+    e.preventDefault();
+    sigDrawing = false;
+  }
+
+  function wireSignaturePadEvents() {
+    const c = $("wiz-signature");
+    if (!c || c.dataset.sigPadWired === "1") return;
+    c.dataset.sigPadWired = "1";
+    c.addEventListener("mousedown", sigStart);
+    c.addEventListener("mousemove", sigMove);
+    c.addEventListener("mouseup", sigEnd);
+    c.addEventListener("mouseleave", sigEnd);
+    c.addEventListener("touchstart", sigStart, { passive: false });
+    c.addEventListener("touchmove", sigMove, { passive: false });
+    c.addEventListener("touchend", sigEnd);
+  }
+
+  function initSignatureBitmap(W, H) {
     sigCanvas = $("wiz-signature");
     if (!sigCanvas || !sigCanvas.getContext) return;
-    const W = 560;
-    const H = 224;
     const dpr = Math.min(typeof window !== "undefined" ? window.devicePixelRatio || 1 : 1, 2.5);
     sigCtx = sigCanvas.getContext("2d", { alpha: false });
+    sigLogicalW = W;
+    sigLogicalH = H;
     sigCanvas.width = Math.round(W * dpr);
     sigCanvas.height = Math.round(H * dpr);
-    sigHadStroke = false;
     sigCtx.setTransform(1, 0, 0, 1, 0, 0);
     sigCtx.scale(dpr, dpr);
     sigCtx.fillStyle = "#ffffff";
@@ -607,48 +681,41 @@
     sigCtx.lineWidth = 2.25;
     sigCtx.lineCap = "round";
     sigCtx.lineJoin = "round";
+    sigHadStroke = false;
+  }
 
-    function pos(e) {
-      const r = sigCanvas.getBoundingClientRect();
-      const scaleX = W / r.width;
-      const scaleY = H / r.height;
-      const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-      const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-      return { x: (clientX - r.left) * scaleX, y: (clientY - r.top) * scaleY };
+  function hideSigOverlay() {
+    const layer = $("pflege-wizard-sig-layer");
+    if (layer) layer.hidden = true;
+    const modal = document.querySelector("#pflegebox-wizard-backdrop .pflege-wizard-modal");
+    const successLayer = $("pflege-wizard-success-layer");
+    if (modal && (!successLayer || successLayer.hidden)) {
+      modal.removeAttribute("inert");
     }
+  }
 
-    function start(e) {
-      e.preventDefault();
-      sigDrawing = true;
-      const p = pos(e);
-      sigCtx.beginPath();
-      sigCtx.moveTo(p.x, p.y);
-    }
-    function move(e) {
-      if (!sigDrawing) return;
-      e.preventDefault();
-      const p = pos(e);
-      sigCtx.lineTo(p.x, p.y);
-      sigCtx.stroke();
-      sigHadStroke = true;
-    }
-    function end(e) {
-      e.preventDefault();
-      sigDrawing = false;
-    }
-
-    sigCanvas.addEventListener("mousedown", start);
-    sigCanvas.addEventListener("mousemove", move);
-    sigCanvas.addEventListener("mouseup", end);
-    sigCanvas.addEventListener("mouseleave", end);
-    sigCanvas.addEventListener("touchstart", start, { passive: false });
-    sigCanvas.addEventListener("touchmove", move, { passive: false });
-    sigCanvas.addEventListener("touchend", end);
-
-    $("wiz-sig-clear")?.addEventListener("click", () => {
-      sigCtx.fillStyle = "#ffffff";
-      sigCtx.fillRect(0, 0, W, H);
-      sigHadStroke = false;
+  function openSigOverlay() {
+    const layer = $("pflege-wizard-sig-layer");
+    if (!layer) return;
+    showError("");
+    layer.hidden = false;
+    document.querySelector("#pflegebox-wizard-backdrop .pflege-wizard-modal")?.setAttribute("inert", "");
+    wireSignaturePadEvents();
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        const wrap = $("wiz-sig-canvas-wrap");
+        const r = wrap?.getBoundingClientRect();
+        if (!r || r.width < 16 || r.height < 16) return;
+        const w = Math.floor(r.width);
+        const h = Math.floor(r.height);
+        const needsInit =
+          !sigOverlayDims || sigOverlayDims.w !== w || sigOverlayDims.h !== h || !sigCtx;
+        if (needsInit) {
+          initSignatureBitmap(w, h);
+          sigOverlayDims = { w, h };
+        }
+        $("wiz-sig-reset-overlay")?.focus();
+      });
     });
   }
 
@@ -673,10 +740,6 @@
       showError(err);
       return;
     }
-    if (meta.key === "s1") {
-      void submitOrder();
-      return;
-    }
     stepIndex += 1;
     render();
     triggerBoxiHop();
@@ -694,8 +757,13 @@
   }
 
   async function submitOrder() {
-    if (!sigCanvas) return;
+    sigCanvas = $("wiz-signature");
+    if (!sigCanvas || !sigCanvas.getContext) return;
     syncFromDom();
+    if (!sigHadStroke) {
+      showError("Bitte unterschreiben Sie im großen Feld, bevor Sie abschicken.");
+      return;
+    }
     const err = validateCurrentStep();
     if (err) {
       showError(err);
@@ -703,9 +771,14 @@
     }
     const signatureDataUrl = sigCanvas.toDataURL("image/png");
     const nextBtn = $("pflege-wizard-next");
+    const submitOverlay = $("wiz-sig-submit-overlay");
     if (nextBtn) {
       nextBtn.disabled = true;
       nextBtn.textContent = "Wird gesendet…";
+    }
+    if (submitOverlay) {
+      submitOverlay.disabled = true;
+      submitOverlay.textContent = "Wird gesendet…";
     }
     showError("");
 
@@ -770,6 +843,7 @@
         showError(msg);
         return;
       }
+      hideSigOverlay();
       orderEndedWithSuccessScreen = true;
       showWizardOrderSuccess(j.reference || null);
       return;
@@ -778,7 +852,12 @@
     } finally {
       if (nextBtn && !orderEndedWithSuccessScreen) {
         nextBtn.disabled = false;
-        nextBtn.textContent = "Bestellung absenden";
+        nextBtn.textContent = "Weiter";
+      }
+      const submitOv = $("wiz-sig-submit-overlay");
+      if (submitOv && !orderEndedWithSuccessScreen) {
+        submitOv.disabled = false;
+        submitOv.textContent = "Bestellung abschicken";
       }
     }
   }
@@ -810,6 +889,12 @@
     const bd = $("pflegebox-wizard-backdrop");
     if (bd) bd.hidden = false;
     hideWizardSuccessLayer();
+    hideSigOverlay();
+    sigOverlayDims = null;
+    sigHadStroke = false;
+    sigCtx = null;
+    sigLogicalW = 0;
+    sigLogicalH = 0;
     pendingOrderReference = null;
     showError("");
     render();
@@ -894,6 +979,14 @@
   function onDocKeydown(e) {
     const bd = $("pflegebox-wizard-backdrop");
     if (!bd || bd.hidden) return;
+    const sigLayer = $("pflege-wizard-sig-layer");
+    if (sigLayer && !sigLayer.hidden) {
+      if (e.key === "Escape") {
+        e.preventDefault();
+        hideSigOverlay();
+      }
+      return;
+    }
     const successLayer = $("pflege-wizard-success-layer");
     if (successLayer && !successLayer.hidden) {
       if (e.key === "Escape") {
@@ -917,6 +1010,7 @@
   function close() {
     document.removeEventListener("keydown", onDocKeydown);
     hideWizardSuccessLayer();
+    hideSigOverlay();
     hideCancelConfirm();
     pendingOrderReference = null;
     const bd = $("pflegebox-wizard-backdrop");
@@ -953,12 +1047,33 @@
     });
   }
 
+  function wireSignatureOverlayUi() {
+    $("wiz-sig-reset-overlay")?.addEventListener("click", () => {
+      if (!sigCtx || !sigLogicalW) return;
+      sigCtx.fillStyle = "#ffffff";
+      sigCtx.fillRect(0, 0, sigLogicalW, sigLogicalH);
+      sigHadStroke = false;
+    });
+    $("wiz-sig-submit-overlay")?.addEventListener("click", () => void submitOrder());
+    $("pflege-wizard-sig-layer")?.addEventListener("click", (e) => {
+      if (e.target === e.currentTarget) hideSigOverlay();
+    });
+    $("pflegebox-wizard-backdrop")?.addEventListener("click", (e) => {
+      const t = e.target;
+      if (t && typeof t.closest === "function" && t.closest("#wiz-open-sig-overlay")) {
+        e.preventDefault();
+        openSigOverlay();
+      }
+    });
+  }
+
   function wireNav() {
     $("pflege-wizard-next")?.addEventListener("click", () => void goNext());
     $("pflege-wizard-back")?.addEventListener("click", goBack);
     $("pflege-wizard-close")?.addEventListener("click", requestCloseWizard);
     wireCancelDialog();
     wireSuccessDialog();
+    wireSignatureOverlayUi();
   }
 
   document.addEventListener("DOMContentLoaded", wireNav);
