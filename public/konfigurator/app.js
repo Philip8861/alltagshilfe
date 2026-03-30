@@ -35,12 +35,6 @@ function calculateCartTotal() {
   }, 0);
 }
 
-/** Schritt 2 (Dateneingabe) erst ab komplett ausgeschöpftem Budget (42 €). */
-function isBudgetExactlyFull() {
-  const total = calculateCartTotal();
-  return Math.abs(total - MAX_BUDGET) < 0.02;
-}
-
 function saveItemsToStorage() {
   try {
     window.localStorage.setItem("konfigurator_items", JSON.stringify(ITEMS));
@@ -95,14 +89,11 @@ function updateBudgetDisplay() {
 
   const btnNextStep = document.getElementById("btn-next-step");
   if (btnNextStep) {
-    const full = isBudgetExactlyFull();
-    btnNextStep.disabled = !full;
-    btnNextStep.title = full
+    const hasItems = cart.length > 0;
+    btnNextStep.disabled = !hasItems;
+    btnNextStep.title = hasItems
       ? ""
-      : `Bitte wählen Sie Artikel im Wert von genau ${MAX_BUDGET.toLocaleString("de-DE", {
-          style: "currency",
-          currency: "EUR",
-        })}. Aktuell: ${total.toLocaleString("de-DE", { style: "currency", currency: "EUR" })}.`;
+      : "Bitte wählen Sie mindestens einen Artikel für Ihre Pflegebox.";
   }
 }
 
@@ -929,16 +920,8 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function openPflegeboxWizard() {
-    if (!isBudgetExactlyFull()) {
-      window.alert(
-        `Die Dateneingabe ist erst möglich, wenn Ihr Warenkorb genau ${MAX_BUDGET.toLocaleString("de-DE", {
-          style: "currency",
-          currency: "EUR",
-        })} erreicht. Aktuell: ${calculateCartTotal().toLocaleString("de-DE", {
-          style: "currency",
-          currency: "EUR",
-        })}.`,
-      );
+    if (cart.length === 0) {
+      window.alert("Bitte wählen Sie zuerst Artikel für Ihre Pflegebox.");
       return;
     }
     if (!window.PflegeboxWizard || typeof window.PflegeboxWizard.open !== "function") return;
@@ -954,18 +937,6 @@ document.addEventListener("DOMContentLoaded", () => {
     btnNext.addEventListener("click", () => {
       if (cart.length === 0) {
         window.alert("Bitte wählen Sie zuerst Artikel für Ihre Pflegebox.");
-        return;
-      }
-      if (!isBudgetExactlyFull()) {
-        window.alert(
-          `Bitte füllen Sie die Pflegebox mit Artikeln im Wert von genau ${MAX_BUDGET.toLocaleString("de-DE", {
-            style: "currency",
-            currency: "EUR",
-          })}. Aktuell: ${calculateCartTotal().toLocaleString("de-DE", {
-            style: "currency",
-            currency: "EUR",
-          })}.`,
-        );
         return;
       }
       setFlowStep(2);

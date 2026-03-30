@@ -174,18 +174,21 @@
   }
 
   function render() {
-    const meta = STEPS[stepIndex];
-    const sec = $("pflege-wizard-section");
-    const title = $("pflege-wizard-title");
-    const mot = $("pflege-wizard-motivation");
-    const body = $("pflege-wizard-body");
-    const backBtn = $("pflege-wizard-back");
-    const nextBtn = $("pflege-wizard-next");
-    if (!body || !title || !mot) return;
+    const meta = STEPS[stepIndex] ?? STEPS[0];
+    const bd = $("pflegebox-wizard-backdrop");
+    /** Im Modal verankern, damit immer die richtigen Knoten befüllt werden (kein Abbruch wenn z. B. nur Titel/Motivation fehlen). */
+    const q = (sel) => (bd?.querySelector(sel) ?? document.querySelector(sel));
+    const sec = q("#pflege-wizard-section");
+    const title = q("#pflege-wizard-title");
+    const mot = q("#pflege-wizard-motivation");
+    const body = q("#pflege-wizard-body");
+    const backBtn = q("#pflege-wizard-back");
+    const nextBtn = q("#pflege-wizard-next");
+    if (!body) return;
 
     if (sec) sec.textContent = meta.section;
-    title.textContent = meta.title;
-    mot.textContent = meta.motivation;
+    if (title) title.textContent = meta.title;
+    if (mot) mot.textContent = meta.motivation;
 
     if (backBtn) backBtn.textContent = stepIndex === 0 ? "Abbrechen" : "Zurück";
     if (nextBtn) nextBtn.textContent = meta.key === "s1" ? "Bestellung absenden" : "Weiter";
