@@ -15,6 +15,19 @@
     { key: "s1", section: "Unterschrift", title: "Unterschrift", motivation: "Zum Schluss: bitte unterschreiben Sie hier." },
   ];
 
+  /** Pflegeboxi: kündigt an, was nach „Weiter“ kommt (letzter Schritt: Absenden). */
+  const BOXI_NEXT_HINTS = [
+    "Als Nächstes: Adresse und Geburtsdatum – dann sind Ihre Personendaten komplett.",
+    "Super! Gleich geht es um Ihre Krankenversicherung.",
+    "Danach nur noch der Pflegegrad – das geht schnell.",
+    "Weiter geht es mit der Frage zur persönlichen Beratung.",
+    "Dann dürfen Sie optional eine Anmerkung zur Bestellung schreiben.",
+    "Gleich folgen AGB und Datenschutz – wir sind schon sehr nah dran.",
+    "Als Nächstes: Partner-Code, falls Sie empfohlen wurden – oder einfach überspringen.",
+    "Zum Schluss nur noch unterschreiben – dann ist Ihre Bestellung fertig!",
+    "Weiter so, gleich sind wir fertig! Unterschreiben Sie unten und tippen Sie auf „Bestellung absenden“.",
+  ];
+
   function $(id) {
     return document.getElementById(id);
   }
@@ -282,6 +295,9 @@
     if (sec) sec.textContent = meta.section;
     if (title) title.textContent = meta.title;
     if (mot) mot.textContent = meta.motivation;
+
+    const boxiBubble = q("#pflege-wizard-boxi-bubble");
+    if (boxiBubble) boxiBubble.textContent = BOXI_NEXT_HINTS[stepIndex] ?? "";
 
     if (backBtn) backBtn.textContent = stepIndex === 0 ? "Abbrechen" : "Zurück";
     if (nextBtn) nextBtn.textContent = meta.key === "s1" ? "Bestellung absenden" : "Weiter";
@@ -774,27 +790,87 @@
       if (STEPS[stepIndex] && STEPS[stepIndex].key === "v1") render();
     });
     document.body.classList.add("pflege-wizard-open");
+    document.addEventListener("keydown", onDocKeydown);
+  }
+
+  function hideCancelConfirm() {
+    const layer = $("pflege-wizard-cancel-layer");
+    const modal = document.querySelector("#pflegebox-wizard-backdrop .pflege-wizard-modal");
+    if (layer) layer.hidden = true;
+    if (modal) modal.removeAttribute("inert");
+  }
+
+  function showCancelConfirm() {
+    const layer = $("pflege-wizard-cancel-layer");
+    const modal = document.querySelector("#pflegebox-wizard-backdrop .pflege-wizard-modal");
+    if (!layer) {
+      if (window.confirm("Möchten Sie den Vorgang wirklich abbrechen?")) {
+        confirmAbortWizard();
+      }
+      return;
+    }
+    layer.hidden = false;
+    if (modal) modal.setAttribute("inert", "");
+    requestAnimationFrame(() => {
+      $("pflege-wizard-cancel-no")?.focus();
+    });
+  }
+
+  function confirmAbortWizard() {
+    hideCancelConfirm();
+    close();
+    window.dispatchEvent(new CustomEvent("pflegebox-wizard-cancel"));
+  }
+
+  function onDocKeydown(e) {
+    const bd = $("pflegebox-wizard-backdrop");
+    if (!bd || bd.hidden) return;
+    if (e.key !== "Escape") return;
+    const layer = $("pflege-wizard-cancel-layer");
+    if (layer && !layer.hidden) {
+      e.preventDefault();
+      hideCancelConfirm();
+      $("pflege-wizard-close")?.focus();
+      return;
+    }
+    e.preventDefault();
+    showCancelConfirm();
   }
 
   function close() {
+    document.removeEventListener("keydown", onDocKeydown);
+    hideCancelConfirm();
     const bd = $("pflegebox-wizard-backdrop");
     if (bd) bd.hidden = true;
     document.body.classList.remove("pflege-wizard-open");
     config = null;
   }
 
-  /** Schließen-Button (X): immer ganzen Vorgang beenden – mit Rückfrage. */
+  /** Schließen-Button (X): Abbruch-Dialog im Layout der Seite. */
   function requestCloseWizard() {
-    const ok = window.confirm("Möchten Sie den Vorgang wirklich abbrechen?");
-    if (!ok) return;
-    close();
-    window.dispatchEvent(new CustomEvent("pflegebox-wizard-cancel"));
+    showCancelConfirm();
+  }
+
+  function wireCancelDialog() {
+    const layer = $("pflege-wizard-cancel-layer");
+    $("pflege-wizard-cancel-yes")?.addEventListener("click", confirmAbortWizard);
+    $("pflege-wizard-cancel-no")?.addEventListener("click", () => {
+      hideCancelConfirm();
+      $("pflege-wizard-close")?.focus();
+    });
+    layer?.addEventListener("click", (e) => {
+      if (e.target === layer) {
+        hideCancelConfirm();
+        $("pflege-wizard-close")?.focus();
+      }
+    });
   }
 
   function wireNav() {
     $("pflege-wizard-next")?.addEventListener("click", () => void goNext());
     $("pflege-wizard-back")?.addEventListener("click", goBack);
     $("pflege-wizard-close")?.addEventListener("click", requestCloseWizard);
+    wireCancelDialog();
   }
 
   document.addEventListener("DOMContentLoaded", wireNav);

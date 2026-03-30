@@ -279,11 +279,25 @@
       role="dialog"
       aria-modal="true"
       aria-labelledby="pflege-wizard-section pflege-wizard-title"
-      aria-describedby="pflege-wizard-motivation"
+      aria-describedby="pflege-wizard-motivation pflege-wizard-boxi-bubble"
     >
       <button type="button" class="pflege-wizard-close" id="pflege-wizard-close" aria-label="Schließen">
         ×
       </button>
+      <div class="pflege-wizard-boxi">
+        <div class="pflege-wizard-boxi-figure">
+          <img
+            class="pflege-wizard-boxi-img"
+            src="images/pflegeboxi.webp"
+            onerror="this.onerror=null;this.src='images/pflegeboxi.png';"
+            width="88"
+            height="88"
+            alt="Pflegeboxi"
+            decoding="async"
+          />
+        </div>
+        <p class="pflege-wizard-boxi-bubble" id="pflege-wizard-boxi-bubble" role="status" aria-live="polite"></p>
+      </div>
       <div class="pflege-wizard-heading">
         <p class="pflege-wizard-section" id="pflege-wizard-section"></p>
         <h2 class="pflege-wizard-title" id="pflege-wizard-title"></h2>
@@ -294,6 +308,25 @@
       <div class="pflege-wizard-nav">
         <button type="button" class="admin-btn" id="pflege-wizard-back">Zurück</button>
         <button type="button" class="btn-primary" id="pflege-wizard-next">Weiter</button>
+      </div>
+    </div>
+
+    <div id="pflege-wizard-cancel-layer" class="pflege-wizard-cancel-layer" hidden>
+      <div
+        class="pflege-wizard-cancel-dialog"
+        role="alertdialog"
+        aria-modal="true"
+        aria-labelledby="pflege-wizard-cancel-title"
+        aria-describedby="pflege-wizard-cancel-text"
+      >
+        <h3 class="pflege-wizard-cancel-title" id="pflege-wizard-cancel-title">Vorgang abbrechen?</h3>
+        <p class="pflege-wizard-cancel-text" id="pflege-wizard-cancel-text">
+          Möchten Sie den Vorgang wirklich abbrechen? Ihre bisherigen Eingaben in diesem Formular gehen dabei verloren.
+        </p>
+        <div class="pflege-wizard-cancel-actions">
+          <button type="button" class="admin-btn" id="pflege-wizard-cancel-no">Nein, weiter</button>
+          <button type="button" class="btn-primary" id="pflege-wizard-cancel-yes">Ja, abbrechen</button>
+        </div>
       </div>
     </div>
   </div>
