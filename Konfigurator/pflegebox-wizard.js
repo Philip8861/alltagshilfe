@@ -38,6 +38,174 @@
   /** Referenz für Event nach Schließen des Erfolgs-Overlays */
   let pendingOrderReference = null;
 
+  let successFwRaf = null;
+  let successFwParticles = [];
+  let successFwOnResize = null;
+  let successFwLastT = 0;
+  let successFwSpawnAcc = 0;
+
+  const SUCCESS_FW_COLORS = [
+    "#ffe066",
+    "#ff6b6b",
+    "#4ecdc4",
+    "#a78bfa",
+    "#f472b6",
+    "#ffffff",
+    "#ffd700",
+    "#7dd3fc",
+    "#fb7185",
+    "#bef264",
+  ];
+
+  function stopSuccessFireworks() {
+    if (successFwRaf) {
+      cancelAnimationFrame(successFwRaf);
+      successFwRaf = null;
+    }
+    successFwParticles = [];
+    successFwSpawnAcc = 0;
+    if (successFwOnResize) {
+      window.removeEventListener("resize", successFwOnResize);
+      successFwOnResize = null;
+    }
+    const cv = $("pflege-wizard-success-fireworks");
+    if (cv && cv.getContext) {
+      const c = cv.getContext("2d");
+      if (c) c.clearRect(0, 0, cv.width, cv.height);
+    }
+  }
+
+  function successFwSpawnBurst(ox, oy, count) {
+    const n = Math.floor(count);
+    for (let i = 0; i < n; i++) {
+      const ang = (Math.PI * 2 * i) / n + (Math.random() - 0.5) * 0.9;
+      const speed = 2.8 + Math.random() * 9;
+      successFwParticles.push({
+        x: ox,
+        y: oy,
+        vx: Math.cos(ang) * speed * (0.55 + Math.random()),
+        vy: Math.sin(ang) * speed * (0.55 + Math.random()) - 1.8,
+        life: 0.88 + Math.random() * 0.42,
+        size: 1.1 + Math.random() * 3.2,
+        c: SUCCESS_FW_COLORS[(Math.random() * SUCCESS_FW_COLORS.length) | 0],
+      });
+    }
+    const sparks = Math.floor(n * 2.2);
+    for (let i = 0; i < sparks; i++) {
+      const ang = Math.random() * Math.PI * 2;
+      const speed = 0.8 + Math.random() * 6.5;
+      successFwParticles.push({
+        x: ox + (Math.random() - 0.5) * 28,
+        y: oy + (Math.random() - 0.5) * 28,
+        vx: Math.cos(ang) * speed,
+        vy: Math.sin(ang) * speed - 2.2,
+        life: 0.45 + Math.random() * 0.55,
+        size: 0.5 + Math.random() * 1.8,
+        c: SUCCESS_FW_COLORS[(Math.random() * SUCCESS_FW_COLORS.length) | 0],
+      });
+    }
+  }
+
+  function startSuccessFireworks() {
+    stopSuccessFireworks();
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    const canvas = $("pflege-wizard-success-fireworks");
+    if (!canvas || !canvas.getContext) return;
+    const ctx = canvas.getContext("2d");
+
+    function fitCanvas() {
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      const w = window.innerWidth;
+      const h = window.innerHeight;
+      canvas.width = Math.floor(w * dpr);
+      canvas.height = Math.floor(h * dpr);
+      canvas.style.width = `${w}px`;
+      canvas.style.height = `${h}px`;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+
+    fitCanvas();
+    successFwOnResize = fitCanvas;
+    window.addEventListener("resize", successFwOnResize);
+
+    successFwLastT = performance.now();
+    successFwSpawnAcc = 0;
+
+    function burstAtBoxi() {
+      const br = $("pflege-wizard-success-boxi")?.getBoundingClientRect();
+      const x = br ? br.left + br.width / 2 : window.innerWidth / 2;
+      const y = br ? br.top + br.height * 0.42 : window.innerHeight / 2;
+      successFwSpawnBurst(x, y, 52);
+      successFwSpawnBurst(x - 18, y + 10, 38);
+      successFwSpawnBurst(x + 22, y - 8, 42);
+      successFwSpawnBurst(x + (Math.random() - 0.5) * 30, y + (Math.random() - 0.5) * 25, 28);
+    }
+    burstAtBoxi();
+
+    function frame(now) {
+      const w = window.innerWidth;
+      const h = window.innerHeight;
+      const dt = Math.min(0.045, (now - successFwLastT) / 1000);
+      successFwLastT = now;
+
+      ctx.fillStyle = "rgba(8, 28, 40, 0.28)";
+      ctx.fillRect(0, 0, w, h);
+
+      const boxi = $("pflege-wizard-success-boxi");
+      const br = boxi?.getBoundingClientRect();
+      const ox = br ? br.left + br.width / 2 : w / 2;
+      const oy = br ? br.top + br.height * 0.42 : h / 2;
+
+      successFwSpawnAcc += dt * 1000;
+      const interval = 95 + Math.random() * 95;
+      if (successFwSpawnAcc >= interval) {
+        successFwSpawnAcc = 0;
+        successFwSpawnBurst(
+          ox + (Math.random() - 0.5) * 70,
+          oy + (Math.random() - 0.5) * 55,
+          36 + ((Math.random() * 34) | 0),
+        );
+      }
+      if (Math.random() < 0.08 * dt * 60) {
+        successFwSpawnBurst(
+          ox + (Math.random() - 0.5) * 40,
+          oy + (Math.random() - 0.5) * 35,
+          18 + ((Math.random() * 16) | 0),
+        );
+      }
+
+      for (let i = successFwParticles.length - 1; i >= 0; i--) {
+        const p = successFwParticles[i];
+        p.vy += 0.2;
+        p.vx *= 0.988;
+        p.x += p.vx;
+        p.y += p.vy;
+        p.life -= dt * 1.05;
+        if (p.life <= 0) {
+          successFwParticles.splice(i, 1);
+          continue;
+        }
+        ctx.globalAlpha = Math.min(1, p.life * 1.15);
+        ctx.fillStyle = p.c;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+        ctx.fill();
+        if (p.size > 1.4) {
+          ctx.globalAlpha = Math.min(1, p.life * 0.5);
+          ctx.fillStyle = "#ffffff";
+          ctx.beginPath();
+          ctx.arc(p.x - p.vx * 0.15, p.y - p.vy * 0.15, p.size * 0.35, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      }
+      ctx.globalAlpha = 1;
+      successFwRaf = requestAnimationFrame(frame);
+    }
+
+    successFwRaf = requestAnimationFrame(frame);
+  }
+
   function pad2(n) {
     return String(n).padStart(2, "0");
   }
@@ -906,12 +1074,11 @@
   }
 
   function hideWizardSuccessLayer() {
+    stopSuccessFireworks();
     const layer = $("pflege-wizard-success-layer");
     const modal = document.querySelector("#pflegebox-wizard-backdrop .pflege-wizard-modal");
     if (layer) layer.hidden = true;
     if (modal) modal.removeAttribute("inert");
-    const img = $("pflege-wizard-success-boxi");
-    if (img) img.classList.remove("pflege-wizard-success-boxi--hop");
   }
 
   function showWizardOrderSuccess(reference) {
@@ -920,20 +1087,12 @@
     const modal = document.querySelector("#pflegebox-wizard-backdrop .pflege-wizard-modal");
     if (layer) layer.hidden = false;
     if (modal) modal.setAttribute("inert", "");
-    const img = $("pflege-wizard-success-boxi");
-    if (img) {
-      img.classList.remove("pflege-wizard-success-boxi--hop");
-      void img.offsetWidth;
-      if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-        img.classList.add("pflege-wizard-success-boxi--hop");
-        function onHopEnd() {
-          img.classList.remove("pflege-wizard-success-boxi--hop");
-          img.removeEventListener("animationend", onHopEnd);
-        }
-        img.addEventListener("animationend", onHopEnd);
-      }
-    }
-    requestAnimationFrame(() => $("pflege-wizard-success-ok")?.focus());
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        startSuccessFireworks();
+        $("pflege-wizard-success-ok")?.focus();
+      });
+    });
   }
 
   function finishWizardAfterSuccess() {

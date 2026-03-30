@@ -331,28 +331,39 @@
     </div>
 
     <div id="pflege-wizard-success-layer" class="pflege-wizard-success-layer" hidden>
+      <canvas
+        id="pflege-wizard-success-fireworks"
+        class="pflege-wizard-success-fireworks"
+        aria-hidden="true"
+      ></canvas>
       <div
-        class="pflege-wizard-success-dialog"
+        class="pflege-wizard-success-stage"
         role="alertdialog"
         aria-modal="true"
         aria-labelledby="pflege-wizard-success-title"
       >
-        <img
-          id="pflege-wizard-success-boxi"
-          class="pflege-wizard-success-boxi"
-          src="images/pflegeboxi.webp"
-          onerror="this.onerror=null;this.src='images/pflegeboxi.png';"
-          width="260"
-          height="260"
-          alt="Pflegeboxi"
-          decoding="async"
-        />
-        <p class="pflege-wizard-success-message" id="pflege-wizard-success-title">
-          Hura! Deine Bestellung ist erfolgreich bei uns eingegangen und wird bald versendet.
-        </p>
-        <button type="button" class="btn-primary pflege-wizard-success-ok" id="pflege-wizard-success-ok">
-          Weiter
-        </button>
+        <div class="pflege-wizard-success-cluster">
+          <div class="pflege-wizard-success-bubble-wrap">
+            <p class="pflege-wizard-success-bubble" id="pflege-wizard-success-title">
+              Hura! Deine Bestellung ist erfolgreich bei uns eingegangen und wird bald versendet.
+            </p>
+            <button type="button" class="btn-primary pflege-wizard-success-close" id="pflege-wizard-success-ok">
+              Schließen
+            </button>
+          </div>
+          <div class="pflege-wizard-success-figure">
+            <img
+              id="pflege-wizard-success-boxi"
+              class="pflege-wizard-success-boxi"
+              src="images/pflegeboxi.webp"
+              onerror="this.onerror=null;this.src='images/pflegeboxi.png';"
+              width="325"
+              height="325"
+              alt="Pflegeboxi"
+              decoding="async"
+            />
+          </div>
+        </div>
       </div>
     </div>
   </div>
