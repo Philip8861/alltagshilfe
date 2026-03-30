@@ -26,6 +26,18 @@ const BUNDLED_CATALOG_ITEMS = [
     isGlove: false,
     bettschutzeinlage: false,
   },
+  {
+    id: 9103,
+    name: "Hygostar Latzschürze 115x90cm wiederverwendbar",
+    pieces: "115 × 90 cm",
+    quantity: null,
+    ml: null,
+    price: 5,
+    imageUrl: null,
+    sizes: [],
+    isGlove: false,
+    bettschutzeinlage: false,
+  },
 ];
 
 /** Partner-Referrer aus URL (?ref=PARTNER_ID oder ?partner=PARTNER_ID) – für Belohnung/Flyer */
