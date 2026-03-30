@@ -22,8 +22,16 @@ const contactSchema = z
     postalCode: z.string().trim().min(1).max(12),
     city: z.string().trim().min(1).max(80),
     birthDate: z.string().trim().regex(/^\d{4}-\d{2}-\d{2}$/),
-    versichertennummer: z.string().trim().min(1).max(30),
-    krankenkasse: z.string().trim().min(1).max(200),
+    /** true = gesetzliche Kasse entfällt, keine Versichertennummer */
+    privatversichert: z.preprocess(
+      (val) => {
+        if (val === undefined || val === null) return false;
+        return val === true || val === "true" || val === 1 || val === "1";
+      },
+      z.boolean(),
+    ),
+    versichertennummer: z.string().trim().max(30),
+    krankenkasse: z.string().trim().max(200),
     pflegegrad: z.number().int().min(1).max(5),
     beihilfeberechtigt: z.boolean(),
     /** true = persönliche Beratung gewünscht */
@@ -44,6 +52,24 @@ const contactSchema = z
     phone: z.string().trim().max(40).optional(),
   })
   .superRefine((c, ctx) => {
+    if (!c.privatversichert) {
+      const v = c.versichertennummer.trim().toUpperCase();
+      if (!/^[A-Z]\d{9}$/.test(v)) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message:
+            "Versichertennummer: genau ein Buchstabe gefolgt von 9 Ziffern (z. B. A123456789).",
+          path: ["versichertennummer"],
+        });
+      }
+      if (!c.krankenkasse.trim()) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "Bitte Krankenkasse angeben.",
+          path: ["krankenkasse"],
+        });
+      }
+    }
     if (!c.personalBeratungWunsch) {
       const g = c.keinBeratungGrund?.trim() ?? "";
       if (g.length < 5) {

@@ -31,8 +31,13 @@ function buildTipNotiz(
   const ber = contact.personalBeratungWunsch
     ? `Beratung: ja (${contact.beratungKanal ?? "—"})`
     : `Beratung: nein — ${(contact.keinBeratungGrund ?? "").slice(0, 500)}`;
+  const versRow = contact.privatversichert
+    ? "Versicherung: Privatversichert"
+    : `Versicherten-Nr.: ${contact.versichertennummer}`;
+  const kkRow = contact.privatversichert ? null : `KK: ${kk}`;
   const tail = [
-    `KK: ${kk}`,
+    versRow,
+    kkRow,
     `Pflegegrad: ${pg}`,
     `Beihilfe: ${contact.beihilfeberechtigt ? "ja" : "nein"}`,
     ber,
@@ -92,6 +97,7 @@ export async function POST(request: Request) {
       postalCode: c.postalCode,
       city: c.city,
       birthDate: c.birthDate,
+      privatversichert: c.privatversichert,
       versichertennummer: c.versichertennummer,
       krankenkasse: c.krankenkasse,
       pflegegrad: c.pflegegrad,

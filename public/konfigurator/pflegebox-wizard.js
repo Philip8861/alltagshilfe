@@ -22,6 +22,82 @@
   let config = null;
   let stepIndex = 0;
   let kkList = [];
+
+  function pad2(n) {
+    return String(n).padStart(2, "0");
+  }
+
+  function splitBirthDate(iso) {
+    const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(iso || "").trim());
+    if (!m) return { y: "", mo: "", d: "" };
+    return { y: m[1], mo: m[2], d: m[3] };
+  }
+
+  function daysInMonth(yearStr, monthStr) {
+    const y = Number(yearStr);
+    const mo = Number(monthStr);
+    if (!yearStr || !monthStr || !Number.isFinite(y) || !Number.isFinite(mo) || mo < 1 || mo > 12) {
+      return 31;
+    }
+    return new Date(Date.UTC(y, mo, 0)).getUTCDate();
+  }
+
+  function isValidBirthIso(iso) {
+    const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso);
+    if (!m) return false;
+    const y = Number(m[1]);
+    const mo = Number(m[2]);
+    const d = Number(m[3]);
+    const cy = new Date().getFullYear();
+    if (y < 1900 || y > cy) return false;
+    if (mo < 1 || mo > 12) return false;
+    const dim = new Date(Date.UTC(y, mo, 0)).getUTCDate();
+    if (d < 1 || d > dim) return false;
+    return true;
+  }
+
+  const BIRTH_MONTHS_DE = [
+    ["01", "Januar"],
+    ["02", "Februar"],
+    ["03", "März"],
+    ["04", "April"],
+    ["05", "Mai"],
+    ["06", "Juni"],
+    ["07", "Juli"],
+    ["08", "August"],
+    ["09", "September"],
+    ["10", "Oktober"],
+    ["11", "November"],
+    ["12", "Dezember"],
+  ];
+
+  function buildBirthDayOptions(parts) {
+    const dim = parts.y && parts.mo ? daysInMonth(parts.y, parts.mo) : 31;
+    let s = '<option value="">—</option>';
+    for (let day = 1; day <= dim; day++) {
+      const v = pad2(day);
+      s += "<option value=\"" + v + "\"" + (v === parts.d ? " selected" : "") + ">" + day + ".</option>";
+    }
+    return s;
+  }
+
+  function buildBirthMonthOptions(parts) {
+    let s = '<option value="">—</option>';
+    for (const [val, label] of BIRTH_MONTHS_DE) {
+      s += "<option value=\"" + val + "\"" + (val === parts.mo ? " selected" : "") + ">" + label + "</option>";
+    }
+    return s;
+  }
+
+  function buildBirthYearOptions(parts) {
+    const cy = new Date().getFullYear();
+    let s = '<option value="">—</option>';
+    for (let y = cy; y >= 1900; y--) {
+      s += "<option value=\"" + y + "\"" + (String(y) === parts.y ? " selected" : "") + ">" + y + "</option>";
+    }
+    return s;
+  }
+
   const data = {
     salutation: "herr",
     firstName: "",
@@ -32,6 +108,7 @@
     birthDate: "",
     versichertennummer: "",
     krankenkasse: "",
+    privatversichert: false,
     pflegegrad: 1,
     beihilfeberechtigt: false,
     personalBeratungWunsch: false,
@@ -92,10 +169,16 @@
     }
     if (s.key === "p2") {
       if (!data.street.trim() || !data.postalCode.trim() || !data.city.trim()) return "Bitte vollständige Adresse angeben.";
-      if (!/^\d{4}-\d{2}-\d{2}$/.test(data.birthDate)) return "Bitte gültiges Geburtsdatum wählen.";
+      if (!data.birthDate || !isValidBirthIso(data.birthDate)) {
+        return "Bitte gültiges Geburtsdatum wählen (Tag, Monat und Jahr).";
+      }
     }
     if (s.key === "v1") {
-      if (!data.versichertennummer.trim()) return "Bitte Versichertennummer eingeben.";
+      if (data.privatversichert) return "";
+      const raw = data.versichertennummer.trim();
+      if (!/^[A-Za-z]\d{9}$/.test(raw)) {
+        return "Versichertennummer ungültig: bitte genau ein Buchstabe und 9 Ziffern (z. B. A123456789).";
+      }
       if (!data.krankenkasse.trim()) return "Bitte Krankenkasse auswählen oder eintragen.";
     }
     if (s.key === "b1") {
@@ -145,9 +228,14 @@
       data.street = $("wiz-street")?.value ?? "";
       data.postalCode = $("wiz-plz")?.value ?? "";
       data.city = $("wiz-city")?.value ?? "";
-      data.birthDate = $("wiz-birth")?.value ?? "";
+      const y = $("wiz-birth-y")?.value ?? "";
+      const mo = $("wiz-birth-m")?.value ?? "";
+      const d = $("wiz-birth-d")?.value ?? "";
+      data.birthDate = y && mo && d ? `${y}-${pad2(mo)}-${pad2(d)}` : "";
     }
     if (s.key === "v1") {
+      const pv = document.querySelector('input[name="wiz-privat"]:checked');
+      data.privatversichert = pv?.value === "ja";
       data.versichertennummer = $("wiz-vsnr")?.value ?? "";
       data.krankenkasse = $("wiz-kk")?.value ?? "";
     }
@@ -230,21 +318,45 @@
             <input type="text" id="wiz-city" maxlength="80" autocomplete="address-level2" value="${escapeAttr(data.city)}" />
           </div>
         </div>
-        <div class="wiz-field">
-          <label for="wiz-birth">Geburtsdatum *</label>
-          <input type="date" id="wiz-birth" value="${escapeAttr(data.birthDate)}" />
-        </div>`;
+        <fieldset class="wiz-birth-fieldset">
+          <legend class="wiz-label">Geburtsdatum *</legend>
+          <div class="wiz-birth-grid">
+            <div class="wiz-field wiz-field--birth">
+              <label for="wiz-birth-d">Tag</label>
+              <select id="wiz-birth-d" autocomplete="bday-day" aria-label="Geburtstag">${buildBirthDayOptions(splitBirthDate(data.birthDate))}</select>
+            </div>
+            <div class="wiz-field wiz-field--birth">
+              <label for="wiz-birth-m">Monat</label>
+              <select id="wiz-birth-m" autocomplete="bday-month" aria-label="Geburtsmonat">${buildBirthMonthOptions(splitBirthDate(data.birthDate))}</select>
+            </div>
+            <div class="wiz-field wiz-field--birth">
+              <label for="wiz-birth-y">Jahr</label>
+              <select id="wiz-birth-y" autocomplete="bday-year" aria-label="Geburtsjahr">${buildBirthYearOptions(splitBirthDate(data.birthDate))}</select>
+            </div>
+          </div>
+        </fieldset>`;
     } else if (meta.key === "v1") {
+      const gkvHidden = data.privatversichert ? "hidden" : "";
       html = `
-        <div class="wiz-field">
-          <label for="wiz-vsnr">Versichertennummer *</label>
-          <input type="text" id="wiz-vsnr" maxlength="30" autocomplete="off" value="${escapeAttr(data.versichertennummer)}" />
+        <div class="wiz-field-group wiz-privat-wrap">
+          <span class="wiz-label wiz-label--prominent" id="wiz-privat-legend">Privatversichert?</span>
+          <div class="wiz-radio-row wiz-radio-row--emphasis" role="group" aria-labelledby="wiz-privat-legend">
+            <label><input type="radio" name="wiz-privat" id="wiz-privat-nein" value="nein" ${!data.privatversichert ? "checked" : ""}/> Nein</label>
+            <label><input type="radio" name="wiz-privat" id="wiz-privat-ja" value="ja" ${data.privatversichert ? "checked" : ""}/> Ja</label>
+          </div>
         </div>
-        <div class="wiz-field">
-          <label for="wiz-kk">Krankenkasse *</label>
-          <input type="text" id="wiz-kk" maxlength="200" list="pflege-wizard-kk-datalist" autocomplete="off" placeholder="Tippen zum Suchen …" value="${escapeAttr(data.krankenkasse)}" />
-          <datalist id="pflege-wizard-kk-datalist"></datalist>
-          <p class="wiz-hint">Alle gesetzlichen Krankenkassen stehen zur Auswahl; Sie können auch frei ergänzen.</p>
+        <div id="wiz-gkv-block" class="wiz-gkv-block" ${gkvHidden}>
+          <div class="wiz-field">
+            <label for="wiz-vsnr">Versichertennummer *</label>
+            <input type="text" id="wiz-vsnr" maxlength="10" inputmode="text" autocomplete="off" spellcheck="false" placeholder="z. B. A123456789" value="${escapeAttr(data.versichertennummer)}" />
+            <p class="wiz-hint">Ein Buchstabe am Anfang, danach genau 9 Ziffern.</p>
+          </div>
+          <div class="wiz-field">
+            <label for="wiz-kk">Krankenkasse *</label>
+            <input type="text" id="wiz-kk" maxlength="200" list="pflege-wizard-kk-datalist" autocomplete="off" placeholder="Tippen zum Suchen …" value="${escapeAttr(data.krankenkasse)}" />
+            <datalist id="pflege-wizard-kk-datalist"></datalist>
+            <p class="wiz-hint">Alle gesetzlichen Krankenkassen stehen zur Auswahl; Sie können auch frei ergänzen.</p>
+          </div>
         </div>`;
     } else if (meta.key === "v2") {
       html = `
@@ -321,8 +433,12 @@
     }
 
     body.innerHTML = html;
+    if (meta.key === "p2") {
+      wireBirthSelects();
+    }
     if (meta.key === "v1") {
       buildKkDatalist();
+      wirePrivatToggle();
     }
     if (meta.key === "b1") {
       wireBeratungToggles();
@@ -344,6 +460,43 @@
 
   function escHtml(s) {
     return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  }
+
+  function wireBirthSelects() {
+    const ys = $("wiz-birth-y");
+    const ms = $("wiz-birth-m");
+    const ds = $("wiz-birth-d");
+    if (!ys || !ms || !ds) return;
+    function rebuildDays() {
+      const y = ys.value;
+      const mo = ms.value;
+      const cur = ds.value;
+      if (!y || !mo) {
+        ds.innerHTML = "<option value=\"\">—</option>";
+        return;
+      }
+      const dim = daysInMonth(y, mo);
+      let s = "<option value=\"\">—</option>";
+      for (let day = 1; day <= dim; day++) {
+        const v = pad2(day);
+        s += "<option value=\"" + v + "\"" + (v === cur ? " selected" : "") + ">" + day + ".</option>";
+      }
+      ds.innerHTML = s;
+    }
+    ys.addEventListener("change", rebuildDays);
+    ms.addEventListener("change", rebuildDays);
+  }
+
+  function wirePrivatToggle() {
+    const block = $("wiz-gkv-block");
+    const ja = $("wiz-privat-ja");
+    if (!block || !ja) return;
+    function sync() {
+      block.hidden = ja.checked === true;
+    }
+    ja.addEventListener("change", sync);
+    $("wiz-privat-nein")?.addEventListener("change", sync);
+    sync();
   }
 
   function wireBeratungToggles() {
@@ -502,8 +655,9 @@
       postalCode: data.postalCode.trim(),
       city: data.city.trim(),
       birthDate: data.birthDate,
-      versichertennummer: data.versichertennummer.trim(),
-      krankenkasse: data.krankenkasse.trim(),
+      privatversichert: data.privatversichert,
+      versichertennummer: data.privatversichert ? "" : data.versichertennummer.trim().toUpperCase(),
+      krankenkasse: data.privatversichert ? "Privatversichert" : data.krankenkasse.trim(),
       pflegegrad: data.pflegegrad,
       beihilfeberechtigt: data.beihilfeberechtigt,
       personalBeratungWunsch: data.personalBeratungWunsch,
@@ -586,6 +740,7 @@
       privacyAccepted: false,
       partnerCode: "",
       partnerLookupOk: null,
+      privatversichert: false,
     });
     const bd = $("pflegebox-wizard-backdrop");
     if (bd) bd.hidden = false;
