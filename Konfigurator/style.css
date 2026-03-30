@@ -119,7 +119,8 @@ body {
 
 .layout {
   display: grid;
-  grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+  /* Rechte Spalte ~20 % breiter als zuvor (1fr → 1.2fr bei gleichem linken Anteil) */
+  grid-template-columns: minmax(0, 1.4fr) minmax(0, 1.2fr);
   gap: 18px;
   align-items: start;
 }
@@ -431,8 +432,21 @@ body {
 }
 
 .cart-empty {
-  font-size: 0.9rem;
-  color: var(--text-muted);
+  margin: 0;
+  width: 100%;
+  text-align: center;
+  font-size: 1.08rem;
+  font-weight: 600;
+  line-height: 1.45;
+  color: var(--primary);
+  padding: 0.5rem 0.75rem;
+}
+
+/* Leerer Warenkorb: Hinweis mittig im weißen Bereich */
+.cart:has(> .cart-empty:only-child) {
+  min-height: 168px;
+  justify-content: center;
+  align-items: stretch;
 }
 
 .cart-item {
@@ -542,26 +556,31 @@ body {
   display: flex;
   flex-direction: column;
   gap: 6px;
-  margin-bottom: 4px;
+  margin-bottom: 0;
 }
 
 .box-title-row {
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  gap: 4px;
+  gap: 8px;
+  /* Gleiche Kopfzeilenhöhe wie „Wählen Sie Ihre Produkte“ (94px) */
   min-height: 94px;
+  max-height: 94px;
 }
 
 .box-icon-wrapper {
   position: relative;
-  margin-left: 4px;
+  margin-left: 0;
+  flex-shrink: 0;
 }
 
 .box-icon {
-  width: 141px;
-  height: 141px;
+  width: auto;
+  height: 76px;
+  max-width: 100px;
   object-fit: contain;
+  display: block;
 }
 
 .box-icon-badge {
@@ -920,6 +939,11 @@ body {
   }
 }
 
+/* Pflegeboxi-Chat (unten rechts) vorerst ausgeblendet */
+#box-chatbot {
+  display: none !important;
+}
+
 .box-chatbot {
   position: fixed;
   right: max(12px, env(safe-area-inset-right, 0px));
@@ -1205,6 +1229,16 @@ body {
     grid-template-columns: 1fr;
     padding-top: 64px;
     gap: 14px;
+  }
+
+  .box-title-row {
+    min-height: 0;
+    max-height: none;
+  }
+
+  .box-icon {
+    height: clamp(88px, 22vw, 120px);
+    max-width: none;
   }
 
   .layout > .panel:first-of-type > h2 {
