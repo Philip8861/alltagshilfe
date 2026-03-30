@@ -156,7 +156,7 @@ body {
   grid-column: span 2;
 }
 
-.item--double-width .item-image {
+.item--double-width .item-image-frame {
   width: var(--item-thumb-size);
   height: var(--item-thumb-size);
 }
@@ -196,15 +196,28 @@ body {
   text-align: center;
 }
 
-.item-image {
+/* Fester sichtbarer Bereich pro Kachel; Bild füllt Fläche gleichmäßig */
+.item-image-frame {
   width: var(--item-thumb-size);
   height: var(--item-thumb-size);
   min-width: var(--item-thumb-size);
   min-height: var(--item-thumb-size);
-  object-fit: contain;
-  object-position: center;
   margin: 0 auto 6px;
   flex-shrink: 0;
+  border-radius: 12px;
+  background: #eef2f6;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.item-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
 }
 
 .item-name {
@@ -377,11 +390,24 @@ body {
   background: #ffffff;
 }
 
-.cart-item-image {
+.cart-item-image-frame {
   width: 52px;
   height: 52px;
-  object-fit: contain;
+  min-width: 52px;
+  flex-shrink: 0;
   margin-right: 6px;
+  border-radius: 8px;
+  background: #eef2f6;
+  overflow: hidden;
+  align-self: center;
+}
+
+.cart-item-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
 }
 
 .cart-item-main {

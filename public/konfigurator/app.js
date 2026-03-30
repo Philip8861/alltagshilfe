@@ -235,11 +235,14 @@ function renderItemList() {
     const countInCart = cart.filter((c) => c.id === item.id).length;
 
     if (item.imageUrl) {
+      const frame = document.createElement("div");
+      frame.className = "item-image-frame";
       const img = document.createElement("img");
       img.className = "item-image";
       img.src = item.imageUrl;
       img.alt = item.name;
-      contentWrap.appendChild(img);
+      frame.appendChild(img);
+      contentWrap.appendChild(frame);
     }
 
     const header = document.createElement("div");
@@ -436,11 +439,14 @@ function renderCart() {
     row.className = "cart-item";
 
     if (item.imageUrl) {
+      const frame = document.createElement("div");
+      frame.className = "cart-item-image-frame";
       const img = document.createElement("img");
       img.className = "cart-item-image";
       img.src = item.imageUrl;
       img.alt = item.name;
-      row.appendChild(img);
+      frame.appendChild(img);
+      row.appendChild(frame);
     }
 
     const main = document.createElement("div");
