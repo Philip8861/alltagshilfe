@@ -13,6 +13,7 @@
     { key: "l1", section: "Rechtliches", title: "AGB & Datenschutz", motivation: "" },
     { key: "r1", section: "Empfehlung", title: "Partner-Code (optional)", motivation: "" },
     { key: "s1", section: "Unterschrift", title: "", motivation: "" },
+    { key: "s2", section: "Bestellung", title: "", motivation: "" },
   ];
 
   /** Pflegeboxi: Kurztext zum aktuellen Schritt. */
@@ -26,6 +27,7 @@
     "Bitte lesen und bestätigen Sie die AGB und die Datenschutzhinweise.",
     "Optional: Tragen Sie einen Partner-Code ein, falls Sie empfohlen wurden.",
     "Zum Schluss fehlt nur noch Ihre Unterschrift. Tippen Sie auf „Jetzt unterschreiben“.",
+    "Hura! Deine Bestellung ist bei uns angekommen – wir freuen uns!",
   ];
 
   function $(id) {
@@ -37,150 +39,6 @@
   let kkList = [];
   /** Referenz für Event nach Schließen des Erfolgs-Overlays */
   let pendingOrderReference = null;
-
-  let successFwRaf = null;
-  let successFwParticles = [];
-  let successFwOnResize = null;
-  let successFwLastT = 0;
-  let successFwSpawnAcc = 0;
-
-  const SUCCESS_FW_COLORS = [
-    "#ffe066",
-    "#ff6b6b",
-    "#4ecdc4",
-    "#a78bfa",
-    "#f472b6",
-    "#ffffff",
-    "#ffd700",
-    "#7dd3fc",
-    "#fb7185",
-    "#bef264",
-  ];
-
-  function stopSuccessFireworks() {
-    if (successFwRaf) {
-      cancelAnimationFrame(successFwRaf);
-      successFwRaf = null;
-    }
-    successFwParticles = [];
-    successFwSpawnAcc = 0;
-    if (successFwOnResize) {
-      window.removeEventListener("resize", successFwOnResize);
-      successFwOnResize = null;
-    }
-    const cv = $("pflege-wizard-success-fireworks");
-    if (cv && cv.getContext) {
-      const c = cv.getContext("2d");
-      if (c) c.clearRect(0, 0, cv.width, cv.height);
-    }
-  }
-
-  /** Wenige Partikel, überwiegend senkrecht nach oben (Raketen-Salut). */
-  function successFwSpawnRockets(ox, oy, count) {
-    const n = Math.max(1, Math.floor(count));
-    for (let i = 0; i < n; i++) {
-      const spread = (Math.random() - 0.5) * 0.42;
-      const ang = -Math.PI / 2 + spread;
-      const speed = 6 + Math.random() * 7;
-      successFwParticles.push({
-        x: ox + (Math.random() - 0.5) * 6,
-        y: oy,
-        vx: Math.cos(ang) * speed,
-        vy: Math.sin(ang) * speed,
-        life: 0.72 + Math.random() * 0.38,
-        size: 1.2 + Math.random() * 1.6,
-        c: SUCCESS_FW_COLORS[(Math.random() * SUCCESS_FW_COLORS.length) | 0],
-      });
-    }
-  }
-
-  function startSuccessFireworks() {
-    stopSuccessFireworks();
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-
-    const canvas = $("pflege-wizard-success-fireworks");
-    if (!canvas || !canvas.getContext) return;
-    const ctx = canvas.getContext("2d");
-
-    function fitCanvas() {
-      const dpr = Math.min(window.devicePixelRatio || 1, 2);
-      const r = canvas.getBoundingClientRect();
-      const w = Math.max(1, r.width);
-      const h = Math.max(1, r.height);
-      canvas.width = Math.floor(w * dpr);
-      canvas.height = Math.floor(h * dpr);
-      canvas.style.width = `${w}px`;
-      canvas.style.height = `${h}px`;
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    }
-
-    fitCanvas();
-    successFwOnResize = fitCanvas;
-    window.addEventListener("resize", successFwOnResize);
-
-    successFwLastT = performance.now();
-    successFwSpawnAcc = 0;
-
-    function launchPad() {
-      const r = canvas.getBoundingClientRect();
-      if (r.width < 4 || r.height < 4) return;
-      const ox = r.width / 2;
-      const oy = r.height - 10;
-      successFwSpawnRockets(ox, oy, 3 + ((Math.random() * 3) | 0));
-    }
-    requestAnimationFrame(() => {
-      requestAnimationFrame(launchPad);
-    });
-
-    function frame(now) {
-      const r = canvas.getBoundingClientRect();
-      const w = r.width;
-      const h = r.height;
-      const dt = Math.min(0.045, (now - successFwLastT) / 1000);
-      successFwLastT = now;
-
-      ctx.clearRect(0, 0, w, h);
-
-      const ox = w / 2;
-      const oy = h - 10;
-
-      successFwSpawnAcc += dt * 1000;
-      const interval = 520 + Math.random() * 480;
-      if (successFwSpawnAcc >= interval) {
-        successFwSpawnAcc = 0;
-        successFwSpawnRockets(ox, oy, 1 + ((Math.random() * 3) | 0));
-      }
-
-      for (let i = successFwParticles.length - 1; i >= 0; i--) {
-        const p = successFwParticles[i];
-        p.vy += 0.1;
-        p.vx *= 0.992;
-        p.x += p.vx;
-        p.y += p.vy;
-        p.life -= dt * 1.05;
-        if (p.life <= 0) {
-          successFwParticles.splice(i, 1);
-          continue;
-        }
-        ctx.globalAlpha = Math.min(1, p.life * 1.15);
-        ctx.fillStyle = p.c;
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-        ctx.fill();
-        if (p.size > 1.4) {
-          ctx.globalAlpha = Math.min(1, p.life * 0.5);
-          ctx.fillStyle = "#ffffff";
-          ctx.beginPath();
-          ctx.arc(p.x - p.vx * 0.15, p.y - p.vy * 0.15, p.size * 0.35, 0, Math.PI * 2);
-          ctx.fill();
-        }
-      }
-      ctx.globalAlpha = 1;
-      successFwRaf = requestAnimationFrame(frame);
-    }
-
-    successFwRaf = requestAnimationFrame(frame);
-  }
 
   function pad2(n) {
     return String(n).padStart(2, "0");
@@ -493,10 +351,21 @@
       boxiBubble.hidden = !intro.trim();
     }
 
-    if (backBtn) backBtn.textContent = stepIndex === 0 ? "Abbrechen" : "Zurück";
+    if (backBtn) {
+      backBtn.hidden = meta.key === "s2";
+      if (!backBtn.hidden) backBtn.textContent = stepIndex === 0 ? "Abbrechen" : "Zurück";
+    }
     if (nextBtn) {
-      nextBtn.hidden = meta.key === "s1";
-      if (!nextBtn.hidden) nextBtn.textContent = "Weiter";
+      if (meta.key === "s1") {
+        nextBtn.hidden = true;
+      } else if (meta.key === "s2") {
+        nextBtn.hidden = false;
+        nextBtn.textContent = "Schließen";
+        nextBtn.disabled = false;
+      } else {
+        nextBtn.hidden = false;
+        nextBtn.textContent = "Weiter";
+      }
     }
 
     let html = "";
@@ -648,10 +517,25 @@
       html = `
         <p class="wiz-hint wiz-sig-step-intro">Hier bestätigen Sie Ihre Bestellung mit einer Unterschrift.</p>
         <button type="button" class="btn-primary wiz-open-sig-btn" id="wiz-open-sig-overlay">Jetzt unterschreiben</button>`;
+    } else if (meta.key === "s2") {
+      html = `
+        <div class="wiz-success-summary">
+          <p class="wiz-success-summary__main">Ihre Bestellung ist erfolgreich bei uns eingegangen.</p>
+          <p class="wiz-success-summary__ref" id="wiz-success-ref" hidden></p>
+        </div>`;
     }
 
     body.innerHTML = html;
+    if (meta.key === "s2") {
+      const refEl = $("wiz-success-ref");
+      const ref = pendingOrderReference;
+      if (refEl && ref) {
+        refEl.textContent = "Ihre Vorgangsnummer: " + ref;
+        refEl.hidden = false;
+      }
+    }
     body.classList.toggle("pflege-wizard-body--sig-step", meta.key === "s1");
+    body.classList.toggle("pflege-wizard-body--success-step", meta.key === "s2");
     if (meta.key === "p2") {
       wireBirthSelects();
     }
@@ -842,11 +726,7 @@
   function hideSigOverlay() {
     const layer = $("pflege-wizard-sig-layer");
     if (layer) layer.hidden = true;
-    const modal = document.querySelector("#pflegebox-wizard-backdrop .pflege-wizard-modal");
-    const successLayer = $("pflege-wizard-success-layer");
-    if (modal && (!successLayer || successLayer.hidden)) {
-      modal.removeAttribute("inert");
-    }
+    document.querySelector("#pflegebox-wizard-backdrop .pflege-wizard-modal")?.removeAttribute("inert");
   }
 
   function openSigOverlay() {
@@ -901,6 +781,7 @@
   }
 
   function goBack() {
+    if (STEPS[stepIndex]?.key === "s2") return;
     if (stepIndex === 0) {
       close();
       window.dispatchEvent(new CustomEvent("pflegebox-wizard-cancel"));
@@ -998,9 +879,13 @@
         showError(msg);
         return;
       }
+      pendingOrderReference = j.reference || null;
       hideSigOverlay();
       orderEndedWithSuccessScreen = true;
-      showWizardOrderSuccess(j.reference || null);
+      stepIndex = STEPS.findIndex((x) => x.key === "s2");
+      render();
+      triggerBoxiHop();
+      requestAnimationFrame(() => $("pflege-wizard-next")?.focus());
       return;
     } catch {
       showError("Netzwerkfehler. Bitte prüfen Sie Ihre Verbindung und versuchen Sie es erneut.");
@@ -1043,7 +928,6 @@
     });
     const bd = $("pflegebox-wizard-backdrop");
     if (bd) bd.hidden = false;
-    hideWizardSuccessLayer();
     hideSigOverlay();
     sigOverlayDims = null;
     sigHadStroke = false;
@@ -1058,28 +942,6 @@
     });
     document.body.classList.add("pflege-wizard-open");
     document.addEventListener("keydown", onDocKeydown);
-  }
-
-  function hideWizardSuccessLayer() {
-    stopSuccessFireworks();
-    const layer = $("pflege-wizard-success-layer");
-    const modal = document.querySelector("#pflegebox-wizard-backdrop .pflege-wizard-modal");
-    if (layer) layer.hidden = true;
-    if (modal) modal.removeAttribute("inert");
-  }
-
-  function showWizardOrderSuccess(reference) {
-    pendingOrderReference = reference ?? null;
-    const layer = $("pflege-wizard-success-layer");
-    const modal = document.querySelector("#pflegebox-wizard-backdrop .pflege-wizard-modal");
-    if (layer) layer.hidden = false;
-    if (modal) modal.setAttribute("inert", "");
-    requestAnimationFrame(() => {
-      requestAnimationFrame(() => {
-        startSuccessFireworks();
-        $("pflege-wizard-success-ok")?.focus();
-      });
-    });
   }
 
   function finishWizardAfterSuccess() {
@@ -1133,8 +995,7 @@
       }
       return;
     }
-    const successLayer = $("pflege-wizard-success-layer");
-    if (successLayer && !successLayer.hidden) {
+    if (STEPS[stepIndex]?.key === "s2") {
       if (e.key === "Escape") {
         e.preventDefault();
         finishWizardAfterSuccess();
@@ -1155,7 +1016,6 @@
 
   function close() {
     document.removeEventListener("keydown", onDocKeydown);
-    hideWizardSuccessLayer();
     hideSigOverlay();
     hideCancelConfirm();
     pendingOrderReference = null;
@@ -1167,6 +1027,10 @@
 
   /** Schließen-Button (X): Abbruch-Dialog im Layout der Seite. */
   function requestCloseWizard() {
+    if (STEPS[stepIndex]?.key === "s2") {
+      finishWizardAfterSuccess();
+      return;
+    }
     showCancelConfirm();
   }
 
@@ -1182,14 +1046,6 @@
         hideCancelConfirm();
         $("pflege-wizard-close")?.focus();
       }
-    });
-  }
-
-  function wireSuccessDialog() {
-    const layer = $("pflege-wizard-success-layer");
-    $("pflege-wizard-success-ok")?.addEventListener("click", finishWizardAfterSuccess);
-    layer?.addEventListener("click", (e) => {
-      if (e.target === layer) finishWizardAfterSuccess();
     });
   }
 
@@ -1214,11 +1070,13 @@
   }
 
   function wireNav() {
-    $("pflege-wizard-next")?.addEventListener("click", () => void goNext());
+    $("pflege-wizard-next")?.addEventListener("click", () => {
+      if (STEPS[stepIndex]?.key === "s2") finishWizardAfterSuccess();
+      else void goNext();
+    });
     $("pflege-wizard-back")?.addEventListener("click", goBack);
     $("pflege-wizard-close")?.addEventListener("click", requestCloseWizard);
     wireCancelDialog();
-    wireSuccessDialog();
     wireSignatureOverlayUi();
   }
 
