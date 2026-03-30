@@ -1,5 +1,33 @@
 const MAX_BUDGET = 42;
 
+/** Im Repo gepflegte Artikel (feste IDs); werden einmalig in die lokale Liste gemerged, falls noch nicht vorhanden. */
+const BUNDLED_CATALOG_ITEMS = [
+  {
+    id: 9101,
+    name: "EUMEPRO_OP-Maske_Typ_IIR",
+    pieces: null,
+    quantity: null,
+    ml: null,
+    price: 5,
+    imageUrl: "images/EUMEPRO_OP-Maske_Typ_IIR.png",
+    sizes: [],
+    isGlove: false,
+    bettschutzeinlage: false,
+  },
+  {
+    id: 9102,
+    name: "Duozid_Gebrauchsfertige_Desinfektionstücher_zur_Hände-und_Oberflächendesinfektion",
+    pieces: null,
+    quantity: null,
+    ml: null,
+    price: 5,
+    imageUrl: "images/Duozid_Gebrauchsfertige_Desinfektionstücher_zur_Hände-und_Oberflächendesinfektion.webp",
+    sizes: [],
+    isGlove: false,
+    bettschutzeinlage: false,
+  },
+];
+
 /** Partner-Referrer aus URL (?ref=PARTNER_ID oder ?partner=PARTNER_ID) – für Belohnung/Flyer */
 const PARTNER_REF_STORAGE_KEY = "konfigurator_partner_ref";
 
@@ -50,6 +78,17 @@ function loadItemsFromStorage() {
       ITEMS = parsed;
     }
   } catch (_) {}
+}
+
+function mergeBundledCatalogItems() {
+  let changed = false;
+  for (const b of BUNDLED_CATALOG_ITEMS) {
+    if (!ITEMS.some((it) => Number(it.id) === Number(b.id))) {
+      ITEMS.push({ ...b });
+      changed = true;
+    }
+  }
+  if (changed) saveItemsToStorage();
 }
 
 function saveCartToStorage() {
@@ -853,6 +892,7 @@ document.addEventListener("DOMContentLoaded", () => {
   boxIconBadgeElement = document.getElementById("box-icon-badge");
 
   loadItemsFromStorage();
+  mergeBundledCatalogItems();
   loadCartFromStorage();
 
   initAdminTool();
