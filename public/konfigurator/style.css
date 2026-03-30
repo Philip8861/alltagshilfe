@@ -29,7 +29,9 @@ body {
 .hero-wrapper {
   position: relative;
   min-height: 100vh;
-  overflow: hidden;
+  /* Nur horizontal begrenzen – overflow-y sichtbar, damit position:sticky im Layout funktioniert */
+  overflow-x: hidden;
+  overflow-y: visible;
   background: #f1f9fb;
 }
 
@@ -120,6 +122,16 @@ body {
   grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
   gap: 18px;
   align-items: start;
+}
+
+/* Desktop: „Meine Pflegebox“-Spalte bleibt beim Scrollen sichtbar */
+@media (min-width: 901px) {
+  .layout > .panel:last-of-type {
+    position: sticky;
+    top: max(1rem, env(safe-area-inset-top, 0px));
+    align-self: start;
+    z-index: 5;
+  }
 }
 
 .panel {
