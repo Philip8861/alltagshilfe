@@ -15,17 +15,17 @@
     { key: "s1", section: "Unterschrift", title: "Unterschrift", motivation: "Zum Schluss: bitte unterschreiben Sie hier." },
   ];
 
-  /** Pflegeboxi: kündigt an, was nach „Weiter“ kommt (letzter Schritt: Absenden). */
-  const BOXI_NEXT_HINTS = [
-    "Als Nächstes: Adresse und Geburtsdatum. Dann sind Ihre Personendaten komplett.",
-    "Super! Gleich geht es um Ihre Krankenversicherung.",
-    "Danach nur noch der Pflegegrad, das geht schnell.",
-    "Weiter geht es mit der Frage zur persönlichen Beratung.",
-    "Dann dürfen Sie optional eine Anmerkung zur Bestellung schreiben.",
-    "Gleich folgen AGB und Datenschutz. Wir sind schon sehr nah dran.",
-    "Als Nächstes: Partner-Code, falls Sie empfohlen wurden, oder einfach überspringen.",
-    "Zum Schluss nur noch unterschreiben, dann ist Ihre Bestellung fertig!",
-    "Weiter so, gleich sind wir fertig! Unterschreiben Sie unten und tippen Sie auf „Bestellung absenden“.",
+  /** Pflegeboxi: beschreibt die gerade geöffnete Seite (nicht den nächsten Schritt). */
+  const BOXI_STEP_INTROS = [
+    "Hier noch schnell Ihre persönlichen Daten: Anrede, Vor- und Nachname.",
+    "Jetzt Ihre Adresse, PLZ, Ort und Ihr Geburtsdatum.",
+    "Hier geht es um Ihre Krankenversicherung, gesetzlich oder privat.",
+    "Auf dieser Seite wählen Sie Ihren Pflegegrad.",
+    "Hier sagen Sie, ob Sie eine persönliche Beratung wünschen und wie wir Sie erreichen dürfen.",
+    "Optional: Hier dürfen Sie eine Anmerkung zu Ihrer Bestellung schreiben.",
+    "Bitte lesen und bestätigen Sie die AGB und die Datenschutzhinweise.",
+    "Optional: Tragen Sie einen Partner-Code ein, falls Sie empfohlen wurden.",
+    "Zum Schluss unterschreiben Sie bitte im Feld, dann können wir Ihre Bestellung entgegennehmen.",
   ];
 
   function $(id) {
@@ -313,7 +313,7 @@
     if (mot) mot.textContent = meta.motivation;
 
     const boxiBubble = q("#pflege-wizard-boxi-bubble");
-    if (boxiBubble) boxiBubble.textContent = BOXI_NEXT_HINTS[stepIndex] ?? "";
+    if (boxiBubble) boxiBubble.textContent = BOXI_STEP_INTROS[stepIndex] ?? "";
 
     if (backBtn) backBtn.textContent = stepIndex === 0 ? "Abbrechen" : "Zurück";
     if (nextBtn) nextBtn.textContent = meta.key === "s1" ? "Bestellung absenden" : "Weiter";

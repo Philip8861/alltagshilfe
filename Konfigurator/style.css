@@ -1241,7 +1241,7 @@ body.pflege-wizard-open {
   color: var(--text-main);
 }
 
-/* Pflegeboxi + Sprechblase (nächster Schritt) */
+/* Pflegeboxi + Sprechblase (aktueller Schritt) */
 .pflege-wizard-boxi {
   display: flex;
   align-items: flex-end;
