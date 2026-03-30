@@ -17,7 +17,7 @@
 
   /** Pflegeboxi: Kurztext zum aktuellen Schritt. */
   const BOXI_STEP_INTROS = [
-    "Hier noch schnell Ihre persönlichen Daten: Anrede, Vor- und Nachname.",
+    "Hier geben Sie Ihre persönlichen Daten ein: Anrede, Vor- und Nachname.",
     "Jetzt Ihre Adresse, PLZ, Ort und Ihr Geburtsdatum.",
     "Hier geht es um Ihre Krankenversicherung, gesetzlich oder privat.",
     "Auf dieser Seite wählen Sie Ihren Pflegegrad.",
@@ -75,32 +75,20 @@
     }
   }
 
-  function successFwSpawnBurst(ox, oy, count) {
-    const n = Math.floor(count);
+  /** Wenige Partikel, überwiegend senkrecht nach oben (Raketen-Salut). */
+  function successFwSpawnRockets(ox, oy, count) {
+    const n = Math.max(1, Math.floor(count));
     for (let i = 0; i < n; i++) {
-      const ang = (Math.PI * 2 * i) / n + (Math.random() - 0.5) * 0.9;
-      const speed = 2.8 + Math.random() * 9;
+      const spread = (Math.random() - 0.5) * 0.42;
+      const ang = -Math.PI / 2 + spread;
+      const speed = 6 + Math.random() * 7;
       successFwParticles.push({
-        x: ox,
+        x: ox + (Math.random() - 0.5) * 6,
         y: oy,
-        vx: Math.cos(ang) * speed * (0.55 + Math.random()),
-        vy: Math.sin(ang) * speed * (0.55 + Math.random()) - 1.8,
-        life: 0.88 + Math.random() * 0.42,
-        size: 1.1 + Math.random() * 3.2,
-        c: SUCCESS_FW_COLORS[(Math.random() * SUCCESS_FW_COLORS.length) | 0],
-      });
-    }
-    const sparks = Math.floor(n * 2.2);
-    for (let i = 0; i < sparks; i++) {
-      const ang = Math.random() * Math.PI * 2;
-      const speed = 0.8 + Math.random() * 6.5;
-      successFwParticles.push({
-        x: ox + (Math.random() - 0.5) * 28,
-        y: oy + (Math.random() - 0.5) * 28,
         vx: Math.cos(ang) * speed,
-        vy: Math.sin(ang) * speed - 2.2,
-        life: 0.45 + Math.random() * 0.55,
-        size: 0.5 + Math.random() * 1.8,
+        vy: Math.sin(ang) * speed,
+        life: 0.72 + Math.random() * 0.38,
+        size: 1.2 + Math.random() * 1.6,
         c: SUCCESS_FW_COLORS[(Math.random() * SUCCESS_FW_COLORS.length) | 0],
       });
     }
@@ -116,8 +104,9 @@
 
     function fitCanvas() {
       const dpr = Math.min(window.devicePixelRatio || 1, 2);
-      const w = window.innerWidth;
-      const h = window.innerHeight;
+      const r = canvas.getBoundingClientRect();
+      const w = Math.max(1, r.width);
+      const h = Math.max(1, r.height);
       canvas.width = Math.floor(w * dpr);
       canvas.height = Math.floor(h * dpr);
       canvas.style.width = `${w}px`;
@@ -132,53 +121,40 @@
     successFwLastT = performance.now();
     successFwSpawnAcc = 0;
 
-    function burstAtBoxi() {
-      const br = $("pflege-wizard-success-boxi")?.getBoundingClientRect();
-      const x = br ? br.left + br.width / 2 : window.innerWidth / 2;
-      const y = br ? br.top + br.height * 0.42 : window.innerHeight / 2;
-      successFwSpawnBurst(x, y, 52);
-      successFwSpawnBurst(x - 18, y + 10, 38);
-      successFwSpawnBurst(x + 22, y - 8, 42);
-      successFwSpawnBurst(x + (Math.random() - 0.5) * 30, y + (Math.random() - 0.5) * 25, 28);
+    function launchPad() {
+      const r = canvas.getBoundingClientRect();
+      if (r.width < 4 || r.height < 4) return;
+      const ox = r.width / 2;
+      const oy = r.height - 10;
+      successFwSpawnRockets(ox, oy, 3 + ((Math.random() * 3) | 0));
     }
-    burstAtBoxi();
+    requestAnimationFrame(() => {
+      requestAnimationFrame(launchPad);
+    });
 
     function frame(now) {
-      const w = window.innerWidth;
-      const h = window.innerHeight;
+      const r = canvas.getBoundingClientRect();
+      const w = r.width;
+      const h = r.height;
       const dt = Math.min(0.045, (now - successFwLastT) / 1000);
       successFwLastT = now;
 
-      ctx.fillStyle = "rgba(8, 28, 40, 0.28)";
-      ctx.fillRect(0, 0, w, h);
+      ctx.clearRect(0, 0, w, h);
 
-      const boxi = $("pflege-wizard-success-boxi");
-      const br = boxi?.getBoundingClientRect();
-      const ox = br ? br.left + br.width / 2 : w / 2;
-      const oy = br ? br.top + br.height * 0.42 : h / 2;
+      const ox = w / 2;
+      const oy = h - 10;
 
       successFwSpawnAcc += dt * 1000;
-      const interval = 95 + Math.random() * 95;
+      const interval = 520 + Math.random() * 480;
       if (successFwSpawnAcc >= interval) {
         successFwSpawnAcc = 0;
-        successFwSpawnBurst(
-          ox + (Math.random() - 0.5) * 70,
-          oy + (Math.random() - 0.5) * 55,
-          36 + ((Math.random() * 34) | 0),
-        );
-      }
-      if (Math.random() < 0.08 * dt * 60) {
-        successFwSpawnBurst(
-          ox + (Math.random() - 0.5) * 40,
-          oy + (Math.random() - 0.5) * 35,
-          18 + ((Math.random() * 16) | 0),
-        );
+        successFwSpawnRockets(ox, oy, 1 + ((Math.random() * 3) | 0));
       }
 
       for (let i = successFwParticles.length - 1; i >= 0; i--) {
         const p = successFwParticles[i];
-        p.vy += 0.2;
-        p.vx *= 0.988;
+        p.vy += 0.1;
+        p.vx *= 0.992;
         p.x += p.vx;
         p.y += p.vy;
         p.life -= dt * 1.05;

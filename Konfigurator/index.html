@@ -331,11 +331,6 @@
     </div>
 
     <div id="pflege-wizard-success-layer" class="pflege-wizard-success-layer" hidden>
-      <canvas
-        id="pflege-wizard-success-fireworks"
-        class="pflege-wizard-success-fireworks"
-        aria-hidden="true"
-      ></canvas>
       <div
         class="pflege-wizard-success-stage"
         role="alertdialog"
@@ -352,16 +347,23 @@
             </button>
           </div>
           <div class="pflege-wizard-success-figure">
-            <img
-              id="pflege-wizard-success-boxi"
-              class="pflege-wizard-success-boxi"
-              src="images/pflegeboxi.webp"
-              onerror="this.onerror=null;this.src='images/pflegeboxi.png';"
-              width="325"
-              height="325"
-              alt="Pflegeboxi"
-              decoding="async"
-            />
+            <div class="pflege-wizard-success-boxi-wrap">
+              <canvas
+                id="pflege-wizard-success-fireworks"
+                class="pflege-wizard-success-fireworks"
+                aria-hidden="true"
+              ></canvas>
+              <img
+                id="pflege-wizard-success-boxi"
+                class="pflege-wizard-success-boxi"
+                src="images/pflegeboxi.webp"
+                onerror="this.onerror=null;this.src='images/pflegeboxi.png';"
+                width="325"
+                height="325"
+                alt="Pflegeboxi"
+                decoding="async"
+              />
+            </div>
           </div>
         </div>
       </div>
