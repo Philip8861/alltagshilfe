@@ -9,6 +9,7 @@
     { key: "v1", section: "Versichertendaten", title: "Krankenversicherung", motivation: "" },
     { key: "v2", section: "Versichertendaten", title: "Pflegegrad", motivation: "" },
     { key: "b1", section: "Beratung", title: "Persönliche Beratung", motivation: "" },
+    { key: "k1", section: "Kontakt", title: "Kontaktmöglichkeiten", motivation: "" },
     { key: "n1", section: "Bestellung", title: "Anmerkung", motivation: "" },
     { key: "l1", section: "Rechtliches", title: "AGB & Datenschutz", motivation: "" },
     { key: "r1", section: "Empfehlung", title: "Partner-Code (optional)", motivation: "" },
@@ -23,6 +24,7 @@
     "Hier geht es um Ihre Krankenversicherung, gesetzlich oder privat.",
     "Auf dieser Seite wählen Sie Ihren Pflegegrad.",
     "Hier sagen Sie, ob Sie eine persönliche Beratung wünschen und wie wir Sie erreichen dürfen.",
+    "Geben Sie eine gültige Kontaktmöglichkeit an: per E-Mail oder telefonisch.",
     "Optional: Hier dürfen Sie eine Anmerkung zu Ihrer Bestellung schreiben.",
     "Bitte lesen und bestätigen Sie die AGB und die Datenschutzhinweise.",
     "Optional: Tragen Sie einen Partner-Code ein, falls Sie empfohlen wurden.",
@@ -42,6 +44,10 @@
 
   function pad2(n) {
     return String(n).padStart(2, "0");
+  }
+
+  function digitCount(str) {
+    return (String(str || "").match(/\d/g) || []).length;
   }
 
   function splitBirthDate(iso) {
@@ -130,6 +136,10 @@
     beihilfeberechtigt: false,
     personalBeratungWunsch: false,
     beratungKanal: "",
+    beratungTelefon: "",
+    kontaktArt: "",
+    contactEmail: "",
+    contactPhone: "",
     orderNote: "",
     agbAccepted: false,
     privacyAccepted: false,
@@ -241,6 +251,29 @@
       if (data.personalBeratungWunsch && !data.beratungKanal) {
         return "Bitte wählen Sie eine Beratungsform.";
       }
+      if (
+        data.personalBeratungWunsch &&
+        data.beratungKanal === "telefon" &&
+        (digitCount(data.beratungTelefon) < 8 || String(data.beratungTelefon).trim().length > 40)
+      ) {
+        return "Bitte eine gültige Telefonnummer für die telefonische Beratung angeben (mind. 8 Ziffern).";
+      }
+    }
+    if (s.key === "k1") {
+      if (!data.kontaktArt) {
+        return "Bitte wählen Sie eine Kontaktmöglichkeit (E-Mail oder telefonisch).";
+      }
+      if (data.kontaktArt === "email") {
+        const em = data.contactEmail.trim();
+        if (!em) return "Bitte Ihre E-Mail-Adresse angeben.";
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em)) return "Bitte eine gültige E-Mail-Adresse angeben.";
+      }
+      if (data.kontaktArt === "telefon") {
+        if (digitCount(data.contactPhone) < 8) {
+          return "Bitte eine gültige Telefonnummer angeben (mind. 8 Ziffern).";
+        }
+        if (String(data.contactPhone).trim().length > 40) return "Telefonnummer zu lang.";
+      }
     }
     if (s.key === "l1") {
       if (!data.agbAccepted || !data.privacyAccepted) return "Bitte AGB und Datenschutz bestätigen.";
@@ -268,52 +301,48 @@
   }
 
   function syncFromDom() {
-    const s = STEPS[stepIndex];
-    if (s.key === "p1") {
-      const sal = document.querySelector('input[name="wiz-salutation"]:checked');
-      data.salutation = sal ? sal.value : "herr";
-      data.firstName = $("wiz-firstname")?.value ?? "";
-      data.lastName = $("wiz-lastname")?.value ?? "";
-    }
-    if (s.key === "p2") {
-      data.street = $("wiz-street")?.value ?? "";
-      data.postalCode = $("wiz-plz")?.value ?? "";
-      data.city = $("wiz-city")?.value ?? "";
-      const y = $("wiz-birth-y")?.value ?? "";
-      const mo = $("wiz-birth-m")?.value ?? "";
-      const d = $("wiz-birth-d")?.value ?? "";
+    const sal = document.querySelector('input[name="wiz-salutation"]:checked');
+    if (sal) data.salutation = sal.value;
+    if ($("wiz-firstname")) data.firstName = $("wiz-firstname").value ?? "";
+    if ($("wiz-lastname")) data.lastName = $("wiz-lastname").value ?? "";
+    if ($("wiz-street")) data.street = $("wiz-street").value ?? "";
+    if ($("wiz-plz")) data.postalCode = $("wiz-plz").value ?? "";
+    if ($("wiz-city")) data.city = $("wiz-city").value ?? "";
+    const yEl = $("wiz-birth-y");
+    const moEl = $("wiz-birth-m");
+    const dEl = $("wiz-birth-d");
+    if (yEl && moEl && dEl) {
+      const y = yEl.value ?? "";
+      const mo = moEl.value ?? "";
+      const d = dEl.value ?? "";
       data.birthDate = y && mo && d ? `${y}-${pad2(mo)}-${pad2(d)}` : "";
     }
-    if (s.key === "v1") {
-      const pv = document.querySelector('input[name="wiz-privat"]:checked');
-      data.privatversichert = pv?.value === "ja";
-      data.versichertennummer = $("wiz-vsnr")?.value ?? "";
-      data.krankenkasse = $("wiz-kk")?.value ?? "";
+    const pv = document.querySelector('input[name="wiz-privat"]:checked');
+    if (pv) {
+      data.privatversichert = pv.value === "ja";
       if (data.privatversichert) {
         const bh = document.querySelector('input[name="wiz-beihilfe"]:checked');
-        data.beihilfeberechtigt = bh?.value === "ja";
+        if (bh) data.beihilfeberechtigt = bh.value === "ja";
       } else {
         data.beihilfeberechtigt = false;
       }
     }
-    if (s.key === "v2") {
-      data.pflegegrad = Number($("wiz-pg")?.value ?? "1");
-    }
-    if (s.key === "b1") {
-      data.personalBeratungWunsch = $("wiz-ber-ja")?.checked === true;
-      const kanal = document.querySelector('input[name="wiz-ber-kanal"]:checked');
-      data.beratungKanal = kanal?.value ?? "";
-    }
-    if (s.key === "n1") {
-      data.orderNote = $("wiz-note")?.value ?? "";
-    }
-    if (s.key === "l1") {
-      data.agbAccepted = $("wiz-agb")?.checked === true;
-      data.privacyAccepted = $("wiz-privacy")?.checked === true;
-    }
-    if (s.key === "r1") {
-      data.partnerCode = $("wiz-partner")?.value ?? "";
-    }
+    if ($("wiz-vsnr")) data.versichertennummer = $("wiz-vsnr").value ?? "";
+    if ($("wiz-kk")) data.krankenkasse = $("wiz-kk").value ?? "";
+    if ($("wiz-pg")) data.pflegegrad = Number($("wiz-pg").value ?? "1");
+    const jaBer = $("wiz-ber-ja");
+    if (jaBer) data.personalBeratungWunsch = jaBer.checked === true;
+    const kanal = document.querySelector('input[name="wiz-ber-kanal"]:checked');
+    if (kanal) data.beratungKanal = kanal.value ?? "";
+    if ($("wiz-beratung-telefon")) data.beratungTelefon = $("wiz-beratung-telefon").value ?? "";
+    const ka = document.querySelector('input[name="wiz-kontakt-art"]:checked');
+    if (ka) data.kontaktArt = ka.value;
+    if ($("wiz-kontakt-email")) data.contactEmail = $("wiz-kontakt-email").value ?? "";
+    if ($("wiz-kontakt-phone")) data.contactPhone = $("wiz-kontakt-phone").value ?? "";
+    if ($("wiz-note")) data.orderNote = $("wiz-note").value ?? "";
+    if ($("wiz-agb")) data.agbAccepted = $("wiz-agb").checked === true;
+    if ($("wiz-privacy")) data.privacyAccepted = $("wiz-privacy").checked === true;
+    if ($("wiz-partner")) data.partnerCode = $("wiz-partner").value ?? "";
   }
 
   function render() {
@@ -376,7 +405,7 @@
           <div class="wiz-radio-row">
             <label><input type="radio" name="wiz-salutation" value="herr" ${data.salutation === "herr" ? "checked" : ""}/> Herr</label>
             <label><input type="radio" name="wiz-salutation" value="frau" ${data.salutation === "frau" ? "checked" : ""}/> Frau</label>
-            <label class="wiz-radio-label--divers"><input type="radio" name="wiz-salutation" value="divers" ${data.salutation === "divers" ? "checked" : ""}/> Divers</label>
+            <label><input type="radio" name="wiz-salutation" value="divers" ${data.salutation === "divers" ? "checked" : ""}/> Divers</label>
           </div>
         </div>
         <div class="wiz-field-row">
@@ -466,6 +495,7 @@
         </div>`;
     } else if (meta.key === "b1") {
       const w = data.personalBeratungWunsch;
+      const showBerTel = w && data.beratungKanal === "telefon";
       html = `
         <div class="wiz-field-group">
           <span class="wiz-label">Ich wünsche eine persönliche Beratung</span>
@@ -477,10 +507,35 @@
         <div id="wiz-ber-block-ja" class="wiz-conditional" ${w ? "" : 'style="display:none"'}>
           <span class="wiz-label">Wie dürfen wir beraten?</span>
           <div class="wiz-radio-col">
-            <label><input type="radio" name="wiz-ber-kanal" value="telefon" ${data.beratungKanal === "telefon" ? "checked" : ""}/> Telefonisch</label>
+            <label><input type="radio" name="wiz-ber-kanal" id="wiz-ber-tele" value="telefon" ${data.beratungKanal === "telefon" ? "checked" : ""}/> Telefonisch</label>
             <label><input type="radio" name="wiz-ber-kanal" value="video" ${data.beratungKanal === "video" ? "checked" : ""}/> Per Videocall</label>
             <label><input type="radio" name="wiz-ber-kanal" value="vor_ort" ${data.beratungKanal === "vor_ort" ? "checked" : ""}/> In den Geschäftsräumen</label>
           </div>
+        </div>
+        <div id="wiz-beratung-telefon-wrap" class="wiz-field wiz-conditional" ${showBerTel ? "" : 'style="display:none"'}>
+          <label for="wiz-beratung-telefon">Telefonnummer für die Beratung *</label>
+          <input type="tel" id="wiz-beratung-telefon" maxlength="40" autocomplete="tel" value="${escapeAttr(data.beratungTelefon)}" />
+        </div>`;
+    } else if (meta.key === "k1") {
+      const ka = data.kontaktArt || "";
+      const showEm = ka === "email";
+      const showPh = ka === "telefon";
+      html = `
+        <p class="wiz-hint wiz-kontakt-intro">Geben Sie eine gültige Kontaktmöglichkeit an.</p>
+        <div class="wiz-field-group">
+          <span class="wiz-label">Wie dürfen wir Sie erreichen?</span>
+          <div class="wiz-radio-col">
+            <label><input type="radio" name="wiz-kontakt-art" id="wiz-kontakt-email-radio" value="email" ${ka === "email" ? "checked" : ""}/> E-Mail</label>
+            <label><input type="radio" name="wiz-kontakt-art" id="wiz-kontakt-tel-radio" value="telefon" ${ka === "telefon" ? "checked" : ""}/> Telefonisch</label>
+          </div>
+        </div>
+        <div id="wiz-kontakt-email-wrap" class="wiz-field" ${showEm ? "" : 'style="display:none"'}>
+          <label for="wiz-kontakt-email">E-Mail-Adresse *</label>
+          <input type="email" id="wiz-kontakt-email" maxlength="320" autocomplete="email" value="${escapeAttr(data.contactEmail)}" />
+        </div>
+        <div id="wiz-kontakt-phone-wrap" class="wiz-field" ${showPh ? "" : 'style="display:none"'}>
+          <label for="wiz-kontakt-phone">Telefonnummer *</label>
+          <input type="tel" id="wiz-kontakt-phone" maxlength="40" autocomplete="tel" value="${escapeAttr(data.contactPhone)}" />
         </div>`;
     } else if (meta.key === "n1") {
       html = `
@@ -521,19 +576,10 @@
       html = `
         <div class="wiz-success-summary">
           <p class="wiz-success-summary__main">Ihre Bestellung ist erfolgreich bei uns eingegangen.</p>
-          <p class="wiz-success-summary__ref" id="wiz-success-ref" hidden></p>
         </div>`;
     }
 
     body.innerHTML = html;
-    if (meta.key === "s2") {
-      const refEl = $("wiz-success-ref");
-      const ref = pendingOrderReference;
-      if (refEl && ref) {
-        refEl.textContent = "Ihre Vorgangsnummer: " + ref;
-        refEl.hidden = false;
-      }
-    }
     body.classList.toggle("pflege-wizard-body--sig-step", meta.key === "s1");
     body.classList.toggle("pflege-wizard-body--success-step", meta.key === "s2");
     if (meta.key === "p2") {
@@ -545,6 +591,9 @@
     }
     if (meta.key === "b1") {
       wireBeratungToggles();
+    }
+    if (meta.key === "k1") {
+      wireKontaktStep();
     }
     if (meta.key === "r1") {
       wirePartnerField();
@@ -628,12 +677,38 @@
     const nein = $("wiz-ber-nein");
     const ja = $("wiz-ber-ja");
     const bj = $("wiz-ber-block-ja");
+    const telRow = $("wiz-beratung-telefon-wrap");
     function sync() {
       const w = ja && ja.checked;
       if (bj) bj.style.display = w ? "block" : "none";
+      const tv = $("wiz-ber-tele");
+      if (telRow) {
+        const telNeeded = w && tv && tv.checked;
+        telRow.style.display = telNeeded ? "" : "none";
+      }
     }
     nein?.addEventListener("change", sync);
     ja?.addEventListener("change", sync);
+    $("wiz-ber-tele")?.addEventListener("change", sync);
+    document.querySelectorAll('input[name="wiz-ber-kanal"]').forEach((el) => {
+      el.addEventListener("change", sync);
+    });
+    sync();
+  }
+
+  function wireKontaktStep() {
+    const emW = $("wiz-kontakt-email-wrap");
+    const phW = $("wiz-kontakt-phone-wrap");
+    const rEm = $("wiz-kontakt-email-radio");
+    const rPh = $("wiz-kontakt-tel-radio");
+    function sync() {
+      const emailChk = rEm?.checked === true;
+      const telChk = rPh?.checked === true;
+      if (emW) emW.style.display = emailChk ? "" : "none";
+      if (phW) phW.style.display = telChk ? "" : "none";
+    }
+    rEm?.addEventListener("change", sync);
+    rPh?.addEventListener("change", sync);
     sync();
   }
 
@@ -841,6 +916,14 @@
     if (data.personalBeratungWunsch) {
       contact.beratungKanal = data.beratungKanal;
     }
+    if (data.personalBeratungWunsch && data.beratungKanal === "telefon") {
+      contact.beratungTelefon = data.beratungTelefon.trim();
+    }
+    if (data.kontaktArt === "email") {
+      contact.email = data.contactEmail.trim();
+    } else if (data.kontaktArt === "telefon") {
+      contact.phone = data.contactPhone.trim();
+    }
     const note = data.orderNote.trim();
     if (note) contact.orderNote = note;
 
@@ -874,7 +957,7 @@
         }
         if (res.status === 400 && j.error === "validation") {
           msg =
-            "Die Daten wurden nicht akzeptiert. Bitte prüfen Sie Ihre Eingaben (z. B. Versichertennummer, Krankenkasse, Beratungskanal) und versuchen Sie es erneut.";
+            "Die Daten wurden nicht akzeptiert. Bitte prüfen Sie Ihre Eingaben (z. B. Versichertennummer, Krankenkasse, Beratung, Kontaktmöglichkeit) und versuchen Sie es erneut.";
         }
         showError(msg);
         return;
@@ -919,6 +1002,10 @@
       beihilfeberechtigt: false,
       personalBeratungWunsch: false,
       beratungKanal: "",
+      beratungTelefon: "",
+      kontaktArt: "",
+      contactEmail: "",
+      contactPhone: "",
       orderNote: "",
       agbAccepted: false,
       privacyAccepted: false,

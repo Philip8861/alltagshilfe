@@ -31,6 +31,17 @@ function buildTipNotiz(
   const ber = contact.personalBeratungWunsch
     ? `Beratung: ja (${contact.beratungKanal ?? "—"})`
     : "Beratung: nein";
+  const beratungTelRow =
+    contact.personalBeratungWunsch &&
+    contact.beratungKanal === "telefon" &&
+    contact.beratungTelefon?.trim()
+      ? `Telefon für Beratung: ${contact.beratungTelefon.trim()}`
+      : null;
+  const kontaktRow = contact.email?.trim()
+    ? `Kontakt: E-Mail ${contact.email.trim()}`
+    : contact.phone?.trim()
+      ? `Kontakt: Tel. ${contact.phone.trim()}`
+      : null;
   const versRow = contact.privatversichert
     ? "Versicherung: Privatversichert"
     : `Versicherten-Nr.: ${contact.versichertennummer}`;
@@ -44,6 +55,8 @@ function buildTipNotiz(
     `Pflegegrad: ${pg}`,
     beihilfeRow,
     ber,
+    beratungTelRow,
+    kontaktRow,
     contact.orderNote ? `Anmerkung: ${contact.orderNote}` : null,
   ]
     .filter(Boolean)
@@ -94,7 +107,7 @@ export async function POST(request: Request) {
 
   const c = contactNormalized;
   const summary_json = {
-    version: 3,
+    version: 4,
     cartLines: parsed.data.cartLines,
     totalBudgetUsed: parsed.data.totalBudgetUsed,
     partnerRefRaw: partnerRefRaw || null,
@@ -114,6 +127,7 @@ export async function POST(request: Request) {
       personalBeratungWunsch: c.personalBeratungWunsch,
       keinBeratungGrund: c.keinBeratungGrund ?? null,
       beratungKanal: c.beratungKanal ?? null,
+      beratungTelefon: c.beratungTelefon?.trim() || null,
       orderNote: c.orderNote ?? null,
       email: c.email?.trim() || null,
       phone: c.phone?.trim() || null,

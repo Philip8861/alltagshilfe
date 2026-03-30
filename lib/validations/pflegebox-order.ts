@@ -42,6 +42,15 @@ const contactSchema = z
     keinBeratungGrund: z.string().trim().max(2000).optional(),
     /** Pflicht wenn personalBeratungWunsch === true */
     beratungKanal: z.enum(["telefon", "video", "vor_ort"]).optional(),
+    /** Pflicht wenn Beratung telefonisch */
+    beratungTelefon: z.preprocess(
+      (val) => {
+        if (val === undefined || val === null) return undefined;
+        const s = String(val).trim();
+        return s.length === 0 ? undefined : s;
+      },
+      z.string().max(40).optional(),
+    ),
     orderNote: z.string().trim().max(2000).optional(),
     email: z.preprocess(
       (val) => {
@@ -51,7 +60,14 @@ const contactSchema = z
       },
       z.string().email("Gültige E-Mail.").max(320).optional(),
     ),
-    phone: z.string().trim().max(40).optional(),
+    phone: z.preprocess(
+      (val) => {
+        if (val === undefined || val === null) return undefined;
+        const s = String(val).trim();
+        return s.length === 0 ? undefined : s;
+      },
+      z.string().max(40).optional(),
+    ),
   })
   .superRefine((c, ctx) => {
     if (!c.privatversichert) {
@@ -85,6 +101,49 @@ const contactSchema = z
         message: "Bitte wählen Sie eine Beratungsart.",
         path: ["beratungKanal"],
       });
+    }
+    if (c.personalBeratungWunsch && c.beratungKanal === "telefon") {
+      const t = (c.beratungTelefon ?? "").trim();
+      const digits = t.replace(/\D/g, "");
+      if (!t) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "Bitte Telefonnummer für die telefonische Beratung angeben.",
+          path: ["beratungTelefon"],
+        });
+      } else if (digits.length < 8 || t.length > 40) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "Bitte eine gültige Telefonnummer für die Beratung angeben (mind. 8 Ziffern).",
+          path: ["beratungTelefon"],
+        });
+      }
+    }
+    const em = (c.email ?? "").trim();
+    const ph = (c.phone ?? "").trim();
+    if (!em && !ph) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Bitte geben Sie eine gültige E-Mail oder Telefonnummer als Kontaktmöglichkeit an.",
+        path: ["email"],
+      });
+    }
+    if (em && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em)) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Bitte eine gültige E-Mail-Adresse angeben.",
+        path: ["email"],
+      });
+    }
+    if (ph) {
+      const digits = ph.replace(/\D/g, "");
+      if (digits.length < 8 || ph.length > 40) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "Bitte eine gültige Telefonnummer angeben (mind. 8 Ziffern).",
+          path: ["phone"],
+        });
+      }
     }
   });
 
