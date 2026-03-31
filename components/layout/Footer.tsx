@@ -103,7 +103,7 @@ export function Footer() {
             </ul>
           </div>
         </div>
-        <div className="mt-8 border-t border-[#0F4F68]/15 pt-6">
+        <div className="mt-6 border-t border-[#0F4F68]/15 pt-4">
           <p className="text-center text-sm text-neutral-500">
             © {currentYear} {siteConfig.name}. Alle Rechte vorbehalten.
           </p>

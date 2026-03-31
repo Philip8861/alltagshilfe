@@ -44,29 +44,35 @@ body {
 }
 
 /*
- * Site-Iframe (?embed=1): Iframe-Höhe = Inhalt (postMessage in app.js); kein height:100% am Root,
- * sonst meldet scrollHeight die Iframe-Zwangshöhe statt der echten Inhaltshöhe.
+ * Site-Iframe (?embed=1): Next setzt feste Iframe-Höhe (Viewport − Header).
+ * Scroll nur in .hero-wrapper → position:sticky für „Meine Pflegebox“ (Desktop) und Budget‑% (Mobile).
  */
 html.kfg-embed {
-  height: auto;
-  overflow-x: hidden;
-  overflow-y: visible;
+  height: 100%;
+  overflow: hidden;
 }
 
 html.kfg-embed body {
   margin: 0;
-  min-height: 0;
-  height: auto;
-  overflow-x: hidden;
-  overflow-y: visible;
-  background: var(--background);
+  height: 100%;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
 
+/*
+ * Kein flex-grow: sonst füllt .hero-wrapper die Iframe-Höhe und unter dem Footer bleibt
+ * sichtbarer Leerraum (gleiche Hintergrundfarbe). Höhe der Iframe steuert die Next-Seite per postMessage.
+ */
 html.kfg-embed .hero-wrapper {
-  width: 100%;
+  flex: 0 1 auto;
+  flex-grow: 0;
   min-height: 0;
+  max-height: 100%;
+  width: 100%;
   overflow-x: hidden;
-  overflow-y: visible;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
   background: #f1f9fb;
 }
 
@@ -257,6 +263,7 @@ html.kfg-embed .hero-overlay {
   grid-column: 1 / -1;
   margin-top: 0.35rem;
   padding-bottom: 0;
+  margin-bottom: max(0.1rem, env(safe-area-inset-bottom, 0px));
 }
 
 .kfg-site-footer .kfg-mini-footer {
@@ -265,6 +272,7 @@ html.kfg-embed .hero-overlay {
 
 .kfg-mini-footer-copy {
   margin: 0.55rem 0 0;
+  padding: 0;
   text-align: center;
   font-size: 0.78rem;
   line-height: 1.45;

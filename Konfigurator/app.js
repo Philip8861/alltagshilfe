@@ -1227,51 +1227,45 @@ document.addEventListener("DOMContentLoaded", () => {
 
 });
 
-/**
- * Embed auf /pflegebox: echte Dokumenthöhe an Parent melden (Iframe ohne Leerraum unter dem Footer).
- * Parent prüft event.origin und begrenzt auf Viewport (sticky/Scroll im Iframe bleiben sinnvoll).
- */
-(function setupKfgEmbedResizePostMessage() {
-  try {
-    if (!document.documentElement.classList.contains("kfg-embed")) return;
-    if (window.parent === window) return;
-
-    let t = 0;
-    function measureAndPost() {
-      const root = document.documentElement;
-      const body = document.body;
-      const h = Math.max(
-        root.scrollHeight,
-        body ? body.scrollHeight : 0,
-        root.offsetHeight,
-        body ? body.offsetHeight : 0
-      );
-      const rounded = Math.ceil(h);
-      window.parent.postMessage({ type: "kfg-resize", height: rounded }, "*");
+(function setupPflegeboxEmbedHeightPostMessage() {
+  function isEmbed() {
+    try {
+      return new URLSearchParams(window.location.search).get("embed") === "1";
+    } catch {
+      return false;
     }
+  }
 
-    function schedule() {
-      window.clearTimeout(t);
-      t = window.setTimeout(measureAndPost, 48);
-    }
+  if (!isEmbed() || window.parent === window) return;
 
-    if (document.readyState === "loading") {
-      document.addEventListener("DOMContentLoaded", measureAndPost);
-    } else {
-      measureAndPost();
+  function measureContentHeight() {
+    var overlay = document.querySelector(".hero-overlay");
+    if (!overlay) return 0;
+    return Math.ceil(Math.max(overlay.scrollHeight, overlay.offsetHeight));
+  }
+
+  function postHeight() {
+    var h = measureContentHeight();
+    if (h < 80) return;
+    window.parent.postMessage({ type: "ahs-kfg-height", height: h }, "*");
+  }
+
+  function start() {
+    postHeight();
+    window.addEventListener("resize", postHeight);
+    var overlay = document.querySelector(".hero-overlay");
+    if (overlay && typeof ResizeObserver !== "undefined") {
+      var ro = new ResizeObserver(function () {
+        postHeight();
+      });
+      ro.observe(overlay);
     }
-    window.addEventListener("load", schedule);
-    window.addEventListener("resize", schedule);
-    const ro = new ResizeObserver(schedule);
-    ro.observe(document.body);
-    const itemList = document.getElementById("item-list");
-    if (itemList) ro.observe(itemList);
-    const cartEl = document.getElementById("cart");
-    if (cartEl) ro.observe(cartEl);
-    const flow1 = document.getElementById("flow-step-1");
-    if (flow1) ro.observe(flow1);
-  } catch (_) {
-    /* ignore */
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", start, { once: true });
+  } else {
+    start();
   }
 })();
 
