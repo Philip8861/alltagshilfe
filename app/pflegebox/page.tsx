@@ -10,7 +10,7 @@ export default function PflegeboxPage() {
   return (
     <div className="w-full max-w-full pb-24 sm:pb-32">
       <iframe
-        src="/konfigurator/index.html?embed=1&v=kfg-layout-5"
+        src="/konfigurator/index.html?embed=1&v=kfg-layout-6"
         title="Pflegebox-Konfigurator – Produkte auswählen"
         className="block w-full max-w-full border-0"
         style={{

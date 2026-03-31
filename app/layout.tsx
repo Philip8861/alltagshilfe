@@ -14,7 +14,7 @@ const baloo2 = Baloo_2({
 });
 
 import { Header } from "@/components/layout/Header";
-import { Footer } from "@/components/layout/Footer";
+import { ConditionalFooter } from "@/components/layout/ConditionalFooter";
 import { CookieBanner } from "@/components/CookieBanner";
 import { OrganizationJsonLd } from "@/components/seo/JsonLd";
 import { ReadabilityZoomControls } from "@/components/accessibility/ReadabilityZoomControls";
@@ -59,7 +59,7 @@ export default function RootLayout({
               {children}
             </main>
           </div>
-          <Footer />
+          <ConditionalFooter />
           <CookieBanner />
         </div>
         <GoogleTranslateBootstrap />
