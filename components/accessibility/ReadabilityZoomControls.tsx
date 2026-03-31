@@ -34,6 +34,11 @@ const FONT_OPTIONS = [
   { id: "georgia", label: "Georgia", value: "Georgia, 'Times New Roman', serif" },
 ] as const;
 
+function isPflegeboxConfiguratorPath(pathname: string | null) {
+  if (!pathname) return false;
+  return pathname === "/pflegebox" || pathname.startsWith("/pflegebox/");
+}
+
 function clampZoom(value: number) {
   return Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, value));
 }
@@ -696,8 +701,8 @@ export function ReadabilityZoomControls() {
   );
 
   if (!mounted || typeof document === "undefined") return null;
-  /* Partner- und Admin-Bereich: kein Lesbarkeits-Launcher (eigenes UI). */
-  if (pathname.startsWith("/partner")) return null;
+  /* Partner, Pflegebox: kein portaliertes Lesbarkeits-UI (eigenes bzw. Iframe-UI; sonst Leisten über Inhalt). */
+  if (pathname.startsWith("/partner") || isPflegeboxConfiguratorPath(pathname)) return null;
 
   return (
     <>

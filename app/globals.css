@@ -3,6 +3,17 @@
 @tailwind utilities;
 
 @layer base {
+  /* Kein horizontaler Scroll-„Balken“ durch 100vw/Überlauf am Seitenende */
+  html {
+    overflow-x: clip;
+  }
+
+  @supports not (overflow: clip) {
+    html {
+      overflow-x: hidden;
+    }
+  }
+
   body {
     background-color: #fafbfc;
   }
@@ -340,6 +351,9 @@ body:has(#pflegebox-root) #main-content {
 .goog-te-banner-frame,
 iframe.goog-te-banner-frame,
 #goog-gt-tt,
+#goog-gt-voting,
+.goog-te-voting-open,
+.goog-te-voting-link-placeholder,
 .goog-te-balloon-frame,
 .goog-te-menu-frame,
 .goog-tooltip,
