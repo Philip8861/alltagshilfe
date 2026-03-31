@@ -3,23 +3,21 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 
 const KFG_HEIGHT_MSG = "ahs-kfg-height";
-/** Entspricht grob der bisherigen Iframe-Formel (Header + Abstände). */
-const VIEWPORT_RESERVE_PX = 168;
 const MIN_IFRAME_PX = 280;
 
-function viewportCapPx() {
-  if (typeof window === "undefined") return 1200;
-  return Math.max(320, window.innerHeight - VIEWPORT_RESERVE_PX);
-}
-
-function clampIframeHeight(contentPx: number) {
-  const cap = viewportCapPx();
-  return Math.min(Math.max(Math.ceil(contentPx), MIN_IFRAME_PX), cap);
+function measureAvailableIframeHeight(iframeEl: HTMLIFrameElement | null) {
+  if (typeof window === "undefined") return 520;
+  const top = iframeEl?.getBoundingClientRect().top ?? 0;
+  return Math.max(MIN_IFRAME_PX, Math.floor(window.innerHeight - Math.max(0, top)));
 }
 
 export function PflegeboxConfiguratorIframe() {
   const iframeRef = useRef<HTMLIFrameElement>(null);
-  const [heightPx, setHeightPx] = useState<number | null>(null);
+  const [heightPx, setHeightPx] = useState<number>(520);
+
+  const syncIframeHeight = useCallback(() => {
+    setHeightPx(measureAvailableIframeHeight(iframeRef.current));
+  }, []);
 
   const onMessage = useCallback((ev: MessageEvent) => {
     if (ev.source !== iframeRef.current?.contentWindow) return;
@@ -28,27 +26,28 @@ export function PflegeboxConfiguratorIframe() {
     if (!data || data.type !== KFG_HEIGHT_MSG) return;
     const h = Number(data.height);
     if (!Number.isFinite(h) || h < 120) return;
-    setHeightPx(clampIframeHeight(h));
-  }, []);
+    syncIframeHeight();
+  }, [syncIframeHeight]);
 
   useEffect(() => {
+    syncIframeHeight();
     window.addEventListener("message", onMessage);
-    return () => window.removeEventListener("message", onMessage);
-  }, [onMessage]);
+    window.addEventListener("resize", syncIframeHeight);
+    window.addEventListener("orientationchange", syncIframeHeight);
+    return () => {
+      window.removeEventListener("message", onMessage);
+      window.removeEventListener("resize", syncIframeHeight);
+      window.removeEventListener("orientationchange", syncIframeHeight);
+    };
+  }, [onMessage, syncIframeHeight]);
 
-  const src = "/konfigurator/index.html?embed=1&v=kfg-embed-head-3";
+  const src = "/konfigurator/index.html?embed=1&v=kfg-embed-head-4";
 
-  const style =
-    heightPx != null
-      ? {
-          height: `${heightPx}px`,
-          minHeight: `${Math.min(MIN_IFRAME_PX, heightPx)}px`,
-          maxHeight: "calc(100dvh - 10.5rem)",
-        }
-      : {
-          height: "max(520px, calc(100dvh - 10.5rem))",
-          minHeight: "max(520px, calc(100dvh - 10.5rem))",
-        };
+  const style = {
+    height: `${heightPx}px`,
+    minHeight: `${heightPx}px`,
+    maxHeight: `${heightPx}px`,
+  };
 
   return (
     <iframe
