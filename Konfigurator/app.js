@@ -1085,6 +1085,31 @@ function buildCartLinesForApi() {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
+  function isEmbed() {
+    try {
+      return new URLSearchParams(window.location.search).get("embed") === "1";
+    } catch {
+      return false;
+    }
+  }
+
+  function setupEmbedMobileProgressFloating() {
+    if (!isEmbed()) return;
+    const wrap = document.querySelector(".hero-wrapper");
+    const mobileProgress = document.querySelector(".budget-progress-mobile-wrapper");
+    if (!wrap || !mobileProgress) return;
+
+    const updateFloatingState = () => {
+      const isMobile = window.matchMedia("(max-width: 900px)").matches;
+      const triggerOffset = Math.max(96, mobileProgress.offsetTop + mobileProgress.offsetHeight);
+      document.documentElement.classList.toggle("kfg-embed-mobile-progress-floating", isMobile && wrap.scrollTop > triggerOffset);
+    };
+
+    wrap.addEventListener("scroll", updateFloatingState, { passive: true });
+    window.addEventListener("resize", updateFloatingState);
+    updateFloatingState();
+  }
+
   readAndStorePartnerRef();
 
   boxIconElement = document.getElementById("box-icon");
@@ -1106,6 +1131,7 @@ document.addEventListener("DOMContentLoaded", () => {
   renderItemList();
   renderCart();
   updateBudgetDisplay();
+  setupEmbedMobileProgressFloating();
   initBoxChatbot();
 
   if (ARTICLE_ADMIN_TOOL_ENABLED) {

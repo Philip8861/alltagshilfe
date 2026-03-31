@@ -1702,6 +1702,23 @@ html.kfg-embed .hero-overlay {
     box-shadow: none;
   }
 
+  html.kfg-embed.kfg-embed-mobile-progress-floating .budget-progress-mobile-wrapper {
+    position: fixed;
+    top: max(8px, env(safe-area-inset-top, 0px));
+    left: max(12px, env(safe-area-inset-left, 0px));
+    right: max(12px, env(safe-area-inset-right, 0px));
+    width: auto;
+    z-index: 30;
+    border-radius: 18px;
+    background: rgba(241, 249, 251, 0.96);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 8px 22px rgba(15, 79, 104, 0.16);
+  }
+
+  html.kfg-embed .kfg-site-footer {
+    display: none;
+  }
+
   .box-chatbot {
     right: max(12px, env(safe-area-inset-right, 0px));
     bottom: max(88px, calc(env(safe-area-inset-bottom, 0px) + 72px));

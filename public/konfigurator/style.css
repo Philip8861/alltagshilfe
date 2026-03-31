@@ -1688,7 +1688,7 @@ html.kfg-embed .hero-overlay {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  /* Embed: nicht mehr über Artikeln kleben lassen – normal im Dokumentfluss anzeigen */
+  /* Embed: zunächst normal im Dokumentfluss; beim Scrollen blendet JS eine kompakte Floating-Leiste ein */
   html.kfg-embed .layout {
     padding-top: 0;
   }
@@ -1703,6 +1703,23 @@ html.kfg-embed .hero-overlay {
     margin-right: 0;
     backdrop-filter: none;
     box-shadow: none;
+  }
+
+  html.kfg-embed.kfg-embed-mobile-progress-floating .budget-progress-mobile-wrapper {
+    position: fixed;
+    top: max(8px, env(safe-area-inset-top, 0px));
+    left: max(12px, env(safe-area-inset-left, 0px));
+    right: max(12px, env(safe-area-inset-right, 0px));
+    width: auto;
+    z-index: 30;
+    border-radius: 18px;
+    background: rgba(241, 249, 251, 0.96);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 8px 22px rgba(15, 79, 104, 0.16);
+  }
+
+  html.kfg-embed .kfg-site-footer {
+    display: none;
   }
 
   .box-chatbot {
