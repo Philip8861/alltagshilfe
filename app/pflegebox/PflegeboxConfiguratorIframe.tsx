@@ -36,7 +36,7 @@ export function PflegeboxConfiguratorIframe() {
     return () => window.removeEventListener("message", onMessage);
   }, [onMessage]);
 
-  const src = "/konfigurator/index.html?embed=1&v=kfg-layout-10";
+  const src = "/konfigurator/index.html?embed=1&v=kfg-layout-11";
 
   const style =
     heightPx != null
