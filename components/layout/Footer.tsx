@@ -39,7 +39,7 @@ export function Footer() {
           />
         </svg>
       </div>
-      <Container className="relative z-10 pt-20 pb-12 sm:pt-28 sm:pb-12">
+      <Container className="relative z-10 pt-20 pb-6 sm:pt-28 sm:pb-6">
         <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
           <div>
             <p className="text-sm font-semibold text-neutral-900">
@@ -103,7 +103,7 @@ export function Footer() {
             </ul>
           </div>
         </div>
-        <div className="mt-10 border-t border-[#0F4F68]/15 pt-8">
+        <div className="mt-8 border-t border-[#0F4F68]/15 pt-6">
           <p className="text-center text-sm text-neutral-500">
             © {currentYear} {siteConfig.name}. Alle Rechte vorbehalten.
           </p>

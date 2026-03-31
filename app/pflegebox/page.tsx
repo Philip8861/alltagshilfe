@@ -8,9 +8,9 @@ export const metadata: Metadata = {
 
 export default function PflegeboxPage() {
   return (
-    <div className="w-full max-w-full pb-24 sm:pb-32">
+    <div className="w-full max-w-full">
       <iframe
-        src="/konfigurator/index.html?embed=1&v=kfg-layout-7"
+        src="/konfigurator/index.html?embed=1&v=kfg-layout-8"
         title="Pflegebox-Konfigurator – Produkte auswählen"
         className="block w-full max-w-full border-0"
         style={{
