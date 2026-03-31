@@ -40,6 +40,7 @@ body:has(#pflegebox-root) #main-content {
   min-height: 0;
   /* Gleiche Fläche wie Konfigurator – kein „weißer Streifen“ unter dem Iframe (#fafbfc) */
   background-color: #f1f9fb;
+  overflow-x: hidden;
 }
 
 @keyframes marker-pop-in {

@@ -16,6 +16,8 @@
 
 html {
   -webkit-text-size-adjust: 100%;
+  overflow-x: clip;
+  max-width: 100%;
 }
 
 body {
@@ -1288,7 +1290,7 @@ html.kfg-embed .hero-overlay {
   align-items: flex-end;
   gap: 8px;
   max-height: calc(100vh - 80px);
-  max-width: calc(100vw - 24px);
+  max-width: calc(100% - 24px);
 }
 
 .box-chatbot--expanded {
@@ -1372,7 +1374,7 @@ html.kfg-embed .hero-overlay {
 }
 
 .box-chatbot--expanded .box-chatbot-window {
-  width: min(600px, calc(100vw - 48px));
+  width: min(600px, calc(100% - 48px));
   max-height: min(788px, calc(100vh - 220px));
   flex-shrink: 1;
   min-height: 0;
@@ -1603,15 +1605,16 @@ html.kfg-embed .hero-overlay {
     padding-bottom: calc(5.5rem + env(safe-area-inset-bottom, 0px));
   }
 
+  /* Kein 100vw: mit vertikaler Scrollbar ist 100vw > Layoutbreite → horizontaler Scrollbalken unten */
   .btn-next-step {
     position: fixed;
-    left: 50%;
-    right: auto;
+    left: max(12px, env(safe-area-inset-left, 0px));
+    right: max(12px, env(safe-area-inset-right, 0px));
     bottom: max(12px, env(safe-area-inset-bottom, 0px));
-    transform: translateX(-50%);
-    width: calc(100vw - 24px);
-    max-width: calc(100vw - 24px);
+    width: auto;
+    max-width: none;
     margin: 0;
+    transform: none;
     z-index: 40;
     box-shadow: 0 8px 28px rgba(15, 79, 104, 0.22);
   }
@@ -1850,7 +1853,7 @@ body.pflege-wizard-open {
 .pflege-wizard-modal {
   position: relative;
   width: 100%;
-  max-width: min(40rem, calc(100vw - 2rem));
+  max-width: min(40rem, calc(100% - 2rem));
   margin: 0.75rem auto 2rem;
   border-radius: 1.25rem;
   --wiz-band: #f2f9fa;
