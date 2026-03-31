@@ -1688,19 +1688,21 @@ html.kfg-embed .hero-overlay {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  /* Embed: %‑Leiste im Scroll mitlaufen lassen (sticky oben im Konfigurator, nicht viewport-fixed) */
+  /* Embed: nicht mehr über Artikeln kleben lassen – normal im Dokumentfluss anzeigen */
   html.kfg-embed .layout {
-    padding-top: 8px;
+    padding-top: 0;
   }
 
   html.kfg-embed .budget-progress-mobile-wrapper {
-    position: sticky;
-    top: 0;
+    position: static;
+    top: auto;
     left: auto;
     right: auto;
     width: 100%;
     margin-left: 0;
     margin-right: 0;
+    backdrop-filter: none;
+    box-shadow: none;
   }
 
   .box-chatbot {

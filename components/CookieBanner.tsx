@@ -77,9 +77,9 @@ export function CookieBanner() {
     <div
       role="dialog"
       aria-label="Cookie-Einstellungen"
-      className="fixed bottom-0 left-0 right-0 z-[60] border-t border-[#0F4F68]/15 bg-white p-4 shadow-[0_-4px_20px_rgba(0,0,0,0.08)] sm:p-5"
+      className="fixed bottom-4 left-4 right-4 z-[60] rounded-2xl border border-[#0F4F68]/15 bg-white p-4 shadow-[0_12px_30px_rgba(0,0,0,0.12)] sm:left-auto sm:max-w-md sm:p-5"
       style={{
-        paddingBottom: "max(1rem, env(safe-area-inset-bottom))",
+        paddingBottom: "max(1rem, calc(0.75rem + env(safe-area-inset-bottom)))",
       }}
     >
       <div className="mx-auto max-w-4xl">
