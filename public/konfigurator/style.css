@@ -46,34 +46,33 @@ body {
 }
 
 /*
- * Site-Iframe (?embed=1): Kein eigener Scroll im Dokument — die Seite wächst mit dem Inhalt.
- * Der äußere Browser scrollt von Header bis Footer (Iframe-Höhe wird von Next per Messung gesetzt).
- * overflow-x: clip auf .hero-wrapper bricht position:sticky für „Meine Pflegebox“ → im Embed vermeiden.
+ * Site-Iframe (?embed=1): Next setzt feste Iframe-Höhe (Viewport − Header).
+ * Scroll nur in .hero-wrapper → position:sticky für „Meine Pflegebox“ (Desktop) und Budget‑% (Mobile).
  */
 html.kfg-embed {
-  height: auto;
-  min-height: 0;
-  overflow-x: hidden;
-  overflow-y: visible;
+  height: 100%;
+  overflow: hidden;
 }
 
 html.kfg-embed body {
   margin: 0;
-  min-height: 0;
-  height: auto;
-  overflow-x: hidden;
-  overflow-y: visible;
+  height: 100%;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
 
 html.kfg-embed .hero-wrapper {
+  flex: 1 1 auto;
   min-height: 0;
-  height: auto;
-  max-height: none;
-  overflow-x: visible;
-  overflow-y: visible;
+  width: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  background: #f1f9fb;
 }
 
-/* Breite Bettschutzeinlage-Zeile: nur Panel horizontal scrollen, nicht den sticky-Stack abbrechen */
+/* Breite Bettschutzeinlage: horizontales Scroll nur im linken Panel */
 html.kfg-embed .layout > .panel:first-of-type {
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
@@ -1577,6 +1576,21 @@ html.kfg-embed .hero-overlay {
 
   .item-list {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  /* Embed: %‑Leiste im Scroll mitlaufen lassen (sticky oben im Konfigurator, nicht viewport-fixed) */
+  html.kfg-embed .layout {
+    padding-top: 8px;
+  }
+
+  html.kfg-embed .budget-progress-mobile-wrapper {
+    position: sticky;
+    top: 0;
+    left: auto;
+    right: auto;
+    width: 100%;
+    margin-left: 0;
+    margin-right: 0;
   }
 
   .box-chatbot {
