@@ -17,6 +17,11 @@ html:has(#pflegebox-root),
 body:has(#pflegebox-root) {
   scrollbar-width: none;
   -ms-overflow-style: none;
+  /*
+   * Sonst #fafbfc durchscheint: Leerraum im Flex-Layout unter/kneben dem Iframe,
+   * unten unter der Shell oder in Viewport-Rändern → wirkt wie weißer „Rahmen“.
+   */
+  background-color: #f1f9fb;
 }
 
 html:has(#pflegebox-root)::-webkit-scrollbar,
@@ -28,16 +33,20 @@ body:has(#pflegebox-root)::-webkit-scrollbar {
 
 body:has(#pflegebox-root) #app-shell {
   min-height: 0;
+  background-color: #f1f9fb;
 }
 
 body:has(#pflegebox-root) #app-shell > div:first-child {
   flex: 0 0 auto;
   min-height: 0;
+  min-width: 0;
+  background-color: #f1f9fb;
 }
 
 body:has(#pflegebox-root) #main-content {
   flex: 0 0 auto;
   min-height: 0;
+  min-width: 0;
   /* Gleiche Fläche wie Konfigurator – kein „weißer Streifen“ unter dem Iframe (#fafbfc) */
   background-color: #f1f9fb;
   overflow-x: hidden;
