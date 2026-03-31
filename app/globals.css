@@ -8,6 +8,38 @@
   }
 }
 
+/*
+ * Pflegebox: #main-content hat sonst flex-1 → Leerraum unter dem Iframe bis zum Viewport-Ende.
+ * App-Shell nicht auf mindestens 100vh zwingen, wenn nur der Konfigurator zu sehen ist.
+ * Scrollbalken ausblenden (Scrollen per Rad/Touch weiter möglich).
+ */
+html:has(#pflegebox-root),
+body:has(#pflegebox-root) {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+html:has(#pflegebox-root)::-webkit-scrollbar,
+body:has(#pflegebox-root)::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
+}
+
+body:has(#pflegebox-root) #app-shell {
+  min-height: 0;
+}
+
+body:has(#pflegebox-root) #app-shell > div:first-child {
+  flex: 0 0 auto;
+  min-height: 0;
+}
+
+body:has(#pflegebox-root) #main-content {
+  flex: 0 0 auto;
+  min-height: 0;
+}
+
 @keyframes marker-pop-in {
   from {
     opacity: 0;

@@ -6,7 +6,6 @@ const KFG_HEIGHT_MSG = "ahs-kfg-height";
 /** Entspricht grob der bisherigen Iframe-Formel (Header + Abstände). */
 const VIEWPORT_RESERVE_PX = 168;
 const MIN_IFRAME_PX = 280;
-const HEIGHT_MARGIN_PX = 8;
 
 function viewportCapPx() {
   if (typeof window === "undefined") return 1200;
@@ -15,7 +14,7 @@ function viewportCapPx() {
 
 function clampIframeHeight(contentPx: number) {
   const cap = viewportCapPx();
-  return Math.min(Math.max(contentPx + HEIGHT_MARGIN_PX, MIN_IFRAME_PX), cap);
+  return Math.min(Math.max(Math.ceil(contentPx), MIN_IFRAME_PX), cap);
 }
 
 export function PflegeboxConfiguratorIframe() {
@@ -37,7 +36,7 @@ export function PflegeboxConfiguratorIframe() {
     return () => window.removeEventListener("message", onMessage);
   }, [onMessage]);
 
-  const src = "/konfigurator/index.html?embed=1&v=kfg-layout-9";
+  const src = "/konfigurator/index.html?embed=1&v=kfg-layout-10";
 
   const style =
     heightPx != null
