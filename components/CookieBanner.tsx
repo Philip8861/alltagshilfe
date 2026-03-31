@@ -11,6 +11,7 @@ const DEFAULT_CONSENT: ConsentState = {
   marketing: false,
   timestamp: 0,
 };
+const COOKIE_BANNER_DISMISSED_KEY = "cookie-banner-dismissed";
 
 export function CookieBanner() {
   const [visible, setVisible] = useState(false);
@@ -20,17 +21,27 @@ export function CookieBanner() {
 
   useEffect(() => {
     const stored = getConsent();
-    if (!stored) setVisible(true);
+    const dismissed = typeof window !== "undefined" && localStorage.getItem(COOKIE_BANNER_DISMISSED_KEY) === "1";
+    if (!stored && !dismissed) setVisible(true);
   }, []);
 
   useEffect(() => {
-    const handler = () => setVisible(true);
+    const handler = () => {
+      localStorage.removeItem(COOKIE_BANNER_DISMISSED_KEY);
+      setVisible(true);
+    };
     window.addEventListener("cookie-banner-show", handler);
     return () => window.removeEventListener("cookie-banner-show", handler);
   }, []);
 
   const save = (state: ConsentState) => {
     setConsent(state);
+    setVisible(false);
+    setSettingsOpen(false);
+  };
+
+  const handleClose = () => {
+    localStorage.setItem(COOKIE_BANNER_DISMISSED_KEY, "1");
     setVisible(false);
     setSettingsOpen(false);
   };
@@ -72,6 +83,18 @@ export function CookieBanner() {
       }}
     >
       <div className="mx-auto max-w-4xl">
+        <div className="mb-2 flex justify-end">
+          <button
+            type="button"
+            onClick={handleClose}
+            aria-label="Cookie-Hinweis schließen"
+            className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-[#0F4F68]/20 text-[#0F4F68] transition hover:bg-[#F2F9FA] focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2"
+          >
+            <span aria-hidden className="text-lg leading-none">
+              ×
+            </span>
+          </button>
+        </div>
         <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between sm:gap-6">
           <div className="min-w-0 flex-1">
             <h2 className="text-lg font-bold text-[#0F4F68]">Cookie-Hinweis</h2>
