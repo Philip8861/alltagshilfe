@@ -1227,3 +1227,51 @@ document.addEventListener("DOMContentLoaded", () => {
 
 });
 
+/**
+ * Embed auf /pflegebox: echte Dokumenthöhe an Parent melden (Iframe ohne Leerraum unter dem Footer).
+ * Parent prüft event.origin und begrenzt auf Viewport (sticky/Scroll im Iframe bleiben sinnvoll).
+ */
+(function setupKfgEmbedResizePostMessage() {
+  try {
+    if (!document.documentElement.classList.contains("kfg-embed")) return;
+    if (window.parent === window) return;
+
+    let t = 0;
+    function measureAndPost() {
+      const root = document.documentElement;
+      const body = document.body;
+      const h = Math.max(
+        root.scrollHeight,
+        body ? body.scrollHeight : 0,
+        root.offsetHeight,
+        body ? body.offsetHeight : 0
+      );
+      const rounded = Math.ceil(h);
+      window.parent.postMessage({ type: "kfg-resize", height: rounded }, "*");
+    }
+
+    function schedule() {
+      window.clearTimeout(t);
+      t = window.setTimeout(measureAndPost, 48);
+    }
+
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", measureAndPost);
+    } else {
+      measureAndPost();
+    }
+    window.addEventListener("load", schedule);
+    window.addEventListener("resize", schedule);
+    const ro = new ResizeObserver(schedule);
+    ro.observe(document.body);
+    const itemList = document.getElementById("item-list");
+    if (itemList) ro.observe(itemList);
+    const cartEl = document.getElementById("cart");
+    if (cartEl) ro.observe(cartEl);
+    const flow1 = document.getElementById("flow-step-1");
+    if (flow1) ro.observe(flow1);
+  } catch (_) {
+    /* ignore */
+  }
+})();
+

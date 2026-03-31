@@ -39,7 +39,7 @@ export function Footer() {
           />
         </svg>
       </div>
-      <Container className="relative z-10 pt-20 pb-6 sm:pt-28 sm:pb-6">
+      <Container className="relative z-10 pt-20 pb-4 sm:pt-28 sm:pb-4">
         <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
           <div>
             <p className="text-sm font-semibold text-neutral-900">

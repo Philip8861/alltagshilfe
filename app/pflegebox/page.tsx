@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { PflegeboxConfiguratorIframe } from "@/components/pflegebox/PflegeboxConfiguratorIframe";
 import { siteConfig } from "@/config/site";
 
 export const metadata: Metadata = {
@@ -9,14 +10,9 @@ export const metadata: Metadata = {
 export default function PflegeboxPage() {
   return (
     <div className="w-full max-w-full">
-      <iframe
-        src="/konfigurator/index.html?embed=1&v=kfg-layout-8"
+      <PflegeboxConfiguratorIframe
+        src="/konfigurator/index.html?embed=1&v=kfg-layout-9"
         title="Pflegebox-Konfigurator – Produkte auswählen"
-        className="block w-full max-w-full border-0"
-        style={{
-          height: "max(520px, calc(100dvh - 10.5rem))",
-          minHeight: "max(520px, calc(100dvh - 10.5rem))",
-        }}
       />
     </div>
   );
