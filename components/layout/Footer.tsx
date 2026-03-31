@@ -10,7 +10,7 @@ export function Footer() {
   return (
     <footer className="relative bg-neutral-50">
       <div
-        className="absolute left-0 right-0 top-0 z-0 h-20 w-full sm:h-28"
+        className="absolute left-0 right-0 top-0 z-0 h-12 w-full sm:h-16"
         style={{ marginTop: "-1px" }}
         aria-hidden
       >
@@ -39,7 +39,7 @@ export function Footer() {
           />
         </svg>
       </div>
-      <Container className="relative z-10 pt-20 pb-4 sm:pt-28 sm:pb-4">
+      <Container className="relative z-10 pt-12 pb-4 sm:pt-16 sm:pb-4">
         <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
           <div>
             <p className="text-sm font-semibold text-neutral-900">

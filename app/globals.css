@@ -357,6 +357,16 @@ html.translated-rtl body {
   padding-top: 0 !important;
 }
 
+/*
+ * Google Translate setzt body oft per Inline-Style (z. B. top: 40px), auch wenn Banner/Widget versteckt ist –
+ * dann entsteht oben ein leerer Streifen auf allen Seiten.
+ */
+body {
+  top: 0 !important;
+  margin-top: 0 !important;
+  padding-top: 0 !important;
+}
+
 /* Scrollbar ausblenden, Scrollen bleibt möglich */
 * {
   -ms-overflow-style: none;
