@@ -539,6 +539,10 @@ html.kfg-embed .hero-overlay {
   background: #64748b;
 }
 
+.btn-next-step[hidden] {
+  display: none !important;
+}
+
 .cart-empty {
   margin: 0;
   width: 100%;
@@ -1530,7 +1534,10 @@ html.kfg-embed .hero-overlay {
   }
 
   .layout > .panel:last-of-type {
-    /* Platz für fixierten „Nächster Schritt“-Button */
+    padding-bottom: 12px;
+  }
+
+  .layout > .panel:last-of-type.panel--next-step-visible {
     padding-bottom: calc(5.5rem + env(safe-area-inset-bottom, 0px));
   }
 

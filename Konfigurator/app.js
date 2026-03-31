@@ -276,10 +276,15 @@ function updateBudgetDisplay() {
   const btnNextStep = document.getElementById("btn-next-step");
   if (btnNextStep) {
     const hasItems = cart.length > 0;
+    btnNextStep.hidden = !hasItems;
     btnNextStep.disabled = !hasItems;
     btnNextStep.title = hasItems
       ? ""
       : "Bitte wählen Sie mindestens einen Artikel für Ihre Pflegebox.";
+    const boxPanel = btnNextStep.closest(".panel");
+    if (boxPanel) {
+      boxPanel.classList.toggle("panel--next-step-visible", hasItems);
+    }
   }
 }
 
