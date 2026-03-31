@@ -312,14 +312,13 @@ body:has(#pflegebox-root) #main-content {
   scroll-behavior: auto !important;
 }
 
-.readability-adjusted-spacing #app-shell {
+/*
+ * Zeilenabstand nur im Hauptinhalt – nicht auf #app-shell (Header/Footer würden sonst künstlich
+ * „aufgeblasen“ wirken, besonders unter einzeiligen Texten wie der Copyright-Zeile).
+ */
+.readability-adjusted-spacing #main-content {
   line-height: var(--ahs-line-height, 1.6) !important;
   letter-spacing: var(--ahs-letter-spacing, 0.01em) !important;
-}
-
-/* Copyright eine Zeile: sonst wirkt viel „Luft“ unter dem Text (line-height greift mit !important) */
-.readability-adjusted-spacing #app-shell footer p {
-  line-height: 1.35 !important;
 }
 
 .readability-font-adjusted #app-shell,

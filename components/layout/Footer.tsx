@@ -8,7 +8,7 @@ export function Footer() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="relative bg-neutral-50">
+    <footer id="site-footer" className="relative shrink-0 bg-neutral-50 leading-normal">
       <div
         className="absolute left-0 right-0 top-0 z-0 h-12 w-full sm:h-16"
         style={{ marginTop: "-1px" }}
