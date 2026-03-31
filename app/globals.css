@@ -317,6 +317,11 @@ body:has(#pflegebox-root) #main-content {
   letter-spacing: var(--ahs-letter-spacing, 0.01em) !important;
 }
 
+/* Copyright eine Zeile: sonst wirkt viel „Luft“ unter dem Text (line-height greift mit !important) */
+.readability-adjusted-spacing #app-shell footer p {
+  line-height: 1.35 !important;
+}
+
 .readability-font-adjusted #app-shell,
 .readability-font-adjusted #app-shell * {
   font-family: var(--ahs-font-family, "Nunito Sans", system-ui, sans-serif) !important;
@@ -364,7 +369,9 @@ html.translated-rtl body {
 body {
   top: 0 !important;
   margin-top: 0 !important;
+  margin-bottom: 0 !important;
   padding-top: 0 !important;
+  padding-bottom: 0 !important;
 }
 
 /* Scrollbar ausblenden, Scrollen bleibt möglich */

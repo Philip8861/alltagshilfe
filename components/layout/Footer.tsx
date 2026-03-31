@@ -39,7 +39,8 @@ export function Footer() {
           />
         </svg>
       </div>
-      <Container className="relative z-10 pt-12 pb-4 sm:pt-16 sm:pb-4">
+      {/* Unten in px: bei Lesbarkeits-Zoom (html font-size %) würden rem-Paddings extrem groß wirken */}
+      <Container className="relative z-10 pt-12 sm:pt-16 pb-[max(8px,env(safe-area-inset-bottom,0px))]">
         <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
           <div>
             <p className="text-sm font-semibold text-neutral-900">
@@ -103,8 +104,8 @@ export function Footer() {
             </ul>
           </div>
         </div>
-        <div className="mt-6 border-t border-[#0F4F68]/15 pt-4">
-          <p className="text-center text-sm text-neutral-500">
+        <div className="mt-6 border-t border-[#0F4F68]/15 pt-3 pb-0">
+          <p className="mb-0 text-center text-sm leading-snug text-neutral-500">
             © {currentYear} {siteConfig.name}. Alle Rechte vorbehalten.
           </p>
         </div>
