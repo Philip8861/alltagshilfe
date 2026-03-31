@@ -36,7 +36,7 @@ export function PflegeboxConfiguratorIframe() {
     return () => window.removeEventListener("message", onMessage);
   }, [onMessage]);
 
-  const src = "/konfigurator/index.html?embed=1&v=kfg-layout-11";
+  const src = "/konfigurator/index.html?embed=1&v=kfg-layout-12";
 
   const style =
     heightPx != null
@@ -55,7 +55,7 @@ export function PflegeboxConfiguratorIframe() {
       ref={iframeRef}
       src={src}
       title="Pflegebox-Konfigurator – Produkte auswählen"
-      className="block w-full max-w-full border-0"
+      className="block w-full max-w-full border-0 bg-[#f1f9fb]"
       style={style}
     />
   );

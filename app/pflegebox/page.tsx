@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 
 export default function PflegeboxPage() {
   return (
-    <div id="pflegebox-root" className="w-full max-w-full">
+    <div id="pflegebox-root" className="w-full max-w-full bg-[#f1f9fb]">
       <PflegeboxConfiguratorIframe />
     </div>
   );

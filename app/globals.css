@@ -38,6 +38,8 @@ body:has(#pflegebox-root) #app-shell > div:first-child {
 body:has(#pflegebox-root) #main-content {
   flex: 0 0 auto;
   min-height: 0;
+  /* Gleiche Fläche wie Konfigurator – kein „weißer Streifen“ unter dem Iframe (#fafbfc) */
+  background-color: #f1f9fb;
 }
 
 @keyframes marker-pop-in {

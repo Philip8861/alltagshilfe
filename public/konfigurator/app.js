@@ -1239,26 +1239,43 @@ document.addEventListener("DOMContentLoaded", () => {
   if (!isEmbed() || window.parent === window) return;
 
   function measureContentHeight() {
+    var wrap = document.querySelector(".hero-wrapper");
     var overlay = document.querySelector(".hero-overlay");
-    if (!overlay) return 0;
-    return Math.ceil(Math.max(overlay.scrollHeight, overlay.offsetHeight));
+    if (!wrap || !overlay) return 0;
+    /*
+     * .hero-overlay hat im Embed zoom: 0.823 — scrollHeight/scrollHeight des Wrappers
+     * ist oft zu groß, dann wirkt das Iframe zu hoch und darunter entsteht ein weißer Streifen.
+     * Ohne inneren Overflow: sichtbare Höhe per getBoundingClientRect (zoom berücksichtigt).
+     */
+    var needsInnerScroll = wrap.scrollHeight > wrap.clientHeight + 1;
+    if (needsInnerScroll) {
+      return Math.ceil(wrap.scrollHeight);
+    }
+    return Math.ceil(overlay.getBoundingClientRect().height);
   }
 
   function postHeight() {
-    var h = measureContentHeight();
-    if (h < 80) return;
-    window.parent.postMessage({ type: "ahs-kfg-height", height: h }, "*");
+    requestAnimationFrame(function () {
+      var h = measureContentHeight();
+      if (h < 80) return;
+      window.parent.postMessage({ type: "ahs-kfg-height", height: h }, "*");
+    });
   }
 
   function start() {
     postHeight();
     window.addEventListener("resize", postHeight);
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener("resize", postHeight);
+    }
+    setTimeout(postHeight, 50);
+    setTimeout(postHeight, 320);
+    var wrap = document.querySelector(".hero-wrapper");
     var overlay = document.querySelector(".hero-overlay");
-    if (overlay && typeof ResizeObserver !== "undefined") {
-      var ro = new ResizeObserver(function () {
-        postHeight();
-      });
-      ro.observe(overlay);
+    if (typeof ResizeObserver !== "undefined") {
+      var ro = new ResizeObserver(postHeight);
+      if (wrap) ro.observe(wrap);
+      if (overlay) ro.observe(overlay);
     }
   }
 

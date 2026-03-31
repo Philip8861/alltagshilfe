@@ -52,6 +52,8 @@ html.kfg-embed {
   overflow: hidden;
   scrollbar-width: none;
   -ms-overflow-style: none;
+  /* Sonst unten Weiß, wenn das Dokument höher als der sichtbare Inhalt ist */
+  background-color: #f1f9fb;
 }
 
 html.kfg-embed::-webkit-scrollbar {
@@ -68,6 +70,7 @@ html.kfg-embed body {
   flex-direction: column;
   scrollbar-width: none;
   -ms-overflow-style: none;
+  background-color: #f1f9fb;
 }
 
 html.kfg-embed body::-webkit-scrollbar {
