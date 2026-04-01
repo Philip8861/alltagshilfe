@@ -11,115 +11,33 @@ function formatProductDisplayName(name) {
     .trim();
 }
 
-/** Im Repo gepflegte Artikel (feste IDs 9101–9113); ersetzen bei jedem Laden die gesamte Artikelliste. */
+/** Im Repo gepflegte Artikel (feste IDs; 9106 entfällt); Reihenfolge = Darstellung im Konfigurator. */
 const BUNDLED_CATALOG_ITEMS = [
   {
-    id: 9101,
-    name: "EUMEPRO_OP-Maske_Typ_IIR",
-    pieces: null,
-    quantity: null,
-    ml: null,
-    price: 7,
-    imageUrl: "images/Mundschutz.webp",
-    sizes: [],
-    isGlove: false,
-    bettschutzeinlage: false,
-  },
-  {
     id: 9102,
-    name: "Duozid_Gebrauchsfertige_Desinfektionstücher_zur_Hände-und_Oberflächendesinfektion",
-    pieces: null,
+    name: "Flächendesinfektionstücher",
+    pieces: "150",
     quantity: null,
     ml: null,
-    price: 4,
+    price: 17.85,
     imageUrl: "images/Flächendesinfektionstücher.webp",
     sizes: [],
     isGlove: false,
     bettschutzeinlage: false,
-  },
-  {
-    id: 9103,
-    name: "Hygostar Latzschürze 115x90cm wiederverwendbar",
-    pieces: "115 × 90 cm",
-    quantity: null,
-    ml: null,
-    price: 9,
-    imageUrl: "images/Schutzschürtze_wiederverwendbar.webp",
-    sizes: [],
-    isGlove: false,
-    bettschutzeinlage: false,
-  },
-  {
-    id: 9104,
-    name: "FFP2-Maske (EN 149)",
-    pieces: null,
-    quantity: null,
-    ml: null,
-    price: 3,
-    imageUrl: "images/FFP2 Masken.webp",
-    sizes: [],
-    isGlove: false,
-    bettschutzeinlage: false,
-  },
-  {
-    id: 9105,
-    name: "BeeSana Krankenunterlagen ComCell 60 × 90 cm (25 St.)",
-    pieces: "60 × 90 cm",
-    quantity: 25,
-    ml: null,
-    price: 6,
-    imageUrl: "images/Bettschutzeinlagen.webp",
-    sizes: [],
-    isGlove: false,
-    bettschutzeinlage: false,
-  },
-  {
-    id: 9106,
-    name: "PE-Einmalschürze (Hygostar)",
-    pieces: null,
-    quantity: null,
-    ml: null,
-    price: 2,
-    imageUrl: "images/Schutzschürtze_einmalgebrauch.webp",
-    sizes: [],
-    isGlove: false,
-    bettschutzeinlage: false,
-  },
-  {
-    id: 9107,
-    name: "Einmallätzchen",
-    pieces: null,
-    quantity: null,
-    ml: null,
-    price: 5,
-    imageUrl: "images/Einmallätzchen.webp",
-    sizes: [],
-    isGlove: false,
-    bettschutzeinlage: false,
+    mlVariants: null,
   },
   {
     id: 9109,
     name: "Einmalhandschuhe",
-    pieces: null,
+    pieces: "100",
     quantity: null,
     ml: null,
-    price: 10,
+    price: 9.52,
     imageUrl: "images/Einmalhandschuhe.webp",
     sizes: [],
     isGlove: true,
     bettschutzeinlage: false,
-  },
-  {
-    id: 9110,
-    name: "Fingerling",
-    pieces: null,
-    quantity: null,
-    ml: null,
-    price: 1,
-    imageUrl: "images/Fingerling.webp",
-    sizes: [],
-    isGlove: false,
-    bettschutzeinlage: false,
+    mlVariants: null,
   },
   {
     id: 9111,
@@ -127,11 +45,16 @@ const BUNDLED_CATALOG_ITEMS = [
     pieces: null,
     quantity: null,
     ml: null,
-    price: 5,
+    price: 3.39,
     imageUrl: "images/Flächendesinfektionsmittel.webp",
     sizes: [],
     isGlove: false,
     bettschutzeinlage: false,
+    mlVariants: [
+      { ml: 250, price: 3.39 },
+      { ml: 500, price: 6.78 },
+      { ml: 1000, price: 13.57 },
+    ],
   },
   {
     id: 9112,
@@ -139,23 +62,107 @@ const BUNDLED_CATALOG_ITEMS = [
     pieces: null,
     quantity: null,
     ml: null,
-    price: 7,
+    price: 1.43,
     imageUrl: "images/Händedesinfektionsmittel.webp",
     sizes: [],
     isGlove: false,
     bettschutzeinlage: false,
+    mlVariants: [
+      { ml: 100, price: 1.43 },
+      { ml: 500, price: 7.14 },
+      { ml: 1000, price: 14.28 },
+    ],
+  },
+  {
+    id: 9104,
+    name: "FFP2 Masken",
+    pieces: "20",
+    quantity: null,
+    ml: null,
+    price: 15.47,
+    imageUrl: "images/FFP2 Masken.webp",
+    sizes: [],
+    isGlove: false,
+    bettschutzeinlage: false,
+    mlVariants: null,
   },
   {
     id: 9113,
     name: "Händedesinfektionstücher",
-    pieces: null,
+    pieces: "50",
     quantity: null,
     ml: null,
-    price: 9,
+    price: 5.95,
     imageUrl: "images/Händedesinfektionstücher.webp",
     sizes: [],
     isGlove: false,
     bettschutzeinlage: false,
+    mlVariants: null,
+  },
+  {
+    id: 9101,
+    name: "Mundschutz",
+    pieces: "50",
+    quantity: null,
+    ml: null,
+    price: 8.33,
+    imageUrl: "images/Mundschutz.webp",
+    sizes: [],
+    isGlove: false,
+    bettschutzeinlage: false,
+    mlVariants: null,
+  },
+  {
+    id: 9110,
+    name: "Fingerling",
+    pieces: "100",
+    quantity: null,
+    ml: null,
+    price: 5.95,
+    imageUrl: "images/Fingerling.webp",
+    sizes: [],
+    isGlove: false,
+    bettschutzeinlage: false,
+    mlVariants: null,
+  },
+  {
+    id: 9103,
+    name: "Schutzschürze_wiederverwendbar",
+    pieces: "1",
+    quantity: null,
+    ml: null,
+    price: 25.59,
+    imageUrl: "images/Schutzschürtze_wiederverwendbar.webp",
+    sizes: [],
+    isGlove: false,
+    bettschutzeinlage: false,
+    mlVariants: null,
+  },
+  {
+    id: 9107,
+    name: "Einmallätzchen",
+    pieces: "100",
+    quantity: null,
+    ml: null,
+    price: 14.28,
+    imageUrl: "images/Einmallätzchen.webp",
+    sizes: [],
+    isGlove: false,
+    bettschutzeinlage: false,
+    mlVariants: null,
+  },
+  {
+    id: 9105,
+    name: "Bettschutzeinlagen",
+    pieces: "25",
+    quantity: null,
+    ml: null,
+    price: 12.2,
+    imageUrl: "images/Bettschutzeinlagen.webp",
+    sizes: [],
+    isGlove: false,
+    bettschutzeinlage: false,
+    mlVariants: null,
   },
   {
     id: 9108,
@@ -168,6 +175,9 @@ const BUNDLED_CATALOG_ITEMS = [
     sizes: [],
     isGlove: false,
     bettschutzeinlage: true,
+    mlVariants: null,
+    description:
+      "Sie erhalten pro Jahr zusätzlich bis zu 4 wiederverwendbare Bettschutzeinlagen. Diese werden nicht auf die 42 € der Pflegebox angerechnet.",
   },
 ];
 
@@ -184,6 +194,10 @@ let editingItemId = null;
 
 let pendingGloveItemId = null;
 let pendingGloveSize = null;
+let pendingGloveMaterial = null;
+
+let pendingMlItemId = null;
+let pendingMlChoiceMl = null;
 
 let boxIconElement = null;
 let boxIconBadgeElement = null;
@@ -345,7 +359,24 @@ function renderItemList() {
     header.appendChild(nameSpan);
     contentWrap.appendChild(header);
 
-    if (item.pieces || item.quantity || item.ml) {
+    if (!item.bettschutzeinlage) {
+      const priceEl = document.createElement("div");
+      priceEl.className = "item-price-row";
+      if (hasMlVariants(item)) {
+        const minP = Math.min(...item.mlVariants.map((v) => v.price));
+        priceEl.textContent = `ab ${euroFormatter.format(minP)}`;
+      } else {
+        priceEl.textContent = euroFormatter.format(item.price || 0);
+      }
+      contentWrap.appendChild(priceEl);
+    }
+
+    if (hasMlVariants(item)) {
+      const metaMl = document.createElement("div");
+      metaMl.className = "item-meta-row";
+      metaMl.textContent = `Gebinde: ${item.mlVariants.map((v) => `${v.ml} ml`).join(", ")}`;
+      contentWrap.appendChild(metaMl);
+    } else if (item.pieces || item.quantity || item.ml) {
       const meta = document.createElement("div");
       meta.className = "item-meta-row";
       const parts = [];
@@ -380,7 +411,9 @@ function renderItemList() {
     const remainingBefore = MAX_BUDGET - totalBefore;
     const canAddOneMore = item.bettschutzeinlage
       ? countInCart < MAX_BETTSCHUTZEINLAGE
-      : (item.price || 0) <= remainingBefore;
+      : hasMlVariants(item)
+        ? canAffordAnyMlVariant(item, remainingBefore)
+        : (item.price || 0) <= remainingBefore;
 
     const footer = document.createElement("div");
     footer.className = "item-qty-row";
@@ -443,6 +476,19 @@ function renderItemList() {
 
 const MAX_BETTSCHUTZEINLAGE = 4;
 
+function hasMlVariants(item) {
+  return Array.isArray(item?.mlVariants) && item.mlVariants.length > 0;
+}
+
+function canAffordAnyMlVariant(item, remainingBudget) {
+  if (!hasMlVariants(item)) return false;
+  return item.mlVariants.some((v) => v.price <= remainingBudget);
+}
+
+function countBettschutzeinlageInCart() {
+  return cart.filter((c) => c.bettschutzeinlage).length;
+}
+
 function tryAddToCart(itemId, selectedSize = null, material = null) {
   const item = ITEMS.find((it) => it.id === itemId);
   if (!item) return;
@@ -451,12 +497,31 @@ function tryAddToCart(itemId, selectedSize = null, material = null) {
     const count = cart.filter((c) => c.id === itemId).length;
     if (count >= MAX_BETTSCHUTZEINLAGE) return;
     const cartEntry = { ...item, selectedSize, material, price: 0 };
+    delete cartEntry.mlVariants;
     cart.push(cartEntry);
   } else {
     const totalBefore = calculateCartTotal();
     const remainingBefore = MAX_BUDGET - totalBefore;
-    if ((item.price || 0) > remainingBefore) return;
-    const cartEntry = { ...item, selectedSize, material };
+    let unitPrice = item.price || 0;
+    let mlVal = item.ml != null ? item.ml : null;
+    let sizeForLine = selectedSize;
+
+    if (hasMlVariants(item)) {
+      let mlNum = Number(selectedSize);
+      if (!Number.isFinite(mlNum)) {
+        const m = /^(\d+)\s*ml$/i.exec(String(selectedSize || "").trim());
+        mlNum = m ? Number(m[1]) : NaN;
+      }
+      const v = item.mlVariants.find((x) => x.ml === mlNum);
+      if (!v) return;
+      unitPrice = v.price;
+      mlVal = v.ml;
+      sizeForLine = `${v.ml} ml`;
+    }
+
+    if (unitPrice > remainingBefore) return;
+    const cartEntry = { ...item, selectedSize: sizeForLine, material, price: unitPrice, ml: mlVal };
+    delete cartEntry.mlVariants;
     cart.push(cartEntry);
   }
   renderCart();
@@ -466,9 +531,19 @@ function tryAddToCart(itemId, selectedSize = null, material = null) {
 }
 
 function decrementItemInCart(itemId, selectedSize = null) {
-  const index = cart.findIndex(
-    (entry) => entry.id === itemId && (entry.selectedSize || null) === selectedSize
-  );
+  let index = -1;
+  if (selectedSize != null && selectedSize !== "") {
+    index = cart.findIndex(
+      (entry) => entry.id === itemId && (entry.selectedSize || null) === selectedSize
+    );
+  } else {
+    for (let i = cart.length - 1; i >= 0; i--) {
+      if (cart[i].id === itemId) {
+        index = i;
+        break;
+      }
+    }
+  }
   if (index === -1) return;
   cart.splice(index, 1);
   renderCart();
@@ -490,6 +565,10 @@ function handleAddFromList(itemId, selectedSize = null) {
     openGloveModal(itemId);
     return;
   }
+  if (hasMlVariants(item)) {
+    openMlModal(itemId);
+    return;
+  }
 
   incrementCartItem(itemId, selectedSize);
 }
@@ -509,7 +588,67 @@ function closeGloveModal() {
   document.body.style.overflow = "";
   pendingGloveItemId = null;
   pendingGloveSize = null;
+  pendingGloveMaterial = null;
   updateGloveConfirmButton();
+}
+
+function updateMlConfirmButton() {
+  const btn = document.getElementById("ml-variant-confirm");
+  if (btn) btn.disabled = pendingMlChoiceMl == null;
+}
+
+function closeMlModal() {
+  const modal = document.getElementById("ml-variant-modal");
+  if (modal) {
+    modal.classList.remove("is-open");
+    modal.setAttribute("aria-hidden", "true");
+  }
+  document.documentElement.style.overflow = "";
+  document.body.style.overflow = "";
+  pendingMlItemId = null;
+  pendingMlChoiceMl = null;
+  updateMlConfirmButton();
+}
+
+function openMlModal(itemId) {
+  const modal = document.getElementById("ml-variant-modal");
+  const wrap = document.getElementById("ml-variant-buttons");
+  if (!modal || !wrap) return;
+  const item = ITEMS.find((it) => it.id === itemId);
+  if (!item || !hasMlVariants(item)) return;
+
+  pendingMlItemId = itemId;
+  pendingMlChoiceMl = null;
+
+  const remaining = MAX_BUDGET - calculateCartTotal();
+  wrap.innerHTML = "";
+  item.mlVariants.forEach((v) => {
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "handschuh-size-btn ml-variant-btn";
+    btn.dataset.ml = String(v.ml);
+    btn.textContent = `${v.ml} ml · ${euroFormatter.format(v.price)}`;
+    const affordable = v.price <= remaining;
+    btn.disabled = !affordable;
+    if (!affordable) btn.classList.add("handschuh-size-btn--disabled");
+    btn.addEventListener("click", () => {
+      wrap.querySelectorAll("button").forEach((b) => b.classList.remove("is-selected"));
+      if (btn.disabled) return;
+      btn.classList.add("is-selected");
+      pendingMlChoiceMl = v.ml;
+      updateMlConfirmButton();
+    });
+    wrap.appendChild(btn);
+  });
+
+  updateMlConfirmButton();
+  modal.classList.add("is-open");
+  modal.setAttribute("aria-hidden", "false");
+  document.documentElement.style.overflow = "hidden";
+  document.body.style.overflow = "hidden";
+  requestAnimationFrame(() => {
+    modal.querySelector(".handschuh-dialog")?.focus();
+  });
 }
 
 function openGloveModal(itemId) {
@@ -685,7 +824,7 @@ function updateItemAvailability(remainingBudget) {
         if (!label) {
           label = document.createElement("div");
           label.className = "item-unavailable-label";
-          label.textContent = "Max. 4 möglich";
+          label.textContent = "Max. 4 Stück möglich";
           el.appendChild(label);
         }
       } else {
@@ -699,7 +838,40 @@ function updateItemAvailability(remainingBudget) {
       return;
     }
 
-    if ((item.price || 0) > remainingBudget || remainingBudget <= 0) {
+    const affordAnyVariant = hasMlVariants(item)
+      ? canAffordAnyMlVariant(item, remainingBudget)
+      : remainingBudget > 0 && (item.price || 0) <= remainingBudget;
+
+    if (hasMlVariants(item)) {
+      if (!affordAnyVariant && countInCart === 0) {
+        plusBtn.disabled = true;
+        plusBtn.classList.add("item-qty-btn--disabled");
+        el.classList.add("item-unavailable");
+        let label = el.querySelector(".item-unavailable-label");
+        if (!label) {
+          label = document.createElement("div");
+          label.className = "item-unavailable-label";
+          label.textContent = "Die Box wäre damit zu voll";
+          el.appendChild(label);
+        }
+      } else if (!affordAnyVariant && countInCart > 0) {
+        plusBtn.disabled = true;
+        plusBtn.classList.add("item-qty-btn--disabled");
+        el.classList.remove("item-unavailable");
+        const label = el.querySelector(".item-unavailable-label");
+        if (label) label.remove();
+      } else {
+        plusBtn.disabled = false;
+        plusBtn.classList.remove("item-qty-btn--disabled");
+        el.classList.remove("item-unavailable");
+        const label = el.querySelector(".item-unavailable-label");
+        if (label) label.remove();
+        canAddAny = true;
+      }
+      return;
+    }
+
+    if (!affordAnyVariant) {
       plusBtn.disabled = true;
       plusBtn.classList.add("item-qty-btn--disabled");
       el.classList.add("item-unavailable");
@@ -769,7 +941,7 @@ function initAdminTool() {
     if (!bettschutzeinlage && (!Number.isFinite(price) || price < 0)) return;
 
     if (editingItemId == null) {
-      window.alert("Neue Artikel können nicht angelegt werden. Es gilt nur der feste Katalog mit 13 Produkten.");
+      window.alert("Neue Artikel können nicht angelegt werden. Es gilt nur der feste Katalog mit 12 Produkten.");
       return;
     }
 
@@ -1193,14 +1365,76 @@ document.addEventListener("DOMContentLoaded", () => {
     if (e.target === gloveModal) closeGloveModal();
   });
 
+  const mlVariantModal = document.getElementById("ml-variant-modal");
+  document.getElementById("ml-variant-confirm")?.addEventListener("click", () => {
+    if (pendingMlItemId == null || pendingMlChoiceMl == null) return;
+    tryAddToCart(pendingMlItemId, String(pendingMlChoiceMl), null);
+    closeMlModal();
+    renderItemList();
+  });
+  document.getElementById("ml-variant-cancel")?.addEventListener("click", () => closeMlModal());
+  document.getElementById("ml-variant-close-btn")?.addEventListener("click", () => closeMlModal());
+  mlVariantModal?.addEventListener("click", (e) => {
+    if (e.target === mlVariantModal) closeMlModal();
+  });
+
+  const bettschutzHintModal = document.getElementById("bettschutz-hint-modal");
+  function closeBettschutzHintModal() {
+    if (!bettschutzHintModal) return;
+    bettschutzHintModal.classList.remove("is-open");
+    bettschutzHintModal.setAttribute("aria-hidden", "true");
+    document.documentElement.style.overflow = "";
+    document.body.style.overflow = "";
+  }
+  function openBettschutzHintModal() {
+    if (!bettschutzHintModal) {
+      openPflegeboxWizardCore();
+      return;
+    }
+    bettschutzHintModal.classList.add("is-open");
+    bettschutzHintModal.setAttribute("aria-hidden", "false");
+    document.documentElement.style.overflow = "hidden";
+    document.body.style.overflow = "hidden";
+    requestAnimationFrame(() => {
+      document.getElementById("bettschutz-hint-skip")?.focus();
+    });
+  }
+  document.getElementById("bettschutz-hint-add")?.addEventListener("click", () => {
+    const bettItem = ITEMS.find((i) => i.bettschutzeinlage);
+    if (bettItem && countBettschutzeinlageInCart() < MAX_BETTSCHUTZEINLAGE) {
+      tryAddToCart(bettItem.id, null, null);
+      renderItemList();
+    }
+    closeBettschutzHintModal();
+    openPflegeboxWizardCore();
+  });
+  document.getElementById("bettschutz-hint-skip")?.addEventListener("click", () => {
+    closeBettschutzHintModal();
+    openPflegeboxWizardCore();
+  });
+  document.getElementById("bettschutz-hint-close")?.addEventListener("click", () => closeBettschutzHintModal());
+  bettschutzHintModal?.addEventListener("click", (e) => {
+    if (e.target === bettschutzHintModal) closeBettschutzHintModal();
+  });
+
   document.addEventListener("keydown", (e) => {
     if (e.key !== "Escape") return;
+    if (mlVariantModal?.classList.contains("is-open")) {
+      e.preventDefault();
+      closeMlModal();
+      return;
+    }
+    if (bettschutzHintModal?.classList.contains("is-open")) {
+      e.preventDefault();
+      closeBettschutzHintModal();
+      return;
+    }
     if (!gloveModal?.classList.contains("is-open")) return;
     e.preventDefault();
     closeGloveModal();
   });
 
-  function openPflegeboxWizard() {
+  function openPflegeboxWizardCore() {
     if (cart.length === 0) {
       window.alert("Bitte wählen Sie zuerst Artikel für Ihre Pflegebox.");
       return;
@@ -1213,15 +1447,21 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  function openPflegeboxWizard() {
+    if (cart.length === 0) {
+      window.alert("Bitte wählen Sie zuerst Artikel für Ihre Pflegebox.");
+      return;
+    }
+    if (countBettschutzeinlageInCart() === 0) {
+      openBettschutzHintModal();
+      return;
+    }
+    openPflegeboxWizardCore();
+  }
+
   const btnNext = document.getElementById("btn-next-step");
   if (btnNext) {
-    btnNext.addEventListener("click", () => {
-      if (cart.length === 0) {
-        window.alert("Bitte wählen Sie zuerst Artikel für Ihre Pflegebox.");
-        return;
-      }
-      openPflegeboxWizard();
-    });
+    btnNext.addEventListener("click", () => openPflegeboxWizard());
   }
 
   document.addEventListener("pflegebox-wizard-cancel", () => {

@@ -20,7 +20,7 @@
     href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;500;600;700&display=swap"
     rel="stylesheet"
   />
-  <link rel="stylesheet" href="style.css?v=kfg-layout-16" />
+  <link rel="stylesheet" href="style.css?v=kfg-catalog-ml-1" />
 </head>
 <body>
   <div class="hero-wrapper">
@@ -65,7 +65,7 @@
     <section class="panel">
       <h2>Wählen Sie Ihre Produkte</h2>
       <p class="item-limit-message" id="item-limit-message" style="display: none">
-        Die Box wäre damit randvoll.
+        Die Box wäre damit zu voll.
       </p>
       <div id="item-list" class="item-list">
       </div>
@@ -223,8 +223,7 @@
       <h2 id="handschuh-dialog-title" class="handschuh-dialog-title">Handschuhe konfigurieren</h2>
       <p class="handschuh-dialog-lead">Wählen Sie Ihre Größe.</p>
       <div class="handschuh-dialog-body">
-        <fieldset class="handschuh-fieldset">
-          <legend class="handschuh-legend handschuh-legend--centered">Größe</legend>
+        <fieldset class="handschuh-fieldset" aria-label="Handschuhgröße">
           <div class="handschuh-size-row handschuh-size-row--centered" id="glove-size-buttons">
             <button type="button" class="handschuh-size-btn" data-size="S">S</button>
             <button type="button" class="handschuh-size-btn" data-size="M">M</button>
@@ -238,6 +237,70 @@
           Ab in die Box
         </button>
         <button type="button" class="handschuh-btn-secondary" id="glove-cancel">Abbrechen</button>
+      </div>
+    </div>
+  </div>
+
+  <div
+    id="ml-variant-modal"
+    class="handschuh-dialog-backdrop"
+    role="presentation"
+    aria-hidden="true"
+  >
+    <div
+      class="handschuh-dialog handschuh-dialog--ml-variant"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="ml-variant-dialog-title"
+      tabindex="-1"
+    >
+      <button type="button" class="handschuh-dialog-close" id="ml-variant-close-btn" aria-label="Schließen">
+        ×
+      </button>
+      <h2 id="ml-variant-dialog-title" class="handschuh-dialog-title">Gebinde wählen</h2>
+      <p class="handschuh-dialog-lead">Bitte wählen Sie die gewünschte Abpackung (ml).</p>
+      <div class="handschuh-dialog-body">
+        <div class="handschuh-size-row handschuh-size-row--ml-wrap" id="ml-variant-buttons"></div>
+      </div>
+      <div class="handschuh-dialog-actions handschuh-dialog-actions--centered">
+        <button type="button" class="handschuh-btn-primary handschuh-btn-primary--prominent" id="ml-variant-confirm" disabled>
+          Ab in die Box
+        </button>
+        <button type="button" class="handschuh-btn-secondary" id="ml-variant-cancel">Abbrechen</button>
+      </div>
+    </div>
+  </div>
+
+  <div
+    id="bettschutz-hint-modal"
+    class="handschuh-dialog-backdrop"
+    role="presentation"
+    aria-hidden="true"
+  >
+    <div
+      class="handschuh-dialog handschuh-dialog--bettschutz-hint"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="bettschutz-hint-title"
+      tabindex="-1"
+    >
+      <button type="button" class="handschuh-dialog-close" id="bettschutz-hint-close" aria-label="Schließen">
+        ×
+      </button>
+      <h2 id="bettschutz-hint-title" class="handschuh-dialog-title">Wiederverwendbare Bettschutzeinlagen</h2>
+      <div class="bettschutz-hint-body">
+        <p>Sie haben keine wiederverwendbaren Bettschutzeinlagen ausgewählt.</p>
+        <p>
+          Sie können pro Jahr zusätzlich bis zu 4 wiederverwendbare Bettschutzeinlagen erhalten. Diese werden nicht auf die 42 € der Pflegebox angerechnet.
+        </p>
+      </div>
+      <div class="handschuh-dialog-actions handschuh-dialog-actions--bettschutz-hint">
+        <button type="button" class="handschuh-btn-primary handschuh-btn-primary--prominent" id="bettschutz-hint-add">
+          Ja hinzufügen
+        </button>
+        <button type="button" class="handschuh-btn-secondary" id="bettschutz-hint-skip">
+          Nein, weiter zum nächsten Schritt
+        </button>
       </div>
     </div>
   </div>
@@ -354,7 +417,7 @@
     </div>
   </div>
 
-  <script src="pflegebox-wizard.js?v=kfg-layout-16"></script>
-  <script src="app.js?v=kfg-layout-16"></script>
+  <script src="pflegebox-wizard.js?v=kfg-catalog-ml-1"></script>
+  <script src="app.js?v=kfg-catalog-ml-1"></script>
 </body>
 </html>

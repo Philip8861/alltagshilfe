@@ -55,6 +55,7 @@ html.kfg-embed {
   overflow: hidden;
   scrollbar-width: none;
   -ms-overflow-style: none;
+  /* Sonst unten Weiß, wenn das Dokument höher als der sichtbare Inhalt ist */
   background-color: #f1f9fb;
 }
 
@@ -542,14 +543,84 @@ html.kfg-embed .hero-overlay {
   padding: 0;
   border-radius: 0;
   background: transparent;
-  color: #0f4f68;
-  font-size: 1.35rem;
-  font-weight: 950;
+  color: #c2410c;
+  font-size: 1.2rem;
+  font-weight: 800;
+  line-height: 1.3;
+  max-width: 92%;
   text-align: center;
   text-shadow:
     0 0 3px rgba(255, 255, 255, 0.95),
     0 0 6px rgba(255, 255, 255, 0.8);
   pointer-events: none;
+}
+
+.item-price-row {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--primary);
+  font-variant-numeric: tabular-nums;
+}
+
+.item-limit-message {
+  margin: 0 0 12px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  background: rgba(234, 88, 12, 0.12);
+  border: 1px solid rgba(234, 88, 12, 0.45);
+  color: #9a3412;
+  font-size: 1.05rem;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.handschuh-size-row--ml-wrap {
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  max-width: 100%;
+}
+
+.handschuh-size-btn.ml-variant-btn {
+  min-width: min(100%, 200px);
+  flex: 1 1 auto;
+}
+
+.handschuh-size-btn--disabled,
+.handschuh-size-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.handschuh-dialog--ml-variant .handschuh-dialog-title {
+  text-align: center;
+}
+
+.bettschutz-hint-body {
+  margin: 0 0 1rem;
+  font-size: 1rem;
+  line-height: 1.5;
+  color: var(--text-main);
+}
+
+.bettschutz-hint-body p {
+  margin: 0 0 0.75rem;
+}
+
+.bettschutz-hint-body p:last-child {
+  margin-bottom: 0;
+}
+
+.handschuh-dialog-actions--bettschutz-hint {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 10px;
+}
+
+.handschuh-dialog--bettschutz-hint .handschuh-dialog-title {
+  font-size: 1.25rem;
+  line-height: 1.35;
 }
 
 .cart {
@@ -1600,6 +1671,7 @@ html.kfg-embed .hero-overlay {
     padding-bottom: 12px;
   }
 
+  /* Nur wenn mindestens ein Artikel: fixierter Button + Abstand unten */
   .layout > .panel:last-of-type.panel--next-step-visible {
     padding-bottom: calc(5.5rem + env(safe-area-inset-bottom, 0px));
   }
@@ -1686,6 +1758,7 @@ html.kfg-embed .hero-overlay {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
+  /* Embed: zunächst normal im Dokumentfluss; beim Scrollen blendet JS eine kompakte Floating-Leiste ein */
   html.kfg-embed .layout {
     padding-top: 0;
   }
