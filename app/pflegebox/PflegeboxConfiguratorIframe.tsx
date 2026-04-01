@@ -41,7 +41,7 @@ export function PflegeboxConfiguratorIframe() {
     };
   }, [onMessage, syncIframeHeight]);
 
-  const src = "/konfigurator/index.html?embed=1&v=kfg-no-admin-1";
+  const src = "/konfigurator/index.html?embed=1&v=kfg-2col-square-1";
 
   const style = {
     height: `${heightPx}px`,
