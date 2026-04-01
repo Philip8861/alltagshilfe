@@ -1,8 +1,5 @@
 const MAX_BUDGET = 42;
 
-/** Internes Artikel-Tool (Admin-Panel): ausgeschaltet und unsichtbar. */
-const ARTICLE_ADMIN_TOOL_ENABLED = false;
-
 /** Lesbare Anzeigenamen (Unterstriche → Leerzeichen); API/Korb behalten `item.name`. */
 function formatProductDisplayName(name) {
   return String(name || "")
@@ -189,8 +186,6 @@ const PARTNER_REF_STORAGE_KEY = "konfigurator_partner_ref";
 
 let ITEMS = [];
 let cart = [];
-
-let editingItemId = null;
 
 let pendingGloveItemId = null;
 let pendingGloveSize = null;
@@ -922,188 +917,6 @@ function updateItemAvailability(remainingBudget) {
   }
 }
 
-function initAdminTool() {
-  if (!ARTICLE_ADMIN_TOOL_ENABLED) return;
-  const form = document.getElementById("admin-item-form");
-  if (!form) return;
-
-  form.addEventListener("submit", (event) => {
-    event.preventDefault();
-
-    const nameInput = document.getElementById("admin-item-name");
-    const piecesInput = document.getElementById("admin-item-pieces");
-    const quantityInput = document.getElementById("admin-item-quantity");
-    const mlInput = document.getElementById("admin-item-ml");
-    const priceInput = document.getElementById("admin-item-price");
-    const imageInput = document.getElementById("admin-item-image");
-    const sizeCheckboxes = document.querySelectorAll(
-      'input[name="admin-item-size"]:checked'
-    );
-    const gloveCheckbox = document.getElementById("admin-item-glove");
-    const bettschutzeinlageCheckbox = document.getElementById("admin-item-bettschutzeinlage");
-
-    const name = nameInput.value.trim();
-    const pieces = piecesInput.value.trim() || null;
-    const quantity = quantityInput.value.trim() || null;
-    const mlRaw = mlInput.value.trim();
-    const ml = mlRaw ? Number(mlRaw) : null;
-    const priceRaw = priceInput.value.trim().replace(",", ".");
-    const price = Number(priceRaw);
-    const imageUrl = imageInput.value.trim() || null;
-
-    const sizes = Array.from(sizeCheckboxes).map((el) => el.value);
-    const isGlove = gloveCheckbox ? gloveCheckbox.checked : false;
-    const bettschutzeinlage = bettschutzeinlageCheckbox ? bettschutzeinlageCheckbox.checked : false;
-    const effectivePrice = bettschutzeinlage ? 0 : price;
-
-    if (!name) return;
-    if (!bettschutzeinlage && (!Number.isFinite(price) || price < 0)) return;
-
-    if (editingItemId == null) {
-      window.alert("Neue Artikel können nicht angelegt werden. Es gilt nur der feste Katalog mit 12 Produkten.");
-      return;
-    }
-
-    const idx = ITEMS.findIndex((it) => it.id === editingItemId);
-    if (idx !== -1) {
-      ITEMS[idx] = {
-        ...ITEMS[idx],
-        name,
-        pieces,
-        quantity,
-        ml,
-        price: effectivePrice,
-        imageUrl,
-        sizes,
-        isGlove,
-        bettschutzeinlage,
-      };
-    }
-
-    editingItemId = null;
-    saveItemsToStorage();
-    renderItemList();
-    renderAdminItemList();
-    form.reset();
-  });
-
-  renderAdminItemList();
-}
-
-function renderAdminItemList() {
-  if (!ARTICLE_ADMIN_TOOL_ENABLED) return;
-  const list = document.getElementById("admin-item-list");
-  if (!list) return;
-  list.innerHTML = "";
-
-  if (ITEMS.length === 0) {
-    const p = document.createElement("p");
-    p.className = "panel-subtitle";
-    p.textContent = "Noch keine Artikel angelegt.";
-    list.appendChild(p);
-    return;
-  }
-
-  ITEMS.forEach((item) => {
-    const row = document.createElement("div");
-    row.className = "admin-item-row";
-
-    const main = document.createElement("div");
-    main.className = "admin-item-main";
-    const name = document.createElement("div");
-    name.className = "admin-item-name";
-    name.textContent = item.name;
-    main.appendChild(name);
-    const meta = document.createElement("div");
-    meta.className = "admin-item-meta";
-    const parts = [];
-    if (item.price) parts.push(euroFormatter.format(item.price));
-    if (item.pieces) parts.push(item.pieces);
-    if (item.quantity) parts.push(item.quantity);
-    if (item.ml) parts.push(`${item.ml} ml`);
-    if (item.isGlove) parts.push("Handschuhe");
-    if (item.bettschutzeinlage) parts.push("Bettschutzeinlage");
-    meta.textContent = parts.join(" · ");
-    main.appendChild(meta);
-    row.appendChild(main);
-
-    const actions = document.createElement("div");
-    actions.className = "admin-item-actions";
-
-    const editBtn = document.createElement("button");
-    editBtn.type = "button";
-    editBtn.className = "admin-btn";
-    editBtn.textContent = "Bearbeiten";
-    editBtn.addEventListener("click", () => {
-      const nameInput = document.getElementById("admin-item-name");
-      const piecesInput = document.getElementById("admin-item-pieces");
-      const quantityInput = document.getElementById("admin-item-quantity");
-      const mlInput = document.getElementById("admin-item-ml");
-      const priceInput = document.getElementById("admin-item-price");
-      const imageInput = document.getElementById("admin-item-image");
-      const gloveCheckbox = document.getElementById("admin-item-glove");
-      const bettschutzeinlageCheckbox = document.getElementById("admin-item-bettschutzeinlage");
-      const sizeCheckboxes = document.querySelectorAll(
-        'input[name="admin-item-size"]'
-      );
-
-      nameInput.value = item.name || "";
-      piecesInput.value = item.pieces || "";
-      quantityInput.value = item.quantity || "";
-      mlInput.value = item.ml != null ? String(item.ml) : "";
-      priceInput.value = item.price != null ? String(item.price).replace(".", ",") : "";
-      imageInput.value = item.imageUrl || "";
-      if (gloveCheckbox) gloveCheckbox.checked = !!item.isGlove;
-      if (bettschutzeinlageCheckbox) bettschutzeinlageCheckbox.checked = !!item.bettschutzeinlage;
-      sizeCheckboxes.forEach((el) => {
-        el.checked = Array.isArray(item.sizes)
-          ? item.sizes.includes(el.value)
-          : false;
-      });
-
-      editingItemId = item.id;
-    });
-    actions.appendChild(editBtn);
-
-    const idNum = Number(item.id);
-    if (!BUNDLED_CATALOG_IDS.has(idNum)) {
-      const deleteBtn = document.createElement("button");
-      deleteBtn.type = "button";
-      deleteBtn.className = "admin-btn";
-      deleteBtn.textContent = "Löschen";
-      deleteBtn.addEventListener("click", () => {
-        ITEMS = ITEMS.filter((it) => it.id !== item.id);
-        saveItemsToStorage();
-        renderItemList();
-        renderAdminItemList();
-      });
-      actions.appendChild(deleteBtn);
-
-      const copyBtn = document.createElement("button");
-      copyBtn.type = "button";
-      copyBtn.className = "admin-btn";
-      copyBtn.textContent = "Kopieren";
-      copyBtn.addEventListener("click", () => {
-        const newId =
-          ITEMS.length > 0 ? Math.max(...ITEMS.map((it) => Number(it.id))) + 1 : 1;
-        const clone = {
-          ...item,
-          id: newId,
-          name: `${item.name} (Kopie)`,
-        };
-        ITEMS.push(clone);
-        saveItemsToStorage();
-        renderItemList();
-        renderAdminItemList();
-      });
-      actions.appendChild(copyBtn);
-    }
-
-    row.appendChild(actions);
-    list.appendChild(row);
-  });
-}
-
 function initBoxChatbot() {
   const root = document.getElementById("box-chatbot");
   if (!root) return;
@@ -1237,11 +1050,6 @@ function setFlowStep(step) {
   if (s3) s3.hidden = step !== 3;
   /* Schritt 2 ist nur das Pflegebox-Pop-up über Schritt 1 – keine eigene Seite. */
   updateFlowStepIndicator(step === 3 ? 3 : 1);
-  const adminPanel = document.getElementById("admin-panel");
-  const adminBtn = document.getElementById("admin-toggle-btn");
-  const hideAdmin = !ARTICLE_ADMIN_TOOL_ENABLED || step !== 1;
-  if (adminPanel) adminPanel.hidden = hideAdmin;
-  if (adminBtn) adminBtn.hidden = hideAdmin;
 }
 
 function buildCartLinesForApi() {
@@ -1311,29 +1119,11 @@ document.addEventListener("DOMContentLoaded", () => {
   loadCartFromStorage();
   pruneCartToBundledCatalog();
 
-  if (ARTICLE_ADMIN_TOOL_ENABLED) {
-    initAdminTool();
-  } else {
-    const ap = document.getElementById("admin-panel");
-    const ab = document.getElementById("admin-toggle-btn");
-    if (ap) ap.hidden = true;
-    if (ab) ab.hidden = true;
-  }
   renderItemList();
   renderCart();
   updateBudgetDisplay();
   setupEmbedMobileProgressFloating();
   initBoxChatbot();
-
-  if (ARTICLE_ADMIN_TOOL_ENABLED) {
-    const adminToggleBtn = document.getElementById("admin-toggle-btn");
-    const adminPanel = document.getElementById("admin-panel");
-    if (adminToggleBtn && adminPanel) {
-      adminToggleBtn.addEventListener("click", () => {
-        adminPanel.classList.toggle("admin-panel--hidden");
-      });
-    }
-  }
 
   const gloveMaterialOptions = document.getElementById("glove-material-options");
   const gloveSizeButtons = document.getElementById("glove-size-buttons");

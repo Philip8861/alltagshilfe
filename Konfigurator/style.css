@@ -1091,75 +1091,6 @@ html.kfg-embed .hero-overlay {
   display: none;
 }
 
-.admin-toggle-btn {
-  position: fixed;
-  bottom: 20px;
-  left: 20px;
-  z-index: 50;
-  padding: 10px 16px;
-  border-radius: 999px;
-  border: 2px solid #0f4f68;
-  background: #ffffff;
-  color: #0f4f68;
-  font-size: 0.9rem;
-  font-weight: 600;
-  cursor: pointer;
-  box-shadow: 0 4px 16px rgba(15, 79, 104, 0.25);
-}
-
-.admin-toggle-btn:hover {
-  background: #0f4f68;
-  color: #ffffff;
-}
-
-.admin-panel {
-  margin-top: 20px;
-  padding: 16px 14px 20px;
-  border-radius: 12px;
-  background: rgba(255, 255, 255, 0.9);
-}
-
-.admin-panel--hidden {
-  display: none !important;
-}
-
-.form-row {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  margin-bottom: 10px;
-}
-
-.form-row-inline {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 10px;
-}
-
-.form-row label {
-  font-size: 0.82rem;
-  color: var(--text-muted);
-}
-
-.form-row input {
-  border-radius: 999px;
-  border: 1px dashed rgba(148, 163, 184, 0.9);
-  padding: 6px 10px;
-  font-size: 0.9rem;
-}
-
-.form-label-inline {
-  font-size: 0.85rem;
-  color: var(--text-muted);
-}
-
-.size-checkboxes {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-top: 4px;
-}
-
 .btn-primary {
   border: none;
   border-radius: 999px;
@@ -1174,46 +1105,6 @@ html.kfg-embed .hero-overlay {
 .btn-small {
   font-size: 0.85rem;
   padding: 6px 14px;
-}
-
-.admin-item-list {
-  margin-top: 12px;
-  border-top: 1px solid rgba(148, 163, 184, 0.35);
-  padding-top: 8px;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.admin-item-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 8px;
-  padding: 6px 8px;
-  border-radius: 8px;
-  background: #ffffff;
-}
-
-.admin-item-main {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
-.admin-item-name {
-  font-size: 0.95rem;
-  font-weight: 600;
-}
-
-.admin-item-meta {
-  font-size: 0.78rem;
-  color: var(--text-muted);
-}
-
-.admin-item-actions {
-  display: flex;
-  gap: 6px;
 }
 
 .admin-btn {
@@ -2104,10 +1995,6 @@ html.kfg-embed .hero-overlay {
   max-width: 640px;
   margin: 0 auto;
   grid-template-columns: 1fr;
-}
-
-.contact-form {
-  position: relative;
 }
 
 .konfig-honeypot {
