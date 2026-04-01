@@ -128,7 +128,8 @@ html.kfg-embed .hero-overlay {
 .hero-overlay {
   position: relative;
   z-index: 1;
-  max-width: min(100%, 1240px);
+  /* Etwas breiter: 3 Produktspalten mit ähnlicher Kartenbreite wie früher bei 2 Spalten */
+  max-width: min(100%, 1380px);
   margin: 0 auto;
   padding: 16px 16px max(16px, env(safe-area-inset-bottom, 0px)) max(40px, 6.5vw);
 }
@@ -209,8 +210,8 @@ html.kfg-embed .hero-overlay {
 
 .layout {
   display: grid;
-  /* Rechte Spalte ~20 % breiter als zuvor (1fr → 1.2fr bei gleichem linken Anteil) */
-  grid-template-columns: minmax(0, 1.4fr) minmax(0, 1.2fr);
+  /* Link: deutlich mehr Platz, damit 3 Karten nebeneinander ≈ frühere Breite bei 2er-Grid */
+  grid-template-columns: minmax(0, 4.15fr) minmax(0, 1fr);
   gap: 18px;
   align-items: start;
 }
