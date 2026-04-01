@@ -627,7 +627,25 @@ function openMlModal(itemId) {
     btn.type = "button";
     btn.className = "handschuh-size-btn ml-variant-btn";
     btn.dataset.ml = String(v.ml);
-    btn.textContent = `${v.ml} ml · ${euroFormatter.format(v.price)}`;
+    btn.setAttribute(
+      "aria-label",
+      `${v.ml} Milliliter, ${euroFormatter.format(v.price)}`,
+    );
+    const stack = document.createElement("span");
+    stack.className = "ml-variant-btn-stack";
+    const num = document.createElement("span");
+    num.className = "ml-variant-num";
+    num.textContent = String(v.ml);
+    const unit = document.createElement("span");
+    unit.className = "ml-variant-unit";
+    unit.textContent = "ml";
+    const price = document.createElement("span");
+    price.className = "ml-variant-price";
+    price.textContent = euroFormatter.format(v.price);
+    stack.appendChild(num);
+    stack.appendChild(unit);
+    stack.appendChild(price);
+    btn.appendChild(stack);
     const affordable = v.price <= remaining;
     btn.disabled = !affordable;
     if (!affordable) btn.classList.add("handschuh-size-btn--disabled");

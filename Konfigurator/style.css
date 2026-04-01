@@ -574,16 +574,56 @@ html.kfg-embed .hero-overlay {
   line-height: 1.4;
 }
 
-.handschuh-size-row--ml-wrap {
+.handschuh-size-btn.ml-variant-btn {
+  display: flex;
+  min-width: 4.25rem;
+  flex: 0 0 auto;
+  min-height: 4.5rem;
+  padding: 10px 12px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+}
+
+.ml-variant-btn-stack {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+  line-height: 1.1;
+}
+
+.ml-variant-num {
+  font-size: 1.35rem;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+
+.ml-variant-unit {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  opacity: 0.85;
+}
+
+.ml-variant-price {
+  margin-top: 4px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-muted);
+}
+
+.handschuh-size-btn.ml-variant-btn.is-selected .ml-variant-price {
+  color: rgba(255, 255, 255, 0.92);
+}
+
+.handschuh-size-row--ml-sizes {
   flex-wrap: wrap;
   gap: 10px;
   justify-content: center;
-  max-width: 100%;
-}
-
-.handschuh-size-btn.ml-variant-btn {
-  min-width: min(100%, 200px);
-  flex: 1 1 auto;
 }
 
 .handschuh-size-btn--disabled,
@@ -595,6 +635,39 @@ html.kfg-embed .hero-overlay {
 
 .handschuh-dialog--ml-variant .handschuh-dialog-title {
   text-align: center;
+  width: 100%;
+  margin-right: 0;
+  padding: 0 2.75rem 0 0.5rem;
+  box-sizing: border-box;
+}
+
+.handschuh-dialog--ml-variant .handschuh-dialog-lead {
+  text-align: center;
+  width: 100%;
+}
+
+.handschuh-dialog--ml-variant .handschuh-dialog-actions--centered .handschuh-btn-primary--prominent,
+.handschuh-dialog--ml-variant .handschuh-dialog-actions--centered .handschuh-btn-secondary {
+  width: 100%;
+  max-width: 280px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.bettschutz-hint-figure {
+  margin: 0 auto 1rem;
+  max-width: 220px;
+  text-align: center;
+}
+
+.bettschutz-hint-img {
+  width: 100%;
+  max-width: 220px;
+  height: auto;
+  border-radius: 14px;
+  border: 1px solid rgba(15, 79, 104, 0.12);
+  object-fit: contain;
+  background: #f8fafc;
 }
 
 .bettschutz-hint-body {
@@ -1022,8 +1095,10 @@ html.kfg-embed .hero-overlay {
   cursor: pointer;
 }
 
-/* Handschuh-Konfigurator (Dialog außerhalb .hero-overlay — kein Zoom-Vorfahr) */
-#glove-modal.handschuh-dialog-backdrop {
+/* Modals außerhalb .hero-overlay — jeweils per ID, damit display:none greift (sonst sofort sichtbar im Iframe) */
+#glove-modal.handschuh-dialog-backdrop,
+#ml-variant-modal.handschuh-dialog-backdrop,
+#bettschutz-hint-modal.handschuh-dialog-backdrop {
   position: fixed;
   inset: 0;
   z-index: 200;
@@ -1038,9 +1113,14 @@ html.kfg-embed .hero-overlay {
   -webkit-backdrop-filter: blur(4px);
 }
 
-/* Muss #glove-modal sein (HTML id), sonst bleibt display:none und html overflow:hidden blockiert Scroll */
-#glove-modal.handschuh-dialog-backdrop.is-open {
+#glove-modal.handschuh-dialog-backdrop.is-open,
+#ml-variant-modal.handschuh-dialog-backdrop.is-open,
+#bettschutz-hint-modal.handschuh-dialog-backdrop.is-open {
   display: flex;
+}
+
+#bettschutz-hint-modal.handschuh-dialog-backdrop.is-open {
+  z-index: 210;
 }
 
 .handschuh-dialog {

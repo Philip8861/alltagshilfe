@@ -20,7 +20,7 @@
     href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;500;600;700&display=swap"
     rel="stylesheet"
   />
-  <link rel="stylesheet" href="style.css?v=kfg-catalog-ml-1" />
+  <link rel="stylesheet" href="style.css?v=kfg-modal-fix-1" />
 </head>
 <body>
   <div class="hero-wrapper">
@@ -257,10 +257,15 @@
       <button type="button" class="handschuh-dialog-close" id="ml-variant-close-btn" aria-label="Schließen">
         ×
       </button>
-      <h2 id="ml-variant-dialog-title" class="handschuh-dialog-title">Gebinde wählen</h2>
-      <p class="handschuh-dialog-lead">Bitte wählen Sie die gewünschte Abpackung (ml).</p>
+      <h2 id="ml-variant-dialog-title" class="handschuh-dialog-title">Bitte wählen Sie Ihre Größe</h2>
+      <p class="handschuh-dialog-lead">Wählen Sie die gewünschte Abpackung (Milliliter) – wie bei den Handschuhgrößen.</p>
       <div class="handschuh-dialog-body">
-        <div class="handschuh-size-row handschuh-size-row--ml-wrap" id="ml-variant-buttons"></div>
+        <div
+          class="handschuh-size-row handschuh-size-row--centered handschuh-size-row--ml-sizes"
+          id="ml-variant-buttons"
+          role="group"
+          aria-label="Abpackung in Millilitern"
+        ></div>
       </div>
       <div class="handschuh-dialog-actions handschuh-dialog-actions--centered">
         <button type="button" class="handschuh-btn-primary handschuh-btn-primary--prominent" id="ml-variant-confirm" disabled>
@@ -288,6 +293,17 @@
         ×
       </button>
       <h2 id="bettschutz-hint-title" class="handschuh-dialog-title">Wiederverwendbare Bettschutzeinlagen</h2>
+      <div class="bettschutz-hint-figure">
+        <img
+          src="images/Bettschutzeinlage_wiederverwendbar.webp"
+          onerror="this.onerror=null;this.src='images/Bettschutzeinlage_wiederverwendbar.png';"
+          alt="Wiederverwendbare Bettschutzeinlage"
+          width="220"
+          height="220"
+          class="bettschutz-hint-img"
+          decoding="async"
+        />
+      </div>
       <div class="bettschutz-hint-body">
         <p>Sie haben keine wiederverwendbaren Bettschutzeinlagen ausgewählt.</p>
         <p>
@@ -417,7 +433,7 @@
     </div>
   </div>
 
-  <script src="pflegebox-wizard.js?v=kfg-catalog-ml-1"></script>
-  <script src="app.js?v=kfg-catalog-ml-1"></script>
+  <script src="pflegebox-wizard.js?v=kfg-modal-fix-1"></script>
+  <script src="app.js?v=kfg-modal-fix-1"></script>
 </body>
 </html>
