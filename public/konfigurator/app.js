@@ -199,6 +199,9 @@ let pendingGloveMaterial = null;
 let pendingMlItemId = null;
 let pendingMlChoiceMl = null;
 
+/** Voreinstellung im Bettschutz-Hinweis-Modal (1–4). */
+let bettschutzHintQty = 4;
+
 let boxIconElement = null;
 let boxIconBadgeElement = null;
 
@@ -359,18 +362,6 @@ function renderItemList() {
     header.appendChild(nameSpan);
     contentWrap.appendChild(header);
 
-    if (!item.bettschutzeinlage) {
-      const priceEl = document.createElement("div");
-      priceEl.className = "item-price-row";
-      if (hasMlVariants(item)) {
-        const minP = Math.min(...item.mlVariants.map((v) => v.price));
-        priceEl.textContent = `ab ${euroFormatter.format(minP)}`;
-      } else {
-        priceEl.textContent = euroFormatter.format(item.price || 0);
-      }
-      contentWrap.appendChild(priceEl);
-    }
-
     if (hasMlVariants(item)) {
       const metaMl = document.createElement("div");
       metaMl.className = "item-meta-row";
@@ -487,6 +478,23 @@ function canAffordAnyMlVariant(item, remainingBudget) {
 
 function countBettschutzeinlageInCart() {
   return cart.filter((c) => c.bettschutzeinlage).length;
+}
+
+/** Fügt n wiederverwendbare Bettschutzeinlagen hinzu (max. MAX_BETTSCHUTZEINLAGE gesamt). */
+function addBettschutzeinlagenCount(n) {
+  const bettItem = ITEMS.find((i) => i.bettschutzeinlage);
+  if (!bettItem) return;
+  let want = Math.max(0, Math.min(MAX_BETTSCHUTZEINLAGE, Math.floor(Number(n) || 0)));
+  while (want > 0 && countBettschutzeinlageInCart() < MAX_BETTSCHUTZEINLAGE) {
+    const cartEntry = { ...bettItem, selectedSize: null, material: null, price: 0 };
+    delete cartEntry.mlVariants;
+    cart.push(cartEntry);
+    want -= 1;
+  }
+  renderCart();
+  updateBudgetDisplay();
+  triggerBoxIconWiggle();
+  saveCartToStorage();
 }
 
 function tryAddToCart(itemId, selectedSize = null, material = null) {
@@ -627,10 +635,7 @@ function openMlModal(itemId) {
     btn.type = "button";
     btn.className = "handschuh-size-btn ml-variant-btn";
     btn.dataset.ml = String(v.ml);
-    btn.setAttribute(
-      "aria-label",
-      `${v.ml} Milliliter, ${euroFormatter.format(v.price)}`,
-    );
+    btn.setAttribute("aria-label", `${v.ml} Milliliter`);
     const stack = document.createElement("span");
     stack.className = "ml-variant-btn-stack";
     const num = document.createElement("span");
@@ -639,12 +644,8 @@ function openMlModal(itemId) {
     const unit = document.createElement("span");
     unit.className = "ml-variant-unit";
     unit.textContent = "ml";
-    const price = document.createElement("span");
-    price.className = "ml-variant-price";
-    price.textContent = euroFormatter.format(v.price);
     stack.appendChild(num);
     stack.appendChild(unit);
-    stack.appendChild(price);
     btn.appendChild(stack);
     const affordable = v.price <= remaining;
     btn.disabled = !affordable;
@@ -1397,6 +1398,33 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   const bettschutzHintModal = document.getElementById("bettschutz-hint-modal");
+  function syncBettschutzHintQtyDisplay() {
+    const valEl = document.getElementById("bettschutz-qty-value");
+    if (valEl) valEl.textContent = String(bettschutzHintQty);
+    const minus = document.getElementById("bettschutz-qty-minus");
+    const plus = document.getElementById("bettschutz-qty-plus");
+    if (minus) {
+      minus.disabled = bettschutzHintQty <= 1;
+      minus.classList.toggle("item-qty-btn--disabled", bettschutzHintQty <= 1);
+    }
+    if (plus) {
+      plus.disabled = bettschutzHintQty >= MAX_BETTSCHUTZEINLAGE;
+      plus.classList.toggle("item-qty-btn--disabled", bettschutzHintQty >= MAX_BETTSCHUTZEINLAGE);
+    }
+  }
+  function triggerBettschutzImgPulse() {
+    const img = document.querySelector("#bettschutz-hint-modal .bettschutz-hint-img");
+    if (!img) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    img.classList.remove("bettschutz-hint-img--pulse");
+    void img.offsetWidth;
+    img.classList.add("bettschutz-hint-img--pulse");
+    function onEnd() {
+      img.classList.remove("bettschutz-hint-img--pulse");
+      img.removeEventListener("animationend", onEnd);
+    }
+    img.addEventListener("animationend", onEnd);
+  }
   function closeBettschutzHintModal() {
     if (!bettschutzHintModal) return;
     bettschutzHintModal.classList.remove("is-open");
@@ -1409,20 +1437,33 @@ document.addEventListener("DOMContentLoaded", () => {
       openPflegeboxWizardCore();
       return;
     }
+    bettschutzHintQty = 4;
+    syncBettschutzHintQtyDisplay();
     bettschutzHintModal.classList.add("is-open");
     bettschutzHintModal.setAttribute("aria-hidden", "false");
     document.documentElement.style.overflow = "hidden";
     document.body.style.overflow = "hidden";
     requestAnimationFrame(() => {
-      document.getElementById("bettschutz-hint-skip")?.focus();
+      triggerBettschutzImgPulse();
+      document.getElementById("bettschutz-hint-add")?.focus();
     });
   }
-  document.getElementById("bettschutz-hint-add")?.addEventListener("click", () => {
-    const bettItem = ITEMS.find((i) => i.bettschutzeinlage);
-    if (bettItem && countBettschutzeinlageInCart() < MAX_BETTSCHUTZEINLAGE) {
-      tryAddToCart(bettItem.id, null, null);
-      renderItemList();
+  document.getElementById("bettschutz-qty-minus")?.addEventListener("click", () => {
+    if (bettschutzHintQty > 1) {
+      bettschutzHintQty -= 1;
+      syncBettschutzHintQtyDisplay();
     }
+  });
+  document.getElementById("bettschutz-qty-plus")?.addEventListener("click", () => {
+    if (bettschutzHintQty < MAX_BETTSCHUTZEINLAGE) {
+      bettschutzHintQty += 1;
+      syncBettschutzHintQtyDisplay();
+    }
+  });
+  document.getElementById("bettschutz-hint-add")?.addEventListener("click", () => {
+    const qty = Math.max(1, Math.min(MAX_BETTSCHUTZEINLAGE, bettschutzHintQty));
+    addBettschutzeinlagenCount(qty);
+    renderItemList();
     closeBettschutzHintModal();
     openPflegeboxWizardCore();
   });

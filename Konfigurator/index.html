@@ -20,7 +20,7 @@
     href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;500;600;700&display=swap"
     rel="stylesheet"
   />
-  <link rel="stylesheet" href="style.css?v=kfg-modal-fix-1" />
+  <link rel="stylesheet" href="style.css?v=kfg-no-price-bett-1" />
 </head>
 <body>
   <div class="hero-wrapper">
@@ -258,7 +258,7 @@
         ×
       </button>
       <h2 id="ml-variant-dialog-title" class="handschuh-dialog-title">Bitte wählen Sie Ihre Größe</h2>
-      <p class="handschuh-dialog-lead">Wählen Sie die gewünschte Abpackung (Milliliter) – wie bei den Handschuhgrößen.</p>
+      <p class="handschuh-dialog-lead">Wählen Sie die gewünschte Größe</p>
       <div class="handschuh-dialog-body">
         <div
           class="handschuh-size-row handschuh-size-row--centered handschuh-size-row--ml-sizes"
@@ -292,6 +292,10 @@
       <button type="button" class="handschuh-dialog-close" id="bettschutz-hint-close" aria-label="Schließen">
         ×
       </button>
+      <p class="bettschutz-hint-chip" role="status">
+        <span class="bettschutz-hint-chip-glow" aria-hidden="true"></span>
+        <span class="bettschutz-hint-chip-label">Zusatzleistung – kein Abzug vom Pflegebox-Budget</span>
+      </p>
       <h2 id="bettschutz-hint-title" class="handschuh-dialog-title">Wiederverwendbare Bettschutzeinlagen</h2>
       <div class="bettschutz-hint-figure">
         <img
@@ -309,6 +313,19 @@
         <p>
           Sie können pro Jahr zusätzlich bis zu 4 wiederverwendbare Bettschutzeinlagen erhalten. Diese werden nicht auf die 42 € der Pflegebox angerechnet.
         </p>
+      </div>
+      <div class="bettschutz-hint-qty-block">
+        <span class="bettschutz-hint-qty-label" id="bettschutz-qty-label">Anzahl</span>
+        <div class="bettschutz-hint-qty-row" role="group" aria-labelledby="bettschutz-qty-label">
+          <button type="button" class="item-qty-btn item-qty-btn--minus bettschutz-hint-qty-btn" id="bettschutz-qty-minus" aria-label="Anzahl verringern">
+            −
+          </button>
+          <span class="bettschutz-hint-qty-value" id="bettschutz-qty-value" aria-live="polite">4</span>
+          <button type="button" class="item-qty-btn item-qty-btn--plus bettschutz-hint-qty-btn" id="bettschutz-qty-plus" aria-label="Anzahl erhöhen">
+            +
+          </button>
+        </div>
+        <p class="bettschutz-hint-qty-hint">Standard: 4 Stück · max. 4 pro Jahr</p>
       </div>
       <div class="handschuh-dialog-actions handschuh-dialog-actions--bettschutz-hint">
         <button type="button" class="handschuh-btn-primary handschuh-btn-primary--prominent" id="bettschutz-hint-add">
@@ -433,7 +450,7 @@
     </div>
   </div>
 
-  <script src="pflegebox-wizard.js?v=kfg-modal-fix-1"></script>
-  <script src="app.js?v=kfg-modal-fix-1"></script>
+  <script src="pflegebox-wizard.js?v=kfg-no-price-bett-1"></script>
+  <script src="app.js?v=kfg-no-price-bett-1"></script>
 </body>
 </html>

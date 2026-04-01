@@ -555,13 +555,6 @@ html.kfg-embed .hero-overlay {
   pointer-events: none;
 }
 
-.item-price-row {
-  font-size: 1.1rem;
-  font-weight: 700;
-  color: var(--primary);
-  font-variant-numeric: tabular-nums;
-}
-
 .item-limit-message {
   margin: 0 0 12px;
   padding: 10px 14px;
@@ -578,7 +571,7 @@ html.kfg-embed .hero-overlay {
   display: flex;
   min-width: 4.25rem;
   flex: 0 0 auto;
-  min-height: 4.5rem;
+  min-height: 3.85rem;
   padding: 10px 12px;
   flex-direction: column;
   align-items: center;
@@ -606,18 +599,6 @@ html.kfg-embed .hero-overlay {
   text-transform: uppercase;
   letter-spacing: 0.06em;
   opacity: 0.85;
-}
-
-.ml-variant-price {
-  margin-top: 4px;
-  font-size: 0.72rem;
-  font-weight: 600;
-  font-variant-numeric: tabular-nums;
-  color: var(--text-muted);
-}
-
-.handschuh-size-btn.ml-variant-btn.is-selected .ml-variant-price {
-  color: rgba(255, 255, 255, 0.92);
 }
 
 .handschuh-size-row--ml-sizes {
@@ -654,6 +635,51 @@ html.kfg-embed .hero-overlay {
   margin-right: auto;
 }
 
+.bettschutz-hint-chip {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 0 0.75rem;
+  padding: 0.45rem 0.85rem;
+  border-radius: 999px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: #0f4f68;
+  background: linear-gradient(135deg, rgba(20, 184, 166, 0.2) 0%, rgba(14, 165, 233, 0.18) 50%, rgba(251, 191, 36, 0.15) 100%);
+  border: 1px solid rgba(15, 79, 104, 0.12);
+  box-shadow: 0 4px 14px rgba(15, 79, 104, 0.08);
+  overflow: hidden;
+}
+
+.bettschutz-hint-chip-glow {
+  position: absolute;
+  inset: -40%;
+  background: conic-gradient(from 120deg, transparent, rgba(255, 255, 255, 0.55), transparent 40%);
+  animation: bettschutz-chip-shimmer 4s linear infinite;
+  opacity: 0.35;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bettschutz-hint-chip-glow {
+    animation: none;
+    opacity: 0.15;
+  }
+}
+
+@keyframes bettschutz-chip-shimmer {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.bettschutz-hint-chip-label {
+  position: relative;
+  z-index: 1;
+}
+
 .bettschutz-hint-figure {
   margin: 0 auto 1rem;
   max-width: 220px;
@@ -668,6 +694,76 @@ html.kfg-embed .hero-overlay {
   border: 1px solid rgba(15, 79, 104, 0.12);
   object-fit: contain;
   background: #f8fafc;
+  transform-origin: center center;
+  will-change: transform;
+}
+
+@keyframes bettschutz-img-pulse {
+  0%,
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(20, 184, 166, 0.35);
+  }
+  50% {
+    transform: scale(1.04);
+    box-shadow: 0 8px 28px rgba(20, 184, 166, 0.25);
+  }
+}
+
+.bettschutz-hint-img.bettschutz-hint-img--pulse {
+  animation: bettschutz-img-pulse 0.75s ease-in-out 3;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bettschutz-hint-img.bettschutz-hint-img--pulse {
+    animation: none;
+  }
+}
+
+.bettschutz-hint-qty-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0 0 1rem;
+  padding: 0.75rem 1rem;
+  border-radius: 14px;
+  background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
+  border: 1px solid rgba(15, 79, 104, 0.1);
+}
+
+.bettschutz-hint-qty-label {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--primary);
+}
+
+.bettschutz-hint-qty-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+.bettschutz-hint-qty-value {
+  min-width: 2.5rem;
+  text-align: center;
+  font-size: 1.5rem;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  color: var(--primary);
+}
+
+.bettschutz-hint-qty-btn {
+  flex-shrink: 0;
+}
+
+.bettschutz-hint-qty-hint {
+  margin: 0;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  text-align: center;
+  line-height: 1.35;
 }
 
 .bettschutz-hint-body {
