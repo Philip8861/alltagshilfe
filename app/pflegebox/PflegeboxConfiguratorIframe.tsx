@@ -41,7 +41,7 @@ export function PflegeboxConfiguratorIframe() {
     };
   }, [onMessage, syncIframeHeight]);
 
-  const src = "/konfigurator/index.html?embed=1&v=kfg-scale-15-bettimg-1";
+  const src = "/konfigurator/index.html?embed=1&v=kfg-art10-bettmodal-1";
 
   const style = {
     height: `${heightPx}px`,
