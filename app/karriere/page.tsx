@@ -132,52 +132,58 @@ export default function KarrierePage() {
         <Container className="flex justify-center">
           <div className="mx-auto flex w-full max-w-6xl justify-end">
             <div className="flex flex-col items-center gap-6 text-center scale-100 origin-top lg:scale-[0.84] lg:origin-top lg:w-[50%]">
-              <div className="flex w-full flex-col items-center">
-                <div className="relative isolate w-[79.8%] max-w-[79.8%] overflow-visible rounded-none bg-[#FAFBFC] lg:max-w-[79.8%]">
-                  <Image
-                    src="/images/Daniel_Niebauer.webp"
-                    alt="Daniel Niebauer – Alltagshilfe-Süd"
-                    width={1080}
-                    height={1350}
-                    className="h-auto w-full object-contain object-center mix-blend-multiply [filter:drop-shadow(0_10px_22px_rgba(15,79,104,0.2))_drop-shadow(0_4px_12px_rgba(15,79,104,0.12))] [will-change:filter]"
-                    sizes="(max-width: 1024px) 80vw, 38vw"
-                  />
-                </div>
-                <div
-                  className="relative z-10 -mt-10 w-[63%] min-w-[200px] rounded-xl bg-[#F2F9FA] px-6 py-3 text-center sm:-mt-12 sm:py-4"
-                  style={{ boxShadow: "0 -2px 12px rgba(15, 79, 104, 0.15)" }}
-                >
-                  <p className="text-lg font-bold text-[#0F4F68] sm:text-xl">Daniel Niebauer</p>
-                  <p className="text-xs font-normal text-neutral-600">Personalreferent</p>
-                </div>
-              </div>
-              <div className="mx-auto w-full max-w-md">
-                <a
-                  href="tel:+4983349893330"
-                  className="inline-flex items-center justify-center gap-2 text-3xl font-bold text-[#0F4F68] hover:underline focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2 rounded sm:text-4xl"
-                  aria-label="Anrufen: 08334 9893330"
-                >
-                  <svg
-                    className="h-8 w-8 shrink-0 sm:h-9 sm:w-9"
-                    fill="currentColor"
-                    viewBox="0 0 24 24"
-                    aria-hidden
-                    style={{ color: "#F78F2E" }}
+              <div className="flex w-[79.8%] max-w-full flex-col gap-6">
+                <div className="flex w-full flex-col">
+                  <div className="relative isolate w-full overflow-visible rounded-none bg-[#FAFBFC]">
+                    <Image
+                      src="/images/Daniel_Niebauer.webp"
+                      alt="Daniel Niebauer – Alltagshilfe-Süd"
+                      width={1080}
+                      height={1350}
+                      className="h-auto w-full object-contain object-center mix-blend-multiply [filter:drop-shadow(0_10px_22px_rgba(15,79,104,0.2))_drop-shadow(0_4px_12px_rgba(15,79,104,0.12))] [will-change:filter]"
+                      sizes="(max-width: 1024px) 80vw, 38vw"
+                    />
+                  </div>
+                  <div
+                    className="relative z-10 -mt-10 w-full rounded-xl bg-[#F2F9FA] px-6 py-3 text-right sm:-mt-12 sm:py-4"
+                    style={{ boxShadow: "0 -2px 12px rgba(15, 79, 104, 0.15)" }}
                   >
-                    <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z" />
-                  </svg>
-                  08334 / 9893330
-                </a>
-                <p className="mt-4 text-sm font-semibold text-neutral-600">E-Mail</p>
-                <a
-                  href="mailto:daniel.niebauer@alltagshilfe-sued.de"
-                  className="mt-1 block text-base font-medium text-[#0F4F68] hover:underline break-all"
-                >
-                  daniel.niebauer@alltagshilfe-sued.de
-                </a>
-              </div>
-              <div className="w-full max-w-md rounded-2xl border border-[#0F4F68]/10 bg-white p-6 shadow-sm sm:p-8">
-                <KarriereForm />
+                    <p className="text-[1.18125rem] font-bold leading-tight text-[#0F4F68] sm:text-[1.3125rem]">
+                      Daniel Niebauer
+                    </p>
+                    <p className="mt-0.5 text-[0.7875rem] font-normal text-neutral-600">
+                      Personalreferent
+                    </p>
+                  </div>
+                </div>
+                <div className="w-full">
+                  <a
+                    href="tel:+4983349893330"
+                    className="inline-flex items-center justify-center gap-2 text-3xl font-bold text-[#0F4F68] hover:underline focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2 rounded sm:text-4xl"
+                    aria-label="Anrufen: 08334 9893330"
+                  >
+                    <svg
+                      className="h-8 w-8 shrink-0 sm:h-9 sm:w-9"
+                      fill="currentColor"
+                      viewBox="0 0 24 24"
+                      aria-hidden
+                      style={{ color: "#F78F2E" }}
+                    >
+                      <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z" />
+                    </svg>
+                    08334 / 9893330
+                  </a>
+                  <p className="mt-4 text-sm font-semibold text-neutral-600">E-Mail</p>
+                  <a
+                    href="mailto:daniel.niebauer@alltagshilfe-sued.de"
+                    className="mt-1 block text-base font-medium text-[#0F4F68] hover:underline break-all"
+                  >
+                    daniel.niebauer@alltagshilfe-sued.de
+                  </a>
+                </div>
+                <div className="w-full rounded-2xl border border-[#0F4F68]/10 bg-white p-6 shadow-sm sm:p-8">
+                  <KarriereForm />
+                </div>
               </div>
             </div>
           </div>
