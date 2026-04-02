@@ -595,7 +595,7 @@
           <div class="wiz-success-celebration__figure">
             <img
               class="pflege-wizard-boxi-img wiz-success-hop-img"
-              src="images/Pflegebox_freude.webp"
+              src="images/pflegeboxi_freude.webp"
               onerror="this.onerror=null;this.src='images/pflegeboxi.webp';"
               width="120"
               height="120"
