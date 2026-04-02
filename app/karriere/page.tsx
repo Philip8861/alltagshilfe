@@ -128,18 +128,18 @@ export default function KarrierePage() {
       </section>
 
       {/* Daniel-Bereich mit gleichem Abstand wie Kontakt */}
-      <section id="bewerbung" className="py-16 sm:py-24">
+      <section id="bewerbung" className="bg-[#FAFBFC] py-16 sm:py-24">
         <Container className="flex justify-center">
           <div className="mx-auto flex w-full max-w-6xl justify-end">
             <div className="flex flex-col items-center gap-6 text-center scale-100 origin-top lg:scale-[0.84] lg:origin-top lg:w-[50%]">
               <div className="flex w-full flex-col items-center">
-                <div className="relative w-[84%] max-w-[84%] bg-transparent lg:max-w-[84%]">
+                <div className="relative isolate w-[84%] max-w-[84%] overflow-visible rounded-none bg-[#FAFBFC] lg:max-w-[84%]">
                   <Image
                     src="/images/Daniel_Niebauer.webp"
                     alt="Daniel Niebauer – Alltagshilfe-Süd"
                     width={1080}
                     height={1350}
-                    className="h-auto w-full object-contain object-center [filter:drop-shadow(0_4px_14px_rgba(15,79,104,0.2))_drop-shadow(0_2px_6px_rgba(15,79,104,0.12))]"
+                    className="h-auto w-full object-contain object-center mix-blend-multiply [filter:drop-shadow(0_10px_22px_rgba(15,79,104,0.2))_drop-shadow(0_4px_12px_rgba(15,79,104,0.12))] [will-change:filter]"
                     sizes="(max-width: 1024px) 84vw, 40vw"
                   />
                 </div>
@@ -334,13 +334,13 @@ export default function KarrierePage() {
             Bei Fragen zu unseren Stellen oder für Ihre Bewerbung – wir sind für Sie da.
           </p>
           <div className="mt-10 flex flex-col items-start gap-8 rounded-2xl border-2 border-[#0F4F68]/15 bg-[#F2F9FA]/60 p-8 sm:flex-row sm:items-center sm:gap-10 sm:p-10">
-            <div className="relative w-[10.5rem] shrink-0 bg-transparent sm:w-[12.6rem]">
+            <div className="relative isolate w-[10.5rem] shrink-0 overflow-visible rounded-none sm:w-[12.6rem]">
               <Image
                 src="/images/Daniel_Niebauer.webp"
                 alt="Daniel Niebauer – Personalreferent, Alltagshilfe-Süd"
                 width={1080}
                 height={1350}
-                className="h-auto w-full object-contain object-center [filter:drop-shadow(0_4px_14px_rgba(15,79,104,0.2))_drop-shadow(0_2px_6px_rgba(15,79,104,0.12))]"
+                className="h-auto w-full object-contain object-center mix-blend-multiply [filter:drop-shadow(0_10px_22px_rgba(15,79,104,0.2))_drop-shadow(0_4px_12px_rgba(15,79,104,0.12))] [will-change:filter]"
                 sizes="(max-width: 640px) 168px, 202px"
               />
             </div>
