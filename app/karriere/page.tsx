@@ -139,7 +139,7 @@ export default function KarrierePage() {
                     alt="Daniel Niebauer – Alltagshilfe-Süd"
                     width={1080}
                     height={1350}
-                    className="h-auto w-full object-contain object-center mix-blend-multiply [filter:drop-shadow(0_10px_22px_rgba(15,79,104,0.2))_drop-shadow(0_4px_12px_rgba(15,79,104,0.12))] [will-change:filter]"
+                    className="h-auto w-full object-contain object-center mix-blend-multiply [filter:brightness(1.1)_drop-shadow(0_10px_22px_rgba(15,79,104,0.2))_drop-shadow(0_4px_12px_rgba(15,79,104,0.12))] [will-change:filter]"
                     sizes="(max-width: 1024px) 84vw, 40vw"
                   />
                 </div>
@@ -340,7 +340,7 @@ export default function KarrierePage() {
                 alt="Daniel Niebauer – Personalreferent, Alltagshilfe-Süd"
                 width={1080}
                 height={1350}
-                className="h-auto w-full object-contain object-center mix-blend-multiply [filter:drop-shadow(0_10px_22px_rgba(15,79,104,0.2))_drop-shadow(0_4px_12px_rgba(15,79,104,0.12))] [will-change:filter]"
+                className="h-auto w-full object-contain object-center mix-blend-multiply [filter:brightness(1.1)_drop-shadow(0_10px_22px_rgba(15,79,104,0.2))_drop-shadow(0_4px_12px_rgba(15,79,104,0.12))] [will-change:filter]"
                 sizes="(max-width: 640px) 168px, 202px"
               />
             </div>
