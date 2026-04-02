@@ -2384,6 +2384,69 @@ body.pflege-wizard-open {
   }
 }
 
+/* Erfolgsschritt: Kopfzeile nur Überschrift; Freude-Bild + Sprechblase im Body */
+.pflege-wizard-boxi--success-head {
+  justify-content: center;
+  padding-top: 0.85rem;
+  padding-bottom: 0.85rem;
+}
+
+.pflege-wizard-success-headline {
+  margin: 0;
+  width: 100%;
+  text-align: center;
+  font-size: clamp(1.2rem, 4vw, 1.65rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--primary);
+  line-height: 1.25;
+}
+
+.pflege-wizard-modal--success-final .pflege-wizard-heading {
+  display: none;
+}
+
+.wiz-success-celebration {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+  padding: 0.35rem 0 0.5rem;
+  box-sizing: border-box;
+}
+
+.wiz-success-celebration__figure {
+  flex-shrink: 0;
+  line-height: 0;
+}
+
+.wiz-success-celebration .pflege-wizard-boxi-img {
+  width: 112px;
+  height: 112px;
+}
+
+.wiz-success-celebration__bubble {
+  flex: 1 1 12rem;
+  min-width: 0;
+}
+
+@media (max-width: 480px) {
+  .wiz-success-celebration {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .wiz-success-celebration__bubble::after,
+  .wiz-success-celebration__bubble::before {
+    display: none;
+  }
+}
+
 /* Abbruch-Bestätigung (über dem Wizard) */
 .pflege-wizard-cancel-layer[hidden] {
   display: none !important;
@@ -2462,7 +2525,7 @@ body.pflege-wizard-open {
   outline-offset: 2px;
 }
 
-/* Erfolg: letzter Wizard-Schritt (Text im Body, Pflegeboxi-Zeile oben) */
+/* Erfolg: letzter Wizard-Schritt (Freude-Bild + Sprechblase im Body) */
 .wiz-success-summary {
   margin: 0;
   padding: 0.5rem 0 0.25rem;

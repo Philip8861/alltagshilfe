@@ -3,6 +3,13 @@
  * Erwartet im DOM: #pflegebox-wizard-backdrop und Kinder (siehe index.html).
  */
 (function () {
+  /** Standard-Zeile „Pflegeboxi + Sprechblase“ (wird nach Erfolgsschritt wiederhergestellt). */
+  const DEFAULT_WIZARD_BOXI_INNER =
+    '<div class="pflege-wizard-boxi-figure">' +
+    '<img class="pflege-wizard-boxi-img" src="images/pflegeboxi.webp" onerror="this.onerror=null;this.src=\'images/pflegeboxi.png\';" width="96" height="96" alt="Pflegeboxi" decoding="async" />' +
+    "</div>" +
+    '<p class="pflege-wizard-boxi-bubble" id="pflege-wizard-boxi-bubble" role="status" aria-live="polite"></p>';
+
   const STEPS = [
     { key: "p1", section: "Persönliche Daten", title: "Ihre Person", motivation: "" },
     { key: "p2", section: "Persönliche Daten", title: "Adresse & Geburtsdatum", motivation: "" },
@@ -198,7 +205,9 @@
   function triggerBoxiHop() {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     const bd = $("pflegebox-wizard-backdrop");
-    const img = bd?.querySelector(".pflege-wizard-boxi-img");
+    const img =
+      bd?.querySelector("#pflege-wizard-body .wiz-success-hop-img") ||
+      bd?.querySelector(".pflege-wizard-boxi-img");
     if (!img) return;
     img.classList.remove("pflege-wizard-boxi-hop");
     void img.offsetWidth;
@@ -350,6 +359,18 @@
     const backBtn = q("#pflege-wizard-back");
     const nextBtn = q("#pflege-wizard-next");
     if (!body) return;
+
+    const boxiRow = q(".pflege-wizard-boxi");
+    if (boxiRow) {
+      if (meta.key === "s2") {
+        boxiRow.classList.add("pflege-wizard-boxi--success-head");
+        boxiRow.innerHTML =
+          '<h2 class="pflege-wizard-success-headline" id="pflege-wizard-success-headline">Bestellung erfolgreich</h2>';
+      } else {
+        boxiRow.classList.remove("pflege-wizard-boxi--success-head");
+        boxiRow.innerHTML = DEFAULT_WIZARD_BOXI_INNER;
+      }
+    }
 
     if (sec) sec.textContent = meta.section;
     if (title) {
@@ -568,9 +589,21 @@
         <p class="wiz-hint wiz-sig-step-intro">Hier bestätigen Sie Ihre Bestellung mit einer Unterschrift.</p>
         <button type="button" class="btn-primary wiz-open-sig-btn" id="wiz-open-sig-overlay">Jetzt unterschreiben</button>`;
     } else if (meta.key === "s2") {
+      const successIntro = BOXI_STEP_INTROS[stepIndex] ?? "";
       html = `
-        <div class="wiz-success-summary">
-          <p class="wiz-success-summary__main">Ihre Bestellung ist erfolgreich bei uns eingegangen.</p>
+        <div class="wiz-success-celebration" role="group" aria-label="Pflegeboxi">
+          <div class="wiz-success-celebration__figure">
+            <img
+              class="pflege-wizard-boxi-img wiz-success-hop-img"
+              src="images/Pflegebox_freude.webp"
+              onerror="this.onerror=null;this.src='images/pflegeboxi.webp';"
+              width="120"
+              height="120"
+              alt="Pflegeboxi freut sich über Ihre Bestellung"
+              decoding="async"
+            />
+          </div>
+          <p class="pflege-wizard-boxi-bubble wiz-success-celebration__bubble" id="wiz-success-intro-bubble" role="status" aria-live="polite">${escHtml(successIntro)}</p>
         </div>`;
     }
 
@@ -596,9 +629,16 @@
 
     const modalDlg = bd?.querySelector(".pflege-wizard-modal");
     if (modalDlg) {
-      const parts = ["pflege-wizard-section"];
-      if (title && !title.hidden) parts.push("pflege-wizard-title");
-      modalDlg.setAttribute("aria-labelledby", parts.join(" "));
+      modalDlg.classList.toggle("pflege-wizard-modal--success-final", meta.key === "s2");
+      if (meta.key === "s2") {
+        modalDlg.setAttribute("aria-labelledby", "pflege-wizard-success-headline");
+        modalDlg.setAttribute("aria-describedby", "wiz-success-intro-bubble");
+      } else {
+        const parts = ["pflege-wizard-section"];
+        if (title && !title.hidden) parts.push("pflege-wizard-title");
+        modalDlg.setAttribute("aria-labelledby", parts.join(" "));
+        modalDlg.setAttribute("aria-describedby", "pflege-wizard-motivation pflege-wizard-boxi-bubble");
+      }
     }
   }
 
