@@ -140,7 +140,7 @@ export default function KarrierePage() {
                       alt="Daniel Niebauer – Alltagshilfe-Süd"
                       width={1080}
                       height={1350}
-                      className="h-auto w-full object-contain object-center mix-blend-multiply [filter:brightness(1.1)_drop-shadow(0_10px_22px_rgba(15,79,104,0.2))_drop-shadow(0_4px_12px_rgba(15,79,104,0.12))] [will-change:filter]"
+                      className="h-auto w-full object-contain object-center mix-blend-multiply [filter:drop-shadow(0_10px_22px_rgba(15,79,104,0.2))_drop-shadow(0_4px_12px_rgba(15,79,104,0.12))] [will-change:filter]"
                       sizes="(max-width: 1024px) 80vw, 38vw"
                     />
                   </div>
@@ -148,10 +148,10 @@ export default function KarrierePage() {
                     className="relative z-10 -mt-10 w-full rounded-xl bg-[#F2F9FA] px-6 py-3 text-center sm:-mt-12 sm:py-4"
                     style={{ boxShadow: "0 -2px 12px rgba(15, 79, 104, 0.15)" }}
                   >
-                    <p className="text-[1.2403125rem] font-bold leading-tight text-[#0F4F68] sm:text-[1.378125rem]">
+                    <p className="text-[1.302328125rem] font-bold leading-tight text-[#0F4F68] sm:text-[1.44703125rem]">
                       Daniel Niebauer
                     </p>
-                    <p className="mt-0.5 text-[0.826875rem] font-normal text-neutral-600">
+                    <p className="mt-0.5 text-[0.86821875rem] font-normal text-neutral-600">
                       Personalreferent
                     </p>
                   </div>
@@ -346,7 +346,7 @@ export default function KarrierePage() {
                 alt="Daniel Niebauer – Personalreferent, Alltagshilfe-Süd"
                 width={1080}
                 height={1350}
-                className="h-auto w-full object-contain object-center mix-blend-multiply [filter:brightness(1.1)_drop-shadow(0_10px_22px_rgba(15,79,104,0.2))_drop-shadow(0_4px_12px_rgba(15,79,104,0.12))] [will-change:filter]"
+                className="h-auto w-full object-contain object-center mix-blend-multiply [filter:drop-shadow(0_10px_22px_rgba(15,79,104,0.2))_drop-shadow(0_4px_12px_rgba(15,79,104,0.12))] [will-change:filter]"
                 sizes="(max-width: 640px) 160px, 192px"
               />
             </div>
