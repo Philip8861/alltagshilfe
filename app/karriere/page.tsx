@@ -137,7 +137,7 @@ export default function KarrierePage() {
                   className="relative aspect-[4/3] w-[80%] max-w-[80%] overflow-visible lg:max-w-[80%]"
                 >
                   <Image
-                    src="/images/Kontakt_Bild.webp"
+                    src="/images/Daniel_Niebauer.webp"
                     alt="Daniel Niebauer – Alltagshilfe-Süd"
                     fill
                     className="object-contain drop-shadow-[0_4px_20px_rgba(15,79,104,0.18)]"
