@@ -148,10 +148,10 @@ export default function KarrierePage() {
                     className="relative z-10 -mt-10 w-full rounded-xl bg-[#F2F9FA] px-6 py-3 text-center sm:-mt-12 sm:py-4"
                     style={{ boxShadow: "0 -2px 12px rgba(15, 79, 104, 0.15)" }}
                   >
-                    <p className="text-[1.302328125rem] font-bold leading-tight text-[#0F4F68] sm:text-[1.44703125rem]">
+                    <p className="text-[1.341398069rem] font-bold leading-tight text-[#0F4F68] sm:text-[1.490442188rem]">
                       Daniel Niebauer
                     </p>
-                    <p className="mt-0.5 text-[0.86821875rem] font-normal text-neutral-600">
+                    <p className="mt-0.5 text-[0.894265313rem] font-normal text-neutral-600">
                       Personalreferent
                     </p>
                   </div>
