@@ -2431,14 +2431,15 @@ body.pflege-wizard-open {
 }
 
 .wiz-success-celebration__bubble {
-  flex: 1 1 12rem;
+  flex: 0 1 auto;
+  max-width: min(100%, 22rem);
   min-width: 0;
 }
 
 @media (max-width: 480px) {
   .wiz-success-celebration {
     flex-direction: column;
-    align-items: stretch;
+    align-items: center;
   }
 
   .wiz-success-celebration__bubble::after,
