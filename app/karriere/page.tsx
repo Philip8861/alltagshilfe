@@ -335,13 +335,16 @@ export default function KarrierePage() {
             Bei Fragen zu unseren Stellen oder für Ihre Bewerbung – wir sind für Sie da.
           </p>
           <div className="mt-10 flex flex-col items-start gap-8 rounded-2xl border-2 border-[#0F4F68]/15 bg-[#F2F9FA]/60 p-8 sm:flex-row sm:items-center sm:gap-10 sm:p-10">
-            <div className="relative h-40 w-40 shrink-0 overflow-hidden rounded-2xl bg-[#0F4F68]/10 sm:h-48 sm:w-48">
-              <img
-                src="https://ui-avatars.com/api/?name=Sarah+Weber&size=256&background=e5e7eb&color=0F4F68&bold=true"
-                alt="Sarah Weber"
-                className="h-full w-full object-cover"
-                width={192}
-                height={192}
+            <div
+              className="relative h-40 w-40 shrink-0 overflow-hidden rounded-2xl bg-[#0F4F68]/10 sm:h-48 sm:w-48"
+              style={{ boxShadow: "0 4px 20px rgba(15, 79, 104, 0.18)" }}
+            >
+              <Image
+                src="/images/Daniel_Niebauer.webp"
+                alt="Daniel Niebauer – Personalreferent, Alltagshilfe-Süd"
+                fill
+                className="object-cover object-center"
+                sizes="(max-width: 640px) 160px, 192px"
               />
             </div>
             <div className="min-w-0 flex-1">
@@ -349,10 +352,10 @@ export default function KarrierePage() {
                 Personal & Recruiting
               </p>
               <h3 className="mt-1 text-2xl font-bold text-neutral-900">
-                Sarah Weber
+                Daniel Niebauer
               </h3>
               <p className="mt-2 text-neutral-600">
-                Ihre Ansprechpartnerin für alle Fragen zu Stellenangeboten und Bewerbungen.
+                Ihr Ansprechpartner für alle Fragen zu Stellenangeboten und Bewerbungen.
               </p>
               <dl className="mt-6 space-y-3">
                 <div className="flex flex-wrap items-center gap-2">
@@ -371,11 +374,11 @@ export default function KarrierePage() {
                   <dt className="sr-only">E-Mail</dt>
                   <dd>
                     <a
-                      href="mailto:karriere@alltagshilfe-sued.de"
+                      href="mailto:daniel.niebauer@alltagshilfe-sued.de"
                       className="inline-flex items-center gap-2 text-[#0F4F68] hover:underline focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2 rounded"
                     >
                       <span className="text-neutral-500" aria-hidden>✉️</span>
-                      karriere@alltagshilfe-sued.de
+                      daniel.niebauer@alltagshilfe-sued.de
                     </a>
                   </dd>
                 </div>
