@@ -145,13 +145,13 @@ export default function KarrierePage() {
                     />
                   </div>
                   <div
-                    className="relative z-10 -mt-10 w-full rounded-xl bg-[#F2F9FA] px-6 py-3 text-right sm:-mt-12 sm:py-4"
+                    className="relative z-10 -mt-10 w-full rounded-xl bg-[#F2F9FA] px-6 py-3 text-center sm:-mt-12 sm:py-4"
                     style={{ boxShadow: "0 -2px 12px rgba(15, 79, 104, 0.15)" }}
                   >
-                    <p className="text-[1.18125rem] font-bold leading-tight text-[#0F4F68] sm:text-[1.3125rem]">
+                    <p className="text-[1.2403125rem] font-bold leading-tight text-[#0F4F68] sm:text-[1.378125rem]">
                       Daniel Niebauer
                     </p>
-                    <p className="mt-0.5 text-[0.7875rem] font-normal text-neutral-600">
+                    <p className="mt-0.5 text-[0.826875rem] font-normal text-neutral-600">
                       Personalreferent
                     </p>
                   </div>
