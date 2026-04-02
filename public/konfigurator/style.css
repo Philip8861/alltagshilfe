@@ -2406,6 +2406,31 @@ body.pflege-wizard-open {
   display: none;
 }
 
+/* Erfolg: Modal als Spalte, mittlerer Bereich vertikal zentriert */
+.pflege-wizard-modal.pflege-wizard-modal--success-final {
+  display: flex;
+  flex-direction: column;
+  min-height: min(52dvh, 420px);
+}
+
+.pflege-wizard-modal--success-final .pflege-wizard-boxi {
+  flex-shrink: 0;
+}
+
+.pflege-wizard-modal--success-final .pflege-wizard-body--success-step {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 0;
+  padding: 1.25rem 1.35rem 1.5rem;
+}
+
+.pflege-wizard-modal--success-final .pflege-wizard-nav {
+  flex-shrink: 0;
+}
+
 .wiz-success-celebration {
   display: flex;
   flex-direction: row;
@@ -2551,7 +2576,6 @@ body.pflege-wizard-open {
 
 .pflege-wizard-body--success-step {
   min-height: 0;
-  padding-top: 0.35rem;
 }
 
 /* Vollbild-Unterschrift (ca. 2/3 der Viewport-Höhe) */

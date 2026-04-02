@@ -201,13 +201,11 @@
     }
   }
 
-  /** Nach erfolgreichem „Weiter“: Pflegeboxi freudig hüpfen lassen. */
+  /** Nach erfolgreichem „Weiter“: Pflegeboxi in der Kopfzeile kurz hüpfen lassen (nicht im Erfolgs-Body). */
   function triggerBoxiHop() {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     const bd = $("pflegebox-wizard-backdrop");
-    const img =
-      bd?.querySelector("#pflege-wizard-body .wiz-success-hop-img") ||
-      bd?.querySelector(".pflege-wizard-boxi-img");
+    const img = bd?.querySelector(".pflege-wizard-boxi .pflege-wizard-boxi-img");
     if (!img) return;
     img.classList.remove("pflege-wizard-boxi-hop");
     void img.offsetWidth;
@@ -594,7 +592,7 @@
         <div class="wiz-success-celebration" role="group" aria-label="Pflegeboxi">
           <div class="wiz-success-celebration__figure">
             <img
-              class="pflege-wizard-boxi-img wiz-success-hop-img"
+              class="pflege-wizard-boxi-img"
               src="images/pflegeboxi_freude.webp"
               onerror="this.onerror=null;this.src='images/pflegeboxi.webp';"
               width="120"
@@ -1009,7 +1007,6 @@
       orderEndedWithSuccessScreen = true;
       stepIndex = STEPS.findIndex((x) => x.key === "s2");
       render();
-      triggerBoxiHop();
       requestAnimationFrame(() => $("pflege-wizard-next")?.focus());
       return;
     } catch {
