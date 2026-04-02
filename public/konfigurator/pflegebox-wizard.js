@@ -590,18 +590,20 @@
       const successIntro = BOXI_STEP_INTROS[stepIndex] ?? "";
       html = `
         <div class="wiz-success-celebration" role="group" aria-label="Pflegeboxi">
-          <div class="wiz-success-celebration__figure">
-            <img
-              class="pflege-wizard-boxi-img"
-              src="images/pflegeboxi_freude.webp"
-              onerror="this.onerror=null;this.src='images/pflegeboxi.webp';"
-              width="120"
-              height="120"
-              alt="Pflegeboxi freut sich über Ihre Bestellung"
-              decoding="async"
-            />
+          <div class="wiz-success-celebration__inner">
+            <div class="wiz-success-celebration__figure">
+              <img
+                class="pflege-wizard-boxi-img"
+                src="images/pflegeboxi_freude.webp"
+                onerror="this.onerror=null;this.src='images/pflegeboxi.webp';"
+                width="126"
+                height="126"
+                alt="Pflegeboxi freut sich über Ihre Bestellung"
+                decoding="async"
+              />
+            </div>
+            <p class="pflege-wizard-boxi-bubble wiz-success-celebration__bubble" id="wiz-success-intro-bubble" role="status" aria-live="polite">${escHtml(successIntro)}</p>
           </div>
-          <p class="pflege-wizard-boxi-bubble wiz-success-celebration__bubble" id="wiz-success-intro-bubble" role="status" aria-live="polite">${escHtml(successIntro)}</p>
         </div>`;
     }
 
