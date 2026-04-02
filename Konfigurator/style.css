@@ -256,6 +256,8 @@ html.kfg-embed .hero-overlay {
   gap: 10px;
   margin-top: 3%;
   align-items: start;
+  /* Platz für Karten-Schatten, damit unten nichts abgeschnitten wird */
+  padding-bottom: 12px;
 }
 
 /* Rechtliche Kurzlinks unter der Produktliste (nur Konfigurator, kein Site-Footer) */
@@ -322,20 +324,16 @@ html.kfg-embed .hero-overlay {
   grid-column: span 2;
   aspect-ratio: 1;
   max-height: none;
-  /* Schatten wie Startseiten-Bilder (~30 %), am ganzen Kasten – nicht nur am Bild */
+  /* Sehr dezenter Schatten am ganzen Kasten */
   box-shadow:
-    0 3px 7px rgba(15, 79, 104, 0.06),
-    0 1px 4px rgba(15, 79, 104, 0.036),
-    0 4px 20px rgba(15, 79, 104, 0.06),
-    0 2px 8px rgba(15, 23, 42, 0.035);
+    0 1px 4px rgba(15, 79, 104, 0.045),
+    0 2px 10px rgba(15, 79, 104, 0.04);
 }
 
 .item.item--double-width:hover {
   box-shadow:
-    0 5px 12px rgba(15, 79, 104, 0.09),
-    0 2px 6px rgba(15, 79, 104, 0.05),
-    0 12px 34px rgba(15, 79, 104, 0.1),
-    0 4px 14px rgba(15, 23, 42, 0.05);
+    0 2px 8px rgba(15, 79, 104, 0.06),
+    0 3px 14px rgba(15, 79, 104, 0.05);
 }
 
 .item {
@@ -344,7 +342,8 @@ html.kfg-embed .hero-overlay {
   width: 100%;
   align-self: start;
   aspect-ratio: 1;
-  overflow: hidden;
+  /* visible: Karten-Schatten und Button-Schatten werden nicht unten abgeschnitten */
+  overflow: visible;
   border-radius: 20px;
   padding: 8px 10px 10px;
   border: 1px solid rgba(15, 79, 104, 0.12);
@@ -2534,6 +2533,7 @@ body.pflege-wizard-open {
 }
 
 .pflege-wizard-sig-canvas-wrap {
+  position: relative;
   width: 100%;
   height: auto;
   aspect-ratio: 5 / 2;
@@ -2549,8 +2549,11 @@ body.pflege-wizard-open {
 
 .wiz-signature-canvas--overlay {
   display: block;
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
+  max-height: none;
   cursor: crosshair;
   vertical-align: middle;
 }
@@ -3087,6 +3090,12 @@ body.pflege-wizard-open {
   max-height: 200px;
   cursor: crosshair;
   vertical-align: middle;
+}
+
+/* Overlay-Canvas füllt den weißen Rahmen; Basis-Regel max-height:200px würde sonst die Fläche kappen */
+.wiz-signature-canvas.wiz-signature-canvas--overlay {
+  max-height: none;
+  height: 100%;
 }
 
 .wiz-sig-clear {

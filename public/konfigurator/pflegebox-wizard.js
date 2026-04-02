@@ -27,7 +27,7 @@
     "Wir gehen vertraulich mit Ihren Daten um. Wir melden uns nur im Falle von Rückfragen bei Ihnen.",
     "Optional: Hier dürfen Sie eine Anmerkung zu Ihrer Bestellung schreiben.",
     "Bitte lesen und bestätigen Sie die AGB und die Datenschutzhinweise.",
-    "Optional: Tragen Sie einen Partner-Code ein, falls Sie empfohlen wurden.",
+    "Optional: Tragen Sie einen Partner-Code ein, falls wir empfohlen wurden.",
     "Zum Schluss fehlt nur noch Ihre Unterschrift. Tippen Sie auf „Jetzt unterschreiben“.",
     "Hura! Deine Bestellung ist bei uns angekommen – wir freuen uns!",
   ];
@@ -733,8 +733,9 @@
   }
 
   function sigPos(e) {
-    if (!sigCanvas || !sigLogicalW) return { x: 0, y: 0 };
-    const r = sigCanvas.getBoundingClientRect();
+    if (!sigCanvas || !sigLogicalW || !sigLogicalH) return { x: 0, y: 0 };
+    const wrap = $("wiz-sig-canvas-wrap");
+    const r = wrap?.getBoundingClientRect() ?? sigCanvas.getBoundingClientRect();
     if (r.width < 1 || r.height < 1) return { x: 0, y: 0 };
     const scaleX = sigLogicalW / r.width;
     const scaleY = sigLogicalH / r.height;
