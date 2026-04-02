@@ -360,7 +360,7 @@ function renderItemList() {
     if (hasMlVariants(item)) {
       const metaMl = document.createElement("div");
       metaMl.className = "item-meta-row";
-      metaMl.textContent = `Gebinde: ${item.mlVariants.map((v) => `${v.ml} ml`).join(", ")}`;
+      metaMl.textContent = `Größe: ${item.mlVariants.map((v) => `${v.ml} ml`).join(", ")}`;
       contentWrap.appendChild(metaMl);
     } else if (item.pieces || item.quantity || item.ml) {
       const meta = document.createElement("div");

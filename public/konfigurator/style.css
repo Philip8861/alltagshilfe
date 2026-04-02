@@ -322,6 +322,20 @@ html.kfg-embed .hero-overlay {
   grid-column: span 2;
   aspect-ratio: 1;
   max-height: none;
+  /* Schatten wie Startseiten-Bilder (~30 %), am ganzen Kasten – nicht nur am Bild */
+  box-shadow:
+    0 3px 7px rgba(15, 79, 104, 0.06),
+    0 1px 4px rgba(15, 79, 104, 0.036),
+    0 4px 20px rgba(15, 79, 104, 0.06),
+    0 2px 8px rgba(15, 23, 42, 0.035);
+}
+
+.item.item--double-width:hover {
+  box-shadow:
+    0 5px 12px rgba(15, 79, 104, 0.09),
+    0 2px 6px rgba(15, 79, 104, 0.05),
+    0 12px 34px rgba(15, 79, 104, 0.1),
+    0 4px 14px rgba(15, 23, 42, 0.05);
 }
 
 .item {
@@ -416,20 +430,15 @@ html.kfg-embed .hero-overlay {
 }
 
 .item--double-width .item-name {
-  font-size: clamp(0.9rem, 2.65vw, 1.18rem);
+  font-size: clamp(0.98rem, 2.95vw, 1.32rem);
   -webkit-line-clamp: 2;
 }
 
 .item--double-width .item-description {
-  font-size: 0.84rem;
-  -webkit-line-clamp: 2;
-  line-height: 1.35;
-}
-
-/* Wiederverwendbare Karte: dezenter Schatten wie Startseiten-Bilder, ca. 30 % Stärke */
-.item--double-width .item-image-frame .item-image {
-  filter: drop-shadow(0 3px 7px rgba(15, 79, 104, 0.06))
-    drop-shadow(0 1px 4px rgba(15, 79, 104, 0.036));
+  font-size: 0.96rem;
+  font-weight: 600;
+  -webkit-line-clamp: 3;
+  line-height: 1.4;
 }
 
 .item-name {
@@ -459,7 +468,7 @@ html.kfg-embed .hero-overlay {
 }
 
 .item-meta-row {
-  font-size: 0.85rem;
+  font-size: 0.93rem;
   color: var(--text-muted);
   text-align: center;
   line-height: 1.4;
@@ -1243,6 +1252,19 @@ html.kfg-embed .hero-overlay {
     0 4px 20px rgba(15, 79, 104, 0.08),
     0 20px 50px rgba(15, 23, 42, 0.18);
   font-family: inherit;
+}
+
+/* ML-Größen: Schatten der runden Buttons nicht durch overflow:hidden abschneiden */
+.handschuh-dialog.handschuh-dialog--ml-variant {
+  overflow-x: hidden;
+  overflow-y: visible;
+  max-height: none;
+}
+
+.handschuh-dialog.handschuh-dialog--ml-variant .handschuh-dialog-body {
+  overflow: visible;
+  padding-top: 6px;
+  padding-bottom: 18px;
 }
 
 /* Nach .handschuh-dialog: höhere Spezifität, damit overflow/padding nicht wieder von .handschuh-dialog überschrieben werden */
