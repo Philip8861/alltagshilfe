@@ -140,7 +140,7 @@ export default function KarrierePage() {
                     src="/images/Daniel_Niebauer.webp"
                     alt="Daniel Niebauer – Alltagshilfe-Süd"
                     fill
-                    className="object-contain drop-shadow-[0_4px_20px_rgba(15,79,104,0.18)]"
+                    className="object-contain object-center [filter:drop-shadow(0_4px_14px_rgba(15,79,104,0.2))_drop-shadow(0_2px_6px_rgba(15,79,104,0.12))]"
                     sizes="(max-width: 1024px) 90vw, 50vw"
                   />
                 </div>
@@ -335,15 +335,12 @@ export default function KarrierePage() {
             Bei Fragen zu unseren Stellen oder für Ihre Bewerbung – wir sind für Sie da.
           </p>
           <div className="mt-10 flex flex-col items-start gap-8 rounded-2xl border-2 border-[#0F4F68]/15 bg-[#F2F9FA]/60 p-8 sm:flex-row sm:items-center sm:gap-10 sm:p-10">
-            <div
-              className="relative h-40 w-40 shrink-0 overflow-hidden rounded-2xl bg-[#0F4F68]/10 sm:h-48 sm:w-48"
-              style={{ boxShadow: "0 4px 20px rgba(15, 79, 104, 0.18)" }}
-            >
+            <div className="relative h-40 w-40 shrink-0 overflow-visible sm:h-48 sm:w-48">
               <Image
                 src="/images/Daniel_Niebauer.webp"
                 alt="Daniel Niebauer – Personalreferent, Alltagshilfe-Süd"
                 fill
-                className="object-cover object-center"
+                className="object-contain object-center [filter:drop-shadow(0_4px_14px_rgba(15,79,104,0.2))_drop-shadow(0_2px_6px_rgba(15,79,104,0.12))]"
                 sizes="(max-width: 640px) 160px, 192px"
               />
             </div>
