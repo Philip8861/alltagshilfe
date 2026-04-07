@@ -85,7 +85,7 @@ export const FORM_V1_PLACEMENTS: Record<FormV1DataFieldId, FormV1FieldPlacement>
     x: 210.2,
     y: 709.81,
     fontSizePt: 11,
-    trackingPt: 9.3,
+    trackingPt: 10.85,
   },
   versichertennummer: {
     kind: "text",
@@ -108,6 +108,7 @@ export const FORM_V1_PLACEMENTS: Record<FormV1DataFieldId, FormV1FieldPlacement>
     x: 400,
     y: 730,
     fontSizePt: 10,
+    trackingPt: 10.85,
   },
   kontaktTelefonisch: {
     kind: "checkbox",
@@ -194,6 +195,7 @@ export const FORM_V1_PLACEMENTS: Record<FormV1DataFieldId, FormV1FieldPlacement>
     x: 426.91,
     y: 270.44,
     fontSizePt: 9.3,
+    trackingPt: 10.85,
   },
   katalog_9109: {
     kind: "text",
@@ -201,6 +203,7 @@ export const FORM_V1_PLACEMENTS: Record<FormV1DataFieldId, FormV1FieldPlacement>
     x: 426.81,
     y: 445.1,
     fontSizePt: 9,
+    trackingPt: 10.85,
   },
   katalog_9111: {
     kind: "text",
@@ -208,6 +211,7 @@ export const FORM_V1_PLACEMENTS: Record<FormV1DataFieldId, FormV1FieldPlacement>
     x: 426.81,
     y: 229.6,
     fontSizePt: 9,
+    trackingPt: 10.85,
   },
   katalog_9112: {
     kind: "text",
@@ -215,6 +219,7 @@ export const FORM_V1_PLACEMENTS: Record<FormV1DataFieldId, FormV1FieldPlacement>
     x: 318,
     y: 386,
     fontSizePt: 9,
+    trackingPt: 10.85,
   },
   katalog_9104: {
     kind: "text",
@@ -222,6 +227,7 @@ export const FORM_V1_PLACEMENTS: Record<FormV1DataFieldId, FormV1FieldPlacement>
     x: 48,
     y: 370,
     fontSizePt: 9,
+    trackingPt: 10.85,
   },
   katalog_9113: {
     kind: "text",
@@ -229,6 +235,7 @@ export const FORM_V1_PLACEMENTS: Record<FormV1DataFieldId, FormV1FieldPlacement>
     x: 318,
     y: 370,
     fontSizePt: 9,
+    trackingPt: 10.85,
   },
   katalog_9101: {
     kind: "text",
@@ -236,6 +243,7 @@ export const FORM_V1_PLACEMENTS: Record<FormV1DataFieldId, FormV1FieldPlacement>
     x: 48,
     y: 354,
     fontSizePt: 9,
+    trackingPt: 10.85,
   },
   katalog_9110: {
     kind: "text",
@@ -243,6 +251,7 @@ export const FORM_V1_PLACEMENTS: Record<FormV1DataFieldId, FormV1FieldPlacement>
     x: 318,
     y: 354,
     fontSizePt: 9,
+    trackingPt: 10.85,
   },
   katalog_9103: {
     kind: "text",
@@ -250,6 +259,7 @@ export const FORM_V1_PLACEMENTS: Record<FormV1DataFieldId, FormV1FieldPlacement>
     x: 48,
     y: 338,
     fontSizePt: 9,
+    trackingPt: 10.85,
   },
   katalog_9107: {
     kind: "text",
@@ -257,6 +267,7 @@ export const FORM_V1_PLACEMENTS: Record<FormV1DataFieldId, FormV1FieldPlacement>
     x: 318,
     y: 338,
     fontSizePt: 9,
+    trackingPt: 10.85,
   },
   katalog_9105: {
     kind: "text",
@@ -264,6 +275,7 @@ export const FORM_V1_PLACEMENTS: Record<FormV1DataFieldId, FormV1FieldPlacement>
     x: 48,
     y: 322,
     fontSizePt: 9,
+    trackingPt: 10.85,
   },
   katalog_9108: {
     kind: "text",
@@ -271,5 +283,6 @@ export const FORM_V1_PLACEMENTS: Record<FormV1DataFieldId, FormV1FieldPlacement>
     x: 318,
     y: 322,
     fontSizePt: 9,
+    trackingPt: 10.85,
   },
 };

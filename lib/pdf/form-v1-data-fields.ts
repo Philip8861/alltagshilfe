@@ -69,17 +69,17 @@ const BASE_FORM_V1_DATA_FIELDS: readonly FormV1DataFieldMeta[] = [
   },
   {
     id: "geburtsdatum",
-    editorLabel: "Daten: Geburtsdatum (ohne Punkte, Tracking)",
+    editorLabel: "Daten: Geburtsdatum (ohne Punkte, Tracking wie Vers.-Nr.)",
     kind: "trackedText",
     sampleText: "15031990",
     defaultFontSizePt: 11,
-    defaultTrackingPt: 9.3,
+    defaultTrackingPt: 10.85,
   },
   {
     id: "versichertennummer",
     editorLabel: "Daten: Versichertennummer (Tracking)",
     kind: "trackedText",
-    sampleText: "123456789012",
+    sampleText: "A123456789",
     defaultFontSizePt: 11,
     defaultTrackingPt: 10.85,
   },
@@ -92,10 +92,11 @@ const BASE_FORM_V1_DATA_FIELDS: readonly FormV1DataFieldMeta[] = [
   },
   {
     id: "aktuellesDatum",
-    editorLabel: "Daten: Aktuelles Datum (Bestellabschluss, DD.MM.YYYY)",
-    kind: "plainText",
+    editorLabel: "Daten: Aktuelles Datum (Tracking wie Vers.-Nr.)",
+    kind: "trackedText",
     sampleText: "07.04.2026",
-    defaultFontSizePt: 11,
+    defaultFontSizePt: 10,
+    defaultTrackingPt: 10.85,
   },
   {
     id: "kontaktTelefonisch",
@@ -189,10 +190,11 @@ const KATALOG_FORM_V1_DATA_FIELDS: FormV1DataFieldMeta[] = KONFIGURATOR_CATALOG.
         : `Stück = ${row.piecesPerPack ?? "?"} × Anzahl`;
   return {
     id,
-    editorLabel: `Konfigurator ${row.name} (${unitHint})`,
-    kind: "plainText" as const,
+    editorLabel: `Konfigurator ${row.name} (${unitHint}, Tracking wie Vers.-Nr.)`,
+    kind: "trackedText" as const,
     sampleText: "0",
     defaultFontSizePt: 9,
+    defaultTrackingPt: 10.85,
   };
 });
 

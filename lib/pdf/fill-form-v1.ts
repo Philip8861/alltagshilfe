@@ -9,7 +9,11 @@ import {
   type FormV1DataFieldId,
 } from "@/lib/pdf/form-v1-data-fields";
 import { FORM_V1_PLACEMENTS } from "@/lib/pdf/form-v1-placements";
-import { formV1NameLineMaxWidthPt, formV1StrasseLineMaxWidthPt } from "@/lib/pdf/form-v1-layout";
+import {
+  FORM_V1_VERS_TRACKING_PT,
+  formV1NameLineMaxWidthPt,
+  formV1StrasseLineMaxWidthPt,
+} from "@/lib/pdf/form-v1-layout";
 import {
   computeKonfiguratorFieldValue,
   KONFIGURATOR_CATALOG_IDS,
@@ -54,13 +58,13 @@ function formV1KrankenkasseMaxWidthPtLocal(pageWidth: number, krankenkasseLeftX:
 
 /**
  * Admin-Vorschau: jeder Katalog-Artikel genau 1×, um die PDF-Zahlen pro Feld zu prüfen.
- * ml-Artikel: kleinste Varianten (250 ml / 100 ml) → Faktor 2,5 bzw. 1.
+ * ml-Artikel (9111, 9112): je 1500 ml → Faktor Σml/100 = 15.
  */
 const FORM_V1_PREVIEW_KONFIGURATOR_LINES: KonfiguratorCartLine[] = [
   { id: 9102, count: 1 },
   { id: 9109, count: 1 },
-  { id: 9111, count: 1, selectedMl: 250 },
-  { id: 9112, count: 1, selectedMl: 100 },
+  { id: 9111, count: 1, selectedMl: 1500 },
+  { id: 9112, count: 1, selectedMl: 1500 },
   { id: 9104, count: 1 },
   { id: 9113, count: 1 },
   { id: 9101, count: 1 },
@@ -76,7 +80,7 @@ export const FORM_V1_PREVIEW_SAMPLE: FormV1FillInput = {
   vorname: "Max",
   nachname: "Mustermann",
   geburtsdatumIso: "1990-03-15",
-  versichertennummer: "123456789012",
+  versichertennummer: "A123456789",
   anschriftStrasse: "Musterstraße",
   hausnummer: "12 a",
   plz: "87700",
@@ -249,14 +253,14 @@ export async function fillFormV1Pdf(
         const v = computeKonfiguratorFieldValue(kId, data.konfiguratorLines);
         const t = sanitizeFormText(v, 32);
         if (t) {
-          page.drawText(t, {
+          const tr = placement.trackingPt ?? FORM_V1_VERS_TRACKING_PT;
+          drawTextWithTracking(page, t, {
             x: placement.x,
             y: placement.y,
             size,
             font,
             color: black,
-            maxWidth: 200,
-            lineHeight: lh,
+            trackingPt: tr,
           });
         }
         continue;
@@ -290,7 +294,7 @@ export async function fillFormV1Pdf(
       }
       if (fieldId === "geburtsdatum") {
         const birthText = sanitizeFormText(formatGeburtsdatumOhnePunkte(data.geburtsdatumIso), 8);
-        const tr = placement.trackingPt ?? meta.defaultTrackingPt ?? 9.3;
+        const tr = placement.trackingPt ?? meta.defaultTrackingPt ?? FORM_V1_VERS_TRACKING_PT;
         drawTextWithTracking(page, birthText, {
           x: placement.x,
           y: placement.y,
@@ -303,7 +307,7 @@ export async function fillFormV1Pdf(
       }
       if (fieldId === "versichertennummer") {
         const versText = sanitizeVersichertennummer(data.versichertennummer, 24);
-        const tr = placement.trackingPt ?? meta.defaultTrackingPt ?? 10.85;
+        const tr = placement.trackingPt ?? meta.defaultTrackingPt ?? FORM_V1_VERS_TRACKING_PT;
         drawTextWithTracking(page, versText, {
           x: placement.x,
           y: placement.y,
@@ -330,15 +334,16 @@ export async function fillFormV1Pdf(
       }
       if (fieldId === "aktuellesDatum") {
         const dText = resolveAktuellesDatumDe(data);
-        page.drawText(dText, {
+        const tr = placement.trackingPt ?? meta.defaultTrackingPt ?? FORM_V1_VERS_TRACKING_PT;
+        drawTextWithTracking(page, dText, {
           x: placement.x,
           y: placement.y,
           size,
           font,
           color: black,
-          maxWidth: 120,
-          lineHeight: lh,
+          trackingPt: tr,
         });
+        continue;
       }
       continue;
     }
