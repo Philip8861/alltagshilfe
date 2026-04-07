@@ -49,24 +49,27 @@ function sanitizeVersichertennummer(s: string, maxLen: number): string {
   return sanitizeFormText(s.replace(/\s+/g, ""), maxLen);
 }
 
-/** `YYYY-MM-DD` → `DD.MM.YYYY` fürs Formular */
+/** `YYYY-MM-DD` → `DD.MM.YYYY` (nur falls noch woanders gebraucht). */
 export function formatGeburtsdatumDe(iso: string): string {
   const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso.trim());
   if (!m) return sanitizeFormText(iso, 32);
   return `${m[3]}.${m[2]}.${m[1]}`;
 }
 
-/** Eine Zeile für das Formular; bei fehlenden Teilen werden überflüssige Kommas vermieden. */
+/** `YYYY-MM-DD` → `DDMMYYYY` ohne Punkte (Kästchenfeld). */
+export function formatGeburtsdatumOhnePunkte(iso: string): string {
+  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso.trim());
+  if (!m) return sanitizeFormText(iso.replace(/\D/g, ""), 8);
+  return `${m[3]}${m[2]}${m[1]}`;
+}
+
+/** Eine Adresszeile: Straße, Hausnummer, PLZ und Ort, durch Leerzeichen getrennt. */
 export function formatFormV1Adresse(data: Pick<FormV1FillInput, "anschriftStrasse" | "hausnummer" | "plz" | "ort">): string {
   const str = sanitizeFormText(data.anschriftStrasse, 80);
   const nr = sanitizeFormText(data.hausnummer, 15);
   const plz = sanitizeFormText(data.plz, 10);
   const ort = sanitizeFormText(data.ort, 80);
-
-  const line1 = [str, nr].filter(Boolean).join(" ");
-  const line2 = [plz, ort].filter(Boolean).join(" ");
-  if (line1 && line2) return `${line1}, ${line2}`;
-  return line1 || line2;
+  return [str, nr, plz, ort].filter(Boolean).join(" ");
 }
 
 function maxPageIndex(): number {
@@ -129,7 +132,7 @@ export async function fillFormV1Pdf(
     color: black,
   });
 
-  const birthText = sanitizeFormText(formatGeburtsdatumDe(data.geburtsdatumIso), 32);
+  const birthText = sanitizeFormText(formatGeburtsdatumOhnePunkte(data.geburtsdatumIso), 8);
   const trackingGeburt = interGlyphTrackingForStretch(
     font,
     birthText,

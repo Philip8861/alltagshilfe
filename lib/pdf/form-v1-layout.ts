@@ -5,10 +5,10 @@
 export const FORM_V1_LAYOUT = {
   /** Nachname und Vorname in einer Zeile (Darstellung: „Nachname, Vorname“). */
   nameUndVorname: { pageIndex: 0, x: 70.21, y: 703.2 },
-  geburtsdatum: { pageIndex: 0, x: 207.48, y: 709.57 },
-  versichertennummer: { pageIndex: 0, x: 376.79, y: 709.97 },
-  /** Straße, Hausnummer, PLZ, Ort — mehrzeilig bei langem Text (`maxWidth`). */
-  adresse: { pageIndex: 0, x: 67.95, y: 661.97 },
+  geburtsdatum: { pageIndex: 0, x: 212.84, y: 710.88 },
+  versichertennummer: { pageIndex: 0, x: 385.08, y: 710.9 },
+  /** Straße, Hausnummer, PLZ, Ort — eine logische Zeile, bei Bedarf Umbruch (`maxWidth`). */
+  adresse: { pageIndex: 0, x: 70.09, y: 660.9 },
   krankenkasse: { pageIndex: 0, x: 375.09, y: 661.69 },
 } as const;
 
@@ -34,11 +34,11 @@ export const FORM_V1_TRACKING_BASELINE_PT = FORM_V1_FONT_SIZE_PT * 0.25;
 /**
  * Streckung der Gesamttextbreite relativ zu „natürliche Breite + Baseline-Tracking“,
  * damit die Zeichen auf die gedruckten Kästchen passen (visuell abgeglichen).
- * Geburtsdatum: 10 Stellen wirkten wie ~8 Kästchen breit → Faktor 10/8.
+ * Basis: 10 Stellen ≈ 8 Kästchen → 10/8; zuletzt +25 % mehr Abstand für neues Raster (ohne Punkte).
  */
-export const FORM_V1_GEBURT_WIDTH_STRETCH = 10 / 8;
+export const FORM_V1_GEBURT_WIDTH_STRETCH = (10 / 8) * 1.25;
 
 /**
- * Versichertennummer: 12 Stellen wirkten wie ~10,5 Kästchen → Faktor 12/10.5.
+ * Versichertennummer: Basis 12/10,5; +25 % mehr Buchstabenabstand wie beim Datum.
  */
-export const FORM_V1_VERS_WIDTH_STRETCH = 12 / 10.5;
+export const FORM_V1_VERS_WIDTH_STRETCH = (12 / 10.5) * 1.25;
