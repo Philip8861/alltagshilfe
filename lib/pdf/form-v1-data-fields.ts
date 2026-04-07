@@ -29,6 +29,7 @@ export type FormV1DataFieldId =
   | "versichertennummer"
   | "krankenkasse"
   | "aktuellesDatum"
+  | "aktuellesDatum2"
   | "kontaktTelefonisch"
   | "kontaktVideocall"
   | "kontaktGeschaeftsraeume"
@@ -92,9 +93,17 @@ const BASE_FORM_V1_DATA_FIELDS: readonly FormV1DataFieldMeta[] = [
   },
   {
     id: "aktuellesDatum",
-    editorLabel: "Daten: Aktuelles Datum (Tracking wie Vers.-Nr.)",
+    editorLabel: "Daten: Aktuelles Datum Platz 1 (ohne Punkte, Tracking wie Vers.-Nr.)",
     kind: "trackedText",
-    sampleText: "07.04.2026",
+    sampleText: "07042026",
+    defaultFontSizePt: 10,
+    defaultTrackingPt: 10.85,
+  },
+  {
+    id: "aktuellesDatum2",
+    editorLabel: "Daten: Aktuelles Datum Platz 2 (gleicher Wert wie Platz 1)",
+    kind: "trackedText",
+    sampleText: "07042026",
     defaultFontSizePt: 10,
     defaultTrackingPt: 10.85,
   },

@@ -129,6 +129,13 @@ function resolveAktuellesDatumDe(data: FormV1FillInput): string {
   return formatHeuteDeBerlin();
 }
 
+/** Aus `DD.MM.YYYY` bzw. manueller Eingabe → `DDMMYYYY` für getrackte Kästchenfelder. */
+function resolveAktuellesDatumOhnePunkte(data: FormV1FillInput): string {
+  const de = resolveAktuellesDatumDe(data);
+  const digits = de.replace(/\D/g, "");
+  return sanitizeFormText(digits.slice(0, 8), 8);
+}
+
 /** `YYYY-MM-DD` → `DD.MM.YYYY` (nur falls noch woanders gebraucht). */
 export function formatGeburtsdatumDe(iso: string): string {
   const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso.trim());
@@ -168,6 +175,7 @@ const DRAW_ORDER_BASE: FormV1DataFieldId[] = [
   "versichertennummer",
   "krankenkasse",
   "aktuellesDatum",
+  "aktuellesDatum2",
   "kontaktTelefonisch",
   "kontaktVideocall",
   "kontaktGeschaeftsraeume",
@@ -333,8 +341,9 @@ export async function fillFormV1Pdf(
         });
         continue;
       }
-      if (fieldId === "aktuellesDatum") {
-        const dText = resolveAktuellesDatumDe(data);
+      if (fieldId === "aktuellesDatum" || fieldId === "aktuellesDatum2") {
+        const dText = resolveAktuellesDatumOhnePunkte(data);
+        if (!dText) continue;
         const tr = placement.trackingPt ?? meta.defaultTrackingPt ?? FORM_V1_VERS_TRACKING_PT;
         drawTextWithTracking(page, dText, {
           x: placement.x,

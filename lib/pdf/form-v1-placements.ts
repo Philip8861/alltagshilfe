@@ -104,6 +104,15 @@ export const FORM_V1_PLACEMENTS: Record<FormV1DataFieldId, FormV1FieldPlacement>
   },
   aktuellesDatum: {
     kind: "text",
+    pageIndex: 1,
+    x: 81.6,
+    y: 302.6,
+    fontSizePt: 10,
+    trackingPt: 10.85,
+  },
+  /** Zweites identisches „heutiges“ Datum — Koordinate im PDF-Editor anpassen, falls nötig. */
+  aktuellesDatum2: {
+    kind: "text",
     pageIndex: 0,
     x: 400,
     y: 730,
@@ -176,7 +185,7 @@ export const FORM_V1_PLACEMENTS: Record<FormV1DataFieldId, FormV1FieldPlacement>
   unterschriftMaxMustermann: {
     kind: "signatureGraphic",
     pageIndex: 1,
-    x: 350.25,
+    x: 348.49,
     y: 307.9,
     scale: 1,
     rotateDeg: -7,
