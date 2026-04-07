@@ -3,9 +3,11 @@ import { interGlyphTrackingForStretch } from "@/lib/pdf/compute-box-tracking";
 import { drawTextWithTracking } from "@/lib/pdf/draw-text-with-tracking";
 import {
   FORM_V1_FONT_SIZE_PT,
+  FORM_V1_GEBURT_SHIFT_LEFT_RATIO,
   FORM_V1_GEBURT_WIDTH_STRETCH,
   FORM_V1_LAYOUT,
   FORM_V1_TRACKING_BASELINE_PT,
+  FORM_V1_VERS_SHIFT_LEFT_RATIO,
   FORM_V1_VERS_WIDTH_STRETCH,
   formV1AddressMaxWidthPt,
 } from "@/lib/pdf/form-v1-layout";
@@ -132,6 +134,9 @@ export async function fillFormV1Pdf(
     color: black,
   });
 
+  const birthX = pBirth.x - pageWidth * FORM_V1_GEBURT_SHIFT_LEFT_RATIO;
+  const versX = pVers.x - pageWidth * FORM_V1_VERS_SHIFT_LEFT_RATIO;
+
   const birthText = sanitizeFormText(formatGeburtsdatumOhnePunkte(data.geburtsdatumIso), 8);
   const trackingGeburt = interGlyphTrackingForStretch(
     font,
@@ -141,7 +146,7 @@ export async function fillFormV1Pdf(
     FORM_V1_GEBURT_WIDTH_STRETCH,
   );
   drawTextWithTracking(pageBirth, birthText, {
-    x: pBirth.x,
+    x: birthX,
     y: pBirth.y,
     size,
     font,
@@ -158,7 +163,7 @@ export async function fillFormV1Pdf(
     FORM_V1_VERS_WIDTH_STRETCH,
   );
   drawTextWithTracking(pageVers, versText, {
-    x: pVers.x,
+    x: versX,
     y: pVers.y,
     size,
     font,
