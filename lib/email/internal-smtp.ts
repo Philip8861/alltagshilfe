@@ -86,6 +86,15 @@ export async function sendInternalMail(
   const conn = parseSmtpConnection();
   const to = resolveRecipientsForKind(input.kind);
   if (!conn || to.length === 0) {
+    if (!conn) {
+      console.warn(
+        "[internal-mail] SMTP unvollständig: SMTP_HOST, SMTP_USER und SMTP_PASS müssen in Production gesetzt sein.",
+      );
+    } else {
+      console.warn(
+        `[internal-mail] Kein Empfänger für "${input.kind}": NOTIFICATION_TO_CONTACT / _KARRIERE / _PFLEGEBOX oder NOTIFICATION_TO setzen.`,
+      );
+    }
     return { ok: false, code: "smtp_not_configured" };
   }
 
@@ -98,7 +107,9 @@ export async function sendInternalMail(
       port: conn.port,
       secure: conn.secure,
       auth: conn.auth,
-      connectionTimeout: 12_000,
+      connectionTimeout: 20_000,
+      greetingTimeout: 20_000,
+      socketTimeout: 25_000,
       ...(conn.port === 587 && !conn.secure ? { requireTLS: true } : {}),
     });
 
@@ -112,7 +123,7 @@ export async function sendInternalMail(
     return { ok: true };
   } catch (e) {
     const msg = e instanceof Error ? e.message : "unknown";
-    console.error("[internal-mail] Versand fehlgeschlagen:", msg);
+    console.error(`[internal-mail] Versand fehlgeschlagen (kind=${input.kind}):`, msg);
     return { ok: false, code: "send_failed" };
   }
 }
