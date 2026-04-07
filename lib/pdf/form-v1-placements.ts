@@ -1,5 +1,4 @@
-import type { FormV1DataFieldId, FormV1KatalogFieldId } from "@/lib/pdf/form-v1-data-fields";
-import { KONFIGURATOR_CATALOG_IDS } from "@/lib/pdf/konfigurator-catalog";
+import type { FormV1DataFieldId } from "@/lib/pdf/form-v1-data-fields";
 
 /** Text / Hinweistext: Baseline (pdf-lib), unten links. */
 export type FormV1TextPlacement = {
@@ -62,22 +61,6 @@ export type FormV1FieldPlacement =
   | FormV1SignatureLinePlacement
   | FormV1SignatureGraphicPlacement;
 
-function katalogTextPlacement(index: number): FormV1TextPlacement {
-  const col = index % 2;
-  const row = Math.floor(index / 2);
-  return {
-    kind: "text",
-    pageIndex: 0,
-    x: col === 0 ? 48 : 318,
-    y: 402 - row * 16,
-    fontSizePt: 9,
-  };
-}
-
-const KATALOG_PLACEMENTS = Object.fromEntries(
-  KONFIGURATOR_CATALOG_IDS.map((id, i) => [`katalog_${id}`, katalogTextPlacement(i)]),
-) as Record<FormV1KatalogFieldId, FormV1TextPlacement>;
-
 /**
  * Koordinaten aller befüllbaren Datenfelder — hier anpassen oder JSON aus dem Admin-Editor übernehmen.
  */
@@ -85,8 +68,8 @@ export const FORM_V1_PLACEMENTS: Record<FormV1DataFieldId, FormV1FieldPlacement>
   vornameNachname: {
     kind: "text",
     pageIndex: 0,
-    x: 69.65,
-    y: 674.5,
+    x: 70.4,
+    y: 703.1,
     fontSizePt: 11,
   },
   strassePlzOrt: {
@@ -115,7 +98,7 @@ export const FORM_V1_PLACEMENTS: Record<FormV1DataFieldId, FormV1FieldPlacement>
   krankenkasse: {
     kind: "text",
     pageIndex: 0,
-    x: 375.09,
+    x: 379.99,
     y: 661.69,
     fontSizePt: 11,
   },
@@ -205,5 +188,88 @@ export const FORM_V1_PLACEMENTS: Record<FormV1DataFieldId, FormV1FieldPlacement>
     x2: 420,
     y: 102,
   },
-  ...KATALOG_PLACEMENTS,
+  katalog_9102: {
+    kind: "text",
+    pageIndex: 0,
+    x: 426.91,
+    y: 270.44,
+    fontSizePt: 9.3,
+  },
+  katalog_9109: {
+    kind: "text",
+    pageIndex: 0,
+    x: 426.81,
+    y: 445.1,
+    fontSizePt: 9,
+  },
+  katalog_9111: {
+    kind: "text",
+    pageIndex: 0,
+    x: 426.81,
+    y: 229.6,
+    fontSizePt: 9,
+  },
+  katalog_9112: {
+    kind: "text",
+    pageIndex: 0,
+    x: 318,
+    y: 386,
+    fontSizePt: 9,
+  },
+  katalog_9104: {
+    kind: "text",
+    pageIndex: 0,
+    x: 48,
+    y: 370,
+    fontSizePt: 9,
+  },
+  katalog_9113: {
+    kind: "text",
+    pageIndex: 0,
+    x: 318,
+    y: 370,
+    fontSizePt: 9,
+  },
+  katalog_9101: {
+    kind: "text",
+    pageIndex: 0,
+    x: 48,
+    y: 354,
+    fontSizePt: 9,
+  },
+  katalog_9110: {
+    kind: "text",
+    pageIndex: 0,
+    x: 318,
+    y: 354,
+    fontSizePt: 9,
+  },
+  katalog_9103: {
+    kind: "text",
+    pageIndex: 0,
+    x: 48,
+    y: 338,
+    fontSizePt: 9,
+  },
+  katalog_9107: {
+    kind: "text",
+    pageIndex: 0,
+    x: 318,
+    y: 338,
+    fontSizePt: 9,
+  },
+  katalog_9105: {
+    kind: "text",
+    pageIndex: 0,
+    x: 48,
+    y: 322,
+    fontSizePt: 9,
+  },
+  katalog_9108: {
+    kind: "text",
+    pageIndex: 0,
+    x: 318,
+    y: 322,
+    fontSizePt: 9,
+  },
 };
