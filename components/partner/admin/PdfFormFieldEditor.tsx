@@ -15,13 +15,16 @@ const DISPLAY_SCALE = 1.5;
 const PRESETS = [
   { id: "geburtsdatum", label: "Geburtsdatum (ohne Punkte)", text: "15031990", tracked: true },
   { id: "versichertennummer", label: "Versichertennummer", text: "123456789012", tracked: true },
+  { id: "vorname_nachname", label: "Vorname Nachname", text: "Max Mustermann", tracked: false },
   {
-    id: "person_adresse",
-    label: "Vorname, Nachname, Adresse (eine Zeile)",
-    text: "Max Mustermann Musterstraße 12 a 87700 Memmingen",
+    id: "strasse_ort",
+    label: "Straße Hausnr. PLZ Ort",
+    text: "Musterstraße 12 a 87700 Memmingen",
     tracked: false,
   },
   { id: "krankenkasse", label: "Krankenkasse", text: "AOK Bayern", tracked: false },
+  { id: "checkbox_label", label: "Checkbox-Beschriftung (Text)", text: "Telefonisch", tracked: false },
+  { id: "unterschrift", label: "Unterschrift (Hinweis)", text: "Unterschrift", tracked: false },
 ] as const;
 
 export type PdfFieldDraft = {
