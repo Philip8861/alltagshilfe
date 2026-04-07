@@ -152,6 +152,12 @@ export function PdfCoordinatePicker() {
         >
           ← Zurück zum Admin
         </Link>
+        <Link
+          href="/partner/admin/pdf-layout-lab"
+          className="text-sm font-medium text-[#0F4F68] underline-offset-2 hover:underline"
+        >
+          Layout-Labor (Vorschau + Tracking)
+        </Link>
       </div>
 
       <div className="rounded-xl border border-dashed border-[#0F4F68]/30 bg-[#F2F9FA]/70 p-4 sm:p-5">

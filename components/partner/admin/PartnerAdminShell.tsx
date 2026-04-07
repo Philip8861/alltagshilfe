@@ -69,6 +69,16 @@ export function PartnerAdminShell({ children }: Props) {
             </svg>
           </Link>
           <Link
+            href="/partner/admin/pdf-layout-lab"
+            className={iconButtonClass(pathname === "/partner/admin/pdf-layout-lab")}
+            title="PDF-Layout-Labor"
+          >
+            <span className="sr-only">PDF-Layout-Labor</span>
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
+              <path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M2 14h4M10 10h4M18 16h4" strokeLinecap="round" />
+            </svg>
+          </Link>
+          <Link
             href="/partner/login"
             className={iconButtonClass(false)}
             title="Partner-Login"
