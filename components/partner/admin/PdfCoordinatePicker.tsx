@@ -154,6 +154,25 @@ export function PdfCoordinatePicker() {
         </Link>
       </div>
 
+      <div className="rounded-xl border border-dashed border-[#0F4F68]/30 bg-[#F2F9FA]/70 p-4 sm:p-5">
+        <h2 className="text-sm font-semibold text-neutral-900">Formular-Vorschau (Testdaten)</h2>
+        <p className="mt-1 text-sm text-neutral-600">
+          PDF mit <strong>Mustermann, Max</strong> und Geburtsdatum <strong>15.03.1990</strong> — ohne
+          Konfigurator. Vorlage ablegen als{" "}
+          <code className="rounded bg-white px-1 py-0.5 text-xs ring-1 ring-neutral-200">
+            private/forms/form-v1-blank.pdf
+          </code>{" "}
+          oder Pfad in <code className="rounded bg-white px-1 py-0.5 text-xs ring-1 ring-neutral-200">FORM_V1_PDF_TEMPLATE_PATH</code>{" "}
+          setzen.
+        </p>
+        <a
+          href="/partner/admin/pdf-form-preview"
+          className="mt-3 inline-flex rounded-lg bg-[#0F4F68] px-4 py-2 text-sm font-medium text-white transition hover:bg-[#0c4256] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68] focus-visible:ring-offset-2"
+        >
+          PDF herunterladen (Max Mustermann)
+        </a>
+      </div>
+
       <div className="rounded-xl border border-[#0F4F68]/15 bg-white p-4 shadow-sm sm:p-6">
         <h1 className="text-lg font-semibold text-neutral-900">PDF-Koordinaten (pdf-lib)</h1>
         <p className="mt-2 text-sm text-neutral-600">
