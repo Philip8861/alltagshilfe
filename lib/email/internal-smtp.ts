@@ -43,7 +43,7 @@ function parseSmtpConnection(): SmtpConnectionConfig | null {
   return { host, port, secure, auth: { user, pass }, from };
 }
 
-function parseAddressList(raw: string | undefined): string[] {
+export function parseNotificationEmailList(raw: string | undefined): string[] {
   if (!raw?.trim()) return [];
   return raw
     .split(",")
@@ -53,24 +53,27 @@ function parseAddressList(raw: string | undefined): string[] {
 
 /** Empfänger für diesen Kanal: zuerst NOTIFICATION_TO_* , sonst NOTIFICATION_TO. */
 export function resolveRecipientsForKind(kind: InternalNotificationKind): string[] {
-  const specific = parseAddressList(process.env[KIND_TO_ENV[kind]]);
+  const specific = parseNotificationEmailList(process.env[KIND_TO_ENV[kind]]);
   if (specific.length > 0) return specific;
-  return parseAddressList(process.env.NOTIFICATION_TO);
+  return parseNotificationEmailList(process.env.NOTIFICATION_TO);
 }
 
 export function isInternalSmtpConfigured(): boolean {
   const conn = parseSmtpConnection();
   if (!conn) return false;
   const hasAnyRecipient =
-    parseAddressList(process.env.NOTIFICATION_TO).length > 0 ||
-    parseAddressList(process.env.NOTIFICATION_TO_CONTACT).length > 0 ||
-    parseAddressList(process.env.NOTIFICATION_TO_KARRIERE).length > 0 ||
-    parseAddressList(process.env.NOTIFICATION_TO_PFLEGEBOX).length > 0;
+    parseNotificationEmailList(process.env.NOTIFICATION_TO).length > 0 ||
+    parseNotificationEmailList(process.env.NOTIFICATION_TO_CONTACT).length > 0 ||
+    parseNotificationEmailList(process.env.NOTIFICATION_TO_KARRIERE).length > 0 ||
+    parseNotificationEmailList(process.env.NOTIFICATION_TO_PFLEGEBOX).length > 0 ||
+    parseNotificationEmailList(process.env.NOTIFICATION_TO_CONTACT_TOPIC_KARRIERE).length > 0;
   return hasAnyRecipient;
 }
 
 export type SendInternalMailInput = {
   kind: InternalNotificationKind;
+  /** Wenn gesetzt (nicht leer), überschreibt die Empfängerliste für diesen Versand. */
+  toOverride?: string[];
   subject: string;
   /** Klartext-Fallback (Barrierefreiheit, ältere Clients). */
   text: string;
@@ -87,7 +90,15 @@ export async function sendInternalMail(
   input: SendInternalMailInput,
 ): Promise<{ ok: true } | { ok: false; code: "smtp_not_configured" | "send_failed" }> {
   const conn = parseSmtpConnection();
-  const to = resolveRecipientsForKind(input.kind);
+  /**
+   * toOverride: nur setzen, wenn die Aufrufer:in die Liste explizit kennt (z. B. Kontakt + Thema).
+   * Leeres Array nicht als „fehlt“ behandeln — sonst würde fälschlich auf den Kanal-Fallback
+   * umgeschaltet und z. B. Karriere-Routing übersprungen.
+   */
+  const to =
+    input.toOverride !== undefined
+      ? input.toOverride
+      : resolveRecipientsForKind(input.kind);
   if (!conn || to.length === 0) {
     if (!conn) {
       console.warn(

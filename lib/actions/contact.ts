@@ -8,7 +8,11 @@ import {
   buildBrandedNotificationHtml,
   type EmailDetailRow,
 } from "@/lib/email/branded-html";
-import { sendInternalMail } from "@/lib/email/internal-smtp";
+import {
+  parseNotificationEmailList,
+  resolveRecipientsForKind,
+  sendInternalMail,
+} from "@/lib/email/internal-smtp";
 
 export type ContactResult = { success: boolean; error?: string };
 
@@ -80,8 +84,25 @@ export async function submitContact(formData: FormData): Promise<ContactResult> 
     detailText: data.message,
   });
 
+  /** Thema „Karriere“: eigene Empfänger — explizit hier, damit es nicht mit dem Standard-Kontakt vermischt wird. */
+  const isKarriereTopic =
+    data.topic === "Karriere" || data.topic.trim().toLowerCase() === "karriere";
+
+  const karriereContactRecipients = isKarriereTopic
+    ? (() => {
+        const onlyContact = parseNotificationEmailList(
+          process.env.NOTIFICATION_TO_CONTACT_TOPIC_KARRIERE,
+        );
+        if (onlyContact.length > 0) return onlyContact;
+        const sameAsKarrierePage = parseNotificationEmailList(process.env.NOTIFICATION_TO_KARRIERE);
+        if (sameAsKarrierePage.length > 0) return sameAsKarrierePage;
+        return resolveRecipientsForKind("contact");
+      })()
+    : undefined;
+
   const mailed = await sendInternalMail({
     kind: "contact",
+    ...(karriereContactRecipients !== undefined ? { toOverride: karriereContactRecipients } : {}),
     subject: `Kontakt: ${data.topic}`,
     text,
     html,
@@ -90,7 +111,7 @@ export async function submitContact(formData: FormData): Promise<ContactResult> 
   if (!mailed.ok) {
     if (mailed.code === "smtp_not_configured") {
       console.warn(
-        "[contact] SMTP oder NOTIFICATION_TO_CONTACT / NOTIFICATION_TO fehlt – keine E-Mail versendet",
+        "[contact] SMTP oder Empfänger fehlt (NOTIFICATION_TO_CONTACT / NOTIFICATION_TO; Thema Karriere: NOTIFICATION_TO_CONTACT_TOPIC_KARRIERE oder NOTIFICATION_TO_KARRIERE) – keine E-Mail versendet",
       );
     }
   }
