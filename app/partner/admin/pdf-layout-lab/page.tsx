@@ -1,6 +1,6 @@
 import { unstable_noStore as noStore } from "next/cache";
 import type { Metadata } from "next";
-import { PdfLayoutLab } from "@/components/partner/admin/PdfLayoutLab";
+import { redirect } from "next/navigation";
 import { requireSystemAdmin } from "@/lib/partner/system-admin-guard";
 
 export const metadata: Metadata = {
@@ -8,8 +8,9 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
-export default async function PdfLayoutLabPage() {
+/** Frühere URL — alles in einem Editor unter /partner/admin/pdf-coords */
+export default async function PdfLayoutLabRedirectPage() {
   noStore();
   await requireSystemAdmin();
-  return <PdfLayoutLab />;
+  redirect("/partner/admin/pdf-coords");
 }
