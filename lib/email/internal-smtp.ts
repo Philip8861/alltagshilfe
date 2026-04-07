@@ -72,7 +72,10 @@ export function isInternalSmtpConfigured(): boolean {
 export type SendInternalMailInput = {
   kind: InternalNotificationKind;
   subject: string;
+  /** Klartext-Fallback (Barrierefreiheit, ältere Clients). */
   text: string;
+  /** Gestaltetes HTML (Markenlayout); optional, sonst nur text. */
+  html?: string;
   replyTo?: string;
 };
 
@@ -119,6 +122,7 @@ export async function sendInternalMail(
       ...(replyTo ? { replyTo } : {}),
       subject,
       text: input.text,
+      ...(input.html ? { html: input.html } : {}),
     });
     return { ok: true };
   } catch (e) {

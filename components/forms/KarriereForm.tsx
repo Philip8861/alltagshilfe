@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, type FormEvent } from "react";
 import Link from "next/link";
 import { submitKarriere } from "@/lib/actions/karriere";
 import { KARRIERE_STELLENANGEBOTE } from "@/lib/validations/karriere";
@@ -9,13 +9,22 @@ export function KarriereForm() {
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
 
-  async function handleSubmit(formData: FormData) {
+  /** Siehe ContactForm: verhindert leeres Formular nach Validierungsfehler (React 19). */
+  async function handleSubmit(e: FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    const form = e.currentTarget;
     setError(null);
     setPending(true);
     try {
+      const formData = new FormData(form);
       const result = await submitKarriere(formData);
       if (!result.success && result.error) {
         setError(result.error);
+        if (result.error.includes("AGB")) {
+          const el = document.getElementById("karriere-agbs");
+          el?.scrollIntoView({ behavior: "smooth", block: "center" });
+          window.requestAnimationFrame(() => el?.focus());
+        }
       }
     } catch {
       setError("Ein Fehler ist aufgetreten. Bitte versuchen Sie es später erneut.");
@@ -26,7 +35,7 @@ export function KarriereForm() {
 
   return (
     <form
-      action={handleSubmit}
+      onSubmit={handleSubmit}
       className="mt-6 w-full max-w-full space-y-4 border-t border-[#0F4F68]/15 pt-6 text-left"
       noValidate
       aria-label="Bewerbungsformular Karriere"

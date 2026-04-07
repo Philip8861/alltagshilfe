@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, type FormEvent } from "react";
 import Link from "next/link";
 import { submitContact } from "@/lib/actions/contact";
 import { CONTACT_TOPICS } from "@/lib/validations/contact";
@@ -9,13 +9,25 @@ export function ContactForm() {
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
 
-  async function handleSubmit(formData: FormData) {
+  /**
+   * onSubmit + preventDefault statt action={…}: React 19 setzt Formulare nach erfülltem
+   * Action-Promise zurück — auch bei { success: false }, wodurch alle Felder leer wurden.
+   */
+  async function handleSubmit(e: FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    const form = e.currentTarget;
     setError(null);
     setPending(true);
     try {
+      const formData = new FormData(form);
       const result = await submitContact(formData);
       if (!result.success && result.error) {
         setError(result.error);
+        if (result.error.includes("Datenschutz")) {
+          const el = document.getElementById("contact-datenschutz");
+          el?.scrollIntoView({ behavior: "smooth", block: "center" });
+          window.requestAnimationFrame(() => el?.focus());
+        }
       }
     } catch {
       setError("Ein Fehler ist aufgetreten. Bitte versuchen Sie es später erneut.");
@@ -26,7 +38,7 @@ export function ContactForm() {
 
   return (
     <form
-      action={handleSubmit}
+      onSubmit={handleSubmit}
       className="space-y-6"
       noValidate
       aria-label="Kontaktformular"

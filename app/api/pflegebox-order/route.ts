@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { headers } from "next/headers";
+import { buildBrandedNotificationHtml } from "@/lib/email/branded-html";
 import { sendInternalMail } from "@/lib/email/internal-smtp";
 import { rateLimitPflegeboxOrder } from "@/lib/rate-limit";
 import { pflegeboxOrderBodySchema, type PflegeboxOrderBody } from "@/lib/validations/pflegebox-order";
@@ -188,20 +189,35 @@ export async function POST(request: Request) {
     }
   }
 
+  const tipNotiz = buildTipNotiz(parsed.data.cartLines, parsed.data.totalBudgetUsed, c);
   const mailBody = [
     "Neue Pflegebox-Bestellung (Konfigurator)",
     `Referenz: ${externalRef}`,
     orderId ? `Interne ID: ${orderId}` : null,
     "",
-    buildTipNotiz(parsed.data.cartLines, parsed.data.totalBudgetUsed, c),
+    tipNotiz,
   ]
     .filter((line): line is string => line !== null)
     .join("\n");
+
+  const pflegeboxRows = [
+    { label: "Referenz", value: externalRef },
+    ...(orderId ? [{ label: "Interne ID", value: orderId }] : []),
+  ];
+
+  const mailHtml = buildBrandedNotificationHtml({
+    kindBadge: "Pflegebox",
+    headline: "Neue Pflegebox-Bestellung",
+    rows: pflegeboxRows,
+    detailTitle: "Konfiguration & Kundendaten",
+    detailText: tipNotiz,
+  });
 
   const mailResult = await sendInternalMail({
     kind: "pflegebox",
     subject: `Pflegebox-Bestellung ${externalRef}`,
     text: mailBody,
+    html: mailHtml,
     replyTo: c.email?.trim() || undefined,
   });
   if (!mailResult.ok && mailResult.code === "smtp_not_configured") {

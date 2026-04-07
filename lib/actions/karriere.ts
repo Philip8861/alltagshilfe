@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { karriereSchema, type KarriereFormData } from "@/lib/validations/karriere";
 import { rateLimit } from "@/lib/rate-limit";
 import { getClientIp } from "@/lib/security";
+import { buildBrandedNotificationHtml } from "@/lib/email/branded-html";
 import { sendInternalMail } from "@/lib/email/internal-smtp";
 
 export type KarriereResult = { success: boolean; error?: string };
@@ -54,10 +55,22 @@ export async function submitKarriere(formData: FormData): Promise<KarriereResult
     `Stellenangebot: ${data.stellenangebot}`,
   ].join("\n");
 
+  const html = buildBrandedNotificationHtml({
+    kindBadge: "Karriere",
+    headline: "Neue Karriere-Anfrage",
+    rows: [
+      { label: "Name", value: `${data.vorname} ${data.nachname}` },
+      { label: "E-Mail", value: data.email },
+      { label: "Telefon", value: data.phone },
+      { label: "Stellenangebot", value: data.stellenangebot },
+    ],
+  });
+
   const mailed = await sendInternalMail({
     kind: "karriere",
     subject: `Karriere: ${data.stellenangebot} – ${data.nachname}, ${data.vorname}`,
     text,
+    html,
     replyTo: data.email,
   });
   if (!mailed.ok && mailed.code === "smtp_not_configured") {

@@ -4,6 +4,10 @@ import { redirect } from "next/navigation";
 import { contactSchema, type ContactFormData } from "@/lib/validations/contact";
 import { rateLimit } from "@/lib/rate-limit";
 import { getClientIp } from "@/lib/security";
+import {
+  buildBrandedNotificationHtml,
+  type EmailDetailRow,
+} from "@/lib/email/branded-html";
 import { sendInternalMail } from "@/lib/email/internal-smtp";
 
 export type ContactResult = { success: boolean; error?: string };
@@ -61,10 +65,26 @@ export async function submitContact(formData: FormData): Promise<ContactResult> 
     .filter((line): line is string => line !== null)
     .join("\n");
 
+  const rows: EmailDetailRow[] = [
+    { label: "Name", value: `${data.vorname} ${data.nachname}` },
+    { label: "E-Mail", value: data.email },
+  ];
+  if (data.phone) rows.push({ label: "Telefon", value: data.phone });
+  rows.push({ label: "Thema", value: data.topic });
+
+  const html = buildBrandedNotificationHtml({
+    kindBadge: "Kontakt",
+    headline: "Neue Kontaktanfrage",
+    rows,
+    detailTitle: "Nachricht",
+    detailText: data.message,
+  });
+
   const mailed = await sendInternalMail({
     kind: "contact",
     subject: `Kontakt: ${data.topic}`,
     text,
+    html,
     replyTo: data.email,
   });
   if (!mailed.ok) {
