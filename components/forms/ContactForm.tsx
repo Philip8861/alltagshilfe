@@ -4,10 +4,12 @@ import { useState, type FormEvent } from "react";
 import Link from "next/link";
 import { submitContact } from "@/lib/actions/contact";
 import { CONTACT_TOPICS } from "@/lib/validations/contact";
+import { cn } from "@/lib/utils";
 
 export function ContactForm() {
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
+  const isDatenschutzError = Boolean(error?.includes("Datenschutz"));
 
   /**
    * onSubmit + preventDefault statt action={…}: React 19 setzt Formulare nach erfülltem
@@ -43,7 +45,7 @@ export function ContactForm() {
       noValidate
       aria-label="Kontaktformular"
     >
-      {error && (
+      {error && !isDatenschutzError && (
         <div
           role="alert"
           className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800"
@@ -167,30 +169,61 @@ export function ContactForm() {
         />
       </div>
 
-      <div className="flex items-start gap-3">
-        <input
-          id="contact-datenschutz"
-          type="checkbox"
-          name="datenschutz"
-          required
-          disabled={pending}
-          value="on"
-          className="mt-1 h-4 w-4 rounded border-neutral-300 text-[#0F4F68] focus:ring-[#0F4F68] disabled:opacity-50"
-          aria-describedby="contact-datenschutz-hint"
-          aria-required="true"
-        />
-        <label htmlFor="contact-datenschutz" className="text-sm text-neutral-700">
-          <span id="contact-datenschutz-hint">
-            Ich habe die{" "}
-            <Link
-              href="/datenschutz"
-              className="font-medium text-[#0F4F68] underline hover:no-underline"
-            >
-              Datenschutzerklärung
-            </Link>{" "}
-            gelesen und stimme der Verarbeitung meiner Daten zum Zweck der Kontaktaufnahme zu. *
-          </span>
-        </label>
+      <div
+        className={cn(
+          "rounded-xl p-4 transition-colors",
+          isDatenschutzError
+            ? "border-2 border-red-500 bg-red-50 shadow-[0_0_0_1px_rgba(239,68,68,0.35)]"
+            : "border-2 border-transparent",
+        )}
+      >
+        {isDatenschutzError && (
+          <p
+            id="contact-datenschutz-error"
+            role="alert"
+            className="mb-3 text-sm font-semibold text-red-800"
+          >
+            {error}
+          </p>
+        )}
+        <div className="flex items-start gap-3">
+          <input
+            id="contact-datenschutz"
+            type="checkbox"
+            name="datenschutz"
+            required
+            disabled={pending}
+            value="on"
+            onChange={() => {
+              setError((prev) => (prev?.includes("Datenschutz") ? null : prev));
+            }}
+            className={cn(
+              "mt-1 h-4 w-4 rounded text-[#0F4F68] focus:ring-[#0F4F68] disabled:opacity-50",
+              isDatenschutzError
+                ? "border-2 border-red-500 ring-2 ring-red-200"
+                : "border-neutral-300",
+            )}
+            aria-describedby={
+              isDatenschutzError
+                ? "contact-datenschutz-hint contact-datenschutz-error"
+                : "contact-datenschutz-hint"
+            }
+            aria-invalid={isDatenschutzError}
+            aria-required="true"
+          />
+          <label htmlFor="contact-datenschutz" className="text-sm text-neutral-700">
+            <span id="contact-datenschutz-hint">
+              Ich habe die{" "}
+              <Link
+                href="/datenschutz"
+                className="font-medium text-[#0F4F68] underline hover:no-underline"
+              >
+                Datenschutzerklärung
+              </Link>{" "}
+              gelesen und stimme der Verarbeitung meiner Daten zum Zweck der Kontaktaufnahme zu. *
+            </span>
+          </label>
+        </div>
       </div>
 
       <div>
