@@ -22,7 +22,12 @@ import {
   type PdfFormV1FieldDraft,
 } from "@/lib/pdf/form-v1-editor-draft";
 
-const DISPLAY_SCALE = 1.5;
+/** Basis-Skalierung für pdf.js; tatsächliche Größe = Basis × (Vorschau-% / 100). */
+const PDF_RENDER_BASE_SCALE = 1.5;
+const PREVIEW_PERCENT_MIN = 35;
+const PREVIEW_PERCENT_MAX = 100;
+const FIELD_LIST_HEIGHT_MIN = 180;
+const FIELD_LIST_HEIGHT_MAX = 900;
 
 function round2(n: number): number {
   return Math.round(n * 100) / 100;
@@ -53,6 +58,15 @@ export function PdfFormFieldEditor() {
     FORM_V1_DATA_FIELDS[0]!.id,
   );
   const [importText, setImportText] = useState("");
+  /** Vorschau-Größe in % der Basisskalierung (kleiner = mehr Rand, nichts abgeschnitten). */
+  const [previewPercent, setPreviewPercent] = useState(62);
+  /** Max. Höhe der scrollbaren Datenfeldliste (px). */
+  const [fieldListMaxHeightPx, setFieldListMaxHeightPx] = useState(420);
+
+  const renderScale = useMemo(
+    () => (PDF_RENDER_BASE_SCALE * previewPercent) / 100,
+    [previewPercent],
+  );
 
   const activeField = useMemo(
     () => fields.find((f) => f.id === activeId) ?? null,
@@ -244,7 +258,7 @@ export function PdfFormFieldEditor() {
       const vp1 = page.getViewport({ scale: 1 });
       setPageSizePt({ w: vp1.width, h: vp1.height });
 
-      const viewport = page.getViewport({ scale: DISPLAY_SCALE });
+      const viewport = page.getViewport({ scale: renderScale });
       const ctx = pdfCv.getContext("2d");
       if (!ctx) {
         setError("Canvas-Kontext nicht verfügbar.");
@@ -268,7 +282,7 @@ export function PdfFormFieldEditor() {
     } finally {
       if (gen === renderGenRef.current) setLoading(false);
     }
-  }, []);
+  }, [renderScale]);
 
   const onFile = async (file: File | null) => {
     setError(null);
@@ -308,7 +322,7 @@ export function PdfFormFieldEditor() {
   useEffect(() => {
     if (!pdfDocRef.current || numPages === 0) return;
     void renderPdfPage(pageIndex0);
-  }, [pageIndex0, numPages, renderPdfPage]);
+  }, [pageIndex0, numPages, renderScale, renderPdfPage]);
 
   useEffect(() => {
     if (!canvasSize || !pageSizePt) return;
@@ -401,7 +415,7 @@ export function PdfFormFieldEditor() {
   };
 
   return (
-    <div className="mx-auto max-w-6xl space-y-6 px-0">
+    <div className="mx-auto max-w-6xl space-y-6 px-3 sm:px-4">
       <div className="flex flex-wrap items-center gap-3">
         <Link
           href="/partner/admin"
@@ -449,32 +463,52 @@ export function PdfFormFieldEditor() {
         </div>
 
         {numPages > 0 && (
-          <div className="mt-6 grid gap-6 lg:grid-cols-[minmax(0,1fr)_min(22rem,100%)] lg:items-start">
-            <div className="lg:sticky lg:top-4">
-              <div className="mb-2 flex flex-wrap items-center gap-3">
-                <label className="text-sm font-medium text-neutral-800" htmlFor="editor-page">
-                  Seite
+          <div className="mt-6 grid min-w-0 gap-6 lg:grid-cols-[minmax(0,1fr)_min(22rem,100%)] lg:items-start">
+            <div className="min-w-0 lg:sticky lg:top-4">
+              <div className="mb-3 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-end">
+                <div className="flex flex-wrap items-center gap-3">
+                  <label className="text-sm font-medium text-neutral-800" htmlFor="editor-page">
+                    Seite
+                  </label>
+                  <select
+                    id="editor-page"
+                    className="rounded-lg border border-neutral-300 bg-white px-3 py-2 text-sm"
+                    value={pageIndex0}
+                    onChange={(e) => setPageIndex0(Number(e.target.value))}
+                  >
+                    {Array.from({ length: numPages }, (_, i) => (
+                      <option key={i} value={i}>
+                        {i + 1} / {numPages} (pageIndex {i})
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <label className="flex min-w-[12rem] flex-1 flex-col gap-1 text-sm text-neutral-800 sm:max-w-md">
+                  <span className="font-medium">
+                    PDF-Vorschau ({previewPercent}% · Skala {renderScale.toFixed(2)})
+                  </span>
+                  <input
+                    type="range"
+                    min={PREVIEW_PERCENT_MIN}
+                    max={PREVIEW_PERCENT_MAX}
+                    step={1}
+                    value={previewPercent}
+                    onChange={(e) => setPreviewPercent(Number(e.target.value))}
+                    className="w-full accent-[#0F4F68]"
+                    aria-label="Größe der PDF-Vorschau"
+                  />
+                  <span className="text-xs font-normal text-neutral-500">
+                    Kleiner = ganze Seite sichtbar; Klick-Koordinaten bleiben korrekt.
+                  </span>
                 </label>
-                <select
-                  id="editor-page"
-                  className="rounded-lg border border-neutral-300 bg-white px-3 py-2 text-sm"
-                  value={pageIndex0}
-                  onChange={(e) => setPageIndex0(Number(e.target.value))}
-                >
-                  {Array.from({ length: numPages }, (_, i) => (
-                    <option key={i} value={i}>
-                      {i + 1} / {numPages} (pageIndex {i})
-                    </option>
-                  ))}
-                </select>
               </div>
               <p className="mb-2 text-xs text-neutral-500">
                 Klick auf die Vorschau setzt die Position für das <strong>aktive</strong> Datenfeld (rotes Kreuz).
                 Bei der Unterschriftslinie: linker Anker und y-Position; x2 im Panel feinjustieren.
               </p>
-              <div className="overflow-x-auto rounded-lg border border-neutral-200 bg-neutral-100 p-2">
-                <div className="relative inline-block max-w-full leading-none">
-                  <canvas ref={pdfCanvasRef} className="block max-w-full bg-white" aria-hidden />
+              <div className="max-h-[min(90vh,1200px)] w-full overflow-auto rounded-lg border border-neutral-200 bg-neutral-100 p-2">
+                <div className="relative inline-block w-max min-w-0 max-w-none leading-none">
+                  <canvas ref={pdfCanvasRef} className="block bg-white" aria-hidden />
                   <canvas
                     ref={overlayRef}
                     onClick={onOverlayClick}
@@ -486,12 +520,25 @@ export function PdfFormFieldEditor() {
               {loading && <p className="mt-2 text-center text-sm text-neutral-500">Rendern…</p>}
             </div>
 
-            <div className="space-y-4 rounded-lg border border-neutral-200 bg-[#FAFBFC] p-4">
+            <div className="min-w-0 space-y-4 rounded-lg border border-neutral-200 bg-[#FAFBFC] p-4">
               <div>
                 <h2 className="text-sm font-semibold text-neutral-900">Datenfelder</h2>
                 <p className="mt-1 text-xs text-neutral-500">
                   Jedes Feld entspricht einem Eintrag in <code className="text-[11px]">FORM_V1_PLACEMENTS</code>.
                 </p>
+                <label className="mt-3 block text-sm text-neutral-800">
+                  <span className="font-medium">Höhe Datenfeldliste ({fieldListMaxHeightPx}px)</span>
+                  <input
+                    type="range"
+                    min={FIELD_LIST_HEIGHT_MIN}
+                    max={FIELD_LIST_HEIGHT_MAX}
+                    step={10}
+                    value={fieldListMaxHeightPx}
+                    onChange={(e) => setFieldListMaxHeightPx(Number(e.target.value))}
+                    className="mt-1 w-full accent-[#0F4F68]"
+                    aria-label="Höhe der Datenfeldliste"
+                  />
+                </label>
                 <div className="mt-2 flex flex-col gap-2 sm:flex-row sm:flex-wrap">
                   <select
                     className="min-w-0 flex-1 rounded-lg border border-neutral-300 bg-white px-2 py-2 text-sm"
@@ -527,7 +574,10 @@ export function PdfFormFieldEditor() {
                   Noch keine Felder — „Alle aus Repo laden“ oder einzelnes Datenfeld hinzufügen.
                 </p>
               ) : (
-                <ul className="max-h-72 space-y-1 overflow-y-auto rounded border border-neutral-200 bg-white p-2 text-sm">
+                <ul
+                  className="space-y-1 overflow-y-auto overflow-x-hidden rounded border border-neutral-200 bg-white p-2 text-sm"
+                  style={{ maxHeight: fieldListMaxHeightPx }}
+                >
                   {fields.map((f) => {
                     const meta = getFormV1DataFieldMeta(f.fieldId);
                     return (
@@ -538,7 +588,7 @@ export function PdfFormFieldEditor() {
                             setActiveId(f.id);
                             if (f.pageIndex0 !== pageIndex0) setPageIndex0(f.pageIndex0);
                           }}
-                          className={`min-w-0 flex-1 truncate rounded px-2 py-1.5 text-left ${
+                          className={`min-w-0 flex-1 rounded px-2 py-1.5 text-left break-words ${
                             f.id === activeId
                               ? "bg-[#0F4F68]/12 font-medium text-[#0F4F68]"
                               : "hover:bg-neutral-100"
