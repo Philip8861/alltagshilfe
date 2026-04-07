@@ -1,9 +1,12 @@
 import { PDFDocument, StandardFonts, rgb } from "pdf-lib";
+import { interGlyphTrackingForStretch } from "@/lib/pdf/compute-box-tracking";
 import { drawTextWithTracking } from "@/lib/pdf/draw-text-with-tracking";
 import {
   FORM_V1_FONT_SIZE_PT,
+  FORM_V1_GEBURT_WIDTH_STRETCH,
   FORM_V1_LAYOUT,
-  FORM_V1_WIDE_TRACKING_PT,
+  FORM_V1_TRACKING_BASELINE_PT,
+  FORM_V1_VERS_WIDTH_STRETCH,
 } from "@/lib/pdf/form-v1-layout";
 
 export type FormV1FillInput = {
@@ -62,7 +65,7 @@ export async function fillFormV1Pdf(
   const font = await doc.embedFont(StandardFonts.Helvetica);
   const size = FORM_V1_FONT_SIZE_PT;
   const black = rgb(0, 0, 0);
-  const wide = FORM_V1_WIDE_TRACKING_PT;
+  const baseline = FORM_V1_TRACKING_BASELINE_PT;
 
   const vor = sanitizeFormText(data.vorname, 80);
   const nach = sanitizeFormText(data.nachname, 80);
@@ -90,23 +93,37 @@ export async function fillFormV1Pdf(
   });
 
   const birthText = sanitizeFormText(formatGeburtsdatumDe(data.geburtsdatumIso), 32);
+  const trackingGeburt = interGlyphTrackingForStretch(
+    font,
+    birthText,
+    size,
+    baseline,
+    FORM_V1_GEBURT_WIDTH_STRETCH,
+  );
   drawTextWithTracking(pageBirth, birthText, {
     x: pBirth.x,
     y: pBirth.y,
     size,
     font,
     color: black,
-    trackingPt: wide,
+    trackingPt: trackingGeburt,
   });
 
   const versText = sanitizeVersichertennummer(data.versichertennummer, 24);
+  const trackingVers = interGlyphTrackingForStretch(
+    font,
+    versText,
+    size,
+    baseline,
+    FORM_V1_VERS_WIDTH_STRETCH,
+  );
   drawTextWithTracking(pageVers, versText, {
     x: pVers.x,
     y: pVers.y,
     size,
     font,
     color: black,
-    trackingPt: wide,
+    trackingPt: trackingVers,
   });
 
   return doc.save();
