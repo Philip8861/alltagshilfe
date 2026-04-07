@@ -28,6 +28,7 @@ export type FormV1DataFieldId =
   | "geburtsdatum"
   | "versichertennummer"
   | "krankenkasse"
+  | "aktuellesDatum"
   | "kontaktTelefonisch"
   | "kontaktVideocall"
   | "kontaktGeschaeftsraeume"
@@ -87,6 +88,13 @@ const BASE_FORM_V1_DATA_FIELDS: readonly FormV1DataFieldMeta[] = [
     editorLabel: "Daten: Krankenkasse",
     kind: "plainText",
     sampleText: "AOK Bayern",
+    defaultFontSizePt: 11,
+  },
+  {
+    id: "aktuellesDatum",
+    editorLabel: "Daten: Aktuelles Datum (Bestellabschluss, DD.MM.YYYY)",
+    kind: "plainText",
+    sampleText: "07.04.2026",
     defaultFontSizePt: 11,
   },
   {

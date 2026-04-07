@@ -119,6 +119,13 @@ export const FORM_V1_PLACEMENTS: Record<FormV1DataFieldId, FormV1FieldPlacement>
     y: 661.69,
     fontSizePt: 11,
   },
+  aktuellesDatum: {
+    kind: "text",
+    pageIndex: 0,
+    x: 400,
+    y: 730,
+    fontSizePt: 10,
+  },
   kontaktTelefonisch: {
     kind: "checkbox",
     pageIndex: 0,

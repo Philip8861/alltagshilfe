@@ -27,6 +27,11 @@ export type FormV1FillInput = {
   plz: string;
   ort: string;
   krankenkasse: string;
+  /**
+   * Bestell-/Abschlussdatum fürs PDF (lesbar, z. B. DD.MM.YYYY).
+   * Weglassen oder leer → beim PDF-Erzeugen: heutiges Datum (Europe/Berlin).
+   */
+  aktuellesDatumDe?: string;
   kontaktTelefonisch: boolean;
   kontaktVideocall: boolean;
   kontaktGeschaeftsraeume: boolean;
@@ -58,6 +63,7 @@ export const FORM_V1_PREVIEW_SAMPLE: FormV1FillInput = {
   plz: "87700",
   ort: "Memmingen",
   krankenkasse: "AOK Bayern",
+  aktuellesDatumDe: "07.04.2026",
   kontaktTelefonisch: true,
   kontaktVideocall: false,
   kontaktGeschaeftsraeume: false,
@@ -86,6 +92,22 @@ function sanitizeFormText(s: string, maxLen: number): string {
 
 function sanitizeVersichertennummer(s: string, maxLen: number): string {
   return sanitizeFormText(s.replace(/\s+/g, ""), maxLen);
+}
+
+/** Heutiges Datum in Europe/Berlin als `de-DE` Kurzdatum (für Bestell-PDF). */
+export function formatHeuteDeBerlin(date: Date = new Date()): string {
+  return date.toLocaleDateString("de-DE", {
+    timeZone: "Europe/Berlin",
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+  });
+}
+
+function resolveAktuellesDatumDe(data: FormV1FillInput): string {
+  const manual = data.aktuellesDatumDe?.trim();
+  if (manual) return sanitizeFormText(manual, 32);
+  return formatHeuteDeBerlin();
 }
 
 /** `YYYY-MM-DD` → `DD.MM.YYYY` (nur falls noch woanders gebraucht). */
@@ -126,6 +148,7 @@ const DRAW_ORDER_BASE: FormV1DataFieldId[] = [
   "geburtsdatum",
   "versichertennummer",
   "krankenkasse",
+  "aktuellesDatum",
   "kontaktTelefonisch",
   "kontaktVideocall",
   "kontaktGeschaeftsraeume",
@@ -287,6 +310,19 @@ export async function fillFormV1Pdf(
           font,
           color: black,
           maxWidth: maxW,
+          lineHeight: lh,
+        });
+        continue;
+      }
+      if (fieldId === "aktuellesDatum") {
+        const dText = resolveAktuellesDatumDe(data);
+        page.drawText(dText, {
+          x: placement.x,
+          y: placement.y,
+          size,
+          font,
+          color: black,
+          maxWidth: 120,
           lineHeight: lh,
         });
       }
