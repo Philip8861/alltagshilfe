@@ -61,11 +61,11 @@ Kopie von `.env.example` nach `.env` anlegen. Wichtig:
 2. In `app/landing/[slug]/page.tsx` in `generateStaticParams()` den neuen Slug ergänzen (z. B. `{ slug: "meine-seite" }`).
 3. Seite ist unter `/landing/meine-seite` erreichbar.
 
-## Kontaktformular
+## Kontaktformular & interne E-Mails
 
 - Validierung: Zod-Schema in `lib/validations/contact.ts`
 - Server Action: `lib/actions/contact.ts` (Honeypot, Rate-Limit, Redirect zur Danke-Seite)
-- E-Mail-Versand/CRM: In `submitContact()` nach dem Validierungsblock anbinden.
+- Benachrichtigung per SMTP: `lib/email/internal-smtp.ts` — optional getrennte Ziele: `NOTIFICATION_TO_CONTACT`, `NOTIFICATION_TO_KARRIERE`, `NOTIFICATION_TO_PFLEGEBOX`, sonst Fallback `NOTIFICATION_TO` (siehe `.env.example`).
 
 ## Konfigurator (Phase 2)
 

@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import Image from "next/image";
 import { StandortSuche } from "@/components/standorte/StandortSuche";
 import { StandortAnthrazitRule } from "@/components/standorte/StandortAnthrazitRule";
 import { KartenMitKoordinatenErfassen } from "@/components/standorte/KartenMitKoordinatenErfassen";
@@ -148,65 +147,6 @@ export default function StandortePage() {
         </div>
       </div>
 
-      {/* Trennlinie zwischen Karte/Standortsuche und Leistungs-Intro */}
-      <div
-        className="mx-auto mt-8 w-full px-4 sm:mt-10 sm:px-6 lg:px-8"
-        role="presentation"
-      >
-        <div
-          className="h-px w-full bg-gradient-to-r from-transparent via-[#0F4F68]/28 to-transparent"
-          aria-hidden
-        />
-      </div>
-
-      <section className="relative mt-10 overflow-hidden rounded-3xl border border-[#0F4F68]/10 bg-[#F2F9FA] p-6 sm:p-8" aria-label="Unsere Standorte stellen sich vor">
-        <svg
-          className="pointer-events-none absolute left-0 top-0 h-10 w-full -translate-y-[60%] sm:h-14"
-          viewBox="0 0 1200 120"
-          preserveAspectRatio="none"
-          fill="none"
-          aria-hidden
-        >
-          <path d="M0,120 C230,34 430,12 620,24 C830,38 1015,88 1200,120 L1200,120 L0,120 Z" fill="#F2F9FA" />
-        </svg>
-        <h2 className="text-3xl font-bold text-[#0F4F68] sm:text-4xl">Unsere Standorte stellen sich vor</h2>
-        <div className="mt-7 grid grid-cols-1 gap-5 md:grid-cols-2">
-          <article className="overflow-hidden rounded-2xl border border-[#0F4F68]/12 bg-white shadow-[0_10px_25px_rgba(15,79,104,0.12)]">
-            <Image src="/images/standort_gemeinsam.webp" alt="Platzhalterbild Standort Allgäu" width={1200} height={700} className="h-44 w-full object-cover" />
-            <div className="p-5">
-              <h3 className="text-xl font-bold text-[#0F4F68]">Standort Allgäu stellt sich vor</h3>
-              <p className="mt-2 text-sm text-neutral-600">Standortleitung: Name folgt</p>
-              <p className="mt-3 text-neutral-700 italic">&bdquo;Wir möchten Menschen in ihrer vertrauten Umgebung stärken und ihnen echte Sicherheit im Alltag geben.&ldquo;</p>
-            </div>
-          </article>
-          <article className="overflow-hidden rounded-2xl border border-[#0F4F68]/12 bg-white shadow-[0_10px_25px_rgba(15,79,104,0.12)]">
-            <Image src="/images/startseite_front.webp" alt="Platzhalterbild Standort Wangen" width={1200} height={700} className="h-44 w-full object-cover" unoptimized />
-            <div className="p-5">
-              <h3 className="text-xl font-bold text-[#0F4F68]">Standort Wangen stellt sich vor</h3>
-              <p className="mt-2 text-sm text-neutral-600">Standortleitung: Name folgt</p>
-              <p className="mt-3 text-neutral-700 italic">&bdquo;Wir tun, was wir tun, weil jede Familie schnelle, verlässliche und menschliche Unterstützung verdient.&ldquo;</p>
-            </div>
-          </article>
-          <article className="overflow-hidden rounded-2xl border border-[#0F4F68]/12 bg-white shadow-[0_10px_25px_rgba(15,79,104,0.12)]">
-            <Image src="/images/Kontakt_Bild.webp" alt="Platzhalterbild Standort Augsburg" width={1200} height={700} className="h-44 w-full object-cover" unoptimized />
-            <div className="p-5">
-              <h3 className="text-xl font-bold text-[#0F4F68]">Standort Augsburg stellt sich vor</h3>
-              <p className="mt-2 text-sm text-neutral-600">Standortleitung: Name folgt</p>
-              <p className="mt-3 text-neutral-700 italic">&bdquo;Unser Antrieb ist es, Pflegealltag leichter zu machen - professionell, herzlich und nah am Menschen.&ldquo;</p>
-            </div>
-          </article>
-          <article className="overflow-hidden rounded-2xl border border-[#0F4F68]/12 bg-white shadow-[0_10px_25px_rgba(15,79,104,0.12)]">
-            <Image src="/images/standort_gemeinsam.webp" alt="Platzhalterbild Standort Engen/Konstanz" width={1200} height={700} className="h-44 w-full object-cover" />
-            <div className="p-5">
-              <h3 className="text-xl font-bold text-[#0F4F68]">Standort Engen/Konstanz stellt sich vor</h3>
-              <p className="mt-2 text-sm text-neutral-600">Standortleitung: Name folgt</p>
-              <p className="mt-3 text-neutral-700 italic">&bdquo;Wir begleiten mit Haltung und Herz, damit Selbstbestimmung und Lebensqualität erhalten bleiben.&ldquo;</p>
-            </div>
-          </article>
-        </div>
-      </section>
-
-      {/* Strukturlinie Anthrazit (~2/3 Breite), über Bereich mit standort_gemeinsam */}
       <StandortAnthrazitRule className="mt-8 sm:mt-10" />
 
       <section className="relative z-20 mt-8 w-full px-4 sm:mt-10 sm:px-6 lg:px-8">

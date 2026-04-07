@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { karriereSchema, type KarriereFormData } from "@/lib/validations/karriere";
 import { rateLimit } from "@/lib/rate-limit";
 import { getClientIp } from "@/lib/security";
+import { sendInternalMail } from "@/lib/email/internal-smtp";
 
 export type KarriereResult = { success: boolean; error?: string };
 
@@ -44,12 +45,26 @@ export async function submitKarriere(formData: FormData): Promise<KarriereResult
   }
 
   const data = parsed.data as KarriereFormData;
-  console.info("[Karriere] Bewerbung erhalten", {
-    vorname: data.vorname,
-    nachname: data.nachname,
-    email: data.email,
-    stellenangebot: data.stellenangebot,
+  const text = [
+    "Neue Karriere-Anfrage über die Website",
+    "",
+    `Name: ${data.vorname} ${data.nachname}`,
+    `E-Mail: ${data.email}`,
+    `Telefon: ${data.phone}`,
+    `Stellenangebot: ${data.stellenangebot}`,
+  ].join("\n");
+
+  const mailed = await sendInternalMail({
+    kind: "karriere",
+    subject: `Karriere: ${data.stellenangebot} – ${data.nachname}, ${data.vorname}`,
+    text,
+    replyTo: data.email,
   });
+  if (!mailed.ok && mailed.code === "smtp_not_configured") {
+    console.warn(
+      "[karriere] SMTP oder NOTIFICATION_TO_KARRIERE / NOTIFICATION_TO fehlt – keine E-Mail versendet",
+    );
+  }
 
   redirect("/karriere/danke");
 }

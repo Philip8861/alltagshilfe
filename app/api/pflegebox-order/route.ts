@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { headers } from "next/headers";
+import { sendInternalMail } from "@/lib/email/internal-smtp";
 import { rateLimitPflegeboxOrder } from "@/lib/rate-limit";
 import { pflegeboxOrderBodySchema, type PflegeboxOrderBody } from "@/lib/validations/pflegebox-order";
 import { createSupabaseServiceRoleClient, resolvePartnerProfileId } from "@/lib/supabase/service";
@@ -185,6 +186,28 @@ export async function POST(request: Request) {
     if (tipErr) {
       console.error("[pflegebox-order] partner_tip_submissions insert failed", tipErr.message);
     }
+  }
+
+  const mailBody = [
+    "Neue Pflegebox-Bestellung (Konfigurator)",
+    `Referenz: ${externalRef}`,
+    orderId ? `Interne ID: ${orderId}` : null,
+    "",
+    buildTipNotiz(parsed.data.cartLines, parsed.data.totalBudgetUsed, c),
+  ]
+    .filter((line): line is string => line !== null)
+    .join("\n");
+
+  const mailResult = await sendInternalMail({
+    kind: "pflegebox",
+    subject: `Pflegebox-Bestellung ${externalRef}`,
+    text: mailBody,
+    replyTo: c.email?.trim() || undefined,
+  });
+  if (!mailResult.ok && mailResult.code === "smtp_not_configured") {
+    console.warn(
+      "[pflegebox-order] SMTP oder NOTIFICATION_TO_PFLEGEBOX / NOTIFICATION_TO fehlt – keine E-Mail versendet",
+    );
   }
 
   return NextResponse.json({ ok: true, id: orderId, reference: externalRef });

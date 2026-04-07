@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { contactSchema, type ContactFormData } from "@/lib/validations/contact";
 import { rateLimit } from "@/lib/rate-limit";
 import { getClientIp } from "@/lib/security";
+import { sendInternalMail } from "@/lib/email/internal-smtp";
 
 export type ContactResult = { success: boolean; error?: string };
 
@@ -47,15 +48,32 @@ export async function submitContact(formData: FormData): Promise<ContactResult> 
   }
 
   const data = parsed.data as ContactFormData;
-  // Hier später: E-Mail versenden oder an CRM anbinden
-  console.info("[Contact] Submission received", {
-    vorname: data.vorname,
-    nachname: data.nachname,
-    email: data.email,
-    phone: data.phone,
-    topic: data.topic,
-    messageLength: data.message.length,
+  const text = [
+    "Neue Kontaktanfrage über die Website",
+    "",
+    `Name: ${data.vorname} ${data.nachname}`,
+    `E-Mail: ${data.email}`,
+    data.phone ? `Telefon: ${data.phone}` : null,
+    `Thema: ${data.topic}`,
+    "",
+    data.message,
+  ]
+    .filter((line): line is string => line !== null)
+    .join("\n");
+
+  const mailed = await sendInternalMail({
+    kind: "contact",
+    subject: `Kontakt: ${data.topic}`,
+    text,
+    replyTo: data.email,
   });
+  if (!mailed.ok) {
+    if (mailed.code === "smtp_not_configured") {
+      console.warn(
+        "[contact] SMTP oder NOTIFICATION_TO_CONTACT / NOTIFICATION_TO fehlt – keine E-Mail versendet",
+      );
+    }
+  }
 
   redirect("/kontakt/danke");
 }
