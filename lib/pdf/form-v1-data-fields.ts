@@ -97,7 +97,7 @@ const BASE_FORM_V1_DATA_FIELDS: readonly FormV1DataFieldMeta[] = [
     kind: "trackedText",
     sampleText: "07042026",
     defaultFontSizePt: 10,
-    defaultTrackingPt: 10.85,
+    defaultTrackingPt: 9.95,
   },
   {
     id: "aktuellesDatum2",
@@ -105,7 +105,7 @@ const BASE_FORM_V1_DATA_FIELDS: readonly FormV1DataFieldMeta[] = [
     kind: "trackedText",
     sampleText: "07042026",
     defaultFontSizePt: 10,
-    defaultTrackingPt: 10.85,
+    defaultTrackingPt: 10.1,
   },
   {
     id: "kontaktTelefonisch",

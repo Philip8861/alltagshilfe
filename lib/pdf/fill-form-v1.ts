@@ -37,19 +37,32 @@ export type FormV1FillInput = {
    * Weglassen oder leer → beim PDF-Erzeugen: heutiges Datum (Europe/Berlin).
    */
   aktuellesDatumDe?: string;
-  kontaktTelefonisch: boolean;
-  kontaktVideocall: boolean;
-  kontaktGeschaeftsraeume: boolean;
-  /** Freie Hakenpositionen (nur Kreuz an fester Koordinate). */
-  haken1: boolean;
-  haken2: boolean;
-  haken3: boolean;
-  haken4: boolean;
-  haken5: boolean;
+  /**
+   * Nur wenn gesetzt: Kontakt-Checkboxen (☐ + Text) werden gezeichnet.
+   * Weglassen → keine der drei Checkboxen (nicht einmal leer).
+   */
+  kontakt?: {
+    telefonisch: boolean;
+    videocall: boolean;
+    geschaeftsraeume: boolean;
+  };
+  /**
+   * Nur wenn gesetzt: Haken 1–5 können gezeichnet werden (nur wo `true`).
+   * Weglassen → keine Haken.
+   */
+  haken?: {
+    haken1: boolean;
+    haken2: boolean;
+    haken3: boolean;
+    haken4: boolean;
+    haken5: boolean;
+  };
   /** Konfigurator-Warenkorb für Katalog-Felder (Mengen/Faktoren). */
   konfiguratorLines?: KonfiguratorCartLine[];
   /** Stilisierte Vektor-Unterschrift „Max Mustermann“ über der Linie. */
   drawMaxMustermannSignature: boolean;
+  /** Nur bei `true`: Hinweistext „Unterschrift“ (o. ä.). Weglassen/`false` → auslassen. */
+  unterschriftHinweistextZeigen?: boolean;
 };
 
 function formV1KrankenkasseMaxWidthPtLocal(pageWidth: number, krankenkasseLeftX: number): number {
@@ -88,16 +101,11 @@ export const FORM_V1_PREVIEW_SAMPLE: FormV1FillInput = {
   ort: "Memmingen",
   krankenkasse: "AOK Bayern",
   aktuellesDatumDe: "07.04.2026",
-  kontaktTelefonisch: true,
-  kontaktVideocall: false,
-  kontaktGeschaeftsraeume: false,
-  haken1: true,
-  haken2: false,
-  haken3: true,
-  haken4: false,
-  haken5: false,
+  kontakt: { telefonisch: true, videocall: false, geschaeftsraeume: false },
+  haken: { haken1: true, haken2: false, haken3: true, haken4: false, haken5: false },
   konfiguratorLines: FORM_V1_PREVIEW_KONFIGURATOR_LINES,
   drawMaxMustermannSignature: true,
+  unterschriftHinweistextZeigen: true,
 };
 
 /** Entfernt Steuerzeichen; Standard-Fonts tolerieren keine beliebigen Unicode-Zeichen. */
@@ -206,24 +214,35 @@ function maxPageIndex(): number {
   return m;
 }
 
-function checkboxOrHakenChecked(fieldId: FormV1DataFieldId, data: FormV1FillInput): boolean {
+function kontaktCheckboxChecked(fieldId: FormV1DataFieldId, data: FormV1FillInput): boolean {
+  const k = data.kontakt;
+  if (!k) return false;
   switch (fieldId) {
     case "kontaktTelefonisch":
-      return data.kontaktTelefonisch;
+      return k.telefonisch;
     case "kontaktVideocall":
-      return data.kontaktVideocall;
+      return k.videocall;
     case "kontaktGeschaeftsraeume":
-      return data.kontaktGeschaeftsraeume;
+      return k.geschaeftsraeume;
+    default:
+      return false;
+  }
+}
+
+function hakenIsChecked(fieldId: FormV1DataFieldId, data: FormV1FillInput): boolean {
+  const h = data.haken;
+  if (!h) return false;
+  switch (fieldId) {
     case "haken1":
-      return data.haken1;
+      return h.haken1;
     case "haken2":
-      return data.haken2;
+      return h.haken2;
     case "haken3":
-      return data.haken3;
+      return h.haken3;
     case "haken4":
-      return data.haken4;
+      return h.haken4;
     case "haken5":
-      return data.haken5;
+      return h.haken5;
     default:
       return false;
   }
@@ -277,6 +296,7 @@ export async function fillFormV1Pdf(
 
       if (fieldId === "vornameNachname") {
         const t = formatFormV1VornameNachname(data);
+        if (!t) continue;
         page.drawText(t, {
           x: placement.x,
           y: placement.y,
@@ -290,6 +310,7 @@ export async function fillFormV1Pdf(
       }
       if (fieldId === "strassePlzOrt") {
         const t = formatFormV1StrassePlzOrt(data);
+        if (!t) continue;
         page.drawText(t, {
           x: placement.x,
           y: placement.y,
@@ -303,6 +324,7 @@ export async function fillFormV1Pdf(
       }
       if (fieldId === "geburtsdatum") {
         const birthText = sanitizeFormText(formatGeburtsdatumOhnePunkte(data.geburtsdatumIso), 8);
+        if (!birthText) continue;
         const tr = placement.trackingPt ?? meta.defaultTrackingPt ?? FORM_V1_GEBURT_TRACKING_PT;
         drawTextWithTracking(page, birthText, {
           x: placement.x,
@@ -316,6 +338,7 @@ export async function fillFormV1Pdf(
       }
       if (fieldId === "versichertennummer") {
         const versText = sanitizeVersichertennummer(data.versichertennummer, 24);
+        if (!versText) continue;
         const tr = placement.trackingPt ?? meta.defaultTrackingPt ?? FORM_V1_VERS_TRACKING_PT;
         drawTextWithTracking(page, versText, {
           x: placement.x,
@@ -329,6 +352,7 @@ export async function fillFormV1Pdf(
       }
       if (fieldId === "krankenkasse") {
         const kkText = sanitizeFormText(data.krankenkasse, 120);
+        if (!kkText) continue;
         const maxW = formV1KrankenkasseMaxWidthPtLocal(pageWidth, placement.x);
         page.drawText(kkText, {
           x: placement.x,
@@ -359,11 +383,12 @@ export async function fillFormV1Pdf(
     }
 
     if (placement.kind === "checkbox") {
+      if (data.kontakt == null) continue;
       const label = meta.checkboxLabel ?? "";
       drawCheckboxWithLabel(page, {
         boxLeftX: placement.boxLeftX,
         yBaseline: placement.yBaseline,
-        checked: checkboxOrHakenChecked(fieldId, data),
+        checked: kontaktCheckboxChecked(fieldId, data),
         label,
         font,
         fontSizePt: placement.fontSizePt,
@@ -372,17 +397,18 @@ export async function fillFormV1Pdf(
     }
 
     if (placement.kind === "checkmarkOnly") {
-      if (checkboxOrHakenChecked(fieldId, data)) {
-        drawCheckmarkOnly(page, {
-          boxLeftX: placement.boxLeftX,
-          yBaseline: placement.yBaseline,
-          fontSizePt: placement.fontSizePt,
-        });
-      }
+      if (data.haken == null) continue;
+      if (!hakenIsChecked(fieldId, data)) continue;
+      drawCheckmarkOnly(page, {
+        boxLeftX: placement.boxLeftX,
+        yBaseline: placement.yBaseline,
+        fontSizePt: placement.fontSizePt,
+      });
       continue;
     }
 
     if (placement.kind === "signatureLabel") {
+      if (data.unterschriftHinweistextZeigen !== true) continue;
       page.drawText(meta.sampleText || "Unterschrift", {
         x: placement.x,
         y: placement.y,

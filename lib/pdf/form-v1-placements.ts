@@ -68,8 +68,8 @@ export const FORM_V1_PLACEMENTS: Record<FormV1DataFieldId, FormV1FieldPlacement>
   vornameNachname: {
     kind: "text",
     pageIndex: 0,
-    x: 70.4,
-    y: 703.1,
+    x: 68.39,
+    y: 702.24,
     fontSizePt: 11,
   },
   strassePlzOrt: {
@@ -108,16 +108,15 @@ export const FORM_V1_PLACEMENTS: Record<FormV1DataFieldId, FormV1FieldPlacement>
     x: 81.6,
     y: 302.6,
     fontSizePt: 10,
-    trackingPt: 10.85,
+    trackingPt: 9.95,
   },
-  /** Zweites identisches „heutiges“ Datum — Koordinate im PDF-Editor anpassen, falls nötig. */
   aktuellesDatum2: {
     kind: "text",
-    pageIndex: 0,
-    x: 400,
-    y: 730,
+    pageIndex: 1,
+    x: 257.67,
+    y: 472.31,
     fontSizePt: 10,
-    trackingPt: 10.85,
+    trackingPt: 10.1,
   },
   kontaktTelefonisch: {
     kind: "checkbox",
@@ -186,7 +185,7 @@ export const FORM_V1_PLACEMENTS: Record<FormV1DataFieldId, FormV1FieldPlacement>
     kind: "signatureGraphic",
     pageIndex: 1,
     x: 348.49,
-    y: 307.9,
+    y: 318.24,
     scale: 1,
     rotateDeg: -7,
     borderWidth: 0.8,
