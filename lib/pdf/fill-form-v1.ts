@@ -1,15 +1,11 @@
 import { PDFDocument, StandardFonts, rgb } from "pdf-lib";
-import { interGlyphTrackingForStretch } from "@/lib/pdf/compute-box-tracking";
 import { drawTextWithTracking } from "@/lib/pdf/draw-text-with-tracking";
 import {
   FORM_V1_FONT_SIZE_PT,
-  FORM_V1_GEBURT_SHIFT_LEFT_RATIO,
-  FORM_V1_GEBURT_WIDTH_STRETCH,
+  FORM_V1_GEBURT_TRACKING_PT,
   FORM_V1_LAYOUT,
-  FORM_V1_TRACKING_BASELINE_PT,
-  FORM_V1_VERS_SHIFT_LEFT_RATIO,
-  FORM_V1_VERS_WIDTH_STRETCH,
-  formV1AddressMaxWidthPt,
+  FORM_V1_VERS_TRACKING_PT,
+  formV1PersonLineMaxWidthPt,
 } from "@/lib/pdf/form-v1-layout";
 
 export type FormV1FillInput = {
@@ -65,21 +61,24 @@ export function formatGeburtsdatumOhnePunkte(iso: string): string {
   return `${m[3]}${m[2]}${m[1]}`;
 }
 
-/** Eine Adresszeile: Straße, Hausnummer, PLZ und Ort, durch Leerzeichen getrennt. */
-export function formatFormV1Adresse(data: Pick<FormV1FillInput, "anschriftStrasse" | "hausnummer" | "plz" | "ort">): string {
+/**
+ * Eine Zeile: Vorname, Nachname, Straße, Hausnummer, PLZ, Ort (Leerzeichen).
+ */
+export function formatFormV1PersonUndAdresse(data: FormV1FillInput): string {
+  const vor = sanitizeFormText(data.vorname, 80);
+  const nach = sanitizeFormText(data.nachname, 80);
   const str = sanitizeFormText(data.anschriftStrasse, 80);
   const nr = sanitizeFormText(data.hausnummer, 15);
   const plz = sanitizeFormText(data.plz, 10);
   const ort = sanitizeFormText(data.ort, 80);
-  return [str, nr, plz, ort].filter(Boolean).join(" ");
+  return [vor, nach, str, nr, plz, ort].filter(Boolean).join(" ");
 }
 
 function maxPageIndex(): number {
   return Math.max(
-    FORM_V1_LAYOUT.nameUndVorname.pageIndex,
+    FORM_V1_LAYOUT.personUndAdresse.pageIndex,
     FORM_V1_LAYOUT.geburtsdatum.pageIndex,
     FORM_V1_LAYOUT.versichertennummer.pageIndex,
-    FORM_V1_LAYOUT.adresse.pageIndex,
     FORM_V1_LAYOUT.krankenkasse.pageIndex,
   );
 }
@@ -90,7 +89,7 @@ function formV1KrankenkasseMaxWidthPt(pageWidth: number): number {
 }
 
 /**
- * Befüllt die leere Vorlage-PDF (Bytes). Adresse und Krankenkasse umbrechen bei Bedarf (`maxWidth`).
+ * Befüllt die leere Vorlage-PDF (Bytes).
  */
 export async function fillFormV1Pdf(
   templatePdfBytes: Uint8Array,
@@ -101,16 +100,10 @@ export async function fillFormV1Pdf(
   const size = FORM_V1_FONT_SIZE_PT;
   const lineHeight = size * 1.2;
   const black = rgb(0, 0, 0);
-  const baseline = FORM_V1_TRACKING_BASELINE_PT;
 
-  const vor = sanitizeFormText(data.vorname, 80);
-  const nach = sanitizeFormText(data.nachname, 80);
-  const nameLine = nach && vor ? `${nach}, ${vor}` : nach || vor;
-
-  const pName = FORM_V1_LAYOUT.nameUndVorname;
+  const pPerson = FORM_V1_LAYOUT.personUndAdresse;
   const pBirth = FORM_V1_LAYOUT.geburtsdatum;
   const pVers = FORM_V1_LAYOUT.versichertennummer;
-  const pAddr = FORM_V1_LAYOUT.adresse;
   const pKk = FORM_V1_LAYOUT.krankenkasse;
 
   const pages = doc.getPages();
@@ -118,69 +111,43 @@ export async function fillFormV1Pdf(
     throw new Error("PDF hat nicht genug Seiten für FORM_V1_LAYOUT.");
   }
 
-  const pageName = pages[pName.pageIndex]!;
+  const pagePerson = pages[pPerson.pageIndex]!;
   const pageBirth = pages[pBirth.pageIndex]!;
   const pageVers = pages[pVers.pageIndex]!;
-  const pageAddr = pages[pAddr.pageIndex]!;
   const pageKk = pages[pKk.pageIndex]!;
 
-  const pageWidth = pageAddr.getWidth();
+  const pageWidth = pagePerson.getWidth();
 
-  pageName.drawText(nameLine, {
-    x: pName.x,
-    y: pName.y,
+  const personLine = formatFormV1PersonUndAdresse(data);
+  const personMaxW = formV1PersonLineMaxWidthPt();
+  pagePerson.drawText(personLine, {
+    x: pPerson.x,
+    y: pPerson.y,
     size,
     font,
     color: black,
+    maxWidth: personMaxW,
+    lineHeight,
   });
 
-  const birthX = pBirth.x - pageWidth * FORM_V1_GEBURT_SHIFT_LEFT_RATIO;
-  const versX = pVers.x - pageWidth * FORM_V1_VERS_SHIFT_LEFT_RATIO;
-
   const birthText = sanitizeFormText(formatGeburtsdatumOhnePunkte(data.geburtsdatumIso), 8);
-  const trackingGeburt = interGlyphTrackingForStretch(
-    font,
-    birthText,
-    size,
-    baseline,
-    FORM_V1_GEBURT_WIDTH_STRETCH,
-  );
   drawTextWithTracking(pageBirth, birthText, {
-    x: birthX,
+    x: pBirth.x,
     y: pBirth.y,
     size,
     font,
     color: black,
-    trackingPt: trackingGeburt,
+    trackingPt: FORM_V1_GEBURT_TRACKING_PT,
   });
 
   const versText = sanitizeVersichertennummer(data.versichertennummer, 24);
-  const trackingVers = interGlyphTrackingForStretch(
-    font,
-    versText,
-    size,
-    baseline,
-    FORM_V1_VERS_WIDTH_STRETCH,
-  );
   drawTextWithTracking(pageVers, versText, {
-    x: versX,
+    x: pVers.x,
     y: pVers.y,
     size,
     font,
     color: black,
-    trackingPt: trackingVers,
-  });
-
-  const adresseText = formatFormV1Adresse(data);
-  const addrMaxW = formV1AddressMaxWidthPt();
-  pageAddr.drawText(adresseText, {
-    x: pAddr.x,
-    y: pAddr.y,
-    size,
-    font,
-    color: black,
-    maxWidth: addrMaxW,
-    lineHeight,
+    trackingPt: FORM_V1_VERS_TRACKING_PT,
   });
 
   const kkText = sanitizeFormText(data.krankenkasse, 120);
