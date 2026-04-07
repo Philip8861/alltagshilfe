@@ -32,15 +32,7 @@ export type FormV1DataFieldId =
   | "aktuellesDatum2"
   | "kontaktTelefonisch"
   | "kontaktVideocall"
-  | "kontaktGeschaeftsraeume"
-  | "haken1"
-  | "haken2"
-  | "haken3"
-  | "haken4"
-  | "haken5"
-  | "unterschriftLabel"
   | "unterschriftMaxMustermann"
-  | "unterschriftLinie"
   | FormV1KatalogFieldId;
 
 export type FormV1DataFieldMeta = {
@@ -109,81 +101,22 @@ const BASE_FORM_V1_DATA_FIELDS: readonly FormV1DataFieldMeta[] = [
   },
   {
     id: "kontaktTelefonisch",
-    editorLabel: "Daten: Kontakt ☐ Telefonisch",
+    editorLabel: "Daten: Kontakt ☐ (nur Kästchen, ohne Text)",
     kind: "checkbox",
     sampleText: "",
-    checkboxLabel: "Telefonisch",
     defaultFontSizePt: 11,
   },
   {
     id: "kontaktVideocall",
-    editorLabel: "Daten: Kontakt ☐ Per Videocall",
+    editorLabel: "Daten: Kontakt ☐ Videocall (nur Kästchen)",
     kind: "checkbox",
     sampleText: "",
-    checkboxLabel: "Per Videocall",
     defaultFontSizePt: 11,
-  },
-  {
-    id: "kontaktGeschaeftsraeume",
-    editorLabel: "Daten: Kontakt ☐ In den Geschäftsräumen",
-    kind: "checkbox",
-    sampleText: "",
-    checkboxLabel: "In den Geschäftsräumen",
-    defaultFontSizePt: 11,
-  },
-  {
-    id: "haken1",
-    editorLabel: "Nur Haken 1 (Koordinate, kein Kästchen)",
-    kind: "checkmarkOnly",
-    sampleText: "✓",
-    defaultFontSizePt: 11,
-  },
-  {
-    id: "haken2",
-    editorLabel: "Nur Haken 2 (Koordinate, kein Kästchen)",
-    kind: "checkmarkOnly",
-    sampleText: "✓",
-    defaultFontSizePt: 11,
-  },
-  {
-    id: "haken3",
-    editorLabel: "Nur Haken 3 (Koordinate, kein Kästchen)",
-    kind: "checkmarkOnly",
-    sampleText: "✓",
-    defaultFontSizePt: 11,
-  },
-  {
-    id: "haken4",
-    editorLabel: "Nur Haken 4 (Koordinate, kein Kästchen)",
-    kind: "checkmarkOnly",
-    sampleText: "✓",
-    defaultFontSizePt: 11,
-  },
-  {
-    id: "haken5",
-    editorLabel: "Nur Haken 5 (Koordinate, kein Kästchen)",
-    kind: "checkmarkOnly",
-    sampleText: "✓",
-    defaultFontSizePt: 11,
-  },
-  {
-    id: "unterschriftLabel",
-    editorLabel: "Beschriftung: Unterschrift (Hinweistext)",
-    kind: "signatureLabel",
-    sampleText: "Unterschrift",
-    defaultFontSizePt: 10,
   },
   {
     id: "unterschriftMaxMustermann",
     editorLabel: "Vektor-Unterschrift Max Mustermann (stilisiert)",
     kind: "signatureGraphic",
-    sampleText: "",
-    defaultFontSizePt: 11,
-  },
-  {
-    id: "unterschriftLinie",
-    editorLabel: "Linie: Unterschrift",
-    kind: "signatureLine",
     sampleText: "",
     defaultFontSizePt: 11,
   },

@@ -149,12 +149,7 @@ export function PdfFormFieldEditor() {
           });
         }
       } else if (f.shape === "checkbox") {
-        const checkedPreview =
-          f.fieldId === "kontaktTelefonisch" ||
-          f.fieldId === "kontaktVideocall" ||
-          f.fieldId === "kontaktGeschaeftsraeume"
-            ? f.fieldId === "kontaktTelefonisch"
-            : false;
+        const checkedPreview = f.fieldId === "kontaktTelefonisch";
         drawCheckboxOverlayPreview(ctx, {
           pdfBoxLeftX: f.boxLeftX,
           pdfYBaseline: f.yBaseline,

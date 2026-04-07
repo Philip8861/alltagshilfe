@@ -47,11 +47,13 @@ export function drawCheckboxWithLabel(
     });
   }
 
-  page.drawText(label, {
-    x: boxLeftX + box + 4,
-    y: yBaseline,
-    size: fontSizePt,
-    font,
-    color: black,
-  });
+  if (label.trim()) {
+    page.drawText(label, {
+      x: boxLeftX + box + 4,
+      y: yBaseline,
+      size: fontSizePt,
+      font,
+      color: black,
+    });
+  }
 }

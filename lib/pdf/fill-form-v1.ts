@@ -1,5 +1,4 @@
 import { PDFDocument, StandardFonts, rgb } from "pdf-lib";
-import { drawCheckmarkOnly } from "@/lib/pdf/draw-checkmark-only";
 import { drawCheckboxWithLabel } from "@/lib/pdf/draw-checkbox";
 import { drawMaxMustermannSignature } from "@/lib/pdf/draw-max-mustermann-signature";
 import { drawTextWithTracking } from "@/lib/pdf/draw-text-with-tracking";
@@ -38,31 +37,17 @@ export type FormV1FillInput = {
    */
   aktuellesDatumDe?: string;
   /**
-   * Nur wenn gesetzt: Kontakt-Checkboxen (☐ + Text) werden gezeichnet.
-   * Weglassen → keine der drei Checkboxen (nicht einmal leer).
+   * Nur wenn gesetzt: zwei Kontakt-Kästchen (ohne Beschriftungstext) werden gezeichnet.
+   * Weglassen → keine Checkboxen.
    */
   kontakt?: {
     telefonisch: boolean;
     videocall: boolean;
-    geschaeftsraeume: boolean;
-  };
-  /**
-   * Nur wenn gesetzt: Haken 1–5 können gezeichnet werden (nur wo `true`).
-   * Weglassen → keine Haken.
-   */
-  haken?: {
-    haken1: boolean;
-    haken2: boolean;
-    haken3: boolean;
-    haken4: boolean;
-    haken5: boolean;
   };
   /** Konfigurator-Warenkorb für Katalog-Felder (Mengen/Faktoren). */
   konfiguratorLines?: KonfiguratorCartLine[];
-  /** Stilisierte Vektor-Unterschrift „Max Mustermann“ über der Linie. */
+  /** Stilisierte Vektor-Unterschrift „Max Mustermann“. */
   drawMaxMustermannSignature: boolean;
-  /** Nur bei `true`: Hinweistext „Unterschrift“ (o. ä.). Weglassen/`false` → auslassen. */
-  unterschriftHinweistextZeigen?: boolean;
 };
 
 function formV1KrankenkasseMaxWidthPtLocal(pageWidth: number, krankenkasseLeftX: number): number {
@@ -101,11 +86,9 @@ export const FORM_V1_PREVIEW_SAMPLE: FormV1FillInput = {
   ort: "Memmingen",
   krankenkasse: "AOK Bayern",
   aktuellesDatumDe: "07.04.2026",
-  kontakt: { telefonisch: true, videocall: false, geschaeftsraeume: false },
-  haken: { haken1: true, haken2: false, haken3: true, haken4: false, haken5: false },
+  kontakt: { telefonisch: true, videocall: false },
   konfiguratorLines: FORM_V1_PREVIEW_KONFIGURATOR_LINES,
   drawMaxMustermannSignature: true,
-  unterschriftHinweistextZeigen: true,
 };
 
 /** Entfernt Steuerzeichen; Standard-Fonts tolerieren keine beliebigen Unicode-Zeichen. */
@@ -186,23 +169,13 @@ const DRAW_ORDER_BASE: FormV1DataFieldId[] = [
   "aktuellesDatum2",
   "kontaktTelefonisch",
   "kontaktVideocall",
-  "kontaktGeschaeftsraeume",
-  "haken1",
-  "haken2",
-  "haken3",
-  "haken4",
-  "haken5",
 ];
 
 const DRAW_ORDER_KATALOG: FormV1DataFieldId[] = KONFIGURATOR_CATALOG_IDS.map(
   (id) => `katalog_${id}` as FormV1DataFieldId,
 );
 
-const DRAW_ORDER_TAIL: FormV1DataFieldId[] = [
-  "unterschriftLabel",
-  "unterschriftMaxMustermann",
-  "unterschriftLinie",
-];
+const DRAW_ORDER_TAIL: FormV1DataFieldId[] = ["unterschriftMaxMustermann"];
 
 const DRAW_ORDER: FormV1DataFieldId[] = [...DRAW_ORDER_BASE, ...DRAW_ORDER_KATALOG, ...DRAW_ORDER_TAIL];
 
@@ -222,27 +195,6 @@ function kontaktCheckboxChecked(fieldId: FormV1DataFieldId, data: FormV1FillInpu
       return k.telefonisch;
     case "kontaktVideocall":
       return k.videocall;
-    case "kontaktGeschaeftsraeume":
-      return k.geschaeftsraeume;
-    default:
-      return false;
-  }
-}
-
-function hakenIsChecked(fieldId: FormV1DataFieldId, data: FormV1FillInput): boolean {
-  const h = data.haken;
-  if (!h) return false;
-  switch (fieldId) {
-    case "haken1":
-      return h.haken1;
-    case "haken2":
-      return h.haken2;
-    case "haken3":
-      return h.haken3;
-    case "haken4":
-      return h.haken4;
-    case "haken5":
-      return h.haken5;
     default:
       return false;
   }
@@ -396,29 +348,6 @@ export async function fillFormV1Pdf(
       continue;
     }
 
-    if (placement.kind === "checkmarkOnly") {
-      if (data.haken == null) continue;
-      if (!hakenIsChecked(fieldId, data)) continue;
-      drawCheckmarkOnly(page, {
-        boxLeftX: placement.boxLeftX,
-        yBaseline: placement.yBaseline,
-        fontSizePt: placement.fontSizePt,
-      });
-      continue;
-    }
-
-    if (placement.kind === "signatureLabel") {
-      if (data.unterschriftHinweistextZeigen !== true) continue;
-      page.drawText(meta.sampleText || "Unterschrift", {
-        x: placement.x,
-        y: placement.y,
-        size: placement.fontSizePt,
-        font,
-        color: rgb(0.25, 0.25, 0.25),
-      });
-      continue;
-    }
-
     if (placement.kind === "signatureGraphic") {
       if (data.drawMaxMustermannSignature) {
         drawMaxMustermannSignature(page, {
@@ -430,15 +359,6 @@ export async function fillFormV1Pdf(
         });
       }
       continue;
-    }
-
-    if (placement.kind === "signatureLine") {
-      page.drawLine({
-        start: { x: placement.x1, y: placement.y },
-        end: { x: placement.x2, y: placement.y },
-        thickness: 0.6,
-        color: black,
-      });
     }
   }
 

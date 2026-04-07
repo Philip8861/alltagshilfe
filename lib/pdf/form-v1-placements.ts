@@ -18,7 +18,7 @@ export type FormV1CheckboxPlacement = {
   fontSizePt: number;
 };
 
-/** Nur Kreuz, kein Rahmen (Haken 1–5). */
+/** Nur Kreuz, kein Rahmen (Legacy / Editor-Import). */
 export type FormV1CheckmarkOnlyPlacement = {
   kind: "checkmarkOnly";
   pageIndex: number;
@@ -132,55 +132,6 @@ export const FORM_V1_PLACEMENTS: Record<FormV1DataFieldId, FormV1FieldPlacement>
     yBaseline: 638,
     fontSizePt: 11,
   },
-  kontaktGeschaeftsraeume: {
-    kind: "checkbox",
-    pageIndex: 0,
-    boxLeftX: 400,
-    yBaseline: 638,
-    fontSizePt: 11,
-  },
-  haken1: {
-    kind: "checkmarkOnly",
-    pageIndex: 0,
-    boxLeftX: 48,
-    yBaseline: 622,
-    fontSizePt: 11,
-  },
-  haken2: {
-    kind: "checkmarkOnly",
-    pageIndex: 0,
-    boxLeftX: 88,
-    yBaseline: 622,
-    fontSizePt: 11,
-  },
-  haken3: {
-    kind: "checkmarkOnly",
-    pageIndex: 0,
-    boxLeftX: 128,
-    yBaseline: 622,
-    fontSizePt: 11,
-  },
-  haken4: {
-    kind: "checkmarkOnly",
-    pageIndex: 0,
-    boxLeftX: 168,
-    yBaseline: 622,
-    fontSizePt: 11,
-  },
-  haken5: {
-    kind: "checkmarkOnly",
-    pageIndex: 0,
-    boxLeftX: 208,
-    yBaseline: 622,
-    fontSizePt: 11,
-  },
-  unterschriftLabel: {
-    kind: "signatureLabel",
-    pageIndex: 0,
-    x: 69.65,
-    y: 118,
-    fontSizePt: 10,
-  },
   unterschriftMaxMustermann: {
     kind: "signatureGraphic",
     pageIndex: 1,
@@ -189,13 +140,6 @@ export const FORM_V1_PLACEMENTS: Record<FormV1DataFieldId, FormV1FieldPlacement>
     scale: 1,
     rotateDeg: -7,
     borderWidth: 0.8,
-  },
-  unterschriftLinie: {
-    kind: "signatureLine",
-    pageIndex: 1,
-    x1: 275.61,
-    x2: 479,
-    y: 299.03,
   },
   katalog_9102: {
     kind: "text",
