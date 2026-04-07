@@ -157,8 +157,8 @@ export function PdfCoordinatePicker() {
       <div className="rounded-xl border border-dashed border-[#0F4F68]/30 bg-[#F2F9FA]/70 p-4 sm:p-5">
         <h2 className="text-sm font-semibold text-neutral-900">Formular-Vorschau (Testdaten)</h2>
         <p className="mt-1 text-sm text-neutral-600">
-          PDF mit <strong>Mustermann, Max</strong>, Geburtsdatum <strong>15.03.1990</strong> und
-          Beispiel-Versichertennummer — ohne Konfigurator. Vorlage ablegen als{" "}
+          PDF mit <strong>Mustermann, Max</strong>, Geburtsdatum, Versichertennummer, Adresse und
+          Krankenkasse (Beispieldaten) — ohne Konfigurator. Vorlage ablegen als{" "}
           <code className="rounded bg-white px-1 py-0.5 text-xs ring-1 ring-neutral-200">
             private/forms/form-v1-blank.pdf
           </code>{" "}

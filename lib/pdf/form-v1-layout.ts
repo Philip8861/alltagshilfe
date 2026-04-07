@@ -7,7 +7,20 @@ export const FORM_V1_LAYOUT = {
   nameUndVorname: { pageIndex: 0, x: 70.21, y: 703.2 },
   geburtsdatum: { pageIndex: 0, x: 207.48, y: 709.57 },
   versichertennummer: { pageIndex: 0, x: 376.79, y: 709.97 },
+  /** Straße, Hausnummer, PLZ, Ort — mehrzeilig bei langem Text (`maxWidth`). */
+  adresse: { pageIndex: 0, x: 67.95, y: 661.97 },
+  krankenkasse: { pageIndex: 0, x: 375.09, y: 661.69 },
 } as const;
+
+/** Abstand zwischen Adress- und Krankenkassen-Spalte (pt). */
+export const FORM_V1_ADDRESS_COLUMN_GAP_PT = 10;
+
+/** Maximale Zeilenbreite Adresse (bis vor die Krankenkassen-Spalte). */
+export function formV1AddressMaxWidthPt(): number {
+  return (
+    FORM_V1_LAYOUT.krankenkasse.x - FORM_V1_LAYOUT.adresse.x - FORM_V1_ADDRESS_COLUMN_GAP_PT
+  );
+}
 
 /** Schriftgröße auf dem Formular (pt). */
 export const FORM_V1_FONT_SIZE_PT = 11;
