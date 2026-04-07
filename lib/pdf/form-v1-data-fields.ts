@@ -69,11 +69,11 @@ const BASE_FORM_V1_DATA_FIELDS: readonly FormV1DataFieldMeta[] = [
   },
   {
     id: "geburtsdatum",
-    editorLabel: "Daten: Geburtsdatum (ohne Punkte, Tracking wie Vers.-Nr.)",
+    editorLabel: "Daten: Geburtsdatum (ohne Punkte, Tracking)",
     kind: "trackedText",
     sampleText: "15031990",
     defaultFontSizePt: 11,
-    defaultTrackingPt: 10.85,
+    defaultTrackingPt: 9.35,
   },
   {
     id: "versichertennummer",

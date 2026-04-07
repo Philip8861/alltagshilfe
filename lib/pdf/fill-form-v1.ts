@@ -10,6 +10,7 @@ import {
 } from "@/lib/pdf/form-v1-data-fields";
 import { FORM_V1_PLACEMENTS } from "@/lib/pdf/form-v1-placements";
 import {
+  FORM_V1_GEBURT_TRACKING_PT,
   FORM_V1_VERS_TRACKING_PT,
   formV1NameLineMaxWidthPt,
   formV1StrasseLineMaxWidthPt,
@@ -294,7 +295,7 @@ export async function fillFormV1Pdf(
       }
       if (fieldId === "geburtsdatum") {
         const birthText = sanitizeFormText(formatGeburtsdatumOhnePunkte(data.geburtsdatumIso), 8);
-        const tr = placement.trackingPt ?? meta.defaultTrackingPt ?? FORM_V1_VERS_TRACKING_PT;
+        const tr = placement.trackingPt ?? meta.defaultTrackingPt ?? FORM_V1_GEBURT_TRACKING_PT;
         drawTextWithTracking(page, birthText, {
           x: placement.x,
           y: placement.y,
