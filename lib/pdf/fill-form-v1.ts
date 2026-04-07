@@ -52,6 +52,25 @@ function formV1KrankenkasseMaxWidthPtLocal(pageWidth: number, krankenkasseLeftX:
   return Math.max(80, pageWidth - krankenkasseLeftX - rightMarginPt);
 }
 
+/**
+ * Admin-Vorschau: jeder Katalog-Artikel genau 1×, um die PDF-Zahlen pro Feld zu prüfen.
+ * ml-Artikel: kleinste Varianten (250 ml / 100 ml) → Faktor 2,5 bzw. 1.
+ */
+const FORM_V1_PREVIEW_KONFIGURATOR_LINES: KonfiguratorCartLine[] = [
+  { id: 9102, count: 1 },
+  { id: 9109, count: 1 },
+  { id: 9111, count: 1, selectedMl: 250 },
+  { id: 9112, count: 1, selectedMl: 100 },
+  { id: 9104, count: 1 },
+  { id: 9113, count: 1 },
+  { id: 9101, count: 1 },
+  { id: 9110, count: 1 },
+  { id: 9103, count: 1 },
+  { id: 9107, count: 1 },
+  { id: 9105, count: 1 },
+  { id: 9108, count: 1 },
+];
+
 /** Feste Testdaten für Admin-Vorschau (`/partner/admin/pdf-form-preview`). */
 export const FORM_V1_PREVIEW_SAMPLE: FormV1FillInput = {
   vorname: "Max",
@@ -72,12 +91,7 @@ export const FORM_V1_PREVIEW_SAMPLE: FormV1FillInput = {
   haken3: true,
   haken4: false,
   haken5: false,
-  konfiguratorLines: [
-    { id: 9109, count: 2 },
-    { id: 9112, count: 1, selectedMl: 500 },
-    { id: 9111, count: 1, selectedMl: 1000 },
-    { id: 9101, count: 1 },
-  ],
+  konfiguratorLines: FORM_V1_PREVIEW_KONFIGURATOR_LINES,
   drawMaxMustermannSignature: true,
 };
 
