@@ -1,14 +1,10 @@
 import { PDFDocument, StandardFonts, rgb } from "pdf-lib";
+import { getFormV1DataFieldMeta } from "@/lib/pdf/form-v1-data-fields";
 import { drawCheckboxWithLabel } from "@/lib/pdf/draw-checkbox";
 import { drawTextWithTracking } from "@/lib/pdf/draw-text-with-tracking";
-import {
-  FORM_V1_FONT_SIZE_PT,
-  FORM_V1_GEBURT_TRACKING_PT,
-  FORM_V1_LAYOUT,
-  FORM_V1_VERS_TRACKING_PT,
-  formV1NameLineMaxWidthPt,
-  formV1StrasseLineMaxWidthPt,
-} from "@/lib/pdf/form-v1-layout";
+import type { FormV1DataFieldId } from "@/lib/pdf/form-v1-data-fields";
+import { FORM_V1_PLACEMENTS } from "@/lib/pdf/form-v1-placements";
+import { formV1NameLineMaxWidthPt, formV1StrasseLineMaxWidthPt } from "@/lib/pdf/form-v1-layout";
 
 export type FormV1FillInput = {
   vorname: string;
@@ -26,9 +22,9 @@ export type FormV1FillInput = {
   kontaktGeschaeftsraeume: boolean;
 };
 
-function formV1KrankenkasseMaxWidthPtLocal(pageWidth: number): number {
+function formV1KrankenkasseMaxWidthPtLocal(pageWidth: number, krankenkasseLeftX: number): number {
   const rightMarginPt = 36;
-  return Math.max(80, pageWidth - FORM_V1_LAYOUT.krankenkasse.x - rightMarginPt);
+  return Math.max(80, pageWidth - krankenkasseLeftX - rightMarginPt);
 }
 
 /** Feste Testdaten für Admin-Vorschau (`/partner/admin/pdf-form-preview`). */
@@ -92,20 +88,43 @@ export function formatFormV1StrassePlzOrt(
   return [str, nr, plz, ort].filter(Boolean).join(" ");
 }
 
+const DRAW_ORDER: FormV1DataFieldId[] = [
+  "vornameNachname",
+  "strassePlzOrt",
+  "geburtsdatum",
+  "versichertennummer",
+  "krankenkasse",
+  "kontaktTelefonisch",
+  "kontaktVideocall",
+  "kontaktGeschaeftsraeume",
+  "unterschriftLabel",
+  "unterschriftLinie",
+];
+
 function maxPageIndex(): number {
-  const idx = [
-    FORM_V1_LAYOUT.vornameNachname.pageIndex,
-    FORM_V1_LAYOUT.strassePlzOrt.pageIndex,
-    FORM_V1_LAYOUT.geburtsdatum.pageIndex,
-    FORM_V1_LAYOUT.versichertennummer.pageIndex,
-    FORM_V1_LAYOUT.krankenkasse.pageIndex,
-    FORM_V1_LAYOUT.unterschriftLabel.pageIndex,
-  ];
-  return Math.max(...idx);
+  let m = 0;
+  for (const id of DRAW_ORDER) {
+    const p = FORM_V1_PLACEMENTS[id];
+    m = Math.max(m, p.pageIndex);
+  }
+  return m;
+}
+
+function checkboxChecked(fieldId: FormV1DataFieldId, data: FormV1FillInput): boolean {
+  switch (fieldId) {
+    case "kontaktTelefonisch":
+      return data.kontaktTelefonisch;
+    case "kontaktVideocall":
+      return data.kontaktVideocall;
+    case "kontaktGeschaeftsraeume":
+      return data.kontaktGeschaeftsraeume;
+    default:
+      return false;
+  }
 }
 
 /**
- * Befüllt die leere Vorlage-PDF (Bytes).
+ * Befüllt die leere Vorlage-PDF (Bytes). Nutzt ausschließlich Koordinaten aus `FORM_V1_PLACEMENTS`.
  */
 export async function fillFormV1Pdf(
   templatePdfBytes: Uint8Array,
@@ -113,124 +132,126 @@ export async function fillFormV1Pdf(
 ): Promise<Uint8Array> {
   const doc = await PDFDocument.load(templatePdfBytes, { ignoreEncryption: true });
   const font = await doc.embedFont(StandardFonts.Helvetica);
-  const size = FORM_V1_FONT_SIZE_PT;
-  const lineHeight = size * 1.2;
   const black = rgb(0, 0, 0);
-
-  const pName = FORM_V1_LAYOUT.vornameNachname;
-  const pStr = FORM_V1_LAYOUT.strassePlzOrt;
-  const pBirth = FORM_V1_LAYOUT.geburtsdatum;
-  const pVers = FORM_V1_LAYOUT.versichertennummer;
-  const pKk = FORM_V1_LAYOUT.krankenkasse;
-  const pSigLabel = FORM_V1_LAYOUT.unterschriftLabel;
-  const pSigLine = FORM_V1_LAYOUT.unterschriftLinie;
 
   const pages = doc.getPages();
   if (pages.length <= maxPageIndex()) {
-    throw new Error("PDF hat nicht genug Seiten für FORM_V1_LAYOUT.");
+    throw new Error("PDF hat nicht genug Seiten für FORM_V1_PLACEMENTS.");
   }
 
-  const pageName = pages[pName.pageIndex]!;
-  const pageStr = pages[pStr.pageIndex]!;
-  const pageBirth = pages[pBirth.pageIndex]!;
-  const pageVers = pages[pVers.pageIndex]!;
-  const pageKk = pages[pKk.pageIndex]!;
-  const pageSig = pages[pSigLabel.pageIndex]!;
+  const lineHeight = (size: number) => size * 1.2;
 
-  const pageWidth = pageName.getWidth();
+  for (const fieldId of DRAW_ORDER) {
+    const placement = FORM_V1_PLACEMENTS[fieldId];
+    const meta = getFormV1DataFieldMeta(fieldId);
+    const page = pages[placement.pageIndex]!;
+    const pageWidth = page.getWidth();
 
-  const nameLine = formatFormV1VornameNachname(data);
-  pageName.drawText(nameLine, {
-    x: pName.x,
-    y: pName.y,
-    size,
-    font,
-    color: black,
-    maxWidth: formV1NameLineMaxWidthPt(),
-    lineHeight,
-  });
+    if (placement.kind === "text") {
+      const size = placement.fontSizePt;
+      const lh = lineHeight(size);
 
-  const strLine = formatFormV1StrassePlzOrt(data);
-  pageStr.drawText(strLine, {
-    x: pStr.x,
-    y: pStr.y,
-    size,
-    font,
-    color: black,
-    maxWidth: formV1StrasseLineMaxWidthPt(),
-    lineHeight,
-  });
+      if (fieldId === "vornameNachname") {
+        const t = formatFormV1VornameNachname(data);
+        page.drawText(t, {
+          x: placement.x,
+          y: placement.y,
+          size,
+          font,
+          color: black,
+          maxWidth: formV1NameLineMaxWidthPt(),
+          lineHeight: lh,
+        });
+        continue;
+      }
+      if (fieldId === "strassePlzOrt") {
+        const t = formatFormV1StrassePlzOrt(data);
+        page.drawText(t, {
+          x: placement.x,
+          y: placement.y,
+          size,
+          font,
+          color: black,
+          maxWidth: formV1StrasseLineMaxWidthPt(),
+          lineHeight: lh,
+        });
+        continue;
+      }
+      if (fieldId === "geburtsdatum") {
+        const birthText = sanitizeFormText(formatGeburtsdatumOhnePunkte(data.geburtsdatumIso), 8);
+        const tr = placement.trackingPt ?? meta.defaultTrackingPt ?? 9.3;
+        drawTextWithTracking(page, birthText, {
+          x: placement.x,
+          y: placement.y,
+          size,
+          font,
+          color: black,
+          trackingPt: tr,
+        });
+        continue;
+      }
+      if (fieldId === "versichertennummer") {
+        const versText = sanitizeVersichertennummer(data.versichertennummer, 24);
+        const tr = placement.trackingPt ?? meta.defaultTrackingPt ?? 10.85;
+        drawTextWithTracking(page, versText, {
+          x: placement.x,
+          y: placement.y,
+          size,
+          font,
+          color: black,
+          trackingPt: tr,
+        });
+        continue;
+      }
+      if (fieldId === "krankenkasse") {
+        const kkText = sanitizeFormText(data.krankenkasse, 120);
+        const maxW = formV1KrankenkasseMaxWidthPtLocal(pageWidth, placement.x);
+        page.drawText(kkText, {
+          x: placement.x,
+          y: placement.y,
+          size,
+          font,
+          color: black,
+          maxWidth: maxW,
+          lineHeight: lh,
+        });
+      }
+      continue;
+    }
 
-  const birthText = sanitizeFormText(formatGeburtsdatumOhnePunkte(data.geburtsdatumIso), 8);
-  drawTextWithTracking(pageBirth, birthText, {
-    x: pBirth.x,
-    y: pBirth.y,
-    size,
-    font,
-    color: black,
-    trackingPt: FORM_V1_GEBURT_TRACKING_PT,
-  });
+    if (placement.kind === "checkbox") {
+      const label = meta.checkboxLabel ?? "";
+      drawCheckboxWithLabel(page, {
+        boxLeftX: placement.boxLeftX,
+        yBaseline: placement.yBaseline,
+        checked: checkboxChecked(fieldId, data),
+        label,
+        font,
+        fontSizePt: placement.fontSizePt,
+      });
+      continue;
+    }
 
-  const versText = sanitizeVersichertennummer(data.versichertennummer, 24);
-  drawTextWithTracking(pageVers, versText, {
-    x: pVers.x,
-    y: pVers.y,
-    size,
-    font,
-    color: black,
-    trackingPt: FORM_V1_VERS_TRACKING_PT,
-  });
+    if (placement.kind === "signatureLabel") {
+      page.drawText(meta.sampleText || "Unterschrift", {
+        x: placement.x,
+        y: placement.y,
+        size: placement.fontSizePt,
+        font,
+        color: rgb(0.25, 0.25, 0.25),
+      });
+      continue;
+    }
 
-  const kkText = sanitizeFormText(data.krankenkasse, 120);
-  pageKk.drawText(kkText, {
-    x: pKk.x,
-    y: pKk.y,
-    size,
-    font,
-    color: black,
-    maxWidth: formV1KrankenkasseMaxWidthPtLocal(pageWidth),
-    lineHeight,
-  });
-
-  const rowY = FORM_V1_LAYOUT.kontaktCheckboxRowY;
-  drawCheckboxWithLabel(pageSig, {
-    boxLeftX: FORM_V1_LAYOUT.kontaktBoxTelefonischX,
-    yBaseline: rowY,
-    checked: data.kontaktTelefonisch,
-    label: "Telefonisch",
-    font,
-    fontSizePt: size,
-  });
-  drawCheckboxWithLabel(pageSig, {
-    boxLeftX: FORM_V1_LAYOUT.kontaktBoxVideocallX,
-    yBaseline: rowY,
-    checked: data.kontaktVideocall,
-    label: "Per Videocall",
-    font,
-    fontSizePt: size,
-  });
-  drawCheckboxWithLabel(pageSig, {
-    boxLeftX: FORM_V1_LAYOUT.kontaktBoxGeschaeftsraeumeX,
-    yBaseline: rowY,
-    checked: data.kontaktGeschaeftsraeume,
-    label: "In den Geschäftsräumen",
-    font,
-    fontSizePt: size,
-  });
-
-  pageSig.drawText("Unterschrift", {
-    x: pSigLabel.x,
-    y: pSigLabel.y,
-    size: size - 1,
-    font,
-    color: rgb(0.25, 0.25, 0.25),
-  });
-  pageSig.drawLine({
-    start: { x: pSigLine.x1, y: pSigLine.y },
-    end: { x: pSigLine.x2, y: pSigLine.y },
-    thickness: 0.6,
-    color: black,
-  });
+    if (placement.kind === "signatureLine") {
+      page.drawLine({
+        start: { x: placement.x1, y: placement.y },
+        end: { x: placement.x2, y: placement.y },
+        thickness: 0.6,
+        color: black,
+      });
+    }
+  }
 
   return doc.save();
 }

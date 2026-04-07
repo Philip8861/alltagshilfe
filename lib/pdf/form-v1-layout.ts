@@ -1,45 +1,36 @@
 /**
- * Statische Feldpositionen (PDF-Punkte, Ursprung unten links) — z. B. Admin PDF-Formularfelder.
- * Checkboxen/Unterschrift: Platzhalter — bei Bedarf im Layout-Labor nachziehen.
+ * Hilfsgrößen für Formular v1 (Spaltenbreiten). Koordinaten: form-v1-placements.ts.
  */
-export const FORM_V1_LAYOUT = {
-  vornameNachname: { pageIndex: 0, x: 69.65, y: 674.5 },
-  strassePlzOrt: { pageIndex: 0, x: 69.65, y: 660.64 },
-  geburtsdatum: { pageIndex: 0, x: 210.2, y: 709.81 },
-  versichertennummer: { pageIndex: 0, x: 381.1, y: 709.8 },
-  krankenkasse: { pageIndex: 0, x: 375.09, y: 661.69 },
-  /** Gemeinsame Text-Baseline für die drei Kontakt-Checkboxen. */
-  kontaktCheckboxRowY: 638,
-  kontaktBoxTelefonischX: 69.65,
-  kontaktBoxVideocallX: 230,
-  kontaktBoxGeschaeftsraeumeX: 400,
-  /** Unterschrift: Hinweistext und Unterschriftenlinie. */
-  unterschriftLabel: { pageIndex: 0, x: 69.65, y: 118 },
-  unterschriftLinie: { pageIndex: 0, x1: 69.65, x2: 420, y: 102 },
-} as const;
+import { FORM_V1_PLACEMENTS } from "@/lib/pdf/form-v1-placements";
 
 /** Abstand Textspalte → Krankenkassen-Spalte (pt). */
 export const FORM_V1_ADDRESS_COLUMN_GAP_PT = 10;
 
-function textColumnMaxWidthPt(leftX: number): number {
-  return (
-    FORM_V1_LAYOUT.krankenkasse.x - leftX - FORM_V1_ADDRESS_COLUMN_GAP_PT
-  );
+function assertTextPlacement(
+  id: "vornameNachname" | "strassePlzOrt" | "krankenkasse",
+): { x: number } {
+  const p = FORM_V1_PLACEMENTS[id];
+  if (p.kind !== "text") throw new Error(`Erwartet Text-Placement für ${id}`);
+  return p;
 }
 
 export function formV1NameLineMaxWidthPt(): number {
-  return textColumnMaxWidthPt(FORM_V1_LAYOUT.vornameNachname.x);
+  const k = assertTextPlacement("krankenkasse");
+  const n = assertTextPlacement("vornameNachname");
+  return k.x - n.x - FORM_V1_ADDRESS_COLUMN_GAP_PT;
 }
 
 export function formV1StrasseLineMaxWidthPt(): number {
-  return textColumnMaxWidthPt(FORM_V1_LAYOUT.strassePlzOrt.x);
+  const k = assertTextPlacement("krankenkasse");
+  const s = assertTextPlacement("strassePlzOrt");
+  return k.x - s.x - FORM_V1_ADDRESS_COLUMN_GAP_PT;
 }
 
-/** Schriftgröße auf dem Formular (pt). */
+/** Schriftgröße auf dem Formular (pt) — Fallback; pro Feld oft in Placements. */
 export const FORM_V1_FONT_SIZE_PT = 11;
 
-/** Festes Tracking (Geburtsdatum DDMMYYYY). */
+/** Fallback-Tracking (Geburtsdatum) — bevorzugt Placement.trackingPt. */
 export const FORM_V1_GEBURT_TRACKING_PT = 9.3;
 
-/** Festes Tracking (Versichertennummer). */
+/** Fallback-Tracking (Versichertennummer). */
 export const FORM_V1_VERS_TRACKING_PT = 10.85;

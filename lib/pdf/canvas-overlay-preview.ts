@@ -91,3 +91,100 @@ export function drawPlainTextOverlay(
 ): void {
   drawTrackedTextOverlay(ctx, { ...opts, trackingPt: 0 });
 }
+
+/** PDF-y (unten links) → Canvas-y (oben links), für Linien und Rechtecke. */
+export function canvasYFromPdfY(pdfY: number, pageHeightPt: number, canvasHeight: number): number {
+  return ((pageHeightPt - pdfY) / pageHeightPt) * canvasHeight;
+}
+
+const CHECKBOX_BOX_PT = 9;
+
+/** Näherung an `draw-checkbox.ts` für die Admin-Vorschau. */
+export function drawCheckboxOverlayPreview(
+  ctx: CanvasRenderingContext2D,
+  opts: {
+    pdfBoxLeftX: number;
+    pdfYBaseline: number;
+    label: string;
+    fontSizePt: number;
+    pageW: number;
+    pageH: number;
+    canvasW: number;
+    canvasH: number;
+    strokeStyle?: string;
+    fillStyle?: string;
+    checkedPreview?: boolean;
+  },
+): void {
+  const {
+    pdfBoxLeftX,
+    pdfYBaseline,
+    label,
+    fontSizePt,
+    pageW,
+    pageH,
+    canvasW,
+    canvasH,
+  } = opts;
+  const scaleX = canvasW / pageW;
+  const scaleY = canvasH / pageH;
+  const rectBottomPdfY = pdfYBaseline - fontSizePt * 0.35;
+  const boxPdf = CHECKBOX_BOX_PT;
+
+  const xCanvas = canvasXFromPdfX(pdfBoxLeftX, pageW, canvasW);
+  const bottomCanvasY = canvasYFromPdfY(rectBottomPdfY, pageH, canvasH);
+  const w = boxPdf * scaleX;
+  const h = boxPdf * scaleY;
+  const yTop = bottomCanvasY - h;
+
+  ctx.save();
+  ctx.strokeStyle = opts.strokeStyle ?? "rgba(37, 99, 235, 0.9)";
+  ctx.lineWidth = 1;
+  ctx.strokeRect(xCanvas, yTop, w, h);
+
+  if (opts.checkedPreview) {
+    ctx.beginPath();
+    const p = 1.6 * scaleX;
+    ctx.moveTo(xCanvas + p, yTop + h - p);
+    ctx.lineTo(xCanvas + w - p, yTop + p);
+    ctx.moveTo(xCanvas + p, yTop + p);
+    ctx.lineTo(xCanvas + w - p, yTop + h - p);
+    ctx.stroke();
+  }
+
+  if (label) {
+    const fontPx = Math.max(4, fontSizePt * scaleY);
+    ctx.font = `${fontPx}px Helvetica, Arial, sans-serif`;
+    ctx.fillStyle = opts.fillStyle ?? "rgba(37, 99, 235, 0.9)";
+    const textX = xCanvas + w + 4 * scaleX;
+    const baselineCanvasY = canvasBaselineYFromPdfY(pdfYBaseline, pageH, canvasH);
+    ctx.fillText(label, textX, baselineCanvasY);
+  }
+  ctx.restore();
+}
+
+export function drawPdfHorizontalLineOverlay(
+  ctx: CanvasRenderingContext2D,
+  opts: {
+    pdfX1: number;
+    pdfX2: number;
+    pdfY: number;
+    pageW: number;
+    pageH: number;
+    canvasW: number;
+    canvasH: number;
+    strokeStyle?: string;
+  },
+): void {
+  const x1 = canvasXFromPdfX(opts.pdfX1, opts.pageW, opts.canvasW);
+  const x2 = canvasXFromPdfX(opts.pdfX2, opts.pageW, opts.canvasW);
+  const y = canvasYFromPdfY(opts.pdfY, opts.pageH, opts.canvasH);
+  ctx.save();
+  ctx.strokeStyle = opts.strokeStyle ?? "rgba(37, 99, 235, 0.9)";
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(x1, y);
+  ctx.lineTo(x2, y);
+  ctx.stroke();
+  ctx.restore();
+}
