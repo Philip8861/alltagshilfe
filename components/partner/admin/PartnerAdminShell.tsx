@@ -58,6 +58,17 @@ export function PartnerAdminShell({ children }: Props) {
             );
           })}
           <Link
+            href="/partner/admin/pdf-coords"
+            className={iconButtonClass(pathname === "/partner/admin/pdf-coords")}
+            title="PDF-Koordinaten"
+          >
+            <span className="sr-only">PDF-Koordinaten</span>
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
+              <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z" strokeLinecap="round" strokeLinejoin="round" />
+              <path d="M14 2v6h6M16 13H8M16 17H8M10 9H8" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </Link>
+          <Link
             href="/partner/login"
             className={iconButtonClass(false)}
             title="Partner-Login"

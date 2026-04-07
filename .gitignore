@@ -42,3 +42,6 @@ coverage
 
 # Lokale PDF-Text-Extrakte (UTF-16 von Windows-Redirect; nicht committen)
 scripts/standortlisten-extract.txt
+
+# pdf.js-Worker (wird per npm postinstall aus pdfjs-dist kopiert)
+public/pdfjs/pdf.worker.min.mjs
