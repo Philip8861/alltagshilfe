@@ -6,6 +6,7 @@ import {
   canvasBaselineYFromPdfY,
   canvasXFromPdfX,
   drawCheckboxOverlayPreview,
+  drawCheckmarkXOnlyOverlay,
   drawPdfHorizontalLineOverlay,
   drawPlainTextOverlay,
   drawTrackedTextOverlay,
@@ -150,6 +151,14 @@ export function PdfFormFieldEditor() {
           checkedPreview,
           ...commonPage,
         });
+      } else if (f.shape === "checkmarkOnly") {
+        drawCheckmarkXOnlyOverlay(ctx, {
+          pdfBoxLeftX: f.boxLeftX,
+          pdfYBaseline: f.yBaseline,
+          fontSizePt: f.fontSizePt,
+          strokeStyle: stroke,
+          ...commonPage,
+        });
       } else if (f.shape === "signatureLabel") {
         drawPlainTextOverlay(ctx, {
           text: meta.sampleText || "Unterschrift",
@@ -159,7 +168,21 @@ export function PdfFormFieldEditor() {
           fillStyle: fill,
           ...commonPage,
         });
-      } else {
+      } else if (f.shape === "signatureGraphic") {
+        const cx = canvasXFromPdfX(f.x, pageSizePt.w, canvasSize.w);
+        const cy = canvasBaselineYFromPdfY(f.y, pageSizePt.h, canvasSize.h);
+        ctx.save();
+        ctx.translate(cx, cy);
+        ctx.rotate((f.rotateDeg * Math.PI) / 180);
+        ctx.strokeStyle = stroke;
+        ctx.lineWidth = Math.max(1, f.borderWidth * 1.2);
+        ctx.beginPath();
+        ctx.moveTo(0, 4);
+        ctx.bezierCurveTo(8, -8, 28, -6, 38, 2);
+        ctx.bezierCurveTo(48, 10, 58, -4, 68, 4);
+        ctx.stroke();
+        ctx.restore();
+      } else if (f.shape === "signatureLine") {
         drawPdfHorizontalLineOverlay(ctx, {
           pdfX1: f.x1,
           pdfX2: f.x2,
@@ -171,10 +194,10 @@ export function PdfFormFieldEditor() {
 
       let markPdfX = 0;
       let markPdfY = 0;
-      if (f.shape === "text" || f.shape === "signatureLabel") {
+      if (f.shape === "text" || f.shape === "signatureLabel" || f.shape === "signatureGraphic") {
         markPdfX = f.x;
         markPdfY = f.y;
-      } else if (f.shape === "checkbox") {
+      } else if (f.shape === "checkbox" || f.shape === "checkmarkOnly") {
         markPdfX = f.boxLeftX;
         markPdfY = f.yBaseline;
       } else {
@@ -313,15 +336,19 @@ export function PdfFormFieldEditor() {
       overlay.height,
     );
 
-    if (activeField.shape === "text" || activeField.shape === "signatureLabel") {
+    if (
+      activeField.shape === "text" ||
+      activeField.shape === "signatureLabel" ||
+      activeField.shape === "signatureGraphic"
+    ) {
       updateField(activeField.id, { x: round2(pdfX), y: round2(pdfY), pageIndex0 });
-    } else if (activeField.shape === "checkbox") {
+    } else if (activeField.shape === "checkbox" || activeField.shape === "checkmarkOnly") {
       updateField(activeField.id, {
         boxLeftX: round2(pdfX),
         yBaseline: round2(pdfY),
         pageIndex0,
       });
-    } else {
+    } else if (activeField.shape === "signatureLine") {
       updateField(activeField.id, {
         x1: round2(pdfX),
         lineY: round2(pdfY),
@@ -500,7 +527,7 @@ export function PdfFormFieldEditor() {
                   Noch keine Felder — „Alle aus Repo laden“ oder einzelnes Datenfeld hinzufügen.
                 </p>
               ) : (
-                <ul className="max-h-48 space-y-1 overflow-y-auto rounded border border-neutral-200 bg-white p-2 text-sm">
+                <ul className="max-h-72 space-y-1 overflow-y-auto rounded border border-neutral-200 bg-white p-2 text-sm">
                   {fields.map((f) => {
                     const meta = getFormV1DataFieldMeta(f.fieldId);
                     return (
@@ -543,7 +570,11 @@ export function PdfFormFieldEditor() {
                       Vorschau:{" "}
                       {activeField.shape === "checkbox"
                         ? (getFormV1DataFieldMeta(activeField.fieldId).checkboxLabel ?? "")
-                        : getFormV1DataFieldMeta(activeField.fieldId).sampleText || "—"}
+                        : activeField.shape === "checkmarkOnly"
+                          ? "nur Kreuz"
+                          : activeField.shape === "signatureGraphic"
+                            ? "Vektor-Unterschrift"
+                            : getFormV1DataFieldMeta(activeField.fieldId).sampleText || "—"}
                     </span>
                   </div>
 
@@ -632,7 +663,7 @@ export function PdfFormFieldEditor() {
                     </div>
                   )}
 
-                  {activeField.shape === "checkbox" && (
+                  {(activeField.shape === "checkbox" || activeField.shape === "checkmarkOnly") && (
                     <div className="grid grid-cols-2 gap-3">
                       <label className="text-sm">
                         <span className="font-medium text-neutral-800">boxLeftX</span>
@@ -654,6 +685,69 @@ export function PdfFormFieldEditor() {
                           value={activeField.yBaseline}
                           onChange={(e) =>
                             updateField(activeField.id, { yBaseline: Number(e.target.value) })
+                          }
+                          className="mt-1 w-full rounded border border-neutral-300 px-2 py-1.5 text-sm"
+                        />
+                      </label>
+                    </div>
+                  )}
+
+                  {activeField.shape === "signatureGraphic" && (
+                    <div className="grid grid-cols-2 gap-3">
+                      <label className="text-sm">
+                        <span className="font-medium text-neutral-800">x</span>
+                        <input
+                          type="number"
+                          step={0.1}
+                          value={activeField.x}
+                          onChange={(e) => updateField(activeField.id, { x: Number(e.target.value) })}
+                          className="mt-1 w-full rounded border border-neutral-300 px-2 py-1.5 text-sm"
+                        />
+                      </label>
+                      <label className="text-sm">
+                        <span className="font-medium text-neutral-800">y</span>
+                        <input
+                          type="number"
+                          step={0.1}
+                          value={activeField.y}
+                          onChange={(e) => updateField(activeField.id, { y: Number(e.target.value) })}
+                          className="mt-1 w-full rounded border border-neutral-300 px-2 py-1.5 text-sm"
+                        />
+                      </label>
+                      <label className="text-sm">
+                        <span className="font-medium text-neutral-800">scale</span>
+                        <input
+                          type="number"
+                          step={0.05}
+                          min={0.3}
+                          max={4}
+                          value={activeField.scale}
+                          onChange={(e) => updateField(activeField.id, { scale: Number(e.target.value) })}
+                          className="mt-1 w-full rounded border border-neutral-300 px-2 py-1.5 text-sm"
+                        />
+                      </label>
+                      <label className="text-sm">
+                        <span className="font-medium text-neutral-800">rotateDeg</span>
+                        <input
+                          type="number"
+                          step={0.5}
+                          value={activeField.rotateDeg}
+                          onChange={(e) =>
+                            updateField(activeField.id, { rotateDeg: Number(e.target.value) })
+                          }
+                          className="mt-1 w-full rounded border border-neutral-300 px-2 py-1.5 text-sm"
+                        />
+                      </label>
+                      <label className="text-sm sm:col-span-2">
+                        <span className="font-medium text-neutral-800">Linienstärke (borderWidth)</span>
+                        <input
+                          type="number"
+                          step={0.05}
+                          min={0.2}
+                          max={3}
+                          value={activeField.borderWidth}
+                          onChange={(e) =>
+                            updateField(activeField.id, { borderWidth: Number(e.target.value) })
                           }
                           className="mt-1 w-full rounded border border-neutral-300 px-2 py-1.5 text-sm"
                         />
@@ -714,20 +808,26 @@ export function PdfFormFieldEditor() {
                       ))}
                     </select>
                   </label>
-                  <label className="text-sm">
-                    <span className="font-medium text-neutral-800">Schriftgröße (pt)</span>
-                    <input
-                      type="number"
-                      step={0.5}
-                      min={6}
-                      max={24}
-                      value={activeField.fontSizePt}
-                      onChange={(e) =>
-                        updateField(activeField.id, { fontSizePt: Number(e.target.value) })
-                      }
-                      className="mt-1 w-full rounded border border-neutral-300 px-2 py-1.5 text-sm"
-                    />
-                  </label>
+                  {(activeField.shape === "text" ||
+                    activeField.shape === "checkbox" ||
+                    activeField.shape === "checkmarkOnly" ||
+                    activeField.shape === "signatureLabel" ||
+                    activeField.shape === "signatureLine") && (
+                    <label className="text-sm">
+                      <span className="font-medium text-neutral-800">Schriftgröße (pt)</span>
+                      <input
+                        type="number"
+                        step={0.5}
+                        min={6}
+                        max={24}
+                        value={activeField.fontSizePt}
+                        onChange={(e) =>
+                          updateField(activeField.id, { fontSizePt: Number(e.target.value) })
+                        }
+                        className="mt-1 w-full rounded border border-neutral-300 px-2 py-1.5 text-sm"
+                      />
+                    </label>
+                  )}
                 </>
               )}
 

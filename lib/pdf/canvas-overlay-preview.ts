@@ -188,3 +188,39 @@ export function drawPdfHorizontalLineOverlay(
   ctx.stroke();
   ctx.restore();
 }
+
+/** Nur Kreuz wie `drawCheckmarkOnly` (ohne Kästchen), für die Admin-Vorschau. */
+export function drawCheckmarkXOnlyOverlay(
+  ctx: CanvasRenderingContext2D,
+  opts: {
+    pdfBoxLeftX: number;
+    pdfYBaseline: number;
+    fontSizePt: number;
+    pageW: number;
+    pageH: number;
+    canvasW: number;
+    canvasH: number;
+    strokeStyle?: string;
+  },
+): void {
+  const scaleX = opts.canvasW / opts.pageW;
+  const scaleY = opts.canvasH / opts.pageH;
+  const boxPdf = CHECKBOX_BOX_PT;
+  const rectBottomPdfY = opts.pdfYBaseline - opts.fontSizePt * 0.35;
+  const xCanvas = canvasXFromPdfX(opts.pdfBoxLeftX, opts.pageW, opts.canvasW);
+  const bottomCanvasY = canvasYFromPdfY(rectBottomPdfY, opts.pageH, opts.canvasH);
+  const w = boxPdf * scaleX;
+  const h = boxPdf * scaleY;
+  const yTop = bottomCanvasY - h;
+  const p = 1.6 * scaleX;
+  ctx.save();
+  ctx.strokeStyle = opts.strokeStyle ?? "rgba(37, 99, 235, 0.9)";
+  ctx.lineWidth = 1.2;
+  ctx.beginPath();
+  ctx.moveTo(xCanvas + p, yTop + h - p * 0.7);
+  ctx.lineTo(xCanvas + w - p, yTop + p * 0.7);
+  ctx.moveTo(xCanvas + p, yTop + p * 0.7);
+  ctx.lineTo(xCanvas + w - p, yTop + h - p * 0.7);
+  ctx.stroke();
+  ctx.restore();
+}

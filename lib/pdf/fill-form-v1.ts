@@ -1,10 +1,20 @@
 import { PDFDocument, StandardFonts, rgb } from "pdf-lib";
-import { getFormV1DataFieldMeta } from "@/lib/pdf/form-v1-data-fields";
+import { drawCheckmarkOnly } from "@/lib/pdf/draw-checkmark-only";
 import { drawCheckboxWithLabel } from "@/lib/pdf/draw-checkbox";
+import { drawMaxMustermannSignature } from "@/lib/pdf/draw-max-mustermann-signature";
 import { drawTextWithTracking } from "@/lib/pdf/draw-text-with-tracking";
-import type { FormV1DataFieldId } from "@/lib/pdf/form-v1-data-fields";
+import {
+  getFormV1DataFieldMeta,
+  parseKatalogFieldItemId,
+  type FormV1DataFieldId,
+} from "@/lib/pdf/form-v1-data-fields";
 import { FORM_V1_PLACEMENTS } from "@/lib/pdf/form-v1-placements";
 import { formV1NameLineMaxWidthPt, formV1StrasseLineMaxWidthPt } from "@/lib/pdf/form-v1-layout";
+import {
+  computeKonfiguratorFieldValue,
+  KONFIGURATOR_CATALOG_IDS,
+  type KonfiguratorCartLine,
+} from "@/lib/pdf/konfigurator-catalog";
 
 export type FormV1FillInput = {
   vorname: string;
@@ -20,6 +30,16 @@ export type FormV1FillInput = {
   kontaktTelefonisch: boolean;
   kontaktVideocall: boolean;
   kontaktGeschaeftsraeume: boolean;
+  /** Freie Hakenpositionen (nur Kreuz an fester Koordinate). */
+  haken1: boolean;
+  haken2: boolean;
+  haken3: boolean;
+  haken4: boolean;
+  haken5: boolean;
+  /** Konfigurator-Warenkorb für Katalog-Felder (Mengen/Faktoren). */
+  konfiguratorLines?: KonfiguratorCartLine[];
+  /** Stilisierte Vektor-Unterschrift „Max Mustermann“ über der Linie. */
+  drawMaxMustermannSignature: boolean;
 };
 
 function formV1KrankenkasseMaxWidthPtLocal(pageWidth: number, krankenkasseLeftX: number): number {
@@ -41,6 +61,18 @@ export const FORM_V1_PREVIEW_SAMPLE: FormV1FillInput = {
   kontaktTelefonisch: true,
   kontaktVideocall: false,
   kontaktGeschaeftsraeume: false,
+  haken1: true,
+  haken2: false,
+  haken3: true,
+  haken4: false,
+  haken5: false,
+  konfiguratorLines: [
+    { id: 9109, count: 2 },
+    { id: 9112, count: 1, selectedMl: 500 },
+    { id: 9111, count: 1, selectedMl: 1000 },
+    { id: 9101, count: 1 },
+  ],
+  drawMaxMustermannSignature: true,
 };
 
 /** Entfernt Steuerzeichen; Standard-Fonts tolerieren keine beliebigen Unicode-Zeichen. */
@@ -88,7 +120,7 @@ export function formatFormV1StrassePlzOrt(
   return [str, nr, plz, ort].filter(Boolean).join(" ");
 }
 
-const DRAW_ORDER: FormV1DataFieldId[] = [
+const DRAW_ORDER_BASE: FormV1DataFieldId[] = [
   "vornameNachname",
   "strassePlzOrt",
   "geburtsdatum",
@@ -97,20 +129,34 @@ const DRAW_ORDER: FormV1DataFieldId[] = [
   "kontaktTelefonisch",
   "kontaktVideocall",
   "kontaktGeschaeftsraeume",
+  "haken1",
+  "haken2",
+  "haken3",
+  "haken4",
+  "haken5",
+];
+
+const DRAW_ORDER_KATALOG: FormV1DataFieldId[] = KONFIGURATOR_CATALOG_IDS.map(
+  (id) => `katalog_${id}` as FormV1DataFieldId,
+);
+
+const DRAW_ORDER_TAIL: FormV1DataFieldId[] = [
   "unterschriftLabel",
+  "unterschriftMaxMustermann",
   "unterschriftLinie",
 ];
 
+const DRAW_ORDER: FormV1DataFieldId[] = [...DRAW_ORDER_BASE, ...DRAW_ORDER_KATALOG, ...DRAW_ORDER_TAIL];
+
 function maxPageIndex(): number {
   let m = 0;
-  for (const id of DRAW_ORDER) {
-    const p = FORM_V1_PLACEMENTS[id];
+  for (const p of Object.values(FORM_V1_PLACEMENTS)) {
     m = Math.max(m, p.pageIndex);
   }
   return m;
 }
 
-function checkboxChecked(fieldId: FormV1DataFieldId, data: FormV1FillInput): boolean {
+function checkboxOrHakenChecked(fieldId: FormV1DataFieldId, data: FormV1FillInput): boolean {
   switch (fieldId) {
     case "kontaktTelefonisch":
       return data.kontaktTelefonisch;
@@ -118,13 +164,23 @@ function checkboxChecked(fieldId: FormV1DataFieldId, data: FormV1FillInput): boo
       return data.kontaktVideocall;
     case "kontaktGeschaeftsraeume":
       return data.kontaktGeschaeftsraeume;
+    case "haken1":
+      return data.haken1;
+    case "haken2":
+      return data.haken2;
+    case "haken3":
+      return data.haken3;
+    case "haken4":
+      return data.haken4;
+    case "haken5":
+      return data.haken5;
     default:
       return false;
   }
 }
 
 /**
- * Befüllt die leere Vorlage-PDF (Bytes). Nutzt ausschließlich Koordinaten aus `FORM_V1_PLACEMENTS`.
+ * Befüllt die leere Vorlage-PDF (Bytes). Nutzt Koordinaten aus `FORM_V1_PLACEMENTS`.
  */
 export async function fillFormV1Pdf(
   templatePdfBytes: Uint8Array,
@@ -150,6 +206,24 @@ export async function fillFormV1Pdf(
     if (placement.kind === "text") {
       const size = placement.fontSizePt;
       const lh = lineHeight(size);
+      const kId = parseKatalogFieldItemId(fieldId);
+
+      if (kId != null) {
+        const v = computeKonfiguratorFieldValue(kId, data.konfiguratorLines);
+        const t = sanitizeFormText(v, 32);
+        if (t) {
+          page.drawText(t, {
+            x: placement.x,
+            y: placement.y,
+            size,
+            font,
+            color: black,
+            maxWidth: 200,
+            lineHeight: lh,
+          });
+        }
+        continue;
+      }
 
       if (fieldId === "vornameNachname") {
         const t = formatFormV1VornameNachname(data);
@@ -224,11 +298,22 @@ export async function fillFormV1Pdf(
       drawCheckboxWithLabel(page, {
         boxLeftX: placement.boxLeftX,
         yBaseline: placement.yBaseline,
-        checked: checkboxChecked(fieldId, data),
+        checked: checkboxOrHakenChecked(fieldId, data),
         label,
         font,
         fontSizePt: placement.fontSizePt,
       });
+      continue;
+    }
+
+    if (placement.kind === "checkmarkOnly") {
+      if (checkboxOrHakenChecked(fieldId, data)) {
+        drawCheckmarkOnly(page, {
+          boxLeftX: placement.boxLeftX,
+          yBaseline: placement.yBaseline,
+          fontSizePt: placement.fontSizePt,
+        });
+      }
       continue;
     }
 
@@ -240,6 +325,19 @@ export async function fillFormV1Pdf(
         font,
         color: rgb(0.25, 0.25, 0.25),
       });
+      continue;
+    }
+
+    if (placement.kind === "signatureGraphic") {
+      if (data.drawMaxMustermannSignature) {
+        drawMaxMustermannSignature(page, {
+          x: placement.x,
+          y: placement.y,
+          scale: placement.scale,
+          rotateDeg: placement.rotateDeg,
+          borderWidth: placement.borderWidth,
+        });
+      }
       continue;
     }
 

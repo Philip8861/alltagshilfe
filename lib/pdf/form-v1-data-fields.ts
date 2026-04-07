@@ -1,16 +1,26 @@
 /**
  * Semantische Datenfelder für Formular-PDF v1.
- * Jede ID entspricht genau einer befüllbaren Stelle (Koordinaten in form-v1-placements.ts).
+ * Katalog-Felder: `katalog_<ID>` — synchron zu `konfigurator-catalog.ts`.
  */
+import {
+  KONFIGURATOR_CATALOG,
+  type KonfiguratorCatalogId,
+  katalogFieldIdForItem,
+} from "@/lib/pdf/konfigurator-catalog";
+
 export const FORM_V1_DATA_FIELD_KINDS = [
   "plainText",
   "trackedText",
   "checkbox",
+  "checkmarkOnly",
   "signatureLabel",
   "signatureLine",
+  "signatureGraphic",
 ] as const;
 
 export type FormV1DataFieldKind = (typeof FORM_V1_DATA_FIELD_KINDS)[number];
+
+export type FormV1KatalogFieldId = `katalog_${KonfiguratorCatalogId}`;
 
 export type FormV1DataFieldId =
   | "vornameNachname"
@@ -21,24 +31,27 @@ export type FormV1DataFieldId =
   | "kontaktTelefonisch"
   | "kontaktVideocall"
   | "kontaktGeschaeftsraeume"
+  | "haken1"
+  | "haken2"
+  | "haken3"
+  | "haken4"
+  | "haken5"
   | "unterschriftLabel"
-  | "unterschriftLinie";
+  | "unterschriftMaxMustermann"
+  | "unterschriftLinie"
+  | FormV1KatalogFieldId;
 
 export type FormV1DataFieldMeta = {
   id: FormV1DataFieldId;
-  /** Anzeige im Admin-Editor (Feld hinzufügen) */
   editorLabel: string;
   kind: FormV1DataFieldKind;
-  /** Mustertext nur für die Canvas-Vorschau im Editor */
   sampleText: string;
-  /** Checkbox-Beschriftung (nur kind checkbox) */
   checkboxLabel?: string;
-  /** Standard für neue Felder im Editor */
   defaultFontSizePt: number;
   defaultTrackingPt?: number;
 };
 
-export const FORM_V1_DATA_FIELDS: readonly FormV1DataFieldMeta[] = [
+const BASE_FORM_V1_DATA_FIELDS: readonly FormV1DataFieldMeta[] = [
   {
     id: "vornameNachname",
     editorLabel: "Daten: Vorname & Nachname (eine Zeile)",
@@ -101,11 +114,53 @@ export const FORM_V1_DATA_FIELDS: readonly FormV1DataFieldMeta[] = [
     defaultFontSizePt: 11,
   },
   {
+    id: "haken1",
+    editorLabel: "Nur Haken 1 (Koordinate, kein Kästchen)",
+    kind: "checkmarkOnly",
+    sampleText: "✓",
+    defaultFontSizePt: 11,
+  },
+  {
+    id: "haken2",
+    editorLabel: "Nur Haken 2 (Koordinate, kein Kästchen)",
+    kind: "checkmarkOnly",
+    sampleText: "✓",
+    defaultFontSizePt: 11,
+  },
+  {
+    id: "haken3",
+    editorLabel: "Nur Haken 3 (Koordinate, kein Kästchen)",
+    kind: "checkmarkOnly",
+    sampleText: "✓",
+    defaultFontSizePt: 11,
+  },
+  {
+    id: "haken4",
+    editorLabel: "Nur Haken 4 (Koordinate, kein Kästchen)",
+    kind: "checkmarkOnly",
+    sampleText: "✓",
+    defaultFontSizePt: 11,
+  },
+  {
+    id: "haken5",
+    editorLabel: "Nur Haken 5 (Koordinate, kein Kästchen)",
+    kind: "checkmarkOnly",
+    sampleText: "✓",
+    defaultFontSizePt: 11,
+  },
+  {
     id: "unterschriftLabel",
     editorLabel: "Beschriftung: Unterschrift (Hinweistext)",
     kind: "signatureLabel",
     sampleText: "Unterschrift",
     defaultFontSizePt: 10,
+  },
+  {
+    id: "unterschriftMaxMustermann",
+    editorLabel: "Vektor-Unterschrift Max Mustermann (stilisiert)",
+    kind: "signatureGraphic",
+    sampleText: "",
+    defaultFontSizePt: 11,
   },
   {
     id: "unterschriftLinie",
@@ -114,7 +169,29 @@ export const FORM_V1_DATA_FIELDS: readonly FormV1DataFieldMeta[] = [
     sampleText: "",
     defaultFontSizePt: 11,
   },
-] as const;
+];
+
+const KATALOG_FORM_V1_DATA_FIELDS: FormV1DataFieldMeta[] = KONFIGURATOR_CATALOG.map((row) => {
+  const id = katalogFieldIdForItem(row.id);
+  const unitHint =
+    row.unit === "ml"
+      ? "Faktor = Σ(ml×Anz)/100"
+      : row.unit === "count"
+        ? "Anzahl Zeilen"
+        : `Stück = ${row.piecesPerPack ?? "?"} × Anzahl`;
+  return {
+    id,
+    editorLabel: `Konfigurator ${row.name} (${unitHint})`,
+    kind: "plainText" as const,
+    sampleText: "0",
+    defaultFontSizePt: 9,
+  };
+});
+
+export const FORM_V1_DATA_FIELDS: readonly FormV1DataFieldMeta[] = [
+  ...BASE_FORM_V1_DATA_FIELDS,
+  ...KATALOG_FORM_V1_DATA_FIELDS,
+];
 
 const byId = Object.fromEntries(FORM_V1_DATA_FIELDS.map((d) => [d.id, d])) as Record<
   FormV1DataFieldId,
@@ -125,6 +202,17 @@ export function getFormV1DataFieldMeta(id: FormV1DataFieldId): FormV1DataFieldMe
   return byId[id];
 }
 
+const KATALOG_ID_SET = new Set<number>(KONFIGURATOR_CATALOG.map((r) => r.id));
+
 export function isFormV1DataFieldId(s: string): s is FormV1DataFieldId {
-  return s in byId;
+  if (s in byId) return true;
+  if (!s.startsWith("katalog_")) return false;
+  const n = Number(s.slice("katalog_".length));
+  return Number.isInteger(n) && KATALOG_ID_SET.has(n);
+}
+
+export function parseKatalogFieldItemId(fieldId: string): KonfiguratorCatalogId | null {
+  if (!fieldId.startsWith("katalog_")) return null;
+  const n = Number(fieldId.slice("katalog_".length));
+  return KATALOG_ID_SET.has(n) ? (n as KonfiguratorCatalogId) : null;
 }

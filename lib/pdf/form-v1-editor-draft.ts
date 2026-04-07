@@ -29,11 +29,31 @@ export type PdfFormV1FieldDraft =
   | {
       id: string;
       fieldId: FormV1DataFieldId;
+      shape: "checkmarkOnly";
+      pageIndex0: number;
+      boxLeftX: number;
+      yBaseline: number;
+      fontSizePt: number;
+    }
+  | {
+      id: string;
+      fieldId: FormV1DataFieldId;
       shape: "signatureLabel";
       pageIndex0: number;
       x: number;
       y: number;
       fontSizePt: number;
+    }
+  | {
+      id: string;
+      fieldId: FormV1DataFieldId;
+      shape: "signatureGraphic";
+      pageIndex0: number;
+      x: number;
+      y: number;
+      scale: number;
+      rotateDeg: number;
+      borderWidth: number;
     }
   | {
       id: string;
@@ -74,6 +94,17 @@ export function createDraftFromFieldId(fieldId: FormV1DataFieldId, id: string): 
       fontSizePt: p.fontSizePt,
     };
   }
+  if (p.kind === "checkmarkOnly") {
+    return {
+      id,
+      fieldId,
+      shape: "checkmarkOnly",
+      pageIndex0: p.pageIndex,
+      boxLeftX: p.boxLeftX,
+      yBaseline: p.yBaseline,
+      fontSizePt: p.fontSizePt,
+    };
+  }
   if (p.kind === "signatureLabel") {
     return {
       id,
@@ -83,6 +114,19 @@ export function createDraftFromFieldId(fieldId: FormV1DataFieldId, id: string): 
       x: p.x,
       y: p.y,
       fontSizePt: p.fontSizePt,
+    };
+  }
+  if (p.kind === "signatureGraphic") {
+    return {
+      id,
+      fieldId,
+      shape: "signatureGraphic",
+      pageIndex0: p.pageIndex,
+      x: p.x,
+      y: p.y,
+      scale: p.scale,
+      rotateDeg: p.rotateDeg,
+      borderWidth: p.borderWidth,
     };
   }
   return {
@@ -124,6 +168,15 @@ export function draftToPlacement(d: PdfFormV1FieldDraft): FormV1FieldPlacement {
       fontSizePt: d.fontSizePt,
     };
   }
+  if (d.shape === "checkmarkOnly") {
+    return {
+      kind: "checkmarkOnly",
+      pageIndex: d.pageIndex0,
+      boxLeftX: d.boxLeftX,
+      yBaseline: d.yBaseline,
+      fontSizePt: d.fontSizePt,
+    };
+  }
   if (d.shape === "signatureLabel") {
     return {
       kind: "signatureLabel",
@@ -131,6 +184,17 @@ export function draftToPlacement(d: PdfFormV1FieldDraft): FormV1FieldPlacement {
       x: d.x,
       y: d.y,
       fontSizePt: d.fontSizePt,
+    };
+  }
+  if (d.shape === "signatureGraphic") {
+    return {
+      kind: "signatureGraphic",
+      pageIndex: d.pageIndex0,
+      x: d.x,
+      y: d.y,
+      scale: d.scale,
+      rotateDeg: d.rotateDeg,
+      borderWidth: d.borderWidth,
     };
   }
   return {
@@ -185,6 +249,16 @@ export function draftsFromPlacementsJson(
         yBaseline: Number(p.yBaseline),
         fontSizePt: Number(p.fontSizePt),
       });
+    } else if (kind === "checkmarkOnly") {
+      drafts.push({
+        id: newId(),
+        fieldId: key as FormV1DataFieldId,
+        shape: "checkmarkOnly",
+        pageIndex0: Number(p.pageIndex),
+        boxLeftX: Number(p.boxLeftX),
+        yBaseline: Number(p.yBaseline),
+        fontSizePt: Number(p.fontSizePt),
+      });
     } else if (kind === "signatureLabel") {
       drafts.push({
         id: newId(),
@@ -194,6 +268,18 @@ export function draftsFromPlacementsJson(
         x: Number(p.x),
         y: Number(p.y),
         fontSizePt: Number(p.fontSizePt),
+      });
+    } else if (kind === "signatureGraphic") {
+      drafts.push({
+        id: newId(),
+        fieldId: key as FormV1DataFieldId,
+        shape: "signatureGraphic",
+        pageIndex0: Number(p.pageIndex),
+        x: Number(p.x),
+        y: Number(p.y),
+        scale: Number(p.scale),
+        rotateDeg: Number(p.rotateDeg),
+        borderWidth: Number(p.borderWidth),
       });
     } else if (kind === "signatureLine") {
       drafts.push({

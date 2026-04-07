@@ -8,7 +8,10 @@ function formatProductDisplayName(name) {
     .trim();
 }
 
-/** Im Repo gepflegte Artikel (feste IDs; 9106 entfällt); Reihenfolge = Darstellung im Konfigurator. */
+/**
+ * Im Repo gepflegte Artikel (feste IDs; 9106 entfällt); Reihenfolge = Darstellung im Konfigurator.
+ * PDF-Formular-Katalogfelder: IDs mit `lib/pdf/konfigurator-catalog.ts` abgleichen.
+ */
 const BUNDLED_CATALOG_ITEMS = [
   {
     id: 9102,
