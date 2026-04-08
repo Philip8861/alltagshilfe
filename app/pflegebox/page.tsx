@@ -23,16 +23,19 @@ export default function PflegeboxPage() {
       <div className="flex w-full justify-center px-4 pb-2 pt-4 sm:pb-3 sm:pt-5">
         {/* kein overflow-hidden: sonst wird drop-shadow abgeschnitten; natives img: zuverlässig aus /public */}
         <div className="flex w-full max-w-xl justify-center bg-[#f1f9fb] px-2 pb-6 pt-1">
-          {/* eslint-disable-next-line @next/next/no-img-element -- statische Asset-URL wie Startseiten-Hero */}
-          <img
-            src={PFLEGEBOX_HERO_SRC}
-            alt="Pflegebox – Abbildung der Produktbox"
-            width={720}
-            height={480}
-            decoding="async"
-            fetchPriority="high"
-            className={`h-auto max-h-[min(42vh,320px)] w-auto max-w-full object-contain object-center ${heroImageDropShadowClass}`}
-          />
+          {/* Crop + leichter Zoom: weißer Rand im Foto wird weggeschnitten (wie Konfigurator-Icon) */}
+          <div className="relative mx-auto aspect-[817/554] h-[min(42vh,320px)] w-auto max-w-full overflow-hidden rounded-2xl bg-[#f1f9fb]">
+            {/* eslint-disable-next-line @next/next/no-img-element -- statische Asset-URL wie Startseiten-Hero */}
+            <img
+              src={PFLEGEBOX_HERO_SRC}
+              alt="Pflegebox – Abbildung der Produktbox"
+              width={817}
+              height={554}
+              decoding="async"
+              fetchPriority="high"
+              className={`absolute inset-0 h-full w-full object-cover object-center [transform:scale(1.1)] [transform-origin:center] ${heroImageDropShadowClass}`}
+            />
+          </div>
         </div>
       </div>
       <PflegeboxConfiguratorIframe />

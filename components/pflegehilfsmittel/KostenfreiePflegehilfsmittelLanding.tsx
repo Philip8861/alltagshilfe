@@ -71,16 +71,18 @@ export function KostenfreiePflegehilfsmittelLanding() {
 
           <div className="w-full lg:w-1/2">
             <div className="rounded-2xl border-4 border-white bg-[#fafbfc] px-2 pb-8 pt-2">
-              {/* eslint-disable-next-line @next/next/no-img-element -- statische Asset-URL, konsistent mit /pflegebox */}
-              <img
-                src={KOSTENFREI_HERO_IMG}
-                alt="Pflegebox – Abbildung der Produktbox"
-                width={720}
-                height={480}
-                decoding="async"
-                fetchPriority="high"
-                className={`mx-auto block h-auto max-h-[min(42vh,340px)] w-auto max-w-full object-contain object-center lg:max-h-[min(48vh,380px)] ${heroImageDropShadowClass}`}
-              />
+              <div className="relative mx-auto aspect-[817/554] h-[min(42vh,340px)] w-auto max-w-full overflow-hidden rounded-xl bg-[#fafbfc] lg:h-[min(48vh,380px)]">
+                {/* eslint-disable-next-line @next/next/no-img-element -- statische Asset-URL, konsistent mit /pflegebox */}
+                <img
+                  src={KOSTENFREI_HERO_IMG}
+                  alt="Pflegebox – Abbildung der Produktbox"
+                  width={817}
+                  height={554}
+                  decoding="async"
+                  fetchPriority="high"
+                  className={`absolute inset-0 h-full w-full object-cover object-center [transform:scale(1.1)] [transform-origin:center] ${heroImageDropShadowClass}`}
+                />
+              </div>
             </div>
           </div>
         </section>
