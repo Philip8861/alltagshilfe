@@ -3,11 +3,8 @@ import Link from "next/link";
 import { siteConfig } from "@/config/site";
 import { PFLEGEBOX_KONFIGURATOR_PAGE } from "@/lib/pflegebox-konfigurator-path";
 
-const KOSTENFREI_HERO_IMG = "/images/pflegebox1.webp";
-
-/** Anzeige 50 % der nativen Pixelgröße (877×536 → 439×268), ohne Schatten oder Rahmen-Wrapper. */
-const KOSTENFREI_HERO_WIDTH = 439;
-const KOSTENFREI_HERO_HEIGHT = 268;
+/** Einziges Hero-Bild dieser Seite (Datei unverändert aus /public/images). */
+const KOSTENFREI_HERO_IMG = "/images/kostenfreiepflegehilfsmittel.webp";
 
 const paketItems = [
   "Einmalhandschuhe",
@@ -74,13 +71,12 @@ export function KostenfreiePflegehilfsmittelLanding() {
               {/* eslint-disable-next-line @next/next/no-img-element -- statische Asset-URL */}
               <img
                 src={KOSTENFREI_HERO_IMG}
-                alt="Pflegebox – Abbildung der Produktbox"
-                width={KOSTENFREI_HERO_WIDTH}
-                height={KOSTENFREI_HERO_HEIGHT}
+                alt="Kostenfreie Pflegehilfsmittel – Übersicht"
+                width={1162}
+                height={845}
                 decoding="async"
                 fetchPriority="high"
-                className="h-auto max-w-full object-contain object-center"
-                style={{ width: `${KOSTENFREI_HERO_WIDTH}px`, maxWidth: "100%" }}
+                className="h-auto w-full max-w-full"
               />
             </div>
           </div>
