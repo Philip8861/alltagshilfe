@@ -120,16 +120,16 @@ export const FORM_V1_PLACEMENTS: Record<FormV1DataFieldId, FormV1FieldPlacement>
   },
   kontaktTelefonisch: {
     kind: "checkbox",
-    pageIndex: 0,
-    boxLeftX: 69.65,
-    yBaseline: 638,
+    pageIndex: 1,
+    boxLeftX: 252.46,
+    yBaseline: 576.78,
     fontSizePt: 11,
   },
   kontaktVideocall: {
     kind: "checkbox",
-    pageIndex: 0,
-    boxLeftX: 230,
-    yBaseline: 638,
+    pageIndex: 1,
+    boxLeftX: 252.46,
+    yBaseline: 576.78,
     fontSizePt: 11,
   },
   unterschriftMaxMustermann: {

@@ -1,10 +1,38 @@
+import { readFile } from "node:fs/promises";
 import { NextResponse } from "next/server";
 import { headers } from "next/headers";
 import { buildBrandedNotificationHtml } from "@/lib/email/branded-html";
-import { sendInternalMail } from "@/lib/email/internal-smtp";
+import { resolveRecipientsForKind, sendInternalMail } from "@/lib/email/internal-smtp";
+import { fillFormV1Pdf } from "@/lib/pdf/fill-form-v1";
+import {
+  buildFormV1FillInputFromPflegeboxOrder,
+  parseSignaturePngDataUrl,
+} from "@/lib/pdf/pflegebox-order-to-form-v1";
+import { resolveFormV1TemplatePath } from "@/lib/pdf/resolve-form-v1-template";
 import { rateLimitPflegeboxOrder } from "@/lib/rate-limit";
 import { pflegeboxOrderBodySchema, type PflegeboxOrderBody } from "@/lib/validations/pflegebox-order";
 import { createSupabaseServiceRoleClient, resolvePartnerProfileId } from "@/lib/supabase/service";
+
+/** Immer Empfänger für den ausgefüllten PDF-Anhang (zusätzlich zu NOTIFICATION_TO_PFLEGEBOX / NOTIFICATION_TO). */
+const PFLEGEBOX_FORM_PDF_RECIPIENT = "info@alltagshilfe-sued.de";
+
+function pflegeboxMailRecipients(): string[] {
+  const seen = new Set<string>();
+  const out: string[] = [];
+  for (const r of resolveRecipientsForKind("pflegebox")) {
+    const k = r.trim().toLowerCase();
+    if (!k || seen.has(k)) continue;
+    seen.add(k);
+    out.push(r.trim());
+  }
+  const fixed = PFLEGEBOX_FORM_PDF_RECIPIENT.trim();
+  const fk = fixed.toLowerCase();
+  if (fixed && !seen.has(fk)) {
+    seen.add(fk);
+    out.push(fixed);
+  }
+  return out;
+}
 
 async function clientIp(): Promise<string> {
   try {
@@ -190,10 +218,36 @@ export async function POST(request: Request) {
   }
 
   const tipNotiz = buildTipNotiz(parsed.data.cartLines, parsed.data.totalBudgetUsed, c);
+
+  let formPdfAttachment: { filename: string; content: Buffer; contentType: string } | undefined;
+  try {
+    const sigBytes = parseSignaturePngDataUrl(parsed.data.signatureDataUrl);
+    if (sigBytes && sigBytes.length > 0) {
+      const templatePath = resolveFormV1TemplatePath();
+      const templateBytes = await readFile(templatePath);
+      const fillInput = buildFormV1FillInputFromPflegeboxOrder(parsed.data, sigBytes);
+      const filled = await fillFormV1Pdf(templateBytes, fillInput);
+      formPdfAttachment = {
+        filename: `Pflegebox-Formular-${externalRef}.pdf`,
+        content: Buffer.from(filled),
+        contentType: "application/pdf",
+      };
+    }
+  } catch (e) {
+    const msg = e instanceof Error ? e.message : "unknown";
+    console.error("[pflegebox-order] Formular-PDF konnte nicht erzeugt werden:", msg);
+  }
+
+  const pdfHinweis = formPdfAttachment
+    ? "Ausgefülltes Formular-PDF: siehe Anhang."
+    : "Hinweis: Das ausgefüllte Formular-PDF konnte nicht erzeugt werden (Vorlage fehlt oder technischer Fehler).";
+
   const mailBody = [
     "Neue Pflegebox-Bestellung (Konfigurator)",
     `Referenz: ${externalRef}`,
     orderId ? `Interne ID: ${orderId}` : null,
+    "",
+    pdfHinweis,
     "",
     tipNotiz,
   ]
@@ -215,10 +269,22 @@ export async function POST(request: Request) {
 
   const mailResult = await sendInternalMail({
     kind: "pflegebox",
+    toOverride: pflegeboxMailRecipients(),
     subject: `Pflegebox-Bestellung ${externalRef}`,
     text: mailBody,
     html: mailHtml,
     replyTo: c.email?.trim() || undefined,
+    ...(formPdfAttachment
+      ? {
+          attachments: [
+            {
+              filename: formPdfAttachment.filename,
+              content: formPdfAttachment.content,
+              contentType: formPdfAttachment.contentType,
+            },
+          ],
+        }
+      : {}),
   });
   if (!mailResult.ok && mailResult.code === "smtp_not_configured") {
     console.warn(

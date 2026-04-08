@@ -1,4 +1,4 @@
-import { PDFDocument, StandardFonts, rgb } from "pdf-lib";
+import { degrees, PDFDocument, StandardFonts, rgb } from "pdf-lib";
 import { drawCheckboxWithLabel } from "@/lib/pdf/draw-checkbox";
 import { drawMaxMustermannSignature } from "@/lib/pdf/draw-max-mustermann-signature";
 import { drawTextWithTracking } from "@/lib/pdf/draw-text-with-tracking";
@@ -37,17 +37,25 @@ export type FormV1FillInput = {
    */
   aktuellesDatumDe?: string;
   /**
-   * Nur wenn gesetzt: zwei Kontakt-Kästchen (ohne Beschriftungstext) werden gezeichnet.
+   * Nur wenn gesetzt: Kontakt-Kästchen (ohne Beschriftungstext) werden gezeichnet.
    * Weglassen → keine Checkboxen.
    */
   kontakt?: {
     telefonisch: boolean;
     videocall: boolean;
   };
+  /**
+   * Wenn Telefon- und Video-Kästchen dieselbe PDF-Position haben: ein Kästchen,
+   * angehakt wenn persönliche Beratung gewünscht (inkl. Vor-Ort).
+   * Ohne Setzen: bei gemeinsamer Position → telefonisch || videocall.
+   */
+  kontaktMergedChecked?: boolean;
   /** Konfigurator-Warenkorb für Katalog-Felder (Mengen/Faktoren). */
   konfiguratorLines?: KonfiguratorCartLine[];
-  /** Stilisierte Vektor-Unterschrift „Max Mustermann“. */
+  /** Stilisierte Vektor-Unterschrift „Max Mustermann“ (Vorschau). */
   drawMaxMustermannSignature: boolean;
+  /** Kunden-Unterschrift aus dem Wizard (PNG-Bytes); hat Vorrang vor Max Mustermann. */
+  signaturePngBytes?: Uint8Array;
 };
 
 function formV1KrankenkasseMaxWidthPtLocal(pageWidth: number, krankenkasseLeftX: number): number {
@@ -200,6 +208,31 @@ function kontaktCheckboxChecked(fieldId: FormV1DataFieldId, data: FormV1FillInpu
   }
 }
 
+function sameCheckboxPlacement(
+  a: (typeof FORM_V1_PLACEMENTS)[FormV1DataFieldId],
+  b: (typeof FORM_V1_PLACEMENTS)[FormV1DataFieldId],
+): boolean {
+  if (a.kind !== "checkbox" || b.kind !== "checkbox") return false;
+  return (
+    a.pageIndex === b.pageIndex &&
+    a.boxLeftX === b.boxLeftX &&
+    a.yBaseline === b.yBaseline &&
+    a.fontSizePt === b.fontSizePt
+  );
+}
+
+const KONTAKT_CHECKBOX_SAME_SPOT = sameCheckboxPlacement(
+  FORM_V1_PLACEMENTS.kontaktTelefonisch,
+  FORM_V1_PLACEMENTS.kontaktVideocall,
+);
+
+function kontaktMergedCheckboxChecked(data: FormV1FillInput): boolean {
+  if (data.kontaktMergedChecked != null) return data.kontaktMergedChecked;
+  const k = data.kontakt;
+  if (!k) return false;
+  return k.telefonisch || k.videocall;
+}
+
 /**
  * Befüllt die leere Vorlage-PDF (Bytes). Nutzt Koordinaten aus `FORM_V1_PLACEMENTS`.
  */
@@ -336,11 +369,16 @@ export async function fillFormV1Pdf(
 
     if (placement.kind === "checkbox") {
       if (data.kontakt == null) continue;
+      if (fieldId === "kontaktVideocall" && KONTAKT_CHECKBOX_SAME_SPOT) continue;
       const label = meta.checkboxLabel ?? "";
+      const checked =
+        fieldId === "kontaktTelefonisch" && KONTAKT_CHECKBOX_SAME_SPOT
+          ? kontaktMergedCheckboxChecked(data)
+          : kontaktCheckboxChecked(fieldId, data);
       drawCheckboxWithLabel(page, {
         boxLeftX: placement.boxLeftX,
         yBaseline: placement.yBaseline,
-        checked: kontaktCheckboxChecked(fieldId, data),
+        checked,
         label,
         font,
         fontSizePt: placement.fontSizePt,
@@ -349,7 +387,27 @@ export async function fillFormV1Pdf(
     }
 
     if (placement.kind === "signatureGraphic") {
-      if (data.drawMaxMustermannSignature) {
+      const png = data.signaturePngBytes;
+      if (png && png.length > 0) {
+        try {
+          const img = await doc.embedPng(png);
+          const iw = img.width;
+          const ih = img.height;
+          const maxWPt = Math.max(36, 72 * placement.scale);
+          const s = maxWPt / iw;
+          const dw = iw * s;
+          const dh = ih * s;
+          page.drawImage(img, {
+            x: placement.x,
+            y: placement.y,
+            width: dw,
+            height: dh,
+            rotate: degrees(placement.rotateDeg),
+          });
+        } catch {
+          /* Ungültige Signatur-Bytes — PDF ohne Bild fortführen */
+        }
+      } else if (data.drawMaxMustermannSignature) {
         drawMaxMustermannSignature(page, {
           x: placement.x,
           y: placement.y,

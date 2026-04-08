@@ -70,6 +70,12 @@ export function isInternalSmtpConfigured(): boolean {
   return hasAnyRecipient;
 }
 
+export type SendInternalMailAttachment = {
+  filename: string;
+  content: Buffer;
+  contentType?: string;
+};
+
 export type SendInternalMailInput = {
   kind: InternalNotificationKind;
   /** Wenn gesetzt (nicht leer), überschreibt die Empfängerliste für diesen Versand. */
@@ -80,6 +86,7 @@ export type SendInternalMailInput = {
   /** Gestaltetes HTML (Markenlayout); optional, sonst nur text. */
   html?: string;
   replyTo?: string;
+  attachments?: SendInternalMailAttachment[];
 };
 
 /**
@@ -134,6 +141,15 @@ export async function sendInternalMail(
       subject,
       text: input.text,
       ...(input.html ? { html: input.html } : {}),
+      ...(input.attachments && input.attachments.length > 0
+        ? {
+            attachments: input.attachments.map((a) => ({
+              filename: a.filename,
+              content: a.content,
+              ...(a.contentType ? { contentType: a.contentType } : {}),
+            })),
+          }
+        : {}),
     });
     return { ok: true };
   } catch (e) {
