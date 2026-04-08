@@ -137,7 +137,7 @@ export function KostenfreiePflegehilfsmittelLanding() {
                   height={845}
                   decoding="async"
                   fetchPriority="high"
-                  className={`h-auto w-full max-w-full origin-center object-contain motion-reduce:translate-x-0 motion-reduce:translate-y-0 motion-reduce:scale-100 translate-x-4 -translate-y-3 scale-[1.438] sm:translate-x-6 sm:-translate-y-5 sm:scale-[1.525] lg:translate-x-10 lg:-translate-y-8 lg:scale-[1.625] xl:translate-x-14 xl:-translate-y-10 ${KOSTENFREI_HERO_GLOW_CLASS}`}
+                  className={`h-auto w-full max-w-full origin-center object-contain motion-reduce:translate-x-0 motion-reduce:translate-y-0 motion-reduce:scale-100 translate-x-4 -translate-y-3 scale-[1.294] sm:translate-x-6 sm:-translate-y-5 sm:scale-[1.373] lg:translate-x-10 lg:-translate-y-8 lg:scale-[1.463] xl:translate-x-14 xl:-translate-y-10 ${KOSTENFREI_HERO_GLOW_CLASS}`}
                 />
               </div>
             </div>
