@@ -2463,6 +2463,7 @@ body.pflege-wizard-open {
   width: 100%;
   max-width: 38rem;
   margin: 0 auto;
+  margin-top: 2%;
 }
 
 @keyframes wiz-success-box-hop {
@@ -2502,8 +2503,8 @@ body.pflege-wizard-open {
 }
 
 .wiz-success-celebration .pflege-wizard-boxi-img {
-  width: 118px;
-  height: 118px;
+  width: 136px;
+  height: 136px;
   display: block;
 }
 
@@ -2787,15 +2788,15 @@ body.pflege-wizard-open {
 
 .pflege-wizard-order-load-boxi-wrap {
   position: relative;
-  width: 90px;
-  height: 90px;
+  width: 104px;
+  height: 104px;
   flex-shrink: 0;
 }
 
 .pflege-wizard-order-load-img {
   display: block;
-  width: 90px;
-  height: 90px;
+  width: 104px;
+  height: 104px;
   object-fit: contain;
 }
 

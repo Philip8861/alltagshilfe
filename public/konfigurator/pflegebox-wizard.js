@@ -158,6 +158,8 @@
   let sigLogicalH = 0;
   /** Letzte initiale Größe der Signaturfläche (bei Änderung wird neu initialisiert). */
   let sigOverlayDims = null;
+  let sigLastX = 0;
+  let sigLastY = 0;
 
   function showError(msg) {
     const sigLayer = $("pflege-wizard-sig-layer");
@@ -596,8 +598,8 @@
                 class="pflege-wizard-boxi-img"
                 src="images/pflegeboxi_freude.webp"
                 onerror="this.onerror=null;this.src='images/pflegeboxi.webp';"
-                width="126"
-                height="126"
+                width="136"
+                height="136"
                 alt="Pflegeboxi freut sich über Ihre Bestellung"
                 decoding="async"
               />
@@ -779,8 +781,10 @@
     if (r.width < 1 || r.height < 1) return { x: 0, y: 0 };
     const scaleX = sigLogicalW / r.width;
     const scaleY = sigLogicalH / r.height;
-    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-    const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+    const touch = e.touches?.[0] ?? e.changedTouches?.[0];
+    const clientX = touch ? touch.clientX : e.clientX;
+    const clientY = touch ? touch.clientY : e.clientY;
+    if (clientX === undefined || clientY === undefined) return { x: sigLastX, y: sigLastY };
     return { x: (clientX - r.left) * scaleX, y: (clientY - r.top) * scaleY };
   }
 
@@ -789,21 +793,39 @@
     e.preventDefault();
     sigDrawing = true;
     const p = sigPos(e);
+    sigLastX = p.x;
+    sigLastY = p.y;
     sigCtx.beginPath();
-    sigCtx.moveTo(p.x, p.y);
+    sigCtx.moveTo(sigLastX, sigLastY);
   }
 
   function sigMove(e) {
     if (!sigDrawing || !sigCtx) return;
     e.preventDefault();
     const p = sigPos(e);
-    sigCtx.lineTo(p.x, p.y);
+    const midX = (sigLastX + p.x) / 2;
+    const midY = (sigLastY + p.y) / 2;
+    sigCtx.beginPath();
+    sigCtx.moveTo(sigLastX, sigLastY);
+    sigCtx.quadraticCurveTo(p.x, p.y, midX, midY);
     sigCtx.stroke();
+    sigLastX = midX;
+    sigLastY = midY;
     sigHadStroke = true;
   }
 
   function sigEnd(e) {
     e.preventDefault();
+    if (sigDrawing && sigCtx) {
+      const p = sigPos(e);
+      sigCtx.beginPath();
+      sigCtx.moveTo(sigLastX, sigLastY);
+      sigCtx.lineTo(p.x, p.y);
+      sigCtx.stroke();
+      sigLastX = p.x;
+      sigLastY = p.y;
+      sigHadStroke = true;
+    }
     sigDrawing = false;
   }
 
@@ -823,7 +845,7 @@
   function initSignatureBitmap(W, H) {
     sigCanvas = $("wiz-signature");
     if (!sigCanvas || !sigCanvas.getContext) return;
-    const dpr = Math.min(typeof window !== "undefined" ? window.devicePixelRatio || 1 : 1, 2.5);
+    const dpr = Math.min(typeof window !== "undefined" ? window.devicePixelRatio || 1 : 1, 3.5);
     /* alpha: true → PNG mit Transparenz; kein weißes Rechteck im PDF (Unterschrift überdeckt sonst Formular). */
     sigCtx = sigCanvas.getContext("2d", { alpha: true });
     sigLogicalW = W;
@@ -834,9 +856,12 @@
     sigCtx.scale(dpr, dpr);
     sigCtx.clearRect(0, 0, W, H);
     sigCtx.strokeStyle = "#0f172a";
-    sigCtx.lineWidth = 4.5;
+    sigCtx.lineWidth = 4.25;
     sigCtx.lineCap = "round";
     sigCtx.lineJoin = "round";
+    sigCtx.miterLimit = 2;
+    sigCtx.imageSmoothingEnabled = true;
+    sigCtx.imageSmoothingQuality = "high";
     sigHadStroke = false;
   }
 
