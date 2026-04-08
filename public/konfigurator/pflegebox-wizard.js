@@ -875,8 +875,22 @@
     if (loadLayer) loadLayer.hidden = false;
   }
 
+  /** Signatur-Overlay-Buttons zurücksetzen (nach Erfolg blieb „Wird gesendet…“ sonst bis zum nächsten Mal hängen). */
+  function resetSignatureOverlayControls() {
+    const submitOv = $("wiz-sig-submit-overlay");
+    if (submitOv) {
+      submitOv.disabled = false;
+      submitOv.textContent = "Bestellung abschicken";
+    }
+    const resetOv = $("wiz-sig-reset-overlay");
+    if (resetOv) resetOv.disabled = false;
+    const backOv = $("wiz-sig-back-overlay");
+    if (backOv) backOv.disabled = false;
+  }
+
   function hideSigOverlay() {
     hideOrderSubmitLoading();
+    resetSignatureOverlayControls();
     const layer = $("pflege-wizard-sig-layer");
     if (layer) layer.hidden = true;
     document.querySelector("#pflegebox-wizard-backdrop .pflege-wizard-modal")?.removeAttribute("inert");
@@ -885,6 +899,8 @@
   function openSigOverlay() {
     const layer = $("pflege-wizard-sig-layer");
     if (!layer) return;
+    hideOrderSubmitLoading();
+    resetSignatureOverlayControls();
     showError("");
     layer.hidden = false;
     document.querySelector("#pflegebox-wizard-backdrop .pflege-wizard-modal")?.setAttribute("inert", "");
@@ -1056,19 +1072,11 @@
       showError("Netzwerkfehler. Bitte prüfen Sie Ihre Verbindung und versuchen Sie es erneut.");
     } finally {
       hideOrderSubmitLoading();
+      resetSignatureOverlayControls();
       if (nextBtn && !orderEndedWithSuccessScreen) {
         nextBtn.disabled = false;
         nextBtn.textContent = "Weiter";
       }
-      const submitOv = $("wiz-sig-submit-overlay");
-      if (submitOv && !orderEndedWithSuccessScreen) {
-        submitOv.disabled = false;
-        submitOv.textContent = "Bestellung abschicken";
-      }
-      const resetOv = $("wiz-sig-reset-overlay");
-      if (resetOv && !orderEndedWithSuccessScreen) resetOv.disabled = false;
-      const backOv = $("wiz-sig-back-overlay");
-      if (backOv && !orderEndedWithSuccessScreen) backOv.disabled = false;
     }
   }
 
