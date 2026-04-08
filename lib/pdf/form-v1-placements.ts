@@ -139,7 +139,7 @@ export const FORM_V1_PLACEMENTS: Record<FormV1DataFieldId, FormV1FieldPlacement>
     y: 303.26,
     scale: 1,
     rotateDeg: -7,
-    borderWidth: 1.5,
+    borderWidth: 3,
   },
   katalog_9102: {
     kind: "text",

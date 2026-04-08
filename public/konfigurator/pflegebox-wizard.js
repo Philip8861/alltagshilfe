@@ -834,7 +834,7 @@
     sigCtx.fillStyle = "#ffffff";
     sigCtx.fillRect(0, 0, W, H);
     sigCtx.strokeStyle = "#0f172a";
-    sigCtx.lineWidth = 2.25;
+    sigCtx.lineWidth = 4.5;
     sigCtx.lineCap = "round";
     sigCtx.lineJoin = "round";
     sigHadStroke = false;

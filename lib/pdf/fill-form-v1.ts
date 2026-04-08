@@ -393,7 +393,7 @@ export async function fillFormV1Pdf(
           const img = await doc.embedPng(png);
           const iw = img.width;
           const ih = img.height;
-          const maxWPt = Math.max(36, 72 * placement.scale);
+          const maxWPt = Math.max(36, 72 * placement.scale) * 1.5;
           const s = maxWPt / iw;
           const dw = iw * s;
           const dh = ih * s;
