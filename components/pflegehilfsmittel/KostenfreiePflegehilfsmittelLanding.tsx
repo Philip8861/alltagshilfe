@@ -1,8 +1,13 @@
 import type { ReactNode } from "react";
-import Image from "next/image";
 import Link from "next/link";
 import { siteConfig } from "@/config/site";
 import { PFLEGEBOX_KONFIGURATOR_PAGE } from "@/lib/pflegebox-konfigurator-path";
+
+/** Wie Pflegebox-Seite / Startseiten-Hero – Filter nicht in overflow-hidden einschließen. */
+const heroImageDropShadowClass =
+  "[filter:drop-shadow(0_10px_22px_rgba(15,79,104,0.2))_drop-shadow(0_4px_12px_rgba(15,79,104,0.12))]";
+
+const KOSTENFREI_HERO_IMG = "/images/pflegebox.webp";
 
 const paketItems = [
   "Einmalhandschuhe",
@@ -65,16 +70,16 @@ export function KostenfreiePflegehilfsmittelLanding() {
           </div>
 
           <div className="w-full lg:w-1/2">
-            <div className="overflow-hidden rounded-2xl border-4 border-white bg-[#fafbfc] shadow-[0_10px_22px_rgba(15,79,104,0.2),0_4px_12px_rgba(15,79,104,0.12)]">
-              <Image
-                src="/images/startseite_front.webp"
-                alt="Gemeinsam zur passenden Unterstützung im Alltag"
-                width={900}
-                height={700}
-                className="block h-auto w-full object-contain object-center [will-change:filter]"
-                sizes="(max-width: 1024px) 100vw, 50vw"
-                priority
-                unoptimized
+            <div className="rounded-2xl border-4 border-white bg-[#fafbfc] px-2 pb-8 pt-2">
+              {/* eslint-disable-next-line @next/next/no-img-element -- statische Asset-URL, konsistent mit /pflegebox */}
+              <img
+                src={KOSTENFREI_HERO_IMG}
+                alt="Pflegebox – Abbildung der Produktbox"
+                width={720}
+                height={480}
+                decoding="async"
+                fetchPriority="high"
+                className={`mx-auto block h-auto max-h-[min(42vh,340px)] w-auto max-w-full object-contain object-center lg:max-h-[min(48vh,380px)] ${heroImageDropShadowClass}`}
               />
             </div>
           </div>
