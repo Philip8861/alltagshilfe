@@ -75,10 +75,10 @@ export function KostenfreiePflegehilfsmittelLanding() {
 
           <div className="w-full overflow-visible lg:w-1/2">
             {/*
-              Extra Padding: Leuchtschatten + scale(1.3) auf Desktop nicht abschneiden.
-              Auf kleinen Viewports etwas weniger skalieren, damit kein horizontales Scrollen nötig ist.
+              +25 % zur vorherigen Skalierung; Verschiebung rechts/oben (translate).
+              Padding für drop-shadow; lg:justify-end rückt das Motiv nach rechts.
             */}
-            <div className="flex justify-center overflow-visible bg-[#fafbfc] px-4 py-8 sm:px-8 sm:py-10 lg:px-10 lg:py-12">
+            <div className="flex justify-center overflow-visible bg-[#fafbfc] px-4 py-8 sm:px-8 sm:py-10 lg:justify-end lg:px-12 lg:py-8 xl:px-16">
               {/* eslint-disable-next-line @next/next/no-img-element -- statische Asset-URL */}
               <img
                 src={KOSTENFREI_HERO_IMG}
@@ -87,7 +87,7 @@ export function KostenfreiePflegehilfsmittelLanding() {
                 height={845}
                 decoding="async"
                 fetchPriority="high"
-                className={`h-auto w-full max-w-full origin-center object-contain motion-reduce:scale-100 scale-[1.15] sm:scale-[1.22] lg:scale-[1.3] ${KOSTENFREI_HERO_GLOW_CLASS}`}
+                className={`h-auto w-full max-w-full origin-center object-contain motion-reduce:translate-x-0 motion-reduce:translate-y-0 motion-reduce:scale-100 translate-x-3 -translate-y-3 scale-[1.438] sm:translate-x-5 sm:-translate-y-5 sm:scale-[1.525] lg:translate-x-4 lg:-translate-y-8 lg:scale-[1.625] xl:translate-x-6 xl:-translate-y-10 ${KOSTENFREI_HERO_GLOW_CLASS}`}
               />
             </div>
           </div>
