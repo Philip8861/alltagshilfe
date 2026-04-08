@@ -95,7 +95,7 @@ export function KostenfreiePflegehilfsmittelLanding() {
     <div className="bg-[#fafbfc] text-neutral-700 antialiased">
       <article id="kostenfreie-hero" className="scroll-mt-24">
         <section className="mx-auto flex max-w-7xl flex-col-reverse items-center gap-10 px-4 pb-12 pt-10 sm:px-6 sm:pb-16 sm:pt-12 lg:flex-row lg:gap-12 lg:px-8 lg:pb-20 lg:pt-6">
-          <div className="w-full space-y-6 lg:w-1/2">
+          <div className="w-full space-y-6 lg:w-1/2 lg:-translate-x-[3%]">
             <h1
               className="text-balance text-3xl font-extrabold leading-tight tracking-tight text-[#0F4F68] opacity-0 motion-reduce:opacity-100 animate-fade-in-up sm:text-4xl lg:text-5xl"
               style={{ animationDelay: "0s" }}
