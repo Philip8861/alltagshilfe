@@ -114,7 +114,7 @@ const BUNDLED_CATALOG_ITEMS = [
   },
   {
     id: 9110,
-    name: "Fingerling",
+    name: "Fingerlinge",
     pieces: "100",
     quantity: null,
     ml: null,

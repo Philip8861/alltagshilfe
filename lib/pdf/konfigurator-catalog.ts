@@ -34,7 +34,7 @@ export const KONFIGURATOR_CATALOG: readonly KonfiguratorCatalogRow[] = [
   { id: 9104, name: "FFP2 Masken", unit: "pieces", piecesPerPack: 20 },
   { id: 9113, name: "Händedesinfektionstücher", unit: "pieces", piecesPerPack: 50 },
   { id: 9101, name: "Mundschutz", unit: "pieces", piecesPerPack: 50 },
-  { id: 9110, name: "Fingerling", unit: "pieces", piecesPerPack: 100 },
+  { id: 9110, name: "Fingerlinge", unit: "pieces", piecesPerPack: 100 },
   { id: 9103, name: "Schutzschürze wiederverwendbar", unit: "pieces", piecesPerPack: 1 },
   { id: 9107, name: "Einmallätzchen", unit: "pieces", piecesPerPack: 100 },
   { id: 9105, name: "Bettschutzeinlagen", unit: "pieces", piecesPerPack: 25 },

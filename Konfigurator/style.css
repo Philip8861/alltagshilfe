@@ -2752,7 +2752,7 @@ body.pflege-wizard-open {
   padding: 0.55rem 1.25rem;
 }
 
-/* Sende-Overlay: kleines Pflegeboxi + schnell drehende Uhr in der Bildmitte */
+/* Sende-Overlay: Pflegeboxi + schnell drehende Uhr unten mittig auf dem Bild */
 .pflege-wizard-order-load-layer[hidden] {
   display: none !important;
 }
@@ -2787,27 +2787,28 @@ body.pflege-wizard-open {
 
 .pflege-wizard-order-load-boxi-wrap {
   position: relative;
-  width: 72px;
-  height: 72px;
+  width: 90px;
+  height: 90px;
   flex-shrink: 0;
 }
 
 .pflege-wizard-order-load-img {
   display: block;
-  width: 72px;
-  height: 72px;
+  width: 90px;
+  height: 90px;
   object-fit: contain;
 }
 
 .pflege-wizard-order-load-clock {
   position: absolute;
   left: 50%;
-  top: 50%;
+  bottom: 2px;
+  top: auto;
   width: 40px;
   height: 40px;
-  margin: -20px 0 0 -20px;
+  margin: 0;
+  transform: translateX(-50%);
   pointer-events: none;
-  filter: drop-shadow(0 1px 2px rgba(15, 23, 42, 0.15));
 }
 
 .pflege-wizard-order-load-clock-rotor {
