@@ -7,7 +7,7 @@ import { PFLEGEBOX_KONFIGURATOR_PAGE } from "@/lib/pflegebox-konfigurator-path";
 const heroImageDropShadowClass =
   "[filter:drop-shadow(0_10px_22px_rgba(15,79,104,0.2))_drop-shadow(0_4px_12px_rgba(15,79,104,0.12))]";
 
-const KOSTENFREI_HERO_IMG = "/images/pflegebox.webp";
+const KOSTENFREI_HERO_IMG = "/images/pflegebox1.webp";
 
 const paketItems = [
   "Einmalhandschuhe",
@@ -71,13 +71,13 @@ export function KostenfreiePflegehilfsmittelLanding() {
 
           <div className="w-full lg:w-1/2">
             <div className="rounded-2xl border-4 border-white bg-[#fafbfc] px-2 pb-8 pt-2">
-              <div className="relative mx-auto aspect-[817/554] h-[min(42vh,340px)] w-auto max-w-full overflow-hidden rounded-xl bg-[#fafbfc] lg:h-[min(48vh,380px)]">
+              <div className="relative mx-auto aspect-[1162/845] h-[min(42vh,340px)] w-auto max-w-full overflow-hidden rounded-xl bg-[#fafbfc] lg:h-[min(48vh,380px)]">
                 {/* eslint-disable-next-line @next/next/no-img-element -- statische Asset-URL, konsistent mit /pflegebox */}
                 <img
                   src={KOSTENFREI_HERO_IMG}
                   alt="Pflegebox – Abbildung der Produktbox"
-                  width={817}
-                  height={554}
+                  width={1162}
+                  height={845}
                   decoding="async"
                   fetchPriority="high"
                   className={`absolute inset-0 h-full w-full object-cover object-center [transform:scale(1.1)] [transform-origin:center] ${heroImageDropShadowClass}`}

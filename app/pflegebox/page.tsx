@@ -13,9 +13,9 @@ const heroImageDropShadowClass =
 
 /**
  * Öffentliche URL: bewusst kleingeschrieben (Deployment auf Linux/Vercel ist case-sensitiv).
- * Datei liegt als `pflegebox.webp` unter `public/images/`.
+ * Datei liegt als `pflegebox1.webp` unter `public/images/`.
  */
-const PFLEGEBOX_HERO_SRC = "/images/pflegebox.webp";
+const PFLEGEBOX_HERO_SRC = "/images/pflegebox1.webp";
 
 export default function PflegeboxPage() {
   return (
@@ -24,13 +24,13 @@ export default function PflegeboxPage() {
         {/* kein overflow-hidden: sonst wird drop-shadow abgeschnitten; natives img: zuverlässig aus /public */}
         <div className="flex w-full max-w-xl justify-center bg-[#f1f9fb] px-2 pb-6 pt-1">
           {/* Crop + leichter Zoom: weißer Rand im Foto wird weggeschnitten (wie Konfigurator-Icon) */}
-          <div className="relative mx-auto aspect-[817/554] h-[min(42vh,320px)] w-auto max-w-full overflow-hidden rounded-2xl bg-[#f1f9fb]">
+          <div className="relative mx-auto aspect-[1162/845] h-[min(42vh,320px)] w-auto max-w-full overflow-hidden rounded-2xl bg-[#f1f9fb]">
             {/* eslint-disable-next-line @next/next/no-img-element -- statische Asset-URL wie Startseiten-Hero */}
             <img
               src={PFLEGEBOX_HERO_SRC}
               alt="Pflegebox – Abbildung der Produktbox"
-              width={817}
-              height={554}
+              width={1162}
+              height={845}
               decoding="async"
               fetchPriority="high"
               className={`absolute inset-0 h-full w-full object-cover object-center [transform:scale(1.1)] [transform-origin:center] ${heroImageDropShadowClass}`}
