@@ -104,7 +104,7 @@ export default function HomePage() {
       style={{ backgroundColor: "#fafbfc" }}
     >
       <section className="w-full pt-0 pb-6 sm:pb-8 lg:pb-10">
-        <div className="mx-auto w-full max-w-[100rem] px-4 sm:px-6 lg:px-8">
+        <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
           {/* Oberer Bereich: Bild rechts, Überschrift + drei Punkte links, etwas oberhalb der Bildmitte (Desktop) */}
           <div className="relative">
             <div className="flex justify-end">
