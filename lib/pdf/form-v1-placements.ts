@@ -135,11 +135,11 @@ export const FORM_V1_PLACEMENTS: Record<FormV1DataFieldId, FormV1FieldPlacement>
   unterschriftMaxMustermann: {
     kind: "signatureGraphic",
     pageIndex: 1,
-    x: 348.49,
-    y: 318.24,
+    x: 350.17,
+    y: 303.26,
     scale: 1,
     rotateDeg: -7,
-    borderWidth: 0.8,
+    borderWidth: 1.5,
   },
   katalog_9102: {
     kind: "text",
