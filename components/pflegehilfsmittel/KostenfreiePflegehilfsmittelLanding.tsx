@@ -69,6 +69,27 @@ function KonfiguratorLink({
   );
 }
 
+/** Drehendes Zahnrad (langsam); bei „reduced motion“ ohne Animation. */
+function KonfiguratorGearIcon({ className = "" }: { className?: string }) {
+  return (
+    <svg
+      className={`shrink-0 motion-safe:animate-[spin_4s_linear_infinite] ${className}`.trim()}
+      fill="none"
+      stroke="currentColor"
+      viewBox="0 0 24 24"
+      aria-hidden
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={2}
+        d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
+      />
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+    </svg>
+  );
+}
+
 export function KostenfreiePflegehilfsmittelLanding() {
   return (
     <div className="bg-[#fafbfc] text-neutral-700 antialiased">
@@ -105,11 +126,9 @@ export function KostenfreiePflegehilfsmittelLanding() {
               id="konfigurator"
             >
               <KonfiguratorLink
-                className="flex w-full transform items-center justify-center gap-3 rounded-xl bg-[#F78F2E] px-8 py-4 text-xl font-bold text-white shadow-lg transition hover:scale-[1.02] hover:opacity-95 focus:outline-none focus:ring-2 focus:ring-[#F78F2E] focus:ring-offset-2 motion-reduce:transform-none sm:w-auto"
+                className="flex w-full transform items-center justify-center gap-2 rounded-xl bg-[#F78F2E] px-6 py-3 text-lg font-bold text-white shadow-lg transition hover:scale-[1.02] hover:opacity-95 focus:outline-none focus:ring-2 focus:ring-[#F78F2E] focus:ring-offset-2 motion-reduce:transform-none sm:w-auto"
               >
-                <svg className="h-6 w-6 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden>
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                </svg>
+                <KonfiguratorGearIcon className="h-5 w-5" />
                 Pflegebox jetzt konfigurieren
               </KonfiguratorLink>
               <p className="mt-3 text-center text-sm text-neutral-600 sm:text-left">
@@ -126,7 +145,7 @@ export function KostenfreiePflegehilfsmittelLanding() {
             <div className="flex justify-center overflow-visible bg-[#fafbfc] px-4 py-8 sm:px-8 sm:py-10 lg:justify-end lg:pl-8 lg:pr-6 lg:py-8 xl:pl-10 xl:pr-4">
               {/* Wrapper: fade-in-up nutzt transform — Skalierung/Verschiebung nur am inneren img */}
               <div
-                className="w-full max-w-full opacity-0 motion-reduce:opacity-100 animate-fade-in-up"
+                className="mx-auto w-full max-w-full opacity-0 motion-reduce:opacity-100 animate-fade-in-up max-lg:flex max-lg:justify-center"
                 style={{ animationDelay: "0.08s" }}
               >
                 {/* eslint-disable-next-line @next/next/no-img-element -- statische Asset-URL */}
@@ -137,7 +156,7 @@ export function KostenfreiePflegehilfsmittelLanding() {
                   height={845}
                   decoding="async"
                   fetchPriority="high"
-                  className={`h-auto w-full max-w-full origin-center object-contain motion-reduce:translate-x-0 motion-reduce:translate-y-0 motion-reduce:scale-100 translate-x-4 -translate-y-3 scale-[1.294] sm:translate-x-6 sm:-translate-y-5 sm:scale-[1.373] lg:translate-x-10 lg:-translate-y-8 lg:scale-[1.463] xl:translate-x-14 xl:-translate-y-10 ${KOSTENFREI_HERO_GLOW_CLASS}`}
+                  className={`h-auto w-full max-w-full origin-center object-contain motion-reduce:translate-x-0 motion-reduce:translate-y-0 motion-reduce:scale-100 max-lg:mx-auto max-lg:translate-x-0 max-lg:-translate-y-2 max-lg:scale-100 lg:translate-x-10 lg:-translate-y-8 lg:scale-[1.463] xl:translate-x-14 xl:-translate-y-10 ${KOSTENFREI_HERO_GLOW_CLASS}`}
                 />
               </div>
             </div>
