@@ -30,7 +30,7 @@ export const serviceLinks: Record<
     kontakt: "/kontakt",
   },
   pflegehilfsmittel: {
-    mehr: "/pflegebox",
+    mehr: "/pflegehilfsmittel/kostenfreie-pflegehilfsmittel",
     kontakt: "/kontakt",
   },
   inkontinenz: {

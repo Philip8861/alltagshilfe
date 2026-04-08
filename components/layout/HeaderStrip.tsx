@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
+import { isPflegeboxKonfiguratorPagePath } from "@/lib/pflegebox-konfigurator-path";
 import { cn } from "@/lib/utils";
 
 const TAGLINE = "Ihr Begleiter im Alltag";
@@ -17,13 +18,9 @@ function isPartnerArea(pathname: string) {
   return pathname.startsWith("/partner") || pathname.startsWith("/en/partner");
 }
 
-function isPflegeboxConfiguratorPage(pathname: string) {
-  return pathname === "/pflegebox" || pathname.startsWith("/pflegebox/");
-}
-
 export function HeaderStrip(_props: HeaderStripProps) {
   const pathname = usePathname();
-  const hideStripOnMobile = isPflegeboxConfiguratorPage(pathname);
+  const hideStripOnMobile = isPflegeboxKonfiguratorPagePath(pathname);
   const partnerLoginHref = pathname.startsWith("/en") ? "/en/partner/login" : "/partner/login";
   const partnerActive = isPartnerArea(pathname);
 

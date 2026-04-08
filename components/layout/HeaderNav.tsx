@@ -4,8 +4,15 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
-import { navLinks } from "@/config/navigation";
+import { navLinks, type NavLink } from "@/config/navigation";
 import { cn } from "@/lib/utils";
+
+function navParentOrChildActive(item: NavLink, pathname: string | null) {
+  if (!pathname) return false;
+  if (pathname === item.href || pathname.startsWith(`${item.href}/`)) return true;
+  if (item.children?.some((c) => pathname === c.href || pathname.startsWith(`${c.href}/`))) return true;
+  return false;
+}
 
 export function HeaderNav() {
   const pathname = usePathname();
@@ -30,33 +37,44 @@ export function HeaderNav() {
                 onMouseEnter={() => setOpenDropdownHref(item.href)}
                 onMouseLeave={() => setOpenDropdownHref(null)}
               >
-                <button
-                  type="button"
-                  aria-haspopup="menu"
-                  aria-expanded={openDropdownHref === item.href}
-                  onFocus={() => setOpenDropdownHref(item.href)}
-                  onBlur={() => setOpenDropdownHref(null)}
-                  onClick={() => {
-                    setOpenDropdownHref((prev) => (prev === item.href ? null : item.href));
-                  }}
-                  className={cn(
-                    "inline-flex items-center gap-0.5 whitespace-nowrap rounded px-1 py-0.5 font-semibold text-neutral-600 hover:text-neutral-900 focus:outline-none focus:ring-2 focus:ring-neutral-500 focus:ring-offset-2 lg:gap-1 lg:px-1.5 xl:px-2",
-                    (pathname === item.href || pathname.startsWith(`${item.href}/`)) && "text-neutral-900"
-                  )}
-                  style={{ fontSize: "clamp(0.6875rem, 1.1vw, 1rem)" }}
-                >
-                  {item.label}
-                  <svg
-                    className={cn("shrink-0 transition-transform", openDropdownHref === item.href && "rotate-180")}
-                    style={{ width: "clamp(0.75rem, 1.2vw, 1rem)", height: "clamp(0.75rem, 1.2vw, 1rem)" }}
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                    aria-hidden
+                <div className="inline-flex min-w-0 items-center gap-0.5 lg:gap-1">
+                  <Link
+                    href={item.href}
+                    className={cn(
+                      "inline-flex items-center whitespace-nowrap rounded px-1 py-0.5 font-semibold text-neutral-600 hover:text-neutral-900 focus:outline-none focus:ring-2 focus:ring-neutral-500 focus:ring-offset-2 lg:px-1.5 xl:px-2",
+                      navParentOrChildActive(item, pathname) && "text-neutral-900"
+                    )}
+                    style={{ fontSize: "clamp(0.6875rem, 1.1vw, 1rem)" }}
                   >
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                  </svg>
-                </button>
+                    {item.label}
+                  </Link>
+                  <button
+                    type="button"
+                    aria-haspopup="menu"
+                    aria-expanded={openDropdownHref === item.href}
+                    aria-label={`Untermenü ${item.label}`}
+                    onFocus={() => setOpenDropdownHref(item.href)}
+                    onBlur={() => setOpenDropdownHref(null)}
+                    onClick={() => {
+                      setOpenDropdownHref((prev) => (prev === item.href ? null : item.href));
+                    }}
+                    className={cn(
+                      "inline-flex shrink-0 items-center justify-center rounded p-0.5 font-semibold text-neutral-600 hover:text-neutral-900 focus:outline-none focus:ring-2 focus:ring-neutral-500 focus:ring-offset-2",
+                      navParentOrChildActive(item, pathname) && "text-neutral-900"
+                    )}
+                  >
+                    <svg
+                      className={cn("shrink-0 transition-transform", openDropdownHref === item.href && "rotate-180")}
+                      style={{ width: "clamp(0.75rem, 1.2vw, 1rem)", height: "clamp(0.75rem, 1.2vw, 1rem)" }}
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                      aria-hidden
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </button>
+                </div>
                 <div
                   className={cn(
                     "absolute left-0 top-full pt-1 min-w-[220px] transition-opacity duration-150",
@@ -171,25 +189,43 @@ export function HeaderNav() {
               <li key={item.href}>
                 {item.children ? (
                   <>
-                    <button
-                      type="button"
-                      onClick={() => setOpenMobileDropdown((open) => (open === item.href ? null : item.href))}
-                      className="flex w-full items-center justify-between rounded-lg px-4 py-3 text-left text-base font-semibold text-neutral-600 hover:bg-neutral-50 hover:text-neutral-900 focus:outline-none focus:ring-2 focus:ring-neutral-500 focus:ring-inset"
-                      aria-expanded={openMobileDropdown === item.href}
-                      aria-controls={`mobile-submenu-${item.href.replace(/\//g, "-")}`}
-                      id={`mobile-trigger-${item.href.replace(/\//g, "-")}`}
-                    >
-                      {item.label}
-                      <svg
-                        className={cn("h-5 w-5 shrink-0 transition-transform", openMobileDropdown === item.href && "rotate-180")}
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                        aria-hidden
+                    <div className="flex w-full items-stretch gap-1">
+                      <Link
+                        href={item.href}
+                        onClick={() => {
+                          setMobileOpen(false);
+                          setOpenMobileDropdown(null);
+                        }}
+                        className={cn(
+                          "flex min-w-0 flex-1 items-center rounded-lg px-4 py-3 text-base font-semibold text-neutral-600 hover:bg-neutral-50 hover:text-neutral-900 focus:outline-none focus:ring-2 focus:ring-neutral-500 focus:ring-inset",
+                          navParentOrChildActive(item, pathname) && "bg-neutral-50 text-neutral-900"
+                        )}
                       >
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                      </svg>
-                    </button>
+                        {item.label}
+                      </Link>
+                      <button
+                        type="button"
+                        onClick={() => setOpenMobileDropdown((open) => (open === item.href ? null : item.href))}
+                        className={cn(
+                          "inline-flex shrink-0 items-center justify-center rounded-lg px-3 py-3 text-neutral-600 hover:bg-neutral-50 hover:text-neutral-900 focus:outline-none focus:ring-2 focus:ring-neutral-500 focus:ring-inset",
+                          openMobileDropdown === item.href && "bg-neutral-50 text-neutral-900"
+                        )}
+                        aria-expanded={openMobileDropdown === item.href}
+                        aria-controls={`mobile-submenu-${item.href.replace(/\//g, "-")}`}
+                        id={`mobile-trigger-${item.href.replace(/\//g, "-")}`}
+                        aria-label={`Untermenü ${item.label} öffnen oder schließen`}
+                      >
+                        <svg
+                          className={cn("h-5 w-5 shrink-0 transition-transform", openMobileDropdown === item.href && "rotate-180")}
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                          aria-hidden
+                        >
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                        </svg>
+                      </button>
+                    </div>
                     <ul
                       id={`mobile-submenu-${item.href.replace(/\//g, "-")}`}
                       role="region"

@@ -12,7 +12,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${base}/standorte`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.7 },
     { url: `${base}/karriere`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.7 },
     { url: `${base}/pflegeberatung`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.7 },
-    { url: `${base}/pflegebox`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.7 },
+    {
+      url: `${base}/pflegehilfsmittel/kostenfreie-pflegehilfsmittel`,
+      lastModified: new Date(),
+      changeFrequency: "monthly",
+      priority: 0.7,
+    },
     { url: `${base}/pflegeshop`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.6 },
     { url: `${base}/inkontinenzversorgung`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.6 },
     { url: `${base}/impressum`, lastModified: new Date(), changeFrequency: "yearly", priority: 0.3 },

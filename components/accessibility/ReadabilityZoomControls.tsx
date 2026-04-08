@@ -5,6 +5,7 @@ import { useEffect, useLayoutEffect, useMemo, useRef, useState, type CSSProperti
 import { usePathname } from "next/navigation";
 import { AHS_READABILITY_OPEN_EVENT } from "@/components/accessibility/ReadabilityLaunchLink";
 import { LanguageFlags } from "@/components/layout/LanguageFlags";
+import { isPflegeboxKonfiguratorPagePath } from "@/lib/pflegebox-konfigurator-path";
 
 const ICON_STROKE = "#FFFFFF";
 const ICON_BG = "#0F4F68";
@@ -33,11 +34,6 @@ const FONT_OPTIONS = [
   { id: "trebuchet", label: "Trebuchet MS", value: "'Trebuchet MS', Helvetica, sans-serif" },
   { id: "georgia", label: "Georgia", value: "Georgia, 'Times New Roman', serif" },
 ] as const;
-
-function isPflegeboxConfiguratorPath(pathname: string | null) {
-  if (!pathname) return false;
-  return pathname === "/pflegebox" || pathname.startsWith("/pflegebox/");
-}
 
 function clampZoom(value: number) {
   return Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, value));
@@ -702,7 +698,7 @@ export function ReadabilityZoomControls() {
 
   if (!mounted || typeof document === "undefined") return null;
   /* Partner, Pflegebox: kein portaliertes Lesbarkeits-UI (eigenes bzw. Iframe-UI; sonst Leisten über Inhalt). */
-  if (pathname.startsWith("/partner") || isPflegeboxConfiguratorPath(pathname)) return null;
+  if (pathname.startsWith("/partner") || isPflegeboxKonfiguratorPagePath(pathname)) return null;
 
   return (
     <>
