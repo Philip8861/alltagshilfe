@@ -128,7 +128,7 @@ export default function HomePage() {
             </div>
 
             <header
-              className="relative z-10 mt-8 max-w-lg text-left sm:max-w-xl lg:absolute lg:left-0 lg:right-auto lg:top-[39%] lg:mt-0 lg:max-w-[min(26rem,42vw)] lg:-translate-x-[21%] lg:-translate-y-1/2 xl:max-w-[min(28rem,38vw)] 2xl:max-w-[min(30rem,34vw)]"
+              className="relative z-10 mt-8 max-w-lg text-left sm:max-w-xl lg:absolute lg:left-0 lg:right-auto lg:top-[39%] lg:mt-0 lg:max-w-[min(26rem,42vw)] lg:-translate-y-1/2 xl:max-w-[min(28rem,38vw)] 2xl:max-w-[min(30rem,34vw)]"
             >
               <h1
                 className="text-balance text-3xl font-extrabold leading-tight tracking-tight text-[#0F4F68] opacity-0 motion-reduce:opacity-100 animate-fade-in-up sm:text-4xl lg:text-5xl"
