@@ -3,11 +3,11 @@ import Link from "next/link";
 import { siteConfig } from "@/config/site";
 import { PFLEGEBOX_KONFIGURATOR_PAGE } from "@/lib/pflegebox-konfigurator-path";
 
-/** Schatten am Motiv; kein zusätzlicher Kartenrahmen um die Hero-Grafik. */
-const heroImageShadowWrapperClass =
-  "[filter:drop-shadow(0_16px_36px_rgba(15,79,104,0.22))_drop-shadow(0_6px_18px_rgba(15,79,104,0.14))]";
-
 const KOSTENFREI_HERO_IMG = "/images/pflegebox1.webp";
+
+/** Anzeige 50 % der nativen Pixelgröße (877×536 → 439×268), ohne Schatten oder Rahmen-Wrapper. */
+const KOSTENFREI_HERO_WIDTH = 439;
+const KOSTENFREI_HERO_HEIGHT = 268;
 
 const paketItems = [
   "Einmalhandschuhe",
@@ -70,21 +70,18 @@ export function KostenfreiePflegehilfsmittelLanding() {
           </div>
 
           <div className="w-full lg:w-1/2">
-            <div className="bg-[#fafbfc] px-2 pb-10 pt-2 sm:pb-12">
-              <div
-                className={`mx-auto box-border flex max-w-full justify-center p-4 sm:p-6 ${heroImageShadowWrapperClass}`}
-              >
-                {/* eslint-disable-next-line @next/next/no-img-element -- statische Asset-URL, konsistent mit /pflegebox */}
-                <img
-                  src={KOSTENFREI_HERO_IMG}
-                  alt="Pflegebox – Abbildung der Produktbox"
-                  width={877}
-                  height={536}
-                  decoding="async"
-                  fetchPriority="high"
-                  className="mx-auto block h-auto max-h-[min(52.5vh,425px)] w-auto max-w-full object-contain object-center lg:max-h-[min(60vh,475px)]"
-                />
-              </div>
+            <div className="flex justify-center bg-[#fafbfc] px-2 py-6 sm:py-8">
+              {/* eslint-disable-next-line @next/next/no-img-element -- statische Asset-URL */}
+              <img
+                src={KOSTENFREI_HERO_IMG}
+                alt="Pflegebox – Abbildung der Produktbox"
+                width={KOSTENFREI_HERO_WIDTH}
+                height={KOSTENFREI_HERO_HEIGHT}
+                decoding="async"
+                fetchPriority="high"
+                className="h-auto max-w-full object-contain object-center"
+                style={{ width: `${KOSTENFREI_HERO_WIDTH}px`, maxWidth: "100%" }}
+              />
             </div>
           </div>
         </section>
