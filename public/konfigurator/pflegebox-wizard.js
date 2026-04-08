@@ -824,15 +824,15 @@
     sigCanvas = $("wiz-signature");
     if (!sigCanvas || !sigCanvas.getContext) return;
     const dpr = Math.min(typeof window !== "undefined" ? window.devicePixelRatio || 1 : 1, 2.5);
-    sigCtx = sigCanvas.getContext("2d", { alpha: false });
+    /* alpha: true → PNG mit Transparenz; kein weißes Rechteck im PDF (Unterschrift überdeckt sonst Formular). */
+    sigCtx = sigCanvas.getContext("2d", { alpha: true });
     sigLogicalW = W;
     sigLogicalH = H;
     sigCanvas.width = Math.round(W * dpr);
     sigCanvas.height = Math.round(H * dpr);
     sigCtx.setTransform(1, 0, 0, 1, 0, 0);
     sigCtx.scale(dpr, dpr);
-    sigCtx.fillStyle = "#ffffff";
-    sigCtx.fillRect(0, 0, W, H);
+    sigCtx.clearRect(0, 0, W, H);
     sigCtx.strokeStyle = "#0f172a";
     sigCtx.lineWidth = 4.5;
     sigCtx.lineCap = "round";
@@ -1180,8 +1180,7 @@
   function wireSignatureOverlayUi() {
     $("wiz-sig-reset-overlay")?.addEventListener("click", () => {
       if (!sigCtx || !sigLogicalW) return;
-      sigCtx.fillStyle = "#ffffff";
-      sigCtx.fillRect(0, 0, sigLogicalW, sigLogicalH);
+      sigCtx.clearRect(0, 0, sigLogicalW, sigLogicalH);
       sigHadStroke = false;
     });
     $("wiz-sig-submit-overlay")?.addEventListener("click", () => void submitOrder());
