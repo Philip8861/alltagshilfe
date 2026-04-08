@@ -592,14 +592,22 @@
       const successIntro = BOXI_STEP_INTROS[stepIndex] ?? "";
       html = `
         <div class="wiz-success-celebration" role="group" aria-label="Pflegeboxi">
+          <div class="wiz-success-fireworks" aria-hidden="true">
+            <span class="wiz-success-fireworks__spark wiz-success-fireworks__spark--a"></span>
+            <span class="wiz-success-fireworks__spark wiz-success-fireworks__spark--b"></span>
+            <span class="wiz-success-fireworks__spark wiz-success-fireworks__spark--c"></span>
+            <span class="wiz-success-fireworks__spark wiz-success-fireworks__spark--d"></span>
+            <span class="wiz-success-fireworks__spark wiz-success-fireworks__spark--e"></span>
+            <span class="wiz-success-fireworks__spark wiz-success-fireworks__spark--f"></span>
+          </div>
           <div class="wiz-success-celebration__inner">
             <div class="wiz-success-celebration__figure">
               <img
                 class="pflege-wizard-boxi-img"
                 src="images/pflegeboxi_freude.webp"
                 onerror="this.onerror=null;this.src='images/pflegeboxi.webp';"
-                width="136"
-                height="136"
+                width="150"
+                height="150"
                 alt="Pflegeboxi freut sich über Ihre Bestellung"
                 decoding="async"
               />
