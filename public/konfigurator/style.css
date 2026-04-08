@@ -239,7 +239,7 @@ html.kfg-embed .hero-overlay {
 }
 
 .layout > .panel:first-of-type > h2 {
-  min-height: 155px;
+  min-height: 141px;
   display: flex;
   align-items: center;
 }
@@ -1098,33 +1098,21 @@ html.kfg-embed .hero-overlay {
   align-items: center;
   justify-content: flex-start;
   gap: 8px;
-  /* Gleiche Höhe wie Überschrift links; ~10 % größer als früher 141px */
-  min-height: 155px;
+  /* Gleiche Höhe wie Überschrift links; Platz für Box-Grafik in Originalgröße */
+  min-height: 141px;
 }
 
 .box-icon-wrapper {
   position: relative;
   margin-left: 0;
   flex-shrink: 0;
-  width: 155px;
-  height: 155px;
-  overflow: hidden;
-  border-radius: 12px;
-  background: var(--background);
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 
 .box-icon {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: center center;
+  width: 141px;
+  height: 141px;
+  object-fit: contain;
   display: block;
-  /* Leicht zoomen: weißer Rand/Schatten im Asset wird weggeschnitten */
-  transform: scale(1.14);
-  transform-origin: center center;
 }
 
 .box-icon-badge {
@@ -1876,12 +1864,8 @@ html.kfg-embed .hero-overlay {
     max-height: none;
   }
 
-  .box-icon-wrapper {
-    width: clamp(97px, 24.2vw, 132px);
-    height: clamp(97px, 24.2vw, 132px);
-  }
-
   .box-icon {
+    height: clamp(88px, 22vw, 120px);
     max-width: none;
   }
 
