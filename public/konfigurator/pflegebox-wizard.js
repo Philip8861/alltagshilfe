@@ -840,7 +840,18 @@
     sigHadStroke = false;
   }
 
+  function hideOrderSubmitLoading() {
+    const loadLayer = $("pflege-wizard-order-load-layer");
+    if (loadLayer) loadLayer.hidden = true;
+  }
+
+  function showOrderSubmitLoading() {
+    const loadLayer = $("pflege-wizard-order-load-layer");
+    if (loadLayer) loadLayer.hidden = false;
+  }
+
   function hideSigOverlay() {
+    hideOrderSubmitLoading();
     const layer = $("pflege-wizard-sig-layer");
     if (layer) layer.hidden = true;
     document.querySelector("#pflegebox-wizard-backdrop .pflege-wizard-modal")?.removeAttribute("inert");
@@ -925,6 +936,9 @@
     const signatureDataUrl = sigCanvas.toDataURL("image/png");
     const nextBtn = $("pflege-wizard-next");
     const submitOverlay = $("wiz-sig-submit-overlay");
+    const resetOverlay = $("wiz-sig-reset-overlay");
+    const backOverlay = $("wiz-sig-back-overlay");
+    showOrderSubmitLoading();
     if (nextBtn) {
       nextBtn.disabled = true;
       nextBtn.textContent = "Wird gesendet…";
@@ -933,6 +947,8 @@
       submitOverlay.disabled = true;
       submitOverlay.textContent = "Wird gesendet…";
     }
+    if (resetOverlay) resetOverlay.disabled = true;
+    if (backOverlay) backOverlay.disabled = true;
     showError("");
 
     let orderEndedWithSuccessScreen = false;
@@ -1014,6 +1030,7 @@
     } catch {
       showError("Netzwerkfehler. Bitte prüfen Sie Ihre Verbindung und versuchen Sie es erneut.");
     } finally {
+      hideOrderSubmitLoading();
       if (nextBtn && !orderEndedWithSuccessScreen) {
         nextBtn.disabled = false;
         nextBtn.textContent = "Weiter";
@@ -1023,6 +1040,10 @@
         submitOv.disabled = false;
         submitOv.textContent = "Bestellung abschicken";
       }
+      const resetOv = $("wiz-sig-reset-overlay");
+      if (resetOv && !orderEndedWithSuccessScreen) resetOv.disabled = false;
+      const backOv = $("wiz-sig-back-overlay");
+      if (backOv && !orderEndedWithSuccessScreen) backOv.disabled = false;
     }
   }
 
@@ -1115,6 +1136,11 @@
   function onDocKeydown(e) {
     const bd = $("pflegebox-wizard-backdrop");
     if (!bd || bd.hidden) return;
+    const loadLayer = $("pflege-wizard-order-load-layer");
+    if (loadLayer && !loadLayer.hidden) {
+      if (e.key === "Escape") e.preventDefault();
+      return;
+    }
     const sigLayer = $("pflege-wizard-sig-layer");
     if (sigLayer && !sigLayer.hidden) {
       if (e.key === "Escape") {
@@ -1178,6 +1204,11 @@
   }
 
   function wireSignatureOverlayUi() {
+    $("wiz-sig-back-overlay")?.addEventListener("click", () => {
+      showError("");
+      hideSigOverlay();
+      requestAnimationFrame(() => $("wiz-open-sig-overlay")?.focus());
+    });
     $("wiz-sig-reset-overlay")?.addEventListener("click", () => {
       if (!sigCtx || !sigLogicalW) return;
       sigCtx.clearRect(0, 0, sigLogicalW, sigLogicalH);

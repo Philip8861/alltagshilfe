@@ -95,6 +95,19 @@ function buildTipNotiz(
   return `${head}\n${body}\n---\n${tail}`;
 }
 
+/** Betreff und HTML-Titel: ohne Referenznummer, mit Nachname und Vorname. */
+function formatPflegeboxMailSubject(contact: PflegeboxOrderBody["contact"]): string {
+  const clean = (s: string) =>
+    s
+      .trim()
+      .replace(/[\u0000-\u001F\u007F]/g, "")
+      .replace(/\s+/g, " ")
+      .slice(0, 80);
+  const last = clean(contact.lastName);
+  const first = clean(contact.firstName);
+  return `Pflegebox-Bestellung ${last}, ${first}`;
+}
+
 export async function POST(request: Request) {
   const ip = await clientIp();
   if (!rateLimitPflegeboxOrder(ip).success) {
@@ -243,9 +256,10 @@ export async function POST(request: Request) {
     ? "Ausgefülltes Formular-PDF: siehe Anhang."
     : "Hinweis: Das ausgefüllte Formular-PDF konnte nicht erzeugt werden (Vorlage fehlt oder technischer Fehler).";
 
+  const mailSubject = formatPflegeboxMailSubject(c);
+
   const mailBody = [
     "Neue Pflegebox-Bestellung (Konfigurator)",
-    `Referenz: ${externalRef}`,
     orderId ? `Interne ID: ${orderId}` : null,
     "",
     pdfHinweis,
@@ -255,14 +269,11 @@ export async function POST(request: Request) {
     .filter((line): line is string => line !== null)
     .join("\n");
 
-  const pflegeboxRows = [
-    { label: "Referenz", value: externalRef },
-    ...(orderId ? [{ label: "Interne ID", value: orderId }] : []),
-  ];
+  const pflegeboxRows = [...(orderId ? [{ label: "Interne ID", value: orderId }] : [])];
 
   const mailHtml = buildBrandedNotificationHtml({
     kindBadge: "Pflegebox",
-    headline: "Neue Pflegebox-Bestellung",
+    headline: mailSubject,
     rows: pflegeboxRows,
     detailTitle: "Konfiguration & Kundendaten",
     detailText: tipNotiz,
@@ -271,7 +282,7 @@ export async function POST(request: Request) {
   const mailResult = await sendInternalMail({
     kind: "pflegebox",
     toOverride: pflegeboxMailRecipients(),
-    subject: `Pflegebox-Bestellung ${externalRef}`,
+    subject: mailSubject,
     text: mailBody,
     html: mailHtml,
     replyTo: c.email?.trim() || undefined,

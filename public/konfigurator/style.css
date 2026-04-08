@@ -2283,10 +2283,20 @@ body.pflege-wizard-open {
     flex-direction: column;
     width: 100%;
     gap: 0.5rem;
+    align-items: stretch;
+  }
+
+  .pflege-wizard-sig-actions-trail {
+    flex-direction: column;
+    width: 100%;
+    min-width: 0;
+    gap: 0.5rem;
   }
 
   .pflege-wizard-sig-actions .admin-btn,
-  .pflege-wizard-sig-actions .btn-primary {
+  .pflege-wizard-sig-actions .btn-primary,
+  .pflege-wizard-sig-actions-trail .admin-btn,
+  .pflege-wizard-sig-actions-trail .btn-primary {
     width: 100%;
     justify-content: center;
     min-height: 3rem;
@@ -2716,8 +2726,19 @@ body.pflege-wizard-open {
   display: flex;
   flex-wrap: wrap;
   gap: 0.65rem;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.pflege-wizard-sig-actions-trail {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
   justify-content: flex-end;
   align-items: center;
+  flex: 1 1 auto;
+  min-width: min(100%, 14rem);
 }
 
 .pflege-wizard-sig-actions .admin-btn {
@@ -2729,6 +2750,89 @@ body.pflege-wizard-open {
   min-height: 2.75rem;
   font-weight: 700;
   padding: 0.55rem 1.25rem;
+}
+
+/* Sende-Overlay: kleines Pflegeboxi + schnell drehende Uhr in der Bildmitte */
+.pflege-wizard-order-load-layer[hidden] {
+  display: none !important;
+}
+
+.pflege-wizard-order-load-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 10006;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: max(0.75rem, env(safe-area-inset-top)) max(0.75rem, env(safe-area-inset-right))
+    max(0.75rem, env(safe-area-inset-bottom)) max(0.75rem, env(safe-area-inset-left));
+  background: rgba(15, 23, 42, 0.55);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+.pflege-wizard-order-load-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.85rem;
+  padding: 1.1rem 1.35rem 1.2rem;
+  max-width: min(92vw, 280px);
+  border-radius: 1rem;
+  background: var(--surface);
+  border: 1px solid rgba(15, 79, 104, 0.14);
+  box-shadow: 0 20px 48px rgba(15, 23, 42, 0.28);
+  text-align: center;
+}
+
+.pflege-wizard-order-load-boxi-wrap {
+  position: relative;
+  width: 72px;
+  height: 72px;
+  flex-shrink: 0;
+}
+
+.pflege-wizard-order-load-img {
+  display: block;
+  width: 72px;
+  height: 72px;
+  object-fit: contain;
+}
+
+.pflege-wizard-order-load-clock {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 40px;
+  height: 40px;
+  margin: -20px 0 0 -20px;
+  pointer-events: none;
+  filter: drop-shadow(0 1px 2px rgba(15, 23, 42, 0.15));
+}
+
+.pflege-wizard-order-load-clock-rotor {
+  transform-origin: 20px 20px;
+  animation: pflege-wizard-order-clock-spin 0.48s linear infinite;
+}
+
+@keyframes pflege-wizard-order-clock-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pflege-wizard-order-load-clock-rotor {
+    animation-duration: 1.6s;
+  }
+}
+
+.pflege-wizard-order-load-title {
+  margin: 0;
+  font-size: 0.98rem;
+  font-weight: 700;
+  line-height: 1.35;
+  color: var(--primary);
 }
 
 .wiz-open-sig-btn {
