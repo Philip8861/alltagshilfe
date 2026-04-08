@@ -1,16 +1,7 @@
-import type { Metadata } from "next";
-import { siteConfig } from "@/config/site";
-import { PflegeboxConfiguratorIframe } from "./PflegeboxConfiguratorIframe";
+import { redirect } from "next/navigation";
+import { PFLEGEBOX_KONFIGURATOR_PAGE } from "@/lib/pflegebox-konfigurator-path";
 
-export const metadata: Metadata = {
-  title: "Pflegebox-Konfigurator",
-  description: `Pflegebox-Konfigurator – ${siteConfig.name}. Wählen Sie Ihre Produkte für die Pflegebox.`,
-};
-
-export default function PflegeboxPage() {
-  return (
-    <div id="pflegebox-root" className="min-w-0 w-full max-w-full bg-[#f1f9fb]">
-      <PflegeboxConfiguratorIframe />
-    </div>
-  );
+/** Alte URL – Weiterleitung zur eigenständigen Seite unter Pflegehilfsmittel. */
+export default function LegacyPflegeboxRedirect() {
+  redirect(PFLEGEBOX_KONFIGURATOR_PAGE);
 }

@@ -5,19 +5,12 @@ import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { navLinks, type NavLink } from "@/config/navigation";
-import { isPflegeboxKonfiguratorPagePath } from "@/lib/pflegebox-konfigurator-path";
 import { cn } from "@/lib/utils";
 
 function navParentOrChildActive(item: NavLink, pathname: string | null) {
   if (!pathname) return false;
   if (pathname === item.href || pathname.startsWith(`${item.href}/`)) return true;
   if (item.children?.some((c) => pathname === c.href || pathname.startsWith(`${c.href}/`))) return true;
-  if (
-    item.href === "/pflegehilfsmittel/kostenfreie-pflegehilfsmittel" &&
-    isPflegeboxKonfiguratorPagePath(pathname)
-  ) {
-    return true;
-  }
   return false;
 }
 
