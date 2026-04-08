@@ -13,6 +13,34 @@ const KOSTENFREI_HERO_IMG = "/images/kostenfreiepflegehilfsmittel.webp";
 const KOSTENFREI_HERO_GLOW_CLASS =
   "[filter:drop-shadow(0_10px_22px_rgba(15,79,104,0.2))_drop-shadow(0_4px_12px_rgba(15,79,104,0.12))] [will-change:filter]";
 
+const KOSTENFREI_HERO_VORTEILE = [
+  "Ab Pflegegrad 1 kostenlos",
+  "Schneller Versand",
+  "Zugelassen bei allen Krankenkassen",
+] as const;
+
+/** Wie Startseiten-Hero: orangener Kreis mit Häkchen. */
+function KostenfreiHeroCheckIcon({ className = "" }: { className?: string }) {
+  return (
+    <span
+      className={`inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#F78F2E]/15 text-[#F78F2E] ${className}`.trim()}
+      aria-hidden
+    >
+      <svg
+        className="h-[1.1rem] w-[1.1rem] sm:h-5 sm:w-5"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        <path d="M20 6L9 17l-5-5" />
+      </svg>
+    </span>
+  );
+}
+
 const paketItems = [
   "Einmalhandschuhe",
   "Flächendesinfektion",
@@ -47,18 +75,35 @@ export function KostenfreiePflegehilfsmittelLanding() {
       <article id="kostenfreie-hero" className="scroll-mt-24">
         <section className="mx-auto flex max-w-7xl flex-col-reverse items-center gap-10 px-4 pb-12 pt-10 sm:px-6 sm:pb-16 sm:pt-12 lg:flex-row lg:gap-12 lg:px-8 lg:pb-20 lg:pt-6">
           <div className="w-full space-y-6 lg:w-1/2">
-            <p className="mb-2 inline-block rounded-full bg-[#F78F2E]/20 px-3 py-1 text-sm font-semibold text-[#0F4F68]">
-              100 % kostenfrei ab Pflegegrad 1
-            </p>
-            <h1 className="text-balance text-3xl font-extrabold leading-tight tracking-tight text-[#0F4F68] sm:text-4xl lg:text-5xl">
+            <h1
+              className="text-balance text-3xl font-extrabold leading-tight tracking-tight text-[#0F4F68] opacity-0 motion-reduce:opacity-100 animate-fade-in-up sm:text-4xl lg:text-5xl"
+              style={{ animationDelay: "0s" }}
+            >
               Ihre kostenfreien Pflegehilfsmittel im Wert von 42&nbsp;€ monatlich
             </h1>
-            <p className="text-pretty text-lg leading-relaxed text-neutral-600">
-              Sparen Sie sich Zeit und Geld. Stellen Sie Ihre Wunschbox zusammen – wir rechnen direkt mit Ihrer
-              Pflegekasse ab. Ohne Rezept, ohne versteckte Kosten.
-            </p>
+            <ul
+              className="mt-5 space-y-3 sm:mt-6 sm:space-y-3.5"
+              aria-label="Ihre Vorteile auf einen Blick"
+            >
+              {KOSTENFREI_HERO_VORTEILE.map((line, i) => (
+                <li
+                  key={line}
+                  className="flex items-center gap-3 text-pretty text-lg font-semibold leading-snug text-[#0F4F68] opacity-0 motion-reduce:opacity-100 animate-fade-in-up sm:text-xl"
+                  style={{
+                    animationDelay: `${0.45 + i * 0.22}s`,
+                  }}
+                >
+                  <KostenfreiHeroCheckIcon />
+                  <span>{line}</span>
+                </li>
+              ))}
+            </ul>
 
-            <div className="pt-2" id="konfigurator">
+            <div
+              className="pt-2 opacity-0 motion-reduce:opacity-100 animate-fade-in-up"
+              style={{ animationDelay: "1.12s" }}
+              id="konfigurator"
+            >
               <KonfiguratorLink
                 className="flex w-full transform items-center justify-center gap-3 rounded-xl bg-[#F78F2E] px-8 py-4 text-xl font-bold text-white shadow-lg transition hover:scale-[1.02] hover:opacity-95 focus:outline-none focus:ring-2 focus:ring-[#F78F2E] focus:ring-offset-2 motion-reduce:transform-none sm:w-auto"
               >
@@ -78,17 +123,23 @@ export function KostenfreiePflegehilfsmittelLanding() {
               +25 % zur vorherigen Skalierung; Verschiebung rechts/oben (translate).
               Padding für drop-shadow; lg:justify-end rückt das Motiv nach rechts.
             */}
-            <div className="flex justify-center overflow-visible bg-[#fafbfc] px-4 py-8 sm:px-8 sm:py-10 lg:justify-end lg:px-12 lg:py-8 xl:px-16">
-              {/* eslint-disable-next-line @next/next/no-img-element -- statische Asset-URL */}
-              <img
-                src={KOSTENFREI_HERO_IMG}
-                alt="Kostenfreie Pflegehilfsmittel – Übersicht"
-                width={1162}
-                height={845}
-                decoding="async"
-                fetchPriority="high"
-                className={`h-auto w-full max-w-full origin-center object-contain motion-reduce:translate-x-0 motion-reduce:translate-y-0 motion-reduce:scale-100 translate-x-3 -translate-y-3 scale-[1.438] sm:translate-x-5 sm:-translate-y-5 sm:scale-[1.525] lg:translate-x-4 lg:-translate-y-8 lg:scale-[1.625] xl:translate-x-6 xl:-translate-y-10 ${KOSTENFREI_HERO_GLOW_CLASS}`}
-              />
+            <div className="flex justify-center overflow-visible bg-[#fafbfc] px-4 py-8 sm:px-8 sm:py-10 lg:justify-end lg:pl-8 lg:pr-6 lg:py-8 xl:pl-10 xl:pr-4">
+              {/* Wrapper: fade-in-up nutzt transform — Skalierung/Verschiebung nur am inneren img */}
+              <div
+                className="w-full max-w-full opacity-0 motion-reduce:opacity-100 animate-fade-in-up"
+                style={{ animationDelay: "0.08s" }}
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element -- statische Asset-URL */}
+                <img
+                  src={KOSTENFREI_HERO_IMG}
+                  alt="Kostenfreie Pflegehilfsmittel – Übersicht"
+                  width={1162}
+                  height={845}
+                  decoding="async"
+                  fetchPriority="high"
+                  className={`h-auto w-full max-w-full origin-center object-contain motion-reduce:translate-x-0 motion-reduce:translate-y-0 motion-reduce:scale-100 translate-x-4 -translate-y-3 scale-[1.438] sm:translate-x-6 sm:-translate-y-5 sm:scale-[1.525] lg:translate-x-10 lg:-translate-y-8 lg:scale-[1.625] xl:translate-x-14 xl:-translate-y-10 ${KOSTENFREI_HERO_GLOW_CLASS}`}
+                />
+              </div>
             </div>
           </div>
         </section>
