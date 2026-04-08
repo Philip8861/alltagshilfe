@@ -2442,7 +2442,6 @@ body.pflege-wizard-open {
 }
 
 .wiz-success-celebration {
-  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -2451,17 +2450,18 @@ body.pflege-wizard-open {
   max-width: 100%;
   margin: 0;
   padding: 0.35rem 0 0.5rem;
-  padding-top: 1.35rem;
   box-sizing: border-box;
 }
 
-/* Dezentes Mini-Feuerwerk oben mittig */
+/* Mini-Feuerwerk: mittig oberhalb des Pflegeboxi-Bilds (+25 % Größe ggü. vorheriger Version) */
 .wiz-success-fireworks {
   position: absolute;
   left: 50%;
-  top: 0;
+  bottom: 100%;
+  top: auto;
   width: 0;
   height: 0;
+  margin-bottom: 2px;
   transform: translateX(-50%);
   pointer-events: none;
   z-index: 1;
@@ -2471,76 +2471,76 @@ body.pflege-wizard-open {
   position: absolute;
   left: 0;
   top: 0;
-  width: 5px;
-  height: 5px;
-  margin: -2.5px 0 0 -2.5px;
+  width: 6px;
+  height: 6px;
+  margin: -3px 0 0 -3px;
   border-radius: 50%;
   opacity: 0;
-  transform: translate(0, 0) scale(0.35);
+  transform: translate(0, 0) scale(0.44);
   animation: wiz-success-firework-float 2.4s ease-out infinite;
 }
 
 .wiz-success-fireworks__spark--a {
   background: #f78f2e;
-  box-shadow: 0 0 4px rgba(247, 143, 46, 0.55);
+  box-shadow: 0 0 5px rgba(247, 143, 46, 0.55);
   animation-delay: 0s;
-  --fw-tx: -14px;
-  --fw-ty: 22px;
+  --fw-tx: -17.5px;
+  --fw-ty: 27.5px;
 }
 
 .wiz-success-fireworks__spark--b {
   background: #0f4f68;
-  box-shadow: 0 0 3px rgba(15, 79, 104, 0.45);
+  box-shadow: 0 0 4px rgba(15, 79, 104, 0.45);
   animation-delay: 0.35s;
-  --fw-tx: 16px;
-  --fw-ty: 20px;
+  --fw-tx: 20px;
+  --fw-ty: 25px;
 }
 
 .wiz-success-fireworks__spark--c {
   background: #f78f2e;
-  box-shadow: 0 0 4px rgba(247, 143, 46, 0.4);
+  box-shadow: 0 0 5px rgba(247, 143, 46, 0.4);
   animation-delay: 0.7s;
-  --fw-tx: -22px;
-  --fw-ty: 12px;
+  --fw-tx: -27.5px;
+  --fw-ty: 15px;
 }
 
 .wiz-success-fireworks__spark--d {
   background: #5cb3c9;
-  box-shadow: 0 0 3px rgba(92, 179, 201, 0.5);
+  box-shadow: 0 0 4px rgba(92, 179, 201, 0.5);
   animation-delay: 1.05s;
-  --fw-tx: 22px;
-  --fw-ty: 14px;
+  --fw-tx: 27.5px;
+  --fw-ty: 17.5px;
 }
 
 .wiz-success-fireworks__spark--e {
   background: #f78f2e;
   animation-delay: 1.35s;
   --fw-tx: 0px;
-  --fw-ty: 26px;
+  --fw-ty: 32.5px;
 }
 
 .wiz-success-fireworks__spark--f {
   background: #0f4f68;
   animation-delay: 1.65s;
-  --fw-tx: -8px;
-  --fw-ty: 18px;
+  --fw-tx: -10px;
+  --fw-ty: 22.5px;
 }
 
 @keyframes wiz-success-firework-float {
   0% {
     opacity: 0;
-    transform: translate(0, 0) scale(0.35);
+    transform: translate(0, 0) scale(0.44);
   }
   18% {
     opacity: 0.55;
   }
   42% {
     opacity: 0.35;
-    transform: translate(var(--fw-tx, 0), var(--fw-ty, 18px)) scale(0.95);
+    transform: translate(var(--fw-tx, 0), var(--fw-ty, 22.5px)) scale(1.19);
   }
   100% {
     opacity: 0;
-    transform: translate(calc(var(--fw-tx, 0) * 1.12), calc(var(--fw-ty, 18px) * 1.08)) scale(0.5);
+    transform: translate(calc(var(--fw-tx, 0) * 1.12), calc(var(--fw-ty, 22.5px) * 1.08)) scale(0.62);
   }
 }
 
@@ -2584,11 +2584,13 @@ body.pflege-wizard-open {
 }
 
 .wiz-success-celebration__figure {
+  position: relative;
   flex-shrink: 0;
   line-height: 0;
   display: flex;
   justify-content: center;
   align-items: center;
+  overflow: visible;
   transform-origin: center bottom;
   animation: wiz-success-box-hop 0.7s ease-out forwards;
 }

@@ -160,6 +160,11 @@
   let sigOverlayDims = null;
   let sigLastX = 0;
   let sigLastY = 0;
+  /** Abgeschlossene Striche (jeweils Punktliste in Logik-Pixeln) für glatte Neuberechnung. */
+  let sigStrokeHistory = [];
+  /** Aktiver Strich während pointerdown … up */
+  let sigCurrentStroke = null;
+  let sigPaintRafId = 0;
 
   function showError(msg) {
     const sigLayer = $("pflege-wizard-sig-layer");
@@ -592,16 +597,16 @@
       const successIntro = BOXI_STEP_INTROS[stepIndex] ?? "";
       html = `
         <div class="wiz-success-celebration" role="group" aria-label="Pflegeboxi">
-          <div class="wiz-success-fireworks" aria-hidden="true">
-            <span class="wiz-success-fireworks__spark wiz-success-fireworks__spark--a"></span>
-            <span class="wiz-success-fireworks__spark wiz-success-fireworks__spark--b"></span>
-            <span class="wiz-success-fireworks__spark wiz-success-fireworks__spark--c"></span>
-            <span class="wiz-success-fireworks__spark wiz-success-fireworks__spark--d"></span>
-            <span class="wiz-success-fireworks__spark wiz-success-fireworks__spark--e"></span>
-            <span class="wiz-success-fireworks__spark wiz-success-fireworks__spark--f"></span>
-          </div>
           <div class="wiz-success-celebration__inner">
             <div class="wiz-success-celebration__figure">
+              <div class="wiz-success-fireworks" aria-hidden="true">
+                <span class="wiz-success-fireworks__spark wiz-success-fireworks__spark--a"></span>
+                <span class="wiz-success-fireworks__spark wiz-success-fireworks__spark--b"></span>
+                <span class="wiz-success-fireworks__spark wiz-success-fireworks__spark--c"></span>
+                <span class="wiz-success-fireworks__spark wiz-success-fireworks__spark--d"></span>
+                <span class="wiz-success-fireworks__spark wiz-success-fireworks__spark--e"></span>
+                <span class="wiz-success-fireworks__spark wiz-success-fireworks__spark--f"></span>
+              </div>
               <img
                 class="pflege-wizard-boxi-img"
                 src="images/pflegeboxi_freude.webp"
@@ -800,18 +805,63 @@
     return sigPointFromClient(cx, cy);
   }
 
-  /** Ein glatter Segmentzug (quadratische Bézier), Endpunkt = Mittelpunkt für weiche Kurven. */
-  function appendSignatureStrokePoint(px, py) {
-    if (!sigCtx) return;
-    const midX = (sigLastX + px) / 2;
-    const midY = (sigLastY + py) / 2;
+  /** Zeichnet einen Strich als durchgehende quadratische Béziers durch die Stützpunkte (ohne pro Segment beginPath). */
+  function sigStrokeSmoothPath(points) {
+    if (!sigCtx || !points || points.length < 1) return;
+    const n = points.length;
     sigCtx.beginPath();
-    sigCtx.moveTo(sigLastX, sigLastY);
-    sigCtx.quadraticCurveTo(px, py, midX, midY);
+    if (n === 1) {
+      sigCtx.moveTo(points[0].x, points[0].y);
+      sigCtx.lineTo(points[0].x + 0.35, points[0].y + 0.05);
+      sigCtx.stroke();
+      return;
+    }
+    sigCtx.moveTo(points[0].x, points[0].y);
+    if (n === 2) {
+      sigCtx.quadraticCurveTo(points[0].x, points[0].y, points[1].x, points[1].y);
+      sigCtx.stroke();
+      return;
+    }
+    for (let i = 1; i < n - 2; i++) {
+      const xc = (points[i].x + points[i + 1].x) / 2;
+      const yc = (points[i].y + points[i + 1].y) / 2;
+      sigCtx.quadraticCurveTo(points[i].x, points[i].y, xc, yc);
+    }
+    sigCtx.quadraticCurveTo(points[n - 2].x, points[n - 2].y, points[n - 1].x, points[n - 1].y);
     sigCtx.stroke();
-    sigLastX = midX;
-    sigLastY = midY;
-    sigHadStroke = true;
+  }
+
+  function sigRepaintAllStrokes() {
+    if (!sigCtx || !sigLogicalW) return;
+    sigCtx.clearRect(0, 0, sigLogicalW, sigLogicalH);
+    for (let s = 0; s < sigStrokeHistory.length; s++) {
+      sigStrokeSmoothPath(sigStrokeHistory[s]);
+    }
+    if (sigCurrentStroke && sigCurrentStroke.length) {
+      sigStrokeSmoothPath(sigCurrentStroke);
+    }
+  }
+
+  function sigScheduleRepaint() {
+    if (sigPaintRafId) return;
+    sigPaintRafId = requestAnimationFrame(() => {
+      sigPaintRafId = 0;
+      sigRepaintAllStrokes();
+    });
+  }
+
+  /** Reduziert Rauschen: zu nahe aufeinanderfolgende Samples weglassen (Logik-Pixel). */
+  function sigAppendPointToCurrent(px, py, force) {
+    if (!sigCurrentStroke) return;
+    const last = sigCurrentStroke[sigCurrentStroke.length - 1];
+    if (!force && last) {
+      const dx = px - last.x;
+      const dy = py - last.y;
+      if (dx * dx + dy * dy < 0.49) return;
+    }
+    sigCurrentStroke.push({ x: px, y: py });
+    sigLastX = px;
+    sigLastY = py;
   }
 
   function sigStart(e) {
@@ -821,15 +871,16 @@
     const p = sigPos(e);
     sigLastX = p.x;
     sigLastY = p.y;
-    sigCtx.beginPath();
-    sigCtx.moveTo(sigLastX, sigLastY);
+    sigCurrentStroke = [{ x: p.x, y: p.y }];
+    sigScheduleRepaint();
   }
 
   function sigMove(e) {
     if (!sigDrawing || !sigCtx) return;
     e.preventDefault();
     const p = sigPos(e);
-    appendSignatureStrokePoint(p.x, p.y);
+    sigAppendPointToCurrent(p.x, p.y, false);
+    sigScheduleRepaint();
   }
 
   function sigPointerDown(e) {
@@ -849,8 +900,9 @@
     for (let i = 0; i < events.length; i++) {
       const ev = events[i];
       const p = sigPointFromClient(ev.clientX, ev.clientY);
-      appendSignatureStrokePoint(p.x, p.y);
+      sigAppendPointToCurrent(p.x, p.y, false);
     }
+    sigScheduleRepaint();
   }
 
   function sigPointerUp(e) {
@@ -862,21 +914,24 @@
         e.currentTarget.releasePointerCapture(e.pointerId);
       }
     } catch (_) {}
-    if (sigDrawing && sigCtx) {
+    if (sigDrawing && sigCtx && sigCurrentStroke && sigCurrentStroke.length) {
       const p = sigPointFromClient(cx, cy);
-      const dx = p.x - sigLastX;
-      const dy = p.y - sigLastY;
-      if (dx * dx + dy * dy > 0.25) {
-        const midX = (sigLastX + p.x) / 2;
-        const midY = (sigLastY + p.y) / 2;
-        sigCtx.beginPath();
-        sigCtx.moveTo(sigLastX, sigLastY);
-        sigCtx.quadraticCurveTo(p.x, p.y, midX, midY);
-        sigCtx.stroke();
-        sigLastX = midX;
-        sigLastY = midY;
+      const last = sigCurrentStroke[sigCurrentStroke.length - 1];
+      const dx = p.x - last.x;
+      const dy = p.y - last.y;
+      if (dx * dx + dy * dy > 0.04) {
+        sigAppendPointToCurrent(p.x, p.y, true);
       }
-      sigHadStroke = true;
+      if (sigCurrentStroke.length) {
+        sigStrokeHistory.push(sigCurrentStroke);
+        sigHadStroke = true;
+      }
+      sigCurrentStroke = null;
+      if (sigPaintRafId) {
+        cancelAnimationFrame(sigPaintRafId);
+        sigPaintRafId = 0;
+      }
+      sigRepaintAllStrokes();
     }
     sigDrawing = false;
   }
@@ -923,6 +978,12 @@
     sigCtx.imageSmoothingEnabled = true;
     sigCtx.imageSmoothingQuality = "high";
     sigHadStroke = false;
+    sigStrokeHistory = [];
+    sigCurrentStroke = null;
+    if (sigPaintRafId) {
+      cancelAnimationFrame(sigPaintRafId);
+      sigPaintRafId = 0;
+    }
   }
 
   function hideOrderSubmitLoading() {
@@ -1176,6 +1237,12 @@
     sigCtx = null;
     sigLogicalW = 0;
     sigLogicalH = 0;
+    sigStrokeHistory = [];
+    sigCurrentStroke = null;
+    if (sigPaintRafId) {
+      cancelAnimationFrame(sigPaintRafId);
+      sigPaintRafId = 0;
+    }
     pendingOrderReference = null;
     showError("");
     render();
@@ -1304,6 +1371,12 @@
     });
     $("wiz-sig-reset-overlay")?.addEventListener("click", () => {
       if (!sigCtx || !sigLogicalW) return;
+      sigStrokeHistory = [];
+      sigCurrentStroke = null;
+      if (sigPaintRafId) {
+        cancelAnimationFrame(sigPaintRafId);
+        sigPaintRafId = 0;
+      }
       sigCtx.clearRect(0, 0, sigLogicalW, sigLogicalH);
       sigHadStroke = false;
     });
