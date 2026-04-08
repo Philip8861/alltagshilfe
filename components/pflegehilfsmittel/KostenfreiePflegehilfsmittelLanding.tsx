@@ -3,9 +3,9 @@ import Link from "next/link";
 import { siteConfig } from "@/config/site";
 import { PFLEGEBOX_KONFIGURATOR_PAGE } from "@/lib/pflegebox-konfigurator-path";
 
-/** Wie Pflegebox-Seite / Startseiten-Hero – Filter nicht in overflow-hidden einschließen. */
-const heroImageDropShadowClass =
-  "[filter:drop-shadow(0_10px_22px_rgba(15,79,104,0.2))_drop-shadow(0_4px_12px_rgba(15,79,104,0.12))]";
+/** Schatten auf Wrapper außerhalb von overflow-hidden, sonst Abschneiden am Bild. */
+const heroImageShadowWrapperClass =
+  "[filter:drop-shadow(0_16px_36px_rgba(15,79,104,0.22))_drop-shadow(0_6px_18px_rgba(15,79,104,0.14))]";
 
 const KOSTENFREI_HERO_IMG = "/images/pflegebox1.webp";
 
@@ -70,18 +70,22 @@ export function KostenfreiePflegehilfsmittelLanding() {
           </div>
 
           <div className="w-full lg:w-1/2">
-            <div className="rounded-2xl border-4 border-white bg-[#fafbfc] px-2 pb-8 pt-2">
-              <div className="relative mx-auto aspect-[1162/845] h-[min(42vh,340px)] w-auto max-w-full overflow-hidden rounded-xl bg-[#fafbfc] lg:h-[min(48vh,380px)]">
-                {/* eslint-disable-next-line @next/next/no-img-element -- statische Asset-URL, konsistent mit /pflegebox */}
-                <img
-                  src={KOSTENFREI_HERO_IMG}
-                  alt="Pflegebox – Abbildung der Produktbox"
-                  width={1162}
-                  height={845}
-                  decoding="async"
-                  fetchPriority="high"
-                  className={`absolute inset-0 h-full w-full object-cover object-center [transform:scale(1.1)] [transform-origin:center] ${heroImageDropShadowClass}`}
-                />
+            <div className="rounded-2xl bg-[#fafbfc] px-2 pb-10 pt-2 sm:pb-12">
+              <div
+                className={`mx-auto box-border flex max-w-full justify-center p-4 sm:p-5 ${heroImageShadowWrapperClass}`}
+              >
+                <div className="relative aspect-[791/619] h-[min(42vh,340px)] w-auto max-w-full overflow-hidden rounded-xl bg-[#fafbfc] lg:h-[min(48vh,380px)]">
+                  {/* eslint-disable-next-line @next/next/no-img-element -- statische Asset-URL, konsistent mit /pflegebox */}
+                  <img
+                    src={KOSTENFREI_HERO_IMG}
+                    alt="Pflegebox – Abbildung der Produktbox"
+                    width={791}
+                    height={619}
+                    decoding="async"
+                    fetchPriority="high"
+                    className="absolute inset-0 h-full w-full origin-center scale-[1.26] object-cover object-center"
+                  />
+                </div>
               </div>
             </div>
           </div>
