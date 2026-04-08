@@ -774,18 +774,35 @@
     };
   }
 
-  function sigPos(e) {
+  function sigPointFromClient(clientX, clientY) {
     if (!sigCanvas || !sigLogicalW || !sigLogicalH) return { x: 0, y: 0 };
     const wrap = $("wiz-sig-canvas-wrap");
     const r = wrap?.getBoundingClientRect() ?? sigCanvas.getBoundingClientRect();
     if (r.width < 1 || r.height < 1) return { x: 0, y: 0 };
     const scaleX = sigLogicalW / r.width;
     const scaleY = sigLogicalH / r.height;
-    const touch = e.touches?.[0] ?? e.changedTouches?.[0];
-    const clientX = touch ? touch.clientX : e.clientX;
-    const clientY = touch ? touch.clientY : e.clientY;
     if (clientX === undefined || clientY === undefined) return { x: sigLastX, y: sigLastY };
     return { x: (clientX - r.left) * scaleX, y: (clientY - r.top) * scaleY };
+  }
+
+  function sigPos(e) {
+    const touch = e.touches?.[0] ?? e.changedTouches?.[0];
+    const cx = touch ? touch.clientX : e.clientX;
+    const cy = touch ? touch.clientY : e.clientY;
+    return sigPointFromClient(cx, cy);
+  }
+
+  function appendSignatureStrokePoint(px, py) {
+    if (!sigCtx) return;
+    const midX = (sigLastX + px) / 2;
+    const midY = (sigLastY + py) / 2;
+    sigCtx.beginPath();
+    sigCtx.moveTo(sigLastX, sigLastY);
+    sigCtx.quadraticCurveTo(px, py, midX, midY);
+    sigCtx.stroke();
+    sigLastX = midX;
+    sigLastY = midY;
+    sigHadStroke = true;
   }
 
   function sigStart(e) {
@@ -803,27 +820,53 @@
     if (!sigDrawing || !sigCtx) return;
     e.preventDefault();
     const p = sigPos(e);
-    const midX = (sigLastX + p.x) / 2;
-    const midY = (sigLastY + p.y) / 2;
-    sigCtx.beginPath();
-    sigCtx.moveTo(sigLastX, sigLastY);
-    sigCtx.quadraticCurveTo(p.x, p.y, midX, midY);
-    sigCtx.stroke();
-    sigLastX = midX;
-    sigLastY = midY;
-    sigHadStroke = true;
+    appendSignatureStrokePoint(p.x, p.y);
   }
 
-  function sigEnd(e) {
+  function sigPointerDown(e) {
+    if (!sigCtx) return;
+    if (e.pointerType === "mouse" && e.button !== 0) return;
     e.preventDefault();
+    try {
+      e.currentTarget.setPointerCapture(e.pointerId);
+    } catch (_) {}
+    sigStart(e);
+  }
+
+  function sigPointerMove(e) {
+    if (!sigDrawing || !sigCtx) return;
+    e.preventDefault();
+    const events = typeof e.getCoalescedEvents === "function" ? e.getCoalescedEvents() : [e];
+    for (let i = 0; i < events.length; i++) {
+      const ev = events[i];
+      const p = sigPointFromClient(ev.clientX, ev.clientY);
+      appendSignatureStrokePoint(p.x, p.y);
+    }
+  }
+
+  function sigPointerUp(e) {
+    e.preventDefault();
+    const cx = e.changedTouches?.[0] ? e.changedTouches[0].clientX : e.clientX;
+    const cy = e.changedTouches?.[0] ? e.changedTouches[0].clientY : e.clientY;
+    try {
+      if (e.pointerId != null && e.currentTarget?.hasPointerCapture?.(e.pointerId)) {
+        e.currentTarget.releasePointerCapture(e.pointerId);
+      }
+    } catch (_) {}
     if (sigDrawing && sigCtx) {
-      const p = sigPos(e);
-      sigCtx.beginPath();
-      sigCtx.moveTo(sigLastX, sigLastY);
-      sigCtx.lineTo(p.x, p.y);
-      sigCtx.stroke();
-      sigLastX = p.x;
-      sigLastY = p.y;
+      const p = sigPointFromClient(cx, cy);
+      const dx = p.x - sigLastX;
+      const dy = p.y - sigLastY;
+      if (dx * dx + dy * dy > 0.25) {
+        const midX = (sigLastX + p.x) / 2;
+        const midY = (sigLastY + p.y) / 2;
+        sigCtx.beginPath();
+        sigCtx.moveTo(sigLastX, sigLastY);
+        sigCtx.quadraticCurveTo(p.x, p.y, midX, midY);
+        sigCtx.stroke();
+        sigLastX = midX;
+        sigLastY = midY;
+      }
       sigHadStroke = true;
     }
     sigDrawing = false;
@@ -833,19 +876,27 @@
     const c = $("wiz-signature");
     if (!c || c.dataset.sigPadWired === "1") return;
     c.dataset.sigPadWired = "1";
-    c.addEventListener("mousedown", sigStart);
-    c.addEventListener("mousemove", sigMove);
-    c.addEventListener("mouseup", sigEnd);
-    c.addEventListener("mouseleave", sigEnd);
-    c.addEventListener("touchstart", sigStart, { passive: false });
-    c.addEventListener("touchmove", sigMove, { passive: false });
-    c.addEventListener("touchend", sigEnd);
+    if (typeof window.PointerEvent !== "undefined") {
+      c.style.touchAction = "none";
+      c.addEventListener("pointerdown", sigPointerDown, { passive: false });
+      c.addEventListener("pointermove", sigPointerMove, { passive: false });
+      c.addEventListener("pointerup", sigPointerUp, { passive: false });
+      c.addEventListener("pointercancel", sigPointerUp, { passive: false });
+    } else {
+      c.addEventListener("mousedown", sigStart);
+      c.addEventListener("mousemove", sigMove);
+      c.addEventListener("mouseup", sigPointerUp);
+      c.addEventListener("mouseleave", sigPointerUp);
+      c.addEventListener("touchstart", sigStart, { passive: false });
+      c.addEventListener("touchmove", sigMove, { passive: false });
+      c.addEventListener("touchend", sigPointerUp, { passive: false });
+    }
   }
 
   function initSignatureBitmap(W, H) {
     sigCanvas = $("wiz-signature");
     if (!sigCanvas || !sigCanvas.getContext) return;
-    const dpr = Math.min(typeof window !== "undefined" ? window.devicePixelRatio || 1 : 1, 3.5);
+    const dpr = Math.min(typeof window !== "undefined" ? window.devicePixelRatio || 1 : 1, 4);
     /* alpha: true → PNG mit Transparenz; kein weißes Rechteck im PDF (Unterschrift überdeckt sonst Formular). */
     sigCtx = sigCanvas.getContext("2d", { alpha: true });
     sigLogicalW = W;
@@ -856,10 +907,10 @@
     sigCtx.scale(dpr, dpr);
     sigCtx.clearRect(0, 0, W, H);
     sigCtx.strokeStyle = "#0f172a";
-    sigCtx.lineWidth = 4.25;
+    sigCtx.lineWidth = 3.35;
     sigCtx.lineCap = "round";
     sigCtx.lineJoin = "round";
-    sigCtx.miterLimit = 2;
+    sigCtx.miterLimit = 1.42;
     sigCtx.imageSmoothingEnabled = true;
     sigCtx.imageSmoothingQuality = "high";
     sigHadStroke = false;

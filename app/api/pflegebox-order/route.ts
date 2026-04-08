@@ -10,6 +10,7 @@ import {
 } from "@/lib/pdf/pflegebox-order-to-form-v1";
 import { resolveFormV1TemplatePath } from "@/lib/pdf/resolve-form-v1-template";
 import { formatPflegeboxCartLineForMail } from "@/lib/pflegebox/cart-line-mail-text";
+import { buildPflegeboxCustomerDetailsMailText } from "@/lib/pflegebox/order-mail-customer-block";
 import { rateLimitPflegeboxOrder } from "@/lib/rate-limit";
 import { pflegeboxOrderBodySchema, type PflegeboxOrderBody } from "@/lib/validations/pflegebox-order";
 import { createSupabaseServiceRoleClient, resolvePartnerProfileId } from "@/lib/supabase/service";
@@ -57,42 +58,8 @@ function buildTipNotiz(
   });
   const head = `Pflegebox-Konfigurator · genutztes Budget ${budget}`;
   const body = lines.map((l) => formatPflegeboxCartLineForMail(l)).join("\n");
-  const kk = contact.krankenkasse;
-  const pg = contact.pflegegrad;
-  const ber = contact.personalBeratungWunsch
-    ? `Beratung: ja (${contact.beratungKanal ?? "—"})`
-    : "Beratung: nein";
-  const beratungTelRow =
-    contact.personalBeratungWunsch &&
-    contact.beratungKanal === "telefon" &&
-    contact.beratungTelefon?.trim()
-      ? `Telefon für Beratung: ${contact.beratungTelefon.trim()}`
-      : null;
-  const kontaktRow = contact.email?.trim()
-    ? `Kontakt: E-Mail ${contact.email.trim()}`
-    : contact.phone?.trim()
-      ? `Kontakt: Tel. ${contact.phone.trim()}`
-      : null;
-  const versRow = contact.privatversichert
-    ? "Versicherung: Privatversichert"
-    : `Versicherten-Nr.: ${contact.versichertennummer}`;
-  const kkRow = contact.privatversichert ? null : `KK: ${kk}`;
-  const beihilfeRow = contact.privatversichert
-    ? `Beihilfe: ${contact.beihilfeberechtigt ? "ja" : "nein"}`
-    : null;
-  const tail = [
-    versRow,
-    kkRow,
-    `Pflegegrad: ${pg}`,
-    beihilfeRow,
-    ber,
-    beratungTelRow,
-    kontaktRow,
-    contact.orderNote ? `Anmerkung: ${contact.orderNote}` : null,
-  ]
-    .filter(Boolean)
-    .join("\n");
-  return `${head}\n${body}\n---\n${tail}`;
+  const customerBlock = buildPflegeboxCustomerDetailsMailText(contact);
+  return `${head}\n${body}\n---\n${customerBlock}`;
 }
 
 /** Betreff und HTML-Titel: ohne Referenznummer, mit Nachname und Vorname. */
