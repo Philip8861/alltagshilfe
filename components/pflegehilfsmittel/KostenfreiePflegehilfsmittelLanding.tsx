@@ -6,6 +6,13 @@ import { PFLEGEBOX_KONFIGURATOR_PAGE } from "@/lib/pflegebox-konfigurator-path";
 /** Einziges Hero-Bild dieser Seite (Datei unverändert aus /public/images). */
 const KOSTENFREI_HERO_IMG = "/images/kostenfreiepflegehilfsmittel.webp";
 
+/**
+ * Wie Startseite unten (`StandortWechselBild` / Hero): `drop-shadow` folgt der Alpha-Maske –
+ * transparente „Aussparungen“ im Bild bekommen keinen Schatten (kein `box-shadow` um das Rechteck).
+ */
+const KOSTENFREI_HERO_GLOW_CLASS =
+  "[filter:drop-shadow(0_10px_22px_rgba(15,79,104,0.2))_drop-shadow(0_4px_12px_rgba(15,79,104,0.12))] [will-change:filter]";
+
 const paketItems = [
   "Einmalhandschuhe",
   "Flächendesinfektion",
@@ -66,8 +73,12 @@ export function KostenfreiePflegehilfsmittelLanding() {
             </div>
           </div>
 
-          <div className="w-full lg:w-1/2">
-            <div className="flex justify-center bg-[#fafbfc] px-2 py-6 sm:py-8">
+          <div className="w-full overflow-visible lg:w-1/2">
+            {/*
+              Extra Padding: Leuchtschatten + scale(1.3) auf Desktop nicht abschneiden.
+              Auf kleinen Viewports etwas weniger skalieren, damit kein horizontales Scrollen nötig ist.
+            */}
+            <div className="flex justify-center overflow-visible bg-[#fafbfc] px-4 py-8 sm:px-8 sm:py-10 lg:px-10 lg:py-12">
               {/* eslint-disable-next-line @next/next/no-img-element -- statische Asset-URL */}
               <img
                 src={KOSTENFREI_HERO_IMG}
@@ -76,7 +87,7 @@ export function KostenfreiePflegehilfsmittelLanding() {
                 height={845}
                 decoding="async"
                 fetchPriority="high"
-                className="h-auto w-full max-w-full"
+                className={`h-auto w-full max-w-full origin-center object-contain motion-reduce:scale-100 scale-[1.15] sm:scale-[1.22] lg:scale-[1.3] ${KOSTENFREI_HERO_GLOW_CLASS}`}
               />
             </div>
           </div>
