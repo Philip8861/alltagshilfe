@@ -868,7 +868,7 @@ function updateItemAvailability(remainingBudget) {
         if (!label) {
           label = document.createElement("div");
           label.className = "item-unavailable-label";
-          label.textContent = "Die Box wäre damit zu voll";
+          label.textContent = "Nicht genug Platz";
           el.appendChild(label);
         }
       } else if (!affordAnyVariant && countInCart > 0) {
@@ -896,7 +896,7 @@ function updateItemAvailability(remainingBudget) {
       if (!label) {
         label = document.createElement("div");
         label.className = "item-unavailable-label";
-        label.textContent = "Die Box wäre damit zu voll";
+        label.textContent = "Nicht genug Platz";
         el.appendChild(label);
       }
     } else {
