@@ -9,6 +9,7 @@ import {
   parseSignaturePngDataUrl,
 } from "@/lib/pdf/pflegebox-order-to-form-v1";
 import { resolveFormV1TemplatePath } from "@/lib/pdf/resolve-form-v1-template";
+import { formatPflegeboxCartLineForMail } from "@/lib/pflegebox/cart-line-mail-text";
 import { rateLimitPflegeboxOrder } from "@/lib/rate-limit";
 import { pflegeboxOrderBodySchema, type PflegeboxOrderBody } from "@/lib/validations/pflegebox-order";
 import { createSupabaseServiceRoleClient, resolvePartnerProfileId } from "@/lib/supabase/service";
@@ -55,7 +56,7 @@ function buildTipNotiz(
     currency: "EUR",
   });
   const head = `Pflegebox-Konfigurator · genutztes Budget ${budget}`;
-  const body = lines.map((l) => `${l.count}× ${l.name}`).join("\n");
+  const body = lines.map((l) => formatPflegeboxCartLineForMail(l)).join("\n");
   const kk = contact.krankenkasse;
   const pg = contact.pflegegrad;
   const ber = contact.personalBeratungWunsch
