@@ -3,7 +3,7 @@ import Link from "next/link";
 import { siteConfig } from "@/config/site";
 import { PFLEGEBOX_KONFIGURATOR_PAGE } from "@/lib/pflegebox-konfigurator-path";
 
-/** Schatten auf Wrapper außerhalb von overflow-hidden, sonst Abschneiden am Bild. */
+/** Schatten am Motiv; kein zusätzlicher Kartenrahmen um die Hero-Grafik. */
 const heroImageShadowWrapperClass =
   "[filter:drop-shadow(0_16px_36px_rgba(15,79,104,0.22))_drop-shadow(0_6px_18px_rgba(15,79,104,0.14))]";
 
@@ -70,22 +70,20 @@ export function KostenfreiePflegehilfsmittelLanding() {
           </div>
 
           <div className="w-full lg:w-1/2">
-            <div className="rounded-2xl bg-[#fafbfc] px-2 pb-10 pt-2 sm:pb-12">
+            <div className="bg-[#fafbfc] px-2 pb-10 pt-2 sm:pb-12">
               <div
-                className={`mx-auto box-border flex max-w-full justify-center p-4 sm:p-5 ${heroImageShadowWrapperClass}`}
+                className={`mx-auto box-border flex max-w-full justify-center p-4 sm:p-6 ${heroImageShadowWrapperClass}`}
               >
-                <div className="relative aspect-[791/619] h-[min(42vh,340px)] w-auto max-w-full overflow-hidden rounded-xl bg-[#fafbfc] lg:h-[min(48vh,380px)]">
-                  {/* eslint-disable-next-line @next/next/no-img-element -- statische Asset-URL, konsistent mit /pflegebox */}
-                  <img
-                    src={KOSTENFREI_HERO_IMG}
-                    alt="Pflegebox – Abbildung der Produktbox"
-                    width={791}
-                    height={619}
-                    decoding="async"
-                    fetchPriority="high"
-                    className="absolute inset-0 h-full w-full origin-center scale-[1.26] object-cover object-center"
-                  />
-                </div>
+                {/* eslint-disable-next-line @next/next/no-img-element -- statische Asset-URL, konsistent mit /pflegebox */}
+                <img
+                  src={KOSTENFREI_HERO_IMG}
+                  alt="Pflegebox – Abbildung der Produktbox"
+                  width={877}
+                  height={536}
+                  decoding="async"
+                  fetchPriority="high"
+                  className="mx-auto block h-auto max-h-[min(52.5vh,425px)] w-auto max-w-full object-contain object-center lg:max-h-[min(60vh,475px)]"
+                />
               </div>
             </div>
           </div>

@@ -7,10 +7,7 @@ export const metadata: Metadata = {
   description: `Pflegebox-Konfigurator – ${siteConfig.name}. Wählen Sie Ihre Produkte für die Pflegebox.`,
 };
 
-/**
- * Drop-Shadow nur auf einem Wrapper **ohne** overflow-hidden – sonst wird der Schatten am Bild abgeschnitten.
- * Etwas weicher/größer als zuvor, damit er klar über die Motivkante hinaus wirkt.
- */
+/** Schatten am Motiv; kein zusätzlicher sichtbarer Rahmen um die Grafik (natives Bild inkl. weißem Innenrand). */
 const heroImageShadowWrapperClass =
   "[filter:drop-shadow(0_16px_36px_rgba(15,79,104,0.22))_drop-shadow(0_6px_18px_rgba(15,79,104,0.14))]";
 
@@ -24,23 +21,18 @@ export default function PflegeboxPage() {
   return (
     <div id="pflegebox-root" className="min-w-0 w-full max-w-full bg-[#f1f9fb]">
       <div className="flex w-full justify-center px-4 pb-2 pt-4 sm:pb-3 sm:pt-5">
-        <div className="flex w-full max-w-xl justify-center bg-[#f1f9fb] px-2 pb-10 pt-2 sm:pb-12">
-          {/* Außen: Schatten; innen: overflow-hidden + Zoom croppt weißen Bildrand im Asset */}
-          <div
-            className={`mx-auto box-border max-w-full p-4 sm:p-6 ${heroImageShadowWrapperClass}`}
-          >
-            <div className="relative mx-auto aspect-[791/619] h-[min(42vh,320px)] w-auto max-w-full overflow-hidden rounded-2xl bg-[#f1f9fb]">
-              {/* eslint-disable-next-line @next/next/no-img-element -- statische Asset-URL wie Startseiten-Hero */}
-              <img
-                src={PFLEGEBOX_HERO_SRC}
-                alt="Pflegebox – Abbildung der Produktbox"
-                width={791}
-                height={619}
-                decoding="async"
-                fetchPriority="high"
-                className="absolute inset-0 h-full w-full origin-center scale-[1.26] object-cover object-center"
-              />
-            </div>
+        <div className="flex w-full max-w-2xl justify-center bg-[#f1f9fb] px-2 pb-10 pt-2 sm:pb-12">
+          <div className={`mx-auto box-border max-w-full p-4 sm:p-8 ${heroImageShadowWrapperClass}`}>
+            {/* eslint-disable-next-line @next/next/no-img-element -- statische Asset-URL wie Startseiten-Hero */}
+            <img
+              src={PFLEGEBOX_HERO_SRC}
+              alt="Pflegebox – Abbildung der Produktbox"
+              width={877}
+              height={536}
+              decoding="async"
+              fetchPriority="high"
+              className="mx-auto block h-auto max-h-[min(52.5vh,400px)] w-auto max-w-full object-contain object-center"
+            />
           </div>
         </div>
       </div>

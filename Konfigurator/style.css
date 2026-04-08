@@ -239,7 +239,7 @@ html.kfg-embed .hero-overlay {
 }
 
 .layout > .panel:first-of-type > h2 {
-  min-height: 141px;
+  min-height: 0;
   display: flex;
   align-items: center;
 }
@@ -1095,24 +1095,11 @@ html.kfg-embed .hero-overlay {
 
 .box-title-row {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: flex-start;
-  gap: 8px;
-  /* Gleiche Höhe wie Überschrift links; Platz für Box-Grafik in Originalgröße */
-  min-height: 141px;
-}
-
-.box-icon-wrapper {
-  position: relative;
-  margin-left: 0;
-  flex-shrink: 0;
-}
-
-.box-icon {
-  width: 141px;
-  height: 141px;
-  object-fit: contain;
-  display: block;
+  gap: 10px;
+  min-height: 0;
 }
 
 .box-icon-badge {
@@ -1130,6 +1117,16 @@ html.kfg-embed .hero-overlay {
   align-items: center;
   justify-content: center;
   visibility: hidden;
+}
+
+/* Badge neben „Meine Pflegebox“ (ohne Box-Illustration) */
+.box-icon-badge--inline {
+  position: static;
+  top: auto;
+  right: auto;
+  min-width: 22px;
+  height: 22px;
+  padding: 0 6px;
 }
 
 .budget-progress {
@@ -1862,11 +1859,6 @@ html.kfg-embed .hero-overlay {
   .box-title-row {
     min-height: 0;
     max-height: none;
-  }
-
-  .box-icon {
-    height: clamp(88px, 22vw, 120px);
-    max-width: none;
   }
 
   .layout > .panel:first-of-type > h2 {
