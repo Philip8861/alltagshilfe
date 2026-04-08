@@ -40,6 +40,7 @@ export const navLinks: NavLink[] = [
     href: "/pflegehilfsmittel/kostenfreie-pflegehilfsmittel",
     label: "Pflegehilfsmittel",
     children: [
+      { href: "/pflegehilfsmittel/kostenfreie-pflegehilfsmittel", label: "Kostenfreie Pflegehilfsmittel" },
       { href: "/pflegeshop", label: "Pflegeshop" },
       { href: "/inkontinenzversorgung", label: "Inkontinenzversorgung" },
     ],
