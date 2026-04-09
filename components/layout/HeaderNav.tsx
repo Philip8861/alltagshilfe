@@ -181,7 +181,7 @@ export function HeaderNav() {
         aria-label="Mobile Menü"
       >
         <nav
-          className="mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8"
+          className="mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-[var(--ahs-page-gutter)]"
           aria-label="Mobile Navigation"
         >
           <ul className="flex flex-col gap-1">

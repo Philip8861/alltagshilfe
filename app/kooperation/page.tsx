@@ -12,7 +12,7 @@ export default function KooperationPage() {
   return (
     <article className="w-full" style={{ backgroundColor: "#fafbfc" }}>
       <section className="w-full pb-12 pt-0 sm:pb-16 lg:pb-20">
-        <div className="mx-auto w-full max-w-[100rem] px-4 sm:px-6 lg:px-8">
+        <div className="mx-auto w-full max-w-[100rem] px-4 sm:px-6 lg:px-[var(--ahs-page-gutter)]">
           <div className="relative">
             <div className="flex justify-end">
               <div className="relative ml-auto w-full max-w-[50rem] lg:mr-[calc((100vw-100%)/-2)]">

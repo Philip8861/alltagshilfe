@@ -42,7 +42,7 @@ export default function UeberUnsPage() {
         </section>
 
         <section
-          className="relative z-20 left-1/2 right-1/2 mt-12 -ml-[50vw] -mr-[50vw] w-screen bg-[#F2F9FA] px-4 pt-10 pb-10 sm:px-6 sm:pt-14 sm:pb-12 lg:px-8"
+          className="relative z-20 left-1/2 right-1/2 mt-12 -ml-[50vw] -mr-[50vw] w-screen bg-[#F2F9FA] px-4 pt-10 pb-10 sm:px-6 sm:pt-14 sm:pb-12 lg:px-[var(--ahs-page-gutter)]"
           aria-label="Unternehmensgeschichte Alltagshilfe-Süd"
         >
           <svg

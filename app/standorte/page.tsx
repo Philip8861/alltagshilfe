@@ -131,7 +131,7 @@ export default function StandortePage() {
             <KartenMitKoordinatenErfassen hauptmarker={HAUPTMARKER} punkte={PUNKTE} ortsLabels={ORTSLABELS} />
           </div>
           {/* Desktop: Text + Standortsuche rechts (order-2). Mobil: oben (order-1) – zuerst Text, dann Standortsuche. */}
-          <div className="w-full min-w-0 flex flex-col gap-6 lg:gap-8 pt-6 sm:pt-8 px-4 sm:px-6 lg:max-w-lg lg:flex-1 lg:px-8 lg:items-start order-1 lg:order-2">
+          <div className="w-full min-w-0 flex flex-col gap-6 lg:gap-8 pt-6 sm:pt-8 px-4 sm:px-6 lg:max-w-lg lg:flex-1 lg:px-[var(--ahs-page-gutter)] lg:items-start order-1 lg:order-2">
             <header className="space-y-3 w-full max-w-lg">
               <h1 className={HEADING_CLASS}>
                 {STANDORTE_INTRO.heading}
@@ -149,7 +149,7 @@ export default function StandortePage() {
 
       <StandortAnthrazitRule className="mt-8 sm:mt-10" />
 
-      <section className="relative z-20 mt-8 w-full px-4 sm:mt-10 sm:px-6 lg:px-8">
+      <section className="relative z-20 mt-8 w-full px-4 sm:mt-10 sm:px-6 lg:px-[var(--ahs-page-gutter)]">
         <div className="mx-auto w-full max-w-5xl rounded-2xl border border-[#0F4F68]/10 bg-white/55 p-5 sm:p-7">
           <h2 className="text-2xl font-bold text-[#0F4F68] sm:text-3xl">
             Wir bieten Haushaltshilfe und Alltagsbegleitungen in folgenden Regionen an
@@ -192,7 +192,7 @@ export default function StandortePage() {
 
       {/* Übergang startet etwas höher, mit gebogener Oberkante und weichem Verlauf */}
       <div
-        className="relative z-0 -mx-4 -mt-[9%] min-h-[26vh] flex-1 bg-[#F2F9FA] px-4 pt-16 pb-20 sm:-mx-6 sm:pt-18 sm:pb-24 lg:-mx-8 lg:px-8"
+        className="relative z-0 -mx-4 -mt-[9%] min-h-[26vh] flex-1 bg-[#F2F9FA] px-4 pt-16 pb-20 sm:-mx-6 sm:pt-18 sm:pb-24 lg:-mx-[var(--ahs-page-gutter)] lg:px-[var(--ahs-page-gutter)]"
       >
         {/* Gebogene Oberkante */}
         <svg

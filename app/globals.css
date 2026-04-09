@@ -3,6 +3,21 @@
 @tailwind utilities;
 
 @layer base {
+  /* Horizontale Außenabstände Desktop: wachsen mit Viewport, Deckel 2rem (wie früher lg:px-8). */
+  :root {
+    --ahs-page-gutter: 1rem;
+  }
+  @media (min-width: 640px) {
+    :root {
+      --ahs-page-gutter: 1.5rem;
+    }
+  }
+  @media (min-width: 1024px) {
+    :root {
+      --ahs-page-gutter: clamp(1rem, 0.75rem + 2.8vw, 2rem);
+    }
+  }
+
   /* Kein horizontaler Scroll-„Balken“ durch 100vw/Überlauf am Seitenende */
   html {
     overflow-x: clip;

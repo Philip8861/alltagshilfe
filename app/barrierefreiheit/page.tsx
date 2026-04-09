@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 
 export default function BarrierefreiheitPage() {
   return (
-    <article className="mx-auto w-full max-w-4xl px-4 py-12 sm:px-6 lg:px-8">
+    <article className="mx-auto w-full max-w-4xl px-4 py-12 sm:px-6 lg:px-[var(--ahs-page-gutter)]">
       <h1 className="text-3xl font-extrabold text-[#0F4F68] sm:text-4xl">Barrierefreie Homepage</h1>
       <p className="mt-4 text-base leading-relaxed text-neutral-700 sm:text-lg">
         Auf unserer Website können Sie die Darstellung individuell anpassen: Schriftgröße, Zeilenabstand, Farben,

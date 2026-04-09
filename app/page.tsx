@@ -104,7 +104,7 @@ export default function HomePage() {
       style={{ backgroundColor: "#fafbfc" }}
     >
       <section className="w-full pt-0 pb-6 sm:pb-8 lg:pb-10">
-        <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-[var(--ahs-page-gutter)]">
           {/* Oberer Bereich: Bild rechts, Überschrift + drei Punkte links, etwas oberhalb der Bildmitte (Desktop) */}
           <div className="relative">
             <div className="flex justify-end">
@@ -171,7 +171,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="relative z-20 mt-2 w-full bg-[#F2F9FA] px-4 pt-8 pb-10 sm:mt-4 sm:px-6 sm:pt-12 sm:pb-12 lg:px-8">
+      <section className="relative z-20 mt-2 w-full bg-[#F2F9FA] px-4 pt-8 pb-10 sm:mt-4 sm:px-6 sm:pt-12 sm:pb-12 lg:px-[var(--ahs-page-gutter)]">
         <svg
           className="pointer-events-none absolute left-0 top-0 h-12 w-full -translate-y-[68%] sm:h-16"
           viewBox="0 0 1200 120"
@@ -246,7 +246,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="relative z-20 mt-12 w-full px-4 sm:mt-16 sm:px-6 lg:mt-20 lg:px-8">
+      <section className="relative z-20 mt-12 w-full px-4 sm:mt-16 sm:px-6 lg:mt-20 lg:px-[var(--ahs-page-gutter)]">
         <div className="mx-auto flex w-full max-w-6xl flex-col gap-6 sm:flex-row sm:items-start sm:gap-8 lg:gap-10">
           <div className="relative z-20 order-3 flex w-full max-w-full justify-center pb-2 pt-1 sm:order-1 lg:w-[50%] lg:max-w-3xl lg:shrink-0 lg:justify-center lg:px-6 lg:pb-4 lg:pt-2 sm:px-4">
             <div className="w-full max-w-full" style={{ width: "min(491px, calc(100vw - 3rem))" }}>
@@ -259,14 +259,14 @@ export default function HomePage() {
             </div>
           </div>
 
-          <StandortNummerEinsReveal className="order-1 w-full min-w-0 px-4 sm:order-2 sm:px-6 lg:flex-1 lg:max-w-lg lg:self-start lg:px-8">
+          <StandortNummerEinsReveal className="order-1 w-full min-w-0 px-4 sm:order-2 sm:px-6 lg:flex-1 lg:max-w-lg lg:self-start lg:px-[var(--ahs-page-gutter)]">
             <h2 className={HEADING_CLASS}>{STARTSEITE_LEISTUNGEN_INTRO.heading}</h2>
             <p className={INTRO_BODY_CLASS}>{STARTSEITE_LEISTUNGEN_INTRO.text}</p>
           </StandortNummerEinsReveal>
         </div>
       </section>
 
-      <section className="relative z-20 mt-12 w-full px-4 sm:mt-14 sm:px-6 lg:mt-16 lg:px-8">
+      <section className="relative z-20 mt-12 w-full px-4 sm:mt-14 sm:px-6 lg:mt-16 lg:px-[var(--ahs-page-gutter)]">
         <div className="mx-auto w-full max-w-6xl">
           <h3 className="text-3xl font-extrabold tracking-tight text-[#0F4F68] sm:text-4xl">Ihre Vorteile bei uns</h3>
           <p className="mt-2 max-w-3xl text-sm text-neutral-600 sm:text-base">
@@ -285,7 +285,7 @@ export default function HomePage() {
 
       <KundenstimmenCarousel />
 
-      <div className="relative z-0 -mt-[9%] min-h-[26vh] flex-1 bg-[#F2F9FA] px-4 pt-16 pb-20 sm:pt-18 sm:pb-24 lg:px-8">
+      <div className="relative z-0 -mt-[9%] min-h-[26vh] flex-1 bg-[#F2F9FA] px-4 pt-16 pb-20 sm:pt-18 sm:pb-24 lg:px-[var(--ahs-page-gutter)]">
         <svg
           className="pointer-events-none absolute left-0 top-0 h-12 w-full -translate-y-[70%] sm:h-16"
           viewBox="0 0 1200 120"

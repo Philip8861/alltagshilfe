@@ -97,8 +97,8 @@ export function KostenfreiePflegehilfsmittelLanding() {
         id="kostenfreie-hero"
         className="min-w-0 scroll-mt-24 overflow-x-clip overflow-y-visible"
       >
-        <section className="relative z-0 mx-auto flex w-full min-w-0 max-w-7xl flex-col-reverse items-center gap-10 px-4 pb-16 pt-0 sm:px-6 sm:pb-24 lg:flex-row lg:items-start lg:gap-8 lg:px-6 lg:pb-[clamp(5.5rem,14vh,9rem)] lg:pt-[clamp(2rem,7vh,4.75rem)] xl:gap-12 xl:px-8 xl:pb-[clamp(6.5rem,15vh,10rem)]">
-          <div className="w-full min-w-0 space-y-6 lg:flex-1 lg:basis-0 lg:-translate-x-[6%] xl:-translate-x-[12%] 2xl:-translate-x-[18%] min-[1800px]:-translate-x-[21%]">
+        <section className="relative z-0 mx-auto flex w-full min-w-0 max-w-7xl flex-col-reverse items-center gap-10 px-4 pb-16 pt-0 sm:px-6 sm:pb-24 lg:flex-row lg:items-start lg:gap-8 lg:px-[var(--ahs-page-gutter)] lg:pb-[clamp(5.5rem,14vh,9rem)] lg:pt-[clamp(2rem,7vh,4.75rem)] xl:gap-12 xl:pb-[clamp(6.5rem,15vh,10rem)]">
+          <div className="w-full min-w-0 space-y-6 lg:flex-1 lg:basis-0 lg:-translate-x-0 xl:-translate-x-[5%] 2xl:-translate-x-[12%] min-[1800px]:-translate-x-[18%]">
             <h1
               className="text-balance text-3xl font-extrabold leading-tight tracking-tight text-[#0F4F68] opacity-0 motion-reduce:opacity-100 animate-fade-in-up sm:text-4xl lg:text-4xl xl:text-5xl"
               style={{ animationDelay: "0s" }}
@@ -141,9 +141,9 @@ export function KostenfreiePflegehilfsmittelLanding() {
           </div>
 
           <div className="w-full min-w-0 lg:flex-1 lg:basis-0">
-            <div className="flex justify-center overflow-visible bg-[#fafbfc] px-4 pt-3 pb-8 sm:px-8 sm:pt-4 sm:pb-10 lg:justify-end lg:px-2 lg:pb-10 lg:pt-0 lg:pr-2 xl:px-3 xl:pb-12 xl:pr-4">
+            <div className="flex justify-center overflow-x-clip bg-[#fafbfc] px-4 pt-3 pb-8 sm:px-8 sm:pt-4 sm:pb-10 lg:justify-end lg:px-0 lg:pb-10 lg:pt-0 xl:pb-12">
               <div
-                className="mx-auto w-full max-w-full overflow-visible opacity-0 motion-reduce:opacity-100 animate-fade-in-up max-lg:flex max-lg:justify-center"
+                className="mx-auto w-full max-w-full opacity-0 motion-reduce:opacity-100 animate-fade-in-up max-lg:flex max-lg:justify-center lg:max-w-full lg:overflow-x-clip lg:pl-1 lg:pr-0"
                 style={{ animationDelay: "0.08s" }}
               >
                 {/* eslint-disable-next-line @next/next/no-img-element -- statische Asset-URL */}
@@ -154,7 +154,7 @@ export function KostenfreiePflegehilfsmittelLanding() {
                   height={845}
                   decoding="async"
                   fetchPriority="high"
-                  className={`h-auto w-full max-w-full object-contain motion-reduce:translate-x-0 motion-reduce:translate-y-0 motion-reduce:scale-[1.05] max-lg:mx-auto max-lg:origin-center max-lg:translate-x-0 max-lg:-translate-y-2 max-lg:scale-[1.05] lg:origin-top lg:translate-x-10 lg:-translate-y-8 lg:scale-[1.536] xl:translate-x-14 xl:-translate-y-10 ${KOSTENFREI_HERO_GLOW_CLASS}`}
+                  className={`h-auto w-full max-w-full object-contain motion-reduce:translate-x-0 motion-reduce:translate-y-0 motion-reduce:scale-[1.05] max-lg:mx-auto max-lg:origin-center max-lg:translate-x-0 max-lg:-translate-y-2 max-lg:scale-[1.05] lg:origin-top-right lg:translate-x-0 lg:-translate-y-6 lg:scale-[1.08] xl:-translate-y-7 xl:scale-[1.18] 2xl:-translate-y-8 2xl:scale-[1.3] min-[1800px]:-translate-y-9 min-[1800px]:scale-[1.48] ${KOSTENFREI_HERO_GLOW_CLASS}`}
                 />
               </div>
             </div>
@@ -162,7 +162,7 @@ export function KostenfreiePflegehilfsmittelLanding() {
         </section>
 
         <section
-          className="relative z-10 bg-[#F2F9FA] px-4 pb-12 pt-20 sm:px-6 sm:pb-14 sm:pt-24 lg:px-8 lg:pt-28"
+          className="relative z-10 bg-[#F2F9FA] px-4 pb-12 pt-20 sm:px-6 sm:pb-14 sm:pt-24 lg:px-[var(--ahs-page-gutter)] lg:pt-28"
           aria-labelledby="anspruch-heading"
         >
           <svg
@@ -217,7 +217,7 @@ export function KostenfreiePflegehilfsmittelLanding() {
         </section>
 
         <section
-          className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8"
+          className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-[var(--ahs-page-gutter)]"
           aria-labelledby="schritte-heading"
         >
           <div className="mb-12 text-center">
@@ -279,7 +279,7 @@ export function KostenfreiePflegehilfsmittelLanding() {
         </section>
 
         <section className="bg-[#F2F9FA] py-16" aria-labelledby="pakete-heading">
-          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-[var(--ahs-page-gutter)]">
             <div className="mb-10 text-center">
               <h2 id="pakete-heading" className="text-3xl font-bold text-[#0F4F68] sm:text-4xl">
                 Was ist in den Pflegepaketen enthalten?

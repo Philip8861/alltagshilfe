@@ -57,7 +57,7 @@ export function HomePartnerLoginBlock() {
 
   return (
     <section
-      className="relative z-20 mx-auto mt-14 w-full max-w-6xl px-4 sm:mt-16 sm:px-6 lg:mt-20 lg:px-8"
+      className="relative z-20 mx-auto mt-14 w-full max-w-6xl px-4 sm:mt-16 sm:px-6 lg:mt-20 lg:px-[var(--ahs-page-gutter)]"
       aria-labelledby="home-partner-login-heading"
     >
       <div className="rounded-3xl border border-[#0F4F68]/12 bg-gradient-to-br from-white to-[#F2F9FA]/50 p-6 shadow-[0_12px_40px_rgba(15,79,104,0.08)] sm:p-8 lg:p-10">

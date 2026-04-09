@@ -52,7 +52,7 @@ export function StandortAnthrazitRule({ className = "", immediate = false }: Sta
   return (
     <div
       ref={ref}
-      className={`flex w-full justify-center px-4 sm:px-6 lg:px-8 ${className}`.trim()}
+      className={`flex w-full justify-center px-4 sm:px-6 lg:px-[var(--ahs-page-gutter)] ${className}`.trim()}
       aria-hidden
     >
       <div
