@@ -316,25 +316,28 @@ export function KostenfreiePflegehilfsmittelLanding() {
           <div className="flex flex-col-reverse items-center gap-10 lg:grid lg:grid-cols-[minmax(0,0.34fr)_minmax(0,0.66fr)] lg:items-center lg:justify-items-stretch lg:gap-x-[clamp(1.5rem,3vw,3.25rem)] lg:gap-y-0">
             <div className="box-border w-full min-w-0 max-w-full space-y-[clamp(1.25rem,2vh+0.75rem,1.75rem)] lg:min-w-0 lg:justify-self-start lg:space-y-[clamp(1.15rem,1.6vh+0.7rem,1.75rem)] lg:-translate-x-[clamp(0.75rem,4.5vw,3rem)] lg:pr-0 motion-reduce:lg:translate-x-0">
             <h1
-              className="text-balance text-3xl font-extrabold leading-tight tracking-tight text-[#0F4F68] opacity-0 motion-reduce:opacity-100 animate-fade-in-up sm:text-4xl lg:text-[clamp(1.75rem,1.05rem+2.5vw,3rem)]"
+              className="text-3xl font-extrabold leading-tight tracking-tight text-[#0F4F68] opacity-0 motion-reduce:opacity-100 animate-fade-in-up sm:text-4xl lg:text-[clamp(1.75rem,1.05rem+2.5vw,3rem)]"
               style={{ animationDelay: "0s" }}
             >
-              Ihre kostenfreien Pflegehilfsmittel im Wert von 42&nbsp;€ monatlich
+              <span className="block">Ihre kostenfreien Pflegehilfsmittel</span>
+              <span className="mt-2 block sm:mt-1.5 lg:mt-2">
+                im Wert von 42&nbsp;€ monatlich
+              </span>
             </h1>
             <ul
-              className="mt-5 space-y-3 sm:mt-6 sm:space-y-3.5 lg:mt-0 lg:space-y-[clamp(0.65rem,0.35rem+0.9vw,1rem)]"
+              className="mt-5 min-w-0 space-y-3 overflow-x-auto overflow-y-visible pb-1 sm:mt-6 sm:space-y-3.5 lg:mt-0 lg:space-y-[clamp(0.65rem,0.35rem+0.9vw,1rem)]"
               aria-label="Ihre Vorteile auf einen Blick"
             >
               {KOSTENFREI_HERO_VORTEILE.map((line, i) => (
                 <li
                   key={line}
-                  className="flex items-center gap-3 text-pretty text-lg font-semibold leading-snug text-[#0F4F68] opacity-0 motion-reduce:opacity-100 animate-fade-in-up sm:text-xl lg:text-[clamp(1.05rem,0.82rem+0.5vw,1.35rem)]"
+                  className="flex min-w-0 flex-nowrap items-center gap-3 text-lg font-semibold leading-snug text-[#0F4F68] opacity-0 motion-reduce:opacity-100 animate-fade-in-up sm:text-xl lg:text-[clamp(1.05rem,0.82rem+0.5vw,1.35rem)]"
                   style={{
                     animationDelay: `${0.45 + i * 0.22}s`,
                   }}
                 >
                   <KostenfreiHeroCheckIcon />
-                  <span>{line}</span>
+                  <span className="whitespace-nowrap">{line}</span>
                 </li>
               ))}
             </ul>
@@ -350,16 +353,16 @@ export function KostenfreiePflegehilfsmittelLanding() {
                 <KonfiguratorGearIcon className="h-5 w-5" />
                 Pflegebox jetzt konfigurieren
               </KonfiguratorLink>
-              <p className="mt-3 text-center text-sm text-neutral-600 sm:text-left lg:text-[clamp(0.8rem,0.7rem+0.35vw,0.95rem)]">
+              <p className="mt-3 min-w-0 text-center text-sm text-neutral-600 sm:text-left sm:whitespace-nowrap sm:overflow-x-auto sm:overflow-y-visible lg:text-[clamp(0.8rem,0.7rem+0.35vw,0.95rem)]">
                 Dauert nur 2 Minuten. Keine Vertragsbindung. Jederzeit kündbar.
               </p>
             </div>
           </div>
 
-            <div className="box-border w-full min-w-0 max-w-full lg:min-h-0 lg:justify-self-stretch lg:self-center">
+            <div className="box-border w-full min-w-0 max-w-full lg:min-h-0 lg:translate-x-[clamp(0.75rem,5vw,3.5rem)] lg:justify-self-stretch lg:self-center motion-reduce:lg:translate-x-0">
               <div className="box-border flex justify-center overflow-x-visible bg-[#fafbfc] px-4 pt-3 pb-8 sm:px-8 sm:pt-4 sm:pb-10 lg:flex lg:justify-end lg:px-0 lg:pb-[clamp(1.75rem,3.5vh+0.75rem,3.25rem)] lg:pt-0">
                 <div
-                  className="mx-auto w-full min-w-0 max-w-[min(100%,72rem)] opacity-0 motion-reduce:opacity-100 animate-fade-in-up max-lg:flex max-lg:max-w-full max-lg:justify-center lg:w-full"
+                  className="mx-auto w-full min-w-0 max-w-[min(100%,72rem)] opacity-0 motion-reduce:opacity-100 animate-fade-in-up max-lg:flex max-lg:max-w-full max-lg:justify-center lg:ml-auto lg:w-full lg:max-w-full"
                   style={{ animationDelay: "0.08s" }}
                 >
                   {/* eslint-disable-next-line @next/next/no-img-element -- statische Asset-URL; Datei: kostenfreiepflegehilfsmittel.webp */}
@@ -371,7 +374,7 @@ export function KostenfreiePflegehilfsmittelLanding() {
                     decoding="async"
                     fetchPriority="high"
                     sizes="(max-width: 1023px) 100vw, (max-width: 1536px) 66vw, 1180px"
-                    className={`box-border h-auto w-full max-w-full object-contain object-center lg:object-contain lg:object-center max-lg:mx-auto max-lg:origin-center max-lg:translate-x-0 max-lg:-translate-y-2 max-lg:scale-[1.05] max-lg:motion-reduce:scale-[1.05] ${KOSTENFREI_HERO_GLOW_CLASS}`}
+                    className={`box-border h-auto w-full max-w-full object-contain object-center lg:object-contain lg:object-right max-lg:mx-auto max-lg:origin-center max-lg:translate-x-0 max-lg:-translate-y-2 max-lg:scale-[1.05] max-lg:motion-reduce:scale-[1.05] ${KOSTENFREI_HERO_GLOW_CLASS}`}
                   />
                 </div>
               </div>
