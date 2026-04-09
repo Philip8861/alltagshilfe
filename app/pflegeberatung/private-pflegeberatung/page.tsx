@@ -121,8 +121,30 @@ export default function PrivatePflegeberatungPage() {
         </div>
       </section>
 
-      <section className="bg-white py-14 sm:py-16" aria-labelledby="vorteile-heading">
-        <div className="mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-[var(--ahs-page-gutter)]">
+      <section
+        className="relative z-10 w-full bg-[#F2F9FA] px-4 pb-12 pt-8 sm:px-6 sm:pb-14 sm:pt-10 lg:px-[var(--ahs-page-gutter)] lg:pb-16"
+        aria-labelledby="pg-table-heading"
+      >
+        <div className="relative mx-auto w-full max-w-4xl">
+          <h2 id="pg-table-heading" className={SECTION_TITLE_CLASS}>
+            Pflegegrad 1–5: Wann Beratung Pflicht ist – und wann nicht
+          </h2>
+          <p className="mt-3 max-w-3xl text-sm leading-relaxed text-neutral-600 sm:text-base">
+            Die gesetzlichen Regelungen nach Paragraf 37 Absatz 3 SGB XI sind eindeutig. Die Kosten trägt in diesen Fällen
+            Ihre Pflegekasse.
+          </p>
+          <div className="mt-8">
+            <PflegegradBeratungTable captionSrOnly />
+          </div>
+        </div>
+      </section>
+
+      <section
+        className="relative z-10 w-full bg-white px-4 pb-14 pt-10 sm:px-6 sm:pb-16 sm:pt-12 lg:px-[var(--ahs-page-gutter)] lg:pb-16 lg:pt-14"
+        aria-labelledby="vorteile-heading"
+      >
+        <WelleObenF2F9FA />
+        <div className="relative mx-auto w-full max-w-6xl">
           <h2 id="vorteile-heading" className={SECTION_TITLE_CLASS}>
             Unsere Vorteile
           </h2>
@@ -147,24 +169,6 @@ export default function PrivatePflegeberatungPage() {
               </li>
             ))}
           </ul>
-        </div>
-      </section>
-
-      <section
-        className="border-t border-[#0F4F68]/10 bg-[#fafbfc] py-14 sm:py-16"
-        aria-labelledby="pg-table-heading"
-      >
-        <div className="mx-auto w-full max-w-4xl px-4 sm:px-6 lg:px-[var(--ahs-page-gutter)]">
-          <h2 id="pg-table-heading" className={SECTION_TITLE_CLASS}>
-            Pflegegrad 1–5: Wann Beratung Pflicht ist – und wann nicht
-          </h2>
-          <p className="mt-3 max-w-3xl text-sm leading-relaxed text-neutral-600 sm:text-base">
-            Die gesetzlichen Regelungen nach Paragraf 37 Absatz 3 SGB XI sind eindeutig. Die Kosten trägt in diesen Fällen
-            Ihre Pflegekasse.
-          </p>
-          <div className="mt-8">
-            <PflegegradBeratungTable captionSrOnly />
-          </div>
         </div>
       </section>
 
