@@ -55,19 +55,19 @@ const paketItems = [
 
 const KOSTENFREI_SCHRITTE = [
   {
-    step: "1",
+    step: "Schritt 1",
     title: "Pflegebox konfigurieren",
     description:
       "Im Pflegebox-Konfigurator wählen Sie in wenigen Klicks passende Produkte und Mengen für den Pflegealltag, übersichtlich und stets innerhalb Ihres monatlichen Budgets.",
   },
   {
-    step: "2",
+    step: "Schritt 2",
     title: "Daten eingeben & unterschreiben",
     description:
       "In klaren, kurzen Schritten tragen Sie Ihre Daten ein und unterschreiben den Antrag digital, schnell und papierarm. Wenn Sie es lieber klassisch möchten, geht es auf Wunsch auch per Post.",
   },
   {
-    step: "3",
+    step: "Schritt 3",
     title: "Zurücklehnen, wir erledigen den Rest",
     description:
       "Wir erledigen alle Formalitäten für Sie. Nach Freigabe erhalten Sie Ihre Lieferung zuverlässig nach Hause.",
@@ -414,15 +414,15 @@ export function KostenfreiePflegehilfsmittelLanding() {
               </div>
             </RevealOnScroll>
 
-            <ol className="grid gap-6 md:grid-cols-3 md:gap-8">
+            <ol className="grid auto-rows-fr gap-6 md:grid-cols-3 md:gap-8 md:items-stretch">
               {KOSTENFREI_SCHRITTE.map((item, i) => (
-                <li key={item.step} className="list-none">
-                  <RevealOnScroll delayMs={i * 150}>
-                    <div className="flex h-full flex-col rounded-2xl border border-[#0F4F68]/10 bg-white p-6 shadow-[0_10px_40px_rgba(15,79,104,0.07)] transition-shadow duration-300 hover:shadow-[0_16px_52px_rgba(15,79,104,0.11)] sm:p-7">
-                      <div className="mb-4 flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#0F4F68] text-lg font-bold text-white">
+                <li key={item.step} className="flex min-h-0 list-none">
+                  <RevealOnScroll delayMs={i * 150} className="h-full min-h-0 w-full">
+                    <div className="flex h-full min-h-[18rem] flex-col items-center rounded-2xl border border-[#0F4F68]/10 bg-white p-6 text-center shadow-[0_10px_40px_rgba(15,79,104,0.07)] transition-shadow duration-300 hover:shadow-[0_16px_52px_rgba(15,79,104,0.11)] sm:min-h-[19rem] sm:p-7">
+                      <div className="mb-4 inline-flex min-h-10 shrink-0 items-center justify-center rounded-full bg-[#0F4F68] px-4 text-sm font-bold text-white sm:text-base">
                         {item.step}
                       </div>
-                      <h3 className="text-lg font-bold text-[#0F4F68]">{item.title}</h3>
+                      <h3 className="text-balance text-lg font-bold text-[#0F4F68]">{item.title}</h3>
                       <p className="mt-2 flex-1 text-pretty text-sm leading-relaxed text-neutral-600 sm:text-base">
                         {item.description}
                       </p>
