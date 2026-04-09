@@ -92,9 +92,12 @@ function KonfiguratorGearIcon({ className = "" }: { className?: string }) {
 
 export function KostenfreiePflegehilfsmittelLanding() {
   return (
-    <div className="min-w-0 overflow-x-clip bg-[#fafbfc] text-neutral-700 antialiased">
-      <article id="kostenfreie-hero" className="min-w-0 scroll-mt-24 overflow-x-clip">
-        <section className="relative z-0 mx-auto flex w-full min-w-0 max-w-7xl flex-col-reverse items-center gap-10 px-4 pb-14 pt-0 sm:px-6 sm:pb-20 lg:flex-row lg:items-start lg:gap-8 lg:px-6 lg:pb-24 lg:pt-[clamp(2rem,7vh,4.75rem)] xl:gap-12 xl:px-8 xl:pb-28">
+    <div className="min-w-0 overflow-x-clip overflow-y-visible bg-[#fafbfc] text-neutral-700 antialiased">
+      <article
+        id="kostenfreie-hero"
+        className="min-w-0 scroll-mt-24 overflow-x-clip overflow-y-visible"
+      >
+        <section className="relative z-0 mx-auto flex w-full min-w-0 max-w-7xl flex-col-reverse items-center gap-10 px-4 pb-16 pt-0 sm:px-6 sm:pb-24 lg:flex-row lg:items-start lg:gap-8 lg:px-6 lg:pb-[clamp(5.5rem,14vh,9rem)] lg:pt-[clamp(2rem,7vh,4.75rem)] xl:gap-12 xl:px-8 xl:pb-[clamp(6.5rem,15vh,10rem)]">
           <div className="w-full min-w-0 space-y-6 lg:flex-1 lg:basis-0 lg:-translate-x-[6%] xl:-translate-x-[12%] 2xl:-translate-x-[18%] min-[1800px]:-translate-x-[21%]">
             <h1
               className="text-balance text-3xl font-extrabold leading-tight tracking-tight text-[#0F4F68] opacity-0 motion-reduce:opacity-100 animate-fade-in-up sm:text-4xl lg:text-4xl xl:text-5xl"
@@ -138,9 +141,9 @@ export function KostenfreiePflegehilfsmittelLanding() {
           </div>
 
           <div className="w-full min-w-0 lg:flex-1 lg:basis-0">
-            <div className="flex justify-center bg-[#fafbfc] px-4 pt-3 pb-8 sm:px-8 sm:pt-4 sm:pb-10 lg:justify-end lg:overflow-x-clip lg:px-2 lg:pb-8 lg:pt-0 lg:pr-2 xl:px-3 xl:pr-4">
+            <div className="flex justify-center overflow-visible bg-[#fafbfc] px-4 pt-3 pb-8 sm:px-8 sm:pt-4 sm:pb-10 lg:justify-end lg:px-2 lg:pb-10 lg:pt-0 lg:pr-2 xl:px-3 xl:pb-12 xl:pr-4">
               <div
-                className="mx-auto w-full max-w-full opacity-0 motion-reduce:opacity-100 animate-fade-in-up max-lg:flex max-lg:justify-center"
+                className="mx-auto w-full max-w-full overflow-visible opacity-0 motion-reduce:opacity-100 animate-fade-in-up max-lg:flex max-lg:justify-center"
                 style={{ animationDelay: "0.08s" }}
               >
                 {/* eslint-disable-next-line @next/next/no-img-element -- statische Asset-URL */}
@@ -159,18 +162,18 @@ export function KostenfreiePflegehilfsmittelLanding() {
         </section>
 
         <section
-          className="relative z-10 bg-[#F2F9FA] px-4 pb-12 pt-16 sm:px-6 sm:pb-14 sm:pt-20 lg:px-8 lg:pt-24"
+          className="relative z-10 bg-[#F2F9FA] px-4 pb-12 pt-20 sm:px-6 sm:pb-14 sm:pt-24 lg:px-8 lg:pt-28"
           aria-labelledby="anspruch-heading"
         >
           <svg
-            className="pointer-events-none absolute left-0 top-0 z-0 h-12 w-full -translate-y-[42%] sm:h-14 sm:-translate-y-[40%] lg:h-16 lg:-translate-y-[38%]"
+            className="pointer-events-none absolute left-0 top-0 z-0 h-14 w-full -translate-y-[28%] sm:h-[4.25rem] sm:-translate-y-[26%] lg:h-[4.75rem] lg:-translate-y-[24%] xl:h-20 xl:-translate-y-[22%]"
             viewBox="0 0 1200 100"
             preserveAspectRatio="none"
             fill="none"
             aria-hidden
           >
             <path
-              d="M0,100 C150,58 320,48 480,52 C640,62 780,82 920,76 C1020,72 1110,62 1200,56 L1200,100 L0,100 Z"
+              d="M0,100 C140,38 300,8 460,36 C620,65 760,95 900,72 C980,58 1080,28 1200,18 L1200,100 L0,100 Z"
               fill="#F2F9FA"
             />
           </svg>
