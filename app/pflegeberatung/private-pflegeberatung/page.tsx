@@ -19,7 +19,7 @@ const HERO_IMG_SHADOW =
 export const metadata: Metadata = {
   title: "Private Pflegeberatung nach Paragraf 37 Absatz 3 SGB XI",
   description:
-    "Pflegeberatung mit Herz: Angehörige entlasten und Pflegegeld sichern. Kostenlos über die Pflegekasse – mit Erinnerungssystem, fester Ansprechperson und optionalem Videocall.",
+    "Pflegeberatung mit Herz: Angehörige entlasten und Pflegegeld sichern. Kostenlos über die Pflegekasse – mit Erinnerungssystem und fester Ansprechperson.",
   alternates: { canonical: PAGE_PATH },
 };
 
@@ -58,71 +58,38 @@ const faqJsonLd = {
   })),
 };
 
-function VideoCallBadge() {
+/** Wellen-Übergang wie auf der Startseite (`app/page.tsx` Leistungs-Sektion) */
+function WelleObenF2F9FA() {
   return (
-    <div className="mt-10 flex flex-col gap-4 rounded-2xl border border-[#0F4F68]/20 bg-gradient-to-br from-[#F2F9FA] to-white p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6">
-      <div className="flex items-start gap-3">
-        <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#0F4F68] text-white" aria-hidden>
-          <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"
-            />
-          </svg>
-        </span>
-        <div>
-          <p className="text-sm font-bold text-[#0F4F68]">Beratung per Videocall</p>
-          <p className="mt-1 text-sm text-neutral-600">
-            Ab dem zweiten Termin darf jede zweite Beratung digital per Videocall erfolgen – unkompliziert und zeitsparend.
-          </p>
-        </div>
-      </div>
-      <Link
-        href="/pflegeberatung/online-videoberatung"
-        className="inline-flex min-h-[44px] shrink-0 items-center justify-center self-start rounded-xl bg-[#F78F2E] px-4 py-2.5 text-sm font-semibold text-white hover:opacity-95 focus:outline-none focus:ring-2 focus:ring-[#F78F2E] focus:ring-offset-2 sm:self-center"
-      >
-        Zur Online-Videoberatung
-      </Link>
-    </div>
+    <svg
+      className="pointer-events-none absolute left-0 top-0 h-12 w-full -translate-y-[68%] sm:h-16"
+      viewBox="0 0 1200 120"
+      preserveAspectRatio="none"
+      fill="none"
+      aria-hidden
+    >
+      <path d="M0,120 C200,32 420,8 600,22 C800,38 1010,90 1200,120 L1200,120 L0,120 Z" fill="#F2F9FA" />
+    </svg>
   );
 }
 
 export default function PrivatePflegeberatungPage() {
   return (
-    <article className="pb-20 sm:pb-28" style={{ backgroundColor: "#fafbfc" }}>
+    <article className="pb-0 sm:pb-0" style={{ backgroundColor: "#fafbfc" }}>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }} />
 
-      {/* Block 1: Hero – Bild links, Text rechts (Desktop) */}
-      <header className="border-b border-[#0F4F68]/10 bg-white">
+      {/* Block 1: Hero – Bild links (ca. 50 % größer auf Desktop), Text rechts */}
+      <header className="bg-white">
         <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 sm:py-16 lg:px-[var(--ahs-page-gutter)] lg:py-20">
-          <nav className="text-sm text-neutral-500" aria-label="Brotkrumen">
-            <ol className="flex flex-wrap gap-x-1 gap-y-1">
-              <li>
-                <Link href="/" className="hover:text-[#0F4F68]">
-                  Start
-                </Link>
-              </li>
-              <li aria-hidden>/</li>
-              <li>
-                <Link href="/pflegeberatung" className="hover:text-[#0F4F68]">
-                  Pflegeberatung
-                </Link>
-              </li>
-              <li aria-hidden>/</li>
-              <li className="font-medium text-neutral-700">Private Pflegeberatung</li>
-            </ol>
-          </nav>
-
-          <div className="mt-8 flex flex-col gap-10 lg:mt-10 lg:flex-row lg:items-center lg:gap-12">
-            <div className="flex w-full justify-center lg:w-[min(46%,28rem)] lg:max-w-xl lg:shrink-0 lg:justify-start">
-              <div className="w-full max-w-md lg:max-w-none">
+          <div className="flex flex-col gap-10 lg:flex-row lg:items-center lg:gap-14">
+            <div className="flex w-full justify-center lg:w-[min(62%,42rem)] lg:max-w-none lg:shrink-0 lg:justify-start">
+              <div className="w-full max-w-lg sm:max-w-xl lg:max-w-2xl lg:max-w-none">
                 <Image
                   src="/images/private_pflegeberatung.webp"
                   alt="Private Pflegeberatung – persönliche Beratung mit Zeit und Vertrauen"
-                  width={640}
-                  height={640}
-                  sizes="(max-width: 1023px) min(100%, 28rem), (max-width: 1280px) 40vw, 28rem"
+                  width={960}
+                  height={960}
+                  sizes="(max-width: 1023px) min(100%, 36rem), (max-width: 1536px) 50vw, 42rem"
                   className={HERO_IMG_SHADOW}
                   priority
                 />
@@ -139,18 +106,12 @@ export default function PrivatePflegeberatungPage() {
               <p className="mt-3 max-w-2xl text-lg font-semibold leading-snug text-[#0F4F68] sm:text-xl">
                 Beratung mit Herz: Angehörige entlasten und Pflegegeld sichern.
               </p>
-              <div className="mt-8 flex flex-wrap gap-3">
+              <div className="mt-8">
                 <Link
                   href="/kontakt"
-                  className="inline-flex min-h-[44px] items-center justify-center rounded-xl bg-[#F78F2E] px-5 py-2.5 text-sm font-semibold text-white hover:opacity-95 focus:outline-none focus:ring-2 focus:ring-[#F78F2E] focus:ring-offset-2"
+                  className="inline-flex min-h-[52px] items-center justify-center rounded-xl bg-[#F78F2E] px-7 py-3.5 text-[1.09375rem] font-semibold text-white hover:opacity-95 focus:outline-none focus:ring-2 focus:ring-[#F78F2E] focus:ring-offset-2 sm:min-h-14 sm:px-8 sm:py-4 sm:text-lg"
                 >
-                  Termin anfragen
-                </Link>
-                <Link
-                  href="/pflegeberatung"
-                  className="inline-flex min-h-[44px] items-center justify-center rounded-xl border-2 border-[#0F4F68]/25 bg-white px-5 py-2.5 text-sm font-semibold text-[#0F4F68] hover:bg-[#F2F9FA] focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2"
-                >
-                  Alle Pflegeberatungs-Angebote
+                  Termin vereinbaren
                 </Link>
               </div>
             </div>
@@ -158,9 +119,13 @@ export default function PrivatePflegeberatungPage() {
         </div>
       </header>
 
-      {/* Block 2 */}
-      <section className="py-14 sm:py-16" aria-labelledby="philosophie-heading">
-        <div className="mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-[var(--ahs-page-gutter)]">
+      {/* Block 2: Welliger Übergang + Philosophie (#F2F9FA wie Startseite) */}
+      <section
+        className="relative z-10 mt-0 w-full bg-[#F2F9FA] px-4 pb-12 pt-10 sm:px-6 sm:pb-14 sm:pt-12 lg:px-[var(--ahs-page-gutter)] lg:pb-16 lg:pt-14"
+        aria-labelledby="philosophie-heading"
+      >
+        <WelleObenF2F9FA />
+        <div className="relative mx-auto w-full max-w-6xl">
           <h2 id="philosophie-heading" className={HEADING_CLASS}>
             Unsere Philosophie und Qualität
           </h2>
@@ -173,8 +138,8 @@ export default function PrivatePflegeberatungPage() {
         </div>
       </section>
 
-      {/* Block 3 – wie Startseite „Ihre Vorteile bei uns“ */}
-      <section className="py-14 sm:py-16" aria-labelledby="vorteile-heading">
+      {/* Block 3 – Unsere Vorteile (weißer Hintergrund, Markenfarben) */}
+      <section className="bg-white py-14 sm:py-16" aria-labelledby="vorteile-heading">
         <div className="mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-[var(--ahs-page-gutter)]">
           <h2 id="vorteile-heading" className={SECTION_TITLE_CLASS}>
             Unsere Vorteile
@@ -186,7 +151,7 @@ export default function PrivatePflegeberatungPage() {
             {VORTEILE.map((text) => (
               <li
                 key={text}
-                className="flex items-start gap-3 rounded-xl px-2 py-1.5 transition-all duration-300 hover:bg-white/75 hover:shadow-[0_0_20px_rgba(15,79,104,0.12)]"
+                className="flex items-start gap-3 rounded-xl px-2 py-1.5 transition-all duration-300 hover:bg-[#F2F9FA]/80 hover:shadow-[0_0_20px_rgba(15,79,104,0.12)]"
               >
                 <Image
                   src="/images/haken.webp"
@@ -200,7 +165,6 @@ export default function PrivatePflegeberatungPage() {
               </li>
             ))}
           </ul>
-          <VideoCallBadge />
         </div>
       </section>
 
@@ -232,32 +196,29 @@ export default function PrivatePflegeberatungPage() {
         </Container>
       </section>
 
-      {/* Block 5 */}
-      <section className="border-t border-[#0F4F68]/10 bg-white py-14 sm:py-16" aria-labelledby="bewertungen-heading">
-        <Container>
-          <h2 id="bewertungen-heading" className={SECTION_TITLE_CLASS}>
-            Unsere Bewertungen
-          </h2>
-          <p className="mt-4 max-w-3xl text-base leading-relaxed text-neutral-600 sm:text-lg">
-            Überzeugen Sie sich selbst von unserer Qualität. Hier erfahren Sie aus erster Hand, was andere Familien über
-            unsere Arbeit, unsere Unterstützung und unsere Pflegeberatung sagen.
-          </p>
-          <div className="mt-8">
-            <KundenstimmenCarousel embedded />
-          </div>
-          <div
-            id="bewertungen-plugin-slot"
-            className="mt-10 rounded-xl border border-dashed border-[#0F4F68]/25 bg-[#F2F9FA]/30 p-6 text-center text-sm text-neutral-600"
-          >
-            <p>
-              Platz für ein externes Bewertungswidget (z. B. ProvenExpert oder eingebettete Karten). Der Entwickler kann den
-              Anbieter-Code hier einfügen, ohne die übrigen Inhalte zu ändern.
-            </p>
-          </div>
-        </Container>
-      </section>
+      {/* Bewertungen 1:1 wie Startseite */}
+      <KundenstimmenCarousel />
 
-      {/* Block 6: FAQ */}
+      <div className="relative z-0 -mt-[9%] min-h-[26vh] flex-1 bg-[#F2F9FA] px-4 pt-16 pb-20 sm:pt-18 sm:pb-24 lg:px-[var(--ahs-page-gutter)]">
+        <svg
+          className="pointer-events-none absolute left-0 top-0 h-12 w-full -translate-y-[70%] sm:h-16"
+          viewBox="0 0 1200 120"
+          preserveAspectRatio="none"
+          fill="none"
+          aria-hidden
+        >
+          <path
+            d="M0,120 C200,32 420,8 600,22 C800,38 1010,90 1200,120 L1200,120 L0,120 Z"
+            fill="#F2F9FA"
+          />
+        </svg>
+        <div
+          className="pointer-events-none absolute left-0 top-0 h-10 w-full -translate-y-2 bg-gradient-to-b from-[#F2F9FA]/85 to-transparent"
+          aria-hidden
+        />
+      </div>
+
+      {/* FAQ */}
       <section className="border-t border-[#0F4F68]/10 bg-[#fafbfc] py-14 sm:py-16" aria-labelledby="faq-heading">
         <Container>
           <h2 id="faq-heading" className={SECTION_TITLE_CLASS}>
