@@ -15,7 +15,7 @@ const KOSTENFREI_HERO_GLOW_CLASS =
 
 const KOSTENFREI_HERO_VORTEILE = [
   "Ab Pflegegrad 1 kostenlos",
-  "Schneller Versand",
+  "Kostenfreier und schneller Versand",
   "Zugelassen bei allen Krankenkassen",
 ] as const;
 
@@ -94,8 +94,8 @@ export function KostenfreiePflegehilfsmittelLanding() {
   return (
     <div className="bg-[#fafbfc] text-neutral-700 antialiased">
       <article id="kostenfreie-hero" className="scroll-mt-24">
-        <section className="mx-auto flex max-w-7xl flex-col-reverse items-center gap-10 px-4 pb-12 pt-0 sm:px-6 sm:pb-16 lg:flex-row lg:items-start lg:gap-12 lg:px-8 lg:pb-20">
-          <div className="w-full space-y-6 lg:w-1/2 lg:-translate-x-[21%] lg:pt-[clamp(2.25rem,8.5vh,5.5rem)]">
+        <section className="relative z-0 mx-auto flex max-w-7xl flex-col-reverse items-center gap-10 px-4 pb-12 pt-0 sm:px-6 sm:pb-16 lg:flex-row lg:items-start lg:gap-12 lg:px-8 lg:pb-16 lg:pt-[clamp(2.25rem,8.5vh,5.5rem)]">
+          <div className="w-full space-y-6 lg:w-1/2 lg:-translate-x-[21%]">
             <h1
               className="text-balance text-3xl font-extrabold leading-tight tracking-tight text-[#0F4F68] opacity-0 motion-reduce:opacity-100 animate-fade-in-up sm:text-4xl lg:text-5xl"
               style={{ animationDelay: "0s" }}
@@ -132,18 +132,13 @@ export function KostenfreiePflegehilfsmittelLanding() {
                 Pflegebox jetzt konfigurieren
               </KonfiguratorLink>
               <p className="mt-3 text-center text-sm text-neutral-600 sm:text-left">
-                Dauert nur 2 Minuten. Keine Vertragsbindung.
+                Dauert nur 2 Minuten. Keine Vertragsbindung. Jederzeit kündbar.
               </p>
             </div>
           </div>
 
           <div className="w-full overflow-visible lg:w-1/2">
-            {/*
-              +25 % zur vorherigen Skalierung; Verschiebung rechts/oben (translate).
-              Padding für drop-shadow; lg:justify-end rückt das Motiv nach rechts.
-            */}
-            <div className="flex justify-center overflow-visible bg-[#fafbfc] px-4 pt-3 pb-8 sm:px-8 sm:pt-4 sm:pb-10 lg:justify-end lg:py-8 lg:pl-8 lg:pr-6 xl:pl-10 xl:pr-4">
-              {/* Wrapper: fade-in-up nutzt transform — Skalierung/Verschiebung nur am inneren img */}
+            <div className="flex justify-center overflow-visible bg-[#fafbfc] px-4 pt-3 pb-8 sm:px-8 sm:pt-4 sm:pb-10 lg:justify-end lg:pb-8 lg:pl-8 lg:pt-0 lg:pr-6 xl:pl-10 xl:pr-4">
               <div
                 className="mx-auto w-full max-w-full opacity-0 motion-reduce:opacity-100 animate-fade-in-up max-lg:flex max-lg:justify-center"
                 style={{ animationDelay: "0.08s" }}
@@ -156,15 +151,30 @@ export function KostenfreiePflegehilfsmittelLanding() {
                   height={845}
                   decoding="async"
                   fetchPriority="high"
-                  className={`h-auto w-full max-w-full origin-center object-contain motion-reduce:translate-x-0 motion-reduce:translate-y-0 motion-reduce:scale-[1.05] max-lg:mx-auto max-lg:translate-x-0 max-lg:-translate-y-2 max-lg:scale-[1.05] lg:translate-x-10 lg:-translate-y-8 lg:scale-[1.536] xl:translate-x-14 xl:-translate-y-10 ${KOSTENFREI_HERO_GLOW_CLASS}`}
+                  className={`h-auto w-full max-w-full object-contain motion-reduce:translate-x-0 motion-reduce:translate-y-0 motion-reduce:scale-[1.05] max-lg:mx-auto max-lg:origin-center max-lg:translate-x-0 max-lg:-translate-y-2 max-lg:scale-[1.05] lg:origin-top lg:translate-x-10 lg:translate-y-0 lg:scale-[1.536] xl:translate-x-14 ${KOSTENFREI_HERO_GLOW_CLASS}`}
                 />
               </div>
             </div>
           </div>
         </section>
 
-        <section className="bg-[#F2F9FA] py-12" aria-labelledby="anspruch-heading">
-          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <section
+          className="relative z-10 bg-[#F2F9FA] px-4 pb-12 pt-14 sm:px-6 sm:pb-14 sm:pt-16 lg:px-8"
+          aria-labelledby="anspruch-heading"
+        >
+          <svg
+            className="pointer-events-none absolute left-0 top-0 z-0 h-16 w-full -translate-y-[75%] sm:h-[4.5rem] sm:-translate-y-[72%]"
+            viewBox="0 0 1200 100"
+            preserveAspectRatio="none"
+            fill="none"
+            aria-hidden
+          >
+            <path
+              d="M0,100 C150,22 320,4 480,28 C640,52 780,92 920,84 C1020,78 1110,48 1200,38 L1200,100 L0,100 Z"
+              fill="#F2F9FA"
+            />
+          </svg>
+          <div className="relative z-[1] mx-auto max-w-7xl">
             <h2 id="anspruch-heading" className="mb-2 text-center text-2xl font-bold text-[#0F4F68] sm:text-3xl">
               Habe ich Anspruch auf die kostenfreien Pflegehilfsmittel?
             </h2>

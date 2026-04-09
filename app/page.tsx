@@ -163,7 +163,7 @@ export default function HomePage() {
             </header>
           </div>
 
-          <div className="lg:-mt-[10%]">
+          <div className="lg:-mt-[10%] lg:-translate-x-[10.5%]">
             <StartEinstiegsHilfe />
           </div>
         </div>

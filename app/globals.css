@@ -8,6 +8,22 @@
     overflow-x: clip;
   }
 
+  /*
+   * Desktop-Zwischenbreiten (nicht Mobile): etwas kleinere Rem-Basis, damit Typo/Abstände/Flächen
+   * proportional mitwachsen – Verhältnis px-4 : max-w-7xl usw. bleibt gleich. Ab 2xl wieder volle Größe.
+   */
+  @media (min-width: 1024px) and (max-width: 1279px) {
+    html {
+      font-size: 93.75%;
+    }
+  }
+
+  @media (min-width: 1280px) and (max-width: 1535px) {
+    html {
+      font-size: 96.875%;
+    }
+  }
+
   @media (prefers-reduced-motion: reduce) {
     html.scroll-smooth {
       scroll-behavior: auto;
@@ -408,6 +424,9 @@ body {
 
 /* Admin Auszahlen: fokussierter Druck (Klasse kurz vor window.print() auf <html>) */
 @media print {
+  html {
+    font-size: 100%;
+  }
   html.partner-payout-print-mode .partner-admin-print-aside,
   html.partner-payout-print-mode .partner-payout-print-hide {
     display: none !important;
