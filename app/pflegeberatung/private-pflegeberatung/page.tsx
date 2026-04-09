@@ -65,19 +65,19 @@ export default function PrivatePflegeberatungPage() {
       <header className="overflow-visible bg-white">
         <div className="mx-auto max-w-7xl overflow-visible px-4 py-12 sm:px-6 sm:py-16 lg:px-[var(--ahs-page-gutter)] lg:py-20">
           <div className="flex flex-col gap-10 overflow-visible lg:flex-row lg:items-start lg:gap-x-12 lg:gap-y-8 xl:gap-x-16">
-            <div className="flex w-full min-w-0 flex-col gap-8 overflow-visible lg:max-w-[min(100%,28rem)] lg:shrink-0 xl:max-w-[min(100%,32rem)]">
-              <div className="overflow-visible px-2 py-6 sm:px-3 sm:py-8">
-                <Image
+            <div className="flex w-full min-w-0 justify-center overflow-visible lg:max-w-[min(100%,26rem)] lg:shrink-0 lg:justify-start">
+              <div className="box-content w-full overflow-visible px-5 py-10 sm:px-8 sm:py-12">
+                {/* eslint-disable-next-line @next/next/no-img-element -- natives img vermeidet Next/Image-Wrapper (overflow) */}
+                <img
                   src="/images/private_pflegeberatung.webp"
                   alt="Private Pflegeberatung – persönliche Beratung mit Zeit und Vertrauen"
                   width={960}
                   height={960}
-                  sizes="(max-width: 1023px) 92vw, (max-width: 1536px) 32vw, 28rem"
-                  className={`${HERO_IMG_BASE} mx-auto h-auto w-full max-w-full object-contain object-center lg:mx-0 lg:object-left`}
-                  priority
+                  decoding="async"
+                  fetchPriority="high"
+                  className={`${HERO_IMG_BASE} mx-auto h-auto w-full max-w-[min(100%,22rem)] object-contain object-center sm:max-w-[min(100%,26rem)] lg:mx-0 lg:max-w-[min(100%,24rem)] lg:object-left`}
                 />
               </div>
-              <PflegegradBeratungTable />
             </div>
 
             <div className="min-w-0 flex-1 overflow-visible pt-0 text-left lg:min-w-[min(100%,18rem)] lg:pt-2">
@@ -146,6 +146,24 @@ export default function PrivatePflegeberatungPage() {
               </li>
             ))}
           </ul>
+        </div>
+      </section>
+
+      <section
+        className="border-t border-[#0F4F68]/10 bg-[#fafbfc] py-14 sm:py-16"
+        aria-labelledby="pg-table-heading"
+      >
+        <div className="mx-auto w-full max-w-4xl px-4 sm:px-6 lg:px-[var(--ahs-page-gutter)]">
+          <h2 id="pg-table-heading" className={SECTION_TITLE_CLASS}>
+            Pflegegrad 1–5: Wann Beratung Pflicht ist – und wann nicht
+          </h2>
+          <p className="mt-3 max-w-3xl text-sm leading-relaxed text-neutral-600 sm:text-base">
+            Die gesetzlichen Regelungen nach Paragraf 37 Absatz 3 SGB XI sind eindeutig. Die Kosten trägt in diesen Fällen
+            Ihre Pflegekasse.
+          </p>
+          <div className="mt-8">
+            <PflegegradBeratungTable captionSrOnly />
+          </div>
         </div>
       </section>
 
