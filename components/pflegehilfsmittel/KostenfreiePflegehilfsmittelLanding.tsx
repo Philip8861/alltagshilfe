@@ -313,7 +313,7 @@ export function KostenfreiePflegehilfsmittelLanding() {
         className="min-w-0 scroll-mt-24 overflow-x-clip overflow-y-visible"
       >
         <section className="relative z-0 box-border mx-auto w-full min-w-0 max-w-7xl px-4 pb-16 pt-0 sm:px-6 sm:pb-24 lg:px-[var(--ahs-page-gutter)] lg:pb-[clamp(5.5rem,12vh+2rem,9rem)] lg:pt-[clamp(2rem,5vh+1.25rem,4.75rem)] xl:pb-[clamp(6.5rem,13vh+2.5rem,10rem)]">
-          <div className="flex flex-col-reverse items-center gap-10 lg:grid lg:grid-cols-[minmax(0,0.405fr)_minmax(0,0.595fr)] lg:items-center lg:justify-items-stretch lg:gap-x-[clamp(2rem,3.8vw,4.25rem)] lg:gap-y-0">
+          <div className="flex flex-col-reverse items-center gap-10 lg:grid lg:grid-cols-[minmax(0,0.36fr)_minmax(0,0.64fr)] lg:items-center lg:justify-items-stretch lg:gap-x-[clamp(2rem,3.8vw,4.25rem)] lg:gap-y-0">
             <div className="box-border w-full min-w-0 max-w-full space-y-[clamp(1.25rem,2vh+0.75rem,1.75rem)] lg:min-w-0 lg:justify-self-stretch lg:space-y-[clamp(1.15rem,1.6vh+0.7rem,1.75rem)] lg:pr-[min(0.75rem,1.5vw)]">
             <h1
               className="text-balance text-3xl font-extrabold leading-tight tracking-tight text-[#0F4F68] opacity-0 motion-reduce:opacity-100 animate-fade-in-up sm:text-4xl lg:text-[clamp(1.75rem,1.05rem+2.5vw,3rem)]"
@@ -356,7 +356,7 @@ export function KostenfreiePflegehilfsmittelLanding() {
             </div>
           </div>
 
-            <div className="box-border w-full min-w-0 max-w-full lg:min-h-0 lg:justify-self-stretch lg:self-center lg:origin-right lg:scale-90 lg:translate-x-[clamp(0.25rem,1.5vw,1.25rem)] motion-reduce:lg:translate-x-0 motion-reduce:lg:scale-100">
+            <div className="box-border w-full min-w-0 max-w-full lg:min-h-0 lg:justify-self-stretch lg:self-center">
               <div className="box-border flex justify-center overflow-x-visible bg-[#fafbfc] px-4 pt-3 pb-8 sm:px-8 sm:pt-4 sm:pb-10 lg:flex lg:justify-end lg:px-0 lg:pb-[clamp(1.75rem,3.5vh+0.75rem,3.25rem)] lg:pt-0">
                 <div
                   className="mx-auto w-full min-w-0 max-w-[min(100%,72rem)] opacity-0 motion-reduce:opacity-100 animate-fade-in-up max-lg:flex max-lg:max-w-full max-lg:justify-center lg:w-full"
@@ -370,7 +370,7 @@ export function KostenfreiePflegehilfsmittelLanding() {
                     height={845}
                     decoding="async"
                     fetchPriority="high"
-                    sizes="(max-width: 1023px) 100vw, (max-width: 1536px) 62vw, 1010px"
+                    sizes="(max-width: 1023px) 100vw, (max-width: 1536px) 68vw, 1120px"
                     className={`box-border h-auto w-full max-w-full object-contain object-center lg:object-contain lg:object-center max-lg:mx-auto max-lg:origin-center max-lg:translate-x-0 max-lg:-translate-y-2 max-lg:scale-[1.05] max-lg:motion-reduce:scale-[1.05] ${KOSTENFREI_HERO_GLOW_CLASS}`}
                   />
                 </div>
@@ -395,64 +395,82 @@ export function KostenfreiePflegehilfsmittelLanding() {
               fill="#F2F9FA"
             />
           </svg>
-          <div className="pointer-events-none absolute inset-x-0 top-[20%] z-0 mx-auto hidden h-64 max-w-4xl rounded-full bg-[#0F4F68]/[0.06] blur-3xl md:block" aria-hidden />
           <div className="relative z-[1] mx-auto max-w-7xl">
-            <div className="mx-auto mb-12 max-w-3xl text-center lg:mb-16">
-              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#F78F2E] sm:text-sm">
-                So einfach geht&apos;s
-              </p>
+            <div className="mx-auto mb-10 max-w-3xl text-center lg:mb-12">
               <h2
                 id="schritte-heading"
-                className="mt-2 text-balance text-3xl font-extrabold tracking-tight text-[#0F4F68] sm:text-4xl lg:text-[2.35rem] lg:leading-tight"
+                className="text-balance text-3xl font-bold tracking-tight text-[#0F4F68] sm:text-4xl"
               >
                 In 3 einfachen Schritten zu Ihrer Lieferung
               </h2>
-              <p className="mt-4 text-pretty text-base leading-relaxed text-neutral-600 sm:text-lg">
-                Kein Formular-Wirrwarr: Sie konfigurieren, unterschreiben digital – den Austausch mit der Pflegekasse
-                übernehmen wir für Sie.
+              <p className="mt-3 text-pretty text-sm text-[#8a6a55] sm:text-base">
+                Konfigurieren, digital unterschreiben – die Pflegekasse-Kommunikation übernehmen wir.
               </p>
             </div>
 
-            <div className="relative">
-              <div
-                className="absolute left-[8%] right-[8%] top-[2.75rem] z-0 hidden h-0.5 bg-gradient-to-r from-transparent via-[#0F4F68]/20 to-transparent md:block lg:top-[3rem]"
-                aria-hidden
-              />
-              <ol className="relative z-10 grid gap-6 sm:gap-8 md:grid-cols-3">
-                {KOSTENFREI_SCHRITTE.map((item, index) => (
-                  <li key={item.step} className="list-none">
-                    <div className="group relative flex h-full flex-col rounded-3xl border border-white/90 bg-white/90 p-7 text-center shadow-[0_12px_48px_rgba(15,79,104,0.08)] ring-1 ring-[#0F4F68]/[0.06] backdrop-blur-sm transition duration-300 hover:-translate-y-1 hover:shadow-[0_20px_56px_rgba(15,79,104,0.12)] motion-reduce:transform-none sm:p-8">
-                      <div
-                        className={`pointer-events-none absolute inset-x-6 top-0 h-1 rounded-full ${
-                          index === 0
-                            ? "bg-gradient-to-r from-[#F78F2E] to-[#F78F2E]/50"
-                            : index === 1
-                              ? "bg-gradient-to-r from-[#0F4F68] to-[#0F4F68]/40"
-                              : "bg-gradient-to-r from-[#F78F2E]/80 to-[#0F4F68]/50"
-                        }`}
-                        aria-hidden
-                      />
-                      <div className="mx-auto mb-5 flex h-[3.25rem] w-[3.25rem] shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-[#0F4F68] to-[#0c3d52] text-xl font-extrabold text-white shadow-lg shadow-[#0F4F68]/25">
-                        {item.step}
-                      </div>
-                      <h3 className="text-lg font-bold text-[#0F4F68] sm:text-xl">{item.title}</h3>
-                      <p className="mt-3 flex-1 text-pretty text-sm leading-relaxed text-neutral-600 sm:text-base">
-                        {item.description}
-                      </p>
+            <ol className="grid gap-6 md:grid-cols-3 md:gap-8">
+              {KOSTENFREI_SCHRITTE.map((item) => (
+                <li key={item.step} className="list-none">
+                  <div className="flex h-full flex-col rounded-2xl border border-[#0F4F68]/10 bg-white p-6 shadow-sm sm:p-7">
+                    <div className="mb-4 flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#0F4F68] text-lg font-bold text-white">
+                      {item.step}
                     </div>
-                  </li>
-                ))}
-              </ol>
-            </div>
+                    <h3 className="text-lg font-bold text-[#0F4F68]">{item.title}</h3>
+                    <p className="mt-2 flex-1 text-pretty text-sm leading-relaxed text-neutral-600 sm:text-base">
+                      {item.description}
+                    </p>
+                  </div>
+                </li>
+              ))}
+            </ol>
 
-            <div className="mt-12 flex flex-col items-center gap-3 sm:mt-14">
+            <div className="mt-10 flex flex-col items-center gap-2 sm:mt-12">
               <KonfiguratorLink
-                className="inline-flex min-h-[48px] items-center justify-center rounded-2xl bg-[#F78F2E] px-8 py-3.5 text-base font-bold text-white shadow-[0_8px_28px_rgba(247,143,46,0.35)] transition hover:brightness-105 focus:outline-none focus:ring-2 focus:ring-[#F78F2E] focus:ring-offset-2 sm:text-lg"
+                className="inline-flex min-h-[48px] items-center justify-center rounded-xl bg-[#F78F2E] px-8 py-3.5 text-base font-bold text-white shadow-md transition hover:opacity-95 focus:outline-none focus:ring-2 focus:ring-[#F78F2E] focus:ring-offset-2 sm:text-lg"
               >
                 Zur Pflegebox in 2 Minuten
               </KonfiguratorLink>
               <p className="text-center text-sm text-neutral-500">Unverbindlich · Keine Vertragsbindung</p>
             </div>
+          </div>
+        </section>
+
+        <section
+          className="relative z-20 w-full bg-white px-4 py-14 sm:px-6 sm:py-16 lg:px-[var(--ahs-page-gutter)]"
+          aria-labelledby="kostenfrei-vorteile-heading"
+        >
+          <div className="mx-auto w-full max-w-6xl">
+            <h2
+              id="kostenfrei-vorteile-heading"
+              className="text-3xl font-bold tracking-tight text-[#0F4F68] sm:text-4xl"
+            >
+              Ihre Vorteile bei uns
+            </h2>
+            <p className="mt-2 max-w-3xl text-sm text-neutral-600 sm:text-base">
+              Verlässlich, transparent und nah bei Ihnen – mit klaren Prozessen und echter Unterstützung rund um Ihre
+              Pflegehilfsmittel.
+            </p>
+            <ul className="mt-6 grid gap-4 sm:grid-cols-2">
+              {KOSTENFREI_USPS.map((item) => (
+                <li
+                  key={item}
+                  className="flex items-start gap-3 rounded-xl px-2 py-1.5 transition-all duration-300 hover:bg-[#fafbfc] hover:shadow-[0_0_20px_rgba(15,79,104,0.12)]"
+                >
+                  {/* eslint-disable-next-line @next/next/no-img-element -- wie Startseite: statisches Haken-Asset */}
+                  <img
+                    src="/images/haken.webp"
+                    alt=""
+                    aria-hidden
+                    width={38}
+                    height={38}
+                    className="mt-0.5 h-[38px] w-[38px] shrink-0 object-contain"
+                  />
+                  <span className="text-[1.03rem] font-medium leading-relaxed text-neutral-800 sm:text-[1.08rem]">
+                    {item}
+                  </span>
+                </li>
+              ))}
+            </ul>
           </div>
         </section>
 
@@ -483,45 +501,6 @@ export function KostenfreiePflegehilfsmittelLanding() {
         </section>
 
         <section
-          className="relative z-20 w-full bg-white px-4 py-14 sm:px-6 sm:py-16 lg:px-[var(--ahs-page-gutter)]"
-          aria-labelledby="kostenfrei-vorteile-heading"
-        >
-          <div className="mx-auto w-full max-w-6xl">
-            <h3
-              id="kostenfrei-vorteile-heading"
-              className="text-3xl font-extrabold tracking-tight text-[#0F4F68] sm:text-4xl"
-            >
-              Ihre Vorteile bei uns
-            </h3>
-            <p className="mt-2 max-w-3xl text-sm text-neutral-600 sm:text-base">
-              Verlässlich, transparent und nah bei Ihnen – mit klaren Prozessen und echter Unterstützung rund um Ihre
-              Pflegehilfsmittel.
-            </p>
-            <ul className="mt-6 grid gap-4 sm:grid-cols-2">
-              {KOSTENFREI_USPS.map((item) => (
-                <li
-                  key={item}
-                  className="flex items-start gap-3 rounded-xl px-2 py-1.5 transition-all duration-300 hover:bg-[#fafbfc] hover:shadow-[0_0_20px_rgba(15,79,104,0.12)]"
-                >
-                  {/* eslint-disable-next-line @next/next/no-img-element -- wie Startseite: statisches Haken-Asset */}
-                  <img
-                    src="/images/haken.webp"
-                    alt=""
-                    aria-hidden
-                    width={38}
-                    height={38}
-                    className="mt-0.5 h-[38px] w-[38px] shrink-0 object-contain"
-                  />
-                  <span className="text-[1.03rem] font-medium leading-relaxed text-neutral-800 sm:text-[1.08rem]">
-                    {item}
-                  </span>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </section>
-
-        <section
           className="relative isolate overflow-x-clip bg-gradient-to-b from-[#e8f4f7]/90 via-[#fafbfc] to-white py-14 sm:py-20"
           aria-labelledby="kostenfrei-faq-heading"
         >
@@ -543,10 +522,7 @@ export function KostenfreiePflegehilfsmittelLanding() {
             <p className="mx-auto mt-2 max-w-2xl text-center text-sm font-medium text-[#0F4F68]/85 sm:text-base">
               Alles zur 42&nbsp;€ Pauschale für Pflegehilfsmittel
             </p>
-            <p className="mx-auto mt-1 max-w-xl text-center text-sm text-[#8a6a55] sm:text-base">
-              Kurz und verständlich zur gesetzlichen Leistung
-            </p>
-            <div className="mt-10 space-y-3">
+            <div className="mt-8 space-y-3 sm:mt-10">
               {KOSTENFREI_FAQ.map((item) => (
                 <details
                   key={item.q}
