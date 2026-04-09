@@ -32,6 +32,11 @@ const config: Config = {
           "25%": { transform: "rotate(-4deg)" },
           "75%": { transform: "rotate(4deg)" },
         },
+        "star-pop-in": {
+          "0%": { opacity: "0", transform: "scale(0.35) rotate(-14deg)" },
+          "70%": { transform: "scale(1.06) rotate(3deg)" },
+          "100%": { opacity: "1", transform: "scale(1) rotate(0deg)" },
+        },
       },
       animation: {
         "fade-in-up": "fade-in-up 0.6s ease-out forwards",
@@ -39,6 +44,7 @@ const config: Config = {
         "partner-col-enter": "partner-col-enter 0.55s cubic-bezier(0.22, 1, 0.36, 1) both",
         "partner-soft-float": "partner-soft-float 4s ease-in-out infinite",
         "partner-icon-nudge": "partner-icon-nudge 2.8s ease-in-out infinite",
+        "star-pop-in": "star-pop-in 0.48s cubic-bezier(0.34, 1.45, 0.64, 1) both",
       },
     },
   },

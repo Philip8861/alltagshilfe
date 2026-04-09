@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { KundenstimmenCarousel } from "@/components/home/KundenstimmenCarousel";
+import { PflegegradBeratungspflichtSection } from "@/components/pflegeberatung/PflegegradBeratungspflichtSection";
 import { PRIVATE_PFLEGEBERATUNG_FAQ } from "@/lib/private-pflegeberatung-faq";
 import { siteConfig } from "@/config/site";
 
@@ -11,8 +12,8 @@ const PAGE_PATH = "/pflegeberatung/private-pflegeberatung";
 const HEADING_CLASS = "text-3xl font-bold text-[#0F4F68] sm:text-4xl w-full max-w-lg self-start";
 const INTRO_BODY_CLASS = "text-lg text-neutral-700 leading-relaxed sm:text-xl";
 const SECTION_TITLE_CLASS = "text-3xl font-extrabold tracking-tight text-[#0F4F68] sm:text-4xl";
-const HERO_IMG_SHADOW =
-  "block h-auto w-full max-w-full object-contain object-left [filter:drop-shadow(0_10px_22px_rgba(15,79,104,0.2))_drop-shadow(0_4px_12px_rgba(15,79,104,0.12))] [will-change:filter]";
+const HERO_IMG_BASE =
+  "block h-auto w-full max-w-full object-contain [filter:drop-shadow(0_10px_22px_rgba(15,79,104,0.2))_drop-shadow(0_4px_12px_rgba(15,79,104,0.12))] [will-change:filter]";
 
 export const metadata: Metadata = {
   title: "Private Pflegeberatung nach Paragraf 37 Absatz 3 SGB XI",
@@ -61,29 +62,29 @@ export default function PrivatePflegeberatungPage() {
     <article className="pb-0 sm:pb-0" style={{ backgroundColor: "#fafbfc" }}>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }} />
 
-      {/* Hero: Bild weiter links, mehr Luft; H1 max. ein Umbruch (<wbr>); Untertitel eine durchlaufende Zeile */}
       <header className="bg-white">
         <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 sm:py-16 lg:px-[var(--ahs-page-gutter)] lg:py-20">
           <div className="flex flex-col gap-12 lg:flex-row lg:items-start lg:gap-x-16 lg:gap-y-8 xl:gap-x-20">
-            <div className="flex w-full justify-center lg:w-[min(58%,40rem)] lg:max-w-none lg:shrink-0 lg:justify-start lg:-ml-3 xl:-ml-5">
-              <div className="w-full max-w-lg sm:max-w-xl lg:max-w-2xl lg:max-w-none">
+            <div className="flex w-full min-w-0 justify-center lg:w-[min(52%,36rem)] lg:shrink-0 lg:justify-start">
+              <div className="w-full min-w-0 max-w-full">
                 <Image
                   src="/images/private_pflegeberatung.webp"
                   alt="Private Pflegeberatung – persönliche Beratung mit Zeit und Vertrauen"
                   width={960}
                   height={960}
-                  sizes="(max-width: 1023px) min(100%, 36rem), (max-width: 1536px) 48vw, 40rem"
-                  className={HERO_IMG_SHADOW}
+                  sizes="(max-width: 1023px) 100vw, (max-width: 1536px) 44vw, 36rem"
+                  className={`${HERO_IMG_BASE} mx-auto max-h-[min(68vh,480px)] w-full max-w-full object-center lg:mx-0 lg:max-h-[min(80vh,620px)] lg:object-left`}
                   priority
                 />
               </div>
             </div>
 
             <div className="min-w-0 flex-1 pt-0 text-left lg:min-w-[min(100%,20rem)] lg:pt-2">
-              <h1 className="text-balance text-3xl font-extrabold leading-[1.15] tracking-tight text-[#0F4F68] sm:text-4xl lg:text-[clamp(1.85rem,1.2rem+1.8vw,2.65rem)] lg:leading-[1.12]">
-                Pflegeberatung nach Paragraf 37 <wbr />
-                Absatz 3 SGB XI
-              </h1>
+              <div className="min-w-0 max-w-full overflow-x-auto [-ms-overflow-style:none] [scrollbar-width:thin] lg:overflow-x-visible">
+                <h1 className="whitespace-nowrap text-[clamp(0.8125rem,0.65vw+0.55rem,2.5rem)] font-extrabold leading-tight tracking-tight text-[#0F4F68] sm:text-[clamp(0.875rem,0.85vw+0.5rem,2.5rem)] lg:text-[clamp(1.35rem,0.55rem+1.25vw,2.5rem)] lg:leading-[1.12]">
+                  Pflegeberatung nach Paragraf 37 Absatz 3 SGB XI
+                </h1>
+              </div>
               <p className="mt-5 w-full max-w-none text-pretty text-lg font-medium leading-normal text-[#0F4F68] sm:text-xl md:text-2xl md:leading-snug">
                 Gute Pflege beginnt mit einer guten Pflegeberatung.
               </p>
@@ -117,6 +118,8 @@ export default function PrivatePflegeberatungPage() {
           </p>
         </div>
       </section>
+
+      <PflegegradBeratungspflichtSection />
 
       <section className="bg-white py-14 sm:py-16" aria-labelledby="vorteile-heading">
         <div className="mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-[var(--ahs-page-gutter)]">

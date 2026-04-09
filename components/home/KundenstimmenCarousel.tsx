@@ -89,15 +89,12 @@ export function KundenstimmenCarousel({ embedded = false }: KundenstimmenCarouse
 
   useEffect(() => {
     setStarCount(0);
+    let n = 0;
     const id = window.setInterval(() => {
-      setStarCount((prev) => {
-        if (prev >= 5) {
-          window.clearInterval(id);
-          return 5;
-        }
-        return prev + 1;
-      });
-    }, 120);
+      n += 1;
+      setStarCount(Math.min(n, 5));
+      if (n >= 5) window.clearInterval(id);
+    }, 140);
     return () => window.clearInterval(id);
   }, [index]);
 
@@ -111,22 +108,29 @@ export function KundenstimmenCarousel({ embedded = false }: KundenstimmenCarouse
       aria-label="Kundenstimmen"
     >
       <div className={embedded ? "mx-auto w-full max-w-6xl py-2 text-center" : "mx-auto w-full max-w-6xl p-5 text-center sm:p-7"}>
-        <div className="flex flex-wrap items-center justify-center gap-2.5">
-          {Array.from({ length: 5 }).map((_, i) => (
-            <Image
-              key={`star-${i}`}
-              src="/images/star.png"
-              alt=""
-              aria-hidden
-              width={39}
-              height={39}
-              sizes="39px"
-              className={cn(
-                "h-[39px] w-[39px] transition-all duration-300",
-                i < starCount ? "scale-100 opacity-100" : "scale-75 opacity-25"
-              )}
-            />
-          ))}
+        <div className="flex flex-wrap items-center justify-center gap-2.5" aria-hidden>
+          {Array.from({ length: 5 }).map((_, i) => {
+            const filled = i < starCount;
+            const newest = filled && i === starCount - 1;
+            const settled = filled && i < starCount - 1;
+            return (
+              <Image
+                key={`${index}-star-${i}`}
+                src="/images/star.png"
+                alt=""
+                width={39}
+                height={39}
+                sizes="39px"
+                className={cn(
+                  "h-[39px] w-[39px]",
+                  !filled && "scale-[0.72] opacity-[0.22]",
+                  settled && "scale-100 opacity-100 motion-reduce:transition-none",
+                  newest &&
+                    "scale-100 opacity-100 motion-safe:animate-star-pop-in motion-reduce:!animate-none motion-reduce:opacity-100"
+                )}
+              />
+            );
+          })}
         </div>
         {!embedded ? (
           <>

@@ -15,22 +15,24 @@ export function Header({ nunitoClass = "", balooClass = "" }: HeaderProps) {
       <HeaderStrip nunitoClass={nunitoClass} balooClass={balooClass} />
       <div className="relative overflow-visible border-b border-[#0F4F68]/15 bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/80">
         {/* Gleiche horizontale Gutter wie HeaderStrip (kein max-w-7xl) → Logo bündig unter „Gemeinsam Stark im Alltag“ */}
-        <div className="grid min-h-[3.75rem] w-full grid-cols-[1fr_auto] items-center gap-x-3 gap-y-2 overflow-visible px-4 sm:px-6 lg:px-[var(--ahs-page-gutter)] md:grid-cols-[auto_minmax(0,1fr)] md:gap-x-5 lg:gap-x-7">
-          <Link
-            href="/"
-            className="z-10 flex shrink-0 -translate-y-[5%] justify-self-start focus:outline-none rounded md:h-10 md:w-auto mr-4 sm:mr-5 md:mr-7 lg:mr-8"
-            aria-label={`${siteConfig.name} – Startseite`}
-          >
-            <Image
-              src="/images/alltagshilfe-logo.svg"
-              alt={siteConfig.name}
-              width={207}
-              height={53}
-              className="h-[34px] w-auto object-contain sm:h-[38px] md:h-9 lg:h-10"
-              priority
-            />
-          </Link>
-          <div className="flex min-w-0 items-center justify-end gap-3 md:justify-center md:gap-4 lg:gap-5 xl:gap-6">
+        <div className="grid min-h-[3.75rem] w-full grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-x-2 gap-y-2 overflow-visible px-4 sm:gap-x-3 sm:px-6 md:gap-x-4 lg:gap-x-5 lg:px-[var(--ahs-page-gutter)]">
+          <div className="min-w-0 justify-self-start">
+            <Link
+              href="/"
+              className="z-10 flex shrink-0 -translate-y-[5%] focus:outline-none rounded md:h-10 md:w-auto"
+              aria-label={`${siteConfig.name} – Startseite`}
+            >
+              <Image
+                src="/images/alltagshilfe-logo.svg"
+                alt={siteConfig.name}
+                width={207}
+                height={53}
+                className="h-[34px] w-auto object-contain sm:h-[38px] md:h-9 lg:h-10"
+                priority
+              />
+            </Link>
+          </div>
+          <div className="flex min-w-0 max-w-[100vw] items-center justify-center gap-2 sm:gap-3 md:gap-4 lg:gap-5 xl:gap-6">
             <HeaderNav />
             <Link
               href="/kontakt"
@@ -40,6 +42,7 @@ export function Header({ nunitoClass = "", balooClass = "" }: HeaderProps) {
               Jetzt Kontakt aufnehmen
             </Link>
           </div>
+          <div className="min-w-0" aria-hidden="true" />
         </div>
       </div>
     </header>
