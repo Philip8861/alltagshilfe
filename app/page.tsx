@@ -100,10 +100,11 @@ const VORTEILE = [
 export default function HomePage() {
   return (
     <article
-      className="flex min-h-[60vh] w-full max-w-[100vw] flex-col pt-0 pb-0"
+      className="flex min-h-[60vh] w-full max-w-[100vw] flex-col overflow-x-clip pt-0 pb-0"
       style={{ backgroundColor: "#fafbfc" }}
     >
-      <section className="box-border w-full pt-0 pb-6 sm:pb-8 lg:pb-[clamp(1.5rem,2vw+0.75rem,2.5rem)]">
+      <div className="mx-auto flex min-h-0 min-w-0 w-[calc(100%/1.1)] max-w-[calc(100%/1.1)] flex-1 flex-col origin-top scale-110 motion-reduce:w-full motion-reduce:max-w-none motion-reduce:scale-100">
+        <section className="box-border w-full pt-0 pb-6 sm:pb-8 lg:pb-[clamp(1.5rem,2vw+0.75rem,2.5rem)]">
         <div className="box-border mx-auto w-full min-w-0 max-w-7xl px-4 sm:px-6 lg:px-[var(--ahs-page-gutter)]">
           {/* Oberer Bereich: Bild rechts, Überschrift + drei Punkte links, etwas oberhalb der Bildmitte (Desktop) */}
           <div className="relative min-w-0">
@@ -303,6 +304,7 @@ export default function HomePage() {
           className="pointer-events-none absolute left-0 top-0 h-10 w-full -translate-y-2 bg-gradient-to-b from-[#F2F9FA]/85 to-transparent"
           aria-hidden
         />
+      </div>
       </div>
     </article>
   );
