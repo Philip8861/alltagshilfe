@@ -34,10 +34,10 @@ export function HeaderNav() {
   return (
     <>
       <nav
-        className="hidden md:flex md:w-full md:min-w-0 md:max-w-none md:items-center md:justify-between md:gap-2 lg:gap-3 xl:gap-4"
+        className="hidden md:flex md:w-full md:min-w-0 md:max-w-none md:items-center md:justify-end md:gap-2 lg:gap-3 xl:gap-4"
         aria-label="Hauptnavigation"
       >
-        <div className="flex min-w-0 flex-1 flex-nowrap items-center justify-start gap-x-1 lg:gap-x-2 xl:gap-x-3">
+        <div className="flex min-w-0 flex-nowrap items-center justify-end gap-x-1 lg:gap-x-2 xl:gap-x-3">
           {navLinks.map((item) =>
             item.children ? (
               <div
@@ -123,13 +123,6 @@ export function HeaderNav() {
             )
           )}
         </div>
-        <Link
-          href="/kontakt"
-          className="shrink-0 whitespace-nowrap rounded-lg px-2 py-1.5 font-semibold text-white transition-colors hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-[#F78F2E] focus:ring-offset-2 lg:px-3 xl:px-4 xl:py-2"
-          style={{ backgroundColor: "#F78F2E", fontSize: "clamp(0.6875rem, 1.1vw, 1rem)" }}
-        >
-          Jetzt Kontakt aufnehmen
-        </Link>
       </nav>
 
       <div className="flex md:hidden">

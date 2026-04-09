@@ -31,7 +31,7 @@ export const navLinks: NavLink[] = [
     href: "/pflegeberatung",
     label: "Pflegeberatung",
     children: [
-      { href: "/pflegeberatung#private-pflegeberatung", label: "Private Pflegeberatung" },
+      { href: "/pflegeberatung/private-pflegeberatung", label: "Private Pflegeberatung" },
       { href: "/pflegeberatung#betriebliche-pflegeberatung", label: "Betriebliche Pflegeberatung" },
       { href: "/ratgeber", label: "Ratgeber" },
     ],

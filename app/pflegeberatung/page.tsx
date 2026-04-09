@@ -5,7 +5,7 @@ import { siteConfig } from "@/config/site";
 
 export const metadata: Metadata = {
   title: "Pflegeberatung",
-  description: `Pflegeberatung – ${siteConfig.name}.`,
+  description: `Pflegeberatung – privat und betrieblich – ${siteConfig.name}.`,
 };
 
 export default function PflegeberatungPage() {
@@ -28,18 +28,21 @@ export default function PflegeberatungPage() {
               Private Pflegeberatung
             </h2>
             <p className="mt-4 max-w-3xl text-neutral-600">
-              In der privaten Pflegeberatung beraten wir Sie und Ihre Angehörigen zu allen Themen der Pflege: von der Antragstellung über Leistungen der Pflegekasse bis zur Organisation der Pflege zu Hause oder in einer Einrichtung. Wir nehmen uns Zeit für Ihre individuelle Situation.
+              Beratung nach Paragraf 37 Absatz 3 SGB XI: wir entlasten Angehörige, sichern Fristen und Pflegegeld – kostenlos
+              über Ihre Pflegekasse, mit fester Ansprechperson und Erinnerungssystem.
             </p>
-            <div className="mt-6 rounded-xl border border-[#0F4F68]/15 bg-[#F2F9FA]/45 p-4">
-              <p className="text-sm font-semibold text-[#0F4F68]">Neu: Online Videoberatung</p>
-              <p className="mt-1 text-sm text-neutral-700">
-                Beratungsgespräch per sicherem Videocall mit Einladungslink und persönlichem Gesprächscode.
-              </p>
+            <div className="mt-6 flex flex-wrap gap-3">
+              <Link
+                href="/pflegeberatung/private-pflegeberatung"
+                className="inline-flex min-h-[44px] items-center justify-center rounded-xl bg-[#0F4F68] px-4 py-2 text-sm font-semibold text-white hover:bg-[#0c3d52] focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2"
+              >
+                Zur privaten Pflegeberatung
+              </Link>
               <Link
                 href="/pflegeberatung/online-videoberatung"
-                className="mt-3 inline-flex min-h-[42px] items-center justify-center rounded-xl bg-[#0F4F68] px-4 py-2 text-sm font-semibold text-white hover:bg-[#0c3d52]"
+                className="inline-flex min-h-[44px] items-center justify-center rounded-xl border-2 border-[#0F4F68]/25 px-4 py-2 text-sm font-semibold text-[#0F4F68] hover:bg-[#F2F9FA] focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2"
               >
-                Online Videoberatung starten
+                Online-Videoberatung
               </Link>
             </div>
           </section>

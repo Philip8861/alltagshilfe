@@ -13,6 +13,18 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${base}/karriere`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.7 },
     { url: `${base}/pflegeberatung`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.7 },
     {
+      url: `${base}/pflegeberatung/private-pflegeberatung`,
+      lastModified: new Date(),
+      changeFrequency: "monthly",
+      priority: 0.75,
+    },
+    {
+      url: `${base}/pflegeberatung/online-videoberatung`,
+      lastModified: new Date(),
+      changeFrequency: "monthly",
+      priority: 0.65,
+    },
+    {
       url: `${base}/pflegehilfsmittel/kostenfreie-pflegehilfsmittel`,
       lastModified: new Date(),
       changeFrequency: "monthly",

@@ -68,7 +68,12 @@ const BEWERTUNGEN: Bewertung[] = [
   },
 ];
 
-export function KundenstimmenCarousel() {
+type KundenstimmenCarouselProps = {
+  /** Ohne große Außenabstände und ohne eigene H2 – für Unterseiten unter bestehender Überschrift */
+  embedded?: boolean;
+};
+
+export function KundenstimmenCarousel({ embedded = false }: KundenstimmenCarouselProps) {
   const [index, setIndex] = useState(0);
   const [starCount, setStarCount] = useState(0);
 
@@ -97,8 +102,15 @@ export function KundenstimmenCarousel() {
   }, [index]);
 
   return (
-    <section className="relative z-20 mt-16 w-full px-4 sm:mt-20 sm:px-6 lg:mt-24 lg:px-[var(--ahs-page-gutter)]" aria-label="Kundenstimmen">
-      <div className="mx-auto w-full max-w-6xl p-5 text-center sm:p-7">
+    <section
+      className={
+        embedded
+          ? "relative z-10 w-full"
+          : "relative z-20 mt-16 w-full px-4 sm:mt-20 sm:px-6 lg:mt-24 lg:px-[var(--ahs-page-gutter)]"
+      }
+      aria-label="Kundenstimmen"
+    >
+      <div className={embedded ? "mx-auto w-full max-w-6xl py-2 text-center" : "mx-auto w-full max-w-6xl p-5 text-center sm:p-7"}>
         <div className="flex flex-wrap items-center justify-center gap-2.5">
           {Array.from({ length: 5 }).map((_, i) => (
             <Image
@@ -116,10 +128,16 @@ export function KundenstimmenCarousel() {
             />
           ))}
         </div>
-        <p className="mt-2 text-sm font-semibold text-[#0F4F68]/75">Google-Rezensionen · 5,0 Sterne</p>
-        <h2 className="mt-1 text-2xl font-bold text-[#0F4F68] sm:text-3xl">Das sagen unsere Kunden*innen</h2>
+        {!embedded ? (
+          <>
+            <p className="mt-2 text-sm font-semibold text-[#0F4F68]/75">Google-Rezensionen · 5,0 Sterne</p>
+            <h2 className="mt-1 text-2xl font-bold text-[#0F4F68] sm:text-3xl">Das sagen unsere Kunden*innen</h2>
+          </>
+        ) : (
+          <p className="mt-2 text-sm font-semibold text-[#0F4F68]/75">Google-Rezensionen · 5,0 Sterne</p>
+        )}
 
-        <div className="mt-5 text-left">
+        <div className={embedded ? "mt-4 text-left" : "mt-5 text-left"}>
           <article key={`${BEWERTUNGEN[index]?.name}-${index}`} className="animate-fade-in-up p-1">
             <p className="text-base leading-relaxed text-neutral-700 sm:text-lg">
               <span aria-hidden>&bdquo;</span>
