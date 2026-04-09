@@ -66,7 +66,7 @@ export default function PrivatePflegeberatungPage() {
       <header className="overflow-visible bg-white">
         <div className="mx-auto max-w-7xl overflow-visible px-4 py-12 sm:px-6 sm:py-16 lg:px-[var(--ahs-page-gutter)] lg:py-20">
           <div className="flex flex-col gap-10 overflow-visible lg:flex-row lg:items-start lg:gap-x-8 lg:gap-y-8 xl:gap-x-12">
-            <div className="flex w-full min-w-0 shrink-0 justify-start overflow-visible lg:max-w-[min(100%,26rem)] xl:max-w-[min(100%,30rem)]">
+            <div className="flex w-full min-w-0 shrink-0 justify-start overflow-visible lg:max-w-[min(100%,33.8rem)] xl:max-w-[min(100%,39rem)]">
               <div className="box-content w-full max-w-full overflow-visible py-6 pr-2 pl-0 sm:py-8 sm:pr-4 lg:py-6 lg:pr-6">
                 {/* eslint-disable-next-line @next/next/no-img-element -- natives img vermeidet Next/Image-Wrapper (overflow) */}
                 <img
