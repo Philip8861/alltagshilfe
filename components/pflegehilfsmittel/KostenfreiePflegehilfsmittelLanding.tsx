@@ -52,32 +52,174 @@ const paketItems = [
   "Lätzchen zum Einmalgebrauch",
 ] as const;
 
-const KOSTENFREI_FAQ = [
+const FAQ_INLINE_LINK =
+  "font-semibold text-[#0F4F68] underline underline-offset-2 decoration-[#0F4F68]/40 hover:decoration-[#F78F2E] hover:text-[#0c3d52]";
+
+type KostenfreiFaqItem = {
+  q: string;
+  /** Fließtext für Schema.org FAQPage (ohne JSX) */
+  answerPlain: string;
+  answer: ReactNode;
+};
+
+/** Vollständige FAQ zur 42-€-Pauschale (pg 54); Reihenfolge wie Redaktionsvorgabe. */
+const KOSTENFREI_FAQ: KostenfreiFaqItem[] = [
   {
-    q: "Wer trägt die Kosten für die monatlichen Pflegehilfsmittel?",
-    a: `Die gesetzliche Pflegekasse übernimmt den monatlichen Festbetrag (derzeit 42\u00A0€) für anerkannte Hilfsmittel, wenn die gesetzlichen Voraussetzungen erfüllt sind. Sie zahlen bei korrekter Beantragung keine Zuzahlung für diesen Rahmen.`,
+    q: "Was sind zum Verbrauch bestimmte Pflegehilfsmittel für 42 Euro?",
+    answerPlain:
+      "Das sind Hygieneartikel, die zur häuslichen Pflege benötigt werden und nur einmal verwendet werden können. Die Pflegekasse übernimmt hierfür die Kosten von bis zu 42 Euro pro Monat.",
+    answer: (
+      <>
+        Das sind Hygieneartikel, die zur häuslichen Pflege benötigt werden und nur einmal verwendet werden können. Die
+        Pflegekasse übernimmt hierfür die Kosten von bis zu 42&nbsp;€ pro Monat.
+      </>
+    ),
   },
   {
-    q: "Ab welchem Pflegegrad kann ich die Leistung nutzen?",
-    a: `Grundsätzlich besteht Anspruch ab Pflegegrad\u00A01, sofern die pflegebedürftige Person zu Hause betreut wird und die weiteren Voraussetzungen (z.\u00A0B. private Pflege) erfüllt sind. Unsicherheiten klären wir gern mit Ihnen oder bei Bedarf auch über unsere Pflegeberatung.`,
+    q: "Wer hat Anspruch auf die 42 Euro Pauschale?",
+    answerPlain:
+      "Anspruch haben alle Pflegebedürftigen, die einen anerkannten Pflegegrad (1 bis 5) haben.",
+    answer: <>Anspruch haben alle Pflegebedürftigen, die einen anerkannten Pflegegrad (1 bis 5) haben.</>,
   },
   {
-    q: "Wie läuft die Beantragung bei Alltagshilfe-Süd ab?",
-    a: "Sie stellen Ihre Wunschprodukte im Konfigurator zusammen. Anschließend erhalten Sie die Unterlagen für Ihre Pflegekasse und unsere Unterstützung bei der Abwicklung – digital oder postalisch, wie es für Sie passt.",
+    q: "Reicht Pflegegrad 1 für den Erhalt der Pflegehilfsmittel aus?",
+    answerPlain:
+      "Ja. Bereits ab Pflegegrad 1 besteht der volle gesetzliche Anspruch auf die monatliche Pauschale von 42 Euro.",
+    answer: (
+      <>
+        Ja. Bereits ab Pflegegrad&nbsp;1 besteht der volle gesetzliche Anspruch auf die monatliche Pauschale von
+        42&nbsp;€.
+      </>
+    ),
   },
   {
-    q: "Kann ich die Zusammenstellung monatlich anpassen?",
-    a: "Ja, solange Sie sich innerhalb des monatlichen Budgets bewegen, können Sie Mengen und Artikel wechseln. So bleibt die Box an Alltag und Hygiene-Routine angepasst.",
+    q: "Welche Produkte sind in einer typischen Pflegebox enthalten?",
+    answerPlain:
+      "Typische Produkte sind: Einmalhandschuhe, Flächendesinfektionsmittel, Händedesinfektion, Bettschutzeinlagen (Einmalgebrauch), Schutzschürzen und Mundschutz (FFP2 oder medizinisch).",
+    answer: (
+      <>
+        Typische Produkte sind: Einmalhandschuhe, Flächendesinfektionsmittel, Händedesinfektion, Bettschutzeinlagen
+        (Einmalgebrauch), Schutzschürzen und Mundschutz (FFP2 oder medizinisch).
+      </>
+    ),
   },
   {
-    q: "Was passiert nach der Bestellung?",
-    a: "Nach Einreichung bei der Kasse bearbeiten wir die Lieferung. Das Paket wird zuverlässig nach Hause geliefert – erneut im nächsten Monat, solange der Anspruch besteht und die Mittel zur Verfügung stehen.",
+    q: "Wie beantrage ich die 42 Euro bei der Pflegekasse?",
+    answerPlain:
+      "Sie erstellen im Pflegebox-Konfigurator Ihre Wunschbox, wir übernehmen alle weiteren Formalitäten für Sie.",
+    answer: (
+      <>
+        Sie erstellen im{" "}
+        <Link href={PFLEGEBOX_KONFIGURATOR_PAGE} className={FAQ_INLINE_LINK}>
+          Pflegebox-Konfigurator
+        </Link>{" "}
+        Ihre Wunschbox, wir übernehmen alle weiteren Formalitäten für Sie!
+      </>
+    ),
   },
   {
-    q: "Gibt es eine Vertragsbindung oder versteckte Kosten?",
-    a: "Nein. Sie bestellen ohne langfristige Bindung; die Abrechnung erfolgt über die Pflegekasse im Rahmen der gesetzlichen Regelungen. Kosten für Produkte außerhalb des Budgets oder ohne Anspruch werden transparent gekennzeichnet.",
+    q: "Sind die Pflegehilfsmittel wirklich zu 100 % kostenlos?",
+    answerPlain:
+      "Ja. Wir sind zugelassen bei allen Krankenkassen in Deutschland; diese übernehmen die Kosten ab Pflegegrad 1 im Rahmen der gesetzlichen Regelungen.",
+    answer: (
+      <>
+        Ganz einfach: Ja! Wir sind zugelassen bei allen Krankenkassen in Deutschland, diese übernehmen die Kosten ab
+        Pflegegrad&nbsp;1.
+      </>
+    ),
   },
-] as const;
+  {
+    q: "Muss ich jeden Monat neue Belege einreichen?",
+    answerPlain:
+      "Nein. Sobald der Dauerantrag von der Pflegekasse genehmigt wurde, erfolgt die Belieferung und Abrechnung automatisch.",
+    answer: (
+      <>
+        Nein. Sobald der Dauerantrag von der Pflegekasse genehmigt wurde, erfolgt die Belieferung und Abrechnung
+        automatisch.
+      </>
+    ),
+  },
+  {
+    q: "Kann man die 42 Euro Pauschale auch rückwirkend beantragen?",
+    answerPlain:
+      "Eine rückwirkende Erstattung ist schwierig und meist nur für den Monat der Antragstellung möglich. Es empfiehlt sich daher, den Antrag so früh wie möglich zu stellen.",
+    answer: (
+      <>
+        Eine rückwirkende Erstattung ist schwierig und meist nur für den Monat der Antragstellung möglich. Es empfiehlt
+        sich daher, den Antrag so früh wie möglich zu stellen.
+      </>
+    ),
+  },
+  {
+    q: "Was passiert, wenn ich in einem Monat weniger als 42 Euro verbrauche?",
+    answerPlain:
+      "Der Betrag ist eine Höchstgrenze. Nicht genutztes Budget verfällt am Ende des Monats und kann nicht in den nächsten Monat übertragen oder bar ausgezahlt werden.",
+    answer: (
+      <>
+        Der Betrag ist eine Höchstgrenze. Nicht genutztes Budget verfällt am Ende des Monats und kann nicht in den
+        nächsten Monat übertragen oder bar ausgezahlt werden.
+      </>
+    ),
+  },
+  {
+    q: "Besteht der Anspruch auch bei einer Unterbringung im Pflegeheim?",
+    answerPlain:
+      "Nein. Der Anspruch besteht nur für die häusliche Pflege. In stationären Einrichtungen ist das Heim für die Bereitstellung von Hygieneartikeln zuständig.",
+    answer: (
+      <>
+        Nein. Der Anspruch besteht nur für die häusliche Pflege. In stationären Einrichtungen ist das Heim für die
+        Bereitstellung von Hygieneartikeln zuständig.
+      </>
+    ),
+  },
+  {
+    q: "Kann ich die Auswahl der Produkte in meiner Box monatlich ändern?",
+    answerPlain:
+      "Ja, das ist problemlos möglich. Kontaktieren Sie uns einfach über die Kontaktseite.",
+    answer: (
+      <>
+        Das ist problemlos möglich – kontaktieren Sie uns einfach über die{" "}
+        <Link href="/kontakt" className={FAQ_INLINE_LINK}>
+          Kontaktseite
+        </Link>
+        .
+      </>
+    ),
+  },
+  {
+    q: "Wie lange dauert die Genehmigung durch die Pflegekasse?",
+    answerPlain:
+      "Das ist unterschiedlich und abhängig von Ihrer Pflegekasse. In der Regel erhalten Sie Ihre Pflegebox jedoch nach etwa 5–7 Werktagen.",
+    answer: (
+      <>
+        Dies ist unterschiedlich und abhängig von Ihrer Pflegekasse. In der Regel erhalten Sie Ihre Pflegebox jedoch
+        nach etwa 5–7 Werktagen.
+      </>
+    ),
+  },
+  {
+    q: "Werden auch FFP2-Masken über die Pauschale finanziert?",
+    answerPlain:
+      "Ja, seit der Corona-Pandemie sind Masken fester Bestandteil des erstattungsfähigen Hilfsmittelverzeichnisses (Produktgruppe 54).",
+    answer: (
+      <>
+        Ja, seit der Corona-Pandemie sind Masken fester Bestandteil des erstattungsfähigen Hilfsmittelverzeichnisses
+        (Produktgruppe&nbsp;54).
+      </>
+    ),
+  },
+  {
+    q: "Was ist der Unterschied zwischen technischen Hilfsmitteln und Pflegehilfsmitteln zum Verbrauch?",
+    answerPlain:
+      "Technische Hilfsmittel (PG 50) sind langlebige Dinge wie Pflegebetten oder Rollstühle. Zum Verbrauch bestimmte Hilfsmittel (PG 54) sind Hygieneartikel wie Handschuhe, die täglich entsorgt werden.",
+    answer: (
+      <>
+        Technische Hilfsmittel (PG&nbsp;50) sind langlebige Dinge wie Pflegebetten oder Rollstühle. Zum Verbrauch
+        bestimmte Hilfsmittel (PG&nbsp;54) sind Hygieneartikel wie Handschuhe, die täglich entsorgt werden.
+      </>
+    ),
+  },
+];
 
 const kostenfreiFaqJsonLd = {
   "@context": "https://schema.org",
@@ -87,7 +229,7 @@ const kostenfreiFaqJsonLd = {
     name: item.q,
     acceptedAnswer: {
       "@type": "Answer",
-      text: item.a,
+      text: item.answerPlain,
     },
   })),
 };
@@ -138,8 +280,8 @@ export function KostenfreiePflegehilfsmittelLanding() {
         className="min-w-0 scroll-mt-24 overflow-x-clip overflow-y-visible"
       >
         <section className="relative z-0 box-border mx-auto w-full min-w-0 max-w-7xl px-4 pb-16 pt-0 sm:px-6 sm:pb-24 lg:px-[var(--ahs-page-gutter)] lg:pb-[clamp(5.5rem,12vh+2rem,9rem)] lg:pt-[clamp(2rem,5vh+1.25rem,4.75rem)] xl:pb-[clamp(6.5rem,13vh+2.5rem,10rem)]">
-          <div className="flex flex-col-reverse items-center gap-10 lg:grid lg:grid-cols-[minmax(0,0.335fr)_minmax(0,0.665fr)] lg:items-center lg:justify-items-stretch lg:gap-x-[min(2.5rem,3.5vw)] lg:gap-y-0">
-            <div className="box-border w-full min-w-0 max-w-full space-y-[clamp(1.25rem,2vh+0.75rem,1.75rem)] lg:justify-self-start lg:space-y-[clamp(1.1rem,1.5vh+0.65rem,1.65rem)]">
+          <div className="flex flex-col-reverse items-center gap-10 lg:grid lg:grid-cols-[minmax(0,0.335fr)_minmax(0,0.665fr)] lg:items-center lg:justify-items-stretch lg:gap-x-[clamp(2.75rem,4.8vw,5.5rem)] lg:gap-y-0">
+            <div className="box-border w-full min-w-0 max-w-full space-y-[clamp(1.25rem,2vh+0.75rem,1.75rem)] lg:justify-self-start lg:space-y-[clamp(1.1rem,1.5vh+0.65rem,1.65rem)] lg:origin-left lg:-translate-x-[clamp(0.35rem,2.4vw,2rem)] lg:scale-90 motion-reduce:lg:translate-x-0 motion-reduce:lg:scale-100">
             <h1
               className="text-balance text-3xl font-extrabold leading-tight tracking-tight text-[#0F4F68] opacity-0 motion-reduce:opacity-100 animate-fade-in-up sm:text-4xl lg:text-[clamp(1.75rem,1.05rem+2.5vw,3rem)]"
               style={{ animationDelay: "0s" }}
@@ -181,8 +323,8 @@ export function KostenfreiePflegehilfsmittelLanding() {
             </div>
           </div>
 
-            <div className="box-border w-full min-w-0 max-w-full lg:min-h-0 lg:justify-self-stretch lg:self-center">
-              <div className="box-border flex justify-center overflow-x-visible bg-[#fafbfc] px-4 pt-3 pb-8 sm:px-8 sm:pt-4 sm:pb-10 lg:flex lg:justify-center lg:px-0 lg:pb-[clamp(1.75rem,3.5vh+0.75rem,3.25rem)] lg:pt-0">
+            <div className="box-border w-full min-w-0 max-w-full lg:min-h-0 lg:translate-x-[clamp(0.35rem,2.4vw,2rem)] lg:justify-self-stretch lg:self-center lg:origin-right lg:scale-90 motion-reduce:lg:translate-x-0 motion-reduce:lg:scale-100">
+              <div className="box-border flex justify-center overflow-x-visible bg-[#fafbfc] px-4 pt-3 pb-8 sm:px-8 sm:pt-4 sm:pb-10 lg:flex lg:justify-end lg:px-0 lg:pb-[clamp(1.75rem,3.5vh+0.75rem,3.25rem)] lg:pt-0">
                 <div
                   className="mx-auto w-full min-w-0 max-w-[min(100%,72rem)] opacity-0 motion-reduce:opacity-100 animate-fade-in-up max-lg:flex max-lg:max-w-full max-lg:justify-center lg:w-full"
                   style={{ animationDelay: "0.08s" }}
@@ -359,15 +501,18 @@ export function KostenfreiePflegehilfsmittelLanding() {
             className="pointer-events-none absolute -left-20 bottom-0 h-64 w-64 rounded-full bg-[#0F4F68]/[0.07] blur-3xl"
             aria-hidden
           />
-          <div className="relative z-[1] mx-auto max-w-3xl px-4 sm:px-6">
+          <div className="relative z-[1] mx-auto max-w-3xl px-4 sm:px-6 lg:max-w-4xl">
             <h2
               id="kostenfrei-faq-heading"
               className="text-center text-2xl font-extrabold tracking-tight text-[#0F4F68] sm:text-3xl"
             >
               Häufige Fragen
             </h2>
-            <p className="mx-auto mt-2 max-w-xl text-center text-sm text-[#8a6a55] sm:text-base">
-              Kurz und verständlich – rund um Ihre kostenfreien Pflegehilfsmittel
+            <p className="mx-auto mt-2 max-w-2xl text-center text-sm font-medium text-[#0F4F68]/85 sm:text-base">
+              Alles zur 42&nbsp;€ Pauschale für Pflegehilfsmittel
+            </p>
+            <p className="mx-auto mt-1 max-w-xl text-center text-sm text-[#8a6a55] sm:text-base">
+              Kurz und verständlich zur gesetzlichen Leistung
             </p>
             <div className="mt-10 space-y-3">
               {KOSTENFREI_FAQ.map((item) => (
@@ -386,9 +531,9 @@ export function KostenfreiePflegehilfsmittelLanding() {
                       </svg>
                     </span>
                   </summary>
-                  <p className="border-t border-[#0F4F68]/8 px-4 pb-4 pt-2 text-pretty text-sm leading-relaxed text-neutral-600 sm:px-5 sm:text-base">
-                    {item.a}
-                  </p>
+                  <div className="border-t border-[#0F4F68]/8 px-4 pb-4 pt-2 text-pretty text-sm leading-relaxed text-neutral-600 sm:px-5 sm:text-base">
+                    {item.answer}
+                  </div>
                 </details>
               ))}
             </div>
