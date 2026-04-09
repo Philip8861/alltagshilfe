@@ -65,15 +65,15 @@ export default function PrivatePflegeberatungPage() {
       <header className="bg-white">
         <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 sm:py-16 lg:px-[var(--ahs-page-gutter)] lg:py-20">
           <div className="flex flex-col gap-12 lg:flex-row lg:items-start lg:gap-x-16 lg:gap-y-8 xl:gap-x-20">
-            <div className="flex w-full min-w-0 justify-center lg:w-[min(52%,36rem)] lg:shrink-0 lg:justify-start">
-              <div className="w-full min-w-0 max-w-full">
+            <div className="flex w-full min-w-0 justify-center overflow-visible lg:w-[min(52%,36rem)] lg:shrink-0 lg:justify-start">
+              <div className="flex w-full min-w-0 justify-center overflow-visible lg:justify-start">
                 <Image
                   src="/images/private_pflegeberatung.webp"
                   alt="Private Pflegeberatung – persönliche Beratung mit Zeit und Vertrauen"
                   width={960}
                   height={960}
-                  sizes="(max-width: 1023px) 100vw, (max-width: 1536px) 44vw, 36rem"
-                  className={`${HERO_IMG_BASE} mx-auto max-h-[min(68vh,480px)] w-full max-w-full object-center lg:mx-0 lg:max-h-[min(80vh,620px)] lg:object-left`}
+                  sizes="(max-width: 1023px) 50vw, (max-width: 1536px) 24vw, 20rem"
+                  className={`${HERO_IMG_BASE} mx-auto h-auto w-1/2 max-w-[50%] object-contain object-center lg:mx-0 lg:object-left`}
                   priority
                 />
               </div>
