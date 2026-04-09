@@ -109,7 +109,7 @@ export default function HomePage() {
           <div className="relative min-w-0">
             <div className="flex min-w-0 justify-end">
               <div
-                className="relative ml-auto w-full min-w-0 max-w-[min(88vw,100%)] opacity-0 animate-fade-in-up motion-reduce:opacity-100 lg:max-w-[min(88vw,min(100%,52rem))] lg:mr-[calc((100vw-100%)/-2)]"
+                className="relative ml-auto w-full min-w-0 max-w-full -mr-4 opacity-0 animate-fade-in-up motion-reduce:opacity-100 sm:-mr-6 lg:mr-[calc((100vw-100%)/-2)] lg:max-w-[min(88vw,min(100%,52rem))]"
                 style={{ animationDelay: "0.08s" }}
               >
                 <div className="w-full">
