@@ -41,7 +41,7 @@ export function PflegeboxConfiguratorIframe() {
     };
   }, [onMessage, syncIframeHeight]);
 
-  const src = "/konfigurator/index.html?embed=1&v=kfg-mobile-2026-06";
+  const src = "/konfigurator/index.html?embed=1&v=kfg-mobile-2026-07";
 
   const style = {
     height: `${heightPx}px`,

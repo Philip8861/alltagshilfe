@@ -1986,21 +1986,34 @@ html.kfg-embed .hero-overlay {
 
   .item-list {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: stretch;
   }
 
   .item.item--double-width {
     grid-column: span 2;
   }
 
-  /* Mobil: kein Quadrat – Karte wächst nach unten; Ecken wie Desktop gleichmäßig gerundet */
+  /* Mobil: gleiche Kartenhöhe pro Zeile (höchster Kasten bestimmt); kein Quadrat */
   .item {
     aspect-ratio: unset;
     min-height: 0;
     border-radius: 20px;
+    align-self: stretch;
+    width: 100%;
+    height: auto;
   }
 
   .item.item--double-width {
     aspect-ratio: unset;
+    align-self: stretch;
+  }
+
+  .item .item-inner {
+    flex: 1 1 auto;
+    min-height: 0;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
   }
 
   .item .item-inner-content {
