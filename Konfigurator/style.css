@@ -1992,10 +1992,37 @@ html.kfg-embed .hero-overlay {
     grid-column: span 2;
   }
 
-  /* Größere Produktbilder: Mindesthöhe Bildbereich, kürzere Textklausel – Namen drücken das Bild nicht so stark */
-  .item .item-image-frame {
+  /* Mobil: kein Quadrat – Karte wächst nach unten; unten stärker gerundet (oval/Kapsel) */
+  .item {
+    aspect-ratio: unset;
+    min-height: 0;
+    border-radius: 1.15rem 1.15rem clamp(2.25rem, 14vw, 3.25rem) clamp(2.25rem, 14vw, 3.25rem);
+  }
+
+  .item.item--double-width {
+    aspect-ratio: unset;
+  }
+
+  .item .item-inner-content {
+    overflow: visible;
     flex: 0 1 auto;
-    min-height: clamp(120px, 38vw, 210px);
+    min-height: 0;
+  }
+
+  /* Bildbereich: genug Höhe, nichts abschneiden */
+  .item .item-image-frame {
+    flex: 0 0 auto;
+    min-height: clamp(132px, 42vw, 240px);
+    overflow: visible;
+    border-radius: 0.95rem 0.95rem clamp(1.25rem, 8vw, 1.75rem) clamp(1.25rem, 8vw, 1.75rem);
+  }
+
+  .item .item-image-frame .item-image {
+    max-height: none;
+    width: auto;
+    max-width: 100%;
+    height: auto;
+    object-fit: contain;
   }
 
   .item .item-name {
@@ -2004,7 +2031,7 @@ html.kfg-embed .hero-overlay {
   }
 
   .item.item--double-width .item-image-frame {
-    min-height: clamp(128px, 34vw, 220px);
+    min-height: clamp(140px, 40vw, 250px);
   }
 
   .item.item--double-width .item-name {
