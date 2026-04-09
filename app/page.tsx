@@ -109,7 +109,7 @@ export default function HomePage() {
           <div className="relative min-w-0">
             <div className="flex min-w-0 justify-end">
               <div
-                className="relative ml-auto w-full min-w-0 max-w-[min(50rem,88vw)] opacity-0 animate-fade-in-up motion-reduce:opacity-100 lg:mr-[calc((100vw-100%)/-2)]"
+                className="relative ml-auto w-full min-w-0 max-w-[min(88vw,100%)] opacity-0 animate-fade-in-up motion-reduce:opacity-100 lg:max-w-[min(88vw,min(100%,52rem))] lg:mr-[calc((100vw-100%)/-2)]"
                 style={{ animationDelay: "0.08s" }}
               >
                 <div className="w-full">
@@ -129,9 +129,9 @@ export default function HomePage() {
             </div>
 
             <div
-              className="relative z-10 mt-8 max-w-lg text-left sm:max-w-xl lg:absolute lg:left-0 lg:right-auto lg:top-[clamp(34%,calc(33%+0.35vw),40%)] lg:mt-0 lg:w-full lg:max-w-none lg:-translate-y-1/2 lg:-translate-x-[min(10.5vw,7.75rem)]"
+              className="relative z-10 mt-8 max-w-lg text-left sm:max-w-xl lg:absolute lg:left-0 lg:right-auto lg:top-[clamp(34%,calc(33%+0.35vw),40%)] lg:mt-0 lg:w-full lg:max-w-none lg:-translate-y-1/2 lg:-translate-x-[5%]"
             >
-              <header className="text-left lg:max-w-[min(26rem,42vw)] xl:max-w-[min(28rem,38vw)] 2xl:max-w-[min(30rem,34vw)]">
+              <header className="text-left lg:max-w-[min(42vw,clamp(22rem,32vw+8rem,30rem))] xl:max-w-[min(38vw,clamp(23rem,28vw+9rem,31rem))] 2xl:max-w-[min(34vw,clamp(24rem,26vw+10rem,32rem))]">
                 <h1
                   className="text-balance text-3xl font-extrabold leading-tight tracking-tight text-[#0F4F68] opacity-0 motion-reduce:opacity-100 animate-fade-in-up sm:text-4xl lg:text-[clamp(2rem,1.05rem+2.6vw,3rem)]"
                   style={{ animationDelay: "0s" }}
@@ -139,7 +139,7 @@ export default function HomePage() {
                   {HERO_INTRO.brand}
                 </h1>
                 <ul
-                  className="mt-5 space-y-3 sm:mt-6 sm:space-y-3.5"
+                  className="mt-5 space-y-3 sm:mt-6 sm:space-y-3.5 lg:space-y-[clamp(0.65rem,0.35rem+0.9vw,1rem)]"
                   aria-label="Ihre Vorteile auf einen Blick"
                 >
                   {HERO_INTRO.taglineLines.map((line, i) => (
@@ -166,7 +166,7 @@ export default function HomePage() {
             </div>
           </div>
 
-          <div className="lg:-mt-[clamp(6%,8vw,10%)] lg:-translate-x-[min(10.5vw,7.75rem)]">
+          <div className="lg:-mt-[clamp(6%,8vw,10%)] lg:-translate-x-[5%]">
             <StartEinstiegsHilfe />
           </div>
         </div>

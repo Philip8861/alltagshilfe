@@ -97,16 +97,17 @@ export function KostenfreiePflegehilfsmittelLanding() {
         id="kostenfreie-hero"
         className="min-w-0 scroll-mt-24 overflow-x-clip overflow-y-visible"
       >
-        <section className="relative z-0 box-border mx-auto flex w-full min-w-0 max-w-7xl flex-col-reverse items-center gap-10 px-4 pb-16 pt-0 sm:px-6 sm:pb-24 lg:flex-row lg:items-start lg:gap-[clamp(1.25rem,1.2vw+0.85rem,3rem)] lg:px-[var(--ahs-page-gutter)] lg:pb-[clamp(5.5rem,12vh+2rem,9rem)] lg:pt-[clamp(2rem,5vh+1.25rem,4.75rem)] xl:pb-[clamp(6.5rem,13vh+2.5rem,10rem)]">
-          <div className="w-full min-w-0 space-y-6 lg:flex-1 lg:basis-0 lg:-translate-x-[min(6vw,5.5rem)]">
+        <section className="relative z-0 box-border mx-auto w-full min-w-0 max-w-7xl px-4 pb-16 pt-0 sm:px-6 sm:pb-24 lg:px-[var(--ahs-page-gutter)] lg:pb-[clamp(5.5rem,12vh+2rem,9rem)] lg:pt-[clamp(2rem,5vh+1.25rem,4.75rem)] xl:pb-[clamp(6.5rem,13vh+2.5rem,10rem)]">
+          <div className="flex flex-col-reverse items-center gap-10 lg:grid lg:grid-cols-[minmax(0,0.46fr)_minmax(0,0.54fr)] lg:items-start lg:justify-items-stretch lg:gap-x-[min(3.25rem,4.2vw)] lg:gap-y-0">
+            <div className="box-border w-full min-w-0 max-w-full space-y-[clamp(1.25rem,2vh+0.75rem,1.75rem)] lg:justify-self-start lg:-translate-x-[5%] lg:space-y-[clamp(1.1rem,1.5vh+0.65rem,1.65rem)]">
             <h1
-              className="text-balance text-3xl font-extrabold leading-tight tracking-tight text-[#0F4F68] opacity-0 motion-reduce:opacity-100 animate-fade-in-up sm:text-4xl lg:text-[clamp(1.875rem,1.15rem+2.35vw,3rem)]"
+              className="text-balance text-3xl font-extrabold leading-tight tracking-tight text-[#0F4F68] opacity-0 motion-reduce:opacity-100 animate-fade-in-up sm:text-4xl lg:text-[clamp(1.75rem,1.05rem+2.5vw,3rem)]"
               style={{ animationDelay: "0s" }}
             >
               Ihre kostenfreien Pflegehilfsmittel im Wert von 42&nbsp;€ monatlich
             </h1>
             <ul
-              className="mt-5 space-y-3 sm:mt-6 sm:space-y-3.5"
+              className="mt-5 space-y-3 sm:mt-6 sm:space-y-3.5 lg:mt-0 lg:space-y-[clamp(0.65rem,0.35rem+0.9vw,1rem)]"
               aria-label="Ihre Vorteile auf einen Blick"
             >
               {KOSTENFREI_HERO_VORTEILE.map((line, i) => (
@@ -129,34 +130,35 @@ export function KostenfreiePflegehilfsmittelLanding() {
               id="konfigurator"
             >
               <KonfiguratorLink
-                className="flex w-full transform items-center justify-center gap-2 rounded-xl bg-[#F78F2E] px-6 py-3 text-lg font-bold text-white shadow-lg transition hover:scale-[1.02] hover:opacity-95 focus:outline-none focus:ring-2 focus:ring-[#F78F2E] focus:ring-offset-2 motion-reduce:transform-none sm:w-auto"
+                className="flex w-full transform items-center justify-center gap-2 rounded-xl bg-[#F78F2E] px-6 py-3 text-lg font-bold text-white shadow-lg transition hover:scale-[1.02] hover:opacity-95 focus:outline-none focus:ring-2 focus:ring-[#F78F2E] focus:ring-offset-2 motion-reduce:transform-none sm:w-auto lg:w-auto lg:gap-[clamp(0.35rem,0.25rem+0.35vw,0.55rem)] lg:px-[clamp(1.15rem,0.85rem+1.1vw,1.65rem)] lg:py-[clamp(0.6rem,0.45rem+0.45vw,0.9rem)] lg:text-[clamp(1rem,0.82rem+0.55vw,1.15rem)]"
               >
                 <KonfiguratorGearIcon className="h-5 w-5" />
                 Pflegebox jetzt konfigurieren
               </KonfiguratorLink>
-              <p className="mt-3 text-center text-sm text-neutral-600 sm:text-left">
+              <p className="mt-3 text-center text-sm text-neutral-600 sm:text-left lg:text-[clamp(0.8rem,0.7rem+0.35vw,0.95rem)]">
                 Dauert nur 2 Minuten. Keine Vertragsbindung. Jederzeit kündbar.
               </p>
             </div>
           </div>
 
-          <div className="w-full min-w-0 lg:flex-1 lg:basis-0">
-            <div className="box-border flex justify-center overflow-x-clip bg-[#fafbfc] px-4 pt-3 pb-8 sm:px-8 sm:pt-4 sm:pb-10 lg:justify-end lg:px-0 lg:pb-[clamp(2.25rem,4vh+1rem,3.5rem)] lg:pt-0 xl:pb-[clamp(2.75rem,4.5vh+1rem,4rem)]">
-              <div
-                className="mx-auto w-full max-w-full min-w-0 opacity-0 motion-reduce:opacity-100 animate-fade-in-up max-lg:flex max-lg:justify-center lg:max-w-full lg:overflow-x-clip lg:pl-[min(0.35rem,0.5vw)] lg:pr-0"
-                style={{ animationDelay: "0.08s" }}
-              >
-                {/* eslint-disable-next-line @next/next/no-img-element -- statische Asset-URL */}
-                <img
-                  src={KOSTENFREI_HERO_IMG}
-                  alt="Kostenfreie Pflegehilfsmittel – Übersicht"
-                  width={1162}
-                  height={845}
-                  decoding="async"
-                  fetchPriority="high"
-                  sizes="(max-width: 1023px) 100vw, (max-width: 1400px) 42vw, 720px"
-                  className={`box-border h-auto w-full max-w-full object-contain max-lg:mx-auto max-lg:origin-center max-lg:translate-x-0 max-lg:-translate-y-2 max-lg:scale-[1.05] max-lg:motion-reduce:scale-[1.05] lg:kostenfrei-hero-media-img lg:motion-reduce:scale-[1.05] ${KOSTENFREI_HERO_GLOW_CLASS}`}
-                />
+            <div className="box-border w-full min-w-0 max-w-full lg:min-h-0 lg:justify-self-end lg:self-start">
+              <div className="box-border flex justify-center overflow-x-clip bg-[#fafbfc] px-4 pt-3 pb-8 sm:px-8 sm:pt-4 sm:pb-10 lg:flex lg:justify-end lg:px-0 lg:pb-[clamp(1.75rem,3.5vh+0.75rem,3.25rem)] lg:pt-0">
+                <div
+                  className="mx-auto w-full max-w-full min-w-0 opacity-0 motion-reduce:opacity-100 animate-fade-in-up max-lg:flex max-lg:justify-center lg:max-w-full"
+                  style={{ animationDelay: "0.08s" }}
+                >
+                  {/* eslint-disable-next-line @next/next/no-img-element -- statische Asset-URL */}
+                  <img
+                    src={KOSTENFREI_HERO_IMG}
+                    alt="Kostenfreie Pflegehilfsmittel – Übersicht"
+                    width={1162}
+                    height={845}
+                    decoding="async"
+                    fetchPriority="high"
+                    sizes="(max-width: 1023px) 100vw, 54vw"
+                    className={`box-border h-auto w-full max-w-full object-contain object-center lg:object-right max-lg:mx-auto max-lg:origin-center max-lg:translate-x-0 max-lg:-translate-y-2 max-lg:scale-[1.05] max-lg:motion-reduce:scale-[1.05] ${KOSTENFREI_HERO_GLOW_CLASS}`}
+                  />
+                </div>
               </div>
             </div>
           </div>
