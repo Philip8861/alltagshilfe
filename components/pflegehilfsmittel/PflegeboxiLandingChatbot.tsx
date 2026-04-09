@@ -1,36 +1,23 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import { buildPflegeboxiReply } from "@/lib/pflegeboxi-build-reply";
 import "./PflegeboxiLandingChatbot.css";
 
 const INTRO_BOT =
-  "Hallo, ich bin Pflegeboxi. Ich helfe dir bei deiner Auswahl sehr gerne weiter. Wie kann ich dir helfen?";
+  "Hallo, ich bin Pflegeboxi. Ich bin kein freier KI-Chat, sondern antworte nach festen Regeln zu Stichworten – so bleibt alles nachvollziehbar. Nutz die Vorschläge unten oder schreib z. B. „Anspruch“, „42 Euro“, „Rezept“ oder „Konfigurator“.";
 
 const BUBBLE_COLLAPSED =
-  "Hallo, ich bin Pflegeboxi! Drück auf mich, ich helfe dir gerne weiter";
+  "Hallo, ich bin Pflegeboxi! Tipp auf mich – dann kannst du Stichwörter schicken oder Themen anklicken.";
 
-function buildReply(text: string): string {
-  const lower = text.toLowerCase();
-  if (lower.includes("budget") || lower.includes("42")) {
-    return "Für die Pflegebox stehen dir 42,00 € pro Monat zur Verfügung. Du kannst im Konfigurator Produkte so wählen, bis das Budget ausgeschöpft ist.";
-  }
-  if (lower.includes("handschuh")) {
-    return "Bei Handschuhen kannst du Material wie Latex, Vinyl oder Nitril und Größen wie S, M, L oder XL wählen, damit sie optimal passen.";
-  }
-  if (lower.includes("pflegegrad") || lower.includes("anspruch")) {
-    return "Kostenfreie Pflegehilfsmittel stehen ab Pflegegrad 1 zu – wir unterstützen dich bei der Beantragung bei deiner Pflegekasse.";
-  }
-  if (lower.includes("antrag") || lower.includes("beantrag")) {
-    return "Du stellst deine Wunschbox im Konfigurator zusammen, trägst deine Daten ein und unterschreibst digital – wir kümmern uns um den Rest mit der Pflegekasse.";
-  }
-  if (lower.includes("pflegebox")) {
-    return "Eine Pflegebox enthält monatlich benötigte Pflegehilfsmittel, die von der Pflegekasse übernommen werden können – wir helfen dir bei der passenden Zusammenstellung.";
-  }
-  if (lower.includes("kostenlos") || lower.includes("kostenfrei")) {
-    return "Die Pflegehilfsmittel aus dem Hilfsmittelverzeichnis sind für dich zuzahlungsfrei, wenn du einen Anspruch bei der Pflegekasse hast – bis zu 42 € pro Monat für Verbrauchsmittel.";
-  }
-  return "Ich bin Pflegeboxi 🤍 und helfe dir bei Fragen zu Pflegeboxen und Pflegehilfsmitteln. Frag mich zu Budget, Antrag, Pflegegrad oder zum Konfigurator – oder nutze unsere Kontaktseite für persönliche Rückfragen.";
-}
+const QUICK_TOPICS: { label: string; send: string }[] = [
+  { label: "Steht mir das zu?", send: "Steht mir das zu?" },
+  { label: "42 € Budget", send: "Wie funktioniert das 42 Euro Budget?" },
+  { label: "Brauche ich ein Rezept?", send: "Brauche ich ein Rezept?" },
+  { label: "Pflegeheim", send: "Was gilt im Pflegeheim?" },
+  { label: "Konfigurator", send: "Wie finde ich den Konfigurator?" },
+  { label: "Telefon", send: "Wie erreiche ich euch telefonisch?" },
+];
 
 export function PflegeboxiLandingChatbot() {
   const [expanded, setExpanded] = useState(false);
@@ -71,17 +58,24 @@ export function PflegeboxiLandingChatbot() {
 
   const toggleExpanded = () => setExpanded((e) => !e);
 
+  const sendUserMessage = useCallback(
+    (raw: string) => {
+      const value = raw.trim();
+      if (!value) return;
+      setMessages((m) => [...m, { from: "user", text: value }]);
+      setInput("");
+      const reply = buildPflegeboxiReply(value, { context: "landing" });
+      window.setTimeout(() => {
+        setMessages((m) => [...m, { from: "bot", text: reply }]);
+        triggerWiggle();
+      }, 300);
+    },
+    [triggerWiggle],
+  );
+
   const onSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const value = input.trim();
-    if (!value) return;
-    setMessages((m) => [...m, { from: "user", text: value }]);
-    setInput("");
-    const reply = buildReply(value);
-    window.setTimeout(() => {
-      setMessages((m) => [...m, { from: "bot", text: reply }]);
-      triggerWiggle();
-    }, 300);
+    sendUserMessage(input);
   };
 
   if (hidden) return null;
@@ -150,12 +144,24 @@ export function PflegeboxiLandingChatbot() {
             </div>
           ))}
         </div>
+        <div className="ahs-landing-pfxb__quick-topics" role="group" aria-label="Schnellthemen">
+          {QUICK_TOPICS.map((t) => (
+            <button
+              key={t.label}
+              type="button"
+              className="ahs-landing-pfxb__quick-btn"
+              onClick={() => sendUserMessage(t.send)}
+            >
+              {t.label}
+            </button>
+          ))}
+        </div>
         <form className="ahs-landing-pfxb__form" autoComplete="off" onSubmit={onSubmit}>
           <input
             type="text"
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            placeholder="Nachricht an die Box eingeben..."
+            placeholder="Stichwort oder kurze Frage …"
             aria-label="Nachricht an Pflegeboxi"
           />
           <button type="submit">Senden</button>

@@ -1,12 +1,12 @@
 /* Pflegeboxi-Widget nur für Kostenfreie-Pflegehilfsmittel-Landing (scoped) */
 .ahs-landing-pfxb__wrap {
   position: fixed;
-  left: max(12px, env(safe-area-inset-left, 0px));
+  right: max(12px, env(safe-area-inset-right, 0px));
   bottom: max(24px, calc(env(safe-area-inset-bottom, 0px) + 16px));
   z-index: 70;
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  align-items: flex-end;
   gap: 8px;
   max-height: calc(100vh - 120px);
   max-width: calc(100% - 24px);
@@ -163,8 +163,8 @@
 .ahs-landing-pfxb__bubble {
   position: absolute;
   bottom: 100%;
-  left: 0;
-  right: auto;
+  right: 0;
+  left: auto;
   transform: translate(0, -8px);
   padding: 10px 16px;
   border-radius: 20px;
@@ -185,9 +185,9 @@
   content: "";
   position: absolute;
   bottom: -10px;
-  left: 40px;
-  right: auto;
-  transform: translateX(-50%);
+  right: 40px;
+  left: auto;
+  transform: translateX(50%);
   border-width: 10px 12px 0;
   border-style: solid;
   border-color: #0f4f68 transparent transparent;
@@ -197,9 +197,9 @@
   content: "";
   position: absolute;
   bottom: -8px;
-  left: 40px;
-  right: auto;
-  transform: translateX(-50%);
+  right: 40px;
+  left: auto;
+  transform: translateX(50%);
   border-width: 8px 10px 0;
   border-style: solid;
   border-color: #ffffff transparent transparent;
@@ -246,6 +246,37 @@
 .ahs-landing-pfxb__msg--user .ahs-landing-pfxb__bubble-text {
   background: #e5e7eb;
   color: #111827;
+}
+
+.ahs-landing-pfxb__quick-topics {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 8px 12px 4px;
+  border-top: 1px solid rgba(148, 163, 184, 0.2);
+}
+
+.ahs-landing-pfxb__quick-btn {
+  border-radius: 999px;
+  border: 1px solid rgba(15, 79, 104, 0.35);
+  background: #f2f9fa;
+  color: #0f4f68;
+  font-size: 0.78rem;
+  font-weight: 600;
+  padding: 6px 10px;
+  cursor: pointer;
+  line-height: 1.2;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.ahs-landing-pfxb__quick-btn:hover {
+  background: #e2f0f3;
+  border-color: rgba(15, 79, 104, 0.55);
+}
+
+.ahs-landing-pfxb__quick-btn:focus-visible {
+  outline: 2px solid #f78f2e;
+  outline-offset: 2px;
 }
 
 .ahs-landing-pfxb__form {
@@ -302,7 +333,7 @@
 
 @media (max-width: 900px) {
   .ahs-landing-pfxb__wrap {
-    left: max(12px, env(safe-area-inset-left, 0px));
+    right: max(12px, env(safe-area-inset-right, 0px));
     bottom: max(20px, calc(env(safe-area-inset-bottom, 0px) + 12px));
   }
 
