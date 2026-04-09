@@ -94,8 +94,8 @@ export function KostenfreiePflegehilfsmittelLanding() {
   return (
     <div className="bg-[#fafbfc] text-neutral-700 antialiased">
       <article id="kostenfreie-hero" className="scroll-mt-24">
-        <section className="mx-auto flex max-w-7xl flex-col-reverse items-center gap-10 px-4 pb-12 pt-10 sm:px-6 sm:pb-16 sm:pt-12 lg:flex-row lg:gap-12 lg:px-8 lg:pb-20 lg:pt-6">
-          <div className="w-full space-y-6 lg:w-1/2 lg:-translate-x-[21%] lg:pt-[10%]">
+        <section className="mx-auto flex max-w-7xl flex-col-reverse items-center gap-10 px-4 pb-12 pt-0 sm:px-6 sm:pb-16 lg:flex-row lg:gap-12 lg:px-8 lg:pb-20">
+          <div className="w-full space-y-6 lg:w-1/2 lg:-translate-x-[21%]">
             <h1
               className="text-balance text-3xl font-extrabold leading-tight tracking-tight text-[#0F4F68] opacity-0 motion-reduce:opacity-100 animate-fade-in-up sm:text-4xl lg:text-5xl"
               style={{ animationDelay: "0s" }}
@@ -156,7 +156,7 @@ export function KostenfreiePflegehilfsmittelLanding() {
                   height={845}
                   decoding="async"
                   fetchPriority="high"
-                  className={`h-auto w-full max-w-full origin-center object-contain motion-reduce:translate-x-0 motion-reduce:translate-y-0 motion-reduce:scale-100 max-lg:mx-auto max-lg:translate-x-0 max-lg:-translate-y-2 max-lg:scale-100 lg:translate-x-10 lg:-translate-y-8 lg:scale-[1.463] xl:translate-x-14 xl:-translate-y-10 ${KOSTENFREI_HERO_GLOW_CLASS}`}
+                  className={`h-auto w-full max-w-full origin-center object-contain motion-reduce:translate-x-0 motion-reduce:translate-y-0 motion-reduce:scale-[1.05] max-lg:mx-auto max-lg:translate-x-0 max-lg:-translate-y-2 max-lg:scale-[1.05] lg:translate-x-10 lg:-translate-y-8 lg:scale-[1.536] xl:translate-x-14 xl:-translate-y-10 ${KOSTENFREI_HERO_GLOW_CLASS}`}
                 />
               </div>
             </div>
