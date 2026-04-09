@@ -15,10 +15,10 @@ export function Header({ nunitoClass = "", balooClass = "" }: HeaderProps) {
     <header className="sticky top-0 z-50 overflow-visible shadow-[0_4px_6px_-1px_rgb(0_0_0/0.07),0_2px_4px_-2px_rgb(0_0_0/0.07)]">
       <HeaderStrip nunitoClass={nunitoClass} balooClass={balooClass} />
       <div className="relative overflow-visible border-b border-[#0F4F68]/15 bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/80">
-        <Container className="grid min-h-[3.75rem] grid-cols-[1fr_auto] items-center gap-3 overflow-visible md:grid-cols-[auto_minmax(0,1fr)_auto] md:gap-4 lg:gap-6">
+        <Container className="grid min-h-[3.75rem] grid-cols-[1fr_auto] items-center gap-x-3 gap-y-2 overflow-visible md:grid-cols-[auto_minmax(0,1fr)_auto] md:gap-x-7 lg:gap-x-8">
           <Link
             href="/"
-            className="z-10 flex shrink-0 -translate-y-[5%] justify-self-start focus:outline-none rounded md:h-10 md:w-auto"
+            className="z-10 flex shrink-0 -translate-y-[5%] justify-self-start focus:outline-none rounded md:h-10 md:w-auto -ml-2 mr-3 sm:-ml-3 sm:mr-4 md:-ml-4 md:mr-6 lg:-ml-3 lg:mr-7"
             aria-label={`${siteConfig.name} – Startseite`}
           >
             <Image
@@ -30,7 +30,7 @@ export function Header({ nunitoClass = "", balooClass = "" }: HeaderProps) {
               priority
             />
           </Link>
-          <div className="min-w-0 flex items-center justify-end md:justify-end">
+          <div className="min-w-0 flex items-center justify-end pl-1 md:justify-end md:pl-2 lg:pl-3">
             <HeaderNav />
           </div>
           <Link

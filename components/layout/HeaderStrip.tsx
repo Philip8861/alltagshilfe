@@ -45,20 +45,22 @@ export function HeaderStrip(_props: HeaderStripProps) {
       className={cn("w-full text-xs font-medium text-white/95", hideStripOnMobile ? "hidden md:block" : "block")}
       style={{ backgroundColor: "#0F4F68", minHeight: "2.45rem" }}
     >
-      <div className="mx-auto flex w-full max-w-7xl flex-row items-center justify-between gap-3 px-4 py-1.5 sm:px-6 lg:px-[var(--ahs-page-gutter)]">
-        <span
-          className="min-w-0 max-w-[min(100%,calc(100%-5.5rem))] shrink text-left text-[0.7rem] leading-tight sm:text-xs md:text-sm md:font-semibold"
-          aria-live="polite"
-        >
-          {TAGLINE.slice(0, taglineLength)}
-          {taglineLength < TAGLINE.length && <span className="animate-pulse" aria-hidden>|</span>}
-        </span>
+      <div className="flex w-full flex-row items-center justify-between gap-4 px-4 py-1.5 sm:px-6 lg:px-[var(--ahs-page-gutter)]">
+        <div className="flex min-w-0 flex-1 items-center justify-start text-left">
+          <span
+            className="block min-w-0 truncate text-[0.7rem] leading-tight sm:text-xs md:text-sm md:font-semibold"
+            aria-live="polite"
+          >
+            {TAGLINE.slice(0, taglineLength)}
+            {taglineLength < TAGLINE.length && <span className="animate-pulse" aria-hidden>|</span>}
+          </span>
+        </div>
 
-        <div className="flex shrink-0 justify-end pl-2">
+        <div className="flex shrink-0 items-center justify-end">
           <Link
             href={partnerLoginHref}
             className={cn(
-              "inline-flex min-h-8 items-center justify-center whitespace-nowrap rounded-md px-2 py-0.5 pr-0.5 text-sm font-bold text-white/95 no-underline transition-colors hover:text-white focus:outline-none focus:ring-2 focus:ring-white/80 focus:ring-offset-2 focus:ring-offset-[#0F4F68] sm:pr-1",
+              "inline-flex min-h-8 items-center justify-center whitespace-nowrap rounded-md py-0.5 text-sm font-bold text-white/95 no-underline transition-colors hover:text-white focus:outline-none focus:ring-2 focus:ring-white/80 focus:ring-offset-2 focus:ring-offset-[#0F4F68]",
               partnerActive && "text-white",
             )}
           >
