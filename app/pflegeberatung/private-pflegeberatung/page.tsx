@@ -65,9 +65,9 @@ export default function PrivatePflegeberatungPage() {
 
       <header className="overflow-visible bg-white">
         <div className="mx-auto max-w-7xl overflow-visible px-4 py-12 sm:px-6 sm:py-16 lg:px-[var(--ahs-page-gutter)] lg:py-20">
-          <div className="flex flex-col gap-10 overflow-visible lg:flex-row lg:items-start lg:gap-x-8 lg:gap-y-8 xl:gap-x-12">
-            <div className="flex w-full min-w-0 shrink-0 justify-start overflow-visible lg:max-w-[min(100%,33.8rem)] xl:max-w-[min(100%,39rem)]">
-              <div className="box-content w-full max-w-full overflow-visible py-6 pr-2 pl-0 sm:py-8 sm:pr-4 lg:py-6 lg:pr-6">
+          <div className="flex w-full flex-col items-center gap-10 overflow-visible lg:flex-row lg:justify-center lg:items-start lg:gap-x-8 lg:gap-y-8 xl:gap-x-12">
+            <div className="flex w-full min-w-0 shrink-0 justify-center overflow-visible sm:max-w-[min(100%,42.25rem)] lg:w-auto lg:max-w-[min(100%,42.25rem)] lg:justify-start xl:max-w-[min(100%,48.75rem)]">
+              <div className="box-content w-full max-w-full overflow-visible py-6 px-2 sm:px-4 sm:py-8 lg:py-6 lg:pl-0 lg:pr-6">
                 {/* eslint-disable-next-line @next/next/no-img-element -- natives img vermeidet Next/Image-Wrapper (overflow) */}
                 <img
                   src="/images/pflegeberatung_gemeinsam.webp"
@@ -76,12 +76,12 @@ export default function PrivatePflegeberatungPage() {
                   height={900}
                   decoding="async"
                   fetchPriority="high"
-                  className={`${HERO_IMG_BASE} h-auto w-full max-w-full object-contain object-left`}
+                  className={`${HERO_IMG_BASE} mx-auto h-auto w-full max-w-full object-contain object-center lg:mx-0 lg:object-left`}
                 />
               </div>
             </div>
 
-            <div className="min-w-0 flex-1 overflow-visible pt-0 text-left lg:min-w-[min(100%,22rem)] lg:pt-2 xl:min-w-[24rem]">
+            <div className="w-full min-w-0 shrink-0 overflow-visible pt-0 text-left sm:max-w-xl lg:w-auto lg:max-w-[min(100%,28rem)] lg:pt-2 xl:max-w-[30rem]">
               <div className="min-w-0 max-w-full overflow-x-auto [-ms-overflow-style:none] [scrollbar-width:thin] lg:overflow-x-visible">
                 <h1 className="whitespace-nowrap text-[clamp(0.8125rem,0.65vw+0.55rem,2.5rem)] font-extrabold leading-tight tracking-tight text-[#0F4F68] sm:text-[clamp(0.875rem,0.85vw+0.5rem,2.5rem)] lg:text-[clamp(1.35rem,0.55rem+1.25vw,2.5rem)] lg:leading-[1.12]">
                   Pflegeberatung nach Paragraf 37 Absatz 3 SGB XI
