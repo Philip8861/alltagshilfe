@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { createPortal } from "react-dom";
 import { findStandortByPlz, type Standort } from "@/config/standorte";
 import { cn } from "@/lib/utils";
 
@@ -201,6 +202,8 @@ function StepFlatIcon({ kind }: { kind: "pflegegrad" | "person" | "kontakt" }) {
 
 export function StartEinstiegsHilfe() {
   const [started, setStarted] = useState(false);
+  /** Portal-Ziel erst nach Mount: Overlay liegt dann außerhalb transformierter Vorfahren (z. B. Startseite scale-90). */
+  const [portalReady, setPortalReady] = useState(false);
   const [step, setStep] = useState(1);
 
   const [leistungen, setLeistungen] = useState<ServiceKey[]>([]);
@@ -218,6 +221,10 @@ export function StartEinstiegsHilfe() {
   const [nachricht, setNachricht] = useState("");
 
   const [error, setError] = useState("");
+
+  useEffect(() => {
+    setPortalReady(true);
+  }, []);
 
   useEffect(() => {
     if (!started) return;
@@ -383,9 +390,10 @@ export function StartEinstiegsHilfe() {
           </button>
           <p className="mt-3 text-sm text-neutral-600">Sie müssen nicht alles schon wissen - wir führen Sie Schritt für Schritt.</p>
         </div>
-      ) : (
-        <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-[#0F4F68]/45 p-3 backdrop-blur-[2px] sm:p-6">
-          <div className="max-h-[92vh] w-full max-w-4xl overflow-y-auto animate-fade-in-up rounded-2xl border border-[#0F4F68]/15 bg-white p-5 shadow-2xl sm:p-7">
+      ) : portalReady ? (
+        createPortal(
+          <div className="fixed inset-0 z-[100] flex items-center justify-center overflow-y-auto bg-[#0F4F68]/45 p-3 backdrop-blur-[2px] sm:p-6">
+            <div className="max-h-[92vh] w-full max-w-4xl overflow-y-auto animate-fade-in-up rounded-2xl border border-[#0F4F68]/15 bg-white p-5 shadow-2xl sm:p-7">
             <div className="mb-4 grid grid-cols-[1fr_auto_1fr] items-center gap-3">
               <p className="justify-self-start text-sm font-bold uppercase tracking-wide text-[#0F4F68]/80">Schritt {Math.min(step, 7)} von 7</p>
               <p className="text-center text-xl font-extrabold text-[#0F4F68] sm:text-2xl">{SCHRITT_MOTIVATION[step]}</p>
@@ -727,8 +735,10 @@ export function StartEinstiegsHilfe() {
               ) : null}
             </div>
             </div>
-        </div>
-      )}
+          </div>,
+          document.body
+        )
+      ) : null}
     </section>
   );
 }
