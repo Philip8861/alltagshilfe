@@ -76,13 +76,13 @@ const KOSTENFREI_SCHRITTE = [
 
 /** Wie Startseite „Ihre Vorteile bei uns“: gleiche Haken-Grafik und Raster. */
 const KOSTENFREI_USPS = [
-  "Von Pflegeprofis geprüfte und empfohlene Qualitätsartikel",
+  "Von Pflegekräften geprüfte und empfohlene Artikel",
   "Persönliche Erreichbarkeit und besonders schnelle Bearbeitung",
   "Direkter Kontakt ohne zeitraubende Warteschleifen am Telefon",
-  "Maximale Freiheit durch jederzeitige Kündbarkeit",
+  "Maximale Freiheit durch jederzeit kündbar",
   "Sorgenfreie Nutzung ohne feste Vertragslaufzeiten",
   "Volle Transparenz und höchster Schutz Ihrer Daten",
-  "Sorgfältige Konfektionierung und Versand direkt aus Deutschland",
+  "Sorgfältig verpackt und direkter Versand aus Deutschland",
   "Ehrliche Arbeitsbedingungen und faire Entlohnung",
 ] as const;
 
