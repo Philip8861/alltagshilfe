@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import Link from "next/link";
 import { siteConfig } from "@/config/site";
 import { PFLEGEBOX_KONFIGURATOR_PAGE } from "@/lib/pflegebox-konfigurator-path";
+import { RevealOnScroll } from "@/components/pflegehilfsmittel/RevealOnScroll";
 
 /** Einziges Hero-Bild dieser Seite (Datei unverändert aus /public/images). */
 const KOSTENFREI_HERO_IMG = "/images/kostenfreiepflegehilfsmittel.webp";
@@ -57,19 +58,19 @@ const KOSTENFREI_SCHRITTE = [
     step: "1",
     title: "Pflegebox konfigurieren",
     description:
-      "Im Pflegebox-Konfigurator wählen Sie in wenigen Klicks passende Produkte und Mengen für den Pflegealltag – übersichtlich und stets innerhalb Ihres monatlichen Budgets.",
+      "Im Pflegebox-Konfigurator wählen Sie in wenigen Klicks passende Produkte und Mengen für den Pflegealltag, übersichtlich und stets innerhalb Ihres monatlichen Budgets.",
   },
   {
     step: "2",
     title: "Daten eingeben & unterschreiben",
     description:
-      "In klaren, kurzen Schritten tragen Sie Ihre Daten ein und unterschreiben den Antrag digital – schnell und papierarm. Wenn Sie es lieber klassisch möchten, geht es auf Wunsch auch per Post.",
+      "In klaren, kurzen Schritten tragen Sie Ihre Daten ein und unterschreiben den Antrag digital, schnell und papierarm. Wenn Sie es lieber klassisch möchten, geht es auf Wunsch auch per Post.",
   },
   {
     step: "3",
-    title: "Zurücklehnen – wir erledigen den Rest",
+    title: "Zurücklehnen, wir erledigen den Rest",
     description:
-      "Wir bereiten alles für Ihre Pflegekasse vor und begleiten Sie durch die Formalitäten. Nach Freigabe erhalten Sie Ihre Lieferung zuverlässig nach Hause – ohne Stress mit Formularen.",
+      "Wir erledigen alle Formalitäten für Sie. Nach Freigabe erhalten Sie Ihre Lieferung zuverlässig nach Hause.",
   },
 ] as const;
 
@@ -353,7 +354,7 @@ export function KostenfreiePflegehilfsmittelLanding() {
                 <KonfiguratorGearIcon className="h-5 w-5" />
                 Pflegebox jetzt konfigurieren
               </KonfiguratorLink>
-              <p className="mt-3 min-w-0 text-center text-sm text-neutral-600 sm:text-left sm:whitespace-nowrap sm:overflow-x-auto sm:overflow-y-visible lg:text-[clamp(0.8rem,0.7rem+0.35vw,0.95rem)]">
+              <p className="mt-3 min-w-0 max-w-full text-pretty text-center text-sm leading-snug text-neutral-600 sm:text-left lg:text-[clamp(0.8rem,0.7rem+0.35vw,0.95rem)]">
                 Dauert nur 2 Minuten. Keine Vertragsbindung. Jederzeit kündbar.
               </p>
             </div>
@@ -368,7 +369,7 @@ export function KostenfreiePflegehilfsmittelLanding() {
                   {/* eslint-disable-next-line @next/next/no-img-element -- statische Asset-URL; Datei: kostenfreiepflegehilfsmittel.webp */}
                   <img
                     src={KOSTENFREI_HERO_IMG}
-                    alt="Kostenfreie Pflegehilfsmittel – Übersicht"
+                    alt="Kostenfreie Pflegehilfsmittel, Übersicht"
                     width={1162}
                     height={845}
                     decoding="async"
@@ -399,107 +400,128 @@ export function KostenfreiePflegehilfsmittelLanding() {
             />
           </svg>
           <div className="relative z-[1] mx-auto max-w-7xl">
-            <div className="mx-auto mb-10 max-w-3xl text-center lg:mb-12">
-              <h2
-                id="schritte-heading"
-                className="text-balance text-3xl font-bold tracking-tight text-[#0F4F68] sm:text-4xl"
-              >
-                In 3 einfachen Schritten zu Ihrer Lieferung
-              </h2>
-              <p className="mt-3 text-pretty text-sm text-[#8a6a55] sm:text-base">
-                Konfigurieren, digital unterschreiben – die Pflegekasse-Kommunikation übernehmen wir.
-              </p>
-            </div>
+            <RevealOnScroll>
+              <div className="mx-auto mb-10 max-w-3xl text-center lg:mb-12">
+                <h2
+                  id="schritte-heading"
+                  className="text-balance text-3xl font-bold tracking-tight text-[#0F4F68] sm:text-4xl"
+                >
+                  In 3 einfachen Schritten zu Ihrer Lieferung
+                </h2>
+                <p className="mt-3 text-pretty text-sm text-[#8a6a55] sm:text-base">
+                  Konfigurieren, digital unterschreiben, die Pflegekasse-Kommunikation übernehmen wir.
+                </p>
+              </div>
+            </RevealOnScroll>
 
             <ol className="grid gap-6 md:grid-cols-3 md:gap-8">
-              {KOSTENFREI_SCHRITTE.map((item) => (
+              {KOSTENFREI_SCHRITTE.map((item, i) => (
                 <li key={item.step} className="list-none">
-                  <div className="flex h-full flex-col rounded-2xl border border-[#0F4F68]/10 bg-white p-6 shadow-sm sm:p-7">
-                    <div className="mb-4 flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#0F4F68] text-lg font-bold text-white">
-                      {item.step}
+                  <RevealOnScroll delayMs={i * 150}>
+                    <div className="flex h-full flex-col rounded-2xl border border-[#0F4F68]/10 bg-white p-6 shadow-[0_10px_40px_rgba(15,79,104,0.07)] transition-shadow duration-300 hover:shadow-[0_16px_52px_rgba(15,79,104,0.11)] sm:p-7">
+                      <div className="mb-4 flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#0F4F68] text-lg font-bold text-white">
+                        {item.step}
+                      </div>
+                      <h3 className="text-lg font-bold text-[#0F4F68]">{item.title}</h3>
+                      <p className="mt-2 flex-1 text-pretty text-sm leading-relaxed text-neutral-600 sm:text-base">
+                        {item.description}
+                      </p>
                     </div>
-                    <h3 className="text-lg font-bold text-[#0F4F68]">{item.title}</h3>
-                    <p className="mt-2 flex-1 text-pretty text-sm leading-relaxed text-neutral-600 sm:text-base">
-                      {item.description}
-                    </p>
-                  </div>
+                  </RevealOnScroll>
                 </li>
               ))}
             </ol>
 
-            <div className="mt-10 flex flex-col items-center gap-2 sm:mt-12">
-              <KonfiguratorLink
-                className="inline-flex min-h-[48px] items-center justify-center rounded-xl bg-[#F78F2E] px-8 py-3.5 text-base font-bold text-white shadow-md transition hover:opacity-95 focus:outline-none focus:ring-2 focus:ring-[#F78F2E] focus:ring-offset-2 sm:text-lg"
-              >
-                Zur Pflegebox in 2 Minuten
-              </KonfiguratorLink>
-              <p className="text-center text-sm text-neutral-500">Unverbindlich · Keine Vertragsbindung</p>
-            </div>
+            <RevealOnScroll delayMs={200}>
+              <div className="mt-10 flex flex-col items-center gap-2 sm:mt-12">
+                <KonfiguratorLink
+                  className="inline-flex min-h-[48px] items-center justify-center rounded-xl bg-[#F78F2E] px-8 py-3.5 text-base font-bold text-white shadow-md transition hover:opacity-95 focus:outline-none focus:ring-2 focus:ring-[#F78F2E] focus:ring-offset-2 sm:text-lg"
+                >
+                  Zur Pflegebox in 2 Minuten
+                </KonfiguratorLink>
+                <p className="text-center text-sm text-neutral-500">Unverbindlich · Keine Vertragsbindung</p>
+              </div>
+            </RevealOnScroll>
           </div>
         </section>
 
         <section
-          className="relative z-20 w-full bg-white px-4 py-14 sm:px-6 sm:py-16 lg:px-[var(--ahs-page-gutter)]"
+          className="relative z-20 w-full overflow-x-clip bg-white px-4 pb-14 pt-[clamp(4.25rem,9vw,6.25rem)] sm:px-6 sm:pb-16 sm:pt-[clamp(4.75rem,10vw,6.75rem)] lg:px-[var(--ahs-page-gutter)] lg:pb-20"
           aria-labelledby="kostenfrei-vorteile-heading"
         >
-          <div className="mx-auto w-full max-w-6xl">
-            <h2
-              id="kostenfrei-vorteile-heading"
-              className="text-3xl font-bold tracking-tight text-[#0F4F68] sm:text-4xl"
-            >
-              Ihre Vorteile bei uns
-            </h2>
-            <p className="mt-2 max-w-3xl text-sm text-neutral-600 sm:text-base">
-              Verlässlich, transparent und nah bei Ihnen – mit klaren Prozessen und echter Unterstützung rund um Ihre
-              Pflegehilfsmittel.
-            </p>
-            <ul className="mt-6 grid gap-4 sm:grid-cols-2">
-              {KOSTENFREI_USPS.map((item) => (
-                <li
-                  key={item}
-                  className="flex items-start gap-3 rounded-xl px-2 py-1.5 transition-all duration-300 hover:bg-[#fafbfc] hover:shadow-[0_0_20px_rgba(15,79,104,0.12)]"
-                >
-                  {/* eslint-disable-next-line @next/next/no-img-element -- wie Startseite: statisches Haken-Asset */}
-                  <img
-                    src="/images/haken.webp"
-                    alt=""
-                    aria-hidden
-                    width={38}
-                    height={38}
-                    className="mt-0.5 h-[38px] w-[38px] shrink-0 object-contain"
-                  />
-                  <span className="text-[1.03rem] font-medium leading-relaxed text-neutral-800 sm:text-[1.08rem]">
-                    {item}
-                  </span>
-                </li>
-              ))}
-            </ul>
-          </div>
+          <svg
+            className="pointer-events-none absolute left-0 top-0 z-0 h-[clamp(2.5rem,1.5rem+3.8vw,5rem)] w-full -translate-y-[clamp(0.9rem,0.35rem+2.1vw,3.2rem)]"
+            viewBox="0 0 1200 100"
+            preserveAspectRatio="none"
+            fill="none"
+            aria-hidden
+          >
+            <path
+              d="M0,100 C140,38 300,8 460,36 C620,65 760,95 900,72 C980,58 1080,28 1200,18 L1200,100 L0,100 Z"
+              fill="#ffffff"
+            />
+          </svg>
+          <RevealOnScroll>
+            <div className="relative z-[1] mx-auto w-full max-w-6xl">
+              <h2
+                id="kostenfrei-vorteile-heading"
+                className="text-3xl font-bold tracking-tight text-[#0F4F68] sm:text-4xl"
+              >
+                Ihre Vorteile bei uns
+              </h2>
+              <p className="mt-2 max-w-3xl text-sm text-neutral-600 sm:text-base">
+                Verlässlich, transparent und nah bei Ihnen, mit klaren Prozessen und echter Unterstützung rund um Ihre
+                Pflegehilfsmittel.
+              </p>
+              <ul className="mt-6 grid gap-4 sm:grid-cols-2">
+                {KOSTENFREI_USPS.map((item) => (
+                  <li
+                    key={item}
+                    className="flex items-start gap-3 rounded-xl px-2 py-1.5 transition-all duration-300 hover:bg-[#fafbfc] hover:shadow-[0_0_20px_rgba(15,79,104,0.12)]"
+                  >
+                    {/* eslint-disable-next-line @next/next/no-img-element -- wie Startseite: statisches Haken-Asset */}
+                    <img
+                      src="/images/haken.webp"
+                      alt=""
+                      aria-hidden
+                      width={38}
+                      height={38}
+                      className="mt-0.5 h-[38px] w-[38px] shrink-0 object-contain"
+                    />
+                    <span className="text-[1.03rem] font-medium leading-relaxed text-neutral-800 sm:text-[1.08rem]">
+                      {item}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </RevealOnScroll>
         </section>
 
         <section className="bg-[#F2F9FA] py-16" aria-labelledby="pakete-heading">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-[var(--ahs-page-gutter)]">
-            <div className="mb-10 text-center">
-              <h2 id="pakete-heading" className="text-3xl font-bold text-[#0F4F68] sm:text-4xl">
-                Was ist in den Pflegepaketen enthalten?
-              </h2>
-              <p className="mt-2 text-sm text-[#8a6a55] sm:text-base">
-                Qualität für den Pflegealltag
-              </p>
-              <p className="mt-3 text-neutral-600">
-                Qualitätsprodukte, die den Pflegealltag spürbar erleichtern (gemäß gesetzlicher Grundlage, SGB XI).
-              </p>
-            </div>
-            <ul className="grid grid-cols-2 gap-4 text-center md:grid-cols-4">
-              {paketItems.map((label) => (
-                <li
-                  key={label}
-                  className="rounded-xl border border-[#0F4F68]/10 bg-white p-4 text-sm font-semibold text-[#0F4F68] shadow-sm sm:text-base"
-                >
-                  {label}
-                </li>
-              ))}
-            </ul>
+            <RevealOnScroll>
+              <div className="mb-10 text-center">
+                <h2 id="pakete-heading" className="text-3xl font-bold text-[#0F4F68] sm:text-4xl">
+                  Was ist in den Pflegepaketen enthalten?
+                </h2>
+                <p className="mt-3 text-neutral-600">
+                  Qualitätsprodukte, die den Pflegealltag spürbar erleichtern (gemäß gesetzlicher Grundlage, SGB XI).
+                </p>
+              </div>
+            </RevealOnScroll>
+            <RevealOnScroll delayMs={120}>
+              <ul className="grid grid-cols-2 gap-4 text-center md:grid-cols-4">
+                {paketItems.map((label) => (
+                  <li
+                    key={label}
+                    className="rounded-xl border border-[#0F4F68]/10 bg-white p-4 text-sm font-semibold text-[#0F4F68] shadow-sm sm:text-base"
+                  >
+                    {label}
+                  </li>
+                ))}
+              </ul>
+            </RevealOnScroll>
           </div>
         </section>
 
@@ -516,38 +538,42 @@ export function KostenfreiePflegehilfsmittelLanding() {
             aria-hidden
           />
           <div className="relative z-[1] mx-auto max-w-3xl px-4 sm:px-6 lg:max-w-4xl">
-            <h2
-              id="kostenfrei-faq-heading"
-              className="text-center text-2xl font-extrabold tracking-tight text-[#0F4F68] sm:text-3xl"
-            >
-              Häufige Fragen
-            </h2>
-            <p className="mx-auto mt-2 max-w-2xl text-center text-sm font-medium text-[#0F4F68]/85 sm:text-base">
-              Alles zur 42&nbsp;€ Pauschale für Pflegehilfsmittel
-            </p>
-            <div className="mt-8 space-y-3 sm:mt-10">
-              {KOSTENFREI_FAQ.map((item) => (
-                <details
-                  key={item.q}
-                  className="group rounded-2xl border border-[#0F4F68]/12 bg-white/95 shadow-[0_2px_16px_rgba(15,79,104,0.06)] backdrop-blur-sm transition hover:border-[#F78F2E]/35 hover:shadow-[0_8px_28px_rgba(15,79,104,0.1)] open:border-[#0F4F68]/18 open:shadow-[0_10px_32px_rgba(15,79,104,0.12)]"
-                >
-                  <summary className="flex cursor-pointer list-none items-center justify-between gap-4 px-4 py-4 text-left text-[#0F4F68] sm:px-5 [&::-webkit-details-marker]:hidden">
-                    <span className="text-base font-semibold leading-snug sm:text-[1.05rem]">{item.q}</span>
-                    <span
-                      className="inline-flex shrink-0 rounded-full bg-[#F78F2E]/12 p-1.5 text-[#F78F2E] transition-transform duration-200 group-open:rotate-180"
-                      aria-hidden
-                    >
-                      <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-                      </svg>
-                    </span>
-                  </summary>
-                  <div className="border-t border-[#0F4F68]/8 px-4 pb-4 pt-2 text-pretty text-sm leading-relaxed text-neutral-600 sm:px-5 sm:text-base">
-                    {item.answer}
-                  </div>
-                </details>
-              ))}
-            </div>
+            <RevealOnScroll>
+              <h2
+                id="kostenfrei-faq-heading"
+                className="text-center text-2xl font-extrabold tracking-tight text-[#0F4F68] sm:text-3xl"
+              >
+                Häufige Fragen
+              </h2>
+              <p className="mx-auto mt-2 max-w-2xl text-center text-sm font-medium text-[#0F4F68]/85 sm:text-base">
+                Alles zur 42&nbsp;€ Pauschale für Pflegehilfsmittel
+              </p>
+            </RevealOnScroll>
+            <RevealOnScroll delayMs={100}>
+              <div className="mt-8 space-y-3 sm:mt-10">
+                {KOSTENFREI_FAQ.map((item) => (
+                  <details
+                    key={item.q}
+                    className="group rounded-2xl border border-[#0F4F68]/12 bg-white/95 shadow-[0_2px_16px_rgba(15,79,104,0.06)] backdrop-blur-sm transition hover:border-[#F78F2E]/35 hover:shadow-[0_8px_28px_rgba(15,79,104,0.1)] open:border-[#0F4F68]/18 open:shadow-[0_10px_32px_rgba(15,79,104,0.12)]"
+                  >
+                    <summary className="flex cursor-pointer list-none items-center justify-between gap-4 px-4 py-4 text-left text-[#0F4F68] sm:px-5 [&::-webkit-details-marker]:hidden">
+                      <span className="text-base font-semibold leading-snug sm:text-[1.05rem]">{item.q}</span>
+                      <span
+                        className="inline-flex shrink-0 rounded-full bg-[#F78F2E]/12 p-1.5 text-[#F78F2E] transition-transform duration-200 group-open:rotate-180"
+                        aria-hidden
+                      >
+                        <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                        </svg>
+                      </span>
+                    </summary>
+                    <div className="border-t border-[#0F4F68]/8 px-4 pb-4 pt-2 text-pretty text-sm leading-relaxed text-neutral-600 sm:px-5 sm:text-base">
+                      {item.answer}
+                    </div>
+                  </details>
+                ))}
+              </div>
+            </RevealOnScroll>
           </div>
           <script
             type="application/ld+json"
@@ -559,21 +585,23 @@ export function KostenfreiePflegehilfsmittelLanding() {
           className="border-t border-[#0F4F68]/10 bg-white py-12"
           aria-label="Abschluss"
         >
-          <div className="mx-auto max-w-3xl px-4 text-center sm:px-6">
-            <p className="text-neutral-600">
-              {siteConfig.name} unterstützt Sie bei der Beantragung und Abrechnung mit Ihrer Pflegekasse. Bei Fragen
-              erreichen Sie uns über unsere{" "}
-              <Link href="/kontakt" className="font-semibold text-[#0F4F68] underline-offset-2 hover:underline">
-                Kontaktseite
-              </Link>
-              .
-            </p>
-            <KonfiguratorLink
-              className="mt-6 inline-flex rounded-lg bg-[#F78F2E] px-8 py-3 text-base font-bold text-white shadow-md transition hover:opacity-95 focus:outline-none focus:ring-2 focus:ring-[#F78F2E] focus:ring-offset-2"
-            >
-              Jetzt konfigurieren
-            </KonfiguratorLink>
-          </div>
+          <RevealOnScroll>
+            <div className="mx-auto max-w-3xl px-4 text-center sm:px-6">
+              <p className="text-neutral-600">
+                {siteConfig.name} unterstützt Sie bei der Beantragung und Abrechnung mit Ihrer Pflegekasse. Bei Fragen
+                erreichen Sie uns über unsere{" "}
+                <Link href="/kontakt" className="font-semibold text-[#0F4F68] underline-offset-2 hover:underline">
+                  Kontaktseite
+                </Link>
+                .
+              </p>
+              <KonfiguratorLink
+                className="mt-6 inline-flex rounded-lg bg-[#F78F2E] px-8 py-3 text-base font-bold text-white shadow-md transition hover:opacity-95 focus:outline-none focus:ring-2 focus:ring-[#F78F2E] focus:ring-offset-2"
+              >
+                Jetzt konfigurieren
+              </KonfiguratorLink>
+            </div>
+          </RevealOnScroll>
         </section>
       </article>
     </div>
