@@ -16,6 +16,10 @@ const SECTION_TITLE_CLASS = "text-3xl font-extrabold tracking-tight text-[#0F4F6
 const HERO_IMG_BASE =
   "block h-auto w-full max-w-full object-contain [filter:drop-shadow(8px_12px_20px_rgba(15,79,104,0.18))_drop-shadow(6px_6px_14px_rgba(15,79,104,0.1))] [will-change:filter]";
 
+/** Einblendung mit motion-reduce: aus (Barrierefreiheit) */
+const ANIM_IN = "opacity-0 animate-fade-in-up motion-reduce:opacity-100 motion-reduce:animate-none";
+const ANIM_RISE = "animate-fade-in-rise motion-reduce:animate-none";
+
 export const metadata: Metadata = {
   title: "Private Pflegeberatung nach Paragraf 37 Absatz 3 SGB XI",
   description:
@@ -66,7 +70,7 @@ export default function PrivatePflegeberatungPage() {
       <header className="overflow-visible bg-white">
         <div className="mx-auto max-w-7xl overflow-visible px-4 py-12 sm:px-6 sm:py-16 lg:px-[var(--ahs-page-gutter)] lg:py-20">
           <div className="flex w-full flex-col items-center gap-10 overflow-visible lg:flex-row lg:justify-center lg:items-start lg:gap-x-8 lg:gap-y-8 xl:gap-x-12">
-            <div className="flex w-full min-w-0 shrink-0 justify-center overflow-visible sm:max-w-[min(100%,35.91rem)] lg:w-auto lg:max-w-[min(100%,35.91rem)] lg:justify-start xl:max-w-[min(100%,41.44rem)]">
+            <div className="flex w-full min-w-0 shrink-0 justify-center overflow-visible sm:max-w-[min(100%,37.71rem)] lg:w-auto lg:max-w-[min(100%,37.71rem)] lg:justify-start xl:max-w-[min(100%,43.51rem)]">
               <div className="box-content w-full max-w-full overflow-visible py-6 px-2 sm:px-4 sm:py-8 lg:py-6 lg:pl-0 lg:pr-6">
                 {/* eslint-disable-next-line @next/next/no-img-element -- natives img vermeidet Next/Image-Wrapper (overflow) */}
                 <img
@@ -76,21 +80,28 @@ export default function PrivatePflegeberatungPage() {
                   height={900}
                   decoding="async"
                   fetchPriority="high"
-                  className={`${HERO_IMG_BASE} mx-auto h-auto w-full max-w-full object-contain object-center lg:mx-0 lg:object-left`}
+                  className={`${HERO_IMG_BASE} ${ANIM_RISE} mx-auto h-auto w-full max-w-full object-contain object-center lg:mx-0 lg:object-left`}
+                  style={{ animationDelay: "40ms" }}
                 />
               </div>
             </div>
 
             <div className="w-full min-w-0 shrink-0 overflow-visible pt-0 text-left sm:max-w-xl lg:w-auto lg:max-w-[min(100%,28rem)] lg:pt-[3cm] xl:max-w-[30rem]">
               <div className="min-w-0 max-w-full overflow-x-auto [-ms-overflow-style:none] [scrollbar-width:thin] lg:overflow-x-visible">
-                <h1 className="whitespace-nowrap text-[clamp(0.8125rem,0.65vw+0.55rem,2.5rem)] font-extrabold leading-tight tracking-tight text-[#0F4F68] sm:text-[clamp(0.875rem,0.85vw+0.5rem,2.5rem)] lg:text-[clamp(1.35rem,0.55rem+1.25vw,2.5rem)] lg:leading-[1.12]">
+                <h1
+                  className={`${ANIM_IN} whitespace-nowrap text-[clamp(0.8125rem,0.65vw+0.55rem,2.5rem)] font-extrabold leading-tight tracking-tight text-[#0F4F68] sm:text-[clamp(0.875rem,0.85vw+0.5rem,2.5rem)] lg:text-[clamp(1.35rem,0.55rem+1.25vw,2.5rem)] lg:leading-[1.12]`}
+                  style={{ animationDelay: "110ms" }}
+                >
                   Pflegeberatung nach Paragraf 37 Absatz 3 SGB XI
                 </h1>
               </div>
-              <p className="mt-5 w-full max-w-none text-pretty text-lg font-medium leading-normal text-[#0F4F68] sm:text-xl md:text-2xl md:leading-snug">
+              <p
+                className={`${ANIM_IN} mt-5 w-full max-w-none text-pretty text-lg font-medium leading-normal text-[#0F4F68] sm:text-xl md:text-2xl md:leading-snug`}
+                style={{ animationDelay: "190ms" }}
+              >
                 Gute Pflege beginnt mit einer guten Pflegeberatung.
               </p>
-              <div className="mt-8">
+              <div className={`${ANIM_IN} mt-8`} style={{ animationDelay: "270ms" }}>
                 <Link
                   href="/kontakt"
                   className="inline-flex min-h-[52px] items-center justify-center rounded-xl bg-[#F78F2E] px-7 py-3.5 text-[1.09375rem] font-semibold text-white hover:opacity-95 focus:outline-none focus:ring-2 focus:ring-[#F78F2E] focus:ring-offset-2 sm:min-h-14 sm:px-8 sm:py-4 sm:text-lg"
@@ -109,10 +120,10 @@ export default function PrivatePflegeberatungPage() {
       >
         <WelleObenF2F9FA />
         <div className="relative mx-auto w-full max-w-6xl">
-          <h2 id="versprechen-heading" className={HEADING_CLASS}>
+          <h2 id="versprechen-heading" className={`${HEADING_CLASS} ${ANIM_IN}`} style={{ animationDelay: "0ms" }}>
             Unser Versprechen an Sie
           </h2>
-          <p className={`mt-6 max-w-3xl ${INTRO_BODY_CLASS}`}>
+          <p className={`${ANIM_IN} mt-6 max-w-3xl ${INTRO_BODY_CLASS}`} style={{ animationDelay: "90ms" }}>
             Die Qualität unserer Pflegeberatung liegt uns besonders am Herzen. Sehr viele pflegende Angehörige wissen nicht
             genau, welche gesetzlichen Leistungen ihnen eigentlich zustehen. Oftmals wird man im Internet falsch oder
             unzureichend informiert. Wir machen das anders: Wir nehmen uns die nötige Zeit für Sie. Unser Ziel ist es, Sie
@@ -126,14 +137,17 @@ export default function PrivatePflegeberatungPage() {
         aria-labelledby="pg-table-heading"
       >
         <div className="relative mx-auto w-full max-w-4xl">
-          <h2 id="pg-table-heading" className={SECTION_TITLE_CLASS}>
+          <h2 id="pg-table-heading" className={`${SECTION_TITLE_CLASS} ${ANIM_IN}`} style={{ animationDelay: "0ms" }}>
             Pflegegrad 1–5: Wann Beratung Pflicht ist – und wann nicht
           </h2>
-          <p className="mt-3 max-w-3xl text-sm leading-relaxed text-neutral-600 sm:text-base">
+          <p
+            className={`${ANIM_IN} mt-3 max-w-3xl text-sm leading-relaxed text-neutral-600 sm:text-base`}
+            style={{ animationDelay: "80ms" }}
+          >
             Die gesetzlichen Regelungen nach Paragraf 37 Absatz 3 SGB XI sind eindeutig. Die Kosten trägt in diesen Fällen
             Ihre Pflegekasse.
           </p>
-          <div className="mt-8">
+          <div className={`${ANIM_IN} mt-8`} style={{ animationDelay: "160ms" }}>
             <PflegegradBeratungTable captionSrOnly />
           </div>
         </div>
@@ -145,17 +159,21 @@ export default function PrivatePflegeberatungPage() {
       >
         <WelleObenF2F9FA />
         <div className="relative mx-auto w-full max-w-6xl">
-          <h2 id="vorteile-heading" className={SECTION_TITLE_CLASS}>
+          <h2 id="vorteile-heading" className={`${SECTION_TITLE_CLASS} ${ANIM_IN}`} style={{ animationDelay: "0ms" }}>
             Unsere Vorteile
           </h2>
-          <p className="mt-2 max-w-3xl text-sm text-neutral-600 sm:text-base">
+          <p
+            className={`${ANIM_IN} mt-2 max-w-3xl text-sm text-neutral-600 sm:text-base`}
+            style={{ animationDelay: "70ms" }}
+          >
             Verlässlich, transparent und nah bei Ihnen – mit klaren Prozessen und echter Unterstützung im Alltag.
           </p>
           <ul className="mt-6 grid gap-4 sm:grid-cols-2">
-            {VORTEILE.map((text) => (
+            {VORTEILE.map((text, i) => (
               <li
                 key={text}
-                className="flex items-start gap-3 rounded-xl px-2 py-1.5 transition-all duration-300 hover:bg-[#F2F9FA]/80 hover:shadow-[0_0_20px_rgba(15,79,104,0.12)]"
+                className={`${ANIM_IN} flex items-start gap-3 rounded-xl px-2 py-1.5 transition-all duration-300 hover:bg-[#F2F9FA]/80 hover:shadow-[0_0_20px_rgba(15,79,104,0.12)]`}
+                style={{ animationDelay: `${120 + i * 55}ms` }}
               >
                 <Image
                   src="/images/haken.webp"
@@ -209,18 +227,23 @@ export default function PrivatePflegeberatungPage() {
         <div className="relative z-[1] mx-auto max-w-3xl px-4 sm:px-6 lg:max-w-4xl">
           <h2
             id="faq-heading"
-            className="text-center text-2xl font-extrabold tracking-tight text-[#0F4F68] sm:text-3xl"
+            className={`${ANIM_IN} text-center text-2xl font-extrabold tracking-tight text-[#0F4F68] sm:text-3xl`}
+            style={{ animationDelay: "0ms" }}
           >
             Häufig gestellte Fragen rund um die Pflegeberatung
           </h2>
-          <p className="mx-auto mt-2 max-w-2xl text-center text-sm font-medium text-[#0F4F68]/85 sm:text-base">
+          <p
+            className={`${ANIM_IN} mx-auto mt-2 max-w-2xl text-center text-sm font-medium text-[#0F4F68]/85 sm:text-base`}
+            style={{ animationDelay: "80ms" }}
+          >
             Antworten zu Ablauf, Kosten, Terminen und Leistungen
           </p>
           <div className="mt-8 space-y-3 sm:mt-10">
-            {PRIVATE_PFLEGEBERATUNG_FAQ.map((item) => (
+            {PRIVATE_PFLEGEBERATUNG_FAQ.map((item, i) => (
               <details
                 key={item.question}
-                className="group rounded-2xl border border-[#0F4F68]/12 bg-white/95 shadow-[0_2px_16px_rgba(15,79,104,0.06)] backdrop-blur-sm transition hover:border-[#F78F2E]/35 hover:shadow-[0_8px_28px_rgba(15,79,104,0.1)] open:border-[#0F4F68]/18 open:shadow-[0_10px_32px_rgba(15,79,104,0.12)]"
+                className={`${ANIM_IN} group rounded-2xl border border-[#0F4F68]/12 bg-white/95 shadow-[0_2px_16px_rgba(15,79,104,0.06)] backdrop-blur-sm transition hover:border-[#F78F2E]/35 hover:shadow-[0_8px_28px_rgba(15,79,104,0.1)] open:border-[#0F4F68]/18 open:shadow-[0_10px_32px_rgba(15,79,104,0.12)]`}
+                style={{ animationDelay: `${140 + i * 45}ms` }}
               >
                 <summary className="flex cursor-pointer list-none items-center justify-between gap-4 px-4 py-4 text-left text-[#0F4F68] sm:px-5 [&::-webkit-details-marker]:hidden">
                   <span className="text-base font-semibold leading-snug sm:text-[1.05rem]">{item.question}</span>
@@ -239,7 +262,10 @@ export default function PrivatePflegeberatungPage() {
               </details>
             ))}
           </div>
-          <p className="mx-auto mt-10 max-w-2xl text-center text-sm text-neutral-600">
+          <p
+            className={`${ANIM_IN} mx-auto mt-10 max-w-2xl text-center text-sm text-neutral-600`}
+            style={{ animationDelay: `${200 + PRIVATE_PFLEGEBERATUNG_FAQ.length * 45}ms` }}
+          >
             Weitere Fragen? Wir sind für Sie da:{" "}
             <Link href="/kontakt" className="font-semibold text-[#0F4F68] underline underline-offset-2 hover:text-[#F78F2E]">
               Kontakt zu {siteConfig.name}

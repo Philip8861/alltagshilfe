@@ -37,9 +37,14 @@ const config: Config = {
           "70%": { transform: "scale(1.06) rotate(3deg)" },
           "100%": { opacity: "1", transform: "scale(1) rotate(0deg)" },
         },
+        "fade-in-rise": {
+          "0%": { transform: "translateY(14px)" },
+          "100%": { transform: "translateY(0)" },
+        },
       },
       animation: {
         "fade-in-up": "fade-in-up 0.6s ease-out forwards",
+        "fade-in-rise": "fade-in-rise 0.65s cubic-bezier(0.22, 1, 0.36, 1) forwards",
         "partner-bar-fill": "partner-bar-fill 0.85s cubic-bezier(0.22, 1, 0.36, 1) both",
         "partner-col-enter": "partner-col-enter 0.55s cubic-bezier(0.22, 1, 0.36, 1) both",
         "partner-soft-float": "partner-soft-float 4s ease-in-out infinite",
