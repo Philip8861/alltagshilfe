@@ -12,8 +12,9 @@ const PAGE_PATH = "/pflegeberatung/private-pflegeberatung";
 const HEADING_CLASS = "text-3xl font-bold text-[#0F4F68] sm:text-4xl w-full max-w-lg self-start";
 const INTRO_BODY_CLASS = "text-lg text-neutral-700 leading-relaxed sm:text-xl";
 const SECTION_TITLE_CLASS = "text-3xl font-extrabold tracking-tight text-[#0F4F68] sm:text-4xl";
+/* Positiver X-Offset: Schatten weniger nach links (sonst bei html overflow-x:clip am linken Rand abgeschnitten) */
 const HERO_IMG_BASE =
-  "block h-auto w-full max-w-full object-contain [filter:drop-shadow(0_10px_22px_rgba(15,79,104,0.2))_drop-shadow(0_4px_12px_rgba(15,79,104,0.12))] [will-change:filter]";
+  "block h-auto w-full max-w-full object-contain [filter:drop-shadow(8px_12px_20px_rgba(15,79,104,0.18))_drop-shadow(6px_6px_14px_rgba(15,79,104,0.1))] [will-change:filter]";
 
 export const metadata: Metadata = {
   title: "Private Pflegeberatung nach Paragraf 37 Absatz 3 SGB XI",
@@ -64,9 +65,9 @@ export default function PrivatePflegeberatungPage() {
 
       <header className="overflow-visible bg-white">
         <div className="mx-auto max-w-7xl overflow-visible px-4 py-12 sm:px-6 sm:py-16 lg:px-[var(--ahs-page-gutter)] lg:py-20">
-          <div className="flex flex-col gap-10 overflow-visible lg:flex-row lg:items-start lg:gap-x-12 lg:gap-y-8 xl:gap-x-16">
-            <div className="flex w-full min-w-0 justify-center overflow-visible lg:max-w-[min(100%,26rem)] lg:shrink-0 lg:justify-start">
-              <div className="box-content w-full overflow-visible px-5 py-10 sm:px-8 sm:py-12">
+          <div className="flex flex-col gap-10 overflow-visible lg:flex-row lg:items-start lg:gap-x-10 lg:gap-y-8 xl:gap-x-14">
+            <div className="flex w-full min-w-0 flex-col items-center justify-center overflow-visible lg:max-w-[min(100%,28rem)] lg:shrink-0">
+              <div className="box-content w-full max-w-full overflow-visible px-6 py-8 sm:px-10 sm:py-10 lg:px-8 lg:py-6">
                 {/* eslint-disable-next-line @next/next/no-img-element -- natives img vermeidet Next/Image-Wrapper (overflow) */}
                 <img
                   src="/images/private_pflegeberatung.webp"
@@ -75,7 +76,7 @@ export default function PrivatePflegeberatungPage() {
                   height={960}
                   decoding="async"
                   fetchPriority="high"
-                  className={`${HERO_IMG_BASE} mx-auto h-auto w-full max-w-[min(100%,22rem)] object-contain object-center sm:max-w-[min(100%,26rem)] lg:mx-0 lg:max-w-[min(100%,24rem)] lg:object-left`}
+                  className={`${HERO_IMG_BASE} mx-auto h-auto w-full max-w-[min(100%,24rem)] object-contain object-center sm:max-w-[min(100%,28rem)] lg:max-w-[min(100%,26rem)]`}
                 />
               </div>
             </div>

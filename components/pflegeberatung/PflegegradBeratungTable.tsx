@@ -90,11 +90,6 @@ export function PflegegradBeratungTable({ captionSrOnly = false }: PflegegradBer
           </tbody>
         </table>
       </div>
-      <p className="mt-3 text-xs leading-relaxed text-neutral-600 sm:text-sm">
-        Gilt bei <strong className="font-semibold text-[#0F4F68]">Pflegegeld</strong> und Pflege{" "}
-        <strong className="font-semibold text-[#0F4F68]">zu Hause durch Angehörige</strong>. Die Pflegekasse übernimmt die
-        Kosten.
-      </p>
     </div>
   );
 }
