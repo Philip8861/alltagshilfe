@@ -8,9 +8,9 @@ import { StandortWechselBild } from "@/components/standorte/StandortWechselBild"
 const HERO_INTRO = {
   brand: "Alltagshilfe-Süd",
   taglineLines: [
-    "Mehr Unterstützung.",
-    "Mehr Entlastung.",
-    "Mehr Zeit fürs Wesentliche.",
+    "Kostenübernahme ab Pflegegrad 1 möglich",
+    "Zugelassen bei allen Krankenkassen",
+    "Freie Kapazitäten, kurze Wartezeit",
   ],
   partnerLine:
     "Ihr verlässlicher Partner für Haushaltshilfe, Betreuung, Pflegeberatung und Pflegehilfsmittel.",
@@ -103,7 +103,8 @@ export default function HomePage() {
       className="flex min-h-[60vh] w-full max-w-[100vw] flex-col overflow-x-clip pt-0 pb-0"
       style={{ backgroundColor: "#fafbfc" }}
     >
-      <div className="mx-auto flex min-h-0 min-w-0 w-[calc(100%/1.1)] max-w-[calc(100%/1.1)] flex-1 flex-col origin-top scale-110 motion-reduce:w-full motion-reduce:max-w-none motion-reduce:scale-100">
+      {/* Gesamte Startseite visuell ~10 % kleiner; origin-top = oben ausrichten, horizontal zentriert → Seitenränder bleiben symmetrisch */}
+      <div className="mx-auto flex min-h-0 min-w-0 w-full max-w-full flex-1 flex-col origin-top scale-90 motion-reduce:scale-100">
         <section className="box-border w-full pt-0 pb-6 sm:pb-8 lg:pb-[clamp(1.5rem,2vw+0.75rem,2.5rem)]">
           <div className="box-border mx-auto w-full min-w-0 max-w-7xl px-4 sm:px-6 lg:px-[var(--ahs-page-gutter)]">
             {/* Oberer Bereich: Bild rechts, Überschrift + drei Punkte links, etwas oberhalb der Bildmitte (Desktop) */}
