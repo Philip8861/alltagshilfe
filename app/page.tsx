@@ -103,70 +103,75 @@ export default function HomePage() {
       className="flex min-h-[60vh] w-full max-w-[100vw] flex-col overflow-x-clip pt-0 pb-0"
       style={{ backgroundColor: "#fafbfc" }}
     >
-      {/* Gesamte Startseite visuell ~10 % kleiner; origin-top = oben ausrichten, horizontal zentriert → Seitenränder bleiben symmetrisch */}
-      <div className="mx-auto flex min-h-0 min-w-0 w-full max-w-full flex-1 flex-col origin-top scale-90 motion-reduce:scale-100">
-        <section className="box-border w-full pt-0 pb-6 sm:pb-8 lg:pb-[clamp(1.5rem,2vw+0.75rem,2.5rem)]">
-          <div className="box-border mx-auto w-full min-w-0 max-w-7xl px-4 sm:px-6 lg:px-[var(--ahs-page-gutter)]">
-            {/* Oberer Bereich: Bild rechts, Überschrift + drei Punkte links, etwas oberhalb der Bildmitte (Desktop) */}
-            <div className="relative min-w-0">
-              <div className="flex min-w-0 justify-end">
-                <div
-                  className="relative ml-auto w-full min-w-0 max-w-[min(88vw,100%)] opacity-0 animate-fade-in-up motion-reduce:opacity-100 lg:max-w-[min(88vw,min(100%,52rem))] lg:mr-[calc((100vw-100%)/-2)]"
-                  style={{ animationDelay: "0.08s" }}
-                >
-                  <div className="w-full">
-                    {/* Hero: unoptimized — Next/Image-Wrapper würde die feste horizontale Einordnung verschieben. */}
-                    <Image
-                      src="/images/startseite_front.webp"
-                      alt="Gemeinsam zur passenden Unterstützung im Alltag"
-                      width={900}
-                      height={700}
-                      sizes="(max-width: 1023px) 100vw, (max-width: 1400px) 88vw, 900px"
-                      className="box-border block h-auto w-full max-w-full object-contain object-right [filter:drop-shadow(0_10px_22px_rgba(15,79,104,0.2))_drop-shadow(0_4px_12px_rgba(15,79,104,0.12))] [will-change:filter]"
-                      priority
-                      unoptimized
-                    />
-                  </div>
-                </div>
-              </div>
-
+      {/* Hero ohne Skalierung: startseite_front-Breakout (lg:mr calc) bezieht sich auf den Viewport-Rand, nicht auf scale-90 */}
+      <section className="box-border w-full pt-0 pb-6 sm:pb-8 lg:pb-[clamp(1.5rem,2vw+0.75rem,2.5rem)]">
+        <div className="box-border mx-auto w-full min-w-0 max-w-7xl px-4 sm:px-6 lg:px-[var(--ahs-page-gutter)]">
+          {/* Oberer Bereich: Bild rechts bis an den Viewport-Rand, Text links (Desktop) */}
+          <div className="relative min-w-0">
+            <div className="flex min-w-0 justify-end">
               <div
-                className="relative z-10 mt-8 max-w-lg text-left sm:max-w-xl lg:absolute lg:left-0 lg:right-auto lg:top-[clamp(34%,calc(33%+0.35vw),40%)] lg:mt-0 lg:w-full lg:max-w-none lg:-translate-y-1/2 lg:-translate-x-[5%]"
+                className="relative ml-auto w-full min-w-0 max-w-[min(88vw,100%)] opacity-0 animate-fade-in-up motion-reduce:opacity-100 lg:max-w-[min(88vw,min(100%,52rem))] lg:mr-[calc((100vw-100%)/-2)]"
+                style={{ animationDelay: "0.08s" }}
               >
-                <header className="text-left lg:max-w-[min(42vw,clamp(22rem,32vw+8rem,30rem))] xl:max-w-[min(38vw,clamp(23rem,28vw+9rem,31rem))] 2xl:max-w-[min(34vw,clamp(24rem,26vw+10rem,32rem))]">
-                  <h1
-                    className="text-balance text-3xl font-extrabold leading-tight tracking-tight text-[#0F4F68] opacity-0 motion-reduce:opacity-100 animate-fade-in-up sm:text-4xl lg:text-[clamp(2rem,1.05rem+2.6vw,3rem)]"
-                    style={{ animationDelay: "0s" }}
-                  >
-                    {HERO_INTRO.brand}
-                  </h1>
-                  <ul
-                    className="mt-5 space-y-3 sm:mt-6 sm:space-y-3.5 lg:space-y-[clamp(0.65rem,0.35rem+0.9vw,1rem)]"
-                    aria-label="Ihre Vorteile auf einen Blick"
-                  >
-                    {HERO_INTRO.taglineLines.map((line, i) => (
-                      <li
-                        key={line}
-                        className="flex items-center gap-3 text-pretty text-lg font-semibold leading-snug text-[#0F4F68] opacity-0 motion-reduce:opacity-100 animate-fade-in-up sm:text-xl lg:text-[clamp(1.05rem,0.82rem+0.5vw,1.35rem)]"
-                        style={{
-                          animationDelay: `${0.68 + i * 0.26}s`,
-                        }}
-                      >
-                        <HeroCheckIcon />
-                        <span>{line}</span>
-                      </li>
-                    ))}
-                  </ul>
-                  <p
-                    className="mt-5 max-w-prose text-pretty text-lg font-normal leading-relaxed text-neutral-600 opacity-0 motion-reduce:opacity-100 animate-fade-in-up sm:mt-6 sm:text-xl lg:text-[clamp(1.05rem,0.85rem+0.42vw,1.3rem)]"
-                    style={{ animationDelay: "1.22s" }}
-                  >
-                    {HERO_INTRO.partnerLine}
-                  </p>
-                </header>
+                <div className="w-full">
+                  {/* Hero: unoptimized — Next/Image-Wrapper würde die feste horizontale Einordnung verschieben. */}
+                  <Image
+                    src="/images/startseite_front.webp"
+                    alt="Gemeinsam zur passenden Unterstützung im Alltag"
+                    width={900}
+                    height={700}
+                    sizes="(max-width: 1023px) 100vw, (max-width: 1400px) 88vw, 900px"
+                    className="box-border block h-auto w-full max-w-full object-contain object-right [filter:drop-shadow(0_10px_22px_rgba(15,79,104,0.2))_drop-shadow(0_4px_12px_rgba(15,79,104,0.12))] [will-change:filter]"
+                    priority
+                    unoptimized
+                  />
+                </div>
               </div>
             </div>
 
+            <div
+              className="relative z-10 mt-8 max-w-lg text-left sm:max-w-xl lg:absolute lg:left-0 lg:right-auto lg:top-[clamp(34%,calc(33%+0.35vw),40%)] lg:mt-0 lg:w-full lg:max-w-none lg:-translate-y-1/2 lg:-translate-x-[5%]"
+            >
+              <header className="text-left lg:max-w-[min(42vw,clamp(22rem,32vw+8rem,30rem))] xl:max-w-[min(38vw,clamp(23rem,28vw+9rem,31rem))] 2xl:max-w-[min(34vw,clamp(24rem,26vw+10rem,32rem))]">
+                <h1
+                  className="text-balance text-3xl font-extrabold leading-tight tracking-tight text-[#0F4F68] opacity-0 motion-reduce:opacity-100 animate-fade-in-up sm:text-4xl lg:text-[clamp(2rem,1.05rem+2.6vw,3rem)]"
+                  style={{ animationDelay: "0s" }}
+                >
+                  {HERO_INTRO.brand}
+                </h1>
+                <ul
+                  className="mt-5 space-y-3 sm:mt-6 sm:space-y-3.5 lg:space-y-[clamp(0.65rem,0.35rem+0.9vw,1rem)]"
+                  aria-label="Ihre Vorteile auf einen Blick"
+                >
+                  {HERO_INTRO.taglineLines.map((line, i) => (
+                    <li
+                      key={line}
+                      className="flex items-center gap-3 text-pretty text-lg font-semibold leading-snug text-[#0F4F68] opacity-0 motion-reduce:opacity-100 animate-fade-in-up sm:text-xl lg:text-[clamp(1.05rem,0.82rem+0.5vw,1.35rem)]"
+                      style={{
+                        animationDelay: `${0.68 + i * 0.26}s`,
+                      }}
+                    >
+                      <HeroCheckIcon />
+                      <span>{line}</span>
+                    </li>
+                  ))}
+                </ul>
+                <p
+                  className="mt-5 max-w-prose text-pretty text-lg font-normal leading-relaxed text-neutral-600 opacity-0 motion-reduce:opacity-100 animate-fade-in-up sm:mt-6 sm:text-xl lg:text-[clamp(1.05rem,0.85rem+0.42vw,1.3rem)]"
+                  style={{ animationDelay: "1.22s" }}
+                >
+                  {HERO_INTRO.partnerLine}
+                </p>
+              </header>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Ab hier: Startseite visuell ~10 % kleiner */}
+      <div className="mx-auto flex min-h-0 min-w-0 w-full max-w-full flex-1 flex-col origin-top scale-90 motion-reduce:scale-100">
+        <section className="box-border w-full pt-0 pb-2 sm:pb-4">
+          <div className="box-border mx-auto w-full min-w-0 max-w-7xl px-4 sm:px-6 lg:px-[var(--ahs-page-gutter)]">
             <div className="lg:-mt-[clamp(6%,8vw,10%)] lg:-translate-x-[5%]">
               <StartEinstiegsHilfe />
             </div>
