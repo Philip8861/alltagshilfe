@@ -130,7 +130,10 @@ html.kfg-embed .hero-overlay {
   z-index: 1;
   max-width: min(100%, 1282px);
   margin: 0 auto;
-  padding: 16px 16px max(16px, env(safe-area-inset-bottom, 0px)) max(40px, 6.5vw);
+  /* Symmetrisches Inline-Padding: vermeidet nach rechts verschobenes Layout (früher größeres padding-left). */
+  padding-top: 16px;
+  padding-bottom: max(16px, env(safe-area-inset-bottom, 0px));
+  padding-inline: clamp(16px, 3.5vw, 40px);
 }
 
 .header {
@@ -210,7 +213,7 @@ html.kfg-embed .hero-overlay {
 .layout {
   display: grid;
   grid-template-columns: minmax(0, 1.76fr) minmax(0, 1.2fr);
-  gap: 18px;
+  gap: clamp(18px, 2vw, 28px);
   align-items: start;
 }
 
@@ -223,13 +226,14 @@ html.kfg-embed .hero-overlay {
     z-index: 5;
   }
 
+  /* Kein zusätzliches padding nur links — sonst wirkt das Raster zum Viewport versetzt. */
   .layout > .panel:first-of-type {
-    padding-left: clamp(24px, 3.5vw, 52px);
+    padding-left: 0;
   }
 }
 
 .panel {
-  padding: 12px 14px;
+  padding: 12px clamp(12px, 1.25vw, 18px);
 }
 
 .panel h2 {

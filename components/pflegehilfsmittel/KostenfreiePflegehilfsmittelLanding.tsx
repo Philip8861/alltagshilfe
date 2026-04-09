@@ -52,6 +52,46 @@ const paketItems = [
   "Lätzchen zum Einmalgebrauch",
 ] as const;
 
+const KOSTENFREI_FAQ = [
+  {
+    q: "Wer trägt die Kosten für die monatlichen Pflegehilfsmittel?",
+    a: `Die gesetzliche Pflegekasse übernimmt den monatlichen Festbetrag (derzeit 42\u00A0€) für anerkannte Hilfsmittel, wenn die gesetzlichen Voraussetzungen erfüllt sind. Sie zahlen bei korrekter Beantragung keine Zuzahlung für diesen Rahmen.`,
+  },
+  {
+    q: "Ab welchem Pflegegrad kann ich die Leistung nutzen?",
+    a: `Grundsätzlich besteht Anspruch ab Pflegegrad\u00A01, sofern die pflegebedürftige Person zu Hause betreut wird und die weiteren Voraussetzungen (z.\u00A0B. private Pflege) erfüllt sind. Unsicherheiten klären wir gern mit Ihnen oder bei Bedarf auch über unsere Pflegeberatung.`,
+  },
+  {
+    q: "Wie läuft die Beantragung bei Alltagshilfe-Süd ab?",
+    a: "Sie stellen Ihre Wunschprodukte im Konfigurator zusammen. Anschließend erhalten Sie die Unterlagen für Ihre Pflegekasse und unsere Unterstützung bei der Abwicklung – digital oder postalisch, wie es für Sie passt.",
+  },
+  {
+    q: "Kann ich die Zusammenstellung monatlich anpassen?",
+    a: "Ja, solange Sie sich innerhalb des monatlichen Budgets bewegen, können Sie Mengen und Artikel wechseln. So bleibt die Box an Alltag und Hygiene-Routine angepasst.",
+  },
+  {
+    q: "Was passiert nach der Bestellung?",
+    a: "Nach Einreichung bei der Kasse bearbeiten wir die Lieferung. Das Paket wird zuverlässig nach Hause geliefert – erneut im nächsten Monat, solange der Anspruch besteht und die Mittel zur Verfügung stehen.",
+  },
+  {
+    q: "Gibt es eine Vertragsbindung oder versteckte Kosten?",
+    a: "Nein. Sie bestellen ohne langfristige Bindung; die Abrechnung erfolgt über die Pflegekasse im Rahmen der gesetzlichen Regelungen. Kosten für Produkte außerhalb des Budgets oder ohne Anspruch werden transparent gekennzeichnet.",
+  },
+] as const;
+
+const kostenfreiFaqJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: KOSTENFREI_FAQ.map((item) => ({
+    "@type": "Question",
+    name: item.q,
+    acceptedAnswer: {
+      "@type": "Answer",
+      text: item.a,
+    },
+  })),
+};
+
 function KonfiguratorLink({
   className,
   children,
@@ -98,8 +138,8 @@ export function KostenfreiePflegehilfsmittelLanding() {
         className="min-w-0 scroll-mt-24 overflow-x-clip overflow-y-visible"
       >
         <section className="relative z-0 box-border mx-auto w-full min-w-0 max-w-7xl px-4 pb-16 pt-0 sm:px-6 sm:pb-24 lg:px-[var(--ahs-page-gutter)] lg:pb-[clamp(5.5rem,12vh+2rem,9rem)] lg:pt-[clamp(2rem,5vh+1.25rem,4.75rem)] xl:pb-[clamp(6.5rem,13vh+2.5rem,10rem)]">
-          <div className="flex flex-col-reverse items-center gap-10 lg:grid lg:grid-cols-[minmax(0,0.46fr)_minmax(0,0.54fr)] lg:items-start lg:justify-items-stretch lg:gap-x-[min(3.25rem,4.2vw)] lg:gap-y-0">
-            <div className="box-border w-full min-w-0 max-w-full space-y-[clamp(1.25rem,2vh+0.75rem,1.75rem)] lg:justify-self-start lg:-translate-x-[5%] lg:space-y-[clamp(1.1rem,1.5vh+0.65rem,1.65rem)]">
+          <div className="flex flex-col-reverse items-center gap-10 lg:grid lg:grid-cols-[minmax(0,0.395fr)_minmax(0,0.605fr)] lg:items-center lg:justify-items-stretch lg:gap-x-[min(2.5rem,3.5vw)] lg:gap-y-0">
+            <div className="box-border w-full min-w-0 max-w-full space-y-[clamp(1.25rem,2vh+0.75rem,1.75rem)] lg:justify-self-start lg:space-y-[clamp(1.1rem,1.5vh+0.65rem,1.65rem)]">
             <h1
               className="text-balance text-3xl font-extrabold leading-tight tracking-tight text-[#0F4F68] opacity-0 motion-reduce:opacity-100 animate-fade-in-up sm:text-4xl lg:text-[clamp(1.75rem,1.05rem+2.5vw,3rem)]"
               style={{ animationDelay: "0s" }}
@@ -141,13 +181,13 @@ export function KostenfreiePflegehilfsmittelLanding() {
             </div>
           </div>
 
-            <div className="box-border w-full min-w-0 max-w-full lg:min-h-0 lg:justify-self-end lg:self-start">
-              <div className="box-border flex justify-center overflow-x-clip bg-[#fafbfc] px-4 pt-3 pb-8 sm:px-8 sm:pt-4 sm:pb-10 lg:flex lg:justify-end lg:px-0 lg:pb-[clamp(1.75rem,3.5vh+0.75rem,3.25rem)] lg:pt-0">
+            <div className="box-border w-full min-w-0 max-w-full lg:min-h-0 lg:justify-self-stretch lg:self-center">
+              <div className="box-border flex justify-center overflow-x-visible bg-[#fafbfc] px-4 pt-3 pb-8 sm:px-8 sm:pt-4 sm:pb-10 lg:flex lg:justify-center lg:px-0 lg:pb-[clamp(1.75rem,3.5vh+0.75rem,3.25rem)] lg:pt-0">
                 <div
-                  className="mx-auto w-full max-w-full min-w-0 opacity-0 motion-reduce:opacity-100 animate-fade-in-up max-lg:flex max-lg:justify-center lg:max-w-full"
+                  className="mx-auto w-full min-w-0 max-w-[min(100%,72rem)] opacity-0 motion-reduce:opacity-100 animate-fade-in-up max-lg:flex max-lg:max-w-full max-lg:justify-center lg:w-full"
                   style={{ animationDelay: "0.08s" }}
                 >
-                  {/* eslint-disable-next-line @next/next/no-img-element -- statische Asset-URL */}
+                  {/* eslint-disable-next-line @next/next/no-img-element -- statische Asset-URL; Datei: kostenfreiepflegehilfsmittel.webp */}
                   <img
                     src={KOSTENFREI_HERO_IMG}
                     alt="Kostenfreie Pflegehilfsmittel – Übersicht"
@@ -155,8 +195,8 @@ export function KostenfreiePflegehilfsmittelLanding() {
                     height={845}
                     decoding="async"
                     fetchPriority="high"
-                    sizes="(max-width: 1023px) 100vw, 54vw"
-                    className={`box-border h-auto w-full max-w-full object-contain object-center lg:object-right max-lg:mx-auto max-lg:origin-center max-lg:translate-x-0 max-lg:-translate-y-2 max-lg:scale-[1.05] max-lg:motion-reduce:scale-[1.05] ${KOSTENFREI_HERO_GLOW_CLASS}`}
+                    sizes="(max-width: 1023px) 100vw, (max-width: 1536px) 62vw, 900px"
+                    className={`box-border h-auto w-full max-w-full object-contain object-center lg:object-contain lg:object-center max-lg:mx-auto max-lg:origin-center max-lg:translate-x-0 max-lg:-translate-y-2 max-lg:scale-[1.05] max-lg:motion-reduce:scale-[1.05] ${KOSTENFREI_HERO_GLOW_CLASS}`}
                   />
                 </div>
               </div>
@@ -305,6 +345,58 @@ export function KostenfreiePflegehilfsmittelLanding() {
               ))}
             </ul>
           </div>
+        </section>
+
+        <section
+          className="relative isolate overflow-x-clip bg-gradient-to-b from-[#e8f4f7]/90 via-[#fafbfc] to-white py-14 sm:py-20"
+          aria-labelledby="kostenfrei-faq-heading"
+        >
+          <div
+            className="pointer-events-none absolute -right-24 top-10 h-72 w-72 rounded-full bg-[#F78F2E]/10 blur-3xl sm:-right-16"
+            aria-hidden
+          />
+          <div
+            className="pointer-events-none absolute -left-20 bottom-0 h-64 w-64 rounded-full bg-[#0F4F68]/[0.07] blur-3xl"
+            aria-hidden
+          />
+          <div className="relative z-[1] mx-auto max-w-3xl px-4 sm:px-6">
+            <h2
+              id="kostenfrei-faq-heading"
+              className="text-center text-2xl font-extrabold tracking-tight text-[#0F4F68] sm:text-3xl"
+            >
+              Häufige Fragen
+            </h2>
+            <p className="mx-auto mt-2 max-w-xl text-center text-sm text-[#8a6a55] sm:text-base">
+              Kurz und verständlich – rund um Ihre kostenfreien Pflegehilfsmittel
+            </p>
+            <div className="mt-10 space-y-3">
+              {KOSTENFREI_FAQ.map((item) => (
+                <details
+                  key={item.q}
+                  className="group rounded-2xl border border-[#0F4F68]/12 bg-white/95 shadow-[0_2px_16px_rgba(15,79,104,0.06)] backdrop-blur-sm transition hover:border-[#F78F2E]/35 hover:shadow-[0_8px_28px_rgba(15,79,104,0.1)] open:border-[#0F4F68]/18 open:shadow-[0_10px_32px_rgba(15,79,104,0.12)]"
+                >
+                  <summary className="flex cursor-pointer list-none items-center justify-between gap-4 px-4 py-4 text-left text-[#0F4F68] sm:px-5 [&::-webkit-details-marker]:hidden">
+                    <span className="text-base font-semibold leading-snug sm:text-[1.05rem]">{item.q}</span>
+                    <span
+                      className="inline-flex shrink-0 rounded-full bg-[#F78F2E]/12 p-1.5 text-[#F78F2E] transition-transform duration-200 group-open:rotate-180"
+                      aria-hidden
+                    >
+                      <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                      </svg>
+                    </span>
+                  </summary>
+                  <p className="border-t border-[#0F4F68]/8 px-4 pb-4 pt-2 text-pretty text-sm leading-relaxed text-neutral-600 sm:px-5 sm:text-base">
+                    {item.a}
+                  </p>
+                </details>
+              ))}
+            </div>
+          </div>
+          <script
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{ __html: JSON.stringify(kostenfreiFaqJsonLd) }}
+          />
         </section>
 
         <section
