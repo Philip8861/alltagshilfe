@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { KundenstimmenCarousel } from "@/components/home/KundenstimmenCarousel";
-import { PflegegradBeratungspflichtSection } from "@/components/pflegeberatung/PflegegradBeratungspflichtSection";
+import { PflegegradBeratungTable } from "@/components/pflegeberatung/PflegegradBeratungTable";
 import { PRIVATE_PFLEGEBERATUNG_FAQ } from "@/lib/private-pflegeberatung-faq";
 import { siteConfig } from "@/config/site";
 
@@ -59,27 +59,28 @@ function WelleObenF2F9FA() {
 
 export default function PrivatePflegeberatungPage() {
   return (
-    <article className="pb-0 sm:pb-0" style={{ backgroundColor: "#fafbfc" }}>
+    <article className="overflow-x-visible pb-0 sm:pb-0" style={{ backgroundColor: "#fafbfc" }}>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }} />
 
-      <header className="bg-white">
-        <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 sm:py-16 lg:px-[var(--ahs-page-gutter)] lg:py-20">
-          <div className="flex flex-col gap-12 lg:flex-row lg:items-start lg:gap-x-16 lg:gap-y-8 xl:gap-x-20">
-            <div className="flex w-full min-w-0 justify-center overflow-visible lg:w-[min(52%,36rem)] lg:shrink-0 lg:justify-start">
-              <div className="flex w-full min-w-0 justify-center overflow-visible lg:justify-start">
+      <header className="overflow-visible bg-white">
+        <div className="mx-auto max-w-7xl overflow-visible px-4 py-12 sm:px-6 sm:py-16 lg:px-[var(--ahs-page-gutter)] lg:py-20">
+          <div className="flex flex-col gap-10 overflow-visible lg:flex-row lg:items-start lg:gap-x-12 lg:gap-y-8 xl:gap-x-16">
+            <div className="flex w-full min-w-0 flex-col gap-8 overflow-visible lg:max-w-[min(100%,28rem)] lg:shrink-0 xl:max-w-[min(100%,32rem)]">
+              <div className="overflow-visible px-2 py-6 sm:px-3 sm:py-8">
                 <Image
                   src="/images/private_pflegeberatung.webp"
                   alt="Private Pflegeberatung – persönliche Beratung mit Zeit und Vertrauen"
                   width={960}
                   height={960}
-                  sizes="(max-width: 1023px) 50vw, (max-width: 1536px) 24vw, 20rem"
-                  className={`${HERO_IMG_BASE} mx-auto h-auto w-1/2 max-w-[50%] object-contain object-center lg:mx-0 lg:object-left`}
+                  sizes="(max-width: 1023px) 92vw, (max-width: 1536px) 32vw, 28rem"
+                  className={`${HERO_IMG_BASE} mx-auto h-auto w-full max-w-full object-contain object-center lg:mx-0 lg:object-left`}
                   priority
                 />
               </div>
+              <PflegegradBeratungTable />
             </div>
 
-            <div className="min-w-0 flex-1 pt-0 text-left lg:min-w-[min(100%,20rem)] lg:pt-2">
+            <div className="min-w-0 flex-1 overflow-visible pt-0 text-left lg:min-w-[min(100%,18rem)] lg:pt-2">
               <div className="min-w-0 max-w-full overflow-x-auto [-ms-overflow-style:none] [scrollbar-width:thin] lg:overflow-x-visible">
                 <h1 className="whitespace-nowrap text-[clamp(0.8125rem,0.65vw+0.55rem,2.5rem)] font-extrabold leading-tight tracking-tight text-[#0F4F68] sm:text-[clamp(0.875rem,0.85vw+0.5rem,2.5rem)] lg:text-[clamp(1.35rem,0.55rem+1.25vw,2.5rem)] lg:leading-[1.12]">
                   Pflegeberatung nach Paragraf 37 Absatz 3 SGB XI
@@ -118,8 +119,6 @@ export default function PrivatePflegeberatungPage() {
           </p>
         </div>
       </section>
-
-      <PflegegradBeratungspflichtSection />
 
       <section className="bg-white py-14 sm:py-16" aria-labelledby="vorteile-heading">
         <div className="mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-[var(--ahs-page-gutter)]">
