@@ -280,8 +280,8 @@ export function KostenfreiePflegehilfsmittelLanding() {
         className="min-w-0 scroll-mt-24 overflow-x-clip overflow-y-visible"
       >
         <section className="relative z-0 box-border mx-auto w-full min-w-0 max-w-7xl px-4 pb-16 pt-0 sm:px-6 sm:pb-24 lg:px-[var(--ahs-page-gutter)] lg:pb-[clamp(5.5rem,12vh+2rem,9rem)] lg:pt-[clamp(2rem,5vh+1.25rem,4.75rem)] xl:pb-[clamp(6.5rem,13vh+2.5rem,10rem)]">
-          <div className="flex flex-col-reverse items-center gap-10 lg:grid lg:grid-cols-[minmax(0,0.335fr)_minmax(0,0.665fr)] lg:items-center lg:justify-items-stretch lg:gap-x-[clamp(2.75rem,4.8vw,5.5rem)] lg:gap-y-0">
-            <div className="box-border w-full min-w-0 max-w-full space-y-[clamp(1.25rem,2vh+0.75rem,1.75rem)] lg:justify-self-start lg:space-y-[clamp(1.1rem,1.5vh+0.65rem,1.65rem)] lg:origin-left lg:-translate-x-[clamp(0.35rem,2.4vw,2rem)] lg:scale-90 motion-reduce:lg:translate-x-0 motion-reduce:lg:scale-100">
+          <div className="flex flex-col-reverse items-center gap-10 lg:grid lg:grid-cols-[minmax(0,0.46fr)_minmax(0,0.54fr)] lg:items-center lg:justify-items-stretch lg:gap-x-[clamp(2rem,3.8vw,4.25rem)] lg:gap-y-0">
+            <div className="box-border w-full min-w-0 max-w-full space-y-[clamp(1.25rem,2vh+0.75rem,1.75rem)] lg:min-w-0 lg:justify-self-stretch lg:space-y-[clamp(1.15rem,1.6vh+0.7rem,1.75rem)] lg:pr-[min(0.75rem,1.5vw)]">
             <h1
               className="text-balance text-3xl font-extrabold leading-tight tracking-tight text-[#0F4F68] opacity-0 motion-reduce:opacity-100 animate-fade-in-up sm:text-4xl lg:text-[clamp(1.75rem,1.05rem+2.5vw,3rem)]"
               style={{ animationDelay: "0s" }}
@@ -323,7 +323,7 @@ export function KostenfreiePflegehilfsmittelLanding() {
             </div>
           </div>
 
-            <div className="box-border w-full min-w-0 max-w-full lg:min-h-0 lg:translate-x-[clamp(0.35rem,2.4vw,2rem)] lg:justify-self-stretch lg:self-center lg:origin-right lg:scale-90 motion-reduce:lg:translate-x-0 motion-reduce:lg:scale-100">
+            <div className="box-border w-full min-w-0 max-w-full lg:min-h-0 lg:justify-self-stretch lg:self-center lg:origin-right lg:scale-90 lg:translate-x-[clamp(0.25rem,1.5vw,1.25rem)] motion-reduce:lg:translate-x-0 motion-reduce:lg:scale-100">
               <div className="box-border flex justify-center overflow-x-visible bg-[#fafbfc] px-4 pt-3 pb-8 sm:px-8 sm:pt-4 sm:pb-10 lg:flex lg:justify-end lg:px-0 lg:pb-[clamp(1.75rem,3.5vh+0.75rem,3.25rem)] lg:pt-0">
                 <div
                   className="mx-auto w-full min-w-0 max-w-[min(100%,72rem)] opacity-0 motion-reduce:opacity-100 animate-fade-in-up max-lg:flex max-lg:max-w-full max-lg:justify-center lg:w-full"
@@ -337,7 +337,7 @@ export function KostenfreiePflegehilfsmittelLanding() {
                     height={845}
                     decoding="async"
                     fetchPriority="high"
-                    sizes="(max-width: 1023px) 100vw, (max-width: 1536px) 68vw, 990px"
+                    sizes="(max-width: 1023px) 100vw, (max-width: 1536px) 56vw, 920px"
                     className={`box-border h-auto w-full max-w-full object-contain object-center lg:object-contain lg:object-center max-lg:mx-auto max-lg:origin-center max-lg:translate-x-0 max-lg:-translate-y-2 max-lg:scale-[1.05] max-lg:motion-reduce:scale-[1.05] ${KOSTENFREI_HERO_GLOW_CLASS}`}
                   />
                 </div>
