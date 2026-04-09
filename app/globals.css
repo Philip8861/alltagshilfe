@@ -52,6 +52,21 @@
   }
 }
 
+@layer components {
+  /*
+   * Pflegehilfsmittel-Hero (nur lg+): Skalierung und vertikaler Offset hängen an 100vw statt fixer rem-Stufen,
+   * Ursprung rechts oben → kein Überstand nach rechts bei schmalen Desktop-Fenstern.
+   */
+  @media (min-width: 1024px) {
+    .kostenfrei-hero-media-img {
+      transform: translateY(calc(-0.35rem - 0.65vw))
+        scale(clamp(1.05, 0.84 + 0.00017 * 100vw, 1.48));
+      transform-origin: top right;
+    }
+  }
+
+}
+
 /*
  * Pflegebox: #main-content hat sonst flex-1 → Leerraum unter dem Iframe bis zum Viewport-Ende.
  * App-Shell nicht auf mindestens 100vh zwingen, wenn nur der Konfigurator zu sehen ist.

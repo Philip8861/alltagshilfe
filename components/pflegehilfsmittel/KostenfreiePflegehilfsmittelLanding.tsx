@@ -97,10 +97,10 @@ export function KostenfreiePflegehilfsmittelLanding() {
         id="kostenfreie-hero"
         className="min-w-0 scroll-mt-24 overflow-x-clip overflow-y-visible"
       >
-        <section className="relative z-0 mx-auto flex w-full min-w-0 max-w-7xl flex-col-reverse items-center gap-10 px-4 pb-16 pt-0 sm:px-6 sm:pb-24 lg:flex-row lg:items-start lg:gap-8 lg:px-[var(--ahs-page-gutter)] lg:pb-[clamp(5.5rem,14vh,9rem)] lg:pt-[clamp(2rem,7vh,4.75rem)] xl:gap-12 xl:pb-[clamp(6.5rem,15vh,10rem)]">
-          <div className="w-full min-w-0 space-y-6 lg:flex-1 lg:basis-0 lg:-translate-x-0 xl:-translate-x-[5%] 2xl:-translate-x-[12%] min-[1800px]:-translate-x-[18%]">
+        <section className="relative z-0 box-border mx-auto flex w-full min-w-0 max-w-7xl flex-col-reverse items-center gap-10 px-4 pb-16 pt-0 sm:px-6 sm:pb-24 lg:flex-row lg:items-start lg:gap-[clamp(1.25rem,1.2vw+0.85rem,3rem)] lg:px-[var(--ahs-page-gutter)] lg:pb-[clamp(5.5rem,12vh+2rem,9rem)] lg:pt-[clamp(2rem,5vh+1.25rem,4.75rem)] xl:pb-[clamp(6.5rem,13vh+2.5rem,10rem)]">
+          <div className="w-full min-w-0 space-y-6 lg:flex-1 lg:basis-0 lg:-translate-x-[min(6vw,5.5rem)]">
             <h1
-              className="text-balance text-3xl font-extrabold leading-tight tracking-tight text-[#0F4F68] opacity-0 motion-reduce:opacity-100 animate-fade-in-up sm:text-4xl lg:text-4xl xl:text-5xl"
+              className="text-balance text-3xl font-extrabold leading-tight tracking-tight text-[#0F4F68] opacity-0 motion-reduce:opacity-100 animate-fade-in-up sm:text-4xl lg:text-[clamp(1.875rem,1.15rem+2.35vw,3rem)]"
               style={{ animationDelay: "0s" }}
             >
               Ihre kostenfreien Pflegehilfsmittel im Wert von 42&nbsp;€ monatlich
@@ -112,7 +112,7 @@ export function KostenfreiePflegehilfsmittelLanding() {
               {KOSTENFREI_HERO_VORTEILE.map((line, i) => (
                 <li
                   key={line}
-                  className="flex items-center gap-3 text-pretty text-lg font-semibold leading-snug text-[#0F4F68] opacity-0 motion-reduce:opacity-100 animate-fade-in-up sm:text-xl"
+                  className="flex items-center gap-3 text-pretty text-lg font-semibold leading-snug text-[#0F4F68] opacity-0 motion-reduce:opacity-100 animate-fade-in-up sm:text-xl lg:text-[clamp(1.05rem,0.82rem+0.5vw,1.35rem)]"
                   style={{
                     animationDelay: `${0.45 + i * 0.22}s`,
                   }}
@@ -141,9 +141,9 @@ export function KostenfreiePflegehilfsmittelLanding() {
           </div>
 
           <div className="w-full min-w-0 lg:flex-1 lg:basis-0">
-            <div className="flex justify-center overflow-x-clip bg-[#fafbfc] px-4 pt-3 pb-8 sm:px-8 sm:pt-4 sm:pb-10 lg:justify-end lg:px-0 lg:pb-10 lg:pt-0 xl:pb-12">
+            <div className="box-border flex justify-center overflow-x-clip bg-[#fafbfc] px-4 pt-3 pb-8 sm:px-8 sm:pt-4 sm:pb-10 lg:justify-end lg:px-0 lg:pb-[clamp(2.25rem,4vh+1rem,3.5rem)] lg:pt-0 xl:pb-[clamp(2.75rem,4.5vh+1rem,4rem)]">
               <div
-                className="mx-auto w-full max-w-full opacity-0 motion-reduce:opacity-100 animate-fade-in-up max-lg:flex max-lg:justify-center lg:max-w-full lg:overflow-x-clip lg:pl-1 lg:pr-0"
+                className="mx-auto w-full max-w-full min-w-0 opacity-0 motion-reduce:opacity-100 animate-fade-in-up max-lg:flex max-lg:justify-center lg:max-w-full lg:overflow-x-clip lg:pl-[min(0.35rem,0.5vw)] lg:pr-0"
                 style={{ animationDelay: "0.08s" }}
               >
                 {/* eslint-disable-next-line @next/next/no-img-element -- statische Asset-URL */}
@@ -154,7 +154,8 @@ export function KostenfreiePflegehilfsmittelLanding() {
                   height={845}
                   decoding="async"
                   fetchPriority="high"
-                  className={`h-auto w-full max-w-full object-contain motion-reduce:translate-x-0 motion-reduce:translate-y-0 motion-reduce:scale-[1.05] max-lg:mx-auto max-lg:origin-center max-lg:translate-x-0 max-lg:-translate-y-2 max-lg:scale-[1.05] lg:origin-top-right lg:translate-x-0 lg:-translate-y-6 lg:scale-[1.08] xl:-translate-y-7 xl:scale-[1.18] 2xl:-translate-y-8 2xl:scale-[1.3] min-[1800px]:-translate-y-9 min-[1800px]:scale-[1.48] ${KOSTENFREI_HERO_GLOW_CLASS}`}
+                  sizes="(max-width: 1023px) 100vw, (max-width: 1400px) 42vw, 720px"
+                  className={`box-border h-auto w-full max-w-full object-contain max-lg:mx-auto max-lg:origin-center max-lg:translate-x-0 max-lg:-translate-y-2 max-lg:scale-[1.05] max-lg:motion-reduce:scale-[1.05] lg:kostenfrei-hero-media-img lg:motion-reduce:scale-[1.05] ${KOSTENFREI_HERO_GLOW_CLASS}`}
                 />
               </div>
             </div>
@@ -166,7 +167,7 @@ export function KostenfreiePflegehilfsmittelLanding() {
           aria-labelledby="anspruch-heading"
         >
           <svg
-            className="pointer-events-none absolute left-0 top-0 z-0 h-14 w-full -translate-y-[28%] sm:h-[4.25rem] sm:-translate-y-[26%] lg:h-[4.75rem] lg:-translate-y-[24%] xl:h-20 xl:-translate-y-[22%]"
+            className="pointer-events-none absolute left-0 top-0 z-0 h-[clamp(2.5rem,1.5rem+3.8vw,5rem)] w-full -translate-y-[clamp(0.9rem,0.35rem+2.1vw,3.2rem)]"
             viewBox="0 0 1200 100"
             preserveAspectRatio="none"
             fill="none"

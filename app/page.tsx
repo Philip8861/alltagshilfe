@@ -103,13 +103,13 @@ export default function HomePage() {
       className="flex min-h-[60vh] w-full max-w-[100vw] flex-col pt-0 pb-0"
       style={{ backgroundColor: "#fafbfc" }}
     >
-      <section className="w-full pt-0 pb-6 sm:pb-8 lg:pb-10">
-        <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-[var(--ahs-page-gutter)]">
+      <section className="box-border w-full pt-0 pb-6 sm:pb-8 lg:pb-[clamp(1.5rem,2vw+0.75rem,2.5rem)]">
+        <div className="box-border mx-auto w-full min-w-0 max-w-7xl px-4 sm:px-6 lg:px-[var(--ahs-page-gutter)]">
           {/* Oberer Bereich: Bild rechts, Überschrift + drei Punkte links, etwas oberhalb der Bildmitte (Desktop) */}
-          <div className="relative">
-            <div className="flex justify-end">
+          <div className="relative min-w-0">
+            <div className="flex min-w-0 justify-end">
               <div
-                className="relative ml-auto w-full max-w-[50rem] opacity-0 animate-fade-in-up motion-reduce:opacity-100 lg:mr-[calc((100vw-100%)/-2)]"
+                className="relative ml-auto w-full min-w-0 max-w-[min(50rem,88vw)] opacity-0 animate-fade-in-up motion-reduce:opacity-100 lg:mr-[calc((100vw-100%)/-2)]"
                 style={{ animationDelay: "0.08s" }}
               >
                 <div className="w-full">
@@ -119,7 +119,8 @@ export default function HomePage() {
                     alt="Gemeinsam zur passenden Unterstützung im Alltag"
                     width={900}
                     height={700}
-                    className="block h-auto w-full object-contain object-right [filter:drop-shadow(0_10px_22px_rgba(15,79,104,0.2))_drop-shadow(0_4px_12px_rgba(15,79,104,0.12))] [will-change:filter]"
+                    sizes="(max-width: 1023px) 100vw, (max-width: 1400px) 88vw, 900px"
+                    className="box-border block h-auto w-full max-w-full object-contain object-right [filter:drop-shadow(0_10px_22px_rgba(15,79,104,0.2))_drop-shadow(0_4px_12px_rgba(15,79,104,0.12))] [will-change:filter]"
                     priority
                     unoptimized
                   />
@@ -128,11 +129,11 @@ export default function HomePage() {
             </div>
 
             <div
-              className="relative z-10 mt-8 max-w-lg text-left sm:max-w-xl lg:absolute lg:left-0 lg:right-auto lg:top-[39%] lg:mt-0 lg:w-full lg:max-w-none lg:-translate-y-1/2 lg:-translate-x-[10.5%]"
+              className="relative z-10 mt-8 max-w-lg text-left sm:max-w-xl lg:absolute lg:left-0 lg:right-auto lg:top-[clamp(34%,calc(33%+0.35vw),40%)] lg:mt-0 lg:w-full lg:max-w-none lg:-translate-y-1/2 lg:-translate-x-[min(10.5vw,7.75rem)]"
             >
               <header className="text-left lg:max-w-[min(26rem,42vw)] xl:max-w-[min(28rem,38vw)] 2xl:max-w-[min(30rem,34vw)]">
                 <h1
-                  className="text-balance text-3xl font-extrabold leading-tight tracking-tight text-[#0F4F68] opacity-0 motion-reduce:opacity-100 animate-fade-in-up sm:text-4xl lg:text-5xl"
+                  className="text-balance text-3xl font-extrabold leading-tight tracking-tight text-[#0F4F68] opacity-0 motion-reduce:opacity-100 animate-fade-in-up sm:text-4xl lg:text-[clamp(2rem,1.05rem+2.6vw,3rem)]"
                   style={{ animationDelay: "0s" }}
                 >
                   {HERO_INTRO.brand}
@@ -144,7 +145,7 @@ export default function HomePage() {
                   {HERO_INTRO.taglineLines.map((line, i) => (
                     <li
                       key={line}
-                      className="flex items-center gap-3 text-pretty text-lg font-semibold leading-snug text-[#0F4F68] opacity-0 motion-reduce:opacity-100 animate-fade-in-up sm:text-xl"
+                      className="flex items-center gap-3 text-pretty text-lg font-semibold leading-snug text-[#0F4F68] opacity-0 motion-reduce:opacity-100 animate-fade-in-up sm:text-xl lg:text-[clamp(1.05rem,0.82rem+0.5vw,1.35rem)]"
                       style={{
                         /* Nach Abschluss der Überschriften-Animation (~0,6s) nacheinander */
                         animationDelay: `${0.68 + i * 0.26}s`,
@@ -156,7 +157,7 @@ export default function HomePage() {
                   ))}
                 </ul>
                 <p
-                  className="mt-5 max-w-prose text-pretty text-lg font-normal leading-relaxed text-neutral-600 opacity-0 motion-reduce:opacity-100 animate-fade-in-up sm:mt-6 sm:text-xl"
+                  className="mt-5 max-w-prose text-pretty text-lg font-normal leading-relaxed text-neutral-600 opacity-0 motion-reduce:opacity-100 animate-fade-in-up sm:mt-6 sm:text-xl lg:text-[clamp(1.05rem,0.85rem+0.42vw,1.3rem)]"
                   style={{ animationDelay: "1.22s" }}
                 >
                   {HERO_INTRO.partnerLine}
@@ -165,7 +166,7 @@ export default function HomePage() {
             </div>
           </div>
 
-          <div className="lg:-mt-[10%] lg:-translate-x-[10.5%]">
+          <div className="lg:-mt-[clamp(6%,8vw,10%)] lg:-translate-x-[min(10.5vw,7.75rem)]">
             <StartEinstiegsHilfe />
           </div>
         </div>
