@@ -860,7 +860,7 @@ function updateItemAvailability(remainingBudget) {
       : remainingBudget > 0 && (item.price || 0) <= remainingBudget;
 
     if (hasMlVariants(item)) {
-      if (!affordAnyVariant && countInCart === 0) {
+      if (!affordAnyVariant) {
         plusBtn.disabled = true;
         plusBtn.classList.add("item-qty-btn--disabled");
         el.classList.add("item-unavailable");
@@ -871,12 +871,6 @@ function updateItemAvailability(remainingBudget) {
           label.textContent = "Nicht genug Platz";
           el.appendChild(label);
         }
-      } else if (!affordAnyVariant && countInCart > 0) {
-        plusBtn.disabled = true;
-        plusBtn.classList.add("item-qty-btn--disabled");
-        el.classList.remove("item-unavailable");
-        const label = el.querySelector(".item-unavailable-label");
-        if (label) label.remove();
       } else {
         plusBtn.disabled = false;
         plusBtn.classList.remove("item-qty-btn--disabled");
