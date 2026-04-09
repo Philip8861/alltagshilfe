@@ -1856,6 +1856,11 @@ html.kfg-embed .hero-overlay {
 }
 
 @media (max-width: 900px) {
+  /* Nur Mobil/Tablet schmal: Schrittzeile „1. Produktauswahl …“ ausblenden (Desktop ≥901px unverändert) */
+  .hero-overlay .header {
+    display: none;
+  }
+
   .layout {
     grid-template-columns: 1fr;
     padding-top: 64px;
@@ -1985,6 +1990,26 @@ html.kfg-embed .hero-overlay {
 
   .item.item--double-width {
     grid-column: span 2;
+  }
+
+  /* Größere Produktbilder: Mindesthöhe Bildbereich, kürzere Textklausel – Namen drücken das Bild nicht so stark */
+  .item .item-image-frame {
+    flex: 0 1 auto;
+    min-height: clamp(120px, 38vw, 210px);
+  }
+
+  .item .item-name {
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+  }
+
+  .item.item--double-width .item-image-frame {
+    min-height: clamp(128px, 34vw, 220px);
+  }
+
+  .item.item--double-width .item-name {
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
   }
 
   /* Embed: zunächst normal im Dokumentfluss; beim Scrollen blendet JS eine kompakte Floating-Leiste ein */
@@ -2189,13 +2214,15 @@ body.pflege-wizard-open {
     align-items: stretch;
   }
 
+  /* Ein durchgängiger Scroll: Weiter/Abbrechen liegen unter den Feldern, nicht darüber */
   .pflege-wizard-modal {
-    display: flex;
-    flex-direction: column;
+    display: block;
     margin: 0 auto 0.5rem;
     max-width: 100%;
     max-height: min(96dvh, calc(100vh - 0.5rem));
-    overflow: hidden;
+    overflow-x: hidden;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
     border-radius: 1rem;
   }
 
@@ -2228,11 +2255,10 @@ body.pflege-wizard-open {
   }
 
   .pflege-wizard-body {
-    flex: 1;
+    flex: none;
     min-height: 0;
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
-    padding: 0.45rem 0.85rem 0.65rem;
+    overflow: visible;
+    padding: 0.45rem 0.85rem 0.85rem;
   }
 
   .pflege-wizard-error {
@@ -2242,10 +2268,11 @@ body.pflege-wizard-open {
   }
 
   .pflege-wizard-nav {
+    position: static;
     flex-shrink: 0;
-    margin-top: 0;
-    padding: 0.6rem 0.85rem;
-    padding-bottom: max(0.6rem, env(safe-area-inset-bottom));
+    margin-top: 0.35rem;
+    padding: 0.75rem 0.85rem;
+    padding-bottom: max(0.75rem, env(safe-area-inset-bottom));
     flex-direction: column-reverse;
     gap: 0.5rem;
   }
@@ -2304,6 +2331,17 @@ body.pflege-wizard-open {
     width: 100%;
     justify-content: center;
     min-height: 3rem;
+  }
+
+  .pflege-wizard-modal.pflege-wizard-modal--success-final {
+    display: block;
+    min-height: auto;
+  }
+
+  .pflege-wizard-modal--success-final .pflege-wizard-body--success-step {
+    flex: none;
+    min-height: auto;
+    justify-content: flex-start;
   }
 }
 

@@ -406,7 +406,7 @@ export function KostenfreiePflegehilfsmittelLanding() {
                   id="schritte-heading"
                   className="text-balance text-3xl font-bold tracking-tight text-[#0F4F68] sm:text-4xl"
                 >
-                  In 3 einfachen Schritten zu Ihrer Lieferung
+                  In 3 einfachen Schritten zu Ihrer Pflegebox
                 </h2>
                 <p className="mt-3 text-pretty text-sm text-[#8a6a55] sm:text-base">
                   Konfigurieren, digital unterschreiben, die Pflegekasse-Kommunikation übernehmen wir.
