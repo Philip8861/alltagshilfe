@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { KundenstimmenCarousel } from "@/components/home/KundenstimmenCarousel";
 import { Container } from "@/components/layout/Container";
@@ -7,6 +8,13 @@ import { PRIVATE_PFLEGEBERATUNG_FAQ } from "@/lib/private-pflegeberatung-faq";
 import { siteConfig } from "@/config/site";
 
 const PAGE_PATH = "/pflegeberatung/private-pflegeberatung";
+
+/** Wie Startseite (`app/page.tsx`) – einheitliche Überschriften und Fließtext */
+const HEADING_CLASS = "text-3xl font-bold text-[#0F4F68] sm:text-4xl w-full max-w-lg self-start";
+const INTRO_BODY_CLASS = "text-lg text-neutral-700 leading-relaxed sm:text-xl";
+const SECTION_TITLE_CLASS = "text-3xl font-extrabold tracking-tight text-[#0F4F68] sm:text-4xl";
+const HERO_IMG_SHADOW =
+  "block h-auto w-full max-w-full object-contain object-left [filter:drop-shadow(0_10px_22px_rgba(15,79,104,0.2))_drop-shadow(0_4px_12px_rgba(15,79,104,0.12))] [will-change:filter]";
 
 export const metadata: Metadata = {
   title: "Private Pflegeberatung nach Paragraf 37 Absatz 3 SGB XI",
@@ -50,18 +58,6 @@ const faqJsonLd = {
   })),
 };
 
-function CheckIcon({ className }: { className?: string }) {
-  return (
-    <svg className={className} viewBox="0 0 20 20" fill="currentColor" aria-hidden>
-      <path
-        fillRule="evenodd"
-        d="M16.704 4.153a.75.75 0 01.143 1.052l-7.5 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 6.848-9.787a.75.75 0 011.052-.143z"
-        clipRule="evenodd"
-      />
-    </svg>
-  );
-}
-
 function VideoCallBadge() {
   return (
     <div className="mt-10 flex flex-col gap-4 rounded-2xl border border-[#0F4F68]/20 bg-gradient-to-br from-[#F2F9FA] to-white p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6">
@@ -94,12 +90,12 @@ function VideoCallBadge() {
 
 export default function PrivatePflegeberatungPage() {
   return (
-    <article className="pb-20 sm:pb-28">
+    <article className="pb-20 sm:pb-28" style={{ backgroundColor: "#fafbfc" }}>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }} />
 
-      {/* Block 1: Hero */}
+      {/* Block 1: Hero – Bild links, Text rechts (Desktop) */}
       <header className="border-b border-[#0F4F68]/10 bg-white">
-        <Container className="py-12 sm:py-16 lg:py-20">
+        <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 sm:py-16 lg:px-[var(--ahs-page-gutter)] lg:py-20">
           <nav className="text-sm text-neutral-500" aria-label="Brotkrumen">
             <ol className="flex flex-wrap gap-x-1 gap-y-1">
               <li>
@@ -117,76 +113,101 @@ export default function PrivatePflegeberatungPage() {
               <li className="font-medium text-neutral-700">Private Pflegeberatung</li>
             </ol>
           </nav>
-          <h1 className="mt-6 max-w-4xl text-3xl font-bold tracking-tight text-[#0F4F68] sm:text-4xl lg:text-[2.35rem] lg:leading-tight">
-            Pflegeberatung nach Paragraf 37 Absatz 3 SGB XI
-          </h1>
-          <p className="mt-4 max-w-3xl text-xl font-semibold text-neutral-800 sm:text-2xl">
-            Gute Pflege beginnt mit einer guten Pflegeberatung.
-          </p>
-          <p className="mt-3 max-w-2xl text-lg font-medium text-[#0F4F68]/90 sm:text-xl">
-            Beratung mit Herz: Angehörige entlasten und Pflegegeld sichern.
-          </p>
-          <div className="mt-8 flex flex-wrap gap-3">
-            <Link
-              href="/kontakt"
-              className="inline-flex min-h-[44px] items-center justify-center rounded-xl bg-[#F78F2E] px-5 py-2.5 text-sm font-semibold text-white hover:opacity-95 focus:outline-none focus:ring-2 focus:ring-[#F78F2E] focus:ring-offset-2"
-            >
-              Termin anfragen
-            </Link>
-            <Link
-              href="/pflegeberatung"
-              className="inline-flex min-h-[44px] items-center justify-center rounded-xl border-2 border-[#0F4F68]/25 bg-white px-5 py-2.5 text-sm font-semibold text-[#0F4F68] hover:bg-[#F2F9FA] focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2"
-            >
-              Alle Pflegeberatungs-Angebote
-            </Link>
+
+          <div className="mt-8 flex flex-col gap-10 lg:mt-10 lg:flex-row lg:items-center lg:gap-12">
+            <div className="flex w-full justify-center lg:w-[min(46%,28rem)] lg:max-w-xl lg:shrink-0 lg:justify-start">
+              <div className="w-full max-w-md lg:max-w-none">
+                <Image
+                  src="/images/private_pflegeberatung.webp"
+                  alt="Private Pflegeberatung – persönliche Beratung mit Zeit und Vertrauen"
+                  width={640}
+                  height={640}
+                  sizes="(max-width: 1023px) min(100%, 28rem), (max-width: 1280px) 40vw, 28rem"
+                  className={HERO_IMG_SHADOW}
+                  priority
+                />
+              </div>
+            </div>
+
+            <div className="min-w-0 flex-1 text-left">
+              <h1 className="text-balance text-3xl font-extrabold leading-tight tracking-tight text-[#0F4F68] sm:text-4xl lg:text-[clamp(2rem,1.05rem+2.2vw,2.75rem)]">
+                Pflegeberatung nach Paragraf 37 Absatz 3 SGB XI
+              </h1>
+              <p className="mt-4 max-w-2xl text-xl font-semibold leading-snug text-neutral-800 sm:text-2xl">
+                Gute Pflege beginnt mit einer guten Pflegeberatung.
+              </p>
+              <p className="mt-3 max-w-2xl text-lg font-semibold leading-snug text-[#0F4F68] sm:text-xl">
+                Beratung mit Herz: Angehörige entlasten und Pflegegeld sichern.
+              </p>
+              <div className="mt-8 flex flex-wrap gap-3">
+                <Link
+                  href="/kontakt"
+                  className="inline-flex min-h-[44px] items-center justify-center rounded-xl bg-[#F78F2E] px-5 py-2.5 text-sm font-semibold text-white hover:opacity-95 focus:outline-none focus:ring-2 focus:ring-[#F78F2E] focus:ring-offset-2"
+                >
+                  Termin anfragen
+                </Link>
+                <Link
+                  href="/pflegeberatung"
+                  className="inline-flex min-h-[44px] items-center justify-center rounded-xl border-2 border-[#0F4F68]/25 bg-white px-5 py-2.5 text-sm font-semibold text-[#0F4F68] hover:bg-[#F2F9FA] focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2"
+                >
+                  Alle Pflegeberatungs-Angebote
+                </Link>
+              </div>
+            </div>
           </div>
-        </Container>
+        </div>
       </header>
 
       {/* Block 2 */}
       <section className="py-14 sm:py-16" aria-labelledby="philosophie-heading">
-        <Container>
-          <h2 id="philosophie-heading" className="sr-only">
+        <div className="mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-[var(--ahs-page-gutter)]">
+          <h2 id="philosophie-heading" className={HEADING_CLASS}>
             Unsere Philosophie und Qualität
           </h2>
-          <div className="mx-auto max-w-3xl text-base leading-relaxed text-neutral-700 sm:text-lg">
-            <p>
-              Die Qualität unserer Pflegeberatung liegt uns besonders am Herzen. Sehr viele pflegende Angehörige wissen gar
-              nicht genau, welche gesetzlichen Leistungen ihnen eigentlich zustehen und verschenken bares Geld. Oftmals wird
-              man im Internet falsch oder unzureichend informiert. Noch schlimmer sind Beratungsstellen, die nur auf eine
-              schnelle Unterschrift aus sind, ohne wirklich zu helfen. Wir machen das anders: Wir nehmen uns die nötige Zeit
-              für Sie. Unser Ziel ist es, Sie umfassend, ehrlich und auf Augenhöhe zu beraten, damit Sie im Alltag optimal
-              entlastet werden.
-            </p>
-          </div>
-        </Container>
+          <p className={`mt-6 max-w-3xl ${INTRO_BODY_CLASS}`}>
+            Die Qualität unserer Pflegeberatung liegt uns besonders am Herzen. Sehr viele pflegende Angehörige wissen nicht
+            genau, welche gesetzlichen Leistungen ihnen eigentlich zustehen. Oftmals wird man im Internet falsch oder
+            unzureichend informiert. Wir machen das anders: Wir nehmen uns die nötige Zeit für Sie. Unser Ziel ist es, Sie
+            umfassend und detailliert zu informieren, damit Sie im Alltag optimal entlastet werden.
+          </p>
+        </div>
       </section>
 
-      {/* Block 3 */}
-      <section className="border-y border-[#0F4F68]/10 bg-[#F2F9FA]/40 py-14 sm:py-16" aria-labelledby="vorteile-heading">
-        <Container>
-          <h2 id="vorteile-heading" className="text-2xl font-bold tracking-tight text-[#0F4F68] sm:text-3xl">
-            Ihre Vorteile bei uns
+      {/* Block 3 – wie Startseite „Ihre Vorteile bei uns“ */}
+      <section className="py-14 sm:py-16" aria-labelledby="vorteile-heading">
+        <div className="mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-[var(--ahs-page-gutter)]">
+          <h2 id="vorteile-heading" className={SECTION_TITLE_CLASS}>
+            Unsere Vorteile
           </h2>
-          <ul className="mt-8 grid gap-4 sm:grid-cols-2 lg:gap-5">
+          <p className="mt-2 max-w-3xl text-sm text-neutral-600 sm:text-base">
+            Verlässlich, transparent und nah bei Ihnen – mit klaren Prozessen und echter Unterstützung im Alltag.
+          </p>
+          <ul className="mt-6 grid gap-4 sm:grid-cols-2">
             {VORTEILE.map((text) => (
               <li
                 key={text}
-                className="flex gap-3 rounded-xl border border-[#0F4F68]/12 bg-white p-4 shadow-sm sm:p-5"
+                className="flex items-start gap-3 rounded-xl px-2 py-1.5 transition-all duration-300 hover:bg-white/75 hover:shadow-[0_0_20px_rgba(15,79,104,0.12)]"
               >
-                <CheckIcon className="mt-0.5 h-5 w-5 shrink-0 text-[#F78F2E]" />
-                <span className="text-sm font-medium leading-snug text-neutral-800 sm:text-base">{text}</span>
+                <Image
+                  src="/images/haken.webp"
+                  alt=""
+                  aria-hidden
+                  width={38}
+                  height={38}
+                  className="mt-0.5 h-[38px] w-[38px] shrink-0 object-contain"
+                />
+                <span className="text-[1.03rem] font-medium leading-relaxed text-neutral-800 sm:text-[1.08rem]">{text}</span>
               </li>
             ))}
           </ul>
           <VideoCallBadge />
-        </Container>
+        </div>
       </section>
 
       {/* Block 4 */}
       <section className="py-14 sm:py-16" aria-labelledby="pflicht-heading">
         <Container>
-          <h2 id="pflicht-heading" className="text-2xl font-bold tracking-tight text-[#0F4F68] sm:text-3xl">
+          <h2 id="pflicht-heading" className={SECTION_TITLE_CLASS}>
             Wann ist die Beratung verpflichtend?
           </h2>
           <div className="mt-8 grid gap-5 md:grid-cols-3">
@@ -214,7 +235,7 @@ export default function PrivatePflegeberatungPage() {
       {/* Block 5 */}
       <section className="border-t border-[#0F4F68]/10 bg-white py-14 sm:py-16" aria-labelledby="bewertungen-heading">
         <Container>
-          <h2 id="bewertungen-heading" className="text-2xl font-bold tracking-tight text-[#0F4F68] sm:text-3xl">
+          <h2 id="bewertungen-heading" className={SECTION_TITLE_CLASS}>
             Unsere Bewertungen
           </h2>
           <p className="mt-4 max-w-3xl text-base leading-relaxed text-neutral-600 sm:text-lg">
@@ -239,7 +260,7 @@ export default function PrivatePflegeberatungPage() {
       {/* Block 6: FAQ */}
       <section className="border-t border-[#0F4F68]/10 bg-[#fafbfc] py-14 sm:py-16" aria-labelledby="faq-heading">
         <Container>
-          <h2 id="faq-heading" className="text-2xl font-bold tracking-tight text-[#0F4F68] sm:text-3xl">
+          <h2 id="faq-heading" className={SECTION_TITLE_CLASS}>
             Häufig gestellte Fragen rund um die Pflegeberatung
           </h2>
           <div className="mx-auto mt-8 max-w-3xl">
