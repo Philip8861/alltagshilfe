@@ -103,10 +103,9 @@ export default function HomePage() {
       className="flex min-h-[60vh] w-full max-w-[100vw] flex-col overflow-x-clip pt-0 pb-0"
       style={{ backgroundColor: "#fafbfc" }}
     >
-      {/* Hero ohne Skalierung: startseite_front-Breakout (lg:mr calc) bezieht sich auf den Viewport-Rand, nicht auf scale-90 */}
       <section className="box-border w-full pt-0 pb-6 sm:pb-8 lg:pb-[clamp(1.5rem,2vw+0.75rem,2.5rem)]">
         <div className="box-border mx-auto w-full min-w-0 max-w-7xl px-4 sm:px-6 lg:px-[var(--ahs-page-gutter)]">
-          {/* Oberer Bereich: Bild rechts bis an den Viewport-Rand, Text links (Desktop) */}
+          {/* Bild rechts bis an den Viewport-Rand (lg:mr calc), Text links (Desktop) */}
           <div className="relative min-w-0">
             <div className="flex min-w-0 justify-end">
               <div
@@ -165,18 +164,12 @@ export default function HomePage() {
               </header>
             </div>
           </div>
+
+          <div className="lg:-mt-[clamp(6%,8vw,10%)] lg:-translate-x-[5%]">
+            <StartEinstiegsHilfe />
+          </div>
         </div>
       </section>
-
-      {/* Ab hier: Startseite visuell ~10 % kleiner */}
-      <div className="mx-auto flex min-h-0 min-w-0 w-full max-w-full flex-1 flex-col origin-top scale-90 motion-reduce:scale-100">
-        <section className="box-border w-full pt-0 pb-2 sm:pb-4">
-          <div className="box-border mx-auto w-full min-w-0 max-w-7xl px-4 sm:px-6 lg:px-[var(--ahs-page-gutter)]">
-            <div className="lg:-mt-[clamp(6%,8vw,10%)] lg:-translate-x-[5%]">
-              <StartEinstiegsHilfe />
-            </div>
-          </div>
-        </section>
 
       <section className="relative z-20 mt-2 w-full bg-[#F2F9FA] px-4 pt-8 pb-10 sm:mt-4 sm:px-6 sm:pt-12 sm:pb-12 lg:px-[var(--ahs-page-gutter)]">
         <svg
@@ -309,7 +302,6 @@ export default function HomePage() {
           className="pointer-events-none absolute left-0 top-0 h-10 w-full -translate-y-2 bg-gradient-to-b from-[#F2F9FA]/85 to-transparent"
           aria-hidden
         />
-      </div>
       </div>
     </article>
   );
