@@ -4,6 +4,7 @@ import { KundenstimmenCarousel } from "@/components/home/KundenstimmenCarousel";
 import { StartEinstiegsHilfe } from "@/components/home/StartEinstiegsHilfe";
 import { StandortNummerEinsReveal } from "@/components/standorte/StandortNummerEinsReveal";
 import { StandortWechselBild } from "@/components/standorte/StandortWechselBild";
+import { PFLEGEBOX_KONFIGURATOR_PAGE } from "@/lib/pflegebox-konfigurator-path";
 
 const HERO_INTRO = {
   brand: "Alltagshilfe-Süd",
@@ -15,6 +16,12 @@ const HERO_INTRO = {
   partnerLine:
     "Ihr verlässlicher Partner für Haushaltshilfe, Betreuung, Pflegeberatung und Pflegehilfsmittel.",
 } as const;
+
+const HOME_HERO_PFLEGE_VORTEILE = [
+  "Ab Pflegegrad 1 kostenlos",
+  "Kostenfreier und schneller Versand",
+  "Zugelassen bei allen Krankenkassen",
+] as const;
 
 function HeroCheckIcon({ className = "" }: { className?: string }) {
   return (
@@ -34,6 +41,27 @@ function HeroCheckIcon({ className = "" }: { className?: string }) {
         <path d="M20 6L9 17l-5-5" />
       </svg>
     </span>
+  );
+}
+
+/** Wie Kostenfrei-Landing: Zahnrad für Konfigurator-Link. */
+function HeroKonfiguratorGearIcon({ className = "" }: { className?: string }) {
+  return (
+    <svg
+      className={`shrink-0 motion-safe:animate-[spin_4s_linear_infinite] ${className}`.trim()}
+      fill="none"
+      stroke="currentColor"
+      viewBox="0 0 24 24"
+      aria-hidden
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={2}
+        d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
+      />
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+    </svg>
   );
 }
 
@@ -104,74 +132,113 @@ export default function HomePage() {
       style={{ backgroundColor: "#fafbfc" }}
     >
       <div className="mx-auto flex min-h-0 min-w-0 w-[calc(100%/1.1)] max-w-[calc(100%/1.1)] flex-1 flex-col origin-top scale-110 motion-reduce:w-full motion-reduce:max-w-none motion-reduce:scale-100">
-        <section className="box-border w-full pt-0 pb-6 sm:pb-8 lg:pb-[clamp(1.5rem,2vw+0.75rem,2.5rem)]">
-        <div className="box-border mx-auto w-full min-w-0 max-w-7xl px-4 sm:px-6 lg:px-[var(--ahs-page-gutter)]">
-          {/* Oberer Bereich: Bild rechts, Überschrift + drei Punkte links, etwas oberhalb der Bildmitte (Desktop) */}
-          <div className="relative min-w-0">
-            <div className="flex min-w-0 justify-end">
-              <div
-                className="relative ml-auto w-full min-w-0 max-w-[min(88vw,100%)] opacity-0 animate-fade-in-up motion-reduce:opacity-100 lg:max-w-[min(88vw,min(100%,52rem))] lg:mr-[calc((100vw-100%)/-2)]"
-                style={{ animationDelay: "0.08s" }}
-              >
-                <div className="w-full">
-                  {/* Hero: unoptimized — Next/Image-Wrapper würde die feste horizontale Einordnung verschieben. */}
-                  <Image
-                    src="/images/startseite_front.webp"
-                    alt="Gemeinsam zur passenden Unterstützung im Alltag"
-                    width={900}
-                    height={700}
-                    sizes="(max-width: 1023px) 100vw, (max-width: 1400px) 88vw, 900px"
-                    className="box-border block h-auto w-full max-w-full object-contain object-right [filter:drop-shadow(0_10px_22px_rgba(15,79,104,0.2))_drop-shadow(0_4px_12px_rgba(15,79,104,0.12))] [will-change:filter]"
-                    priority
-                    unoptimized
-                  />
+        <section className="relative z-0 box-border w-full pt-0 pb-10 sm:pb-16 lg:pb-[clamp(5.5rem,12vh+2rem,9rem)] lg:pt-[clamp(2rem,5vh+1.25rem,4.75rem)] xl:pb-[clamp(6.5rem,13vh+2.5rem,10rem)]">
+          <div className="box-border mx-auto w-full min-w-0 max-w-7xl px-4 sm:px-6 lg:px-[var(--ahs-page-gutter)]">
+            {/* Layout wie /pflegehilfsmittel/kostenfreie-pflegehilfsmittel: Text links, Bild rechts; mobil Bild oben */}
+            <div className="flex min-w-0 flex-col-reverse items-center gap-10 lg:grid lg:grid-cols-[minmax(0,0.34fr)_minmax(0,0.66fr)] lg:items-center lg:justify-items-stretch lg:gap-x-[clamp(1.5rem,3vw,3.25rem)] lg:gap-y-0">
+              <div className="box-border w-full min-w-0 max-w-full space-y-[clamp(1.25rem,2vh+0.75rem,1.75rem)] lg:min-w-0 lg:justify-self-start lg:space-y-[clamp(1.15rem,1.6vh+0.7rem,1.75rem)] lg:-translate-x-[clamp(0.75rem,4.5vw,3rem)] lg:pr-0 motion-reduce:lg:translate-x-0">
+                <header className="text-left">
+                  <h1
+                    className="text-balance text-3xl font-extrabold leading-tight tracking-tight text-[#0F4F68] opacity-0 motion-reduce:opacity-100 animate-fade-in-up sm:text-4xl lg:text-[clamp(1.75rem,1.05rem+2.5vw,3rem)]"
+                    style={{ animationDelay: "0s" }}
+                  >
+                    {HERO_INTRO.brand}
+                  </h1>
+                  <ul
+                    className="mt-5 min-w-0 space-y-3 sm:mt-6 sm:space-y-3.5 lg:mt-0 lg:space-y-[clamp(0.65rem,0.35rem+0.9vw,1rem)]"
+                    aria-label="Ihre Vorteile auf einen Blick"
+                  >
+                    {HERO_INTRO.taglineLines.map((line, i) => (
+                      <li
+                        key={line}
+                        className="flex min-w-0 items-center gap-3 text-pretty text-lg font-semibold leading-snug text-[#0F4F68] opacity-0 motion-reduce:opacity-100 animate-fade-in-up sm:text-xl lg:text-[clamp(1.05rem,0.82rem+0.5vw,1.35rem)]"
+                        style={{
+                          animationDelay: `${0.45 + i * 0.22}s`,
+                        }}
+                      >
+                        <HeroCheckIcon />
+                        <span>{line}</span>
+                      </li>
+                    ))}
+                  </ul>
+                  <p
+                    className="mt-5 max-w-prose text-pretty text-lg font-normal leading-relaxed text-neutral-600 opacity-0 motion-reduce:opacity-100 animate-fade-in-up sm:mt-6 sm:text-xl lg:text-[clamp(1.05rem,0.85rem+0.42vw,1.3rem)]"
+                    style={{ animationDelay: "1.12s" }}
+                  >
+                    {HERO_INTRO.partnerLine}
+                  </p>
+                </header>
+
+                <div className="space-y-[clamp(1rem,1.5vh+0.5rem,1.35rem)] border-t border-[#0F4F68]/10 pt-[clamp(1rem,1.8vh+0.5rem,1.5rem)]">
+                  <h2
+                    className="text-balance text-3xl font-extrabold leading-tight tracking-tight text-[#0F4F68] opacity-0 motion-reduce:opacity-100 animate-fade-in-up sm:text-4xl lg:text-[clamp(1.75rem,1.05rem+2.5vw,3rem)]"
+                    style={{ animationDelay: "1.2s" }}
+                  >
+                    <span className="block">Ihre kostenfreien Pflegehilfsmittel</span>
+                    <span className="mt-2 block sm:mt-1.5 lg:mt-2">im Wert von 42&nbsp;€ monatlich</span>
+                  </h2>
+                  <ul
+                    className="mt-5 min-w-0 space-y-3 overflow-x-auto overflow-y-visible pb-1 sm:mt-6 sm:space-y-3.5 lg:mt-0 lg:space-y-[clamp(0.65rem,0.35rem+0.9vw,1rem)]"
+                    aria-label="Vorteile der Pflegebox"
+                  >
+                    {HOME_HERO_PFLEGE_VORTEILE.map((line, i) => (
+                      <li
+                        key={line}
+                        className="flex min-w-0 items-center gap-3 text-pretty text-lg font-semibold leading-snug text-[#0F4F68] opacity-0 motion-reduce:opacity-100 animate-fade-in-up sm:text-xl lg:text-[clamp(1.05rem,0.82rem+0.5vw,1.35rem)]"
+                        style={{
+                          animationDelay: `${1.32 + i * 0.22}s`,
+                        }}
+                      >
+                        <HeroCheckIcon />
+                        <span>{line}</span>
+                      </li>
+                    ))}
+                  </ul>
+                  <div
+                    className="pt-2 opacity-0 motion-reduce:opacity-100 animate-fade-in-up"
+                    style={{ animationDelay: "1.98s" }}
+                  >
+                    <Link
+                      href={PFLEGEBOX_KONFIGURATOR_PAGE}
+                      className="flex w-full transform items-center justify-center gap-2 rounded-xl bg-[#F78F2E] px-6 py-3 text-lg font-bold text-white shadow-lg transition hover:scale-[1.02] hover:opacity-95 focus:outline-none focus:ring-2 focus:ring-[#F78F2E] focus:ring-offset-2 motion-reduce:transform-none sm:w-auto lg:w-auto lg:gap-[clamp(0.35rem,0.25rem+0.35vw,0.55rem)] lg:px-[clamp(1.15rem,0.85rem+1.1vw,1.65rem)] lg:py-[clamp(0.6rem,0.45rem+0.45vw,0.9rem)] lg:text-[clamp(1rem,0.82rem+0.55vw,1.15rem)]"
+                    >
+                      <HeroKonfiguratorGearIcon className="h-5 w-5" />
+                      Pflegebox jetzt konfigurieren
+                    </Link>
+                    <p className="mt-3 min-w-0 max-w-full text-pretty text-center text-sm leading-snug text-neutral-600 sm:text-left lg:text-[clamp(0.8rem,0.7rem+0.35vw,0.95rem)]">
+                      Dauert nur 2 Minuten. Keine Vertragsbindung. Jederzeit kündbar.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="box-border w-full min-w-0 max-w-full lg:min-h-0 lg:translate-x-[clamp(0.75rem,5vw,3.5rem)] lg:justify-self-stretch lg:self-center motion-reduce:lg:translate-x-0">
+                <div className="box-border flex justify-center overflow-x-visible bg-[#fafbfc] px-4 pt-3 pb-6 sm:px-8 sm:pt-4 sm:pb-8 lg:flex lg:justify-end lg:px-0 lg:pb-[clamp(1.75rem,3.5vh+0.75rem,3.25rem)] lg:pt-0">
+                  <div
+                    className="mx-auto w-full min-w-0 max-w-[min(100%,72rem)] origin-top opacity-0 motion-reduce:opacity-100 animate-fade-in-up max-lg:flex max-lg:max-w-full max-lg:justify-center lg:ml-auto lg:w-full lg:max-w-full lg:origin-top-right scale-[0.9] motion-reduce:scale-100"
+                    style={{ animationDelay: "0.08s" }}
+                  >
+                    {/* Hero: unoptimized — Next/Image-Wrapper; 10 % kleiner, Ursprung oben rechts (Eck) */}
+                    <Image
+                      src="/images/startseite_front.webp"
+                      alt="Gemeinsam zur passenden Unterstützung im Alltag"
+                      width={900}
+                      height={700}
+                      sizes="(max-width: 1023px) 100vw, (max-width: 1536px) 66vw, 900px"
+                      className="box-border block h-auto w-full max-w-full object-contain object-center lg:object-contain lg:object-right max-lg:mx-auto [filter:drop-shadow(0_10px_22px_rgba(15,79,104,0.2))_drop-shadow(0_4px_12px_rgba(15,79,104,0.12))] [will-change:filter]"
+                      priority
+                      unoptimized
+                    />
+                  </div>
                 </div>
               </div>
             </div>
 
-            <div
-              className="relative z-10 mt-8 max-w-lg text-left sm:max-w-xl lg:absolute lg:left-0 lg:right-auto lg:top-[clamp(34%,calc(33%+0.35vw),40%)] lg:mt-0 lg:w-full lg:max-w-none lg:-translate-y-1/2 lg:-translate-x-[5%]"
-            >
-              <header className="text-left lg:max-w-[min(42vw,clamp(22rem,32vw+8rem,30rem))] xl:max-w-[min(38vw,clamp(23rem,28vw+9rem,31rem))] 2xl:max-w-[min(34vw,clamp(24rem,26vw+10rem,32rem))]">
-                <h1
-                  className="text-balance text-3xl font-extrabold leading-tight tracking-tight text-[#0F4F68] opacity-0 motion-reduce:opacity-100 animate-fade-in-up sm:text-4xl lg:text-[clamp(2rem,1.05rem+2.6vw,3rem)]"
-                  style={{ animationDelay: "0s" }}
-                >
-                  {HERO_INTRO.brand}
-                </h1>
-                <ul
-                  className="mt-5 space-y-3 sm:mt-6 sm:space-y-3.5 lg:space-y-[clamp(0.65rem,0.35rem+0.9vw,1rem)]"
-                  aria-label="Ihre Vorteile auf einen Blick"
-                >
-                  {HERO_INTRO.taglineLines.map((line, i) => (
-                    <li
-                      key={line}
-                      className="flex items-center gap-3 text-pretty text-lg font-semibold leading-snug text-[#0F4F68] opacity-0 motion-reduce:opacity-100 animate-fade-in-up sm:text-xl lg:text-[clamp(1.05rem,0.82rem+0.5vw,1.35rem)]"
-                      style={{
-                        /* Nach Abschluss der Überschriften-Animation (~0,6s) nacheinander */
-                        animationDelay: `${0.68 + i * 0.26}s`,
-                      }}
-                    >
-                      <HeroCheckIcon />
-                      <span>{line}</span>
-                    </li>
-                  ))}
-                </ul>
-                <p
-                  className="mt-5 max-w-prose text-pretty text-lg font-normal leading-relaxed text-neutral-600 opacity-0 motion-reduce:opacity-100 animate-fade-in-up sm:mt-6 sm:text-xl lg:text-[clamp(1.05rem,0.85rem+0.42vw,1.3rem)]"
-                  style={{ animationDelay: "1.22s" }}
-                >
-                  {HERO_INTRO.partnerLine}
-                </p>
-              </header>
+            <div className="mt-10 w-full lg:mt-12 lg:-translate-x-[clamp(0.75rem,4.5vw,3rem)] motion-reduce:lg:translate-x-0">
+              <StartEinstiegsHilfe />
             </div>
           </div>
-
-          <div className="lg:-mt-[clamp(6%,8vw,10%)] lg:-translate-x-[5%]">
-            <StartEinstiegsHilfe />
-          </div>
-        </div>
-      </section>
+        </section>
 
       <section className="relative z-20 mt-2 w-full bg-[#F2F9FA] px-4 pt-8 pb-10 sm:mt-4 sm:px-6 sm:pt-12 sm:pb-12 lg:px-[var(--ahs-page-gutter)]">
         <svg
