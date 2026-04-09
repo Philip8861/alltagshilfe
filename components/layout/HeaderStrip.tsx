@@ -43,12 +43,12 @@ export function HeaderStrip(_props: HeaderStripProps) {
   return (
     <div
       className={cn(
-        "flex w-full flex-col items-stretch gap-2 px-4 py-2.5 text-sm font-medium text-white/95 md:flex-row md:items-center md:justify-between md:gap-4",
+        "flex w-full flex-col items-stretch gap-1.5 px-3 py-1.5 text-xs font-medium text-white/95 md:flex-row md:items-center md:justify-between md:gap-3",
         hideStripOnMobile ? "hidden md:flex" : "flex",
       )}
-      style={{ backgroundColor: "#0F4F68", minHeight: "3.25rem" }}
+      style={{ backgroundColor: "#0F4F68", minHeight: "2.45rem" }}
     >
-      <span className="text-center md:text-left md:text-base md:font-semibold" aria-live="polite">
+      <span className="text-center md:text-left md:text-sm md:font-semibold" aria-live="polite">
         {TAGLINE.slice(0, taglineLength)}
         {taglineLength < TAGLINE.length && <span className="animate-pulse" aria-hidden>|</span>}
       </span>
@@ -57,8 +57,8 @@ export function HeaderStrip(_props: HeaderStripProps) {
         <Link
           href={partnerLoginHref}
           className={cn(
-            "inline-flex min-h-10 items-center justify-center whitespace-nowrap rounded-md px-2 py-1 text-sm font-normal text-white/85 underline decoration-white/35 underline-offset-4 transition-colors hover:text-white hover:decoration-white/60 focus:outline-none focus:ring-2 focus:ring-white/80 focus:ring-offset-2 focus:ring-offset-[#0F4F68]",
-            partnerActive && "font-medium text-white decoration-white/55",
+            "inline-flex min-h-8 items-center justify-center whitespace-nowrap rounded-md px-2 py-0.5 text-sm font-bold text-white/95 no-underline transition-colors hover:text-white focus:outline-none focus:ring-2 focus:ring-white/80 focus:ring-offset-2 focus:ring-offset-[#0F4F68]",
+            partnerActive && "text-white",
           )}
         >
           Login

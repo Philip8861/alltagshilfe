@@ -7,6 +7,16 @@ import { AHS_READABILITY_OPEN_EVENT } from "@/components/accessibility/Readabili
 import { LanguageFlags } from "@/components/layout/LanguageFlags";
 import { isPflegeboxKonfiguratorPagePath } from "@/lib/pflegebox-konfigurator-path";
 
+const KOSTENFREIE_PFLEGEHILFSMITTEL_LANDING = "/pflegehilfsmittel/kostenfreie-pflegehilfsmittel";
+
+function isKostenfreiePflegehilfsmittelLandingPath(pathname: string | null): boolean {
+  if (!pathname) return false;
+  return (
+    pathname === KOSTENFREIE_PFLEGEHILFSMITTEL_LANDING ||
+    pathname.startsWith(`${KOSTENFREIE_PFLEGEHILFSMITTEL_LANDING}/`)
+  );
+}
+
 const ICON_STROKE = "#FFFFFF";
 const ICON_BG = "#0F4F68";
 
@@ -361,7 +371,9 @@ export function ReadabilityZoomControls() {
   };
 
   const isKontakt = useMemo(() => pathname === "/kontakt", [pathname]);
-  const hideLauncher = isKontakt || isKonfiguratorOpen;
+  /** Kostenfrei-Landing: schwebender Lesbarkeits-Button aus – dort Pflegeboxi unten links; Barrierefreiheit weiter über Footer-Link. */
+  const hideLauncher =
+    isKontakt || isKonfiguratorOpen || isKostenfreiePflegehilfsmittelLandingPath(pathname);
   const selectedFontIndex = FONT_OPTIONS.findIndex((f) => f.id === selectedFont);
   const cycleFont = (direction: -1 | 1) => {
     const nextIndex = (selectedFontIndex + direction + FONT_OPTIONS.length) % FONT_OPTIONS.length;

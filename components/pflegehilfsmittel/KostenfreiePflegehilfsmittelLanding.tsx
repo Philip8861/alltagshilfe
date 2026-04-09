@@ -3,6 +3,7 @@ import Link from "next/link";
 import { siteConfig } from "@/config/site";
 import { PFLEGEBOX_KONFIGURATOR_PAGE } from "@/lib/pflegebox-konfigurator-path";
 import { RevealOnScroll } from "@/components/pflegehilfsmittel/RevealOnScroll";
+import { PflegeboxiLandingChatbot } from "@/components/pflegehilfsmittel/PflegeboxiLandingChatbot";
 
 /** Einziges Hero-Bild dieser Seite (Datei unverändert aus /public/images). */
 const KOSTENFREI_HERO_IMG = "/images/kostenfreiepflegehilfsmittel.webp";
@@ -604,6 +605,7 @@ export function KostenfreiePflegehilfsmittelLanding() {
           </RevealOnScroll>
         </section>
       </article>
+      <PflegeboxiLandingChatbot />
     </div>
   );
 }

@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { navLinks, type NavLink } from "@/config/navigation";
+import { isPflegeboxKonfiguratorPagePath } from "@/lib/pflegebox-konfigurator-path";
 import { cn } from "@/lib/utils";
 
 function navParentOrChildActive(item: NavLink, pathname: string | null) {
@@ -21,6 +22,9 @@ export function HeaderNav() {
   const [openMobileDropdown, setOpenMobileDropdown] = useState<string | null>(null);
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
+
+  /** Mobil: Backdrop beginnt unter vollem Header (ohne Teal-Streifen auf Pflegebox-Konfigurator kürzer). */
+  const mobileBackdropTopClass = isPflegeboxKonfiguratorPagePath(pathname) ? "top-12" : "top-[5.5rem]";
 
   return (
     <>
@@ -165,7 +169,10 @@ export function HeaderNav() {
         typeof document !== "undefined" &&
         createPortal(
           <div
-            className="fixed inset-0 top-16 left-0 right-0 bottom-0 z-[45] bg-black/60 md:hidden"
+            className={cn(
+              "fixed inset-0 left-0 right-0 bottom-0 z-[45] bg-black/60 md:hidden",
+              mobileBackdropTopClass,
+            )}
             aria-hidden
             onClick={() => setMobileOpen(false)}
           />,
@@ -174,8 +181,8 @@ export function HeaderNav() {
       <div
         id="mobile-menu"
         className={cn(
-          "absolute left-0 right-0 top-16 z-50 border-b border-[#0F4F68]/15 bg-white md:hidden",
-          mobileOpen ? "block" : "hidden"
+          "absolute left-0 right-0 top-full z-50 border-b border-[#0F4F68]/15 bg-white md:hidden",
+          mobileOpen ? "block" : "hidden",
         )}
         role="dialog"
         aria-label="Mobile Menü"
