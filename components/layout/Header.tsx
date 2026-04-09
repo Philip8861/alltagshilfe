@@ -18,7 +18,7 @@ export function Header({ nunitoClass = "", balooClass = "" }: HeaderProps) {
         <Container className="grid min-h-16 grid-cols-[1fr_auto_1fr] md:grid-cols-[auto_1fr] items-center gap-2 overflow-visible pr-3 sm:pr-4 md:gap-4 lg:gap-6 lg:pr-6">
           <Link
             href="/"
-            className="-ml-4 flex shrink-0 focus:outline-none rounded sm:-ml-6 md:h-10 md:w-auto"
+            className="-ml-4 flex shrink-0 -translate-y-[5%] focus:outline-none rounded sm:-ml-6 md:h-10 md:w-auto"
             aria-label={`${siteConfig.name} – Startseite`}
           >
             <Image

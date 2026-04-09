@@ -1,7 +1,7 @@
 "use client";
 
 import { createPortal } from "react-dom";
-import { useEffect, useLayoutEffect, useMemo, useRef, useState, type CSSProperties } from "react";
+import { useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
 import { usePathname } from "next/navigation";
 import { AHS_READABILITY_OPEN_EVENT } from "@/components/accessibility/ReadabilityLaunchLink";
 import { LanguageFlags } from "@/components/layout/LanguageFlags";
@@ -57,7 +57,6 @@ function fixedLaunchStyle(partial: Pick<CSSProperties, "right" | "bottom">): CSS
 
 export function ReadabilityZoomControls() {
   const pathname = usePathname();
-  const [launchSlot, setLaunchSlot] = useState<HTMLElement | null>(null);
   const [uiLang, setUiLang] = useState<"de" | "en">("de");
   const [mounted, setMounted] = useState(false);
   const [zoomLevel, setZoomLevel] = useState(100);
@@ -93,11 +92,6 @@ export function ReadabilityZoomControls() {
       // ignore session storage errors
     }
   }, []);
-
-  useLayoutEffect(() => {
-    const el = document.getElementById("ahs-readability-launcher-root");
-    setLaunchSlot(el);
-  }, [pathname]);
 
   useEffect(() => {
     const readLang = () => {
@@ -401,11 +395,10 @@ export function ReadabilityZoomControls() {
     return () => window.clearTimeout(t);
   }, [showUndo]);
 
-  const launcherInHeader = Boolean(launchSlot);
-
+  /** Kein Launcher im Header: schwebender Button; bei geöffnetem Panel ausblenden (Lupe/% nur im Dialog unter der Überschrift). */
   const launcherNode =
-    hideLauncher ? null : widgetHidden ? (
-      launcherInHeader ? (
+    hideLauncher || open ? null : widgetHidden ? (
+      <div style={buttonWrapStyle}>
         <button
           type="button"
           onClick={() => {
@@ -413,105 +406,51 @@ export function ReadabilityZoomControls() {
             setShowUndo(false);
           }}
           aria-label={uiLang === "en" ? "Show readability widget again" : "Lesbarkeits-Widget wieder einblenden"}
-          className="flex h-8 w-8 items-center justify-center rounded-md border border-white/35 bg-white/10 text-white shadow-sm transition hover:bg-white/20 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#0F4F68]"
+          className="flex h-7 w-7 items-center justify-center rounded-lg shadow-[0_8px_18px_rgba(15,79,104,0.34)] transition hover:opacity-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68] focus-visible:ring-offset-2"
+          style={{ backgroundColor: ICON_BG }}
         >
-          <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+          <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke={ICON_STROKE} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
             <path d="M21 21l-4.35-4.35" />
             <circle cx="11" cy="11" r="7" />
           </svg>
         </button>
-      ) : (
-        <div style={buttonWrapStyle}>
-          <button
-            type="button"
-            onClick={() => {
-              setWidgetHidden(false);
-              setShowUndo(false);
-            }}
-            aria-label={uiLang === "en" ? "Show readability widget again" : "Lesbarkeits-Widget wieder einblenden"}
-            className="flex h-7 w-7 items-center justify-center rounded-lg shadow-[0_8px_18px_rgba(15,79,104,0.34)] transition hover:opacity-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68] focus-visible:ring-offset-2"
-            style={{ backgroundColor: ICON_BG }}
-          >
-            <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke={ICON_STROKE} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-              <path d="M21 21l-4.35-4.35" />
-              <circle cx="11" cy="11" r="7" />
-            </svg>
-          </button>
-        </div>
-      )
+      </div>
     ) : (
-      launcherInHeader ? (
-        <div className="flex items-center gap-1">
-          <button
-            type="button"
-            onClick={() => setOpen((v) => !v)}
-            aria-haspopup="menu"
-            aria-expanded={open}
-            aria-label={
-              uiLang === "en"
-                ? `Open readability settings. Current font size: ${zoomLevel}%`
-                : `Lesbarkeit Einstellungen öffnen. Aktuelle Schriftgröße: ${zoomLevel}%`
-            }
-            className="flex min-h-[36px] min-w-[36px] flex-col items-center justify-center gap-0 rounded-lg border border-white/35 bg-white/10 px-1.5 py-0.5 shadow-sm transition hover:bg-white/20 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#0F4F68]"
-          >
-            <svg className="h-4 w-4 shrink-0 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-              <path d="M21 21l-4.35-4.35" />
-              <circle cx="11" cy="11" r="7" />
-            </svg>
-            <span className="text-[10px] font-extrabold leading-tight tracking-wide text-white">{zoomLevel}%</span>
-          </button>
-          <button
-            type="button"
-            onClick={() => {
-              setWidgetHidden(true);
-              setShowUndo(true);
-              setOpen(false);
-            }}
-            aria-label={uiLang === "en" ? "Close readability widget" : "Lesbarkeits-Widget schließen"}
-            className="inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-white/40 bg-white/15 text-white shadow-sm transition hover:bg-white/25 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#0F4F68]"
-          >
-            <span aria-hidden className="text-sm leading-none font-extrabold">
-              ×
-            </span>
-          </button>
-        </div>
-      ) : (
-        <div style={buttonWrapStyle}>
-          <button
-            type="button"
-            onClick={() => setOpen((v) => !v)}
-            aria-haspopup="menu"
-            aria-expanded={open}
-            aria-label={
-              uiLang === "en"
-                ? `Open readability settings. Current font size: ${zoomLevel}%`
-                : `Lesbarkeit Einstellungen öffnen. Aktuelle Schriftgröße: ${zoomLevel}%`
-            }
-            className="flex min-h-[60px] min-w-[60px] flex-col items-center justify-center gap-0.5 rounded-2xl px-3 py-2 shadow-[0_10px_36px_rgba(15,79,104,0.34)] transition hover:opacity-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68] focus-visible:ring-offset-2"
-            style={{ backgroundColor: ICON_BG }}
-          >
-            <svg className="h-7 w-7 shrink-0" viewBox="0 0 24 24" fill="none" stroke={ICON_STROKE} strokeWidth="2.75" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-              <path d="M21 21l-4.35-4.35" />
-              <circle cx="11" cy="11" r="7" />
-            </svg>
-            <span className="text-[15px] font-extrabold tracking-wide text-white">{zoomLevel}%</span>
-          </button>
-          <button
-            type="button"
-            onClick={() => {
-              setWidgetHidden(true);
-              setShowUndo(true);
-              setOpen(false);
-            }}
-            aria-label={uiLang === "en" ? "Close readability widget" : "Lesbarkeits-Widget schließen"}
-            className="absolute -right-2 -top-8 inline-flex h-7 w-7 items-center justify-center rounded-full bg-[#0F4F68] text-white shadow-[0_10px_20px_rgba(15,79,104,0.25)] transition hover:opacity-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68] focus-visible:ring-offset-2"
-          >
-            <span aria-hidden className="text-lg leading-none font-extrabold">
-              ×
-            </span>
-          </button>
-        </div>
-      )
+      <div style={buttonWrapStyle}>
+        <button
+          type="button"
+          onClick={() => setOpen((v) => !v)}
+          aria-haspopup="menu"
+          aria-expanded={open}
+          aria-label={
+            uiLang === "en"
+              ? `Open readability settings. Current font size: ${zoomLevel}%`
+              : `Lesbarkeit Einstellungen öffnen. Aktuelle Schriftgröße: ${zoomLevel}%`
+          }
+          className="flex min-h-[60px] min-w-[60px] flex-col items-center justify-center gap-0.5 rounded-2xl px-3 py-2 shadow-[0_10px_36px_rgba(15,79,104,0.34)] transition hover:opacity-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68] focus-visible:ring-offset-2"
+          style={{ backgroundColor: ICON_BG }}
+        >
+          <svg className="h-7 w-7 shrink-0" viewBox="0 0 24 24" fill="none" stroke={ICON_STROKE} strokeWidth="2.75" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+            <path d="M21 21l-4.35-4.35" />
+            <circle cx="11" cy="11" r="7" />
+          </svg>
+          <span className="text-[15px] font-extrabold tracking-wide text-white">{zoomLevel}%</span>
+        </button>
+        <button
+          type="button"
+          onClick={() => {
+            setWidgetHidden(true);
+            setShowUndo(true);
+            setOpen(false);
+          }}
+          aria-label={uiLang === "en" ? "Close readability widget" : "Lesbarkeits-Widget schließen"}
+          className="absolute -right-2 -top-8 inline-flex h-7 w-7 items-center justify-center rounded-full bg-[#0F4F68] text-white shadow-[0_10px_20px_rgba(15,79,104,0.25)] transition hover:opacity-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68] focus-visible:ring-offset-2"
+        >
+          <span aria-hidden className="text-lg leading-none font-extrabold">
+            ×
+          </span>
+        </button>
+      </div>
     );
 
   const overlayNode = (
@@ -542,9 +481,30 @@ export function ReadabilityZoomControls() {
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-start justify-between gap-3">
-              <div>
+              <div className="min-w-0 flex-1">
                 <p className="text-lg font-extrabold text-[#0F4F68] sm:text-xl">{uiLang === "en" ? "Accessible Website" : "Barrierefreie Homepage"}</p>
                 <p className="mt-1 text-sm text-neutral-600">{uiLang === "en" ? "Change your display settings here." : "Hier können Sie ihre Darstellung ändern."}</p>
+                <div
+                  className="mt-4 flex items-center gap-3 rounded-2xl border border-[#0F4F68]/12 bg-[#F2F9FA]/60 px-4 py-3"
+                  aria-label={
+                    uiLang === "en"
+                      ? `Current page zoom ${zoomLevel} percent`
+                      : `Aktuelle Seitenvergrößerung ${zoomLevel} Prozent`
+                  }
+                >
+                  <div className="flex h-[52px] min-w-[52px] flex-col items-center justify-center gap-0 rounded-xl border border-[#0F4F68]/18 bg-white px-2 py-1 shadow-sm">
+                    <svg className="h-5 w-5 shrink-0 text-[#0F4F68]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                      <path d="M21 21l-4.35-4.35" />
+                      <circle cx="11" cy="11" r="7" />
+                    </svg>
+                    <span className="text-[11px] font-extrabold leading-tight tracking-wide text-[#0F4F68]">{zoomLevel}%</span>
+                  </div>
+                  <p className="text-sm text-neutral-600">
+                    {uiLang === "en"
+                      ? "This is your current text size on the site. Adjust it below."
+                      : "So groß stellt sich die Seite aktuell dar. Unten können Sie die Schriftgröße ändern."}
+                  </p>
+                </div>
               </div>
               <LanguageFlags />
               <button type="button" onClick={() => setOpen(false)} className="rounded-lg p-2 text-neutral-600 hover:bg-neutral-50" aria-label={uiLang === "en" ? "Close settings" : "Einstellungen schließen"}>
@@ -703,11 +663,7 @@ export function ReadabilityZoomControls() {
   return (
     <>
       {createPortal(overlayNode, document.body)}
-      {launcherNode
-        ? launchSlot
-          ? createPortal(launcherNode, launchSlot)
-          : createPortal(launcherNode, document.body)
-        : null}
+      {launcherNode ? createPortal(launcherNode, document.body) : null}
     </>
   );
 }
