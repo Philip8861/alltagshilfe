@@ -14,13 +14,13 @@
    */
   @media (min-width: 1024px) and (max-width: 1279px) {
     html {
-      font-size: 93.75%;
+      font-size: 91.25%;
     }
   }
 
   @media (min-width: 1280px) and (max-width: 1535px) {
     html {
-      font-size: 96.875%;
+      font-size: 94.5%;
     }
   }
 

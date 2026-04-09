@@ -127,40 +127,42 @@ export default function HomePage() {
               </div>
             </div>
 
-            <header
-              className="relative z-10 mt-8 max-w-lg text-left sm:max-w-xl lg:absolute lg:left-0 lg:right-auto lg:top-[39%] lg:mt-0 lg:max-w-[min(26rem,42vw)] lg:-translate-y-1/2 xl:max-w-[min(28rem,38vw)] 2xl:max-w-[min(30rem,34vw)]"
+            <div
+              className="relative z-10 mt-8 max-w-lg text-left sm:max-w-xl lg:absolute lg:left-0 lg:right-auto lg:top-[39%] lg:mt-0 lg:w-full lg:max-w-none lg:-translate-y-1/2 lg:-translate-x-[10.5%]"
             >
-              <h1
-                className="text-balance text-3xl font-extrabold leading-tight tracking-tight text-[#0F4F68] opacity-0 motion-reduce:opacity-100 animate-fade-in-up sm:text-4xl lg:text-5xl"
-                style={{ animationDelay: "0s" }}
-              >
-                {HERO_INTRO.brand}
-              </h1>
-              <ul
-                className="mt-5 space-y-3 sm:mt-6 sm:space-y-3.5"
-                aria-label="Ihre Vorteile auf einen Blick"
-              >
-                {HERO_INTRO.taglineLines.map((line, i) => (
-                  <li
-                    key={line}
-                    className="flex items-center gap-3 text-pretty text-lg font-semibold leading-snug text-[#0F4F68] opacity-0 motion-reduce:opacity-100 animate-fade-in-up sm:text-xl"
-                    style={{
-                      /* Nach Abschluss der Überschriften-Animation (~0,6s) nacheinander */
-                      animationDelay: `${0.68 + i * 0.26}s`,
-                    }}
-                  >
-                    <HeroCheckIcon />
-                    <span>{line}</span>
-                  </li>
-                ))}
-              </ul>
-              <p
-                className="mt-5 max-w-prose text-pretty text-lg font-normal leading-relaxed text-neutral-600 opacity-0 motion-reduce:opacity-100 animate-fade-in-up sm:mt-6 sm:text-xl"
-                style={{ animationDelay: "1.22s" }}
-              >
-                {HERO_INTRO.partnerLine}
-              </p>
-            </header>
+              <header className="text-left lg:max-w-[min(26rem,42vw)] xl:max-w-[min(28rem,38vw)] 2xl:max-w-[min(30rem,34vw)]">
+                <h1
+                  className="text-balance text-3xl font-extrabold leading-tight tracking-tight text-[#0F4F68] opacity-0 motion-reduce:opacity-100 animate-fade-in-up sm:text-4xl lg:text-5xl"
+                  style={{ animationDelay: "0s" }}
+                >
+                  {HERO_INTRO.brand}
+                </h1>
+                <ul
+                  className="mt-5 space-y-3 sm:mt-6 sm:space-y-3.5"
+                  aria-label="Ihre Vorteile auf einen Blick"
+                >
+                  {HERO_INTRO.taglineLines.map((line, i) => (
+                    <li
+                      key={line}
+                      className="flex items-center gap-3 text-pretty text-lg font-semibold leading-snug text-[#0F4F68] opacity-0 motion-reduce:opacity-100 animate-fade-in-up sm:text-xl"
+                      style={{
+                        /* Nach Abschluss der Überschriften-Animation (~0,6s) nacheinander */
+                        animationDelay: `${0.68 + i * 0.26}s`,
+                      }}
+                    >
+                      <HeroCheckIcon />
+                      <span>{line}</span>
+                    </li>
+                  ))}
+                </ul>
+                <p
+                  className="mt-5 max-w-prose text-pretty text-lg font-normal leading-relaxed text-neutral-600 opacity-0 motion-reduce:opacity-100 animate-fade-in-up sm:mt-6 sm:text-xl"
+                  style={{ animationDelay: "1.22s" }}
+                >
+                  {HERO_INTRO.partnerLine}
+                </p>
+              </header>
+            </div>
           </div>
 
           <div className="lg:-mt-[10%] lg:-translate-x-[10.5%]">
