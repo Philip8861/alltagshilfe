@@ -9,18 +9,14 @@
   }
 
   /*
-   * Desktop-Zwischenbreiten (nicht Mobile): etwas kleinere Rem-Basis, damit Typo/Abstände/Flächen
-   * proportional mitwachsen – Verhältnis px-4 : max-w-7xl usw. bleibt gleich. Ab 2xl wieder volle Größe.
+   * Desktop (ab lg): Rem-Basis steigt flüssig mit der Viewportbreite (Tailwind nutzt rem).
+   * So skalieren Text, Abstände und die meisten Komponenten mit – ohne Sprünge zwischen Breakpoints.
+   * Mobile/Tablet <1024px: Browser-Standard (typ. 16px). Obere Kappe 16px, unten ~14px auf schmalen Laptops.
+   * Hinweis: feste px-Klassen in Komponenten ändern sich nicht; Bilder: width/max-w + object-* nutzen.
    */
-  @media (min-width: 1024px) and (max-width: 1279px) {
+  @media (min-width: 1024px) {
     html {
-      font-size: 91.25%;
-    }
-  }
-
-  @media (min-width: 1280px) and (max-width: 1535px) {
-    html {
-      font-size: 94.5%;
+      font-size: clamp(14px, 9px + 0.42vw, 16px);
     }
   }
 
