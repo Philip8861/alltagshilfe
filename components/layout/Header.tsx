@@ -15,10 +15,10 @@ export function Header({ nunitoClass = "", balooClass = "" }: HeaderProps) {
     <header className="sticky top-0 z-50 overflow-visible shadow-[0_4px_6px_-1px_rgb(0_0_0/0.07),0_2px_4px_-2px_rgb(0_0_0/0.07)]">
       <HeaderStrip nunitoClass={nunitoClass} balooClass={balooClass} />
       <div className="relative overflow-visible border-b border-[#0F4F68]/15 bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/80">
-        <Container className="grid min-h-12 grid-cols-[1fr_auto_1fr] md:grid-cols-[auto_1fr] items-center gap-1.5 overflow-visible pr-3 sm:pr-4 md:gap-3 lg:gap-[1.125rem] lg:pr-5">
+        <Container className="grid min-h-[3.75rem] grid-cols-[1fr_auto_1fr] md:grid-cols-[auto_1fr] items-center gap-2 overflow-visible pr-3 sm:pr-4 md:gap-4 lg:gap-6 lg:pr-6">
           <Link
             href="/"
-            className="-ml-4 flex shrink-0 -translate-y-[5%] focus:outline-none rounded sm:-ml-6 md:h-8 md:w-auto"
+            className="-ml-4 flex shrink-0 -translate-y-[5%] focus:outline-none rounded sm:-ml-6 md:h-10 md:w-auto"
             aria-label={`${siteConfig.name} – Startseite`}
           >
             <Image
@@ -26,7 +26,7 @@ export function Header({ nunitoClass = "", balooClass = "" }: HeaderProps) {
               alt={siteConfig.name}
               width={207}
               height={53}
-              className="h-[27px] w-auto object-contain sm:h-[30px] md:h-[29px] lg:h-8"
+              className="h-[34px] w-auto object-contain sm:h-[38px] md:h-9 lg:h-10"
               priority
             />
           </Link>

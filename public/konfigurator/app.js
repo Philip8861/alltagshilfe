@@ -917,203 +917,172 @@ function updateItemAvailability(remainingBudget) {
 function initBoxChatbot() {
   const root = document.getElementById("box-chatbot");
   if (!root) return;
-  const avatar = root.querySelector(".box-chatbot-avatar");
+
+  const PFLEGEBOXI_PANEL_INTRO =
+    "Hallo, ich bin Pflegeboxi. Wählen Sie unten ein Thema – ich zeige Ihnen die passende Antwort.";
+
+  /** Wie lib/pflegeboxi-topics.ts – bei Textänderungen beide pflegen. */
+  const PFLEGEBOXI_TOPICS = [
+    {
+      label: "Kostet die Pflegebox etwas?",
+      answer:
+        "Nein, die Box ist für Sie komplett kostenfrei. Die Pflegekasse übernimmt die 42 Euro monatlich.",
+    },
+    {
+      label: "Wer hat Anspruch darauf?",
+      answer:
+        "Alle Personen ab Pflegegrad 1 haben den vollen gesetzlichen Anspruch auf diese monatliche Pauschale.",
+    },
+    {
+      label: "Was ist in der Box?",
+      answer:
+        "Sie finden darin nützliche Helfer wie Einmalhandschuhe, Flächendesinfektion, Händedesinfektion, Bettschutzeinlagen, Masken und Schutzschürzen.",
+    },
+    {
+      label: "Wie bestelle ich die Box?",
+      answer:
+        "In drei einfachen Schritten online konfigurieren, digital unterschreiben und wir übernehmen den gesamten Rest für Sie.",
+      links: [{ href: "/pflegehilfsmittel/pflegebox-konfigurator", label: "Zum Konfigurator" }],
+    },
+    {
+      label: "Muss ich Anträge ausfüllen?",
+      answer:
+        "Nein, wir erledigen die komplette Kommunikation mit der Pflegekasse. Sie können sich entspannt zurücklehnen.",
+    },
+    {
+      label: "Wie lange dauert die Lieferung?",
+      answer:
+        "Nach der Freigabe durch Ihre Kasse erhalten Sie die Lieferung zuverlässig nach etwa fünf bis sieben Werktagen nach Hause.",
+    },
+    {
+      label: "Gibt es eine Vertragsbindung?",
+      answer:
+        "Es gibt bei uns absolut keine festen Laufzeiten. Sie haben maximale Freiheit und können jederzeit kündigen.",
+    },
+    {
+      label: "Kann ich den Inhalt ändern?",
+      answer:
+        "Ja, das ist problemlos möglich. Kontaktieren Sie uns einfach und wir passen Ihre Wunschbox für den nächsten Monat an.",
+    },
+    {
+      label: "Muss ich monatlich Belege einreichen?",
+      answer:
+        "Nein, sobald der Dauerantrag steht, laufen die Belieferung und die Abrechnung ganz automatisch ab.",
+    },
+    {
+      label: "Was passiert mit Restguthaben?",
+      answer:
+        "Die 42 Euro sind eine Höchstgrenze. Nicht genutztes Budget verfällt am Monatsende und wird nicht ausgezahlt.",
+    },
+    {
+      label: "Gilt das auch im Pflegeheim?",
+      answer:
+        "Nein, der Anspruch besteht nur bei häuslicher Pflege. Im Heim ist die Einrichtung für diese Hygieneartikel zuständig.",
+    },
+    {
+      label: "Geht das auch rückwirkend?",
+      answer:
+        "Eine rückwirkende Erstattung ist sehr schwierig. Stellen Sie den Antrag am besten so früh wie möglich direkt über uns.",
+    },
+    {
+      label: "Sind Masken auch dabei?",
+      answer:
+        "Ja, medizinische Masken sowie FFP2 Masken sind fester Bestandteil und werden von der Kasse erstattet.",
+    },
+    {
+      label: "Welche Qualität haben die Produkte?",
+      answer:
+        "Wir bieten Ihnen ausschließlich von Pflegekräften geprüfte und empfohlene Qualitätsprodukte für Ihren Pflegealltag.",
+    },
+    {
+      label: "Warum bei Alltagshilfe Süd bestellen?",
+      answer:
+        "Wir bieten persönliche Erreichbarkeit, extrem schnelle Bearbeitung, direkten Kontakt ohne Warteschleifen und faire Arbeitsbedingungen.",
+    },
+    {
+      label: "Zahle ich Versandkosten?",
+      answer:
+        "Der sorgfältig verpackte Versand erfolgt direkt aus Deutschland und ist für Sie immer absolut kostenfrei.",
+    },
+    {
+      label: "Was sind Verbrauchshilfsmittel?",
+      answer:
+        "Das sind Hygieneartikel für den Einmalgebrauch wie Handschuhe, ganz im Gegensatz zu technischen Hilfsmitteln wie Pflegebetten.",
+    },
+    {
+      label: "Welche Krankenkassen machen mit?",
+      answer: "Wir sind bei ausnahmslos allen Krankenkassen in Deutschland offiziell zugelassen.",
+    },
+    {
+      label: "Geht der Antrag auch per Post?",
+      answer:
+        "Ja, Sie können alles digital und papierarm unterschreiben oder auf Wunsch ganz klassisch den Postweg wählen.",
+    },
+    {
+      label: "Wie erreiche ich Sie bei Fragen?",
+      answer:
+        "Rufen Sie uns gerne gebührenfrei unter 08334 9893330 an. Wir sind von Montag bis Freitag gerne für Sie da.",
+    },
+    {
+      label: "Anderes Anliegen",
+      answer:
+        "Für individuelle Fragen erreichen Sie unseren Kundenservice am besten über die Kontaktseite – wir melden uns gern bei Ihnen.",
+      links: [{ href: "/kontakt", label: "Zur Kontaktseite" }],
+    },
+  ];
+
   const avatarImage = root.querySelector(".box-chatbot-image");
   const windowEl = document.getElementById("box-chatbot-window");
-  const form = document.getElementById("box-chatbot-form");
-  const input = document.getElementById("box-chatbot-input");
-  const messages = document.getElementById("box-chatbot-messages");
+  const replyBubble = document.getElementById("box-chatbot-reply-bubble");
+  const topicsRoot = document.getElementById("box-chatbot-topics");
 
-  function addChatMessage(from, text) {
-    const wrap = document.createElement("div");
-    wrap.className = `box-chatbot-message ${from}`;
-    const bubble = document.createElement("div");
-    bubble.className = "bubble";
-    bubble.textContent = text;
-    wrap.appendChild(bubble);
-    messages.appendChild(wrap);
-    messages.scrollTop = messages.scrollHeight;
+  function wiggleAvatar() {
+    if (!avatarImage) return;
+    avatarImage.classList.remove("wiggle");
+    void avatarImage.offsetWidth;
+    avatarImage.classList.add("wiggle");
+    avatarImage.addEventListener(
+      "animationend",
+      function cleanup() {
+        avatarImage.classList.remove("wiggle");
+        avatarImage.removeEventListener("animationend", cleanup);
+      },
+      { once: true },
+    );
   }
 
-  /** Regelbasiert (kein KI-Chat) – inhaltlich parallel zu lib/pflegeboxi-build-reply.ts (Kontext: Konfigurator). */
-  function buildReply(text) {
-    const lower = String(text).toLowerCase().trim();
-    var kfg =
-      "Hier im Konfigurator siehst du live, wie viel von den 42 € du nutzt – füge Artikel hinzu, bis das Budget passt.";
-    if (/\b(anwalt|klage|gericht|medikament|tabletten|diagnos|krankheit\s+habe|schmerz(en)?\b)/i.test(text)) {
-      return "Als digitaler Hinweisgeber darf ich keine rechtsverbindliche oder medizinische Beratung geben. Bei rechtlichen Fragen zur Pflegekasse empfehlen wir unsere Pflegeberatung vor Ort; bei gesundheitlichen Beschwerden wende dich bitte an deinen Arzt oder eine Pflegefachkraft.";
+  function setReplyContent(topic) {
+    if (!replyBubble) return;
+    replyBubble.textContent = "";
+    const title = document.createElement("strong");
+    title.className = "box-chatbot-reply-q";
+    title.textContent = topic.label;
+    replyBubble.appendChild(title);
+    const p = document.createElement("p");
+    p.className = "box-chatbot-reply-a";
+    p.textContent = topic.answer;
+    replyBubble.appendChild(p);
+    if (topic.links && topic.links.length) {
+      const linkWrap = document.createElement("div");
+      linkWrap.className = "box-chatbot-reply-links";
+      topic.links.forEach(function (l) {
+        const a = document.createElement("a");
+        a.href = l.href;
+        a.textContent = l.label;
+        a.className = "box-chatbot-inline-link";
+        linkWrap.appendChild(a);
+      });
+      replyBubble.appendChild(linkWrap);
     }
-    if (
-      lower.includes("rezept") ||
-      lower.includes("attest") ||
-      lower.includes("verordnung") ||
-      lower.includes("verschreib") ||
-      lower.includes("hausarzt")
-    ) {
-      return "Gute Nachricht: Für die zum Verbrauch bestimmten Pflegehilfsmittel (PG 54) brauchst du kein Rezept und kein ärztliches Attest – der anerkannte Pflegegrad reicht. Wir übernehmen die Beantragung bei der Pflegekasse für dich.";
-    }
-    if (
-      lower.includes("pflegeheim") ||
-      lower.includes("vollstationär") ||
-      lower.includes("vollstationaer") ||
-      lower.includes("stationäres heim") ||
-      lower.includes("stationäre pflege")
-    ) {
-      return "Die monatliche Pflegehilfsmittel-Pauschale (42 €) gilt für die häusliche Pflege. In einem vollstationären Pflegeheim stellt die Einrichtung die Verbrauchsmaterialien – unser Pflegebox-Angebot greift dort nicht.";
-    }
-    if (
-      lower.includes("pflegedienst") ||
-      lower.includes("ambulanter dienst") ||
-      lower.includes("caritas") ||
-      lower.includes("diakonie") ||
-      lower.includes("samariter")
-    ) {
-      return "Du kannst die kostenfreie Pflegebox nutzen, wenn zusätzlich eine private Person (z. B. Angehörige) in der Pflege hilft. Der ambulante Pflegedienst muss seine eigenen Schutzhandschuhe und Desinfektion mitbringen – die Box ist für die private Pflege und die pflegebedürftige Person gedacht.";
-    }
-    if (
-      lower.includes("telefon") ||
-      lower.includes("hotline") ||
-      lower.includes("anruf") ||
-      lower.includes(" anrufen") ||
-      lower.startsWith("anrufen") ||
-      lower.includes("email") ||
-      lower.includes("e-mail") ||
-      lower.includes("kontakt") ||
-      lower.includes("erreichen") ||
-      lower.includes("öffnungszeit") ||
-      lower.includes("sprechzeiten")
-    ) {
-      return "Du erreichst unser Team telefonisch unter 08334 / 98 93 330 oder 08376 / 97 69 317 (Mo–Do 8:30–16:00, Fr 8:30–12:00). Per E-Mail: info@alltagshilfe-sued.de – wir helfen auch beim Ausfüllen des Antrags.";
-    }
-    if (
-      lower.includes("wechsel") ||
-      lower.includes("apotheke") ||
-      lower.includes("sanität") ||
-      lower.includes("sanitaet") ||
-      lower.includes("curabox") ||
-      lower.includes("anderer anbieter") ||
-      lower.includes("woanders")
-    ) {
-      return "Ein Wechsel zu uns ist unkompliziert: Du kündigst beim bisherigen Anbieter und stellst deine neue Box hier im Konfigurator zusammen – der Anspruch bei der Pflegekasse bleibt bestehen. Wir kümmern uns um die Abrechnung.";
-    }
-    if (
-      lower.includes("abgelehnt") ||
-      lower.includes("ablehnung") ||
-      lower.includes("zahlt nicht") ||
-      lower.includes("risiko")
-    ) {
-      return "Wenn die Pflegekasse einmal nicht bewilligt, informieren wir dich sofort. Du bekommst keine unbezahlten Lieferungen von uns – es entstehen dir keine Kosten aus unserer Zusammenarbeit. In den meisten Fällen klären wir Rückfragen vorab mit der Kasse.";
-    }
-    if (
-      lower.includes("pkv") ||
-      lower.includes("privat versichert") ||
-      lower.includes("private kranken") ||
-      lower.includes("beihilfe")
-    ) {
-      return "Privat Versicherte haben grundsätzlich ebenfalls Anspruch auf Pflegehilfsmittel; oft musst du erst zahlen und rechnest die Kosten mit der privaten Pflege-Pflichtversicherung bzw. Beihilfe ab – genaue Modalitäten bitte bei deiner Kasse erfragen.";
-    }
-    if (
-      lower.includes("ansparen") ||
-      lower.includes("aufheben") ||
-      lower.includes("auszahlen") ||
-      lower.includes("übertrag") ||
-      lower.includes("uebertrag") ||
-      lower.includes("restbetrag") ||
-      lower.includes("nächsten monat") ||
-      lower.includes("naechsten monat")
-    ) {
-      return "Die 42 € für Verbrauchsmittel sind ein striktes Monatsbudget: Nicht Genutztes verfällt am Monatsende – Ansparen oder Auszahlen geht rechtlich nicht. Darum lohnt sich eine regelmäßige Box, damit du den Anspruch nutzt.";
-    }
-    if (
-      lower.includes("kosten") ||
-      lower.includes("gratis") ||
-      lower.includes("umsonst") ||
-      lower.includes("versand") ||
-      lower.includes("porto") ||
-      lower.includes("zuzahlung") ||
-      lower.includes("rechnung") ||
-      lower.includes("wirklich kostenlos")
-    ) {
-      return "Die Pflegebox ist für dich zuzahlungsfrei, soweit die Pflegekasse bis zu 42 € pro Monat übernimmt. Es gibt bei uns keine versteckten Gebühren für die Box; der Versand ist eingerechnet – du zahlst nichts dazu, wenn die Kasse bewilligt.";
-    }
-    if (
-      lower.includes("entlastungs") ||
-      lower.includes("131") ||
-      lower.includes("haushaltshilfe") ||
-      lower.includes("putzen") ||
-      lower.includes("einkauf") ||
-      lower.includes("überlast") ||
-      lower.includes("ueberlast")
-    ) {
-      return "Neben der 42-€-Box für Verbrauchsmittel gibt es den Entlastungsbetrag (z. B. für haushaltsnahe Dienstleistungen) – der läuft anders als die monatliche PG-54-Pauschale. Dazu beraten wir dich gern persönlich oder über unsere Pflegeberatung.";
-    }
-    if (
-      lower.includes("anspruch") ||
-      lower.includes("voraussetzung") ||
-      lower.includes("wer bekommt") ||
-      lower.includes("steht mir") ||
-      lower.includes("berechtigt") ||
-      lower.includes("pflegestufe") ||
-      /welche.*pflegegrad/i.test(text)
-    ) {
-      return "Damit die Kasse die Box mit bis zu 42 € übernimmt: anerkannter Pflegegrad (1–5 – die Höhe des Grades ändert nicht die 42 €), Pflege zu Hause/WG/Angehörige (nicht vollstationäres Heim) und mindestens eine private Pflegeperson zusätzlich zur rein professionellen Versorgung, falls ein Pflegedienst kommt. Wenn das passt, kannst du hier weitermachen.";
-    }
-    if (
-      lower.includes("konfigurator") ||
-      lower.includes("zusammenstell") ||
-      lower.includes("bestellen") ||
-      lower.includes("wunschbox") ||
-      lower.includes("pflegebox-konfigurator")
-    ) {
-      return kfg + " So gehst du vor: Produkte wählen, Mengen mit +/− setzen, Budget beachten (mind. einen Mindestwert im System), Daten eingeben – wir melden uns bei der Pflegekasse.";
-    }
-    if (lower.includes("mindest") && (lower.includes("bestell") || lower.includes("wert"))) {
-      return "Im Konfigurator gilt ein Mindestbestellwert, bevor du den Abschluss starten kannst – die Oberfläche zeigt dir, wann genug Artikel drin sind. Wähl gern mehrere kleine Positionen, bis die grüne Freigabe kommt.";
-    }
-    if (lower.includes("maske") || lower.includes("mundschutz") || lower.includes("ffp2")) {
-      return "Wir führen medizinische Mundschutz-Packungen (z. B. 50 Stück) und FFP2-Masken (20 Stück, ohne Ausatemventil) im Sortiment – alles hier auswählbar innerhalb deines 42-€-Budgets.";
-    }
-    if (
-      lower.includes("desinfekt") ||
-      lower.includes("fläche") ||
-      lower.includes("flaeche") ||
-      lower.includes("hygiene")
-    ) {
-      return "Zu Hände- und Flächendesinfektion sowie Tücher gibt es verschiedene Gebinde im Konfigurator – wähl die Größe, die zu deinem Alltag passt, und beobachte den Budgetbalken.";
-    }
-    if (lower.includes("bettschutz") || lower.includes("einlage") || lower.includes("unterlage")) {
-      return "Bettschutzeinlagen gibt es bei uns als Einmal-Variante (Standardgröße, z. B. 60×90 cm) und als waschbare Mehrweg-Option – beides im Konfigurator.";
-    }
-    if (lower.includes("handschuh") || lower.includes("handschuhe")) {
-      return "Einmalhandschuhe liefern wir in Packungen zu 100 Stück. Bitte unbedingt die Größe (S, M, L, XL) wählen – ohne Größe lässt sich der Schritt oft nicht abschließen.";
-    }
-    if (lower.includes("budget") || lower.includes("42") || lower.includes("euro")) {
-      return "Für die Verbrauchsmittel-Box stehen dir bis zu 42,00 € pro Monat von der Pflegekasse zu – mehr geht in dieser Pauschale nicht. " + kfg;
-    }
-    if (lower.includes("pflegegrad")) {
-      return "Ab anerkanntem Pflegegrad 1 kannst du die Box beantragen; wichtig: Auch mit PG 1 hast du dasselbe maximale Budget von 42 € wie mit höherem Grad – es gibt keine Staffelung nach Pflegegrad.";
-    }
-    if (lower.includes("antrag") || lower.includes("beantrag") || lower.includes("formular")) {
-      return "Du stellst die Box digital zusammen und trägst die Daten ein – wir reichen bei der Pflegekasse ein. Ein separates ärztliches Rezept brauchst du für diese Verbrauchsmittel nicht.";
-    }
-    if (lower.includes("pflegebox") || lower.includes("pflege box")) {
-      return "Die Pflegebox enthält ausgewählte Verbrauchsmittel aus dem Hilfsmittelverzeichnis (PG 54), die die Pflegekasse bis 42 € monatlich übernehmen kann. " + kfg;
-    }
-    if (lower.includes("kostenlos") || lower.includes("kostenfrei")) {
-      return "Wenn die Pflegekasse bewilligt, zahlst du für die Box keine Zuzahlung – bis zu 42 € sind abgedeckt. Details zu deinem individuellen Fall klärt die Kasse im Antrag.";
-    }
-    if (
-      /^(hallo|hi|hey|moin|servus|guten tag|guten morgen|guten abend)[\s!.?]*$/i.test(lower) ||
-      lower.includes("was kannst") ||
-      lower.includes("wie funktioniert") ||
-      lower.includes("hilfe")
-    ) {
-      return "Ich bin Pflegeboxi und antworte nach festen Regeln (kein freier KI-Chat). Schreib Stichworte wie ‚Anspruch‘, ‚42 Euro‘, ‚Rezept‘, ‚Pflegeheim‘, ‚Konfigurator‘, ‚Handschuhe‘ – dann bekommst du passende Kurzinfos. Für alles Persönliche: Telefon oder Kontakt auf der Website.";
-    }
-    return (
-      "Ich habe dazu keine feste Kurzantwort. Probier Stichworte wie: Anspruch, 42 Euro, Budget, Rezept, Pflegeheim, Pflegedienst, Handschuhe, Kosten, Telefon – hier im Konfigurator siehst du außerdem live dein Budget. " +
-      kfg
-    );
+  }
+
+  function setIntroContent() {
+    if (!replyBubble) return;
+    replyBubble.textContent = "";
+    const p = document.createElement("p");
+    p.className = "box-chatbot-reply-a";
+    p.textContent = PFLEGEBOXI_PANEL_INTRO;
+    replyBubble.appendChild(p);
   }
 
   function toggleChatbot() {
@@ -1124,19 +1093,43 @@ function initBoxChatbot() {
         ? "flex"
         : "none";
     }
+    if (root.classList.contains("box-chatbot--expanded")) {
+      setIntroContent();
+    }
+  }
+
+  if (topicsRoot) {
+    PFLEGEBOXI_TOPICS.forEach(function (topic) {
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "box-chatbot-topic-btn";
+      btn.textContent = topic.label;
+      btn.addEventListener("click", function () {
+        setReplyContent(topic);
+        wiggleAvatar();
+        const wrap = replyBubble && replyBubble.closest(".box-chatbot-messages");
+        if (wrap) {
+          wrap.scrollTop = 0;
+        }
+      });
+      topicsRoot.appendChild(btn);
+    });
   }
 
   if (avatarImage) {
-    avatarImage.addEventListener("click", () => {
+    avatarImage.addEventListener("click", function () {
       if (root.classList.contains("box-chatbot--expanded")) {
-        // Geöffnet: Pflegeboxi vor Freude hüpfen
         avatarImage.classList.remove("pflegeboxi-jump");
         void avatarImage.offsetWidth;
         avatarImage.classList.add("pflegeboxi-jump");
-        avatarImage.addEventListener("animationend", function removeJump() {
-          avatarImage.classList.remove("pflegeboxi-jump");
-          avatarImage.removeEventListener("animationend", removeJump);
-        }, { once: true });
+        avatarImage.addEventListener(
+          "animationend",
+          function removeJump() {
+            avatarImage.classList.remove("pflegeboxi-jump");
+            avatarImage.removeEventListener("animationend", removeJump);
+          },
+          { once: true },
+        );
       } else {
         toggleChatbot();
       }
@@ -1146,38 +1139,20 @@ function initBoxChatbot() {
 
   const closeBtn = document.getElementById("box-chatbot-close");
   if (closeBtn) {
-    closeBtn.addEventListener("click", () => {
+    closeBtn.addEventListener("click", function () {
       toggleChatbot();
     });
   }
 
   const hideMobileBtn = document.getElementById("box-chatbot-hide-mobile");
   if (hideMobileBtn && root) {
-    hideMobileBtn.addEventListener("click", (e) => {
+    hideMobileBtn.addEventListener("click", function (e) {
       e.stopPropagation();
       root.classList.add("box-chatbot--hidden");
     });
   }
-
-  if (form && input) {
-    form.addEventListener("submit", (e) => {
-      e.preventDefault();
-      const value = input.value.trim();
-      if (!value) return;
-      addChatMessage("user", value);
-      input.value = "";
-      const reply = buildReply(value);
-      setTimeout(() => {
-        addChatMessage("bot", reply);
-        if (avatarImage) {
-          avatarImage.classList.remove("wiggle");
-          void avatarImage.offsetWidth;
-          avatarImage.classList.add("wiggle");
-        }
-      }, 300);
-    });
-  }
 }
+
 
 function readAndStorePartnerRef() {
   const params = new URLSearchParams(window.location.search);

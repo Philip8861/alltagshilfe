@@ -101,6 +101,7 @@
   box-shadow: 0 16px 40px rgba(15, 23, 42, 0.45);
   display: none;
   flex-direction: column;
+  min-height: 0;
 }
 
 .ahs-landing-pfxb__wrap--expanded .ahs-landing-pfxb__window {
@@ -218,92 +219,112 @@
   display: none !important;
 }
 
-.ahs-landing-pfxb__messages {
-  padding: 12px 14px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  max-height: 400px;
-  overflow-y: auto;
+.ahs-landing-pfxb__reply-wrap {
+  padding: 12px 14px 8px;
+  flex-shrink: 0;
 }
 
-.ahs-landing-pfxb__wrap--expanded .ahs-landing-pfxb__messages {
-  max-height: 600px;
-}
-
-.ahs-landing-pfxb__msg .ahs-landing-pfxb__bubble-text {
-  display: inline-block;
-  padding: 8px 12px;
+.ahs-landing-pfxb__reply-bubble {
+  display: block;
+  padding: 10px 14px;
   border-radius: 12px;
   font-size: 0.95rem;
-}
-
-.ahs-landing-pfxb__msg--bot .ahs-landing-pfxb__bubble-text {
   background: #0f4f68;
   color: #ffffff;
+  line-height: 1.45;
 }
 
-.ahs-landing-pfxb__msg--user .ahs-landing-pfxb__bubble-text {
-  background: #e5e7eb;
-  color: #111827;
+.ahs-landing-pfxb__reply-q {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-size: 1rem;
 }
 
-.ahs-landing-pfxb__quick-topics {
+.ahs-landing-pfxb__reply-a {
+  margin: 0;
+  font-weight: 500;
+}
+
+.ahs-landing-pfxb__reply-links {
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
   gap: 6px;
-  padding: 8px 12px 4px;
-  border-top: 1px solid rgba(148, 163, 184, 0.2);
+  margin-top: 10px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(255, 255, 255, 0.25);
 }
 
-.ahs-landing-pfxb__quick-btn {
-  border-radius: 999px;
+.ahs-landing-pfxb__inline-link {
+  color: #ffffff;
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.ahs-landing-pfxb__inline-link:hover {
+  color: #f78f2e;
+}
+
+.ahs-landing-pfxb__topics {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 6px 12px 10px;
+  border-top: 1px solid rgba(148, 163, 184, 0.2);
+  min-height: 0;
+  flex: 1;
+  overflow-y: auto;
+  max-height: 280px;
+}
+
+.ahs-landing-pfxb__wrap--expanded .ahs-landing-pfxb__topics {
+  max-height: min(42vh, 360px);
+}
+
+.ahs-landing-pfxb__topic-btn {
+  width: 100%;
+  text-align: left;
+  border-radius: 12px;
   border: 1px solid rgba(15, 79, 104, 0.35);
   background: #f2f9fa;
   color: #0f4f68;
-  font-size: 0.78rem;
+  font-size: 0.88rem;
   font-weight: 600;
-  padding: 6px 10px;
+  padding: 10px 12px;
   cursor: pointer;
-  line-height: 1.2;
+  line-height: 1.3;
   transition: background 0.15s ease, border-color 0.15s ease;
 }
 
-.ahs-landing-pfxb__quick-btn:hover {
+.ahs-landing-pfxb__topic-btn:hover {
   background: #e2f0f3;
   border-color: rgba(15, 79, 104, 0.55);
 }
 
-.ahs-landing-pfxb__quick-btn:focus-visible {
+.ahs-landing-pfxb__topic-btn:focus-visible {
   outline: 2px solid #f78f2e;
   outline-offset: 2px;
 }
 
-.ahs-landing-pfxb__form {
-  padding: 10px 12px;
-  border-top: 1px solid rgba(148, 163, 184, 0.35);
+.ahs-landing-pfxb__panel-links {
   display: flex;
-  gap: 8px;
+  flex-wrap: wrap;
+  gap: 8px 14px;
+  padding: 10px 12px 12px;
+  border-top: 1px solid rgba(148, 163, 184, 0.35);
+  flex-shrink: 0;
 }
 
-.ahs-landing-pfxb__form input {
-  flex: 1;
-  border-radius: 999px;
-  border: 1px solid rgba(148, 163, 184, 0.9);
-  padding: 8px 12px;
-  font-size: 1rem;
-  min-width: 0;
+.ahs-landing-pfxb__panel-link {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #0f4f68;
+  text-decoration: underline;
+  text-underline-offset: 3px;
 }
 
-.ahs-landing-pfxb__form button[type="submit"] {
-  border-radius: 999px;
-  border: none;
-  padding: 8px 14px;
-  background: #0f4f68;
-  color: #ffffff;
-  cursor: pointer;
-  font-size: 0.95rem;
-  font-weight: 600;
+.ahs-landing-pfxb__panel-link:hover {
+  color: #f78f2e;
 }
 
 @keyframes ahs-landing-pfxb-wiggle {
@@ -353,8 +374,8 @@
     max-height: 65vh;
   }
 
-  .ahs-landing-pfxb__wrap--expanded .ahs-landing-pfxb__messages {
-    max-height: 45vh;
+  .ahs-landing-pfxb__wrap--expanded .ahs-landing-pfxb__topics {
+    max-height: 38vh;
   }
 
   .ahs-landing-pfxb__close {

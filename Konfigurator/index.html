@@ -270,7 +270,7 @@
 
   <!-- Chatbot-Box unten rechts -->
   <div class="box-chatbot box-chatbot--collapsed" id="box-chatbot">
-    <button type="button" class="box-chatbot-close" id="box-chatbot-close" aria-label="Chat schließen">×</button>
+    <button type="button" class="box-chatbot-close" id="box-chatbot-close" aria-label="Hilfe schließen">×</button>
     <div class="box-chatbot-avatar">
       <img
         src="images/pflegeboxi.webp"
@@ -279,26 +279,22 @@
         class="box-chatbot-image"
       />
       <div class="box-chatbot-bubble-over" id="box-chatbot-bubble-over">
-        Hallo, ich bin Pflegeboxi! Drück auf mich, ich helfe dir gerne weiter
+        Hallo, ich bin Pflegeboxi. Tippen Sie auf mich – ich helfe Ihnen mit Antworten zur Pflegebox.
       </div>
     </div>
     <button type="button" class="box-chatbot-hide-mobile" id="box-chatbot-hide-mobile" aria-label="Pflegeboxi ausblenden">×</button>
     <div class="box-chatbot-window" id="box-chatbot-window">
       <div class="box-chatbot-messages" id="box-chatbot-messages">
         <div class="box-chatbot-message bot">
-          <div class="bubble">
-            Hallo, ich bin Pflegeboxi. Ich helfe dir bei deiner Auswahl sehr gerne weiter. Wie kann ich dir helfen?
-          </div>
+          <div class="bubble box-chatbot-reply-bubble" id="box-chatbot-reply-bubble"></div>
         </div>
       </div>
-      <form class="box-chatbot-input-row" id="box-chatbot-form" autocomplete="off">
-        <input
-          type="text"
-          id="box-chatbot-input"
-          placeholder="Nachricht an die Box eingeben..."
-        />
-        <button type="submit">Senden</button>
-      </form>
+      <div class="box-chatbot-topics" id="box-chatbot-topics" role="group" aria-label="Häufige Fragen"></div>
+      <div class="box-chatbot-panel-links" aria-label="Weitere Seiten">
+        <a class="box-chatbot-panel-link" href="/pflegehilfsmittel/pflegebox-konfigurator">Zum Konfigurator</a>
+        <a class="box-chatbot-panel-link" href="/kontakt">Kundenservice</a>
+        <a class="box-chatbot-panel-link" href="/pflegehilfsmittel/kostenfreie-pflegehilfsmittel">Kostenfreie Pflegehilfsmittel</a>
+      </div>
     </div>
   </div>
 

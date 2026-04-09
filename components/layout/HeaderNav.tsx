@@ -23,8 +23,13 @@ export function HeaderNav() {
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
 
-  /** Mobil: Backdrop beginnt unter vollem Header (ohne Teal-Streifen auf Pflegebox-Konfigurator kürzer). */
-  const mobileBackdropTopClass = isPflegeboxKonfiguratorPagePath(pathname) ? "top-12" : "top-[5.5rem]";
+  /**
+   * Mobil: Backdrop unter vollem Header. Teal-Streifen: 2.45rem (unverändert), weiße Zeile: min-h-[3.75rem].
+   * Pflegebox-Konfigurator: Streifen ausgeblendet → nur weiße Zeile.
+   */
+  const mobileBackdropTopClass = isPflegeboxKonfiguratorPagePath(pathname)
+    ? "top-[3.75rem]"
+    : "top-[calc(2.45rem+3.75rem)]";
 
   return (
     <>

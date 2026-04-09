@@ -1,6 +1,6 @@
 ---
 description: Pflegeboxi (regelbasiert) – vollständige Spezifikation in docs/PFLEGEBOXI-SPEZIFIKATION.md; bei Landing + Konfigurator-Chat befolgen.
-globs: components/pflegehilfsmittel/Pflegeboxi*.tsx,lib/pflegeboxi-build-reply.ts,public/konfigurator/app.js,Konfigurator/app.js
+globs: components/pflegehilfsmittel/Pflegeboxi*.tsx,lib/pflegeboxi-topics.ts,public/konfigurator/app.js,Konfigurator/app.js,public/konfigurator/index.html,Konfigurator/index.html
 alwaysApply: false
 ---
 
@@ -11,8 +11,8 @@ alwaysApply: false
 Vor **jeder** Änderung an Texten, Keywords, Antwortlogik oder neuen Intents von **Pflegeboxi**:
 
 1. **[docs/PFLEGEBOXI-SPEZIFIKATION.md](docs/PFLEGEBOXI-SPEZIFIKATION.md)** vollständig zugrunde legen (Guardrails, SGB-XI-Kern, Produktmatrix PG 54, Konfigurator-Regeln inkl. Mindestwert **30**, Variantenpflicht, Intent-Cluster, geografisches Routing, Out-of-Bounds).
-2. **Kein** Ersatz durch generatives „Freitext“-Modell im Produktivcode – Logik bleibt **deterministisch** und **regelbasiert**.
-3. Code-Spiegel: `lib/pflegeboxi-build-reply.ts` (Landing), `public/konfigurator/app.js` und `Konfigurator/app.js` (`buildReply`) **inhaltlich synchron** halten.
+2. **Kein** Ersatz durch generatives „Freitext“-Modell im Produktivcode – Inhalte bleiben **fest vorgegeben** (Themen-Buttons + feste Antworten).
+3. Code-Spiegel: `lib/pflegeboxi-topics.ts` (Landing) und `PFLEGEBOXI_TOPICS` in `public/konfigurator/app.js` sowie `Konfigurator/app.js` (**inhaltlich synchron** halten).
 
 ## Kurz: nicht verhandelbare Leitplanken
 
