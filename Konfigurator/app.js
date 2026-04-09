@@ -926,7 +926,7 @@ function initBoxChatbot() {
     {
       label: "Kostet die Pflegebox etwas?",
       answer:
-        "Nein, die Box ist für Sie komplett kostenfrei. Die Pflegekasse übernimmt die 42 Euro monatlich.",
+        "Ab Pflegegrad 1 ist sie für Sie komplett kostenfrei. Die Pflegekasse übernimmt die 42 Euro monatlich – Sie zahlen nichts für die Box.",
     },
     {
       label: "Wer hat Anspruch darauf?",
@@ -1036,6 +1036,16 @@ function initBoxChatbot() {
   const replyBubble = document.getElementById("box-chatbot-reply-bubble");
   const topicsRoot = document.getElementById("box-chatbot-topics");
 
+  function flashReplyBubble() {
+    if (!replyBubble) return;
+    replyBubble.classList.remove("box-chatbot-reply-bubble--flash");
+    void replyBubble.offsetWidth;
+    replyBubble.classList.add("box-chatbot-reply-bubble--flash");
+    window.setTimeout(function () {
+      replyBubble.classList.remove("box-chatbot-reply-bubble--flash");
+    }, 700);
+  }
+
   function wiggleAvatar() {
     if (!avatarImage) return;
     avatarImage.classList.remove("wiggle");
@@ -1074,6 +1084,7 @@ function initBoxChatbot() {
       });
       replyBubble.appendChild(linkWrap);
     }
+    flashReplyBubble();
   }
 
   function setIntroContent() {
@@ -1083,6 +1094,7 @@ function initBoxChatbot() {
     p.className = "box-chatbot-reply-a";
     p.textContent = PFLEGEBOXI_PANEL_INTRO;
     replyBubble.appendChild(p);
+    flashReplyBubble();
   }
 
   function toggleChatbot() {
@@ -1144,9 +1156,9 @@ function initBoxChatbot() {
     });
   }
 
-  const hideMobileBtn = document.getElementById("box-chatbot-hide-mobile");
-  if (hideMobileBtn && root) {
-    hideMobileBtn.addEventListener("click", function (e) {
+  const dismissBtn = document.getElementById("box-chatbot-dismiss");
+  if (dismissBtn && root) {
+    dismissBtn.addEventListener("click", function (e) {
       e.stopPropagation();
       root.classList.add("box-chatbot--hidden");
     });

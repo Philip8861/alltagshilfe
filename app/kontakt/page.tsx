@@ -23,11 +23,11 @@ export default async function KontaktPage({
   const selectedStandort = selectedPlz ? findStandortByPlz(selectedPlz) : undefined;
 
   return (
-    <article className="py-16 sm:py-24">
-      <Container className="flex justify-center">
+    <article className="w-full min-w-0 py-16 sm:py-24">
+      <Container className="w-full">
         <div className="mx-auto grid w-full max-w-6xl gap-10 lg:grid-cols-2 lg:items-start lg:gap-12">
-          <div className="flex flex-col items-center order-2 lg:order-1">
-            <div className="w-full max-w-xl rounded-2xl bg-[#F2F9FA] p-6 sm:p-8 lg:p-10">
+          <div className="order-2 flex min-w-0 flex-col lg:order-1">
+            <div className="mx-auto w-full max-w-xl rounded-2xl bg-[#F2F9FA] p-6 sm:p-8 lg:mx-0 lg:max-w-none lg:p-10">
               <h1 className="text-3xl font-bold tracking-tight text-[#0F4F68] sm:text-4xl">
                 Kontakt
               </h1>
@@ -102,10 +102,10 @@ export default async function KontaktPage({
               </p>
             </div>
           </div>
-          <div className="flex flex-col items-center gap-6 text-center order-1 lg:order-2">
+          <div className="order-1 flex min-w-0 flex-col items-center gap-6 text-center lg:order-2">
             <div className="flex w-full flex-col items-center">
               <div
-                className="relative aspect-[4/3] w-[80%] max-w-[80%] overflow-visible opacity-0 animate-fade-in-up lg:max-w-[80%]"
+                className="relative aspect-[4/3] w-full max-w-md overflow-visible opacity-0 animate-fade-in-up sm:max-w-lg"
                 style={{ animationDelay: "0.15s" }}
               >
                 <Image
@@ -118,7 +118,7 @@ export default async function KontaktPage({
                 />
               </div>
               <div
-                className="relative z-10 -mt-10 w-[63%] min-w-[200px] rounded-xl bg-[#F2F9FA] px-6 py-3 text-center text-lg font-semibold text-[#0F4F68] sm:-mt-12 sm:py-4 sm:text-xl"
+                className="relative z-10 -mt-10 w-full max-w-sm rounded-xl bg-[#F2F9FA] px-6 py-3 text-center text-lg font-semibold text-[#0F4F68] sm:-mt-12 sm:max-w-md sm:py-4 sm:text-xl"
                 style={{ boxShadow: "0 -2px 12px rgba(15, 79, 104, 0.15)" }}
               >
                 Wir freuen uns über Ihren Anruf!

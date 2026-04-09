@@ -2,7 +2,7 @@ import { PFLEGEBOX_KONFIGURATOR_PAGE } from "@/lib/pflegebox-konfigurator-path";
 
 /** Eingeklappt: Sprechblase am Avatar */
 export const PFLEGEBOXI_COLLAPSED_HINT =
-  "Hallo, ich bin Pflegeboxi. Tippen Sie auf mich – ich helfe Ihnen mit Antworten zur Pflegebox.";
+  "Hallo ich bin Pflegeboxi, tippen Sie auf mich, ich helfe gerne weiter";
 
 /** Geöffnet: erste Zeile in der Sprechblase, bevor ein Thema gewählt wurde */
 export const PFLEGEBOXI_PANEL_INTRO =
@@ -24,7 +24,7 @@ export const PFLEGEBOXI_TOPICS: PflegeboxiTopic[] = [
   {
     label: "Kostet die Pflegebox etwas?",
     answer:
-      "Nein, die Box ist für Sie komplett kostenfrei. Die Pflegekasse übernimmt die 42 Euro monatlich.",
+      "Ab Pflegegrad 1 ist sie für Sie komplett kostenfrei. Die Pflegekasse übernimmt die 42 Euro monatlich – Sie zahlen nichts für die Box.",
   },
   {
     label: "Wer hat Anspruch darauf?",

@@ -42,27 +42,26 @@ export function HeaderStrip(_props: HeaderStripProps) {
 
   return (
     <div
-      className={cn(
-        "flex w-full flex-col items-stretch gap-1.5 px-3 py-1.5 text-xs font-medium text-white/95 md:flex-row md:items-center md:justify-between md:gap-3",
-        hideStripOnMobile ? "hidden md:flex" : "flex",
-      )}
+      className={cn("w-full text-xs font-medium text-white/95", hideStripOnMobile ? "hidden md:block" : "block")}
       style={{ backgroundColor: "#0F4F68", minHeight: "2.45rem" }}
     >
-      <span className="text-center md:text-left md:text-sm md:font-semibold" aria-live="polite">
-        {TAGLINE.slice(0, taglineLength)}
-        {taglineLength < TAGLINE.length && <span className="animate-pulse" aria-hidden>|</span>}
-      </span>
+      <div className="mx-auto flex w-full max-w-7xl flex-col items-stretch gap-1.5 px-4 py-1.5 sm:px-6 md:flex-row md:items-center md:justify-between md:gap-3 lg:px-[var(--ahs-page-gutter)]">
+        <span className="text-center md:text-left md:text-sm md:font-semibold" aria-live="polite">
+          {TAGLINE.slice(0, taglineLength)}
+          {taglineLength < TAGLINE.length && <span className="animate-pulse" aria-hidden>|</span>}
+        </span>
 
-      <div className="flex justify-center md:justify-end">
-        <Link
-          href={partnerLoginHref}
-          className={cn(
-            "inline-flex min-h-8 items-center justify-center whitespace-nowrap rounded-md px-2 py-0.5 text-sm font-bold text-white/95 no-underline transition-colors hover:text-white focus:outline-none focus:ring-2 focus:ring-white/80 focus:ring-offset-2 focus:ring-offset-[#0F4F68]",
-            partnerActive && "text-white",
-          )}
-        >
-          Login
-        </Link>
+        <div className="flex justify-center md:justify-end">
+          <Link
+            href={partnerLoginHref}
+            className={cn(
+              "inline-flex min-h-8 items-center justify-center whitespace-nowrap rounded-md px-2 py-0.5 text-sm font-bold text-white/95 no-underline transition-colors hover:text-white focus:outline-none focus:ring-2 focus:ring-white/80 focus:ring-offset-2 focus:ring-offset-[#0F4F68]",
+              partnerActive && "text-white",
+            )}
+          >
+            Login
+          </Link>
+        </div>
       </div>
     </div>
   );

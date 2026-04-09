@@ -18,6 +18,7 @@ export function PflegeboxiLandingChatbot() {
   const [jump, setJump] = useState(false);
   const [wiggle, setWiggle] = useState(false);
   const replyRef = useRef<HTMLDivElement>(null);
+  const replyBubbleRef = useRef<HTMLDivElement>(null);
   const imgRef = useRef<HTMLImageElement>(null);
 
   useEffect(() => {
@@ -31,6 +32,20 @@ export function PflegeboxiLandingChatbot() {
       replyRef.current.scrollIntoView({ block: "nearest", behavior: "smooth" });
     }
   }, [selectedTopic]);
+
+  /** Kurzes Aufleuchten der Sprechblase bei jedem neuen Inhalt (Intro oder Antwort). */
+  useEffect(() => {
+    if (!expanded) return;
+    const el = replyBubbleRef.current;
+    if (!el) return;
+    el.classList.remove("ahs-landing-pfxb__reply-bubble--flash");
+    void el.offsetWidth;
+    el.classList.add("ahs-landing-pfxb__reply-bubble--flash");
+    const t = window.setTimeout(() => {
+      el.classList.remove("ahs-landing-pfxb__reply-bubble--flash");
+    }, 700);
+    return () => window.clearTimeout(t);
+  }, [expanded, selectedTopic]);
 
   const triggerJump = useCallback(() => {
     setJump(false);
@@ -77,6 +92,19 @@ export function PflegeboxiLandingChatbot() {
       </button>
 
       <div className="ahs-landing-pfxb__avatar">
+        {!expanded ? (
+          <button
+            type="button"
+            className="ahs-landing-pfxb__dismiss"
+            aria-label="Pflegeboxi ausblenden"
+            onClick={(e) => {
+              e.stopPropagation();
+              setHidden(true);
+            }}
+          >
+            ×
+          </button>
+        ) : null}
         {/* eslint-disable-next-line @next/next/no-img-element -- Fallback .png wie im Konfigurator */}
         <img
           ref={imgRef}
@@ -105,21 +133,9 @@ export function PflegeboxiLandingChatbot() {
         {!expanded ? <div className="ahs-landing-pfxb__bubble">{PFLEGEBOXI_COLLAPSED_HINT}</div> : null}
       </div>
 
-      <button
-        type="button"
-        className="ahs-landing-pfxb__hide-mobile"
-        aria-label="Pflegeboxi ausblenden"
-        onClick={(e) => {
-          e.stopPropagation();
-          setHidden(true);
-        }}
-      >
-        ×
-      </button>
-
       <div className="ahs-landing-pfxb__window">
         <div ref={replyRef} className="ahs-landing-pfxb__reply-wrap">
-          <div className="ahs-landing-pfxb__reply-bubble">
+          <div ref={replyBubbleRef} className="ahs-landing-pfxb__reply-bubble">
             {selectedTopic ? (
               <>
                 <strong className="ahs-landing-pfxb__reply-q">{selectedTopic.label}</strong>
