@@ -94,8 +94,8 @@ export function KostenfreiePflegehilfsmittelLanding() {
   return (
     <div className="bg-[#fafbfc] text-neutral-700 antialiased">
       <article id="kostenfreie-hero" className="scroll-mt-24">
-        <section className="mx-auto flex max-w-7xl flex-col-reverse items-center gap-10 px-4 pb-12 pt-0 sm:px-6 sm:pb-16 lg:flex-row lg:gap-12 lg:px-8 lg:pb-20">
-          <div className="w-full space-y-6 lg:w-1/2 lg:-translate-x-[21%]">
+        <section className="mx-auto flex max-w-7xl flex-col-reverse items-center gap-10 px-4 pb-12 pt-0 sm:px-6 sm:pb-16 lg:flex-row lg:items-start lg:gap-12 lg:px-8 lg:pb-20">
+          <div className="w-full space-y-6 lg:w-1/2 lg:-translate-x-[21%] lg:pt-[clamp(2.25rem,8.5vh,5.5rem)]">
             <h1
               className="text-balance text-3xl font-extrabold leading-tight tracking-tight text-[#0F4F68] opacity-0 motion-reduce:opacity-100 animate-fade-in-up sm:text-4xl lg:text-5xl"
               style={{ animationDelay: "0s" }}
@@ -142,7 +142,7 @@ export function KostenfreiePflegehilfsmittelLanding() {
               +25 % zur vorherigen Skalierung; Verschiebung rechts/oben (translate).
               Padding für drop-shadow; lg:justify-end rückt das Motiv nach rechts.
             */}
-            <div className="flex justify-center overflow-visible bg-[#fafbfc] px-4 py-8 sm:px-8 sm:py-10 lg:justify-end lg:pl-8 lg:pr-6 lg:py-8 xl:pl-10 xl:pr-4">
+            <div className="flex justify-center overflow-visible bg-[#fafbfc] px-4 pt-3 pb-8 sm:px-8 sm:pt-4 sm:pb-10 lg:justify-end lg:py-8 lg:pl-8 lg:pr-6 xl:pl-10 xl:pr-4">
               {/* Wrapper: fade-in-up nutzt transform — Skalierung/Verschiebung nur am inneren img */}
               <div
                 className="mx-auto w-full max-w-full opacity-0 motion-reduce:opacity-100 animate-fade-in-up max-lg:flex max-lg:justify-center"
