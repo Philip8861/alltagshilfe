@@ -34,10 +34,10 @@ export function HeaderNav() {
   return (
     <>
       <nav
-        className="hidden md:flex md:w-full md:min-w-0 md:items-center md:justify-end md:gap-1 lg:gap-2 xl:gap-3"
+        className="hidden md:flex md:w-full md:min-w-0 md:max-w-none md:items-center md:justify-between md:gap-2 lg:gap-3 xl:gap-4"
         aria-label="Hauptnavigation"
       >
-        <div className="flex min-w-0 flex-1 flex-nowrap items-center justify-center gap-x-1 lg:justify-end lg:gap-x-2 xl:gap-x-3">
+        <div className="flex min-w-0 flex-1 flex-nowrap items-center justify-start gap-x-1 lg:gap-x-2 xl:gap-x-3">
           {navLinks.map((item) =>
             item.children ? (
               <div

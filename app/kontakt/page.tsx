@@ -108,14 +108,18 @@ export default async function KontaktPage({
                 className="relative aspect-[4/3] w-full max-w-md overflow-visible opacity-0 animate-fade-in-up sm:max-w-lg"
                 style={{ animationDelay: "0.15s" }}
               >
-                <Image
-                  src="/images/Kontakt_Bild.webp"
-                  alt="Kontakt – Alltagshilfe-Süd"
-                  fill
-                  className="object-contain drop-shadow-[0_4px_20px_rgba(15,79,104,0.18)]"
-                  sizes="(max-width: 1024px) 90vw, 50vw"
-                  priority
-                />
+                <div className="relative isolate h-full w-full rounded-lg shadow-[0_4px_20px_rgba(15,79,104,0.18)] [transform:translateZ(0)] [backface-visibility:hidden]">
+                  <div className="relative h-full w-full overflow-hidden rounded-lg">
+                    <Image
+                      src="/images/Kontakt_Bild.webp"
+                      alt="Kontakt – Alltagshilfe-Süd"
+                      fill
+                      className="object-contain"
+                      sizes="(max-width: 1024px) 90vw, 50vw"
+                      priority
+                    />
+                  </div>
+                </div>
               </div>
               <div
                 className="relative z-10 -mt-10 w-full max-w-sm rounded-xl bg-[#F2F9FA] px-6 py-3 text-center text-lg font-semibold text-[#0F4F68] sm:-mt-12 sm:max-w-md sm:py-4 sm:text-xl"

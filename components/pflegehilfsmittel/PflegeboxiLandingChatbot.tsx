@@ -93,17 +93,20 @@ export function PflegeboxiLandingChatbot() {
 
       <div className="ahs-landing-pfxb__avatar">
         {!expanded ? (
-          <button
-            type="button"
-            className="ahs-landing-pfxb__dismiss"
-            aria-label="Pflegeboxi ausblenden"
-            onClick={(e) => {
-              e.stopPropagation();
-              setHidden(true);
-            }}
-          >
-            ×
-          </button>
+          <div className="ahs-landing-pfxb__bubble-wrap">
+            <button
+              type="button"
+              className="ahs-landing-pfxb__dismiss"
+              aria-label="Pflegeboxi ausblenden"
+              onClick={(e) => {
+                e.stopPropagation();
+                setHidden(true);
+              }}
+            >
+              ×
+            </button>
+            <div className="ahs-landing-pfxb__bubble">{PFLEGEBOXI_COLLAPSED_HINT}</div>
+          </div>
         ) : null}
         {/* eslint-disable-next-line @next/next/no-img-element -- Fallback .png wie im Konfigurator */}
         <img
@@ -130,7 +133,6 @@ export function PflegeboxiLandingChatbot() {
             }
           }}
         />
-        {!expanded ? <div className="ahs-landing-pfxb__bubble">{PFLEGEBOXI_COLLAPSED_HINT}</div> : null}
       </div>
 
       <div className="ahs-landing-pfxb__window">

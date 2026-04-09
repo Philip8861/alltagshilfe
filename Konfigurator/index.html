@@ -272,16 +272,18 @@
   <div class="box-chatbot box-chatbot--collapsed" id="box-chatbot">
     <button type="button" class="box-chatbot-close" id="box-chatbot-close" aria-label="Hilfe schließen">×</button>
     <div class="box-chatbot-avatar">
-      <button type="button" class="box-chatbot-dismiss" id="box-chatbot-dismiss" aria-label="Pflegeboxi ausblenden">×</button>
+      <div class="box-chatbot-bubble-wrap">
+        <button type="button" class="box-chatbot-dismiss" id="box-chatbot-dismiss" aria-label="Pflegeboxi ausblenden">×</button>
+        <div class="box-chatbot-bubble-over" id="box-chatbot-bubble-over">
+          Hallo ich bin Pflegeboxi, tippen Sie auf mich, ich helfe gerne weiter
+        </div>
+      </div>
       <img
         src="images/pflegeboxi.webp"
         onerror="this.onerror=null;this.src='images/pflegeboxi.png';"
         alt="Pflegeboxi"
         class="box-chatbot-image"
       />
-      <div class="box-chatbot-bubble-over" id="box-chatbot-bubble-over">
-        Hallo ich bin Pflegeboxi, tippen Sie auf mich, ich helfe gerne weiter
-      </div>
     </div>
     <div class="box-chatbot-window" id="box-chatbot-window">
       <div class="box-chatbot-messages" id="box-chatbot-messages">

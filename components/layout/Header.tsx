@@ -18,7 +18,7 @@ export function Header({ nunitoClass = "", balooClass = "" }: HeaderProps) {
         <Container className="grid min-h-[3.75rem] grid-cols-[1fr_auto_1fr] items-center gap-2 overflow-visible md:grid-cols-[auto_1fr] md:gap-4 lg:gap-6">
           <Link
             href="/"
-            className="flex shrink-0 -translate-y-[5%] focus:outline-none rounded md:h-10 md:w-auto"
+            className="z-10 flex shrink-0 -translate-y-[5%] -ml-2 justify-self-start focus:outline-none rounded sm:-ml-3 md:-ml-4 md:h-10 md:w-auto lg:-ml-3"
             aria-label={`${siteConfig.name} – Startseite`}
           >
             <Image
@@ -30,7 +30,7 @@ export function Header({ nunitoClass = "", balooClass = "" }: HeaderProps) {
               priority
             />
           </Link>
-          <div className="min-w-0 flex items-center justify-center md:justify-end">
+          <div className="min-w-0 pl-1 sm:pl-2 md:pl-3 lg:pl-4 flex items-center justify-center md:justify-end">
             <HeaderNav />
           </div>
           <div className="md:hidden" aria-hidden />
