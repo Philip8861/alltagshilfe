@@ -11,7 +11,7 @@ const PAGE_PATH = "/pflegeberatung/private-pflegeberatung";
 
 const HERO_KURZ_VORTEILE = [
   "Wir erinnern Sie an bevorstehende Termine",
-  "Die Kosten übernimmt die Krankenkasse",
+  "Die Kosten übernimmt die Pflegekasse",
   "Wir helfen auch bei Anträgen und Widerspruch",
 ] as const;
 
@@ -98,8 +98,8 @@ export default function PrivatePflegeberatungPage() {
       <header className="overflow-visible bg-white">
         <div className="mx-auto max-w-7xl overflow-visible px-4 pt-2 pb-10 sm:px-6 sm:pt-4 sm:pb-14 lg:px-[var(--ahs-page-gutter)] lg:pt-16 lg:pb-20">
           <div className="mx-auto flex w-full max-w-[min(100%,72rem)] flex-col items-center gap-8 overflow-visible lg:mx-0 lg:mr-auto lg:flex-row lg:justify-start lg:items-center lg:gap-x-11 lg:gap-y-6 xl:gap-x-[3.75rem]">
-            <div className="flex w-full min-w-0 shrink-0 justify-center overflow-visible lg:max-w-[min(100%,29rem)] xl:max-w-[min(100%,35rem)]">
-              <div className="box-content w-full max-w-[min(100%,26.5rem)] overflow-visible px-2 pt-1 pb-2 sm:max-w-[min(100%,31rem)] sm:px-3 sm:pb-4 lg:max-w-full lg:px-2 lg:py-2">
+            <div className="flex w-full min-w-0 shrink-0 justify-center overflow-visible lg:max-w-[min(100%,32rem)] lg:-ml-4 lg:-mr-5 xl:max-w-[min(100%,38.5rem)] xl:-ml-6 xl:-mr-7">
+              <div className="box-content w-full max-w-[min(100%,29rem)] overflow-visible px-2 pt-1 pb-2 sm:max-w-[min(100%,34rem)] sm:px-3 sm:pb-4 lg:max-w-full lg:px-1 lg:py-2">
                 {/* eslint-disable-next-line @next/next/no-img-element -- natives img vermeidet Next/Image-Wrapper (overflow) */}
                 <img
                   src="/images/pflegeberatung_gemeinsam.webp"
