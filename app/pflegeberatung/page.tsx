@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Container } from "@/components/layout/Container";
+import { BetrieblichePflegeberatungSection } from "@/components/pflegeberatung/BetrieblichePflegeberatungSection";
 import { siteConfig } from "@/config/site";
 
 export const metadata: Metadata = {
@@ -48,15 +49,7 @@ export default function PflegeberatungPage() {
           </section>
 
           <section id="betriebliche-pflegeberatung" aria-labelledby="betrieblich-heading">
-            <h2
-              id="betrieblich-heading"
-              className="text-2xl font-bold tracking-tight text-neutral-900 sm:text-3xl"
-            >
-              Betriebliche Pflegeberatung
-            </h2>
-            <p className="mt-4 max-w-3xl text-neutral-600">
-              Als betriebliche Pflegeberatung unterstützen wir Arbeitgeber und Beschäftigte: bei der Vereinbarkeit von Beruf und Pflege, bei der Information über Rechte und Leistungen sowie bei der Suche nach passenden Ansprechpartnern. So bleiben Ihre Mitarbeiterinnen und Mitarbeiter handlungsfähig, wenn Angehörige pflegebedürftig werden.
-            </p>
+            <BetrieblichePflegeberatungSection />
           </section>
         </div>
       </Container>
