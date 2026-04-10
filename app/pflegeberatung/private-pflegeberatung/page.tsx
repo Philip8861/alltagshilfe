@@ -18,11 +18,11 @@ const HERO_KURZ_VORTEILE = [
 function HeroCheckIcon({ className = "" }: { className?: string }) {
   return (
     <span
-      className={`inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#F78F2E]/15 text-[#F78F2E] ${className}`.trim()}
+      className={`inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#F78F2E]/15 text-[#F78F2E] sm:h-10 sm:w-10 ${className}`.trim()}
       aria-hidden
     >
       <svg
-        className="h-[1.1rem] w-[1.1rem] sm:h-5 sm:w-5"
+        className="h-[1.2rem] w-[1.2rem] sm:h-[1.35rem] sm:w-[1.35rem]"
         viewBox="0 0 24 24"
         fill="none"
         stroke="currentColor"
@@ -97,9 +97,9 @@ export default function PrivatePflegeberatungPage() {
 
       <header className="overflow-visible bg-white">
         <div className="mx-auto max-w-7xl overflow-visible px-4 pt-2 pb-10 sm:px-6 sm:pt-4 sm:pb-14 lg:px-[var(--ahs-page-gutter)] lg:pt-16 lg:pb-20">
-          <div className="mx-auto flex w-full max-w-[min(100%,72rem)] flex-col items-center gap-8 overflow-visible lg:flex-row lg:justify-center lg:items-center lg:gap-x-10 lg:gap-y-6 xl:gap-x-14">
-            <div className="flex w-full min-w-0 shrink-0 justify-center overflow-visible lg:max-w-[min(100%,26rem)] xl:max-w-[min(100%,32rem)]">
-              <div className="box-content w-full max-w-[min(100%,24rem)] overflow-visible px-2 pt-1 pb-2 sm:max-w-[min(100%,28rem)] sm:px-3 sm:pb-4 lg:max-w-full lg:px-2 lg:py-2">
+          <div className="mx-auto flex w-full max-w-[min(100%,72rem)] flex-col items-center gap-8 overflow-visible lg:mx-0 lg:mr-auto lg:flex-row lg:justify-start lg:items-center lg:gap-x-11 lg:gap-y-6 xl:gap-x-[3.75rem]">
+            <div className="flex w-full min-w-0 shrink-0 justify-center overflow-visible lg:max-w-[min(100%,29rem)] xl:max-w-[min(100%,35rem)]">
+              <div className="box-content w-full max-w-[min(100%,26.5rem)] overflow-visible px-2 pt-1 pb-2 sm:max-w-[min(100%,31rem)] sm:px-3 sm:pb-4 lg:max-w-full lg:px-2 lg:py-2">
                 {/* eslint-disable-next-line @next/next/no-img-element -- natives img vermeidet Next/Image-Wrapper (overflow) */}
                 <img
                   src="/images/pflegeberatung_gemeinsam.webp"
@@ -114,15 +114,15 @@ export default function PrivatePflegeberatungPage() {
               </div>
             </div>
 
-            <div className="flex w-full min-w-0 max-w-xl shrink-0 flex-col items-center overflow-visible text-center lg:max-w-[min(100%,28rem)] lg:items-start lg:text-left xl:max-w-[30rem]">
+            <div className="flex w-full min-w-0 max-w-xl shrink-0 flex-col items-center overflow-visible text-center lg:max-w-[min(100%,31rem)] lg:items-start lg:text-left xl:max-w-[33rem]">
               <h1
-                className={`${ANIM_IN} max-w-[22rem] text-balance text-2xl font-extrabold leading-snug tracking-tight text-[#0F4F68] sm:max-w-2xl sm:text-3xl sm:leading-tight lg:max-w-none lg:whitespace-nowrap lg:text-[clamp(1.35rem,0.55rem+1.25vw,2.5rem)] lg:leading-[1.12]`}
+                className={`${ANIM_IN} max-w-[24rem] text-balance text-[1.375rem] font-extrabold leading-snug tracking-tight text-[#0F4F68] sm:max-w-2xl sm:text-[1.65rem] sm:leading-tight lg:max-w-none lg:whitespace-nowrap lg:text-[clamp(1.5rem,0.6rem+1.4vw,2.75rem)] lg:leading-[1.12]`}
                 style={{ animationDelay: "110ms" }}
               >
                 Pflegeberatung nach Paragraf 37 Absatz 3 SGB XI
               </h1>
               <p
-                className={`${ANIM_IN} mt-4 w-full max-w-xl text-pretty text-base font-medium leading-relaxed text-[#0F4F68] sm:mt-5 sm:text-lg md:text-xl lg:text-2xl`}
+                className={`${ANIM_IN} mt-4 w-full max-w-xl text-pretty text-[1.05rem] font-medium leading-relaxed text-[#0F4F68] sm:mt-5 sm:text-[1.125rem] md:text-[1.25rem] lg:text-[1.375rem]`}
                 style={{ animationDelay: "190ms" }}
               >
                 Gute Pflege beginnt mit einer guten Pflegeberatung.
@@ -135,7 +135,7 @@ export default function PrivatePflegeberatungPage() {
                 {HERO_KURZ_VORTEILE.map((line) => (
                   <li key={line} className="flex items-start justify-center gap-3 sm:items-center lg:justify-start">
                     <HeroCheckIcon className="mt-0.5 sm:mt-0" />
-                    <span className="text-pretty text-base font-semibold leading-snug text-[#0F4F68] sm:text-lg">
+                    <span className="text-pretty text-[1.05rem] font-semibold leading-snug text-[#0F4F68] sm:text-[1.125rem]">
                       {line}
                     </span>
                   </li>
@@ -144,7 +144,7 @@ export default function PrivatePflegeberatungPage() {
               <div className={`${ANIM_IN} mt-8 flex w-full justify-center lg:justify-start`} style={{ animationDelay: "400ms" }}>
                 <Link
                   href="/kontakt"
-                  className="inline-flex min-h-[52px] items-center justify-center rounded-xl bg-[#F78F2E] px-7 py-3.5 text-[1.09375rem] font-semibold text-white hover:opacity-95 focus:outline-none focus:ring-2 focus:ring-[#F78F2E] focus:ring-offset-2 sm:min-h-14 sm:px-8 sm:py-4 sm:text-lg"
+                  className="inline-flex min-h-[3.625rem] min-w-[11.5rem] items-center justify-center rounded-xl bg-[#F78F2E] px-8 py-4 text-[1.2rem] font-semibold text-white hover:opacity-95 focus:outline-none focus:ring-2 focus:ring-[#F78F2E] focus:ring-offset-2 sm:min-h-[3.75rem] sm:px-9 sm:py-[1.15rem] sm:text-[1.21875rem]"
                 >
                   Termin vereinbaren
                 </Link>
