@@ -8,6 +8,33 @@ import { siteConfig } from "@/config/site";
 
 const PAGE_PATH = "/pflegeberatung/private-pflegeberatung";
 
+const HERO_KURZ_VORTEILE = [
+  "Wir erinnern Sie an bevorstehende Termine",
+  "Die Kosten übernimmt die Krankenkasse",
+  "Wir helfen auch bei Anträgen und Widerspruch",
+] as const;
+
+function HeroCheckIcon({ className = "" }: { className?: string }) {
+  return (
+    <span
+      className={`inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#F78F2E]/15 text-[#F78F2E] ${className}`.trim()}
+      aria-hidden
+    >
+      <svg
+        className="h-[1.1rem] w-[1.1rem] sm:h-5 sm:w-5"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        <path d="M20 6L9 17l-5-5" />
+      </svg>
+    </span>
+  );
+}
+
 /** Wie Startseite – Schrift erbt von Root-Layout (Nunito Sans am body) */
 const HEADING_CLASS = "text-3xl font-bold text-[#0F4F68] sm:text-4xl w-full max-w-lg self-start";
 const INTRO_BODY_CLASS = "text-lg text-neutral-700 leading-relaxed sm:text-xl";
@@ -68,10 +95,10 @@ export default function PrivatePflegeberatungPage() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }} />
 
       <header className="overflow-visible bg-white">
-        <div className="mx-auto max-w-7xl overflow-visible px-4 py-12 sm:px-6 sm:py-16 lg:px-[var(--ahs-page-gutter)] lg:py-20">
-          <div className="flex w-full flex-col items-center gap-10 overflow-visible lg:flex-row lg:justify-center lg:items-start lg:gap-x-8 lg:gap-y-8 xl:gap-x-12">
-            <div className="flex w-full min-w-0 shrink-0 justify-center overflow-visible sm:max-w-[min(100%,37.71rem)] lg:w-auto lg:max-w-[min(100%,37.71rem)] lg:justify-start xl:max-w-[min(100%,43.51rem)]">
-              <div className="box-content w-full max-w-full overflow-visible py-6 px-2 sm:px-4 sm:py-8 lg:py-6 lg:pl-0 lg:pr-6">
+        <div className="mx-auto max-w-7xl overflow-visible px-4 pt-2 pb-10 sm:px-6 sm:pt-4 sm:pb-14 lg:px-[var(--ahs-page-gutter)] lg:pt-16 lg:pb-20">
+          <div className="mx-auto flex w-full max-w-[min(100%,72rem)] flex-col items-center gap-8 overflow-visible lg:flex-row lg:justify-center lg:items-center lg:gap-x-10 lg:gap-y-6 xl:gap-x-14">
+            <div className="flex w-full min-w-0 shrink-0 justify-center overflow-visible lg:max-w-[min(100%,26rem)] xl:max-w-[min(100%,32rem)]">
+              <div className="box-content w-full max-w-[min(100%,24rem)] overflow-visible px-2 pt-1 pb-2 sm:max-w-[min(100%,28rem)] sm:px-3 sm:pb-4 lg:max-w-full lg:px-2 lg:py-2">
                 {/* eslint-disable-next-line @next/next/no-img-element -- natives img vermeidet Next/Image-Wrapper (overflow) */}
                 <img
                   src="/images/pflegeberatung_gemeinsam.webp"
@@ -80,28 +107,40 @@ export default function PrivatePflegeberatungPage() {
                   height={900}
                   decoding="async"
                   fetchPriority="high"
-                  className={`${HERO_IMG_BASE} ${ANIM_RISE} mx-auto h-auto w-full max-w-full object-contain object-center lg:mx-0 lg:object-left`}
+                  className={`${HERO_IMG_BASE} ${ANIM_RISE} mx-auto h-auto w-full max-w-full object-contain object-center`}
                   style={{ animationDelay: "40ms" }}
                 />
               </div>
             </div>
 
-            <div className="w-full min-w-0 shrink-0 overflow-visible pt-0 text-left sm:max-w-xl lg:w-auto lg:max-w-[min(100%,28rem)] lg:pt-[3cm] xl:max-w-[30rem]">
-              <div className="min-w-0 max-w-full overflow-x-auto [-ms-overflow-style:none] [scrollbar-width:thin] lg:overflow-x-visible">
-                <h1
-                  className={`${ANIM_IN} whitespace-nowrap text-[clamp(0.8125rem,0.65vw+0.55rem,2.5rem)] font-extrabold leading-tight tracking-tight text-[#0F4F68] sm:text-[clamp(0.875rem,0.85vw+0.5rem,2.5rem)] lg:text-[clamp(1.35rem,0.55rem+1.25vw,2.5rem)] lg:leading-[1.12]`}
-                  style={{ animationDelay: "110ms" }}
-                >
-                  Pflegeberatung nach Paragraf 37 Absatz 3 SGB XI
-                </h1>
-              </div>
+            <div className="flex w-full min-w-0 max-w-xl shrink-0 flex-col items-center overflow-visible text-center lg:max-w-[min(100%,28rem)] lg:items-start lg:text-left xl:max-w-[30rem]">
+              <h1
+                className={`${ANIM_IN} max-w-[22rem] text-balance text-2xl font-extrabold leading-snug tracking-tight text-[#0F4F68] sm:max-w-2xl sm:text-3xl sm:leading-tight lg:max-w-none lg:whitespace-nowrap lg:text-[clamp(1.35rem,0.55rem+1.25vw,2.5rem)] lg:leading-[1.12]`}
+                style={{ animationDelay: "110ms" }}
+              >
+                Pflegeberatung nach Paragraf 37 Absatz 3 SGB XI
+              </h1>
               <p
-                className={`${ANIM_IN} mt-5 w-full max-w-none text-pretty text-lg font-medium leading-normal text-[#0F4F68] sm:text-xl md:text-2xl md:leading-snug`}
+                className={`${ANIM_IN} mt-4 w-full max-w-xl text-pretty text-base font-medium leading-relaxed text-[#0F4F68] sm:mt-5 sm:text-lg md:text-xl lg:text-2xl`}
                 style={{ animationDelay: "190ms" }}
               >
                 Gute Pflege beginnt mit einer guten Pflegeberatung.
               </p>
-              <div className={`${ANIM_IN} mt-8`} style={{ animationDelay: "270ms" }}>
+              <ul
+                className={`${ANIM_IN} mt-5 w-full max-w-xl space-y-3 text-left sm:mt-6 sm:space-y-3.5 lg:mx-0`}
+                style={{ animationDelay: "240ms" }}
+                aria-label="Ihre Vorteile auf einen Blick"
+              >
+                {HERO_KURZ_VORTEILE.map((line) => (
+                  <li key={line} className="flex items-start justify-center gap-3 sm:items-center lg:justify-start">
+                    <HeroCheckIcon className="mt-0.5 sm:mt-0" />
+                    <span className="text-pretty text-base font-semibold leading-snug text-[#0F4F68] sm:text-lg">
+                      {line}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+              <div className={`${ANIM_IN} mt-8 flex w-full justify-center lg:justify-start`} style={{ animationDelay: "400ms" }}>
                 <Link
                   href="/kontakt"
                   className="inline-flex min-h-[52px] items-center justify-center rounded-xl bg-[#F78F2E] px-7 py-3.5 text-[1.09375rem] font-semibold text-white hover:opacity-95 focus:outline-none focus:ring-2 focus:ring-[#F78F2E] focus:ring-offset-2 sm:min-h-14 sm:px-8 sm:py-4 sm:text-lg"
