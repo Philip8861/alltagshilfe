@@ -238,21 +238,6 @@ const ANGEBOT = [
 export function BetrieblichePflegeberatungSection() {
   return (
     <div className="space-y-14 sm:space-y-16">
-      <header className="space-y-4">
-        <h2 id="betrieblich-heading" className="text-2xl font-bold tracking-tight text-[#0F4F68] sm:text-3xl">
-          Betriebliche Pflegeberatung
-        </h2>
-        <p className="max-w-3xl text-lg font-semibold leading-snug text-[#0F4F68] sm:text-xl">
-          Arbeitnehmer entlasten. Fehlzeiten reduzieren.
-        </p>
-        <p className="inline-flex max-w-3xl items-center gap-2 rounded-full border border-[#F78F2E]/35 bg-[#F78F2E]/10 px-4 py-2 text-sm font-semibold text-[#0F4F68] sm:text-base">
-          <svg className="h-5 w-5 shrink-0 text-[#F78F2E]" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
-            <path d="M12 2l2.4 7.4h7.6l-6 4.6 2.3 7-6-4.6-6 4.6 2.3-7-6-4.6h7.6z" />
-          </svg>
-          Ihr Experte für Pflege seit über 12 Jahren!
-        </p>
-      </header>
-
       <section aria-labelledby="betrieblich-vorteile-heading">
         <h3 id="betrieblich-vorteile-heading" className="text-xl font-extrabold text-[#0F4F68] sm:text-2xl">
           Ihre Vorteile auf einen Blick
