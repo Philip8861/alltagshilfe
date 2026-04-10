@@ -4,8 +4,8 @@ import { Container } from "@/components/layout/Container";
 import { BetrieblichePflegeberatungSection } from "@/components/pflegeberatung/BetrieblichePflegeberatungSection";
 import { siteConfig } from "@/config/site";
 
-/** Natürliche Pixelmaße von public/images/betriebliche_pflegeberatung.webp (Alpha-Kanal) */
-const BETRIEBLICH_IMG = { w: 1053, h: 572 } as const;
+/** Natürliche Pixelmaße von public/images/betriebliche_pflegeberatung.webp (Quelle: konfigurator/betriebliche.webp, Alpha) */
+const BETRIEBLICH_IMG = { w: 1031, h: 549 } as const;
 /** 20 % kleiner als Original */
 const IMG_SCALE = 0.8;
 const IMG_W = Math.round(BETRIEBLICH_IMG.w * IMG_SCALE);
