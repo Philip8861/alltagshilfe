@@ -176,9 +176,10 @@ export default function PrivatePflegeberatungPage() {
       </section>
 
       <section
-        className="relative z-10 w-full bg-[#F2F9FA] px-4 pb-12 pt-8 sm:px-6 sm:pb-14 sm:pt-10 lg:px-[var(--ahs-page-gutter)] lg:pb-16"
+        className="relative z-10 w-full bg-white px-4 pb-12 pt-10 sm:px-6 sm:pb-14 sm:pt-12 lg:px-[var(--ahs-page-gutter)] lg:pb-16"
         aria-labelledby="pg-table-heading"
       >
+        <WelleObenF2F9FA />
         <div className="relative mx-auto w-full max-w-4xl">
           <h2 id="pg-table-heading" className={`${SECTION_TITLE_CLASS} ${ANIM_IN}`} style={{ animationDelay: "0ms" }}>
             Pflegegrad 1–5: Wann Beratung Pflicht ist – und wann nicht
