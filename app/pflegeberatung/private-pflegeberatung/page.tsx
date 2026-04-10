@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { KundenstimmenCarousel } from "@/components/home/KundenstimmenCarousel";
 import { PflegegradBeratungTable } from "@/components/pflegeberatung/PflegegradBeratungTable";
+import { PflegeberatungNaehePlzDialog } from "@/components/pflegeberatung/PflegeberatungNaehePlzDialog";
 import { PRIVATE_PFLEGEBERATUNG_FAQ } from "@/lib/private-pflegeberatung-faq";
 import { siteConfig } from "@/config/site";
 
@@ -160,7 +161,7 @@ export default function PrivatePflegeberatungPage() {
         <WelleObenF2F9FA />
         <div className="relative mx-auto w-full max-w-6xl">
           <h2 id="versprechen-heading" className={`${HEADING_CLASS} ${ANIM_IN}`} style={{ animationDelay: "0ms" }}>
-            Unser Versprechen an Sie
+            Unser Qualitätsversprechen an Sie
           </h2>
           <p className={`${ANIM_IN} mt-6 max-w-3xl ${INTRO_BODY_CLASS}`} style={{ animationDelay: "90ms" }}>
             Die Qualität unserer Pflegeberatung liegt uns besonders am Herzen. Sehr viele pflegende Angehörige wissen nicht
@@ -168,6 +169,9 @@ export default function PrivatePflegeberatungPage() {
             unzureichend informiert. Wir machen das anders: Wir nehmen uns die nötige Zeit für Sie. Unser Ziel ist es, Sie
             umfassend und detailliert zu informieren, damit Sie im Alltag optimal entlastet werden.
           </p>
+          <div className={`${ANIM_IN}`} style={{ animationDelay: "160ms" }}>
+            <PflegeberatungNaehePlzDialog />
+          </div>
         </div>
       </section>
 
