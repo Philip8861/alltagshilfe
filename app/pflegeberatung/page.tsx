@@ -4,6 +4,12 @@ import { Container } from "@/components/layout/Container";
 import { BetrieblichePflegeberatungSection } from "@/components/pflegeberatung/BetrieblichePflegeberatungSection";
 import { siteConfig } from "@/config/site";
 
+/** Natürliche Pixelmaße von public/images/betriebliche_pflegeberatung.webp (Alpha-Kanal) */
+const BETRIEBLICH_IMG = { w: 1053, h: 572 } as const;
+
+const IMG_DROP_SHADOW =
+  "[filter:drop-shadow(8px_12px_20px_rgba(15,79,104,0.2))_drop-shadow(6px_6px_14px_rgba(15,79,104,0.12))]";
+
 export const metadata: Metadata = {
   title: "Betriebliche Pflegeberatung",
   description: `Betriebliche Pflegeberatung für Unternehmen: Mitarbeitende entlasten, Fehlzeiten reduzieren – ${siteConfig.name}.`,
@@ -13,10 +19,10 @@ export default function PflegeberatungPage() {
   return (
     <article className="pb-16 sm:pb-24">
       <section id="betriebliche-pflegeberatung" aria-labelledby="betrieblich-heading">
-        <div className="border-b border-[#0F4F68]/8 bg-white pb-12 pt-8 sm:pb-16 sm:pt-10">
+        <div className="border-b border-[#0F4F68]/8 bg-white pb-16 pt-8 sm:pb-20 sm:pt-10 lg:pb-24">
           <Container>
-            <div className="flex justify-center lg:justify-end">
-              <div className="flex w-full max-w-xl flex-col items-center text-center lg:max-w-[min(100%,30rem)] lg:items-end lg:text-right xl:max-w-[34rem]">
+            <div className="flex flex-col gap-10 lg:flex-row lg:items-start lg:justify-between lg:gap-10 xl:gap-14">
+              <header className="max-w-xl shrink-0 text-left lg:max-w-[min(100%,28rem)] lg:pt-2 xl:max-w-[32rem]">
                 <h1
                   id="betrieblich-heading"
                   className="text-3xl font-extrabold leading-[1.15] tracking-tight text-[#0F4F68] sm:text-4xl"
@@ -24,25 +30,28 @@ export default function PflegeberatungPage() {
                   <span className="block">Betriebliche</span>
                   <span className="block">Pflegeberatung</span>
                 </h1>
-                <p className="mt-4 max-w-md text-lg font-semibold leading-snug text-[#0F4F68] sm:text-xl lg:ml-auto lg:max-w-lg">
+                <p className="mt-4 text-lg font-semibold leading-snug text-[#0F4F68] sm:text-xl">
                   Arbeitnehmer entlasten. Fehlzeiten reduzieren.
                 </p>
-                <div className="relative mt-10 w-full max-w-[min(100%,28rem)] lg:max-w-none">
+              </header>
+
+              <div className="relative mx-auto w-max max-w-full shrink-0 lg:mx-0 lg:ml-auto lg:self-start">
+                <div className="relative inline-block max-w-full">
+                  <Image
+                    src="/images/betriebliche_pflegeberatung.webp"
+                    alt="Beratungsgespräch zur betrieblichen Pflegeberatung"
+                    width={BETRIEBLICH_IMG.w}
+                    height={BETRIEBLICH_IMG.h}
+                    priority
+                    sizes="(max-width: 1024px) 100vw, 1053px"
+                    className={`relative z-0 h-auto w-[min(100%,1053px)] ${IMG_DROP_SHADOW} motion-reduce:filter-none`}
+                  />
                   <p
-                    className="absolute left-1/2 top-0 z-20 w-[min(calc(100vw-2rem),22rem)] -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-[#F78F2E] bg-[#0F4F68] px-3 py-2 text-center text-[0.8125rem] font-bold leading-snug text-white shadow-[0_10px_28px_rgba(15,79,104,0.38)] sm:w-auto sm:max-w-[90%] sm:px-5 sm:py-2.5 sm:text-sm md:text-base md:leading-tight"
+                    className="absolute bottom-0 left-1/2 z-10 w-[min(calc(100vw-2rem),24rem)] -translate-x-1/2 translate-y-1/2 rounded-full bg-[#0F4F68] px-4 py-2.5 text-center text-[0.8125rem] font-bold leading-snug text-white shadow-[0_8px_22px_rgba(15,79,104,0.35)] sm:w-max sm:max-w-[calc(100%+1rem)] sm:px-5 sm:text-sm md:text-base"
                     role="note"
                   >
                     Ihre Experten für Pflege seit 12 Jahren!
                   </p>
-                  <Image
-                    src="/images/betriebliche_pflegeberatung.webp"
-                    alt="Beratungsgespräch zur betrieblichen Pflegeberatung"
-                    width={1200}
-                    height={900}
-                    priority
-                    className="relative z-0 h-auto w-full rounded-2xl object-cover object-center shadow-[0_22px_55px_-14px_rgba(15,79,104,0.42),0_12px_28px_-8px_rgba(15,79,104,0.22)] ring-1 ring-[#0F4F68]/12"
-                    sizes="(max-width: 1024px) min(100vw - 2rem, 28rem), 34rem"
-                  />
                 </div>
               </div>
             </div>
