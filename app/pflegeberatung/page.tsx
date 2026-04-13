@@ -71,7 +71,7 @@ export default function PflegeberatungPage() {
                   className="relative z-0 block h-auto w-full max-w-none shadow-none"
                 />
                 <p
-                  className="pointer-events-auto absolute bottom-0 left-1/2 z-10 w-[min(calc(100vw-1rem),28rem)] -translate-x-1/2 translate-y-1/2 rounded-full border border-white/25 bg-[#0F4F68] px-[1.15rem] py-[0.65rem] text-center text-[1.05rem] font-bold leading-snug text-white shadow-none sm:w-max sm:max-w-[min(calc(100vw-0.5rem),32rem)] sm:px-[1.4rem] sm:py-[0.85rem] sm:text-[1.14rem] md:px-[1.6rem] md:py-[1rem] md:text-[1.3rem]"
+                  className="pointer-events-auto absolute bottom-0 left-1/2 z-20 w-[min(calc(100vw-1rem),28rem)] -translate-x-1/2 translate-y-1/2 rounded-full border border-white/25 bg-[#0F4F68] px-[1.15rem] py-[0.65rem] text-center text-[1.05rem] font-bold leading-snug text-white shadow-none sm:w-max sm:max-w-[min(calc(100vw-0.5rem),32rem)] sm:px-[1.4rem] sm:py-[0.85rem] sm:text-[1.14rem] md:px-[1.6rem] md:py-[1rem] md:text-[1.3rem]"
                   role="note"
                 >
                   Ihre Experten für Pflege seit 12 Jahren!
@@ -79,10 +79,10 @@ export default function PflegeberatungPage() {
               </div>
             </div>
 
-            {/* Welle im selben Farbverlauf — kein eigener Hintergrundstreifen, nahtloser Übergang */}
-            <div className="relative left-1/2 w-screen max-w-[100vw] -translate-x-1/2 overflow-x-hidden">
+            {/* Unten am Hero: bei lg liegt das Bild außerhalb des Flusses — im Fluss würde die Welle sonst direkt unter den Text rutschen */}
+            <div className="pointer-events-none absolute bottom-0 left-1/2 z-[1] w-screen max-w-[100vw] -translate-x-1/2 overflow-x-hidden leading-none">
               <svg
-                className="-mt-px block h-12 w-full shrink-0 text-[#E8F2F5] sm:h-[3.75rem]"
+                className="relative z-[1] -mb-px block h-12 w-full shrink-0 text-[#E8F2F5] sm:h-[3.75rem]"
                 viewBox="0 0 1440 100"
                 preserveAspectRatio="none"
                 aria-hidden
