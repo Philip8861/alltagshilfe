@@ -18,7 +18,7 @@ const KOSTENFREI_HERO_GLOW_CLASS =
 const KOSTENFREI_HERO_VORTEILE = [
   "Ab Pflegegrad 1 kostenlos",
   "Kostenfreier und schneller Versand",
-  "Zugelassen bei allen Krankenkassen",
+  "Zugelassen bei allen Pflegekassen",
 ] as const;
 
 /** Wie Startseiten-Hero: orangener Kreis mit Häkchen. */

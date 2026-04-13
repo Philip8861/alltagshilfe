@@ -75,16 +75,19 @@ const faqJsonLd = {
   })),
 };
 
-/** Wellen-Übergang wie auf der Startseite */
+/** Wellen-Übergang wie auf der Startseite (seitliche Kappen gegen weiße Randkeile bei preserveAspectRatio="none") */
 function WelleObenF2F9FA() {
   return (
     <svg
-      className="pointer-events-none absolute left-0 top-0 h-12 w-full -translate-y-[68%] sm:h-16"
+      className="pointer-events-none absolute left-0 top-0 block h-12 w-full -translate-y-[68%] sm:h-16"
       viewBox="0 0 1200 120"
       preserveAspectRatio="none"
       fill="none"
+      overflow="visible"
       aria-hidden
     >
+      <rect x="-48" y="0" width="48" height="120" fill="#F2F9FA" />
+      <rect x="1200" y="0" width="48" height="120" fill="#F2F9FA" />
       <path d="M0,120 C200,32 420,8 600,22 C800,38 1010,90 1200,120 L1200,120 L0,120 Z" fill="#F2F9FA" />
     </svg>
   );
@@ -201,7 +204,6 @@ export default function PrivatePflegeberatungPage() {
         className="relative z-10 w-full bg-white px-4 pb-14 pt-10 sm:px-6 sm:pb-16 sm:pt-12 lg:px-[var(--ahs-page-gutter)] lg:pb-16 lg:pt-14"
         aria-labelledby="vorteile-heading"
       >
-        <WelleObenF2F9FA />
         <div className="relative mx-auto w-full max-w-6xl">
           <h2 id="vorteile-heading" className={`${SECTION_TITLE_CLASS} ${ANIM_IN}`} style={{ animationDelay: "0ms" }}>
             Unsere Vorteile
@@ -238,12 +240,15 @@ export default function PrivatePflegeberatungPage() {
 
       <div className="relative z-0 -mt-[9%] min-h-[26vh] flex-1 bg-[#F2F9FA] px-4 pt-16 pb-20 sm:pt-18 sm:pb-24 lg:px-[var(--ahs-page-gutter)]">
         <svg
-          className="pointer-events-none absolute left-0 top-0 h-12 w-full -translate-y-[70%] sm:h-16"
+          className="pointer-events-none absolute left-0 top-0 block h-12 w-full -translate-y-[70%] sm:h-16"
           viewBox="0 0 1200 120"
           preserveAspectRatio="none"
           fill="none"
+          overflow="visible"
           aria-hidden
         >
+          <rect x="-48" y="0" width="48" height="120" fill="#F2F9FA" />
+          <rect x="1200" y="0" width="48" height="120" fill="#F2F9FA" />
           <path
             d="M0,120 C200,32 420,8 600,22 C800,38 1010,90 1200,120 L1200,120 L0,120 Z"
             fill="#F2F9FA"
