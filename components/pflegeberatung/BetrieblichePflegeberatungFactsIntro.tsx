@@ -1,23 +1,34 @@
 "use client";
 
 import { useEffect, useRef, useState, type ReactNode } from "react";
-import {
-  Bar,
-  BarChart,
-  CartesianGrid,
-  LabelList,
-  ResponsiveContainer,
-  Tooltip,
-  XAxis,
-  YAxis,
-} from "recharts";
 import { cn } from "@/lib/utils";
 
-/** Illustrierende Werte zur Verdeutlichung des Potenzials (keine individuelle Prognose). */
-const AU_CHART_DATA = [
-  { label: "Typischer Ausgangspunkt", tage: 14 },
-  { label: "Bei wirksamer Entlastung¹", tage: 8 },
-] as const;
+const ICON_WRAP =
+  "inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-[#0F4F68] text-white shadow-sm sm:h-14 sm:w-14";
+
+/** Belegschaft / Pflege (Mehrpersonen + Bettkontext) */
+function IconFactZweiteSchicht() {
+  return (
+    <svg className="h-6 w-6 sm:h-7 sm:w-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
+      <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" strokeLinecap="round" />
+      <circle cx="9" cy="7" r="4" />
+      <path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+/** Psychische Belastung / Fehlzeiten (Puls / Belastung) */
+function IconFactPflegebelastung() {
+  return (
+    <svg className="h-6 w-6 sm:h-7 sm:w-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
+      <path
+        d="M22 12h-4l-3 9L9 3l-3 9H2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
 
 function usePrefersReducedMotion(): boolean {
   const [reduced, setReduced] = useState(false);
@@ -31,32 +42,54 @@ function usePrefersReducedMotion(): boolean {
   return reduced;
 }
 
-function FadeUp({
+function FactSlideRow({
   show,
   reducedMotion,
+  from,
   delayMs,
-  className,
+  icon,
   children,
 }: {
   show: boolean;
   reducedMotion: boolean;
+  from: "left" | "right";
   delayMs: number;
-  className?: string;
+  icon: ReactNode;
   children: ReactNode;
 }) {
+  const fromLeft = from === "left";
   return (
-    <div
-      className={cn(
-        "will-change-transform",
-        reducedMotion
-          ? "opacity-100"
-          : "transition-[opacity,transform] duration-700 ease-out motion-reduce:transition-none motion-reduce:opacity-100",
-        !reducedMotion && (show ? "translate-y-0 opacity-100" : "translate-y-5 opacity-0"),
-        className,
-      )}
-      style={reducedMotion || !show ? undefined : { transitionDelay: `${delayMs}ms` }}
-    >
-      {children}
+    <div className="overflow-x-hidden py-1">
+      <div
+        className={cn(
+          "mx-auto flex w-full max-w-3xl flex-row items-center gap-4 sm:gap-5",
+          "will-change-transform",
+          reducedMotion
+            ? "translate-x-0 opacity-100"
+            : cn(
+                "transition-[transform,opacity] duration-[900ms] ease-out motion-reduce:transition-none",
+                show ? "translate-x-0 opacity-100" : "opacity-0",
+                show ? undefined : fromLeft ? "-translate-x-[115%]" : "translate-x-[115%]",
+              ),
+        )}
+        style={reducedMotion || !show ? undefined : { transitionDelay: `${delayMs}ms` }}
+      >
+        {fromLeft ? (
+          <>
+            <span className={ICON_WRAP} aria-hidden>
+              {icon}
+            </span>
+            <div className="min-w-0 flex-1 text-pretty">{children}</div>
+          </>
+        ) : (
+          <>
+            <div className="min-w-0 flex-1 text-pretty">{children}</div>
+            <span className={ICON_WRAP} aria-hidden>
+              {icon}
+            </span>
+          </>
+        )}
+      </div>
     </div>
   );
 }
@@ -93,85 +126,26 @@ export function BetrieblichePflegeberatungFactsIntro() {
       ref={rootRef}
       className="rounded-2xl border border-[#0F4F68]/12 bg-white/95 p-5 shadow-sm sm:p-8"
       role="region"
-      aria-label="Kennzahlen und Einsparungspotenzial"
+      aria-label="Fakten zur Pflegebelastung im Betrieb"
     >
       <div className="space-y-6 sm:space-y-8">
-        <FadeUp show={show} reducedMotion={reducedMotion} delayMs={0}>
-          <p className="text-pretty text-lg font-bold leading-snug text-[#0F4F68] sm:text-xl">
+        <FactSlideRow show={show} reducedMotion={reducedMotion} from="left" delayMs={0} icon={<IconFactZweiteSchicht />}>
+          <p className="text-lg font-bold leading-snug text-[#0F4F68] sm:text-xl">
             Wussten Sie, dass 10&nbsp;% Ihrer Belegschaft bereits jetzt eine „zweite Schicht“ am Krankenbett leisten?
           </p>
-        </FadeUp>
+        </FactSlideRow>
 
-        <FadeUp show={show} reducedMotion={reducedMotion} delayMs={140}>
-          <p className="text-pretty text-base font-semibold leading-relaxed text-neutral-800 sm:text-[1.05rem]">
-            Pflegebelastung ist der Treiber für psychische Erkrankungen – der zweithäufigste Grund für Fehltage in
-            2024.
+        <FactSlideRow
+          show={show}
+          reducedMotion={reducedMotion}
+          from="right"
+          delayMs={220}
+          icon={<IconFactPflegebelastung />}
+        >
+          <p className="text-base font-semibold leading-relaxed text-neutral-800 sm:text-[1.05rem]">
+            Pflegebelastung ist der Treiber für psychische Erkrankungen – der zweithäufigste Grund für Fehltage in 2024.
           </p>
-        </FadeUp>
-
-        <FadeUp show={show} reducedMotion={reducedMotion} delayMs={280}>
-          <div className="rounded-xl border border-[#0F4F68]/10 bg-gradient-to-b from-[#f8fcfd] to-white p-4 sm:p-6">
-            <h3 className="text-base font-extrabold text-[#0F4F68] sm:text-lg">
-              Einsparungspotenzial durch Reduktion von AU-Tagen
-            </h3>
-            <p className="mt-2 text-sm leading-relaxed text-neutral-600">
-              Schematische Darstellung: weniger krankheitsbedingte Ausfälle, wenn Pflegebelastung im Betrieb adressiert
-              wird.
-            </p>
-            <div className="mt-4 h-[220px] w-full sm:h-[260px]">
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart
-                  data={[...AU_CHART_DATA]}
-                  layout="vertical"
-                  margin={{ top: 8, right: 28, left: 4, bottom: 8 }}
-                  barCategoryGap={18}
-                >
-                  <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" horizontal={false} />
-                  <XAxis
-                    type="number"
-                    domain={[0, 16]}
-                    tick={{ fill: "#64748b", fontSize: 12 }}
-                    tickFormatter={(v) => `${v}`}
-                    label={{ value: "Tage (illustrativ)", position: "insideBottom", offset: -2, fill: "#64748b", fontSize: 11 }}
-                  />
-                  <YAxis
-                    type="category"
-                    dataKey="label"
-                    width={148}
-                    tick={{ fill: "#0F4F68", fontSize: 12 }}
-                    tickLine={false}
-                    axisLine={false}
-                  />
-                  <Tooltip
-                    formatter={(value: number) => [`${value} Tage`, "Modellannahme"]}
-                    labelStyle={{ color: "#0F4F68", fontWeight: 600 }}
-                    contentStyle={{ borderRadius: 12, border: "1px solid #0F4F6820" }}
-                  />
-                  <Bar
-                    dataKey="tage"
-                    fill="#0F4F68"
-                    radius={[0, 6, 6, 0]}
-                    name="Tage"
-                    isAnimationActive={show}
-                    animationDuration={reducedMotion ? 0 : 900}
-                    animationEasing="ease-out"
-                  >
-                    <LabelList
-                      dataKey="tage"
-                      position="right"
-                      formatter={(v: number) => `${v}`}
-                      style={{ fill: "#0F4F68", fontWeight: 700, fontSize: 13 }}
-                    />
-                  </Bar>
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
-            <p className="mt-3 text-xs leading-relaxed text-neutral-500">
-              ¹ Beispielwerte zur Veranschaulichung, keine Zusage für Ihr Unternehmen. Konkrete Kennzahlen und Quellen
-              besprechen wir gern persönlich.
-            </p>
-          </div>
-        </FadeUp>
+        </FactSlideRow>
       </div>
     </div>
   );
