@@ -102,13 +102,14 @@ export function ReadabilityZoomControls() {
 
   useEffect(() => {
     const onOpenFromFooter = () => {
+      if (pathname === "/pflegeberatung") return;
       setWidgetHidden(false);
       setShowUndo(false);
       setOpen(true);
     };
     window.addEventListener(AHS_READABILITY_OPEN_EVENT, onOpenFromFooter);
     return () => window.removeEventListener(AHS_READABILITY_OPEN_EVENT, onOpenFromFooter);
-  }, []);
+  }, [pathname]);
 
   useEffect(() => {
     const onKonfiguratorState = (event: Event) => {
@@ -336,9 +337,6 @@ export function ReadabilityZoomControls() {
   };
 
   const isKontakt = useMemo(() => pathname === "/kontakt", [pathname]);
-  /** Betriebliche Pflegeberatung: viel Fließtext → Widget und Panel größer für Lesbarkeit und Bedienung. */
-  const isBetrieblichePflegeberatungPage = pathname === "/pflegeberatung";
-  const readabilityExpanded = isBetrieblichePflegeberatungPage;
   /** Kostenfrei-Landing: schwebender Lesbarkeits-Button aus – dort Pflegeboxi unten links; Barrierefreiheit weiter über Footer-Link. */
   const hideLauncher =
     isKontakt || isKonfiguratorOpen || isKostenfreiePflegehilfsmittelLandingPath(pathname);
@@ -354,12 +352,11 @@ export function ReadabilityZoomControls() {
     () =>
       fixedLaunchStyle({
         right: "max(1rem, env(safe-area-inset-right, 0px))",
-        bottom:
-          isKontakt || isBetrieblichePflegeberatungPage
-            ? "min(42vh, calc(env(safe-area-inset-bottom, 0px) + max(2rem, 11rem)))"
-            : "max(1rem, env(safe-area-inset-bottom, 0px))",
+        bottom: isKontakt
+          ? "min(42vh, calc(env(safe-area-inset-bottom, 0px) + max(2rem, 11rem)))"
+          : "max(1rem, env(safe-area-inset-bottom, 0px))",
       }),
-    [isKontakt, isBetrieblichePflegeberatungPage],
+    [isKontakt],
   );
 
   useEffect(() => {
@@ -404,15 +401,11 @@ export function ReadabilityZoomControls() {
           aria-haspopup="menu"
           aria-expanded={open}
           aria-label={`Lesbarkeit Einstellungen öffnen. Aktuelle Schriftgröße: ${zoomLevel}%`}
-          className={`flex flex-col items-center justify-center gap-0.5 rounded-2xl shadow-[0_10px_36px_rgba(15,79,104,0.34)] transition hover:opacity-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68] focus-visible:ring-offset-2 ${
-            readabilityExpanded
-              ? "min-h-[72px] min-w-[72px] px-3.5 py-2.5"
-              : "min-h-[60px] min-w-[60px] px-3 py-2"
-          }`}
+          className="flex min-h-[60px] min-w-[60px] flex-col items-center justify-center gap-0.5 rounded-2xl px-3 py-2 shadow-[0_10px_36px_rgba(15,79,104,0.34)] transition hover:opacity-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68] focus-visible:ring-offset-2"
           style={{ backgroundColor: ICON_BG }}
         >
           <svg
-            className={`shrink-0 ${readabilityExpanded ? "h-8 w-8" : "h-7 w-7"}`}
+            className="h-7 w-7 shrink-0"
             viewBox="0 0 24 24"
             fill="none"
             stroke={ICON_STROKE}
@@ -424,11 +417,7 @@ export function ReadabilityZoomControls() {
             <path d="M21 21l-4.35-4.35" />
             <circle cx="11" cy="11" r="7" />
           </svg>
-          <span
-            className={`font-extrabold tracking-wide text-white ${readabilityExpanded ? "text-[17px]" : "text-[15px]"}`}
-          >
-            {zoomLevel}%
-          </span>
+          <span className="text-[15px] font-extrabold tracking-wide text-white">{zoomLevel}%</span>
         </button>
         <button
           type="button"
@@ -470,41 +459,24 @@ export function ReadabilityZoomControls() {
           <div
             role="menu"
             aria-label="Barrierefreie Einstellungen"
-            className={`absolute right-3 top-1/2 max-h-[92vh] -translate-y-1/2 overflow-y-auto rounded-3xl border border-[#0F4F68]/18 bg-white shadow-[0_18px_48px_rgba(15,79,104,0.26)] sm:right-4 ${
-              readabilityExpanded
-                ? "w-[min(96vw,52rem)] p-7 sm:p-10"
-                : "w-[min(96vw,42rem)] p-6 sm:p-8"
-            }`}
+            className="absolute right-3 top-1/2 w-[min(96vw,42rem)] max-h-[92vh] -translate-y-1/2 overflow-y-auto rounded-3xl border border-[#0F4F68]/18 bg-white p-6 shadow-[0_18px_48px_rgba(15,79,104,0.26)] sm:right-4 sm:p-8"
             style={{ transform: `translateY(-50%) scale(${100 / zoomLevel})`, transformOrigin: "top right" }}
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-start justify-between gap-3">
               <div className="min-w-0 flex-1">
-                <p
-                  className={`font-extrabold text-[#0F4F68] ${readabilityExpanded ? "text-xl sm:text-2xl" : "text-lg sm:text-xl"}`}
-                >
-                  Barrierefreie Homepage
-                </p>
-                <p className={`mt-1 text-neutral-600 ${readabilityExpanded ? "text-base sm:text-[1.05rem]" : "text-sm"}`}>
-                  Hier können Sie ihre Darstellung ändern.
-                </p>
+                <p className="text-lg font-extrabold text-[#0F4F68] sm:text-xl">Barrierefreie Homepage</p>
+                <p className="mt-1 text-sm text-neutral-600">Hier können Sie ihre Darstellung ändern.</p>
               </div>
               <button type="button" onClick={() => setOpen(false)} className="rounded-lg p-2 text-neutral-600 hover:bg-neutral-50" aria-label="Einstellungen schließen">
                 <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden><path d="M18 6L6 18M6 6l12 12" strokeLinecap="round" strokeLinejoin="round" /></svg>
               </button>
             </div>
 
-            <div className={`mt-5 grid grid-cols-1 sm:grid-cols-3 ${readabilityExpanded ? "gap-4 sm:gap-5" : "gap-3"}`}>
-              <section
-                className={`rounded-2xl border border-[#0F4F68]/10 bg-[#F2F9FA]/45 ${readabilityExpanded ? "p-4 sm:p-5" : "p-3"}`}
-              >
-                <h4 className={`font-extrabold text-[#0F4F68] ${readabilityExpanded ? "text-xl" : "text-lg"}`}>
-                  Schriftgröße & Art
-                </h4>
-                <label
-                  className={`mt-3 block font-semibold text-[#0F4F68] ${readabilityExpanded ? "text-sm" : "text-xs"}`}
-                  htmlFor="zoom-range"
-                >{`Schriftgröße (${zoomLevel}%)`}</label>
+            <div className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-3">
+              <section className="rounded-2xl border border-[#0F4F68]/10 bg-[#F2F9FA]/45 p-3">
+                <h4 className="text-lg font-extrabold text-[#0F4F68]">Schriftgröße & Art</h4>
+                <label className="mt-3 block text-xs font-semibold text-[#0F4F68]" htmlFor="zoom-range">{`Schriftgröße (${zoomLevel}%)`}</label>
                 <input
                   id="zoom-range"
                   type="range"
@@ -513,20 +485,20 @@ export function ReadabilityZoomControls() {
                   step={STEP}
                   value={zoomLevel}
                   onChange={(e) => updateZoom(Number.parseInt(e.target.value, 10))}
-                  className={`mt-2 w-full accent-[#F78F2E] ${readabilityExpanded ? "min-h-11" : ""}`}
+                  className="mt-2 w-full accent-[#F78F2E]"
                 />
                 <div className="mt-2 flex gap-2">
                   <button
                     type="button"
                     onClick={() => updateZoom(zoomLevel - STEP)}
-                    className={`flex-1 rounded-xl border border-[#0F4F68]/20 bg-white font-semibold text-[#0F4F68] ${readabilityExpanded ? "min-h-12 px-3 py-2.5 text-base" : "px-3 py-2 text-sm"}`}
+                    className="flex-1 rounded-xl border border-[#0F4F68]/20 bg-white px-3 py-2 text-sm font-semibold text-[#0F4F68]"
                   >
                     -
                   </button>
                   <button
                     type="button"
                     onClick={() => updateZoom(zoomLevel + STEP)}
-                    className={`flex-1 rounded-xl bg-[#F78F2E] font-semibold text-white ${readabilityExpanded ? "min-h-12 px-3 py-2.5 text-base" : "px-3 py-2 text-sm"}`}
+                    className="flex-1 rounded-xl bg-[#F78F2E] px-3 py-2 text-sm font-semibold text-white"
                   >
                     +
                   </button>
@@ -534,47 +506,41 @@ export function ReadabilityZoomControls() {
                 <button
                   type="button"
                   onClick={() => updateZoom(100)}
-                  className={`mt-2 w-full rounded-xl border border-[#0F4F68]/20 bg-white font-semibold text-[#0F4F68] ${readabilityExpanded ? "min-h-12 px-3 py-2.5 text-base" : "px-3 py-2 text-sm"}`}
+                  className="mt-2 w-full rounded-xl border border-[#0F4F68]/20 bg-white px-3 py-2 text-sm font-semibold text-[#0F4F68]"
                 >
                   Zurücksetzen
                 </button>
-                <label
-                  className={`mt-3 block font-semibold text-[#0F4F68] ${readabilityExpanded ? "text-sm" : "text-xs"}`}
-                >
-                  Schriftart
-                </label>
+                <label className="mt-3 block text-xs font-semibold text-[#0F4F68]">Schriftart</label>
                 <div className="mt-2 flex items-center gap-2">
                   <button
                     type="button"
                     onClick={() => cycleFont(-1)}
                     aria-label="Vorherige Schriftart"
-                    className={`inline-flex items-center justify-center rounded-lg border border-[#0F4F68]/20 bg-white text-[#0F4F68] ${readabilityExpanded ? "h-11 w-11 text-lg" : "h-9 w-9"}`}
+                    className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-[#0F4F68]/20 bg-white text-[#0F4F68]"
                   >
                     ←
                   </button>
-                  <p
-                    className={`flex-1 text-center font-semibold text-[#0F4F68] ${readabilityExpanded ? "text-base" : "text-sm"}`}
-                  >
+                  <p className="flex-1 text-center text-sm font-semibold text-[#0F4F68]">
                     {FONT_OPTIONS[selectedFontIndex]?.label}
                   </p>
                   <button
                     type="button"
                     onClick={() => cycleFont(1)}
                     aria-label="Nächste Schriftart"
-                    className={`inline-flex items-center justify-center rounded-lg border border-[#0F4F68]/20 bg-white text-[#0F4F68] ${readabilityExpanded ? "h-11 w-11 text-lg" : "h-9 w-9"}`}
+                    className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-[#0F4F68]/20 bg-white text-[#0F4F68]"
                   >
                     →
                   </button>
                 </div>
                 <div
-                  className={`mt-3 text-center font-bold text-[#0F4F68] ${readabilityExpanded ? "text-3xl" : "text-2xl"}`}
+                  className="mt-3 text-center text-2xl font-bold text-[#0F4F68]"
                   style={{ fontFamily: FONT_OPTIONS.find((f) => f.id === selectedFont)?.value }}
                 >
                   Schriftart Test
                 </div>
-                <div className={`mt-3 rounded-xl border border-[#0F4F68]/10 bg-[#F2F9FA]/40 ${readabilityExpanded ? "p-5" : "p-4"}`}>
-                  <p className={`font-bold text-[#0F4F68] ${readabilityExpanded ? "text-base" : "text-sm"}`}>Zeilenabstand</p>
-                  <p className={`mt-1 text-neutral-600 ${readabilityExpanded ? "text-base" : "text-sm"}`}>{`Aktuell: ${lineHeightLevel}%`}</p>
+                <div className="mt-3 rounded-xl border border-[#0F4F68]/10 bg-[#F2F9FA]/40 p-4">
+                  <p className="text-sm font-bold text-[#0F4F68]">Zeilenabstand</p>
+                  <p className="mt-1 text-sm text-neutral-600">{`Aktuell: ${lineHeightLevel}%`}</p>
                   <div className="mt-2 flex gap-2">
                     <button
                       type="button"
@@ -583,7 +549,7 @@ export function ReadabilityZoomControls() {
                         setLineHeightLevel(next);
                         window.localStorage.setItem(STORAGE_KEY_LINE_HEIGHT, String(next));
                       }}
-                      className={`flex-1 rounded-xl border border-[#0F4F68]/20 bg-white font-semibold text-[#0F4F68] ${readabilityExpanded ? "min-h-12 px-3 py-2.5 text-base" : "px-3 py-2 text-sm"}`}
+                      className="flex-1 rounded-xl border border-[#0F4F68]/20 bg-white px-3 py-2 text-sm font-semibold text-[#0F4F68]"
                     >
                       -
                     </button>
@@ -594,7 +560,7 @@ export function ReadabilityZoomControls() {
                         setLineHeightLevel(next);
                         window.localStorage.setItem(STORAGE_KEY_LINE_HEIGHT, String(next));
                       }}
-                      className={`flex-1 rounded-xl bg-[#F78F2E] font-semibold text-white ${readabilityExpanded ? "min-h-12 px-3 py-2.5 text-base" : "px-3 py-2 text-sm"}`}
+                      className="flex-1 rounded-xl bg-[#F78F2E] px-3 py-2 text-sm font-semibold text-white"
                     >
                       +
                     </button>
@@ -602,13 +568,9 @@ export function ReadabilityZoomControls() {
                 </div>
               </section>
 
-              <section
-                className={`rounded-2xl border border-[#0F4F68]/10 bg-[#F2F9FA]/45 ${readabilityExpanded ? "p-4 sm:p-5" : "p-3"}`}
-              >
-                <h4 className={`font-extrabold text-[#0F4F68] ${readabilityExpanded ? "text-xl" : "text-lg"}`}>Farben</h4>
-                <label
-                  className={`mt-3 flex cursor-pointer items-start gap-3 rounded-xl border border-[#0F4F68]/10 bg-[#F2F9FA]/40 ${readabilityExpanded ? "gap-4 p-5" : "p-4"}`}
-                >
+              <section className="rounded-2xl border border-[#0F4F68]/10 bg-[#F2F9FA]/45 p-3">
+                <h4 className="text-lg font-extrabold text-[#0F4F68]">Farben</h4>
+                <label className="mt-3 flex cursor-pointer items-start gap-3 rounded-xl border border-[#0F4F68]/10 bg-[#F2F9FA]/40 p-4">
                   <input
                     type="checkbox"
                     checked={bwMode}
@@ -617,20 +579,14 @@ export function ReadabilityZoomControls() {
                       setBwMode(v);
                       window.localStorage.setItem(STORAGE_KEY_BW_MODE, v ? "1" : "0");
                     }}
-                    className={`mt-1 accent-[#F78F2E] ${readabilityExpanded ? "h-6 w-6" : "h-5 w-5"}`}
+                    className="mt-1 h-5 w-5 accent-[#F78F2E]"
                   />
                   <span>
-                    <span className={`block font-bold text-[#0F4F68] ${readabilityExpanded ? "text-base" : "text-sm"}`}>
-                      Schwarz/Weiß-Modus
-                    </span>
-                    <span className={`block text-neutral-600 ${readabilityExpanded ? "mt-1 text-base leading-snug" : "text-sm"}`}>
-                      Reduziert Farben auf Graustufen für ruhigere Darstellung.
-                    </span>
+                    <span className="block text-sm font-bold text-[#0F4F68]">Schwarz/Weiß-Modus</span>
+                    <span className="block text-sm text-neutral-600">Reduziert Farben auf Graustufen für ruhigere Darstellung.</span>
                   </span>
                 </label>
-                <label
-                  className={`mt-3 flex cursor-pointer items-start gap-3 rounded-xl border border-[#0F4F68]/10 bg-[#F2F9FA]/40 ${readabilityExpanded ? "gap-4 p-5" : "p-4"}`}
-                >
+                <label className="mt-3 flex cursor-pointer items-start gap-3 rounded-xl border border-[#0F4F68]/10 bg-[#F2F9FA]/40 p-4">
                   <input
                     type="checkbox"
                     checked={brightPage}
@@ -639,20 +595,14 @@ export function ReadabilityZoomControls() {
                       setBrightPage(v);
                       window.localStorage.setItem(STORAGE_KEY_BRIGHT_PAGE, v ? "1" : "0");
                     }}
-                    className={`mt-1 accent-[#F78F2E] ${readabilityExpanded ? "h-6 w-6" : "h-5 w-5"}`}
+                    className="mt-1 h-5 w-5 accent-[#F78F2E]"
                   />
                   <span>
-                    <span className={`block font-bold text-[#0F4F68] ${readabilityExpanded ? "text-base" : "text-sm"}`}>
-                      Seite heller machen
-                    </span>
-                    <span className={`block text-neutral-600 ${readabilityExpanded ? "mt-1 text-base leading-snug" : "text-sm"}`}>
-                      Erhöht Helligkeit und Kontrast für bessere Sichtbarkeit.
-                    </span>
+                    <span className="block text-sm font-bold text-[#0F4F68]">Seite heller machen</span>
+                    <span className="block text-sm text-neutral-600">Erhöht Helligkeit und Kontrast für bessere Sichtbarkeit.</span>
                   </span>
                 </label>
-                <label
-                  className={`mt-3 flex cursor-pointer items-start gap-3 rounded-xl border border-[#0F4F68]/10 bg-[#F2F9FA]/40 ${readabilityExpanded ? "gap-4 p-5" : "p-4"}`}
-                >
+                <label className="mt-3 flex cursor-pointer items-start gap-3 rounded-xl border border-[#0F4F68]/10 bg-[#F2F9FA]/40 p-4">
                   <input
                     type="checkbox"
                     checked={enhancedCursor}
@@ -661,26 +611,18 @@ export function ReadabilityZoomControls() {
                       setEnhancedCursor(v);
                       window.localStorage.setItem(STORAGE_KEY_CURSOR_ENHANCED, v ? "1" : "0");
                     }}
-                    className={`mt-1 accent-[#F78F2E] ${readabilityExpanded ? "h-6 w-6" : "h-5 w-5"}`}
+                    className="mt-1 h-5 w-5 accent-[#F78F2E]"
                   />
                   <span>
-                    <span className={`block font-bold text-[#0F4F68] ${readabilityExpanded ? "text-base" : "text-sm"}`}>
-                      Maus Cursor vergrößern
-                    </span>
-                    <span className={`block text-neutral-600 ${readabilityExpanded ? "mt-1 text-base leading-snug" : "text-sm"}`}>
-                      Gleiche Pfeil-Form wie gewohnt, nur größer dargestellt.
-                    </span>
+                    <span className="block text-sm font-bold text-[#0F4F68]">Maus Cursor vergrößern</span>
+                    <span className="block text-sm text-neutral-600">Gleiche Pfeil-Form wie gewohnt, nur größer dargestellt.</span>
                   </span>
                 </label>
               </section>
 
-              <section
-                className={`rounded-2xl border border-[#0F4F68]/10 bg-[#F2F9FA]/45 ${readabilityExpanded ? "p-4 sm:p-5" : "p-3"}`}
-              >
-                <h4 className={`font-extrabold text-[#0F4F68] ${readabilityExpanded ? "text-xl" : "text-lg"}`}>Ton</h4>
-                <label
-                  className={`mt-3 flex cursor-pointer items-start gap-3 rounded-xl border border-[#0F4F68]/10 bg-[#F2F9FA]/40 ${readabilityExpanded ? "gap-4 p-5" : "p-4"}`}
-                >
+              <section className="rounded-2xl border border-[#0F4F68]/10 bg-[#F2F9FA]/45 p-3">
+                <h4 className="text-lg font-extrabold text-[#0F4F68]">Ton</h4>
+                <label className="mt-3 flex cursor-pointer items-start gap-3 rounded-xl border border-[#0F4F68]/10 bg-[#F2F9FA]/40 p-4">
                   <input
                     type="checkbox"
                     checked={readAloudMode}
@@ -690,25 +632,16 @@ export function ReadabilityZoomControls() {
                       window.localStorage.setItem(STORAGE_KEY_READ_ALOUD, v ? "1" : "0");
                       if (!v) stopReading();
                     }}
-                    className={`mt-1 accent-[#F78F2E] ${readabilityExpanded ? "h-6 w-6" : "h-5 w-5"}`}
+                    className="mt-1 h-5 w-5 accent-[#F78F2E]"
                   />
                   <span>
-                    <span
-                      className={`flex items-center gap-2 font-bold text-[#0F4F68] ${readabilityExpanded ? "text-base" : "text-sm"}`}
-                    >
-                      <svg
-                        className={readabilityExpanded ? "h-5 w-5" : "h-4 w-4"}
-                        viewBox="0 0 24 24"
-                        fill="currentColor"
-                        aria-hidden
-                      >
+                    <span className="flex items-center gap-2 text-sm font-bold text-[#0F4F68]">
+                      <svg className="h-4 w-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
                         <path d="M3 10v4h4l5 4V6L7 10H3zm13.5 2a3.5 3.5 0 0 0-2.1-3.2v6.4a3.5 3.5 0 0 0 2.1-3.2zm0-7.5v2.1a6 6 0 0 1 0 10.8v2.1a8.5 8.5 0 0 0 0-15z" />
                       </svg>
                       Vorlese Modus
                     </span>
-                    <span className={`block text-neutral-600 ${readabilityExpanded ? "mt-1 text-base leading-snug" : "text-sm"}`}>
-                      Nutzt standardmäßig Google Deutsch (de-DE), falls vorhanden.
-                    </span>
+                    <span className="block text-sm text-neutral-600">Nutzt standardmäßig Google Deutsch (de-DE), falls vorhanden.</span>
                   </span>
                 </label>
               </section>
@@ -718,7 +651,7 @@ export function ReadabilityZoomControls() {
               <button
                 type="button"
                 onClick={resetAllSettings}
-                className={`w-full rounded-xl border border-[#0F4F68]/20 bg-white font-semibold text-[#0F4F68] ${readabilityExpanded ? "min-h-[52px] px-4 py-3.5 text-lg" : "px-4 py-3 text-base"}`}
+                className="w-full rounded-xl border border-[#0F4F68]/20 bg-white px-4 py-3 text-base font-semibold text-[#0F4F68]"
               >
                 Einstellungen zurücksetzen
               </button>
@@ -729,12 +662,10 @@ export function ReadabilityZoomControls() {
 
       {readAloudMode ? (
         <div
-          className={`fixed left-1/2 z-[2147483647] -translate-x-1/2 ${readabilityExpanded ? "w-[min(94vw,34rem)]" : "w-[min(92vw,28rem)]"}`}
+          className="fixed left-1/2 z-[2147483647] w-[min(92vw,28rem)] -translate-x-1/2"
           style={{ bottom: "max(1rem, calc(env(safe-area-inset-bottom, 0px) + 1rem))" }}
         >
-          <div
-            className={`relative rounded-2xl border border-[#0F4F68]/15 bg-white shadow-[0_12px_34px_rgba(15,79,104,0.22)] ${readabilityExpanded ? "p-4" : "p-3"}`}
-          >
+          <div className="relative rounded-2xl border border-[#0F4F68]/15 bg-white p-3 shadow-[0_12px_34px_rgba(15,79,104,0.22)]">
             <button
               type="button"
               onClick={() => {
@@ -753,9 +684,7 @@ export function ReadabilityZoomControls() {
             <button
               type="button"
               onClick={() => (isSpeaking ? stopReading() : startReading())}
-              className={`inline-flex w-full items-center justify-center rounded-xl bg-[#0F4F68] font-bold text-white transition hover:bg-[#0c3d52] ${
-                readabilityExpanded ? "min-h-[60px] px-5 py-3.5 text-xl" : "min-h-[56px] px-5 py-3 text-lg"
-              }`}
+              className="inline-flex min-h-[56px] w-full items-center justify-center rounded-xl bg-[#0F4F68] px-5 py-3 text-lg font-bold text-white transition hover:bg-[#0c3d52]"
             >
               {isSpeaking ? "Vorlesen Stoppen" : hasReadOnce ? "Erneut lesen" : "Vorlesen Start"}
             </button>
@@ -766,8 +695,14 @@ export function ReadabilityZoomControls() {
   );
 
   if (!mounted || typeof document === "undefined") return null;
-  /* Partner, Pflegebox: kein portaliertes Lesbarkeits-UI (eigenes bzw. Iframe-UI; sonst Leisten über Inhalt). */
-  if (pathname.startsWith("/partner") || isPflegeboxKonfiguratorPagePath(pathname)) return null;
+  /* Partner, Pflegebox, Betriebliche Pflegeberatung: kein portaliertes Lesbarkeits-UI. */
+  if (
+    pathname.startsWith("/partner") ||
+    isPflegeboxKonfiguratorPagePath(pathname) ||
+    pathname === "/pflegeberatung"
+  ) {
+    return null;
+  }
 
   return (
     <>
