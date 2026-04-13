@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { BetrieblichAngebotOpenButton } from "@/components/pflegeberatung/BetrieblicheAngebotAnfrage";
+import { BetrieblichePflegeberatungFactsIntro } from "@/components/pflegeberatung/BetrieblichePflegeberatungFactsIntro";
 
 const ICON_WRAP =
   "inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-[#0F4F68] text-white shadow-sm sm:h-14 sm:w-14";
@@ -239,6 +240,8 @@ const ANGEBOT = [
 export function BetrieblichePflegeberatungSection() {
   return (
     <div className="space-y-14 sm:space-y-16">
+      <BetrieblichePflegeberatungFactsIntro />
+
       <section aria-labelledby="betrieblich-was-ist-heading">
         <h2 id="betrieblich-was-ist-heading" className="text-xl font-extrabold text-[#0F4F68] sm:text-2xl">
           Was versteht man unter betrieblicher Pflegeberatung?

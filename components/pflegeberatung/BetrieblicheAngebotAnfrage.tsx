@@ -31,7 +31,7 @@ const BTN_ORANGE =
 
 export function BetrieblichAngebotOpenButton({
   className,
-  children = "Jetzt Angebot anfordern!",
+  children = "Jetzt unverbindliches Angebot anfordern",
 }: {
   className?: string;
   children?: React.ReactNode;

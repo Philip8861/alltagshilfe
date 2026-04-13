@@ -21,7 +21,7 @@ const imgBlockStyle = {
 
 export const metadata: Metadata = {
   title: "Betriebliche Pflegeberatung",
-  description: `Betriebliche Pflegeberatung für Unternehmen: Mitarbeitende entlasten, Fehlzeiten reduzieren – ${siteConfig.name}.`,
+  description: `Betriebliche Pflegeberatung für Unternehmen: Team entlasten, Fehlzeiten reduzieren, Mitarbeitende stärken – ${siteConfig.name}.`,
 };
 
 export default function PflegeberatungPage() {
@@ -46,8 +46,8 @@ export default function PflegeberatungPage() {
                   <span className="block">Betriebliche</span>
                   <span className="block">Pflegeberatung</span>
                 </h1>
-                <p className="mt-4 text-lg font-semibold leading-snug text-[#0F4F68] sm:text-xl">
-                  Arbeitnehmer entlasten. Fehlzeiten reduzieren.
+                <p className="mt-4 text-pretty text-lg font-semibold leading-snug text-[#0F4F68] sm:text-xl">
+                  Entlasten Sie Ihr Team, reduzieren Sie Fehlzeiten und stärken Sie Ihre Mitarbeitenden.
                 </p>
                 <div className="mt-5 max-w-md">
                   <BetrieblichAngebotOpenButton className="w-full sm:w-auto" />
