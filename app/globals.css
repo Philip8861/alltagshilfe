@@ -6,7 +6,16 @@
   /* Horizontale Außenabstände Desktop: wachsen mit Viewport, Deckel 2rem (wie früher lg:px-8). */
   :root {
     --ahs-page-gutter: 1rem;
+    /* Sticky-Header (Strip + Logo/Nav): verhindert, dass Anker-Ziele unter dem Header landen */
+    --ahs-header-scroll-padding: 7.25rem;
   }
+  @media (max-width: 1023px) {
+    :root {
+      /* Schmalere Viewports: Nav kann umbrechen → etwas mehr Abstand */
+      --ahs-header-scroll-padding: 8.25rem;
+    }
+  }
+
   @media (min-width: 640px) {
     :root {
       --ahs-page-gutter: 1.5rem;
@@ -21,6 +30,7 @@
   /* Kein horizontaler Scroll-„Balken“ durch 100vw/Überlauf am Seitenende */
   html {
     overflow-x: clip;
+    scroll-padding-top: var(--ahs-header-scroll-padding);
   }
 
   /*

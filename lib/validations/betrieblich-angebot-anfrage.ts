@@ -4,6 +4,7 @@ const MAX_NAME_LENGTH = 100;
 const MAX_PHONE_LENGTH = 50;
 const MAX_MITARBEITER = 50;
 const MAX_BEMERKUNG = 2000;
+const MAX_FIRMENNAME = 200;
 
 export const betrieblichAngebotAnfrageSchema = z.object({
   nachname: z
@@ -15,6 +16,17 @@ export const betrieblichAngebotAnfrageSchema = z.object({
     .min(1, "Bitte geben Sie Ihren Vornamen an.")
     .max(MAX_NAME_LENGTH, `Der Vorname darf maximal ${MAX_NAME_LENGTH} Zeichen haben.`),
   email: z.string().email("Bitte geben Sie eine gültige E-Mail-Adresse an."),
+  firmenname: z.preprocess(
+    (v) => {
+      if (v === undefined || v === null) return undefined;
+      const s = String(v).trim();
+      return s === "" ? undefined : s;
+    },
+    z
+      .string()
+      .max(MAX_FIRMENNAME, `Der Firmenname darf maximal ${MAX_FIRMENNAME} Zeichen haben.`)
+      .optional(),
+  ),
   phone: z
     .string()
     .max(MAX_PHONE_LENGTH, `Die Telefonnummer darf maximal ${MAX_PHONE_LENGTH} Zeichen haben.`)

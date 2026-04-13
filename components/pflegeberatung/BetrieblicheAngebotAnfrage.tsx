@@ -201,6 +201,21 @@ export function BetrieblichAngebotDialogProvider({ children }: { children: React
                   </div>
 
                   <div>
+                    <label htmlFor="betrieblich-firma" className="block text-sm font-medium text-neutral-700">
+                      Firmenname (optional)
+                    </label>
+                    <input
+                      id="betrieblich-firma"
+                      name="firmenname"
+                      type="text"
+                      autoComplete="organization"
+                      disabled={pending}
+                      className="mt-1 block w-full rounded-lg border border-[#0F4F68]/25 px-4 py-2.5 text-neutral-900 placeholder-neutral-400 focus:border-[#0F4F68] focus:outline-none focus:ring-1 focus:ring-[#0F4F68] disabled:opacity-50"
+                      placeholder="Unternehmen oder Einrichtung"
+                    />
+                  </div>
+
+                  <div>
                     <label htmlFor="betrieblich-email" className="block text-sm font-medium text-neutral-700">
                       E-Mail *
                     </label>

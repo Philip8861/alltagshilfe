@@ -21,6 +21,7 @@ export async function submitBetrieblichAngebotAnfrage(formData: FormData): Promi
   const raw = {
     nachname: formData.get("nachname") ?? "",
     vorname: formData.get("vorname") ?? "",
+    firmenname: formData.get("firmenname") ?? "",
     email: formData.get("email") ?? "",
     phone: phoneRaw && String(phoneRaw).trim() !== "" ? String(phoneRaw).trim() : undefined,
     mitarbeiteranzahl: formData.get("mitarbeiteranzahl") ?? "",
@@ -35,6 +36,7 @@ export async function submitBetrieblichAngebotAnfrage(formData: FormData): Promi
     const message =
       first.nachname?.[0] ??
       first.vorname?.[0] ??
+      first.firmenname?.[0] ??
       first.email?.[0] ??
       first.phone?.[0] ??
       first.mitarbeiteranzahl?.[0] ??
@@ -60,6 +62,7 @@ export async function submitBetrieblichAngebotAnfrage(formData: FormData): Promi
     "Neue Anfrage: Betriebliche Pflegeberatung (Angebot)",
     "",
     `Name: ${data.vorname} ${data.nachname}`,
+    ...(data.firmenname ? [`Firma: ${data.firmenname}`] : []),
     `E-Mail: ${data.email}`,
     ...(data.phone ? [`Telefon: ${data.phone}`] : []),
     `Mitarbeiteranzahl: ${data.mitarbeiteranzahl}`,
@@ -68,8 +71,9 @@ export async function submitBetrieblichAngebotAnfrage(formData: FormData): Promi
 
   const rows: EmailDetailRow[] = [
     { label: "Name", value: `${data.vorname} ${data.nachname}` },
-    { label: "E-Mail", value: data.email },
   ];
+  if (data.firmenname) rows.push({ label: "Firmenname", value: data.firmenname });
+  rows.push({ label: "E-Mail", value: data.email });
   if (data.phone) rows.push({ label: "Telefon", value: data.phone });
   rows.push({ label: "Mitarbeiteranzahl", value: data.mitarbeiteranzahl });
   if (data.bemerkung) rows.push({ label: "Bemerkung", value: data.bemerkung });

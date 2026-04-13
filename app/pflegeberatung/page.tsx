@@ -31,10 +31,14 @@ export default function PflegeberatungPage() {
   return (
     <BetrieblichAngebotDialogProvider>
       <article className="pb-16 sm:pb-24">
-        <section id="betriebliche-pflegeberatung" aria-labelledby="betrieblich-heading">
-          {/* Oberer Bereich: weicher Übergang Richtung Markenfläche unten */}
+        <section
+          id="betriebliche-pflegeberatung"
+          aria-labelledby="betrieblich-heading"
+          className="scroll-mt-[var(--ahs-header-scroll-padding)]"
+        >
+          {/* Oberer Bereich: weicher Übergang Richtung Markenfläche unten (ohne border-b — sonst Linie unter dem Bild-Badge) */}
           <div
-            className="relative w-full border-b border-[#0F4F68]/8 bg-gradient-to-b from-white from-[20%] via-[#fafcfd] via-[55%] to-[#eef7f9] pb-12 pt-8 sm:pb-16 sm:pt-10 lg:min-h-[min(100vw,480px)] lg:pb-20 lg:pt-10"
+            className="relative w-full bg-gradient-to-b from-white from-[20%] via-[#fafcfd] via-[55%] to-[#eef7f9] pb-12 pt-8 sm:pb-16 sm:pt-10 lg:min-h-[min(100vw,480px)] lg:pb-20 lg:pt-10"
           >
             <Container className="relative z-10">
               <header className="max-w-xl text-left lg:max-w-[min(100%,28rem)] lg:pr-4 xl:max-w-[32rem]">
