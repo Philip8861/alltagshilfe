@@ -1,8 +1,5 @@
 import Link from "next/link";
-import {
-  BetrieblichAngebotDialogProvider,
-  BetrieblichAngebotOpenButton,
-} from "@/components/pflegeberatung/BetrieblicheAngebotAnfrage";
+import { BetrieblichAngebotOpenButton } from "@/components/pflegeberatung/BetrieblicheAngebotAnfrage";
 
 const ICON_WRAP =
   "inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-[#0F4F68] text-white shadow-sm sm:h-14 sm:w-14";
@@ -250,7 +247,7 @@ export function BetrieblichePflegeberatungSection() {
           {VORTEILE.map(({ title, text, Icon }) => (
             <li
               key={title}
-              className="flex gap-4 rounded-2xl border border-[#0F4F68]/10 bg-[#F2F9FA]/60 p-4 shadow-sm transition-shadow hover:shadow-md sm:p-5"
+              className="flex gap-4 rounded-2xl border border-[#0F4F68]/12 bg-white/90 p-4 shadow-sm transition-shadow hover:shadow-md sm:p-5"
             >
               <span className={ICON_WRAP} aria-hidden>
                 <Icon />
@@ -264,30 +261,6 @@ export function BetrieblichePflegeberatungSection() {
         </ul>
       </section>
 
-      <div className="relative left-1/2 w-screen max-w-[100vw] -translate-x-1/2 overflow-x-hidden">
-        <svg
-          className="block h-12 w-full shrink-0 text-[#E8F2F5] sm:h-16"
-          viewBox="0 0 1440 100"
-          preserveAspectRatio="none"
-          aria-hidden
-        >
-          <path
-            fill="currentColor"
-            d="M0,55 C240,18 480,92 720,48 C960,4 1200,78 1440,42 L1440,100 L0,100 Z"
-          />
-        </svg>
-        <BetrieblichAngebotDialogProvider>
-          <div className="-mt-px space-y-14 bg-gradient-to-b from-[#E8F2F5] via-[#F0F8FA] to-[#E5F2F6] pb-16 pt-6 sm:space-y-16 sm:pb-20 sm:pt-8">
-            <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-[var(--ahs-page-gutter)]">
-              <div className="flex flex-col items-stretch gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
-                <p className="text-center text-base font-semibold text-[#0F4F68] sm:text-left sm:text-lg">
-                  Unverbindliches Angebot für Ihr Unternehmen
-                </p>
-                <BetrieblichAngebotOpenButton className="w-full shrink-0 sm:w-auto" />
-              </div>
-            </div>
-
-            <div className="mx-auto max-w-7xl space-y-14 px-4 sm:space-y-16 sm:px-6 lg:px-[var(--ahs-page-gutter)]">
       <section
         className="rounded-2xl border border-[#0F4F68]/10 bg-white p-5 shadow-sm sm:p-8"
         aria-labelledby="betrieblich-demografie-heading"
@@ -400,10 +373,6 @@ export function BetrieblichePflegeberatungSection() {
           </Link>
         </div>
       </section>
-            </div>
-          </div>
-        </BetrieblichAngebotDialogProvider>
-      </div>
     </div>
   );
 }
