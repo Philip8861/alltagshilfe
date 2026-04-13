@@ -247,13 +247,16 @@ export function BetrieblichePflegeberatungSection() {
           <p>
             Betriebliche Pflegeberatung ist ein Unterstützungsangebot für Beschäftigte, die Angehörige pflegen oder
             kurzfristig vor einer Pflegesituation stehen. Sie basiert auf unserer langjährigen Erfahrung und auf dem
-            häufigsten Satz, den wir hören: „Hätte ich das eher gewusst, wäre vieles leichter gewesen.“
+            häufigsten Satz, den wir hören:{" "}
+            <strong className="font-semibold text-[#0F4F68]">
+              „Hätte ich das eher gewusst, wäre vieles leichter gewesen.“
+            </strong>
           </p>
           <p>
             Damit Mitarbeitende nach Feierabend nicht noch „die zweite Schicht“ starten müssen und sich mit Formularen,
-            Anträgen, Telefonaten, Haushalt und organisatorischen Aufgaben auseinandersetzen müssen, stehen wir sofort zur
-            Seite. Wir beraten schnell im Betrieb oder zu Hause und kümmern uns um die Organisation, damit Entlastung und
-            finanzielle Leistungen sicher ankommen.
+            Anträgen, Telefonaten, Haushalt und organisatorischen Aufgaben auseinandersetzen müssen, stehen wir{" "}
+            <strong className="font-semibold text-[#0F4F68]">sofort</strong> zur Seite. Wir beraten schnell im Betrieb oder
+            zu Hause und kümmern uns um die Organisation, damit Entlastung und finanzielle Leistungen sicher ankommen.
           </p>
           <p>
             Für Unternehmen heißt das eine verlässliche, feste Kooperation mit uns. Gegen einen günstigen monatlichen
@@ -261,11 +264,11 @@ export function BetrieblichePflegeberatungSection() {
             Beratung und fachlicher Unterstützung ohne Einzelabrechnung, ohne Mehraufwand und ohne Limit.
           </p>
           <p>
-            Wir begleiten die Beschäftigten aktiv und dauerhaft und kommen bei Bedarf direkt in den Betrieb oder nach Hause.
-            Das unterscheidet uns klar von öffentlichen Pflegeberatungsstellen. Der Arbeitgeber kann diesen neuen
-            „Arbeitgeber-Benefit“ ausschreiben und aktiv kommunizieren und zeigt damit echte Fürsorge. Das entlastet spürbar,
-            reduziert Stress und erhöht die Sicherheit im Alltag. Gleichzeitig bleiben Mitarbeitende leistungsfähiger, und
-            Überlastung sowie Fehl- und Ausfallzeiten können deutlich sinken.
+            Der Arbeitgeber kann diesen{" "}
+            <strong className="font-semibold text-[#0F4F68]">neuen „Arbeitgeber-Benefit“</strong> ausschreiben und aktiv
+            kommunizieren und zeigt damit echte Fürsorge. Das entlastet spürbar, reduziert Stress und erhöht die Sicherheit im
+            Alltag. Gleichzeitig bleiben Mitarbeitende leistungsfähiger, und Überlastung sowie Fehl- und Ausfallzeiten können
+            deutlich sinken.
           </p>
         </div>
       </section>
