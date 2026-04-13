@@ -55,27 +55,29 @@ export default function PflegeberatungPage() {
               </header>
             </Container>
 
-            {/* Bild: z über der Welle, sonst verdeckt die gefüllte SVG-Welle das Badge unten */}
-            <div className="relative z-10 mt-8 max-lg:px-0 overflow-visible lg:pointer-events-none lg:absolute lg:right-0 lg:top-0 lg:z-20 lg:mt-0">
+            {/* Bild: z über der Welle. Außenpadding für Badge-Schatten; innen nur Bildhöhe → bottom-0 = untere Bildkante */}
+            <div className="relative z-10 mt-8 max-lg:px-0 overflow-visible px-1 sm:px-2 lg:pointer-events-none lg:absolute lg:right-0 lg:top-0 lg:z-20 lg:mt-0 lg:px-3">
               <div
-                className="relative isolate ml-auto leading-none pb-16 sm:pb-20 lg:ml-0 lg:mr-0 lg:pb-24 [&_img]:block [&_img]:max-w-none [&_img]:shadow-none"
+                className="ml-auto overflow-visible pb-16 pt-1 sm:pb-20 sm:pt-2 lg:ml-0 lg:mr-0 lg:pb-24 lg:pt-2"
                 style={imgBlockStyle}
               >
-                <Image
-                  src="/images/betriebliche_pflegeberatung.webp"
-                  alt="Beratungsgespräch zur betrieblichen Pflegeberatung"
-                  width={BETRIEBLICH_IMG.w}
-                  height={BETRIEBLICH_IMG.h}
-                  priority
-                  sizes={`${IMG_W}px`}
-                  className="relative z-0 block h-auto w-full max-w-none shadow-none"
-                />
-                <p
-                  className="pointer-events-auto absolute bottom-0 left-1/2 z-20 w-[min(calc(100vw-1rem),28rem)] -translate-x-1/2 translate-y-1/2 rounded-full border border-white/25 bg-[#0F4F68] px-[1.15rem] py-[0.65rem] text-center text-[1.05rem] font-bold leading-snug text-white shadow-[0_10px_28px_-4px_rgba(15,79,104,0.45),0_4px_12px_-2px_rgba(15,79,104,0.22)] sm:w-max sm:max-w-[min(calc(100vw-0.5rem),32rem)] sm:px-[1.4rem] sm:py-[0.85rem] sm:text-[1.14rem] md:px-[1.6rem] md:py-[1rem] md:text-[1.3rem]"
-                  role="note"
-                >
-                  Ihre Experten für Pflege seit 12 Jahren!
-                </p>
+                <div className="relative isolate ml-auto leading-none [&_img]:block [&_img]:max-w-none [&_img]:shadow-none">
+                  <Image
+                    src="/images/betriebliche_pflegeberatung.webp"
+                    alt="Beratungsgespräch zur betrieblichen Pflegeberatung"
+                    width={BETRIEBLICH_IMG.w}
+                    height={BETRIEBLICH_IMG.h}
+                    priority
+                    sizes={`${IMG_W}px`}
+                    className="relative z-0 block h-auto w-full max-w-none shadow-none"
+                  />
+                  <p
+                    className="pointer-events-auto absolute bottom-0 left-1/2 z-20 w-[min(calc(100vw-1.75rem),28rem)] -translate-x-1/2 translate-y-1/2 rounded-full border border-white/25 bg-[#0F4F68] px-[1.15rem] py-[0.65rem] text-center text-[1.05rem] font-bold leading-snug text-white shadow-[0_10px_28px_-4px_rgba(15,79,104,0.45),0_4px_12px_-2px_rgba(15,79,104,0.22)] sm:w-max sm:max-w-[min(calc(100vw-1.25rem),32rem)] sm:px-[1.4rem] sm:py-[0.85rem] sm:text-[1.14rem] md:px-[1.6rem] md:py-[1rem] md:text-[1.3rem]"
+                    role="note"
+                  >
+                    Ihre Experten für Pflege seit 12 Jahren!
+                  </p>
+                </div>
               </div>
             </div>
 
