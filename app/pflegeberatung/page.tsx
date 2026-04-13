@@ -35,7 +35,7 @@ export default function PflegeberatungPage() {
         >
           {/* Oberer Bereich inkl. Welle: eine Fläche ohne zusätzliche Kante zwischen Hero und Markenfarbe */}
           <div
-            className="relative w-full bg-gradient-to-b from-white from-[20%] via-[#fafcfd] via-[55%] to-[#eef7f9] pt-8 sm:pt-10 lg:min-h-[min(100vw,480px)] lg:pt-10"
+            className="relative w-full overflow-visible bg-gradient-to-b from-white from-[20%] via-[#fafcfd] via-[55%] to-[#eef7f9] pt-8 sm:pt-10 lg:min-h-[min(100vw,480px)] lg:pt-10"
           >
             <Container className="relative z-10">
               <header className="max-w-xl text-left lg:max-w-[min(100%,28rem)] lg:pr-4 xl:max-w-[32rem]">
@@ -55,10 +55,10 @@ export default function PflegeberatungPage() {
               </header>
             </Container>
 
-            {/* Bild: bündig oben + rechts; kein Schatten/Ring — vermeidet Doppel-Schatten und „Geisterlinien“ am Übergang */}
-            <div className="relative z-0 mt-8 max-lg:px-0 lg:pointer-events-none lg:absolute lg:right-0 lg:top-0 lg:mt-0">
+            {/* Bild: z über der Welle, sonst verdeckt die gefüllte SVG-Welle das Badge unten */}
+            <div className="relative z-10 mt-8 max-lg:px-0 overflow-visible lg:pointer-events-none lg:absolute lg:right-0 lg:top-0 lg:z-20 lg:mt-0">
               <div
-                className="relative isolate ml-auto leading-none pb-14 sm:pb-16 lg:ml-0 lg:mr-0 lg:pb-20 [&_img]:block [&_img]:max-w-none [&_img]:shadow-none"
+                className="relative isolate ml-auto leading-none pb-16 sm:pb-20 lg:ml-0 lg:mr-0 lg:pb-24 [&_img]:block [&_img]:max-w-none [&_img]:shadow-none"
                 style={imgBlockStyle}
               >
                 <Image
@@ -71,7 +71,7 @@ export default function PflegeberatungPage() {
                   className="relative z-0 block h-auto w-full max-w-none shadow-none"
                 />
                 <p
-                  className="pointer-events-auto absolute bottom-0 left-1/2 z-20 w-[min(calc(100vw-1rem),28rem)] -translate-x-1/2 translate-y-1/2 rounded-full border border-white/25 bg-[#0F4F68] px-[1.15rem] py-[0.65rem] text-center text-[1.05rem] font-bold leading-snug text-white shadow-none sm:w-max sm:max-w-[min(calc(100vw-0.5rem),32rem)] sm:px-[1.4rem] sm:py-[0.85rem] sm:text-[1.14rem] md:px-[1.6rem] md:py-[1rem] md:text-[1.3rem]"
+                  className="pointer-events-auto absolute bottom-0 left-1/2 z-20 w-[min(calc(100vw-1rem),28rem)] -translate-x-1/2 translate-y-1/2 rounded-full border border-white/25 bg-[#0F4F68] px-[1.15rem] py-[0.65rem] text-center text-[1.05rem] font-bold leading-snug text-white shadow-[0_10px_28px_-4px_rgba(15,79,104,0.45),0_4px_12px_-2px_rgba(15,79,104,0.22)] sm:w-max sm:max-w-[min(calc(100vw-0.5rem),32rem)] sm:px-[1.4rem] sm:py-[0.85rem] sm:text-[1.14rem] md:px-[1.6rem] md:py-[1rem] md:text-[1.3rem]"
                   role="note"
                 >
                   Ihre Experten für Pflege seit 12 Jahren!
@@ -79,8 +79,8 @@ export default function PflegeberatungPage() {
               </div>
             </div>
 
-            {/* Unten am Hero: bei lg liegt das Bild außerhalb des Flusses — im Fluss würde die Welle sonst direkt unter den Text rutschen */}
-            <div className="pointer-events-none absolute bottom-0 left-1/2 z-[1] w-screen max-w-[100vw] -translate-x-1/2 overflow-x-hidden leading-none">
+            {/* Welle hinten (z-0), damit Badge-Schatten und Pill nicht von der SVG-Fläche übermalt werden */}
+            <div className="pointer-events-none absolute bottom-0 left-1/2 z-0 w-screen max-w-[100vw] -translate-x-1/2 overflow-x-hidden overflow-y-visible leading-none">
               <svg
                 className="relative z-[1] -mb-px block h-12 w-full shrink-0 text-[#E8F2F5] sm:h-[3.75rem]"
                 viewBox="0 0 1440 100"
