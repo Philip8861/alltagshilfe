@@ -66,7 +66,8 @@ export function isInternalSmtpConfigured(): boolean {
     parseNotificationEmailList(process.env.NOTIFICATION_TO_CONTACT).length > 0 ||
     parseNotificationEmailList(process.env.NOTIFICATION_TO_KARRIERE).length > 0 ||
     parseNotificationEmailList(process.env.NOTIFICATION_TO_PFLEGEBOX).length > 0 ||
-    parseNotificationEmailList(process.env.NOTIFICATION_TO_CONTACT_TOPIC_KARRIERE).length > 0;
+    parseNotificationEmailList(process.env.NOTIFICATION_TO_CONTACT_TOPIC_KARRIERE).length > 0 ||
+    parseNotificationEmailList(process.env.NOTIFICATION_TO_BETRIEBLICH_ANGEBOT).length > 0;
   return hasAnyRecipient;
 }
 

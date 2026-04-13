@@ -19,15 +19,15 @@ export function Header({ nunitoClass = "", balooClass = "" }: HeaderProps) {
           <div className="min-w-0 justify-self-start">
             <Link
               href="/"
-              className="z-10 flex shrink-0 -translate-y-[5%] focus:outline-none rounded md:h-10 md:w-auto"
+              className="z-10 flex shrink-0 -translate-y-[5%] focus:outline-none rounded md:h-[45px] md:w-auto"
               aria-label={`${siteConfig.name} – Startseite`}
             >
               <Image
                 src="/images/alltagshilfe-logo.svg?v=20260410"
                 alt={siteConfig.name}
-                width={207}
-                height={53}
-                className="h-[34px] w-auto object-contain sm:h-[38px] md:h-9 lg:h-10"
+                width={259}
+                height={66}
+                className="h-[42.5px] w-auto object-contain sm:h-[47.5px] md:h-[45px] lg:h-[50px]"
                 priority
               />
             </Link>
