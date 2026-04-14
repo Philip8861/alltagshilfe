@@ -3,23 +3,9 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
-const ICON_WRAP =
-  "inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-[#0F4F68] text-white shadow-sm sm:h-14 sm:w-14";
-
-/** Einheitliche Darstellung der beiden Fakten-Sätze */
+/** Einheitliche Darstellung der beiden Fakten-Sätze (kursiv, leicht versetzt) */
 const FACT_ZEILE_KLASSE =
-  "text-pretty text-lg font-semibold leading-relaxed text-[#0F4F68] sm:text-xl";
-
-/** Ausrufezeichen im Kreis (Hinweis / Aufmerksamkeit) */
-function IconAusrufezeichen() {
-  return (
-    <svg className="h-6 w-6 sm:h-7 sm:w-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" aria-hidden>
-      <circle cx="12" cy="12" r="10" strokeLinecap="round" />
-      <path strokeLinecap="round" d="M12 8v5" />
-      <path strokeLinecap="round" d="M12 16h.01" />
-    </svg>
-  );
-}
+  "text-pretty text-lg font-semibold italic leading-relaxed text-[#0F4F68] sm:text-xl";
 
 function usePrefersReducedMotion(): boolean {
   const [reduced, setReduced] = useState(false);
@@ -33,53 +19,35 @@ function usePrefersReducedMotion(): boolean {
   return reduced;
 }
 
-function FactSlideRow({
+function FactPopRow({
   show,
   reducedMotion,
-  from,
   delayMs,
-  icon,
+  indentClass,
   children,
 }: {
   show: boolean;
   reducedMotion: boolean;
-  from: "left" | "right";
   delayMs: number;
-  icon: ReactNode;
+  indentClass?: string;
   children: ReactNode;
 }) {
-  const fromLeft = from === "left";
   return (
-    <div className="overflow-x-hidden py-1">
+    <div className={cn("overflow-x-hidden py-1", indentClass)}>
       <div
         className={cn(
-          "mx-auto flex w-full max-w-3xl flex-row items-center gap-4 sm:gap-5",
-          "will-change-transform",
-          reducedMotion
-            ? "translate-x-0 opacity-100"
-            : cn(
-                "transition-[transform,opacity] duration-[900ms] ease-out motion-reduce:transition-none",
-                show ? "translate-x-0 opacity-100" : "opacity-0",
-                show ? undefined : fromLeft ? "-translate-x-[115%]" : "translate-x-[115%]",
-              ),
+          "mx-auto max-w-3xl will-change-transform transition-[transform,opacity] duration-500 ease-out motion-reduce:transition-none",
+          reducedMotion || show
+            ? "translate-y-0 scale-100 opacity-100"
+            : "translate-y-3 scale-[0.96] opacity-0",
         )}
-        style={reducedMotion || !show ? undefined : { transitionDelay: `${delayMs}ms` }}
+        style={
+          reducedMotion || !show
+            ? undefined
+            : { transitionDelay: `${delayMs}ms`, transitionProperty: "transform, opacity" }
+        }
       >
-        {fromLeft ? (
-          <>
-            <span className={ICON_WRAP} aria-hidden>
-              {icon}
-            </span>
-            <div className="min-w-0 flex-1 text-pretty">{children}</div>
-          </>
-        ) : (
-          <>
-            <div className="min-w-0 flex-1 text-pretty">{children}</div>
-            <span className={ICON_WRAP} aria-hidden>
-              {icon}
-            </span>
-          </>
-        )}
+        {children}
       </div>
     </div>
   );
@@ -113,26 +81,20 @@ export function BetrieblichePflegeberatungFactsIntro() {
   const show = reducedMotion || inView;
 
   return (
-    <div ref={rootRef} className="relative" role="region" aria-label="Fakten zur Pflegebelastung im Betrieb">
-      <div className="space-y-6 sm:space-y-8">
-        <FactSlideRow show={show} reducedMotion={reducedMotion} from="left" delayMs={0} icon={<IconAusrufezeichen />}>
+    <div ref={rootRef} className="relative mt-[3cm]" role="region" aria-label="Fakten zur Pflegebelastung im Betrieb">
+      <div className="space-y-7 sm:space-y-9">
+        <FactPopRow show={show} reducedMotion={reducedMotion} delayMs={0}>
           <p className={FACT_ZEILE_KLASSE}>
             Die Statistik zeigt: Bereits heute ist etwa jede zehnte beschäftigte Person neben dem Beruf in eine
             Pflegesituation eingebunden.
           </p>
-        </FactSlideRow>
+        </FactPopRow>
 
-        <FactSlideRow
-          show={show}
-          reducedMotion={reducedMotion}
-          from="right"
-          delayMs={220}
-          icon={<IconAusrufezeichen />}
-        >
+        <FactPopRow show={show} reducedMotion={reducedMotion} delayMs={180} indentClass="pl-5 sm:pl-10 md:pl-14">
           <p className={FACT_ZEILE_KLASSE}>
             Eine tägliche Pflegebelastung zählt seit 2024 zu den zweithäufigsten Ursachen für krankheitsbedingte Fehltage.
           </p>
-        </FactSlideRow>
+        </FactPopRow>
       </div>
     </div>
   );

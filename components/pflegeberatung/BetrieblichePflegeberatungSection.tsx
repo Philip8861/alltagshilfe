@@ -1,29 +1,32 @@
-import Link from "next/link";
 import { BetrieblichAngebotOpenButton } from "@/components/pflegeberatung/BetrieblicheAngebotAnfrage";
 import { BetrieblichePflegeberatungFactsIntro } from "@/components/pflegeberatung/BetrieblichePflegeberatungFactsIntro";
 
 const ICON_WRAP =
   "inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-[#0F4F68] text-white shadow-sm sm:h-14 sm:w-14";
 
-/** Welle zum hellblauen Block; volle Viewport-Breite (zentriert unterhalb von max-w-Container) */
-function WelleAnschlussHell({ fill }: { fill: string }) {
+const BETRIEBLICH_HELL_BG = "#F2F9FA" as const;
+
+/** Welle unter dem Was-ist-Block zum Verlauf / „Ihre Vorteile“ (volle Breite) */
+function WelleZuVorteileBand() {
   return (
-    <svg
-      className="pointer-events-none absolute left-1/2 top-0 block h-12 w-screen max-w-[100vw] -translate-x-1/2 -translate-y-[68%] sm:h-16"
-      viewBox="0 0 1200 120"
-      preserveAspectRatio="none"
-      fill="none"
-      overflow="visible"
-      aria-hidden
-    >
-      <rect x="-48" y="0" width="48" height="120" fill={fill} />
-      <rect x="1200" y="0" width="48" height="120" fill={fill} />
-      <path d="M0,120 C200,32 420,8 600,22 C800,38 1010,90 1200,120 L1200,120 L0,120 Z" fill={fill} />
-    </svg>
+    <div className="pointer-events-none relative left-1/2 mt-10 w-screen max-w-[100vw] -translate-x-1/2 leading-none sm:mt-12">
+      <svg
+        className="relative -mb-px block h-12 w-full shrink-0 text-[#E8F2F5] sm:h-[3.75rem]"
+        viewBox="0 0 1440 100"
+        preserveAspectRatio="none"
+        aria-hidden
+      >
+        <path
+          fill="currentColor"
+          d="M0,55 C240,18 480,92 720,48 C960,4 1200,78 1440,42 L1440,100 L0,100 Z"
+        />
+      </svg>
+    </div>
   );
 }
 
-const BETRIEBLICH_HELL_BG = "#F2F9FA" as const;
+const POP_IN =
+  "opacity-0 motion-reduce:opacity-100 motion-reduce:animate-none animate-fade-in-up";
 
 function IconCalendar() {
   return (
@@ -71,15 +74,6 @@ function IconTrendUp() {
   );
 }
 
-function IconBuilding() {
-  return (
-    <svg className="h-6 w-6 sm:h-7 sm:w-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
-      <path d="M3 21h18M5 21V7l8-4v18M19 21V11l-6-4" strokeLinecap="round" strokeLinejoin="round" />
-      <path d="M9 9v.01M9 12v.01M9 15v.01M9 18v.01" strokeLinecap="round" />
-    </svg>
-  );
-}
-
 function IconHeart() {
   return (
     <svg className="h-6 w-6 sm:h-7 sm:w-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
@@ -120,47 +114,6 @@ function IconCalendarOff() {
   );
 }
 
-function IconPhoneQuick() {
-  return (
-    <svg className="h-6 w-6 sm:h-7 sm:w-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
-      <path
-        d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      <path d="M12 2v4M10 4h4" strokeLinecap="round" />
-    </svg>
-  );
-}
-
-function IconUserCheck() {
-  return (
-    <svg className="h-6 w-6 sm:h-7 sm:w-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
-      <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
-      <circle cx="9" cy="7" r="4" />
-      <path d="M19 8l2 2 4-4" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  );
-}
-
-function IconFiles() {
-  return (
-    <svg className="h-6 w-6 sm:h-7 sm:w-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
-      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-      <path d="M14 2v6h6M10 12h8M10 16h8" strokeLinecap="round" />
-    </svg>
-  );
-}
-
-function IconHomeLife() {
-  return (
-    <svg className="h-6 w-6 sm:h-7 sm:w-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
-      <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" strokeLinecap="round" strokeLinejoin="round" />
-      <path d="M9 22V12h6v10" strokeLinecap="round" />
-    </svg>
-  );
-}
-
 const VORTEILE = [
   {
     title: "Reduktion von Fehlzeiten & Krankheitstagen",
@@ -186,11 +139,6 @@ const VORTEILE = [
     title: "Produktivitätssteigerung",
     text: "Durch Reduzierung psychischer Belastung und Verbesserung der Konzentrationsfähigkeit.",
     Icon: IconTrendUp,
-  },
-  {
-    title: "Unterstützung für Personalabteilung & Führungskräfte",
-    text: "Durch persönlichen Ansprechpartner im Betrieb.",
-    Icon: IconBuilding,
   },
   {
     title: "Imagegewinn durch soziale Verantwortung",
@@ -223,40 +171,6 @@ const FOLGEN = [
   },
 ] as const;
 
-const ANGEBOT = [
-  {
-    title: "Schnelle und gezielte Pflegeberatung ohne Wartezeiten",
-    lines: [
-      "Telefonisch, digital oder vor Ort – individuell abgestimmt",
-      "Begleitung vom Klinikaufenthalt bis zur optimal abgestimmten Versorgung zu Hause",
-    ],
-    Icon: IconPhoneQuick,
-  },
-  {
-    title: "Persönlicher Ansprechpartner im Betrieb",
-    lines: [
-      "Schulung zu gesetzlichen Ansprüchen, Entlastungsmöglichkeiten und Vereinbarkeit von Beruf und Pflege",
-      "Beratung der Personalabteilung und des Betrieblichen Gesundheitsmanagements (BGM)",
-    ],
-    Icon: IconUserCheck,
-  },
-  {
-    title: "Übernahme von Schriftverkehr & Antragstellungen",
-    lines: [
-      "Kommunikation mit Krankenkassen, Pflegekassen, Ärzten, Sozialdiensten und Reha-Einrichtungen",
-    ],
-    Icon: IconFiles,
-  },
-  {
-    title: "Unterstützung im Alltag",
-    lines: [
-      "Schnelle Unterstützung im Haushalt und bei alltäglichen Erledigungen",
-      "Pflegehilfsmittel",
-    ],
-    Icon: IconHomeLife,
-  },
-] as const;
-
 /** Oberer weißer Streifen (Fakten + Folgen) – Inhalt; volle Breite liefert die Seite */
 export function BetrieblichePflegeberatungWhiteIntro() {
   return (
@@ -265,13 +179,18 @@ export function BetrieblichePflegeberatungWhiteIntro() {
       <section className="mt-10 sm:mt-12" aria-labelledby="betrieblich-folgen-heading">
         <h3
           id="betrieblich-folgen-heading"
-          className="mx-auto max-w-4xl text-center text-pretty text-xl font-extrabold text-[#0F4F68] sm:text-2xl"
+          className={`${POP_IN} mx-auto max-w-4xl text-center text-pretty text-xl font-extrabold text-[#0F4F68] sm:text-2xl`}
+          style={{ animationDelay: "280ms" }}
         >
           Folgen für Arbeitgeber durch pflegende Beschäftigte
         </h3>
         <ul className="mt-8 grid gap-8 sm:gap-10 lg:grid-cols-3 lg:gap-8">
-          {FOLGEN.map(({ title, bullets, Icon }) => (
-            <li key={title} className="flex flex-col gap-3 sm:flex-row sm:gap-4">
+          {FOLGEN.map(({ title, bullets, Icon }, i) => (
+            <li
+              key={title}
+              className={`${POP_IN} flex flex-col gap-3 sm:flex-row sm:gap-4`}
+              style={{ animationDelay: `${400 + i * 90}ms` }}
+            >
               <span className={`${ICON_WRAP} shrink-0 sm:mt-0.5`} aria-hidden>
                 <Icon />
               </span>
@@ -292,22 +211,28 @@ export function BetrieblichePflegeberatungWhiteIntro() {
 }
 
 export function BetrieblichePflegeberatungSection() {
+  const wasBodyDelays = [80, 160, 240, 320] as const;
+  const vorteilBaseDelay = 520;
+
   return (
     <div className="space-y-14 sm:space-y-16">
       <div
-        className="relative left-1/2 w-screen max-w-[100vw] -translate-x-1/2 overflow-visible pt-8 sm:pt-10"
+        className="relative left-1/2 w-screen max-w-[100vw] -translate-x-1/2 overflow-visible pb-0 pt-8 sm:pt-10"
         style={{ backgroundColor: BETRIEBLICH_HELL_BG }}
       >
-        <WelleAnschlussHell fill={BETRIEBLICH_HELL_BG} />
         <section
           aria-labelledby="betrieblich-was-ist-heading"
-          className="relative mx-auto max-w-7xl px-4 pb-10 pt-10 sm:px-6 sm:pb-12 sm:pt-12 lg:px-[var(--ahs-page-gutter)] lg:pb-14 lg:pt-14"
+          className="relative mx-auto max-w-7xl px-4 pb-6 pt-6 sm:px-6 sm:pb-8 sm:pt-8 lg:px-[var(--ahs-page-gutter)]"
         >
-          <h2 id="betrieblich-was-ist-heading" className="text-xl font-extrabold text-[#0F4F68] sm:text-2xl">
+          <h2
+            id="betrieblich-was-ist-heading"
+            className={`${POP_IN} mx-auto max-w-4xl text-center text-pretty text-xl font-extrabold text-[#0F4F68] sm:text-2xl`}
+            style={{ animationDelay: "0ms" }}
+          >
             Was versteht man unter betrieblicher Pflegeberatung?
           </h2>
-          <div className="mt-5 max-w-4xl space-y-4 text-pretty text-neutral-700 leading-relaxed sm:text-[1.05rem]">
-            <p>
+          <div className="mx-auto mt-5 max-w-4xl space-y-4 text-pretty text-neutral-700 leading-relaxed sm:text-[1.05rem]">
+            <p className={POP_IN} style={{ animationDelay: `${wasBodyDelays[0]}ms` }}>
               Betriebliche Pflegeberatung ist ein Unterstützungsangebot für Beschäftigte, die Angehörige pflegen oder
               kurzfristig vor einer Pflegesituation stehen. Sie basiert auf unserer langjährigen Erfahrung und auf dem
               häufigsten Satz, den wir hören:{" "}
@@ -315,18 +240,18 @@ export function BetrieblichePflegeberatungSection() {
                 „Hätte ich das eher gewusst, wäre vieles leichter gewesen.“
               </strong>
             </p>
-            <p>
+            <p className={POP_IN} style={{ animationDelay: `${wasBodyDelays[1]}ms` }}>
               Damit Mitarbeitende nach Feierabend nicht noch „die zweite Schicht“ starten müssen und sich mit Formularen,
               Anträgen, Telefonaten, Haushalt und organisatorischen Aufgaben auseinandersetzen müssen, stehen wir{" "}
               <strong className="font-semibold text-[#0F4F68]">sofort</strong> zur Seite. Wir beraten schnell im Betrieb oder zu
               Hause und kümmern uns um die Organisation, damit Entlastung und finanzielle Leistungen sicher ankommen.
             </p>
-            <p>
+            <p className={POP_IN} style={{ animationDelay: `${wasBodyDelays[2]}ms` }}>
               Für Unternehmen heißt das eine verlässliche, feste Kooperation mit uns. Gegen einen günstigen monatlichen
               Festbetrag, abhängig von der Unternehmensgröße, erhalten Mitarbeitende und Führungskräfte unbegrenzten Zugang zu
               Beratung und fachlicher Unterstützung ohne Einzelabrechnung, ohne Mehraufwand und ohne Limit.
             </p>
-            <p>
+            <p className={POP_IN} style={{ animationDelay: `${wasBodyDelays[3]}ms` }}>
               Der Arbeitgeber kann diesen{" "}
               <strong className="font-semibold text-[#0F4F68]">neuen „Arbeitgeber-Benefit“</strong> ausschreiben und aktiv
               kommunizieren und zeigt damit echte Fürsorge. Das entlastet spürbar, reduziert Stress und erhöht die Sicherheit im
@@ -334,18 +259,29 @@ export function BetrieblichePflegeberatungSection() {
               deutlich sinken.
             </p>
           </div>
+          <div className={`${POP_IN} mt-8 flex justify-center sm:mt-10`} style={{ animationDelay: "400ms" }}>
+            <BetrieblichAngebotOpenButton className="min-h-[3rem] px-8 py-3.5 text-base sm:text-lg">
+              Jetzt unverbindlich informieren lassen
+            </BetrieblichAngebotOpenButton>
+          </div>
         </section>
+        <WelleZuVorteileBand />
       </div>
 
       <section aria-labelledby="betrieblich-vorteile-heading">
-        <h3 id="betrieblich-vorteile-heading" className="text-xl font-extrabold text-[#0F4F68] sm:text-2xl">
+        <h3
+          id="betrieblich-vorteile-heading"
+          className={`${POP_IN} text-xl font-extrabold text-[#0F4F68] sm:text-2xl`}
+          style={{ animationDelay: `${vorteilBaseDelay}ms` }}
+        >
           Ihre Vorteile auf einen Blick
         </h3>
         <ul className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3">
-          {VORTEILE.map(({ title, text, Icon }) => (
+          {VORTEILE.map(({ title, text, Icon }, i) => (
             <li
               key={title}
-              className="flex gap-4 rounded-2xl border border-[#0F4F68]/12 bg-white/90 p-4 shadow-sm transition-shadow hover:shadow-md sm:p-5"
+              className={`${POP_IN} flex gap-4 rounded-2xl border border-[#0F4F68]/12 bg-white/90 p-4 shadow-sm transition-shadow hover:shadow-md sm:p-5`}
+              style={{ animationDelay: `${vorteilBaseDelay + 80 + i * 70}ms` }}
             >
               <span className={ICON_WRAP} aria-hidden>
                 <Icon />
@@ -360,7 +296,8 @@ export function BetrieblichePflegeberatungSection() {
       </section>
 
       <section
-        className="rounded-2xl border border-[#0F4F68]/10 bg-white p-5 shadow-sm sm:p-8"
+        className={`${POP_IN} rounded-2xl border border-[#0F4F68]/10 bg-white p-5 shadow-sm sm:p-8`}
+        style={{ animationDelay: `${vorteilBaseDelay + 80 + VORTEILE.length * 70 + 120}ms` }}
         aria-labelledby="betrieblich-demografie-heading"
       >
         <h3 id="betrieblich-demografie-heading" className="text-xl font-extrabold text-[#0F4F68] sm:text-2xl">
@@ -379,72 +316,6 @@ export function BetrieblichePflegeberatungSection() {
             Studien zeigen: Bereits heute pflegt etwa jeder zehnte Arbeitnehmer regelmäßig ein Familienmitglied – Tendenz stark
             steigend.
           </p>
-        </div>
-      </section>
-
-      <section aria-labelledby="betrieblich-angebot-heading">
-        <h3 id="betrieblich-angebot-heading" className="text-xl font-extrabold text-[#0F4F68] sm:text-2xl">
-          Was wir bieten – auf einen Blick
-        </h3>
-        <ul className="mt-6 space-y-4">
-          {ANGEBOT.map(({ title, lines, Icon }) => (
-            <li
-              key={title}
-              className="flex gap-4 rounded-2xl border border-[#0F4F68]/10 bg-[#fafbfc] p-4 sm:gap-5 sm:p-6"
-            >
-              <span className={`${ICON_WRAP} bg-[#F78F2E]`} aria-hidden>
-                <Icon />
-              </span>
-              <div className="min-w-0">
-                <p className="flex items-start gap-2 font-bold text-[#0F4F68] sm:text-lg">
-                  <span className="mt-0.5 text-[#F78F2E]" aria-hidden>
-                    +
-                  </span>
-                  <span>{title}</span>
-                </p>
-                <ul className="mt-2 space-y-1.5 text-sm leading-relaxed text-neutral-700 sm:text-[0.95rem]">
-                  {lines.map((line) => (
-                    <li key={line}>{line}</li>
-                  ))}
-                </ul>
-              </div>
-            </li>
-          ))}
-        </ul>
-      </section>
-
-      <section
-        className="rounded-2xl border border-[#0F4F68]/12 bg-gradient-to-br from-[#F2F9FA] to-white p-5 sm:p-8"
-        aria-labelledby="betrieblich-ahs-heading"
-      >
-        <h3 id="betrieblich-ahs-heading" className="text-xl font-extrabold text-[#0F4F68] sm:text-2xl">
-          Alltagshilfe-Süd – Ihre Experten für Pflege seit über 12 Jahren
-        </h3>
-        <div className="mt-5 space-y-4 text-pretty text-neutral-700 leading-relaxed sm:text-[1.05rem]">
-          <p>
-            Die Alltagshilfe-Süd steht seit mehr als zwölf Jahren für professionelle Unterstützung rund um das Thema Pflege.
-            Neben unserem etablierten Betreuungsdienst haben wir uns darauf spezialisiert, pflegebedürftige Menschen und deren
-            Angehörige individuell und kompetent zu beraten.
-          </p>
-          <p>
-            Seit 2025 bieten wir zusätzlich die betriebliche Pflegeberatung an – ein gezieltes Angebot für Unternehmen, die
-            ihre Mitarbeitenden in herausfordernden Pflegesituationen entlasten möchten. Unser Ziel: Arbeitgeber und
-            Arbeitnehmer gleichermaßen zu stärken, Ausfallzeiten zu reduzieren und die Vereinbarkeit von Beruf und Pflege
-            nachhaltig zu verbessern.
-          </p>
-          <p>
-            Dabei kommen ausschließlich geschulte, persönliche Pflegeberater zum Einsatz, die schnell, vertraulich und
-            lösungsorientiert unterstützen – direkt im Betrieb, beim Arbeitnehmer zu Hause oder digital.
-          </p>
-        </div>
-        <div className="mt-8 flex flex-wrap gap-3">
-          <BetrieblichAngebotOpenButton />
-          <Link
-            href="/leistungen/betriebliche-pflegeberatung"
-            className="inline-flex min-h-[48px] items-center justify-center rounded-xl border-2 border-[#0F4F68]/25 bg-white/80 px-6 py-3 text-base font-semibold text-[#0F4F68] hover:bg-white focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2"
-          >
-            Zur Leistungsseite
-          </Link>
         </div>
       </section>
     </div>

@@ -132,20 +132,6 @@ export default function PflegeberatungPage() {
             <Container className="relative z-10 pb-10 sm:pb-14">
               <BetrieblichePflegeberatungWhiteIntro />
             </Container>
-
-            <div className="pointer-events-none relative left-1/2 w-screen max-w-[100vw] -translate-x-1/2 overflow-x-hidden leading-none">
-              <svg
-                className="relative z-[1] -mb-px block h-12 w-full shrink-0 text-[#E8F2F5] sm:h-[3.75rem]"
-                viewBox="0 0 1440 100"
-                preserveAspectRatio="none"
-                aria-hidden
-              >
-                <path
-                  fill="currentColor"
-                  d="M0,55 C240,18 480,92 720,48 C960,4 1200,78 1440,42 L1440,100 L0,100 Z"
-                />
-              </svg>
-            </div>
           </div>
 
           <div className="relative left-1/2 w-screen max-w-[100vw] -translate-x-1/2 overflow-x-hidden bg-gradient-to-b from-[#E8F2F5] via-[#F0F8FA] to-[#E5F2F6] pb-16 sm:pb-20">
