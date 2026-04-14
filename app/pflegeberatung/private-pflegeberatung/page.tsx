@@ -8,6 +8,8 @@ import { PRIVATE_PFLEGEBERATUNG_FAQ } from "@/lib/private-pflegeberatung-faq";
 import { siteConfig } from "@/config/site";
 
 const PAGE_PATH = "/pflegeberatung/private-pflegeberatung";
+/** Seiten-Hintergrund (article); Wellen nutzen dieselbe Farbe statt Hellblau #F2F9FA */
+const PAGE_SURFACE = "#fafbfc" as const;
 
 const HERO_KURZ_VORTEILE = [
   "Wir erinnern Sie an bevorstehende Termine",
@@ -75,8 +77,8 @@ const faqJsonLd = {
   })),
 };
 
-/** Wellen-Übergang wie auf der Startseite (seitliche Kappen gegen weiße Randkeile bei preserveAspectRatio="none") */
-function WelleObenF2F9FA() {
+/** Wellen-Übergang; `fill` = Farbe des aktuellen Abschnitts (wird nach oben in den vorherigen Bereich gezogen) */
+function WelleObenMitFuellfarbe({ fill }: { fill: string }) {
   return (
     <svg
       className="pointer-events-none absolute left-0 top-0 block h-12 w-full -translate-y-[68%] sm:h-16"
@@ -86,16 +88,16 @@ function WelleObenF2F9FA() {
       overflow="visible"
       aria-hidden
     >
-      <rect x="-48" y="0" width="48" height="120" fill="#F2F9FA" />
-      <rect x="1200" y="0" width="48" height="120" fill="#F2F9FA" />
-      <path d="M0,120 C200,32 420,8 600,22 C800,38 1010,90 1200,120 L1200,120 L0,120 Z" fill="#F2F9FA" />
+      <rect x="-48" y="0" width="48" height="120" fill={fill} />
+      <rect x="1200" y="0" width="48" height="120" fill={fill} />
+      <path d="M0,120 C200,32 420,8 600,22 C800,38 1010,90 1200,120 L1200,120 L0,120 Z" fill={fill} />
     </svg>
   );
 }
 
 export default function PrivatePflegeberatungPage() {
   return (
-    <article className="overflow-x-visible pb-0 sm:pb-0" style={{ backgroundColor: "#fafbfc" }}>
+    <article className="overflow-x-visible pb-0 sm:pb-0" style={{ backgroundColor: PAGE_SURFACE }}>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }} />
 
       <header className="overflow-visible bg-white">
@@ -158,10 +160,11 @@ export default function PrivatePflegeberatungPage() {
       </header>
 
       <section
-        className="relative z-10 mt-0 w-full bg-[#F2F9FA] px-4 pb-12 pt-10 sm:px-6 sm:pb-14 sm:pt-12 lg:px-[var(--ahs-page-gutter)] lg:pb-16 lg:pt-14"
+        className="relative z-10 mt-0 w-full px-4 pb-12 pt-10 sm:px-6 sm:pb-14 sm:pt-12 lg:px-[var(--ahs-page-gutter)] lg:pb-16 lg:pt-14"
+        style={{ backgroundColor: PAGE_SURFACE }}
         aria-labelledby="versprechen-heading"
       >
-        <WelleObenF2F9FA />
+        <WelleObenMitFuellfarbe fill={PAGE_SURFACE} />
         <div className="relative mx-auto w-full max-w-6xl">
           <h2 id="versprechen-heading" className={`${HEADING_CLASS} ${ANIM_IN}`} style={{ animationDelay: "0ms" }}>
             Unser Qualitätsversprechen an Sie
@@ -182,7 +185,7 @@ export default function PrivatePflegeberatungPage() {
         className="relative z-10 w-full bg-white px-4 pb-12 pt-10 sm:px-6 sm:pb-14 sm:pt-12 lg:px-[var(--ahs-page-gutter)] lg:pb-16"
         aria-labelledby="pg-table-heading"
       >
-        <WelleObenF2F9FA />
+        <WelleObenMitFuellfarbe fill="#ffffff" />
         <div className="relative mx-auto w-full max-w-4xl">
           <h2 id="pg-table-heading" className={`${SECTION_TITLE_CLASS} ${ANIM_IN}`} style={{ animationDelay: "0ms" }}>
             Pflegegrad 1–5: Wann Beratung Pflicht ist – und wann nicht
@@ -204,7 +207,6 @@ export default function PrivatePflegeberatungPage() {
         className="relative z-10 w-full bg-white px-4 pb-14 pt-10 sm:px-6 sm:pb-16 sm:pt-12 lg:px-[var(--ahs-page-gutter)] lg:pb-16 lg:pt-14"
         aria-labelledby="vorteile-heading"
       >
-        <WelleObenF2F9FA />
         <div className="relative mx-auto w-full max-w-6xl">
           <h2 id="vorteile-heading" className={`${SECTION_TITLE_CLASS} ${ANIM_IN}`} style={{ animationDelay: "0ms" }}>
             Unsere Vorteile
