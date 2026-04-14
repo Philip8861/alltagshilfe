@@ -178,12 +178,9 @@ export default function PrivatePflegeberatungPage() {
         </div>
       </section>
 
-      <section
-        className="relative z-10 w-full bg-white px-4 pb-12 pt-10 sm:px-6 sm:pb-14 sm:pt-12 lg:px-[var(--ahs-page-gutter)] lg:pb-16"
-        aria-labelledby="pg-table-heading"
-      >
+      <section className="relative z-10 w-full bg-white pt-10 sm:pt-12 lg:pt-12" aria-labelledby="pg-table-heading">
         <WelleObenF2F9FA />
-        <div className="relative mx-auto w-full max-w-4xl">
+        <div className="relative mx-auto w-full max-w-4xl px-4 pb-10 sm:px-6 sm:pb-12 lg:px-[var(--ahs-page-gutter)] lg:pb-14">
           <h2 id="pg-table-heading" className={`${SECTION_TITLE_CLASS} ${ANIM_IN}`} style={{ animationDelay: "0ms" }}>
             Pflegegrad 1–5: Wann Beratung Pflicht ist – und wann nicht
           </h2>
@@ -194,8 +191,14 @@ export default function PrivatePflegeberatungPage() {
             Die gesetzlichen Regelungen nach Paragraf 37 Absatz 3 SGB XI sind eindeutig. Die Kosten trägt in diesen Fällen
             Ihre Pflegekasse.
           </p>
-          <div className={`${ANIM_IN} mt-8`} style={{ animationDelay: "160ms" }}>
-            <PflegegradBeratungTable captionSrOnly />
+        </div>
+
+        <div className="relative w-full bg-[#F2F9FA] pb-12 pt-10 sm:pb-14 sm:pt-12 lg:pb-16 lg:pt-14">
+          <WelleObenF2F9FA />
+          <div className="relative mx-auto w-full max-w-4xl px-4 sm:px-6 lg:px-[var(--ahs-page-gutter)]">
+            <div className={`${ANIM_IN}`} style={{ animationDelay: "160ms" }}>
+              <PflegegradBeratungTable captionSrOnly />
+            </div>
           </div>
         </div>
       </section>
@@ -204,6 +207,7 @@ export default function PrivatePflegeberatungPage() {
         className="relative z-10 w-full bg-white px-4 pb-14 pt-10 sm:px-6 sm:pb-16 sm:pt-12 lg:px-[var(--ahs-page-gutter)] lg:pb-16 lg:pt-14"
         aria-labelledby="vorteile-heading"
       >
+        <WelleObenF2F9FA />
         <div className="relative mx-auto w-full max-w-6xl">
           <h2 id="vorteile-heading" className={`${SECTION_TITLE_CLASS} ${ANIM_IN}`} style={{ animationDelay: "0ms" }}>
             Unsere Vorteile
