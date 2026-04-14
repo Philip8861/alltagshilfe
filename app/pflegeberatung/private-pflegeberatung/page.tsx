@@ -178,6 +178,9 @@ export default function PrivatePflegeberatungPage() {
           <div className={`${ANIM_IN}`} style={{ animationDelay: "160ms" }}>
             <PflegeberatungNaehePlzDialog />
           </div>
+          <p className={`${ANIM_IN} mt-6 max-w-3xl ${INTRO_BODY_CLASS}`} style={{ animationDelay: "200ms" }}>
+            Dabei bleiben wir neutral und kümmern uns um die bestmögliche Versorgung zuhause.
+          </p>
         </div>
       </section>
 
