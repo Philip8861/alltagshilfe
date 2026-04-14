@@ -261,71 +261,76 @@ export function BetrieblichePflegeberatungSection() {
   return (
     <div className="space-y-14 sm:space-y-16">
       <div className="relative overflow-visible">
-        <section
-          aria-labelledby="betrieblich-was-ist-heading"
-          className="relative overflow-hidden rounded-2xl px-5 py-8 sm:rounded-3xl sm:px-7 sm:py-10"
+        <div className="relative overflow-hidden rounded-2xl border border-[#0F4F68]/10 bg-white px-5 py-8 sm:rounded-3xl sm:px-7 sm:py-10">
+          <BetrieblichePflegeberatungFactsIntro />
+          <section className="mt-10 sm:mt-12" aria-labelledby="betrieblich-folgen-heading">
+            <h3
+              id="betrieblich-folgen-heading"
+              className="mx-auto max-w-4xl text-center text-pretty text-xl font-extrabold text-[#0F4F68] sm:text-2xl"
+            >
+              Folgen für Arbeitgeber durch pflegende Beschäftigte
+            </h3>
+            <ul className="mt-8 grid gap-8 sm:gap-10 lg:grid-cols-3 lg:gap-8">
+              {FOLGEN.map(({ title, bullets, Icon }) => (
+                <li key={title} className="flex flex-col gap-3 sm:flex-row sm:gap-4">
+                  <span className={`${ICON_WRAP} shrink-0 sm:mt-0.5`} aria-hidden>
+                    <Icon />
+                  </span>
+                  <div className="min-w-0">
+                    <p className="font-bold leading-snug text-[#0F4F68]">{title}</p>
+                    <ul className="mt-2 list-disc space-y-2 pl-4 text-sm leading-relaxed text-neutral-700 sm:text-[0.95rem]">
+                      {bullets.map((b) => (
+                        <li key={b}>{b}</li>
+                      ))}
+                    </ul>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </section>
+        </div>
+
+        <div
+          className="relative mt-8 overflow-visible rounded-2xl sm:mt-10 sm:rounded-3xl"
           style={{ backgroundColor: BETRIEBLICH_HELL_BG }}
         >
-          <h2 id="betrieblich-was-ist-heading" className="text-xl font-extrabold text-[#0F4F68] sm:text-2xl">
-            Was versteht man unter betrieblicher Pflegeberatung?
-          </h2>
-          <div className="mt-5 max-w-4xl space-y-4 text-pretty text-neutral-700 leading-relaxed sm:text-[1.05rem]">
-            <p>
-              Betriebliche Pflegeberatung ist ein Unterstützungsangebot für Beschäftigte, die Angehörige pflegen oder
-              kurzfristig vor einer Pflegesituation stehen. Sie basiert auf unserer langjährigen Erfahrung und auf dem
-              häufigsten Satz, den wir hören:{" "}
-              <strong className="font-semibold text-[#0F4F68]">
-                „Hätte ich das eher gewusst, wäre vieles leichter gewesen.“
-              </strong>
-            </p>
-            <p>
-              Damit Mitarbeitende nach Feierabend nicht noch „die zweite Schicht“ starten müssen und sich mit Formularen,
-              Anträgen, Telefonaten, Haushalt und organisatorischen Aufgaben auseinandersetzen müssen, stehen wir{" "}
-              <strong className="font-semibold text-[#0F4F68]">sofort</strong> zur Seite. Wir beraten schnell im Betrieb oder
-              zu Hause und kümmern uns um die Organisation, damit Entlastung und finanzielle Leistungen sicher ankommen.
-            </p>
-            <p>
-              Für Unternehmen heißt das eine verlässliche, feste Kooperation mit uns. Gegen einen günstigen monatlichen
-              Festbetrag, abhängig von der Unternehmensgröße, erhalten Mitarbeitende und Führungskräfte unbegrenzten Zugang zu
-              Beratung und fachlicher Unterstützung ohne Einzelabrechnung, ohne Mehraufwand und ohne Limit.
-            </p>
-            <p>
-              Der Arbeitgeber kann diesen{" "}
-              <strong className="font-semibold text-[#0F4F68]">neuen „Arbeitgeber-Benefit“</strong> ausschreiben und aktiv
-              kommunizieren und zeigt damit echte Fürsorge. Das entlastet spürbar, reduziert Stress und erhöht die Sicherheit im
-              Alltag. Gleichzeitig bleiben Mitarbeitende leistungsfähiger, und Überlastung sowie Fehl- und Ausfallzeiten können
-              deutlich sinken.
-            </p>
-          </div>
-        </section>
-
-        <div className="relative pt-8 sm:pt-10">
           <WelleAnschlussHell fill={BETRIEBLICH_HELL_BG} />
-          <div className="relative">
-            <BetrieblichePflegeberatungFactsIntro />
-            <section className="mt-10 sm:mt-12" aria-labelledby="betrieblich-folgen-heading">
-              <h3 id="betrieblich-folgen-heading" className="text-xl font-extrabold text-[#0F4F68] sm:text-2xl">
-                Folgen für Arbeitgeber durch pflegende Beschäftigte
-              </h3>
-              <ul className="mt-6 grid gap-8 sm:gap-10 lg:grid-cols-3 lg:gap-8">
-                {FOLGEN.map(({ title, bullets, Icon }) => (
-                  <li key={title} className="flex flex-col gap-3 sm:flex-row sm:gap-4">
-                    <span className={`${ICON_WRAP} shrink-0 sm:mt-0.5`} aria-hidden>
-                      <Icon />
-                    </span>
-                    <div className="min-w-0">
-                      <p className="font-bold leading-snug text-[#0F4F68]">{title}</p>
-                      <ul className="mt-2 list-disc space-y-2 pl-4 text-sm leading-relaxed text-neutral-700 sm:text-[0.95rem]">
-                        {bullets.map((b) => (
-                          <li key={b}>{b}</li>
-                        ))}
-                      </ul>
-                    </div>
-                  </li>
-                ))}
-              </ul>
-            </section>
-          </div>
+          <section
+            aria-labelledby="betrieblich-was-ist-heading"
+            className="relative px-5 pb-8 pt-10 sm:px-7 sm:pb-10 sm:pt-12"
+          >
+            <h2 id="betrieblich-was-ist-heading" className="text-xl font-extrabold text-[#0F4F68] sm:text-2xl">
+              Was versteht man unter betrieblicher Pflegeberatung?
+            </h2>
+            <div className="mt-5 max-w-4xl space-y-4 text-pretty text-neutral-700 leading-relaxed sm:text-[1.05rem]">
+              <p>
+                Betriebliche Pflegeberatung ist ein Unterstützungsangebot für Beschäftigte, die Angehörige pflegen oder
+                kurzfristig vor einer Pflegesituation stehen. Sie basiert auf unserer langjährigen Erfahrung und auf dem
+                häufigsten Satz, den wir hören:{" "}
+                <strong className="font-semibold text-[#0F4F68]">
+                  „Hätte ich das eher gewusst, wäre vieles leichter gewesen.“
+                </strong>
+              </p>
+              <p>
+                Damit Mitarbeitende nach Feierabend nicht noch „die zweite Schicht“ starten müssen und sich mit Formularen,
+                Anträgen, Telefonaten, Haushalt und organisatorischen Aufgaben auseinandersetzen müssen, stehen wir{" "}
+                <strong className="font-semibold text-[#0F4F68]">sofort</strong> zur Seite. Wir beraten schnell im Betrieb oder
+                zu Hause und kümmern uns um die Organisation, damit Entlastung und finanzielle Leistungen sicher ankommen.
+              </p>
+              <p>
+                Für Unternehmen heißt das eine verlässliche, feste Kooperation mit uns. Gegen einen günstigen monatlichen
+                Festbetrag, abhängig von der Unternehmensgröße, erhalten Mitarbeitende und Führungskräfte unbegrenzten Zugang zu
+                Beratung und fachlicher Unterstützung ohne Einzelabrechnung, ohne Mehraufwand und ohne Limit.
+              </p>
+              <p>
+                Der Arbeitgeber kann diesen{" "}
+                <strong className="font-semibold text-[#0F4F68]">neuen „Arbeitgeber-Benefit“</strong> ausschreiben und aktiv
+                kommunizieren und zeigt damit echte Fürsorge. Das entlastet spürbar, reduziert Stress und erhöht die Sicherheit im
+                Alltag. Gleichzeitig bleiben Mitarbeitende leistungsfähiger, und Überlastung sowie Fehl- und Ausfallzeiten können
+                deutlich sinken.
+              </p>
+            </div>
+          </section>
         </div>
       </div>
 
