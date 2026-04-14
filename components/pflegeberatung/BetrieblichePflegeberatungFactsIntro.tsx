@@ -6,6 +6,10 @@ import { cn } from "@/lib/utils";
 const ICON_WRAP =
   "inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-[#0F4F68] text-white shadow-sm sm:h-14 sm:w-14";
 
+/** Einheitliche Darstellung der beiden Fakten-Sätze */
+const FACT_ZEILE_KLASSE =
+  "text-pretty text-lg font-semibold leading-relaxed text-[#0F4F68] sm:text-xl";
+
 /** Belegschaft / Pflege (Mehrpersonen + Bettkontext) */
 function IconFactZweiteSchicht() {
   return (
@@ -122,16 +126,12 @@ export function BetrieblichePflegeberatungFactsIntro() {
   const show = reducedMotion || inView;
 
   return (
-    <div
-      ref={rootRef}
-      className="rounded-2xl border border-[#0F4F68]/12 bg-white/95 p-5 shadow-sm sm:p-8"
-      role="region"
-      aria-label="Fakten zur Pflegebelastung im Betrieb"
-    >
+    <div ref={rootRef} className="relative" role="region" aria-label="Fakten zur Pflegebelastung im Betrieb">
       <div className="space-y-6 sm:space-y-8">
         <FactSlideRow show={show} reducedMotion={reducedMotion} from="left" delayMs={0} icon={<IconFactZweiteSchicht />}>
-          <p className="text-lg font-bold leading-snug text-[#0F4F68] sm:text-xl">
-            Wussten Sie, dass 10&nbsp;% Ihrer Belegschaft bereits jetzt eine „zweite Schicht“ am Krankenbett leisten?
+          <p className={FACT_ZEILE_KLASSE}>
+            Wussten Sie, dass rund 10&nbsp;% Ihrer Belegschaft betroffen sein können? Die Statistik zeigt: Bereits heute
+            ist etwa jede zehnte beschäftigte Person neben dem Beruf in eine Pflegesituation eingebunden.
           </p>
         </FactSlideRow>
 
@@ -142,8 +142,8 @@ export function BetrieblichePflegeberatungFactsIntro() {
           delayMs={220}
           icon={<IconFactPflegebelastung />}
         >
-          <p className="text-base font-semibold leading-relaxed text-neutral-800 sm:text-[1.05rem]">
-            Pflegebelastung ist der Treiber für psychische Erkrankungen – der zweithäufigste Grund für Fehltage in 2024.
+          <p className={FACT_ZEILE_KLASSE}>
+            Eine tägliche Pflegebelastung zählt seit 2024 zu den zweithäufigsten Ursachen für krankheitsbedingte Fehltage.
           </p>
         </FactSlideRow>
       </div>

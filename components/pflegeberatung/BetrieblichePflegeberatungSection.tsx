@@ -5,6 +5,26 @@ import { BetrieblichePflegeberatungFactsIntro } from "@/components/pflegeberatun
 const ICON_WRAP =
   "inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-[#0F4F68] text-white shadow-sm sm:h-14 sm:w-14";
 
+/** Welle zwischen hellem Block und Fakten (gleiche Geometrie wie andere Seiten) */
+function WelleAnschlussHell({ fill }: { fill: string }) {
+  return (
+    <svg
+      className="pointer-events-none absolute left-0 top-0 block h-12 w-full -translate-y-[68%] sm:h-16"
+      viewBox="0 0 1200 120"
+      preserveAspectRatio="none"
+      fill="none"
+      overflow="visible"
+      aria-hidden
+    >
+      <rect x="-48" y="0" width="48" height="120" fill={fill} />
+      <rect x="1200" y="0" width="48" height="120" fill={fill} />
+      <path d="M0,120 C200,32 420,8 600,22 C800,38 1010,90 1200,120 L1200,120 L0,120 Z" fill={fill} />
+    </svg>
+  );
+}
+
+const BETRIEBLICH_HELL_BG = "#F2F9FA" as const;
+
 function IconCalendar() {
   return (
     <svg className="h-6 w-6 sm:h-7 sm:w-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
@@ -240,41 +260,52 @@ const ANGEBOT = [
 export function BetrieblichePflegeberatungSection() {
   return (
     <div className="space-y-14 sm:space-y-16">
-      <BetrieblichePflegeberatungFactsIntro />
+      <div className="relative overflow-visible">
+        <section
+          aria-labelledby="betrieblich-was-ist-heading"
+          className="relative overflow-hidden rounded-2xl px-5 py-8 sm:rounded-3xl sm:px-7 sm:py-10"
+          style={{ backgroundColor: BETRIEBLICH_HELL_BG }}
+        >
+          <h2 id="betrieblich-was-ist-heading" className="text-xl font-extrabold text-[#0F4F68] sm:text-2xl">
+            Was versteht man unter betrieblicher Pflegeberatung?
+          </h2>
+          <div className="mt-5 max-w-4xl space-y-4 text-pretty text-neutral-700 leading-relaxed sm:text-[1.05rem]">
+            <p>
+              Betriebliche Pflegeberatung ist ein Unterstützungsangebot für Beschäftigte, die Angehörige pflegen oder
+              kurzfristig vor einer Pflegesituation stehen. Sie basiert auf unserer langjährigen Erfahrung und auf dem
+              häufigsten Satz, den wir hören:{" "}
+              <strong className="font-semibold text-[#0F4F68]">
+                „Hätte ich das eher gewusst, wäre vieles leichter gewesen.“
+              </strong>
+            </p>
+            <p>
+              Damit Mitarbeitende nach Feierabend nicht noch „die zweite Schicht“ starten müssen und sich mit Formularen,
+              Anträgen, Telefonaten, Haushalt und organisatorischen Aufgaben auseinandersetzen müssen, stehen wir{" "}
+              <strong className="font-semibold text-[#0F4F68]">sofort</strong> zur Seite. Wir beraten schnell im Betrieb oder
+              zu Hause und kümmern uns um die Organisation, damit Entlastung und finanzielle Leistungen sicher ankommen.
+            </p>
+            <p>
+              Für Unternehmen heißt das eine verlässliche, feste Kooperation mit uns. Gegen einen günstigen monatlichen
+              Festbetrag, abhängig von der Unternehmensgröße, erhalten Mitarbeitende und Führungskräfte unbegrenzten Zugang zu
+              Beratung und fachlicher Unterstützung ohne Einzelabrechnung, ohne Mehraufwand und ohne Limit.
+            </p>
+            <p>
+              Der Arbeitgeber kann diesen{" "}
+              <strong className="font-semibold text-[#0F4F68]">neuen „Arbeitgeber-Benefit“</strong> ausschreiben und aktiv
+              kommunizieren und zeigt damit echte Fürsorge. Das entlastet spürbar, reduziert Stress und erhöht die Sicherheit im
+              Alltag. Gleichzeitig bleiben Mitarbeitende leistungsfähiger, und Überlastung sowie Fehl- und Ausfallzeiten können
+              deutlich sinken.
+            </p>
+          </div>
+        </section>
 
-      <section aria-labelledby="betrieblich-was-ist-heading">
-        <h2 id="betrieblich-was-ist-heading" className="text-xl font-extrabold text-[#0F4F68] sm:text-2xl">
-          Was versteht man unter betrieblicher Pflegeberatung?
-        </h2>
-        <div className="mt-5 max-w-4xl space-y-4 text-pretty text-neutral-700 leading-relaxed sm:text-[1.05rem]">
-          <p>
-            Betriebliche Pflegeberatung ist ein Unterstützungsangebot für Beschäftigte, die Angehörige pflegen oder
-            kurzfristig vor einer Pflegesituation stehen. Sie basiert auf unserer langjährigen Erfahrung und auf dem
-            häufigsten Satz, den wir hören:{" "}
-            <strong className="font-semibold text-[#0F4F68]">
-              „Hätte ich das eher gewusst, wäre vieles leichter gewesen.“
-            </strong>
-          </p>
-          <p>
-            Damit Mitarbeitende nach Feierabend nicht noch „die zweite Schicht“ starten müssen und sich mit Formularen,
-            Anträgen, Telefonaten, Haushalt und organisatorischen Aufgaben auseinandersetzen müssen, stehen wir{" "}
-            <strong className="font-semibold text-[#0F4F68]">sofort</strong> zur Seite. Wir beraten schnell im Betrieb oder
-            zu Hause und kümmern uns um die Organisation, damit Entlastung und finanzielle Leistungen sicher ankommen.
-          </p>
-          <p>
-            Für Unternehmen heißt das eine verlässliche, feste Kooperation mit uns. Gegen einen günstigen monatlichen
-            Festbetrag, abhängig von der Unternehmensgröße, erhalten Mitarbeitende und Führungskräfte unbegrenzten Zugang zu
-            Beratung und fachlicher Unterstützung ohne Einzelabrechnung, ohne Mehraufwand und ohne Limit.
-          </p>
-          <p>
-            Der Arbeitgeber kann diesen{" "}
-            <strong className="font-semibold text-[#0F4F68]">neuen „Arbeitgeber-Benefit“</strong> ausschreiben und aktiv
-            kommunizieren und zeigt damit echte Fürsorge. Das entlastet spürbar, reduziert Stress und erhöht die Sicherheit im
-            Alltag. Gleichzeitig bleiben Mitarbeitende leistungsfähiger, und Überlastung sowie Fehl- und Ausfallzeiten können
-            deutlich sinken.
-          </p>
+        <div className="relative pt-8 sm:pt-10">
+          <WelleAnschlussHell fill={BETRIEBLICH_HELL_BG} />
+          <div className="relative">
+            <BetrieblichePflegeberatungFactsIntro />
+          </div>
         </div>
-      </section>
+      </div>
 
       <section aria-labelledby="betrieblich-vorteile-heading">
         <h3 id="betrieblich-vorteile-heading" className="text-xl font-extrabold text-[#0F4F68] sm:text-2xl">
