@@ -1,7 +1,10 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import { Container } from "@/components/layout/Container";
-import { BetrieblichePflegeberatungSection } from "@/components/pflegeberatung/BetrieblichePflegeberatungSection";
+import {
+  BetrieblichePflegeberatungSection,
+  BetrieblichePflegeberatungWhiteIntro,
+} from "@/components/pflegeberatung/BetrieblichePflegeberatungSection";
 import {
   BetrieblichAngebotDialogProvider,
   BetrieblichAngebotOpenButton,
@@ -11,7 +14,7 @@ import { siteConfig } from "@/config/site";
 const BETRIEBLICH_HERO_BULLETS = [
   "Attraktiver Benefit zum Ausschreiben",
   "Problemlösung für den demokratischen Wandel",
-  "Zeigt Fürsorge, die einen Unterschied macht",
+  "Eine Kooperation, die einen Unterschied macht",
 ] as const;
 
 function HeroCheckIcon({ className = "" }: { className?: string }) {
@@ -63,10 +66,9 @@ export default function PflegeberatungPage() {
           aria-labelledby="betrieblich-heading"
           className="scroll-mt-[var(--ahs-header-scroll-padding)]"
         >
-          {/* Oberer Bereich inkl. Welle: eine Fläche ohne zusätzliche Kante zwischen Hero und Markenfarbe */}
-          <div
-            className="relative w-full overflow-visible bg-gradient-to-b from-white from-[20%] via-[#fafcfd] via-[55%] to-[#eef7f9] pt-8 sm:pt-10 lg:min-h-[min(100vw,480px)] lg:pt-10"
-          >
+          {/* Weißer Streifen: Hero + Fakten/Folgen, volle Viewport-Breite; danach Welle zum blauen Bereich */}
+          <div className="relative left-1/2 w-screen max-w-[100vw] -translate-x-1/2 overflow-x-visible overflow-y-visible bg-white">
+            <div className="relative w-full overflow-visible pt-8 sm:pt-10 lg:min-h-[min(100vw,480px)] lg:pt-10">
             <Container className="relative z-10">
               <header className="max-w-xl text-left lg:max-w-[min(100%,28rem)] lg:pr-4 xl:max-w-[32rem]">
                 <h1
@@ -125,9 +127,13 @@ export default function PflegeberatungPage() {
                 </div>
               </div>
             </div>
+            </div>
 
-            {/* Welle hinten (z-0), damit Badge-Schatten und Pill nicht von der SVG-Fläche übermalt werden */}
-            <div className="pointer-events-none absolute bottom-0 left-1/2 z-0 w-screen max-w-[100vw] -translate-x-1/2 overflow-x-hidden overflow-y-visible leading-none">
+            <Container className="relative z-10 pb-10 sm:pb-14">
+              <BetrieblichePflegeberatungWhiteIntro />
+            </Container>
+
+            <div className="pointer-events-none relative left-1/2 w-screen max-w-[100vw] -translate-x-1/2 overflow-x-hidden leading-none">
               <svg
                 className="relative z-[1] -mb-px block h-12 w-full shrink-0 text-[#E8F2F5] sm:h-[3.75rem]"
                 viewBox="0 0 1440 100"

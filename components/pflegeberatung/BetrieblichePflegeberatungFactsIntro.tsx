@@ -10,26 +10,13 @@ const ICON_WRAP =
 const FACT_ZEILE_KLASSE =
   "text-pretty text-lg font-semibold leading-relaxed text-[#0F4F68] sm:text-xl";
 
-/** Belegschaft / Pflege (Mehrpersonen + Bettkontext) */
-function IconFactZweiteSchicht() {
+/** Ausrufezeichen im Kreis (Hinweis / Aufmerksamkeit) */
+function IconAusrufezeichen() {
   return (
-    <svg className="h-6 w-6 sm:h-7 sm:w-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
-      <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" strokeLinecap="round" />
-      <circle cx="9" cy="7" r="4" />
-      <path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" strokeLinecap="round" />
-    </svg>
-  );
-}
-
-/** Psychische Belastung / Fehlzeiten (Puls / Belastung) */
-function IconFactPflegebelastung() {
-  return (
-    <svg className="h-6 w-6 sm:h-7 sm:w-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
-      <path
-        d="M22 12h-4l-3 9L9 3l-3 9H2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
+    <svg className="h-6 w-6 sm:h-7 sm:w-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" aria-hidden>
+      <circle cx="12" cy="12" r="10" strokeLinecap="round" />
+      <path strokeLinecap="round" d="M12 8v5" />
+      <path strokeLinecap="round" d="M12 16h.01" />
     </svg>
   );
 }
@@ -128,10 +115,10 @@ export function BetrieblichePflegeberatungFactsIntro() {
   return (
     <div ref={rootRef} className="relative" role="region" aria-label="Fakten zur Pflegebelastung im Betrieb">
       <div className="space-y-6 sm:space-y-8">
-        <FactSlideRow show={show} reducedMotion={reducedMotion} from="left" delayMs={0} icon={<IconFactZweiteSchicht />}>
+        <FactSlideRow show={show} reducedMotion={reducedMotion} from="left" delayMs={0} icon={<IconAusrufezeichen />}>
           <p className={FACT_ZEILE_KLASSE}>
-            Wussten Sie, dass rund 10&nbsp;% Ihrer Belegschaft betroffen sein können? Die Statistik zeigt: Bereits heute
-            ist etwa jede zehnte beschäftigte Person neben dem Beruf in eine Pflegesituation eingebunden.
+            Die Statistik zeigt: Bereits heute ist etwa jede zehnte beschäftigte Person neben dem Beruf in eine
+            Pflegesituation eingebunden.
           </p>
         </FactSlideRow>
 
@@ -140,7 +127,7 @@ export function BetrieblichePflegeberatungFactsIntro() {
           reducedMotion={reducedMotion}
           from="right"
           delayMs={220}
-          icon={<IconFactPflegebelastung />}
+          icon={<IconAusrufezeichen />}
         >
           <p className={FACT_ZEILE_KLASSE}>
             Eine tägliche Pflegebelastung zählt seit 2024 zu den zweithäufigsten Ursachen für krankheitsbedingte Fehltage.

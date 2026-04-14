@@ -5,11 +5,11 @@ import { BetrieblichePflegeberatungFactsIntro } from "@/components/pflegeberatun
 const ICON_WRAP =
   "inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-[#0F4F68] text-white shadow-sm sm:h-14 sm:w-14";
 
-/** Welle zwischen hellem Block und Fakten (gleiche Geometrie wie andere Seiten) */
+/** Welle zum hellblauen Block; volle Viewport-Breite (zentriert unterhalb von max-w-Container) */
 function WelleAnschlussHell({ fill }: { fill: string }) {
   return (
     <svg
-      className="pointer-events-none absolute left-0 top-0 block h-12 w-full -translate-y-[68%] sm:h-16"
+      className="pointer-events-none absolute left-1/2 top-0 block h-12 w-screen max-w-[100vw] -translate-x-1/2 -translate-y-[68%] sm:h-16"
       viewBox="0 0 1200 120"
       preserveAspectRatio="none"
       fill="none"
@@ -257,81 +257,84 @@ const ANGEBOT = [
   },
 ] as const;
 
+/** Oberer weißer Streifen (Fakten + Folgen) – Inhalt; volle Breite liefert die Seite */
+export function BetrieblichePflegeberatungWhiteIntro() {
+  return (
+    <>
+      <BetrieblichePflegeberatungFactsIntro />
+      <section className="mt-10 sm:mt-12" aria-labelledby="betrieblich-folgen-heading">
+        <h3
+          id="betrieblich-folgen-heading"
+          className="mx-auto max-w-4xl text-center text-pretty text-xl font-extrabold text-[#0F4F68] sm:text-2xl"
+        >
+          Folgen für Arbeitgeber durch pflegende Beschäftigte
+        </h3>
+        <ul className="mt-8 grid gap-8 sm:gap-10 lg:grid-cols-3 lg:gap-8">
+          {FOLGEN.map(({ title, bullets, Icon }) => (
+            <li key={title} className="flex flex-col gap-3 sm:flex-row sm:gap-4">
+              <span className={`${ICON_WRAP} shrink-0 sm:mt-0.5`} aria-hidden>
+                <Icon />
+              </span>
+              <div className="min-w-0">
+                <p className="font-bold leading-snug text-[#0F4F68]">{title}</p>
+                <ul className="mt-2 list-disc space-y-2 pl-4 text-sm leading-relaxed text-neutral-700 sm:text-[0.95rem]">
+                  {bullets.map((b) => (
+                    <li key={b}>{b}</li>
+                  ))}
+                </ul>
+              </div>
+            </li>
+          ))}
+        </ul>
+      </section>
+    </>
+  );
+}
+
 export function BetrieblichePflegeberatungSection() {
   return (
     <div className="space-y-14 sm:space-y-16">
-      <div className="relative overflow-visible">
-        <div className="relative overflow-hidden rounded-2xl border border-[#0F4F68]/10 bg-white px-5 py-8 sm:rounded-3xl sm:px-7 sm:py-10">
-          <BetrieblichePflegeberatungFactsIntro />
-          <section className="mt-10 sm:mt-12" aria-labelledby="betrieblich-folgen-heading">
-            <h3
-              id="betrieblich-folgen-heading"
-              className="mx-auto max-w-4xl text-center text-pretty text-xl font-extrabold text-[#0F4F68] sm:text-2xl"
-            >
-              Folgen für Arbeitgeber durch pflegende Beschäftigte
-            </h3>
-            <ul className="mt-8 grid gap-8 sm:gap-10 lg:grid-cols-3 lg:gap-8">
-              {FOLGEN.map(({ title, bullets, Icon }) => (
-                <li key={title} className="flex flex-col gap-3 sm:flex-row sm:gap-4">
-                  <span className={`${ICON_WRAP} shrink-0 sm:mt-0.5`} aria-hidden>
-                    <Icon />
-                  </span>
-                  <div className="min-w-0">
-                    <p className="font-bold leading-snug text-[#0F4F68]">{title}</p>
-                    <ul className="mt-2 list-disc space-y-2 pl-4 text-sm leading-relaxed text-neutral-700 sm:text-[0.95rem]">
-                      {bullets.map((b) => (
-                        <li key={b}>{b}</li>
-                      ))}
-                    </ul>
-                  </div>
-                </li>
-              ))}
-            </ul>
-          </section>
-        </div>
-
-        <div
-          className="relative mt-8 overflow-visible rounded-2xl sm:mt-10 sm:rounded-3xl"
-          style={{ backgroundColor: BETRIEBLICH_HELL_BG }}
+      <div
+        className="relative left-1/2 w-screen max-w-[100vw] -translate-x-1/2 overflow-visible pt-8 sm:pt-10"
+        style={{ backgroundColor: BETRIEBLICH_HELL_BG }}
+      >
+        <WelleAnschlussHell fill={BETRIEBLICH_HELL_BG} />
+        <section
+          aria-labelledby="betrieblich-was-ist-heading"
+          className="relative mx-auto max-w-7xl px-4 pb-10 pt-10 sm:px-6 sm:pb-12 sm:pt-12 lg:px-[var(--ahs-page-gutter)] lg:pb-14 lg:pt-14"
         >
-          <WelleAnschlussHell fill={BETRIEBLICH_HELL_BG} />
-          <section
-            aria-labelledby="betrieblich-was-ist-heading"
-            className="relative px-5 pb-8 pt-10 sm:px-7 sm:pb-10 sm:pt-12"
-          >
-            <h2 id="betrieblich-was-ist-heading" className="text-xl font-extrabold text-[#0F4F68] sm:text-2xl">
-              Was versteht man unter betrieblicher Pflegeberatung?
-            </h2>
-            <div className="mt-5 max-w-4xl space-y-4 text-pretty text-neutral-700 leading-relaxed sm:text-[1.05rem]">
-              <p>
-                Betriebliche Pflegeberatung ist ein Unterstützungsangebot für Beschäftigte, die Angehörige pflegen oder
-                kurzfristig vor einer Pflegesituation stehen. Sie basiert auf unserer langjährigen Erfahrung und auf dem
-                häufigsten Satz, den wir hören:{" "}
-                <strong className="font-semibold text-[#0F4F68]">
-                  „Hätte ich das eher gewusst, wäre vieles leichter gewesen.“
-                </strong>
-              </p>
-              <p>
-                Damit Mitarbeitende nach Feierabend nicht noch „die zweite Schicht“ starten müssen und sich mit Formularen,
-                Anträgen, Telefonaten, Haushalt und organisatorischen Aufgaben auseinandersetzen müssen, stehen wir{" "}
-                <strong className="font-semibold text-[#0F4F68]">sofort</strong> zur Seite. Wir beraten schnell im Betrieb oder
-                zu Hause und kümmern uns um die Organisation, damit Entlastung und finanzielle Leistungen sicher ankommen.
-              </p>
-              <p>
-                Für Unternehmen heißt das eine verlässliche, feste Kooperation mit uns. Gegen einen günstigen monatlichen
-                Festbetrag, abhängig von der Unternehmensgröße, erhalten Mitarbeitende und Führungskräfte unbegrenzten Zugang zu
-                Beratung und fachlicher Unterstützung ohne Einzelabrechnung, ohne Mehraufwand und ohne Limit.
-              </p>
-              <p>
-                Der Arbeitgeber kann diesen{" "}
-                <strong className="font-semibold text-[#0F4F68]">neuen „Arbeitgeber-Benefit“</strong> ausschreiben und aktiv
-                kommunizieren und zeigt damit echte Fürsorge. Das entlastet spürbar, reduziert Stress und erhöht die Sicherheit im
-                Alltag. Gleichzeitig bleiben Mitarbeitende leistungsfähiger, und Überlastung sowie Fehl- und Ausfallzeiten können
-                deutlich sinken.
-              </p>
-            </div>
-          </section>
-        </div>
+          <h2 id="betrieblich-was-ist-heading" className="text-xl font-extrabold text-[#0F4F68] sm:text-2xl">
+            Was versteht man unter betrieblicher Pflegeberatung?
+          </h2>
+          <div className="mt-5 max-w-4xl space-y-4 text-pretty text-neutral-700 leading-relaxed sm:text-[1.05rem]">
+            <p>
+              Betriebliche Pflegeberatung ist ein Unterstützungsangebot für Beschäftigte, die Angehörige pflegen oder
+              kurzfristig vor einer Pflegesituation stehen. Sie basiert auf unserer langjährigen Erfahrung und auf dem
+              häufigsten Satz, den wir hören:{" "}
+              <strong className="font-semibold text-[#0F4F68]">
+                „Hätte ich das eher gewusst, wäre vieles leichter gewesen.“
+              </strong>
+            </p>
+            <p>
+              Damit Mitarbeitende nach Feierabend nicht noch „die zweite Schicht“ starten müssen und sich mit Formularen,
+              Anträgen, Telefonaten, Haushalt und organisatorischen Aufgaben auseinandersetzen müssen, stehen wir{" "}
+              <strong className="font-semibold text-[#0F4F68]">sofort</strong> zur Seite. Wir beraten schnell im Betrieb oder zu
+              Hause und kümmern uns um die Organisation, damit Entlastung und finanzielle Leistungen sicher ankommen.
+            </p>
+            <p>
+              Für Unternehmen heißt das eine verlässliche, feste Kooperation mit uns. Gegen einen günstigen monatlichen
+              Festbetrag, abhängig von der Unternehmensgröße, erhalten Mitarbeitende und Führungskräfte unbegrenzten Zugang zu
+              Beratung und fachlicher Unterstützung ohne Einzelabrechnung, ohne Mehraufwand und ohne Limit.
+            </p>
+            <p>
+              Der Arbeitgeber kann diesen{" "}
+              <strong className="font-semibold text-[#0F4F68]">neuen „Arbeitgeber-Benefit“</strong> ausschreiben und aktiv
+              kommunizieren und zeigt damit echte Fürsorge. Das entlastet spürbar, reduziert Stress und erhöht die Sicherheit im
+              Alltag. Gleichzeitig bleiben Mitarbeitende leistungsfähiger, und Überlastung sowie Fehl- und Ausfallzeiten können
+              deutlich sinken.
+            </p>
+          </div>
+        </section>
       </div>
 
       <section aria-labelledby="betrieblich-vorteile-heading">
