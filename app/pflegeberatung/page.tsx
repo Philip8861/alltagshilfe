@@ -8,6 +8,36 @@ import {
 } from "@/components/pflegeberatung/BetrieblicheAngebotAnfrage";
 import { siteConfig } from "@/config/site";
 
+const BETRIEBLICH_HERO_BULLETS = [
+  "Attraktiver Benefit zum Ausschreiben",
+  "Problemlösung für den demokratischen Wandel",
+  "Zeigt Fürsorge, die einen Unterschied macht",
+] as const;
+
+function HeroCheckIcon({ className = "" }: { className?: string }) {
+  return (
+    <span
+      className={`inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#F78F2E]/15 text-[#F78F2E] sm:h-10 sm:w-10 ${className}`.trim()}
+      aria-hidden
+    >
+      <svg
+        className="h-[1.2rem] w-[1.2rem] sm:h-[1.35rem] sm:w-[1.35rem]"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        <path d="M20 6L9 17l-5-5" />
+      </svg>
+    </span>
+  );
+}
+
+const HERO_BULLET_ANIM =
+  "flex items-start gap-3 text-pretty text-lg font-semibold leading-snug text-[#0F4F68] opacity-0 motion-reduce:opacity-100 motion-reduce:animate-none animate-fade-in-up sm:items-center sm:text-xl";
+
 /** Natürliche Pixelmaße von public/images/betriebliche_pflegeberatung.webp (Quelle: konfigurator/betriebliche.webp, Alpha) */
 const BETRIEBLICH_IMG = { w: 1031, h: 549 } as const;
 /** 20 % kleiner als Original */
@@ -49,7 +79,22 @@ export default function PflegeberatungPage() {
                 <p className="mt-4 text-pretty text-lg font-semibold leading-snug text-[#0F4F68] sm:text-xl">
                   Entlasten Sie Ihr Team, reduzieren Sie Fehlzeiten und stärken Sie Ihre Mitarbeitenden.
                 </p>
-                <div className="mt-5 max-w-md">
+                <ul
+                  className="mt-4 max-w-xl space-y-3 sm:mt-5 sm:space-y-3.5"
+                  aria-label="Warum betriebliche Pflegeberatung für Ihr Unternehmen"
+                >
+                  {BETRIEBLICH_HERO_BULLETS.map((line, i) => (
+                    <li
+                      key={line}
+                      className={HERO_BULLET_ANIM}
+                      style={{ animationDelay: `${120 + i * 90}ms` }}
+                    >
+                      <HeroCheckIcon className="mt-0.5 sm:mt-0" />
+                      <span>{line}</span>
+                    </li>
+                  ))}
+                </ul>
+                <div className="mt-5 max-w-md sm:mt-6">
                   <BetrieblichAngebotOpenButton className="w-full sm:w-auto" />
                 </div>
               </header>
