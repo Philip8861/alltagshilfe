@@ -4,7 +4,10 @@ import { useEffect, useRef, useState, type ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
 const FACT_ZEILE_KLASSE =
-  "text-pretty text-center text-lg font-semibold leading-relaxed text-[#0F4F68] sm:text-xl";
+  "text-pretty text-lg font-semibold leading-relaxed text-[#0F4F68] sm:text-xl";
+
+const BULLET_DOT =
+  "mt-2 inline-block h-2.5 w-2.5 shrink-0 rounded-full bg-[#F78F2E] sm:mt-2.5 sm:h-3 sm:w-3";
 
 function usePrefersReducedMotion(): boolean {
   const [reduced, setReduced] = useState(false);
@@ -18,47 +21,48 @@ function usePrefersReducedMotion(): boolean {
   return reduced;
 }
 
-function FactPopRow({
+function FactSlideRow({
   show,
   reducedMotion,
+  from,
   delayMs,
   children,
 }: {
   show: boolean;
   reducedMotion: boolean;
+  from: "left" | "right";
   delayMs: number;
   children: ReactNode;
 }) {
+  const fromLeft = from === "left";
   return (
     <div className="overflow-x-hidden py-1">
       <div
         className={cn(
-          "mx-auto max-w-3xl will-change-transform transition-[transform,opacity] duration-500 ease-out motion-reduce:transition-none",
-          reducedMotion || show
-            ? "translate-y-0 scale-100 opacity-100"
-            : "translate-y-3 scale-[0.98] opacity-0",
+          "mx-auto flex w-full max-w-3xl flex-row items-start gap-3 sm:gap-4",
+          "will-change-transform",
+          reducedMotion
+            ? "translate-x-0 opacity-100"
+            : cn(
+                "transition-[transform,opacity] duration-[900ms] ease-out motion-reduce:transition-none",
+                show ? "translate-x-0 opacity-100" : "opacity-0",
+                show ? undefined : fromLeft ? "-translate-x-[115%]" : "translate-x-[115%]",
+              ),
         )}
-        style={
-          reducedMotion || !show
-            ? undefined
-            : { transitionDelay: `${delayMs}ms`, transitionProperty: "transform, opacity" }
-        }
+        style={reducedMotion || !show ? undefined : { transitionDelay: `${delayMs}ms` }}
       >
-        {children}
+        {fromLeft ? (
+          <>
+            <span className={BULLET_DOT} aria-hidden />
+            <div className="min-w-0 flex-1 text-pretty">{children}</div>
+          </>
+        ) : (
+          <>
+            <div className="min-w-0 flex-1 text-pretty">{children}</div>
+            <span className={BULLET_DOT} aria-hidden />
+          </>
+        )}
       </div>
-    </div>
-  );
-}
-
-/** Oranges Ausrufezeichen als visuelle Brücke zwischen den beiden Fakten-Sätzen */
-function OrangeAusrufKreativ() {
-  return (
-    <div className="flex justify-center py-2 sm:py-3" aria-hidden>
-      <span
-        className="relative inline-flex h-[3.25rem] w-[3.25rem] select-none items-center justify-center rounded-2xl bg-gradient-to-br from-[#F78F2E] via-[#f67a14] to-[#e06512] font-black leading-none text-white shadow-[0_10px_28px_-8px_rgba(247,143,46,0.65),inset_0_1px_0_rgba(255,255,255,0.35)] ring-[3px] ring-[#F78F2E]/25 sm:h-14 sm:w-14 sm:text-[2.35rem] text-[2rem] motion-safe:transition-transform motion-safe:duration-300 motion-safe:hover:scale-105 motion-reduce:transition-none"
-      >
-        !
-      </span>
     </div>
   );
 }
@@ -92,23 +96,19 @@ export function BetrieblichePflegeberatungFactsIntro() {
 
   return (
     <div ref={rootRef} className="relative mt-8 sm:mt-10" role="region" aria-label="Fakten zur Pflegebelastung im Betrieb">
-      <div className="mx-auto flex max-w-3xl flex-col items-stretch gap-0">
-        <FactPopRow show={show} reducedMotion={reducedMotion} delayMs={0}>
+      <div className="space-y-6 sm:space-y-8">
+        <FactSlideRow show={show} reducedMotion={reducedMotion} from="left" delayMs={0}>
           <p className={FACT_ZEILE_KLASSE}>
             Die Statistik zeigt: Bereits heute ist etwa jede zehnte beschäftigte Person neben dem Beruf in eine
             Pflegesituation eingebunden.
           </p>
-        </FactPopRow>
+        </FactSlideRow>
 
-        <FactPopRow show={show} reducedMotion={reducedMotion} delayMs={120}>
-          <OrangeAusrufKreativ />
-        </FactPopRow>
-
-        <FactPopRow show={show} reducedMotion={reducedMotion} delayMs={240}>
+        <FactSlideRow show={show} reducedMotion={reducedMotion} from="right" delayMs={220}>
           <p className={FACT_ZEILE_KLASSE}>
             Eine tägliche Pflegebelastung zählt seit 2024 zu den zweithäufigsten Ursachen für krankheitsbedingte Fehltage.
           </p>
-        </FactPopRow>
+        </FactSlideRow>
       </div>
     </div>
   );

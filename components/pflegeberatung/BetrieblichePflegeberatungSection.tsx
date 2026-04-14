@@ -191,52 +191,9 @@ const FOLGEN = [
   },
 ] as const;
 
-/** Oberer weißer Streifen: Fakten + welliger Übergang + Folgen als zusammenhängender Block */
+/** Oberer weißer Streifen: nur Fakten-Sätze (Folgen stehen unter „Was versteht man …“) */
 export function BetrieblichePflegeberatungWhiteIntro() {
-  return (
-    <div className="mx-auto max-w-5xl">
-      <BetrieblichePflegeberatungFactsIntro />
-      <section
-        className="relative mt-8 overflow-visible rounded-2xl border border-[#0F4F68]/10 px-4 pb-10 pt-14 shadow-[0_12px_40px_-28px_rgba(15,79,104,0.18)] sm:mt-10 sm:rounded-3xl sm:px-8 sm:pb-12 sm:pt-16"
-        style={{ backgroundColor: FOLGEN_BAND_BG }}
-        aria-labelledby="betrieblich-folgen-heading"
-      >
-        <WelleObenBand fill={FOLGEN_BAND_BG} />
-        <p className="mx-auto mb-3 max-w-2xl text-center text-sm font-medium text-[#0F4F68]/80 sm:text-base">
-          Aus diesen Belastungen ergeben sich typische betriebliche Folgen – deshalb lohnt sich frühzeitig
-          Gegensteuern:
-        </p>
-        <h3
-          id="betrieblich-folgen-heading"
-          className={`${POP_IN} mx-auto max-w-4xl text-center text-pretty text-xl font-extrabold text-[#0F4F68] sm:text-2xl`}
-          style={{ animationDelay: "120ms" }}
-        >
-          Folgen für Arbeitgeber durch pflegende Beschäftigte
-        </h3>
-        <ul className="mt-8 grid gap-8 sm:gap-10 lg:grid-cols-3 lg:gap-8">
-          {FOLGEN.map(({ title, bullets, Icon }, i) => (
-            <li
-              key={title}
-              className={`${POP_IN} flex flex-col gap-3 rounded-xl border border-white/60 bg-white/70 p-4 shadow-sm backdrop-blur-sm sm:flex-row sm:gap-4 sm:p-5`}
-              style={{ animationDelay: `${200 + i * 85}ms` }}
-            >
-              <span className={`${ICON_WRAP} shrink-0 sm:mt-0.5`} aria-hidden>
-                <Icon />
-              </span>
-              <div className="min-w-0">
-                <p className="font-bold leading-snug text-[#0F4F68]">{title}</p>
-                <ul className="mt-2 list-disc space-y-2 pl-4 text-sm leading-relaxed text-neutral-700 sm:text-[0.95rem]">
-                  {bullets.map((b) => (
-                    <li key={b}>{b}</li>
-                  ))}
-                </ul>
-              </div>
-            </li>
-          ))}
-        </ul>
-      </section>
-    </div>
-  );
+  return <BetrieblichePflegeberatungFactsIntro />;
 }
 
 export function BetrieblichePflegeberatungSection() {
@@ -294,6 +251,39 @@ export function BetrieblichePflegeberatungSection() {
             </BetrieblichAngebotOpenButton>
           </div>
         </section>
+
+        <div className="relative overflow-visible" style={{ backgroundColor: FOLGEN_BAND_BG }}>
+          <WelleObenBand fill={FOLGEN_BAND_BG} />
+          <section
+            className="relative mx-auto max-w-7xl px-4 pb-10 pt-8 sm:px-6 sm:pb-12 sm:pt-10 lg:px-[var(--ahs-page-gutter)]"
+            aria-labelledby="betrieblich-folgen-heading"
+          >
+            <h3
+              id="betrieblich-folgen-heading"
+              className="mx-auto max-w-4xl text-center text-pretty text-xl font-extrabold text-[#0F4F68] sm:text-2xl"
+            >
+              Folgen für Arbeitgeber durch pflegende Beschäftigte
+            </h3>
+            <ul className="mt-8 grid gap-8 sm:gap-10 lg:grid-cols-3 lg:gap-8">
+              {FOLGEN.map(({ title, bullets, Icon }) => (
+                <li key={title} className="flex flex-col gap-3 sm:flex-row sm:gap-4">
+                  <span className={`${ICON_WRAP} shrink-0 sm:mt-0.5`} aria-hidden>
+                    <Icon />
+                  </span>
+                  <div className="min-w-0">
+                    <p className="font-bold leading-snug text-[#0F4F68]">{title}</p>
+                    <ul className="mt-2 list-disc space-y-2 pl-4 text-sm leading-relaxed text-neutral-700 sm:text-[0.95rem]">
+                      {bullets.map((b) => (
+                        <li key={b}>{b}</li>
+                      ))}
+                    </ul>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </section>
+        </div>
+
         <WelleZuVorteileBand />
       </div>
 
