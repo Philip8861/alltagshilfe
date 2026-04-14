@@ -3,9 +3,8 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
-/** Einheitliche Darstellung der beiden Fakten-Sätze (kursiv, leicht versetzt) */
 const FACT_ZEILE_KLASSE =
-  "text-pretty text-lg font-semibold italic leading-relaxed text-[#0F4F68] sm:text-xl";
+  "text-pretty text-center text-lg font-semibold leading-relaxed text-[#0F4F68] sm:text-xl";
 
 function usePrefersReducedMotion(): boolean {
   const [reduced, setReduced] = useState(false);
@@ -23,23 +22,21 @@ function FactPopRow({
   show,
   reducedMotion,
   delayMs,
-  indentClass,
   children,
 }: {
   show: boolean;
   reducedMotion: boolean;
   delayMs: number;
-  indentClass?: string;
   children: ReactNode;
 }) {
   return (
-    <div className={cn("overflow-x-hidden py-1", indentClass)}>
+    <div className="overflow-x-hidden py-1">
       <div
         className={cn(
           "mx-auto max-w-3xl will-change-transform transition-[transform,opacity] duration-500 ease-out motion-reduce:transition-none",
           reducedMotion || show
             ? "translate-y-0 scale-100 opacity-100"
-            : "translate-y-3 scale-[0.96] opacity-0",
+            : "translate-y-3 scale-[0.98] opacity-0",
         )}
         style={
           reducedMotion || !show
@@ -49,6 +46,19 @@ function FactPopRow({
       >
         {children}
       </div>
+    </div>
+  );
+}
+
+/** Oranges Ausrufezeichen als visuelle Brücke zwischen den beiden Fakten-Sätzen */
+function OrangeAusrufKreativ() {
+  return (
+    <div className="flex justify-center py-2 sm:py-3" aria-hidden>
+      <span
+        className="relative inline-flex h-[3.25rem] w-[3.25rem] select-none items-center justify-center rounded-2xl bg-gradient-to-br from-[#F78F2E] via-[#f67a14] to-[#e06512] font-black leading-none text-white shadow-[0_10px_28px_-8px_rgba(247,143,46,0.65),inset_0_1px_0_rgba(255,255,255,0.35)] ring-[3px] ring-[#F78F2E]/25 sm:h-14 sm:w-14 sm:text-[2.35rem] text-[2rem] motion-safe:transition-transform motion-safe:duration-300 motion-safe:hover:scale-105 motion-reduce:transition-none"
+      >
+        !
+      </span>
     </div>
   );
 }
@@ -81,8 +91,8 @@ export function BetrieblichePflegeberatungFactsIntro() {
   const show = reducedMotion || inView;
 
   return (
-    <div ref={rootRef} className="relative mt-[3cm]" role="region" aria-label="Fakten zur Pflegebelastung im Betrieb">
-      <div className="space-y-7 sm:space-y-9">
+    <div ref={rootRef} className="relative mt-8 sm:mt-10" role="region" aria-label="Fakten zur Pflegebelastung im Betrieb">
+      <div className="mx-auto flex max-w-3xl flex-col items-stretch gap-0">
         <FactPopRow show={show} reducedMotion={reducedMotion} delayMs={0}>
           <p className={FACT_ZEILE_KLASSE}>
             Die Statistik zeigt: Bereits heute ist etwa jede zehnte beschäftigte Person neben dem Beruf in eine
@@ -90,7 +100,11 @@ export function BetrieblichePflegeberatungFactsIntro() {
           </p>
         </FactPopRow>
 
-        <FactPopRow show={show} reducedMotion={reducedMotion} delayMs={180} indentClass="pl-5 sm:pl-10 md:pl-14">
+        <FactPopRow show={show} reducedMotion={reducedMotion} delayMs={120}>
+          <OrangeAusrufKreativ />
+        </FactPopRow>
+
+        <FactPopRow show={show} reducedMotion={reducedMotion} delayMs={240}>
           <p className={FACT_ZEILE_KLASSE}>
             Eine tägliche Pflegebelastung zählt seit 2024 zu den zweithäufigsten Ursachen für krankheitsbedingte Fehltage.
           </p>

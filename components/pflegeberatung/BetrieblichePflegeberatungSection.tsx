@@ -5,6 +5,26 @@ const ICON_WRAP =
   "inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-[#0F4F68] text-white shadow-sm sm:h-14 sm:w-14";
 
 const BETRIEBLICH_HELL_BG = "#F2F9FA" as const;
+/** Leichter Ton für Folgen-Bereich (Welle + Fläche) */
+const FOLGEN_BAND_BG = "#eef6f9" as const;
+
+/** Welle am oberen Rand eines Blocks (z. B. Übergang von Weiß zu Folgen-Fläche) */
+function WelleObenBand({ fill }: { fill: string }) {
+  return (
+    <svg
+      className="pointer-events-none absolute left-1/2 top-0 block h-11 w-screen max-w-[100vw] -translate-x-1/2 -translate-y-[70%] sm:h-14"
+      viewBox="0 0 1200 120"
+      preserveAspectRatio="none"
+      fill="none"
+      overflow="visible"
+      aria-hidden
+    >
+      <rect x="-48" y="0" width="48" height="120" fill={fill} />
+      <rect x="1200" y="0" width="48" height="120" fill={fill} />
+      <path d="M0,120 C200,32 420,8 600,22 C800,38 1010,90 1200,120 L1200,120 L0,120 Z" fill={fill} />
+    </svg>
+  );
+}
 
 /** Welle unter dem Was-ist-Block zum Verlauf / „Ihre Vorteile“ (volle Breite) */
 function WelleZuVorteileBand() {
@@ -171,16 +191,25 @@ const FOLGEN = [
   },
 ] as const;
 
-/** Oberer weißer Streifen (Fakten + Folgen) – Inhalt; volle Breite liefert die Seite */
+/** Oberer weißer Streifen: Fakten + welliger Übergang + Folgen als zusammenhängender Block */
 export function BetrieblichePflegeberatungWhiteIntro() {
   return (
-    <>
+    <div className="mx-auto max-w-5xl">
       <BetrieblichePflegeberatungFactsIntro />
-      <section className="mt-10 sm:mt-12" aria-labelledby="betrieblich-folgen-heading">
+      <section
+        className="relative mt-8 overflow-visible rounded-2xl border border-[#0F4F68]/10 px-4 pb-10 pt-14 shadow-[0_12px_40px_-28px_rgba(15,79,104,0.18)] sm:mt-10 sm:rounded-3xl sm:px-8 sm:pb-12 sm:pt-16"
+        style={{ backgroundColor: FOLGEN_BAND_BG }}
+        aria-labelledby="betrieblich-folgen-heading"
+      >
+        <WelleObenBand fill={FOLGEN_BAND_BG} />
+        <p className="mx-auto mb-3 max-w-2xl text-center text-sm font-medium text-[#0F4F68]/80 sm:text-base">
+          Aus diesen Belastungen ergeben sich typische betriebliche Folgen – deshalb lohnt sich frühzeitig
+          Gegensteuern:
+        </p>
         <h3
           id="betrieblich-folgen-heading"
           className={`${POP_IN} mx-auto max-w-4xl text-center text-pretty text-xl font-extrabold text-[#0F4F68] sm:text-2xl`}
-          style={{ animationDelay: "280ms" }}
+          style={{ animationDelay: "120ms" }}
         >
           Folgen für Arbeitgeber durch pflegende Beschäftigte
         </h3>
@@ -188,8 +217,8 @@ export function BetrieblichePflegeberatungWhiteIntro() {
           {FOLGEN.map(({ title, bullets, Icon }, i) => (
             <li
               key={title}
-              className={`${POP_IN} flex flex-col gap-3 sm:flex-row sm:gap-4`}
-              style={{ animationDelay: `${400 + i * 90}ms` }}
+              className={`${POP_IN} flex flex-col gap-3 rounded-xl border border-white/60 bg-white/70 p-4 shadow-sm backdrop-blur-sm sm:flex-row sm:gap-4 sm:p-5`}
+              style={{ animationDelay: `${200 + i * 85}ms` }}
             >
               <span className={`${ICON_WRAP} shrink-0 sm:mt-0.5`} aria-hidden>
                 <Icon />
@@ -206,7 +235,7 @@ export function BetrieblichePflegeberatungWhiteIntro() {
           ))}
         </ul>
       </section>
-    </>
+    </div>
   );
 }
 
@@ -217,7 +246,7 @@ export function BetrieblichePflegeberatungSection() {
   return (
     <div className="space-y-14 sm:space-y-16">
       <div
-        className="relative left-1/2 w-screen max-w-[100vw] -translate-x-1/2 overflow-visible pb-0 pt-8 sm:pt-10"
+        className="relative left-1/2 w-screen max-w-[100vw] -translate-x-1/2 overflow-visible pb-0 pt-10 sm:pt-12"
         style={{ backgroundColor: BETRIEBLICH_HELL_BG }}
       >
         <section

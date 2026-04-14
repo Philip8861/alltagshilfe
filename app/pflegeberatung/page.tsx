@@ -135,7 +135,8 @@ export default function PflegeberatungPage() {
           </div>
 
           <div className="relative left-1/2 w-screen max-w-[100vw] -translate-x-1/2 overflow-x-hidden bg-gradient-to-b from-[#E8F2F5] via-[#F0F8FA] to-[#E5F2F6] pb-16 sm:pb-20">
-            <Container className="pt-10 sm:pt-14">
+            {/* kein pt hier: sonst sichtbarer Streifen aus dem Verlauf über dem ersten Vollbreiten-Block */}
+            <Container className="pt-0">
               <BetrieblichePflegeberatungSection />
             </Container>
           </div>
