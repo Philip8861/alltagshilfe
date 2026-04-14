@@ -191,9 +191,49 @@ const FOLGEN = [
   },
 ] as const;
 
-/** Oberer weißer Streifen: nur Fakten-Sätze (Folgen stehen unter „Was versteht man …“) */
+/** Oberer weißer Streifen: nur Fakten-Sätze */
 export function BetrieblichePflegeberatungWhiteIntro() {
   return <BetrieblichePflegeberatungFactsIntro />;
+}
+
+/** Direkt unter den Fakten: welliger Übergang von Weiß zum Folgen-Band */
+export function BetrieblichePflegeberatungFolgenBand() {
+  return (
+    <div
+      className="relative left-1/2 w-screen max-w-[100vw] -translate-x-1/2 overflow-visible pb-0"
+      style={{ backgroundColor: FOLGEN_BAND_BG }}
+    >
+      <WelleObenBand fill={FOLGEN_BAND_BG} />
+      <section
+        className="relative mx-auto max-w-7xl px-4 pb-10 pt-8 sm:px-6 sm:pb-12 sm:pt-10 lg:px-[var(--ahs-page-gutter)]"
+        aria-labelledby="betrieblich-folgen-heading"
+      >
+        <h2
+          id="betrieblich-folgen-heading"
+          className="mx-auto max-w-4xl text-center text-pretty text-xl font-extrabold text-[#0F4F68] sm:text-2xl"
+        >
+          Folgen für Arbeitgeber durch pflegende Beschäftigte
+        </h2>
+        <ul className="mt-8 grid gap-8 sm:gap-10 lg:grid-cols-3 lg:gap-8">
+          {FOLGEN.map(({ title, bullets, Icon }) => (
+            <li key={title} className="flex flex-col gap-3 sm:flex-row sm:gap-4">
+              <span className={`${ICON_WRAP} shrink-0 sm:mt-0.5`} aria-hidden>
+                <Icon />
+              </span>
+              <div className="min-w-0">
+                <p className="font-bold leading-snug text-[#0F4F68]">{title}</p>
+                <ul className="mt-2 list-disc space-y-2 pl-4 text-sm leading-relaxed text-neutral-700 sm:text-[0.95rem]">
+                  {bullets.map((b) => (
+                    <li key={b}>{b}</li>
+                  ))}
+                </ul>
+              </div>
+            </li>
+          ))}
+        </ul>
+      </section>
+    </div>
+  );
 }
 
 export function BetrieblichePflegeberatungSection() {
@@ -251,38 +291,6 @@ export function BetrieblichePflegeberatungSection() {
             </BetrieblichAngebotOpenButton>
           </div>
         </section>
-
-        <div className="relative overflow-visible" style={{ backgroundColor: FOLGEN_BAND_BG }}>
-          <WelleObenBand fill={FOLGEN_BAND_BG} />
-          <section
-            className="relative mx-auto max-w-7xl px-4 pb-10 pt-8 sm:px-6 sm:pb-12 sm:pt-10 lg:px-[var(--ahs-page-gutter)]"
-            aria-labelledby="betrieblich-folgen-heading"
-          >
-            <h3
-              id="betrieblich-folgen-heading"
-              className="mx-auto max-w-4xl text-center text-pretty text-xl font-extrabold text-[#0F4F68] sm:text-2xl"
-            >
-              Folgen für Arbeitgeber durch pflegende Beschäftigte
-            </h3>
-            <ul className="mt-8 grid gap-8 sm:gap-10 lg:grid-cols-3 lg:gap-8">
-              {FOLGEN.map(({ title, bullets, Icon }) => (
-                <li key={title} className="flex flex-col gap-3 sm:flex-row sm:gap-4">
-                  <span className={`${ICON_WRAP} shrink-0 sm:mt-0.5`} aria-hidden>
-                    <Icon />
-                  </span>
-                  <div className="min-w-0">
-                    <p className="font-bold leading-snug text-[#0F4F68]">{title}</p>
-                    <ul className="mt-2 list-disc space-y-2 pl-4 text-sm leading-relaxed text-neutral-700 sm:text-[0.95rem]">
-                      {bullets.map((b) => (
-                        <li key={b}>{b}</li>
-                      ))}
-                    </ul>
-                  </div>
-                </li>
-              ))}
-            </ul>
-          </section>
-        </div>
 
         <WelleZuVorteileBand />
       </div>

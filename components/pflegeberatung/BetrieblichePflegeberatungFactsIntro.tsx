@@ -6,8 +6,9 @@ import { cn } from "@/lib/utils";
 const FACT_ZEILE_KLASSE =
   "text-pretty text-lg font-semibold leading-relaxed text-[#0F4F68] sm:text-xl";
 
-const BULLET_DOT =
-  "mt-2 inline-block h-2.5 w-2.5 shrink-0 rounded-full bg-[#F78F2E] sm:mt-2.5 sm:h-3 sm:w-3";
+/** Dekoratives oranges Ausrufezeichen neben den Faktenzeilen */
+const FACT_AUSRUFE =
+  "mt-0.5 inline-block shrink-0 select-none text-3xl font-black leading-none tracking-tight text-[#F78F2E] sm:mt-1 sm:text-4xl";
 
 function usePrefersReducedMotion(): boolean {
   const [reduced, setReduced] = useState(false);
@@ -53,13 +54,17 @@ function FactSlideRow({
       >
         {fromLeft ? (
           <>
-            <span className={BULLET_DOT} aria-hidden />
+            <span className={FACT_AUSRUFE} aria-hidden>
+              !
+            </span>
             <div className="min-w-0 flex-1 text-pretty">{children}</div>
           </>
         ) : (
           <>
             <div className="min-w-0 flex-1 text-pretty">{children}</div>
-            <span className={BULLET_DOT} aria-hidden />
+            <span className={FACT_AUSRUFE} aria-hidden>
+              !
+            </span>
           </>
         )}
       </div>

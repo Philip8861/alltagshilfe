@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import { Container } from "@/components/layout/Container";
 import {
+  BetrieblichePflegeberatungFolgenBand,
   BetrieblichePflegeberatungSection,
   BetrieblichePflegeberatungWhiteIntro,
 } from "@/components/pflegeberatung/BetrieblichePflegeberatungSection";
@@ -66,7 +67,7 @@ export default function PflegeberatungPage() {
           aria-labelledby="betrieblich-heading"
           className="scroll-mt-[var(--ahs-header-scroll-padding)]"
         >
-          {/* Weißer Streifen: Hero + Fakten/Folgen, volle Viewport-Breite; danach Welle zum blauen Bereich */}
+          {/* Weißer Streifen: Hero + Fakten; Folgen-Band mit Welle; danach Verlauf + „Was versteht man …“ */}
           <div className="relative left-1/2 w-screen max-w-[100vw] -translate-x-1/2 overflow-x-visible overflow-y-visible bg-white">
             <div className="relative w-full overflow-visible pt-8 sm:pt-10 lg:min-h-[min(100vw,480px)] lg:pt-10">
             <Container className="relative z-10">
@@ -129,9 +130,10 @@ export default function PflegeberatungPage() {
             </div>
             </div>
 
-            <Container className="relative z-10 pb-10 sm:pb-14">
+            <Container className="relative z-10 pb-6 sm:pb-8">
               <BetrieblichePflegeberatungWhiteIntro />
             </Container>
+            <BetrieblichePflegeberatungFolgenBand />
           </div>
 
           <div className="relative left-1/2 w-screen max-w-[100vw] -translate-x-1/2 overflow-x-hidden bg-gradient-to-b from-[#E8F2F5] via-[#F0F8FA] to-[#E5F2F6] pb-16 sm:pb-20">
