@@ -303,6 +303,28 @@ export function BetrieblichePflegeberatungSection() {
           <WelleAnschlussHell fill={BETRIEBLICH_HELL_BG} />
           <div className="relative">
             <BetrieblichePflegeberatungFactsIntro />
+            <section className="mt-10 sm:mt-12" aria-labelledby="betrieblich-folgen-heading">
+              <h3 id="betrieblich-folgen-heading" className="text-xl font-extrabold text-[#0F4F68] sm:text-2xl">
+                Folgen für Arbeitgeber durch pflegende Beschäftigte
+              </h3>
+              <ul className="mt-6 grid gap-8 sm:gap-10 lg:grid-cols-3 lg:gap-8">
+                {FOLGEN.map(({ title, bullets, Icon }) => (
+                  <li key={title} className="flex flex-col gap-3 sm:flex-row sm:gap-4">
+                    <span className={`${ICON_WRAP} shrink-0 sm:mt-0.5`} aria-hidden>
+                      <Icon />
+                    </span>
+                    <div className="min-w-0">
+                      <p className="font-bold leading-snug text-[#0F4F68]">{title}</p>
+                      <ul className="mt-2 list-disc space-y-2 pl-4 text-sm leading-relaxed text-neutral-700 sm:text-[0.95rem]">
+                        {bullets.map((b) => (
+                          <li key={b}>{b}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            </section>
           </div>
         </div>
       </div>
@@ -350,30 +372,6 @@ export function BetrieblichePflegeberatungSection() {
             steigend.
           </p>
         </div>
-      </section>
-
-      <section aria-labelledby="betrieblich-folgen-heading">
-        <h3 id="betrieblich-folgen-heading" className="text-xl font-extrabold text-[#0F4F68] sm:text-2xl">
-          Folgen für Arbeitgeber durch pflegende Beschäftigte
-        </h3>
-        <ul className="mt-6 grid gap-4 lg:grid-cols-3">
-          {FOLGEN.map(({ title, bullets, Icon }) => (
-            <li
-              key={title}
-              className="flex flex-col rounded-2xl border border-red-900/10 bg-red-50/40 p-5 sm:p-6"
-            >
-              <span className={`${ICON_WRAP} mb-4 bg-red-800`} aria-hidden>
-                <Icon />
-              </span>
-              <p className="font-bold text-[#0F4F68]">{title}</p>
-              <ul className="mt-3 list-disc space-y-2 pl-4 text-sm leading-relaxed text-neutral-700 sm:text-[0.95rem]">
-                {bullets.map((b) => (
-                  <li key={b}>{b}</li>
-                ))}
-              </ul>
-            </li>
-          ))}
-        </ul>
       </section>
 
       <section aria-labelledby="betrieblich-angebot-heading">
