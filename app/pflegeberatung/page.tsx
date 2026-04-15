@@ -109,7 +109,7 @@ export default function PflegeberatungPage() {
                 className="ml-auto overflow-visible pb-16 pt-1 sm:pb-20 sm:pt-2 lg:ml-0 lg:mr-0 lg:pb-24 lg:pt-2"
                 style={imgBlockStyle}
               >
-                <div className="relative isolate ml-auto leading-none [&_img]:block [&_img]:max-w-none [&_img]:shadow-none">
+                <div className="relative isolate ml-auto leading-none [&_img]:block [&_img]:max-w-none">
                   <Image
                     src="/images/betriebliche_pflegeberatung.webp"
                     alt="Beratungsgespräch zur betrieblichen Pflegeberatung"
@@ -117,7 +117,7 @@ export default function PflegeberatungPage() {
                     height={BETRIEBLICH_IMG.h}
                     priority
                     sizes={`${IMG_W}px`}
-                    className="relative z-0 block h-auto w-full max-w-none shadow-none"
+                    className="relative z-0 block h-auto w-full max-w-none drop-shadow-[0_22px_48px_rgba(15,79,104,0.22)] drop-shadow-[0_10px_24px_rgba(15,79,104,0.14)]"
                   />
                   <p
                     className="pointer-events-auto absolute bottom-0 left-1/2 z-20 w-[min(calc(100vw-1.75rem),28rem)] -translate-x-1/2 translate-y-1/2 rounded-full border border-white/25 bg-[#0F4F68] px-[1.15rem] py-[0.65rem] text-center text-[1.05rem] font-bold leading-snug text-white shadow-[0_10px_28px_-4px_rgba(15,79,104,0.45),0_4px_12px_-2px_rgba(15,79,104,0.22)] sm:w-max sm:max-w-[min(calc(100vw-1.25rem),32rem)] sm:px-[1.4rem] sm:py-[0.85rem] sm:text-[1.14rem] md:px-[1.6rem] md:py-[1rem] md:text-[1.3rem]"
