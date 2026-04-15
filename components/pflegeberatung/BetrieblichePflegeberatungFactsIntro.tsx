@@ -4,9 +4,6 @@ import Image from "next/image";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
-const FACT_ZEILE_KLASSE =
-  "text-pretty text-lg font-semibold leading-relaxed text-[#0F4F68] sm:text-xl";
-
 /** Natürliche Pixelmaße von public/images/statistik.webp */
 const STATISTIK_IMG = { w: 307, h: 461 } as const;
 
@@ -14,9 +11,40 @@ const STATISTIK_IMG = { w: 307, h: 461 } as const;
 const STATISTIK_DROP_SHADOW =
   "[filter:drop-shadow(0_14px_28px_rgba(15,79,104,0.22))_drop-shadow(0_6px_14px_rgba(15,79,104,0.12))]";
 
-/** Dekoratives oranges Ausrufezeichen neben den Faktenzeilen */
-const FACT_AUSRUFE =
-  "mt-0.5 inline-block shrink-0 select-none text-3xl font-black leading-none tracking-tight text-[#F78F2E] sm:mt-1 sm:text-4xl";
+const CHIP =
+  "rounded-xl border border-[#0F4F68]/12 bg-[#F8FCFD] px-3 py-2 shadow-sm sm:px-3.5 sm:py-2.5";
+
+const CHIP_TEXT = "text-pretty text-[0.8125rem] font-semibold leading-snug text-[#0F4F68] sm:text-sm";
+
+const CHIP_SOURCE = "mt-1 border-t border-[#0F4F68]/10 pt-1 text-[0.7rem] font-medium leading-snug text-neutral-600 sm:text-xs";
+
+function SectionLabel({ children }: { children: ReactNode }) {
+  return (
+    <p className="mb-1.5 text-[0.7rem] font-bold uppercase tracking-wide text-[#F78F2E] sm:text-xs">{children}</p>
+  );
+}
+
+function FactChip({ text, source }: { text: string; source?: string }) {
+  return (
+    <div className={CHIP}>
+      <p className={CHIP_TEXT}>{text}</p>
+      {source ? <p className={CHIP_SOURCE}>{source}</p> : null}
+    </div>
+  );
+}
+
+function BulletChip({ children }: { children: ReactNode }) {
+  return (
+    <div className={CHIP}>
+      <p className={`${CHIP_TEXT} flex gap-2`}>
+        <span className="shrink-0 text-[#F78F2E]" aria-hidden>
+          →
+        </span>
+        <span className="min-w-0">{children}</span>
+      </p>
+    </div>
+  );
+}
 
 function usePrefersReducedMotion(): boolean {
   const [reduced, setReduced] = useState(false);
@@ -30,55 +58,15 @@ function usePrefersReducedMotion(): boolean {
   return reduced;
 }
 
-function FactSlideRow({
-  show,
-  reducedMotion,
-  from,
-  delayMs,
-  children,
-}: {
-  show: boolean;
-  reducedMotion: boolean;
-  from: "left" | "right";
-  delayMs: number;
-  children: ReactNode;
-}) {
-  const fromLeft = from === "left";
-  return (
-    <div className="overflow-x-hidden py-2 sm:py-2.5">
-      <div
-        className={cn(
-          "mx-auto flex w-full max-w-3xl flex-row items-start gap-3 sm:gap-4 lg:mx-0 lg:max-w-none",
-          "will-change-transform",
-          reducedMotion
-            ? "translate-x-0 opacity-100"
-            : cn(
-                "transition-[transform,opacity] duration-[900ms] ease-out motion-reduce:transition-none",
-                show ? "translate-x-0 opacity-100" : "opacity-0",
-                show ? undefined : fromLeft ? "-translate-x-[115%]" : "translate-x-[115%]",
-              ),
-        )}
-        style={reducedMotion || !show ? undefined : { transitionDelay: `${delayMs}ms` }}
-      >
-        {fromLeft ? (
-          <>
-            <span className={FACT_AUSRUFE} aria-hidden>
-              !
-            </span>
-            <div className="min-w-0 flex-1 text-pretty">{children}</div>
-          </>
-        ) : (
-          <>
-            <div className="min-w-0 flex-1 text-pretty">{children}</div>
-            <span className={FACT_AUSRUFE} aria-hidden>
-              !
-            </span>
-          </>
-        )}
-      </div>
-    </div>
-  );
-}
+const LEFT_FACTS: { text: string; source?: string }[] = [
+  { text: "~70 % psychisch stark belastet" },
+  { text: "75 % emotional belastet" },
+  { text: ">50 % berichten körperliche Beschwerden", source: "Diakonie-Umfrage & Praxisdaten" },
+  { text: "Jeder 4. fühlt sich am Limit oder überfordert", source: "WiDO / AOK-Studie" },
+  { text: ">40 % haben körperliche Beschwerden (z. B. Rücken)" },
+  { text: ">20 % berichten dauerhafte gesundheitliche Beeinträchtigung", source: "Bundesgesundheitsportal" },
+  { text: "40–60 % erleben extremen Stress", source: "internationale Studien" },
+];
 
 export function BetrieblichePflegeberatungFactsIntro() {
   const rootRef = useRef<HTMLDivElement>(null);
@@ -99,7 +87,7 @@ export function BetrieblichePflegeberatungFactsIntro() {
           obs.disconnect();
         }
       },
-      { rootMargin: "0px 0px -8% 0px", threshold: 0.12 },
+      { rootMargin: "0px 0px -8% 0px", threshold: 0.08 },
     );
     obs.observe(el);
     return () => obs.disconnect();
@@ -107,57 +95,113 @@ export function BetrieblichePflegeberatungFactsIntro() {
 
   const show = reducedMotion || inView;
 
+  const colGap = "flex flex-col gap-2 sm:gap-2.5";
+
   return (
     <div
       ref={rootRef}
       className="relative mt-[calc(2rem+3cm)] sm:mt-[calc(2.5rem+3cm)]"
       role="region"
-      aria-label="Fakten zur Pflegebelastung im Betrieb"
+      aria-labelledby="betrieblich-statistik-hub-heading"
     >
-      <div className="flex flex-col gap-12 sm:gap-14 lg:flex-row lg:items-start lg:gap-12 xl:gap-16">
-        <div className="min-w-0 flex-1 space-y-12 sm:space-y-16">
-          <FactSlideRow show={show} reducedMotion={reducedMotion} from="left" delayMs={0}>
-            <p className={FACT_ZEILE_KLASSE}>
-              Bereits heute ist etwa jede zehnte beschäftigte Person neben dem Beruf in eine Pflegesituation eingebunden.
-            </p>
-          </FactSlideRow>
-
-          <FactSlideRow show={show} reducedMotion={reducedMotion} from="right" delayMs={220}>
-            <p className={FACT_ZEILE_KLASSE}>
-              Eine tägliche Pflegebelastung zählt seit 2024 zu den zweithäufigsten Ursachen für krankheitsbedingte
-              Fehltage.
-            </p>
-          </FactSlideRow>
-        </div>
-
-        <aside
-          className={cn(
-            "mx-auto w-full max-w-[16.5rem] shrink-0 sm:max-w-[18rem] lg:mx-0 lg:max-w-[min(100%,15.5rem)] xl:max-w-[17rem]",
-            reducedMotion
-              ? "translate-y-0 opacity-100"
-              : "transition-[transform,opacity] duration-[900ms] ease-out motion-reduce:transition-none",
-            !reducedMotion && (show ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"),
-          )}
-          style={reducedMotion || !show ? undefined : { transitionDelay: "380ms" }}
-          aria-labelledby="betrieblich-statistik-heading"
-        >
-          <h2
-            id="betrieblich-statistik-heading"
-            className="text-center text-pretty text-lg font-extrabold tracking-tight text-[#0F4F68] sm:text-xl lg:text-left"
-          >
-            Statistik zeigt:
-          </h2>
-          <div className="mt-4 flex justify-center lg:justify-start">
-            <Image
-              src="/images/statistik.webp"
-              alt="Grafik: Pflegebelastung und Fehltage im beruflichen Kontext"
-              width={STATISTIK_IMG.w}
-              height={STATISTIK_IMG.h}
-              sizes="(max-width: 1023px) 288px, 248px"
-              className={cn("h-auto w-full max-w-full rounded-sm", STATISTIK_DROP_SHADOW)}
-            />
+      <div
+        className={cn(
+          "transition-opacity duration-700 ease-out motion-reduce:transition-none",
+          show ? "opacity-100" : "opacity-0",
+        )}
+      >
+        <div className="flex flex-col items-stretch gap-8 lg:flex-row lg:items-center lg:gap-6 xl:gap-8">
+          {/* Links: Umfragen & Kennzahlen — auf Mobile unter dem Bild */}
+          <div className={cn(colGap, "order-1 min-w-0 flex-1")}>
+            <SectionLabel>Studien & Kennzahlen</SectionLabel>
+            <div className={colGap}>
+              {LEFT_FACTS.map((f) => (
+                <FactChip key={f.text} text={f.text} source={f.source} />
+              ))}
+            </div>
           </div>
-        </aside>
+
+          {/* Mitte: Grafik */}
+          <aside
+            className="order-2 mx-auto flex w-full max-w-[17.5rem] shrink-0 flex-col items-center sm:max-w-[19rem] lg:max-w-[min(100%,16.25rem)]"
+            aria-label="Statistik-Grafik"
+          >
+            <h2
+              id="betrieblich-statistik-hub-heading"
+              className="text-center text-pretty text-lg font-extrabold tracking-tight text-[#0F4F68] sm:text-xl"
+            >
+              Statistik zeigt:
+            </h2>
+            <div className="mt-3 flex justify-center lg:mt-4">
+              <Image
+                src="/images/statistik.webp"
+                alt="Grafik: Belastung durch Pflege und betrieblicher Kontext"
+                width={STATISTIK_IMG.w}
+                height={STATISTIK_IMG.h}
+                sizes="(max-width: 1023px) 304px, 260px"
+                className={cn("h-auto w-full max-w-full rounded-sm", STATISTIK_DROP_SHADOW)}
+              />
+            </div>
+          </aside>
+
+          {/* Rechts: Kontext, Risiken, Arbeitgeber — auf Mobile zuerst unter Überschrift / vor Bild sinnvoll: nach Bild */}
+          <div className={cn(colGap, "order-3 min-w-0 flex-1")}>
+            <div>
+              <SectionLabel>Gleichzeitig</SectionLabel>
+              <div className={colGap}>
+                <FactChip text="~5–7 Millionen Menschen pflegen Angehörige" />
+                <FactChip text="Der Großteil der Pflege passiert zu Hause durch Familie." />
+              </div>
+            </div>
+
+            <div>
+              <SectionLabel>
+                <span className="inline-flex items-center gap-1.5">
+                  <span aria-hidden>⚠️</span>
+                  <span>Was das bedeutet</span>
+                </span>
+              </SectionLabel>
+              <FactChip text='Pflege ist kein „Nebenbei-Thema", sondern:' />
+              <div className={colGap}>
+                <BulletChip>ein dauerhafter Hochstress-Zustand</BulletChip>
+                <BulletChip>oft vergleichbar mit einem zweiten Vollzeitjob</BulletChip>
+                <BulletChip>verbunden mit Gesundheitsrisiken (psychisch + körperlich)</BulletChip>
+              </div>
+            </div>
+
+            <div>
+              <SectionLabel>Zusätzlich zeigt Forschung</SectionLabel>
+              <div className={colGap}>
+                <FactChip text="Pflege erhöht das Risiko für Depressionen messbar." />
+                <FactChip text="Belastung gilt als klarer Risikofaktor für psychische Erkrankungen." />
+              </div>
+            </div>
+
+            <div>
+              <SectionLabel>
+                <span className="inline-flex items-center gap-1.5">
+                  <span aria-hidden>🏢</span>
+                  <span>Auswirkungen auf Unternehmen</span>
+                </span>
+              </SectionLabel>
+              <div className={colGap}>
+                <FactChip text="Pflege betrifft direkt die Arbeitswelt." />
+                <FactChip text="Nur 46 % arbeiten noch Vollzeit." />
+                <FactChip text="Viele reduzieren Arbeitszeit oder steigen aus." source="VdK-Studie" />
+              </div>
+            </div>
+
+            <div>
+              <SectionLabel>Folgen für Arbeitgeber</SectionLabel>
+              <div className="grid grid-cols-1 gap-2 min-[400px]:grid-cols-2 sm:gap-2.5">
+                <FactChip text="Steigende Fehlzeiten" />
+                <FactChip text="Produktivitätsverlust" />
+                <FactChip text="Mitarbeiterkündigungen" />
+                <FactChip text="Mentale Überlastung im Job" />
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
