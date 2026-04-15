@@ -14,8 +14,8 @@ import { siteConfig } from "@/config/site";
 
 const BETRIEBLICH_HERO_BULLETS = [
   "Attraktiver Benefit zum Ausschreiben",
-  "Problemlösung für den demokratischen Wandel",
-  "Eine Kooperation, die einen Unterschied macht",
+  "Mitarbeiterbindung stärken durch echte Fürsorge",
+  "Wenn Pflege zum Thema wird, sind wir da.",
 ] as const;
 
 function HeroCheckIcon({ className = "" }: { className?: string }) {
@@ -130,7 +130,7 @@ export default function PflegeberatungPage() {
             </div>
             </div>
 
-            <Container className="relative z-10 pb-6 sm:pb-8">
+            <Container className="relative z-10 pb-[calc(1.5rem+3cm)] sm:pb-[calc(2rem+3cm)]">
               <BetrieblichePflegeberatungWhiteIntro />
             </Container>
             <BetrieblichePflegeberatungFolgenBand />

@@ -37,7 +37,7 @@ function FactSlideRow({
 }) {
   const fromLeft = from === "left";
   return (
-    <div className="overflow-x-hidden py-1">
+    <div className="overflow-x-hidden py-2 sm:py-2.5">
       <div
         className={cn(
           "mx-auto flex w-full max-w-3xl flex-row items-start gap-3 sm:gap-4",
@@ -100,8 +100,13 @@ export function BetrieblichePflegeberatungFactsIntro() {
   const show = reducedMotion || inView;
 
   return (
-    <div ref={rootRef} className="relative mt-8 sm:mt-10" role="region" aria-label="Fakten zur Pflegebelastung im Betrieb">
-      <div className="space-y-6 sm:space-y-8">
+    <div
+      ref={rootRef}
+      className="relative mt-[calc(2rem+3cm)] sm:mt-[calc(2.5rem+3cm)]"
+      role="region"
+      aria-label="Fakten zur Pflegebelastung im Betrieb"
+    >
+      <div className="space-y-12 sm:space-y-16">
         <FactSlideRow show={show} reducedMotion={reducedMotion} from="left" delayMs={0}>
           <p className={FACT_ZEILE_KLASSE}>
             Die Statistik zeigt: Bereits heute ist etwa jede zehnte beschäftigte Person neben dem Beruf in eine

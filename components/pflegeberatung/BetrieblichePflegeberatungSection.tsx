@@ -237,8 +237,8 @@ export function BetrieblichePflegeberatungFolgenBand() {
 }
 
 export function BetrieblichePflegeberatungSection() {
-  const wasBodyDelays = [80, 160, 240, 320] as const;
-  const vorteilBaseDelay = 520;
+  const wasBodyDelays = [80, 160, 240, 320, 400, 480, 560, 640, 720] as const;
+  const vorteilBaseDelay = 880;
 
   return (
     <div className="space-y-14 sm:space-y-16">
@@ -257,35 +257,53 @@ export function BetrieblichePflegeberatungSection() {
           >
             Was versteht man unter betrieblicher Pflegeberatung?
           </h2>
-          <div className="mx-auto mt-5 max-w-4xl space-y-4 text-pretty text-neutral-700 leading-relaxed sm:text-[1.05rem]">
+          <div className="mx-auto mt-5 max-w-4xl space-y-4 text-pretty text-neutral-700 leading-relaxed sm:space-y-5 sm:text-[1.05rem]">
             <p className={POP_IN} style={{ animationDelay: `${wasBodyDelays[0]}ms` }}>
-              Betriebliche Pflegeberatung ist ein Unterstützungsangebot für Beschäftigte, die Angehörige pflegen oder
-              kurzfristig vor einer Pflegesituation stehen. Sie basiert auf unserer langjährigen Erfahrung und auf dem
-              häufigsten Satz, den wir hören:{" "}
+              Die betriebliche Pflegeberatung ist ein Angebot, das Sie als Arbeitgeber aktiv für Ihr Unternehmen abschließen
+              können. Sie unterstützen damit Ihre Mitarbeitenden genau in den Momenten, in denen private Pflegesituationen
+              plötzlich zur Belastung werden.
+            </p>
+            <p className={POP_IN} style={{ animationDelay: `${wasBodyDelays[1]}ms` }}>
+              Sie basiert auf unserer langjährigen Erfahrung und auf dem häufigsten Satz, den wir hören:{" "}
               <strong className="font-semibold text-[#0F4F68]">
                 „Hätte ich das eher gewusst, wäre vieles leichter gewesen.“
               </strong>
             </p>
-            <p className={POP_IN} style={{ animationDelay: `${wasBodyDelays[1]}ms` }}>
-              Damit Mitarbeitende nach Feierabend nicht noch „die zweite Schicht“ starten müssen und sich mit Formularen,
-              Anträgen, Telefonaten, Haushalt und organisatorischen Aufgaben auseinandersetzen müssen, stehen wir{" "}
-              <strong className="font-semibold text-[#0F4F68]">sofort</strong> zur Seite. Wir beraten schnell im Betrieb oder zu
-              Hause und kümmern uns um die Organisation, damit Entlastung und finanzielle Leistungen sicher ankommen.
-            </p>
             <p className={POP_IN} style={{ animationDelay: `${wasBodyDelays[2]}ms` }}>
-              Für Unternehmen heißt das eine verlässliche, feste Kooperation mit uns. Gegen einen günstigen monatlichen
-              Festbetrag, abhängig von der Unternehmensgröße, erhalten Mitarbeitende und Führungskräfte unbegrenzten Zugang zu
-              Beratung und fachlicher Unterstützung ohne Einzelabrechnung, ohne Mehraufwand und ohne Limit.
+              Denn im Alltag entsteht genau hier die größte Herausforderung: Mitarbeitende starten nach Feierabend oft eine
+              zweite Schicht und müssen sich mit Formularen, Anträgen, Telefonaten, Haushalt und organisatorischen Aufgaben
+              auseinandersetzen. Diese zusätzliche Belastung führt zu Stress, Überforderung und wirkt sich direkt auf
+              Konzentration, Leistungsfähigkeit und Fehlzeiten aus.
             </p>
             <p className={POP_IN} style={{ animationDelay: `${wasBodyDelays[3]}ms` }}>
-              Der Arbeitgeber kann diesen{" "}
-              <strong className="font-semibold text-[#0F4F68]">neuen „Arbeitgeber-Benefit“</strong> ausschreiben und aktiv
-              kommunizieren und zeigt damit echte Fürsorge. Das entlastet spürbar, reduziert Stress und erhöht die Sicherheit im
-              Alltag. Gleichzeitig bleiben Mitarbeitende leistungsfähiger, und Überlastung sowie Fehl- und Ausfallzeiten können
-              deutlich sinken.
+              Unternehmen, die hier gezielt unterstützen, können Fehlzeiten reduzieren und die Leistungsfähigkeit ihrer
+              Mitarbeitenden stabilisieren.
+            </p>
+            <p className={POP_IN} style={{ animationDelay: `${wasBodyDelays[4]}ms` }}>
+              Wir stehen genau in diesen Situationen sofort zur Seite.
+            </p>
+            <p className={POP_IN} style={{ animationDelay: `${wasBodyDelays[5]}ms` }}>
+              Wir beraten schnell und unkompliziert im Betrieb oder zu Hause und kümmern uns um die gesamte Organisation,
+              damit Entlastung und finanzielle Leistungen sicher ankommen.
+            </p>
+            <p className={POP_IN} style={{ animationDelay: `${wasBodyDelays[6]}ms` }}>
+              Für Sie als Unternehmen bedeutet das eine verlässliche, feste Kooperation mit uns. Gegen einen günstigen
+              monatlichen Festbetrag, abhängig von der Unternehmensgröße, erhalten Ihre Mitarbeitenden und Führungskräfte
+              unbegrenzten Zugang zu Beratung und fachlicher Unterstützung. Es gibt keine Einzelabrechnung, keinen Mehraufwand
+              und keine Begrenzung.
+            </p>
+            <p className={POP_IN} style={{ animationDelay: `${wasBodyDelays[7]}ms` }}>
+              Sie können diesen Benefit aktiv im Unternehmen kommunizieren und als festen Bestandteil Ihrer
+              Arbeitgeberleistungen etablieren. Damit zeigen Sie echte Fürsorge und übernehmen Verantwortung für Ihre
+              Mitarbeitenden.
+            </p>
+            <p className={POP_IN} style={{ animationDelay: `${wasBodyDelays[8]}ms` }}>
+              Das Ergebnis ist spürbar im Alltag: Mitarbeitende werden entlastet, gewinnen Sicherheit und bleiben
+              leistungsfähig. Gleichzeitig können Überlastung sowie Fehl- und Ausfallzeiten deutlich sinken und Ihr
+              Unternehmen wird als moderner und verantwortungsvoller Arbeitgeber wahrgenommen.
             </p>
           </div>
-          <div className={`${POP_IN} mt-8 flex justify-center sm:mt-10`} style={{ animationDelay: "400ms" }}>
+          <div className={`${POP_IN} mt-8 flex justify-center sm:mt-10`} style={{ animationDelay: "800ms" }}>
             <BetrieblichAngebotOpenButton className="min-h-[3rem] px-8 py-3.5 text-base sm:text-lg">
               Jetzt unverbindlich informieren lassen
             </BetrieblichAngebotOpenButton>
