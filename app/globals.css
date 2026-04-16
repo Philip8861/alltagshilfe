@@ -7,12 +7,13 @@
   :root {
     --ahs-page-gutter: 1rem;
     /* Sticky-Header (Strip + Logo/Nav): verhindert, dass Anker-Ziele unter dem Header landen */
-    --ahs-header-scroll-padding: 7.25rem;
+    /* Strip 2.45rem + weiße Zeile min 4.375rem + Puffer (Anker unter Sticky-Header) */
+    --ahs-header-scroll-padding: 8.125rem;
   }
   @media (max-width: 1023px) {
     :root {
       /* Schmalere Viewports: Nav kann umbrechen → etwas mehr Abstand */
-      --ahs-header-scroll-padding: 8.25rem;
+      --ahs-header-scroll-padding: 9.125rem;
     }
   }
 

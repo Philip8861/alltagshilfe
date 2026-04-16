@@ -15,11 +15,11 @@ export function Header({ nunitoClass = "", balooClass = "" }: HeaderProps) {
       <HeaderStrip nunitoClass={nunitoClass} balooClass={balooClass} />
       <div className="relative overflow-visible border-b border-[#0F4F68]/15 bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/80">
         {/* Gleiche horizontale Gutter wie HeaderStrip (kein max-w-7xl) → Logo bündig unter „Gemeinsam Stark im Alltag“ */}
-        <div className="grid min-h-[3.5rem] w-full grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-x-2 gap-y-2 overflow-visible px-4 sm:gap-x-3 sm:px-6 md:gap-x-4 lg:gap-x-5 lg:px-[var(--ahs-page-gutter)]">
+        <div className="grid min-h-[4.375rem] w-full grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-x-2 gap-y-2 overflow-visible px-4 sm:gap-x-3 sm:px-6 md:gap-x-4 lg:gap-x-5 lg:px-[var(--ahs-page-gutter)]">
           <div className="min-w-0 justify-self-start">
             <Link
               href="/"
-              className="z-10 flex shrink-0 -translate-y-[5%] focus:outline-none rounded md:h-[28.86px] md:w-auto"
+              className="z-10 flex shrink-0 -translate-y-[5%] focus:outline-none rounded md:h-[34.63px] md:w-auto"
               aria-label={`${siteConfig.name} – Startseite`}
             >
               <Image
@@ -27,8 +27,8 @@ export function Header({ nunitoClass = "", balooClass = "" }: HeaderProps) {
                 alt={siteConfig.name}
                 width={370}
                 height={96}
-                sizes="(max-width: 640px) 108px, (max-width: 1024px) 123px, 154px"
-                className="h-[27.27px] w-auto object-contain sm:h-[30.48px] md:h-[28.86px] lg:h-[32.08px]"
+                sizes="(max-width: 640px) 130px, (max-width: 1024px) 148px, 185px"
+                className="h-[32.72px] w-auto object-contain sm:h-[36.58px] md:h-[34.63px] lg:h-[38.5px]"
                 priority
               />
             </Link>
