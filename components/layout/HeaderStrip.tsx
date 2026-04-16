@@ -7,8 +7,11 @@ import { siteConfig } from "@/config/site";
 import { isPflegeboxKonfiguratorPagePath } from "@/lib/pflegebox-konfigurator-path";
 import { cn } from "@/lib/utils";
 
-const TAGLINE = "Gemeinsam Stark im Alltag";
+const TAGLINE = "gemeinsam stark im Alltag";
 const TAGLINE_CHAR_MS = 55;
+
+const STRIP_LINE_CLASS =
+  "text-[0.68rem] font-medium leading-tight sm:text-[0.75rem] md:text-sm md:font-semibold";
 
 type HeaderStripProps = {
   nunitoClass?: string;
@@ -47,14 +50,15 @@ export function HeaderStrip(_props: HeaderStripProps) {
       style={{ backgroundColor: "#0F4F68", minHeight: "2.45rem" }}
     >
       <div className="flex w-full flex-row items-center justify-between gap-4 px-4 py-1.5 sm:px-6 lg:px-[var(--ahs-page-gutter)]">
-        <div className="flex min-w-0 flex-1 items-baseline justify-start gap-x-1.5 text-left sm:gap-x-2">
-          <span className="shrink-0 text-[0.82rem] font-bold leading-none tracking-tight text-white sm:text-[0.92rem] md:text-[1.05rem]">
-            {siteConfig.name}
-          </span>
-          <span
-            className="min-w-0 truncate text-[0.68rem] font-medium leading-tight sm:text-[0.75rem] md:text-sm md:font-semibold"
-            aria-live="polite"
+        <div className="flex min-w-0 flex-1 items-center justify-start gap-x-1.5 text-left sm:gap-x-2">
+          <Link
+            href="/"
+            className={`shrink-0 rounded-sm text-white/95 no-underline transition-colors hover:text-white focus:outline-none focus:ring-2 focus:ring-white/80 focus:ring-offset-2 focus:ring-offset-[#0F4F68] ${STRIP_LINE_CLASS}`}
+            aria-label={`${siteConfig.name} – Startseite`}
           >
+            {siteConfig.name}
+          </Link>
+          <span className={`min-w-0 truncate ${STRIP_LINE_CLASS}`} aria-live="polite">
             {TAGLINE.slice(0, taglineLength)}
             {taglineLength < TAGLINE.length && <span className="animate-pulse" aria-hidden>|</span>}
           </span>
