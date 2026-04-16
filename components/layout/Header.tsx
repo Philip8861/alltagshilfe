@@ -19,7 +19,7 @@ export function Header({ nunitoClass = "", balooClass = "" }: HeaderProps) {
           <div className="flex min-h-[4.375rem] min-w-0 items-center justify-self-start self-stretch">
             <Link
               href="/"
-              className="z-10 flex shrink-0 items-center focus:outline-none rounded md:h-[34.73px] md:w-auto"
+              className="z-10 flex shrink-0 -translate-y-[5%] items-center focus:outline-none rounded md:h-[34.73px] md:w-auto"
               aria-label={`${siteConfig.name} – Startseite`}
             >
               <Image
