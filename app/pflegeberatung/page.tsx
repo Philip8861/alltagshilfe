@@ -3,7 +3,6 @@ import Image from "next/image";
 import { Container } from "@/components/layout/Container";
 import {
   BetrieblichePflegeberatungFolgenBand,
-  BetrieblichePflegeberatungSection,
   BetrieblichePflegeberatungVorteileVorStatistik,
   BetrieblichePflegeberatungWhiteIntro,
 } from "@/components/pflegeberatung/BetrieblichePflegeberatungSection";
@@ -68,7 +67,7 @@ export default function PflegeberatungPage() {
           aria-labelledby="betrieblich-heading"
           className="scroll-mt-[var(--ahs-header-scroll-padding)]"
         >
-          {/* Weißer Streifen: Hero + Fakten; Folgen-Band mit Welle; danach Verlauf + „Was versteht man …“ */}
+          {/* Weißer Streifen: Hero → Vorteile + „Was versteht man …“ (mint) → Statistik (weiß) → Folgen-Band */}
           <div className="relative left-1/2 w-screen max-w-[100vw] -translate-x-1/2 overflow-x-visible overflow-y-visible bg-white">
             <div className="relative w-full overflow-visible pt-8 sm:pt-10 lg:min-h-[min(100vw,480px)] lg:pt-10">
             <Container className="relative z-10">
@@ -137,13 +136,6 @@ export default function PflegeberatungPage() {
               <BetrieblichePflegeberatungWhiteIntro />
             </Container>
             <BetrieblichePflegeberatungFolgenBand />
-          </div>
-
-          <div className="relative left-1/2 w-screen max-w-[100vw] -translate-x-1/2 overflow-x-hidden bg-gradient-to-b from-[#E8F2F5] via-[#F0F8FA] to-[#E5F2F6] pb-16 sm:pb-20">
-            {/* kein pt hier: sonst sichtbarer Streifen aus dem Verlauf über dem ersten Vollbreiten-Block */}
-            <Container className="pt-0">
-              <BetrieblichePflegeberatungSection />
-            </Container>
           </div>
         </section>
       </article>

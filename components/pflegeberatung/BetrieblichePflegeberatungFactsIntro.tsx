@@ -31,25 +31,6 @@ const FACTS_RIGHT = [
   "Viele reduzieren Arbeitszeit oder steigen aus.",
 ] as const;
 
-/** Welliger Übergang nach oben (optisch zu heller Vorteils-Fläche), oberhalb „Statistik zeigt …“ */
-function WelleStatistikNachOben() {
-  return (
-    <div className="pointer-events-none relative left-1/2 mb-6 w-screen max-w-[100vw] -translate-x-1/2 leading-none sm:mb-8">
-      <svg
-        className="block h-10 w-full shrink-0 rotate-180 text-[#F2F9FA] sm:h-12"
-        viewBox="0 0 1440 100"
-        preserveAspectRatio="none"
-        aria-hidden
-      >
-        <path
-          fill="currentColor"
-          d="M0,55 C240,18 480,92 720,48 C960,4 1200,78 1440,42 L1440,100 L0,100 Z"
-        />
-      </svg>
-    </div>
-  );
-}
-
 function usePrefersReducedMotion(): boolean {
   const [reduced, setReduced] = useState(false);
   useEffect(() => {
@@ -137,7 +118,7 @@ export function BetrieblichePflegeberatungFactsIntro() {
   return (
     <div
       ref={rootRef}
-      className="relative mt-[calc(2rem+3cm)] sm:mt-[calc(2.5rem+3cm)]"
+      className="relative mt-10 sm:mt-12 lg:mt-14"
       role="region"
       aria-labelledby="betrieblich-statistik-hub-heading"
     >
@@ -147,7 +128,6 @@ export function BetrieblichePflegeberatungFactsIntro() {
           show ? "opacity-100" : "opacity-0",
         )}
       >
-        <WelleStatistikNachOben />
         <h2
           id="betrieblich-statistik-hub-heading"
           className="mx-auto max-w-4xl text-pretty text-center text-[1.35rem] font-extrabold leading-tight tracking-tight text-[#0F4F68] sm:text-2xl md:text-3xl lg:text-[2rem] lg:leading-snug"
@@ -156,7 +136,7 @@ export function BetrieblichePflegeberatungFactsIntro() {
           <span className="block sm:inline">pflegende Angehörige sind:</span>
         </h2>
 
-        <div className="mt-8 grid grid-cols-1 items-center gap-8 sm:mt-10 sm:gap-10 lg:mt-12 lg:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] lg:gap-6 xl:gap-10">
+        <div className="mx-auto mt-8 grid w-full max-w-[min(96rem,calc(100vw-1.5rem))] grid-cols-1 items-center gap-8 sm:mt-10 sm:gap-10 lg:mt-12 lg:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] lg:items-center lg:gap-8 xl:gap-12">
           <FactList
             items={FACTS_LEFT}
             align="right"
@@ -167,8 +147,7 @@ export function BetrieblichePflegeberatungFactsIntro() {
 
           <aside
             className={cn(
-              "mx-auto flex w-full max-w-[min(100%,calc(100vw-2rem))] flex-col items-center justify-center justify-self-center lg:max-w-[min(34vw,var(--img-max))]",
-              "row-start-2 lg:row-start-1",
+              "row-start-2 mx-auto flex w-full max-w-[min(100%,calc(100vw-2rem))] flex-col items-center justify-center justify-self-center lg:row-start-1 lg:max-w-[min(36vw,var(--img-max))]",
             )}
             style={{ "--img-max": imgMax } as CSSProperties}
             aria-label="Statistik-Grafik"
