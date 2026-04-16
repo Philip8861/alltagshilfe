@@ -26,6 +26,27 @@ function WelleObenBand({ fill }: { fill: string }) {
   );
 }
 
+/** Leicht abgesetzter Streifen „Was versteht man …“ + welliger Übergang nach oben (volle Breite) */
+const WAS_STREIF_BG = "#E4F1F4" as const;
+
+function WelleWasBereichNachOben() {
+  return (
+    <div className="pointer-events-none relative left-1/2 w-screen max-w-[100vw] -translate-x-1/2 leading-none">
+      <svg
+        className="relative -mt-px block h-11 w-full shrink-0 rotate-180 text-[#F2F9FA] sm:h-[3.25rem]"
+        viewBox="0 0 1440 100"
+        preserveAspectRatio="none"
+        aria-hidden
+      >
+        <path
+          fill="currentColor"
+          d="M0,55 C240,18 480,92 720,48 C960,4 1200,78 1440,42 L1440,100 L0,100 Z"
+        />
+      </svg>
+    </div>
+  );
+}
+
 /** Welle unter hellen Fläche zu weißer Fläche (z. B. vor Statistik-Hub) */
 function WelleZuWeissBand() {
   return (
@@ -207,12 +228,12 @@ export function BetrieblichePflegeberatungVorteileVorStatistik() {
 
   return (
     <div
-      className="relative left-1/2 w-screen max-w-[100vw] -translate-x-1/2 overflow-visible pb-0"
+      className="relative left-1/2 mt-12 w-screen max-w-[100vw] -translate-x-1/2 overflow-visible pb-0 sm:mt-16 lg:mt-20"
       style={{ backgroundColor: BETRIEBLICH_HELL_BG }}
     >
       <WelleObenBand fill={BETRIEBLICH_HELL_BG} />
       <section
-        className="relative mx-auto max-w-7xl px-4 pb-2 pt-8 sm:px-6 sm:pb-4 sm:pt-10 lg:px-[var(--ahs-page-gutter)]"
+        className="relative mx-auto max-w-7xl px-4 pb-2 pt-10 sm:px-6 sm:pb-4 sm:pt-12 lg:px-[var(--ahs-page-gutter)] lg:pt-14"
         aria-labelledby="betrieblich-vorteile-heading"
       >
         <h2
@@ -241,12 +262,16 @@ export function BetrieblichePflegeberatungVorteileVorStatistik() {
         </ul>
       </section>
 
-      {/* Großer Erklärtext auf heller/weißer Fläche (Karte), direkt unter den Vorteilen */}
-      <section
-        aria-labelledby="betrieblich-was-ist-heading"
-        className="relative mx-auto mt-10 max-w-7xl px-4 pb-4 sm:mt-12 sm:px-6 sm:pb-6 lg:px-[var(--ahs-page-gutter)]"
+      {/* Erklärtext: volle Breite, kein Kasten, welliger Übergang nach oben */}
+      <div
+        className="relative left-1/2 mt-12 w-screen max-w-[100vw] -translate-x-1/2 sm:mt-14"
+        style={{ backgroundColor: WAS_STREIF_BG }}
       >
-        <div className="rounded-2xl border border-[#0F4F68]/10 bg-white/95 p-5 shadow-sm sm:p-8 lg:p-10">
+        <WelleWasBereichNachOben />
+        <section
+          aria-labelledby="betrieblich-was-ist-heading"
+          className="relative mx-auto max-w-7xl px-4 pb-10 pt-2 sm:px-6 sm:pb-12 sm:pt-3 lg:px-[var(--ahs-page-gutter)]"
+        >
           <h2
             id="betrieblich-was-ist-heading"
             className={`${POP_IN} mx-auto max-w-4xl text-center text-pretty text-xl font-extrabold text-[#0F4F68] sm:text-2xl`}
@@ -305,8 +330,8 @@ export function BetrieblichePflegeberatungVorteileVorStatistik() {
               Jetzt unverbindlich informieren lassen
             </BetrieblichAngebotOpenButton>
           </div>
-        </div>
-      </section>
+        </section>
+      </div>
 
       <WelleZuWeissBand />
     </div>

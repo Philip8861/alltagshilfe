@@ -136,18 +136,20 @@ export function BetrieblichePflegeberatungFactsIntro() {
           <span className="block sm:inline">pflegende Angehörige sind:</span>
         </h2>
 
-        <div className="mx-auto mt-8 grid w-full max-w-[min(96rem,calc(100vw-1.5rem))] grid-cols-1 items-center gap-8 sm:mt-10 sm:gap-10 lg:mt-12 lg:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] lg:items-center lg:gap-8 xl:gap-12">
-          <FactList
-            items={FACTS_LEFT}
-            align="right"
-            show={show}
-            reducedMotion={reducedMotion}
-            delayBase={80}
-          />
+        <div className="mx-auto mt-8 flex w-full max-w-[min(96rem,calc(100vw-1.5rem))] flex-col items-stretch gap-8 sm:mt-10 sm:gap-10 md:flex-row md:items-center md:justify-center md:gap-6 lg:mt-12 lg:gap-8 xl:gap-12">
+          <div className="order-1 flex min-h-0 min-w-0 w-full flex-1 justify-center md:max-w-none md:justify-end md:pr-1 lg:pr-3">
+            <FactList
+              items={FACTS_LEFT}
+              align="right"
+              show={show}
+              reducedMotion={reducedMotion}
+              delayBase={80}
+            />
+          </div>
 
           <aside
             className={cn(
-              "row-start-2 mx-auto flex w-full max-w-[min(100%,calc(100vw-2rem))] flex-col items-center justify-center justify-self-center lg:row-start-1 lg:max-w-[min(36vw,var(--img-max))]",
+              "order-2 mx-auto flex w-full max-w-[min(100%,calc(100vw-2rem))] shrink-0 flex-col items-center justify-center md:mx-0 md:w-auto md:max-w-[min(36vw,var(--img-max))]",
             )}
             style={{ "--img-max": imgMax } as CSSProperties}
             aria-label="Statistik-Grafik"
@@ -173,13 +175,15 @@ export function BetrieblichePflegeberatungFactsIntro() {
             </div>
           </aside>
 
-          <FactList
-            items={FACTS_RIGHT}
-            align="left"
-            show={show}
-            reducedMotion={reducedMotion}
-            delayBase={120}
-          />
+          <div className="order-3 flex min-h-0 min-w-0 w-full flex-1 justify-center md:max-w-none md:justify-start md:pl-1 lg:pl-3">
+            <FactList
+              items={FACTS_RIGHT}
+              align="left"
+              show={show}
+              reducedMotion={reducedMotion}
+              delayBase={120}
+            />
+          </div>
         </div>
       </div>
     </div>

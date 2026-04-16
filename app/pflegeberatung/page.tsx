@@ -106,7 +106,7 @@ export default function PflegeberatungPage() {
             {/* Bild: z über der Welle. Außenpadding für Badge-Schatten; innen nur Bildhöhe → bottom-0 = untere Bildkante */}
             <div className="relative z-10 mt-8 max-lg:px-0 overflow-visible px-1 sm:px-2 lg:pointer-events-none lg:absolute lg:right-0 lg:top-0 lg:z-20 lg:mt-0 lg:px-3">
               <div
-                className="ml-auto overflow-visible pb-16 pt-1 sm:pb-20 sm:pt-2 lg:ml-0 lg:mr-0 lg:pb-24 lg:pt-2"
+                className="ml-auto overflow-visible pb-24 pt-1 sm:pb-28 sm:pt-2 lg:ml-0 lg:mr-0 lg:pb-32 lg:pt-2"
                 style={imgBlockStyle}
               >
                 <div className="relative isolate ml-auto leading-none [&_img]:block [&_img]:max-w-none">
