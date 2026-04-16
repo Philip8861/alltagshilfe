@@ -38,8 +38,9 @@ function HeroCheckIcon({ className = "" }: { className?: string }) {
   );
 }
 
-/** Wie Startseite – Schrift erbt von Root-Layout (Nunito Sans am body) */
-const HEADING_CLASS = "text-3xl font-bold text-[#0F4F68] sm:text-4xl w-full max-w-lg self-start";
+/** Qualitätsversprechen-Block: mittig ausgerichtet */
+const VERSPRECHEN_HEADING_CLASS =
+  "mx-auto w-full max-w-3xl text-balance text-center text-3xl font-bold text-[#0F4F68] sm:text-4xl";
 const INTRO_BODY_CLASS = "text-lg text-neutral-700 leading-relaxed sm:text-xl";
 const SECTION_TITLE_CLASS = "text-3xl font-extrabold tracking-tight text-[#0F4F68] sm:text-4xl";
 /* Positiver X-Offset: Schatten weniger nach links (sonst bei html overflow-x:clip am linken Rand abgeschnitten) */
@@ -165,20 +166,20 @@ export default function PrivatePflegeberatungPage() {
         aria-labelledby="versprechen-heading"
       >
         <WelleObenMitFuellfarbe fill={PAGE_SURFACE} />
-        <div className="relative mx-auto w-full max-w-6xl">
-          <h2 id="versprechen-heading" className={`${HEADING_CLASS} ${ANIM_IN}`} style={{ animationDelay: "0ms" }}>
+        <div className="relative mx-auto flex w-full max-w-6xl flex-col items-center text-center">
+          <h2 id="versprechen-heading" className={`${VERSPRECHEN_HEADING_CLASS} ${ANIM_IN}`} style={{ animationDelay: "0ms" }}>
             Unser Qualitätsversprechen an Sie
           </h2>
-          <p className={`${ANIM_IN} mt-6 max-w-3xl ${INTRO_BODY_CLASS}`} style={{ animationDelay: "90ms" }}>
+          <p className={`${ANIM_IN} mt-6 max-w-3xl text-pretty ${INTRO_BODY_CLASS}`} style={{ animationDelay: "90ms" }}>
             Die Qualität unserer Pflegeberatung liegt uns besonders am Herzen. Sehr viele pflegende Angehörige wissen nicht
             genau, welche gesetzlichen Leistungen ihnen eigentlich zustehen. Oftmals wird man im Internet falsch oder
             unzureichend informiert. Wir machen das anders: Wir nehmen uns die nötige Zeit für Sie. Unser Ziel ist es, Sie
             umfassend und detailliert zu informieren, damit Sie im Alltag optimal entlastet werden.
           </p>
-          <div className={`${ANIM_IN}`} style={{ animationDelay: "160ms" }}>
+          <div className={`${ANIM_IN} flex w-full justify-center`} style={{ animationDelay: "160ms" }}>
             <PflegeberatungNaehePlzDialog />
           </div>
-          <p className={`${ANIM_IN} mt-6 max-w-3xl ${INTRO_BODY_CLASS}`} style={{ animationDelay: "200ms" }}>
+          <p className={`${ANIM_IN} mt-6 max-w-3xl text-pretty ${INTRO_BODY_CLASS}`} style={{ animationDelay: "200ms" }}>
             Dabei bleiben wir neutral und kümmern uns um die bestmögliche Versorgung zuhause.
           </p>
         </div>
