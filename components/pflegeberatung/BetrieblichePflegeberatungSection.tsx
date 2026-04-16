@@ -363,7 +363,7 @@ function WelleWeissZuFolgenBand() {
 export function BetrieblichePflegeberatungFolgenBand() {
   return (
     <div
-      className="relative left-1/2 z-30 w-screen max-w-[100vw] -translate-x-1/2 overflow-visible pb-0"
+      className="relative left-1/2 z-10 w-screen max-w-[100vw] -translate-x-1/2 overflow-visible pb-0"
       style={{ marginTop: `-${BETRIEBLICH_STATISTIK_FOLGEN_OVERLAP_REM}rem` }}
     >
       <WelleWeissZuFolgenBand />

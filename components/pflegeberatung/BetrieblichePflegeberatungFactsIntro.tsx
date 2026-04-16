@@ -2,10 +2,7 @@
 
 import Image from "next/image";
 import { useEffect, useRef, useState, type CSSProperties } from "react";
-import {
-  BETRIEBLICH_STATISTIK_IMG_MAX_REM,
-  BETRIEBLICH_STATISTIK_LAYOUT_HEIGHT_REM,
-} from "@/components/pflegeberatung/betriebliche-statistik-layout";
+import { BETRIEBLICH_STATISTIK_IMG_MAX_REM } from "@/components/pflegeberatung/betriebliche-statistik-layout";
 import { cn } from "@/lib/utils";
 
 /** Natürliche Pixelmaße von public/images/statistik_betriebliche.webp */
@@ -117,7 +114,6 @@ export function BetrieblichePflegeberatungFactsIntro() {
   const show = reducedMotion || inView;
 
   const imgMax = `${IMG_MAX_REM}rem`;
-  const imgLayoutMaxHeightRem = BETRIEBLICH_STATISTIK_LAYOUT_HEIGHT_REM;
 
   return (
     <div
@@ -153,23 +149,20 @@ export function BetrieblichePflegeberatungFactsIntro() {
 
           <aside
             className={cn(
-              "relative z-10 order-2 mx-auto flex w-full max-w-[min(100%,calc(100vw-2rem))] shrink-0 flex-col items-center justify-center md:mx-0 md:w-auto md:max-w-[min(36vw,var(--img-max))]",
+              "relative z-[2] order-2 mx-auto flex w-full max-w-[min(100%,calc(100vw-2rem))] shrink-0 flex-col items-center justify-center md:mx-0 md:w-auto md:max-w-[min(36vw,var(--img-max))]",
             )}
             style={{ "--img-max": imgMax } as CSSProperties}
             aria-label="Statistik-Grafik"
           >
             <div
               className={cn(
-                "w-full max-w-[var(--img-max)] overflow-hidden",
+                "relative z-[2] w-full max-w-[var(--img-max)] overflow-visible",
                 reducedMotion
                   ? "translate-y-0 opacity-100"
                   : "transition-[transform,opacity] duration-700 ease-out motion-reduce:transition-none",
                 show ? "translate-y-0 opacity-100" : "translate-y-3 opacity-0",
               )}
-              style={{
-                maxHeight: `${imgLayoutMaxHeightRem}rem`,
-                ...(reducedMotion || !show ? {} : { transitionDelay: "220ms" }),
-              }}
+              style={reducedMotion || !show ? undefined : { transitionDelay: "220ms" }}
             >
               <Image
                 src="/images/statistik_betriebliche.webp"
@@ -178,7 +171,7 @@ export function BetrieblichePflegeberatungFactsIntro() {
                 height={STATISTIK_IMG.h}
                 sizes="(max-width: 1023px) 840px, 760px"
                 className={cn(
-                  "h-auto w-full max-w-full rounded-sm object-contain object-top",
+                  "relative z-[2] h-auto w-full max-w-full rounded-sm object-contain object-top",
                   STATISTIK_DROP_SHADOW,
                 )}
               />

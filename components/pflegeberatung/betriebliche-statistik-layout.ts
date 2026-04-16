@@ -5,16 +5,13 @@ const STATISTIK_ASPECT = 538 / 358;
 export const BETRIEBLICH_STATISTIK_IMG_MAX_REM = 16.25 * 1.3 * 0.7 * 1.25 * 1.3 * 1.3 * 1.3;
 
 /**
- * Anteil der Layout-Höhe unterhalb des sichtbaren Motivs (transparenter Rand unten).
+ * Volle Layout-Höhe der Grafik bei max. Breite (rem), inkl. transparentem Rand im Asset –
+ * nicht abschneiden, sonst wird das Motiv am unteren Rand gekappt.
  */
-export const BETRIEBLICH_STATISTIK_VISIBLE_HEIGHT_RATIO = 0.86;
-
-/** Layout-Höhe der Grafik (rem), entspricht maxWidth × Aspekt × sichtbarer Anteil */
-export const BETRIEBLICH_STATISTIK_LAYOUT_HEIGHT_REM =
-  BETRIEBLICH_STATISTIK_IMG_MAX_REM * STATISTIK_ASPECT * BETRIEBLICH_STATISTIK_VISIBLE_HEIGHT_RATIO;
+export const BETRIEBLICH_STATISTIK_FULL_LAYOUT_HEIGHT_REM =
+  BETRIEBLICH_STATISTIK_IMG_MAX_REM * STATISTIK_ASPECT;
 
 /**
- * Negativer oberer Rand Folgen-Band: Welle sitzt im unteren Drittel der Grafik-Layoutfläche
- * (ein Drittel der Layout-Höhe nach oben gezogen).
+ * Negativer oberer Rand Folgen-Band: Welle im unteren Drittel der Grafik-Höhe (bezogen auf volle Bildhöhe).
  */
-export const BETRIEBLICH_STATISTIK_FOLGEN_OVERLAP_REM = BETRIEBLICH_STATISTIK_LAYOUT_HEIGHT_REM / 3;
+export const BETRIEBLICH_STATISTIK_FOLGEN_OVERLAP_REM = BETRIEBLICH_STATISTIK_FULL_LAYOUT_HEIGHT_REM / 3;
