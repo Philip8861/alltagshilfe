@@ -4,7 +4,7 @@ import Image from "next/image";
 import { useEffect, useRef, useState, type CSSProperties } from "react";
 import {
   BETRIEBLICH_STATISTIK_IMG_MAX_REM,
-  BETRIEBLICH_STATISTIK_VISIBLE_HEIGHT_RATIO,
+  BETRIEBLICH_STATISTIK_LAYOUT_HEIGHT_REM,
 } from "@/components/pflegeberatung/betriebliche-statistik-layout";
 import { cn } from "@/lib/utils";
 
@@ -22,7 +22,7 @@ const FACT_TEXT =
   "text-pretty text-[1.2rem] font-semibold leading-snug text-[#0F4F68] sm:text-[1.3125rem] sm:leading-snug lg:text-[1.375rem]";
 
 const FACTS_LEFT = [
-  "~70 % psychisch stark belastet",
+  "70 % psychisch stark belastet",
   "75 % emotional belastet",
   "50 % berichten körperliche Beschwerden",
   "Jeder 4. fühlt sich am Limit oder überfordert",
@@ -117,13 +117,12 @@ export function BetrieblichePflegeberatungFactsIntro() {
   const show = reducedMotion || inView;
 
   const imgMax = `${IMG_MAX_REM}rem`;
-  /** Kürzt den unteren, oft transparenten Streifen aus der Layout-Höhe (Welle bleibt sichtbar) */
-  const imgLayoutMaxHeightRem = IMG_MAX_REM * (STATISTIK_IMG.h / STATISTIK_IMG.w) * BETRIEBLICH_STATISTIK_VISIBLE_HEIGHT_RATIO;
+  const imgLayoutMaxHeightRem = BETRIEBLICH_STATISTIK_LAYOUT_HEIGHT_REM;
 
   return (
     <div
       ref={rootRef}
-      className="relative z-20 mt-6 sm:mt-8 lg:mt-10"
+      className="relative z-10 mt-6 sm:mt-8 lg:mt-10"
       role="region"
       aria-labelledby="betrieblich-statistik-hub-heading"
     >
@@ -135,14 +134,14 @@ export function BetrieblichePflegeberatungFactsIntro() {
       >
         <h2
           id="betrieblich-statistik-hub-heading"
-          className="mx-auto max-w-3xl text-pretty text-center text-[1.40625rem] font-extrabold leading-tight tracking-tight text-[#0F4F68] sm:text-[1.5625rem] md:text-[1.875rem] lg:text-[1.8125rem] lg:leading-snug"
+          className="mx-auto max-w-3xl text-pretty text-center text-[1.40625rem] font-extrabold leading-tight tracking-tight text-[#0F4F68] sm:text-[1.5625rem] md:text-[1.875rem] lg:text-[1.8125rem] lg:leading-snug mb-0"
         >
           <span className="block sm:inline">Statistik zeigt: </span>
           <span className="block sm:inline">pflegende Angehörige sind:</span>
         </h2>
 
-        <div className="mx-auto mt-2 flex w-full max-w-[min(68rem,calc(100vw-1.5rem))] flex-col items-stretch gap-5 sm:mt-3 sm:gap-6 md:flex-row md:items-center md:justify-center md:gap-4 lg:mt-4 lg:gap-5 xl:gap-6">
-          <div className="order-1 flex min-h-0 min-w-0 w-full flex-1 justify-center md:max-w-none md:justify-end md:pr-1 lg:pr-3">
+        <div className="mx-auto mt-0 flex w-full max-w-[min(68rem,calc(100vw-1.5rem))] flex-col items-stretch gap-5 sm:mt-1 sm:gap-6 md:flex-row md:items-center md:justify-center md:gap-4 lg:mt-1 lg:gap-5 xl:gap-6">
+          <div className="relative z-20 order-1 flex min-h-0 min-w-0 w-full flex-1 justify-center md:max-w-none md:justify-end md:pr-1 lg:pr-3">
             <FactList
               items={FACTS_LEFT}
               align="right"
@@ -154,7 +153,7 @@ export function BetrieblichePflegeberatungFactsIntro() {
 
           <aside
             className={cn(
-              "order-2 mx-auto flex w-full max-w-[min(100%,calc(100vw-2rem))] shrink-0 flex-col items-center justify-center md:mx-0 md:w-auto md:max-w-[min(36vw,var(--img-max))]",
+              "relative z-10 order-2 mx-auto flex w-full max-w-[min(100%,calc(100vw-2rem))] shrink-0 flex-col items-center justify-center md:mx-0 md:w-auto md:max-w-[min(36vw,var(--img-max))]",
             )}
             style={{ "--img-max": imgMax } as CSSProperties}
             aria-label="Statistik-Grafik"
@@ -177,7 +176,7 @@ export function BetrieblichePflegeberatungFactsIntro() {
                 alt="Grafik: Belastung pflegender Angehöriger"
                 width={STATISTIK_IMG.w}
                 height={STATISTIK_IMG.h}
-                sizes="(max-width: 1023px) 650px, 580px"
+                sizes="(max-width: 1023px) 840px, 760px"
                 className={cn(
                   "h-auto w-full max-w-full rounded-sm object-contain object-top",
                   STATISTIK_DROP_SHADOW,
@@ -186,7 +185,7 @@ export function BetrieblichePflegeberatungFactsIntro() {
             </div>
           </aside>
 
-          <div className="order-3 flex min-h-0 min-w-0 w-full flex-1 justify-center md:max-w-none md:justify-start md:pl-1 lg:pl-3">
+          <div className="relative z-20 order-3 flex min-h-0 min-w-0 w-full flex-1 justify-center md:max-w-none md:justify-start md:pl-1 lg:pl-3">
             <FactList
               items={FACTS_RIGHT}
               align="left"

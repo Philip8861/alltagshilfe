@@ -1,5 +1,6 @@
 import { BetrieblichAngebotOpenButton } from "@/components/pflegeberatung/BetrieblicheAngebotAnfrage";
 import { BetrieblichePflegeberatungFactsIntro } from "@/components/pflegeberatung/BetrieblichePflegeberatungFactsIntro";
+import { BETRIEBLICH_STATISTIK_FOLGEN_OVERLAP_REM } from "@/components/pflegeberatung/betriebliche-statistik-layout";
 
 const ICON_WRAP =
   "inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-[#0F4F68] text-white shadow-sm sm:h-14 sm:w-14";
@@ -361,7 +362,10 @@ function WelleWeissZuFolgenBand() {
 /** Direkt unter den Fakten: welliger Übergang von Weiß zum Folgen-Band */
 export function BetrieblichePflegeberatungFolgenBand() {
   return (
-    <div className="relative left-1/2 z-0 w-screen max-w-[100vw] -translate-x-1/2 overflow-visible pb-0">
+    <div
+      className="relative left-1/2 z-30 w-screen max-w-[100vw] -translate-x-1/2 overflow-visible pb-0"
+      style={{ marginTop: `-${BETRIEBLICH_STATISTIK_FOLGEN_OVERLAP_REM}rem` }}
+    >
       <WelleWeissZuFolgenBand />
       <div className="pb-0" style={{ backgroundColor: FOLGEN_BAND_BG }}>
         <section
