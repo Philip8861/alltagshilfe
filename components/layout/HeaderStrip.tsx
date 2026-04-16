@@ -59,8 +59,8 @@ export function HeaderStrip(_props: HeaderStripProps) {
               alt=""
               width={220}
               height={60}
-              sizes="(max-width: 640px) 120px, 160px"
-              className="h-[0.95rem] w-auto object-contain object-left sm:h-[1.08rem] md:h-[1.28rem]"
+              sizes="(max-width: 640px) 150px, 200px"
+              className="h-[1.1875rem] w-auto object-contain object-left sm:h-[1.35rem] md:h-[1.6rem]"
               priority
             />
           </Link>
