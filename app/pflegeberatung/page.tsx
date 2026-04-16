@@ -61,7 +61,7 @@ export const metadata: Metadata = {
 export default function PflegeberatungPage() {
   return (
     <BetrieblichAngebotDialogProvider>
-      <article className="pb-16 sm:pb-24">
+      <article className="pb-0">
         <section
           id="betriebliche-pflegeberatung"
           aria-labelledby="betrieblich-heading"
@@ -133,7 +133,7 @@ export default function PflegeberatungPage() {
             <BetrieblichePflegeberatungVorteileVorStatistik />
 
             <div className="relative isolate overflow-visible">
-              <Container className="relative z-30 bg-transparent pb-[calc(1.5rem+3cm)] pointer-events-none sm:pb-[calc(2rem+3cm)]">
+              <Container className="relative z-30 bg-white pb-[calc(1.5rem+3cm)] pointer-events-none sm:pb-[calc(2rem+3cm)]">
                 <div className="pointer-events-auto">
                   <BetrieblichePflegeberatungWhiteIntro />
                 </div>

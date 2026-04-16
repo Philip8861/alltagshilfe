@@ -367,9 +367,9 @@ export function BetrieblichePflegeberatungFolgenBand() {
       style={{ marginTop: `-${BETRIEBLICH_STATISTIK_FOLGEN_OVERLAP_REM}rem` }}
     >
       <WelleWeissZuFolgenBand />
-      <div className="pb-0" style={{ backgroundColor: FOLGEN_BAND_BG }}>
+      <div className="pb-16 sm:pb-24" style={{ backgroundColor: FOLGEN_BAND_BG }}>
         <section
-          className="relative mx-auto max-w-7xl px-4 pb-10 pt-4 sm:px-6 sm:pb-12 sm:pt-6 lg:px-[var(--ahs-page-gutter)]"
+          className="relative mx-auto max-w-7xl px-4 pb-10 pt-14 sm:px-6 sm:pb-12 sm:pt-20 lg:px-[var(--ahs-page-gutter)]"
           aria-labelledby="betrieblich-folgen-heading"
         >
           <h2
