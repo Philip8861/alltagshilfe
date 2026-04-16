@@ -395,6 +395,11 @@ export function BetrieblichePflegeberatungFolgenBand() {
               </li>
             ))}
           </ul>
+          <div className="mt-10 flex justify-center sm:mt-12">
+            <BetrieblichAngebotOpenButton className="w-full max-w-md min-h-[3rem] px-8 py-3.5 text-base sm:w-auto sm:text-lg">
+              Jetzt unverbindliches Angebot anfordern
+            </BetrieblichAngebotOpenButton>
+          </div>
         </section>
       </div>
     </div>
