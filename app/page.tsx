@@ -171,7 +171,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="relative z-20 mt-2 w-full bg-[#F2F9FA] px-4 pt-8 pb-10 sm:mt-4 sm:px-6 sm:pt-12 sm:pb-12 lg:px-[var(--ahs-page-gutter)]">
+      <section className="relative z-20 mt-2 w-full bg-[#F2F9FA] px-4 pt-[1.6rem] pb-8 sm:mt-4 sm:px-6 sm:pt-[2.4rem] sm:pb-[2.4rem] lg:px-[var(--ahs-page-gutter)]">
         <svg
           className="pointer-events-none absolute left-0 top-0 h-12 w-full -translate-y-[68%] sm:h-16"
           viewBox="0 0 1200 120"
@@ -181,10 +181,10 @@ export default function HomePage() {
         >
           <path d="M0,120 C200,32 420,8 600,22 C800,38 1010,90 1200,120 L1200,120 L0,120 Z" fill="#F2F9FA" />
         </svg>
-        <div className="mx-auto w-full max-w-6xl p-1 sm:p-2">
+        <div className="mx-auto w-full max-w-6xl">
           <h2 className="text-2xl font-bold text-[#0F4F68] sm:text-3xl">Unsere Leistungen im Überblick</h2>
           <p className="mt-2 text-sm text-[#8a6a55] sm:text-base">Persönlich, zuverlässig und mit viel Herz im Alltag.</p>
-          <div className="mt-6 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {LEISTUNGEN.map((leistung, index) => (
               <Link
                 key={leistung.title}

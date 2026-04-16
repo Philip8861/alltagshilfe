@@ -50,7 +50,7 @@ export default function LeistungenPage() {
 
   return (
     <article className="overflow-hidden">
-      <section className="relative border-b border-[#0F4F68]/15 bg-[#F2F9FA]/60 py-16 sm:py-20">
+      <section className="relative border-b border-[#0F4F68]/15 bg-[#F2F9FA]/60 py-[3.2rem] sm:py-16">
         <Container>
           <p className="text-center text-sm font-semibold uppercase tracking-widest text-[#0F4F68]">
             {siteConfig.name}
