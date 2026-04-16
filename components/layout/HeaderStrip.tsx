@@ -1,10 +1,8 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-import { siteConfig } from "@/config/site";
 import { isPflegeboxKonfiguratorPagePath } from "@/lib/pflegebox-konfigurator-path";
 import { cn } from "@/lib/utils";
 
@@ -48,22 +46,7 @@ export function HeaderStrip(_props: HeaderStripProps) {
       style={{ backgroundColor: "#0F4F68", minHeight: "2.45rem" }}
     >
       <div className="flex w-full flex-row items-center justify-between gap-4 px-4 py-1.5 sm:px-6 lg:px-[var(--ahs-page-gutter)]">
-        <div className="flex min-w-0 flex-1 items-center justify-start gap-2 text-left sm:gap-2.5">
-          <Link
-            href="/"
-            className="flex shrink-0 items-center focus:outline-none focus:ring-2 focus:ring-white/80 focus:ring-offset-2 focus:ring-offset-[#0F4F68] rounded-sm"
-            aria-label={`${siteConfig.name} – Startseite`}
-          >
-            <Image
-              src="/images/logo_weiss.png"
-              alt=""
-              width={220}
-              height={60}
-              sizes="(max-width: 640px) 150px, 200px"
-              className="h-[1.1875rem] w-auto object-contain object-left sm:h-[1.35rem] md:h-[1.6rem]"
-              priority
-            />
-          </Link>
+        <div className="flex min-w-0 flex-1 items-center justify-start text-left">
           <span
             className="block min-w-0 truncate text-[0.7rem] leading-tight sm:text-xs md:text-sm md:font-semibold"
             aria-live="polite"
