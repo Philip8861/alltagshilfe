@@ -1,11 +1,11 @@
-/** Natürliche Pixelmaße von public/images/statistik_betriebliche.webp */
-const STATISTIK_IMG = { w: 358, h: 538 } as const;
+/** Max. Breite der Statistik-Grafik (rem), zuletzt +30 % ggü. vorherigem Wert */
+export const BETRIEBLICH_STATISTIK_IMG_MAX_REM = 16.25 * 1.3 * 0.7 * 1.25 * 1.3 * 1.3;
 
 /**
- * Max. Breite der Statistik-Grafik (rem).
- * Folgen-Welle: 10 % der sichtbaren Bildhöhe ≈ maxBreite × (h/w) × 0,1 als Überlapp nach oben.
+ * Anteil der Layout-Höhe unterhalb des sichtbaren Motivs (transparenter Rand unten).
+ * Reduziert die Kastenhöhe, damit die Folgen-Welle nicht unter „leerem“ PNG-Bereich liegt.
  */
-export const BETRIEBLICH_STATISTIK_IMG_MAX_REM = 16.25 * 1.3 * 0.7 * 1.25 * 1.3;
+export const BETRIEBLICH_STATISTIK_VISIBLE_HEIGHT_RATIO = 0.86;
 
-export const BETRIEBLICH_STATISTIK_FOLGEN_OVERLAP_REM =
-  BETRIEBLICH_STATISTIK_IMG_MAX_REM * (STATISTIK_IMG.h / STATISTIK_IMG.w) * 0.1;
+/** Kein negativer Margin mehr: Welle liegt vollständig unter der Grafik und wird nicht beschnitten */
+export const BETRIEBLICH_STATISTIK_FOLGEN_OVERLAP_REM = 0;

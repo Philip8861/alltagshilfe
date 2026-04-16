@@ -358,10 +358,10 @@ function WelleWeissZuFolgenBand() {
   );
 }
 
-/** Direkt unter den Fakten: welliger Übergang von Weiß zum Folgen-Band (optional Überlapp zur Grafik darüber) */
+/** Direkt unter den Fakten: welliger Übergang von Weiß zum Folgen-Band */
 export function BetrieblichePflegeberatungFolgenBand() {
   return (
-    <div className="relative left-1/2 z-0 w-screen max-w-[100vw] -translate-x-1/2 overflow-visible pb-0 -mt-[var(--pflege-stat-folgen-overlap,0rem)]">
+    <div className="relative left-1/2 z-0 w-screen max-w-[100vw] -translate-x-1/2 overflow-visible pb-0">
       <WelleWeissZuFolgenBand />
       <div className="pb-0" style={{ backgroundColor: FOLGEN_BAND_BG }}>
         <section

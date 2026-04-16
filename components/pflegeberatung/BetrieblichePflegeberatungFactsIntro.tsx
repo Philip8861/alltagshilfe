@@ -2,7 +2,10 @@
 
 import Image from "next/image";
 import { useEffect, useRef, useState, type CSSProperties } from "react";
-import { BETRIEBLICH_STATISTIK_IMG_MAX_REM } from "@/components/pflegeberatung/betriebliche-statistik-layout";
+import {
+  BETRIEBLICH_STATISTIK_IMG_MAX_REM,
+  BETRIEBLICH_STATISTIK_VISIBLE_HEIGHT_RATIO,
+} from "@/components/pflegeberatung/betriebliche-statistik-layout";
 import { cn } from "@/lib/utils";
 
 /** Natürliche Pixelmaße von public/images/statistik_betriebliche.webp */
@@ -114,6 +117,8 @@ export function BetrieblichePflegeberatungFactsIntro() {
   const show = reducedMotion || inView;
 
   const imgMax = `${IMG_MAX_REM}rem`;
+  /** Kürzt den unteren, oft transparenten Streifen aus der Layout-Höhe (Welle bleibt sichtbar) */
+  const imgLayoutMaxHeightRem = IMG_MAX_REM * (STATISTIK_IMG.h / STATISTIK_IMG.w) * BETRIEBLICH_STATISTIK_VISIBLE_HEIGHT_RATIO;
 
   return (
     <div
@@ -156,21 +161,27 @@ export function BetrieblichePflegeberatungFactsIntro() {
           >
             <div
               className={cn(
-                "w-full max-w-[var(--img-max)]",
+                "w-full max-w-[var(--img-max)] overflow-hidden",
                 reducedMotion
                   ? "translate-y-0 opacity-100"
                   : "transition-[transform,opacity] duration-700 ease-out motion-reduce:transition-none",
                 show ? "translate-y-0 opacity-100" : "translate-y-3 opacity-0",
               )}
-              style={reducedMotion || !show ? undefined : { transitionDelay: "220ms" }}
+              style={{
+                maxHeight: `${imgLayoutMaxHeightRem}rem`,
+                ...(reducedMotion || !show ? {} : { transitionDelay: "220ms" }),
+              }}
             >
               <Image
                 src="/images/statistik_betriebliche.webp"
                 alt="Grafik: Belastung pflegender Angehöriger"
                 width={STATISTIK_IMG.w}
                 height={STATISTIK_IMG.h}
-                sizes="(max-width: 1023px) 500px, 440px"
-                className={cn("h-auto w-full max-w-full rounded-sm", STATISTIK_DROP_SHADOW)}
+                sizes="(max-width: 1023px) 650px, 580px"
+                className={cn(
+                  "h-auto w-full max-w-full rounded-sm object-contain object-top",
+                  STATISTIK_DROP_SHADOW,
+                )}
               />
             </div>
           </aside>

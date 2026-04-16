@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import type { CSSProperties } from "react";
 import Image from "next/image";
 import { Container } from "@/components/layout/Container";
 import {
@@ -7,7 +6,6 @@ import {
   BetrieblichePflegeberatungVorteileVorStatistik,
   BetrieblichePflegeberatungWhiteIntro,
 } from "@/components/pflegeberatung/BetrieblichePflegeberatungSection";
-import { BETRIEBLICH_STATISTIK_FOLGEN_OVERLAP_REM } from "@/components/pflegeberatung/betriebliche-statistik-layout";
 import {
   BetrieblichAngebotDialogProvider,
   BetrieblichAngebotOpenButton,
@@ -134,19 +132,10 @@ export default function PflegeberatungPage() {
 
             <BetrieblichePflegeberatungVorteileVorStatistik />
 
-            <div
-              className="relative"
-              style={
-                {
-                  "--pflege-stat-folgen-overlap": `${BETRIEBLICH_STATISTIK_FOLGEN_OVERLAP_REM}rem`,
-                } as CSSProperties
-              }
-            >
-              <Container className="relative z-20 bg-white pb-[calc(1.5rem+3cm)] sm:pb-[calc(2rem+3cm)]">
-                <BetrieblichePflegeberatungWhiteIntro />
-              </Container>
-              <BetrieblichePflegeberatungFolgenBand />
-            </div>
+            <Container className="relative z-20 bg-white pb-[calc(1.5rem+3cm)] sm:pb-[calc(2rem+3cm)]">
+              <BetrieblichePflegeberatungWhiteIntro />
+            </Container>
+            <BetrieblichePflegeberatungFolgenBand />
           </div>
         </section>
       </article>
