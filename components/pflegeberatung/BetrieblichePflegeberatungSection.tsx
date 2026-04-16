@@ -26,14 +26,12 @@ function WelleObenBand({ fill }: { fill: string }) {
   );
 }
 
-/** Leicht abgesetzter Streifen „Was versteht man …“ + welliger Übergang nach oben (volle Breite) */
-const WAS_STREIF_BG = "#E4F1F4" as const;
-
+/** „Was versteht man …“: wie Hero/Header weiß + welliger Übergang von Mint nach oben */
 function WelleWasBereichNachOben() {
   return (
     <div className="pointer-events-none relative left-1/2 w-screen max-w-[100vw] -translate-x-1/2 leading-none">
       <svg
-        className="relative -mt-px block h-11 w-full shrink-0 rotate-180 text-[#F2F9FA] sm:h-[3.25rem]"
+        className="relative -mt-px block h-11 w-full shrink-0 rotate-180 text-white sm:h-[3.25rem]"
         viewBox="0 0 1440 100"
         preserveAspectRatio="none"
         aria-hidden
@@ -263,10 +261,7 @@ export function BetrieblichePflegeberatungVorteileVorStatistik() {
       </section>
 
       {/* Erklärtext: volle Breite, kein Kasten, welliger Übergang nach oben */}
-      <div
-        className="relative left-1/2 mt-12 w-screen max-w-[100vw] -translate-x-1/2 sm:mt-14"
-        style={{ backgroundColor: WAS_STREIF_BG }}
-      >
+      <div className="relative left-1/2 mt-12 w-screen max-w-[100vw] -translate-x-1/2 bg-white sm:mt-14">
         <WelleWasBereichNachOben />
         <section
           aria-labelledby="betrieblich-was-ist-heading"

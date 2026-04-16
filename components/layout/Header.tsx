@@ -16,10 +16,10 @@ export function Header({ nunitoClass = "", balooClass = "" }: HeaderProps) {
       <div className="relative overflow-visible border-b border-[#0F4F68]/15 bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/80">
         {/* Gleiche horizontale Gutter wie HeaderStrip (kein max-w-7xl) → Logo bündig unter „Gemeinsam Stark im Alltag“ */}
         <div className="grid min-h-[4.375rem] w-full grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-x-2 gap-y-2 overflow-visible px-4 sm:gap-x-3 sm:px-6 md:gap-x-4 lg:gap-x-5 lg:px-[var(--ahs-page-gutter)]">
-          <div className="flex min-h-[4.375rem] min-w-0 items-start justify-self-start self-stretch pt-0.5">
+          <div className="flex min-h-[4.375rem] min-w-0 items-center justify-self-start self-stretch">
             <Link
               href="/"
-              className="z-10 flex shrink-0 -translate-y-1 items-center focus:outline-none rounded md:h-[34.73px] md:w-auto"
+              className="z-10 flex shrink-0 items-center focus:outline-none rounded md:h-[34.73px] md:w-auto"
               aria-label={`${siteConfig.name} – Startseite`}
             >
               <Image
