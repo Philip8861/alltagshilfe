@@ -12,8 +12,8 @@ export function Header({ nunitoClass = "", balooClass = "" }: HeaderProps) {
     <header className="sticky top-0 z-50 overflow-visible shadow-[0_4px_6px_-1px_rgb(0_0_0/0.07),0_2px_4px_-2px_rgb(0_0_0/0.07)]">
       <HeaderStrip nunitoClass={nunitoClass} balooClass={balooClass} />
       <div className="relative overflow-visible border-b border-[#0F4F68]/15 bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/80">
-        <div className="flex min-h-[4.375rem] w-full flex-wrap items-center justify-center gap-x-3 gap-y-2 overflow-visible px-4 sm:gap-x-4 sm:px-6 lg:gap-x-5 lg:px-[var(--ahs-page-gutter)]">
-          <div className="flex min-h-[4.375rem] min-w-0 max-w-[100vw] flex-1 items-center justify-center gap-2 sm:gap-3 md:gap-4 lg:gap-5 xl:gap-6">
+        <div className="flex min-h-[var(--ahs-header-white-min-height)] w-full flex-wrap items-center justify-center gap-x-3 gap-y-2 overflow-visible px-4 sm:gap-x-4 sm:px-6 lg:gap-x-5 lg:px-[var(--ahs-page-gutter)]">
+          <div className="flex min-h-[var(--ahs-header-white-min-height)] min-w-0 max-w-[100vw] flex-1 items-center justify-center gap-2 sm:gap-3 md:gap-4 lg:gap-5 xl:gap-6">
             <HeaderNav />
             <Link
               href="/kontakt"

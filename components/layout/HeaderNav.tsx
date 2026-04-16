@@ -24,12 +24,12 @@ export function HeaderNav() {
   useEffect(() => setMounted(true), []);
 
   /**
-   * Mobil: Backdrop unter vollem Header. Teal-Streifen: 2.45rem, weiße Zeile: min-h-[4.375rem] (Header.tsx).
+   * Mobil: Backdrop unter vollem Header. Teal-Streifen: 2.45rem, weiße Zeile: var(--ahs-header-white-min-height).
    * Pflegebox-Konfigurator: Streifen ausgeblendet → nur weiße Zeile.
    */
   const mobileBackdropTopClass = isPflegeboxKonfiguratorPagePath(pathname)
-    ? "top-[4.375rem]"
-    : "top-[calc(2.45rem+4.375rem)]";
+    ? "top-[var(--ahs-header-white-min-height)]"
+    : "top-[calc(2.45rem+var(--ahs-header-white-min-height))]";
 
   return (
     <>
