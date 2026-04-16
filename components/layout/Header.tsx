@@ -19,7 +19,7 @@ export function Header({ nunitoClass = "", balooClass = "" }: HeaderProps) {
           <div className="min-w-0 justify-self-start">
             <Link
               href="/"
-              className="z-10 flex shrink-0 -translate-y-[5%] focus:outline-none rounded md:h-[59.51px] md:w-auto"
+              className="z-10 flex shrink-0 -translate-y-[5%] focus:outline-none rounded md:h-[53.56px] md:w-auto"
               aria-label={`${siteConfig.name} – Startseite`}
             >
               <Image
@@ -27,8 +27,8 @@ export function Header({ nunitoClass = "", balooClass = "" }: HeaderProps) {
                 alt={siteConfig.name}
                 width={257}
                 height={66}
-                sizes="(max-width: 640px) 120px, (max-width: 1024px) 140px, 180px"
-                className="h-[56.21px] w-auto object-contain sm:h-[62.82px] md:h-[59.51px] lg:h-[66.13px]"
+                sizes="(max-width: 640px) 110px, (max-width: 1024px) 130px, 170px"
+                className="h-[50.59px] w-auto object-contain sm:h-[56.54px] md:h-[53.56px] lg:h-[59.52px]"
                 priority
               />
             </Link>
