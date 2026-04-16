@@ -5,6 +5,7 @@ import { BETRIEBLICH_STATISTIK_FOLGEN_OVERLAP_REM } from "@/components/pflegeber
 const ICON_WRAP =
   "inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-[#0F4F68] text-white shadow-sm sm:h-14 sm:w-14";
 
+const BETRIEBLICH_HELL_BG = "#F2F9FA" as const;
 /** Leichter Ton für Folgen-Bereich (Welle + Fläche) */
 const FOLGEN_BAND_BG = "#eef6f9" as const;
 
@@ -23,6 +24,28 @@ function WelleObenBand({ fill }: { fill: string }) {
       <rect x="1200" y="0" width="48" height="120" fill={fill} />
       <path d="M0,120 C200,32 420,8 600,22 C800,38 1010,90 1200,120 L1200,120 L0,120 Z" fill={fill} />
     </svg>
+  );
+}
+
+/** Mint (#F2F9FA) → Weiß: gleiche Kurve wie unten, oberhalb der Welle bleibt Mint sichtbar */
+function WelleMintZuWeissBand() {
+  return (
+    <div
+      className="pointer-events-none relative left-1/2 w-screen max-w-[100vw] -translate-x-1/2 leading-none"
+      style={{ backgroundColor: BETRIEBLICH_HELL_BG }}
+    >
+      <svg
+        className="relative -mb-px block h-12 w-full shrink-0 text-white sm:h-[3.75rem]"
+        viewBox="0 0 1440 100"
+        preserveAspectRatio="none"
+        aria-hidden
+      >
+        <path
+          fill="currentColor"
+          d="M0,55 C240,18 480,92 720,48 C960,4 1200,78 1440,42 L1440,100 L0,100 Z"
+        />
+      </svg>
+    </div>
   );
 }
 
@@ -200,7 +223,7 @@ export function BetrieblichePflegeberatungWhiteIntro() {
 }
 
 /**
- * „Ihre Vorteile“ mit welligem Übergang; Fläche durchgängig weiß wie der Hero (kein Mint-/Grau-Streifen).
+ * „Ihre Vorteile“ mit welligem Übergang von Weiß (Hero) nach unten und Übergang zu Weiß (Statistik-Hub).
  * Liegt oberhalb von „Statistik zeigt …“.
  */
 const WAS_BODY_DELAYS = [80, 160, 240, 320, 400, 480, 560, 640, 720] as const;
@@ -209,10 +232,13 @@ export function BetrieblichePflegeberatungVorteileVorStatistik() {
   const vorteilBaseDelay = 80;
 
   return (
-    <div className="relative left-1/2 mt-12 w-screen max-w-[100vw] -translate-x-1/2 overflow-visible bg-white pb-0 sm:mt-16 lg:mt-20">
-      <WelleObenBand fill="#ffffff" />
+    <div
+      className="relative left-1/2 mt-12 w-screen max-w-[100vw] -translate-x-1/2 overflow-visible pb-0 sm:mt-16 lg:mt-20"
+      style={{ backgroundColor: BETRIEBLICH_HELL_BG }}
+    >
+      <WelleObenBand fill={BETRIEBLICH_HELL_BG} />
       <section
-        className="relative mx-auto max-w-7xl px-4 pb-2 pt-12 sm:px-6 sm:pb-4 sm:pt-16 lg:px-[var(--ahs-page-gutter)] lg:pt-16"
+        className="relative mx-auto max-w-7xl px-4 pb-2 pt-10 sm:px-6 sm:pb-4 sm:pt-12 lg:px-[var(--ahs-page-gutter)] lg:pt-14"
         aria-labelledby="betrieblich-vorteile-heading"
       >
         <h2
@@ -241,9 +267,9 @@ export function BetrieblichePflegeberatungVorteileVorStatistik() {
         </ul>
       </section>
 
-      {/* Welliger Übergang Weiß → Weiß (dekorativ), dann Erklärtext */}
+      {/* Welliger Übergang Mint → Weiß, dann Erklärtext auf Weiß */}
       <div className="mt-10 sm:mt-12">
-        <WelleZuWeissBand />
+        <WelleMintZuWeissBand />
       </div>
 
       <div className="relative left-1/2 w-screen max-w-[100vw] -translate-x-1/2 bg-white">
@@ -341,9 +367,9 @@ export function BetrieblichePflegeberatungFolgenBand() {
       style={{ marginTop: `-${BETRIEBLICH_STATISTIK_FOLGEN_OVERLAP_REM}rem` }}
     >
       <WelleWeissZuFolgenBand />
-      <div className="pb-16 sm:pb-24" style={{ backgroundColor: FOLGEN_BAND_BG }}>
+      <div className="pb-0" style={{ backgroundColor: FOLGEN_BAND_BG }}>
         <section
-          className="relative mx-auto max-w-7xl px-4 pb-10 pt-14 sm:px-6 sm:pb-12 sm:pt-20 lg:px-[var(--ahs-page-gutter)]"
+          className="relative mx-auto max-w-7xl px-4 pb-10 pt-4 sm:px-6 sm:pb-12 sm:pt-6 lg:px-[var(--ahs-page-gutter)]"
           aria-labelledby="betrieblich-folgen-heading"
         >
           <h2
@@ -369,11 +395,6 @@ export function BetrieblichePflegeberatungFolgenBand() {
               </li>
             ))}
           </ul>
-          <div className="mt-10 flex justify-center sm:mt-12">
-            <BetrieblichAngebotOpenButton className="w-full max-w-md min-h-[3rem] px-8 py-3.5 text-base sm:w-auto sm:text-lg">
-              Jetzt unverbindliches Angebot anfordern
-            </BetrieblichAngebotOpenButton>
-          </div>
         </section>
       </div>
     </div>

@@ -61,14 +61,14 @@ export const metadata: Metadata = {
 export default function PflegeberatungPage() {
   return (
     <BetrieblichAngebotDialogProvider>
-      <article className="pb-0">
+      <article className="pb-16 sm:pb-24">
         <section
           id="betriebliche-pflegeberatung"
           aria-labelledby="betrieblich-heading"
           className="scroll-mt-[var(--ahs-header-scroll-padding)]"
         >
           {/* Weißer Streifen: Hero → Vorteile + „Was versteht man …“ (mint) → Statistik (weiß) → Folgen-Band */}
-          <div className="relative left-1/2 w-screen max-w-[100vw] -translate-x-1/2 overflow-x-visible overflow-y-visible bg-white">
+          <div className="relative left-1/2 w-screen max-w-[100vw] -translate-x-1/2 overflow-x-visible overflow-y-visible">
             <div className="relative w-full overflow-visible bg-white pt-8 sm:pt-10 lg:min-h-[min(100vw,480px)] lg:pt-0">
             <Container className="relative z-10 lg:pt-10">
               <header className="max-w-xl text-left lg:max-w-[min(100%,28rem)] lg:pr-4 xl:max-w-[32rem]">
@@ -133,7 +133,7 @@ export default function PflegeberatungPage() {
             <BetrieblichePflegeberatungVorteileVorStatistik />
 
             <div className="relative isolate overflow-visible">
-              <Container className="relative z-30 bg-white pb-[calc(1.5rem+3cm)] pointer-events-none sm:pb-[calc(2rem+3cm)]">
+              <Container className="relative z-30 bg-transparent pb-[calc(1.5rem+3cm)] pointer-events-none sm:pb-[calc(2rem+3cm)]">
                 <div className="pointer-events-auto">
                   <BetrieblichePflegeberatungWhiteIntro />
                 </div>
