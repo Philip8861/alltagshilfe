@@ -212,15 +212,21 @@ export default function PrivatePflegeberatungPage() {
         aria-labelledby="vorteile-heading"
       >
         <div className="relative mx-auto w-full max-w-6xl">
-          <h2 id="vorteile-heading" className={`${SECTION_TITLE_CLASS} ${ANIM_IN}`} style={{ animationDelay: "0ms" }}>
-            Unsere Vorteile
-          </h2>
-          <p
-            className={`${ANIM_IN} mt-2 max-w-3xl text-sm text-neutral-600 sm:text-base`}
-            style={{ animationDelay: "70ms" }}
-          >
-            Verlässlich, transparent und nah bei Ihnen – mit klaren Prozessen und echter Unterstützung im Alltag.
-          </p>
+          <div className="mx-auto flex w-full max-w-3xl flex-col items-center text-center">
+            <h2
+              id="vorteile-heading"
+              className={`${SECTION_TITLE_CLASS} text-balance ${ANIM_IN}`}
+              style={{ animationDelay: "0ms" }}
+            >
+              Unsere Vorteile
+            </h2>
+            <p
+              className={`${ANIM_IN} mt-2 text-pretty text-sm text-neutral-600 sm:text-base`}
+              style={{ animationDelay: "70ms" }}
+            >
+              Verlässlich, transparent und nah bei Ihnen – mit klaren Prozessen und echter Unterstützung im Alltag.
+            </p>
+          </div>
           <ul className="mt-6 grid gap-4 sm:grid-cols-2">
             {VORTEILE.map((text, i) => (
               <li

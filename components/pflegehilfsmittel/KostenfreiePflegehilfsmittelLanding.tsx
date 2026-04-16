@@ -464,16 +464,18 @@ export function KostenfreiePflegehilfsmittelLanding() {
           </svg>
           <RevealOnScroll>
             <div className="relative z-[1] mx-auto w-full max-w-6xl">
-              <h2
-                id="kostenfrei-vorteile-heading"
-                className="text-3xl font-bold tracking-tight text-[#0F4F68] sm:text-4xl"
-              >
-                Ihre Vorteile bei uns
-              </h2>
-              <p className="mt-2 max-w-3xl text-sm text-neutral-600 sm:text-base">
-                Verlässlich, transparent und nah bei Ihnen, mit klaren Prozessen und echter Unterstützung rund um Ihre
-                Pflegehilfsmittel.
-              </p>
+              <div className="mx-auto flex w-full max-w-3xl flex-col items-center text-center">
+                <h2
+                  id="kostenfrei-vorteile-heading"
+                  className="text-balance text-3xl font-bold tracking-tight text-[#0F4F68] sm:text-4xl"
+                >
+                  Ihre Vorteile bei uns
+                </h2>
+                <p className="mt-2 text-pretty text-sm text-neutral-600 sm:text-base">
+                  Verlässlich, transparent und nah bei Ihnen, mit klaren Prozessen und echter Unterstützung rund um Ihre
+                  Pflegehilfsmittel.
+                </p>
+              </div>
               <ul className="mt-6 grid gap-4 sm:grid-cols-2">
                 {KOSTENFREI_USPS.map((item) => (
                   <li
