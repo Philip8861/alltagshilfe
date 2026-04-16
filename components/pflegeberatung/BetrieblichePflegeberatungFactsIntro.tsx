@@ -7,8 +7,8 @@ import { cn } from "@/lib/utils";
 /** Natürliche Pixelmaße von public/images/statistik_betriebliche.webp */
 const STATISTIK_IMG = { w: 358, h: 538 } as const;
 
-/** Bild max. Breite: nach vorheriger Vergrößerung um ~30 % reduziert (Gesamtbereich kompakter) */
-const IMG_MAX_REM = 16.25 * 1.3 * 0.7;
+/** Bild max. Breite: Kompakt-Basis zuzüglich 25 % Vergrößerung für die Grafik */
+const IMG_MAX_REM = 16.25 * 1.3 * 0.7 * 1.25;
 
 /** Schatten nur entlang sichtbarer Bildpixel (Alpha) */
 const STATISTIK_DROP_SHADOW =
@@ -136,7 +136,7 @@ export function BetrieblichePflegeberatungFactsIntro() {
           <span className="block sm:inline">pflegende Angehörige sind:</span>
         </h2>
 
-        <div className="mx-auto mt-5 flex w-full max-w-[min(68rem,calc(100vw-1.5rem))] flex-col items-stretch gap-5 sm:mt-6 sm:gap-6 md:flex-row md:items-center md:justify-center md:gap-4 lg:mt-8 lg:gap-5 xl:gap-6">
+        <div className="mx-auto mt-2 flex w-full max-w-[min(68rem,calc(100vw-1.5rem))] flex-col items-stretch gap-5 sm:mt-3 sm:gap-6 md:flex-row md:items-center md:justify-center md:gap-4 lg:mt-4 lg:gap-5 xl:gap-6">
           <div className="order-1 flex min-h-0 min-w-0 w-full flex-1 justify-center md:max-w-none md:justify-end md:pr-1 lg:pr-3">
             <FactList
               items={FACTS_LEFT}
@@ -169,7 +169,7 @@ export function BetrieblichePflegeberatungFactsIntro() {
                 alt="Grafik: Belastung pflegender Angehöriger"
                 width={STATISTIK_IMG.w}
                 height={STATISTIK_IMG.h}
-                sizes="(max-width: 1023px) 300px, 260px"
+                sizes="(max-width: 1023px) 380px, 330px"
                 className={cn("h-auto w-full max-w-full rounded-sm", STATISTIK_DROP_SHADOW)}
               />
             </div>

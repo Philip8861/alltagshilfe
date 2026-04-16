@@ -26,12 +26,15 @@ function WelleObenBand({ fill }: { fill: string }) {
   );
 }
 
-/** „Was versteht man …“: wie Hero/Header weiß + welliger Übergang von Mint nach oben */
-function WelleWasBereichNachOben() {
+/** Mint (#F2F9FA) → Weiß: gleiche Kurve wie unten, oberhalb der Welle bleibt Mint sichtbar */
+function WelleMintZuWeissBand() {
   return (
-    <div className="pointer-events-none relative left-1/2 w-screen max-w-[100vw] -translate-x-1/2 leading-none">
+    <div
+      className="pointer-events-none relative left-1/2 w-screen max-w-[100vw] -translate-x-1/2 leading-none"
+      style={{ backgroundColor: BETRIEBLICH_HELL_BG }}
+    >
       <svg
-        className="relative -mt-px block h-11 w-full shrink-0 rotate-180 text-white sm:h-[3.25rem]"
+        className="relative -mb-px block h-12 w-full shrink-0 text-white sm:h-[3.75rem]"
         viewBox="0 0 1440 100"
         preserveAspectRatio="none"
         aria-hidden
@@ -45,10 +48,10 @@ function WelleWasBereichNachOben() {
   );
 }
 
-/** Welle unter hellen Fläche zu weißer Fläche (z. B. vor Statistik-Hub) */
+/** Welle unter hellen Fläche zu weißer Fläche (z. B. vor Statistik-Hub). bg-white verhindert mintfarbenen Streifen oberhalb der Kurve. */
 function WelleZuWeissBand() {
   return (
-    <div className="pointer-events-none relative left-1/2 mt-8 w-screen max-w-[100vw] -translate-x-1/2 leading-none sm:mt-10">
+    <div className="pointer-events-none relative left-1/2 w-screen max-w-[100vw] -translate-x-1/2 bg-white leading-none">
       <svg
         className="relative -mb-px block h-12 w-full shrink-0 text-white sm:h-[3.75rem]"
         viewBox="0 0 1440 100"
@@ -76,11 +79,14 @@ function IconCalendar() {
   );
 }
 
-function IconGift() {
+/** Stern – wirkt klarer als „Geschenk“ für Mitarbeiter-Benefit */
+function IconStarBenefit() {
   return (
     <svg className="h-6 w-6 sm:h-7 sm:w-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
-      <rect x="3" y="8" width="18" height="4" rx="1" />
-      <path d="M12 8v13M7 8V6a2 2 0 0 1 4 0v2M13 8V6a2 2 0 0 1 4 0v2" strokeLinecap="round" />
+      <path
+        d="M12 2l2.4 6.18L21 9.27l-5 4.87L18.18 21 12 17.77 5.82 21 7 14.14 2 9.27l6.6-.95L12 2z"
+        strokeLinejoin="round"
+      />
     </svg>
   );
 }
@@ -162,7 +168,7 @@ const VORTEILE = [
   {
     title: "Attraktiver Mitarbeiter-Benefit",
     text: "Steigert die Arbeitgeberattraktivität.",
-    Icon: IconGift,
+    Icon: IconStarBenefit,
   },
   {
     title: "Stärkere Mitarbeiterbindung",
@@ -260,12 +266,15 @@ export function BetrieblichePflegeberatungVorteileVorStatistik() {
         </ul>
       </section>
 
-      {/* Erklärtext: volle Breite, kein Kasten, welliger Übergang nach oben */}
-      <div className="relative left-1/2 mt-12 w-screen max-w-[100vw] -translate-x-1/2 bg-white sm:mt-14">
-        <WelleWasBereichNachOben />
+      {/* Welliger Übergang Mint → Weiß, dann Erklärtext auf Weiß */}
+      <div className="mt-10 sm:mt-12">
+        <WelleMintZuWeissBand />
+      </div>
+
+      <div className="relative left-1/2 w-screen max-w-[100vw] -translate-x-1/2 bg-white">
         <section
           aria-labelledby="betrieblich-was-ist-heading"
-          className="relative mx-auto max-w-7xl px-4 pb-10 pt-2 sm:px-6 sm:pb-12 sm:pt-3 lg:px-[var(--ahs-page-gutter)]"
+          className="relative mx-auto max-w-7xl px-4 pb-10 pt-6 sm:px-6 sm:pb-12 sm:pt-8 lg:px-[var(--ahs-page-gutter)]"
         >
           <h2
             id="betrieblich-was-ist-heading"
@@ -333,42 +342,57 @@ export function BetrieblichePflegeberatungVorteileVorStatistik() {
   );
 }
 
+/** Weiß → Folgen-Fläche: eine Welle ohne zweite „WelleObenBand“-Kante */
+function WelleWeissZuFolgenBand() {
+  return (
+    <div className="pointer-events-none relative left-1/2 w-screen max-w-[100vw] -translate-x-1/2 bg-white leading-none">
+      <svg
+        className="relative -mb-px block h-12 w-full shrink-0 sm:h-[3.75rem]"
+        viewBox="0 0 1440 100"
+        preserveAspectRatio="none"
+        aria-hidden
+      >
+        <path fill={FOLGEN_BAND_BG} d="M0,55 C240,18 480,92 720,48 C960,4 1200,78 1440,42 L1440,100 L0,100 Z" />
+      </svg>
+    </div>
+  );
+}
+
 /** Direkt unter den Fakten: welliger Übergang von Weiß zum Folgen-Band */
 export function BetrieblichePflegeberatungFolgenBand() {
   return (
-    <div
-      className="relative left-1/2 w-screen max-w-[100vw] -translate-x-1/2 overflow-visible pb-0"
-      style={{ backgroundColor: FOLGEN_BAND_BG }}
-    >
-      <WelleObenBand fill={FOLGEN_BAND_BG} />
-      <section
-        className="relative mx-auto max-w-7xl px-4 pb-10 pt-8 sm:px-6 sm:pb-12 sm:pt-10 lg:px-[var(--ahs-page-gutter)]"
-        aria-labelledby="betrieblich-folgen-heading"
-      >
-        <h2
-          id="betrieblich-folgen-heading"
-          className="mx-auto max-w-4xl text-center text-pretty text-xl font-extrabold text-[#0F4F68] sm:text-2xl"
+    <div className="relative left-1/2 w-screen max-w-[100vw] -translate-x-1/2 overflow-visible pb-0">
+      <WelleWeissZuFolgenBand />
+      <div className="pb-0" style={{ backgroundColor: FOLGEN_BAND_BG }}>
+        <section
+          className="relative mx-auto max-w-7xl px-4 pb-10 pt-4 sm:px-6 sm:pb-12 sm:pt-6 lg:px-[var(--ahs-page-gutter)]"
+          aria-labelledby="betrieblich-folgen-heading"
         >
-          Folgen für Arbeitgeber durch pflegende Beschäftigte
-        </h2>
-        <ul className="mt-8 grid gap-8 sm:gap-10 lg:grid-cols-3 lg:gap-8">
-          {FOLGEN.map(({ title, bullets, Icon }) => (
-            <li key={title} className="flex flex-col gap-3 sm:flex-row sm:gap-4">
-              <span className={`${ICON_WRAP} shrink-0 sm:mt-0.5`} aria-hidden>
-                <Icon />
-              </span>
-              <div className="min-w-0">
-                <p className="font-bold leading-snug text-[#0F4F68]">{title}</p>
-                <ul className="mt-2 list-disc space-y-2 pl-4 text-sm leading-relaxed text-neutral-700 sm:text-[0.95rem]">
-                  {bullets.map((b) => (
-                    <li key={b}>{b}</li>
-                  ))}
-                </ul>
-              </div>
-            </li>
-          ))}
-        </ul>
-      </section>
+          <h2
+            id="betrieblich-folgen-heading"
+            className="mx-auto max-w-4xl text-center text-pretty text-xl font-extrabold text-[#0F4F68] sm:text-2xl"
+          >
+            Folgen für Arbeitgeber durch pflegende Beschäftigte
+          </h2>
+          <ul className="mt-8 grid gap-8 sm:gap-10 lg:grid-cols-3 lg:gap-8">
+            {FOLGEN.map(({ title, bullets, Icon }) => (
+              <li key={title} className="flex flex-col gap-3 sm:flex-row sm:gap-4">
+                <span className={`${ICON_WRAP} shrink-0 sm:mt-0.5`} aria-hidden>
+                  <Icon />
+                </span>
+                <div className="min-w-0">
+                  <p className="font-bold leading-snug text-[#0F4F68]">{title}</p>
+                  <ul className="mt-2 list-disc space-y-2 pl-4 text-sm leading-relaxed text-neutral-700 sm:text-[0.95rem]">
+                    {bullets.map((b) => (
+                      <li key={b}>{b}</li>
+                    ))}
+                  </ul>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </section>
+      </div>
     </div>
   );
 }
