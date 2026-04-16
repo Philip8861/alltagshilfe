@@ -23,10 +23,11 @@ export function Header({ nunitoClass = "", balooClass = "" }: HeaderProps) {
               aria-label={`${siteConfig.name} – Startseite`}
             >
               <Image
-                src="/images/logo_header.svg?v=20260416"
+                src="/images/logo_header.webp?v=20260417"
                 alt={siteConfig.name}
-                width={210}
-                height={297}
+                width={257}
+                height={66}
+                sizes="(max-width: 640px) 120px, (max-width: 1024px) 140px, 180px"
                 className="h-[56.21px] w-auto object-contain sm:h-[62.82px] md:h-[59.51px] lg:h-[66.13px]"
                 priority
               />
