@@ -171,7 +171,7 @@ export function BetrieblichePflegeberatungFactsIntro() {
                 height={STATISTIK_IMG.h}
                 sizes="(max-width: 1023px) 840px, 760px"
                 className={cn(
-                  "relative z-[2] h-auto w-full max-w-full rounded-sm object-contain object-top",
+                  "relative z-[2] h-auto w-full max-w-full object-contain object-top",
                   STATISTIK_DROP_SHADOW,
                 )}
               />

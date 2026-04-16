@@ -68,7 +68,7 @@ export default function PflegeberatungPage() {
           className="scroll-mt-[var(--ahs-header-scroll-padding)]"
         >
           {/* Weißer Streifen: Hero → Vorteile + „Was versteht man …“ (mint) → Statistik (weiß) → Folgen-Band */}
-          <div className="relative left-1/2 w-screen max-w-[100vw] -translate-x-1/2 overflow-x-visible overflow-y-visible">
+          <div className="relative left-1/2 w-screen max-w-[100vw] -translate-x-1/2 overflow-x-visible overflow-y-visible bg-white">
             <div className="relative w-full overflow-visible bg-white pt-8 sm:pt-10 lg:min-h-[min(100vw,480px)] lg:pt-0">
             <Container className="relative z-10 lg:pt-10">
               <header className="max-w-xl text-left lg:max-w-[min(100%,28rem)] lg:pr-4 xl:max-w-[32rem]">
