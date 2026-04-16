@@ -55,7 +55,7 @@ export function HeaderStrip(_props: HeaderStripProps) {
             aria-label={`${siteConfig.name} – Startseite`}
           >
             <Image
-              src="/images/logo_weiß.png"
+              src="/images/logo_weiss.png"
               alt=""
               width={220}
               height={60}
