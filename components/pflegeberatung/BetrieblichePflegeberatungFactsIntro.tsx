@@ -2,13 +2,13 @@
 
 import Image from "next/image";
 import { useEffect, useRef, useState, type CSSProperties } from "react";
+import { BETRIEBLICH_STATISTIK_IMG_MAX_REM } from "@/components/pflegeberatung/betriebliche-statistik-layout";
 import { cn } from "@/lib/utils";
 
 /** Natürliche Pixelmaße von public/images/statistik_betriebliche.webp */
 const STATISTIK_IMG = { w: 358, h: 538 } as const;
 
-/** Bild max. Breite: Kompakt-Basis zuzüglich 25 % Vergrößerung für die Grafik */
-const IMG_MAX_REM = 16.25 * 1.3 * 0.7 * 1.25;
+const IMG_MAX_REM = BETRIEBLICH_STATISTIK_IMG_MAX_REM;
 
 /** Schatten nur entlang sichtbarer Bildpixel (Alpha) */
 const STATISTIK_DROP_SHADOW =
@@ -118,7 +118,7 @@ export function BetrieblichePflegeberatungFactsIntro() {
   return (
     <div
       ref={rootRef}
-      className="relative mt-6 sm:mt-8 lg:mt-10"
+      className="relative z-20 mt-6 sm:mt-8 lg:mt-10"
       role="region"
       aria-labelledby="betrieblich-statistik-hub-heading"
     >
@@ -130,7 +130,7 @@ export function BetrieblichePflegeberatungFactsIntro() {
       >
         <h2
           id="betrieblich-statistik-hub-heading"
-          className="mx-auto max-w-3xl text-pretty text-center text-[1.125rem] font-extrabold leading-tight tracking-tight text-[#0F4F68] sm:text-xl md:text-2xl lg:text-[1.45rem] lg:leading-snug"
+          className="mx-auto max-w-3xl text-pretty text-center text-[1.40625rem] font-extrabold leading-tight tracking-tight text-[#0F4F68] sm:text-[1.5625rem] md:text-[1.875rem] lg:text-[1.8125rem] lg:leading-snug"
         >
           <span className="block sm:inline">Statistik zeigt: </span>
           <span className="block sm:inline">pflegende Angehörige sind:</span>
@@ -169,7 +169,7 @@ export function BetrieblichePflegeberatungFactsIntro() {
                 alt="Grafik: Belastung pflegender Angehöriger"
                 width={STATISTIK_IMG.w}
                 height={STATISTIK_IMG.h}
-                sizes="(max-width: 1023px) 380px, 330px"
+                sizes="(max-width: 1023px) 500px, 440px"
                 className={cn("h-auto w-full max-w-full rounded-sm", STATISTIK_DROP_SHADOW)}
               />
             </div>

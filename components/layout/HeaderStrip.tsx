@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
+import { siteConfig } from "@/config/site";
 import { isPflegeboxKonfiguratorPagePath } from "@/lib/pflegebox-konfigurator-path";
 import { cn } from "@/lib/utils";
 
@@ -46,9 +47,12 @@ export function HeaderStrip(_props: HeaderStripProps) {
       style={{ backgroundColor: "#0F4F68", minHeight: "2.45rem" }}
     >
       <div className="flex w-full flex-row items-center justify-between gap-4 px-4 py-1.5 sm:px-6 lg:px-[var(--ahs-page-gutter)]">
-        <div className="flex min-w-0 flex-1 items-center justify-start text-left">
+        <div className="flex min-w-0 flex-1 items-baseline justify-start gap-x-1.5 text-left sm:gap-x-2">
+          <span className="shrink-0 text-[0.82rem] font-bold leading-none tracking-tight text-white sm:text-[0.92rem] md:text-[1.05rem]">
+            {siteConfig.name}
+          </span>
           <span
-            className="block min-w-0 truncate text-[0.7rem] leading-tight sm:text-xs md:text-sm md:font-semibold"
+            className="min-w-0 truncate text-[0.68rem] font-medium leading-tight sm:text-[0.75rem] md:text-sm md:font-semibold"
             aria-live="polite"
           >
             {TAGLINE.slice(0, taglineLength)}
