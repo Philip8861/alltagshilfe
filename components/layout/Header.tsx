@@ -1,6 +1,4 @@
 import Link from "next/link";
-import Image from "next/image";
-import { siteConfig } from "@/config/site";
 import { HeaderNav } from "./HeaderNav";
 import { HeaderStrip } from "./HeaderStrip";
 
@@ -14,26 +12,8 @@ export function Header({ nunitoClass = "", balooClass = "" }: HeaderProps) {
     <header className="sticky top-0 z-50 overflow-visible shadow-[0_4px_6px_-1px_rgb(0_0_0/0.07),0_2px_4px_-2px_rgb(0_0_0/0.07)]">
       <HeaderStrip nunitoClass={nunitoClass} balooClass={balooClass} />
       <div className="relative overflow-visible border-b border-[#0F4F68]/15 bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/80">
-        {/* Gleiche horizontale Gutter wie HeaderStrip (kein max-w-7xl) → Logo bündig unter „Gemeinsam Stark im Alltag“ */}
-        <div className="grid min-h-[4.375rem] w-full grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-x-2 gap-y-2 overflow-visible px-4 sm:gap-x-3 sm:px-6 md:gap-x-4 lg:gap-x-5 lg:px-[var(--ahs-page-gutter)]">
-          <div className="flex min-h-[4.375rem] min-w-0 items-center justify-self-start self-stretch">
-            <Link
-              href="/"
-              className="z-10 flex shrink-0 -translate-y-[5%] items-center focus:outline-none rounded md:h-[34.73px] md:w-auto"
-              aria-label={`${siteConfig.name} – Startseite`}
-            >
-              <Image
-                src="/images/logo_header.webp?v=20260420"
-                alt={siteConfig.name}
-                width={370}
-                height={96}
-                sizes="(max-width: 640px) 131px, (max-width: 1024px) 149px, 185px"
-                className="h-[32.82px] w-auto object-contain sm:h-[36.69px] md:h-[34.73px] lg:h-[38.62px]"
-                priority
-              />
-            </Link>
-          </div>
-          <div className="flex min-h-[4.375rem] min-w-0 max-w-[100vw] items-center justify-center gap-2 self-stretch sm:gap-3 md:gap-4 lg:gap-5 xl:gap-6">
+        <div className="flex min-h-[4.375rem] w-full flex-wrap items-center justify-center gap-x-3 gap-y-2 overflow-visible px-4 sm:gap-x-4 sm:px-6 lg:gap-x-5 lg:px-[var(--ahs-page-gutter)]">
+          <div className="flex min-h-[4.375rem] min-w-0 max-w-[100vw] flex-1 items-center justify-center gap-2 sm:gap-3 md:gap-4 lg:gap-5 xl:gap-6">
             <HeaderNav />
             <Link
               href="/kontakt"
@@ -43,7 +23,6 @@ export function Header({ nunitoClass = "", balooClass = "" }: HeaderProps) {
               Jetzt Kontakt aufnehmen
             </Link>
           </div>
-          <div className="min-w-0" aria-hidden="true" />
         </div>
       </div>
     </header>
