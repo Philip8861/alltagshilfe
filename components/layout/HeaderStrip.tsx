@@ -7,11 +7,15 @@ import { siteConfig } from "@/config/site";
 import { isPflegeboxKonfiguratorPagePath } from "@/lib/pflegebox-konfigurator-path";
 import { cn } from "@/lib/utils";
 
-const TAGLINE = "gemeinsam stark im Alltag";
+/** Sichtbarer Markenname im Streifen (Leerzeichen vor „Süd“) */
+const STRIP_BRAND_DISPLAY = "Alltagshilfe Süd";
+/** Nach „ - “; wird zeichenweise eingeblendet */
+const TAGLINE = "Gemeinsam stark im Alltag";
 const TAGLINE_CHAR_MS = 55;
 
-const STRIP_LINE_CLASS =
-  "text-[0.68rem] font-medium leading-tight sm:text-[0.75rem] md:text-sm md:font-semibold";
+/** Marke und Tagline: identische Schriftgröße und -stärke */
+const STRIP_TEXT_CLASS =
+  "inline text-[0.68rem] font-medium leading-tight text-white/95 sm:text-[0.75rem] md:text-sm md:font-semibold";
 
 type HeaderStripProps = {
   nunitoClass?: string;
@@ -50,15 +54,18 @@ export function HeaderStrip(_props: HeaderStripProps) {
       style={{ backgroundColor: "#0F4F68", minHeight: "2.45rem" }}
     >
       <div className="flex w-full flex-row items-center justify-between gap-4 px-4 py-1.5 sm:px-6 lg:px-[var(--ahs-page-gutter)]">
-        <div className="flex min-w-0 flex-1 items-center justify-start gap-x-1.5 text-left sm:gap-x-2">
+        <div className="flex min-w-0 flex-1 items-center justify-start gap-x-0 text-left">
           <Link
             href="/"
-            className={`shrink-0 rounded-sm text-white/95 no-underline transition-colors hover:text-white focus:outline-none focus:ring-2 focus:ring-white/80 focus:ring-offset-2 focus:ring-offset-[#0F4F68] ${STRIP_LINE_CLASS}`}
+            className={`shrink-0 rounded-sm no-underline transition-colors hover:text-white focus:outline-none focus:ring-2 focus:ring-white/80 focus:ring-offset-2 focus:ring-offset-[#0F4F68] ${STRIP_TEXT_CLASS}`}
             aria-label={`${siteConfig.name} – Startseite`}
           >
-            {siteConfig.name}
+            {STRIP_BRAND_DISPLAY}
           </Link>
-          <span className={`min-w-0 truncate ${STRIP_LINE_CLASS}`} aria-live="polite">
+          <span className={`shrink-0 whitespace-pre ${STRIP_TEXT_CLASS}`} aria-hidden>
+            {" - "}
+          </span>
+          <span className={`min-w-0 truncate ${STRIP_TEXT_CLASS}`} aria-live="polite">
             {TAGLINE.slice(0, taglineLength)}
             {taglineLength < TAGLINE.length && <span className="animate-pulse" aria-hidden>|</span>}
           </span>
