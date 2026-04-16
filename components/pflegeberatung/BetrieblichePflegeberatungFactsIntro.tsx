@@ -4,8 +4,8 @@ import Image from "next/image";
 import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { cn } from "@/lib/utils";
 
-/** Natürliche Pixelmaße von public/images/statistik.webp */
-const STATISTIK_IMG = { w: 307, h: 461 } as const;
+/** Natürliche Pixelmaße von public/images/statistik_betriebliche.webp */
+const STATISTIK_IMG = { w: 358, h: 538 } as const;
 
 /** +30 % ggü. früher ca. max. 16,25 rem effektiver Bildbreite */
 const IMG_MAX_REM = 16.25 * 1.3;
@@ -164,11 +164,11 @@ export function BetrieblichePflegeberatungFactsIntro() {
               style={reducedMotion || !show ? undefined : { transitionDelay: "220ms" }}
             >
               <Image
-                src="/images/statistik.webp"
+                src="/images/statistik_betriebliche.webp"
                 alt="Grafik: Belastung pflegender Angehöriger"
                 width={STATISTIK_IMG.w}
                 height={STATISTIK_IMG.h}
-                sizes="(max-width: 1023px) 400px, 340px"
+                sizes="(max-width: 1023px) 420px, 360px"
                 className={cn("h-auto w-full max-w-full rounded-sm", STATISTIK_DROP_SHADOW)}
               />
             </div>
