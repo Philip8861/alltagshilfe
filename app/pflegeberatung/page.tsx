@@ -4,6 +4,7 @@ import { Container } from "@/components/layout/Container";
 import {
   BetrieblichePflegeberatungFolgenBand,
   BetrieblichePflegeberatungSection,
+  BetrieblichePflegeberatungVorteileVorStatistik,
   BetrieblichePflegeberatungWhiteIntro,
 } from "@/components/pflegeberatung/BetrieblichePflegeberatungSection";
 import {
@@ -130,7 +131,9 @@ export default function PflegeberatungPage() {
             </div>
             </div>
 
-            <Container className="relative z-10 pb-[calc(1.5rem+3cm)] sm:pb-[calc(2rem+3cm)]">
+            <BetrieblichePflegeberatungVorteileVorStatistik />
+
+            <Container className="relative z-10 bg-white pb-[calc(1.5rem+3cm)] sm:pb-[calc(2rem+3cm)]">
               <BetrieblichePflegeberatungWhiteIntro />
             </Container>
             <BetrieblichePflegeberatungFolgenBand />

@@ -45,6 +45,25 @@ function WelleZuVorteileBand() {
   );
 }
 
+/** Welle unter hellen Fläche zu weißer Fläche (z. B. vor Statistik-Hub) */
+function WelleZuWeissBand() {
+  return (
+    <div className="pointer-events-none relative left-1/2 mt-8 w-screen max-w-[100vw] -translate-x-1/2 leading-none sm:mt-10">
+      <svg
+        className="relative -mb-px block h-12 w-full shrink-0 text-white sm:h-[3.75rem]"
+        viewBox="0 0 1440 100"
+        preserveAspectRatio="none"
+        aria-hidden
+      >
+        <path
+          fill="currentColor"
+          d="M0,55 C240,18 480,92 720,48 C960,4 1200,78 1440,42 L1440,100 L0,100 Z"
+        />
+      </svg>
+    </div>
+  );
+}
+
 const POP_IN =
   "opacity-0 motion-reduce:opacity-100 motion-reduce:animate-none animate-fade-in-up";
 
@@ -196,6 +215,53 @@ export function BetrieblichePflegeberatungWhiteIntro() {
   return <BetrieblichePflegeberatungFactsIntro />;
 }
 
+/**
+ * „Ihre Vorteile“ mit welligem Übergang von Weiß (Hero) nach unten und Übergang zu Weiß (Statistik-Hub).
+ * Liegt oberhalb von „Statistik zeigt …“.
+ */
+export function BetrieblichePflegeberatungVorteileVorStatistik() {
+  const vorteilBaseDelay = 80;
+
+  return (
+    <div
+      className="relative left-1/2 w-screen max-w-[100vw] -translate-x-1/2 overflow-visible pb-0"
+      style={{ backgroundColor: BETRIEBLICH_HELL_BG }}
+    >
+      <WelleObenBand fill={BETRIEBLICH_HELL_BG} />
+      <section
+        className="relative mx-auto max-w-7xl px-4 pb-2 pt-8 sm:px-6 sm:pb-4 sm:pt-10 lg:px-[var(--ahs-page-gutter)]"
+        aria-labelledby="betrieblich-vorteile-heading"
+      >
+        <h2
+          id="betrieblich-vorteile-heading"
+          className={`${POP_IN} text-xl font-extrabold text-[#0F4F68] sm:text-2xl`}
+          style={{ animationDelay: `${vorteilBaseDelay}ms` }}
+        >
+          Ihre Vorteile auf einen Blick
+        </h2>
+        <ul className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3">
+          {VORTEILE.map(({ title, text, Icon }, i) => (
+            <li
+              key={title}
+              className={`${POP_IN} flex gap-4 rounded-2xl border border-[#0F4F68]/12 bg-white/90 p-4 shadow-sm transition-shadow hover:shadow-md sm:p-5`}
+              style={{ animationDelay: `${vorteilBaseDelay + 80 + i * 70}ms` }}
+            >
+              <span className={ICON_WRAP} aria-hidden>
+                <Icon />
+              </span>
+              <div className="min-w-0">
+                <p className="font-bold leading-snug text-[#0F4F68]">{title}</p>
+                <p className="mt-1.5 text-sm leading-relaxed text-neutral-700 sm:text-[0.95rem]">{text}</p>
+              </div>
+            </li>
+          ))}
+        </ul>
+      </section>
+      <WelleZuWeissBand />
+    </div>
+  );
+}
+
 /** Direkt unter den Fakten: welliger Übergang von Weiß zum Folgen-Band */
 export function BetrieblichePflegeberatungFolgenBand() {
   return (
@@ -238,7 +304,6 @@ export function BetrieblichePflegeberatungFolgenBand() {
 
 export function BetrieblichePflegeberatungSection() {
   const wasBodyDelays = [80, 160, 240, 320, 400, 480, 560, 640, 720] as const;
-  const vorteilBaseDelay = 880;
 
   return (
     <div className="space-y-14 sm:space-y-16">
@@ -312,57 +377,6 @@ export function BetrieblichePflegeberatungSection() {
 
         <WelleZuVorteileBand />
       </div>
-
-      <section aria-labelledby="betrieblich-vorteile-heading">
-        <h3
-          id="betrieblich-vorteile-heading"
-          className={`${POP_IN} text-xl font-extrabold text-[#0F4F68] sm:text-2xl`}
-          style={{ animationDelay: `${vorteilBaseDelay}ms` }}
-        >
-          Ihre Vorteile auf einen Blick
-        </h3>
-        <ul className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3">
-          {VORTEILE.map(({ title, text, Icon }, i) => (
-            <li
-              key={title}
-              className={`${POP_IN} flex gap-4 rounded-2xl border border-[#0F4F68]/12 bg-white/90 p-4 shadow-sm transition-shadow hover:shadow-md sm:p-5`}
-              style={{ animationDelay: `${vorteilBaseDelay + 80 + i * 70}ms` }}
-            >
-              <span className={ICON_WRAP} aria-hidden>
-                <Icon />
-              </span>
-              <div className="min-w-0">
-                <p className="font-bold leading-snug text-[#0F4F68]">{title}</p>
-                <p className="mt-1.5 text-sm leading-relaxed text-neutral-700 sm:text-[0.95rem]">{text}</p>
-              </div>
-            </li>
-          ))}
-        </ul>
-      </section>
-
-      <section
-        className={`${POP_IN} rounded-2xl border border-[#0F4F68]/10 bg-white p-5 shadow-sm sm:p-8`}
-        style={{ animationDelay: `${vorteilBaseDelay + 80 + VORTEILE.length * 70 + 120}ms` }}
-        aria-labelledby="betrieblich-demografie-heading"
-      >
-        <h3 id="betrieblich-demografie-heading" className="text-xl font-extrabold text-[#0F4F68] sm:text-2xl">
-          Wenn Arbeit und Pflege kollidieren: Der demografische Wandel und seine Folgen für Arbeitgeber
-        </h3>
-        <div className="mt-5 space-y-4 text-pretty text-neutral-700 leading-relaxed sm:text-[1.05rem]">
-          <p>
-            Der demografische Wandel verändert unsere Gesellschaft grundlegend und stellt insbesondere Arbeitgeber vor neue
-            Herausforderungen. Bis 2035 wird die Zahl der Menschen über 67 Jahre in Deutschland auf rund 20 Millionen
-            steigen. Damit wächst nicht nur die Gruppe der Pflegebedürftigen, sondern auch die Zahl der Erwerbstätigen, die
-            ihre Angehörigen zu Hause pflegen.
-          </p>
-          <p>
-            Schon heute sind über 5 Millionen Menschen in Deutschland auf Pflege angewiesen – mehr als 80&nbsp;% davon werden
-            zu Hause betreut, meist durch Familienangehörige. Ein großer Teil dieser pflegenden Angehörigen ist berufstätig.
-            Studien zeigen: Bereits heute pflegt etwa jeder zehnte Arbeitnehmer regelmäßig ein Familienmitglied – Tendenz stark
-            steigend.
-          </p>
-        </div>
-      </section>
     </div>
   );
 }

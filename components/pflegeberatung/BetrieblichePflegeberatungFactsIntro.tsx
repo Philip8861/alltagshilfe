@@ -31,6 +31,25 @@ const FACTS_RIGHT = [
   "Viele reduzieren Arbeitszeit oder steigen aus.",
 ] as const;
 
+/** Welliger Übergang nach oben (optisch zu heller Vorteils-Fläche), oberhalb „Statistik zeigt …“ */
+function WelleStatistikNachOben() {
+  return (
+    <div className="pointer-events-none relative left-1/2 mb-6 w-screen max-w-[100vw] -translate-x-1/2 leading-none sm:mb-8">
+      <svg
+        className="block h-10 w-full shrink-0 rotate-180 text-[#F2F9FA] sm:h-12"
+        viewBox="0 0 1440 100"
+        preserveAspectRatio="none"
+        aria-hidden
+      >
+        <path
+          fill="currentColor"
+          d="M0,55 C240,18 480,92 720,48 C960,4 1200,78 1440,42 L1440,100 L0,100 Z"
+        />
+      </svg>
+    </div>
+  );
+}
+
 function usePrefersReducedMotion(): boolean {
   const [reduced, setReduced] = useState(false);
   useEffect(() => {
@@ -128,6 +147,7 @@ export function BetrieblichePflegeberatungFactsIntro() {
           show ? "opacity-100" : "opacity-0",
         )}
       >
+        <WelleStatistikNachOben />
         <h2
           id="betrieblich-statistik-hub-heading"
           className="mx-auto max-w-4xl text-pretty text-center text-[1.35rem] font-extrabold leading-tight tracking-tight text-[#0F4F68] sm:text-2xl md:text-3xl lg:text-[2rem] lg:leading-snug"
