@@ -160,7 +160,7 @@ export function HaushaltshilfeLanding() {
   return (
     <div className="min-w-0 overflow-x-clip overflow-y-visible bg-[#fafbfc] text-neutral-700 antialiased">
       <article id="haushaltshilfe-hero" className="min-w-0 scroll-mt-24 overflow-x-clip overflow-y-visible">
-        <section className="relative z-0 box-border mx-auto w-full min-w-0 max-w-7xl px-4 pb-16 pt-0 sm:px-6 sm:pb-24 lg:px-[var(--ahs-page-gutter)] lg:pb-[clamp(5.5rem,12vh+2rem,9rem)] lg:pt-[clamp(2rem,5vh+1.25rem,4.75rem)] xl:pb-[clamp(6.5rem,13vh+2.5rem,10rem)]">
+        <section className="relative z-0 box-border mx-auto w-full min-w-0 max-w-7xl px-4 pb-10 pt-0 sm:px-6 sm:pb-16 lg:px-[var(--ahs-page-gutter)] lg:pb-[clamp(4rem,9vh+1.5rem,7rem)] lg:pt-[clamp(2rem,5vh+1.25rem,4.75rem)] xl:pb-[clamp(5rem,10vh+1.5rem,8rem)]">
           <div className="flex flex-col-reverse items-center gap-10 lg:grid lg:grid-cols-[minmax(0,0.34fr)_minmax(0,0.66fr)] lg:items-center lg:justify-items-stretch lg:gap-x-[clamp(1.5rem,3vw,3.25rem)] lg:gap-y-0">
             <div className="box-border w-full min-w-0 max-w-full space-y-[clamp(1.25rem,2vh+0.75rem,1.75rem)] lg:min-w-0 lg:justify-self-start lg:space-y-[clamp(1.15rem,1.6vh+0.7rem,1.75rem)] lg:-translate-x-[clamp(0.75rem,4.5vw,3rem)] lg:pr-0 motion-reduce:lg:translate-x-0">
               <h1
@@ -170,17 +170,17 @@ export function HaushaltshilfeLanding() {
                 <span className="block">Haushaltshilfe ganz in Ihrer Nähe</span>
               </h1>
               <ul
-                className="mt-5 min-w-0 space-y-3 overflow-x-auto overflow-y-visible pb-1 sm:mt-6 sm:space-y-3.5 lg:mt-0 lg:space-y-[clamp(0.65rem,0.35rem+0.9vw,1rem)]"
+                className="mt-5 min-w-0 space-y-3 sm:mt-6 sm:space-y-3.5 lg:mt-0 lg:space-y-[clamp(0.65rem,0.35rem+0.9vw,1rem)]"
                 aria-label="Ihre Vorteile auf einen Blick"
               >
                 {HERO_VORTEILE.map((line, i) => (
                   <li
                     key={line}
-                    className="flex min-w-0 flex-nowrap items-center gap-3 text-lg font-semibold leading-snug text-[#0F4F68] opacity-0 motion-reduce:opacity-100 animate-fade-in-up sm:text-xl lg:text-[clamp(1.05rem,0.82rem+0.5vw,1.35rem)]"
+                    className="flex min-w-0 items-start gap-3 text-lg font-semibold leading-snug text-[#0F4F68] opacity-0 motion-reduce:opacity-100 animate-fade-in-up sm:text-xl lg:items-center lg:text-[clamp(1.05rem,0.82rem+0.5vw,1.35rem)]"
                     style={{ animationDelay: `${0.45 + i * 0.22}s` }}
                   >
-                    <HeroCheckIcon />
-                    <span className="whitespace-nowrap max-sm:whitespace-normal">{line}</span>
+                    <HeroCheckIcon className="mt-0.5 lg:mt-0" />
+                    <span className="min-w-0 flex-1 text-pretty">{line}</span>
                   </li>
                 ))}
               </ul>
@@ -225,7 +225,7 @@ export function HaushaltshilfeLanding() {
         </section>
 
         <section
-          className="relative z-10 overflow-x-clip bg-[#F2F9FA] px-4 pb-16 pt-[clamp(4.5rem,10vw,6.5rem)] sm:px-6 sm:pb-20 lg:px-[var(--ahs-page-gutter)] lg:pb-24"
+          className="relative z-10 overflow-x-clip bg-[#F2F9FA] px-4 pb-16 pt-[clamp(2.5rem,4.5vw,4.25rem)] sm:px-6 sm:pb-20 lg:px-[var(--ahs-page-gutter)] lg:pb-24"
           aria-labelledby="haushalt-schritte-heading"
         >
           <svg
@@ -244,7 +244,7 @@ export function HaushaltshilfeLanding() {
                   id="haushalt-schritte-heading"
                   className="text-balance text-3xl font-bold tracking-tight text-[#0F4F68] sm:text-4xl"
                 >
-                  So einfach starten Sie mit uns
+                  So einfach zur passenden Haushaltshilfe
                 </h2>
                 <p className="mt-3 text-pretty text-sm text-[#8a6a55] sm:text-base">
                   Drei Schritte zu verlässlicher Haushaltshilfe – transparent und persönlich.
