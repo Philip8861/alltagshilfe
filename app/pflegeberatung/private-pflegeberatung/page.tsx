@@ -262,9 +262,9 @@ export default function PrivatePflegeberatungPage() {
         </div>
       </section>
 
-      {/* Welliger Übergang von Weiß (Vorteile) zu Kundenstimmen */}
+      {/* Welliger Übergang von Weiß (Vorteile) zu Kundenstimmen; unten Luft zur FAQ-Welle (z-[11]), damit Inhalt nicht überdeckt wird */}
       <div
-        className="relative z-10 w-full [&>section]:!mt-8 sm:[&>section]:!mt-10 lg:[&>section]:!mt-12"
+        className="relative z-10 w-full pb-20 sm:pb-24 lg:pb-28 [&>section]:!mt-8 sm:[&>section]:!mt-10 lg:[&>section]:!mt-12"
         style={{ backgroundColor: KUNDENSTIMMEN_SURFACE }}
       >
         <WelleObenMitFuellfarbe fill={KUNDENSTIMMEN_SURFACE} />

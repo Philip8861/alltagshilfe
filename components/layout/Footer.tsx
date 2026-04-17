@@ -42,7 +42,7 @@ export function Footer() {
       {/* Unten in px: bei Lesbarkeits-Zoom (html font-size %) würden rem-Paddings extrem groß wirken */}
       <Container className="relative z-10 pt-12 sm:pt-16 pb-[max(8px,env(safe-area-inset-bottom,0px))]">
         <div className="mx-auto grid w-full max-w-6xl grid-cols-1 justify-items-center gap-y-[3.125rem] text-center lg:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] lg:justify-items-stretch lg:gap-x-[4.375rem] lg:gap-y-[3.125rem] lg:text-left xl:gap-x-20">
-          <div className="flex min-w-0 max-w-md flex-col items-center justify-self-center text-center lg:max-w-lg lg:translate-x-0">
+          <div className="flex min-w-0 max-w-md flex-col items-center justify-self-center text-center lg:max-w-lg lg:justify-self-start lg:translate-x-[25%]">
             <p className="text-sm font-semibold text-neutral-900">{siteConfig.name}</p>
             <p className="mt-2 max-w-sm text-pretty text-sm leading-relaxed text-neutral-600 sm:max-w-md">
               {siteConfig.description}
@@ -63,7 +63,7 @@ export function Footer() {
               ))}
             </ul>
           </div>
-          <div className="min-w-0 max-w-md lg:max-w-none lg:justify-self-end lg:translate-x-[25%]">
+          <div className="min-w-0 max-w-md lg:max-w-none lg:justify-self-end lg:-translate-x-[25%]">
             <p className="text-sm font-semibold text-neutral-900">Rechtliches</p>
             <ul className="mt-3 flex flex-col items-center gap-2 lg:items-start">
               <li>
