@@ -134,14 +134,14 @@ export default function PrivatePflegeberatungPage() {
                 Gute Pflege beginnt mit einer guten Pflegeberatung.
               </p>
               <ul
-                className={`${ANIM_IN} mt-5 w-full max-w-xl space-y-3 text-left sm:mt-6 sm:space-y-3.5 lg:mx-0`}
+                className={`${ANIM_IN} mx-auto mt-5 w-full max-w-xl space-y-3 text-left sm:mt-6 sm:space-y-3.5 lg:mx-0`}
                 style={{ animationDelay: "240ms" }}
                 aria-label="Ihre Vorteile auf einen Blick"
               >
                 {HERO_KURZ_VORTEILE.map((line) => (
-                  <li key={line} className="flex items-start justify-center gap-3 sm:items-center lg:justify-start">
+                  <li key={line} className="flex w-full items-start gap-3 sm:items-center lg:items-start">
                     <HeroCheckIcon className="mt-0.5 sm:mt-0" />
-                    <span className="text-pretty text-[1.05rem] font-semibold leading-snug text-[#0F4F68] sm:text-[1.125rem]">
+                    <span className="min-w-0 flex-1 text-pretty text-left text-[1.05rem] font-semibold leading-snug text-[#0F4F68] sm:text-[1.125rem]">
                       {line}
                     </span>
                   </li>
@@ -176,12 +176,12 @@ export default function PrivatePflegeberatungPage() {
             unzureichend informiert. Wir machen das anders: Wir nehmen uns die nötige Zeit für Sie. Unser Ziel ist es, Sie
             umfassend und detailliert zu informieren, damit Sie im Alltag optimal entlastet werden.
           </p>
-          <div className={`${ANIM_IN} flex w-full justify-center`} style={{ animationDelay: "160ms" }}>
-            <PflegeberatungNaehePlzDialog />
-          </div>
-          <p className={`${ANIM_IN} mt-6 max-w-3xl text-pretty ${INTRO_BODY_CLASS}`} style={{ animationDelay: "200ms" }}>
+          <p className={`${ANIM_IN} mt-6 max-w-3xl text-pretty ${INTRO_BODY_CLASS}`} style={{ animationDelay: "160ms" }}>
             Dabei bleiben wir neutral und kümmern uns um die bestmögliche Versorgung zuhause.
           </p>
+          <div className={`${ANIM_IN} mt-6 flex w-full justify-center`} style={{ animationDelay: "200ms" }}>
+            <PflegeberatungNaehePlzDialog />
+          </div>
         </div>
       </section>
 
@@ -249,35 +249,21 @@ export default function PrivatePflegeberatungPage() {
         </div>
       </section>
 
-      <KundenstimmenCarousel />
-
-      <div className="relative z-0 -mt-[9%] min-h-[26vh] flex-1 bg-[#F2F9FA] px-4 pt-16 pb-20 sm:pt-18 sm:pb-24 lg:px-[var(--ahs-page-gutter)]">
-        <svg
-          className="pointer-events-none absolute left-0 top-0 block h-12 w-full -translate-y-[70%] sm:h-16"
-          viewBox="0 0 1200 120"
-          preserveAspectRatio="none"
-          fill="none"
-          overflow="visible"
-          aria-hidden
-        >
-          <rect x="-48" y="0" width="48" height="120" fill="#F2F9FA" />
-          <rect x="1200" y="0" width="48" height="120" fill="#F2F9FA" />
-          <path
-            d="M0,120 C200,32 420,8 600,22 C800,38 1010,90 1200,120 L1200,120 L0,120 Z"
-            fill="#F2F9FA"
-          />
-        </svg>
-        <div
-          className="pointer-events-none absolute left-0 top-0 h-10 w-full -translate-y-2 bg-gradient-to-b from-[#F2F9FA]/85 to-transparent"
-          aria-hidden
-        />
+      {/* Welliger Übergang von Weiß (Vorteile) zu Kundenstimmen */}
+      <div
+        className="relative z-10 w-full [&>section]:!mt-8 sm:[&>section]:!mt-10 lg:[&>section]:!mt-12"
+        style={{ backgroundColor: PAGE_SURFACE }}
+      >
+        <WelleObenMitFuellfarbe fill={PAGE_SURFACE} />
+        <KundenstimmenCarousel />
       </div>
 
-      {/* FAQ – optisch wie Kostenfreie-Pflegehilfsmittel-Landing (zentriert, details/summary, Verlauf) */}
+      {/* FAQ – Hintergrund #FAFAFA, welliger Anschluss an den Bereich darüber */}
       <section
-        className="relative isolate overflow-x-clip bg-gradient-to-b from-[#e8f4f7]/90 via-[#fafbfc] to-white py-14 sm:py-20"
+        className="relative isolate overflow-x-clip bg-[#FAFAFA] py-14 sm:py-20"
         aria-labelledby="faq-heading"
       >
+        <WelleObenMitFuellfarbe fill="#FAFAFA" />
         <div
           className="pointer-events-none absolute -right-24 top-10 h-72 w-72 rounded-full bg-[#F78F2E]/10 blur-3xl sm:-right-16"
           aria-hidden

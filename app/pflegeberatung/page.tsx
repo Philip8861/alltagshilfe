@@ -75,7 +75,7 @@ export default function PflegeberatungPage() {
               <header className="max-w-xl text-left lg:max-w-[min(100%,28rem)] lg:pr-4 xl:max-w-[32rem]">
                 <h1
                   id="betrieblich-heading"
-                  className="max-w-[24rem] text-balance text-[1.375rem] font-extrabold leading-snug tracking-tight text-[#0F4F68] sm:max-w-2xl sm:text-[1.65rem] sm:leading-tight lg:max-w-none lg:text-[clamp(1.5rem,0.6rem+1.4vw,2.75rem)] lg:leading-[1.12]"
+                  className="max-w-[24rem] text-balance text-3xl font-extrabold leading-tight tracking-tight text-[#0F4F68] sm:max-w-2xl sm:text-4xl lg:max-w-none lg:text-[clamp(1.5rem,0.6rem+1.4vw,2.75rem)] lg:leading-[1.12]"
                 >
                   <span className="block">Betriebliche</span>
                   <span className="block">Pflegeberatung</span>
