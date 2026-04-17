@@ -41,16 +41,16 @@ export function Footer() {
       </div>
       {/* Unten in px: bei Lesbarkeits-Zoom (html font-size %) würden rem-Paddings extrem groß wirken */}
       <Container className="relative z-10 pt-12 sm:pt-16 pb-[max(8px,env(safe-area-inset-bottom,0px))]">
-        <div className="mx-auto grid w-full max-w-6xl grid-cols-1 items-start gap-x-0 gap-y-[3.125rem] text-left sm:grid-cols-2 sm:gap-x-[3.75rem] sm:gap-y-[3.125rem] lg:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] lg:gap-x-[4.375rem] xl:gap-x-20">
-          <div className="flex min-w-0 flex-col items-center lg:justify-self-start lg:-translate-x-[25%]">
+        <div className="mx-auto grid w-full max-w-6xl grid-cols-1 justify-items-center gap-y-[3.125rem] text-center lg:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] lg:justify-items-stretch lg:gap-x-[4.375rem] lg:gap-y-[3.125rem] lg:text-left xl:gap-x-20">
+          <div className="flex min-w-0 max-w-md flex-col items-center lg:max-w-none lg:items-end lg:justify-self-start lg:-translate-x-[25%]">
             <p className="text-sm font-semibold text-neutral-900">{siteConfig.name}</p>
-            <p className="mt-2 max-w-sm text-pretty text-center text-sm leading-relaxed text-neutral-600 lg:max-w-md">
+            <p className="mt-2 max-w-sm text-pretty text-center text-sm leading-relaxed text-neutral-600 lg:max-w-md lg:text-right">
               {siteConfig.description}
             </p>
           </div>
-          <div className="min-w-0 text-center lg:justify-self-center lg:px-2">
+          <div className="min-w-0 text-center lg:justify-self-center lg:px-2 lg:text-center">
             <p className="text-sm font-semibold text-neutral-900">Navigation</p>
-            <ul className="mt-3 flex flex-col items-center gap-2 sm:gap-2">
+            <ul className="mt-3 flex flex-col items-center gap-2">
               {navLinks.map(({ href, label }) => (
                 <li key={href}>
                   <Link
@@ -63,9 +63,9 @@ export function Footer() {
               ))}
             </ul>
           </div>
-          <div className="min-w-0 lg:justify-self-end lg:translate-x-[25%]">
+          <div className="min-w-0 max-w-md lg:max-w-none lg:justify-self-end lg:translate-x-[25%]">
             <p className="text-sm font-semibold text-neutral-900">Rechtliches</p>
-            <ul className="mt-3 space-y-2">
+            <ul className="mt-3 flex flex-col items-center gap-2 lg:items-start">
               <li>
                 <Link
                   href="/impressum"

@@ -428,9 +428,9 @@ export function BetrieblichePflegeberatungFolgenBand() {
                 <span className={`${ICON_WRAP} shrink-0 sm:mt-0.5`} aria-hidden>
                   <Icon />
                 </span>
-                <div className="min-w-0">
+                <div className="min-w-0 w-full max-sm:flex max-sm:flex-col max-sm:items-center">
                   <p className="font-bold leading-snug text-[#0F4F68]">{title}</p>
-                  <ul className="mt-2 list-disc space-y-2 pl-4 text-sm leading-relaxed text-neutral-700 sm:text-[0.95rem]">
+                  <ul className="mt-2 w-full max-w-md list-disc space-y-2 pl-5 text-left text-sm leading-relaxed text-neutral-700 sm:max-w-none sm:pl-4 sm:text-[0.95rem]">
                     {bullets.map((b) => (
                       <li key={b}>{b}</li>
                     ))}

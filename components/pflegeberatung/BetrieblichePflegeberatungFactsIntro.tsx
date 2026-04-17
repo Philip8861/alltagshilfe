@@ -57,6 +57,8 @@ function FactList({
   reducedMotion,
   delayOffsetMs,
   listAriaLabel,
+  /** Mobil: Aufzählungspunkte, Text links in mittig ausgerichtetem Block */
+  bulletsMobile,
 }: {
   items: readonly string[];
   align: "left" | "right" | "center";
@@ -66,23 +68,40 @@ function FactList({
   delayOffsetMs: number;
   /** Optional: kombinierte Liste (mobil zentriert) */
   listAriaLabel?: string;
+  bulletsMobile?: boolean;
 }) {
   const textAlign =
-    align === "center" ? "text-center" : align === "right" ? "text-right" : "text-left";
+    bulletsMobile
+      ? "text-left"
+      : align === "center"
+        ? "text-center"
+        : align === "right"
+          ? "text-right"
+          : "text-left";
   const lgAlign =
-    align === "center" ? "" : align === "right" ? "lg:text-right" : "lg:text-left";
+    bulletsMobile || align === "center" ? "" : align === "right" ? "lg:text-right" : "lg:text-left";
 
   const defaultAria =
     align === "right" ? "Weitere Kennzahlen" : align === "center" ? "Kennzahlen zur Belastung" : "Kennzahlen zur Belastung";
 
   return (
     <ul
-      className={cn("list-none space-y-3 sm:space-y-3.5 md:space-y-3.5 lg:space-y-4", textAlign, lgAlign)}
+      className={cn(
+        bulletsMobile
+          ? "list-disc space-y-3 pl-5 marker:text-[#0F4F68] sm:space-y-3.5 md:space-y-3.5 lg:space-y-4"
+          : "list-none space-y-3 sm:space-y-3.5 md:space-y-3.5 lg:space-y-4",
+        textAlign,
+        lgAlign,
+      )}
       aria-label={listAriaLabel ?? defaultAria}
     >
       {items.map((line, i) => {
         const fromSide =
-          align === "center" ? undefined : align === "right" ? "translate-x-6" : "-translate-x-6";
+          bulletsMobile || align === "center"
+            ? undefined
+            : align === "right"
+              ? "translate-x-6"
+              : "-translate-x-6";
         return (
           <li
             key={line}
@@ -158,36 +177,27 @@ export function BetrieblichePflegeberatungFactsIntro() {
         <h2
           id="betrieblich-statistik-hub-heading"
           className={cn(
-            "relative z-10 mx-auto mb-0 flex max-w-[min(100%,22rem)] flex-row flex-wrap items-center justify-center gap-3 text-pretty text-center font-extrabold leading-tight tracking-tight text-[#0F4F68] sm:max-w-[min(100%,26rem)] sm:gap-4",
+            "relative z-10 mx-auto mb-0 max-w-3xl text-pretty text-center font-extrabold leading-tight tracking-tight text-[#0F4F68]",
             "text-[1.35rem] sm:text-[1.5rem]",
-            "md:mb-0 md:block md:max-w-3xl md:text-[1.875rem] lg:text-[1.8125rem] lg:leading-snug",
+            "md:text-[1.875rem] lg:text-[1.8125rem] lg:leading-snug",
           )}
         >
-          <span className="min-w-0 shrink text-center md:mx-auto">
-            <span className="block sm:inline">Statistik zeigt: </span>
-            <span className="block sm:inline">pflegende Angehörige sind:</span>
-          </span>
-          <span className="relative w-[4.25rem] shrink-0 sm:w-[4.75rem] md:hidden" aria-hidden>
-            <Image
-              src="/images/statistik_betriebliche.webp"
-              alt=""
-              width={STATISTIK_IMG.w}
-              height={STATISTIK_IMG.h}
-              sizes="96px"
-              className={cn("h-auto w-full object-contain object-top", STATISTIK_DROP_SHADOW)}
-            />
-          </span>
+          <span className="block sm:inline">Statistik zeigt: </span>
+          <span className="block sm:inline">pflegende Angehörige sind:</span>
         </h2>
 
-        <div className="mx-auto mt-5 max-w-lg px-3 pb-1 md:hidden">
-          <FactList
+        <div className="mx-auto mt-5 flex w-full justify-center px-3 pb-1 md:hidden">
+          <div className="w-full max-w-md">
+            <FactList
             items={MOBILE_FACTS}
             align="center"
             show={show}
             reducedMotion={reducedMotion}
             delayOffsetMs={0}
+            bulletsMobile
             listAriaLabel="Kennzahlen zur Belastung pflegender Angehöriger"
           />
+          </div>
         </div>
 
         <div className="mx-auto -mt-2 hidden w-full max-w-[min(68rem,calc(100vw-1.5rem))] flex-col items-stretch gap-2 sm:-mt-2.5 sm:gap-2.5 md:flex md:flex-row md:items-center md:justify-center md:gap-2.5 lg:-mt-3 lg:gap-3 xl:gap-3">
