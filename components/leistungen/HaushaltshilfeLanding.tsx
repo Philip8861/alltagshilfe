@@ -65,12 +65,12 @@ const SCHRITTE = [
 ] as const;
 
 const LEISTUNGS_TILES = [
-  "Haushaltsreinigung",
-  "Fenster putzen & Grundreinigung",
-  "Kleinere Reparatur- und Instandhaltungsarbeiten",
-  "Garten- und Außenpflege",
-  "Aufräumen und Organisation",
-  "Weitere haushaltsnahe Tätigkeiten nach Absprache",
+  "Saugen und Wischen der Böden",
+  "Fenster putzen",
+  "Reinigung von Bad und Küche",
+  "Mahlzeiten zubereiten",
+  "Aufräumen und Ordnung halten",
+  "Wäsche waschen und bügeln",
 ] as const;
 
 const FAQ_INLINE =
@@ -251,9 +251,25 @@ export function HaushaltshilfeLanding() {
                 ))}
               </ul>
             </RevealOnScroll>
+          </div>
+        </section>
 
-            <RevealOnScroll delayMs={80}>
-              <div className="mx-auto mt-14 max-w-3xl text-center sm:mt-16 lg:mt-20 lg:mb-12">
+        <section
+          className="relative z-[11] overflow-x-clip bg-[#fafbfc] px-4 pb-16 pt-[clamp(2.5rem,4.5vw,4.25rem)] sm:px-6 sm:pb-20 lg:px-[var(--ahs-page-gutter)] lg:pb-24"
+          aria-labelledby="haushalt-schritte-heading"
+        >
+          <svg
+            className={WELLEN_SVG_CLASS}
+            viewBox="0 0 1200 100"
+            preserveAspectRatio="none"
+            fill="none"
+            aria-hidden
+          >
+            <path d={WELLEN_D} fill="#fafbfc" />
+          </svg>
+          <div className="relative z-[1] mx-auto max-w-7xl">
+            <RevealOnScroll>
+              <div className="mx-auto mb-10 max-w-3xl text-center lg:mb-12">
                 <h2
                   id="haushalt-schritte-heading"
                   className="text-balance text-3xl font-bold tracking-tight text-[#0F4F68] sm:text-4xl"
