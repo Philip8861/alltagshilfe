@@ -340,8 +340,8 @@ export function AlltagsbegleitungBetreuungLanding() {
           <div className="mx-auto max-w-7xl">
             <RevealOnScroll delayMs={80}>
               <div className="flex flex-col items-center gap-8 lg:flex-row lg:items-center lg:gap-10 xl:gap-14">
-                <div className="w-full max-w-[min(100%,30.8rem)] shrink-0 lg:max-w-[min(100%,28.6rem)]">
-                  {/* eslint-disable-next-line @next/next/no-img-element -- statisches Promo-Asset */}
+                <div className="w-full max-w-[min(100%,30.8rem)] shrink-0 leading-none lg:max-w-[min(100%,28.6rem)]">
+                  {/* eslint-disable-next-line @next/next/no-img-element -- statisches Promo-Asset; ohne Karten-Rahmen, Transparenz bis zum Seitenhintergrund */}
                   <img
                     src="/images/jetzt_neu.webp"
                     alt="Übersicht über Termine und Rechnungen in der App"
@@ -349,7 +349,7 @@ export function AlltagsbegleitungBetreuungLanding() {
                     height={704}
                     decoding="async"
                     loading="lazy"
-                    className="h-auto w-full rounded-2xl border border-[#0F4F68]/10 bg-white object-contain shadow-[0_10px_40px_rgba(15,79,104,0.08)]"
+                    className="mx-auto block h-auto w-full object-contain object-center [filter:drop-shadow(0_12px_28px_rgba(15,79,104,0.14))] motion-reduce:filter-none lg:mx-0"
                   />
                 </div>
                 <div className="min-w-0 flex-1 text-center lg:text-left">
