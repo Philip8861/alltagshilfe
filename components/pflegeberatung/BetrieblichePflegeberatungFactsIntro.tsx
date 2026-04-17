@@ -29,6 +29,7 @@ const FACTS_RIGHT = [
   "20 % berichten dauerhafte gesundheitliche Beeinträchtigung",
   "Nur 46 % arbeiten noch Vollzeit.",
   "Viele reduzieren Arbeitszeit oder steigen aus.",
+  "Über 80 % der Pflegebedürftigen werden zu Hause versorgt.",
 ] as const;
 
 /** Abstand zwischen Fakten-Zeilen: optisch nacheinander „reinfliegend“ */
