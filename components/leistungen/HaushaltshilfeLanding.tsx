@@ -1,7 +1,9 @@
 import type { ReactNode } from "react";
 import Link from "next/link";
+import { KundenstimmenCarousel } from "@/components/home/KundenstimmenCarousel";
 import { siteConfig } from "@/config/site";
 import { RevealOnScroll } from "@/components/pflegehilfsmittel/RevealOnScroll";
+import { STARTSEITE_VORTEILE } from "@/lib/startseite-vorteile";
 
 const HERO_IMG = "/images/haushaltshilfe.webp";
 
@@ -9,9 +11,9 @@ const HERO_GLOW_CLASS =
   "[filter:drop-shadow(0_10px_22px_rgba(15,79,104,0.2))_drop-shadow(0_4px_12px_rgba(15,79,104,0.12))] [will-change:filter]";
 
 const HERO_VORTEILE = [
-  "Regional und persönlich in Ihrer Nähe",
-  "Zuverlässige Unterstützung im Alltag",
-  "Feste Ansprechpartner und klare Abläufe",
+  "Freie Kapazitäten & kurze Wartezeiten",
+  "Zugelassen bei allen Krankenkassen",
+  "Feste Bezugsperson statt ständiger Wechsel",
 ] as const;
 
 const WELLEN_D =
@@ -60,17 +62,6 @@ const SCHRITTE = [
     description:
       "Ihre festen Ansprechpartnerinnen und Ansprechpartner unterstützen Sie regelmäßig und verlässlich – damit Sie entlastet sind.",
   },
-] as const;
-
-const USPS = [
-  "Erfahrenes Team mit regionaler Verbundenheit",
-  "Transparente Absprachen und faire Leistungen",
-  "Schnelle Terminfindung, wo es möglich ist",
-  "Abstimmung mit Pflegekasse und Leistungsträgern, wo erforderlich",
-  "Verlässliche Erreichbarkeit im Büro",
-  "Individuelle Planung statt Standardpaket",
-  "Unterstützung auch in ländlichen Gebieten",
-  "Hohe Wertschätzung für Ihr Zuhause und Ihre Gewohnheiten",
 ] as const;
 
 const LEISTUNGS_TILES = [
@@ -226,7 +217,7 @@ export function HaushaltshilfeLanding() {
 
         <section
           className="relative z-10 overflow-x-clip bg-[#F2F9FA] px-4 pb-16 pt-[clamp(2.5rem,4.5vw,4.25rem)] sm:px-6 sm:pb-20 lg:px-[var(--ahs-page-gutter)] lg:pb-24"
-          aria-labelledby="haushalt-schritte-heading"
+          aria-labelledby="haushalt-leistungen-heading"
         >
           <svg
             className={WELLEN_SVG_CLASS}
@@ -239,7 +230,30 @@ export function HaushaltshilfeLanding() {
           </svg>
           <div className="relative z-[1] mx-auto max-w-7xl">
             <RevealOnScroll>
-              <div className="mx-auto mb-10 max-w-3xl text-center lg:mb-12">
+              <div className="mb-10 text-center sm:mb-12">
+                <h2 id="haushalt-leistungen-heading" className="text-3xl font-bold text-[#0F4F68] sm:text-4xl">
+                  Das übernehmen wir im Haushalt
+                </h2>
+                <p className="mt-3 text-pretty text-neutral-600 sm:max-w-3xl sm:mx-auto">
+                  Typische haushaltsnahe Leistungen – im Detail stimmen wir alles mit Ihnen ab.
+                </p>
+              </div>
+            </RevealOnScroll>
+            <RevealOnScroll delayMs={120}>
+              <ul className="grid grid-cols-1 gap-4 text-center sm:grid-cols-2 md:grid-cols-3">
+                {LEISTUNGS_TILES.map((label) => (
+                  <li
+                    key={label}
+                    className="rounded-xl border border-[#0F4F68]/10 bg-white p-4 text-sm font-semibold text-[#0F4F68] shadow-sm sm:text-base"
+                  >
+                    {label}
+                  </li>
+                ))}
+              </ul>
+            </RevealOnScroll>
+
+            <RevealOnScroll delayMs={80}>
+              <div className="mx-auto mt-14 max-w-3xl text-center sm:mt-16 lg:mt-20 lg:mb-12">
                 <h2
                   id="haushalt-schritte-heading"
                   className="text-balance text-3xl font-bold tracking-tight text-[#0F4F68] sm:text-4xl"
@@ -247,7 +261,7 @@ export function HaushaltshilfeLanding() {
                   So einfach zur passenden Haushaltshilfe
                 </h2>
                 <p className="mt-3 text-pretty text-sm text-[#8a6a55] sm:text-base">
-                  Drei Schritte zu verlässlicher Haushaltshilfe – transparent und persönlich.
+                  Drei Schritte zur verlässlichen Haushaltshilfe, schnell & unkompliziert
                 </p>
               </div>
             </RevealOnScroll>
@@ -307,14 +321,14 @@ export function HaushaltshilfeLanding() {
                   Ihre Vorteile bei uns
                 </h2>
                 <p className="mt-2 text-pretty text-sm text-neutral-600 sm:text-base">
-                  Verlässlich, transparent und nah bei Ihnen – mit Haushaltshilfe, die zu Ihrem Alltag passt.
+                  Verlässlich, transparent und nah bei Ihnen - mit klaren Prozessen und echter Unterstützung im Alltag.
                 </p>
               </div>
               <ul className="mt-6 grid gap-4 sm:grid-cols-2">
-                {USPS.map((item) => (
+                {STARTSEITE_VORTEILE.map((item) => (
                   <li
                     key={item}
-                    className="flex items-start gap-3 rounded-xl px-2 py-1.5 transition-all duration-300 hover:bg-[#fafbfc] hover:shadow-[0_0_20px_rgba(15,79,104,0.12)]"
+                    className="flex items-start gap-3 rounded-xl px-2 py-1.5 transition-all duration-300 hover:bg-white/75 hover:shadow-[0_0_20px_rgba(15,79,104,0.12)]"
                   >
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
@@ -335,32 +349,7 @@ export function HaushaltshilfeLanding() {
           </RevealOnScroll>
         </section>
 
-        <section className="bg-[#F2F9FA] py-16" aria-labelledby="haushalt-leistungen-heading">
-          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-[var(--ahs-page-gutter)]">
-            <RevealOnScroll>
-              <div className="mb-10 text-center">
-                <h2 id="haushalt-leistungen-heading" className="text-3xl font-bold text-[#0F4F68] sm:text-4xl">
-                  Das übernehmen wir im Haushalt
-                </h2>
-                <p className="mt-3 text-neutral-600">
-                  Typische haushaltsnahe Leistungen – im Detail stimmen wir alles mit Ihnen ab.
-                </p>
-              </div>
-            </RevealOnScroll>
-            <RevealOnScroll delayMs={120}>
-              <ul className="grid grid-cols-1 gap-4 text-center sm:grid-cols-2 md:grid-cols-3">
-                {LEISTUNGS_TILES.map((label) => (
-                  <li
-                    key={label}
-                    className="rounded-xl border border-[#0F4F68]/10 bg-white p-4 text-sm font-semibold text-[#0F4F68] shadow-sm sm:text-base"
-                  >
-                    {label}
-                  </li>
-                ))}
-              </ul>
-            </RevealOnScroll>
-          </div>
-        </section>
+        <KundenstimmenCarousel />
 
         <section className="relative bg-[#fafbfc] py-14 sm:py-20" aria-labelledby="haushalt-faq-heading">
           <div className="relative mx-auto max-w-3xl px-4 sm:px-6 lg:max-w-4xl">

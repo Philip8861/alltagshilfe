@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { STARTSEITE_VORTEILE } from "@/lib/startseite-vorteile";
 import { KundenstimmenCarousel } from "@/components/home/KundenstimmenCarousel";
 import { StartEinstiegsHilfe } from "@/components/home/StartEinstiegsHilfe";
 import { StandortNummerEinsReveal } from "@/components/standorte/StandortNummerEinsReveal";
@@ -85,17 +86,6 @@ const LEISTUNGS_LINKS: Record<(typeof LEISTUNGEN)[number]["icon"], string> = {
   briefcase: "/leistungen/betriebliche-pflegeberatung",
   meal: "/leistungen/essen-auf-raeder",
 };
-
-const VORTEILE = [
-  "Zugelassen bei allen Pflege- und Krankenkassen in Deutschland",
-  "Schnelle Terminvergabe bei all unseren Dienstleistungen",
-  "Volle Transparenz dank App: Rechnungen und kommende Termine jederzeit einsehbar",
-  "Ab Pflegegrad 1: Nutzen Sie Ihren Entlastungsbetrag von 131 Euro für unsere Leistungen",
-  "Neu ab Pflegegrad 2: Bis zu 3.539 Euro Ersatzpflege / Verhinderungspflege über uns abrechenbar",
-  "Umfangreiche Dienstleistungen rund um Betreuung, Entlastung, Alltagshilfe und Pflegeberatung aus einer Hand.",
-  "Auch wenn wir eine Leistung nicht direkt anbieten: Unser starkes Netzwerk hilft weiter",
-  "Wir sind nicht nur in Städten, sondern auch in ländlichen Regionen und Dörfern für Sie unterwegs",
-] as const;
 
 export default function HomePage() {
   return (
@@ -273,7 +263,7 @@ export default function HomePage() {
             Verlässlich, transparent und nah bei Ihnen - mit klaren Prozessen und echter Unterstützung im Alltag.
           </p>
           <ul className="mt-6 grid gap-4 sm:grid-cols-2">
-            {VORTEILE.map((item) => (
+            {STARTSEITE_VORTEILE.map((item) => (
               <li className="flex items-start gap-3 rounded-xl px-2 py-1.5 transition-all duration-300 hover:bg-white/75 hover:shadow-[0_0_20px_rgba(15,79,104,0.12)]" key={item}>
                 <img src="/images/haken.webp" alt="" aria-hidden width={38} height={38} className="mt-0.5 h-[38px] w-[38px] shrink-0 object-contain" />
                 <span className="text-[1.03rem] font-medium leading-relaxed text-neutral-800 sm:text-[1.08rem]">{item}</span>
