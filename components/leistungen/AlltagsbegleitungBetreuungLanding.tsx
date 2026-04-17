@@ -339,8 +339,8 @@ export function AlltagsbegleitungBetreuungLanding() {
         >
           <div className="mx-auto max-w-7xl">
             <RevealOnScroll delayMs={80}>
-              <div className="flex flex-col items-center gap-8 lg:flex-row lg:items-center lg:gap-10 xl:gap-14">
-                <div className="w-full max-w-[min(100%,30.8rem)] shrink-0 leading-none lg:max-w-[min(100%,28.6rem)]">
+              <div className="flex flex-col items-center gap-8 lg:flex-row lg:items-start lg:gap-10 xl:gap-14">
+                <div className="w-full max-w-[min(100%,30.8rem)] shrink-0 leading-none lg:max-w-[min(100%,28.6rem)] lg:pt-1">
                   {/* eslint-disable-next-line @next/next/no-img-element -- statisches Promo-Asset; ohne Karten-Rahmen, Transparenz bis zum Seitenhintergrund */}
                   <img
                     src="/images/jetzt_neu.webp"
@@ -352,19 +352,63 @@ export function AlltagsbegleitungBetreuungLanding() {
                     className="mx-auto block h-auto w-full object-contain object-center [filter:drop-shadow(0_12px_28px_rgba(15,79,104,0.14))] motion-reduce:filter-none lg:mx-0"
                   />
                 </div>
-                <div className="min-w-0 flex-1 text-center lg:text-left">
-                  <p
-                    id="ab-jetzt-neu-promo"
-                    className="text-pretty text-lg font-semibold leading-relaxed text-[#0F4F68] sm:text-xl lg:text-[clamp(1.05rem,0.9rem+0.45vw,1.35rem)]"
-                  >
-                    <span
-                      className="mr-1 inline-block align-top text-2xl font-extrabold leading-none text-[#F78F2E] sm:mr-1.5 sm:text-3xl"
-                      aria-hidden
+                <div className="min-w-0 flex-1 space-y-6 text-center lg:text-left lg:space-y-5">
+                  <div className="space-y-3">
+                    <h2
+                      id="ab-jetzt-neu-promo"
+                      className="text-balance text-2xl font-extrabold leading-tight tracking-tight text-[#0F4F68] sm:text-3xl"
                     >
-                      !
-                    </span>
-                    Jetzt Neu! Behalten Sie kommende Termine und Rechnungen bequem im Überblick.
-                  </p>
+                      <span aria-hidden>{'🚀'}</span> Jetzt neu: Ihr persönlicher Überblick
+                    </h2>
+                    <p className="text-pretty text-base font-medium leading-relaxed text-neutral-700 sm:text-lg">
+                      Behalten Sie Ihre Termine, Rechnungen und Ihr Budget jederzeit im Blick – einfach, transparent und
+                      übersichtlich.
+                    </p>
+                  </div>
+                  <ul className="list-none space-y-5 text-pretty sm:space-y-6">
+                    <li className="space-y-2">
+                      <h3 className="text-lg font-bold text-[#0F4F68] sm:text-xl">
+                        <span aria-hidden>{'📅'}</span> Alles auf einen Blick
+                      </h3>
+                      <p className="text-sm leading-relaxed text-neutral-700 sm:text-base">
+                        Alle wichtigen Informationen zu Terminen und Rechnungen sind jederzeit für Sie verfügbar.
+                      </p>
+                    </li>
+                    <li className="space-y-2">
+                      <h3 className="text-lg font-bold text-[#0F4F68] sm:text-xl">
+                        <span aria-hidden>{'💰'}</span> Volle Kontrolle über Ihr Budget
+                      </h3>
+                      <p className="text-sm leading-relaxed text-neutral-700 sm:text-base">
+                        Sehen Sie jederzeit, wie Ihr aktuelles Budget aussieht – klar und verständlich dargestellt.
+                      </p>
+                    </li>
+                    <li className="space-y-2">
+                      <h3 className="text-lg font-bold text-[#0F4F68] sm:text-xl">
+                        <span aria-hidden>{'🔍'}</span> Transparenz, die überzeugt
+                      </h3>
+                      <p className="text-sm leading-relaxed text-neutral-700 sm:text-base">
+                        Transparenz ist uns besonders wichtig:
+                        <br />
+                        Sie haben jederzeit Zugriff auf alle relevanten Daten.
+                      </p>
+                    </li>
+                    <li className="space-y-2">
+                      <h3 className="text-lg font-bold text-[#0F4F68] sm:text-xl">
+                        <span aria-hidden>{'📱'}</span> Jederzeit &amp; überall
+                      </h3>
+                      <p className="text-sm leading-relaxed text-neutral-700 sm:text-base">
+                        Ob Laptop oder Smartphone – Ihr Zugang ist jederzeit und von überall aus möglich.
+                      </p>
+                    </li>
+                    <li className="space-y-2">
+                      <h3 className="text-lg font-bold text-[#0F4F68] sm:text-xl">
+                        <span aria-hidden>{'🎁'}</span> Kostenloser Service
+                      </h3>
+                      <p className="text-sm leading-relaxed text-neutral-700 sm:text-base">
+                        Diese neue Leistung ist für alle Kunden selbstverständlich kostenlos.
+                      </p>
+                    </li>
+                  </ul>
                 </div>
               </div>
             </RevealOnScroll>
