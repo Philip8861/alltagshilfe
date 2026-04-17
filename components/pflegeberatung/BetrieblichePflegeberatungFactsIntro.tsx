@@ -31,6 +31,10 @@ const FACTS_RIGHT = [
   "Viele reduzieren Arbeitszeit oder steigen aus.",
 ] as const;
 
+/** Abstand zwischen Fakten-Zeilen: optisch nacheinander „reinfliegend“ */
+const FACT_STAGGER_MS = 105;
+const FACT_BLOCK_GAP_MS = 120;
+
 function usePrefersReducedMotion(): boolean {
   const [reduced, setReduced] = useState(false);
   useEffect(() => {
@@ -48,13 +52,14 @@ function FactList({
   align,
   show,
   reducedMotion,
-  delayBase,
+  delayOffsetMs,
 }: {
   items: readonly string[];
   align: "left" | "right";
   show: boolean;
   reducedMotion: boolean;
-  delayBase: number;
+  /** Verzögerung der ersten Zeile dieser Liste (alle Fakten nacheinander: links, Pause, rechts) */
+  delayOffsetMs: number;
 }) {
   const textAlign = align === "right" ? "text-right" : "text-left";
   const lgAlign = align === "right" ? "lg:text-right" : "lg:text-left";
@@ -64,24 +69,29 @@ function FactList({
       className={cn("list-none space-y-3 sm:space-y-3.5 md:space-y-3.5 lg:space-y-4", textAlign, lgAlign)}
       aria-label={align === "right" ? "Weitere Kennzahlen" : "Kennzahlen zur Belastung"}
     >
-      {items.map((line, i) => (
-        <li
-          key={line}
-          className={cn(
-            "will-change-transform",
-            reducedMotion
-              ? "translate-x-0 opacity-100"
-              : "transition-[transform,opacity] duration-700 ease-out motion-reduce:transition-none",
-            show ? "translate-x-0 opacity-100" : "opacity-0",
-            show ? undefined : align === "right" ? "translate-x-5" : "-translate-x-5",
-          )}
-          style={
-            reducedMotion || !show ? undefined : { transitionDelay: `${delayBase + i * 70}ms` }
-          }
-        >
-          <p className={FACT_TEXT}>{line}</p>
-        </li>
-      ))}
+      {items.map((line, i) => {
+        const fromSide = align === "right" ? "translate-x-6" : "-translate-x-6";
+        return (
+          <li
+            key={line}
+            className={cn(
+              "will-change-[transform,opacity]",
+              reducedMotion
+                ? "translate-x-0 translate-y-0 opacity-100"
+                : "transition-[transform,opacity] duration-700 ease-out motion-reduce:transition-none",
+              show ? "translate-x-0 translate-y-0 opacity-100" : "translate-y-4 opacity-0",
+              show ? undefined : fromSide,
+            )}
+            style={
+              reducedMotion || !show
+                ? undefined
+                : { transitionDelay: `${delayOffsetMs + i * FACT_STAGGER_MS}ms` }
+            }
+          >
+            <p className={FACT_TEXT}>{line}</p>
+          </li>
+        );
+      })}
     </ul>
   );
 }
@@ -118,7 +128,7 @@ export function BetrieblichePflegeberatungFactsIntro() {
   return (
     <div
       ref={rootRef}
-      className="relative z-10 mt-6 sm:mt-8 lg:mt-10"
+      className="relative z-10 mt-8 sm:mt-10 lg:mt-10"
       role="region"
       aria-labelledby="betrieblich-statistik-hub-heading"
     >
@@ -136,14 +146,14 @@ export function BetrieblichePflegeberatungFactsIntro() {
           <span className="block sm:inline">pflegende Angehörige sind:</span>
         </h2>
 
-        <div className="mx-auto mt-0 flex w-full max-w-[min(68rem,calc(100vw-1.5rem))] flex-col items-stretch gap-5 sm:mt-1 sm:gap-6 md:flex-row md:items-center md:justify-center md:gap-4 lg:mt-1 lg:gap-5 xl:gap-6">
+        <div className="mx-auto -mt-1 flex w-full max-w-[min(68rem,calc(100vw-1.5rem))] flex-col items-stretch gap-2.5 sm:-mt-1.5 sm:gap-3 md:flex-row md:items-center md:justify-center md:gap-3 lg:-mt-2 lg:gap-3.5 xl:gap-4">
           <div className="relative z-20 order-1 flex min-h-0 min-w-0 w-full flex-1 justify-center md:max-w-none md:justify-end md:pr-1 lg:pr-3">
             <FactList
               items={FACTS_LEFT}
               align="right"
               show={show}
               reducedMotion={reducedMotion}
-              delayBase={80}
+              delayOffsetMs={0}
             />
           </div>
 
@@ -162,7 +172,18 @@ export function BetrieblichePflegeberatungFactsIntro() {
                   : "transition-[transform,opacity] duration-700 ease-out motion-reduce:transition-none",
                 show ? "translate-y-0 opacity-100" : "translate-y-3 opacity-0",
               )}
-              style={reducedMotion || !show ? undefined : { transitionDelay: "220ms" }}
+              style={
+                reducedMotion || !show
+                  ? undefined
+                  : {
+                      transitionDelay: `${
+                        FACTS_LEFT.length * FACT_STAGGER_MS +
+                        FACT_BLOCK_GAP_MS +
+                        FACTS_RIGHT.length * FACT_STAGGER_MS +
+                        80
+                      }ms`,
+                    }
+              }
             >
               <Image
                 src="/images/statistik_betriebliche.webp"
@@ -184,7 +205,7 @@ export function BetrieblichePflegeberatungFactsIntro() {
               align="left"
               show={show}
               reducedMotion={reducedMotion}
-              delayBase={120}
+              delayOffsetMs={FACTS_LEFT.length * FACT_STAGGER_MS + FACT_BLOCK_GAP_MS}
             />
           </div>
         </div>

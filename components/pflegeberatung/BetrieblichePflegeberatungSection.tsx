@@ -368,7 +368,9 @@ export function BetrieblichePflegeberatungFolgenBand() {
       className="relative left-1/2 z-10 w-screen max-w-[100vw] -translate-x-1/2 overflow-visible pb-0"
       style={{ marginTop: `-${BETRIEBLICH_STATISTIK_FOLGEN_OVERLAP_REM}rem` }}
     >
-      <WelleWeissZuFolgenBand />
+      <div style={{ marginTop: "3%" }}>
+        <WelleWeissZuFolgenBand />
+      </div>
       <div className="pb-0" style={{ backgroundColor: FOLGEN_BAND_BG }}>
         <section
           className="relative mx-auto max-w-7xl px-4 pb-10 pt-4 sm:px-6 sm:pb-12 sm:pt-6 lg:px-[var(--ahs-page-gutter)]"
@@ -377,7 +379,7 @@ export function BetrieblichePflegeberatungFolgenBand() {
           <h2
             id="betrieblich-folgen-heading"
             className="mx-auto max-w-4xl text-center text-pretty text-xl font-extrabold text-[#0F4F68] sm:text-2xl"
-            style={{ marginTop: "5%" }}
+            style={{ marginTop: "8%" }}
           >
             Folgen für Arbeitgeber durch pflegende Beschäftigte
           </h2>
