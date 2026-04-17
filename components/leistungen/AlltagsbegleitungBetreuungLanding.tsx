@@ -230,8 +230,8 @@ export function AlltagsbegleitungBetreuungLanding() {
     <div className="min-w-0 overflow-x-clip overflow-y-visible bg-[#fafbfc] text-neutral-700 antialiased">
       <article id="alltagsbegleitung-betreuung-hero" className="min-w-0 scroll-mt-24 overflow-x-clip overflow-y-visible">
         <section className="relative z-0 box-border mx-auto w-full min-w-0 max-w-7xl px-4 pb-10 pt-0 sm:px-6 sm:pb-16 lg:px-[var(--ahs-page-gutter)] lg:pb-[clamp(4rem,9vh+1.5rem,7rem)] lg:pt-[clamp(2rem,5vh+1.25rem,4.75rem)] xl:pb-[clamp(5rem,10vh+1.5rem,8rem)]">
-          <div className="flex flex-col-reverse items-center gap-10 lg:grid lg:grid-cols-[minmax(0,0.34fr)_minmax(0,0.66fr)] lg:items-center lg:justify-items-stretch lg:gap-x-[clamp(1.5rem,3vw,3.25rem)] lg:gap-y-0">
-            <div className="box-border w-full min-w-0 max-w-full space-y-[clamp(1.25rem,2vh+0.75rem,1.75rem)] lg:min-w-0 lg:justify-self-start lg:space-y-[clamp(1.15rem,1.6vh+0.7rem,1.75rem)] lg:-translate-x-[clamp(0.75rem,4.5vw,3rem)] lg:pr-0 motion-reduce:lg:translate-x-0">
+          <div className="flex flex-col-reverse items-center gap-10 lg:grid lg:grid-cols-[minmax(0,0.42fr)_minmax(0,0.58fr)] lg:items-center lg:justify-items-stretch lg:gap-x-[clamp(1.5rem,3vw,3.25rem)] lg:gap-y-0">
+            <div className="box-border w-full min-w-0 max-w-full space-y-[clamp(1.25rem,2vh+0.75rem,1.75rem)] lg:min-w-0 lg:max-w-none lg:justify-self-stretch lg:space-y-[clamp(1.15rem,1.6vh+0.7rem,1.75rem)] lg:-translate-x-[clamp(0.35rem,2.5vw,1.75rem)] lg:pr-0 motion-reduce:lg:translate-x-0">
               <h1
                 className="text-3xl font-extrabold leading-tight tracking-tight text-[#0F4F68] opacity-0 motion-reduce:opacity-100 animate-fade-in-up sm:text-4xl lg:text-[clamp(1.75rem,1.05rem+2.5vw,3rem)]"
                 style={{ animationDelay: "0s" }}
@@ -284,8 +284,8 @@ export function AlltagsbegleitungBetreuungLanding() {
                     height={800}
                     decoding="async"
                     fetchPriority="high"
-                    sizes="(max-width: 1023px) 70vw, (max-width: 1536px) 46vw, 840px"
-                    className={`box-border h-auto w-[70%] max-w-full object-contain object-center max-lg:mx-auto lg:ml-auto lg:mr-0 lg:w-[70%] lg:object-contain lg:object-right ${HERO_GLOW_CLASS}`}
+                    sizes="(max-width: 1023px) 81vw, (max-width: 1536px) 52vw, 967px"
+                    className={`box-border h-auto w-[80.5%] max-w-full object-contain object-center max-lg:mx-auto lg:ml-auto lg:mr-0 lg:w-[80.5%] lg:object-contain lg:object-right ${HERO_GLOW_CLASS}`}
                   />
                 </div>
               </div>
