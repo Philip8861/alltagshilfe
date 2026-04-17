@@ -125,14 +125,14 @@ export default function StandortePage() {
     >
       {/* overflow-x nur hier: Karte/Suche – Schatten beim Intro-Bild darf nicht am article geclippt werden */}
       <div className="w-full overflow-x-hidden">
-        <div className="flex w-full flex-col gap-8 lg:flex-row lg:flex-nowrap lg:items-flex-start lg:justify-start lg:gap-10">
+        <div className="flex w-full flex-col gap-8 lg:flex-row lg:flex-nowrap lg:items-start lg:justify-start lg:gap-10">
           {/* Desktop: Karte links (order-1). Mobil: Karte unten (order-2). */}
           <div className="relative w-full flex-none shrink-0 bg-transparent lg:w-[50%] lg:max-w-3xl lg:min-w-0 order-2 lg:order-1">
             <KartenMitKoordinatenErfassen hauptmarker={HAUPTMARKER} punkte={PUNKTE} ortsLabels={ORTSLABELS} />
           </div>
           {/* Desktop: Text + Standortsuche rechts (order-2). Mobil: oben (order-1) – zuerst Text, dann Standortsuche. */}
-          <div className="w-full min-w-0 flex flex-col gap-6 lg:gap-8 pt-6 sm:pt-8 px-4 sm:px-6 lg:max-w-lg lg:flex-1 lg:px-[var(--ahs-page-gutter)] lg:items-start order-1 lg:order-2">
-            <header className="space-y-3 w-full max-w-lg">
+          <div className="order-1 flex w-full min-w-0 flex-col gap-6 px-4 pt-6 sm:px-6 sm:pt-8 lg:order-2 lg:flex-1 lg:gap-8 lg:max-w-none lg:items-start lg:px-[var(--ahs-page-gutter)]">
+            <header className="w-full max-w-lg space-y-3">
               <h1 className={HEADING_CLASS}>
                 {STANDORTE_INTRO.heading}
               </h1>
@@ -140,7 +140,7 @@ export default function StandortePage() {
                 {STANDORTE_INTRO.text}
               </p>
             </header>
-            <div className="w-full max-w-md mx-auto lg:mx-0">
+            <div className="mx-auto w-full max-w-md lg:mx-0 lg:max-w-none">
               <StandortSuche />
             </div>
           </div>

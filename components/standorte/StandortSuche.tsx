@@ -59,61 +59,63 @@ export function StandortSuche() {
 
   return (
     <>
-      <div className="w-full rounded-2xl border border-[#0F4F68]/15 bg-[#F2F9FA] p-10 sm:p-12">
-        <div className="flex items-center gap-5">
-          <span
-            className="flex h-16 w-16 shrink-0 items-center justify-center rounded-xl bg-[#0F4F68] text-white"
-            aria-hidden
-          >
-            <svg className="h-7 w-7" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
-            </svg>
-          </span>
-          <div>
-            <h2 className="text-2xl font-bold text-[#0F4F68]">
-              Standort suchen
-            </h2>
-            <p className="mt-1.5 text-lg text-neutral-600">
-              Postleitzahl eingeben – wir zeigen Ihren Ansprechpartner.
-            </p>
+      <div className="w-full rounded-2xl border border-[#0F4F68]/15 bg-[#F2F9FA] p-11 sm:p-[3.3rem] lg:p-[2.75rem] xl:p-[3.3rem]">
+        <div className="flex flex-col gap-8 lg:flex-row lg:items-center lg:gap-10">
+          <div className="flex items-center gap-5 lg:max-w-[min(100%,26rem)] lg:shrink-0">
+            <span
+              className="flex h-[4.4rem] w-[4.4rem] shrink-0 items-center justify-center rounded-xl bg-[#0F4F68] text-white"
+              aria-hidden
+            >
+              <svg className="h-8 w-8" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
+              </svg>
+            </span>
+            <div className="min-w-0">
+              <h2 className="text-[1.65rem] font-bold leading-snug text-[#0F4F68] sm:text-[1.75rem]">
+                Standort suchen
+              </h2>
+              <p className="mt-1.5 text-[1.125rem] leading-snug text-neutral-600 sm:text-xl">
+                Postleitzahl eingeben – wir zeigen Ihren Ansprechpartner.
+              </p>
+            </div>
+          </div>
+
+          <div className="flex w-full min-w-0 flex-col gap-4 sm:flex-row sm:items-stretch lg:flex-1">
+            <label htmlFor="standort-plz" className="sr-only">
+              Postleitzahl
+            </label>
+            <input
+              id="standort-plz"
+              type="text"
+              inputMode="numeric"
+              maxLength={5}
+              placeholder="PLZ (z. B. 87700)"
+              value={plz}
+              onChange={(e) => {
+                const v = e.target.value.replace(/\D/g, "").slice(0, 5);
+                setPlz(v);
+                setResult("idle");
+                setError(null);
+              }}
+              onKeyDown={handleKeyDown}
+              className="min-h-[3.3rem] w-full flex-1 rounded-xl border border-[#0F4F68]/25 bg-white px-[1.1rem] py-[1.1rem] text-[1.125rem] text-neutral-900 placeholder-neutral-400 focus:border-[#0F4F68] focus:outline-none focus:ring-2 focus:ring-[#0F4F68]/20 sm:px-6 sm:text-lg"
+              aria-invalid={!!error}
+              aria-describedby={error ? "standort-plz-error" : undefined}
+            />
+            <button
+              type="button"
+              onClick={handleSearch}
+              className="flex min-h-[3.3rem] w-full shrink-0 items-center justify-center rounded-xl bg-[#0F4F68] px-8 py-[1.1rem] text-[1.125rem] font-semibold text-white transition-colors hover:bg-[#0c3d52] focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2 focus:ring-offset-[#F2F9FA] sm:w-auto sm:px-10 sm:text-lg"
+            >
+              Suchen
+            </button>
           </div>
         </div>
-
-        <div className="mt-10">
-          <label htmlFor="standort-plz" className="sr-only">
-            Postleitzahl
-          </label>
-          <input
-            id="standort-plz"
-            type="text"
-            inputMode="numeric"
-            maxLength={5}
-            placeholder="PLZ (z. B. 87700)"
-            value={plz}
-            onChange={(e) => {
-              const v = e.target.value.replace(/\D/g, "").slice(0, 5);
-              setPlz(v);
-              setResult("idle");
-              setError(null);
-            }}
-            onKeyDown={handleKeyDown}
-            className="w-full rounded-xl border border-[#0F4F68]/25 bg-white px-6 py-4 text-lg text-neutral-900 placeholder-neutral-400 focus:border-[#0F4F68] focus:outline-none focus:ring-2 focus:ring-[#0F4F68]/20"
-            aria-invalid={!!error}
-            aria-describedby={error ? "standort-plz-error" : undefined}
-          />
-          <button
-            type="button"
-            onClick={handleSearch}
-            className="mt-4 flex w-full items-center justify-center rounded-xl bg-[#0F4F68] px-6 py-4 font-semibold text-lg text-white transition-colors hover:bg-[#0c3d52] focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2 focus:ring-offset-[#F2F9FA]"
-          >
-            Suchen
-          </button>
-          {error && (
-            <p id="standort-plz-error" className="mt-3 text-base text-red-600" role="alert">
-              {error}
-            </p>
-          )}
-        </div>
+        {error && (
+          <p id="standort-plz-error" className="mt-4 text-base text-red-600 lg:mt-5" role="alert">
+            {error}
+          </p>
+        )}
       </div>
 
       {/* Popup wie Kontakt-Seite: gleicher Aufbau und Optik wie StandortFinderPopup */}
