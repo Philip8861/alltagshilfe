@@ -22,6 +22,102 @@ const WELLEN_D =
 const WELLEN_SVG_CLASS =
   "pointer-events-none absolute left-0 top-0 z-0 h-16 w-full -translate-y-7 sm:h-[clamp(2.85rem,1.5rem+3.8vw,5rem)] sm:-translate-y-[clamp(0.9rem,0.35rem+2.1vw,3.2rem)]";
 
+/** Cache-Buster bei aktualisiertem Asset; Wert bei neuer Grafik erhöhen. */
+const JETZT_NEU_IMG = "/images/jetzt_neu.webp?v=4";
+
+const PROMO_ICON_HEAD =
+  "inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#F78F2E]/15 sm:h-10 sm:w-10 [&_svg]:h-[1.35rem] [&_svg]:w-[1.35rem] sm:[&_svg]:h-6 sm:[&_svg]:w-6";
+
+const PROMO_ICON_SM =
+  "inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#0F4F68]/10 [&_svg]:h-[1.15rem] [&_svg]:w-[1.15rem] sm:[&_svg]:h-[1.3rem] sm:[&_svg]:w-[1.3rem]";
+
+function PromoIconJetztNeu({ className = "" }: { className?: string }) {
+  return (
+    <span className={`${PROMO_ICON_HEAD} ${className}`.trim()} aria-hidden>
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden>
+        <path
+          d="M12 4l1.8 5.5h5.8l-4.7 3.4 1.8 5.6L12 15.9 6.3 18.5l1.8-5.6L3.4 9.5h5.8L12 4z"
+          stroke="#F78F2E"
+          strokeWidth="1.6"
+          strokeLinejoin="round"
+        />
+        <circle cx="12" cy="12" r="2" fill="#0F4F68" />
+      </svg>
+    </span>
+  );
+}
+
+function PromoIconCalendar({ className = "" }: { className?: string }) {
+  return (
+    <span className={`${PROMO_ICON_SM} ${className}`.trim()} aria-hidden>
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden>
+        <rect x="3.5" y="4.5" width="17" height="16" rx="2" stroke="#0F4F68" strokeWidth="1.75" />
+        <path d="M3.5 9.5h17M8 2.5v4M16 2.5v4" stroke="#0F4F68" strokeWidth="1.75" strokeLinecap="round" />
+        <path d="M8 14h2M12 14h2M8 17.5h2" stroke="#F78F2E" strokeWidth="1.75" strokeLinecap="round" />
+      </svg>
+    </span>
+  );
+}
+
+function PromoIconBudget({ className = "" }: { className?: string }) {
+  return (
+    <span className={`${PROMO_ICON_SM} ${className}`.trim()} aria-hidden>
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden>
+        <ellipse cx="12" cy="16" rx="7" ry="3.5" stroke="#0F4F68" strokeWidth="1.75" />
+        <path d="M5 16V9.5c0-2 3.15-3.5 7-3.5s7 1.5 7 3.5V16" stroke="#0F4F68" strokeWidth="1.75" />
+        <path
+          d="M12 6v4.5M10.25 9.75h2.9a1.35 1.35 0 010 2.7h-1.2a1.35 1.35 0 100 2.7H12"
+          stroke="#F78F2E"
+          strokeWidth="1.75"
+          strokeLinecap="round"
+        />
+      </svg>
+    </span>
+  );
+}
+
+function PromoIconTransparenz({ className = "" }: { className?: string }) {
+  return (
+    <span className={`${PROMO_ICON_SM} ${className}`.trim()} aria-hidden>
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden>
+        <circle cx="11" cy="11" r="6.25" stroke="#0F4F68" strokeWidth="1.75" />
+        <path d="M16.5 16.5L21 21" stroke="#0F4F68" strokeWidth="1.75" strokeLinecap="round" />
+        <path d="M8.5 11h5M11 8.5v5" stroke="#F78F2E" strokeWidth="1.75" strokeLinecap="round" />
+      </svg>
+    </span>
+  );
+}
+
+function PromoIconMobile({ className = "" }: { className?: string }) {
+  return (
+    <span className={`${PROMO_ICON_SM} ${className}`.trim()} aria-hidden>
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden>
+        <rect x="7" y="3.5" width="10" height="17" rx="2.5" stroke="#0F4F68" strokeWidth="1.75" />
+        <path d="M10 6.5h4" stroke="#F78F2E" strokeWidth="1.75" strokeLinecap="round" />
+        <circle cx="12" cy="18" r="0.9" fill="#F78F2E" />
+      </svg>
+    </span>
+  );
+}
+
+function PromoIconGeschenk({ className = "" }: { className?: string }) {
+  return (
+    <span className={`${PROMO_ICON_SM} ${className}`.trim()} aria-hidden>
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden>
+        <path d="M5 10h14v11H5V10z" stroke="#0F4F68" strokeWidth="1.75" strokeLinejoin="round" />
+        <path d="M5 10h14" stroke="#0F4F68" strokeWidth="1.75" />
+        <path
+          d="M12 10V6.5M7.5 8.5a4.5 4.5 0 019 0V10"
+          stroke="#F78F2E"
+          strokeWidth="1.75"
+          strokeLinecap="round"
+        />
+        <path d="M12 12.5v5.5" stroke="#F78F2E" strokeWidth="1.75" strokeLinecap="round" />
+      </svg>
+    </span>
+  );
+}
+
 function HeroCheckIcon({ className = "" }: { className?: string }) {
   return (
     <span
@@ -343,7 +439,7 @@ export function AlltagsbegleitungBetreuungLanding() {
                 <div className="w-full max-w-[min(100%,30.8rem)] shrink-0 leading-none lg:max-w-[min(100%,28.6rem)] lg:pt-1">
                   {/* eslint-disable-next-line @next/next/no-img-element -- statisches Promo-Asset; ohne Karten-Rahmen, Transparenz bis zum Seitenhintergrund */}
                   <img
-                    src="/images/jetzt_neu.webp"
+                    src={JETZT_NEU_IMG}
                     alt="Übersicht über Termine und Rechnungen in der App"
                     width={915}
                     height={704}
@@ -356,9 +452,10 @@ export function AlltagsbegleitungBetreuungLanding() {
                   <div className="space-y-3">
                     <h2
                       id="ab-jetzt-neu-promo"
-                      className="text-balance text-2xl font-extrabold leading-tight tracking-tight text-[#0F4F68] sm:text-3xl"
+                      className="flex flex-wrap items-center justify-center gap-2 text-balance text-2xl font-extrabold leading-tight tracking-tight text-[#0F4F68] sm:text-3xl lg:justify-start"
                     >
-                      <span aria-hidden>{'🚀'}</span> Jetzt neu: Ihr persönlicher Überblick
+                      <PromoIconJetztNeu />
+                      <span>Jetzt neu: Ihr persönlicher Überblick</span>
                     </h2>
                     <p className="text-pretty text-base font-medium leading-relaxed text-neutral-700 sm:text-lg">
                       Behalten Sie Ihre Termine, Rechnungen und Ihr Budget jederzeit im Blick – einfach, transparent und
@@ -367,24 +464,27 @@ export function AlltagsbegleitungBetreuungLanding() {
                   </div>
                   <ul className="list-none space-y-5 text-pretty sm:space-y-6">
                     <li className="space-y-2">
-                      <h3 className="text-lg font-bold text-[#0F4F68] sm:text-xl">
-                        <span aria-hidden>{'📅'}</span> Alles auf einen Blick
+                      <h3 className="flex flex-wrap items-center justify-center gap-2.5 text-lg font-bold text-[#0F4F68] sm:text-xl lg:justify-start">
+                        <PromoIconCalendar />
+                        <span>Alles auf einen Blick</span>
                       </h3>
                       <p className="text-sm leading-relaxed text-neutral-700 sm:text-base">
                         Alle wichtigen Informationen zu Terminen und Rechnungen sind jederzeit für Sie verfügbar.
                       </p>
                     </li>
                     <li className="space-y-2">
-                      <h3 className="text-lg font-bold text-[#0F4F68] sm:text-xl">
-                        <span aria-hidden>{'💰'}</span> Volle Kontrolle über Ihr Budget
+                      <h3 className="flex flex-wrap items-center justify-center gap-2.5 text-lg font-bold text-[#0F4F68] sm:text-xl lg:justify-start">
+                        <PromoIconBudget />
+                        <span>Volle Kontrolle über Ihr Budget</span>
                       </h3>
                       <p className="text-sm leading-relaxed text-neutral-700 sm:text-base">
                         Sehen Sie jederzeit, wie Ihr aktuelles Budget aussieht – klar und verständlich dargestellt.
                       </p>
                     </li>
                     <li className="space-y-2">
-                      <h3 className="text-lg font-bold text-[#0F4F68] sm:text-xl">
-                        <span aria-hidden>{'🔍'}</span> Transparenz, die überzeugt
+                      <h3 className="flex flex-wrap items-center justify-center gap-2.5 text-lg font-bold text-[#0F4F68] sm:text-xl lg:justify-start">
+                        <PromoIconTransparenz />
+                        <span>Transparenz, die überzeugt</span>
                       </h3>
                       <p className="text-sm leading-relaxed text-neutral-700 sm:text-base">
                         Transparenz ist uns besonders wichtig:
@@ -393,16 +493,18 @@ export function AlltagsbegleitungBetreuungLanding() {
                       </p>
                     </li>
                     <li className="space-y-2">
-                      <h3 className="text-lg font-bold text-[#0F4F68] sm:text-xl">
-                        <span aria-hidden>{'📱'}</span> Jederzeit &amp; überall
+                      <h3 className="flex flex-wrap items-center justify-center gap-2.5 text-lg font-bold text-[#0F4F68] sm:text-xl lg:justify-start">
+                        <PromoIconMobile />
+                        <span>Jederzeit &amp; überall</span>
                       </h3>
                       <p className="text-sm leading-relaxed text-neutral-700 sm:text-base">
                         Ob Laptop oder Smartphone – Ihr Zugang ist jederzeit und von überall aus möglich.
                       </p>
                     </li>
                     <li className="space-y-2">
-                      <h3 className="text-lg font-bold text-[#0F4F68] sm:text-xl">
-                        <span aria-hidden>{'🎁'}</span> Kostenloser Service
+                      <h3 className="flex flex-wrap items-center justify-center gap-2.5 text-lg font-bold text-[#0F4F68] sm:text-xl lg:justify-start">
+                        <PromoIconGeschenk />
+                        <span>Kostenloser Service</span>
                       </h3>
                       <p className="text-sm leading-relaxed text-neutral-700 sm:text-base">
                         Diese neue Leistung ist für alle Kunden selbstverständlich kostenlos.
