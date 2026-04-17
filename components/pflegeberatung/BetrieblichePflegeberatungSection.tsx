@@ -1,3 +1,4 @@
+import type { CSSProperties } from "react";
 import { BetrieblichAngebotOpenButton } from "@/components/pflegeberatung/BetrieblicheAngebotAnfrage";
 import { BetrieblichePflegeberatungFactsIntro } from "@/components/pflegeberatung/BetrieblichePflegeberatungFactsIntro";
 import { BETRIEBLICH_STATISTIK_FOLGEN_OVERLAP_REM } from "@/components/pflegeberatung/betriebliche-statistik-layout";
@@ -397,20 +398,24 @@ function WelleWeissZuFolgenBand() {
 export function BetrieblichePflegeberatungFolgenBand() {
   return (
     <div
-      className="relative left-1/2 z-10 w-screen max-w-[100vw] -translate-x-1/2 overflow-visible pb-0"
-      style={{ marginTop: `-${BETRIEBLICH_STATISTIK_FOLGEN_OVERLAP_REM}rem` }}
+      className="relative left-1/2 z-10 mt-0 w-screen max-w-[100vw] -translate-x-1/2 overflow-visible pb-0 md:[margin-top:calc(-1*var(--folgen-overlap))]"
+      style={
+        {
+          ["--folgen-overlap" as string]: `${BETRIEBLICH_STATISTIK_FOLGEN_OVERLAP_REM}rem`,
+        } as CSSProperties
+      }
     >
-      <div style={{ marginTop: "3%" }}>
+      <div className="max-md:mt-0 md:mt-[3%]">
         <WelleWeissZuFolgenBand />
       </div>
       <div className="pb-0" style={{ backgroundColor: FOLGEN_BAND_BG }}>
         <section
-          className="relative mx-auto max-w-7xl px-4 pb-10 pt-4 sm:px-6 sm:pb-12 sm:pt-6 lg:px-[var(--ahs-page-gutter)]"
+          className="relative mx-auto max-w-7xl px-4 pb-10 pt-6 sm:px-6 sm:pb-12 sm:pt-6 lg:px-[var(--ahs-page-gutter)]"
           aria-labelledby="betrieblich-folgen-heading"
         >
           <h2
             id="betrieblich-folgen-heading"
-            className="mx-auto mt-5 max-w-4xl text-pretty text-center text-xl font-extrabold text-[#0F4F68] sm:mt-6 sm:text-2xl md:mt-[6%] lg:mt-[8%]"
+            className="mx-auto mt-2 max-w-4xl text-pretty text-center text-xl font-extrabold text-[#0F4F68] sm:mt-3 sm:text-2xl md:mt-[6%] lg:mt-[8%]"
           >
             Folgen für Arbeitgeber durch pflegende Beschäftigte
           </h2>

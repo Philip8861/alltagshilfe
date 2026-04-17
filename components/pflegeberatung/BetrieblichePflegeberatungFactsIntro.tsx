@@ -145,7 +145,7 @@ export function BetrieblichePflegeberatungFactsIntro() {
   return (
     <div
       ref={rootRef}
-      className="relative z-10 mt-2 sm:mt-3 lg:mt-3"
+      className="relative z-10 mt-2 pb-8 sm:mt-3 md:pb-0 lg:mt-3"
       role="region"
       aria-labelledby="betrieblich-statistik-hub-heading"
     >
