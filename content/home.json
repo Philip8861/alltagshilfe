@@ -14,7 +14,6 @@
       { "slug": "pflegeberatung-einsaetze", "title": "Pflegeberatungseinsätze §37.3 SGB XI", "description": "Professionelle Pflegeberatung – Kosten übernimmt die Pflegekasse." },
       { "slug": "pflegehilfsmittelbox", "title": "Kostenfreie Pflegehilfsmittelbox", "description": "Monatlich 42€ kostenfrei ab Pflegegrad 1 – Pflegekasse übernimmt." },
       { "slug": "essen-auf-raeder", "title": "Essen auf Räder", "description": "Mit Herz gekocht, liebevoll gebracht – frisch und regional mit LuckyLunch." },
-      { "slug": "einkaufsservice", "title": "Einkaufsservice", "description": "Wir erledigen Ihren Einkauf – aus der Filiale Ihrer Wahl." },
       { "slug": "hilfe-nach-operation", "title": "Hilfe nach Operation, Unfall oder Schwangerschaft", "description": "Entlastung in besonderen Zeiten – Haushaltshilfe, Kinderbetreuung, Begleitung." }
     ]
   },

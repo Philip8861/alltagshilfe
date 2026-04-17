@@ -26,6 +26,16 @@ const nextConfig: NextConfig = {
         destination: "/leistungen/alltagsbegleitung-betreuung",
         permanent: true,
       },
+      {
+        source: "/leistungen/einkaufsservice",
+        destination: "/#unsere-leistungen",
+        permanent: true,
+      },
+      {
+        source: "/standorte/86156-pfersee",
+        destination: "/standorte/86156-augsburg",
+        permanent: true,
+      },
     ];
   },
   /* Konfigurator: nach CSS/HTML-Änderungen nicht aus CDN-Browser-Cache „tot“ laden */

@@ -36,12 +36,19 @@ function PromoIconJetztNeu({ className = "" }: { className?: string }) {
     <span className={`${PROMO_ICON_HEAD} ${className}`.trim()} aria-hidden>
       <svg viewBox="0 0 24 24" fill="none" aria-hidden>
         <path
-          d="M12 4l1.8 5.5h5.8l-4.7 3.4 1.8 5.6L12 15.9 6.3 18.5l1.8-5.6L3.4 9.5h5.8L12 4z"
+          d="M12 3.25L14.2 8.1l5.35.78-3.87 3.77.92 5.33L12 15.9l-4.8 2.52.92-5.33-3.87-3.77 5.35-.78L12 3.25z"
+          fill="#F78F2E"
+          fillOpacity="0.22"
           stroke="#F78F2E"
-          strokeWidth="1.6"
+          strokeWidth="1.5"
           strokeLinejoin="round"
         />
-        <circle cx="12" cy="12" r="2" fill="#0F4F68" />
+        <path
+          d="M12 8.75v4.5M9.75 11h4.5"
+          stroke="#0F4F68"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+        />
       </svg>
     </span>
   );
@@ -51,9 +58,27 @@ function PromoIconCalendar({ className = "" }: { className?: string }) {
   return (
     <span className={`${PROMO_ICON_SM} ${className}`.trim()} aria-hidden>
       <svg viewBox="0 0 24 24" fill="none" aria-hidden>
-        <rect x="3.5" y="4.5" width="17" height="16" rx="2" stroke="#0F4F68" strokeWidth="1.75" />
-        <path d="M3.5 9.5h17M8 2.5v4M16 2.5v4" stroke="#0F4F68" strokeWidth="1.75" strokeLinecap="round" />
-        <path d="M8 14h2M12 14h2M8 17.5h2" stroke="#F78F2E" strokeWidth="1.75" strokeLinecap="round" />
+        <rect
+          x="4"
+          y="5.5"
+          width="16"
+          height="14.5"
+          rx="3"
+          fill="#0F4F68"
+          fillOpacity="0.08"
+          stroke="#0F4F68"
+          strokeWidth="1.5"
+        />
+        <path d="M4 10.25h16" stroke="#0F4F68" strokeWidth="1.5" strokeLinecap="round" />
+        <path
+          d="M8.25 4.75v3.25M15.75 4.75v3.25"
+          stroke="#0F4F68"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+        />
+        <circle cx="9.25" cy="14.25" r="1.1" fill="#F78F2E" />
+        <circle cx="14.75" cy="14.25" r="1.1" fill="#F78F2E" fillOpacity="0.45" />
+        <circle cx="9.25" cy="17.5" r="1.1" fill="#F78F2E" fillOpacity="0.45" />
       </svg>
     </span>
   );
@@ -63,14 +88,22 @@ function PromoIconBudget({ className = "" }: { className?: string }) {
   return (
     <span className={`${PROMO_ICON_SM} ${className}`.trim()} aria-hidden>
       <svg viewBox="0 0 24 24" fill="none" aria-hidden>
-        <ellipse cx="12" cy="16" rx="7" ry="3.5" stroke="#0F4F68" strokeWidth="1.75" />
-        <path d="M5 16V9.5c0-2 3.15-3.5 7-3.5s7 1.5 7 3.5V16" stroke="#0F4F68" strokeWidth="1.75" />
         <path
-          d="M12 6v4.5M10.25 9.75h2.9a1.35 1.35 0 010 2.7h-1.2a1.35 1.35 0 100 2.7H12"
-          stroke="#F78F2E"
-          strokeWidth="1.75"
+          d="M5.25 9.25h13.5a1.75 1.75 0 011.75 1.75v7.5a1.75 1.75 0 01-1.75 1.75H5.25A1.75 1.75 0 013.5 18.5v-7.5a1.75 1.75 0 011.75-1.75z"
+          fill="#0F4F68"
+          fillOpacity="0.08"
+          stroke="#0F4F68"
+          strokeWidth="1.5"
+          strokeLinejoin="round"
+        />
+        <path
+          d="M5.25 9.25V8a2 2 0 012-2h9.5a2 2 0 012 2v1.25"
+          stroke="#0F4F68"
+          strokeWidth="1.5"
           strokeLinecap="round"
         />
+        <rect x="14" y="12.75" width="5.5" height="5" rx="1.25" fill="#F78F2E" fillOpacity="0.25" stroke="#F78F2E" strokeWidth="1.5" />
+        <path d="M16.75 14.75v2.25" stroke="#0F4F68" strokeWidth="1.5" strokeLinecap="round" />
       </svg>
     </span>
   );
@@ -80,9 +113,16 @@ function PromoIconTransparenz({ className = "" }: { className?: string }) {
   return (
     <span className={`${PROMO_ICON_SM} ${className}`.trim()} aria-hidden>
       <svg viewBox="0 0 24 24" fill="none" aria-hidden>
-        <circle cx="11" cy="11" r="6.25" stroke="#0F4F68" strokeWidth="1.75" />
-        <path d="M16.5 16.5L21 21" stroke="#0F4F68" strokeWidth="1.75" strokeLinecap="round" />
-        <path d="M8.5 11h5M11 8.5v5" stroke="#F78F2E" strokeWidth="1.75" strokeLinecap="round" />
+        <path
+          d="M6.5 5.5h8a2 2 0 012 2v9a2 2 0 01-2 2h-8a2 2 0 01-2-2v-9a2 2 0 012-2z"
+          fill="#0F4F68"
+          fillOpacity="0.06"
+          stroke="#0F4F68"
+          strokeWidth="1.5"
+        />
+        <path d="M7.25 9.25h6.5M7.25 12h5M7.25 14.75h4" stroke="#0F4F68" strokeWidth="1.5" strokeLinecap="round" opacity="0.45" />
+        <circle cx="16.25" cy="15.25" r="4" fill="#fff" stroke="#F78F2E" strokeWidth="1.5" />
+        <path d="M14.5 15.25h3.5M16.25 13.5v3.5" stroke="#0F4F68" strokeWidth="1.5" strokeLinecap="round" />
       </svg>
     </span>
   );
@@ -92,9 +132,20 @@ function PromoIconMobile({ className = "" }: { className?: string }) {
   return (
     <span className={`${PROMO_ICON_SM} ${className}`.trim()} aria-hidden>
       <svg viewBox="0 0 24 24" fill="none" aria-hidden>
-        <rect x="7" y="3.5" width="10" height="17" rx="2.5" stroke="#0F4F68" strokeWidth="1.75" />
-        <path d="M10 6.5h4" stroke="#F78F2E" strokeWidth="1.75" strokeLinecap="round" />
-        <circle cx="12" cy="18" r="0.9" fill="#F78F2E" />
+        <rect
+          x="6.5"
+          y="3"
+          width="11"
+          height="18"
+          rx="3"
+          fill="#0F4F68"
+          fillOpacity="0.07"
+          stroke="#0F4F68"
+          strokeWidth="1.5"
+        />
+        <rect x="8.25" y="6" width="7.5" height="10.5" rx="1.5" fill="#fff" stroke="#0F4F68" strokeWidth="1.25" opacity="0.9" />
+        <path d="M9.5 6h5" stroke="#F78F2E" strokeWidth="1.5" strokeLinecap="round" />
+        <rect x="10.25" y="18.25" width="3.5" height="1.25" rx="0.5" fill="#F78F2E" />
       </svg>
     </span>
   );
@@ -104,15 +155,23 @@ function PromoIconGeschenk({ className = "" }: { className?: string }) {
   return (
     <span className={`${PROMO_ICON_SM} ${className}`.trim()} aria-hidden>
       <svg viewBox="0 0 24 24" fill="none" aria-hidden>
-        <path d="M5 10h14v11H5V10z" stroke="#0F4F68" strokeWidth="1.75" strokeLinejoin="round" />
-        <path d="M5 10h14" stroke="#0F4F68" strokeWidth="1.75" />
         <path
-          d="M12 10V6.5M7.5 8.5a4.5 4.5 0 019 0V10"
-          stroke="#F78F2E"
-          strokeWidth="1.75"
-          strokeLinecap="round"
+          d="M5.5 10.25h13v10.5a1.75 1.75 0 01-1.75 1.75H7.25a1.75 1.75 0 01-1.75-1.75v-10.5z"
+          fill="#0F4F68"
+          fillOpacity="0.08"
+          stroke="#0F4F68"
+          strokeWidth="1.5"
+          strokeLinejoin="round"
         />
-        <path d="M12 12.5v5.5" stroke="#F78F2E" strokeWidth="1.75" strokeLinecap="round" />
+        <path d="M5.5 10.25h13" stroke="#0F4F68" strokeWidth="1.5" />
+        <path
+          d="M12 10.25V7M8.5 8.75a3.5 3.5 0 017 0v1.5M8.5 8.75h7"
+          stroke="#F78F2E"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+        <path d="M12 12.5v6.25" stroke="#F78F2E" strokeWidth="1.5" strokeLinecap="round" />
       </svg>
     </span>
   );
