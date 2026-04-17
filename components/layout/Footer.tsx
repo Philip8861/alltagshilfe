@@ -41,8 +41,8 @@ export function Footer() {
       </div>
       {/* Unten in px: bei Lesbarkeits-Zoom (html font-size %) würden rem-Paddings extrem groß wirken */}
       <Container className="relative z-10 pt-12 sm:pt-16 pb-[max(8px,env(safe-area-inset-bottom,0px))]">
-        <div className="mx-auto grid w-full max-w-5xl grid-cols-1 gap-8 text-left sm:grid-cols-2 lg:grid-cols-3 lg:gap-10">
-          <div>
+        <div className="mx-auto grid w-full max-w-6xl grid-cols-1 items-start gap-y-10 gap-x-0 text-left sm:grid-cols-2 sm:gap-x-12 sm:gap-y-10 lg:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] lg:gap-x-14 xl:gap-x-16">
+          <div className="min-w-0 lg:justify-self-end lg:text-right">
             <p className="text-sm font-semibold text-neutral-900">
               {siteConfig.name}
             </p>
@@ -50,7 +50,7 @@ export function Footer() {
               {siteConfig.description}
             </p>
           </div>
-          <div className="text-center">
+          <div className="min-w-0 text-center lg:justify-self-center lg:px-2">
             <p className="text-sm font-semibold text-neutral-900">Navigation</p>
             <ul className="mt-3 flex flex-col items-center gap-2 sm:gap-2">
               {navLinks.map(({ href, label }) => (
@@ -65,7 +65,7 @@ export function Footer() {
               ))}
             </ul>
           </div>
-          <div>
+          <div className="min-w-0 lg:justify-self-start">
             <p className="text-sm font-semibold text-neutral-900">Rechtliches</p>
             <ul className="mt-3 space-y-2">
               <li>
