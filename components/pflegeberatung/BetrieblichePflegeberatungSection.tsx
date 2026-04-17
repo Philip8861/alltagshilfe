@@ -144,21 +144,43 @@ function IconChartDown() {
   );
 }
 
-function IconUserX() {
+/** Person mit Abgangs-Pfeil – klar lesbar für Fluktuation / Weggang */
+function IconFluktuation() {
   return (
-    <svg className="h-6 w-6 sm:h-7 sm:w-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
-      <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
-      <circle cx="9" cy="7" r="4" />
-      <path d="M22 21l-3-3m0 0l-3-3m3 3l-3 3m3-3l3-3" strokeLinecap="round" />
+    <svg
+      className="h-6 w-6 sm:h-7 sm:w-7"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden
+    >
+      <circle cx="7.5" cy="7" r="3.25" />
+      <path d="M2.5 21v-1.75a3.75 3.75 0 0 1 3.75-3.75h2a3.75 3.75 0 0 1 3.75 3.75V21" />
+      <path d="M14 12h7" />
+      <path d="m18.5 9 3.5 3-3.5 3" />
     </svg>
   );
 }
 
-function IconCalendarOff() {
+/** Kalender mit steigenden Balken – Zunahme von Abwesenheiten / Fehlzeiten */
+function IconFehlzeitenZunahme() {
   return (
-    <svg className="h-6 w-6 sm:h-7 sm:w-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
+    <svg
+      className="h-6 w-6 sm:h-7 sm:w-7"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden
+    >
       <rect x="3" y="4" width="18" height="18" rx="2" />
-      <path d="M16 2v4M8 2v4M3 10h18M9 16l6-6m0 6L9 10" strokeLinecap="round" />
+      <path d="M16 2v4M8 2v4M3 10h18" />
+      <path d="M7 18v-3M11 18v-5.5M15 18v-8" />
     </svg>
   );
 }
@@ -208,7 +230,7 @@ const FOLGEN = [
       "Kurzfristige Ausfälle durch akute Pflegesituationen",
       "Häufigere krankheitsbedingte Abwesenheiten (durch zusätzliche psychische und physische Belastungen)",
     ],
-    Icon: IconUserX,
+    Icon: IconFluktuation,
   },
   {
     title: "Zunahme von Fehlzeiten",
@@ -216,7 +238,7 @@ const FOLGEN = [
       "Reduktion der Arbeitszeit oder Kündigung aufgrund von Pflegeverpflichtungen",
       "Verlust von qualifizierten Fachkräften",
     ],
-    Icon: IconCalendarOff,
+    Icon: IconFehlzeitenZunahme,
   },
 ] as const;
 
@@ -383,6 +405,9 @@ export function BetrieblichePflegeberatungFolgenBand() {
               </li>
             ))}
           </ul>
+          <div className="mt-10 flex justify-center sm:mt-12">
+            <BetrieblichAngebotOpenButton className="w-full max-w-md min-h-[3rem] px-8 py-3.5 text-base sm:w-auto sm:max-w-none sm:text-lg" />
+          </div>
         </section>
       </div>
     </div>
