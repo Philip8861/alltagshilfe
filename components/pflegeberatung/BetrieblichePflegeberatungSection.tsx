@@ -270,14 +270,14 @@ export function BetrieblichePflegeberatungVorteileVorStatistik() {
       </section>
 
       {/* Welliger Übergang Mint → Weiß, dann Erklärtext auf Weiß */}
-      <div className="mt-10 sm:mt-12">
+      <div className="mt-6 sm:mt-8">
         <WelleMintZuWeissBand />
       </div>
 
       <div className="relative left-1/2 w-screen max-w-[100vw] -translate-x-1/2 bg-white">
         <section
           aria-labelledby="betrieblich-was-ist-heading"
-          className="relative mx-auto max-w-7xl px-4 pb-10 pt-6 sm:px-6 sm:pb-12 sm:pt-8 lg:px-[var(--ahs-page-gutter)]"
+          className="relative mx-auto max-w-7xl px-4 pb-6 pt-5 sm:px-6 sm:pb-8 sm:pt-6 lg:px-[var(--ahs-page-gutter)]"
         >
           <h2
             id="betrieblich-was-ist-heading"

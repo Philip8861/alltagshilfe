@@ -109,13 +109,18 @@ export function BetrieblichePflegeberatungFactsIntro() {
       return;
     }
     const obs = new IntersectionObserver(
-      (entries) => {
-        if (entries.some((e) => e.isIntersecting)) {
+      ([entry]) => {
+        if (!entry?.isIntersecting) return;
+        const ratio = entry.intersectionRatio;
+        const top = entry.boundingClientRect.top;
+        const vh = window.innerHeight;
+        // Erst animieren, wenn der Bereich wirklich im Viewport liegt (nicht beim ersten Paint weit unten)
+        if (ratio >= 0.1 && top < vh * 0.88 && top > -vh * 0.42) {
           setInView(true);
           obs.disconnect();
         }
       },
-      { rootMargin: "0px 0px -8% 0px", threshold: 0.08 },
+      { rootMargin: "0px 0px -20% 0px", threshold: [0, 0.05, 0.1, 0.15, 0.2, 0.25] },
     );
     obs.observe(el);
     return () => obs.disconnect();
@@ -128,7 +133,7 @@ export function BetrieblichePflegeberatungFactsIntro() {
   return (
     <div
       ref={rootRef}
-      className="relative z-10 mt-8 sm:mt-10 lg:mt-10"
+      className="relative z-10 mt-2 sm:mt-3 lg:mt-3"
       role="region"
       aria-labelledby="betrieblich-statistik-hub-heading"
     >
@@ -146,7 +151,7 @@ export function BetrieblichePflegeberatungFactsIntro() {
           <span className="block sm:inline">pflegende Angehörige sind:</span>
         </h2>
 
-        <div className="mx-auto -mt-1 flex w-full max-w-[min(68rem,calc(100vw-1.5rem))] flex-col items-stretch gap-2.5 sm:-mt-1.5 sm:gap-3 md:flex-row md:items-center md:justify-center md:gap-3 lg:-mt-2 lg:gap-3.5 xl:gap-4">
+        <div className="mx-auto -mt-2 flex w-full max-w-[min(68rem,calc(100vw-1.5rem))] flex-col items-stretch gap-2 sm:-mt-2.5 sm:gap-2.5 md:flex-row md:items-center md:justify-center md:gap-2.5 lg:-mt-3 lg:gap-3 xl:gap-3">
           <div className="relative z-20 order-1 flex min-h-0 min-w-0 w-full flex-1 justify-center md:max-w-none md:justify-end md:pr-1 lg:pr-3">
             <FactList
               items={FACTS_LEFT}
