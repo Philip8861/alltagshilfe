@@ -40,7 +40,7 @@ export function Hero({ title, subtitle, ctaPrimary, ctaSecondary }: HeroProps) {
               {ctaPrimary}
             </Link>
             <Link
-              href="/leistungen"
+              href="/#unsere-leistungen"
               className={cn(
                 ctaBase,
                 "border border-[#0F4F68]/25 bg-white text-neutral-900 hover:bg-neutral-50 focus:ring-1 focus:ring-[#0F4F68]"

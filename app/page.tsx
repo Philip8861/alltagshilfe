@@ -79,11 +79,11 @@ const LEISTUNGEN = [
 
 const LEISTUNGS_LINKS: Record<(typeof LEISTUNGEN)[number]["icon"], string> = {
   home: "/leistungen/haushaltshilfe",
-  chat: "/leistungen/pflegeberatung-einsaetze",
-  box: "/leistungen/pflegehilfsmittelbox",
+  chat: "/pflegeberatung/private-pflegeberatung",
+  box: "/pflegehilfsmittel/kostenfreie-pflegehilfsmittel",
   shield: "/inkontinenzversorgung",
   cart: "/pflegeshop",
-  briefcase: "/leistungen/betriebliche-pflegeberatung",
+  briefcase: "/pflegeberatung#betriebliche-pflegeberatung",
   meal: "/leistungen/essen-auf-raeder",
 };
 
@@ -172,7 +172,12 @@ export default function HomePage() {
           <path d="M0,120 C200,32 420,8 600,22 C800,38 1010,90 1200,120 L1200,120 L0,120 Z" fill="#F2F9FA" />
         </svg>
         <div className="mx-auto w-full max-w-6xl">
-          <h2 className="text-2xl font-bold text-[#0F4F68] sm:text-3xl">Unsere Leistungen im Überblick</h2>
+          <h2
+            id="unsere-leistungen"
+            className="text-2xl font-bold text-[#0F4F68] sm:text-3xl scroll-mt-[calc(2.45rem+var(--ahs-header-white-min-height)+0.75rem)]"
+          >
+            Unsere Leistungen im Überblick
+          </h2>
           <p className="mt-2 text-sm text-[#8a6a55] sm:text-base">Persönlich, zuverlässig und mit viel Herz im Alltag.</p>
           <div className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {LEISTUNGEN.map((leistung, index) => (

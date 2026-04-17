@@ -2,21 +2,26 @@
  * Hauptnavigation – zentrale Pfade.
  * Einträge mit `children` werden als Dropdown dargestellt.
  */
-import leistungenData from "@/content/leistungen.json";
-
 export type NavLink = {
   href: string;
   label: string;
   children?: { href: string; label: string }[];
 };
 
-const leistungenNav = (leistungenData as { slug: string; title: string }[]).map((item) => ({
-  href: `/leistungen/${item.slug}`,
-  label: item.title,
-}));
+/** Reihenfolge wie zuvor in der Leistungsübersicht; drei Einträge verweisen auf ausgearbeitete Unterseiten. */
+const UNSERE_LEISTUNGEN_CHILDREN: { href: string; label: string }[] = [
+  { href: "/leistungen/haushaltshilfe", label: "Haushaltshilfe" },
+  { href: "/leistungen/betreuung-beschaeftigung", label: "Betreuung und Beschäftigung" },
+  { href: "/pflegeberatung/private-pflegeberatung", label: "Pflegeberatungseinsätze nach §37.3 SGB XI" },
+  { href: "/pflegehilfsmittel/kostenfreie-pflegehilfsmittel", label: "Kostenfreie Pflegehilfsmittelbox im Wert von 42€" },
+  { href: "/leistungen/essen-auf-raeder", label: "Essen auf Räder" },
+  { href: "/leistungen/einkaufsservice", label: "Einkaufsservice" },
+  { href: "/leistungen/hilfe-nach-operation", label: "Hilfe nach Operation, Unfall oder Schwangerschaft" },
+  { href: "/pflegeberatung#betriebliche-pflegeberatung", label: "Betriebliche Pflegeberatung" },
+];
 
 export const navLinks: NavLink[] = [
-  { href: "/leistungen", label: "Unsere Leistungen", children: leistungenNav },
+  { href: "/#unsere-leistungen", label: "Unsere Leistungen", children: UNSERE_LEISTUNGEN_CHILDREN },
   { href: "/standorte", label: "Standorte" },
   {
     href: "/ueber-uns",

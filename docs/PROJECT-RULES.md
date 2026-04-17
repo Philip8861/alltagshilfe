@@ -35,10 +35,9 @@ Diese Datei ist die verbindliche Referenz für Architektur, Tech-Stack, Seitenst
 
 | Pfad | Typ | Beschreibung |
 |------|-----|--------------|
-| `/` | SSG | Startseite (Hero, Leistungen, Trust, Referenzen, FAQ, CTA, Footer) |
+| `/` | SSG | Startseite (Hero, Leistungen, Trust, Referenzen, FAQ, CTA, Footer); Leistungsübersicht per Anker `#unsere-leistungen` (keine eigene `/leistungen`-Seite; Redirect `/leistungen` → `/`) |
 | `/ueber-uns` | SSG | Über uns |
-| `/leistungen` | SSG | Leistungsübersicht |
-| `/leistungen/[slug]` | SSG | Einzelleistung |
+| `/leistungen/[slug]` | SSG | Einzelleistung (Auswahl im JSON; drei frühere Slugs per Redirect auf Pflegeberatung bzw. Kostenfreie Pflegehilfsmittel) |
 | `/landing/[slug]` | SSG/dynamisch | Landingpages |
 | `/kontakt` | Hybrid | Kontaktseite + Formular (Server Action) |
 | `/kontakt/danke` | SSG | Danke-Seite nach Formularversand |

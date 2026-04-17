@@ -47,7 +47,7 @@ export const serviceLinks: Record<
     kontakt: "/kontakt",
   },
   leistungen_ueberblick: {
-    mehr: "/leistungen",
+    mehr: "/#unsere-leistungen",
     kontakt: "/kontakt",
   },
   rueckruf: {

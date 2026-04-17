@@ -10,8 +10,18 @@ import { cn } from "@/lib/utils";
 
 function navParentOrChildActive(item: NavLink, pathname: string | null) {
   if (!pathname) return false;
-  if (pathname === item.href || pathname.startsWith(`${item.href}/`)) return true;
-  if (item.children?.some((c) => pathname === c.href || pathname.startsWith(`${c.href}/`))) return true;
+  if (item.href === "/#unsere-leistungen" && pathname === "/") return true;
+  const itemPath = item.href.split("#")[0];
+  if (itemPath && pathname === itemPath) return true;
+  if (itemPath && itemPath !== "/" && pathname.startsWith(`${itemPath}/`)) return true;
+  if (
+    item.children?.some((c) => {
+      const base = c.href.split("#")[0];
+      if (!base) return false;
+      return pathname === base || pathname.startsWith(`${base}/`);
+    })
+  )
+    return true;
   return false;
 }
 

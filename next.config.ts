@@ -3,6 +3,26 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
+  async redirects() {
+    return [
+      { source: "/leistungen", destination: "/", permanent: true },
+      {
+        source: "/leistungen/pflegeberatung-einsaetze",
+        destination: "/pflegeberatung/private-pflegeberatung",
+        permanent: true,
+      },
+      {
+        source: "/leistungen/pflegehilfsmittelbox",
+        destination: "/pflegehilfsmittel/kostenfreie-pflegehilfsmittel",
+        permanent: true,
+      },
+      {
+        source: "/leistungen/betriebliche-pflegeberatung",
+        destination: "/pflegeberatung",
+        permanent: true,
+      },
+    ];
+  },
   /* Konfigurator: nach CSS/HTML-Änderungen nicht aus CDN-Browser-Cache „tot“ laden */
   async headers() {
     return [

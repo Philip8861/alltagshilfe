@@ -39,10 +39,10 @@ export default async function LeistungPage({ params }: Props) {
     <article className="py-16 sm:py-24">
       <Container>
         <Link
-          href="/leistungen"
+          href="/#unsere-leistungen"
           className="inline-flex items-center gap-1 text-sm font-medium text-[#0F4F68] hover:underline focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2 rounded"
         >
-          ← Zurück zu Leistungen
+          ← Zurück zur Leistungsübersicht
         </Link>
 
         <header className="mt-6">

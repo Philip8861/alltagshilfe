@@ -31,44 +31,6 @@
     ]
   },
   {
-    "slug": "pflegeberatung-einsaetze",
-    "title": "Pflegeberatungseinsätze nach §37.3 SGB XI",
-    "description": "Professionelle Pflegeberatung – verpflichtend je nach Pflegegrad, Kosten übernimmt die Pflegekasse.",
-    "intro": "Wir bieten Ihnen professionelle Pflegeberatungseinsätze gemäß §37.3 SGB XI, um sicherzustellen, dass Sie die bestmögliche Unterstützung erhalten. Unsere Beratungen richten sich insbesondere an Personen, die von ihren Angehörigen zu Hause gepflegt werden.",
-    "sections": [
-      {
-        "text": "Ab einem Pflegegrad 1 stehen Ihnen bis zu 131 € monatlich durch die Pflegekasse zu."
-      },
-      {
-        "bullets": [
-          "Pflegegrad 1: Beratungseinsätze sind nicht verpflichtend, dürfen jedoch bis zu zweimal im Jahr kostenlos in Anspruch genommen werden.",
-          "Pflegegrad 2 und 3: Beratungseinsätze sind halbjährlich verpflichtend.",
-          "Pflegegrad 4 und 5: Beratungseinsätze sind vierteljährlich verpflichtend. Die Kosten für die Pflegeberatungseinsätze werden von Ihrer Pflegekasse übernommen."
-        ]
-      }
-    ]
-  },
-  {
-    "slug": "pflegehilfsmittelbox",
-    "title": "Kostenfreie Pflegehilfsmittelbox im Wert von 42€",
-    "description": "Monatlich kostenfrei ab Pflegegrad 1 – die Pflegekasse übernimmt die Kosten.",
-    "intro": "Ab Pflegegrad 1 steht Ihnen eine monatliche und kostenfreie Pflegehilfsmittelbox im Wert von 42€ zu. Die Pflegekasse übernimmt die anfallenden Kosten für Sie!",
-    "sections": [
-      {
-        "text": "Die Pflegehilfsmittelbox ist eine Sammlung von verschiedenen Hilfsmitteln, die zur Unterstützung in der häuslichen Pflege verwendet werden. Sie enthält Artikel wie Einmalhandschuhe, Desinfektionsmittel, Flächendesinfektionsmittel, Mundschutz, Bettschutzeinlagen und andere Pflegeutensilien. Einfach und unkompliziert telefonisch oder online beantragen unter www.alltagshilfe-pflegebox.de"
-      },
-      {
-        "bullets": [
-          "Kostenlose Lieferung nach Hause.",
-          "Einfach und unkompliziert telefonisch oder online beantragen.",
-          "Wir übernehmen alle erforderlichen Formalitäten.",
-          "Jederzeit änder- oder kündbar."
-        ]
-      }
-    ],
-    "highlight": "42€ monatlich kostenfrei"
-  },
-  {
     "slug": "essen-auf-raeder",
     "title": "Essen auf Räder",
     "description": "Mit Herz gekocht, liebevoll gebracht – frisch und regional mit Partner LuckyLunch.",
@@ -119,25 +81,6 @@
       },
       {
         "text": "Wir sind zugelassene Partner bei allen Krankenkassen, und eine Übernahme der Kosten ist durch die Krankenkasse möglich! Wir beraten Sie gerne und unterstützen Sie bei der Antragstellung."
-      }
-    ]
-  },
-  {
-    "slug": "betriebliche-pflegeberatung",
-    "title": "Betriebliche Pflegeberatung",
-    "description": "Pflegeberatung für Mitarbeitende und Unternehmen – wir entlasten im Berufsalltag.",
-    "intro": "Mit unserer betrieblichen Pflegeberatung unterstützen wir Unternehmen und Beschäftigte bei Fragen rund um Pflege, Vereinbarkeit von Beruf und Familie sowie passende Entlastungsleistungen.",
-    "sections": [
-      {
-        "bullets": [
-          "Beratung für Mitarbeitende in akuten Pflegesituationen.",
-          "Unterstützung bei Anträgen und Leistungen der Pflegekasse.",
-          "Informationen zu Entlastungsmöglichkeiten für Angehörige.",
-          "Praxisnahe Empfehlungen für eine bessere Vereinbarkeit von Beruf und Pflege."
-        ]
-      },
-      {
-        "text": "Gerne entwickeln wir mit Ihnen ein passendes Beratungsangebot für Ihr Unternehmen."
       }
     ]
   }
