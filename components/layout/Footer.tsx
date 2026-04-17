@@ -8,41 +8,11 @@ export function Footer() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer id="site-footer" className="relative shrink-0 bg-neutral-50 leading-normal">
-      <div
-        className="absolute left-0 right-0 top-0 z-0 h-12 w-full sm:h-16"
-        style={{ marginTop: "-1px" }}
-        aria-hidden
-      >
-        <svg
-          className="absolute bottom-0 block h-full w-full"
-          viewBox="0 0 1200 160"
-          preserveAspectRatio="none"
-        >
-          <defs>
-            <linearGradient id="footer-mountain-gradient" x1="0" x2="0" y1="0" y2="1">
-              <stop offset="0%" stopColor="#ffffff" />
-              <stop offset="100%" stopColor="#fafafa" />
-            </linearGradient>
-          </defs>
-          <path
-            fill="url(#footer-mountain-gradient)"
-            d="M0,160 L0,95 L120,60 L260,85 L380,45 L500,75 L620,40 L740,68 L860,38 L980,62 L1100,50 L1200,75 L1200,160 Z"
-          />
-          <path
-            fill="url(#footer-mountain-gradient)"
-            d="M0,160 L0,115 L180,80 L360,105 L540,70 L720,100 L900,75 L1080,95 L1200,70 L1200,160 Z"
-          />
-          <path
-            fill="url(#footer-mountain-gradient)"
-            d="M0,160 L0,135 L300,100 L600,125 L900,105 L1200,130 L1200,160 Z"
-          />
-        </svg>
-      </div>
+    <footer id="site-footer" className="shrink-0 bg-neutral-50 leading-normal">
       {/* Unten in px: bei Lesbarkeits-Zoom (html font-size %) würden rem-Paddings extrem groß wirken */}
-      <Container className="relative z-10 pt-12 sm:pt-16 pb-[max(8px,env(safe-area-inset-bottom,0px))]">
+      <Container className="pt-12 sm:pt-16 pb-[max(8px,env(safe-area-inset-bottom,0px))]">
         <div className="mx-auto grid w-full max-w-6xl grid-cols-1 justify-items-center gap-y-[3.125rem] text-center lg:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] lg:justify-items-stretch lg:gap-x-[4.375rem] lg:gap-y-[3.125rem] lg:text-left xl:gap-x-20">
-          <div className="flex min-w-0 max-w-md flex-col items-center justify-self-center text-center lg:max-w-lg lg:justify-self-start lg:translate-x-[25%]">
+          <div className="flex min-w-0 max-w-md flex-col items-center justify-self-center text-center lg:max-w-lg lg:items-start lg:justify-self-start lg:text-left">
             <p className="text-sm font-semibold text-neutral-900">{siteConfig.name}</p>
             <p className="mt-2 max-w-sm text-pretty text-sm leading-relaxed text-neutral-600 sm:max-w-md">
               {siteConfig.description}
@@ -63,7 +33,7 @@ export function Footer() {
               ))}
             </ul>
           </div>
-          <div className="min-w-0 max-w-md lg:max-w-none lg:justify-self-end lg:-translate-x-[25%]">
+          <div className="min-w-0 max-w-md lg:max-w-none lg:justify-self-end">
             <p className="text-sm font-semibold text-neutral-900">Rechtliches</p>
             <ul className="mt-3 flex flex-col items-center gap-2 lg:items-start">
               <li>
