@@ -2,10 +2,7 @@
 
 import Image from "next/image";
 import { useEffect, useRef, useState, type CSSProperties } from "react";
-import {
-  BETRIEBLICH_FOLGEN_SURFACE,
-  BETRIEBLICH_STATISTIK_IMG_MAX_REM,
-} from "@/components/pflegeberatung/betriebliche-statistik-layout";
+import { BETRIEBLICH_STATISTIK_IMG_MAX_REM } from "@/components/pflegeberatung/betriebliche-statistik-layout";
 import { cn } from "@/lib/utils";
 
 /** Natürliche Pixelmaße von public/images/statistik_betriebliche.webp */
@@ -217,20 +214,6 @@ export function BetrieblichePflegeberatungFactsIntro() {
               delayOffsetMs={FACTS_LEFT.length * FACT_STAGGER_MS + FACT_BLOCK_GAP_MS}
             />
           </div>
-        </div>
-
-        <div className="pointer-events-none relative left-1/2 w-screen max-w-[100vw] -translate-x-1/2 bg-white leading-none">
-          <svg
-            className="relative -mb-px block h-12 w-full shrink-0 sm:h-[3.75rem]"
-            viewBox="0 0 1440 100"
-            preserveAspectRatio="none"
-            aria-hidden
-          >
-            <path
-              fill={BETRIEBLICH_FOLGEN_SURFACE}
-              d="M0,55 C240,18 480,92 720,48 C960,4 1200,78 1440,42 L1440,100 L0,100 Z"
-            />
-          </svg>
         </div>
       </div>
     </div>

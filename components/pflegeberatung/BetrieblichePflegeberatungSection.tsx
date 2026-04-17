@@ -1,15 +1,13 @@
 import { BetrieblichAngebotOpenButton } from "@/components/pflegeberatung/BetrieblicheAngebotAnfrage";
 import { BetrieblichePflegeberatungFactsIntro } from "@/components/pflegeberatung/BetrieblichePflegeberatungFactsIntro";
-import {
-  BETRIEBLICH_FOLGEN_SURFACE,
-  BETRIEBLICH_STATISTIK_FOLGEN_OVERLAP_REM,
-} from "@/components/pflegeberatung/betriebliche-statistik-layout";
+import { BETRIEBLICH_STATISTIK_FOLGEN_OVERLAP_REM } from "@/components/pflegeberatung/betriebliche-statistik-layout";
 
 const ICON_WRAP =
   "inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-[#0F4F68] text-white shadow-sm sm:h-14 sm:w-14";
 
 const BETRIEBLICH_HELL_BG = "#F2F9FA" as const;
 /** Einheitliche Fläche: Folgen-Band, Welle und Seitenfuß-Anschluss (keine Zwischenweiß-/Grau-Streifen) */
+export const BETRIEBLICH_FOLGEN_SURFACE = "#eef6f9" as const;
 const FOLGEN_BAND_BG = BETRIEBLICH_FOLGEN_SURFACE;
 
 /** Welle am oberen Rand eines Blocks (z. B. Übergang von Weiß zu Folgen-Fläche) */
@@ -348,21 +346,44 @@ export function BetrieblichePflegeberatungVorteileVorStatistik() {
   );
 }
 
-/** Folgen-Inhalt (Überschrift + Liste); Welle Statistik→Folgen liegt in FactsIntro darüber. */
+/** Weiß → Folgen-Fläche: eine Welle ohne zweite „WelleObenBand“-Kante */
+function WelleWeissZuFolgenBand() {
+  return (
+    <div
+      className="pointer-events-none relative left-1/2 w-screen max-w-[100vw] -translate-x-1/2 leading-none"
+      style={{ backgroundColor: FOLGEN_BAND_BG }}
+    >
+      <svg
+        className="relative -mb-px block h-12 w-full shrink-0 sm:h-[3.75rem]"
+        viewBox="0 0 1440 100"
+        preserveAspectRatio="none"
+        aria-hidden
+      >
+        <path fill={FOLGEN_BAND_BG} d="M0,55 C240,18 480,92 720,48 C960,4 1200,78 1440,42 L1440,100 L0,100 Z" />
+      </svg>
+    </div>
+  );
+}
+
+/** Direkt unter den Fakten: welliger Übergang von Weiß zum Folgen-Band */
 export function BetrieblichePflegeberatungFolgenBand() {
   return (
     <div
       className="relative left-1/2 z-10 w-screen max-w-[100vw] -translate-x-1/2 overflow-visible pb-0"
       style={{ marginTop: `-${BETRIEBLICH_STATISTIK_FOLGEN_OVERLAP_REM}rem` }}
     >
+      <div style={{ marginTop: "3%" }}>
+        <WelleWeissZuFolgenBand />
+      </div>
       <div className="pb-0" style={{ backgroundColor: FOLGEN_BAND_BG }}>
         <section
-          className="relative mx-auto max-w-7xl px-4 pb-10 pt-1 sm:px-6 sm:pb-12 sm:pt-2 lg:px-[var(--ahs-page-gutter)]"
+          className="relative mx-auto max-w-7xl px-4 pb-10 pt-4 sm:px-6 sm:pb-12 sm:pt-6 lg:px-[var(--ahs-page-gutter)]"
           aria-labelledby="betrieblich-folgen-heading"
         >
           <h2
             id="betrieblich-folgen-heading"
             className="mx-auto max-w-4xl text-center text-pretty text-xl font-extrabold text-[#0F4F68] sm:text-2xl"
+            style={{ marginTop: "8%" }}
           >
             Folgen für Arbeitgeber durch pflegende Beschäftigte
           </h2>

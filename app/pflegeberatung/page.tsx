@@ -5,6 +5,7 @@ import {
   BetrieblichePflegeberatungFolgenBand,
   BetrieblichePflegeberatungVorteileVorStatistik,
   BetrieblichePflegeberatungWhiteIntro,
+  BETRIEBLICH_FOLGEN_SURFACE,
 } from "@/components/pflegeberatung/BetrieblichePflegeberatungSection";
 import {
   BetrieblichAngebotDialogProvider,
@@ -61,7 +62,7 @@ export const metadata: Metadata = {
 export default function PflegeberatungPage() {
   return (
     <BetrieblichAngebotDialogProvider>
-      <article className="bg-white pb-12 sm:pb-16">
+      <article className="pb-12 sm:pb-16" style={{ backgroundColor: BETRIEBLICH_FOLGEN_SURFACE }}>
         <section
           id="betriebliche-pflegeberatung"
           aria-labelledby="betrieblich-heading"
