@@ -16,8 +16,13 @@ type LeistungItem = {
 
 type Props = { params: Promise<{ slug: string }> };
 
+/** Slugs mit eigener Route unter `app/leistungen/<slug>/page.tsx` (Landing mit Hero & Sektionen). */
+const SLUGS_WITH_DEDICATED_PAGE = new Set(["haushaltshilfe", "alltagsbegleitung-betreuung"]);
+
 export async function generateStaticParams() {
-  return (leistungenData as LeistungItem[]).map((item) => ({ slug: item.slug }));
+  return (leistungenData as LeistungItem[])
+    .filter((item) => !SLUGS_WITH_DEDICATED_PAGE.has(item.slug))
+    .map((item) => ({ slug: item.slug }));
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
