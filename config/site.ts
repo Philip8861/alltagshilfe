@@ -65,7 +65,7 @@ function getIndeedJobsUrl(): string {
 
 export const siteConfig = {
   name: "Alltagshilfe-Süd",
-  description: "Alltagshilfe-Süd ihr liebevoller Haushalts & Betreuungsdienst vor Ort.",
+  description: "Liebevolle Pflegeberatung, Haushaltshilfe und Betreuung aus einer Hand",
   baseUrl,
   locale: "de",
   /** Link zu den Stellen bei Indeed (optional). */

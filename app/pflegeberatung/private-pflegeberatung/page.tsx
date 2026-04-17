@@ -249,12 +249,12 @@ export default function PrivatePflegeberatungPage() {
         </div>
       </section>
 
-      {/* Welliger Übergang von Weiß (Vorteile) zu Kundenstimmen */}
+      {/* Welliger Übergang von Weiß (Vorteile) zu Kundenstimmen (#F2F9FA) */}
       <div
         className="relative z-10 w-full [&>section]:!mt-8 sm:[&>section]:!mt-10 lg:[&>section]:!mt-12"
-        style={{ backgroundColor: PAGE_SURFACE }}
+        style={{ backgroundColor: "#F2F9FA" }}
       >
-        <WelleObenMitFuellfarbe fill={PAGE_SURFACE} />
+        <WelleObenMitFuellfarbe fill="#F2F9FA" />
         <KundenstimmenCarousel />
       </div>
 
