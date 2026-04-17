@@ -7,7 +7,7 @@ const ICON_WRAP =
 
 const BETRIEBLICH_HELL_BG = "#F2F9FA" as const;
 /** Einheitliche Fläche: Folgen-Band, Welle und Seitenfuß-Anschluss (sehr helles Neutralgrau) */
-export const BETRIEBLICH_FOLGEN_SURFACE = "#FCFCFC" as const;
+export const BETRIEBLICH_FOLGEN_SURFACE = "#FAFAFA" as const;
 const FOLGEN_BAND_BG = BETRIEBLICH_FOLGEN_SURFACE;
 
 /** Welle am oberen Rand eines Blocks (z. B. Übergang von Weiß zu Folgen-Fläche) */
@@ -410,14 +410,16 @@ export function BetrieblichePflegeberatungFolgenBand() {
         >
           <h2
             id="betrieblich-folgen-heading"
-            className="mx-auto max-w-4xl text-center text-pretty text-xl font-extrabold text-[#0F4F68] sm:text-2xl"
-            style={{ marginTop: "8%" }}
+            className="mx-auto mt-5 max-w-4xl text-pretty text-center text-xl font-extrabold text-[#0F4F68] sm:mt-6 sm:text-2xl md:mt-[6%] lg:mt-[8%]"
           >
             Folgen für Arbeitgeber durch pflegende Beschäftigte
           </h2>
           <ul className="mt-8 grid gap-8 sm:gap-10 lg:grid-cols-3 lg:gap-8">
             {FOLGEN.map(({ title, bullets, Icon }) => (
-              <li key={title} className="flex flex-col gap-3 sm:flex-row sm:gap-4">
+              <li
+                key={title}
+                className="flex flex-col items-center gap-3 text-center sm:flex-row sm:items-start sm:gap-4 sm:text-left"
+              >
                 <span className={`${ICON_WRAP} shrink-0 sm:mt-0.5`} aria-hidden>
                   <Icon />
                 </span>
