@@ -31,147 +31,20 @@ const PROMO_ICON_HEAD =
 const PROMO_ICON_SM =
   "inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#0F4F68]/10 [&_svg]:h-[1.15rem] [&_svg]:w-[1.15rem] sm:[&_svg]:h-[1.3rem] sm:[&_svg]:w-[1.3rem]";
 
-function PromoIconJetztNeu({ className = "" }: { className?: string }) {
+/** Kleiner Stern für den Promo-Block „Jetzt neu“ (dekorativ). */
+function PromoStar({ variant, className = "" }: { variant: "head" | "sm"; className?: string }) {
+  const wrap = variant === "head" ? PROMO_ICON_HEAD : PROMO_ICON_SM;
   return (
-    <span className={`${PROMO_ICON_HEAD} ${className}`.trim()} aria-hidden>
+    <span className={`${wrap} ${className}`.trim()} aria-hidden>
       <svg viewBox="0 0 24 24" fill="none" aria-hidden>
         <path
-          d="M12 3.25L14.2 8.1l5.35.78-3.87 3.77.92 5.33L12 15.9l-4.8 2.52.92-5.33-3.87-3.77 5.35-.78L12 3.25z"
+          d="M12 2.35l2.82 5.71 6.31.92-4.56 4.44 1.08 6.28L12 16.65l-5.65 2.97 1.08-6.28-4.56-4.44 6.31-.92L12 2.35z"
           fill="#F78F2E"
-          fillOpacity="0.22"
+          fillOpacity={variant === "head" ? 0.28 : 0.22}
           stroke="#F78F2E"
-          strokeWidth="1.5"
+          strokeWidth="1.45"
           strokeLinejoin="round"
         />
-        <path
-          d="M12 8.75v4.5M9.75 11h4.5"
-          stroke="#0F4F68"
-          strokeWidth="1.5"
-          strokeLinecap="round"
-        />
-      </svg>
-    </span>
-  );
-}
-
-function PromoIconCalendar({ className = "" }: { className?: string }) {
-  return (
-    <span className={`${PROMO_ICON_SM} ${className}`.trim()} aria-hidden>
-      <svg viewBox="0 0 24 24" fill="none" aria-hidden>
-        <rect
-          x="4"
-          y="5.5"
-          width="16"
-          height="14.5"
-          rx="3"
-          fill="#0F4F68"
-          fillOpacity="0.08"
-          stroke="#0F4F68"
-          strokeWidth="1.5"
-        />
-        <path d="M4 10.25h16" stroke="#0F4F68" strokeWidth="1.5" strokeLinecap="round" />
-        <path
-          d="M8.25 4.75v3.25M15.75 4.75v3.25"
-          stroke="#0F4F68"
-          strokeWidth="1.5"
-          strokeLinecap="round"
-        />
-        <circle cx="9.25" cy="14.25" r="1.1" fill="#F78F2E" />
-        <circle cx="14.75" cy="14.25" r="1.1" fill="#F78F2E" fillOpacity="0.45" />
-        <circle cx="9.25" cy="17.5" r="1.1" fill="#F78F2E" fillOpacity="0.45" />
-      </svg>
-    </span>
-  );
-}
-
-function PromoIconBudget({ className = "" }: { className?: string }) {
-  return (
-    <span className={`${PROMO_ICON_SM} ${className}`.trim()} aria-hidden>
-      <svg viewBox="0 0 24 24" fill="none" aria-hidden>
-        <path
-          d="M5.25 9.25h13.5a1.75 1.75 0 011.75 1.75v7.5a1.75 1.75 0 01-1.75 1.75H5.25A1.75 1.75 0 013.5 18.5v-7.5a1.75 1.75 0 011.75-1.75z"
-          fill="#0F4F68"
-          fillOpacity="0.08"
-          stroke="#0F4F68"
-          strokeWidth="1.5"
-          strokeLinejoin="round"
-        />
-        <path
-          d="M5.25 9.25V8a2 2 0 012-2h9.5a2 2 0 012 2v1.25"
-          stroke="#0F4F68"
-          strokeWidth="1.5"
-          strokeLinecap="round"
-        />
-        <rect x="14" y="12.75" width="5.5" height="5" rx="1.25" fill="#F78F2E" fillOpacity="0.25" stroke="#F78F2E" strokeWidth="1.5" />
-        <path d="M16.75 14.75v2.25" stroke="#0F4F68" strokeWidth="1.5" strokeLinecap="round" />
-      </svg>
-    </span>
-  );
-}
-
-function PromoIconTransparenz({ className = "" }: { className?: string }) {
-  return (
-    <span className={`${PROMO_ICON_SM} ${className}`.trim()} aria-hidden>
-      <svg viewBox="0 0 24 24" fill="none" aria-hidden>
-        <path
-          d="M6.5 5.5h8a2 2 0 012 2v9a2 2 0 01-2 2h-8a2 2 0 01-2-2v-9a2 2 0 012-2z"
-          fill="#0F4F68"
-          fillOpacity="0.06"
-          stroke="#0F4F68"
-          strokeWidth="1.5"
-        />
-        <path d="M7.25 9.25h6.5M7.25 12h5M7.25 14.75h4" stroke="#0F4F68" strokeWidth="1.5" strokeLinecap="round" opacity="0.45" />
-        <circle cx="16.25" cy="15.25" r="4" fill="#fff" stroke="#F78F2E" strokeWidth="1.5" />
-        <path d="M14.5 15.25h3.5M16.25 13.5v3.5" stroke="#0F4F68" strokeWidth="1.5" strokeLinecap="round" />
-      </svg>
-    </span>
-  );
-}
-
-function PromoIconMobile({ className = "" }: { className?: string }) {
-  return (
-    <span className={`${PROMO_ICON_SM} ${className}`.trim()} aria-hidden>
-      <svg viewBox="0 0 24 24" fill="none" aria-hidden>
-        <rect
-          x="6.5"
-          y="3"
-          width="11"
-          height="18"
-          rx="3"
-          fill="#0F4F68"
-          fillOpacity="0.07"
-          stroke="#0F4F68"
-          strokeWidth="1.5"
-        />
-        <rect x="8.25" y="6" width="7.5" height="10.5" rx="1.5" fill="#fff" stroke="#0F4F68" strokeWidth="1.25" opacity="0.9" />
-        <path d="M9.5 6h5" stroke="#F78F2E" strokeWidth="1.5" strokeLinecap="round" />
-        <rect x="10.25" y="18.25" width="3.5" height="1.25" rx="0.5" fill="#F78F2E" />
-      </svg>
-    </span>
-  );
-}
-
-function PromoIconGeschenk({ className = "" }: { className?: string }) {
-  return (
-    <span className={`${PROMO_ICON_SM} ${className}`.trim()} aria-hidden>
-      <svg viewBox="0 0 24 24" fill="none" aria-hidden>
-        <path
-          d="M5.5 10.25h13v10.5a1.75 1.75 0 01-1.75 1.75H7.25a1.75 1.75 0 01-1.75-1.75v-10.5z"
-          fill="#0F4F68"
-          fillOpacity="0.08"
-          stroke="#0F4F68"
-          strokeWidth="1.5"
-          strokeLinejoin="round"
-        />
-        <path d="M5.5 10.25h13" stroke="#0F4F68" strokeWidth="1.5" />
-        <path
-          d="M12 10.25V7M8.5 8.75a3.5 3.5 0 017 0v1.5M8.5 8.75h7"
-          stroke="#F78F2E"
-          strokeWidth="1.5"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-        <path d="M12 12.5v6.25" stroke="#F78F2E" strokeWidth="1.5" strokeLinecap="round" />
       </svg>
     </span>
   );
@@ -513,7 +386,7 @@ export function AlltagsbegleitungBetreuungLanding() {
                       id="ab-jetzt-neu-promo"
                       className="flex flex-wrap items-center justify-center gap-2 text-balance text-2xl font-extrabold leading-tight tracking-tight text-[#0F4F68] sm:text-3xl lg:justify-start"
                     >
-                      <PromoIconJetztNeu />
+                      <PromoStar variant="head" />
                       <span>Jetzt neu: Ihr persönlicher Überblick</span>
                     </h2>
                     <p className="text-pretty text-base font-medium leading-relaxed text-neutral-700 sm:text-lg">
@@ -524,7 +397,7 @@ export function AlltagsbegleitungBetreuungLanding() {
                   <ul className="list-none space-y-5 text-pretty sm:space-y-6">
                     <li className="space-y-2">
                       <h3 className="flex flex-wrap items-center justify-center gap-2.5 text-lg font-bold text-[#0F4F68] sm:text-xl lg:justify-start">
-                        <PromoIconCalendar />
+                        <PromoStar variant="sm" />
                         <span>Alles auf einen Blick</span>
                       </h3>
                       <p className="text-sm leading-relaxed text-neutral-700 sm:text-base">
@@ -533,7 +406,7 @@ export function AlltagsbegleitungBetreuungLanding() {
                     </li>
                     <li className="space-y-2">
                       <h3 className="flex flex-wrap items-center justify-center gap-2.5 text-lg font-bold text-[#0F4F68] sm:text-xl lg:justify-start">
-                        <PromoIconBudget />
+                        <PromoStar variant="sm" />
                         <span>Volle Kontrolle über Ihr Budget</span>
                       </h3>
                       <p className="text-sm leading-relaxed text-neutral-700 sm:text-base">
@@ -542,7 +415,7 @@ export function AlltagsbegleitungBetreuungLanding() {
                     </li>
                     <li className="space-y-2">
                       <h3 className="flex flex-wrap items-center justify-center gap-2.5 text-lg font-bold text-[#0F4F68] sm:text-xl lg:justify-start">
-                        <PromoIconTransparenz />
+                        <PromoStar variant="sm" />
                         <span>Transparenz, die überzeugt</span>
                       </h3>
                       <p className="text-sm leading-relaxed text-neutral-700 sm:text-base">
@@ -553,7 +426,7 @@ export function AlltagsbegleitungBetreuungLanding() {
                     </li>
                     <li className="space-y-2">
                       <h3 className="flex flex-wrap items-center justify-center gap-2.5 text-lg font-bold text-[#0F4F68] sm:text-xl lg:justify-start">
-                        <PromoIconMobile />
+                        <PromoStar variant="sm" />
                         <span>Jederzeit &amp; überall</span>
                       </h3>
                       <p className="text-sm leading-relaxed text-neutral-700 sm:text-base">
@@ -562,7 +435,7 @@ export function AlltagsbegleitungBetreuungLanding() {
                     </li>
                     <li className="space-y-2">
                       <h3 className="flex flex-wrap items-center justify-center gap-2.5 text-lg font-bold text-[#0F4F68] sm:text-xl lg:justify-start">
-                        <PromoIconGeschenk />
+                        <PromoStar variant="sm" />
                         <span>Kostenloser Service</span>
                       </h3>
                       <p className="text-sm leading-relaxed text-neutral-700 sm:text-base">
