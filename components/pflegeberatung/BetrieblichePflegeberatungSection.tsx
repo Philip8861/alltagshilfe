@@ -241,13 +241,15 @@ export function BetrieblichePflegeberatungVorteileVorStatistik() {
         className="relative mx-auto max-w-7xl px-4 pb-2 pt-10 sm:px-6 sm:pb-4 sm:pt-12 lg:px-[var(--ahs-page-gutter)] lg:pt-14"
         aria-labelledby="betrieblich-vorteile-heading"
       >
-        <h2
-          id="betrieblich-vorteile-heading"
-          className={`${POP_IN} text-xl font-extrabold text-[#0F4F68] sm:text-2xl`}
-          style={{ animationDelay: `${vorteilBaseDelay}ms` }}
-        >
-          Ihre Vorteile auf einen Blick
-        </h2>
+        <div className="mx-auto flex w-full max-w-3xl flex-col items-center text-center">
+          <h2
+            id="betrieblich-vorteile-heading"
+            className={`${POP_IN} text-balance text-xl font-extrabold text-[#0F4F68] sm:text-2xl`}
+            style={{ animationDelay: `${vorteilBaseDelay}ms` }}
+          >
+            Ihre Vorteile auf einen Blick
+          </h2>
+        </div>
         <ul className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3">
           {VORTEILE.map(({ title, text, Icon }, i) => (
             <li
@@ -375,6 +377,7 @@ export function BetrieblichePflegeberatungFolgenBand() {
           <h2
             id="betrieblich-folgen-heading"
             className="mx-auto max-w-4xl text-center text-pretty text-xl font-extrabold text-[#0F4F68] sm:text-2xl"
+            style={{ marginTop: "5%" }}
           >
             Folgen für Arbeitgeber durch pflegende Beschäftigte
           </h2>
