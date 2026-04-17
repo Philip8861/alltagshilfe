@@ -131,17 +131,19 @@ export default function StandortePage() {
             <KartenMitKoordinatenErfassen hauptmarker={HAUPTMARKER} punkte={PUNKTE} ortsLabels={ORTSLABELS} />
           </div>
           {/* Desktop: Text + Standortsuche rechts (order-2). Mobil: oben (order-1) – zuerst Text, dann Standortsuche. */}
-          <div className="order-1 flex w-full min-w-0 flex-col items-center gap-6 px-4 pt-6 sm:px-6 sm:pt-8 lg:order-2 lg:flex-1 lg:gap-8 lg:max-w-none lg:items-center lg:px-[var(--ahs-page-gutter)]">
-            <header className="w-full space-y-3">
-              <h1 className={STANDORTE_INTRO_HEADING_CLASS}>
-                {STANDORTE_INTRO.heading}
-              </h1>
-              <p className={STANDORTE_INTRO_BODY_CLASS}>
-                {STANDORTE_INTRO.text}
-              </p>
-            </header>
-            <div className="w-full max-w-md lg:max-w-none">
-              <StandortSuche />
+          <div className="order-1 flex w-full min-w-0 flex-col px-4 pt-6 sm:px-6 sm:pt-8 lg:order-2 lg:flex-1 lg:max-w-none lg:px-[var(--ahs-page-gutter)]">
+            <div className="flex w-full flex-col items-center gap-6 sm:mt-[3vh] lg:gap-8 lg:items-center">
+              <header className="w-full space-y-3">
+                <h1 className={STANDORTE_INTRO_HEADING_CLASS}>
+                  {STANDORTE_INTRO.heading}
+                </h1>
+                <p className={STANDORTE_INTRO_BODY_CLASS}>
+                  {STANDORTE_INTRO.text}
+                </p>
+              </header>
+              <div className="w-full max-w-md lg:max-w-none">
+                <StandortSuche />
+              </div>
             </div>
           </div>
         </div>
