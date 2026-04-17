@@ -6,8 +6,8 @@ const ICON_WRAP =
   "inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-[#0F4F68] text-white shadow-sm sm:h-14 sm:w-14";
 
 const BETRIEBLICH_HELL_BG = "#F2F9FA" as const;
-/** Einheitliche Fläche: Folgen-Band, Welle und Seitenfuß-Anschluss (keine Zwischenweiß-/Grau-Streifen) */
-export const BETRIEBLICH_FOLGEN_SURFACE = "#eef6f9" as const;
+/** Einheitliche Fläche: Folgen-Band, Welle und Seitenfuß-Anschluss (sehr helles Neutralgrau) */
+export const BETRIEBLICH_FOLGEN_SURFACE = "#FCFCFC" as const;
 const FOLGEN_BAND_BG = BETRIEBLICH_FOLGEN_SURFACE;
 
 /** Welle am oberen Rand eines Blocks (z. B. Übergang von Weiß zu Folgen-Fläche) */
