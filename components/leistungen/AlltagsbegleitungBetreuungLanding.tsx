@@ -334,6 +334,44 @@ export function AlltagsbegleitungBetreuungLanding() {
         </section>
 
         <section
+          className="relative z-[10] overflow-x-clip bg-[#fafbfc] px-4 py-12 sm:px-6 sm:py-14 lg:px-[var(--ahs-page-gutter)] lg:py-16"
+          aria-labelledby="ab-jetzt-neu-promo"
+        >
+          <div className="mx-auto max-w-7xl">
+            <RevealOnScroll delayMs={80}>
+              <div className="flex flex-col items-center gap-8 lg:flex-row lg:items-center lg:gap-10 xl:gap-14">
+                <div className="w-full max-w-md shrink-0 lg:max-w-[min(100%,26rem)]">
+                  {/* eslint-disable-next-line @next/next/no-img-element -- statisches Promo-Asset */}
+                  <img
+                    src="/images/jetzt_neu.webp"
+                    alt="Übersicht über Termine und Rechnungen in der App"
+                    width={832}
+                    height={640}
+                    decoding="async"
+                    loading="lazy"
+                    className="h-auto w-full rounded-2xl border border-[#0F4F68]/10 bg-white object-contain shadow-[0_10px_40px_rgba(15,79,104,0.08)]"
+                  />
+                </div>
+                <div className="min-w-0 flex-1 text-center lg:text-left">
+                  <p
+                    id="ab-jetzt-neu-promo"
+                    className="text-pretty text-lg font-semibold leading-relaxed text-[#0F4F68] sm:text-xl lg:text-[clamp(1.05rem,0.9rem+0.45vw,1.35rem)]"
+                  >
+                    <span
+                      className="mr-1 inline-block align-top text-2xl font-extrabold leading-none text-[#F78F2E] sm:mr-1.5 sm:text-3xl"
+                      aria-hidden
+                    >
+                      !
+                    </span>
+                    Jetzt Neu! Behalten Sie kommende Termine und Rechnungen bequem im Überblick.
+                  </p>
+                </div>
+              </div>
+            </RevealOnScroll>
+          </div>
+        </section>
+
+        <section
           className="relative z-[11] overflow-x-clip bg-[#fafbfc] px-4 pb-16 pt-[clamp(2.5rem,4.5vw,4.25rem)] sm:px-6 sm:pb-20 lg:px-[var(--ahs-page-gutter)] lg:pb-24"
           aria-labelledby="ab-schritte-heading"
         >
