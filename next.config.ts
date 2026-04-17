@@ -21,6 +21,11 @@ const nextConfig: NextConfig = {
         destination: "/pflegeberatung",
         permanent: true,
       },
+      {
+        source: "/leistungen/betreuung-beschaeftigung",
+        destination: "/leistungen/alltagsbegleitung-betreuung",
+        permanent: true,
+      },
     ];
   },
   /* Konfigurator: nach CSS/HTML-Änderungen nicht aus CDN-Browser-Cache „tot“ laden */

@@ -11,7 +11,7 @@ export type NavLink = {
 /** Reihenfolge wie zuvor in der Leistungsübersicht; drei Einträge verweisen auf ausgearbeitete Unterseiten. */
 const UNSERE_LEISTUNGEN_CHILDREN: { href: string; label: string }[] = [
   { href: "/leistungen/haushaltshilfe", label: "Haushaltshilfe" },
-  { href: "/leistungen/betreuung-beschaeftigung", label: "Betreuung und Beschäftigung" },
+  { href: "/leistungen/alltagsbegleitung-betreuung", label: "Alltagsbegleitung und Betreuung" },
   { href: "/pflegeberatung/private-pflegeberatung", label: "Pflegeberatungseinsätze nach §37.3 SGB XI" },
   { href: "/pflegehilfsmittel/kostenfreie-pflegehilfsmittel", label: "Kostenfreie Pflegehilfsmittelbox im Wert von 42€" },
   { href: "/leistungen/essen-auf-raeder", label: "Essen auf Räder" },

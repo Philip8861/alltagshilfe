@@ -10,7 +10,7 @@
     "subtitle": "Von der Haushaltshilfe über Betreuung und Pflegeberatung bis zur Pflegehilfsmittelbox – wir unterstützen Sie im Alltag.",
     "items": [
       { "slug": "haushaltshilfe", "title": "Haushaltshilfe", "description": "Unterstützung im Haushalt – Reinigung, kleine Reparaturen, Gartenarbeiten." },
-      { "slug": "betreuung-beschaeftigung", "title": "Betreuung und Beschäftigung", "description": "Gemeinsam einkaufen, kochen, spazieren – und Begleitung bei Behördengängen." },
+      { "slug": "alltagsbegleitung-betreuung", "title": "Alltagsbegleitung und Betreuung", "description": "Gemeinsam im Alltag: Einkauf, Kochen, Spaziergänge und Begleitung zu Arzt und Behörden." },
       { "slug": "pflegeberatung-einsaetze", "title": "Pflegeberatungseinsätze §37.3 SGB XI", "description": "Professionelle Pflegeberatung – Kosten übernimmt die Pflegekasse." },
       { "slug": "pflegehilfsmittelbox", "title": "Kostenfreie Pflegehilfsmittelbox", "description": "Monatlich 42€ kostenfrei ab Pflegegrad 1 – Pflegekasse übernimmt." },
       { "slug": "essen-auf-raeder", "title": "Essen auf Räder", "description": "Mit Herz gekocht, liebevoll gebracht – frisch und regional mit LuckyLunch." },
