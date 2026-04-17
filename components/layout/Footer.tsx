@@ -41,7 +41,7 @@ export function Footer() {
       </div>
       {/* Unten in px: bei Lesbarkeits-Zoom (html font-size %) würden rem-Paddings extrem groß wirken */}
       <Container className="relative z-10 pt-12 sm:pt-16 pb-[max(8px,env(safe-area-inset-bottom,0px))]">
-        <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="mx-auto grid w-full max-w-5xl grid-cols-1 gap-8 text-center sm:grid-cols-2 sm:text-left lg:grid-cols-3 lg:gap-10">
           <div>
             <p className="text-sm font-semibold text-neutral-900">
               {siteConfig.name}

@@ -70,7 +70,7 @@ export default function PflegeberatungPage() {
         >
           {/* Weißer Streifen: Hero → Vorteile + „Was versteht man …“ (mint) → Statistik (weiß) → Folgen-Band */}
           <div className="relative left-1/2 w-screen max-w-[100vw] -translate-x-1/2 overflow-x-visible overflow-y-visible bg-white">
-            <div className="relative flex w-full flex-col overflow-visible bg-white pt-8 sm:pt-10 lg:block lg:min-h-[min(100vw,480px)] lg:pt-0">
+            <div className="relative flex w-full flex-col overflow-visible bg-white pt-0 lg:block lg:min-h-[min(100vw,480px)] lg:pt-0">
             <Container className="relative z-10 order-2 mt-8 lg:order-none lg:mt-0 lg:pt-10">
               <header className="max-w-xl text-left lg:max-w-[min(100%,28rem)] lg:pr-4 xl:max-w-[32rem]">
                 <h1
@@ -107,7 +107,7 @@ export default function PflegeberatungPage() {
             {/* Mobil: Bild zuerst (order-1); ab lg rechts absolut wie zuvor */}
             <div className="relative z-10 order-1 mt-0 max-lg:px-0 overflow-visible px-1 sm:px-2 lg:order-none lg:pointer-events-none lg:absolute lg:right-0 lg:top-0 lg:z-20 lg:mt-0 lg:px-0">
               <div
-                className="ml-auto overflow-visible pb-24 pt-1 sm:pb-28 sm:pt-2 lg:ml-0 lg:mr-0 lg:pb-32 lg:pt-0"
+                className="ml-auto overflow-visible pb-24 pt-0 sm:pb-28 lg:ml-0 lg:mr-0 lg:pb-32 lg:pt-0"
                 style={imgBlockStyle}
               >
                 <div className="relative isolate ml-auto leading-none [&_img]:block [&_img]:max-w-none">
