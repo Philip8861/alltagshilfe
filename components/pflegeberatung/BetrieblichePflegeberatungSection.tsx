@@ -8,7 +8,7 @@ const ICON_WRAP =
 
 const BETRIEBLICH_HELL_BG = "#F2F9FA" as const;
 /** Einheitliche Fläche: Folgen-Band, Welle und Seitenfuß-Anschluss (sehr helles Neutralgrau) */
-export const BETRIEBLICH_FOLGEN_SURFACE = "#FAFAFA" as const;
+export const BETRIEBLICH_FOLGEN_SURFACE = "#fafbfc" as const;
 const FOLGEN_BAND_BG = BETRIEBLICH_FOLGEN_SURFACE;
 
 /** Welle am oberen Rand eines Blocks (z. B. Übergang von Weiß zu Folgen-Fläche) */
@@ -439,7 +439,7 @@ export function BetrieblichePflegeberatungFolgenBand() {
               </li>
             ))}
           </ul>
-          <div className="mt-10 flex flex-col items-center gap-4 text-center sm:mt-12 sm:gap-5">
+          <div className="mt-[calc(2.5rem+5vh)] flex flex-col items-center gap-4 text-center sm:mt-[calc(3rem+5vh)] sm:gap-5">
             <p className="max-w-2xl text-pretty px-4 text-base font-semibold leading-snug text-[#0F4F68] sm:text-lg">
               Sichern Sie Ihre Mitarbeitenden mit diesem neuen Corporate Benefit ab und stellen Sie Ihr Unternehmen
               frühzeitig auf den demografischen Wandel ein.

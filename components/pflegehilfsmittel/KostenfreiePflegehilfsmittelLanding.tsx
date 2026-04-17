@@ -530,18 +530,10 @@ export function KostenfreiePflegehilfsmittelLanding() {
         </section>
 
         <section
-          className="relative isolate overflow-x-clip bg-gradient-to-b from-[#e8f4f7]/90 via-[#fafbfc] to-white py-14 sm:py-20"
+          className="relative bg-[#fafbfc] py-14 sm:py-20"
           aria-labelledby="kostenfrei-faq-heading"
         >
-          <div
-            className="pointer-events-none absolute -right-24 top-10 h-72 w-72 rounded-full bg-[#F78F2E]/10 blur-3xl sm:-right-16"
-            aria-hidden
-          />
-          <div
-            className="pointer-events-none absolute -left-20 bottom-0 h-64 w-64 rounded-full bg-[#0F4F68]/[0.07] blur-3xl"
-            aria-hidden
-          />
-          <div className="relative z-[1] mx-auto max-w-3xl px-4 sm:px-6 lg:max-w-4xl">
+          <div className="relative mx-auto max-w-3xl px-4 sm:px-6 lg:max-w-4xl">
             <RevealOnScroll>
               <h2
                 id="kostenfrei-faq-heading"
@@ -558,7 +550,7 @@ export function KostenfreiePflegehilfsmittelLanding() {
                 {KOSTENFREI_FAQ.map((item) => (
                   <details
                     key={item.q}
-                    className="group rounded-2xl border border-[#0F4F68]/12 bg-white/95 shadow-[0_2px_16px_rgba(15,79,104,0.06)] backdrop-blur-sm transition hover:border-[#F78F2E]/35 hover:shadow-[0_8px_28px_rgba(15,79,104,0.1)] open:border-[#0F4F68]/18 open:shadow-[0_10px_32px_rgba(15,79,104,0.12)]"
+                    className="group rounded-2xl border border-[#0F4F68]/12 bg-white shadow-[0_2px_16px_rgba(15,79,104,0.06)] transition hover:border-[#F78F2E]/35 hover:shadow-[0_8px_28px_rgba(15,79,104,0.1)] open:border-[#0F4F68]/18 open:shadow-[0_10px_32px_rgba(15,79,104,0.12)]"
                   >
                     <summary className="flex cursor-pointer list-none items-center justify-between gap-4 px-4 py-4 text-left text-[#0F4F68] sm:px-5 [&::-webkit-details-marker]:hidden">
                       <span className="text-base font-semibold leading-snug sm:text-[1.05rem]">{item.q}</span>
