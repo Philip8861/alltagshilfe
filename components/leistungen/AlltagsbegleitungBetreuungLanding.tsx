@@ -284,8 +284,8 @@ export function AlltagsbegleitungBetreuungLanding() {
                     height={800}
                     decoding="async"
                     fetchPriority="high"
-                    sizes="(max-width: 1023px) 81vw, (max-width: 1536px) 52vw, 967px"
-                    className={`box-border h-auto w-[80.5%] max-w-full object-contain object-center max-lg:mx-auto lg:ml-auto lg:mr-0 lg:w-[80.5%] lg:object-contain lg:object-right ${HERO_GLOW_CLASS}`}
+                    sizes="(max-width: 1023px) 89vw, (max-width: 1536px) 57vw, 1064px"
+                    className={`box-border h-auto w-[88.55%] max-w-full object-contain object-center max-lg:mx-auto lg:ml-auto lg:mr-0 lg:w-[88.55%] lg:object-contain lg:object-right ${HERO_GLOW_CLASS}`}
                   />
                 </div>
               </div>
