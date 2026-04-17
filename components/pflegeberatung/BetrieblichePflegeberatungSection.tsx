@@ -439,7 +439,11 @@ export function BetrieblichePflegeberatungFolgenBand() {
               </li>
             ))}
           </ul>
-          <div className="mt-10 flex justify-center sm:mt-12">
+          <div className="mt-10 flex flex-col items-center gap-4 text-center sm:mt-12 sm:gap-5">
+            <p className="max-w-2xl text-pretty px-4 text-base font-semibold leading-snug text-[#0F4F68] sm:text-lg">
+              Sichern Sie Ihre Mitarbeitenden mit diesem neuen Corporate Benefit ab und stellen Sie Ihr Unternehmen
+              frühzeitig auf den demografischen Wandel ein.
+            </p>
             <BetrieblichAngebotOpenButton className="w-full max-w-md min-h-[3rem] px-8 py-3.5 text-base sm:w-auto sm:max-w-none sm:text-lg" />
           </div>
         </section>
