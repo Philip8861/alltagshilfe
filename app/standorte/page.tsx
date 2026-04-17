@@ -82,12 +82,12 @@ const STANDORTE_INTRO = {
   text: "Hier finden Sie Ihren passenden Ansprechpartner für eine zuverlässige, liebevolle Unterstützung ganz in Ihrer Nähe. Wir stehen Ihnen im Alltag gerne zur Seite.",
 };
 
-/** Intro-Überschriften eine Stufe größer */
-const HEADING_CLASS =
-  "text-3xl font-bold text-[#0F4F68] sm:text-4xl w-full max-w-lg self-start";
+/** Intro über der PLZ-Suche: mittig über dem Kasten */
+const STANDORTE_INTRO_HEADING_CLASS =
+  "mx-auto w-full max-w-2xl text-balance text-center text-3xl font-bold text-[#0F4F68] sm:text-4xl";
 
-/** Intro-Fließtext eine Stufe größer */
-const INTRO_BODY_CLASS = "text-lg text-neutral-700 leading-relaxed sm:text-xl";
+const STANDORTE_INTRO_BODY_CLASS =
+  "mx-auto w-full max-w-2xl text-balance text-center text-lg text-neutral-700 leading-relaxed sm:text-xl";
 
 export default function StandortePage() {
   const leistungen = [
@@ -131,16 +131,16 @@ export default function StandortePage() {
             <KartenMitKoordinatenErfassen hauptmarker={HAUPTMARKER} punkte={PUNKTE} ortsLabels={ORTSLABELS} />
           </div>
           {/* Desktop: Text + Standortsuche rechts (order-2). Mobil: oben (order-1) – zuerst Text, dann Standortsuche. */}
-          <div className="order-1 flex w-full min-w-0 flex-col gap-6 px-4 pt-6 sm:px-6 sm:pt-8 lg:order-2 lg:flex-1 lg:gap-8 lg:max-w-none lg:items-start lg:px-[var(--ahs-page-gutter)]">
-            <header className="w-full max-w-lg space-y-3">
-              <h1 className={HEADING_CLASS}>
+          <div className="order-1 flex w-full min-w-0 flex-col items-center gap-6 px-4 pt-6 sm:px-6 sm:pt-8 lg:order-2 lg:flex-1 lg:gap-8 lg:max-w-none lg:items-center lg:px-[var(--ahs-page-gutter)]">
+            <header className="w-full space-y-3">
+              <h1 className={STANDORTE_INTRO_HEADING_CLASS}>
                 {STANDORTE_INTRO.heading}
               </h1>
-              <p className={INTRO_BODY_CLASS}>
+              <p className={STANDORTE_INTRO_BODY_CLASS}>
                 {STANDORTE_INTRO.text}
               </p>
             </header>
-            <div className="mx-auto w-full max-w-md lg:mx-0 lg:max-w-none">
+            <div className="w-full max-w-md lg:max-w-none">
               <StandortSuche />
             </div>
           </div>
