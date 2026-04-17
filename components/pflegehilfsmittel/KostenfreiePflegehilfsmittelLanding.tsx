@@ -21,6 +21,13 @@ const KOSTENFREI_HERO_VORTEILE = [
   "Zugelassen bei allen Pflegekassen",
 ] as const;
 
+/** viewBox 0 0 1200 100 – deutlichere Amplitude (mobil wirkt die alte Mehrfach-Kurve oft wie eine Linie) */
+const KOSTENFREI_WELLEN_D =
+  "M0,100 C200,26 420,6 600,18 C800,32 1010,75 1200,100 L1200,100 L0,100 Z";
+
+const KOSTENFREI_WELLEN_SVG_CLASS =
+  "pointer-events-none absolute left-0 top-0 z-0 h-16 w-full -translate-y-7 sm:h-[clamp(2.85rem,1.5rem+3.8vw,5rem)] sm:-translate-y-[clamp(0.9rem,0.35rem+2.1vw,3.2rem)]";
+
 /** Wie Startseiten-Hero: orangener Kreis mit Häkchen. */
 function KostenfreiHeroCheckIcon({ className = "" }: { className?: string }) {
   return (
@@ -389,16 +396,13 @@ export function KostenfreiePflegehilfsmittelLanding() {
           aria-labelledby="schritte-heading"
         >
           <svg
-            className="pointer-events-none absolute left-0 top-0 z-0 h-[clamp(2.5rem,1.5rem+3.8vw,5rem)] w-full -translate-y-[clamp(0.9rem,0.35rem+2.1vw,3.2rem)]"
+            className={KOSTENFREI_WELLEN_SVG_CLASS}
             viewBox="0 0 1200 100"
             preserveAspectRatio="none"
             fill="none"
             aria-hidden
           >
-            <path
-              d="M0,100 C140,38 300,8 460,36 C620,65 760,95 900,72 C980,58 1080,28 1200,18 L1200,100 L0,100 Z"
-              fill="#F2F9FA"
-            />
+            <path d={KOSTENFREI_WELLEN_D} fill="#F2F9FA" />
           </svg>
           <div className="relative z-[1] mx-auto max-w-7xl">
             <RevealOnScroll>
@@ -451,16 +455,13 @@ export function KostenfreiePflegehilfsmittelLanding() {
           aria-labelledby="kostenfrei-vorteile-heading"
         >
           <svg
-            className="pointer-events-none absolute left-0 top-0 z-0 h-[clamp(2.5rem,1.5rem+3.8vw,5rem)] w-full -translate-y-[clamp(0.9rem,0.35rem+2.1vw,3.2rem)]"
+            className={KOSTENFREI_WELLEN_SVG_CLASS}
             viewBox="0 0 1200 100"
             preserveAspectRatio="none"
             fill="none"
             aria-hidden
           >
-            <path
-              d="M0,100 C140,38 300,8 460,36 C620,65 760,95 900,72 C980,58 1080,28 1200,18 L1200,100 L0,100 Z"
-              fill="#ffffff"
-            />
+            <path d={KOSTENFREI_WELLEN_D} fill="#ffffff" />
           </svg>
           <RevealOnScroll>
             <div className="relative z-[1] mx-auto w-full max-w-6xl">

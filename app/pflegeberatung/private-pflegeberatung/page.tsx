@@ -6,10 +6,13 @@ import { PflegegradBeratungTable } from "@/components/pflegeberatung/PflegegradB
 import { PflegeberatungNaehePlzDialog } from "@/components/pflegeberatung/PflegeberatungNaehePlzDialog";
 import { PRIVATE_PFLEGEBERATUNG_FAQ } from "@/lib/private-pflegeberatung-faq";
 import { siteConfig } from "@/config/site";
+import { cn } from "@/lib/utils";
 
 const PAGE_PATH = "/pflegeberatung/private-pflegeberatung";
 /** Seiten-Hintergrund (article); Wellen nutzen dieselbe Farbe statt Hellblau #F2F9FA */
 const PAGE_SURFACE = "#fafbfc" as const;
+/** Kundenstimmen-Bereich (Übergang FAQ → #fafbfc per Welle am FAQ-Anfang) */
+const KUNDENSTIMMEN_SURFACE = "#F2F9FA" as const;
 
 const HERO_KURZ_VORTEILE = [
   "Wir erinnern Sie an bevorstehende Termine",
@@ -79,10 +82,20 @@ const faqJsonLd = {
 };
 
 /** Wellen-Übergang; `fill` = Farbe des aktuellen Abschnitts (wird nach oben in den vorherigen Bereich gezogen) */
-function WelleObenMitFuellfarbe({ fill }: { fill: string }) {
+function WelleObenMitFuellfarbe({
+  fill,
+  className,
+}: {
+  fill: string;
+  /** z. B. größere Welle für Übergänge zwischen ähnlichen Farben (#F2F9FA → #fafbfc) */
+  className?: string;
+}) {
   return (
     <svg
-      className="pointer-events-none absolute left-0 top-0 block h-12 w-full -translate-y-[68%] sm:h-16"
+      className={cn(
+        "pointer-events-none absolute left-0 top-0 block h-12 w-full -translate-y-[68%] sm:h-16",
+        className,
+      )}
       viewBox="0 0 1200 120"
       preserveAspectRatio="none"
       fill="none"
@@ -249,22 +262,25 @@ export default function PrivatePflegeberatungPage() {
         </div>
       </section>
 
-      {/* Welliger Übergang von Weiß (Vorteile) zu Kundenstimmen (#F2F9FA) */}
+      {/* Welliger Übergang von Weiß (Vorteile) zu Kundenstimmen */}
       <div
         className="relative z-10 w-full [&>section]:!mt-8 sm:[&>section]:!mt-10 lg:[&>section]:!mt-12"
-        style={{ backgroundColor: "#F2F9FA" }}
+        style={{ backgroundColor: KUNDENSTIMMEN_SURFACE }}
       >
-        <WelleObenMitFuellfarbe fill="#F2F9FA" />
+        <WelleObenMitFuellfarbe fill={KUNDENSTIMMEN_SURFACE} />
         <KundenstimmenCarousel />
       </div>
 
-      {/* FAQ – einheitlich #fafbfc (ohne Farbverläufe/Flecken) */}
+      {/* FAQ – #fafbfc; Welle oben = welliger Übergang von Kundenstimmen (#F2F9FA) */}
       <section
-        className="relative isolate overflow-x-clip py-14 sm:py-20"
+        className="relative z-[11] py-14 sm:py-20"
         style={{ backgroundColor: PAGE_SURFACE }}
         aria-labelledby="faq-heading"
       >
-        <WelleObenMitFuellfarbe fill={PAGE_SURFACE} />
+        <WelleObenMitFuellfarbe
+          fill={PAGE_SURFACE}
+          className="h-16 -translate-y-[72%] sm:h-20 sm:-translate-y-[75%]"
+        />
         <div className="relative z-[1] mx-auto max-w-3xl px-4 sm:px-6 lg:max-w-4xl">
           <h2
             id="faq-heading"
