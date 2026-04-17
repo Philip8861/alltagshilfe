@@ -6,12 +6,12 @@ const PATH = "/leistungen/haushaltshilfe" as const;
 
 export const metadata: Metadata = {
   title: "Haushaltshilfe ganz in Ihrer Nähe",
-  description: `Haushaltshilfe und haushaltsnahe Unterstützung regional und persönlich – ${siteConfig.name}. Jetzt unverbindlich anfragen.`,
+  description: `Haushaltshilfe & haushaltsnahe Dienstleistungen: Kosten, Krankenkasse, Entlastungsbetrag, feste Bezugsperson, Region. ${siteConfig.name} – jetzt unverbindlich anfragen.`,
   alternates: { canonical: PATH },
   openGraph: {
     title: `Haushaltshilfe ganz in Ihrer Nähe | ${siteConfig.name}`,
     description:
-      "Haushaltshilfe und haushaltsnahe Unterstützung: regional, verlässlich und auf Ihren Alltag abgestimmt.",
+      "Haushaltshilfe regional: Reinigung, Wäsche, Mahlzeiten u. v. m. – mit Transparenz per App, Zulassung bei allen Kassen, schnelle Terminvergabe.",
   },
 };
 

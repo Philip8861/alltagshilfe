@@ -82,58 +82,198 @@ const FAQ: FaqItem[] = [
   {
     q: "Was versteht man unter Haushaltshilfe?",
     answerPlain:
-      "Haushaltshilfe umfasst haushaltsnahe Tätigkeiten wie Reinigung, kleinere Reparaturen oder Gartenarbeiten – abgestimmt auf Ihre Bedürfnisse.",
+      "Haushaltshilfe (häufig auch haushaltsnahe Dienstleistungen genannt) unterstützt Sie bei Aufgaben wie Reinigung, Wäsche, Einkauf oder Mahlzeitenvorbereitung – nicht bei medizinischer Grundpflege. Ziel ist, dass Sie länger selbstbestimmt zu Hause leben können.",
     answer: (
       <>
-        Haushaltshilfe umfasst haushaltsnahe Tätigkeiten wie Reinigung, kleinere Reparaturen oder Gartenarbeiten –
-        immer in Absprache mit Ihnen und passend zu Ihrer Situation.
+        Unter <strong>Haushaltshilfe</strong> versteht man typischerweise{" "}
+        <strong>haushaltsnahe, nicht pflegerische Tätigkeiten</strong> – etwa Reinigung, Wäschepflege, Ordnung, Zubereiten
+        von Mahlzeiten oder Einkauf. Konkrete Leistungen stimmen wir mit Ihnen ab; medizinische Pflegehandlungen gehören
+        nicht dazu.
       </>
     ),
   },
   {
-    q: "In welchen Regionen bieten Sie Haushaltshilfe an?",
-    answerPlain: `${siteConfig.name} ist in mehreren Regionen in Süddeutschland für Sie da. Details zu Ihrem Ort finden Sie auf unserer Standorte-Seite oder bei der Anfrage.`,
+    q: "Welche Aufgaben übernimmt die Haushaltshilfe bei Alltagshilfe-Süd?",
+    answerPlain:
+      "Typisch sind u. a. Saugen und Wischen, Fensterputzen, Reinigung von Bad und Küche, Zubereiten von Mahlzeiten, Aufräumen sowie Wäsche waschen und bügeln. Der genaue Umfang wird individuell vereinbart.",
     answer: (
       <>
-        {siteConfig.name} ist in mehreren Regionen für Sie da. Eine Übersicht finden Sie unter{" "}
+        Häufig gehören dazu unter anderem:{" "}
+        <strong>
+          Saugen und Wischen der Böden, Fenster putzen, Reinigung von Bad und Küche, Mahlzeiten zubereiten, Aufräumen und
+          Ordnung halten, Wäsche waschen und bügeln
+        </strong>
+        . Alles Weitere besprechen wir transparent mit Blick auf Ihren Bedarf.
+      </>
+    ),
+  },
+  {
+    q: "In welchen Regionen gibt es Haushaltshilfe – auch auf dem Land?",
+    answerPlain: `${siteConfig.name} ist regional in Süddeutschland unterwegs und betreut Kundinnen und Kunden in Städten sowie in ländlichen Regionen und Dörfern. Ob Ihr Ort dazu gehört, klären wir gern anhand Ihrer Postleitzahl.`,
+    answer: (
+      <>
+        {siteConfig.name} ist <strong>regional verwurzelt</strong> und unterwegs in{" "}
+        <strong>städtischen und ländlichen Gebieten</strong>. Eine Übersicht finden Sie unter{" "}
         <Link href="/standorte" className={FAQ_INLINE}>
           Standorte
         </Link>
-        ; gern prüfen wir anhand Ihrer Postleitzahl, ob wir Sie direkt unterstützen können.
+        ; bei der Anfrage prüfen wir, ob wir Sie in Ihrer Gegend unterstützen können.
       </>
     ),
   },
   {
-    q: "Wer trägt die Kosten für Haushaltshilfe?",
+    q: "Ist Alltagshilfe-Süd bei Krankenkassen und Pflegekassen zugelassen?",
     answerPlain:
-      "Das hängt von Ihrer Situation ab: z. B. Pflegegrad, Entlastungsbetrag oder private Vereinbarung. Wir beraten Sie gern und verweisen auf die zuständigen Stellen.",
+      "Ja. Alltagshilfe-Süd ist bei allen Pflege- und Krankenkassen in Deutschland zugelassen. Welche Leistungen für Ihre Haushaltshilfe konkret in Frage kommen, hängt von Ihrer individuellen Situation ab.",
     answer: (
       <>
-        Das ist individuell – z.&nbsp;B. über den Entlastungsbetrag bei anerkanntem Pflegegrad, andere Leistungen oder
-        privat. Wir geben Ihnen bei der{" "}
+        Ja – {siteConfig.name} ist <strong>bei allen Pflege- und Krankenkassen in Deutschland zugelassen</strong>. Welche
+        Kostenübernahme für Ihre Haushaltshilfe möglich ist, hängt von Versicherungsschutz, Pflegegrad und weiteren
+        Faktoren ab; wir unterstützen Sie bei der Orientierung.
+      </>
+    ),
+  },
+  {
+    q: "Wer bezahlt Haushaltshilfe – Krankenkasse, Pflegekasse oder privat?",
+    answerPlain:
+      "Die Finanzierung kann z. B. über die Pflegekasse (z. B. Entlastungsbetrag), die Krankenkasse bei entsprechender medizinischer Indikation oder privat erfolgen. Im Einzelfall klären wir mit Ihnen, welcher Weg passt.",
+    answer: (
+      <>
+        Das ist <strong>individuell</strong>: Möglich sind u.&nbsp;a. Leistungen der{" "}
+        <strong>Pflegekasse</strong> (z.&nbsp;B. Entlastungsbetrag), in passenden Fällen auch die{" "}
+        <strong>Krankenkasse</strong> oder eine <strong>private Vereinbarung</strong>. Wir nennen keine Rechtsberatung,
+        geben Ihnen aber eine erste Einordnung – gern über unsere{" "}
         <Link href="/kontakt" className={FAQ_INLINE}>
           Kontaktaufnahme
-        </Link>{" "}
-        eine erste Orientierung.
+        </Link>
+        .
       </>
     ),
   },
   {
-    q: "Wie schnell kann Unterstützung starten?",
+    q: "Kann ich den Entlastungsbetrag von 131 Euro für Haushaltshilfe nutzen?",
     answerPlain:
-      "Je nach Region und Personalverfügbarkeit bemühen wir uns um zeitnahe Termine. Nach der Anfrage melden wir uns mit einem konkreten Vorschlag.",
+      "Bei anerkanntem Pflegegrad steht Ihnen ein monatlicher Entlastungsbetrag von 131 Euro zu, den Sie für anerkannte entlastende Leistungen – darunter häufig auch haushaltsnahe Dienstleistungen – nutzen können. Wir beraten Sie zur Einordnung.",
     answer: (
       <>
-        Nach Ihrer Anfrage melden wir uns mit den nächsten möglichen Terminen. Die Dauer hängt von Kapazität und Region
-        ab – wir halten Sie transparent auf dem Laufenden.
+        Ab <strong>Pflegegrad 1</strong> haben Anspruchsberechtigte Anspruch auf einen{" "}
+        <strong>monatlichen Entlastungsbetrag von 131&nbsp;Euro</strong> für qualifizierte Entlastungsleistungen. Ob und
+        wie Ihre <strong>Haushaltshilfe</strong> davon abgedeckt werden kann, hängt von der konkreten Vereinbarung und den
+        Vorgaben der Pflegekasse ab. Mehr Hintergrund bietet unser{" "}
+        <Link href="/ratgeber/entlastungsbetrag-131-euro" className={FAQ_INLINE}>
+          Ratgeber zum Entlastungsbetrag
+        </Link>
+        .
       </>
     ),
   },
   {
-    q: "Kann ich die Haushaltshilfe anpassen oder pausieren?",
+    q: "Brauche ich einen Pflegegrad für eine Kostenübernahme der Haushaltshilfe?",
     answerPlain:
-      "Ja, Umfang und Rhythmus werden mit Ihnen vereinbart und können – soweit vertraglich möglich – angepasst werden.",
-    answer: <>Umfang und Termine stimmen wir mit Ihnen ab; Änderungen besprechen wir offen mit Blick auf Ihre Entlastung.</>,
+      "Für den Entlastungsbetrag der Pflegekasse ist in der Regel ein anerkannter Pflegegrad erforderlich. Eine reine Krankenkassen-Leistung kann je nach Verordnung auch ohne Pflegegrad infrage kommen. Wir klären das gerne mit Ihnen im Gespräch.",
+    answer: (
+      <>
+        Für den <strong>Entlastungsbetrag</strong> der Pflegekasse ist typischerweise ein{" "}
+        <strong>anerkannter Pflegegrad</strong> nötig. Andere Wege (z.&nbsp;B. über die Krankenkasse) können je nach
+        Situation anders aussehen. Sprechen Sie uns unverbindlich an.
+      </>
+    ),
+  },
+  {
+    q: "Gibt es eine App für Rechnungen und Termine zur Haushaltshilfe?",
+    answerPlain:
+      "Ja. Alltagshilfe-Süd bietet volle Transparenz über eine App: Rechnungen und kommende Termine sind dort einsehbar.",
+    answer: (
+      <>
+        Ja – bei uns gehört <strong>Transparenz</strong> dazu: Über eine <strong>App</strong> können Sie sich{" "}
+        <strong>Rechnungen</strong> ansehen und <strong>kommende Termine</strong> einsehen, wie auch auf der Startseite
+        beschrieben.
+      </>
+    ),
+  },
+  {
+    q: "Bekomme ich eine feste Bezugsperson bei der Haushaltshilfe?",
+    answerPlain:
+      "Alltagshilfe-Süd legt Wert auf Vertrauen und plant wo möglich mit fester Ansprechperson statt ständig wechselndem Personal. Details hängen von Verfügbarkeit und Region ab.",
+    answer: (
+      <>
+        Verlässlichkeit ist uns wichtig: Wo es geht, arbeiten Sie mit einer{" "}
+        <strong>festen Bezugsperson</strong> statt mit ständig wechselnden Einsatzkräften. Konkrete Planung besprechen wir
+        bei der Aufnahme.
+      </>
+    ),
+  },
+  {
+    q: "Wie schnell kann Haushaltshilfe nach der Anfrage starten?",
+    answerPlain:
+      "Alltagshilfe-Süd bemüht sich um schnelle Terminvergabe; je nach freien Kapazitäten und Region melden wir uns mit einem konkreten Vorschlag. Auf der Homepage weisen wir auf freie Kapazitäten und kurze Wartezeiten hin.",
+    answer: (
+      <>
+        Wir legen Wert auf <strong>schnelle Terminvergabe</strong>. Nach Ihrer Anfrage erhalten Sie zeitnah Rückmeldung;
+        der konkrete Start hängt von <strong>freien Kapazitäten</strong> und Region ab – wir halten Sie auf dem Laufenden.
+      </>
+    ),
+  },
+  {
+    q: "Kann ich Umfang, Rhythmus oder Pausen der Haushaltshilfe ändern?",
+    answerPlain:
+      "Ja. Umfang und Termine werden mit Ihnen vereinbart und können im Rahmen der Vereinbarung angepasst oder pausiert werden, soweit möglich.",
+    answer: (
+      <>
+        <strong>Umfang, Rhythmus und Pausen</strong> stimmen wir mit Ihnen ab. Änderungen sind möglich, soweit sie mit
+        Organisation und Vertrag vereinbar sind – sprechen Sie uns einfach an.
+      </>
+    ),
+  },
+  {
+    q: "Was ist der Unterschied zwischen Haushaltshilfe und häuslicher Pflege?",
+    answerPlain:
+      "Haushaltshilfe betrifft den Haushalt und Alltag (Reinigung, Wäsche, Mahlzeiten usw.). Häusliche Pflege umfasst pflegerische Maßnahmen nach SGB XI oder SGB V, etwa Körperpflege oder Medikamentengabe, oft durch examiniertes Personal.",
+    answer: (
+      <>
+        <strong>Haushaltshilfe</strong> = Unterstützung im <strong>Haushalt und Alltag</strong>.{" "}
+        <strong>Häusliche Pflege</strong> = <strong>pflegerische</strong> Tätigkeiten (z.&nbsp;B. Grundpflege), oft durch
+        entsprechend qualifizierte Kräfte und andere Abrechnungswege. Beides kann sich ergänzen – wir beraten zur
+        Einordnung.
+      </>
+    ),
+  },
+  {
+    q: "Welche weiteren Leistungen bietet Alltagshilfe-Süd neben Haushaltshilfe?",
+    answerPlain:
+      "Neben Haushaltshilfe und Alltagsbegleitung gehören u. a. Pflegeberatung, Betreuung, Pflegehilfsmittel und weitere Angebote zum Portfolio – aus einer Hand, mit Netzwerk wenn nötig.",
+    answer: (
+      <>
+        Zu {siteConfig.name} gehören u.&nbsp;a.{" "}
+        <Link href="/pflegeberatung/private-pflegeberatung" className={FAQ_INLINE}>
+          Pflegeberatung
+        </Link>
+        ,{" "}
+        <Link href="/leistungen/betreuung-beschaeftigung" className={FAQ_INLINE}>
+          Betreuung und Beschäftigung
+        </Link>{" "}
+        sowie{" "}
+        <Link href="/pflegehilfsmittel/kostenfreie-pflegehilfsmittel" className={FAQ_INLINE}>
+          Pflegehilfsmittel
+        </Link>{" "}
+        und mehr – <strong>aus einer Hand</strong>, mit starkem Netzwerk, falls Sie Spezialisten brauchen.
+      </>
+    ),
+  },
+  {
+    q: "Wie frage ich Haushaltshilfe bei Alltagshilfe-Süd unverbindlich an?",
+    answerPlain:
+      "Sie erreichen uns telefonisch oder über das Kontaktformular. Wir melden uns zurück, klären Bedarf und nächste Schritte – unverbindlich.",
+    answer: (
+      <>
+        Am einfachsten über unsere{" "}
+        <Link href="/kontakt" className={FAQ_INLINE}>
+          Kontaktseite
+        </Link>{" "}
+        oder telefonisch. Wir beantworten Ihre Fragen zur <strong>Haushaltshilfe</strong> und erläutern den Ablauf –{" "}
+        <strong>unverbindlich</strong>.
+      </>
+    ),
   },
 ];
 
@@ -377,7 +517,7 @@ export function HaushaltshilfeLanding() {
                 Häufige Fragen
               </h2>
               <p className="mx-auto mt-2 max-w-2xl text-center text-sm font-medium text-[#0F4F68]/85 sm:text-base">
-                Rund um Haushaltshilfe, Kosten und Ablauf
+                Antworten zu Kosten, Krankenkasse, Entlastungsbetrag, Region, Ablauf und weiteren häufigen Fragen
               </p>
             </RevealOnScroll>
             <RevealOnScroll delayMs={100}>
