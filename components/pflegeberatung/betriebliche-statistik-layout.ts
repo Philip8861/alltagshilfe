@@ -12,6 +12,10 @@ export const BETRIEBLICH_STATISTIK_FULL_LAYOUT_HEIGHT_REM =
   BETRIEBLICH_STATISTIK_IMG_MAX_REM * STATISTIK_ASPECT;
 
 /**
- * Negativer oberer Rand Folgen-Band: Welle im unteren Drittel der Grafik-Höhe (bezogen auf volle Bildhöhe).
+ * Negativer oberer Rand Folgen-Band: Folgen-Überschrift näher an Statistik-Hub (Welle darunter), leicht stärker als 1/3.
  */
-export const BETRIEBLICH_STATISTIK_FOLGEN_OVERLAP_REM = BETRIEBLICH_STATISTIK_FULL_LAYOUT_HEIGHT_REM / 3;
+export const BETRIEBLICH_STATISTIK_FOLGEN_OVERLAP_REM =
+  (BETRIEBLICH_STATISTIK_FULL_LAYOUT_HEIGHT_REM / 3) * 1.15;
+
+/** Hintergrund Folgen-Band / Footer-Fläche (Wellenfüllung Statistik → Folgen) */
+export const BETRIEBLICH_FOLGEN_SURFACE = "#eef6f9" as const;
