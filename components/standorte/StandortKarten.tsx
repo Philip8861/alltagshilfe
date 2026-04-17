@@ -92,12 +92,12 @@ const STANDORTE: StandortKarte[] = [
     imageSrc: STANDORT_CARD_BILD,
     imageAlt: "Standort Augsburg",
   },
-  {
+   {
     name: "Standort Engen/Konstanz",
     address: "Robert-Bosch-Straße 1",
     plzOrt: "78234 Engen",
-    phone: "08334 / 9893330",
-    phoneHref: "tel:+4983349893330",
+    phone: "07733 / 948880",
+    phoneHref: "tel:+497733948880",
     email: "engen@alltagshilfe-sued.de",
     orte: [
       "Engen",

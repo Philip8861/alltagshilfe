@@ -268,8 +268,8 @@ export const standorteByPlz: Standort[] = [
   {
     name: "Standort Engen/Konstanz",
     address: "Robert-Bosch-Straße 1, 78234 Engen",
-    phone: "08334 / 9893330",
-    phoneHref: "tel:+4983349893330",
+    phone: "07733 / 948880",
+    phoneHref: "tel:+497733948880",
     email: "engen@alltagshilfe-sued.de",
     hours: HOURS,
     plzList: data["Engen/Konstanz"] ?? [],
