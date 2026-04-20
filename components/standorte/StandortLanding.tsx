@@ -7,13 +7,8 @@ import { siteConfig } from "@/config/site";
 import { RevealOnScroll } from "@/components/pflegehilfsmittel/RevealOnScroll";
 import { STARTSEITE_VORTEILE } from "@/lib/startseite-vorteile";
 import { LeistungenKachelGrid } from "@/components/home/LeistungenKachelGrid";
-import {
-  getStandortMapsEmbedSrc,
-  getStandortMapsSearchUrl,
-  phoneHrefToWhatsAppUrl,
-  type Standort,
-} from "@/config/standorte";
-import { getPlzOrtMapLines } from "@/config/plz-ort-map-centers";
+import { phoneHrefToWhatsAppUrl, type Standort } from "@/config/standorte";
+import { getPlzOrtMapLines, getPlzOrtMapsEmbedSrc } from "@/config/plz-ort-map-centers";
 
 const CONTACT_ANCHOR = "#standort-kontakt";
 const HAUSHALTSHILFE_URL = "/leistungen/haushaltshilfe";
@@ -145,7 +140,6 @@ export function StandortLanding({ slug, plz, ort, standort }: StandortLandingPro
   };
 
   const whatsappHref = phoneHrefToWhatsAppUrl(standort.phoneHref);
-  const standortLabel = standort.name.startsWith("Standort") ? standort.name : `Standort ${standort.name}`;
   const hoursParts = standort.hours.split(/\s*·\s*/).filter(Boolean);
   const plzOrtMapInfo = getPlzOrtMapLines(slug, plz, ort);
 
@@ -352,35 +346,6 @@ export function StandortLanding({ slug, plz, ort, standort }: StandortLandingPro
                     </p>
                   </div>
 
-                  <div className="mt-6 overflow-hidden rounded-xl border border-[#0F4F68]/20 bg-[#F2F9FA]/80 shadow-[0_10px_22px_rgba(15,79,104,0.2)] shadow-[0_4px_12px_rgba(15,79,104,0.12)]">
-                    <div className="border-b border-[#0F4F68]/15 bg-[#F2F9FA] px-4 py-3 text-center sm:px-5">
-                      <p className="text-base font-semibold text-neutral-700 sm:text-lg">
-                        {plz} {ort} · {standortLabel}
-                      </p>
-                      <p className="mt-1 text-sm text-neutral-600">{standort.address}</p>
-                    </div>
-                    <div className="relative aspect-[4/3] w-full min-h-[220px] bg-neutral-200">
-                      <iframe
-                        title={`Google Maps: ${standort.name}, ${standort.address}`}
-                        src={getStandortMapsEmbedSrc(standort)}
-                        className="absolute inset-0 h-full w-full border-0"
-                        loading="lazy"
-                        referrerPolicy="no-referrer-when-downgrade"
-                        allowFullScreen
-                      />
-                    </div>
-                    <p className="px-4 py-3 text-center">
-                      <a
-                        href={getStandortMapsSearchUrl(standort)}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-sm font-semibold text-[#0F4F68] underline underline-offset-2 hover:text-[#0c3d52] focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2 rounded"
-                      >
-                        Größere Karte und Route in Google Maps öffnen
-                      </a>
-                    </p>
-                  </div>
-
                   <div className="mt-10">
                     <ContactForm />
                   </div>
@@ -467,31 +432,53 @@ export function StandortLanding({ slug, plz, ort, standort }: StandortLandingPro
                         WhatsApp
                       </a>
                     </div>
-                    <div className="mt-8 flex flex-col items-center gap-3 text-center">
-                      <Image
-                        src="/images/QR_Code.webp"
-                        alt={`QR-Code WhatsApp – ${standort.name}`}
-                        width={176}
-                        height={176}
-                        className="h-auto w-44 max-w-full object-contain [filter:drop-shadow(0_8px_20px_rgba(15,79,104,0.2))]"
-                        unoptimized
-                      />
+                    <div className="mt-8 flex w-full max-w-md flex-col items-stretch gap-6">
+                      <div className="flex justify-center">
+                        <Image
+                          src="/images/QR_Code.webp"
+                          alt={`QR-Code WhatsApp – ${standort.name}`}
+                          width={176}
+                          height={176}
+                          className="h-auto w-44 max-w-full object-contain"
+                          unoptimized
+                        />
+                      </div>
+
+                      <div className="overflow-hidden rounded-xl border border-[#0F4F68]/20 bg-[#F2F9FA]/80 shadow-[0_10px_22px_rgba(15,79,104,0.2)] shadow-[0_4px_12px_rgba(15,79,104,0.12)]">
+                        <div className="border-b border-[#0F4F68]/15 bg-[#F2F9FA] px-4 py-3 text-center sm:px-5">
+                          <p className="text-base font-semibold text-neutral-700 sm:text-lg">
+                            {plz} {ort}
+                          </p>
+                          <p className="mt-1 text-sm text-neutral-600">Kartenansicht Ihres Suchgebiets (PLZ/Ort)</p>
+                        </div>
+                        <div className="relative aspect-[4/3] w-full min-h-[220px] bg-neutral-200">
+                          <iframe
+                            title={`Google Maps: Suchgebiet ${plz} ${ort}`}
+                            src={getPlzOrtMapsEmbedSrc(plz, ort)}
+                            className="absolute inset-0 h-full w-full border-0"
+                            loading="lazy"
+                            referrerPolicy="no-referrer-when-downgrade"
+                            allowFullScreen
+                          />
+                        </div>
+                        <p className="px-4 py-3 text-center">
+                          <a
+                            href={plzOrtMapInfo.mapsHref}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-sm font-semibold text-[#0F4F68] underline underline-offset-2 hover:text-[#0c3d52] focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2 rounded"
+                          >
+                            Größere Karte und Route in Google Maps öffnen
+                          </a>
+                        </p>
+                      </div>
+
                       {plzOrtMapInfo.coordsLine ? (
-                        <p className="max-w-md text-sm text-neutral-700">
+                        <p className="text-center text-sm text-neutral-700">
                           <span className="font-semibold text-[#0F4F68]">Koordinaten (Suchgebiet): </span>
                           {plzOrtMapInfo.coordsLine}
                         </p>
                       ) : null}
-                      <p className="text-sm text-neutral-600">
-                        <a
-                          href={plzOrtMapInfo.mapsHref}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="font-semibold text-[#0F4F68] underline underline-offset-2 hover:text-[#0c3d52] focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2 rounded"
-                        >
-                          {plz} {ort} in Google Maps
-                        </a>
-                      </p>
                     </div>
                   </section>
                 </div>
