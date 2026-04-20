@@ -14,12 +14,8 @@ import {
   type Standort,
 } from "@/config/standorte";
 
-const STANDORT_HERO_IMG = "/images/standort_hintergrund.webp";
 const CONTACT_ANCHOR = "#standort-kontakt";
 const HAUSHALTSHILFE_URL = "/leistungen/haushaltshilfe";
-
-const HERO_GLOW_CLASS =
-  "[filter:drop-shadow(0_10px_22px_rgba(15,79,104,0.2))_drop-shadow(0_4px_12px_rgba(15,79,104,0.12))] [will-change:filter]";
 
 const HERO_VORTEILE = [
   "Freie Kapazitäten & kurze Wartezeiten",
@@ -154,68 +150,68 @@ export function StandortLanding({ plz, ort, standort }: StandortLandingProps) {
   return (
     <div className="min-w-0 overflow-x-clip overflow-y-visible bg-[#fafbfc] text-neutral-700 antialiased">
       <article id="standort-landing" className="min-w-0 scroll-mt-24 overflow-x-clip overflow-y-visible">
-        <section className="relative z-0 box-border mx-auto w-full min-w-0 max-w-7xl px-4 pb-10 pt-0 sm:px-6 sm:pb-16 lg:px-[var(--ahs-page-gutter)] lg:pb-[clamp(4rem,9vh+1.5rem,7rem)] lg:pt-[clamp(2rem,5vh+1.25rem,4.75rem)] xl:pb-[clamp(5rem,10vh+1.5rem,8rem)]">
-          <div className="flex flex-col-reverse items-center gap-10 lg:grid lg:grid-cols-[minmax(0,0.5fr)_minmax(0,0.5fr)] xl:grid-cols-[minmax(0,0.52fr)_minmax(0,0.48fr)] lg:items-center lg:justify-items-stretch lg:gap-x-[clamp(2rem,4.5vw,4rem)] lg:gap-y-0">
-            <div className="box-border w-full min-w-0 max-w-full space-y-[clamp(1rem,2vh+0.5rem,1.5rem)] lg:min-w-0 lg:max-w-none lg:justify-self-stretch lg:pr-1 xl:pr-2">
-              <h1
-                className="text-3xl font-extrabold leading-[1.15] tracking-tight text-[#0F4F68] opacity-0 motion-reduce:opacity-100 animate-fade-in-up sm:text-4xl lg:text-[clamp(1.85rem,1.2rem+2.2vw,2.75rem)] xl:text-[clamp(2rem,1.35rem+2vw,3rem)]"
-                style={{ animationDelay: "0s" }}
-              >
-                <span className="block max-lg:text-pretty lg:text-balance">
-                  Pflegeberatung, Haushaltshilfe &amp; Betreuung in {plz} {ort}
-                </span>
-              </h1>
-
-              <ul
-                className="min-w-0 space-y-3 sm:space-y-3.5 lg:space-y-[clamp(0.65rem,0.35rem+0.9vw,1rem)]"
-                aria-label="Ihre Vorteile auf einen Blick"
-              >
-                {HERO_VORTEILE.map((line, i) => (
-                  <li
-                    key={line}
-                    className="flex min-w-0 items-start gap-3 text-lg font-semibold leading-snug text-[#0F4F68] opacity-0 motion-reduce:opacity-100 animate-fade-in-up sm:text-xl lg:items-center lg:text-[clamp(1.05rem,0.88rem+0.45vw,1.3rem)]"
-                    style={{ animationDelay: `${0.45 + i * 0.22}s` }}
-                  >
-                    <HeroCheckIcon className="mt-0.5 shrink-0 lg:mt-0" />
-                    <span className="min-w-0 flex-1 max-lg:text-pretty lg:text-balance">{line}</span>
-                  </li>
-                ))}
-              </ul>
-
-              <div
-                className="pt-2 opacity-0 motion-reduce:opacity-100 animate-fade-in-up"
-                style={{ animationDelay: "1.12s" }}
-              >
-                <Link
-                  href={CONTACT_ANCHOR}
-                  className="flex w-full transform items-center justify-center gap-2 rounded-xl bg-[#F78F2E] px-6 py-3 text-lg font-bold text-white shadow-lg transition hover:scale-[1.02] hover:opacity-95 focus:outline-none focus:ring-2 focus:ring-[#F78F2E] focus:ring-offset-2 motion-reduce:transform-none sm:w-auto lg:w-auto lg:px-[clamp(1.15rem,0.85rem+1.1vw,1.65rem)] lg:py-[clamp(0.6rem,0.45rem+0.45vw,0.9rem)] lg:text-[clamp(1rem,0.82rem+0.55vw,1.15rem)]"
-                >
-                  Jetzt Kontakt aufnehmen
-                </Link>
-                <p className="mt-3 min-w-0 max-w-full text-pretty text-center text-sm leading-snug text-neutral-600 sm:text-left lg:text-[clamp(0.8rem,0.7rem+0.35vw,0.95rem)]">
-                  Unverbindliche Erstberatung – wir melden uns zeitnah bei Ihnen.
-                </p>
-              </div>
-            </div>
-
-            <div className="box-border w-full min-w-0 max-w-full lg:min-h-0 lg:translate-x-[clamp(1.25rem,6vw,5rem)] lg:justify-self-end lg:self-center xl:translate-x-[clamp(2rem,7vw,6rem)] motion-reduce:lg:translate-x-0">
-              <div className="box-border flex justify-center overflow-x-visible bg-[#fafbfc] px-4 pt-3 pb-8 sm:px-8 sm:pt-4 sm:pb-10 lg:flex lg:justify-end lg:pl-2 lg:pr-0 lg:pb-[clamp(1.75rem,3.5vh+0.75rem,3.25rem)] lg:pt-0">
+        {/* Gleiches Hero-Layout wie Startseite (app/page.tsx): Bild rechts bis an den Viewport-Rand, Text links überlagert */}
+        <section className="relative z-0 box-border w-full pt-0 pb-6 sm:pb-8 lg:pb-[clamp(1.5rem,2vw+0.75rem,2.5rem)]">
+          <div className="box-border mx-auto w-full min-w-0 max-w-7xl px-4 sm:px-6 lg:px-[var(--ahs-page-gutter)]">
+            <div className="relative min-w-0">
+              <div className="flex min-w-0 justify-end">
                 <div
-                  className="mx-auto w-full min-w-0 max-w-[min(100%,72rem)] opacity-0 motion-reduce:opacity-100 animate-fade-in-up max-lg:flex max-lg:max-w-full max-lg:justify-center lg:ml-0 lg:w-full lg:max-w-[min(100%,42rem)] xl:max-w-[min(100%,38rem)]"
+                  className="relative ml-auto w-full min-w-0 max-w-full -mr-4 opacity-0 animate-fade-in-up motion-reduce:opacity-100 sm:-mr-6 lg:mr-[calc((100vw-100%)/-2)] lg:max-w-[min(88vw,min(100%,52rem))]"
                   style={{ animationDelay: "0.08s" }}
                 >
-                  {/* eslint-disable-next-line @next/next/no-img-element -- statisches Hero-Asset */}
-                  <img
-                    src={STANDORT_HERO_IMG}
-                    alt={`Pflegeberatung, Haushaltshilfe und Betreuung in ${plz} ${ort}`}
-                    width={1200}
-                    height={800}
-                    decoding="async"
-                    fetchPriority="high"
-                    sizes="(max-width: 1023px) 100vw, (max-width: 1536px) 50vw, 640px"
-                    className={`box-border h-auto w-full max-w-full object-contain object-center lg:object-contain lg:object-right max-lg:mx-auto max-lg:origin-center max-lg:translate-x-0 max-lg:-translate-y-2 max-lg:scale-[1.05] max-lg:motion-reduce:scale-[1.05] ${HERO_GLOW_CLASS}`}
-                  />
+                  <div className="w-full">
+                    <Image
+                      src="/images/startseite_front.webp"
+                      alt={`Pflegeberatung, Haushaltshilfe und Betreuung in ${plz} ${ort}`}
+                      width={900}
+                      height={700}
+                      sizes="(max-width: 1023px) 100vw, (max-width: 1400px) 88vw, 900px"
+                      className="box-border block h-auto w-full max-w-full object-contain object-right [filter:drop-shadow(0_10px_22px_rgba(15,79,104,0.2))_drop-shadow(0_4px_12px_rgba(15,79,104,0.12))] [will-change:filter]"
+                      priority
+                      unoptimized
+                    />
+                  </div>
                 </div>
+              </div>
+
+              <div className="relative z-10 mt-8 max-w-lg text-left sm:max-w-xl lg:absolute lg:left-0 lg:right-auto lg:top-[clamp(34%,calc(33%+0.35vw),40%)] lg:mt-0 lg:w-full lg:max-w-none lg:-translate-y-1/2 lg:-translate-x-[5%]">
+                <header className="text-left lg:max-w-[min(42vw,clamp(22rem,32vw+8rem,30rem))] xl:max-w-[min(38vw,clamp(23rem,28vw+9rem,31rem))] 2xl:max-w-[min(34vw,clamp(24rem,26vw+10rem,32rem))]">
+                  <h1
+                    className="text-balance text-3xl font-extrabold leading-tight tracking-tight text-[#0F4F68] opacity-0 motion-reduce:opacity-100 animate-fade-in-up sm:text-4xl lg:text-[clamp(2rem,1.05rem+2.6vw,3rem)]"
+                    style={{ animationDelay: "0s" }}
+                  >
+                    Pflegeberatung, Haushaltshilfe &amp; Betreuung in {plz} {ort}
+                  </h1>
+                  <ul
+                    className="mt-5 space-y-3 sm:mt-6 sm:space-y-3.5 lg:space-y-[clamp(0.65rem,0.35rem+0.9vw,1rem)]"
+                    aria-label="Ihre Vorteile auf einen Blick"
+                  >
+                    {HERO_VORTEILE.map((line, i) => (
+                      <li
+                        key={line}
+                        className="flex items-center gap-3 text-pretty text-lg font-semibold leading-snug text-[#0F4F68] opacity-0 motion-reduce:opacity-100 animate-fade-in-up sm:text-xl lg:text-[clamp(1.05rem,0.82rem+0.5vw,1.35rem)]"
+                        style={{ animationDelay: `${0.68 + i * 0.26}s` }}
+                      >
+                        <HeroCheckIcon />
+                        <span>{line}</span>
+                      </li>
+                    ))}
+                  </ul>
+                  <div
+                    className="mt-5 opacity-0 motion-reduce:opacity-100 animate-fade-in-up sm:mt-6"
+                    style={{ animationDelay: "1.22s" }}
+                  >
+                    <Link
+                      href={CONTACT_ANCHOR}
+                      className="inline-flex min-h-[48px] w-full transform items-center justify-center gap-2 rounded-xl bg-[#F78F2E] px-6 py-3 text-lg font-bold text-white shadow-lg transition hover:scale-[1.02] hover:opacity-95 focus:outline-none focus:ring-2 focus:ring-[#F78F2E] focus:ring-offset-2 motion-reduce:transform-none sm:w-auto lg:px-[clamp(1.15rem,0.85rem+1.1vw,1.65rem)] lg:py-[clamp(0.6rem,0.45rem+0.45vw,0.9rem)] lg:text-[clamp(1rem,0.82rem+0.55vw,1.15rem)]"
+                    >
+                      Jetzt Kontakt aufnehmen
+                    </Link>
+                    <p className="mt-3 max-w-prose text-pretty text-sm leading-snug text-neutral-600 sm:text-base lg:text-[clamp(1.05rem,0.85rem+0.42vw,1.15rem)]">
+                      Unverbindliche Erstberatung – wir melden uns zeitnah bei Ihnen.
+                    </p>
+                  </div>
+                </header>
               </div>
             </div>
           </div>
