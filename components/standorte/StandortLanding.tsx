@@ -432,53 +432,15 @@ export function StandortLanding({ slug, plz, ort, standort }: StandortLandingPro
                         WhatsApp
                       </a>
                     </div>
-                    <div className="mt-8 flex w-full max-w-md flex-col items-stretch gap-6">
-                      <div className="flex justify-center">
-                        <Image
-                          src="/images/QR_Code.webp"
-                          alt={`QR-Code WhatsApp – ${standort.name}`}
-                          width={176}
-                          height={176}
-                          className="h-auto w-44 max-w-full object-contain"
-                          unoptimized
-                        />
-                      </div>
-
-                      <div className="overflow-hidden rounded-xl border border-[#0F4F68]/20 bg-[#F2F9FA]/80 shadow-[0_10px_22px_rgba(15,79,104,0.2)] shadow-[0_4px_12px_rgba(15,79,104,0.12)]">
-                        <div className="border-b border-[#0F4F68]/15 bg-[#F2F9FA] px-4 py-3 text-center sm:px-5">
-                          <p className="text-base font-semibold text-neutral-700 sm:text-lg">
-                            {plz} {ort}
-                          </p>
-                          <p className="mt-1 text-sm text-neutral-600">Kartenansicht Ihres Suchgebiets (PLZ/Ort)</p>
-                        </div>
-                        <div className="relative aspect-[4/3] w-full min-h-[220px] bg-neutral-200">
-                          <iframe
-                            title={`Google Maps: Suchgebiet ${plz} ${ort}`}
-                            src={getPlzOrtMapsEmbedSrc(plz, ort)}
-                            className="absolute inset-0 h-full w-full border-0"
-                            loading="lazy"
-                            referrerPolicy="no-referrer-when-downgrade"
-                            allowFullScreen
-                          />
-                        </div>
-                        <p className="px-4 py-3 text-center">
-                          <a
-                            href={plzOrtMapInfo.mapsHref}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-sm font-semibold text-[#0F4F68] underline underline-offset-2 hover:text-[#0c3d52] focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2 rounded"
-                          >
-                            Größere Karte und Route in Google Maps öffnen
-                          </a>
-                        </p>
-                      </div>
-
-                      {plzOrtMapInfo.coordsLine ? (
-                        <p className="text-center text-sm text-neutral-700">
-                          <span className="font-semibold text-[#0F4F68]">Koordinaten (Suchgebiet): </span>
-                          {plzOrtMapInfo.coordsLine}
-                        </p>
-                      ) : null}
+                    <div className="mt-8 flex justify-center">
+                      <Image
+                        src="/images/QR_Code.webp"
+                        alt={`QR-Code WhatsApp – ${standort.name}`}
+                        width={176}
+                        height={176}
+                        className="h-auto w-44 max-w-full object-contain"
+                        unoptimized
+                      />
                     </div>
                   </section>
                 </div>
@@ -497,6 +459,47 @@ export function StandortLanding({ slug, plz, ort, standort }: StandortLandingPro
                 </Link>
                 .
               </p>
+
+              <div
+                className="mx-auto mt-10 w-full max-w-2xl overflow-hidden rounded-xl border border-[#0F4F68]/20 bg-[#F2F9FA]/80 shadow-[0_10px_22px_rgba(15,79,104,0.2)] shadow-[0_4px_12px_rgba(15,79,104,0.12)]"
+                role="region"
+                aria-label={`Karte Suchgebiet ${plz} ${ort}`}
+              >
+                <div className="border-b border-[#0F4F68]/15 bg-[#F2F9FA] px-4 py-3 text-center sm:px-5">
+                  <p className="text-base font-semibold text-neutral-700 sm:text-lg">
+                    {plz} {ort}
+                  </p>
+                  <p className="mt-1 text-sm text-neutral-600">Kartenansicht Ihres Suchgebiets (PLZ/Ort)</p>
+                </div>
+                <div className="relative aspect-[4/3] w-full min-h-[220px] bg-neutral-200">
+                  <iframe
+                    title={`Google Maps: Suchgebiet ${plz} ${ort}`}
+                    src={getPlzOrtMapsEmbedSrc(plz, ort)}
+                    className="absolute inset-0 h-full w-full border-0"
+                    loading="lazy"
+                    referrerPolicy="no-referrer-when-downgrade"
+                    allowFullScreen
+                  />
+                </div>
+                <p className="px-4 py-3 text-center">
+                  <a
+                    href={plzOrtMapInfo.mapsHref}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-sm font-semibold text-[#0F4F68] underline underline-offset-2 hover:text-[#0c3d52] focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2 rounded"
+                  >
+                    Größere Karte und Route in Google Maps öffnen
+                  </a>
+                </p>
+              </div>
+
+              {plzOrtMapInfo.coordsLine ? (
+                <p className="mx-auto mt-4 max-w-2xl text-center text-sm text-neutral-700">
+                  <span className="font-semibold text-[#0F4F68]">Koordinaten (Suchgebiet): </span>
+                  {plzOrtMapInfo.coordsLine}
+                </p>
+              ) : null}
+
               <div className="mt-6 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
                 <Link
                   href={CONTACT_ANCHOR}
