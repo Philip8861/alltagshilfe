@@ -1,5 +1,5 @@
 import Image from "next/image";
-import Link from "next/link";
+import { LeistungenKachelGrid } from "@/components/home/LeistungenKachelGrid";
 import { STARTSEITE_VORTEILE } from "@/lib/startseite-vorteile";
 import { KundenstimmenCarousel } from "@/components/home/KundenstimmenCarousel";
 import { StartEinstiegsHilfe } from "@/components/home/StartEinstiegsHilfe";
@@ -46,51 +46,6 @@ const STARTSEITE_LEISTUNGEN_INTRO = {
 const HEADING_CLASS =
   "text-3xl font-bold text-[#0F4F68] sm:text-4xl w-full max-w-lg self-start";
 const INTRO_BODY_CLASS = "text-lg text-neutral-700 leading-relaxed sm:text-xl";
-const LEISTUNGEN = [
-  {
-    title: "Haushaltshilfe",
-    icon: "home",
-  },
-  {
-    title: "Alltagsbegleitung und Betreuung",
-    icon: "people",
-  },
-  {
-    title: "Pflegeberatung nach §37.3 SGB XI",
-    icon: "chat",
-  },
-  {
-    title: "Kostenfreie Pflegehilfsmittel",
-    icon: "box",
-  },
-  {
-    title: "Inkontinenzversorgung",
-    icon: "shield",
-  },
-  {
-    title: "Pflegeshop",
-    icon: "cart",
-  },
-  {
-    title: "Betriebliche Pflegeberatung",
-    icon: "briefcase",
-  },
-  {
-    title: "Essen auf Räder (im Raum Kempten)",
-    icon: "meal",
-  },
-] as const;
-
-const LEISTUNGS_LINKS: Record<(typeof LEISTUNGEN)[number]["icon"], string> = {
-  home: "/leistungen/haushaltshilfe",
-  people: "/leistungen/alltagsbegleitung-betreuung",
-  chat: "/pflegeberatung/private-pflegeberatung",
-  box: "/pflegehilfsmittel/kostenfreie-pflegehilfsmittel",
-  shield: "/inkontinenzversorgung",
-  cart: "/pflegeshop",
-  briefcase: "/pflegeberatung#betriebliche-pflegeberatung",
-  meal: "/leistungen/essen-auf-raeder",
-};
 
 export default function HomePage() {
   return (
@@ -177,77 +132,12 @@ export default function HomePage() {
           <path d="M0,120 C200,32 420,8 600,22 C800,38 1010,90 1200,120 L1200,120 L0,120 Z" fill="#F2F9FA" />
         </svg>
         <div className="mx-auto w-full max-w-6xl">
-          <h2
+          <LeistungenKachelGrid
             id="unsere-leistungen"
-            className="text-2xl font-bold text-[#0F4F68] sm:text-3xl scroll-mt-[calc(2.45rem+var(--ahs-header-white-min-height)+0.75rem)]"
-          >
-            Unsere Leistungen im Überblick
-          </h2>
-          <p className="mt-2 text-sm text-[#8a6a55] sm:text-base">Persönlich, zuverlässig und mit viel Herz im Alltag.</p>
-          <div className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            {LEISTUNGEN.map((leistung, index) => (
-              <Link
-                key={leistung.title}
-                href={LEISTUNGS_LINKS[leistung.icon]}
-                className="rounded-2xl px-4 py-4 opacity-0 transition-all duration-300 hover:-translate-y-1 hover:bg-white/70 hover:shadow-[0_0_24px_rgba(15,79,104,0.15)] animate-fade-in-up focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68] focus-visible:ring-offset-2"
-                style={{ animationDelay: `${0.06 * (index + 1)}s` }}
-              >
-                <article className="flex items-start gap-3">
-                  <span
-                    className="mt-0.5 inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-[#0F4F68] text-white"
-                    aria-hidden
-                  >
-                    {leistung.icon === "home" && (
-                      <svg className="h-6 w-6" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M12 21s-7-4.35-7-10a4 4 0 0 1 7-2.65A4 4 0 0 1 19 11c0 5.65-7 10-7 10z" />
-                      </svg>
-                    )}
-                    {leistung.icon === "people" && (
-                      <svg className="h-6 w-6" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
-                        <path d="M16 11a3 3 0 1 0-3-3 3 3 0 0 0 3 3m-8 0a3 3 0 1 0-3-3 3 3 0 0 0 3 3m0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5m8 0h-1c1.2.9 2 2.24 2 3.5V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z" />
-                      </svg>
-                    )}
-                    {leistung.icon === "chat" && (
-                      <svg className="h-6 w-6" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M4 4h16v11H7.6L4 18.6V4zm4 4v2h8V8H8zm0 4v2h5v-2H8z" />
-                      </svg>
-                    )}
-                    {leistung.icon === "box" && (
-                      <svg className="h-6 w-6" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M3 7.2 12 3l9 4.2v9.6L12 21l-9-4.2V7.2zm9 8.5 6.8-3.2V8.6L12 11.8 5.2 8.6v3.9l6.8 3.2z" />
-                      </svg>
-                    )}
-                    {leistung.icon === "shield" && (
-                      <svg className="h-6 w-6" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M12 2 4 5.2v6.1c0 5.1 3.4 9.8 8 10.7 4.6-.9 8-5.6 8-10.7V5.2L12 2zm-1 13.2-3-3 1.4-1.4 1.6 1.6 3.6-3.6 1.4 1.4-5 5z" />
-                      </svg>
-                    )}
-                    {leistung.icon === "cart" && (
-                      <svg className="h-6 w-6" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M7 4H4v2h1.3l2 9.1h9.6l1.7-6.8H8.5L8 6h12V4H7zm2 13a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm8 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4z" />
-                      </svg>
-                    )}
-                    {leistung.icon === "briefcase" && (
-                      <svg className="h-6 w-6" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M9 4h6a2 2 0 0 1 2 2v1h3a2 2 0 0 1 2 2v3H2V9a2 2 0 0 1 2-2h3V6a2 2 0 0 1 2-2zm6 3V6H9v1h6zM2 13h20v6a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-6z" />
-                      </svg>
-                    )}
-                    {leistung.icon === "meal" && (
-                      <svg className="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M4 4v7" />
-                        <path d="M7 4v7" />
-                        <path d="M4 8h3" />
-                        <path d="M6 11v9" />
-                        <path d="M14 4c2.2 0 4 1.8 4 4v12" />
-                        <path d="M18 8h-4" />
-                      </svg>
-                    )}
-                  </span>
-                  <p className="text-lg font-semibold leading-snug text-[#0F4F68]">{leistung.title}</p>
-                </article>
-              </Link>
-            ))}
-          </div>
+            heading="Unsere Leistungen im Überblick"
+            subtitle="Persönlich, zuverlässig und mit viel Herz im Alltag."
+            headingClassName="scroll-mt-[calc(2.45rem+var(--ahs-header-white-min-height)+0.75rem)]"
+          />
         </div>
       </section>
 

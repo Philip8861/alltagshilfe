@@ -6,11 +6,11 @@ import { ContactForm } from "@/components/forms/ContactForm";
 import { siteConfig } from "@/config/site";
 import { RevealOnScroll } from "@/components/pflegehilfsmittel/RevealOnScroll";
 import { STARTSEITE_VORTEILE } from "@/lib/startseite-vorteile";
+import { LeistungenKachelGrid } from "@/components/home/LeistungenKachelGrid";
 import {
   getStandortMapsEmbedSrc,
   getStandortMapsSearchUrl,
   phoneHrefToWhatsAppUrl,
-  STANDORT_LEISTUNGEN,
   type Standort,
 } from "@/config/standorte";
 
@@ -173,21 +173,6 @@ export function StandortLanding({ plz, ort, standort }: StandortLandingProps) {
                 </span>
               </h1>
 
-              <div
-                className="rounded-2xl border border-[#0F4F68]/12 bg-white/90 p-4 text-pretty text-sm leading-relaxed text-neutral-700 shadow-sm sm:p-5 sm:text-base opacity-0 motion-reduce:opacity-100 animate-fade-in-up"
-                style={{ animationDelay: "0.12s" }}
-              >
-                <p className="font-medium text-[#0F4F68]">
-                  Für {ort} (PLZ {plz}) koordinieren wir Ihre Anfrage über{" "}
-                  <span className="font-bold">{standort.name}</span> – Büro in {standort.schemaAddress.addressLocality}.
-                </p>
-                {standort.localIntro.map((p) => (
-                  <p key={p.slice(0, 48)} className="mt-3">
-                    {p}
-                  </p>
-                ))}
-              </div>
-
               <ul
                 className="min-w-0 space-y-3 sm:space-y-3.5 lg:space-y-[clamp(0.65rem,0.35rem+0.9vw,1rem)]"
                 aria-label="Ihre Vorteile auf einen Blick"
@@ -250,37 +235,22 @@ export function StandortLanding({ plz, ort, standort }: StandortLandingProps) {
           <svg className={WELLEN_SVG_CLASS} viewBox="0 0 1200 100" preserveAspectRatio="none" fill="none" aria-hidden>
             <path d={WELLEN_D} fill="#F2F9FA" />
           </svg>
-          <div className="relative z-[1] mx-auto max-w-3xl text-center">
+          <div className="relative z-[1] mx-auto w-full max-w-6xl px-0 sm:px-0">
             <RevealOnScroll>
-              <h2 id="standort-angebot-heading" className="text-2xl font-bold text-[#0F4F68] sm:text-3xl">
-                Leistungen in Ihrer Region
-              </h2>
-              <p className="mt-3 text-pretty text-neutral-600">
-                In {ort} und Umgebung bieten wir unter anderem Folgendes an – Details und Ablauf finden Sie auf den
-                verlinkten Fachseiten.
-              </p>
+              <LeistungenKachelGrid
+                id="standort-angebot-heading"
+                heading={`Wir bieten folgende Leistungen an Ihrem Standort ${plz} ${ort} an:`}
+                subtitle="Persönlich, zuverlässig und mit viel Herz im Alltag."
+                headingClassName="text-balance"
+              />
             </RevealOnScroll>
-            <RevealOnScroll delayMs={100}>
-              <ul className="mt-8 space-y-3 text-left text-neutral-800">
-                {STANDORT_LEISTUNGEN.map((leistung) => (
-                  <li key={leistung} className="flex items-start gap-3">
-                    <span
-                      className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#F78F2E] text-white"
-                      aria-hidden
-                    >
-                      <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
-                        <polyline points="20 6 9 17 4 12" />
-                      </svg>
-                    </span>
-                    <span>{leistung}</span>
-                  </li>
-                ))}
-              </ul>
-              <p className="mt-8 text-sm text-neutral-600">
-                Ausführliche Informationen zur Haushaltshilfe:{" "}
+            <RevealOnScroll delayMs={120}>
+              <p className="mx-auto mt-8 max-w-2xl text-center text-sm text-neutral-600">
+                Details zu einzelnen Leistungen und Abläufen finden Sie über die Kacheln – ausführlich z. B. unter{" "}
                 <Link href={HAUSHALTSHILFE_URL} className={LINK_CLASS}>
-                  Zur Haushaltshilfe-Seite
+                  Haushaltshilfe
                 </Link>
+                .
               </p>
             </RevealOnScroll>
           </div>
@@ -449,6 +419,40 @@ export function StandortLanding({ plz, ort, standort }: StandortLandingProps) {
             </RevealOnScroll>
           </div>
           <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }} />
+        </section>
+
+        <section
+          id="standort-vor-kontakt"
+          className="scroll-mt-24 border-t border-[#0F4F68]/10 bg-[#fafbfc] py-14 sm:py-16"
+          aria-labelledby="standort-vor-kontakt-heading"
+        >
+          <Container className="w-full">
+            <div className="mx-auto max-w-3xl">
+              <h2 id="standort-vor-kontakt-heading" className="text-xl font-bold text-[#0F4F68] sm:text-2xl">
+                Ihr Standort und Ansprechpartner
+              </h2>
+              <div className="mt-5 rounded-2xl border border-[#0F4F68]/12 bg-white p-5 text-pretty text-sm leading-relaxed text-neutral-700 shadow-sm sm:p-6 sm:text-base">
+                <p className="font-medium text-[#0F4F68]">
+                  Für {ort} (PLZ {plz}) koordinieren wir Ihre Anfrage über{" "}
+                  <span className="font-semibold">{standort.name}</span> – Büro in{" "}
+                  {standort.schemaAddress.addressLocality}.
+                </p>
+                {standort.localIntro.map((p) => (
+                  <p key={p.slice(0, 60)} className="mt-4">
+                    {p}
+                  </p>
+                ))}
+              </div>
+              <p className="mt-8 text-center">
+                <Link
+                  href={CONTACT_ANCHOR}
+                  className="inline-flex min-h-[48px] items-center justify-center rounded-xl bg-[#F78F2E] px-8 py-3.5 text-base font-bold text-white shadow-md transition hover:opacity-95 focus:outline-none focus:ring-2 focus:ring-[#F78F2E] focus:ring-offset-2 sm:text-lg"
+                >
+                  Jetzt Kontakt aufnehmen
+                </Link>
+              </p>
+            </div>
+          </Container>
         </section>
 
         <section
