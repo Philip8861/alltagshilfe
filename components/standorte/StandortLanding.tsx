@@ -272,7 +272,7 @@ export function StandortLanding({ slug, plz, ort, standort }: StandortLandingPro
             <RevealOnScroll>
               <LeistungenKachelGrid
                 id="standort-angebot-heading"
-                heading={`Wir bieten folgende Leistungen an Ihrem Standort ${plz} ${ort} an:`}
+                heading={`Wir bieten folgende Leistungen an Ihrem Standort in ${plz} ${ort} an:`}
                 subtitle="Persönlich, zuverlässig und mit viel Herz im Alltag."
                 headingClassName="text-balance"
               />
