@@ -28,6 +28,49 @@ const WELLEN_SVG_CLASS =
 const LINK_CLASS =
   "font-semibold text-[#0F4F68] underline underline-offset-2 decoration-[#0F4F68]/40 hover:decoration-[#F78F2E] hover:text-[#0c3d52]";
 
+/** Overlay über eingebetteter Google-Map: GPS-Zentrum, Umkreisfläche, Puls-Ringe (iframe bleibt darunter). */
+function StandortSuchgebietMapOverlay() {
+  return (
+    <div
+      className="pointer-events-none absolute inset-0 z-[1] flex items-center justify-center overflow-hidden"
+      aria-hidden
+    >
+      {/* Halbtransparente „Stadtgebiet“-Fläche */}
+      <div
+        className="absolute left-1/2 top-1/2 h-[min(52%,14rem)] w-[min(52%,14rem)] -translate-x-1/2 -translate-y-1/2 rounded-full"
+        style={{
+          background:
+            "radial-gradient(circle, rgba(15,79,104,0.22) 0%, rgba(15,79,104,0.1) 40%, rgba(15,79,104,0.04) 65%, transparent 78%)",
+        }}
+      />
+      {/* Drei Impuls-Ringe, zeitversetzt */}
+      {[0, 0.87, 1.74].map((delay) => (
+        <div
+          key={delay}
+          className="ahs-standort-map-ripple absolute left-1/2 top-1/2 h-[min(40%,11rem)] w-[min(40%,11rem)] rounded-full border-2 border-[#0F4F68]/35"
+          style={{ animationDelay: `${delay}s` }}
+        />
+      ))}
+      {/* GPS / Zielsymbol */}
+      <svg
+        className="relative z-[2] h-12 w-12 text-[#0F4F68] sm:h-14 sm:w-14"
+        viewBox="0 0 24 24"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="1.25" opacity="0.35" />
+        <circle cx="12" cy="12" r="2.75" fill="currentColor" />
+        <path
+          d="M12 2.5v3.2M12 18.3V21.5M2.5 12h3.2M18.3 12H21.5"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+        />
+      </svg>
+    </div>
+  );
+}
+
 function HeroCheckIcon({ className = "" }: { className?: string }) {
   return (
     <span
@@ -475,11 +518,12 @@ export function StandortLanding({ slug, plz, ort, standort }: StandortLandingPro
                   <iframe
                     title={`Google Maps: Suchgebiet ${plz} ${ort}`}
                     src={getPlzOrtMapsEmbedSrc(plz, ort)}
-                    className="absolute inset-0 h-full w-full border-0"
+                    className="absolute inset-0 z-0 h-full w-full border-0"
                     loading="lazy"
                     referrerPolicy="no-referrer-when-downgrade"
                     allowFullScreen
                   />
+                  <StandortSuchgebietMapOverlay />
                 </div>
                 <p className="px-4 py-3 text-center">
                   <a
