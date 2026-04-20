@@ -232,6 +232,11 @@ export interface Standort {
   /** 2–3 Absätze: unterscheidet Büros inhaltlich (kein reines PLZ-Tauschen). */
   localIntro: readonly string[];
   schemaAddress: StandortSchemaAddress;
+  /**
+   * Optional: exakte iframe-URL aus Google Maps (Standort → Teilen → „Karte einbetten“).
+   * Ohne Eintrag: Einbettung per Adresssuche (gleiche Adresse wie `address`).
+   */
+  mapsEmbedSrc?: string;
 }
 
 const HOURS =
@@ -335,6 +340,19 @@ export function phoneHrefToWhatsAppUrl(phoneHref: string): string {
   const digits = phoneHref.replace(/^tel:/i, "").replace(/\D/g, "");
   if (!digits) return "https://wa.me/";
   return `https://wa.me/${digits}`;
+}
+
+/** Google-Maps-Karte einbetten (iframe src). Bei `mapsEmbedSrc` am Standort: exakte Karte, sonst Suche nach `address`. */
+export function getStandortMapsEmbedSrc(standort: Standort): string {
+  if (standort.mapsEmbedSrc?.trim()) return standort.mapsEmbedSrc.trim();
+  const q = encodeURIComponent(standort.address);
+  return `https://maps.google.com/maps?q=${q}&hl=de&z=16&output=embed`;
+}
+
+/** Link zur größeren Karte (neuer Tab). */
+export function getStandortMapsSearchUrl(standort: Standort): string {
+  const q = encodeURIComponent(standort.address);
+  return `https://www.google.com/maps/search/?api=1&query=${q}`;
 }
 
 /** Sucht Standort anhand PLZ (nur erste 5 Ziffern). */

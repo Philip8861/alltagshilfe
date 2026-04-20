@@ -6,7 +6,13 @@ import { ContactForm } from "@/components/forms/ContactForm";
 import { siteConfig } from "@/config/site";
 import { RevealOnScroll } from "@/components/pflegehilfsmittel/RevealOnScroll";
 import { STARTSEITE_VORTEILE } from "@/lib/startseite-vorteile";
-import { phoneHrefToWhatsAppUrl, STANDORT_LEISTUNGEN, type Standort } from "@/config/standorte";
+import {
+  getStandortMapsEmbedSrc,
+  getStandortMapsSearchUrl,
+  phoneHrefToWhatsAppUrl,
+  STANDORT_LEISTUNGEN,
+  type Standort,
+} from "@/config/standorte";
 
 const STANDORT_HERO_IMG = "/images/standort_hintergrund.webp";
 const CONTACT_ANCHOR = "#standort-kontakt";
@@ -462,29 +468,33 @@ export function StandortLanding({ plz, ort, standort }: StandortLandingProps) {
                   </h2>
                   <p className="mt-4 text-neutral-600">Schreiben Sie uns – wir melden uns zeitnah bei Ihnen.</p>
 
-                  <div className="mt-5 rounded-xl border border-[#0F4F68]/20 bg-[#F2F9FA]/80 p-5 text-center sm:p-6">
-                    <p className="text-base font-semibold text-neutral-700 sm:text-lg">
-                      {plz} {ort}
-                    </p>
-                    <p className="mt-2 truncate text-base font-bold text-[#0F4F68] sm:text-lg">{standortLabel}</p>
-                    <p className="mt-2 text-sm text-neutral-700 sm:text-base">{standort.address}</p>
-                    <a
-                      href={standort.phoneHref}
-                      className="mt-3 inline-flex items-center justify-center gap-2 text-2xl font-extrabold text-[#0F4F68] hover:underline focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2 rounded"
-                      aria-label={`Anrufen: ${standort.phone}`}
-                    >
-                      <svg
-                        className="h-6 w-6 shrink-0"
-                        viewBox="0 0 24 24"
-                        fill="currentColor"
-                        style={{ color: "#F78F2E" }}
-                        aria-hidden
+                  <div className="mt-5 overflow-hidden rounded-xl border border-[#0F4F68]/20 bg-[#F2F9FA]/80">
+                    <div className="border-b border-[#0F4F68]/15 bg-[#F2F9FA] px-4 py-3 text-center sm:px-5">
+                      <p className="text-base font-semibold text-neutral-700 sm:text-lg">
+                        {plz} {ort} · {standortLabel}
+                      </p>
+                      <p className="mt-1 text-sm text-neutral-600">{standort.address}</p>
+                    </div>
+                    <div className="relative aspect-[4/3] w-full min-h-[220px] bg-neutral-200">
+                      <iframe
+                        title={`Google Maps: ${standort.name}, ${standort.address}`}
+                        src={getStandortMapsEmbedSrc(standort)}
+                        className="absolute inset-0 h-full w-full border-0"
+                        loading="lazy"
+                        referrerPolicy="no-referrer-when-downgrade"
+                        allowFullScreen
+                      />
+                    </div>
+                    <p className="px-4 py-3 text-center">
+                      <a
+                        href={getStandortMapsSearchUrl(standort)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-sm font-semibold text-[#0F4F68] underline underline-offset-2 hover:text-[#0c3d52] focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2 rounded"
                       >
-                        <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z" />
-                      </svg>
-                      {standort.phone}
-                    </a>
-                    <p className="mt-2 text-sm text-neutral-700 sm:text-base">{standort.hours}</p>
+                        Größere Karte und Route in Google Maps öffnen
+                      </a>
+                    </p>
                   </div>
 
                   <div className="mt-10">
