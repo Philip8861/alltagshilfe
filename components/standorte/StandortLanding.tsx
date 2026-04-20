@@ -145,14 +145,13 @@ export function StandortLanding({ plz, ort, standort }: StandortLandingProps) {
   const whatsappHref = phoneHrefToWhatsAppUrl(standort.phoneHref);
   const standortLabel = standort.name.startsWith("Standort") ? standort.name : `Standort ${standort.name}`;
   const hoursParts = standort.hours.split(/\s*·\s*/).filter(Boolean);
-  const vorteileKurz = STARTSEITE_VORTEILE.slice(0, 4);
 
   return (
     <div className="min-w-0 overflow-x-clip overflow-y-visible bg-[#fafbfc] text-neutral-700 antialiased">
       <article id="standort-landing" className="min-w-0 scroll-mt-24 overflow-x-clip overflow-y-visible">
         {/* Gleiches Hero-Layout wie Startseite (app/page.tsx): Bild rechts bis an den Viewport-Rand, Text links überlagert */}
-        {/* Kein zusätzliches pt: Header ist sticky und liegt im Fluss – main beginnt bereits unter dem Header; pt in Headerhöhe würde die Lücke verdoppeln. */}
-        <section className="relative z-0 box-border w-full pt-0 pb-6 sm:pb-8 lg:pb-[clamp(1.5rem,2vw+0.75rem,2.5rem)]">
+        {/* lg:pt wie Haushaltshilfe-Landing („Haushaltshilfe ganz in Ihrer Nähe“): gleicher Abstand unter dem Header */}
+        <section className="relative z-0 box-border w-full pt-0 pb-6 sm:pb-8 lg:pb-[clamp(1.5rem,2vw+0.75rem,2.5rem)] lg:pt-[clamp(2rem,5vh+1.25rem,4.75rem)]">
           <div className="box-border mx-auto w-full min-w-0 max-w-7xl px-4 sm:px-6 lg:px-[var(--ahs-page-gutter)]">
             <div className="relative min-w-0">
               <div className="flex min-w-0 items-start justify-end">
@@ -252,84 +251,42 @@ export function StandortLanding({ plz, ort, standort }: StandortLandingProps) {
         </section>
 
         <section
-          className="relative z-[12] overflow-x-clip bg-white px-4 pb-14 pt-[clamp(2.5rem,4.5vw,4.25rem)] sm:px-6 sm:pb-16 lg:px-[var(--ahs-page-gutter)] lg:pb-20"
-          aria-labelledby="standort-ablauf-heading"
+          className="relative z-20 mt-12 w-full px-4 sm:mt-16 sm:px-6 lg:mt-20 lg:px-[var(--ahs-page-gutter)]"
+          aria-labelledby="standort-vorteile-heading"
         >
-          <svg className={WELLEN_SVG_CLASS} viewBox="0 0 1200 100" preserveAspectRatio="none" fill="none" aria-hidden>
-            <path d={WELLEN_D} fill="#F2F9FA" />
-          </svg>
-          <div className="relative z-[1] mx-auto max-w-2xl">
+          <div className="mx-auto w-full max-w-6xl">
             <RevealOnScroll>
-              <h2 id="standort-ablauf-heading" className="text-center text-2xl font-bold text-[#0F4F68] sm:text-3xl">
-                So geht es weiter
-              </h2>
-              <ol className="mt-8 list-decimal space-y-4 pl-6 text-neutral-700 marker:font-bold marker:text-[#0F4F68]">
-                <li>
-                  <strong className="text-[#0F4F68]">Kontakt:</strong> Rufen Sie die lokale Nummer an oder nutzen Sie
-                  das Formular unten auf dieser Seite.
-                </li>
-                <li>
-                  <strong className="text-[#0F4F68]">Abstimmung:</strong> Wir klären Bedarf, Umfang und Termine mit
-                  Ihnen.
-                </li>
-                <li>
-                  <strong className="text-[#0F4F68]">Start:</strong> Ihr Team vor Ort unterstützt Sie verlässlich –
-                  mit festen Bezugspersonen, wo möglich.
-                </li>
-              </ol>
-              <p className="mt-6 text-center text-sm text-neutral-600">
-                Ausführlicher Drei-Schritte-Ablauf:{" "}
-                <Link href={HAUSHALTSHILFE_URL} className={LINK_CLASS}>
-                  Haushaltshilfe – Ablauf
-                </Link>
-              </p>
-            </RevealOnScroll>
-          </div>
-        </section>
-
-        <section
-          className="relative bg-[#fafbfc] px-4 py-14 sm:px-6 sm:py-16 lg:px-[var(--ahs-page-gutter)]"
-          aria-labelledby="standort-vorteile-kurz-heading"
-        >
-          <div className="mx-auto max-w-6xl">
-            <RevealOnScroll>
-              <h2
-                id="standort-vorteile-kurz-heading"
-                className="text-center text-2xl font-bold text-[#0F4F68] sm:text-3xl"
+              <h3
+                id="standort-vorteile-heading"
+                className="text-3xl font-extrabold tracking-tight text-[#0F4F68] sm:text-4xl"
               >
-                Einige Vorteile auf einen Blick
-              </h2>
-              <p className="mx-auto mt-2 max-w-2xl text-center text-sm text-neutral-600">
-                Die vollständige Übersicht mit allen Punkten finden Sie auf der{" "}
-                <Link href="/" className={LINK_CLASS}>
-                  Startseite
-                </Link>{" "}
-                und unter{" "}
-                <Link href={HAUSHALTSHILFE_URL} className={LINK_CLASS}>
-                  Haushaltshilfe
-                </Link>
-                .
+                Ihre Vorteile bei uns
+              </h3>
+              <p className="mt-2 max-w-3xl text-sm text-neutral-600 sm:text-base">
+                Verlässlich, transparent und nah bei Ihnen - mit klaren Prozessen und echter Unterstützung im Alltag.
               </p>
+              <ul className="mt-6 grid gap-4 sm:grid-cols-2">
+                {STARTSEITE_VORTEILE.map((item) => (
+                  <li
+                    key={item}
+                    className="flex items-start gap-3 rounded-xl px-2 py-1.5 transition-all duration-300 hover:bg-white/75 hover:shadow-[0_0_20px_rgba(15,79,104,0.12)]"
+                  >
+                    {/* eslint-disable-next-line @next/next/no-img-element -- wie Startseite: statisches Haken-Icon */}
+                    <img
+                      src="/images/haken.webp"
+                      alt=""
+                      aria-hidden
+                      width={38}
+                      height={38}
+                      className="mt-0.5 h-[38px] w-[38px] shrink-0 object-contain"
+                    />
+                    <span className="text-[1.03rem] font-medium leading-relaxed text-neutral-800 sm:text-[1.08rem]">
+                      {item}
+                    </span>
+                  </li>
+                ))}
+              </ul>
             </RevealOnScroll>
-            <ul className="mt-8 grid gap-3 sm:grid-cols-2">
-              {vorteileKurz.map((item) => (
-                <li
-                  key={item}
-                  className="flex items-start gap-3 rounded-xl border border-[#0F4F68]/8 bg-white p-4 shadow-sm"
-                >
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src="/images/haken.webp"
-                    alt=""
-                    aria-hidden
-                    width={32}
-                    height={32}
-                    className="mt-0.5 h-8 w-8 shrink-0 object-contain"
-                  />
-                  <span className="text-sm font-medium leading-relaxed text-neutral-800 sm:text-base">{item}</span>
-                </li>
-              ))}
-            </ul>
           </div>
         </section>
 
