@@ -276,6 +276,16 @@ export const standorteByPlz: Standort[] = [
   },
 ];
 
+/**
+ * Wandelt eine tel:-URL (E.164) in eine WhatsApp-wa.me-Adresse um.
+ * z. B. tel:+4975229151686 → https://wa.me/4975229151686
+ */
+export function phoneHrefToWhatsAppUrl(phoneHref: string): string {
+  const digits = phoneHref.replace(/^tel:/i, "").replace(/\D/g, "");
+  if (!digits) return "https://wa.me/";
+  return `https://wa.me/${digits}`;
+}
+
 /** Sucht Standort anhand PLZ (nur erste 5 Ziffern). */
 export function findStandortByPlz(plz: string): Standort | undefined {
   const normalized = plz.replace(/\D/g, "").slice(0, 5);

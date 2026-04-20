@@ -1,0 +1,678 @@
+import type { ReactNode } from "react";
+import Image from "next/image";
+import Link from "next/link";
+import { KundenstimmenCarousel } from "@/components/home/KundenstimmenCarousel";
+import { Container } from "@/components/layout/Container";
+import { ContactForm } from "@/components/forms/ContactForm";
+import { siteConfig } from "@/config/site";
+import { RevealOnScroll } from "@/components/pflegehilfsmittel/RevealOnScroll";
+import { JetztNeuPromoSection } from "@/components/leistungen/JetztNeuPromoSection";
+import { STARTSEITE_VORTEILE } from "@/lib/startseite-vorteile";
+import { phoneHrefToWhatsAppUrl, type Standort } from "@/config/standorte";
+
+const STANDORT_HERO_IMG = "/images/standort_hintergrund.webp";
+const CONTACT_ANCHOR = "#standort-kontakt";
+
+const HERO_GLOW_CLASS =
+  "[filter:drop-shadow(0_10px_22px_rgba(15,79,104,0.2))_drop-shadow(0_4px_12px_rgba(15,79,104,0.12))] [will-change:filter]";
+
+const HERO_VORTEILE = [
+  "Freie Kapazitäten & kurze Wartezeiten",
+  "Zugelassen bei allen Krankenkassen",
+  "Feste Bezugsperson statt ständiger Wechsel",
+] as const;
+
+const WELLEN_D =
+  "M0,100 C200,26 420,6 600,18 C800,32 1010,75 1200,100 L1200,100 L0,100 Z";
+
+const WELLEN_SVG_CLASS =
+  "pointer-events-none absolute left-0 top-0 z-0 h-16 w-full -translate-y-7 sm:h-[clamp(2.85rem,1.5rem+3.8vw,5rem)] sm:-translate-y-[clamp(0.9rem,0.35rem+2.1vw,3.2rem)]";
+
+function HeroCheckIcon({ className = "" }: { className?: string }) {
+  return (
+    <span
+      className={`inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#F78F2E]/15 text-[#F78F2E] ${className}`.trim()}
+      aria-hidden
+    >
+      <svg
+        className="h-[1.1rem] w-[1.1rem] sm:h-5 sm:w-5"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        <path d="M20 6L9 17l-5-5" />
+      </svg>
+    </span>
+  );
+}
+
+const SCHRITTE = [
+  {
+    step: "Schritt 1",
+    title: "Unverbindlich anfragen",
+    description:
+      "Kontaktieren Sie uns telefonisch oder über das Kontaktformular. Wir klären kurz Ihren Bedarf und die nächsten Schritte – ohne Verpflichtung.",
+  },
+  {
+    step: "Schritt 2",
+    title: "Persönliche Abstimmung",
+    description:
+      "Wir stimmen Umfang, Termine und Details mit Ihnen ab. So passt die Haushaltshilfe zu Ihrem Alltag und Ihrer Lebenssituation.",
+  },
+  {
+    step: "Schritt 3",
+    title: "Zuverlässige Unterstützung",
+    description:
+      "Ihre festen Ansprechpartnerinnen und Ansprechpartner unterstützen Sie regelmäßig und verlässlich – damit Sie entlastet sind.",
+  },
+] as const;
+
+const LEISTUNGS_TILES = [
+  "Saugen und Wischen der Böden",
+  "Fenster putzen",
+  "Reinigung von Bad und Küche",
+  "Mahlzeiten zubereiten",
+  "Aufräumen und Ordnung halten",
+  "Wäsche waschen und bügeln",
+] as const;
+
+const FAQ_INLINE =
+  "font-semibold text-[#0F4F68] underline underline-offset-2 decoration-[#0F4F68]/40 hover:decoration-[#F78F2E] hover:text-[#0c3d52]";
+
+type FaqItem = { q: string; answerPlain: string; answer: ReactNode };
+
+function buildFaq(contactHref: string): FaqItem[] {
+  return [
+    {
+      q: "Welche Aufgaben werden übernommen?",
+      answerPlain:
+        "Typische Leistungen sind Bodenreinigung, Fensterputzen, Bad- und Küchenreinigung sowie Ordnung halten. Der Umfang wird an Ihren Bedarf angepasst.",
+      answer: (
+        <>
+          Typische Leistungen sind <strong>Bodenreinigung</strong>, <strong>Fensterputzen</strong>,{" "}
+          <strong>Bad- und Küchenreinigung</strong> sowie <strong>Ordnung halten</strong>. Wir passen uns Ihrem Bedarf an.
+        </>
+      ),
+    },
+    {
+      q: "Wo bietet die Alltagshilfe-Süd ihre Leistung an?",
+      answerPlain: `${siteConfig.name} unterstützt in Städten und ländlichen Regionen. Ob wir in Ihrer Nähe sind, prüfen Sie über den Standortsucher auf der Seite Standorte.`,
+      answer: (
+        <>
+          Wir unterstützen in <strong>Städten und ländlichen Regionen</strong>. Ob wir in Ihrer Nähe sind, prüfen Sie mit
+          unserem{" "}
+          <Link href="/standorte" className={FAQ_INLINE}>
+            Standortsucher
+          </Link>
+          .
+        </>
+      ),
+    },
+    {
+      q: "Werden die Kosten übernommen?",
+      answerPlain: `Als zugelassener Partner rechnen wir mit allen Pflege- und Krankenkassen ab.`,
+      answer: (
+        <>
+          Als <strong>zugelassener Partner</strong> rechnen wir mit <strong>allen Pflege- und Krankenkassen</strong> ab.
+        </>
+      ),
+    },
+    {
+      q: "Wie wird abgerechnet?",
+      answerPlain:
+        "Die Bezahlung erfolgt über die Pflegekasse, die Krankenkasse oder privat. Im Beratungsgespräch klären wir Ihre Möglichkeiten.",
+      answer: (
+        <>
+          Die Bezahlung erfolgt über die <strong>Pflegekasse</strong>, die <strong>Krankenkasse</strong> oder{" "}
+          <strong>privat</strong>. Wir beraten Sie gerne zu Ihren Möglichkeiten – auch über unser{" "}
+          <Link href={contactHref} className={FAQ_INLINE}>
+            Kontaktformular auf dieser Seite
+          </Link>
+          .
+        </>
+      ),
+    },
+    {
+      q: "Gilt der Entlastungsbetrag von 131 Euro?",
+      answerPlain:
+        "Ab Pflegegrad 1 können Sie den monatlichen Entlastungsbetrag von 131 Euro für qualifizierte Leistungen nutzen, sofern die Voraussetzungen erfüllt sind.",
+      answer: (
+        <>
+          Ab <strong>Pflegegrad 1</strong> können Sie diesen monatlichen Betrag für unsere Leistungen nutzen, wenn die
+          gesetzlichen Voraussetzungen erfüllt sind. Details zum Entlastungsbetrag finden Sie auch in unserem{" "}
+          <Link href="/ratgeber/entlastungsbetrag-131-euro" className={FAQ_INLINE}>
+            Ratgeber
+          </Link>
+          .
+        </>
+      ),
+    },
+    {
+      q: "Kann ich 3.539 Euro für Ersatzpflege und Verhinderungspflege über Alltagshilfe-Süd nutzen?",
+      answerPlain:
+        "Ja, ab Pflegegrad 2 können Sie Ersatzpflege und Verhinderungspflege bis zum gesetzlich vorgesehenen Jahresbudget über Alltagshilfe-Süd abrechnen lassen, sofern die Voraussetzungen erfüllt sind.",
+      answer: (
+        <>
+          Ja, ab einem <strong>Pflegegrad 2</strong> ist das unkompliziert möglich, wenn die gesetzlichen und
+          vertraglichen Voraussetzungen erfüllt sind. Wir unterstützen Sie bei der Abrechnung.
+        </>
+      ),
+    },
+    {
+      q: "Brauche ich einen Pflegegrad?",
+      answerPlain:
+        "Für Leistungen über die Pflegekasse ist in der Regel ein Pflegegrad erforderlich. Über die Krankenkasse oder privat ist Hilfe auch ohne Pflegegrad möglich, je nach Einzelfall.",
+      answer: (
+        <>
+          Für Leistungen der <strong>Pflegekasse</strong> ja. Über die <strong>Krankenkasse</strong> oder{" "}
+          <strong>privat</strong> ist Hilfe auch ohne Pflegegrad möglich.
+        </>
+      ),
+    },
+    {
+      q: "Gibt es eine feste Bezugsperson?",
+      answerPlain:
+        "Ja, eine persönliche Beziehung ist wichtig; ein Wechsel der Bezugsperson erfolgt nur in dringenden Fällen.",
+      answer: (
+        <>
+          Ja, eine <strong>persönliche Beziehung</strong> ist uns wichtig, daher ist ein Wechsel nur in dringenden Fällen
+          notwendig.
+        </>
+      ),
+    },
+    {
+      q: "Wie schnell startet die Hilfe?",
+      answerPlain:
+        "Termine werden zeitnah vergeben. Der Start hängt von regionalen Kapazitäten ab; darüber informieren wir Sie umgehend.",
+      answer: (
+        <>
+          Wir vergeben Termine <strong>zeitnah</strong>. Der Start hängt von regionalen Kapazitäten ab, über die wir Sie
+          sofort informieren.
+        </>
+      ),
+    },
+    {
+      q: "Gibt es eine App für Termine?",
+      answerPlain:
+        "Ja, über die App von Alltagshilfe-Süd sind Termine und Rechnungen jederzeit einsehbar.",
+      answer: (
+        <>
+          Ja, über unsere <strong>App</strong> haben Sie <strong>Termine und Rechnungen</strong> jederzeit transparent im
+          Blick.
+        </>
+      ),
+    },
+    {
+      q: "Wie stelle ich eine Anfrage?",
+      answerPlain:
+        "Kontaktieren Sie Alltagshilfe-Süd telefonisch oder über das Online-Formular für ein unverbindliches Erstgespräch.",
+      answer: (
+        <>
+          Kontaktieren Sie uns einfach telefonisch oder per{" "}
+          <Link href={contactHref} className={FAQ_INLINE}>
+            Online-Formular auf dieser Seite
+          </Link>{" "}
+          für ein unverbindliches Erstgespräch.
+        </>
+      ),
+    },
+  ];
+}
+
+export type StandortLandingProps = {
+  plz: string;
+  ort: string;
+  standort: Standort;
+};
+
+export function StandortLanding({ plz, ort, standort }: StandortLandingProps) {
+  const FAQ = buildFaq(CONTACT_ANCHOR);
+  const faqJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: FAQ.map((item) => ({
+      "@type": "Question",
+      name: item.q,
+      acceptedAnswer: { "@type": "Answer", text: item.answerPlain },
+    })),
+  };
+
+  const whatsappHref = phoneHrefToWhatsAppUrl(standort.phoneHref);
+  const standortLabel = standort.name.startsWith("Standort") ? standort.name : `Standort ${standort.name}`;
+
+  const hoursParts = standort.hours.split(/\s*·\s*/).filter(Boolean);
+
+  return (
+    <div className="min-w-0 overflow-x-clip overflow-y-visible bg-[#fafbfc] text-neutral-700 antialiased">
+      <article id="standort-landing" className="min-w-0 scroll-mt-24 overflow-x-clip overflow-y-visible">
+        <section className="relative z-0 box-border mx-auto w-full min-w-0 max-w-7xl px-4 pb-10 pt-0 sm:px-6 sm:pb-16 lg:px-[var(--ahs-page-gutter)] lg:pb-[clamp(4rem,9vh+1.5rem,7rem)] lg:pt-[clamp(2rem,5vh+1.25rem,4.75rem)] xl:pb-[clamp(5rem,10vh+1.5rem,8rem)]">
+          <div className="flex flex-col-reverse items-center gap-10 lg:grid lg:grid-cols-[minmax(0,0.34fr)_minmax(0,0.66fr)] lg:items-center lg:justify-items-stretch lg:gap-x-[clamp(1.5rem,3vw,3.25rem)] lg:gap-y-0">
+            <div className="box-border w-full min-w-0 max-w-full space-y-[clamp(1.25rem,2vh+0.75rem,1.75rem)] lg:min-w-0 lg:justify-self-start lg:space-y-[clamp(1.15rem,1.6vh+0.7rem,1.75rem)] lg:-translate-x-[clamp(0.75rem,4.5vw,3rem)] lg:pr-0 motion-reduce:lg:translate-x-0">
+              <h1
+                className="text-3xl font-extrabold leading-tight tracking-tight text-[#0F4F68] opacity-0 motion-reduce:opacity-100 animate-fade-in-up sm:text-4xl lg:text-[clamp(1.75rem,1.05rem+2.5vw,3rem)]"
+                style={{ animationDelay: "0s" }}
+              >
+                <span className="block text-pretty">
+                  Pflegeberatung, Haushaltshilfe &amp; Betreuung in {plz} {ort}
+                </span>
+              </h1>
+              <ul
+                className="mt-5 min-w-0 space-y-3 sm:mt-6 sm:space-y-3.5 lg:mt-0 lg:space-y-[clamp(0.65rem,0.35rem+0.9vw,1rem)]"
+                aria-label="Ihre Vorteile auf einen Blick"
+              >
+                {HERO_VORTEILE.map((line, i) => (
+                  <li
+                    key={line}
+                    className="flex min-w-0 items-start gap-3 text-lg font-semibold leading-snug text-[#0F4F68] opacity-0 motion-reduce:opacity-100 animate-fade-in-up sm:text-xl lg:items-center lg:text-[clamp(1.05rem,0.82rem+0.5vw,1.35rem)]"
+                    style={{ animationDelay: `${0.45 + i * 0.22}s` }}
+                  >
+                    <HeroCheckIcon className="mt-0.5 lg:mt-0" />
+                    <span className="min-w-0 flex-1 text-pretty">{line}</span>
+                  </li>
+                ))}
+              </ul>
+
+              <div
+                className="pt-2 opacity-0 motion-reduce:opacity-100 animate-fade-in-up"
+                style={{ animationDelay: "1.12s" }}
+              >
+                <Link
+                  href={CONTACT_ANCHOR}
+                  className="flex w-full transform items-center justify-center gap-2 rounded-xl bg-[#F78F2E] px-6 py-3 text-lg font-bold text-white shadow-lg transition hover:scale-[1.02] hover:opacity-95 focus:outline-none focus:ring-2 focus:ring-[#F78F2E] focus:ring-offset-2 motion-reduce:transform-none sm:w-auto lg:w-auto lg:px-[clamp(1.15rem,0.85rem+1.1vw,1.65rem)] lg:py-[clamp(0.6rem,0.45rem+0.45vw,0.9rem)] lg:text-[clamp(1rem,0.82rem+0.55vw,1.15rem)]"
+                >
+                  Jetzt Kontakt aufnehmen
+                </Link>
+                <p className="mt-3 min-w-0 max-w-full text-pretty text-center text-sm leading-snug text-neutral-600 sm:text-left lg:text-[clamp(0.8rem,0.7rem+0.35vw,0.95rem)]">
+                  Unverbindliche Erstberatung – wir melden uns zeitnah bei Ihnen.
+                </p>
+              </div>
+            </div>
+
+            <div className="box-border w-full min-w-0 max-w-full lg:min-h-0 lg:translate-x-[clamp(0.75rem,5vw,3.5rem)] lg:justify-self-stretch lg:self-center motion-reduce:lg:translate-x-0">
+              <div className="box-border flex justify-center overflow-x-visible bg-[#fafbfc] px-4 pt-3 pb-8 sm:px-8 sm:pt-4 sm:pb-10 lg:flex lg:justify-end lg:px-0 lg:pb-[clamp(1.75rem,3.5vh+0.75rem,3.25rem)] lg:pt-0">
+                <div
+                  className="mx-auto w-full min-w-0 max-w-[min(100%,72rem)] opacity-0 motion-reduce:opacity-100 animate-fade-in-up max-lg:flex max-lg:max-w-full max-lg:justify-center lg:ml-auto lg:w-full lg:max-w-full"
+                  style={{ animationDelay: "0.08s" }}
+                >
+                  {/* eslint-disable-next-line @next/next/no-img-element -- statisches Hero-Asset */}
+                  <img
+                    src={STANDORT_HERO_IMG}
+                    alt={`Pflegeberatung, Haushaltshilfe und Betreuung in ${plz} ${ort}`}
+                    width={1200}
+                    height={800}
+                    decoding="async"
+                    fetchPriority="high"
+                    sizes="(max-width: 1023px) 100vw, (max-width: 1536px) 66vw, 1200px"
+                    className={`box-border h-auto w-full max-w-full object-contain object-center lg:object-contain lg:object-right max-lg:mx-auto max-lg:origin-center max-lg:translate-x-0 max-lg:-translate-y-2 max-lg:scale-[1.05] max-lg:motion-reduce:scale-[1.05] ${HERO_GLOW_CLASS}`}
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section
+          className="relative z-10 overflow-x-clip bg-[#F2F9FA] px-4 pb-16 pt-[clamp(2.5rem,4.5vw,4.25rem)] sm:px-6 sm:pb-20 lg:px-[var(--ahs-page-gutter)] lg:pb-24"
+          aria-labelledby="standort-leistungen-heading"
+        >
+          <svg
+            className={WELLEN_SVG_CLASS}
+            viewBox="0 0 1200 100"
+            preserveAspectRatio="none"
+            fill="none"
+            aria-hidden
+          >
+            <path d={WELLEN_D} fill="#F2F9FA" />
+          </svg>
+          <div className="relative z-[1] mx-auto max-w-7xl">
+            <RevealOnScroll>
+              <div className="mb-10 text-center sm:mb-12">
+                <h2 id="standort-leistungen-heading" className="text-3xl font-bold text-[#0F4F68] sm:text-4xl">
+                  Das übernehmen wir im Haushalt
+                </h2>
+                <p className="mt-3 text-pretty text-neutral-600 sm:max-w-3xl sm:mx-auto">
+                  Typische haushaltsnahe Leistungen – im Detail stimmen wir alles mit Ihnen ab.
+                </p>
+              </div>
+            </RevealOnScroll>
+            <RevealOnScroll delayMs={120}>
+              <ul className="grid grid-cols-1 gap-4 text-center sm:grid-cols-2 md:grid-cols-3">
+                {LEISTUNGS_TILES.map((label) => (
+                  <li
+                    key={label}
+                    className="rounded-xl border border-[#0F4F68]/10 bg-white p-4 text-sm font-semibold text-[#0F4F68] shadow-sm sm:text-base"
+                  >
+                    {label}
+                  </li>
+                ))}
+              </ul>
+            </RevealOnScroll>
+          </div>
+        </section>
+
+        <JetztNeuPromoSection headingId="standort-jetzt-neu-promo" />
+
+        <section
+          className="relative z-[11] overflow-x-clip bg-[#fafbfc] px-4 pb-16 pt-[clamp(2.5rem,4.5vw,4.25rem)] sm:px-6 sm:pb-20 lg:px-[var(--ahs-page-gutter)] lg:pb-24"
+          aria-labelledby="standort-schritte-heading"
+        >
+          <svg
+            className={WELLEN_SVG_CLASS}
+            viewBox="0 0 1200 100"
+            preserveAspectRatio="none"
+            fill="none"
+            aria-hidden
+          >
+            <path d={WELLEN_D} fill="#fafbfc" />
+          </svg>
+          <div className="relative z-[1] mx-auto max-w-7xl">
+            <RevealOnScroll>
+              <div className="mx-auto mb-10 max-w-3xl text-center lg:mb-12">
+                <h2
+                  id="standort-schritte-heading"
+                  className="text-balance text-3xl font-bold tracking-tight text-[#0F4F68] sm:text-4xl"
+                >
+                  So einfach zur passenden Haushaltshilfe
+                </h2>
+                <p className="mt-3 text-pretty text-sm text-[#8a6a55] sm:text-base">
+                  Drei Schritte zur verlässlichen Haushaltshilfe, schnell & unkompliziert
+                </p>
+              </div>
+            </RevealOnScroll>
+
+            <ol className="grid auto-rows-fr gap-6 md:grid-cols-3 md:gap-8 md:items-stretch">
+              {SCHRITTE.map((item, i) => (
+                <li key={item.step} className="flex min-h-0 list-none">
+                  <RevealOnScroll delayMs={i * 150} className="h-full min-h-0 w-full">
+                    <div className="flex h-full min-h-[18rem] flex-col items-center rounded-2xl border border-[#0F4F68]/10 bg-white p-6 text-center shadow-[0_10px_40px_rgba(15,79,104,0.07)] transition-shadow duration-300 hover:shadow-[0_16px_52px_rgba(15,79,104,0.11)] sm:min-h-[19rem] sm:p-7">
+                      <div className="mb-4 inline-flex min-h-10 shrink-0 items-center justify-center rounded-full bg-[#0F4F68] px-4 text-sm font-bold text-white sm:text-base">
+                        {item.step}
+                      </div>
+                      <h3 className="text-balance text-lg font-bold text-[#0F4F68]">{item.title}</h3>
+                      <p className="mt-2 flex-1 text-pretty text-sm leading-relaxed text-neutral-600 sm:text-base">
+                        {item.description}
+                      </p>
+                    </div>
+                  </RevealOnScroll>
+                </li>
+              ))}
+            </ol>
+
+            <RevealOnScroll delayMs={200}>
+              <div className="mt-10 flex flex-col items-center gap-2 sm:mt-12">
+                <Link
+                  href={CONTACT_ANCHOR}
+                  className="inline-flex min-h-[48px] items-center justify-center rounded-xl bg-[#F78F2E] px-8 py-3.5 text-base font-bold text-white shadow-md transition hover:opacity-95 focus:outline-none focus:ring-2 focus:ring-[#F78F2E] focus:ring-offset-2 sm:text-lg"
+                >
+                  Anfrage stellen
+                </Link>
+                <p className="text-center text-sm text-neutral-500">Unverbindlich · Wir melden uns bei Ihnen</p>
+              </div>
+            </RevealOnScroll>
+          </div>
+        </section>
+
+        <section
+          className="relative z-20 w-full overflow-x-clip bg-white px-4 pb-14 pt-[clamp(4.25rem,9vw,6.25rem)] sm:px-6 sm:pb-16 sm:pt-[clamp(4.75rem,10vw,6.75rem)] lg:px-[var(--ahs-page-gutter)] lg:pb-20"
+          aria-labelledby="standort-vorteile-heading"
+        >
+          <svg
+            className={WELLEN_SVG_CLASS}
+            viewBox="0 0 1200 100"
+            preserveAspectRatio="none"
+            fill="none"
+            aria-hidden
+          >
+            <path d={WELLEN_D} fill="#ffffff" />
+          </svg>
+          <RevealOnScroll>
+            <div className="relative z-[1] mx-auto w-full max-w-6xl">
+              <div className="mx-auto flex w-full max-w-3xl flex-col items-center text-center">
+                <h2
+                  id="standort-vorteile-heading"
+                  className="text-balance text-3xl font-bold tracking-tight text-[#0F4F68] sm:text-4xl"
+                >
+                  Ihre Vorteile bei uns
+                </h2>
+                <p className="mt-2 text-pretty text-sm text-neutral-600 sm:text-base">
+                  Verlässlich, transparent und nah bei Ihnen - mit klaren Prozessen und echter Unterstützung im Alltag.
+                </p>
+              </div>
+              <ul className="mt-6 grid gap-4 sm:grid-cols-2">
+                {STARTSEITE_VORTEILE.map((item) => (
+                  <li
+                    key={item}
+                    className="flex items-start gap-3 rounded-xl px-2 py-1.5 transition-all duration-300 hover:bg-white/75 hover:shadow-[0_0_20px_rgba(15,79,104,0.12)]"
+                  >
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src="/images/haken.webp"
+                      alt=""
+                      aria-hidden
+                      width={38}
+                      height={38}
+                      className="mt-0.5 h-[38px] w-[38px] shrink-0 object-contain"
+                    />
+                    <span className="text-[1.03rem] font-medium leading-relaxed text-neutral-800 sm:text-[1.08rem]">
+                      {item}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </RevealOnScroll>
+        </section>
+
+        <KundenstimmenCarousel />
+
+        <section className="relative bg-[#fafbfc] py-14 sm:py-20" aria-labelledby="standort-faq-heading">
+          <div className="relative mx-auto max-w-3xl px-4 sm:px-6 lg:max-w-4xl">
+            <RevealOnScroll>
+              <h2
+                id="standort-faq-heading"
+                className="text-center text-2xl font-extrabold tracking-tight text-[#0F4F68] sm:text-3xl"
+              >
+                Häufige Fragen
+              </h2>
+              <p className="mx-auto mt-2 max-w-2xl text-center text-sm font-medium text-[#0F4F68]/85 sm:text-base">
+                Antworten zu Kosten, Krankenkasse, Entlastungsbetrag, Region, Ablauf und weiteren häufigen Fragen
+              </p>
+            </RevealOnScroll>
+            <RevealOnScroll delayMs={100}>
+              <div className="mt-8 space-y-3 sm:mt-10">
+                {FAQ.map((item) => (
+                  <details
+                    key={item.q}
+                    className="group rounded-2xl border border-[#0F4F68]/12 bg-white shadow-[0_2px_16px_rgba(15,79,104,0.06)] transition hover:border-[#F78F2E]/35 hover:shadow-[0_8px_28px_rgba(15,79,104,0.1)] open:border-[#0F4F68]/18 open:shadow-[0_10px_32px_rgba(15,79,104,0.12)]"
+                  >
+                    <summary className="flex cursor-pointer list-none items-center justify-between gap-4 px-4 py-4 text-left text-[#0F4F68] sm:px-5 [&::-webkit-details-marker]:hidden">
+                      <span className="text-base font-semibold leading-snug sm:text-[1.05rem]">{item.q}</span>
+                      <span
+                        className="inline-flex shrink-0 rounded-full bg-[#F78F2E]/12 p-1.5 text-[#F78F2E] transition-transform duration-200 group-open:rotate-180"
+                        aria-hidden
+                      >
+                        <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                        </svg>
+                      </span>
+                    </summary>
+                    <div className="border-t border-[#0F4F68]/8 px-4 pb-4 pt-2 text-pretty text-sm leading-relaxed text-neutral-600 sm:px-5 sm:text-base">
+                      {item.answer}
+                    </div>
+                  </details>
+                ))}
+              </div>
+            </RevealOnScroll>
+          </div>
+          <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }} />
+        </section>
+
+        <section
+          id="standort-kontakt"
+          className="scroll-mt-24 border-t border-[#0F4F68]/10 bg-white py-16 sm:py-24"
+          aria-labelledby="standort-kontakt-heading"
+        >
+          <Container className="w-full">
+            <div className="mx-auto grid w-full max-w-6xl gap-10 lg:grid-cols-2 lg:items-start lg:gap-12">
+              <div className="order-2 flex min-w-0 flex-col lg:order-1">
+                <div className="mx-auto w-full max-w-xl rounded-2xl bg-[#F2F9FA] p-6 sm:p-8 lg:mx-0 lg:max-w-none lg:p-10">
+                  <h2
+                    id="standort-kontakt-heading"
+                    className="text-3xl font-bold tracking-tight text-[#0F4F68] sm:text-4xl"
+                  >
+                    Kontakt
+                  </h2>
+                  <p className="mt-4 text-neutral-600">Schreiben Sie uns – wir melden uns zeitnah bei Ihnen.</p>
+
+                  <div className="mt-5 rounded-xl border border-[#0F4F68]/20 bg-[#F2F9FA]/80 p-5 text-center sm:p-6">
+                    <p className="text-base font-semibold text-neutral-700 sm:text-lg">
+                      {plz} {ort}
+                    </p>
+                    <p className="mt-2 truncate text-base font-bold text-[#0F4F68] sm:text-lg">{standortLabel}</p>
+                    <p className="mt-2 text-sm text-neutral-700 sm:text-base">{standort.address}</p>
+                    <a
+                      href={standort.phoneHref}
+                      className="mt-3 inline-flex items-center justify-center gap-2 text-2xl font-extrabold text-[#0F4F68] hover:underline focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2 rounded"
+                      aria-label={`Anrufen: ${standort.phone}`}
+                    >
+                      <svg
+                        className="h-6 w-6 shrink-0"
+                        viewBox="0 0 24 24"
+                        fill="currentColor"
+                        style={{ color: "#F78F2E" }}
+                        aria-hidden
+                      >
+                        <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z" />
+                      </svg>
+                      {standort.phone}
+                    </a>
+                    <p className="mt-2 text-sm text-neutral-700 sm:text-base">{standort.hours}</p>
+                  </div>
+
+                  <div className="mt-10">
+                    <ContactForm />
+                  </div>
+                  <p className="mt-8 text-sm text-neutral-500">
+                    Weitere Informationen zur Datenverarbeitung finden Sie in unserer{" "}
+                    <Link href="/datenschutz" className="underline hover:text-neutral-700">
+                      Datenschutzerklärung
+                    </Link>
+                    .
+                  </p>
+                </div>
+              </div>
+
+              <div className="order-1 flex min-w-0 flex-col items-center gap-6 text-center lg:order-2">
+                <div className="flex w-full flex-col items-center">
+                  <div className="relative aspect-[4/3] w-full max-w-md overflow-visible sm:max-w-lg">
+                    <div className="relative h-full w-full isolate [transform:translateZ(0)] [backface-visibility:hidden]">
+                      <Image
+                        src="/images/Kontakt_Bild.webp"
+                        alt={`Kontakt – ${standort.name}`}
+                        fill
+                        className="object-contain drop-shadow-[0_4px_20px_rgba(15,79,104,0.18)]"
+                        sizes="(max-width: 1024px) 90vw, 50vw"
+                      />
+                    </div>
+                  </div>
+                  <div
+                    className="relative z-10 -mt-10 w-full max-w-sm rounded-xl bg-[#F2F9FA] px-6 py-3 text-center text-lg font-semibold text-[#0F4F68] sm:-mt-12 sm:max-w-md sm:py-4 sm:text-xl"
+                    style={{ boxShadow: "0 -2px 12px rgba(15, 79, 104, 0.15)" }}
+                  >
+                    Wir freuen uns über Ihren Anruf!
+                  </div>
+                </div>
+                <div className="mx-auto w-full max-w-md">
+                  <p className="text-base font-semibold text-[#0F4F68] sm:text-lg">Telefonnummer Ihres Standorts</p>
+                  <a
+                    href={standort.phoneHref}
+                    className="mt-2 flex items-center justify-center gap-2 text-3xl font-bold tabular-nums text-[#0F4F68] hover:underline focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2 rounded sm:text-4xl"
+                    aria-label={`Anrufen: ${standort.phone}`}
+                  >
+                    <svg
+                      className="h-8 w-8 shrink-0 sm:h-9 sm:w-9"
+                      fill="currentColor"
+                      viewBox="0 0 24 24"
+                      aria-hidden
+                      style={{ color: "#F78F2E" }}
+                    >
+                      <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z" />
+                    </svg>
+                    <span>{standort.phone}</span>
+                  </a>
+                  <ul className="mt-5 space-y-2 text-base text-neutral-700 sm:text-lg">
+                    {hoursParts.map((line) => (
+                      <li key={line}>{line}</li>
+                    ))}
+                  </ul>
+
+                  <section className="mt-8 border-t border-neutral-200 pt-6" aria-labelledby="standort-whatsapp-heading">
+                    <h3 id="standort-whatsapp-heading" className="text-xl font-bold text-[#0F4F68] sm:text-2xl">
+                      Oder schreiben Sie uns bequem
+                      <br />
+                      per Whatsapp
+                    </h3>
+                    <p className="mt-3 text-sm text-neutral-700">
+                      Nutzen Sie den Button – so erreichen Sie diesen Standort direkt per WhatsApp. Für andere Kanäle
+                      steht Ihnen unsere{" "}
+                      <Link href="/kontakt" className="font-semibold text-[#0F4F68] underline hover:no-underline">
+                        zentrale Kontaktseite
+                      </Link>{" "}
+                      zur Verfügung.
+                    </p>
+                    <div className="mt-4 flex justify-center">
+                      <a
+                        href={whatsappHref}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-2 rounded-lg px-5 py-3 text-base font-bold uppercase tracking-wide text-white transition-opacity hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-[#25D366]"
+                        style={{ backgroundColor: "#25D366" }}
+                        aria-label="Per WhatsApp an diesen Standort schreiben"
+                      >
+                        <svg className="h-6 w-6 shrink-0" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+                          <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.865 9.865 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
+                        </svg>
+                        WhatsApp
+                      </a>
+                    </div>
+                  </section>
+                </div>
+              </div>
+            </div>
+          </Container>
+        </section>
+
+        <section className="border-t border-[#0F4F68]/10 bg-[#fafbfc] py-12" aria-label="Abschluss">
+          <RevealOnScroll>
+            <div className="mx-auto max-w-3xl px-4 text-center sm:px-6">
+              <p className="text-neutral-600">
+                {siteConfig.name} unterstützt Sie mit Haushaltshilfe in {ort} und Umgebung. Zur Übersicht aller Regionen:{" "}
+                <Link href="/standorte" className="font-semibold text-[#0F4F68] underline-offset-2 hover:underline">
+                  Standorte
+                </Link>
+                .
+              </p>
+              <div className="mt-6 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
+                <Link
+                  href={CONTACT_ANCHOR}
+                  className="inline-flex rounded-lg bg-[#F78F2E] px-8 py-3 text-base font-bold text-white shadow-md transition hover:opacity-95 focus:outline-none focus:ring-2 focus:ring-[#F78F2E] focus:ring-offset-2"
+                >
+                  Jetzt Kontakt aufnehmen
+                </Link>
+                <Link
+                  href="/standorte"
+                  className="inline-flex items-center justify-center rounded-xl border-2 border-[#0F4F68] px-6 py-3 font-semibold text-[#0F4F68] transition-colors hover:bg-[#0F4F68]/5 focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2"
+                >
+                  Zurück zur Standortsuche
+                </Link>
+              </div>
+            </div>
+          </RevealOnScroll>
+        </section>
+      </article>
+    </div>
+  );
+}
