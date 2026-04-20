@@ -162,13 +162,13 @@ export function StandortLanding({ plz, ort, standort }: StandortLandingProps) {
     <div className="min-w-0 overflow-x-clip overflow-y-visible bg-[#fafbfc] text-neutral-700 antialiased">
       <article id="standort-landing" className="min-w-0 scroll-mt-24 overflow-x-clip overflow-y-visible">
         <section className="relative z-0 box-border mx-auto w-full min-w-0 max-w-7xl px-4 pb-10 pt-0 sm:px-6 sm:pb-16 lg:px-[var(--ahs-page-gutter)] lg:pb-[clamp(4rem,9vh+1.5rem,7rem)] lg:pt-[clamp(2rem,5vh+1.25rem,4.75rem)] xl:pb-[clamp(5rem,10vh+1.5rem,8rem)]">
-          <div className="flex flex-col-reverse items-center gap-10 lg:grid lg:grid-cols-[minmax(0,0.34fr)_minmax(0,0.66fr)] lg:items-center lg:justify-items-stretch lg:gap-x-[clamp(1.5rem,3vw,3.25rem)] lg:gap-y-0">
-            <div className="box-border w-full min-w-0 max-w-full space-y-[clamp(1rem,2vh+0.5rem,1.5rem)] lg:min-w-0 lg:justify-self-start lg:-translate-x-[clamp(0.75rem,4.5vw,3rem)] lg:pr-0 motion-reduce:lg:translate-x-0">
+          <div className="flex flex-col-reverse items-center gap-10 lg:grid lg:grid-cols-[minmax(0,0.5fr)_minmax(0,0.5fr)] xl:grid-cols-[minmax(0,0.52fr)_minmax(0,0.48fr)] lg:items-center lg:justify-items-stretch lg:gap-x-[clamp(2rem,4.5vw,4rem)] lg:gap-y-0">
+            <div className="box-border w-full min-w-0 max-w-full space-y-[clamp(1rem,2vh+0.5rem,1.5rem)] lg:min-w-0 lg:max-w-none lg:justify-self-stretch lg:pr-1 xl:pr-2">
               <h1
-                className="text-3xl font-extrabold leading-tight tracking-tight text-[#0F4F68] opacity-0 motion-reduce:opacity-100 animate-fade-in-up sm:text-4xl lg:text-[clamp(1.75rem,1.05rem+2.5vw,3rem)]"
+                className="text-3xl font-extrabold leading-[1.15] tracking-tight text-[#0F4F68] opacity-0 motion-reduce:opacity-100 animate-fade-in-up sm:text-4xl lg:text-[clamp(1.85rem,1.2rem+2.2vw,2.75rem)] xl:text-[clamp(2rem,1.35rem+2vw,3rem)]"
                 style={{ animationDelay: "0s" }}
               >
-                <span className="block text-pretty">
+                <span className="block max-lg:text-pretty lg:text-balance">
                   Pflegeberatung, Haushaltshilfe &amp; Betreuung in {plz} {ort}
                 </span>
               </h1>
@@ -180,11 +180,11 @@ export function StandortLanding({ plz, ort, standort }: StandortLandingProps) {
                 {HERO_VORTEILE.map((line, i) => (
                   <li
                     key={line}
-                    className="flex min-w-0 items-start gap-3 text-lg font-semibold leading-snug text-[#0F4F68] opacity-0 motion-reduce:opacity-100 animate-fade-in-up sm:text-xl lg:items-center lg:text-[clamp(1.05rem,0.82rem+0.5vw,1.35rem)]"
+                    className="flex min-w-0 items-start gap-3 text-lg font-semibold leading-snug text-[#0F4F68] opacity-0 motion-reduce:opacity-100 animate-fade-in-up sm:text-xl lg:items-center lg:text-[clamp(1.05rem,0.88rem+0.45vw,1.3rem)]"
                     style={{ animationDelay: `${0.45 + i * 0.22}s` }}
                   >
-                    <HeroCheckIcon className="mt-0.5 lg:mt-0" />
-                    <span className="min-w-0 flex-1 text-pretty">{line}</span>
+                    <HeroCheckIcon className="mt-0.5 shrink-0 lg:mt-0" />
+                    <span className="min-w-0 flex-1 max-lg:text-pretty lg:text-balance">{line}</span>
                   </li>
                 ))}
               </ul>
@@ -205,10 +205,10 @@ export function StandortLanding({ plz, ort, standort }: StandortLandingProps) {
               </div>
             </div>
 
-            <div className="box-border w-full min-w-0 max-w-full lg:min-h-0 lg:translate-x-[clamp(0.75rem,5vw,3.5rem)] lg:justify-self-stretch lg:self-center motion-reduce:lg:translate-x-0">
-              <div className="box-border flex justify-center overflow-x-visible bg-[#fafbfc] px-4 pt-3 pb-8 sm:px-8 sm:pt-4 sm:pb-10 lg:flex lg:justify-end lg:px-0 lg:pb-[clamp(1.75rem,3.5vh+0.75rem,3.25rem)] lg:pt-0">
+            <div className="box-border w-full min-w-0 max-w-full lg:min-h-0 lg:translate-x-[clamp(1.25rem,6vw,5rem)] lg:justify-self-end lg:self-center xl:translate-x-[clamp(2rem,7vw,6rem)] motion-reduce:lg:translate-x-0">
+              <div className="box-border flex justify-center overflow-x-visible bg-[#fafbfc] px-4 pt-3 pb-8 sm:px-8 sm:pt-4 sm:pb-10 lg:flex lg:justify-end lg:pl-2 lg:pr-0 lg:pb-[clamp(1.75rem,3.5vh+0.75rem,3.25rem)] lg:pt-0">
                 <div
-                  className="mx-auto w-full min-w-0 max-w-[min(100%,72rem)] opacity-0 motion-reduce:opacity-100 animate-fade-in-up max-lg:flex max-lg:max-w-full max-lg:justify-center lg:ml-auto lg:w-full lg:max-w-full"
+                  className="mx-auto w-full min-w-0 max-w-[min(100%,72rem)] opacity-0 motion-reduce:opacity-100 animate-fade-in-up max-lg:flex max-lg:max-w-full max-lg:justify-center lg:ml-0 lg:w-full lg:max-w-[min(100%,42rem)] xl:max-w-[min(100%,38rem)]"
                   style={{ animationDelay: "0.08s" }}
                 >
                   {/* eslint-disable-next-line @next/next/no-img-element -- statisches Hero-Asset */}
@@ -219,7 +219,7 @@ export function StandortLanding({ plz, ort, standort }: StandortLandingProps) {
                     height={800}
                     decoding="async"
                     fetchPriority="high"
-                    sizes="(max-width: 1023px) 100vw, (max-width: 1536px) 66vw, 1200px"
+                    sizes="(max-width: 1023px) 100vw, (max-width: 1536px) 50vw, 640px"
                     className={`box-border h-auto w-full max-w-full object-contain object-center lg:object-contain lg:object-right max-lg:mx-auto max-lg:origin-center max-lg:translate-x-0 max-lg:-translate-y-2 max-lg:scale-[1.05] max-lg:motion-reduce:scale-[1.05] ${HERO_GLOW_CLASS}`}
                   />
                 </div>
