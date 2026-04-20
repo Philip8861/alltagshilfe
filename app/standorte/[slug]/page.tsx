@@ -90,7 +90,7 @@ export default async function StandortSlugPage({ params }: Props) {
           </li>
         </ol>
       </nav>
-      <StandortLanding plz={plz} ort={ort} standort={standort} />
+      <StandortLanding slug={slug} plz={plz} ort={ort} standort={standort} />
     </>
   );
 }

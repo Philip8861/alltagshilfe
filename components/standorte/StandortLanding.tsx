@@ -13,6 +13,7 @@ import {
   phoneHrefToWhatsAppUrl,
   type Standort,
 } from "@/config/standorte";
+import { getPlzOrtMapLines } from "@/config/plz-ort-map-centers";
 
 const CONTACT_ANCHOR = "#standort-kontakt";
 const HAUSHALTSHILFE_URL = "/leistungen/haushaltshilfe";
@@ -125,12 +126,13 @@ function buildStandortFaq(input: {
 }
 
 export type StandortLandingProps = {
+  slug: string;
   plz: string;
   ort: string;
   standort: Standort;
 };
 
-export function StandortLanding({ plz, ort, standort }: StandortLandingProps) {
+export function StandortLanding({ slug, plz, ort, standort }: StandortLandingProps) {
   const FAQ = buildStandortFaq({ plz, ort, standort, contactHref: CONTACT_ANCHOR });
   const faqJsonLd = {
     "@context": "https://schema.org",
@@ -145,6 +147,7 @@ export function StandortLanding({ plz, ort, standort }: StandortLandingProps) {
   const whatsappHref = phoneHrefToWhatsAppUrl(standort.phoneHref);
   const standortLabel = standort.name.startsWith("Standort") ? standort.name : `Standort ${standort.name}`;
   const hoursParts = standort.hours.split(/\s*·\s*/).filter(Boolean);
+  const plzOrtMapInfo = getPlzOrtMapLines(slug, plz, ort);
 
   return (
     <div className="min-w-0 overflow-x-clip overflow-y-visible bg-[#fafbfc] text-neutral-700 antialiased">
@@ -237,15 +240,6 @@ export function StandortLanding({ plz, ort, standort }: StandortLandingProps) {
                 headingClassName="text-balance"
               />
             </RevealOnScroll>
-            <RevealOnScroll delayMs={120}>
-              <p className="mx-auto mt-8 max-w-2xl text-center text-sm text-neutral-600">
-                Details zu einzelnen Leistungen und Abläufen finden Sie über die Kacheln – ausführlich z. B. unter{" "}
-                <Link href={HAUSHALTSHILFE_URL} className={LINK_CLASS}>
-                  Haushaltshilfe
-                </Link>
-                .
-              </p>
-            </RevealOnScroll>
           </div>
         </section>
 
@@ -257,11 +251,11 @@ export function StandortLanding({ plz, ort, standort }: StandortLandingProps) {
             <RevealOnScroll>
               <h3
                 id="standort-vorteile-heading"
-                className="text-3xl font-extrabold tracking-tight text-[#0F4F68] sm:text-4xl"
+                className="text-center text-3xl font-extrabold tracking-tight text-[#0F4F68] sm:text-4xl"
               >
                 Ihre Vorteile bei uns
               </h3>
-              <p className="mt-2 max-w-3xl text-sm text-neutral-600 sm:text-base">
+              <p className="mx-auto mt-2 max-w-3xl text-center text-sm text-neutral-600 sm:text-base">
                 Verlässlich, transparent und nah bei Ihnen - mit klaren Prozessen und echter Unterstützung im Alltag.
               </p>
               <ul className="mt-6 grid gap-4 sm:grid-cols-2">
@@ -333,40 +327,6 @@ export function StandortLanding({ plz, ort, standort }: StandortLandingProps) {
         </section>
 
         <section
-          id="standort-vor-kontakt"
-          className="scroll-mt-24 border-t border-[#0F4F68]/10 bg-[#fafbfc] py-14 sm:py-16"
-          aria-labelledby="standort-vor-kontakt-heading"
-        >
-          <Container className="w-full">
-            <div className="mx-auto max-w-3xl">
-              <h2 id="standort-vor-kontakt-heading" className="text-xl font-bold text-[#0F4F68] sm:text-2xl">
-                Ihr Standort und Ansprechpartner
-              </h2>
-              <div className="mt-5 rounded-2xl border border-[#0F4F68]/12 bg-white p-5 text-pretty text-sm leading-relaxed text-neutral-700 shadow-sm sm:p-6 sm:text-base">
-                <p className="font-medium text-[#0F4F68]">
-                  Für {ort} (PLZ {plz}) koordinieren wir Ihre Anfrage über{" "}
-                  <span className="font-semibold">{standort.name}</span> – Büro in{" "}
-                  {standort.schemaAddress.addressLocality}.
-                </p>
-                {standort.localIntro.map((p) => (
-                  <p key={p.slice(0, 60)} className="mt-4">
-                    {p}
-                  </p>
-                ))}
-              </div>
-              <p className="mt-8 text-center">
-                <Link
-                  href={CONTACT_ANCHOR}
-                  className="inline-flex min-h-[48px] items-center justify-center rounded-xl bg-[#F78F2E] px-8 py-3.5 text-base font-bold text-white shadow-md transition hover:opacity-95 focus:outline-none focus:ring-2 focus:ring-[#F78F2E] focus:ring-offset-2 sm:text-lg"
-                >
-                  Jetzt Kontakt aufnehmen
-                </Link>
-              </p>
-            </div>
-          </Container>
-        </section>
-
-        <section
           id="standort-kontakt"
           className="scroll-mt-24 border-t border-[#0F4F68]/10 bg-white py-16 sm:py-24"
           aria-labelledby="standort-kontakt-heading"
@@ -381,9 +341,18 @@ export function StandortLanding({ plz, ort, standort }: StandortLandingProps) {
                   >
                     Kontakt
                   </h2>
-                  <p className="mt-4 text-neutral-600">Schreiben Sie uns – wir melden uns zeitnah bei Ihnen.</p>
+                  <div className="mt-4 space-y-4 text-pretty text-sm leading-relaxed text-neutral-700 sm:text-base">
+                    <p>
+                      Für Ihre Suche in <strong>{plz}</strong> <strong>{ort}</strong> ist unser Standort{" "}
+                      <strong>{standort.name}</strong> zuständig.
+                    </p>
+                    <p>
+                      Gerne können Sie direkt hier unser Kontaktformular nutzen – Ihre Anfrage wird automatisch an den
+                      passenden Standort weitergeleitet und dort schnellstmöglich bearbeitet.
+                    </p>
+                  </div>
 
-                  <div className="mt-5 overflow-hidden rounded-xl border border-[#0F4F68]/20 bg-[#F2F9FA]/80">
+                  <div className="mt-6 overflow-hidden rounded-xl border border-[#0F4F68]/20 bg-[#F2F9FA]/80 shadow-[0_10px_22px_rgba(15,79,104,0.2)] shadow-[0_4px_12px_rgba(15,79,104,0.12)]">
                     <div className="border-b border-[#0F4F68]/15 bg-[#F2F9FA] px-4 py-3 text-center sm:px-5">
                       <p className="text-base font-semibold text-neutral-700 sm:text-lg">
                         {plz} {ort} · {standortLabel}
@@ -497,6 +466,32 @@ export function StandortLanding({ plz, ort, standort }: StandortLandingProps) {
                         </svg>
                         WhatsApp
                       </a>
+                    </div>
+                    <div className="mt-8 flex flex-col items-center gap-3 text-center">
+                      <Image
+                        src="/images/QR_Code.webp"
+                        alt={`QR-Code WhatsApp – ${standort.name}`}
+                        width={176}
+                        height={176}
+                        className="h-auto w-44 max-w-full object-contain [filter:drop-shadow(0_8px_20px_rgba(15,79,104,0.2))]"
+                        unoptimized
+                      />
+                      {plzOrtMapInfo.coordsLine ? (
+                        <p className="max-w-md text-sm text-neutral-700">
+                          <span className="font-semibold text-[#0F4F68]">Koordinaten (Suchgebiet): </span>
+                          {plzOrtMapInfo.coordsLine}
+                        </p>
+                      ) : null}
+                      <p className="text-sm text-neutral-600">
+                        <a
+                          href={plzOrtMapInfo.mapsHref}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="font-semibold text-[#0F4F68] underline underline-offset-2 hover:text-[#0c3d52] focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2 rounded"
+                        >
+                          {plz} {ort} in Google Maps
+                        </a>
+                      </p>
                     </div>
                   </section>
                 </div>
