@@ -151,8 +151,8 @@ export function StandortLanding({ plz, ort, standort }: StandortLandingProps) {
     <div className="min-w-0 overflow-x-clip overflow-y-visible bg-[#fafbfc] text-neutral-700 antialiased">
       <article id="standort-landing" className="min-w-0 scroll-mt-24 overflow-x-clip overflow-y-visible">
         {/* Gleiches Hero-Layout wie Startseite (app/page.tsx): Bild rechts bis an den Viewport-Rand, Text links überlagert */}
-        {/* pt: Sticky-Header (Strip 2.45rem + weiße Nav), sonst liegt der Hero unter dem Header */}
-        <section className="relative z-0 box-border w-full pt-[calc(2.45rem+var(--ahs-header-white-min-height))] pb-6 sm:pb-8 lg:pb-[clamp(1.5rem,2vw+0.75rem,2.5rem)]">
+        {/* Kein zusätzliches pt: Header ist sticky und liegt im Fluss – main beginnt bereits unter dem Header; pt in Headerhöhe würde die Lücke verdoppeln. */}
+        <section className="relative z-0 box-border w-full pt-0 pb-6 sm:pb-8 lg:pb-[clamp(1.5rem,2vw+0.75rem,2.5rem)]">
           <div className="box-border mx-auto w-full min-w-0 max-w-7xl px-4 sm:px-6 lg:px-[var(--ahs-page-gutter)]">
             <div className="relative min-w-0">
               <div className="flex min-w-0 items-start justify-end">
@@ -167,7 +167,7 @@ export function StandortLanding({ plz, ort, standort }: StandortLandingProps) {
                       width={900}
                       height={700}
                       sizes="(max-width: 1023px) 100vw, (max-width: 1400px) 88vw, 900px"
-                      className="box-border block h-auto w-full max-w-full object-contain object-right [filter:drop-shadow(0_10px_22px_rgba(15,79,104,0.2))_drop-shadow(0_4px_12px_rgba(15,79,104,0.12))] [will-change:filter]"
+                      className="box-border block h-auto w-full max-w-full object-contain object-right-top [filter:drop-shadow(0_10px_22px_rgba(15,79,104,0.2))_drop-shadow(0_4px_12px_rgba(15,79,104,0.12))] [will-change:filter]"
                       priority
                       unoptimized
                     />
@@ -182,10 +182,10 @@ export function StandortLanding({ plz, ort, standort }: StandortLandingProps) {
                     style={{ animationDelay: "0s" }}
                   >
                     <span className="block whitespace-nowrap">
-                      Pflegeberatung, Haushaltshilfe &amp; Betreuung
+                      Pflegeberatung, Haushaltshilfe
                     </span>
                     <span className="mt-0.5 block whitespace-nowrap sm:mt-1">
-                      in {plz} {ort}
+                      &amp; Betreuung in {plz} {ort}
                     </span>
                   </h1>
                   <ul
