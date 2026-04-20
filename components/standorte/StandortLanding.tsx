@@ -1,17 +1,16 @@
 import type { ReactNode } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { KundenstimmenCarousel } from "@/components/home/KundenstimmenCarousel";
 import { Container } from "@/components/layout/Container";
 import { ContactForm } from "@/components/forms/ContactForm";
 import { siteConfig } from "@/config/site";
 import { RevealOnScroll } from "@/components/pflegehilfsmittel/RevealOnScroll";
-import { JetztNeuPromoSection } from "@/components/leistungen/JetztNeuPromoSection";
 import { STARTSEITE_VORTEILE } from "@/lib/startseite-vorteile";
-import { phoneHrefToWhatsAppUrl, type Standort } from "@/config/standorte";
+import { phoneHrefToWhatsAppUrl, STANDORT_LEISTUNGEN, type Standort } from "@/config/standorte";
 
 const STANDORT_HERO_IMG = "/images/standort_hintergrund.webp";
 const CONTACT_ANCHOR = "#standort-kontakt";
+const HAUSHALTSHILFE_URL = "/leistungen/haushaltshilfe";
 
 const HERO_GLOW_CLASS =
   "[filter:drop-shadow(0_10px_22px_rgba(15,79,104,0.2))_drop-shadow(0_4px_12px_rgba(15,79,104,0.12))] [will-change:filter]";
@@ -27,6 +26,16 @@ const WELLEN_D =
 
 const WELLEN_SVG_CLASS =
   "pointer-events-none absolute left-0 top-0 z-0 h-16 w-full -translate-y-7 sm:h-[clamp(2.85rem,1.5rem+3.8vw,5rem)] sm:-translate-y-[clamp(0.9rem,0.35rem+2.1vw,3.2rem)]";
+
+const LEISTUNGS_TEASER = [
+  "Saugen und Wischen der Böden",
+  "Reinigung von Bad und Küche",
+  "Mahlzeiten zubereiten",
+  "Wäsche waschen und bügeln",
+] as const;
+
+const LINK_CLASS =
+  "font-semibold text-[#0F4F68] underline underline-offset-2 decoration-[#0F4F68]/40 hover:decoration-[#F78F2E] hover:text-[#0c3d52]";
 
 function HeroCheckIcon({ className = "" }: { className?: string }) {
   return (
@@ -49,173 +58,71 @@ function HeroCheckIcon({ className = "" }: { className?: string }) {
   );
 }
 
-const SCHRITTE = [
-  {
-    step: "Schritt 1",
-    title: "Unverbindlich anfragen",
-    description:
-      "Kontaktieren Sie uns telefonisch oder über das Kontaktformular. Wir klären kurz Ihren Bedarf und die nächsten Schritte – ohne Verpflichtung.",
-  },
-  {
-    step: "Schritt 2",
-    title: "Persönliche Abstimmung",
-    description:
-      "Wir stimmen Umfang, Termine und Details mit Ihnen ab. So passt die Haushaltshilfe zu Ihrem Alltag und Ihrer Lebenssituation.",
-  },
-  {
-    step: "Schritt 3",
-    title: "Zuverlässige Unterstützung",
-    description:
-      "Ihre festen Ansprechpartnerinnen und Ansprechpartner unterstützen Sie regelmäßig und verlässlich – damit Sie entlastet sind.",
-  },
-] as const;
-
-const LEISTUNGS_TILES = [
-  "Saugen und Wischen der Böden",
-  "Fenster putzen",
-  "Reinigung von Bad und Küche",
-  "Mahlzeiten zubereiten",
-  "Aufräumen und Ordnung halten",
-  "Wäsche waschen und bügeln",
-] as const;
-
-const FAQ_INLINE =
-  "font-semibold text-[#0F4F68] underline underline-offset-2 decoration-[#0F4F68]/40 hover:decoration-[#F78F2E] hover:text-[#0c3d52]";
-
 type FaqItem = { q: string; answerPlain: string; answer: ReactNode };
 
-function buildFaq(contactHref: string): FaqItem[] {
+function buildStandortFaq(input: {
+  plz: string;
+  ort: string;
+  standort: Standort;
+  contactHref: string;
+}): FaqItem[] {
+  const { plz, ort, standort, contactHref } = input;
+  const bueroOrt = standort.schemaAddress.addressLocality;
+
   return [
     {
-      q: "Welche Aufgaben werden übernommen?",
-      answerPlain:
-        "Typische Leistungen sind Bodenreinigung, Fensterputzen, Bad- und Küchenreinigung sowie Ordnung halten. Der Umfang wird an Ihren Bedarf angepasst.",
+      q: `Wer ist für ${ort} und die PLZ ${plz} zuständig?`,
+      answerPlain: `Anfragen aus diesem Gebiet werden von ${standort.name} koordiniert (Büro ${bueroOrt}). Sie erreichen das Team über die auf dieser Seite angegebene Telefonnummer und E-Mail.`,
       answer: (
         <>
-          Typische Leistungen sind <strong>Bodenreinigung</strong>, <strong>Fensterputzen</strong>,{" "}
-          <strong>Bad- und Küchenreinigung</strong> sowie <strong>Ordnung halten</strong>. Wir passen uns Ihrem Bedarf an.
+          Ihre Anfrage aus <strong>{ort}</strong> (PLZ <strong>{plz}</strong>) bearbeitet{" "}
+          <strong>{standort.name}</strong> mit Sitz in <strong>{bueroOrt}</strong>. Telefon und E-Mail auf dieser Seite
+          führen direkt zu diesem Büro.
         </>
       ),
     },
     {
-      q: "Wo bietet die Alltagshilfe-Süd ihre Leistung an?",
-      answerPlain: `${siteConfig.name} unterstützt in Städten und ländlichen Regionen. Ob wir in Ihrer Nähe sind, prüfen Sie über den Standortsucher auf der Seite Standorte.`,
+      q: "Welche Leistungen kann ich hier anfragen?",
+      answerPlain:
+        "Haushaltshilfe, Alltagsbegleitung, Pflegeberatung nach SGB XI und kostenfreie Pflegehilfsmittel – je nach Voraussetzung. Details zu Ablauf und Umfang finden Sie auf der ausführlichen Haushaltshilfe-Seite.",
       answer: (
         <>
-          Wir unterstützen in <strong>Städten und ländlichen Regionen</strong>. Ob wir in Ihrer Nähe sind, prüfen Sie mit
-          unserem{" "}
-          <Link href="/standorte" className={FAQ_INLINE}>
-            Standortsucher
+          Unter anderem <strong>Haushaltshilfe</strong>, <strong>Alltagsbegleitung</strong>,{" "}
+          <strong>Pflegeberatung</strong> und <strong>Pflegehilfsmittel</strong>. Die vollständige Darstellung mit Ablauf
+          und Beispielen finden Sie unter{" "}
+          <Link href={HAUSHALTSHILFE_URL} className={LINK_CLASS}>
+            Haushaltshilfe
           </Link>
           .
         </>
       ),
     },
     {
-      q: "Werden die Kosten übernommen?",
-      answerPlain: `Als zugelassener Partner rechnen wir mit allen Pflege- und Krankenkassen ab.`,
-      answer: (
-        <>
-          Als <strong>zugelassener Partner</strong> rechnen wir mit <strong>allen Pflege- und Krankenkassen</strong> ab.
-        </>
-      ),
-    },
-    {
-      q: "Wie wird abgerechnet?",
+      q: "Wie schnell kann ich einen Termin oder eine Rückmeldung bekommen?",
       answerPlain:
-        "Die Bezahlung erfolgt über die Pflegekasse, die Krankenkasse oder privat. Im Beratungsgespräch klären wir Ihre Möglichkeiten.",
+        "Am schnellsten geht es telefonisch über die lokale Standortnummer. Alternativ nutzen Sie das Kontaktformular auf dieser Seite – wir melden uns zeitnah.",
       answer: (
         <>
-          Die Bezahlung erfolgt über die <strong>Pflegekasse</strong>, die <strong>Krankenkasse</strong> oder{" "}
-          <strong>privat</strong>. Wir beraten Sie gerne zu Ihren Möglichkeiten – auch über unser{" "}
-          <Link href={contactHref} className={FAQ_INLINE}>
-            Kontaktformular auf dieser Seite
-          </Link>
-          .
-        </>
-      ),
-    },
-    {
-      q: "Gilt der Entlastungsbetrag von 131 Euro?",
-      answerPlain:
-        "Ab Pflegegrad 1 können Sie den monatlichen Entlastungsbetrag von 131 Euro für qualifizierte Leistungen nutzen, sofern die Voraussetzungen erfüllt sind.",
-      answer: (
-        <>
-          Ab <strong>Pflegegrad 1</strong> können Sie diesen monatlichen Betrag für unsere Leistungen nutzen, wenn die
-          gesetzlichen Voraussetzungen erfüllt sind. Details zum Entlastungsbetrag finden Sie auch in unserem{" "}
-          <Link href="/ratgeber/entlastungsbetrag-131-euro" className={FAQ_INLINE}>
-            Ratgeber
-          </Link>
-          .
-        </>
-      ),
-    },
-    {
-      q: "Kann ich 3.539 Euro für Ersatzpflege und Verhinderungspflege über Alltagshilfe-Süd nutzen?",
-      answerPlain:
-        "Ja, ab Pflegegrad 2 können Sie Ersatzpflege und Verhinderungspflege bis zum gesetzlich vorgesehenen Jahresbudget über Alltagshilfe-Süd abrechnen lassen, sofern die Voraussetzungen erfüllt sind.",
-      answer: (
-        <>
-          Ja, ab einem <strong>Pflegegrad 2</strong> ist das unkompliziert möglich, wenn die gesetzlichen und
-          vertraglichen Voraussetzungen erfüllt sind. Wir unterstützen Sie bei der Abrechnung.
-        </>
-      ),
-    },
-    {
-      q: "Brauche ich einen Pflegegrad?",
-      answerPlain:
-        "Für Leistungen über die Pflegekasse ist in der Regel ein Pflegegrad erforderlich. Über die Krankenkasse oder privat ist Hilfe auch ohne Pflegegrad möglich, je nach Einzelfall.",
-      answer: (
-        <>
-          Für Leistungen der <strong>Pflegekasse</strong> ja. Über die <strong>Krankenkasse</strong> oder{" "}
-          <strong>privat</strong> ist Hilfe auch ohne Pflegegrad möglich.
-        </>
-      ),
-    },
-    {
-      q: "Gibt es eine feste Bezugsperson?",
-      answerPlain:
-        "Ja, eine persönliche Beziehung ist wichtig; ein Wechsel der Bezugsperson erfolgt nur in dringenden Fällen.",
-      answer: (
-        <>
-          Ja, eine <strong>persönliche Beziehung</strong> ist uns wichtig, daher ist ein Wechsel nur in dringenden Fällen
-          notwendig.
-        </>
-      ),
-    },
-    {
-      q: "Wie schnell startet die Hilfe?",
-      answerPlain:
-        "Termine werden zeitnah vergeben. Der Start hängt von regionalen Kapazitäten ab; darüber informieren wir Sie umgehend.",
-      answer: (
-        <>
-          Wir vergeben Termine <strong>zeitnah</strong>. Der Start hängt von regionalen Kapazitäten ab, über die wir Sie
-          sofort informieren.
-        </>
-      ),
-    },
-    {
-      q: "Gibt es eine App für Termine?",
-      answerPlain:
-        "Ja, über die App von Alltagshilfe-Süd sind Termine und Rechnungen jederzeit einsehbar.",
-      answer: (
-        <>
-          Ja, über unsere <strong>App</strong> haben Sie <strong>Termine und Rechnungen</strong> jederzeit transparent im
-          Blick.
-        </>
-      ),
-    },
-    {
-      q: "Wie stelle ich eine Anfrage?",
-      answerPlain:
-        "Kontaktieren Sie Alltagshilfe-Süd telefonisch oder über das Online-Formular für ein unverbindliches Erstgespräch.",
-      answer: (
-        <>
-          Kontaktieren Sie uns einfach telefonisch oder per{" "}
-          <Link href={contactHref} className={FAQ_INLINE}>
-            Online-Formular auf dieser Seite
+          Am direktesten erreichen Sie uns über die <strong>örtliche Rufnummer</strong> oben auf der Seite. Über das{" "}
+          <Link href={contactHref} className={LINK_CLASS}>
+            Kontaktformular
           </Link>{" "}
-          für ein unverbindliches Erstgespräch.
+          geht es ebenfalls – wir antworten zeitnah.
+        </>
+      ),
+    },
+    {
+      q: "Wo finde ich ausführliche Infos zu Kosten, Kasse und Entlastungsbetrag?",
+      answerPlain:
+        "Ausführliche Antworten zu Kosten, Krankenkasse und Entlastungsbetrag stehen auf der Haushaltshilfe-Seite in der FAQ-Sektion.",
+      answer: (
+        <>
+          Dafür lohnt sich die{" "}
+          <Link href={`${HAUSHALTSHILFE_URL}#haushalt-faq-heading`} className={LINK_CLASS}>
+            FAQ auf der Seite Haushaltshilfe
+          </Link>
+          – dort gehen wir ausführlich auf Kosten, Kassen und häufige Fragen ein, ohne diese Texte auf jeder
+          Standortseite zu wiederholen.
         </>
       ),
     },
@@ -229,7 +136,7 @@ export type StandortLandingProps = {
 };
 
 export function StandortLanding({ plz, ort, standort }: StandortLandingProps) {
-  const FAQ = buildFaq(CONTACT_ANCHOR);
+  const FAQ = buildStandortFaq({ plz, ort, standort, contactHref: CONTACT_ANCHOR });
   const faqJsonLd = {
     "@context": "https://schema.org",
     "@type": "FAQPage",
@@ -242,15 +149,15 @@ export function StandortLanding({ plz, ort, standort }: StandortLandingProps) {
 
   const whatsappHref = phoneHrefToWhatsAppUrl(standort.phoneHref);
   const standortLabel = standort.name.startsWith("Standort") ? standort.name : `Standort ${standort.name}`;
-
   const hoursParts = standort.hours.split(/\s*·\s*/).filter(Boolean);
+  const vorteileKurz = STARTSEITE_VORTEILE.slice(0, 4);
 
   return (
     <div className="min-w-0 overflow-x-clip overflow-y-visible bg-[#fafbfc] text-neutral-700 antialiased">
       <article id="standort-landing" className="min-w-0 scroll-mt-24 overflow-x-clip overflow-y-visible">
         <section className="relative z-0 box-border mx-auto w-full min-w-0 max-w-7xl px-4 pb-10 pt-0 sm:px-6 sm:pb-16 lg:px-[var(--ahs-page-gutter)] lg:pb-[clamp(4rem,9vh+1.5rem,7rem)] lg:pt-[clamp(2rem,5vh+1.25rem,4.75rem)] xl:pb-[clamp(5rem,10vh+1.5rem,8rem)]">
           <div className="flex flex-col-reverse items-center gap-10 lg:grid lg:grid-cols-[minmax(0,0.34fr)_minmax(0,0.66fr)] lg:items-center lg:justify-items-stretch lg:gap-x-[clamp(1.5rem,3vw,3.25rem)] lg:gap-y-0">
-            <div className="box-border w-full min-w-0 max-w-full space-y-[clamp(1.25rem,2vh+0.75rem,1.75rem)] lg:min-w-0 lg:justify-self-start lg:space-y-[clamp(1.15rem,1.6vh+0.7rem,1.75rem)] lg:-translate-x-[clamp(0.75rem,4.5vw,3rem)] lg:pr-0 motion-reduce:lg:translate-x-0">
+            <div className="box-border w-full min-w-0 max-w-full space-y-[clamp(1rem,2vh+0.5rem,1.5rem)] lg:min-w-0 lg:justify-self-start lg:-translate-x-[clamp(0.75rem,4.5vw,3rem)] lg:pr-0 motion-reduce:lg:translate-x-0">
               <h1
                 className="text-3xl font-extrabold leading-tight tracking-tight text-[#0F4F68] opacity-0 motion-reduce:opacity-100 animate-fade-in-up sm:text-4xl lg:text-[clamp(1.75rem,1.05rem+2.5vw,3rem)]"
                 style={{ animationDelay: "0s" }}
@@ -259,8 +166,24 @@ export function StandortLanding({ plz, ort, standort }: StandortLandingProps) {
                   Pflegeberatung, Haushaltshilfe &amp; Betreuung in {plz} {ort}
                 </span>
               </h1>
+
+              <div
+                className="rounded-2xl border border-[#0F4F68]/12 bg-white/90 p-4 text-pretty text-sm leading-relaxed text-neutral-700 shadow-sm sm:p-5 sm:text-base opacity-0 motion-reduce:opacity-100 animate-fade-in-up"
+                style={{ animationDelay: "0.12s" }}
+              >
+                <p className="font-medium text-[#0F4F68]">
+                  Für {ort} (PLZ {plz}) koordinieren wir Ihre Anfrage über{" "}
+                  <span className="font-bold">{standort.name}</span> – Büro in {standort.schemaAddress.addressLocality}.
+                </p>
+                {standort.localIntro.map((p) => (
+                  <p key={p.slice(0, 48)} className="mt-3">
+                    {p}
+                  </p>
+                ))}
+              </div>
+
               <ul
-                className="mt-5 min-w-0 space-y-3 sm:mt-6 sm:space-y-3.5 lg:mt-0 lg:space-y-[clamp(0.65rem,0.35rem+0.9vw,1rem)]"
+                className="min-w-0 space-y-3 sm:space-y-3.5 lg:space-y-[clamp(0.65rem,0.35rem+0.9vw,1rem)]"
                 aria-label="Ihre Vorteile auf einen Blick"
               >
                 {HERO_VORTEILE.map((line, i) => (
@@ -315,35 +238,79 @@ export function StandortLanding({ plz, ort, standort }: StandortLandingProps) {
         </section>
 
         <section
-          className="relative z-10 overflow-x-clip bg-[#F2F9FA] px-4 pb-16 pt-[clamp(2.5rem,4.5vw,4.25rem)] sm:px-6 sm:pb-20 lg:px-[var(--ahs-page-gutter)] lg:pb-24"
-          aria-labelledby="standort-leistungen-heading"
+          className="relative z-10 overflow-x-clip bg-[#F2F9FA] px-4 pb-14 pt-[clamp(2.5rem,4.5vw,4.25rem)] sm:px-6 sm:pb-16 lg:px-[var(--ahs-page-gutter)] lg:pb-20"
+          aria-labelledby="standort-angebot-heading"
         >
-          <svg
-            className={WELLEN_SVG_CLASS}
-            viewBox="0 0 1200 100"
-            preserveAspectRatio="none"
-            fill="none"
-            aria-hidden
-          >
+          <svg className={WELLEN_SVG_CLASS} viewBox="0 0 1200 100" preserveAspectRatio="none" fill="none" aria-hidden>
             <path d={WELLEN_D} fill="#F2F9FA" />
+          </svg>
+          <div className="relative z-[1] mx-auto max-w-3xl text-center">
+            <RevealOnScroll>
+              <h2 id="standort-angebot-heading" className="text-2xl font-bold text-[#0F4F68] sm:text-3xl">
+                Leistungen in Ihrer Region
+              </h2>
+              <p className="mt-3 text-pretty text-neutral-600">
+                In {ort} und Umgebung bieten wir unter anderem Folgendes an – Details und Ablauf finden Sie auf den
+                verlinkten Fachseiten.
+              </p>
+            </RevealOnScroll>
+            <RevealOnScroll delayMs={100}>
+              <ul className="mt-8 space-y-3 text-left text-neutral-800">
+                {STANDORT_LEISTUNGEN.map((leistung) => (
+                  <li key={leistung} className="flex items-start gap-3">
+                    <span
+                      className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#F78F2E] text-white"
+                      aria-hidden
+                    >
+                      <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
+                        <polyline points="20 6 9 17 4 12" />
+                      </svg>
+                    </span>
+                    <span>{leistung}</span>
+                  </li>
+                ))}
+              </ul>
+              <p className="mt-8 text-sm text-neutral-600">
+                Ausführliche Informationen zur Haushaltshilfe:{" "}
+                <Link href={HAUSHALTSHILFE_URL} className={LINK_CLASS}>
+                  Zur Haushaltshilfe-Seite
+                </Link>
+              </p>
+            </RevealOnScroll>
+          </div>
+        </section>
+
+        <section
+          className="relative z-[11] overflow-x-clip bg-[#fafbfc] px-4 pb-14 pt-[clamp(2.5rem,4.5vw,4.25rem)] sm:px-6 sm:pb-16 lg:px-[var(--ahs-page-gutter)] lg:pb-20"
+          aria-labelledby="standort-haushalt-teaser-heading"
+        >
+          <svg className={WELLEN_SVG_CLASS} viewBox="0 0 1200 100" preserveAspectRatio="none" fill="none" aria-hidden>
+            <path d={WELLEN_D} fill="#fafbfc" />
           </svg>
           <div className="relative z-[1] mx-auto max-w-7xl">
             <RevealOnScroll>
-              <div className="mb-10 text-center sm:mb-12">
-                <h2 id="standort-leistungen-heading" className="text-3xl font-bold text-[#0F4F68] sm:text-4xl">
-                  Das übernehmen wir im Haushalt
+              <div className="mb-8 text-center sm:mb-10">
+                <h2
+                  id="standort-haushalt-teaser-heading"
+                  className="text-2xl font-bold text-[#0F4F68] sm:text-3xl"
+                >
+                  Typische Aufgaben im Haushalt
                 </h2>
-                <p className="mt-3 text-pretty text-neutral-600 sm:max-w-3xl sm:mx-auto">
-                  Typische haushaltsnahe Leistungen – im Detail stimmen wir alles mit Ihnen ab.
+                <p className="mt-2 max-w-2xl mx-auto text-pretty text-sm text-neutral-600 sm:text-base">
+                  Ein Auszug – die vollständige Liste und Erklärungen stehen auf der{" "}
+                  <Link href={HAUSHALTSHILFE_URL} className={LINK_CLASS}>
+                    Haushaltshilfe
+                  </Link>
+                  .
                 </p>
               </div>
             </RevealOnScroll>
-            <RevealOnScroll delayMs={120}>
-              <ul className="grid grid-cols-1 gap-4 text-center sm:grid-cols-2 md:grid-cols-3">
-                {LEISTUNGS_TILES.map((label) => (
+            <RevealOnScroll delayMs={80}>
+              <ul className="grid grid-cols-1 gap-3 text-center sm:grid-cols-2">
+                {LEISTUNGS_TEASER.map((label) => (
                   <li
                     key={label}
-                    className="rounded-xl border border-[#0F4F68]/10 bg-white p-4 text-sm font-semibold text-[#0F4F68] shadow-sm sm:text-base"
+                    className="rounded-xl border border-[#0F4F68]/10 bg-white p-4 text-sm font-semibold text-[#0F4F68] shadow-sm"
                   >
                     {label}
                   </li>
@@ -353,140 +320,108 @@ export function StandortLanding({ plz, ort, standort }: StandortLandingProps) {
           </div>
         </section>
 
-        <JetztNeuPromoSection headingId="standort-jetzt-neu-promo" />
-
         <section
-          className="relative z-[11] overflow-x-clip bg-[#fafbfc] px-4 pb-16 pt-[clamp(2.5rem,4.5vw,4.25rem)] sm:px-6 sm:pb-20 lg:px-[var(--ahs-page-gutter)] lg:pb-24"
-          aria-labelledby="standort-schritte-heading"
+          className="relative z-[12] overflow-x-clip bg-white px-4 pb-14 pt-[clamp(2.5rem,4.5vw,4.25rem)] sm:px-6 sm:pb-16 lg:px-[var(--ahs-page-gutter)] lg:pb-20"
+          aria-labelledby="standort-ablauf-heading"
         >
-          <svg
-            className={WELLEN_SVG_CLASS}
-            viewBox="0 0 1200 100"
-            preserveAspectRatio="none"
-            fill="none"
-            aria-hidden
-          >
-            <path d={WELLEN_D} fill="#fafbfc" />
+          <svg className={WELLEN_SVG_CLASS} viewBox="0 0 1200 100" preserveAspectRatio="none" fill="none" aria-hidden>
+            <path d={WELLEN_D} fill="#ffffff" />
           </svg>
-          <div className="relative z-[1] mx-auto max-w-7xl">
+          <div className="relative z-[1] mx-auto max-w-2xl">
             <RevealOnScroll>
-              <div className="mx-auto mb-10 max-w-3xl text-center lg:mb-12">
-                <h2
-                  id="standort-schritte-heading"
-                  className="text-balance text-3xl font-bold tracking-tight text-[#0F4F68] sm:text-4xl"
-                >
-                  So einfach zur passenden Haushaltshilfe
-                </h2>
-                <p className="mt-3 text-pretty text-sm text-[#8a6a55] sm:text-base">
-                  Drei Schritte zur verlässlichen Haushaltshilfe, schnell & unkompliziert
-                </p>
-              </div>
-            </RevealOnScroll>
-
-            <ol className="grid auto-rows-fr gap-6 md:grid-cols-3 md:gap-8 md:items-stretch">
-              {SCHRITTE.map((item, i) => (
-                <li key={item.step} className="flex min-h-0 list-none">
-                  <RevealOnScroll delayMs={i * 150} className="h-full min-h-0 w-full">
-                    <div className="flex h-full min-h-[18rem] flex-col items-center rounded-2xl border border-[#0F4F68]/10 bg-white p-6 text-center shadow-[0_10px_40px_rgba(15,79,104,0.07)] transition-shadow duration-300 hover:shadow-[0_16px_52px_rgba(15,79,104,0.11)] sm:min-h-[19rem] sm:p-7">
-                      <div className="mb-4 inline-flex min-h-10 shrink-0 items-center justify-center rounded-full bg-[#0F4F68] px-4 text-sm font-bold text-white sm:text-base">
-                        {item.step}
-                      </div>
-                      <h3 className="text-balance text-lg font-bold text-[#0F4F68]">{item.title}</h3>
-                      <p className="mt-2 flex-1 text-pretty text-sm leading-relaxed text-neutral-600 sm:text-base">
-                        {item.description}
-                      </p>
-                    </div>
-                  </RevealOnScroll>
+              <h2 id="standort-ablauf-heading" className="text-center text-2xl font-bold text-[#0F4F68] sm:text-3xl">
+                So geht es weiter
+              </h2>
+              <ol className="mt-8 list-decimal space-y-4 pl-6 text-neutral-700 marker:font-bold marker:text-[#0F4F68]">
+                <li>
+                  <strong className="text-[#0F4F68]">Kontakt:</strong> Rufen Sie die lokale Nummer an oder nutzen Sie
+                  das Formular unten auf dieser Seite.
                 </li>
-              ))}
-            </ol>
-
-            <RevealOnScroll delayMs={200}>
-              <div className="mt-10 flex flex-col items-center gap-2 sm:mt-12">
-                <Link
-                  href={CONTACT_ANCHOR}
-                  className="inline-flex min-h-[48px] items-center justify-center rounded-xl bg-[#F78F2E] px-8 py-3.5 text-base font-bold text-white shadow-md transition hover:opacity-95 focus:outline-none focus:ring-2 focus:ring-[#F78F2E] focus:ring-offset-2 sm:text-lg"
-                >
-                  Anfrage stellen
+                <li>
+                  <strong className="text-[#0F4F68]">Abstimmung:</strong> Wir klären Bedarf, Umfang und Termine mit
+                  Ihnen.
+                </li>
+                <li>
+                  <strong className="text-[#0F4F68]">Start:</strong> Ihr Team vor Ort unterstützt Sie verlässlich –
+                  mit festen Bezugspersonen, wo möglich.
+                </li>
+              </ol>
+              <p className="mt-6 text-center text-sm text-neutral-600">
+                Ausführlicher Drei-Schritte-Ablauf:{" "}
+                <Link href={HAUSHALTSHILFE_URL} className={LINK_CLASS}>
+                  Haushaltshilfe – Ablauf
                 </Link>
-                <p className="text-center text-sm text-neutral-500">Unverbindlich · Wir melden uns bei Ihnen</p>
-              </div>
+              </p>
             </RevealOnScroll>
           </div>
         </section>
 
         <section
-          className="relative z-20 w-full overflow-x-clip bg-white px-4 pb-14 pt-[clamp(4.25rem,9vw,6.25rem)] sm:px-6 sm:pb-16 sm:pt-[clamp(4.75rem,10vw,6.75rem)] lg:px-[var(--ahs-page-gutter)] lg:pb-20"
-          aria-labelledby="standort-vorteile-heading"
+          className="relative bg-[#fafbfc] px-4 py-14 sm:px-6 sm:py-16 lg:px-[var(--ahs-page-gutter)]"
+          aria-labelledby="standort-vorteile-kurz-heading"
         >
-          <svg
-            className={WELLEN_SVG_CLASS}
-            viewBox="0 0 1200 100"
-            preserveAspectRatio="none"
-            fill="none"
-            aria-hidden
-          >
-            <path d={WELLEN_D} fill="#ffffff" />
-          </svg>
-          <RevealOnScroll>
-            <div className="relative z-[1] mx-auto w-full max-w-6xl">
-              <div className="mx-auto flex w-full max-w-3xl flex-col items-center text-center">
-                <h2
-                  id="standort-vorteile-heading"
-                  className="text-balance text-3xl font-bold tracking-tight text-[#0F4F68] sm:text-4xl"
+          <div className="mx-auto max-w-6xl">
+            <RevealOnScroll>
+              <h2
+                id="standort-vorteile-kurz-heading"
+                className="text-center text-2xl font-bold text-[#0F4F68] sm:text-3xl"
+              >
+                Einige Vorteile auf einen Blick
+              </h2>
+              <p className="mx-auto mt-2 max-w-2xl text-center text-sm text-neutral-600">
+                Die vollständige Übersicht mit allen Punkten finden Sie auf der{" "}
+                <Link href="/" className={LINK_CLASS}>
+                  Startseite
+                </Link>{" "}
+                und unter{" "}
+                <Link href={HAUSHALTSHILFE_URL} className={LINK_CLASS}>
+                  Haushaltshilfe
+                </Link>
+                .
+              </p>
+            </RevealOnScroll>
+            <ul className="mt-8 grid gap-3 sm:grid-cols-2">
+              {vorteileKurz.map((item) => (
+                <li
+                  key={item}
+                  className="flex items-start gap-3 rounded-xl border border-[#0F4F68]/8 bg-white p-4 shadow-sm"
                 >
-                  Ihre Vorteile bei uns
-                </h2>
-                <p className="mt-2 text-pretty text-sm text-neutral-600 sm:text-base">
-                  Verlässlich, transparent und nah bei Ihnen - mit klaren Prozessen und echter Unterstützung im Alltag.
-                </p>
-              </div>
-              <ul className="mt-6 grid gap-4 sm:grid-cols-2">
-                {STARTSEITE_VORTEILE.map((item) => (
-                  <li
-                    key={item}
-                    className="flex items-start gap-3 rounded-xl px-2 py-1.5 transition-all duration-300 hover:bg-white/75 hover:shadow-[0_0_20px_rgba(15,79,104,0.12)]"
-                  >
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src="/images/haken.webp"
-                      alt=""
-                      aria-hidden
-                      width={38}
-                      height={38}
-                      className="mt-0.5 h-[38px] w-[38px] shrink-0 object-contain"
-                    />
-                    <span className="text-[1.03rem] font-medium leading-relaxed text-neutral-800 sm:text-[1.08rem]">
-                      {item}
-                    </span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </RevealOnScroll>
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src="/images/haken.webp"
+                    alt=""
+                    aria-hidden
+                    width={32}
+                    height={32}
+                    className="mt-0.5 h-8 w-8 shrink-0 object-contain"
+                  />
+                  <span className="text-sm font-medium leading-relaxed text-neutral-800 sm:text-base">{item}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
         </section>
 
-        <KundenstimmenCarousel />
-
-        <section className="relative bg-[#fafbfc] py-14 sm:py-20" aria-labelledby="standort-faq-heading">
-          <div className="relative mx-auto max-w-3xl px-4 sm:px-6 lg:max-w-4xl">
+        <section className="relative border-t border-[#0F4F68]/10 bg-white py-14 sm:py-16" aria-labelledby="standort-faq-heading">
+          <div className="relative mx-auto max-w-3xl px-4 sm:px-6">
             <RevealOnScroll>
               <h2
                 id="standort-faq-heading"
                 className="text-center text-2xl font-extrabold tracking-tight text-[#0F4F68] sm:text-3xl"
               >
-                Häufige Fragen
+                Fragen zu diesem Standort
               </h2>
-              <p className="mx-auto mt-2 max-w-2xl text-center text-sm font-medium text-[#0F4F68]/85 sm:text-base">
-                Antworten zu Kosten, Krankenkasse, Entlastungsbetrag, Region, Ablauf und weiteren häufigen Fragen
+              <p className="mx-auto mt-2 max-w-2xl text-center text-sm text-neutral-600 sm:text-base">
+                Kurz beantwortet – ausführliche FAQ zur Haushaltshilfe verlinken wir bewusst zentral, statt identische
+                Texte auf hunderten Seiten zu wiederholen.
               </p>
             </RevealOnScroll>
-            <RevealOnScroll delayMs={100}>
+            <RevealOnScroll delayMs={80}>
               <div className="mt-8 space-y-3 sm:mt-10">
                 {FAQ.map((item) => (
                   <details
                     key={item.q}
-                    className="group rounded-2xl border border-[#0F4F68]/12 bg-white shadow-[0_2px_16px_rgba(15,79,104,0.06)] transition hover:border-[#F78F2E]/35 hover:shadow-[0_8px_28px_rgba(15,79,104,0.1)] open:border-[#0F4F68]/18 open:shadow-[0_10px_32px_rgba(15,79,104,0.12)]"
+                    className="group rounded-2xl border border-[#0F4F68]/12 bg-[#fafbfc] shadow-[0_2px_16px_rgba(15,79,104,0.06)] transition hover:border-[#F78F2E]/35 open:border-[#0F4F68]/18"
                   >
                     <summary className="flex cursor-pointer list-none items-center justify-between gap-4 px-4 py-4 text-left text-[#0F4F68] sm:px-5 [&::-webkit-details-marker]:hidden">
                       <span className="text-base font-semibold leading-snug sm:text-[1.05rem]">{item.q}</span>
@@ -499,7 +434,7 @@ export function StandortLanding({ plz, ort, standort }: StandortLandingProps) {
                         </svg>
                       </span>
                     </summary>
-                    <div className="border-t border-[#0F4F68]/8 px-4 pb-4 pt-2 text-pretty text-sm leading-relaxed text-neutral-600 sm:px-5 sm:text-base">
+                    <div className="border-t border-[#0F4F68]/8 bg-white px-4 pb-4 pt-2 text-pretty text-sm leading-relaxed text-neutral-600 sm:px-5 sm:text-base">
                       {item.answer}
                     </div>
                   </details>

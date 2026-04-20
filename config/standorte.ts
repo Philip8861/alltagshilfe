@@ -213,6 +213,14 @@ function normalizeOrtNameSafe(input: string): string {
     .replace(/├û/g, "Ü");
 }
 
+/** Strukturierte Adresse (JSON-LD, konsistent zu Anzeigezeile `address`). */
+export type StandortSchemaAddress = {
+  streetAddress: string;
+  postalCode: string;
+  addressLocality: string;
+  addressCountry: "DE";
+};
+
 export interface Standort {
   name: string;
   address: string;
@@ -221,6 +229,9 @@ export interface Standort {
   email: string;
   hours: string;
   plzList: string[];
+  /** 2–3 Absätze: unterscheidet Büros inhaltlich (kein reines PLZ-Tauschen). */
+  localIntro: readonly string[];
+  schemaAddress: StandortSchemaAddress;
 }
 
 const HOURS =
@@ -246,6 +257,16 @@ export const standorteByPlz: Standort[] = [
     email: "Info@alltagshilfe-sued.de",
     hours: HOURS,
     plzList: data["Allgäu"] ?? [],
+    localIntro: [
+      "Ihre Anfrage aus dieser PLZ-Region wird von unserem Team am Standort Bad Grönenbach bearbeitet. Dort koordinieren wir Haushaltshilfe, Alltagsbegleitung und Anmeldungen – persönlich und mit festen Ansprechpartnerinnen und Ansprechpartnern.",
+      "Wir sind im Allgäu und in angrenzenden Gemeinden unterwegs. Unter der angezeigten Rufnummer und E-Adresse erreichen Sie genau dieses Büro, nicht eine anonyme Zentrale.",
+    ],
+    schemaAddress: {
+      streetAddress: "Hinter den Gärten 10",
+      postalCode: "87730",
+      addressLocality: "Bad Grönenbach",
+      addressCountry: "DE",
+    },
   },
   {
     name: "Wangen (Bodenseeregion)",
@@ -255,6 +276,16 @@ export const standorteByPlz: Standort[] = [
     email: "wangen@alltagshilfe-sued.de",
     hours: HOURS,
     plzList: data["Wangen"] ?? [],
+    localIntro: [
+      "Für die Bodenseeregion und das umliegende Gebiet ist unser Büro in Wangen im Allgäu zuständig. Termine, Beratung und Organisation laufen dort gebündelt – Sie sprechen mit Kolleginnen und Kollegen vor Ort.",
+      "Von Friedrichshafen bis ins Hinterland: Wir kennen die Region und begleiten Sie bei Haushaltshilfe, Begleitung und Pflegehilfsmitteln – erreichbar über die lokale Nummer auf dieser Seite.",
+    ],
+    schemaAddress: {
+      streetAddress: "Karlstraße 3",
+      postalCode: "88239",
+      addressLocality: "Wangen im Allgäu",
+      addressCountry: "DE",
+    },
   },
   {
     name: "Standort Augsburg",
@@ -264,6 +295,16 @@ export const standorteByPlz: Standort[] = [
     email: "augsburg@alltagshilfe-sued.de",
     hours: HOURS,
     plzList: data["Augsburg"] ?? [],
+    localIntro: [
+      "Anfragen aus dem Augsburger Einzugsgebiet bearbeiten wir an der Ulmer Straße in Augsburg. Dort sitzt die Koordination für Haushaltshilfe, Begleitung und verwandte Leistungen in Stadt und näherer Region.",
+      "Ob Innenstadt oder Landkreis: Ihre Kontaktdaten auf dieser Seite führen direkt zu diesem Team – inklusive der örtlichen Telefonzeiten und Erreichbarkeit.",
+    ],
+    schemaAddress: {
+      streetAddress: "Ulmer Straße 160",
+      postalCode: "86156",
+      addressLocality: "Augsburg",
+      addressCountry: "DE",
+    },
   },
   {
     name: "Standort Engen/Konstanz",
@@ -273,6 +314,16 @@ export const standorteByPlz: Standort[] = [
     email: "engen@alltagshilfe-sued.de",
     hours: HOURS,
     plzList: data["Engen/Konstanz"] ?? [],
+    localIntro: [
+      "Diesen PLZ-Bereich betreut unser Standort in Engen. Von dort aus organisieren wir Haushaltshilfe und Begleitung Richtung Hochrhein und Bodensee – mit klaren Ansprechpartnern und regionaler Erfahrung.",
+      "Für Konstanz, Singen und die umliegenden Orte ist diese Nummer Ihre direkte Verbindung zum Team vor Ort, inklusive Beratung zu Leistungen und nächsten Schritten.",
+    ],
+    schemaAddress: {
+      streetAddress: "Robert-Bosch-Straße 1",
+      postalCode: "78234",
+      addressLocality: "Engen",
+      addressCountry: "DE",
+    },
   },
 ];
 
@@ -334,4 +385,45 @@ export function getAllStandortSlugs(): { slug: string }[] {
   }
   out.sort((a, b) => a.slug.localeCompare(b.slug));
   return out;
+}
+
+const TEL_E164 = (href: string) => href.replace(/^tel:/i, "").replace(/\s/g, "");
+
+/**
+ * JSON-LD für den zuständigen Betrieb vor Ort (ergänzt Breadcrumb / FAQ).
+ */
+export function buildStandortLocalBusinessJsonLd(input: {
+  pageUrl: string;
+  siteUrl: string;
+  organizationName: string;
+  plz: string;
+  ort: string;
+  standort: Standort;
+}): Record<string, unknown> {
+  const base = input.siteUrl.replace(/\/$/, "");
+  return {
+    "@type": "LocalBusiness",
+    "@id": `${input.pageUrl}#local-business`,
+    name: `${input.organizationName} – ${input.standort.name}`,
+    url: input.pageUrl,
+    telephone: TEL_E164(input.standort.phoneHref),
+    email: input.standort.email,
+    image: `${base}/images/standort_hintergrund.webp`,
+    address: {
+      "@type": "PostalAddress",
+      streetAddress: input.standort.schemaAddress.streetAddress,
+      postalCode: input.standort.schemaAddress.postalCode,
+      addressLocality: input.standort.schemaAddress.addressLocality,
+      addressCountry: input.standort.schemaAddress.addressCountry,
+    },
+    parentOrganization: {
+      "@type": "Organization",
+      name: input.organizationName,
+      url: base,
+    },
+    areaServed: {
+      "@type": "Place",
+      name: `${input.plz} ${input.ort}`,
+    },
+  };
 }

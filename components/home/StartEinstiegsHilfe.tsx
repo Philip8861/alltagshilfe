@@ -63,6 +63,16 @@ const BAD_GROENENBACH_STANDORT: StandortInfo = {
   email: "info@alltagshilfe-sued.de",
   hours: "Mo-Do 08:30-12:00 & 13:00-16:00, Fr 08:30-12:00",
   plzList: [],
+  localIntro: [
+    "Ihr Ergebnis wird von unserem Team in Bad Grönenbach koordiniert.",
+    "Unter der angezeigten Rufnummer erreichen Sie dieses Büro direkt.",
+  ],
+  schemaAddress: {
+    streetAddress: "Hinter den Gärten 10",
+    postalCode: "87730",
+    addressLocality: "Bad Grönenbach",
+    addressCountry: "DE",
+  },
 };
 
 const optionButtonClass =

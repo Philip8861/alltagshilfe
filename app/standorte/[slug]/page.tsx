@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { StandortLanding } from "@/components/standorte/StandortLanding";
 import { Container } from "@/components/layout/Container";
-import { getStandortBySlug, getAllStandortSlugs } from "@/config/standorte";
+import { buildStandortLocalBusinessJsonLd, getStandortBySlug, getAllStandortSlugs } from "@/config/standorte";
 import { siteConfig } from "@/config/site";
 
 export async function generateStaticParams() {
@@ -16,9 +16,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const data = getStandortBySlug(slug);
   if (!data) return { title: "Standort" };
-  const { plz, ort } = data;
+  const { plz, ort, standort } = data;
   const title = `Pflegeberatung, Haushaltshilfe & Betreuung in ${plz} ${ort} | ${siteConfig.name}`;
-  const description = `Haushaltshilfe, Alltagsbegleitung, Pflegeberatung und Pflegehilfsmittel in ${ort}. Jetzt Kontakt aufnehmen – ${data.standort.name}.`;
+  const metaDescRaw = `${standort.localIntro[0]} Kontakt: ${standort.phone}.`;
+  const description =
+    metaDescRaw.length > 160 ? `${metaDescRaw.slice(0, 157).trim()}…` : metaDescRaw;
   const path = `/standorte/${slug}`;
   return {
     title,
@@ -59,9 +61,27 @@ export default async function StandortSlugPage({ params }: Props) {
     ],
   };
 
+  const localBusinessJsonLd = buildStandortLocalBusinessJsonLd({
+    pageUrl,
+    siteUrl: base,
+    organizationName: siteConfig.name,
+    plz,
+    ort,
+    standort,
+  });
+
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }} />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            ...localBusinessJsonLd,
+          }),
+        }}
+      />
       <div className="w-full bg-[#fafbfc] pt-6 sm:pt-8">
         <Container className="w-full">
           <nav className="mx-auto max-w-7xl" aria-label="Breadcrumb">
