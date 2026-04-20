@@ -1,8 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import Link from "next/link";
 import { StandortLanding } from "@/components/standorte/StandortLanding";
-import { Container } from "@/components/layout/Container";
 import { buildStandortLocalBusinessJsonLd, getStandortBySlug, getAllStandortSlugs } from "@/config/standorte";
 import { siteConfig } from "@/config/site";
 
@@ -82,26 +80,16 @@ export default async function StandortSlugPage({ params }: Props) {
           }),
         }}
       />
-      <div className="w-full bg-[#fafbfc] pt-6 sm:pt-8">
-        <Container className="w-full">
-          <nav className="mx-auto max-w-7xl" aria-label="Breadcrumb">
-            <ol className="flex flex-wrap items-center gap-2 text-sm text-neutral-600">
-              <li>
-                <Link
-                  href="/standorte"
-                  className="text-[#0F4F68] hover:underline focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2 rounded"
-                >
-                  Standorte
-                </Link>
-              </li>
-              <li aria-hidden>/</li>
-              <li className="font-medium text-neutral-900" aria-current="page">
-                {plz} {ort}
-              </li>
-            </ol>
-          </nav>
-        </Container>
-      </div>
+      <nav className="sr-only" aria-label="Brotkrumen-Navigation">
+        <ol>
+          <li>
+            <a href={`${base}/standorte`}>Standorte</a>
+          </li>
+          <li aria-current="page">
+            {plz} {ort}
+          </li>
+        </ol>
+      </nav>
       <StandortLanding plz={plz} ort={ort} standort={standort} />
     </>
   );

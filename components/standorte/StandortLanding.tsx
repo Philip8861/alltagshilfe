@@ -154,9 +154,9 @@ export function StandortLanding({ plz, ort, standort }: StandortLandingProps) {
         <section className="relative z-0 box-border w-full pt-0 pb-6 sm:pb-8 lg:pb-[clamp(1.5rem,2vw+0.75rem,2.5rem)]">
           <div className="box-border mx-auto w-full min-w-0 max-w-7xl px-4 sm:px-6 lg:px-[var(--ahs-page-gutter)]">
             <div className="relative min-w-0">
-              <div className="flex min-w-0 justify-end">
+              <div className="flex min-w-0 items-start justify-end">
                 <div
-                  className="relative ml-auto w-full min-w-0 max-w-full -mr-4 opacity-0 animate-fade-in-up motion-reduce:opacity-100 sm:-mr-6 lg:mr-[calc((100vw-100%)/-2)] lg:max-w-[min(88vw,min(100%,52rem))]"
+                  className="relative ml-auto w-full min-w-0 max-w-full -mr-4 self-start opacity-0 animate-fade-in-up motion-reduce:opacity-100 sm:-mr-6 lg:mr-[calc((100vw-100%)/-2)] lg:max-w-[min(88vw,min(100%,52rem))]"
                   style={{ animationDelay: "0.08s" }}
                 >
                   <div className="w-full">
@@ -177,10 +177,13 @@ export function StandortLanding({ plz, ort, standort }: StandortLandingProps) {
               <div className="relative z-10 mt-8 max-w-lg text-left sm:max-w-xl lg:absolute lg:left-0 lg:right-auto lg:top-[clamp(34%,calc(33%+0.35vw),40%)] lg:mt-0 lg:w-full lg:max-w-none lg:-translate-y-1/2 lg:-translate-x-[5%]">
                 <header className="text-left lg:max-w-[min(42vw,clamp(22rem,32vw+8rem,30rem))] xl:max-w-[min(38vw,clamp(23rem,28vw+9rem,31rem))] 2xl:max-w-[min(34vw,clamp(24rem,26vw+10rem,32rem))]">
                   <h1
-                    className="text-balance text-3xl font-extrabold leading-tight tracking-tight text-[#0F4F68] opacity-0 motion-reduce:opacity-100 animate-fade-in-up sm:text-4xl lg:text-[clamp(2rem,1.05rem+2.6vw,3rem)]"
+                    className="text-left text-3xl font-extrabold leading-tight tracking-tight text-[#0F4F68] opacity-0 motion-reduce:opacity-100 animate-fade-in-up sm:text-4xl lg:text-[clamp(2rem,1.05rem+2.6vw,3rem)]"
                     style={{ animationDelay: "0s" }}
                   >
-                    Pflegeberatung, Haushaltshilfe &amp; Betreuung in {plz} {ort}
+                    <span className="block">Pflegeberatung, Haushaltshilfe &amp; Betreuung</span>
+                    <span className="block">
+                      in {plz} {ort}
+                    </span>
                   </h1>
                   <ul
                     className="mt-5 space-y-3 sm:mt-6 sm:space-y-3.5 lg:space-y-[clamp(0.65rem,0.35rem+0.9vw,1rem)]"
