@@ -33,13 +33,6 @@ const WELLEN_D =
 const WELLEN_SVG_CLASS =
   "pointer-events-none absolute left-0 top-0 z-0 h-16 w-full -translate-y-7 sm:h-[clamp(2.85rem,1.5rem+3.8vw,5rem)] sm:-translate-y-[clamp(0.9rem,0.35rem+2.1vw,3.2rem)]";
 
-const LEISTUNGS_TEASER = [
-  "Saugen und Wischen der Böden",
-  "Reinigung von Bad und Küche",
-  "Mahlzeiten zubereiten",
-  "Wäsche waschen und bügeln",
-] as const;
-
 const LINK_CLASS =
   "font-semibold text-[#0F4F68] underline underline-offset-2 decoration-[#0F4F68]/40 hover:decoration-[#F78F2E] hover:text-[#0c3d52]";
 
@@ -257,51 +250,11 @@ export function StandortLanding({ plz, ort, standort }: StandortLandingProps) {
         </section>
 
         <section
-          className="relative z-[11] overflow-x-clip bg-[#fafbfc] px-4 pb-14 pt-[clamp(2.5rem,4.5vw,4.25rem)] sm:px-6 sm:pb-16 lg:px-[var(--ahs-page-gutter)] lg:pb-20"
-          aria-labelledby="standort-haushalt-teaser-heading"
-        >
-          <svg className={WELLEN_SVG_CLASS} viewBox="0 0 1200 100" preserveAspectRatio="none" fill="none" aria-hidden>
-            <path d={WELLEN_D} fill="#fafbfc" />
-          </svg>
-          <div className="relative z-[1] mx-auto max-w-7xl">
-            <RevealOnScroll>
-              <div className="mb-8 text-center sm:mb-10">
-                <h2
-                  id="standort-haushalt-teaser-heading"
-                  className="text-2xl font-bold text-[#0F4F68] sm:text-3xl"
-                >
-                  Typische Aufgaben im Haushalt
-                </h2>
-                <p className="mt-2 max-w-2xl mx-auto text-pretty text-sm text-neutral-600 sm:text-base">
-                  Ein Auszug – die vollständige Liste und Erklärungen stehen auf der{" "}
-                  <Link href={HAUSHALTSHILFE_URL} className={LINK_CLASS}>
-                    Haushaltshilfe
-                  </Link>
-                  .
-                </p>
-              </div>
-            </RevealOnScroll>
-            <RevealOnScroll delayMs={80}>
-              <ul className="grid grid-cols-1 gap-3 text-center sm:grid-cols-2">
-                {LEISTUNGS_TEASER.map((label) => (
-                  <li
-                    key={label}
-                    className="rounded-xl border border-[#0F4F68]/10 bg-white p-4 text-sm font-semibold text-[#0F4F68] shadow-sm"
-                  >
-                    {label}
-                  </li>
-                ))}
-              </ul>
-            </RevealOnScroll>
-          </div>
-        </section>
-
-        <section
           className="relative z-[12] overflow-x-clip bg-white px-4 pb-14 pt-[clamp(2.5rem,4.5vw,4.25rem)] sm:px-6 sm:pb-16 lg:px-[var(--ahs-page-gutter)] lg:pb-20"
           aria-labelledby="standort-ablauf-heading"
         >
           <svg className={WELLEN_SVG_CLASS} viewBox="0 0 1200 100" preserveAspectRatio="none" fill="none" aria-hidden>
-            <path d={WELLEN_D} fill="#ffffff" />
+            <path d={WELLEN_D} fill="#F2F9FA" />
           </svg>
           <div className="relative z-[1] mx-auto max-w-2xl">
             <RevealOnScroll>
