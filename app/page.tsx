@@ -7,11 +7,13 @@ import { StandortNummerEinsReveal } from "@/components/standorte/StandortNummerE
 import { StandortWechselBild } from "@/components/standorte/StandortWechselBild";
 import { RevealOnScroll } from "@/components/pflegehilfsmittel/RevealOnScroll";
 import {
-  HAUSHALTSHILFE_FAQ,
-  HAUSHALTSHILFE_FAQ_JSON_LD,
-  HAUSHALTSHILFE_FAQ_LINK_CLASS,
-} from "@/lib/haushaltshilfe-faq";
+  buildStandortStyleFaq,
+  standortFaqJsonLd,
+  STANDORT_FAQ_LINK_CLASS,
+} from "@/lib/standort-faq";
 import { STARTSEITE_VORTEILE, STARTSEITE_VORTEILE_INTRO } from "@/lib/startseite-vorteile";
+
+const HAUSHALTSHILFE_FAQ_ANCHOR = "/leistungen/haushaltshilfe#haushalt-faq-heading";
 
 const STARTSEITE_FAQ_WELLEN_D =
   "M0,100 C200,26 420,6 600,18 C800,32 1010,75 1200,100 L1200,100 L0,100 Z";
@@ -61,6 +63,9 @@ const HEADING_CLASS =
 const INTRO_BODY_CLASS = "text-lg text-neutral-700 leading-relaxed sm:text-xl";
 
 export default function HomePage() {
+  const startseiteFaq = buildStandortStyleFaq(null);
+  const startseiteFaqJsonLd = standortFaqJsonLd(startseiteFaq);
+
   return (
     <article
       className="flex min-h-[60vh] w-full max-w-[100vw] flex-col overflow-x-clip pt-0 pb-0"
@@ -213,16 +218,16 @@ export default function HomePage() {
               Häufige Fragen
             </h2>
             <p className="mx-auto mt-2 max-w-2xl text-center text-sm font-medium text-[#0F4F68]/85 sm:text-base">
-              Antworten zu Leistungen, Kosten, Kasse und Ablauf – ausführlicher mit Kontext auch auf der Seite{" "}
-              <Link href="/leistungen/haushaltshilfe#haushalt-faq-heading" className={HAUSHALTSHILFE_FAQ_LINK_CLASS}>
-                Haushaltshilfe
+              Antworten zu Region, Leistungen, Kosten, Kasse, Entlastungsbetrag und Ablauf – ergänzend zur{" "}
+              <Link href={HAUSHALTSHILFE_FAQ_ANCHOR} className={STANDORT_FAQ_LINK_CLASS}>
+                FAQ Haushaltshilfe
               </Link>
               .
             </p>
           </RevealOnScroll>
           <RevealOnScroll delayMs={100}>
             <div className="mt-8 space-y-3 sm:mt-10">
-              {HAUSHALTSHILFE_FAQ.map((item) => (
+              {startseiteFaq.map((item) => (
                 <details
                   key={item.q}
                   className="group rounded-2xl border border-[#0F4F68]/12 bg-white shadow-[0_2px_16px_rgba(15,79,104,0.06)] transition hover:border-[#F78F2E]/35 hover:shadow-[0_8px_28px_rgba(15,79,104,0.1)] open:border-[#0F4F68]/18 open:shadow-[0_10px_32px_rgba(15,79,104,0.12)]"
@@ -248,7 +253,7 @@ export default function HomePage() {
         </div>
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(HAUSHALTSHILFE_FAQ_JSON_LD) }}
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(startseiteFaqJsonLd) }}
         />
       </section>
 
