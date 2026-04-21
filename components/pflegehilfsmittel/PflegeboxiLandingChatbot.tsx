@@ -59,6 +59,31 @@ export function PflegeboxiLandingChatbot() {
     setWiggle(true);
   }, []);
 
+  /** Im eingeklappten Zustand ab und zu hüpfen (2–4 s Abstand), um Aufmerksamkeit zu lenken. */
+  useEffect(() => {
+    if (hidden || expanded) return;
+    if (typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      return;
+    }
+    let cancelled = false;
+    let timeoutId = 0;
+
+    const scheduleNext = () => {
+      const delayMs = 2000 + Math.random() * 2000;
+      timeoutId = window.setTimeout(() => {
+        if (cancelled) return;
+        triggerJump();
+        scheduleNext();
+      }, delayMs);
+    };
+
+    scheduleNext();
+    return () => {
+      cancelled = true;
+      window.clearTimeout(timeoutId);
+    };
+  }, [hidden, expanded, triggerJump]);
+
   const onImgClick = () => {
     if (expanded) {
       triggerJump();
