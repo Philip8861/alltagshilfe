@@ -550,10 +550,10 @@ export function StandortLanding({ standort, plzContext }: StandortLandingProps) 
                   id="standort-plz-liste-heading"
                   className="text-center text-balance text-lg font-extrabold tracking-tight text-[#0F4F68] sm:text-xl"
                 >
-                  Orte und Postleitzahlen in diesem Gebiet
+                  Unsere Einsatzgebiete der Alltagshilfe-Süd
                 </h3>
                 <p className="mx-auto mt-2 max-w-2xl text-center text-sm text-neutral-600 sm:text-base">
-                  Alphabetisch nach Ort – jeder Eintrag führt zur Standortseite mit Ihrer Auswahl.
+                  Klicken Sie auf Ihre Region und finden Sie direkt den passenden Ansprechpartner vor Ort.
                 </p>
                 <div className="mt-8 space-y-8 sm:space-y-10" aria-labelledby="standort-plz-liste-heading">
                   {plzLetterGroups.map(([letter, rows]) => (
