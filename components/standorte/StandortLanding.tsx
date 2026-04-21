@@ -13,6 +13,7 @@ import { getNearbyServedPlzOrte } from "@/lib/plz-umkreis";
 import {
   getPlzMarkersForRegionMap,
   getServiceRegionGoogleMapsSearchHref,
+  getServiceRegionMapView,
   getServiceRegionMapsEmbedSrc,
 } from "@/lib/standort-region-map";
 
@@ -36,6 +37,7 @@ const LINK_CLASS =
 
 const UMKREIS_KM = 8;
 
+const REGION_MAP_VIEW = getServiceRegionMapView();
 const REGION_MAP_MARKERS = getPlzMarkersForRegionMap();
 
 function HeroCheckIcon({ className = "" }: { className?: string }) {
@@ -501,7 +503,7 @@ export function StandortLanding({ plz, ort, standort }: StandortLandingProps) {
                     {plz} {ort}
                   </p>
                   <p className="mt-1 text-sm text-neutral-600">
-                    Regionalkarte: tippen Sie auf ein GPS-Symbol für den jeweiligen Standort (PLZ/Ort).
+                    Regionalkarte: tippen Sie auf einen orangefarbenen Punkt für den jeweiligen Standort (PLZ/Ort).
                   </p>
                 </div>
                 <div className="relative aspect-[4/3] w-full min-h-[220px] bg-neutral-200">
@@ -513,7 +515,7 @@ export function StandortLanding({ plz, ort, standort }: StandortLandingProps) {
                     referrerPolicy="no-referrer-when-downgrade"
                     allowFullScreen
                   />
-                  <StandortMapMarkerOverlay markers={REGION_MAP_MARKERS} currentPlz={plz} />
+                  <StandortMapMarkerOverlay markers={REGION_MAP_MARKERS} currentPlz={plz} mapView={REGION_MAP_VIEW} />
                 </div>
                 <p className="px-4 py-3 text-center">
                   <a

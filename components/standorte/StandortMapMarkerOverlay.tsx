@@ -1,57 +1,76 @@
+"use client";
+
 import Link from "next/link";
+import { useCallback, useLayoutEffect, useRef, useState } from "react";
+import { latLngToWorldPixel } from "@/lib/maps-mercator";
 import type { PlzMapMarker } from "@/lib/standort-region-map";
 
-const BRAND = "#0F4F68";
-
-function GpsIcon({ className }: { className?: string }) {
-  return (
-    <svg
-      className={className}
-      viewBox="0 0 24 24"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-      aria-hidden
-    >
-      <circle cx="12" cy="12" r="9" stroke={BRAND} strokeWidth="1.35" opacity="0.35" />
-      <circle cx="12" cy="12" r="2.85" fill={BRAND} />
-      <path
-        d="M12 2.5v3.2M12 18.3V21.5M2.5 12h3.2M18.3 12H21.5"
-        stroke={BRAND}
-        strokeWidth="2"
-        strokeLinecap="round"
-      />
-    </svg>
-  );
-}
+type MapView = { lat: number; lng: number; zoom: number };
 
 type Props = {
   markers: PlzMapMarker[];
   currentPlz: string;
+  mapView: MapView;
 };
 
 /**
- * Klickbare GPS-Marker über der eingebetteten Karte (Positionen aus Bounding-Box, linear).
+ * Klickbare orangefarbene Punkte über der eingebetteten Karte (Web-Mercator, gemessene Containergröße).
  */
-export function StandortMapMarkerOverlay({ markers, currentPlz }: Props) {
+export function StandortMapMarkerOverlay({ markers, currentPlz, mapView }: Props) {
+  const wrapRef = useRef<HTMLDivElement>(null);
+  const [size, setSize] = useState({ w: 0, h: 0 });
+
+  const measure = useCallback(() => {
+    const el = wrapRef.current;
+    if (!el) return;
+    const r = el.getBoundingClientRect();
+    setSize({ w: r.width, h: r.height });
+  }, []);
+
+  useLayoutEffect(() => {
+    measure();
+    const el = wrapRef.current;
+    if (!el) return;
+    const ro = new ResizeObserver(() => measure());
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [measure]);
+
+  const { lat: cLat, lng: cLng, zoom } = mapView;
+  const ready = size.w > 0 && size.h > 0;
+  const centerPx = ready ? latLngToWorldPixel(cLat, cLng, zoom) : null;
+
   return (
-    <div className="absolute inset-0 z-[2] overflow-hidden">
-      {markers.map((m) => {
-        const active = m.plz === currentPlz;
-        return (
-          <Link
-            key={m.plz}
-            href={`/standorte/${m.slug}`}
-            className={`pointer-events-auto absolute flex min-h-[44px] min-w-[44px] -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full text-[#0F4F68] transition-transform hover:scale-110 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68] focus-visible:ring-offset-2 ${
-              active ? "z-[4]" : "z-[3]"
-            }`}
-            style={{ left: `${m.leftPct}%`, top: `${m.topPct}%` }}
-            aria-label={`Standort ${m.plz} ${m.ort}`}
-            title={`${m.plz} ${m.ort}`}
-          >
-            <GpsIcon className={active ? "h-7 w-7 drop-shadow-sm" : "h-[1.15rem] w-[1.15rem] drop-shadow-sm sm:h-5 sm:w-5"} />
-          </Link>
-        );
-      })}
+    <div ref={wrapRef} className="pointer-events-none absolute inset-0 z-[2] overflow-hidden">
+      {ready &&
+        centerPx &&
+        markers.map((m) => {
+          const pt = latLngToWorldPixel(m.lat, m.lng, zoom);
+          const dx = pt.x - centerPx.x;
+          const dy = pt.y - centerPx.y;
+          const left = size.w / 2 + dx;
+          const top = size.h / 2 + dy;
+          const active = m.plz === currentPlz;
+          return (
+            <Link
+              key={m.plz}
+              href={`/standorte/${m.slug}`}
+              className={`pointer-events-auto absolute flex min-h-[44px] min-w-[44px] -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full transition-transform hover:scale-125 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#F78F2E] focus-visible:ring-offset-2 ${
+                active ? "z-[4]" : "z-[3]"
+              }`}
+              style={{ left, top }}
+              aria-label={`Standort ${m.plz} ${m.ort}`}
+              title={`${m.plz} ${m.ort}`}
+            >
+              <span
+                className={`shrink-0 rounded-full bg-[#F78F2E] shadow-[0_1px_3px_rgba(15,79,104,0.35)] ring-1 ring-white/95 ${
+                  active ? "h-3 w-3" : "h-2 w-2"
+                }`}
+                aria-hidden
+              />
+            </Link>
+          );
+        })}
     </div>
   );
 }

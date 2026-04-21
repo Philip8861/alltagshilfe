@@ -1,6 +1,6 @@
 /**
  * Regionale Standortkarte: gemeinsame Bounds aller servierten PLZ (plz-centroids.json),
- * passende Google-Embed-Zentrierung und Overlay-Positionen in Prozent (linear zur Bounding-Box).
+ * Zentrum/Zoom für das Google-Embed; Marker-Positionen clientseitig per Web-Mercator (maps-mercator.ts).
  */
 import plzCentroids from "@/config/plz-centroids.json";
 import { getAllStandortSlugs, getOrtByPlz } from "@/config/standorte";
@@ -20,8 +20,8 @@ export type PlzMapMarker = {
   plz: string;
   ort: string;
   slug: string;
-  leftPct: number;
-  topPct: number;
+  lat: number;
+  lng: number;
 };
 
 type Bounds = {
@@ -81,23 +81,13 @@ export function getServiceRegionMapView(): { lat: number; lng: number; zoom: num
 
 export function getServiceRegionMapsEmbedSrc(): string {
   const { lat, lng, zoom } = getServiceRegionMapView();
-  const q = encodeURIComponent(`${lat},${lng}`);
-  return `https://maps.google.com/maps?q=${q}&hl=de&z=${zoom}&output=embed`;
+  /** `ll=` zentriert exakt auf Koordinaten; `q=` kann wie eine Suche leicht verschieben. */
+  return `https://maps.google.com/maps?ll=${lat},${lng}&hl=de&z=${zoom}&output=embed`;
 }
 
 export function getServiceRegionGoogleMapsSearchHref(): string {
   const { lat, lng } = getServiceRegionMapView();
   return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${lat},${lng}`)}`;
-}
-
-function centroidToPercent(lat: number, lng: number): { leftPct: number; topPct: number } {
-  const b = getPaddedBounds();
-  const leftPct = ((lng - b.minLng) / (b.maxLng - b.minLng)) * 100;
-  const topPct = ((b.maxLat - lat) / (b.maxLat - b.minLat)) * 100;
-  return {
-    leftPct: Math.min(100, Math.max(0, leftPct)),
-    topPct: Math.min(100, Math.max(0, topPct)),
-  };
 }
 
 let markersCache: PlzMapMarker[] | null = null;
@@ -112,8 +102,7 @@ export function getPlzMarkersForRegionMap(): PlzMapMarker[] {
     const ort = getOrtByPlz(plz);
     const c = centroids[plz];
     if (!ort || !c) continue;
-    const { leftPct, topPct } = centroidToPercent(c.lat, c.lng);
-    out.push({ plz, ort, slug, leftPct, topPct });
+    out.push({ plz, ort, slug, lat: c.lat, lng: c.lng });
   }
   markersCache = out;
   return out;
