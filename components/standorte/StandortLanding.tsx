@@ -329,49 +329,6 @@ export function StandortLanding({ standort, plzContext }: StandortLandingProps) 
           </div>
         </section>
 
-        <section className="relative border-t border-[#0F4F68]/10 bg-white py-14 sm:py-16" aria-labelledby="standort-faq-heading">
-          <div className="relative mx-auto max-w-3xl px-4 sm:px-6">
-            <RevealOnScroll>
-              <h2
-                id="standort-faq-heading"
-                className="text-center text-2xl font-extrabold tracking-tight text-[#0F4F68] sm:text-3xl"
-              >
-                Fragen zu diesem Standort
-              </h2>
-              <p className="mx-auto mt-2 max-w-2xl text-center text-sm text-neutral-600 sm:text-base">
-                Kurz beantwortet – ausführliche FAQ zur Haushaltshilfe verlinken wir bewusst zentral, statt lange Texte auf
-                vielen Unterseiten zu wiederholen.
-              </p>
-            </RevealOnScroll>
-            <RevealOnScroll delayMs={80}>
-              <div className="mt-8 space-y-3 sm:mt-10">
-                {FAQ.map((item) => (
-                  <details
-                    key={item.q}
-                    className="group rounded-2xl border border-[#0F4F68]/12 bg-[#fafbfc] shadow-[0_2px_16px_rgba(15,79,104,0.06)] transition hover:border-[#F78F2E]/35 open:border-[#0F4F68]/18"
-                  >
-                    <summary className="flex cursor-pointer list-none items-center justify-between gap-4 px-4 py-4 text-left text-[#0F4F68] sm:px-5 [&::-webkit-details-marker]:hidden">
-                      <span className="text-base font-semibold leading-snug sm:text-[1.05rem]">{item.q}</span>
-                      <span
-                        className="inline-flex shrink-0 rounded-full bg-[#F78F2E]/12 p-1.5 text-[#F78F2E] transition-transform duration-200 group-open:rotate-180"
-                        aria-hidden
-                      >
-                        <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-                        </svg>
-                      </span>
-                    </summary>
-                    <div className="border-t border-[#0F4F68]/8 bg-white px-4 pb-4 pt-2 text-pretty text-sm leading-relaxed text-neutral-600 sm:px-5 sm:text-base">
-                      {item.answer}
-                    </div>
-                  </details>
-                ))}
-              </div>
-            </RevealOnScroll>
-          </div>
-          <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }} />
-        </section>
-
         <section
           id="standort-kontakt"
           className="scroll-mt-24 border-t border-[#0F4F68]/10 bg-white py-16 sm:py-24"
@@ -640,6 +597,52 @@ export function StandortLanding({ standort, plzContext }: StandortLandingProps) 
               </div>
             </div>
           </RevealOnScroll>
+        </section>
+
+        <section
+          className="relative border-t border-[#0F4F68]/10 bg-white py-14 sm:py-16"
+          aria-labelledby="standort-faq-heading"
+        >
+          <div className="relative mx-auto max-w-3xl px-4 sm:px-6">
+            <RevealOnScroll>
+              <h2
+                id="standort-faq-heading"
+                className="text-center text-2xl font-extrabold tracking-tight text-[#0F4F68] sm:text-3xl"
+              >
+                Fragen zu diesem Standort
+              </h2>
+              <p className="mx-auto mt-2 max-w-2xl text-center text-sm text-neutral-600 sm:text-base">
+                Kurz beantwortet – ausführliche FAQ zur Haushaltshilfe verlinken wir bewusst zentral, statt lange Texte
+                auf vielen Unterseiten zu wiederholen.
+              </p>
+            </RevealOnScroll>
+            <RevealOnScroll delayMs={80}>
+              <div className="mt-8 space-y-3 sm:mt-10">
+                {FAQ.map((item) => (
+                  <details
+                    key={item.q}
+                    className="group rounded-2xl border border-[#0F4F68]/12 bg-[#fafbfc] shadow-[0_2px_16px_rgba(15,79,104,0.06)] transition hover:border-[#F78F2E]/35 open:border-[#0F4F68]/18"
+                  >
+                    <summary className="flex cursor-pointer list-none items-center justify-between gap-4 px-4 py-4 text-left text-[#0F4F68] sm:px-5 [&::-webkit-details-marker]:hidden">
+                      <span className="text-base font-semibold leading-snug sm:text-[1.05rem]">{item.q}</span>
+                      <span
+                        className="inline-flex shrink-0 rounded-full bg-[#F78F2E]/12 p-1.5 text-[#F78F2E] transition-transform duration-200 group-open:rotate-180"
+                        aria-hidden
+                      >
+                        <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                        </svg>
+                      </span>
+                    </summary>
+                    <div className="border-t border-[#0F4F68]/8 bg-white px-4 pb-4 pt-2 text-pretty text-sm leading-relaxed text-neutral-600 sm:px-5 sm:text-base">
+                      {item.answer}
+                    </div>
+                  </details>
+                ))}
+              </div>
+            </RevealOnScroll>
+          </div>
+          <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }} />
         </section>
       </article>
     </div>
