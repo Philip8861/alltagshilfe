@@ -1,10 +1,10 @@
 "use client";
 
-import { useCallback, useState } from "react";
-import { StandortMapMarkerOverlay } from "@/components/standorte/StandortMapMarkerOverlay";
+import { useEffect, useRef, useState } from "react";
+import maplibregl from "maplibre-gl";
+import "maplibre-gl/dist/maplibre-gl.css";
 import type { PlzMapMarker } from "@/lib/standort-region-map";
 import {
-  buildRegionMapsEmbedSrc,
   REGION_MAP_INTERACTIVE_ZOOM_MAX,
   REGION_MAP_INTERACTIVE_ZOOM_MIN,
 } from "@/lib/region-map-embed";
@@ -17,69 +17,122 @@ type Props = {
   initialView: MapView;
 };
 
+function clampZoom(z: number): number {
+  return Math.min(
+    REGION_MAP_INTERACTIVE_ZOOM_MAX,
+    Math.max(REGION_MAP_INTERACTIVE_ZOOM_MIN, Math.round(z)),
+  );
+}
+
 /**
- * Eingebettete Regionalkarte mit Zoom (+/−) und Marker-Overlay (Zoom synchron zur iframe-URL).
+ * Interaktive Regionalkarte (OpenStreetMap + MapLibre): Marker sind an Geo-Koordinaten gebunden und wandern mit Pan/Zoom.
  */
 export function StandortRegionMapInteractive({ markers, currentPlz, initialView }: Props) {
-  const [zoom, setZoom] = useState(() =>
-    Math.round(
-      Math.min(
-        REGION_MAP_INTERACTIVE_ZOOM_MAX,
-        Math.max(REGION_MAP_INTERACTIVE_ZOOM_MIN, initialView.zoom),
-      ),
-    ),
-  );
+  const containerRef = useRef<HTMLDivElement>(null);
+  const mapRef = useRef<maplibregl.Map | null>(null);
+  const markersRef = useRef<maplibregl.Marker[]>([]);
+  const [mapLoaded, setMapLoaded] = useState(false);
 
-  const mapView: MapView = {
-    lat: initialView.lat,
-    lng: initialView.lng,
-    zoom,
-  };
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
 
-  const zoomIn = useCallback(
-    () => setZoom((z) => Math.min(REGION_MAP_INTERACTIVE_ZOOM_MAX, z + 1)),
-    [],
-  );
-  const zoomOut = useCallback(
-    () => setZoom((z) => Math.max(REGION_MAP_INTERACTIVE_ZOOM_MIN, z - 1)),
-    [],
-  );
+    let cancelled = false;
 
-  const iframeSrc = buildRegionMapsEmbedSrc(initialView.lat, initialView.lng, zoom);
+    const map = new maplibregl.Map({
+      container,
+      style: {
+        version: 8,
+        sources: {
+          osm: {
+            type: "raster",
+            tiles: ["https://tile.openstreetmap.org/{z}/{x}/{y}.png"],
+            tileSize: 256,
+            attribution:
+              '&copy; <a href="https://www.openstreetmap.org/copyright" rel="noopener noreferrer">OpenStreetMap</a>',
+            maxzoom: 19,
+          },
+        },
+        layers: [{ id: "osm", type: "raster", source: "osm" }],
+      },
+      center: [initialView.lng, initialView.lat],
+      zoom: clampZoom(initialView.zoom),
+      minZoom: REGION_MAP_INTERACTIVE_ZOOM_MIN,
+      maxZoom: REGION_MAP_INTERACTIVE_ZOOM_MAX,
+    });
+
+    map.addControl(new maplibregl.NavigationControl({ showCompass: false }), "top-right");
+    mapRef.current = map;
+
+    const onLoad = () => {
+      if (!cancelled) setMapLoaded(true);
+    };
+    if (map.loaded()) {
+      onLoad();
+    } else {
+      map.once("load", onLoad);
+    }
+
+    return () => {
+      cancelled = true;
+      map.off("load", onLoad);
+      setMapLoaded(false);
+      for (const m of markersRef.current) m.remove();
+      markersRef.current = [];
+      map.remove();
+      mapRef.current = null;
+    };
+  }, [initialView.lat, initialView.lng, initialView.zoom]);
+
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!mapLoaded || !map) return;
+
+    for (const m of markersRef.current) m.remove();
+    markersRef.current = [];
+
+    for (const marker of markers) {
+      const active = marker.plz === currentPlz;
+      const a = document.createElement("a");
+      a.href = `/standorte/${marker.slug}`;
+      a.style.display = "flex";
+      a.style.alignItems = "center";
+      a.style.justifyContent = "center";
+      a.style.minWidth = "44px";
+      a.style.minHeight = "44px";
+      a.style.borderRadius = "9999px";
+      a.style.textDecoration = "none";
+      a.setAttribute("aria-label", `Standort ${marker.plz} ${marker.ort}`);
+      a.title = `${marker.plz} ${marker.ort}`;
+      if (active) a.setAttribute("aria-current", "location");
+
+      const dot = document.createElement("span");
+      dot.style.display = "block";
+      dot.style.flexShrink = "0";
+      dot.style.borderRadius = "9999px";
+      dot.style.backgroundColor = active ? "#0F4F68" : "#F78F2E";
+      dot.style.boxShadow = "0 1px 3px rgba(15,79,104,0.35)";
+      if (active) {
+        dot.style.width = "16px";
+        dot.style.height = "16px";
+        dot.style.border = "2px solid rgba(255,255,255,0.95)";
+      } else {
+        dot.style.width = "8px";
+        dot.style.height = "8px";
+        dot.style.border = "1px solid rgba(255,255,255,0.95)";
+      }
+      a.appendChild(dot);
+
+      const ml = new maplibregl.Marker({ element: a, anchor: "center" })
+        .setLngLat([marker.lng, marker.lat])
+        .addTo(map);
+      markersRef.current.push(ml);
+    }
+  }, [mapLoaded, markers, currentPlz]);
 
   return (
-    <div className="relative aspect-[4/3] w-full min-h-[220px] bg-neutral-200">
-      <iframe
-        key={iframeSrc}
-        title="Google Maps: Versorgungsgebiet Alltagshilfe-Süd"
-        src={iframeSrc}
-        className="absolute inset-0 z-0 h-full w-full border-0"
-        loading="lazy"
-        referrerPolicy="no-referrer-when-downgrade"
-        allowFullScreen
-      />
-      <StandortMapMarkerOverlay markers={markers} currentPlz={currentPlz} mapView={mapView} />
-      <div className="pointer-events-none absolute right-2 top-1/2 z-[5] flex -translate-y-1/2 flex-col overflow-hidden rounded-md border border-[#0F4F68]/25 bg-white/95 shadow-md">
-        <button
-          type="button"
-          onClick={zoomIn}
-          disabled={zoom >= REGION_MAP_INTERACTIVE_ZOOM_MAX}
-          className="pointer-events-auto flex h-10 w-10 items-center justify-center text-xl font-semibold leading-none text-[#0F4F68] transition hover:bg-[#F2F9FA] disabled:cursor-not-allowed disabled:opacity-40"
-          aria-label="Karte vergrößern"
-        >
-          +
-        </button>
-        <div className="h-px shrink-0 bg-[#0F4F68]/15" aria-hidden />
-        <button
-          type="button"
-          onClick={zoomOut}
-          disabled={zoom <= REGION_MAP_INTERACTIVE_ZOOM_MIN}
-          className="pointer-events-auto flex h-10 w-10 items-center justify-center text-xl font-semibold leading-none text-[#0F4F68] transition hover:bg-[#F2F9FA] disabled:cursor-not-allowed disabled:opacity-40"
-          aria-label="Karte verkleinern"
-        >
-          −
-        </button>
-      </div>
+    <div className="relative aspect-[4/3] w-full min-h-[220px] overflow-hidden rounded-b-xl bg-neutral-200">
+      <div ref={containerRef} className="absolute inset-0 h-full w-full" />
     </div>
   );
 }

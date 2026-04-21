@@ -497,8 +497,8 @@ export function StandortLanding({ plz, ort, standort }: StandortLandingProps) {
                     {plz} {ort}
                   </p>
                   <p className="mt-1 text-sm text-neutral-600">
-                    Regionalkarte: Mit + und − zoomen. Ihr Ort ist blau hervorgehoben; andere Standorte als
-                    orangefarbene Punkte – antippen öffnet die jeweilige Seite (PLZ/Ort).
+                    Regionalkarte (OpenStreetMap): Karte verschieben wie gewohnt; +/− zum Zoomen. Ihr Ort ist blau
+                    hervorgehoben, andere Standorte orange – antippen öffnet die jeweilige Seite (PLZ/Ort).
                   </p>
                 </div>
                 <StandortRegionMapInteractive

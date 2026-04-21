@@ -1,6 +1,6 @@
 /**
  * Regionale Standortkarte: gemeinsame Bounds aller servierten PLZ (plz-centroids.json),
- * Zentrum/Zoom für das Google-Embed; Marker-Positionen clientseitig per Web-Mercator (maps-mercator.ts).
+ * Zentrum/Zoom für Regionalkarte (MapLibre/OSM) und Link „Google Maps öffnen“.
  */
 import plzCentroids from "@/config/plz-centroids.json";
 import { getAllStandortSlugs, getOrtByPlz } from "@/config/standorte";
