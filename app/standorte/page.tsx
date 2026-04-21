@@ -118,7 +118,7 @@ export default function StandortePage() {
       <div className="w-full overflow-x-hidden">
         <div className="flex w-full flex-col gap-8 lg:flex-row lg:flex-nowrap lg:items-start lg:justify-start lg:gap-10">
           {/* Desktop: Karte links (order-1). Mobil: Karte unten (order-2). */}
-          <div className="relative w-full flex-none shrink-0 bg-transparent lg:w-[50%] lg:max-w-3xl lg:min-w-0 order-2 lg:order-1">
+          <div className="relative z-10 w-full flex-none shrink-0 bg-transparent lg:w-[50%] lg:max-w-3xl lg:min-w-0 order-2 lg:order-1 -translate-y-2 sm:-translate-y-4 drop-shadow-[0_14px_28px_rgba(15,79,104,0.2)]">
             <KartenMitKoordinatenErfassen hauptmarker={HAUPTMARKER} punkte={PUNKTE} ortsLabels={ORTSLABELS} />
           </div>
           {/* Desktop: Text + Standortsuche rechts (order-2). Mobil: oben (order-1) – zuerst Text, dann Standortsuche. */}
@@ -145,7 +145,7 @@ export default function StandortePage() {
       <section className="relative z-20 mt-8 w-full px-4 sm:mt-10 sm:px-6 lg:px-[var(--ahs-page-gutter)]">
         <div className="mx-auto w-full max-w-5xl rounded-2xl border border-[#0F4F68]/10 bg-white/55 p-5 sm:p-7">
           <h2 className="text-2xl font-bold text-[#0F4F68] sm:text-3xl">
-            Unsere Ansprechpartner unterstützen Sie an rund {plzAnzahl} Orten im süddeutschen Raum
+            Unsere Standorte sind an rund {plzAnzahl} Standorten für Sie im Einsatz. Wir helfen gerne weiter!
           </h2>
           <ul className="mt-4 grid grid-cols-1 gap-2 text-sm text-neutral-700 sm:grid-cols-2 sm:text-base lg:grid-cols-3">
             {leistungen.map((leistung) => (
@@ -167,19 +167,21 @@ export default function StandortePage() {
                       href={`/standorte/${st.pageSlug}`}
                       className="group flex min-h-0 flex-1 flex-col focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68] focus-visible:ring-offset-2"
                     >
-                      <div className="relative aspect-[16/10] w-full shrink-0 overflow-hidden bg-[#0F4F68]/8">
+                      <div className="relative mx-auto aspect-[16/10] w-[min(100%,70%)] shrink-0 overflow-hidden rounded-lg bg-[#0F4F68]/8 sm:w-[min(100%,65%)]">
                         <Image
                           src={imgSrc}
                           alt={`${st.name} – regionaler Ansprechpartner`}
                           fill
                           className="object-cover transition duration-300 group-hover:scale-[1.02]"
-                          sizes="(max-width: 640px) 100vw, 50vw"
+                          sizes="(max-width: 640px) 70vw, 35vw"
                         />
                       </div>
                       <div className="flex flex-1 flex-col p-5">
                         <span className="text-lg font-bold text-[#0F4F68]">{st.name}</span>
                         <span className="mt-1 text-sm text-neutral-600">{st.address}</span>
-                        <span className="mt-3 text-sm font-semibold text-[#0F4F68]">{st.phone}</span>
+                        <span className="mt-3 text-xl font-bold tabular-nums text-[#0F4F68] sm:text-2xl">
+                          {st.phone}
+                        </span>
                         <span className="sr-only">Zur Standortseite {st.name}</span>
                       </div>
                     </Link>

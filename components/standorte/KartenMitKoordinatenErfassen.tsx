@@ -217,13 +217,15 @@ export function KartenMitKoordinatenErfassen({ hauptmarker, punkte, ortsLabels =
           {punkte.map((p, i) => (
             <span
               key={`dot-${i}`}
-              className={`pointer-events-none absolute rounded-full bg-[#F78F2E] ring-2 ring-white overflow-visible ${playMarkerAnimation ? "animate-marker-pop-in" : ""}`}
+              className={`pointer-events-none absolute rounded-full bg-[#FF9A3C] ring-2 ring-white/95 overflow-visible ${playMarkerAnimation ? "animate-marker-pop-in" : ""}`}
               style={{
                 left: `${p.left}%`,
                 top: `${p.top}%`,
-                width: "clamp(3px, 0.65vw, 5px)",
-                height: "clamp(3px, 0.65vw, 5px)",
+                width: "clamp(4.5px, 1vw, 8px)",
+                height: "clamp(4.5px, 1vw, 8px)",
                 transform: "translate(-50%, -50%) translateZ(0)",
+                boxShadow:
+                  "0 0 5px 2px rgba(255, 154, 60, 0.95), 0 0 14px 5px rgba(247, 143, 46, 0.55), 0 0 22px 8px rgba(247, 143, 46, 0.25)",
                 ...(playMarkerAnimation ? { animationDelay: `${Math.min(i * 90, 1800)}ms` } : {}),
               }}
             />

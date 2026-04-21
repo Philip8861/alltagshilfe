@@ -74,11 +74,12 @@ export function getServiceRegionMapView(): { lat: number; lng: number; zoom: num
   const b = getPaddedBounds();
   const lat = (b.minLat + b.maxLat) / 2;
   const lng = (b.minLng + b.maxLng) / 2;
-  const zoom = lngSpanToZoom(b.maxLng - b.minLng);
+  const zoom = Math.max(ZOOM_MIN, lngSpanToZoom(b.maxLng - b.minLng) - 1);
   return { lat, lng, zoom };
 }
 
-const FOCUS_ZOOM = 10;
+/** Eine Zoomstufe weiter heraus (~ wie „−“ in der Karte), damit mehr Umland sichtbar ist. */
+const FOCUS_ZOOM = 8;
 
 /**
  * Kartenstart für Standort-Unterseiten: Fokus auf gesuchte PLZ bzw. Büro-PLZ des Standorts,

@@ -359,28 +359,20 @@ export function StandortLanding({ standort, plzContext }: StandortLandingProps) 
                   >
                     Kontakt
                   </h2>
-                  <div className="mt-4 space-y-4 text-pretty text-sm leading-relaxed text-neutral-700 sm:text-base">
-                    <p>
-                      {hasGeo && plzContext ? (
-                        <>
-                          Für die <strong>{plzContext.plz}</strong> <strong>{plzContext.ort}</strong> ist der Standort{" "}
-                          <strong>{standort.name}</strong> zuständig.
-                        </>
-                      ) : (
-                        <>
-                          <strong>{standort.name}</strong> ist für Anfragen aus dem zugehörigen Versorgungsgebiet
-                          zuständig. Das Team arbeitet am Sitz in{" "}
-                          <strong>{standort.schemaAddress.addressLocality}</strong>.
-                        </>
-                      )}
-                    </p>
-                    <p>
-                      Gerne können Sie dieses Kontaktformular nutzen – Ihre Anfrage wird direkt an den passenden
-                      Standort weitergeleitet. Wir freuen uns über Ihre Anfrage!
-                    </p>
-                  </div>
+                  {hasGeo && plzContext ? (
+                    <div className="mt-4 space-y-4 text-pretty text-sm leading-relaxed text-neutral-700 sm:text-base">
+                      <p>
+                        Für die <strong>{plzContext.plz}</strong> <strong>{plzContext.ort}</strong> ist der Standort{" "}
+                        <strong>{standort.name}</strong> zuständig.
+                      </p>
+                      <p>
+                        Gerne können Sie dieses Kontaktformular nutzen – Ihre Anfrage wird direkt an den passenden
+                        Standort weitergeleitet. Wir freuen uns über Ihre Anfrage!
+                      </p>
+                    </div>
+                  ) : null}
 
-                  <div className="mt-10">
+                  <div className={hasGeo && plzContext ? "mt-10" : "mt-6"}>
                     <ContactForm />
                   </div>
                   <p className="mt-8 text-sm text-neutral-500">
@@ -493,7 +485,7 @@ export function StandortLanding({ standort, plzContext }: StandortLandingProps) 
           <RevealOnScroll>
             <div className="relative z-[1] mx-auto max-w-5xl px-4 sm:px-6">
               <div
-                className="mx-auto w-full max-w-[min(100%,29.5rem)] overflow-hidden rounded-xl border border-[#0F4F68]/20 bg-[#F2F9FA]/80 shadow-[0_10px_22px_rgba(15,79,104,0.2)] shadow-[0_4px_12px_rgba(15,79,104,0.12)]"
+                className="relative z-[1] mx-auto w-full max-w-[min(100%,29.5rem)] -translate-y-2 overflow-hidden rounded-xl border border-[#0F4F68]/20 bg-[#F2F9FA]/80 shadow-[0_16px_32px_rgba(15,79,104,0.22),0_6px_0_rgba(15,79,104,0.08)] sm:-translate-y-3"
                 role="region"
                 aria-labelledby="standort-karten-titel"
               >
