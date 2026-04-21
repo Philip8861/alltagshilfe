@@ -98,15 +98,6 @@ const STANDORTE_INTRO_BODY_CLASS =
   "mx-auto w-full max-w-2xl text-balance text-center text-lg text-neutral-700 leading-relaxed sm:text-xl";
 
 export default function StandortePage() {
-  const leistungen = [
-    "Haushaltshilfe",
-    "Alltagsbegleitung",
-    "Kostenfreie Pflegehilfsmittel",
-    "Pflegeberatung",
-    "Inkontinenzversorgung",
-    "Pflegeshop",
-  ] as const;
-
   const plzAnzahl = SERVED_PLZ_TOTAL;
 
   return (
@@ -142,53 +133,51 @@ export default function StandortePage() {
 
       <StandortAnthrazitRule className="mt-8 sm:mt-10" />
 
-      <section className="relative z-20 mt-8 w-full px-4 sm:mt-10 sm:px-6 lg:px-[var(--ahs-page-gutter)]">
-        <div className="mx-auto w-full max-w-5xl rounded-2xl border border-[#0F4F68]/10 bg-white/55 p-5 sm:p-7">
-          <h2 className="text-2xl font-bold text-[#0F4F68] sm:text-3xl">
+      <section
+        className="relative z-20 mt-8 w-full px-4 sm:mt-10 sm:px-6 lg:px-[var(--ahs-page-gutter)]"
+        aria-labelledby="standorte-karten-heading"
+      >
+        <div className="mx-auto w-full max-w-5xl rounded-[1.35rem] border border-[#0F4F68]/12 bg-gradient-to-b from-white via-white to-[#F2F9FA]/35 p-6 shadow-[0_12px_40px_rgba(15,79,104,0.08)] sm:p-8 lg:p-10">
+          <h2
+            id="standorte-karten-heading"
+            className="mx-auto max-w-3xl text-balance text-center text-2xl font-bold leading-snug text-[#0F4F68] sm:text-3xl"
+          >
             Unsere Standorte sind an rund {plzAnzahl} Standorten für Sie im Einsatz. Wir helfen gerne weiter!
           </h2>
-          <ul className="mt-4 grid grid-cols-1 gap-2 text-sm text-neutral-700 sm:grid-cols-2 sm:text-base lg:grid-cols-3">
-            {leistungen.map((leistung) => (
-              <li key={leistung} className="inline-flex items-center gap-2">
-                <span aria-hidden className="text-[#EA580C]">
-                  ✓
-                </span>
-                <span>{leistung}</span>
-              </li>
-            ))}
-          </ul>
-          <ul className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <ul className="mt-8 grid grid-cols-1 gap-6 sm:mt-10 sm:grid-cols-2 sm:gap-8">
             {standorteByPlz.map((st) => {
               const imgSrc = STANDORT_CARD_IMAGE[st.pageSlug] ?? "/images/Bild_Allgaue.webp";
               return (
                 <li key={st.pageSlug} className="flex min-h-0">
-                  <div className="flex h-full w-full min-w-0 flex-col overflow-hidden rounded-xl border border-[#0F4F68]/15 bg-[#F2F9FA]/80 shadow-sm transition hover:border-[#F78F2E]/40 hover:bg-white hover:shadow-md">
+                  <div className="flex h-full w-full min-w-0 flex-col overflow-hidden rounded-2xl border border-[#0F4F68]/12 bg-[#F2F9FA]/90 shadow-[0_4px_20px_rgba(15,79,104,0.07)] transition hover:border-[#F78F2E]/35 hover:bg-white hover:shadow-[0_12px_32px_rgba(15,79,104,0.12)]">
                     <Link
                       href={`/standorte/${st.pageSlug}`}
-                      className="group flex min-h-0 flex-1 flex-col focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68] focus-visible:ring-offset-2"
+                      className="group flex min-h-0 flex-1 flex-col items-center text-center focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68] focus-visible:ring-offset-2"
                     >
-                      <div className="relative mx-auto aspect-[16/10] w-[min(100%,70%)] shrink-0 overflow-hidden rounded-lg bg-[#0F4F68]/8 sm:w-[min(100%,65%)]">
+                      <div className="relative aspect-[16/10] w-full shrink-0 overflow-hidden bg-[#0F4F68]/10">
                         <Image
                           src={imgSrc}
                           alt={`${st.name} – regionaler Ansprechpartner`}
                           fill
-                          className="object-cover transition duration-300 group-hover:scale-[1.02]"
-                          sizes="(max-width: 640px) 70vw, 35vw"
+                          className="object-cover transition duration-300 group-hover:scale-[1.03]"
+                          sizes="(max-width: 640px) 100vw, 50vw"
                         />
                       </div>
-                      <div className="flex flex-1 flex-col p-5">
-                        <span className="text-lg font-bold text-[#0F4F68]">{st.name}</span>
-                        <span className="mt-1 text-sm text-neutral-600">{st.address}</span>
-                        <span className="mt-3 text-xl font-bold tabular-nums text-[#0F4F68] sm:text-2xl">
+                      <div className="flex w-full flex-1 flex-col items-center px-5 pb-5 pt-5 sm:px-6 sm:pb-6 sm:pt-6">
+                        <span className="text-lg font-bold text-[#0F4F68] sm:text-xl">{st.name}</span>
+                        <span className="mt-2 max-w-md text-pretty text-sm leading-relaxed text-neutral-600 sm:text-base">
+                          {st.address}
+                        </span>
+                        <span className="mt-4 text-xl font-bold tabular-nums text-[#0F4F68] sm:text-2xl">
                           {st.phone}
                         </span>
                         <span className="sr-only">Zur Standortseite {st.name}</span>
                       </div>
                     </Link>
-                    <div className="border-t border-[#0F4F68]/10 bg-white/60 px-5 py-3">
+                    <div className="border-t border-[#0F4F68]/10 bg-white/70 px-5 py-4 text-center sm:px-6">
                       <a
                         href={`mailto:${st.email}`}
-                        className="break-all text-sm font-semibold text-[#0F4F68] underline-offset-2 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68] focus-visible:ring-offset-2 rounded"
+                        className="inline-block max-w-full break-all text-sm font-semibold text-[#0F4F68] underline-offset-2 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68] focus-visible:ring-offset-2 rounded"
                       >
                         {st.email}
                       </a>
