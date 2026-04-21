@@ -17,6 +17,7 @@ import {
   getInteractiveRegionMapInitialView,
   getPlzMarkersForRegionMap,
 } from "@/lib/standort-region-map";
+import { siteConfig } from "@/config/site";
 
 const CONTACT_ANCHOR = "#standort-kontakt";
 const HAUSHALTSHILFE_URL = "/leistungen/haushaltshilfe";
@@ -69,6 +70,7 @@ function buildStandortFaq(input: {
 }): FaqItem[] {
   const { standort, plzContext, contactHref } = input;
   const bueroOrt = standort.schemaAddress.addressLocality;
+  const brand = siteConfig.name;
 
   const regionBlock: FaqItem = plzContext
     ? {
@@ -98,12 +100,12 @@ function buildStandortFaq(input: {
     {
       q: "Welche Leistungen kann ich hier anfragen?",
       answerPlain:
-        "Haushaltshilfe, Alltagsbegleitung, Pflegeberatung nach SGB XI und kostenfreie Pflegehilfsmittel – je nach Voraussetzung. Details zu Ablauf und Umfang finden Sie auf der ausführlichen Haushaltshilfe-Seite.",
+        "Haushaltshilfe, Alltagsbegleitung, Pflegeberatung nach SGB XI und kostenfreie Pflegehilfsmittel – je nach Voraussetzung und Zuständigkeit. Ausführliche Beispiele und Ablauf beschreiben wir auf der Seite Haushaltshilfe.",
       answer: (
         <>
           Unter anderem <strong>Haushaltshilfe</strong>, <strong>Alltagsbegleitung</strong>,{" "}
-          <strong>Pflegeberatung</strong> und <strong>Pflegehilfsmittel</strong>. Die vollständige Darstellung mit Ablauf
-          und Beispielen finden Sie unter{" "}
+          <strong>Pflegeberatung</strong> und <strong>Pflegehilfsmittel</strong> – je nach Voraussetzung. Ablauf,
+          Beispiele und weitere Details finden Sie unter{" "}
           <Link href={HAUSHALTSHILFE_URL} className={LINK_CLASS}>
             Haushaltshilfe
           </Link>
@@ -112,31 +114,106 @@ function buildStandortFaq(input: {
       ),
     },
     {
-      q: "Wie schnell kann ich einen Termin oder eine Rückmeldung bekommen?",
+      q: "Welche Aufgaben werden übernommen?",
       answerPlain:
-        "Am schnellsten geht es telefonisch über die lokale Standortnummer. Alternativ nutzen Sie das Kontaktformular auf dieser Seite – wir melden uns zeitnah.",
+        "Typische Leistungen sind Bodenreinigung, Fensterputzen, Bad- und Küchenreinigung, Mahlzeiten zubereiten, Wäsche und Ordnung im Haushalt. Der Umfang wird an Ihren Bedarf angepasst.",
       answer: (
         <>
-          Am direktesten erreichen Sie uns über die <strong>örtliche Rufnummer</strong> oben auf der Seite. Über das{" "}
-          <Link href={contactHref} className={LINK_CLASS}>
-            Kontaktformular
-          </Link>{" "}
-          geht es ebenfalls – wir antworten zeitnah.
+          Typisch sind unter anderem <strong>Bodenreinigung</strong>, <strong>Fensterputzen</strong>,{" "}
+          <strong>Bad- und Küchenreinigung</strong>, <strong>Kochen</strong>, <strong>Wäsche</strong> und{" "}
+          <strong>Ordnung im Haushalt</strong>. Wir stimmen den Umfang mit Ihnen ab.
         </>
       ),
     },
     {
-      q: "Wo finde ich ausführliche Infos zu Kosten, Kasse und Entlastungsbetrag?",
-      answerPlain:
-        "Ausführliche Antworten zu Kosten, Krankenkasse und Entlastungsbetrag stehen auf der Haushaltshilfe-Seite in der FAQ-Sektion.",
+      q: "Werden die Kosten übernommen?",
+      answerPlain: `Als zugelassener Partner rechnet ${brand} mit allen Pflege- und Krankenkassen ab. Die Bezahlung erfolgt über die Pflegekasse, die Krankenkasse oder privat – das klären wir im Beratungsgespräch.`,
       answer: (
         <>
-          Dafür lohnt sich die{" "}
-          <Link href={`${HAUSHALTSHILFE_URL}#haushalt-faq-heading`} className={LINK_CLASS}>
-            FAQ auf der Seite Haushaltshilfe
+          Als <strong>zugelassener Partner</strong> rechnen wir mit <strong>allen Pflege- und Krankenkassen</strong> ab.
+          Die Bezahlung läuft über die <strong>Pflegekasse</strong>, die <strong>Krankenkasse</strong> oder{" "}
+          <strong>privat</strong> – gemeinsam klären wir Ihre Möglichkeiten.
+        </>
+      ),
+    },
+    {
+      q: "Gilt der Entlastungsbetrag von 131 Euro?",
+      answerPlain:
+        "Ab Pflegegrad 1 können Sie den monatlichen Entlastungsbetrag von 131 Euro für qualifizierte Leistungen nutzen, sofern die gesetzlichen Voraussetzungen erfüllt sind.",
+      answer: (
+        <>
+          Ab <strong>Pflegegrad 1</strong> können Sie diesen monatlichen Betrag für unsere Leistungen nutzen, wenn die
+          gesetzlichen Voraussetzungen erfüllt sind. Mehr dazu im{" "}
+          <Link href="/ratgeber/entlastungsbetrag-131-euro" className={LINK_CLASS}>
+            Ratgeber zum Entlastungsbetrag
           </Link>
-          – dort gehen wir ausführlich auf Kosten, Kassen und häufige Fragen ein, ohne diese Texte auf jeder
-          Standortseite zu wiederholen.
+          .
+        </>
+      ),
+    },
+    {
+      q: `Kann ich 3.539 Euro für Ersatzpflege und Verhinderungspflege über ${brand} nutzen?`,
+      answerPlain: `Ja, ab Pflegegrad 2 können Ersatzpflege und Verhinderungspflege bis zum gesetzlich vorgesehenen Jahresbudget über ${brand} abgerechnet werden, sofern die Voraussetzungen erfüllt sind.`,
+      answer: (
+        <>
+          Ja, ab einem <strong>Pflegegrad 2</strong> ist das möglich, wenn die gesetzlichen und vertraglichen
+          Voraussetzungen erfüllt sind. Wir unterstützen Sie bei der <strong>Abrechnung</strong>.
+        </>
+      ),
+    },
+    {
+      q: "Brauche ich einen Pflegegrad?",
+      answerPlain:
+        "Für Leistungen über die Pflegekasse ist in der Regel ein Pflegegrad erforderlich. Über die Krankenkasse oder privat ist Hilfe je nach Einzelfall auch ohne Pflegegrad möglich.",
+      answer: (
+        <>
+          Für Leistungen der <strong>Pflegekasse</strong> in der Regel <strong>ja</strong>. Über die{" "}
+          <strong>Krankenkasse</strong> oder <strong>privat</strong> ist Unterstützung je nach Fall auch ohne
+          Pflegegrad möglich.
+        </>
+      ),
+    },
+    {
+      q: "Gibt es eine feste Bezugsperson?",
+      answerPlain:
+        "Ja, eine persönliche Beziehung ist wichtig; ein Wechsel der Bezugsperson erfolgt nur in dringenden Fällen.",
+      answer: (
+        <>
+          Ja, uns ist eine <strong>verlässliche Bezugsperson</strong> wichtig. Ein Wechsel erfolgt nur in{" "}
+          <strong>dringenden Fällen</strong>.
+        </>
+      ),
+    },
+    {
+      q: "Wie schnell kann ich einen Termin oder eine Rückmeldung bekommen?",
+      answerPlain: `Am schnellsten erreichen Sie ${standort.name} telefonisch über die lokale Standortnummer. Über das Kontaktformular auf dieser Seite melden wir uns zeitnah; der Start hängt von den regionalen Kapazitäten ab.`,
+      answer: (
+        <>
+          Am <strong>schnellsten</strong> geht es über die <strong>örtliche Rufnummer</strong> dieses Standorts. Über das{" "}
+          <Link href={contactHref} className={LINK_CLASS}>
+            Kontaktformular
+          </Link>{" "}
+          antworten wir zeitnah. Der konkrete Start hängt von den <strong>regionalen Kapazitäten</strong> ab – das
+          besprechen wir mit Ihnen offen.
+        </>
+      ),
+    },
+    {
+      q: "Wie stelle ich eine Anfrage?",
+      answerPlain: `Sie erreichen ${standort.name} telefonisch über die auf dieser Seite genannte Nummer oder nutzen das Kontaktformular. Zusätzlich können Sie ${brand} über die allgemeine Kontaktseite erreichen. Über die App von ${brand} sind Termine und Rechnungen einsehbar.`,
+      answer: (
+        <>
+          Rufen Sie uns an oder nutzen Sie das <Link href={contactHref} className={LINK_CLASS}>Kontaktformular</Link> auf
+          dieser Seite – Ihre Anfrage geht an den <strong>passenden Standort</strong>. Alternativ die{" "}
+          <Link href="/kontakt" className={LINK_CLASS}>
+            allgemeine Kontaktseite
+          </Link>
+          . Über die <strong>App</strong> von {brand} behalten Sie <strong>Termine und Rechnungen</strong> im Blick. Noch
+          mehr Fragen? In der{" "}
+          <Link href={`${HAUSHALTSHILFE_URL}#haushalt-faq-heading`} className={LINK_CLASS}>
+            FAQ Haushaltshilfe
+          </Link>{" "}
+          finden Sie weitere Antworten.
         </>
       ),
     },
@@ -584,29 +661,28 @@ export function StandortLanding({ standort, plzContext }: StandortLandingProps) 
           </RevealOnScroll>
         </section>
 
-        <section
-          className="relative border-t border-[#0F4F68]/10 bg-white py-14 sm:py-16"
-          aria-labelledby="standort-faq-heading"
-        >
-          <div className="relative mx-auto max-w-3xl px-4 sm:px-6">
+        <section className="relative bg-[#fafbfc] py-14 sm:py-20" aria-labelledby="standort-faq-heading">
+          <div className="relative mx-auto max-w-3xl px-4 sm:px-6 lg:max-w-4xl">
             <RevealOnScroll>
               <h2
                 id="standort-faq-heading"
                 className="text-center text-2xl font-extrabold tracking-tight text-[#0F4F68] sm:text-3xl"
               >
-                Fragen zu diesem Standort
+                Häufige Fragen
               </h2>
-              <p className="mx-auto mt-2 max-w-2xl text-center text-sm text-neutral-600 sm:text-base">
-                Kurz beantwortet – ausführliche FAQ zur Haushaltshilfe verlinken wir bewusst zentral, statt lange Texte
-                auf vielen Unterseiten zu wiederholen.
+              <p className="mx-auto mt-2 max-w-2xl text-center text-sm font-medium text-[#0F4F68]/85 sm:text-base">
+                Antworten zu Region, Leistungen, Kosten, Kasse, Entlastungsbetrag und Ablauf – ergänzend zur{" "}
+                <Link href={`${HAUSHALTSHILFE_URL}#haushalt-faq-heading`} className={LINK_CLASS}>
+                  FAQ Haushaltshilfe
+                </Link>
               </p>
             </RevealOnScroll>
-            <RevealOnScroll delayMs={80}>
+            <RevealOnScroll delayMs={100}>
               <div className="mt-8 space-y-3 sm:mt-10">
                 {FAQ.map((item) => (
                   <details
                     key={item.q}
-                    className="group rounded-2xl border border-[#0F4F68]/12 bg-[#fafbfc] shadow-[0_2px_16px_rgba(15,79,104,0.06)] transition hover:border-[#F78F2E]/35 open:border-[#0F4F68]/18"
+                    className="group rounded-2xl border border-[#0F4F68]/12 bg-white shadow-[0_2px_16px_rgba(15,79,104,0.06)] transition hover:border-[#F78F2E]/35 hover:shadow-[0_8px_28px_rgba(15,79,104,0.1)] open:border-[#0F4F68]/18 open:shadow-[0_10px_32px_rgba(15,79,104,0.12)]"
                   >
                     <summary className="flex cursor-pointer list-none items-center justify-between gap-4 px-4 py-4 text-left text-[#0F4F68] sm:px-5 [&::-webkit-details-marker]:hidden">
                       <span className="text-base font-semibold leading-snug sm:text-[1.05rem]">{item.q}</span>
@@ -619,7 +695,7 @@ export function StandortLanding({ standort, plzContext }: StandortLandingProps) 
                         </svg>
                       </span>
                     </summary>
-                    <div className="border-t border-[#0F4F68]/8 bg-white px-4 pb-4 pt-2 text-pretty text-sm leading-relaxed text-neutral-600 sm:px-5 sm:text-base">
+                    <div className="border-t border-[#0F4F68]/8 px-4 pb-4 pt-2 text-pretty text-sm leading-relaxed text-neutral-600 sm:px-5 sm:text-base">
                       {item.answer}
                     </div>
                   </details>
