@@ -560,6 +560,57 @@ export function StandortLanding({ standort, plzContext }: StandortLandingProps) 
         </section>
 
         <section
+          className="relative z-20 overflow-x-clip bg-[#F2F9FA] pb-14 pt-[clamp(4rem,7vw+1.75rem,6.75rem)] sm:pb-16 sm:pt-[clamp(4.5rem,8vw+2rem,7.25rem)] lg:pb-20"
+          aria-labelledby="standort-faq-heading"
+        >
+          <svg className={WELLEN_SVG_CLASS} viewBox="0 0 1200 100" preserveAspectRatio="none" fill="none" aria-hidden>
+            <path d={WELLEN_D} fill="#F2F9FA" />
+          </svg>
+          <div className="relative z-[1] mx-auto max-w-3xl px-4 sm:px-6 lg:max-w-4xl">
+            <RevealOnScroll>
+              <h2
+                id="standort-faq-heading"
+                className="text-center text-2xl font-extrabold tracking-tight text-[#0F4F68] sm:text-3xl"
+              >
+                Häufige Fragen
+              </h2>
+              <p className="mx-auto mt-2 max-w-2xl text-center text-sm font-medium text-[#0F4F68]/85 sm:text-base">
+                Antworten zu Region, Leistungen, Kosten, Kasse, Entlastungsbetrag und Ablauf – ergänzend zur{" "}
+                <Link href={`${HAUSHALTSHILFE_URL}#haushalt-faq-heading`} className={LINK_CLASS}>
+                  FAQ Haushaltshilfe
+                </Link>
+              </p>
+            </RevealOnScroll>
+            <RevealOnScroll delayMs={100}>
+              <div className="mt-8 space-y-3 sm:mt-10">
+                {FAQ.map((item) => (
+                  <details
+                    key={item.q}
+                    className="group rounded-2xl border border-[#0F4F68]/12 bg-white shadow-[0_2px_16px_rgba(15,79,104,0.06)] transition hover:border-[#F78F2E]/35 hover:shadow-[0_8px_28px_rgba(15,79,104,0.1)] open:border-[#0F4F68]/18 open:shadow-[0_10px_32px_rgba(15,79,104,0.12)]"
+                  >
+                    <summary className="flex cursor-pointer list-none items-center justify-between gap-4 px-4 py-4 text-left text-[#0F4F68] sm:px-5 [&::-webkit-details-marker]:hidden">
+                      <span className="text-base font-semibold leading-snug sm:text-[1.05rem]">{item.q}</span>
+                      <span
+                        className="inline-flex shrink-0 rounded-full bg-[#F78F2E]/12 p-1.5 text-[#F78F2E] transition-transform duration-200 group-open:rotate-180"
+                        aria-hidden
+                      >
+                        <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                        </svg>
+                      </span>
+                    </summary>
+                    <div className="border-t border-[#0F4F68]/8 px-4 pb-4 pt-2 text-pretty text-sm leading-relaxed text-neutral-600 sm:px-5 sm:text-base">
+                      {item.answer}
+                    </div>
+                  </details>
+                ))}
+              </div>
+            </RevealOnScroll>
+          </div>
+          <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }} />
+        </section>
+
+        <section
           className="relative z-10 overflow-x-clip bg-[#fafbfc] py-12 sm:py-14"
           aria-labelledby="standort-karten-titel"
         >
@@ -665,51 +716,6 @@ export function StandortLanding({ standort, plzContext }: StandortLandingProps) 
               </div>
             </div>
           </RevealOnScroll>
-        </section>
-
-        <section className="relative bg-[#fafbfc] py-14 sm:py-20" aria-labelledby="standort-faq-heading">
-          <div className="relative mx-auto max-w-3xl px-4 sm:px-6 lg:max-w-4xl">
-            <RevealOnScroll>
-              <h2
-                id="standort-faq-heading"
-                className="text-center text-2xl font-extrabold tracking-tight text-[#0F4F68] sm:text-3xl"
-              >
-                Häufige Fragen
-              </h2>
-              <p className="mx-auto mt-2 max-w-2xl text-center text-sm font-medium text-[#0F4F68]/85 sm:text-base">
-                Antworten zu Region, Leistungen, Kosten, Kasse, Entlastungsbetrag und Ablauf – ergänzend zur{" "}
-                <Link href={`${HAUSHALTSHILFE_URL}#haushalt-faq-heading`} className={LINK_CLASS}>
-                  FAQ Haushaltshilfe
-                </Link>
-              </p>
-            </RevealOnScroll>
-            <RevealOnScroll delayMs={100}>
-              <div className="mt-8 space-y-3 sm:mt-10">
-                {FAQ.map((item) => (
-                  <details
-                    key={item.q}
-                    className="group rounded-2xl border border-[#0F4F68]/12 bg-white shadow-[0_2px_16px_rgba(15,79,104,0.06)] transition hover:border-[#F78F2E]/35 hover:shadow-[0_8px_28px_rgba(15,79,104,0.1)] open:border-[#0F4F68]/18 open:shadow-[0_10px_32px_rgba(15,79,104,0.12)]"
-                  >
-                    <summary className="flex cursor-pointer list-none items-center justify-between gap-4 px-4 py-4 text-left text-[#0F4F68] sm:px-5 [&::-webkit-details-marker]:hidden">
-                      <span className="text-base font-semibold leading-snug sm:text-[1.05rem]">{item.q}</span>
-                      <span
-                        className="inline-flex shrink-0 rounded-full bg-[#F78F2E]/12 p-1.5 text-[#F78F2E] transition-transform duration-200 group-open:rotate-180"
-                        aria-hidden
-                      >
-                        <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-                        </svg>
-                      </span>
-                    </summary>
-                    <div className="border-t border-[#0F4F68]/8 px-4 pb-4 pt-2 text-pretty text-sm leading-relaxed text-neutral-600 sm:px-5 sm:text-base">
-                      {item.answer}
-                    </div>
-                  </details>
-                ))}
-              </div>
-            </RevealOnScroll>
-          </div>
-          <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }} />
         </section>
       </article>
     </div>
