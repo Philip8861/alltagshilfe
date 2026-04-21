@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import { Fragment, type ReactNode } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Container } from "@/components/layout/Container";
@@ -8,7 +8,8 @@ import { RevealOnScroll } from "@/components/pflegehilfsmittel/RevealOnScroll";
 import { STARTSEITE_VORTEILE } from "@/lib/startseite-vorteile";
 import { LeistungenKachelGrid } from "@/components/home/LeistungenKachelGrid";
 import { phoneHrefToWhatsAppUrl, type Standort } from "@/config/standorte";
-import { getPlzOrtMapLines, getPlzOrtMapsEmbedSrc } from "@/config/plz-ort-map-centers";
+import { getPlzOrtGoogleMapsSearchHref, getPlzOrtMapsEmbedSrc } from "@/config/plz-ort-map-centers";
+import { getNearbyServedPlzOrte } from "@/lib/plz-umkreis";
 
 const CONTACT_ANCHOR = "#standort-kontakt";
 const HAUSHALTSHILFE_URL = "/leistungen/haushaltshilfe";
@@ -27,6 +28,8 @@ const WELLEN_SVG_CLASS =
 
 const LINK_CLASS =
   "font-semibold text-[#0F4F68] underline underline-offset-2 decoration-[#0F4F68]/40 hover:decoration-[#F78F2E] hover:text-[#0c3d52]";
+
+const UMKREIS_KM = 8;
 
 /** Overlay über eingebetteter Google-Map: GPS-Zentrum, Umkreisfläche, Puls-Ringe (iframe bleibt darunter). */
 function StandortSuchgebietMapOverlay() {
@@ -164,13 +167,12 @@ function buildStandortFaq(input: {
 }
 
 export type StandortLandingProps = {
-  slug: string;
   plz: string;
   ort: string;
   standort: Standort;
 };
 
-export function StandortLanding({ slug, plz, ort, standort }: StandortLandingProps) {
+export function StandortLanding({ plz, ort, standort }: StandortLandingProps) {
   const FAQ = buildStandortFaq({ plz, ort, standort, contactHref: CONTACT_ANCHOR });
   const faqJsonLd = {
     "@context": "https://schema.org",
@@ -184,7 +186,8 @@ export function StandortLanding({ slug, plz, ort, standort }: StandortLandingPro
 
   const whatsappHref = phoneHrefToWhatsAppUrl(standort.phoneHref);
   const hoursParts = standort.hours.split(/\s*·\s*/).filter(Boolean);
-  const plzOrtMapInfo = getPlzOrtMapLines(slug, plz, ort);
+  const plzOrtMapsHref = getPlzOrtGoogleMapsSearchHref(plz, ort);
+  const nearbyPlzOrte = getNearbyServedPlzOrte(plz, UMKREIS_KM);
 
   return (
     <div className="min-w-0 overflow-x-clip overflow-y-visible bg-[#fafbfc] text-neutral-700 antialiased">
@@ -495,12 +498,33 @@ export function StandortLanding({ slug, plz, ort, standort }: StandortLandingPro
         <section className="border-t border-[#0F4F68]/10 bg-[#fafbfc] py-12" aria-label="Abschluss">
           <RevealOnScroll>
             <div className="mx-auto max-w-3xl px-4 text-center sm:px-6">
-              <p className="text-neutral-600">
-                {siteConfig.name} unterstützt Sie mit Haushaltshilfe in {ort} und Umgebung. Zur Übersicht aller Regionen:{" "}
-                <Link href="/standorte" className="font-semibold text-[#0F4F68] underline-offset-2 hover:underline">
-                  Standorte
-                </Link>
-                .
+              <p className="text-pretty text-neutral-600">
+                <span>
+                  {siteConfig.name} unterstützt Sie mit Haushaltshilfe in{" "}
+                  <strong>
+                    {plz} {ort}
+                  </strong>{" "}
+                  und Umgebung
+                </span>
+                {nearbyPlzOrte.length > 0 ? (
+                  <span>
+                    {" "}
+                    – im Umkreis von etwa {UMKREIS_KM}&#8239;km unter anderem in{" "}
+                    {nearbyPlzOrte.map((n, i) => (
+                      <Fragment key={n.plz}>
+                        {i > 0 && (i === nearbyPlzOrte.length - 1 ? " und " : ", ")}
+                        <strong>{n.plz}</strong> {n.ort}
+                      </Fragment>
+                    ))}
+                  </span>
+                ) : null}
+                <span>
+                  : Zur Übersicht aller Regionen:{" "}
+                  <Link href="/standorte" className="font-semibold text-[#0F4F68] underline-offset-2 hover:underline">
+                    Standorte
+                  </Link>
+                  .
+                </span>
               </p>
 
               <div
@@ -527,7 +551,7 @@ export function StandortLanding({ slug, plz, ort, standort }: StandortLandingPro
                 </div>
                 <p className="px-4 py-3 text-center">
                   <a
-                    href={plzOrtMapInfo.mapsHref}
+                    href={plzOrtMapsHref}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-sm font-semibold text-[#0F4F68] underline underline-offset-2 hover:text-[#0c3d52] focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2 rounded"
@@ -536,13 +560,6 @@ export function StandortLanding({ slug, plz, ort, standort }: StandortLandingPro
                   </a>
                 </p>
               </div>
-
-              {plzOrtMapInfo.coordsLine ? (
-                <p className="mx-auto mt-4 max-w-2xl text-center text-sm text-neutral-700">
-                  <span className="font-semibold text-[#0F4F68]">Koordinaten (Suchgebiet): </span>
-                  {plzOrtMapInfo.coordsLine}
-                </p>
-              ) : null}
 
               <div className="mt-6 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
                 <Link

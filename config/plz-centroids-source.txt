@@ -1,0 +1,5 @@
+PLZ-Mittelpunkte (WGS84): Teilmenge der Datei plz_geocoord.csv aus
+https://github.com/WZBSocialScienceCenter/plz_geocoord (Apache License 2.0).
+Enthält nur Postleitzahlen aus config/standorte-plz-generated.json (plzToOrt).
+Generierung: siehe Projekt-Historie / bei Bedarf CSV erneut einlesen und
+config/plz-centroids.json neu erzeugen.
