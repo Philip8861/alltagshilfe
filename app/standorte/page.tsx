@@ -3,7 +3,7 @@ import Link from "next/link";
 import { StandortSuche } from "@/components/standorte/StandortSuche";
 import { StandortAnthrazitRule } from "@/components/standorte/StandortAnthrazitRule";
 import { KartenMitKoordinatenErfassen } from "@/components/standorte/KartenMitKoordinatenErfassen";
-import { getAllStandortSlugs, getOrtByPlz } from "@/config/standorte";
+import { SERVED_PLZ_TOTAL, standorteByPlz } from "@/config/standorte";
 import { siteConfig } from "@/config/site";
 
 export const metadata: Metadata = {
@@ -16,10 +16,10 @@ const ORTSLABELS: { left: number; top: number; label: string; withX?: boolean }[
 
 /** GPS-Marker – Spitze des Pins auf der Koordinate. labelAbove: Name über Symbol. */
 const HAUPTMARKER = [
-  { left: 68.3, top: 67, label: "Allgäu", href: "/kontakt", labelAbove: false },
-  { left: 72.3, top: 49, label: "Augsburg", href: "/kontakt", labelAbove: true },
-  { left: 54.1, top: 62.3, label: "Engen/Konstanz", href: "/kontakt", labelAbove: false },
-  { left: 62.7, top: 61.1, label: "Wangen", sublabel: "(Bodenseeregion)", href: "/kontakt", labelAbove: true },
+  { left: 68.3, top: 67, label: "Allgäu", href: "/standorte/allgaeu", labelAbove: false },
+  { left: 72.3, top: 49, label: "Augsburg", href: "/standorte/augsburg", labelAbove: true },
+  { left: 54.1, top: 62.3, label: "Engen/Konstanz", href: "/standorte/engen", labelAbove: false },
+  { left: 62.7, top: 61.1, label: "Wangen", sublabel: "(Bodenseeregion)", href: "/standorte/wangen", labelAbove: true },
 ];
 
 /** Orangene Punkte auf der Karte (alte Positionen + 5 ergänzte). */
@@ -99,24 +99,7 @@ export default function StandortePage() {
     "Pflegeshop",
   ] as const;
 
-  const regionen = getAllStandortSlugs()
-    .map(({ slug }) => {
-      const plz = slug.split("-")[0] ?? "";
-      const ort = getOrtByPlz(plz) ?? slug.replace(/^\d{5}-/, "").replace(/-/g, " ");
-      return { slug, plz, ort };
-    })
-    .sort((a, b) => a.ort.localeCompare(b.ort, "de", { sensitivity: "base" }));
-
-  const groupedRegionen = regionen.reduce<Record<string, typeof regionen>>((acc, eintrag) => {
-    const letter = eintrag.ort.charAt(0).toLocaleUpperCase("de");
-    if (!acc[letter]) acc[letter] = [];
-    acc[letter].push(eintrag);
-    return acc;
-  }, {});
-  const sortedLetters = Object.keys(groupedRegionen).sort((a, b) =>
-    a.localeCompare(b, "de", { sensitivity: "base" })
-  );
-  const plzAnzahl = regionen.length;
+  const plzAnzahl = SERVED_PLZ_TOTAL;
 
   return (
     <article
@@ -154,10 +137,11 @@ export default function StandortePage() {
       <section className="relative z-20 mt-8 w-full px-4 sm:mt-10 sm:px-6 lg:px-[var(--ahs-page-gutter)]">
         <div className="mx-auto w-full max-w-5xl rounded-2xl border border-[#0F4F68]/10 bg-white/55 p-5 sm:p-7">
           <h2 className="text-2xl font-bold text-[#0F4F68] sm:text-3xl">
-            Wir bieten Haushaltshilfe und Alltagsbegleitungen in folgenden Regionen an
+            Unsere vier Standorte – ein Team für über {plzAnzahl} Postleitzahlen
           </h2>
-          <p className="mt-2 text-base font-semibold text-[#0F4F68]/90 sm:text-lg">
-            Wir bieten unsere Leistungen an ({plzAnzahl} PLZ) an.
+          <p className="mt-2 text-base text-neutral-700 sm:text-lg">
+            Wählen Sie Ihren regionalen Schwerpunkt. Über die Postleitzahl-Suche oben gelangen Sie mit Ihrer PLZ
+            direkt zur passenden Seite inklusive Ortsanzeige.
           </p>
           <ul className="mt-4 grid grid-cols-1 gap-2 text-sm text-neutral-700 sm:grid-cols-2 sm:text-base lg:grid-cols-3">
             {leistungen.map((leistung) => (
@@ -169,26 +153,21 @@ export default function StandortePage() {
               </li>
             ))}
           </ul>
-          <div className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            {sortedLetters.map((letter) => (
-              <section key={letter} aria-label={`Regionen mit ${letter}`}>
-                <h3 className="mb-2 text-lg font-bold text-[#0F4F68]">{letter}</h3>
-                <ul className="space-y-1.5">
-                  {groupedRegionen[letter].map((eintrag) => (
-                    <li key={eintrag.slug}>
-                      <Link
-                        href={`/standorte/${eintrag.slug}`}
-                        className="inline-flex items-baseline gap-2 text-neutral-800 hover:text-[#0F4F68] hover:underline focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2 rounded-sm"
-                      >
-                        <span>{eintrag.ort}</span>
-                        <span className="text-sm text-neutral-500">{eintrag.plz}</span>
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              </section>
+          <ul className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
+            {standorteByPlz.map((st) => (
+              <li key={st.pageSlug}>
+                <Link
+                  href={`/standorte/${st.pageSlug}`}
+                  className="flex h-full flex-col rounded-xl border border-[#0F4F68]/15 bg-[#F2F9FA]/80 p-5 transition hover:border-[#F78F2E]/40 hover:bg-white focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68] focus-visible:ring-offset-2"
+                >
+                  <span className="text-lg font-bold text-[#0F4F68]">{st.name}</span>
+                  <span className="mt-1 text-sm text-neutral-600">{st.address}</span>
+                  <span className="mt-3 text-sm font-semibold text-[#0F4F68]">{st.phone}</span>
+                  <span className="sr-only">Zur Standortseite {st.name}</span>
+                </Link>
+              </li>
             ))}
-          </div>
+          </ul>
         </div>
       </section>
 

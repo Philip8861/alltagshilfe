@@ -31,31 +31,6 @@ const nextConfig: NextConfig = {
         destination: "/#unsere-leistungen",
         permanent: true,
       },
-      {
-        source: "/standorte/86156-pfersee",
-        destination: "/standorte/86156-augsburg",
-        permanent: true,
-      },
-      {
-        source: "/standorte/86153-oberhausen",
-        destination: "/standorte/86153-innenstadt",
-        permanent: true,
-      },
-      {
-        source: "/standorte/88441-streitberg",
-        destination: "/standorte/88441-mittelbiberach",
-        permanent: true,
-      },
-      {
-        source: "/standorte/88454-winkel",
-        destination: "/standorte/88454-hochdorf-an-der-riss",
-        permanent: true,
-      },
-      {
-        source: "/standorte/88662-berlingen",
-        destination: "/standorte/88662-ueberlingen",
-        permanent: true,
-      },
     ];
   },
   /* Konfigurator: nach CSS/HTML-Änderungen nicht aus CDN-Browser-Cache „tot“ laden */

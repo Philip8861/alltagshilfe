@@ -94,7 +94,8 @@ export function StandortRegionMapInteractive({ markers, currentPlz, initialView 
     for (const marker of markers) {
       const active = marker.plz === currentPlz;
       const a = document.createElement("a");
-      a.href = `/standorte/${marker.slug}`;
+      const q = new URLSearchParams({ plz: marker.plz, ort: marker.ort });
+      a.href = `/standorte/${marker.standortPageSlug}?${q.toString()}`;
       a.style.display = "flex";
       a.style.alignItems = "center";
       a.style.justifyContent = "center";

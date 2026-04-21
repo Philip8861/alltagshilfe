@@ -238,6 +238,13 @@ export type StandortSchemaAddress = {
 
 export interface Standort {
   name: string;
+  /** URL-Segment der festen Standortseite, z. B. „allgaeu“. */
+  pageSlug: string;
+  /**
+   * Zweite Zeile der Hero-Überschrift ohne PLZ-Kontext (z. B. „im Allgäu und der Region“).
+   * Mit PLZ-Suche: stattdessen „in {PLZ} {Ort}“.
+   */
+  heroLocationGeneral: string;
   address: string;
   phone: string;
   phoneHref: string;
@@ -265,12 +272,14 @@ export const STANDORT_LEISTUNGEN = [
   "Kostenfreie Pflegehilfsmittel",
 ] as const;
 
-/** Slug des auf der Standorte-Seite hervorgehobenen Beispiel-Standorts (A–Z-Ausbau folgt). */
-export const STANDORT_TEASER_SLUG = "87700-memmingen" as const;
+/** Beispiel-Standortseite für Teaser/Verweise (feste URL). */
+export const STANDORT_TEASER_PAGE_SLUG = "allgaeu" as const;
 
 export const standorteByPlz: Standort[] = [
   {
     name: "Standort Allgäu",
+    pageSlug: "allgaeu",
+    heroLocationGeneral: "im Allgäu und der Region",
     address: "Hinter den Gärten 10, 87730 Bad Grönenbach",
     phone: "08334 / 9893330",
     phoneHref: "tel:+4983349893330",
@@ -290,6 +299,8 @@ export const standorteByPlz: Standort[] = [
   },
   {
     name: "Wangen (Bodenseeregion)",
+    pageSlug: "wangen",
+    heroLocationGeneral: "in der Bodenseeregion und der Region Wangen",
     address: "Karlstraße 3, 88239 Wangen im Allgäu",
     phone: "07522 / 9151686",
     phoneHref: "tel:+4975229151686",
@@ -309,6 +320,8 @@ export const standorteByPlz: Standort[] = [
   },
   {
     name: "Standort Augsburg",
+    pageSlug: "augsburg",
+    heroLocationGeneral: "in Augsburg und der Region",
     address: "Ulmer Straße 160, 86156 Augsburg",
     phone: "0821 / 48046200",
     phoneHref: "tel:+4982148046200",
@@ -328,6 +341,8 @@ export const standorteByPlz: Standort[] = [
   },
   {
     name: "Standort Engen/Konstanz",
+    pageSlug: "engen",
+    heroLocationGeneral: "am Hochrhein, Bodensee und der Region Engen",
     address: "Robert-Bosch-Straße 1, 78234 Engen",
     phone: "07733 / 948880",
     phoneHref: "tel:+497733948880",
@@ -346,6 +361,51 @@ export const standorteByPlz: Standort[] = [
     },
   },
 ];
+
+/** Anzahl eindeutig bedienter PLZ über alle vier Standortgebiete. */
+export const SERVED_PLZ_TOTAL = new Set(standorteByPlz.flatMap((s) => s.plzList)).size;
+
+export function findStandortByPageSlug(slug: string): Standort | undefined {
+  const t = slug.trim().toLowerCase();
+  return standorteByPlz.find((s) => s.pageSlug === t);
+}
+
+export function getAllStandortPageSlugs(): { standortSlug: string }[] {
+  return standorteByPlz.map((s) => ({ standortSlug: s.pageSlug }));
+}
+
+/** Kanonische URL einer festen Standortseite; optional mit PLZ/Ort aus der Suche. */
+export function buildStandortPageHref(
+  standort: Standort,
+  query?: { plz: string; ort: string },
+): string {
+  const base = `/standorte/${standort.pageSlug}`;
+  if (!query) return base;
+  const plz = query.plz.replace(/\D/g, "").slice(0, 5);
+  const ort = query.ort.trim();
+  if (plz.length !== 5 || !ort) return base;
+  const p = new URLSearchParams();
+  p.set("plz", plz);
+  p.set("ort", ort);
+  return `${base}?${p.toString()}`;
+}
+
+/**
+ * Liest ?plz=&ort= nur dann als gültigen Kontext, wenn die PLZ zum angezeigten Standortgebiet gehört.
+ */
+export function resolvePlzContextForStandortPage(
+  standort: Standort,
+  raw: { plz?: string; ort?: string } | undefined,
+): { plz: string; ort: string } | undefined {
+  if (!raw?.plz) return undefined;
+  const plz = String(raw.plz).replace(/\D/g, "").slice(0, 5);
+  if (plz.length !== 5 || !standort.plzList.includes(plz)) return undefined;
+  const fromPlz = getOrtByPlz(plz);
+  const ortParam = raw.ort?.trim();
+  const ort = ortParam && ortParam.length > 0 ? ortParam : fromPlz;
+  if (!ort) return undefined;
+  return { plz, ort };
+}
 
 /**
  * Wandelt eine tel:-URL (E.164) in eine WhatsApp-wa.me-Adresse um.
@@ -394,32 +454,6 @@ export function ortToSlugSegment(ort: string): string {
     .replace(/ß/g, "ss");
 }
 
-/** Liefert PLZ, Ort und Standort für eine Slug-URL (z. B. "87700-memmingen"); null wenn ungültig. */
-export function getStandortBySlug(slug: string): {
-  plz: string;
-  ort: string;
-  standort: Standort;
-} | null {
-  const part = slug.trim().toLowerCase().split("-");
-  const plz = part[0]?.replace(/\D/g, "").slice(0, 5);
-  if (!plz || plz.length !== 5) return null;
-  const ort = getOrtByPlz(plz);
-  const standort = findStandortByPlz(plz);
-  if (!ort || !standort) return null;
-  return { plz, ort, standort };
-}
-
-/** Alle gültigen Standort-Slugs für SSG (PLZ + Ort A–Z); für generateStaticParams. */
-export function getAllStandortSlugs(): { slug: string }[] {
-  const out: { slug: string }[] = [];
-  for (const [plz, ort] of Object.entries(plzToOrt)) {
-    if (plz.length !== 5 || !findStandortByPlz(plz)) continue;
-    out.push({ slug: `${plz}-${ortToSlugSegment(ort)}` });
-  }
-  out.sort((a, b) => a.slug.localeCompare(b.slug));
-  return out;
-}
-
 const TEL_E164 = (href: string) => href.replace(/^tel:/i, "").replace(/\s/g, "");
 
 /**
@@ -429,11 +463,14 @@ export function buildStandortLocalBusinessJsonLd(input: {
   pageUrl: string;
   siteUrl: string;
   organizationName: string;
-  plz: string;
-  ort: string;
   standort: Standort;
+  /** Gesetzt, wenn die Seite über PLZ-Suche mit konkretem Ort aufgerufen wurde. */
+  plzContext?: { plz: string; ort: string };
 }): Record<string, unknown> {
   const base = input.siteUrl.replace(/\/$/, "");
+  const areaLabel = input.plzContext
+    ? `${input.plzContext.plz} ${input.plzContext.ort}`
+    : `${input.standort.name} · Versorgungsgebiet`;
   return {
     "@type": "LocalBusiness",
     "@id": `${input.pageUrl}#local-business`,
@@ -456,7 +493,7 @@ export function buildStandortLocalBusinessJsonLd(input: {
     },
     areaServed: {
       "@type": "Place",
-      name: `${input.plz} ${input.ort}`,
+      name: areaLabel,
     },
   };
 }

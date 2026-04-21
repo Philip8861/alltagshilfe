@@ -1,7 +1,7 @@
 import { siteConfig } from "@/config/site";
 import type { MetadataRoute } from "next";
 import leistungenData from "@/content/leistungen.json";
-import { getAllStandortSlugs } from "@/config/standorte";
+import { getAllStandortPageSlugs } from "@/config/standorte";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const base = siteConfig.baseUrl;
@@ -49,8 +49,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.7,
     })
   );
-  const standortSeiten = getAllStandortSlugs().map(({ slug }) => ({
-    url: `${base}/standorte/${slug}`,
+  const standortSeiten = getAllStandortPageSlugs().map(({ standortSlug }) => ({
+    url: `${base}/standorte/${standortSlug}`,
     lastModified: new Date(),
     changeFrequency: "monthly" as const,
     priority: 0.65,

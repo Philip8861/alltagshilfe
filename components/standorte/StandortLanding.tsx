@@ -8,7 +8,12 @@ import { RevealOnScroll } from "@/components/pflegehilfsmittel/RevealOnScroll";
 import { STARTSEITE_VORTEILE } from "@/lib/startseite-vorteile";
 import { LEISTUNGS_LINKS_BY_ICON, STARTSEITE_LEISTUNGEN_KACHELN } from "@/lib/startseite-leistungen";
 import { LeistungenKachelGrid } from "@/components/home/LeistungenKachelGrid";
-import { ortToSlugSegment, phoneHrefToWhatsAppUrl, type Standort } from "@/config/standorte";
+import {
+  buildStandortPageHref,
+  findStandortByPlz,
+  phoneHrefToWhatsAppUrl,
+  type Standort,
+} from "@/config/standorte";
 import { StandortRegionMapInteractive } from "@/components/standorte/StandortRegionMapInteractive";
 import { getNearbyServedPlzOrte } from "@/lib/plz-umkreis";
 import {
@@ -64,26 +69,38 @@ function HeroCheckIcon({ className = "" }: { className?: string }) {
 type FaqItem = { q: string; answerPlain: string; answer: ReactNode };
 
 function buildStandortFaq(input: {
-  plz: string;
-  ort: string;
   standort: Standort;
+  plzContext?: { plz: string; ort: string };
   contactHref: string;
 }): FaqItem[] {
-  const { plz, ort, standort, contactHref } = input;
+  const { standort, plzContext, contactHref } = input;
   const bueroOrt = standort.schemaAddress.addressLocality;
 
+  const regionBlock: FaqItem = plzContext
+    ? {
+        q: `Wer ist für ${plzContext.ort} und die PLZ ${plzContext.plz} zuständig?`,
+        answerPlain: `Anfragen aus diesem Gebiet werden von ${standort.name} koordiniert (Büro ${bueroOrt}). Sie erreichen das Team über die auf dieser Seite angegebene Telefonnummer und E-Mail.`,
+        answer: (
+          <>
+            Ihre Anfrage aus <strong>{plzContext.ort}</strong> (PLZ <strong>{plzContext.plz}</strong>) bearbeitet{" "}
+            <strong>{standort.name}</strong> mit Sitz in <strong>{bueroOrt}</strong>. Telefon und E-Mail auf dieser
+            Seite führen direkt zu diesem Büro.
+          </>
+        ),
+      }
+    : {
+        q: "Wer betreut meine Region an diesem Standort?",
+        answerPlain: `Anfragen aus dem Versorgungsgebiet werden von ${standort.name} koordiniert (Büro ${bueroOrt}). Sie erreichen das Team über Telefonnummer und E-Mail auf dieser Seite.`,
+        answer: (
+          <>
+            <strong>{standort.name}</strong> koordiniert Anfragen aus dem zugehörigen PLZ-Gebiet. Das Büro liegt in{" "}
+            <strong>{bueroOrt}</strong> – erreichbar über die auf dieser Seite genannte Rufnummer und E-Mail-Adresse.
+          </>
+        ),
+      };
+
   return [
-    {
-      q: `Wer ist für ${ort} und die PLZ ${plz} zuständig?`,
-      answerPlain: `Anfragen aus diesem Gebiet werden von ${standort.name} koordiniert (Büro ${bueroOrt}). Sie erreichen das Team über die auf dieser Seite angegebene Telefonnummer und E-Mail.`,
-      answer: (
-        <>
-          Ihre Anfrage aus <strong>{ort}</strong> (PLZ <strong>{plz}</strong>) bearbeitet{" "}
-          <strong>{standort.name}</strong> mit Sitz in <strong>{bueroOrt}</strong>. Telefon und E-Mail auf dieser Seite
-          führen direkt zu diesem Büro.
-        </>
-      ),
-    },
+    regionBlock,
     {
       q: "Welche Leistungen kann ich hier anfragen?",
       answerPlain:
@@ -133,13 +150,19 @@ function buildStandortFaq(input: {
 }
 
 export type StandortLandingProps = {
-  plz: string;
-  ort: string;
   standort: Standort;
+  /** Gesetzt, wenn der Besuch über PLZ-Suche oder Karte mit konkretem Ort erfolgt. */
+  plzContext?: { plz: string; ort: string };
 };
 
-export function StandortLanding({ plz, ort, standort }: StandortLandingProps) {
-  const FAQ = buildStandortFaq({ plz, ort, standort, contactHref: CONTACT_ANCHOR });
+export function StandortLanding({ standort, plzContext }: StandortLandingProps) {
+  const hasGeo = Boolean(plzContext);
+  const mapAnchorPlz = plzContext?.plz ?? standort.schemaAddress.postalCode;
+  const heroLocationLine = hasGeo
+    ? `in ${plzContext!.plz} ${plzContext!.ort}`
+    : standort.heroLocationGeneral;
+
+  const FAQ = buildStandortFaq({ standort, plzContext, contactHref: CONTACT_ANCHOR });
   const faqJsonLd = {
     "@context": "https://schema.org",
     "@type": "FAQPage",
@@ -153,7 +176,7 @@ export function StandortLanding({ plz, ort, standort }: StandortLandingProps) {
   const whatsappHref = phoneHrefToWhatsAppUrl(standort.phoneHref);
   const hoursParts = standort.hours.split(/\s*·\s*/).filter(Boolean);
   const regionMapsHref = getServiceRegionGoogleMapsSearchHref();
-  const nearbyPlzOrte = getNearbyServedPlzOrte(plz, UMKREIS_KM);
+  const nearbyPlzOrte = hasGeo && plzContext ? getNearbyServedPlzOrte(plzContext.plz, UMKREIS_KM) : [];
 
   return (
     <div className="min-w-0 overflow-x-clip overflow-y-visible bg-[#fafbfc] text-neutral-700 antialiased">
@@ -170,7 +193,7 @@ export function StandortLanding({ plz, ort, standort }: StandortLandingProps) {
                   <div className="w-full">
                     <Image
                       src="/images/startseite_front.webp"
-                      alt={`Pflegeberatung, Haushaltshilfe und Betreuung in ${plz} ${ort}`}
+                      alt={`Pflegeberatung, Haushaltshilfe und Betreuung – ${standort.name}`}
                       width={900}
                       height={700}
                       sizes="(max-width: 1023px) 100vw, (max-width: 1400px) 88vw, 900px"
@@ -191,8 +214,8 @@ export function StandortLanding({ plz, ort, standort }: StandortLandingProps) {
                     <span className="block whitespace-nowrap">
                       Pflegeberatung, Haushaltshilfe
                     </span>
-                    <span className="mt-0.5 block whitespace-nowrap sm:mt-1">
-                      &amp; Betreuung in {plz} {ort}
+                    <span className="mt-0.5 block text-balance sm:mt-1">
+                      &amp; Betreuung {heroLocationLine}
                     </span>
                   </h1>
                   <ul
@@ -241,7 +264,11 @@ export function StandortLanding({ plz, ort, standort }: StandortLandingProps) {
             <RevealOnScroll>
               <LeistungenKachelGrid
                 id="standort-angebot-heading"
-                heading={`Unser Leistungsangebot für ${plz} ${ort}`}
+                heading={
+                  hasGeo && plzContext
+                    ? `Unser Leistungsangebot für ${plzContext.plz} ${plzContext.ort}`
+                    : `Unser Leistungsangebot – ${standort.name}`
+                }
                 subtitle="Persönlich, zuverlässig und mit viel Herz im Alltag – hier mit einem Klick zur ausführlichen Seite."
                 headingClassName="text-balance"
               />
@@ -299,8 +326,8 @@ export function StandortLanding({ plz, ort, standort }: StandortLandingProps) {
                 Fragen zu diesem Standort
               </h2>
               <p className="mx-auto mt-2 max-w-2xl text-center text-sm text-neutral-600 sm:text-base">
-                Kurz beantwortet – ausführliche FAQ zur Haushaltshilfe verlinken wir bewusst zentral, statt identische
-                Texte auf hunderten Seiten zu wiederholen.
+                Kurz beantwortet – ausführliche FAQ zur Haushaltshilfe verlinken wir bewusst zentral, statt lange Texte auf
+                vielen Unterseiten zu wiederholen.
               </p>
             </RevealOnScroll>
             <RevealOnScroll delayMs={80}>
@@ -349,8 +376,18 @@ export function StandortLanding({ plz, ort, standort }: StandortLandingProps) {
                   </h2>
                   <div className="mt-4 space-y-4 text-pretty text-sm leading-relaxed text-neutral-700 sm:text-base">
                     <p>
-                      Für die <strong>{plz}</strong> <strong>{ort}</strong> ist der Standort{" "}
-                      <strong>{standort.name}</strong> zuständig.
+                      {hasGeo && plzContext ? (
+                        <>
+                          Für die <strong>{plzContext.plz}</strong> <strong>{plzContext.ort}</strong> ist der Standort{" "}
+                          <strong>{standort.name}</strong> zuständig.
+                        </>
+                      ) : (
+                        <>
+                          <strong>{standort.name}</strong> ist für Anfragen aus dem zugehörigen Versorgungsgebiet
+                          zuständig. Das Team arbeitet am Sitz in{" "}
+                          <strong>{standort.schemaAddress.addressLocality}</strong>.
+                        </>
+                      )}
                     </p>
                     <p>
                       Gerne können Sie dieses Kontaktformular nutzen – Ihre Anfrage wird direkt an den passenden
@@ -484,7 +521,11 @@ export function StandortLanding({ plz, ort, standort }: StandortLandingProps) {
 
                 <ul
                   className="mx-auto mt-2 max-w-lg space-y-3 sm:max-w-xl"
-                  aria-label={`Leistungen in ${plz} ${ort} und Nachbargemeinden`}
+                  aria-label={
+                    hasGeo && plzContext
+                      ? `Leistungen in ${plzContext.plz} ${plzContext.ort} und Nachbargemeinden`
+                      : `Leistungen im Versorgungsgebiet ${standort.name}`
+                  }
                 >
                   {STARTSEITE_LEISTUNGEN_KACHELN.map((leistung) => (
                     <li key={leistung.title} className="flex items-start gap-3">
@@ -501,11 +542,22 @@ export function StandortLanding({ plz, ort, standort }: StandortLandingProps) {
 
                 <p className="text-center text-sm leading-relaxed sm:text-base">
                   <span className="font-medium text-neutral-800">{siteConfig.name}</span> koordiniert diese Leistungen
-                  für Sie in{" "}
-                  <strong>
-                    {plz} {ort}
-                  </strong>{" "}
-                  – und ebenso in den <strong>Nachbargemeinden</strong> und Orten in der näheren Umgebung.
+                  {hasGeo && plzContext ? (
+                    <>
+                      {" "}
+                      für Sie in{" "}
+                      <strong>
+                        {plzContext.plz} {plzContext.ort}
+                      </strong>{" "}
+                      – und ebenso in den <strong>Nachbargemeinden</strong> und Orten in der näheren Umgebung.
+                    </>
+                  ) : (
+                    <>
+                      {" "}
+                      im Einzugsgebiet von <strong>{standort.name}</strong> – einschließlich angrenzender Gemeinden in
+                      der Region.
+                    </>
+                  )}
                 </p>
 
                 {nearbyPlzOrte.length > 0 ? (
@@ -517,16 +569,22 @@ export function StandortLanding({ plz, ort, standort }: StandortLandingProps) {
                       className="flex flex-wrap items-center justify-center gap-2"
                       aria-label="Weitere Orte im Nahbereich"
                     >
-                      {nearbyPlzOrte.map((n) => (
-                        <li key={n.plz}>
-                          <Link
-                            href={`/standorte/${n.plz}-${ortToSlugSegment(n.ort)}`}
-                            className="inline-flex rounded-full border border-[#0F4F68]/20 bg-white px-3 py-1.5 text-sm font-semibold text-[#0F4F68] shadow-sm transition hover:border-[#F78F2E]/50 hover:bg-[#F2F9FA] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68] focus-visible:ring-offset-2"
-                          >
-                            {n.plz} {n.ort}
-                          </Link>
-                        </li>
-                      ))}
+                      {nearbyPlzOrte.map((n) => {
+                        const ziel = findStandortByPlz(n.plz);
+                        const href = ziel
+                          ? buildStandortPageHref(ziel, { plz: n.plz, ort: n.ort })
+                          : "/standorte";
+                        return (
+                          <li key={n.plz}>
+                            <Link
+                              href={href}
+                              className="inline-flex rounded-full border border-[#0F4F68]/20 bg-white px-3 py-1.5 text-sm font-semibold text-[#0F4F68] shadow-sm transition hover:border-[#F78F2E]/50 hover:bg-[#F2F9FA] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68] focus-visible:ring-offset-2"
+                            >
+                              {n.plz} {n.ort}
+                            </Link>
+                          </li>
+                        );
+                      })}
                     </ul>
                   </div>
                 ) : null}
@@ -550,12 +608,13 @@ export function StandortLanding({ plz, ort, standort }: StandortLandingProps) {
                     id="standort-karten-titel"
                     className="text-base font-semibold text-neutral-700 sm:text-lg"
                   >
-                    Regionalkarte · {plz} {ort}
+                    Regionalkarte ·{" "}
+                    {hasGeo && plzContext ? `${plzContext.plz} ${plzContext.ort}` : standort.name}
                   </p>
                 </div>
                 <StandortRegionMapInteractive
                   markers={REGION_MAP_MARKERS}
-                  currentPlz={plz}
+                  currentPlz={mapAnchorPlz}
                   initialView={REGION_MAP_VIEW}
                 />
                 <p className="px-4 py-3 text-center">

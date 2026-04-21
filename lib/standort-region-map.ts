@@ -2,7 +2,7 @@
  * Regionale Standortkarte: gemeinsame Bounds aller servierten PLZ (plz-centroids.json),
  * Zentrum/Zoom für Regionalkarte (MapLibre/OSM) und Link „Google Maps öffnen“.
  */
-import { getAllStandortSlugs, getOrtByPlz } from "@/config/standorte";
+import { findStandortByPlz, getOrtByPlz } from "@/config/standorte";
 import { buildRegionMapsEmbedSrc } from "@/lib/region-map-embed";
 import { getAllCentroidPlzKeys, getResolvedCentroid } from "@/lib/plz-centroid-resolve";
 
@@ -16,7 +16,8 @@ const ZOOM_MAX = 10;
 export type PlzMapMarker = {
   plz: string;
   ort: string;
-  slug: string;
+  /** Feste Standortseite (/standorte/{slug}). */
+  standortPageSlug: string;
   lat: number;
   lng: number;
 };
@@ -89,17 +90,17 @@ export function getServiceRegionGoogleMapsSearchHref(): string {
 
 let markersCache: PlzMapMarker[] | null = null;
 
-/** Alle Standort-Seiten mit Koordinate, für die Karten-Overlays (Reihenfolge wie getAllStandortSlugs). */
+/** Servierte PLZ mit Koordinate; Linkziel ist die zugehörige feste Standortseite inkl. PLZ/Ort. */
 export function getPlzMarkersForRegionMap(): PlzMapMarker[] {
   if (markersCache) return markersCache;
   const out: PlzMapMarker[] = [];
-  for (const { slug } of getAllStandortSlugs()) {
-    const plz = slug.slice(0, 5);
+  for (const plz of getAllCentroidPlzKeys()) {
     if (!/^\d{5}$/.test(plz)) continue;
     const ort = getOrtByPlz(plz);
+    const standort = findStandortByPlz(plz);
     const c = getResolvedCentroid(plz);
-    if (!ort || !c) continue;
-    out.push({ plz, ort, slug, lat: c.lat, lng: c.lng });
+    if (!ort || !standort || !c) continue;
+    out.push({ plz, ort, standortPageSlug: standort.pageSlug, lat: c.lat, lng: c.lng });
   }
   markersCache = out;
   return out;

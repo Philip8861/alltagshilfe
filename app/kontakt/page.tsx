@@ -4,7 +4,7 @@ import Link from "next/link";
 import { Container } from "@/components/layout/Container";
 import { ContactForm } from "@/components/forms/ContactForm";
 import { StandortFinderPopup } from "@/components/contact/StandortFinderPopup";
-import { findStandortByPlz, getOrtByPlz, ortToSlugSegment } from "@/config/standorte";
+import { buildStandortPageHref, findStandortByPlz, getOrtByPlz } from "@/config/standorte";
 import { siteConfig } from "@/config/site";
 
 export const metadata: Metadata = {
@@ -73,8 +73,11 @@ export default async function KontaktPage({
                   <div className="mt-4 flex justify-center">
                     <Link
                       href={
-                        selectedOrt
-                          ? `/standorte/${selectedPlz}-${ortToSlugSegment(selectedOrt)}`
+                        selectedStandort && selectedOrt
+                          ? buildStandortPageHref(selectedStandort, {
+                              plz: selectedPlz,
+                              ort: selectedOrt,
+                            })
                           : "/standorte"
                       }
                       className="flex w-full max-w-sm items-center justify-center rounded-xl bg-[#0F4F68] px-6 py-3.5 font-semibold text-white transition-colors hover:bg-[#0c3d52] focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2"

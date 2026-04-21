@@ -57,6 +57,8 @@ const SCHRITT_MOTIVATION: Record<number, string> = {
 
 const BAD_GROENENBACH_STANDORT: StandortInfo = {
   name: "Standort Bad Grönenbach",
+  pageSlug: "allgaeu",
+  heroLocationGeneral: "im Allgäu und der Region",
   address: "Hinter den Gärten 10, 87730 Bad Grönenbach",
   phone: "08334 / 9893330",
   phoneHref: "tel:+4983349893330",
