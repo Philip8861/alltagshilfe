@@ -178,9 +178,6 @@ export function PflegeboxiLandingChatbot() {
           <Link href="/kontakt" className="ahs-landing-pfxb__panel-link">
             Kundenservice
           </Link>
-          <Link href="/pflegehilfsmittel/kostenfreie-pflegehilfsmittel" className="ahs-landing-pfxb__panel-link">
-            Kostenfreie Pflegehilfsmittel
-          </Link>
         </div>
       </div>
     </div>
