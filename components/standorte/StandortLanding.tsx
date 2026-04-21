@@ -1,4 +1,4 @@
-import { Fragment, type ReactNode } from "react";
+import { type ReactNode } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Container } from "@/components/layout/Container";
@@ -7,7 +7,7 @@ import { siteConfig } from "@/config/site";
 import { RevealOnScroll } from "@/components/pflegehilfsmittel/RevealOnScroll";
 import { STARTSEITE_VORTEILE } from "@/lib/startseite-vorteile";
 import { LeistungenKachelGrid } from "@/components/home/LeistungenKachelGrid";
-import { phoneHrefToWhatsAppUrl, type Standort } from "@/config/standorte";
+import { ortToSlugSegment, phoneHrefToWhatsAppUrl, type Standort } from "@/config/standorte";
 import { StandortRegionMapInteractive } from "@/components/standorte/StandortRegionMapInteractive";
 import { getNearbyServedPlzOrte } from "@/lib/plz-umkreis";
 import {
@@ -456,49 +456,70 @@ export function StandortLanding({ plz, ort, standort }: StandortLandingProps) {
 
         <section className="border-t border-[#0F4F68]/10 bg-[#fafbfc] py-12" aria-label="Abschluss">
           <RevealOnScroll>
-            <div className="mx-auto max-w-3xl px-4 text-center sm:px-6">
-              <p className="text-pretty text-neutral-600">
-                <span>
-                  {siteConfig.name} unterstützt Sie mit Haushaltshilfe, Alltagsbegleitung, Pflegeberatung,
-                  Pflegehilfsmittel in:{" "}
+            <div className="mx-auto max-w-3xl px-4 sm:px-6">
+              <div className="space-y-5 text-pretty text-neutral-700">
+                <h3
+                  id="standort-region-leistungen-heading"
+                  className="text-center text-xl font-extrabold tracking-tight text-[#0F4F68] sm:text-2xl"
+                >
+                  Haushaltshilfe, Begleitung &amp; Beratung in Ihrer Region
+                </h3>
+
+                <p className="text-center text-sm leading-relaxed sm:text-base">
+                  <span className="font-medium text-neutral-800">{siteConfig.name}</span> unterstützt Sie mit{" "}
+                  <span className="font-semibold text-[#0F4F68]">
+                    Haushaltshilfe, Alltagsbegleitung, Pflegeberatung und Pflegehilfsmitteln
+                  </span>{" "}
+                  in{" "}
                   <strong>
                     {plz} {ort}
                   </strong>{" "}
-                  und Umgebung
-                </span>
+                  und Umgebung.
+                </p>
+
                 {nearbyPlzOrte.length > 0 ? (
-                  <span>
-                    {" "}
-                    – im Umkreis von etwa {UMKREIS_KM}&#8239;km unter anderem in{" "}
-                    {nearbyPlzOrte.map((n, i) => (
-                      <Fragment key={n.plz}>
-                        {i > 0 && (i === nearbyPlzOrte.length - 1 ? " und " : ", ")}
-                        {n.plz} {n.ort}
-                      </Fragment>
-                    ))}
-                  </span>
+                  <div className="space-y-3">
+                    <p className="text-center text-sm font-semibold text-neutral-800 sm:text-base">
+                      Im Umkreis von etwa {UMKREIS_KM}&#8239;km unter anderem in:
+                    </p>
+                    <ul
+                      className="flex flex-wrap items-center justify-center gap-2"
+                      aria-label="Weitere Orte im Nahbereich"
+                    >
+                      {nearbyPlzOrte.map((n) => (
+                        <li key={n.plz}>
+                          <Link
+                            href={`/standorte/${n.plz}-${ortToSlugSegment(n.ort)}`}
+                            className="inline-flex rounded-full border border-[#0F4F68]/20 bg-white px-3 py-1.5 text-sm font-semibold text-[#0F4F68] shadow-sm transition hover:border-[#F78F2E]/50 hover:bg-[#F2F9FA] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68] focus-visible:ring-offset-2"
+                          >
+                            {n.plz} {n.ort}
+                          </Link>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
                 ) : null}
-                <span>
-                  : Zur Übersicht aller Regionen:{" "}
+
+                <p className="text-center text-sm text-neutral-600 sm:text-base">
+                  Zur Übersicht aller Regionen:{" "}
                   <Link href="/standorte" className="font-semibold text-[#0F4F68] underline-offset-2 hover:underline">
                     Standorte
                   </Link>
                   .
-                </span>
-              </p>
+                </p>
+              </div>
 
               <div
-                className="mx-auto mt-10 w-full max-w-2xl overflow-hidden rounded-xl border border-[#0F4F68]/20 bg-[#F2F9FA]/80 shadow-[0_10px_22px_rgba(15,79,104,0.2)] shadow-[0_4px_12px_rgba(15,79,104,0.12)]"
+                className="mx-auto mt-10 w-full max-w-[min(100%,29.5rem)] overflow-hidden rounded-xl border border-[#0F4F68]/20 bg-[#F2F9FA]/80 shadow-[0_10px_22px_rgba(15,79,104,0.2)] shadow-[0_4px_12px_rgba(15,79,104,0.12)]"
                 role="region"
-                aria-label={`Regionalkarte mit allen Standorten; aktuell ${plz} ${ort}`}
+                aria-labelledby="standort-karten-titel"
               >
                 <div className="border-b border-[#0F4F68]/15 bg-[#F2F9FA] px-4 py-3 text-center sm:px-5">
-                  <p className="text-base font-semibold text-neutral-700 sm:text-lg">
-                    {plz} {ort}
-                  </p>
-                  <p className="mt-1 text-sm text-neutral-600">
-                    Regionalkarte (OpenStreetMap): Karte verschieben wie gewohnt; +/− zum Zoomen. Ihr Ort ist blau
-                    hervorgehoben, andere Standorte orange – antippen öffnet die jeweilige Seite (PLZ/Ort).
+                  <p
+                    id="standort-karten-titel"
+                    className="text-base font-semibold text-neutral-700 sm:text-lg"
+                  >
+                    Regionalkarte · {plz} {ort}
                   </p>
                 </div>
                 <StandortRegionMapInteractive
@@ -515,6 +536,10 @@ export function StandortLanding({ plz, ort, standort }: StandortLandingProps) {
                   >
                     Größere Karte und Route in Google Maps öffnen
                   </a>
+                </p>
+                <p className="border-t border-[#0F4F68]/10 px-4 pb-3 pt-2 text-center text-xs leading-snug text-neutral-500">
+                  Die Marker liegen am Mittelpunkt der jeweiligen Postleitzahl; bei weitläufigen Gemeinden kann das
+                  neben dem Ortsnamen erscheinen.
                 </p>
               </div>
 

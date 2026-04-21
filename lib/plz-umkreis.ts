@@ -1,13 +1,8 @@
 /**
- * Umkreis-Berechnung für servierte PLZ (nur Einträge in config/plz-centroids.json).
- * Koordinaten: Teilmenge aus WZB plz_geocoord (Apache-2.0), siehe config/plz-centroids-source.txt.
+ * Umkreis-Berechnung für servierte PLZ. Koordinaten: plz-centroids.json + config/plz-centroid-overrides.ts.
  */
-import plzCentroids from "@/config/plz-centroids.json";
 import { getOrtByPlz } from "@/config/standorte";
-
-type Centroid = { lat: number; lng: number };
-
-const centroids = plzCentroids as Record<string, Centroid>;
+import { getAllCentroidPlzKeys, getResolvedCentroid, type Centroid } from "@/lib/plz-centroid-resolve";
 
 function haversineKm(a: Centroid, b: Centroid): number {
   const R = 6371;
@@ -26,13 +21,15 @@ export type NearbyPlzOrt = { plz: string; ort: string; distanceKm: number };
 /** Servierte PLZ/Ort-Paare (ohne Zentrum) im angegebenen Radius, sortiert nach Entfernung. */
 export function getNearbyServedPlzOrte(centerPlz: string, radiusKm: number): NearbyPlzOrt[] {
   const normalized = centerPlz.replace(/\D/g, "").slice(0, 5);
-  const center = centroids[normalized];
+  const center = getResolvedCentroid(normalized);
   if (!center) return [];
 
   const out: NearbyPlzOrt[] = [];
-  for (const plz of Object.keys(centroids)) {
+  for (const plz of getAllCentroidPlzKeys()) {
     if (plz === normalized) continue;
-    const d = haversineKm(center, centroids[plz]);
+    const other = getResolvedCentroid(plz);
+    if (!other) continue;
+    const d = haversineKm(center, other);
     if (d > radiusKm) continue;
     const ort = getOrtByPlz(plz);
     if (!ort) continue;

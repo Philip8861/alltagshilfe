@@ -2,13 +2,9 @@
  * Regionale Standortkarte: gemeinsame Bounds aller servierten PLZ (plz-centroids.json),
  * Zentrum/Zoom für Regionalkarte (MapLibre/OSM) und Link „Google Maps öffnen“.
  */
-import plzCentroids from "@/config/plz-centroids.json";
 import { getAllStandortSlugs, getOrtByPlz } from "@/config/standorte";
 import { buildRegionMapsEmbedSrc } from "@/lib/region-map-embed";
-
-type Centroid = { lat: number; lng: number };
-
-const centroids = plzCentroids as Record<string, Centroid>;
+import { getAllCentroidPlzKeys, getResolvedCentroid } from "@/lib/plz-centroid-resolve";
 
 const PADDING_RATIO = 0.12;
 /** Sichtbare Breite in px (Referenz), konservativ für typische Embed-Breite */
@@ -39,8 +35,9 @@ function computeRawBounds(): Bounds {
   let maxLat = -90;
   let minLng = 180;
   let maxLng = -180;
-  for (const key of Object.keys(centroids)) {
-    const c = centroids[key];
+  for (const key of getAllCentroidPlzKeys()) {
+    const c = getResolvedCentroid(key);
+    if (!c) continue;
     if (c.lat < minLat) minLat = c.lat;
     if (c.lat > maxLat) maxLat = c.lat;
     if (c.lng < minLng) minLng = c.lng;
@@ -100,7 +97,7 @@ export function getPlzMarkersForRegionMap(): PlzMapMarker[] {
     const plz = slug.slice(0, 5);
     if (!/^\d{5}$/.test(plz)) continue;
     const ort = getOrtByPlz(plz);
-    const c = centroids[plz];
+    const c = getResolvedCentroid(plz);
     if (!ort || !c) continue;
     out.push({ plz, ort, slug, lat: c.lat, lng: c.lng });
   }

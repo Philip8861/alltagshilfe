@@ -131,7 +131,7 @@ export function StandortRegionMapInteractive({ markers, currentPlz, initialView 
   }, [mapLoaded, markers, currentPlz]);
 
   return (
-    <div className="relative aspect-[4/3] w-full min-h-[220px] overflow-hidden rounded-b-xl bg-neutral-200">
+    <div className="relative aspect-[4/3] w-full min-h-[154px] overflow-hidden rounded-b-xl bg-neutral-200">
       <div ref={containerRef} className="absolute inset-0 h-full w-full" />
     </div>
   );
