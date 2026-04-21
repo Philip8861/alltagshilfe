@@ -6,6 +6,7 @@ import { ContactForm } from "@/components/forms/ContactForm";
 import { siteConfig } from "@/config/site";
 import { RevealOnScroll } from "@/components/pflegehilfsmittel/RevealOnScroll";
 import { STARTSEITE_VORTEILE } from "@/lib/startseite-vorteile";
+import { LEISTUNGS_LINKS_BY_ICON, STARTSEITE_LEISTUNGEN_KACHELN } from "@/lib/startseite-leistungen";
 import { LeistungenKachelGrid } from "@/components/home/LeistungenKachelGrid";
 import { ortToSlugSegment, phoneHrefToWhatsAppUrl, type Standort } from "@/config/standorte";
 import { StandortRegionMapInteractive } from "@/components/standorte/StandortRegionMapInteractive";
@@ -240,8 +241,8 @@ export function StandortLanding({ plz, ort, standort }: StandortLandingProps) {
             <RevealOnScroll>
               <LeistungenKachelGrid
                 id="standort-angebot-heading"
-                heading={`Wir bieten folgende Leistungen an Ihrem Standort in ${plz} ${ort} an:`}
-                subtitle="Persönlich, zuverlässig und mit viel Herz im Alltag."
+                heading={`Unser Leistungsangebot für ${plz} ${ort}`}
+                subtitle="Persönlich, zuverlässig und mit viel Herz im Alltag – hier mit einem Klick zur ausführlichen Seite."
                 headingClassName="text-balance"
               />
             </RevealOnScroll>
@@ -454,27 +455,57 @@ export function StandortLanding({ plz, ort, standort }: StandortLandingProps) {
           </Container>
         </section>
 
-        <section className="border-t border-[#0F4F68]/10 bg-[#fafbfc] py-12" aria-label="Abschluss">
+        <section
+          className="relative z-10 overflow-x-clip bg-[#fafbfc] py-12 sm:py-14"
+          aria-labelledby="standort-region-leistungen-heading"
+        >
+          <svg
+            className={WELLEN_SVG_CLASS}
+            viewBox="0 0 1200 100"
+            preserveAspectRatio="none"
+            fill="none"
+            aria-hidden
+          >
+            <path d={WELLEN_D} fill="#fafbfc" />
+          </svg>
           <RevealOnScroll>
-            <div className="mx-auto max-w-3xl px-4 sm:px-6">
+            <div className="relative z-[1] mx-auto max-w-3xl px-4 sm:px-6">
               <div className="space-y-5 text-pretty text-neutral-700">
                 <h3
                   id="standort-region-leistungen-heading"
-                  className="text-center text-xl font-extrabold tracking-tight text-[#0F4F68] sm:text-2xl"
+                  className="text-center text-balance text-xl font-extrabold tracking-tight text-[#0F4F68] sm:text-2xl"
                 >
-                  Haushaltshilfe, Begleitung &amp; Beratung in Ihrer Region
+                  Haushaltshilfe, Betreuung, Alltagsbegleitung, Pflegeberatung und Pflegehilfsmittel in Ihrer Nähe.
                 </h3>
 
+                <p className="text-center text-base font-semibold text-[#0F4F68] sm:text-lg">
+                  Wir bieten folgende Leistungen
+                </p>
+
+                <ul
+                  className="mx-auto mt-2 max-w-lg space-y-3 sm:max-w-xl"
+                  aria-label={`Leistungen in ${plz} ${ort} und Nachbargemeinden`}
+                >
+                  {STARTSEITE_LEISTUNGEN_KACHELN.map((leistung) => (
+                    <li key={leistung.title} className="flex items-start gap-3">
+                      <HeroCheckIcon className="mt-0.5" />
+                      <Link
+                        href={LEISTUNGS_LINKS_BY_ICON[leistung.icon]}
+                        className={`text-left text-base font-medium leading-snug ${LINK_CLASS}`}
+                      >
+                        {leistung.title}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+
                 <p className="text-center text-sm leading-relaxed sm:text-base">
-                  <span className="font-medium text-neutral-800">{siteConfig.name}</span> unterstützt Sie mit{" "}
-                  <span className="font-semibold text-[#0F4F68]">
-                    Haushaltshilfe, Alltagsbegleitung, Pflegeberatung und Pflegehilfsmitteln
-                  </span>{" "}
-                  in{" "}
+                  <span className="font-medium text-neutral-800">{siteConfig.name}</span> koordiniert diese Leistungen
+                  für Sie in{" "}
                   <strong>
                     {plz} {ort}
                   </strong>{" "}
-                  und Umgebung.
+                  – und ebenso in den <strong>Nachbargemeinden</strong> und Orten in der näheren Umgebung.
                 </p>
 
                 {nearbyPlzOrte.length > 0 ? (
