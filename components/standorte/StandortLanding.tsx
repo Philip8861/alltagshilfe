@@ -3,10 +3,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { Container } from "@/components/layout/Container";
 import { ContactForm } from "@/components/forms/ContactForm";
-import { siteConfig } from "@/config/site";
 import { RevealOnScroll } from "@/components/pflegehilfsmittel/RevealOnScroll";
 import { STARTSEITE_VORTEILE } from "@/lib/startseite-vorteile";
-import { LEISTUNGS_LINKS_BY_ICON, STARTSEITE_LEISTUNGEN_KACHELN } from "@/lib/startseite-leistungen";
 import { LeistungenKachelGrid } from "@/components/home/LeistungenKachelGrid";
 import {
   buildStandortPageHref,
@@ -16,9 +14,9 @@ import {
 } from "@/config/standorte";
 import { StandortRegionMapInteractive } from "@/components/standorte/StandortRegionMapInteractive";
 import {
+  getInteractiveRegionMapInitialView,
   getPlzMarkersForRegionMap,
   getServiceRegionGoogleMapsSearchHref,
-  getServiceRegionMapView,
 } from "@/lib/standort-region-map";
 
 const CONTACT_ANCHOR = "#standort-kontakt";
@@ -39,7 +37,6 @@ const WELLEN_SVG_CLASS =
 const LINK_CLASS =
   "font-semibold text-[#0F4F68] underline underline-offset-2 decoration-[#0F4F68]/40 hover:decoration-[#F78F2E] hover:text-[#0c3d52]";
 
-const REGION_MAP_VIEW = getServiceRegionMapView();
 const REGION_MAP_MARKERS = getPlzMarkersForRegionMap();
 
 function HeroCheckIcon({ className = "" }: { className?: string }) {
@@ -162,6 +159,22 @@ function buildSortedStandortPlzOrte(standort: Standort): { plz: string; ort: str
   return rows;
 }
 
+/** Gruppierung A–Z nach erstem Buchstaben des Ortsnamens (de), stabil sortiert. */
+function groupPlzOrteByInitialLetter(rows: { plz: string; ort: string }[]): [string, { plz: string; ort: string }[]][] {
+  const groups = new Map<string, { plz: string; ort: string }[]>();
+  for (const row of rows) {
+    const label = (row.ort || row.plz).trim();
+    const first = label.charAt(0);
+    const upper = first ? first.toLocaleUpperCase("de-DE") : "#";
+    const key = /[A-ZÄÖÜ0-9]/.test(upper) ? upper : "#";
+    if (!groups.has(key)) groups.set(key, []);
+    groups.get(key)!.push(row);
+  }
+  return [...groups.entries()].sort((a, b) =>
+    a[0].localeCompare(b[0], "de", { numeric: true, sensitivity: "base" }),
+  );
+}
+
 export type StandortLandingProps = {
   standort: Standort;
   /** Gesetzt, wenn der Besuch über PLZ-Suche oder Karte mit konkretem Ort erfolgt. */
@@ -190,6 +203,8 @@ export function StandortLanding({ standort, plzContext }: StandortLandingProps) 
   const hoursParts = standort.hours.split(/\s*·\s*/).filter(Boolean);
   const regionMapsHref = getServiceRegionGoogleMapsSearchHref();
   const standortPlzOrteSorted = buildSortedStandortPlzOrte(standort);
+  const plzLetterGroups = groupPlzOrteByInitialLetter(standortPlzOrteSorted);
+  const regionMapInitialView = getInteractiveRegionMapInitialView(mapAnchorPlz, standort);
 
   return (
     <div className="min-w-0 overflow-x-clip overflow-y-visible bg-[#fafbfc] text-neutral-700 antialiased">
@@ -464,7 +479,7 @@ export function StandortLanding({ standort, plzContext }: StandortLandingProps) 
 
         <section
           className="relative z-10 overflow-x-clip bg-[#fafbfc] py-12 sm:py-14"
-          aria-labelledby="standort-region-leistungen-heading"
+          aria-labelledby="standort-karten-titel"
         >
           <svg
             className={WELLEN_SVG_CLASS}
@@ -477,77 +492,8 @@ export function StandortLanding({ standort, plzContext }: StandortLandingProps) 
           </svg>
           <RevealOnScroll>
             <div className="relative z-[1] mx-auto max-w-5xl px-4 sm:px-6">
-              <div className="space-y-5 text-pretty text-neutral-700">
-                <h3
-                  id="standort-region-leistungen-heading"
-                  className="text-center text-balance text-xl font-extrabold tracking-tight text-[#0F4F68] sm:text-2xl"
-                >
-                  Wir bieten folgende Leistungen
-                </h3>
-
-                <ul
-                  className="mx-auto mt-2 max-w-lg space-y-3 sm:max-w-xl"
-                  aria-label={`Leistungen im Versorgungsgebiet ${standort.name}`}
-                >
-                  {STARTSEITE_LEISTUNGEN_KACHELN.map((leistung) => (
-                    <li key={leistung.title} className="flex items-start gap-3">
-                      <HeroCheckIcon className="mt-0.5" />
-                      <Link
-                        href={LEISTUNGS_LINKS_BY_ICON[leistung.icon]}
-                        className={`text-left text-base font-medium leading-snug ${LINK_CLASS}`}
-                      >
-                        {leistung.title}
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-
-                <p className="text-center text-sm leading-relaxed sm:text-base">
-                  <span className="font-medium text-neutral-800">{siteConfig.name}</span> koordiniert diese Leistungen im
-                  Einzugsgebiet von <strong>{standort.name}</strong> – einschließlich angrenzender Gemeinden in der
-                  Region.
-                </p>
-
-                <p className="text-center text-sm text-neutral-600 sm:text-base">
-                  Zur Übersicht aller Regionen:{" "}
-                  <Link href="/standorte" className="font-semibold text-[#0F4F68] underline-offset-2 hover:underline">
-                    Standorte
-                  </Link>
-                  .
-                </p>
-
-                <div className="border-t border-[#0F4F68]/10 pt-6">
-                  <p
-                    id="standort-plz-liste-heading"
-                    className="text-center text-sm font-semibold text-[#0F4F68] sm:text-base"
-                  >
-                    Orte und Postleitzahlen in diesem Standortgebiet (A–Z)
-                  </p>
-                  <ul
-                    className="mt-4 grid grid-cols-1 gap-x-4 gap-y-1.5 text-sm text-neutral-800 sm:grid-cols-2 lg:grid-cols-3"
-                    aria-labelledby="standort-plz-liste-heading"
-                  >
-                    {standortPlzOrteSorted.map(({ plz, ort }) => (
-                      <li key={plz}>
-                        <Link
-                          href={
-                            ort
-                              ? buildStandortPageHref(standort, { plz, ort })
-                              : `/standorte/${standort.pageSlug}`
-                          }
-                          className="inline-flex w-full max-w-full items-baseline gap-2 rounded-sm py-0.5 text-left hover:text-[#0F4F68] hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68] focus-visible:ring-offset-2"
-                        >
-                          <span className="min-w-0 flex-1 truncate">{ort || `PLZ ${plz}`}</span>
-                          <span className="shrink-0 tabular-nums text-neutral-500">{plz}</span>
-                        </Link>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </div>
-
               <div
-                className="mx-auto mt-10 w-full max-w-[min(100%,29.5rem)] overflow-hidden rounded-xl border border-[#0F4F68]/20 bg-[#F2F9FA]/80 shadow-[0_10px_22px_rgba(15,79,104,0.2)] shadow-[0_4px_12px_rgba(15,79,104,0.12)]"
+                className="mx-auto w-full max-w-[min(100%,29.5rem)] overflow-hidden rounded-xl border border-[#0F4F68]/20 bg-[#F2F9FA]/80 shadow-[0_10px_22px_rgba(15,79,104,0.2)] shadow-[0_4px_12px_rgba(15,79,104,0.12)]"
                 role="region"
                 aria-labelledby="standort-karten-titel"
               >
@@ -563,7 +509,7 @@ export function StandortLanding({ standort, plzContext }: StandortLandingProps) 
                 <StandortRegionMapInteractive
                   markers={REGION_MAP_MARKERS}
                   currentPlz={mapAnchorPlz}
-                  initialView={REGION_MAP_VIEW}
+                  initialView={regionMapInitialView}
                 />
                 <p className="px-4 py-3 text-center">
                   <a
@@ -581,7 +527,61 @@ export function StandortLanding({ standort, plzContext }: StandortLandingProps) 
                 </p>
               </div>
 
-              <div className="mt-6 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
+              <div className="relative mx-auto mt-10 max-w-5xl rounded-2xl border border-[#0F4F68]/12 bg-gradient-to-br from-white via-[#F2F9FA]/90 to-white p-5 shadow-[0_8px_30px_rgba(15,79,104,0.08)] sm:p-8">
+                <div
+                  className="pointer-events-none absolute -right-6 -top-6 h-24 w-24 rounded-full bg-[#F78F2E]/10 blur-2xl sm:h-32 sm:w-32"
+                  aria-hidden
+                />
+                <h3
+                  id="standort-plz-liste-heading"
+                  className="text-center text-balance text-lg font-extrabold tracking-tight text-[#0F4F68] sm:text-xl"
+                >
+                  Orte und Postleitzahlen in diesem Gebiet
+                </h3>
+                <p className="mx-auto mt-2 max-w-2xl text-center text-sm text-neutral-600 sm:text-base">
+                  Alphabetisch nach Ort – jeder Eintrag führt zur Standortseite mit Ihrer Auswahl.
+                </p>
+                <div className="mt-8 space-y-8 sm:space-y-10" aria-labelledby="standort-plz-liste-heading">
+                  {plzLetterGroups.map(([letter, rows]) => (
+                    <div key={letter} className="flex flex-col gap-4 sm:flex-row sm:gap-6">
+                      <div className="flex items-center gap-3 sm:block sm:w-14 sm:shrink-0 sm:text-center">
+                        <span
+                          className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-[#0F4F68] text-lg font-extrabold text-white shadow-md sm:mx-auto sm:h-14 sm:w-14 sm:text-2xl"
+                          aria-hidden
+                        >
+                          {letter}
+                        </span>
+                        <span className="text-xs font-semibold uppercase tracking-wider text-[#0F4F68]/70 sm:hidden">
+                          {rows.length} {rows.length === 1 ? "Ort" : "Orte"}
+                        </span>
+                      </div>
+                      <ul className="grid flex-1 grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3">
+                        {rows.map(({ plz, ort }) => (
+                          <li key={plz}>
+                            <Link
+                              href={
+                                ort
+                                  ? buildStandortPageHref(standort, { plz, ort })
+                                  : `/standorte/${standort.pageSlug}`
+                              }
+                              className="flex min-h-[48px] items-center justify-between gap-3 rounded-xl border border-[#0F4F68]/10 bg-white/95 px-3 py-2.5 text-left text-sm text-neutral-800 shadow-sm transition hover:border-[#F78F2E]/40 hover:shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68] focus-visible:ring-offset-2 sm:px-4 sm:text-[0.9375rem]"
+                            >
+                              <span className="min-w-0 flex-1 font-medium leading-snug">
+                                {ort || `PLZ ${plz}`}
+                              </span>
+                              <span className="shrink-0 rounded-md bg-[#0F4F68]/8 px-2 py-0.5 tabular-nums text-xs font-semibold text-[#0F4F68] sm:text-sm">
+                                {plz}
+                              </span>
+                            </Link>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="mt-8 flex flex-col items-center gap-3 sm:mt-10 sm:flex-row sm:justify-center">
                 <Link
                   href={CONTACT_ANCHOR}
                   className="inline-flex rounded-lg bg-[#F78F2E] px-8 py-3 text-base font-bold text-white shadow-md transition hover:opacity-95 focus:outline-none focus:ring-2 focus:ring-[#F78F2E] focus:ring-offset-2"

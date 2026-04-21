@@ -2,7 +2,7 @@
  * Regionale Standortkarte: gemeinsame Bounds aller servierten PLZ (plz-centroids.json),
  * Zentrum/Zoom für Regionalkarte (MapLibre/OSM) und Link „Google Maps öffnen“.
  */
-import { findStandortByPlz, getOrtByPlz } from "@/config/standorte";
+import { findStandortByPlz, getOrtByPlz, type Standort } from "@/config/standorte";
 import { buildRegionMapsEmbedSrc } from "@/lib/region-map-embed";
 import { getAllCentroidPlzKeys, getResolvedCentroid } from "@/lib/plz-centroid-resolve";
 
@@ -76,6 +76,41 @@ export function getServiceRegionMapView(): { lat: number; lng: number; zoom: num
   const lng = (b.minLng + b.maxLng) / 2;
   const zoom = lngSpanToZoom(b.maxLng - b.minLng);
   return { lat, lng, zoom };
+}
+
+const FOCUS_ZOOM = 10;
+
+/**
+ * Kartenstart für Standort-Unterseiten: Fokus auf gesuchte PLZ bzw. Büro-PLZ des Standorts,
+ * damit die Karte nicht nur die große Regionalmitte (wirkt oft „irgendwo Mitteldeutschland“) zeigt.
+ */
+export function getInteractiveRegionMapInitialView(
+  focusPlz: string,
+  standort: Standort,
+): { lat: number; lng: number; zoom: number } {
+  const markers = getPlzMarkersForRegionMap();
+  const normalized = focusPlz.replace(/\D/g, "").slice(0, 5);
+
+  const byPlz = (plz: string) => markers.find((x) => x.plz === plz);
+  let m = normalized.length === 5 ? byPlz(normalized) : undefined;
+
+  if (!m) {
+    const officePlz = standort.schemaAddress.postalCode.replace(/\D/g, "").slice(0, 5);
+    if (officePlz.length === 5) m = byPlz(officePlz);
+  }
+
+  if (!m && standort.plzList.length > 0) {
+    const sortedPlz = [...standort.plzList].sort();
+    for (const p of sortedPlz) {
+      m = byPlz(p);
+      if (m) break;
+    }
+  }
+
+  if (m) {
+    return { lat: m.lat, lng: m.lng, zoom: FOCUS_ZOOM };
+  }
+  return getServiceRegionMapView();
 }
 
 export function getServiceRegionMapsEmbedSrc(): string {

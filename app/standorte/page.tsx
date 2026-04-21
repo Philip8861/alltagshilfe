@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { StandortSuche } from "@/components/standorte/StandortSuche";
 import { StandortAnthrazitRule } from "@/components/standorte/StandortAnthrazitRule";
@@ -21,6 +22,13 @@ const HAUPTMARKER = [
   { left: 54.1, top: 62.3, label: "Engen/Konstanz", href: "/standorte/engen", labelAbove: false },
   { left: 62.7, top: 61.1, label: "Wangen", sublabel: "(Bodenseeregion)", href: "/standorte/wangen", labelAbove: true },
 ];
+
+const STANDORT_CARD_IMAGE: Record<string, string> = {
+  allgaeu: "/images/Bild_Allgaue.webp",
+  augsburg: "/images/Bild_Augsburg.webp",
+  engen: "/images/Bild_Konstanz.webp",
+  wangen: "/images/Bild_Wangen.webp",
+};
 
 /** Orangene Punkte auf der Karte (alte Positionen + 5 ergänzte). */
 const PUNKTE = [
@@ -137,12 +145,8 @@ export default function StandortePage() {
       <section className="relative z-20 mt-8 w-full px-4 sm:mt-10 sm:px-6 lg:px-[var(--ahs-page-gutter)]">
         <div className="mx-auto w-full max-w-5xl rounded-2xl border border-[#0F4F68]/10 bg-white/55 p-5 sm:p-7">
           <h2 className="text-2xl font-bold text-[#0F4F68] sm:text-3xl">
-            Ihr Ansprechpartner für rund {plzAnzahl} Orte
+            Unsere Ansprechpartner unterstützen Sie an rund {plzAnzahl} Orten im süddeutschen Raum
           </h2>
-          <p className="mt-2 text-base text-neutral-700 sm:text-lg">
-            Wählen Sie Ihren regionalen Schwerpunkt. Über die Postleitzahl-Suche oben gelangen Sie mit Ihrer PLZ
-            direkt zur passenden Seite inklusive Ortsanzeige.
-          </p>
           <ul className="mt-4 grid grid-cols-1 gap-2 text-sm text-neutral-700 sm:grid-cols-2 sm:text-base lg:grid-cols-3">
             {leistungen.map((leistung) => (
               <li key={leistung} className="inline-flex items-center gap-2">
@@ -154,19 +158,43 @@ export default function StandortePage() {
             ))}
           </ul>
           <ul className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
-            {standorteByPlz.map((st) => (
-              <li key={st.pageSlug}>
-                <Link
-                  href={`/standorte/${st.pageSlug}`}
-                  className="flex h-full flex-col rounded-xl border border-[#0F4F68]/15 bg-[#F2F9FA]/80 p-5 transition hover:border-[#F78F2E]/40 hover:bg-white focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68] focus-visible:ring-offset-2"
-                >
-                  <span className="text-lg font-bold text-[#0F4F68]">{st.name}</span>
-                  <span className="mt-1 text-sm text-neutral-600">{st.address}</span>
-                  <span className="mt-3 text-sm font-semibold text-[#0F4F68]">{st.phone}</span>
-                  <span className="sr-only">Zur Standortseite {st.name}</span>
-                </Link>
-              </li>
-            ))}
+            {standorteByPlz.map((st) => {
+              const imgSrc = STANDORT_CARD_IMAGE[st.pageSlug] ?? "/images/Bild_Allgaue.webp";
+              return (
+                <li key={st.pageSlug} className="flex min-h-0">
+                  <div className="flex h-full w-full min-w-0 flex-col overflow-hidden rounded-xl border border-[#0F4F68]/15 bg-[#F2F9FA]/80 shadow-sm transition hover:border-[#F78F2E]/40 hover:bg-white hover:shadow-md">
+                    <Link
+                      href={`/standorte/${st.pageSlug}`}
+                      className="group flex min-h-0 flex-1 flex-col focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68] focus-visible:ring-offset-2"
+                    >
+                      <div className="relative aspect-[16/10] w-full shrink-0 overflow-hidden bg-[#0F4F68]/8">
+                        <Image
+                          src={imgSrc}
+                          alt={`${st.name} – regionaler Ansprechpartner`}
+                          fill
+                          className="object-cover transition duration-300 group-hover:scale-[1.02]"
+                          sizes="(max-width: 640px) 100vw, 50vw"
+                        />
+                      </div>
+                      <div className="flex flex-1 flex-col p-5">
+                        <span className="text-lg font-bold text-[#0F4F68]">{st.name}</span>
+                        <span className="mt-1 text-sm text-neutral-600">{st.address}</span>
+                        <span className="mt-3 text-sm font-semibold text-[#0F4F68]">{st.phone}</span>
+                        <span className="sr-only">Zur Standortseite {st.name}</span>
+                      </div>
+                    </Link>
+                    <div className="border-t border-[#0F4F68]/10 bg-white/60 px-5 py-3">
+                      <a
+                        href={`mailto:${st.email}`}
+                        className="break-all text-sm font-semibold text-[#0F4F68] underline-offset-2 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68] focus-visible:ring-offset-2 rounded"
+                      >
+                        {st.email}
+                      </a>
+                    </div>
+                  </div>
+                </li>
+              );
+            })}
           </ul>
         </div>
       </section>
