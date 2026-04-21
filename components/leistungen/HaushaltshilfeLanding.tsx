@@ -4,7 +4,7 @@ import { KundenstimmenCarousel } from "@/components/home/KundenstimmenCarousel";
 import { siteConfig } from "@/config/site";
 import { RevealOnScroll } from "@/components/pflegehilfsmittel/RevealOnScroll";
 import { JetztNeuPromoSection } from "@/components/leistungen/JetztNeuPromoSection";
-import { STARTSEITE_VORTEILE } from "@/lib/startseite-vorteile";
+import { STARTSEITE_VORTEILE, STARTSEITE_VORTEILE_INTRO } from "@/lib/startseite-vorteile";
 
 const HERO_IMG = "/images/haushaltshilfe.webp";
 
@@ -416,9 +416,7 @@ export function HaushaltshilfeLanding() {
                 >
                   Ihre Vorteile bei uns
                 </h2>
-                <p className="mt-2 text-pretty text-sm text-neutral-600 sm:text-base">
-                  Verlässlich, transparent und nah bei Ihnen - mit klaren Prozessen und echter Unterstützung im Alltag.
-                </p>
+                <p className="mt-2 text-pretty text-sm text-neutral-600 sm:text-base">{STARTSEITE_VORTEILE_INTRO}</p>
               </div>
               <ul className="mt-6 grid gap-4 sm:grid-cols-2">
                 {STARTSEITE_VORTEILE.map((item) => (

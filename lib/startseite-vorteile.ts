@@ -1,3 +1,7 @@
+/** Gleiche Überschrift und Einleitung wie auf der Startseite („Ihre Vorteile bei uns“). */
+export const STARTSEITE_VORTEILE_INTRO =
+  "Herzlich, zuverlässig und immer nah bei Ihnen. Wir bieten eine echte Unterstützung im Alltag.";
+
 /** Gleiche Liste wie auf der Startseite („Ihre Vorteile bei uns“). */
 export const STARTSEITE_VORTEILE = [
   "Zugelassen bei allen Pflege- und Krankenkassen in Deutschland",

@@ -4,7 +4,7 @@ import Link from "next/link";
 import { Container } from "@/components/layout/Container";
 import { ContactForm } from "@/components/forms/ContactForm";
 import { RevealOnScroll } from "@/components/pflegehilfsmittel/RevealOnScroll";
-import { STARTSEITE_VORTEILE } from "@/lib/startseite-vorteile";
+import { STARTSEITE_VORTEILE, STARTSEITE_VORTEILE_INTRO } from "@/lib/startseite-vorteile";
 import { LeistungenKachelGrid } from "@/components/home/LeistungenKachelGrid";
 import {
   buildStandortPageHref,
@@ -404,7 +404,7 @@ export function StandortLanding({ standort, plzContext }: StandortLandingProps) 
                 Ihre Vorteile bei uns
               </h3>
               <p className="mx-auto mt-2 max-w-3xl text-center text-sm text-neutral-600 sm:text-base">
-                Herzlich, zuverlässig und immer nah bei Ihnen. Wir bieten eine echte Unterstützung im Alltag.
+                {STARTSEITE_VORTEILE_INTRO}
               </p>
               <ul className="mt-6 grid gap-4 sm:grid-cols-2">
                 {STARTSEITE_VORTEILE.map((item) => (

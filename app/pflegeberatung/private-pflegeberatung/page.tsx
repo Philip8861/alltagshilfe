@@ -5,6 +5,7 @@ import { KundenstimmenCarousel } from "@/components/home/KundenstimmenCarousel";
 import { PflegegradBeratungTable } from "@/components/pflegeberatung/PflegegradBeratungTable";
 import { PflegeberatungNaehePlzDialog } from "@/components/pflegeberatung/PflegeberatungNaehePlzDialog";
 import { PRIVATE_PFLEGEBERATUNG_FAQ } from "@/lib/private-pflegeberatung-faq";
+import { STARTSEITE_VORTEILE_INTRO } from "@/lib/startseite-vorteile";
 import { siteConfig } from "@/config/site";
 import { cn } from "@/lib/utils";
 
@@ -231,13 +232,13 @@ export default function PrivatePflegeberatungPage() {
               className={`${SECTION_TITLE_CLASS} text-balance ${ANIM_IN}`}
               style={{ animationDelay: "0ms" }}
             >
-              Unsere Vorteile
+              Ihre Vorteile bei uns
             </h2>
             <p
               className={`${ANIM_IN} mt-2 text-pretty text-sm text-neutral-600 sm:text-base`}
               style={{ animationDelay: "70ms" }}
             >
-              Verlässlich, transparent und nah bei Ihnen – mit klaren Prozessen und echter Unterstützung im Alltag.
+              {STARTSEITE_VORTEILE_INTRO}
             </p>
           </div>
           <ul className="mt-6 grid gap-4 sm:grid-cols-2">

@@ -3,6 +3,7 @@ import Link from "next/link";
 import { siteConfig } from "@/config/site";
 import { PFLEGEBOX_KONFIGURATOR_PAGE } from "@/lib/pflegebox-konfigurator-path";
 import { RevealOnScroll } from "@/components/pflegehilfsmittel/RevealOnScroll";
+import { STARTSEITE_VORTEILE_INTRO } from "@/lib/startseite-vorteile";
 import { PflegeboxiLandingChatbot } from "@/components/pflegehilfsmittel/PflegeboxiLandingChatbot";
 
 /** Einziges Hero-Bild dieser Seite (Datei unverändert aus /public/images). */
@@ -472,10 +473,7 @@ export function KostenfreiePflegehilfsmittelLanding() {
                 >
                   Ihre Vorteile bei uns
                 </h2>
-                <p className="mt-2 text-pretty text-sm text-neutral-600 sm:text-base">
-                  Verlässlich, transparent und nah bei Ihnen, mit klaren Prozessen und echter Unterstützung rund um Ihre
-                  Pflegehilfsmittel.
-                </p>
+                <p className="mt-2 text-pretty text-sm text-neutral-600 sm:text-base">{STARTSEITE_VORTEILE_INTRO}</p>
               </div>
               <ul className="mt-6 grid gap-4 sm:grid-cols-2">
                 {KOSTENFREI_USPS.map((item) => (
