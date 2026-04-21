@@ -16,7 +16,6 @@ export function PflegeboxiLandingChatbot() {
   const [hidden, setHidden] = useState(false);
   const [selectedTopic, setSelectedTopic] = useState<PflegeboxiTopic | null>(null);
   const [jump, setJump] = useState(false);
-  const [wiggle, setWiggle] = useState(false);
   const replyRef = useRef<HTMLDivElement>(null);
   const replyBubbleRef = useRef<HTMLDivElement>(null);
   const imgRef = useRef<HTMLImageElement>(null);
@@ -51,12 +50,6 @@ export function PflegeboxiLandingChatbot() {
     setJump(false);
     void imgRef.current?.offsetWidth;
     setJump(true);
-  }, []);
-
-  const triggerWiggle = useCallback(() => {
-    setWiggle(false);
-    void imgRef.current?.offsetWidth;
-    setWiggle(true);
   }, []);
 
   /** Im eingeklappten Zustand ab und zu hüpfen (2–4 s Abstand), um Aufmerksamkeit zu lenken. */
@@ -96,7 +89,7 @@ export function PflegeboxiLandingChatbot() {
 
   const onTopicClick = (topic: PflegeboxiTopic) => {
     setSelectedTopic(topic);
-    triggerWiggle();
+    triggerJump();
   };
 
   if (hidden) return null;
@@ -138,14 +131,13 @@ export function PflegeboxiLandingChatbot() {
           ref={imgRef}
           src="/konfigurator/images/pflegeboxi.webp"
           alt="Pflegeboxi"
-          className={`ahs-landing-pfxb__img${jump ? " ahs-landing-pfxb__img--jump" : ""}${wiggle ? " ahs-landing-pfxb__img--wiggle" : ""}`}
+          className={`ahs-landing-pfxb__img${jump ? " ahs-landing-pfxb__img--jump" : ""}`}
           width={130}
           height={130}
           decoding="async"
           onClick={onImgClick}
           onAnimationEnd={(ev) => {
             if (ev.animationName.includes("ahs-landing-pfxb-jump")) setJump(false);
-            if (ev.animationName.includes("ahs-landing-pfxb-wiggle")) setWiggle(false);
           }}
           onError={(ev) => {
             const t = ev.currentTarget;
