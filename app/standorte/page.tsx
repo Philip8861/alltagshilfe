@@ -142,7 +142,7 @@ export default function StandortePage() {
             id="standorte-karten-heading"
             className="mx-auto max-w-3xl text-balance text-center text-2xl font-bold leading-snug text-[#0F4F68] sm:text-3xl"
           >
-            Unsere Standorte sind an rund {plzAnzahl} Standorten für Sie im Einsatz. Wir helfen gerne weiter!
+            Unsere Hauptstandorte sind an rund {plzAnzahl} Regionen für Sie im Einsatz. Wir helfen gerne weiter!
           </h2>
           <ul className="mt-8 grid grid-cols-1 gap-6 sm:mt-10 sm:grid-cols-2 sm:gap-8">
             {standorteByPlz.map((st) => {

@@ -9,7 +9,7 @@ import { STARTSEITE_VORTEILE, STARTSEITE_VORTEILE_INTRO } from "@/lib/startseite
 const HNO_LANDING_FAQ = buildStandortStyleFaq(null);
 const HNO_LANDING_FAQ_JSON_LD = standortFaqJsonLd(HNO_LANDING_FAQ);
 
-const HERO_IMG = "/images/haushaltshilfe.webp";
+const HERO_IMG = "/images/operation.webp";
 
 const HERO_GLOW_CLASS =
   "[filter:drop-shadow(0_10px_22px_rgba(15,79,104,0.2))_drop-shadow(0_4px_12px_rgba(15,79,104,0.12))] [will-change:filter]";
@@ -88,7 +88,10 @@ export function HilfeNachOperationLanding() {
                 className="text-3xl font-extrabold leading-tight tracking-tight text-[#0F4F68] opacity-0 motion-reduce:opacity-100 animate-fade-in-up sm:text-4xl lg:text-[clamp(1.75rem,1.05rem+2.5vw,3rem)]"
                 style={{ animationDelay: "0s" }}
               >
-                <span className="block">Hilfe nach Operation, Unfall oder Schwangerschaft ganz in Ihrer Nähe</span>
+                <span className="block max-sm:text-balance sm:whitespace-nowrap">
+                  Hilfe nach Operation, Haushaltshilfe oder
+                </span>
+                <span className="block max-sm:text-balance sm:whitespace-nowrap">Schwangerschaft ganz in Ihrer Nähe</span>
               </h1>
               <ul
                 className="mt-5 min-w-0 space-y-3 sm:mt-6 sm:space-y-3.5 lg:mt-0 lg:space-y-[clamp(0.65rem,0.35rem+0.9vw,1rem)]"
@@ -97,11 +100,13 @@ export function HilfeNachOperationLanding() {
                 {HERO_VORTEILE.map((line, i) => (
                   <li
                     key={line}
-                    className="flex min-w-0 items-start gap-3 text-lg font-semibold leading-snug text-[#0F4F68] opacity-0 motion-reduce:opacity-100 animate-fade-in-up sm:text-xl lg:items-center lg:text-[clamp(1.05rem,0.82rem+0.5vw,1.35rem)]"
+                    className="flex min-w-0 flex-nowrap items-start gap-3 text-lg font-semibold leading-snug text-[#0F4F68] opacity-0 motion-reduce:opacity-100 animate-fade-in-up sm:text-xl lg:items-center lg:text-[clamp(1.05rem,0.82rem+0.5vw,1.35rem)]"
                     style={{ animationDelay: `${0.45 + i * 0.22}s` }}
                   >
-                    <HeroCheckIcon className="mt-0.5 lg:mt-0" />
-                    <span className="min-w-0 flex-1 text-pretty">{line}</span>
+                    <HeroCheckIcon className="mt-0.5 shrink-0 lg:mt-0" />
+                    <span className="min-w-0 flex-1 max-sm:text-pretty max-sm:text-[0.9375rem] sm:whitespace-nowrap">
+                      {line}
+                    </span>
                   </li>
                 ))}
               </ul>
@@ -131,7 +136,7 @@ export function HilfeNachOperationLanding() {
                   {/* eslint-disable-next-line @next/next/no-img-element -- statisches Hero-Asset */}
                   <img
                     src={HERO_IMG}
-                    alt="Hilfe nach Operation, Unfall oder Schwangerschaft – Unterstützung im Alltag bei Ihnen zu Hause"
+                    alt="Hilfe nach Operation, Haushaltshilfe oder Schwangerschaft – Unterstützung im Alltag bei Ihnen zu Hause"
                     width={1200}
                     height={800}
                     decoding="async"
