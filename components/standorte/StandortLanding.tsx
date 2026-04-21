@@ -63,87 +63,61 @@ function HeroCheckIcon({ className = "" }: { className?: string }) {
 
 type FaqItem = { q: string; answerPlain: string; answer: ReactNode };
 
-function buildStandortFaq(input: {
-  standort: Standort;
-  plzContext?: { plz: string; ort: string };
-  contactHref: string;
-}): FaqItem[] {
-  const { standort, plzContext, contactHref } = input;
-  const bueroOrt = standort.schemaAddress.addressLocality;
+function buildStandortFaq(standort: Standort): FaqItem[] {
   const brand = siteConfig.name;
 
-  const regionBlock: FaqItem = plzContext
-    ? {
-        q: `Wer ist für ${plzContext.ort} und die PLZ ${plzContext.plz} zuständig?`,
-        answerPlain: `Anfragen aus diesem Gebiet werden von ${standort.name} koordiniert (Büro ${bueroOrt}). Sie erreichen das Team über die auf dieser Seite angegebene Telefonnummer und E-Mail.`,
-        answer: (
-          <>
-            Ihre Anfrage aus <strong>{plzContext.ort}</strong> (PLZ <strong>{plzContext.plz}</strong>) bearbeitet{" "}
-            <strong>{standort.name}</strong> mit Sitz in <strong>{bueroOrt}</strong>. Telefon und E-Mail auf dieser
-            Seite führen direkt zu diesem Büro.
-          </>
-        ),
-      }
-    : {
-        q: "Wer betreut meine Region an diesem Standort?",
-        answerPlain: `Anfragen aus dem Versorgungsgebiet werden von ${standort.name} koordiniert (Büro ${bueroOrt}). Sie erreichen das Team über Telefonnummer und E-Mail auf dieser Seite.`,
-        answer: (
-          <>
-            <strong>{standort.name}</strong> koordiniert Anfragen aus dem zugehörigen PLZ-Gebiet. Das Büro liegt in{" "}
-            <strong>{bueroOrt}</strong> – erreichbar über die auf dieser Seite genannte Rufnummer und E-Mail-Adresse.
-          </>
-        ),
-      };
-
   return [
-    regionBlock,
     {
-      q: "Welche Leistungen kann ich hier anfragen?",
-      answerPlain:
-        "Haushaltshilfe, Alltagsbegleitung, Pflegeberatung nach SGB XI und kostenfreie Pflegehilfsmittel – je nach Voraussetzung und Zuständigkeit. Ausführliche Beispiele und Ablauf beschreiben wir auf der Seite Haushaltshilfe.",
+      q: `Hat ${brand} noch freie Kapazitäten?`,
+      answerPlain: `Ja, in der Regel haben wir an all unseren Standorten noch freie Kapazitäten. Vom Erstgespräch bis zum ersten Besuch dauert es meist etwa 2 Wochen.`,
       answer: (
         <>
-          Unter anderem <strong>Haushaltshilfe</strong>, <strong>Alltagsbegleitung</strong>,{" "}
-          <strong>Pflegeberatung</strong> und <strong>Pflegehilfsmittel</strong> – je nach Voraussetzung. Ablauf,
-          Beispiele und weitere Details finden Sie unter{" "}
-          <Link href={HAUSHALTSHILFE_URL} className={LINK_CLASS}>
-            Haushaltshilfe
-          </Link>
-          .
+          Ja, in der Regel haben wir an <strong>allen unseren Standorten</strong> noch freie Kapazitäten. Vom{" "}
+          <strong>Erstgespräch</strong> bis zum <strong>ersten Besuch</strong> dauert es meist etwa <strong>2 Wochen</strong>.
         </>
       ),
     },
     {
-      q: "Welche Aufgaben werden übernommen?",
+      q: "Gibt es eine feste Vertragslaufzeit oder lange Bindungen?",
       answerPlain:
-        "Typische Leistungen sind Bodenreinigung, Fensterputzen, Bad- und Küchenreinigung, Mahlzeiten zubereiten, Wäsche und Ordnung im Haushalt. Der Umfang wird an Ihren Bedarf angepasst.",
+        "Nein. Sie können uns ganz entspannt kennenlernen. Wenn unser Angebot doch nicht zu Ihnen passt, können Sie unsere Leistungen jederzeit kündigen.",
       answer: (
         <>
-          Typisch sind unter anderem <strong>Bodenreinigung</strong>, <strong>Fensterputzen</strong>,{" "}
-          <strong>Bad- und Küchenreinigung</strong>, <strong>Kochen</strong>, <strong>Wäsche</strong> und{" "}
-          <strong>Ordnung im Haushalt</strong>. Wir stimmen den Umfang mit Ihnen ab.
+          <strong>Nein.</strong> Sie können uns ganz entspannt kennenlernen. Wenn unser Angebot doch nicht zu Ihnen
+          passt, können Sie unsere Leistungen <strong>jederzeit kündigen</strong>.
         </>
       ),
     },
     {
-      q: "Werden die Kosten übernommen?",
-      answerPlain: `Als zugelassener Partner rechnet ${brand} mit allen Pflege- und Krankenkassen ab. Die Bezahlung erfolgt über die Pflegekasse, die Krankenkasse oder privat – das klären wir im Beratungsgespräch.`,
+      q: "Was passiert, wenn ich einen Termin krankheitsbedingt nicht wahrnehmen kann?",
+      answerPlain:
+        "Kein Problem. Wir rechnen nur Leistungen ab, die tatsächlich stattgefunden haben.",
       answer: (
         <>
-          Als <strong>zugelassener Partner</strong> rechnen wir mit <strong>allen Pflege- und Krankenkassen</strong> ab.
-          Die Bezahlung läuft über die <strong>Pflegekasse</strong>, die <strong>Krankenkasse</strong> oder{" "}
-          <strong>privat</strong> – gemeinsam klären wir Ihre Möglichkeiten.
+          Kein Problem. Wir rechnen nur Leistungen ab, die <strong>tatsächlich stattgefunden</strong> haben.
         </>
       ),
     },
     {
-      q: "Gilt der Entlastungsbetrag von 131 Euro?",
+      q: "Kommt zu mir immer eine feste Bezugsperson?",
       answerPlain:
-        "Ab Pflegegrad 1 können Sie den monatlichen Entlastungsbetrag von 131 Euro für qualifizierte Leistungen nutzen, sofern die gesetzlichen Voraussetzungen erfüllt sind.",
+        "Ja, wir planen für Sie nach Möglichkeit eine feste Bezugsperson ein. Nur bei Urlaub oder Krankheit kann es zu einer Vertretung kommen. In diesem Fall informieren wir Sie frühzeitig.",
       answer: (
         <>
-          Ab <strong>Pflegegrad 1</strong> können Sie diesen monatlichen Betrag für unsere Leistungen nutzen, wenn die
-          gesetzlichen Voraussetzungen erfüllt sind. Mehr dazu im{" "}
+          Ja, wir planen für Sie nach Möglichkeit eine <strong>feste Bezugsperson</strong> ein. Nur bei{" "}
+          <strong>Urlaub</strong> oder <strong>Krankheit</strong> kann es zu einer Vertretung kommen. In diesem Fall
+          informieren wir Sie <strong>frühzeitig</strong>.
+        </>
+      ),
+    },
+    {
+      q: "Kann der Entlastungsbetrag von 131 € über uns genutzt werden?",
+      answerPlain:
+        "Ja. Wir sind bei allen Pflegekassen in Deutschland zugelassen, sodass die Abrechnung problemlos möglich ist.",
+      answer: (
+        <>
+          <strong>Ja.</strong> Wir sind bei <strong>allen Pflegekassen in Deutschland</strong> zugelassen, sodass die
+          Abrechnung problemlos möglich ist. Hintergrundinfos finden Sie in unserem{" "}
           <Link href="/ratgeber/entlastungsbetrag-131-euro" className={LINK_CLASS}>
             Ratgeber zum Entlastungsbetrag
           </Link>
@@ -152,68 +126,100 @@ function buildStandortFaq(input: {
       ),
     },
     {
-      q: `Kann ich 3.539 Euro für Ersatzpflege und Verhinderungspflege über ${brand} nutzen?`,
-      answerPlain: `Ja, ab Pflegegrad 2 können Ersatzpflege und Verhinderungspflege bis zum gesetzlich vorgesehenen Jahresbudget über ${brand} abgerechnet werden, sofern die Voraussetzungen erfüllt sind.`,
-      answer: (
-        <>
-          Ja, ab einem <strong>Pflegegrad 2</strong> ist das möglich, wenn die gesetzlichen und vertraglichen
-          Voraussetzungen erfüllt sind. Wir unterstützen Sie bei der <strong>Abrechnung</strong>.
-        </>
-      ),
-    },
-    {
-      q: "Brauche ich einen Pflegegrad?",
+      q: "Kann die Ersatzpflege beziehungsweise Verhinderungspflege von 3.539 € über uns genutzt werden?",
       answerPlain:
-        "Für Leistungen über die Pflegekasse ist in der Regel ein Pflegegrad erforderlich. Über die Krankenkasse oder privat ist Hilfe je nach Einzelfall auch ohne Pflegegrad möglich.",
+        "Ja. Auch die Ersatzpflege beziehungsweise Verhinderungspflege kann über uns genutzt werden. Wir sind bei allen Pflegekassen in Deutschland zugelassen.",
       answer: (
         <>
-          Für Leistungen der <strong>Pflegekasse</strong> in der Regel <strong>ja</strong>. Über die{" "}
-          <strong>Krankenkasse</strong> oder <strong>privat</strong> ist Unterstützung je nach Fall auch ohne
-          Pflegegrad möglich.
+          <strong>Ja.</strong> Auch die <strong>Ersatzpflege</strong> beziehungsweise <strong>Verhinderungspflege</strong>{" "}
+          kann über uns genutzt werden. Wir sind bei <strong>allen Pflegekassen in Deutschland</strong> zugelassen.
         </>
       ),
     },
     {
-      q: "Gibt es eine feste Bezugsperson?",
+      q: "Wie funktioniert die monatliche Abrechnung?",
       answerPlain:
-        "Ja, eine persönliche Beziehung ist wichtig; ein Wechsel der Bezugsperson erfolgt nur in dringenden Fällen.",
+        "Ganz unkompliziert. Entweder rechnen wir direkt mit Ihrer Pflegekasse ab oder Sie erhalten von uns die Rechnungen und Leistungsnachweise per Post und können diese selbst einreichen.",
       answer: (
         <>
-          Ja, uns ist eine <strong>verlässliche Bezugsperson</strong> wichtig. Ein Wechsel erfolgt nur in{" "}
-          <strong>dringenden Fällen</strong>.
+          Ganz unkompliziert. Entweder rechnen wir <strong>direkt mit Ihrer Pflegekasse</strong> ab, oder Sie erhalten
+          von uns die <strong>Rechnungen</strong> und <strong>Leistungsnachweise</strong> per Post und können diese selbst
+          einreichen.
         </>
       ),
     },
     {
-      q: "Wie schnell kann ich einen Termin oder eine Rückmeldung bekommen?",
-      answerPlain: `Am schnellsten erreichen Sie ${standort.name} telefonisch über die lokale Standortnummer. Über das Kontaktformular auf dieser Seite melden wir uns zeitnah; der Start hängt von den regionalen Kapazitäten ab.`,
+      q: "Kann ich meine Rechnungen und Termine selbst im Blick behalten?",
+      answerPlain:
+        "Ja. Sie erhalten Zugangsdaten für unsere Partnerapp und können Ihre Termine und Unterlagen bequem digital einsehen. Auf Wunsch schicken wir Ihnen Rechnungen und Leistungsnachweise auch per Post zu.",
       answer: (
         <>
-          Am <strong>schnellsten</strong> geht es über die <strong>örtliche Rufnummer</strong> dieses Standorts. Über das{" "}
-          <Link href={contactHref} className={LINK_CLASS}>
-            Kontaktformular
-          </Link>{" "}
-          antworten wir zeitnah. Der konkrete Start hängt von den <strong>regionalen Kapazitäten</strong> ab – das
-          besprechen wir mit Ihnen offen.
+          <strong>Ja.</strong> Sie erhalten Zugangsdaten für unsere <strong>Partnerapp</strong> und können Ihre{" "}
+          <strong>Termine</strong> und <strong>Unterlagen</strong> bequem digital einsehen. Auf Wunsch schicken wir Ihnen
+          Rechnungen und Leistungsnachweise auch <strong>per Post</strong> zu.
         </>
       ),
     },
     {
-      q: "Wie stelle ich eine Anfrage?",
-      answerPlain: `Sie erreichen ${standort.name} telefonisch über die auf dieser Seite genannte Nummer oder nutzen das Kontaktformular. Zusätzlich können Sie ${brand} über die allgemeine Kontaktseite erreichen. Über die App von ${brand} sind Termine und Rechnungen einsehbar.`,
+      q: "Welcher Standort ist für mich zuständig?",
+      answerPlain: `Auf dieser Seite erreichen Sie den Standort ${standort.name}. Für andere Orte und Postleitzahlen finden Sie den passenden Standort über den Standortsucher auf der Website.`,
       answer: (
         <>
-          Rufen Sie uns an oder nutzen Sie das <Link href={contactHref} className={LINK_CLASS}>Kontaktformular</Link> auf
-          dieser Seite – Ihre Anfrage geht an den <strong>passenden Standort</strong>. Alternativ die{" "}
-          <Link href="/kontakt" className={LINK_CLASS}>
-            allgemeine Kontaktseite
+          Auf dieser Seite erreichen Sie <strong>{standort.name}</strong>. Für andere Orte und Postleitzahlen finden Sie
+          den passenden Standort in Ihrer Nähe mit unserem{" "}
+          <Link href="/standorte" className={LINK_CLASS}>
+            Standortsucher
           </Link>
-          . Über die <strong>App</strong> von {brand} behalten Sie <strong>Termine und Rechnungen</strong> im Blick. Noch
-          mehr Fragen? In der{" "}
-          <Link href={`${HAUSHALTSHILFE_URL}#haushalt-faq-heading`} className={LINK_CLASS}>
-            FAQ Haushaltshilfe
-          </Link>{" "}
-          finden Sie weitere Antworten.
+          .
+        </>
+      ),
+    },
+    {
+      q: "Kommen private Kosten auf mich zu?",
+      answerPlain:
+        "Nein, solange die Leistungen im Rahmen der Budgets Ihrer Pflegekasse bleiben. Im Erstgespräch rechnen wir gemeinsam aus, welche Leistungen Ihnen zustehen.",
+      answer: (
+        <>
+          <strong>Nein</strong>, solange die Leistungen im Rahmen der <strong>Budgets Ihrer Pflegekasse</strong>{" "}
+          bleiben. Im <strong>Erstgespräch</strong> rechnen wir gemeinsam aus, welche Leistungen Ihnen zustehen.
+        </>
+      ),
+    },
+    {
+      q: "Kann ich auch mehrere Dienstleister gleichzeitig nutzen?",
+      answerPlain:
+        "Ja, das ist möglich. Eine Kombination aus mehreren Dienstleistern ist kein Problem, zum Beispiel aus Pflegedienst und Haushaltsdienst.",
+      answer: (
+        <>
+          <strong>Ja</strong>, das ist möglich. Eine Kombination aus mehreren Dienstleistern ist kein Problem, zum
+          Beispiel aus <strong>Pflegedienst</strong> und <strong>Haushaltsdienst</strong>.
+        </>
+      ),
+    },
+    {
+      q: `Wie viele Stunden erhalte ich im Monat über ${brand}?`,
+      answerPlain: `Das ist ganz unterschiedlich und hängt von Ihrem Pflegegrad sowie den verfügbaren Budgets ab. Gerne beraten wir Sie dazu im Erstgespräch.`,
+      answer: (
+        <>
+          Das ist <strong>ganz unterschiedlich</strong> und hängt von Ihrem <strong>Pflegegrad</strong> sowie den
+          verfügbaren <strong>Budgets</strong> ab. Gerne beraten wir Sie dazu im <strong>Erstgespräch</strong>. Details zu
+          Leistungen finden Sie auch unter{" "}
+          <Link href={HAUSHALTSHILFE_URL} className={LINK_CLASS}>
+            Haushaltshilfe
+          </Link>
+          .
+        </>
+      ),
+    },
+    {
+      q: "Ist mein Alltagshelfer oder meine Alltagshelferin versichert?",
+      answerPlain:
+        "Ja. Alle Mitarbeiterinnen und Mitarbeiter sind umfassend über uns versichert. Dabei sind sowohl Personenschäden als auch Sachschäden an Ihrem Eigentum abgesichert.",
+      answer: (
+        <>
+          <strong>Ja.</strong> Alle Mitarbeiterinnen und Mitarbeiter sind <strong>umfassend über uns versichert</strong>.
+          Dabei sind sowohl <strong>Personenschäden</strong> als auch <strong>Sachschäden</strong> an Ihrem Eigentum
+          abgesichert.
         </>
       ),
     },
@@ -265,7 +271,7 @@ export function StandortLanding({ standort, plzContext }: StandortLandingProps) 
     ? `in ${plzContext!.plz} ${plzContext!.ort}`
     : standort.heroLocationGeneral;
 
-  const FAQ = buildStandortFaq({ standort, plzContext, contactHref: CONTACT_ANCHOR });
+  const FAQ = buildStandortFaq(standort);
   const faqJsonLd = {
     "@context": "https://schema.org",
     "@type": "FAQPage",
