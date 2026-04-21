@@ -38,14 +38,6 @@ const LINK_CLASS =
 
 const REGION_MAP_MARKERS = getPlzMarkersForRegionMap();
 
-/** Regionales Hero-Bild pro fester Standortseite (public/images). */
-const STANDORT_HERO_IMAGE_BY_SLUG: Record<string, string> = {
-  allgaeu: "/images/kempten_standort.webp",
-  augsburg: "/images/augburg_standort.webp",
-  engen: "/images/konstanz_standort.webp",
-  wangen: "/images/wangen_standort.webp",
-};
-
 /** Kurzname für Badge („Ihr Standort …“), ohne doppeltes „Standort“. */
 function standortLabelForHeroBadge(standort: Standort): string {
   const n = standort.name.trim();
@@ -54,15 +46,6 @@ function standortLabelForHeroBadge(standort: Standort): string {
   }
   return n;
 }
-
-/** Wie Seite „Betriebliche Pflegeberatung“: gleiches Layout und Bildbreite; Motiv pro Standort. */
-const STANDORT_HERO_IMG = { w: 1031, h: 549 } as const;
-const STANDORT_HERO_IMG_SCALE = 0.8;
-const STANDORT_HERO_IMG_W = Math.round(STANDORT_HERO_IMG.w * STANDORT_HERO_IMG_SCALE);
-const standortHeroImgBlockStyle = {
-  width: `min(100vw, ${STANDORT_HERO_IMG_W}px)` as const,
-  maxWidth: `min(100vw, ${STANDORT_HERO_IMG_W}px)` as const,
-};
 
 const STANDORT_HERO_BULLET_ANIM =
   "flex items-start gap-3 text-pretty text-lg font-semibold leading-snug text-[#0F4F68] opacity-0 motion-reduce:opacity-100 motion-reduce:animate-none animate-fade-in-up sm:items-center sm:text-xl";
@@ -232,14 +215,12 @@ export function StandortLanding({ standort, plzContext }: StandortLandingProps) 
   const standortPlzOrteSorted = buildSortedStandortPlzOrte(standort);
   const plzLetterGroups = groupPlzOrteByInitialLetter(standortPlzOrteSorted);
   const regionMapInitialView = getInteractiveRegionMapInitialView(mapAnchorPlz, standort);
-  const heroImageSrc =
-    STANDORT_HERO_IMAGE_BY_SLUG[standort.pageSlug] ?? "/images/betriebliche_pflegeberatung.webp";
   const heroBadgeStandort = standortLabelForHeroBadge(standort);
 
   return (
     <div className="min-w-0 overflow-x-clip overflow-y-visible bg-[#fafbfc] text-neutral-700 antialiased">
       <article id="standort-landing" className="min-w-0 scroll-mt-24 overflow-x-clip overflow-y-visible">
-        {/* Hero wie „Betriebliche Pflegeberatung“: gleiches Layout; Bild und Badge pro Standort */}
+        {/* Hero: gleiches Motiv wie Startseite (startseite_front); Badge pro Standort */}
         <section
           className="relative z-0 box-border w-full scroll-mt-[var(--ahs-header-scroll-padding)] pt-0 pb-6 sm:pb-8 lg:pb-[clamp(1.5rem,2vw+0.75rem,2.5rem)]"
           aria-labelledby="standort-hero-heading"
@@ -287,21 +268,21 @@ export function StandortLanding({ standort, plzContext }: StandortLandingProps) 
 
               <div className="relative z-10 order-1 mt-0 max-lg:px-0 overflow-visible px-1 sm:px-2 lg:order-none lg:pointer-events-none lg:absolute lg:right-0 lg:top-0 lg:z-20 lg:mt-0 lg:px-0">
                 <div
-                  className="ml-auto overflow-visible pb-24 pt-0 opacity-0 animate-fade-in-up motion-reduce:opacity-100 sm:pb-28 lg:ml-0 lg:mr-0 lg:pb-32 lg:pt-0"
-                  style={{ ...standortHeroImgBlockStyle, animationDelay: "80ms" }}
+                  className="relative ml-auto w-full min-w-0 max-w-full -mr-4 overflow-visible pb-24 pt-0 opacity-0 animate-fade-in-up motion-reduce:opacity-100 sm:-mr-6 sm:pb-28 lg:ml-0 lg:mr-[calc((100vw-100%)/-2)] lg:max-w-[min(88vw,min(100%,52rem))] lg:pb-32 lg:pt-0"
+                  style={{ animationDelay: "80ms" }}
                 >
-                  <div className="relative isolate ml-auto leading-none">
-                    <div
-                      className="relative z-0 w-full overflow-hidden drop-shadow-[0_22px_48px_rgba(15,79,104,0.22)] drop-shadow-[0_10px_24px_rgba(15,79,104,0.14)]"
-                      style={{ aspectRatio: `${STANDORT_HERO_IMG.w} / ${STANDORT_HERO_IMG.h}` }}
-                    >
+                  <div className="relative isolate ml-auto w-full leading-none">
+                    <div className="w-full">
+                      {/* Wie Startseite: unoptimized, object-contain — gleiche horizontale Einordnung */}
                       <Image
-                        src={heroImageSrc}
+                        src="/images/startseite_front.webp"
                         alt={`Pflegeberatung, Haushaltshilfe und Betreuung – ${standort.name}`}
-                        fill
+                        width={900}
+                        height={700}
+                        sizes="(max-width: 1023px) 100vw, (max-width: 1400px) 88vw, 900px"
+                        className="box-border block h-auto w-full max-w-full object-contain object-right [filter:drop-shadow(0_10px_22px_rgba(15,79,104,0.2))_drop-shadow(0_4px_12px_rgba(15,79,104,0.12))] [will-change:filter]"
                         priority
-                        sizes={`${STANDORT_HERO_IMG_W}px`}
-                        className="object-cover object-center"
+                        unoptimized
                       />
                     </div>
                     <p
