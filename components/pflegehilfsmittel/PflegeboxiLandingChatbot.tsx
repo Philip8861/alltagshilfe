@@ -52,7 +52,7 @@ export function PflegeboxiLandingChatbot() {
     setJump(true);
   }, []);
 
-  /** Im eingeklappten Zustand ab und zu hüpfen (2–4 s Abstand), um Aufmerksamkeit zu lenken. */
+  /** Im eingeklappten Zustand alle 5 s einmal hüpfen, um Aufmerksamkeit zu lenken. */
   useEffect(() => {
     if (hidden || expanded) return;
     if (typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
@@ -62,7 +62,7 @@ export function PflegeboxiLandingChatbot() {
     let timeoutId = 0;
 
     const scheduleNext = () => {
-      const delayMs = 2000 + Math.random() * 2000;
+      const delayMs = 5000;
       timeoutId = window.setTimeout(() => {
         if (cancelled) return;
         triggerJump();

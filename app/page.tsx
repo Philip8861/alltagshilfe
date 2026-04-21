@@ -15,11 +15,11 @@ import { STARTSEITE_VORTEILE, STARTSEITE_VORTEILE_INTRO } from "@/lib/startseite
 
 const HAUSHALTSHILFE_FAQ_ANCHOR = "/leistungen/haushaltshilfe#haushalt-faq-heading";
 
-const STARTSEITE_FAQ_WELLEN_D =
-  "M0,100 C200,26 420,6 600,18 C800,32 1010,75 1200,100 L1200,100 L0,100 Z";
+/** Hintergrund FAQ-Bereich (Startseite), inkl. Wellenfüllung */
+const STARTSEITE_FAQ_BG = "#f0f9fa";
 
-const STARTSEITE_FAQ_WELLEN_SVG_CLASS =
-  "pointer-events-none absolute left-0 top-0 z-0 h-16 w-full -translate-y-7 sm:h-[clamp(2.85rem,1.5rem+3.8vw,5rem)] sm:-translate-y-[clamp(0.9rem,0.35rem+2.1vw,3.2rem)]";
+const STARTSEITE_FAQ_WELLEN_D =
+  "M0,120 C200,32 420,8 600,22 C800,38 1010,90 1200,120 L1200,120 L0,120 Z";
 
 const HERO_INTRO = {
   brand: "Alltagshilfe-Süd",
@@ -197,17 +197,18 @@ export default function HomePage() {
       <KundenstimmenCarousel />
 
       <section
-        className="relative z-10 mt-10 overflow-x-clip bg-[#fafbfc] pb-16 pt-[clamp(4rem,7vw+1.75rem,6.75rem)] sm:mt-12 sm:pb-20 sm:pt-[clamp(4.5rem,8vw+2rem,7.25rem)] lg:mt-14 lg:pb-24"
+        className="relative z-10 mt-10 overflow-x-clip pb-8 pt-[clamp(4rem,7vw+1.75rem,6.75rem)] sm:mt-12 sm:pb-10 sm:pt-[clamp(4.5rem,8vw+2rem,7.25rem)] lg:mt-14 lg:pb-10"
+        style={{ backgroundColor: STARTSEITE_FAQ_BG }}
         aria-labelledby="startseite-faq-heading"
       >
         <svg
-          className={STARTSEITE_FAQ_WELLEN_SVG_CLASS}
-          viewBox="0 0 1200 100"
+          className="pointer-events-none absolute left-0 top-0 z-0 h-12 w-full -translate-y-[68%] sm:h-16"
+          viewBox="0 0 1200 120"
           preserveAspectRatio="none"
           fill="none"
           aria-hidden
         >
-          <path d={STARTSEITE_FAQ_WELLEN_D} fill="#fafbfc" />
+          <path d={STARTSEITE_FAQ_WELLEN_D} fill={STARTSEITE_FAQ_BG} />
         </svg>
         <div className="relative z-[1] mx-auto max-w-3xl px-4 sm:px-6 lg:max-w-4xl">
           <RevealOnScroll>
@@ -256,25 +257,6 @@ export default function HomePage() {
           dangerouslySetInnerHTML={{ __html: JSON.stringify(startseiteFaqJsonLd) }}
         />
       </section>
-
-      <div className="relative z-0 min-h-[26vh] flex-1 bg-[#F2F9FA] px-4 pt-16 pb-20 sm:pb-24 lg:px-[var(--ahs-page-gutter)]">
-        <svg
-          className="pointer-events-none absolute left-0 top-0 h-12 w-full -translate-y-[70%] sm:h-16"
-          viewBox="0 0 1200 120"
-          preserveAspectRatio="none"
-          fill="none"
-          aria-hidden
-        >
-          <path
-            d="M0,120 C200,32 420,8 600,22 C800,38 1010,90 1200,120 L1200,120 L0,120 Z"
-            fill="#F2F9FA"
-          />
-        </svg>
-        <div
-          className="pointer-events-none absolute left-0 top-0 h-10 w-full -translate-y-2 bg-gradient-to-b from-[#F2F9FA]/85 to-transparent"
-          aria-hidden
-        />
-      </div>
     </article>
   );
 }
