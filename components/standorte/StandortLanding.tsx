@@ -210,7 +210,7 @@ export function StandortLanding({ standort, plzContext }: StandortLandingProps) 
       <article id="standort-landing" className="min-w-0 scroll-mt-24 overflow-x-clip overflow-y-visible">
         {/* Hero: identischer Aufbau wie Startseite (app/page.tsx), ohne Badge */}
         <section
-          className="relative z-0 box-border w-full pt-0 pb-10 sm:pb-16 lg:pt-[clamp(2rem,5vh+1.25rem,4.75rem)] lg:pb-[clamp(4rem,9vh+1.5rem,7rem)] xl:pb-[clamp(5rem,10vh+1.5rem,8rem)]"
+          className="relative z-0 box-border w-full pt-0 pb-6 sm:pb-8 lg:pb-[clamp(1.5rem,2vw+0.75rem,2.5rem)]"
           aria-labelledby="standort-hero-heading"
         >
           <div className="box-border mx-auto w-full min-w-0 max-w-7xl px-4 sm:px-6 lg:px-[var(--ahs-page-gutter)]">
@@ -235,14 +235,14 @@ export function StandortLanding({ standort, plzContext }: StandortLandingProps) 
                 </div>
               </div>
 
-              <div className="relative z-10 mt-8 max-w-lg text-left sm:max-w-xl lg:absolute lg:left-0 lg:right-auto lg:top-[clamp(34%,calc(33%+0.35vw),40%)] lg:mt-0 lg:w-full lg:max-w-none lg:-translate-y-1/2 lg:-translate-x-[5%]">
+              <div className="relative z-10 mt-8 max-w-lg text-left sm:max-w-xl lg:absolute lg:left-0 lg:right-auto lg:top-[clamp(2rem,5vh+1.25rem,4.75rem)] lg:mt-0 lg:w-full lg:max-w-none lg:translate-y-0 lg:-translate-x-[5%]">
                 <header className="text-left lg:max-w-[min(42vw,clamp(22rem,32vw+8rem,30rem))] xl:max-w-[min(38vw,clamp(23rem,28vw+9rem,31rem))] 2xl:max-w-[min(34vw,clamp(24rem,26vw+10rem,32rem))]">
                   <h1
                     id="standort-hero-heading"
-                    className="text-balance text-3xl font-extrabold leading-tight tracking-tight text-[#0F4F68] opacity-0 motion-reduce:opacity-100 animate-fade-in-up sm:text-4xl lg:text-[clamp(2rem,1.05rem+2.6vw,3rem)]"
+                    className="text-3xl font-extrabold leading-tight tracking-tight text-[#0F4F68] opacity-0 motion-reduce:opacity-100 animate-fade-in-up sm:text-4xl lg:text-[clamp(2rem,1.05rem+2.6vw,3rem)]"
                     style={{ animationDelay: "0s" }}
                   >
-                    <span className="block">Pflegeberatung, Haushaltshilfe</span>
+                    <span className="block lg:whitespace-nowrap">Pflegeberatung, Haushaltshilfe</span>
                     <span className="mt-0.5 block sm:mt-1">&amp; Betreuung {heroLocationLine}</span>
                   </h1>
                   <ul
