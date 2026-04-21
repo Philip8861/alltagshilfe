@@ -15,9 +15,9 @@ const HERO_GLOW_CLASS =
   "[filter:drop-shadow(0_10px_22px_rgba(15,79,104,0.2))_drop-shadow(0_4px_12px_rgba(15,79,104,0.12))] [will-change:filter]";
 
 const HERO_VORTEILE = [
-  "Freie Kapazitäten & kurze Wartezeiten",
-  "Zugelassen bei allen Krankenkassen",
-  "Feste Bezugsperson statt ständiger Wechsel",
+  "Wir übernehmen den Kontakt zu Ihrer Krankenkasse",
+  "Unkomplizierte und schnelle Terminvergabe",
+  "Für Sie entstehen keine Kosten",
 ] as const;
 
 const WELLEN_D =
