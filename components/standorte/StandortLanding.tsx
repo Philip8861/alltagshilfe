@@ -210,7 +210,7 @@ export function StandortLanding({ standort, plzContext }: StandortLandingProps) 
       <article id="standort-landing" className="min-w-0 scroll-mt-24 overflow-x-clip overflow-y-visible">
         {/* Hero: identischer Aufbau wie Startseite (app/page.tsx), ohne Badge */}
         <section
-          className="relative z-0 box-border w-full scroll-mt-[var(--ahs-header-scroll-padding)] pt-0 pb-6 sm:pb-8 lg:pb-[clamp(1.5rem,2vw+0.75rem,2.5rem)]"
+          className="relative z-0 box-border w-full pt-0 pb-10 sm:pb-16 lg:pt-[clamp(2rem,5vh+1.25rem,4.75rem)] lg:pb-[clamp(4rem,9vh+1.5rem,7rem)] xl:pb-[clamp(5rem,10vh+1.5rem,8rem)]"
           aria-labelledby="standort-hero-heading"
         >
           <div className="box-border mx-auto w-full min-w-0 max-w-7xl px-4 sm:px-6 lg:px-[var(--ahs-page-gutter)]">
@@ -306,10 +306,13 @@ export function StandortLanding({ standort, plzContext }: StandortLandingProps) 
         </section>
 
         <section
-          className="relative z-20 mt-12 w-full px-4 sm:mt-16 sm:px-6 lg:mt-20 lg:px-[var(--ahs-page-gutter)]"
+          className="relative z-20 w-full overflow-x-clip bg-[#fafbfc] px-4 pb-14 pt-[clamp(4rem,7vw+1.75rem,6.75rem)] sm:px-6 sm:pb-16 lg:px-[var(--ahs-page-gutter)] lg:pb-20"
           aria-labelledby="standort-vorteile-heading"
         >
-          <div className="mx-auto w-full max-w-6xl">
+          <svg className={WELLEN_SVG_CLASS} viewBox="0 0 1200 100" preserveAspectRatio="none" fill="none" aria-hidden>
+            <path d={WELLEN_D} fill="#fafbfc" />
+          </svg>
+          <div className="relative z-[1] mx-auto w-full max-w-6xl pt-1 sm:pt-2">
             <RevealOnScroll>
               <h3
                 id="standort-vorteile-heading"
@@ -347,10 +350,13 @@ export function StandortLanding({ standort, plzContext }: StandortLandingProps) 
 
         <section
           id="standort-kontakt"
-          className="scroll-mt-24 border-t border-[#0F4F68]/10 bg-white py-16 sm:py-24"
+          className="relative z-30 scroll-mt-24 overflow-x-clip bg-white pb-16 pt-[clamp(4.75rem,8.5vw+2rem,7.75rem)] sm:pb-20 sm:pt-[clamp(5.25rem,9vw+2.25rem,8.25rem)] lg:pb-24"
           aria-labelledby="standort-kontakt-heading"
         >
-          <Container className="w-full">
+          <svg className={WELLEN_SVG_CLASS} viewBox="0 0 1200 100" preserveAspectRatio="none" fill="none" aria-hidden>
+            <path d={WELLEN_D} fill="#ffffff" />
+          </svg>
+          <Container className="relative z-[1] w-full">
             <div className="mx-auto grid w-full max-w-6xl gap-10 lg:grid-cols-2 lg:items-start lg:gap-12">
               <div className="order-2 flex min-w-0 flex-col lg:order-1">
                 <div className="mx-auto w-full max-w-xl rounded-2xl bg-[#F2F9FA] p-6 sm:p-8 lg:mx-0 lg:max-w-none lg:p-10">
