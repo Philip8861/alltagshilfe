@@ -199,6 +199,21 @@ const plzToOrt: Record<string, string> = Object.fromEntries(
 );
 
 /**
+ * Korrekturen für falsch zugeordnete oder beschädigte Ortsnamen aus dem PDF-Import
+ * (z. B. „berlingen“ statt Überlingen, Wohnplatz statt Hauptort).
+ */
+const PLZ_ORT_OVERRIDES: Record<string, string> = {
+  "88441": "Mittelbiberach",
+  "88454": "Hochdorf an der Riß",
+  "88662": "Überlingen",
+  "86153": "Innenstadt",
+};
+
+for (const plz of Object.keys(PLZ_ORT_OVERRIDES)) {
+  if (plzToOrt[plz]) plzToOrt[plz] = PLZ_ORT_OVERRIDES[plz];
+}
+
+/**
  * Stabile Normalisierung für kaputte Zeichenketten (Mojibake).
  * Wird aktiv genutzt, bis der aufgeblähte Legacy-Block bereinigt ist.
  */
