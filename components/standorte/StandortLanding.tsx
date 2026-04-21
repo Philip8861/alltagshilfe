@@ -348,12 +348,12 @@ export function StandortLanding({ plz, ort, standort }: StandortLandingProps) {
                   </h2>
                   <div className="mt-4 space-y-4 text-pretty text-sm leading-relaxed text-neutral-700 sm:text-base">
                     <p>
-                      Für Ihre Suche in <strong>{plz}</strong> <strong>{ort}</strong> ist unser Standort{" "}
+                      Für die <strong>{plz}</strong> <strong>{ort}</strong> ist der Standort{" "}
                       <strong>{standort.name}</strong> zuständig.
                     </p>
                     <p>
-                      Gerne können Sie direkt hier unser Kontaktformular nutzen – Ihre Anfrage wird automatisch an den
-                      passenden Standort weitergeleitet und dort schnellstmöglich bearbeitet.
+                      Gerne können Sie dieses Kontaktformular nutzen – Ihre Anfrage wird direkt an den passenden
+                      Standort weitergeleitet. Wir freuen uns über Ihre Anfrage!
                     </p>
                   </div>
 
@@ -421,12 +421,7 @@ export function StandortLanding({ plz, ort, standort }: StandortLandingProps) {
                       per Whatsapp
                     </h3>
                     <p className="mt-3 text-sm text-neutral-700">
-                      Nutzen Sie den Button – so erreichen Sie diesen Standort direkt per WhatsApp. Für andere Kanäle
-                      steht Ihnen unsere{" "}
-                      <Link href="/kontakt" className="font-semibold text-[#0F4F68] underline hover:no-underline">
-                        zentrale Kontaktseite
-                      </Link>{" "}
-                      zur Verfügung.
+                      Nutzen Sie den Button – so erreichen Sie diesen Standort direkt per WhatsApp.
                     </p>
                     <div className="mt-4 flex justify-center">
                       <a
@@ -443,14 +438,13 @@ export function StandortLanding({ plz, ort, standort }: StandortLandingProps) {
                         WhatsApp
                       </a>
                     </div>
-                    <div className="mt-8 flex justify-center">
+                    <div className="mt-4 flex w-full justify-center">
                       <Image
                         src="/images/QR_Code.webp"
                         alt={`QR-Code WhatsApp – ${standort.name}`}
-                        width={176}
-                        height={176}
-                        className="h-auto w-44 max-w-full object-contain"
-                        unoptimized
+                        width={202}
+                        height={202}
+                        className="mx-auto h-[118px] w-[118px] object-contain sm:h-[141px] sm:w-[141px]"
                       />
                     </div>
                   </section>
@@ -465,7 +459,8 @@ export function StandortLanding({ plz, ort, standort }: StandortLandingProps) {
             <div className="mx-auto max-w-3xl px-4 text-center sm:px-6">
               <p className="text-pretty text-neutral-600">
                 <span>
-                  {siteConfig.name} unterstützt Sie mit Haushaltshilfe in{" "}
+                  {siteConfig.name} unterstützt Sie mit Haushaltshilfe, Alltagsbegleitung, Pflegeberatung,
+                  Pflegehilfsmittel in:{" "}
                   <strong>
                     {plz} {ort}
                   </strong>{" "}
@@ -478,7 +473,7 @@ export function StandortLanding({ plz, ort, standort }: StandortLandingProps) {
                     {nearbyPlzOrte.map((n, i) => (
                       <Fragment key={n.plz}>
                         {i > 0 && (i === nearbyPlzOrte.length - 1 ? " und " : ", ")}
-                        <strong>{n.plz}</strong> {n.ort}
+                        {n.plz} {n.ort}
                       </Fragment>
                     ))}
                   </span>
