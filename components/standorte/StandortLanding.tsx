@@ -38,26 +38,15 @@ const LINK_CLASS =
 
 const REGION_MAP_MARKERS = getPlzMarkersForRegionMap();
 
-/** Kurzname für Badge („Ihr Standort …“), ohne doppeltes „Standort“. */
-function standortLabelForHeroBadge(standort: Standort): string {
-  const n = standort.name.trim();
-  if (n.toLowerCase().startsWith("standort ")) {
-    return n.slice("Standort ".length).trim();
-  }
-  return n;
-}
-
-const STANDORT_HERO_BULLET_ANIM =
-  "flex items-start gap-3 text-pretty text-lg font-semibold leading-snug text-[#0F4F68] opacity-0 motion-reduce:opacity-100 motion-reduce:animate-none animate-fade-in-up sm:items-center sm:text-xl";
-
+/** Wie Startseite (app/page.tsx) – gleiche Kästchengröße in den Hero-Bullets. */
 function HeroCheckIcon({ className = "" }: { className?: string }) {
   return (
     <span
-      className={`inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#F78F2E]/15 text-[#F78F2E] sm:h-10 sm:w-10 ${className}`.trim()}
+      className={`inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#F78F2E]/15 text-[#F78F2E] ${className}`.trim()}
       aria-hidden
     >
       <svg
-        className="h-[1.2rem] w-[1.2rem] sm:h-[1.35rem] sm:w-[1.35rem]"
+        className="h-[1.1rem] w-[1.1rem] sm:h-5 sm:w-5"
         viewBox="0 0 24 24"
         fill="none"
         stroke="currentColor"
@@ -215,44 +204,68 @@ export function StandortLanding({ standort, plzContext }: StandortLandingProps) 
   const standortPlzOrteSorted = buildSortedStandortPlzOrte(standort);
   const plzLetterGroups = groupPlzOrteByInitialLetter(standortPlzOrteSorted);
   const regionMapInitialView = getInteractiveRegionMapInitialView(mapAnchorPlz, standort);
-  const heroBadgeStandort = standortLabelForHeroBadge(standort);
 
   return (
     <div className="min-w-0 overflow-x-clip overflow-y-visible bg-[#fafbfc] text-neutral-700 antialiased">
       <article id="standort-landing" className="min-w-0 scroll-mt-24 overflow-x-clip overflow-y-visible">
-        {/* Hero: gleiches Motiv wie Startseite (startseite_front); Badge pro Standort */}
+        {/* Hero: identischer Aufbau wie Startseite (app/page.tsx), ohne Badge */}
         <section
           className="relative z-0 box-border w-full scroll-mt-[var(--ahs-header-scroll-padding)] pt-0 pb-6 sm:pb-8 lg:pb-[clamp(1.5rem,2vw+0.75rem,2.5rem)]"
           aria-labelledby="standort-hero-heading"
         >
-          <div className="relative left-1/2 w-screen max-w-[100vw] -translate-x-1/2 overflow-x-visible overflow-y-visible bg-white">
-            <div className="relative flex w-full flex-col overflow-visible bg-white pt-0 lg:block lg:min-h-[min(100vw,480px)] lg:pt-0">
-              <Container className="relative z-10 order-2 mt-8 lg:order-none lg:mt-0 lg:pt-10">
-                <header className="max-w-xl text-left lg:max-w-[min(100%,28rem)] lg:pr-4 xl:max-w-[32rem]">
+          <div className="box-border mx-auto w-full min-w-0 max-w-7xl px-4 sm:px-6 lg:px-[var(--ahs-page-gutter)]">
+            <div className="relative min-w-0">
+              <div className="flex min-w-0 justify-end">
+                <div
+                  className="relative ml-auto w-full min-w-0 max-w-full -mr-4 opacity-0 animate-fade-in-up motion-reduce:opacity-100 sm:-mr-6 lg:mr-[calc((100vw-100%)/-2)] lg:max-w-[min(88vw,min(100%,52rem))]"
+                  style={{ animationDelay: "0.08s" }}
+                >
+                  <div className="w-full">
+                    <Image
+                      src="/images/startseite_front.webp"
+                      alt="Gemeinsam zur passenden Unterstützung im Alltag"
+                      width={900}
+                      height={700}
+                      sizes="(max-width: 1023px) 100vw, (max-width: 1400px) 88vw, 900px"
+                      className="box-border block h-auto w-full max-w-full object-contain object-right [filter:drop-shadow(0_10px_22px_rgba(15,79,104,0.2))_drop-shadow(0_4px_12px_rgba(15,79,104,0.12))] [will-change:filter]"
+                      priority
+                      unoptimized
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div className="relative z-10 mt-8 max-w-lg text-left sm:max-w-xl lg:absolute lg:left-0 lg:right-auto lg:top-[clamp(34%,calc(33%+0.35vw),40%)] lg:mt-0 lg:w-full lg:max-w-none lg:-translate-y-1/2 lg:-translate-x-[5%]">
+                <header className="text-left lg:max-w-[min(42vw,clamp(22rem,32vw+8rem,30rem))] xl:max-w-[min(38vw,clamp(23rem,28vw+9rem,31rem))] 2xl:max-w-[min(34vw,clamp(24rem,26vw+10rem,32rem))]">
                   <h1
                     id="standort-hero-heading"
-                    className="max-w-[24rem] text-balance text-3xl font-extrabold leading-tight tracking-tight text-[#0F4F68] opacity-0 motion-reduce:opacity-100 animate-fade-in-up sm:max-w-2xl sm:text-4xl lg:max-w-none lg:text-[clamp(1.5rem,0.6rem+1.4vw,2.75rem)] lg:leading-[1.12]"
+                    className="text-balance text-3xl font-extrabold leading-tight tracking-tight text-[#0F4F68] opacity-0 motion-reduce:opacity-100 animate-fade-in-up sm:text-4xl lg:text-[clamp(2rem,1.05rem+2.6vw,3rem)]"
                     style={{ animationDelay: "0s" }}
                   >
                     <span className="block">Pflegeberatung, Haushaltshilfe</span>
                     <span className="mt-0.5 block sm:mt-1">&amp; Betreuung {heroLocationLine}</span>
                   </h1>
                   <ul
-                    className="mt-4 max-w-xl space-y-3 sm:mt-5 sm:space-y-3.5"
+                    className="mt-5 space-y-3 sm:mt-6 sm:space-y-3.5 lg:space-y-[clamp(0.65rem,0.35rem+0.9vw,1rem)]"
                     aria-label="Ihre Vorteile auf einen Blick"
                   >
                     {HERO_VORTEILE.map((line, i) => (
                       <li
                         key={line}
-                        className={STANDORT_HERO_BULLET_ANIM}
-                        style={{ animationDelay: `${120 + i * 90}ms` }}
+                        className="flex items-center gap-3 text-pretty text-lg font-semibold leading-snug text-[#0F4F68] opacity-0 motion-reduce:opacity-100 animate-fade-in-up sm:text-xl lg:text-[clamp(1.05rem,0.82rem+0.5vw,1.35rem)]"
+                        style={{
+                          animationDelay: `${0.68 + i * 0.26}s`,
+                        }}
                       >
-                        <HeroCheckIcon className="mt-0.5 sm:mt-0" />
+                        <HeroCheckIcon />
                         <span>{line}</span>
                       </li>
                     ))}
                   </ul>
-                  <div className="mt-5 max-w-md opacity-0 motion-reduce:opacity-100 animate-fade-in-up sm:mt-6" style={{ animationDelay: "400ms" }}>
+                  <div
+                    className="mt-5 max-w-md opacity-0 motion-reduce:opacity-100 animate-fade-in-up sm:mt-6"
+                    style={{ animationDelay: "1.22s" }}
+                  >
                     <Link
                       href={CONTACT_ANCHOR}
                       className="inline-flex min-h-[48px] w-full transform items-center justify-center gap-2 rounded-xl bg-[#F78F2E] px-6 py-3 text-lg font-bold text-white shadow-lg transition hover:scale-[1.02] hover:opacity-95 focus:outline-none focus:ring-2 focus:ring-[#F78F2E] focus:ring-offset-2 motion-reduce:transform-none sm:w-auto"
@@ -264,35 +277,6 @@ export function StandortLanding({ standort, plzContext }: StandortLandingProps) 
                     </p>
                   </div>
                 </header>
-              </Container>
-
-              <div className="relative z-10 order-1 mt-0 max-lg:px-0 overflow-visible px-1 sm:px-2 lg:order-none lg:pointer-events-none lg:absolute lg:right-0 lg:top-0 lg:z-20 lg:mt-0 lg:px-0">
-                <div
-                  className="relative ml-auto w-full min-w-0 max-w-full -mr-4 overflow-visible pb-24 pt-0 opacity-0 animate-fade-in-up motion-reduce:opacity-100 sm:-mr-6 sm:pb-28 lg:ml-0 lg:mr-[calc((100vw-100%)/-2)] lg:max-w-[min(88vw,min(100%,52rem))] lg:pb-32 lg:pt-0"
-                  style={{ animationDelay: "80ms" }}
-                >
-                  <div className="relative isolate ml-auto w-full leading-none">
-                    <div className="w-full">
-                      {/* Wie Startseite: unoptimized, object-contain — gleiche horizontale Einordnung */}
-                      <Image
-                        src="/images/startseite_front.webp"
-                        alt={`Pflegeberatung, Haushaltshilfe und Betreuung – ${standort.name}`}
-                        width={900}
-                        height={700}
-                        sizes="(max-width: 1023px) 100vw, (max-width: 1400px) 88vw, 900px"
-                        className="box-border block h-auto w-full max-w-full object-contain object-right [filter:drop-shadow(0_10px_22px_rgba(15,79,104,0.2))_drop-shadow(0_4px_12px_rgba(15,79,104,0.12))] [will-change:filter]"
-                        priority
-                        unoptimized
-                      />
-                    </div>
-                    <p
-                      className="pointer-events-auto absolute bottom-0 left-1/2 z-20 w-[min(calc(100vw-1.75rem),28rem)] -translate-x-1/2 translate-y-1/2 rounded-full border border-white/25 bg-[#0F4F68] px-[1.15rem] py-[0.65rem] text-center text-[1.05rem] font-bold leading-snug text-white shadow-[0_10px_28px_-4px_rgba(15,79,104,0.45),0_4px_12px_-2px_rgba(15,79,104,0.22)] sm:w-max sm:max-w-[min(calc(100vw-1.25rem),32rem)] sm:px-[1.4rem] sm:py-[0.85rem] sm:text-[1.14rem] md:px-[1.6rem] md:py-[1rem] md:text-[1.3rem]"
-                      role="note"
-                    >
-                      Ihr Standort {heroBadgeStandort} ist gerne für Sie da!
-                    </p>
-                  </div>
-                </div>
               </div>
             </div>
           </div>
