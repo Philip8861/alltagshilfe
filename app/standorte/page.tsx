@@ -137,7 +137,7 @@ export default function StandortePage() {
       <section className="relative z-20 mt-8 w-full px-4 sm:mt-10 sm:px-6 lg:px-[var(--ahs-page-gutter)]">
         <div className="mx-auto w-full max-w-5xl rounded-2xl border border-[#0F4F68]/10 bg-white/55 p-5 sm:p-7">
           <h2 className="text-2xl font-bold text-[#0F4F68] sm:text-3xl">
-            Unsere vier Standorte – ein Team für über {plzAnzahl} Postleitzahlen
+            Ihr Ansprechpartner für rund {plzAnzahl} Orte
           </h2>
           <p className="mt-2 text-base text-neutral-700 sm:text-lg">
             Wählen Sie Ihren regionalen Schwerpunkt. Über die Postleitzahl-Suche oben gelangen Sie mit Ihrer PLZ

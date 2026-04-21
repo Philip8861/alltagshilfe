@@ -10,12 +10,11 @@ import { LEISTUNGS_LINKS_BY_ICON, STARTSEITE_LEISTUNGEN_KACHELN } from "@/lib/st
 import { LeistungenKachelGrid } from "@/components/home/LeistungenKachelGrid";
 import {
   buildStandortPageHref,
-  findStandortByPlz,
+  getOrtByPlz,
   phoneHrefToWhatsAppUrl,
   type Standort,
 } from "@/config/standorte";
 import { StandortRegionMapInteractive } from "@/components/standorte/StandortRegionMapInteractive";
-import { getNearbyServedPlzOrte } from "@/lib/plz-umkreis";
 import {
   getPlzMarkersForRegionMap,
   getServiceRegionGoogleMapsSearchHref,
@@ -39,8 +38,6 @@ const WELLEN_SVG_CLASS =
 
 const LINK_CLASS =
   "font-semibold text-[#0F4F68] underline underline-offset-2 decoration-[#0F4F68]/40 hover:decoration-[#F78F2E] hover:text-[#0c3d52]";
-
-const UMKREIS_KM = 8;
 
 const REGION_MAP_VIEW = getServiceRegionMapView();
 const REGION_MAP_MARKERS = getPlzMarkersForRegionMap();
@@ -149,6 +146,22 @@ function buildStandortFaq(input: {
   ];
 }
 
+/** PLZ dieses Standorts mit Ortsname, alphabetisch nach Ort (de), bei Gleichstand nach PLZ. */
+function buildSortedStandortPlzOrte(standort: Standort): { plz: string; ort: string }[] {
+  const rows = standort.plzList.map((plz) => ({
+    plz,
+    ort: getOrtByPlz(plz) ?? "",
+  }));
+  rows.sort((a, b) => {
+    const labelA = a.ort || a.plz;
+    const labelB = b.ort || b.plz;
+    const byOrt = labelA.localeCompare(labelB, "de", { sensitivity: "base" });
+    if (byOrt !== 0) return byOrt;
+    return a.plz.localeCompare(b.plz);
+  });
+  return rows;
+}
+
 export type StandortLandingProps = {
   standort: Standort;
   /** Gesetzt, wenn der Besuch über PLZ-Suche oder Karte mit konkretem Ort erfolgt. */
@@ -176,7 +189,7 @@ export function StandortLanding({ standort, plzContext }: StandortLandingProps) 
   const whatsappHref = phoneHrefToWhatsAppUrl(standort.phoneHref);
   const hoursParts = standort.hours.split(/\s*·\s*/).filter(Boolean);
   const regionMapsHref = getServiceRegionGoogleMapsSearchHref();
-  const nearbyPlzOrte = hasGeo && plzContext ? getNearbyServedPlzOrte(plzContext.plz, UMKREIS_KM) : [];
+  const standortPlzOrteSorted = buildSortedStandortPlzOrte(standort);
 
   return (
     <div className="min-w-0 overflow-x-clip overflow-y-visible bg-[#fafbfc] text-neutral-700 antialiased">
@@ -506,26 +519,18 @@ export function StandortLanding({ standort, plzContext }: StandortLandingProps) 
             <path d={WELLEN_D} fill="#fafbfc" />
           </svg>
           <RevealOnScroll>
-            <div className="relative z-[1] mx-auto max-w-3xl px-4 sm:px-6">
+            <div className="relative z-[1] mx-auto max-w-5xl px-4 sm:px-6">
               <div className="space-y-5 text-pretty text-neutral-700">
                 <h3
                   id="standort-region-leistungen-heading"
                   className="text-center text-balance text-xl font-extrabold tracking-tight text-[#0F4F68] sm:text-2xl"
                 >
-                  Haushaltshilfe, Betreuung, Alltagsbegleitung, Pflegeberatung und Pflegehilfsmittel in Ihrer Nähe.
-                </h3>
-
-                <p className="text-center text-base font-semibold text-[#0F4F68] sm:text-lg">
                   Wir bieten folgende Leistungen
-                </p>
+                </h3>
 
                 <ul
                   className="mx-auto mt-2 max-w-lg space-y-3 sm:max-w-xl"
-                  aria-label={
-                    hasGeo && plzContext
-                      ? `Leistungen in ${plzContext.plz} ${plzContext.ort} und Nachbargemeinden`
-                      : `Leistungen im Versorgungsgebiet ${standort.name}`
-                  }
+                  aria-label={`Leistungen im Versorgungsgebiet ${standort.name}`}
                 >
                   {STARTSEITE_LEISTUNGEN_KACHELN.map((leistung) => (
                     <li key={leistung.title} className="flex items-start gap-3">
@@ -541,53 +546,10 @@ export function StandortLanding({ standort, plzContext }: StandortLandingProps) 
                 </ul>
 
                 <p className="text-center text-sm leading-relaxed sm:text-base">
-                  <span className="font-medium text-neutral-800">{siteConfig.name}</span> koordiniert diese Leistungen
-                  {hasGeo && plzContext ? (
-                    <>
-                      {" "}
-                      für Sie in{" "}
-                      <strong>
-                        {plzContext.plz} {plzContext.ort}
-                      </strong>{" "}
-                      – und ebenso in den <strong>Nachbargemeinden</strong> und Orten in der näheren Umgebung.
-                    </>
-                  ) : (
-                    <>
-                      {" "}
-                      im Einzugsgebiet von <strong>{standort.name}</strong> – einschließlich angrenzender Gemeinden in
-                      der Region.
-                    </>
-                  )}
+                  <span className="font-medium text-neutral-800">{siteConfig.name}</span> koordiniert diese Leistungen im
+                  Einzugsgebiet von <strong>{standort.name}</strong> – einschließlich angrenzender Gemeinden in der
+                  Region.
                 </p>
-
-                {nearbyPlzOrte.length > 0 ? (
-                  <div className="space-y-3">
-                    <p className="text-center text-sm font-semibold text-neutral-800 sm:text-base">
-                      Im Umkreis von etwa {UMKREIS_KM}&#8239;km unter anderem in:
-                    </p>
-                    <ul
-                      className="flex flex-wrap items-center justify-center gap-2"
-                      aria-label="Weitere Orte im Nahbereich"
-                    >
-                      {nearbyPlzOrte.map((n) => {
-                        const ziel = findStandortByPlz(n.plz);
-                        const href = ziel
-                          ? buildStandortPageHref(ziel, { plz: n.plz, ort: n.ort })
-                          : "/standorte";
-                        return (
-                          <li key={n.plz}>
-                            <Link
-                              href={href}
-                              className="inline-flex rounded-full border border-[#0F4F68]/20 bg-white px-3 py-1.5 text-sm font-semibold text-[#0F4F68] shadow-sm transition hover:border-[#F78F2E]/50 hover:bg-[#F2F9FA] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68] focus-visible:ring-offset-2"
-                            >
-                              {n.plz} {n.ort}
-                            </Link>
-                          </li>
-                        );
-                      })}
-                    </ul>
-                  </div>
-                ) : null}
 
                 <p className="text-center text-sm text-neutral-600 sm:text-base">
                   Zur Übersicht aller Regionen:{" "}
@@ -596,6 +558,35 @@ export function StandortLanding({ standort, plzContext }: StandortLandingProps) 
                   </Link>
                   .
                 </p>
+
+                <div className="border-t border-[#0F4F68]/10 pt-6">
+                  <p
+                    id="standort-plz-liste-heading"
+                    className="text-center text-sm font-semibold text-[#0F4F68] sm:text-base"
+                  >
+                    Orte und Postleitzahlen in diesem Standortgebiet (A–Z)
+                  </p>
+                  <ul
+                    className="mt-4 grid grid-cols-1 gap-x-4 gap-y-1.5 text-sm text-neutral-800 sm:grid-cols-2 lg:grid-cols-3"
+                    aria-labelledby="standort-plz-liste-heading"
+                  >
+                    {standortPlzOrteSorted.map(({ plz, ort }) => (
+                      <li key={plz}>
+                        <Link
+                          href={
+                            ort
+                              ? buildStandortPageHref(standort, { plz, ort })
+                              : `/standorte/${standort.pageSlug}`
+                          }
+                          className="inline-flex w-full max-w-full items-baseline gap-2 rounded-sm py-0.5 text-left hover:text-[#0F4F68] hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68] focus-visible:ring-offset-2"
+                        >
+                          <span className="min-w-0 flex-1 truncate">{ort || `PLZ ${plz}`}</span>
+                          <span className="shrink-0 tabular-nums text-neutral-500">{plz}</span>
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
               </div>
 
               <div
