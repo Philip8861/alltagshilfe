@@ -88,10 +88,10 @@ export function HilfeNachOperationLanding() {
           <div className="flex flex-col-reverse items-center gap-10 lg:grid lg:grid-cols-[minmax(0,0.34fr)_minmax(0,0.66fr)] lg:items-center lg:justify-items-stretch lg:gap-x-[clamp(1.5rem,3vw,3.25rem)] lg:gap-y-0">
             <div className="box-border w-full min-w-0 max-w-full space-y-[clamp(1.25rem,2vh+0.75rem,1.75rem)] lg:min-w-0 lg:justify-self-start lg:space-y-[clamp(1.15rem,1.6vh+0.7rem,1.75rem)] lg:-translate-x-[clamp(0.75rem,4.5vw,3rem)] lg:pr-0 motion-reduce:lg:translate-x-0">
               <h1
-                className="text-2xl font-extrabold leading-tight tracking-tight text-[#0F4F68] opacity-0 motion-reduce:opacity-100 animate-fade-in-up sm:text-3xl lg:text-[clamp(1.35rem,0.82rem+1.65vw,2.35rem)]"
+                className="text-3xl font-extrabold leading-tight tracking-tight text-[#0F4F68] opacity-0 motion-reduce:opacity-100 animate-fade-in-up sm:text-4xl lg:text-[clamp(1.6rem,0.95rem+2.1vw,2.85rem)]"
                 style={{ animationDelay: "0s" }}
               >
-                <span className="block text-balance">Hilfe nach Operation, Unfall</span>
+                <span className="block whitespace-nowrap">Hilfe nach Operation, Unfall</span>
                 <span className="block text-balance">oder Schwangerschaft</span>
               </h1>
               <ul
