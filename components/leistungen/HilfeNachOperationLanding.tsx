@@ -80,18 +80,19 @@ const LEISTUNGS_TILES = [
 export function HilfeNachOperationLanding() {
   return (
     <div className="min-w-0 overflow-x-clip overflow-y-visible bg-[#fafbfc] text-neutral-700 antialiased">
-      <article id="hilfe-nach-operation-hero" className="min-w-0 scroll-mt-24 overflow-x-clip overflow-y-visible">
-        <section className="relative z-0 box-border mx-auto w-full min-w-0 max-w-7xl px-4 pb-10 pt-0 sm:px-6 sm:pb-16 lg:px-[var(--ahs-page-gutter)] lg:pb-[clamp(4rem,9vh+1.5rem,7rem)] lg:pt-[clamp(2rem,5vh+1.25rem,4.75rem)] xl:pb-[clamp(5rem,10vh+1.5rem,8rem)]">
+      <article
+        id="hilfe-nach-operation-hero"
+        className="min-w-0 scroll-mt-24 overflow-x-clip overflow-y-visible lg:overflow-x-visible"
+      >
+        <section className="relative z-0 box-border mx-auto w-full min-w-0 max-w-7xl overflow-x-clip px-4 pb-10 pt-0 sm:px-6 sm:pb-16 lg:overflow-x-visible lg:px-[var(--ahs-page-gutter)] lg:pb-[clamp(4rem,9vh+1.5rem,7rem)] lg:pt-[clamp(2rem,5vh+1.25rem,4.75rem)] xl:pb-[clamp(5rem,10vh+1.5rem,8rem)]">
           <div className="flex flex-col-reverse items-center gap-10 lg:grid lg:grid-cols-[minmax(0,0.34fr)_minmax(0,0.66fr)] lg:items-center lg:justify-items-stretch lg:gap-x-[clamp(1.5rem,3vw,3.25rem)] lg:gap-y-0">
             <div className="box-border w-full min-w-0 max-w-full space-y-[clamp(1.25rem,2vh+0.75rem,1.75rem)] lg:min-w-0 lg:justify-self-start lg:space-y-[clamp(1.15rem,1.6vh+0.7rem,1.75rem)] lg:-translate-x-[clamp(0.75rem,4.5vw,3rem)] lg:pr-0 motion-reduce:lg:translate-x-0">
               <h1
-                className="text-3xl font-extrabold leading-tight tracking-tight text-[#0F4F68] opacity-0 motion-reduce:opacity-100 animate-fade-in-up sm:text-4xl lg:text-[clamp(1.75rem,1.05rem+2.5vw,3rem)]"
+                className="text-2xl font-extrabold leading-tight tracking-tight text-[#0F4F68] opacity-0 motion-reduce:opacity-100 animate-fade-in-up sm:text-3xl lg:text-[clamp(1.35rem,0.82rem+1.65vw,2.35rem)]"
                 style={{ animationDelay: "0s" }}
               >
-                <span className="block max-sm:text-balance sm:whitespace-nowrap">
-                  Hilfe nach Operation, Haushaltshilfe oder
-                </span>
-                <span className="block max-sm:text-balance sm:whitespace-nowrap">Schwangerschaft ganz in Ihrer Nähe</span>
+                <span className="block text-balance">Hilfe nach Operation, Unfall</span>
+                <span className="block text-balance">oder Schwangerschaft</span>
               </h1>
               <ul
                 className="mt-5 min-w-0 space-y-3 sm:mt-6 sm:space-y-3.5 lg:mt-0 lg:space-y-[clamp(0.65rem,0.35rem+0.9vw,1rem)]"
@@ -127,8 +128,8 @@ export function HilfeNachOperationLanding() {
               </div>
             </div>
 
-            <div className="box-border w-full min-w-0 max-w-full lg:min-h-0 lg:translate-x-[clamp(0.75rem,5vw,3.5rem)] lg:justify-self-stretch lg:self-center motion-reduce:lg:translate-x-0">
-              <div className="box-border flex justify-center overflow-x-visible bg-[#fafbfc] px-4 pt-3 pb-8 sm:px-8 sm:pt-4 sm:pb-10 lg:flex lg:justify-end lg:px-0 lg:pb-[clamp(1.75rem,3.5vh+0.75rem,3.25rem)] lg:pt-0">
+            <div className="box-border w-full min-w-0 max-w-full lg:min-h-0 lg:translate-x-[clamp(1.75rem,8vw,6.25rem)] lg:justify-self-stretch lg:self-center motion-reduce:lg:translate-x-0">
+              <div className="box-border flex justify-center overflow-x-visible bg-[#fafbfc] px-4 pt-3 pb-8 sm:px-8 sm:pt-4 sm:pb-10 lg:flex lg:justify-end lg:pl-2 lg:pr-0 lg:pb-[clamp(1.75rem,3.5vh+0.75rem,3.25rem)] lg:pt-0">
                 <div
                   className="mx-auto w-full min-w-0 max-w-[min(100%,72rem)] opacity-0 motion-reduce:opacity-100 animate-fade-in-up max-lg:flex max-lg:max-w-full max-lg:justify-center lg:ml-auto lg:w-full lg:max-w-full"
                   style={{ animationDelay: "0.08s" }}
@@ -136,13 +137,13 @@ export function HilfeNachOperationLanding() {
                   {/* eslint-disable-next-line @next/next/no-img-element -- statisches Hero-Asset */}
                   <img
                     src={HERO_IMG}
-                    alt="Hilfe nach Operation, Haushaltshilfe oder Schwangerschaft – Unterstützung im Alltag bei Ihnen zu Hause"
+                    alt="Hilfe nach Operation, Unfall oder Schwangerschaft – Unterstützung im Alltag bei Ihnen zu Hause"
                     width={1200}
                     height={800}
                     decoding="async"
                     fetchPriority="high"
                     sizes="(max-width: 1023px) 100vw, (max-width: 1536px) 66vw, 1200px"
-                    className={`box-border h-auto w-full max-w-full object-contain object-center lg:object-contain lg:object-right max-lg:mx-auto max-lg:origin-center max-lg:translate-x-0 max-lg:-translate-y-2 max-lg:scale-[1.05] max-lg:motion-reduce:scale-[1.05] ${HERO_GLOW_CLASS}`}
+                    className={`box-border h-auto w-full max-w-full origin-center object-contain object-center max-lg:mx-auto max-lg:-translate-y-2 max-lg:scale-100 lg:origin-right lg:object-contain lg:object-right lg:translate-x-[min(7%,2.85rem)] lg:scale-[0.96] xl:translate-x-[min(9%,3.5rem)] ${HERO_GLOW_CLASS}`}
                   />
                 </div>
               </div>
