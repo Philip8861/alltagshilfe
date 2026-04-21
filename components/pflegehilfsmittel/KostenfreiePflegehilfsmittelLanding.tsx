@@ -88,7 +88,7 @@ const KOSTENFREI_USPS = [
   "Von Pflegekräften geprüfte und empfohlene Artikel",
   "Persönliche Erreichbarkeit und besonders schnelle Bearbeitung",
   "Direkter Kontakt ohne zeitraubende Warteschleifen am Telefon",
-  "Maximale Freiheit durch jederzeit kündbar",
+  "Keine Verpflichtung, der Vertrag ist jederzeit kündbar.",
   "Sorgenfreie Nutzung ohne feste Vertragslaufzeiten",
   "Volle Transparenz und höchster Schutz Ihrer Daten",
   "Sorgfältig verpackt und direkter Versand aus Deutschland",
