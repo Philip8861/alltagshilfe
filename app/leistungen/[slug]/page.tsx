@@ -17,7 +17,11 @@ type LeistungItem = {
 type Props = { params: Promise<{ slug: string }> };
 
 /** Slugs mit eigener Route unter `app/leistungen/<slug>/page.tsx` (Landing mit Hero & Sektionen). */
-const SLUGS_WITH_DEDICATED_PAGE = new Set(["haushaltshilfe", "alltagsbegleitung-betreuung"]);
+const SLUGS_WITH_DEDICATED_PAGE = new Set([
+  "haushaltshilfe",
+  "alltagsbegleitung-betreuung",
+  "hilfe-nach-operation",
+]);
 
 export async function generateStaticParams() {
   return (leistungenData as LeistungItem[])
