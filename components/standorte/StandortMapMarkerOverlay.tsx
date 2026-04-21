@@ -55,16 +55,19 @@ export function StandortMapMarkerOverlay({ markers, currentPlz, mapView }: Props
             <Link
               key={m.plz}
               href={`/standorte/${m.slug}`}
-              className={`pointer-events-auto absolute flex min-h-[44px] min-w-[44px] -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full transition-transform hover:scale-125 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#F78F2E] focus-visible:ring-offset-2 ${
-                active ? "z-[4]" : "z-[3]"
+              className={`pointer-events-auto absolute flex min-h-[44px] min-w-[44px] -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full transition-transform hover:scale-125 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 ${
+                active ? "z-[4] focus-visible:ring-[#0F4F68]" : "z-[3] focus-visible:ring-[#F78F2E]"
               }`}
               style={{ left, top }}
               aria-label={`Standort ${m.plz} ${m.ort}`}
               title={`${m.plz} ${m.ort}`}
+              aria-current={active ? "location" : undefined}
             >
               <span
-                className={`shrink-0 rounded-full bg-[#F78F2E] shadow-[0_1px_3px_rgba(15,79,104,0.35)] ring-1 ring-white/95 ${
-                  active ? "h-3 w-3" : "h-2 w-2"
+                className={`shrink-0 rounded-full shadow-[0_1px_3px_rgba(15,79,104,0.35)] ring-2 ring-white/95 ${
+                  active
+                    ? "h-4 w-4 bg-[#0F4F68]"
+                    : "h-2 w-2 bg-[#F78F2E] ring-1"
                 }`}
                 aria-hidden
               />

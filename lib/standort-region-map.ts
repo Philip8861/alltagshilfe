@@ -4,6 +4,7 @@
  */
 import plzCentroids from "@/config/plz-centroids.json";
 import { getAllStandortSlugs, getOrtByPlz } from "@/config/standorte";
+import { buildRegionMapsEmbedSrc } from "@/lib/region-map-embed";
 
 type Centroid = { lat: number; lng: number };
 
@@ -81,8 +82,7 @@ export function getServiceRegionMapView(): { lat: number; lng: number; zoom: num
 
 export function getServiceRegionMapsEmbedSrc(): string {
   const { lat, lng, zoom } = getServiceRegionMapView();
-  /** `ll=` zentriert exakt auf Koordinaten; `q=` kann wie eine Suche leicht verschieben. */
-  return `https://maps.google.com/maps?ll=${lat},${lng}&hl=de&z=${zoom}&output=embed`;
+  return buildRegionMapsEmbedSrc(lat, lng, zoom);
 }
 
 export function getServiceRegionGoogleMapsSearchHref(): string {
