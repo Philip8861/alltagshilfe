@@ -16,7 +16,6 @@ import { StandortRegionMapInteractive } from "@/components/standorte/StandortReg
 import {
   getInteractiveRegionMapInitialView,
   getPlzMarkersForRegionMap,
-  getServiceRegionGoogleMapsSearchHref,
 } from "@/lib/standort-region-map";
 
 const CONTACT_ANCHOR = "#standort-kontakt";
@@ -213,7 +212,6 @@ export function StandortLanding({ standort, plzContext }: StandortLandingProps) 
 
   const whatsappHref = phoneHrefToWhatsAppUrl(standort.phoneHref);
   const hoursParts = standort.hours.split(/\s*·\s*/).filter(Boolean);
-  const regionMapsHref = getServiceRegionGoogleMapsSearchHref();
   const standortPlzOrteSorted = buildSortedStandortPlzOrte(standort);
   const plzLetterGroups = groupPlzOrteByInitialLetter(standortPlzOrteSorted);
   const regionMapInitialView = getInteractiveRegionMapInitialView(mapAnchorPlz, standort);
@@ -517,20 +515,6 @@ export function StandortLanding({ standort, plzContext }: StandortLandingProps) 
                   currentPlz={mapAnchorPlz}
                   initialView={regionMapInitialView}
                 />
-                <p className="px-4 py-3 text-center">
-                  <a
-                    href={regionMapsHref}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-sm font-semibold text-[#0F4F68] underline underline-offset-2 hover:text-[#0c3d52] focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2 rounded"
-                  >
-                    Größere Karte und Route in Google Maps öffnen
-                  </a>
-                </p>
-                <p className="border-t border-[#0F4F68]/10 px-4 pb-3 pt-2 text-center text-xs leading-snug text-neutral-500">
-                  Die Punkte markieren die zugeordnete Ortslage (Geocoding zu PLZ und Ortsname), nicht den
-                  rein geometrischen Flächenmittelpunkt der Postleitzahl.
-                </p>
               </div>
 
               <div className="relative mx-auto mt-10 max-w-5xl rounded-2xl border border-[#0F4F68]/12 bg-gradient-to-br from-white via-[#F2F9FA]/90 to-white p-5 shadow-[0_8px_30px_rgba(15,79,104,0.08)] sm:p-8">
