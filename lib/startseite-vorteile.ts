@@ -5,7 +5,7 @@ export const STARTSEITE_VORTEILE = [
   "Volle Transparenz dank App: Rechnungen und kommende Termine jederzeit einsehbar",
   "Ab Pflegegrad 1: Nutzen Sie Ihren Entlastungsbetrag von 131 Euro für unsere Leistungen",
   "Neu ab Pflegegrad 2: Bis zu 3.539 Euro Ersatzpflege / Verhinderungspflege über uns abrechenbar",
-  "Umfangreiche Dienstleistungen rund um Betreuung, Entlastung, Alltagshilfe und Pflegeberatung aus einer Hand.",
+  "Keine Vertragsbindung! Unsere Verträge sind jederzeit kündbar",
   "Auch wenn wir eine Leistung nicht direkt anbieten: Unser starkes Netzwerk hilft weiter",
-  "Wir sind nicht nur in Städten, sondern auch in ländlichen Regionen und Dörfern für Sie unterwegs",
+  "Wir sind nicht nur in Städten, sondern auch in ländlichen Regionen für Sie unterwegs",
 ] as const;
