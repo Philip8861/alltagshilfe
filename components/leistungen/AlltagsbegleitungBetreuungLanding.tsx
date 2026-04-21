@@ -1,10 +1,13 @@
-import type { ReactNode } from "react";
 import Link from "next/link";
 import { KundenstimmenCarousel } from "@/components/home/KundenstimmenCarousel";
 import { siteConfig } from "@/config/site";
 import { RevealOnScroll } from "@/components/pflegehilfsmittel/RevealOnScroll";
 import { JetztNeuPromoSection } from "@/components/leistungen/JetztNeuPromoSection";
 import { STARTSEITE_VORTEILE, STARTSEITE_VORTEILE_INTRO } from "@/lib/startseite-vorteile";
+import { buildStandortStyleFaq, standortFaqJsonLd } from "@/lib/standort-faq";
+
+const AB_LANDING_FAQ = buildStandortStyleFaq(null);
+const AB_LANDING_FAQ_JSON_LD = standortFaqJsonLd(AB_LANDING_FAQ);
 
 const HERO_IMG = "/images/standort_gemeinsam.webp";
 
@@ -73,158 +76,6 @@ const LEISTUNGS_TILES = [
   "Gespräch, Beschäftigung und Aktivierung zu Hause",
   "Individuelle Wünsche nach Absprache",
 ] as const;
-
-const FAQ_INLINE =
-  "font-semibold text-[#0F4F68] underline underline-offset-2 decoration-[#0F4F68]/40 hover:decoration-[#F78F2E] hover:text-[#0c3d52]";
-
-type FaqItem = { q: string; answerPlain: string; answer: ReactNode };
-
-const FAQ: FaqItem[] = [
-  {
-    q: "Welche Aufgaben werden übernommen?",
-    answerPlain:
-      "Typisch sind Begleitung beim Einkaufen, gemeinsames Kochen oder Essen, Spaziergänge, Begleitung zu Arzt und Apotheke sowie Unterstützung bei Behördengängen. Der Umfang richtet sich nach Ihrem Bedarf.",
-    answer: (
-      <>
-        Typisch gehören dazu <strong>Begleitung beim Einkaufen</strong>, <strong>gemeinsames Kochen oder Essen</strong>,{" "}
-        <strong>Spaziergänge</strong>, <strong>Begleitung zu Arzt und Apotheke</strong> sowie{" "}
-        <strong>Unterstützung bei Behördengängen</strong>. Wir passen uns Ihrem Bedarf an.
-      </>
-    ),
-  },
-  {
-    q: "Wo bietet die Alltagshilfe-Süd ihre Leistung an?",
-    answerPlain: `${siteConfig.name} unterstützt in Städten und ländlichen Regionen. Ob wir in Ihrer Nähe sind, prüfen Sie über den Standortsucher auf der Seite Standorte.`,
-    answer: (
-      <>
-        Wir unterstützen in <strong>Städten und ländlichen Regionen</strong>. Ob wir in Ihrer Nähe sind, prüfen Sie mit
-        unserem{" "}
-        <Link href="/standorte" className={FAQ_INLINE}>
-          Standortsucher
-        </Link>
-        .
-      </>
-    ),
-  },
-  {
-    q: "Werden die Kosten übernommen?",
-    answerPlain: `Als zugelassener Partner rechnen wir mit allen Pflege- und Krankenkassen ab.`,
-    answer: (
-      <>
-        Als <strong>zugelassener Partner</strong> rechnen wir mit <strong>allen Pflege- und Krankenkassen</strong> ab.
-      </>
-    ),
-  },
-  {
-    q: "Wie wird abgerechnet?",
-    answerPlain:
-      "Die Bezahlung erfolgt über die Pflegekasse, die Krankenkasse oder privat. Im Beratungsgespräch klären wir Ihre Möglichkeiten.",
-    answer: (
-      <>
-        Die Bezahlung erfolgt über die <strong>Pflegekasse</strong>, die <strong>Krankenkasse</strong> oder{" "}
-        <strong>privat</strong>. Wir beraten Sie gerne zu Ihren Möglichkeiten, gern auch über unsere{" "}
-        <Link href="/kontakt" className={FAQ_INLINE}>
-          Kontaktseite
-        </Link>
-        .
-      </>
-    ),
-  },
-  {
-    q: "Gilt der Entlastungsbetrag von 131 Euro?",
-    answerPlain:
-      "Ab Pflegegrad 1 können Sie den monatlichen Entlastungsbetrag von 131 Euro für qualifizierte Leistungen nutzen, sofern die Voraussetzungen erfüllt sind.",
-    answer: (
-      <>
-        Ab <strong>Pflegegrad 1</strong> können Sie diesen monatlichen Betrag für unsere Leistungen nutzen, wenn die
-        gesetzlichen Voraussetzungen erfüllt sind. Details zum Entlastungsbetrag finden Sie auch in unserem{" "}
-        <Link href="/ratgeber/entlastungsbetrag-131-euro" className={FAQ_INLINE}>
-          Ratgeber
-        </Link>
-        .
-      </>
-    ),
-  },
-  {
-    q: "Kann ich 3.539 Euro für Ersatzpflege und Verhinderungspflege über Alltagshilfe-Süd nutzen?",
-    answerPlain:
-      "Ja, ab Pflegegrad 2 können Sie Ersatzpflege und Verhinderungspflege bis zum gesetzlich vorgesehenen Jahresbudget über Alltagshilfe-Süd abrechnen lassen, sofern die Voraussetzungen erfüllt sind.",
-    answer: (
-      <>
-        Ja, ab einem <strong>Pflegegrad 2</strong> ist das unkompliziert möglich, wenn die gesetzlichen und
-        vertraglichen Voraussetzungen erfüllt sind. Wir unterstützen Sie bei der Abrechnung.
-      </>
-    ),
-  },
-  {
-    q: "Brauche ich einen Pflegegrad?",
-    answerPlain:
-      "Für Leistungen über die Pflegekasse ist in der Regel ein Pflegegrad erforderlich. Über die Krankenkasse oder privat ist Hilfe auch ohne Pflegegrad möglich, je nach Einzelfall.",
-    answer: (
-      <>
-        Für Leistungen der <strong>Pflegekasse</strong> ja. Über die <strong>Krankenkasse</strong> oder{" "}
-        <strong>privat</strong> ist Hilfe auch ohne Pflegegrad möglich.
-      </>
-    ),
-  },
-  {
-    q: "Gibt es eine feste Bezugsperson?",
-    answerPlain:
-      "Ja, eine persönliche Beziehung ist wichtig; ein Wechsel der Bezugsperson erfolgt nur in dringenden Fällen.",
-    answer: (
-      <>
-        Ja, eine <strong>persönliche Beziehung</strong> ist uns wichtig, daher ist ein Wechsel nur in dringenden Fällen
-        notwendig.
-      </>
-    ),
-  },
-  {
-    q: "Wie schnell startet die Hilfe?",
-    answerPlain:
-      "Termine werden zeitnah vergeben. Der Start hängt von regionalen Kapazitäten ab; darüber informieren wir Sie umgehend.",
-    answer: (
-      <>
-        Wir vergeben Termine <strong>zeitnah</strong>. Der Start hängt von regionalen Kapazitäten ab, über die wir Sie
-        sofort informieren.
-      </>
-    ),
-  },
-  {
-    q: "Gibt es eine App für Termine?",
-    answerPlain:
-      "Ja, über die App von Alltagshilfe-Süd sind Termine und Rechnungen jederzeit einsehbar.",
-    answer: (
-      <>
-        Ja, über unsere <strong>App</strong> haben Sie <strong>Termine und Rechnungen</strong> jederzeit transparent im
-        Blick.
-      </>
-    ),
-  },
-  {
-    q: "Wie stelle ich eine Anfrage?",
-    answerPlain:
-      "Kontaktieren Sie Alltagshilfe-Süd telefonisch oder über das Online-Formular für ein unverbindliches Erstgespräch.",
-    answer: (
-      <>
-        Kontaktieren Sie uns einfach telefonisch oder per{" "}
-        <Link href="/kontakt" className={FAQ_INLINE}>
-          Online-Formular
-        </Link>{" "}
-        für ein unverbindliches Erstgespräch.
-      </>
-    ),
-  },
-];
-
-const faqJsonLd = {
-  "@context": "https://schema.org",
-  "@type": "FAQPage",
-  mainEntity: FAQ.map((item) => ({
-    "@type": "Question",
-    name: item.q,
-    acceptedAnswer: { "@type": "Answer", text: item.answerPlain },
-  })),
-};
 
 export function AlltagsbegleitungBetreuungLanding() {
   return (
@@ -457,12 +308,12 @@ export function AlltagsbegleitungBetreuungLanding() {
                 Häufige Fragen
               </h2>
               <p className="mx-auto mt-2 max-w-2xl text-center text-sm font-medium text-[#0F4F68]/85 sm:text-base">
-                Antworten zu Begleitung, Kosten, Krankenkasse, Entlastungsbetrag, Region und Ablauf
+                Antworten zu Region, Leistungen, Kosten, Kasse, Entlastungsbetrag und Ablauf
               </p>
             </RevealOnScroll>
             <RevealOnScroll delayMs={100}>
               <div className="mt-8 space-y-3 sm:mt-10">
-                {FAQ.map((item) => (
+                {AB_LANDING_FAQ.map((item) => (
                   <details
                     key={item.q}
                     className="group rounded-2xl border border-[#0F4F68]/12 bg-white shadow-[0_2px_16px_rgba(15,79,104,0.06)] transition hover:border-[#F78F2E]/35 hover:shadow-[0_8px_28px_rgba(15,79,104,0.1)] open:border-[#0F4F68]/18 open:shadow-[0_10px_32px_rgba(15,79,104,0.12)]"
@@ -486,7 +337,7 @@ export function AlltagsbegleitungBetreuungLanding() {
               </div>
             </RevealOnScroll>
           </div>
-          <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }} />
+          <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(AB_LANDING_FAQ_JSON_LD) }} />
         </section>
 
         <section className="border-t border-[#0F4F68]/10 bg-white py-12" aria-label="Abschluss">

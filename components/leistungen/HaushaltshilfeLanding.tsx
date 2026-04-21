@@ -3,8 +3,11 @@ import { KundenstimmenCarousel } from "@/components/home/KundenstimmenCarousel";
 import { siteConfig } from "@/config/site";
 import { RevealOnScroll } from "@/components/pflegehilfsmittel/RevealOnScroll";
 import { JetztNeuPromoSection } from "@/components/leistungen/JetztNeuPromoSection";
-import { HAUSHALTSHILFE_FAQ, HAUSHALTSHILFE_FAQ_JSON_LD } from "@/lib/haushaltshilfe-faq";
+import { buildStandortStyleFaq, standortFaqJsonLd } from "@/lib/standort-faq";
 import { STARTSEITE_VORTEILE, STARTSEITE_VORTEILE_INTRO } from "@/lib/startseite-vorteile";
+
+const HAUSHALT_LANDING_FAQ = buildStandortStyleFaq(null);
+const HAUSHALT_LANDING_FAQ_JSON_LD = standortFaqJsonLd(HAUSHALT_LANDING_FAQ);
 
 const HERO_IMG = "/images/haushaltshilfe.webp";
 
@@ -304,12 +307,12 @@ export function HaushaltshilfeLanding() {
                 Häufige Fragen
               </h2>
               <p className="mx-auto mt-2 max-w-2xl text-center text-sm font-medium text-[#0F4F68]/85 sm:text-base">
-                Antworten zu Kosten, Krankenkasse, Entlastungsbetrag, Region, Ablauf und weiteren häufigen Fragen
+                Antworten zu Region, Leistungen, Kosten, Kasse, Entlastungsbetrag und Ablauf
               </p>
             </RevealOnScroll>
             <RevealOnScroll delayMs={100}>
               <div className="mt-8 space-y-3 sm:mt-10">
-                {HAUSHALTSHILFE_FAQ.map((item) => (
+                {HAUSHALT_LANDING_FAQ.map((item) => (
                   <details
                     key={item.q}
                     className="group rounded-2xl border border-[#0F4F68]/12 bg-white shadow-[0_2px_16px_rgba(15,79,104,0.06)] transition hover:border-[#F78F2E]/35 hover:shadow-[0_8px_28px_rgba(15,79,104,0.1)] open:border-[#0F4F68]/18 open:shadow-[0_10px_32px_rgba(15,79,104,0.12)]"
@@ -333,7 +336,7 @@ export function HaushaltshilfeLanding() {
               </div>
             </RevealOnScroll>
           </div>
-          <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(HAUSHALTSHILFE_FAQ_JSON_LD) }} />
+          <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(HAUSHALT_LANDING_FAQ_JSON_LD) }} />
         </section>
 
         <section className="border-t border-[#0F4F68]/10 bg-white py-12" aria-label="Abschluss">
