@@ -64,33 +64,6 @@
   }
 }
 
-@layer utilities {
-  /* Standort-Suchgebiet-Karte: Impuls-Ringe vom GPS-Zentrum */
-  @keyframes ahs-standort-gps-ripple {
-    0% {
-      transform: translate(-50%, -50%) scale(0.3);
-      opacity: 0.55;
-    }
-    100% {
-      transform: translate(-50%, -50%) scale(1.75);
-      opacity: 0;
-    }
-  }
-
-  .ahs-standort-map-ripple {
-    animation: ahs-standort-gps-ripple 2.6s cubic-bezier(0.22, 0.61, 0.36, 1) infinite;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .ahs-standort-map-ripple {
-    animation: none !important;
-    opacity: 0.2 !important;
-    transform: translate(-50%, -50%) scale(1) !important;
-  }
-}
-
-
 /*
  * Pflegebox: #main-content hat sonst flex-1 → Leerraum unter dem Iframe bis zum Viewport-Ende.
  * App-Shell nicht auf mindestens 100vh zwingen, wenn nur der Konfigurator zu sehen ist.
