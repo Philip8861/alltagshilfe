@@ -3,4 +3,5 @@ https://github.com/WZBSocialScienceCenter/plz_geocoord (Apache License 2.0).
 Enthält nur Postleitzahlen aus config/standorte-plz-generated.json (plzToOrt).
 Generierung: siehe Projekt-Historie / bei Bedarf CSV erneut einlesen und
 config/plz-centroids.json neu erzeugen.
-Korrekturen für die Karte (Ortskern): config/plz-centroid-overrides.ts.
+Ortsmitte (Karte/Umkreis): config/plz-centroids-ortsmitte.json (Nominatim, Script scripts/geocode-plz-ortsmitte.mjs).
+Fallback geometrisch: plz-centroids.json. Manuelle Korrektur: plz-centroid-overrides.ts.

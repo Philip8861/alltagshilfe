@@ -11,7 +11,9 @@
     "check:partner-env": "node scripts/check-partner-env.mjs",
     "partner:admin-secret": "node scripts/print-partner-admin-secret.mjs",
     "vercel:push-partner-env": "node scripts/vercel-push-partner-env.mjs",
-    "postinstall": "node scripts/copy-pdfjs-worker.mjs"
+    "postinstall": "node scripts/copy-pdfjs-worker.mjs",
+    "geocode:plz-ortsmitte": "node scripts/geocode-plz-ortsmitte.mjs",
+    "geocode:plz-ortsmitte:retry": "node scripts/geocode-plz-ortsmitte.mjs --retry-failed"
   },
   "dependencies": {
     "@supabase/ssr": "^0.9.0",

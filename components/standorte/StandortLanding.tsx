@@ -538,8 +538,8 @@ export function StandortLanding({ plz, ort, standort }: StandortLandingProps) {
                   </a>
                 </p>
                 <p className="border-t border-[#0F4F68]/10 px-4 pb-3 pt-2 text-center text-xs leading-snug text-neutral-500">
-                  Die Marker liegen am Mittelpunkt der jeweiligen Postleitzahl; bei weitläufigen Gemeinden kann das
-                  neben dem Ortsnamen erscheinen.
+                  Die Punkte markieren die zugeordnete Ortslage (Geocoding zu PLZ und Ortsname), nicht den
+                  rein geometrischen Flächenmittelpunkt der Postleitzahl.
                 </p>
               </div>
 
