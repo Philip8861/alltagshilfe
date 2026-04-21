@@ -39,14 +39,26 @@ const LINK_CLASS =
 
 const REGION_MAP_MARKERS = getPlzMarkersForRegionMap();
 
+/** Wie Seite „Betriebliche Pflegeberatung“: gleiche Grafik, Maße und Bildbreite. */
+const STANDORT_HERO_IMG = { w: 1031, h: 549 } as const;
+const STANDORT_HERO_IMG_SCALE = 0.8;
+const STANDORT_HERO_IMG_W = Math.round(STANDORT_HERO_IMG.w * STANDORT_HERO_IMG_SCALE);
+const standortHeroImgBlockStyle = {
+  width: `min(100vw, ${STANDORT_HERO_IMG_W}px)` as const,
+  maxWidth: `min(100vw, ${STANDORT_HERO_IMG_W}px)` as const,
+};
+
+const STANDORT_HERO_BULLET_ANIM =
+  "flex items-start gap-3 text-pretty text-lg font-semibold leading-snug text-[#0F4F68] opacity-0 motion-reduce:opacity-100 motion-reduce:animate-none animate-fade-in-up sm:items-center sm:text-xl";
+
 function HeroCheckIcon({ className = "" }: { className?: string }) {
   return (
     <span
-      className={`inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#F78F2E]/15 text-[#F78F2E] ${className}`.trim()}
+      className={`inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#F78F2E]/15 text-[#F78F2E] sm:h-10 sm:w-10 ${className}`.trim()}
       aria-hidden
     >
       <svg
-        className="h-[1.1rem] w-[1.1rem] sm:h-5 sm:w-5"
+        className="h-[1.2rem] w-[1.2rem] sm:h-[1.35rem] sm:w-[1.35rem]"
         viewBox="0 0 24 24"
         fill="none"
         stroke="currentColor"
@@ -209,73 +221,75 @@ export function StandortLanding({ standort, plzContext }: StandortLandingProps) 
   return (
     <div className="min-w-0 overflow-x-clip overflow-y-visible bg-[#fafbfc] text-neutral-700 antialiased">
       <article id="standort-landing" className="min-w-0 scroll-mt-24 overflow-x-clip overflow-y-visible">
-        {/* Bild oben bündig unter Header; vertikaler Text-Offset nur auf der linken Spalte (lg), Schriftposition wie zuvor */}
-        <section className="relative z-0 box-border w-full pt-0 pb-6 sm:pb-8 lg:pb-[clamp(1.5rem,2vw+0.75rem,2.5rem)]">
-          <div className="box-border mx-auto w-full min-w-0 max-w-7xl px-4 sm:px-6 lg:px-[var(--ahs-page-gutter)]">
-            <div className="relative min-w-0">
-              <div className="flex min-w-0 items-start justify-end">
-                <div
-                  className="relative ml-auto w-full min-w-0 max-w-full -mr-4 self-start opacity-0 animate-fade-in-up motion-reduce:opacity-100 sm:-mr-6 lg:mr-[calc((100vw-100%)/-2)] lg:max-w-[min(88vw,min(100%,52rem))]"
-                  style={{ animationDelay: "0.08s" }}
-                >
-                  <div className="w-full">
-                    <Image
-                      src="/images/startseite_front.webp"
-                      alt={`Pflegeberatung, Haushaltshilfe und Betreuung – ${standort.name}`}
-                      width={900}
-                      height={700}
-                      sizes="(max-width: 1023px) 100vw, (max-width: 1400px) 88vw, 900px"
-                      className="box-border block h-auto w-full max-w-full object-contain object-right-top [filter:drop-shadow(0_10px_22px_rgba(15,79,104,0.2))_drop-shadow(0_4px_12px_rgba(15,79,104,0.12))] [will-change:filter]"
-                      priority
-                      unoptimized
-                    />
-                  </div>
-                </div>
-              </div>
-
-              <div className="relative z-10 mt-8 max-w-lg text-left sm:max-w-xl lg:absolute lg:left-0 lg:right-auto lg:top-[clamp(2rem,5vh+1.25rem,4.75rem)] lg:mt-0 lg:w-full lg:max-w-none lg:-translate-x-[5%] lg:translate-y-0">
-                <header className="text-left lg:max-w-[min(42vw,clamp(22rem,32vw+8rem,30rem))] xl:max-w-[min(38vw,clamp(23rem,28vw+9rem,31rem))] 2xl:max-w-[min(34vw,clamp(24rem,26vw+10rem,32rem))]">
+        {/* Hero wie „Betriebliche Pflegeberatung“: gleiches Bild, Layout und Experten-Badge */}
+        <section
+          className="relative z-0 box-border w-full scroll-mt-[var(--ahs-header-scroll-padding)] pt-0 pb-6 sm:pb-8 lg:pb-[clamp(1.5rem,2vw+0.75rem,2.5rem)]"
+          aria-labelledby="standort-hero-heading"
+        >
+          <div className="relative left-1/2 w-screen max-w-[100vw] -translate-x-1/2 overflow-x-visible overflow-y-visible bg-white">
+            <div className="relative flex w-full flex-col overflow-visible bg-white pt-0 lg:block lg:min-h-[min(100vw,480px)] lg:pt-0">
+              <Container className="relative z-10 order-2 mt-8 lg:order-none lg:mt-0 lg:pt-10">
+                <header className="max-w-xl text-left lg:max-w-[min(100%,28rem)] lg:pr-4 xl:max-w-[32rem]">
                   <h1
-                    className="text-left text-[clamp(0.8125rem,2.9vw+0.45rem,1.875rem)] font-extrabold leading-tight tracking-tight text-[#0F4F68] opacity-0 motion-reduce:opacity-100 animate-fade-in-up sm:text-4xl lg:text-[clamp(2rem,1.05rem+2.6vw,3rem)]"
+                    id="standort-hero-heading"
+                    className="max-w-[24rem] text-balance text-3xl font-extrabold leading-tight tracking-tight text-[#0F4F68] opacity-0 motion-reduce:opacity-100 animate-fade-in-up sm:max-w-2xl sm:text-4xl lg:max-w-none lg:text-[clamp(1.5rem,0.6rem+1.4vw,2.75rem)] lg:leading-[1.12]"
                     style={{ animationDelay: "0s" }}
                   >
-                    <span className="block whitespace-nowrap">
-                      Pflegeberatung, Haushaltshilfe
-                    </span>
-                    <span className="mt-0.5 block text-balance sm:mt-1">
-                      &amp; Betreuung {heroLocationLine}
-                    </span>
+                    <span className="block">Pflegeberatung, Haushaltshilfe</span>
+                    <span className="mt-0.5 block sm:mt-1">&amp; Betreuung {heroLocationLine}</span>
                   </h1>
                   <ul
-                    className="mt-5 space-y-3 sm:mt-6 sm:space-y-3.5 lg:space-y-[clamp(0.65rem,0.35rem+0.9vw,1rem)]"
+                    className="mt-4 max-w-xl space-y-3 sm:mt-5 sm:space-y-3.5"
                     aria-label="Ihre Vorteile auf einen Blick"
                   >
                     {HERO_VORTEILE.map((line, i) => (
                       <li
                         key={line}
-                        className="flex items-center gap-3 text-pretty text-lg font-semibold leading-snug text-[#0F4F68] opacity-0 motion-reduce:opacity-100 animate-fade-in-up sm:text-xl lg:text-[clamp(1.05rem,0.82rem+0.5vw,1.35rem)]"
-                        style={{ animationDelay: `${0.68 + i * 0.26}s` }}
+                        className={STANDORT_HERO_BULLET_ANIM}
+                        style={{ animationDelay: `${120 + i * 90}ms` }}
                       >
-                        <HeroCheckIcon />
+                        <HeroCheckIcon className="mt-0.5 sm:mt-0" />
                         <span>{line}</span>
                       </li>
                     ))}
                   </ul>
-                  <div
-                    className="mt-5 opacity-0 motion-reduce:opacity-100 animate-fade-in-up sm:mt-6"
-                    style={{ animationDelay: "1.22s" }}
-                  >
+                  <div className="mt-5 max-w-md opacity-0 motion-reduce:opacity-100 animate-fade-in-up sm:mt-6" style={{ animationDelay: "400ms" }}>
                     <Link
                       href={CONTACT_ANCHOR}
-                      className="inline-flex min-h-[48px] w-full transform items-center justify-center gap-2 rounded-xl bg-[#F78F2E] px-6 py-3 text-lg font-bold text-white shadow-lg transition hover:scale-[1.02] hover:opacity-95 focus:outline-none focus:ring-2 focus:ring-[#F78F2E] focus:ring-offset-2 motion-reduce:transform-none sm:w-auto lg:px-[clamp(1.15rem,0.85rem+1.1vw,1.65rem)] lg:py-[clamp(0.6rem,0.45rem+0.45vw,0.9rem)] lg:text-[clamp(1rem,0.82rem+0.55vw,1.15rem)]"
+                      className="inline-flex min-h-[48px] w-full transform items-center justify-center gap-2 rounded-xl bg-[#F78F2E] px-6 py-3 text-lg font-bold text-white shadow-lg transition hover:scale-[1.02] hover:opacity-95 focus:outline-none focus:ring-2 focus:ring-[#F78F2E] focus:ring-offset-2 motion-reduce:transform-none sm:w-auto"
                     >
                       Jetzt Kontakt aufnehmen
                     </Link>
-                    <p className="mt-3 max-w-prose text-pretty text-sm leading-snug text-neutral-600 sm:text-base lg:text-[clamp(1.05rem,0.85rem+0.42vw,1.15rem)]">
+                    <p className="mt-3 max-w-prose text-pretty text-sm leading-snug text-neutral-600 sm:text-base">
                       Unverbindliche Erstberatung – wir melden uns zeitnah bei Ihnen.
                     </p>
                   </div>
                 </header>
+              </Container>
+
+              <div className="relative z-10 order-1 mt-0 max-lg:px-0 overflow-visible px-1 sm:px-2 lg:order-none lg:pointer-events-none lg:absolute lg:right-0 lg:top-0 lg:z-20 lg:mt-0 lg:px-0">
+                <div
+                  className="ml-auto overflow-visible pb-24 pt-0 opacity-0 animate-fade-in-up motion-reduce:opacity-100 sm:pb-28 lg:ml-0 lg:mr-0 lg:pb-32 lg:pt-0"
+                  style={{ ...standortHeroImgBlockStyle, animationDelay: "80ms" }}
+                >
+                  <div className="relative isolate ml-auto leading-none [&_img]:block [&_img]:max-w-none">
+                    <Image
+                      src="/images/betriebliche_pflegeberatung.webp"
+                      alt={`Pflegeberatung, Haushaltshilfe und Betreuung – ${standort.name}`}
+                      width={STANDORT_HERO_IMG.w}
+                      height={STANDORT_HERO_IMG.h}
+                      priority
+                      sizes={`${STANDORT_HERO_IMG_W}px`}
+                      className="relative z-0 block h-auto w-full max-w-none drop-shadow-[0_22px_48px_rgba(15,79,104,0.22)] drop-shadow-[0_10px_24px_rgba(15,79,104,0.14)]"
+                    />
+                    <p
+                      className="pointer-events-auto absolute bottom-0 left-1/2 z-20 w-[min(calc(100vw-1.75rem),28rem)] -translate-x-1/2 translate-y-1/2 rounded-full border border-white/25 bg-[#0F4F68] px-[1.15rem] py-[0.65rem] text-center text-[1.05rem] font-bold leading-snug text-white shadow-[0_10px_28px_-4px_rgba(15,79,104,0.45),0_4px_12px_-2px_rgba(15,79,104,0.22)] sm:w-max sm:max-w-[min(calc(100vw-1.25rem),32rem)] sm:px-[1.4rem] sm:py-[0.85rem] sm:text-[1.14rem] md:px-[1.6rem] md:py-[1rem] md:text-[1.3rem]"
+                      role="note"
+                    >
+                      Ihre Experten für Pflege seit 12 Jahren!
+                    </p>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
