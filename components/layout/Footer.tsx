@@ -12,9 +12,9 @@ export function Footer() {
       {/* Unten in px: bei Lesbarkeits-Zoom (html font-size %) würden rem-Paddings extrem groß wirken */}
       <Container className="pt-12 sm:pt-16 pb-[max(8px,env(safe-area-inset-bottom,0px))]">
         <div className="mx-auto grid w-full max-w-6xl grid-cols-1 justify-items-center gap-y-[3.125rem] text-center lg:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] lg:justify-items-stretch lg:gap-x-[4.375rem] lg:gap-y-[3.125rem] lg:text-left xl:gap-x-20">
-          <div className="flex min-w-0 max-w-md flex-col items-center justify-self-center text-center lg:max-w-lg lg:items-start lg:justify-self-start lg:text-left">
+          <div className="flex min-w-0 max-w-md flex-col items-center justify-self-center text-center lg:max-w-lg lg:justify-self-start">
             <p className="text-sm font-semibold text-neutral-900">{siteConfig.name}</p>
-            <p className="mt-2 max-w-sm text-pretty text-sm leading-relaxed text-neutral-600 sm:max-w-md">
+            <p className="mt-2 max-w-sm text-balance text-pretty text-sm leading-relaxed text-neutral-600 sm:max-w-md">
               {siteConfig.description}
             </p>
           </div>
