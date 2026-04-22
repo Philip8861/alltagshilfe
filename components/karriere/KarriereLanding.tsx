@@ -302,20 +302,23 @@ export function KarriereLanding() {
       >
         <section
           aria-labelledby="karriere-hero-heading"
-          className="relative isolate z-0 min-w-0 overflow-x-clip overflow-y-visible bg-[#fafbfc] pb-7 pt-3 sm:pb-10 sm:pt-4 lg:pb-[clamp(2.45rem,5.6vh+0.7rem,3.85rem)] lg:pt-3"
+          className="relative isolate z-0 min-w-0 overflow-x-clip overflow-y-visible bg-[#fafbfc] pb-8 pt-0 sm:pb-10 lg:pb-[clamp(2.45rem,5.6vh+0.7rem,3.85rem)]"
         >
-          {/* Abstand nach oben: Bild beginnt unter dem weißen Nav-Balken (wie Hero bei betrieblicher Pflegeberatung), kein Überlappen mit Sticky-Header */}
-          <div className="relative min-h-[min(32vh,280px)] w-full sm:min-h-[min(31vh,266px)] lg:min-h-[min(28vh,252px)]">
+          {/* Kein fill: Next/Image-Wrapper nutzt overflow-hidden und kann object-contain oben/unten beschneiden. Feste Maße (970×495) + max-h = volles Motiv, oben bündig unter weißer Nav-Zeile (pt-0). */}
+          <div className="relative min-h-[min(40vh,340px)] w-full sm:min-h-[min(38vh,320px)] lg:min-h-[min(36vh,300px)]">
             <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-1/2 max-w-[50vw] overflow-x-clip overflow-y-visible">
-              <div className="absolute inset-0 origin-top-right scale-[1.001] motion-reduce:scale-100">
-                <Image
-                  src={HERO_IMG}
-                  alt="Karriere bei der Alltagshilfe-Süd – Team und Arbeitgeber"
-                  fill
-                  priority
-                  sizes="50vw"
-                  className="object-cover object-right"
-                />
+              <div className="absolute inset-0">
+                <div className="flex h-full justify-end overflow-visible">
+                  <Image
+                    src={HERO_IMG}
+                    alt="Karriere bei der Alltagshilfe-Süd – Team und Arbeitgeber"
+                    width={970}
+                    height={495}
+                    priority
+                    sizes="50vw"
+                    className="h-auto max-h-[min(40vh,340px)] w-auto max-w-full object-contain object-right object-top sm:max-h-[min(38vh,320px)] lg:max-h-[min(36vh,300px)]"
+                  />
+                </div>
                 <div
                   className="pointer-events-none absolute inset-0 bg-gradient-to-r from-[#fafbfc] from-0% via-white/90 via-35% to-transparent to-[62%] sm:via-white/85 sm:via-30% sm:to-[58%] lg:via-white/80 lg:via-25% lg:to-[52%]"
                   aria-hidden
@@ -323,7 +326,7 @@ export function KarriereLanding() {
               </div>
             </div>
             {/* Gleiche horizontale Position wie Container / Leistungs-Landings (max-w-7xl + Gutter, optional leichter Offset wie Haushaltshilfe) */}
-            <div className="relative z-10 mx-auto flex min-h-[min(32vh,280px)] w-full max-w-7xl flex-col justify-center px-4 py-5 sm:min-h-[min(31vh,266px)] sm:px-6 sm:py-6 lg:min-h-[min(28vh,252px)] lg:px-[var(--ahs-page-gutter)] lg:py-7">
+            <div className="relative z-10 mx-auto flex min-h-[min(40vh,340px)] w-full max-w-7xl flex-col justify-center px-4 py-5 sm:min-h-[min(38vh,320px)] sm:px-6 sm:py-6 lg:min-h-[min(36vh,300px)] lg:px-[var(--ahs-page-gutter)] lg:py-7">
               <div className="box-border max-w-full lg:-translate-x-[clamp(0.75rem,4.5vw,3rem)] lg:pr-0 motion-reduce:lg:translate-x-0">
                 <div className="max-w-[min(100%,28rem)] sm:max-w-[min(100%,32rem)] xl:max-w-[34rem]">
                   <h1
