@@ -9,6 +9,13 @@ const HERO_IMG = "/images/standort_hintergrund.webp";
 const HERO_GLOW_CLASS =
   "[filter:drop-shadow(0_10px_22px_rgba(15,79,104,0.2))_drop-shadow(0_4px_12px_rgba(15,79,104,0.12))] [will-change:filter]";
 
+/** Drei zentrale Arbeitgeber-Vorteile (einheitlich auf allen Stellenkarten). */
+const STELLEN_VORTEILE = [
+  "Tarifgerechte Vergütung, planbare Zeiten und klare Strukturen im Alltag",
+  "Echte Teamkultur: Einarbeitung, fester Ansprechpartner und Unterstützung vor Ort",
+  "Sinnstiftende Arbeit in der Region – dort, wo Hilfe für Menschen ankommt",
+] as const;
+
 const jobs = [
   {
     id: "pflegefachkraft",
@@ -16,11 +23,6 @@ const jobs = [
     tagline: "Menschen im Alltag stärken",
     type: "Vollzeit",
     location: "Memmingen & Umgebung",
-    highlights: [
-      "Sinnstiftende Arbeit mit direktem Kontakt zu Menschen",
-      "Feste Teams, faire Dienstplangestaltung",
-      "Weiterbildung und fachliche Begleitung",
-    ],
     accent: "primary" as const,
     icon: "heart",
   },
@@ -30,11 +32,6 @@ const jobs = [
     tagline: "Begleitung, die ankommt",
     type: "Teilzeit / Vollzeit",
     location: "Verschiedene Standorte",
-    highlights: [
-      "Vielfältige Einsatzmöglichkeiten",
-      "Einarbeitung durch erfahrene Kolleg:innen",
-      "Attraktive Sozialleistungen",
-    ],
     accent: "warm" as const,
     icon: "hand",
   },
@@ -44,11 +41,6 @@ const jobs = [
     tagline: "Schnittstelle zwischen Mensch und System",
     type: "Vollzeit",
     location: "Büro Memmingen",
-    highlights: [
-      "Beratung und Koordination von Pflegeleistungen",
-      "Moderne Arbeitsmittel, hybrid möglich",
-      "Starkes Team im Hintergrund",
-    ],
     accent: "soft" as const,
     icon: "desk",
   },
@@ -58,11 +50,6 @@ const jobs = [
     tagline: "Ihr Neustart in der Pflege",
     type: "Vollzeit nach Einarbeitung",
     location: "Alle Standorte",
-    highlights: [
-      "Strukturierte Einarbeitung ohne Druck",
-      "Qualifizierung wird gefördert",
-      "Sichere Festanstellung",
-    ],
     accent: "primary" as const,
     icon: "star",
   },
@@ -81,6 +68,23 @@ function JobIcon({ name }: { name: string }) {
   return (
     <svg className="h-8 w-8 shrink-0 sm:h-10 sm:w-10" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
       <path d={d} />
+    </svg>
+  );
+}
+
+function VorteilHaken() {
+  return (
+    <svg
+      className="mt-0.5 h-5 w-5 shrink-0 text-[#F78F2E]"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={2.4}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden
+    >
+      <path d="M20 6 9 17l-5-5" />
     </svg>
   );
 }
@@ -136,27 +140,29 @@ function OffeneStellenSpalte() {
                 </div>
               </div>
               <div className="flex flex-1 flex-col px-5 pb-5 sm:px-6 sm:pb-6">
-                <ul className="mt-3 space-y-2 text-sm text-neutral-700">
-                  {job.highlights.map((h) => (
-                    <li key={h} className="flex items-start gap-2">
-                      <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-[#0F4F68]" aria-hidden />
+                <ul className="mt-3 space-y-2.5 text-sm text-neutral-700">
+                  {STELLEN_VORTEILE.map((h) => (
+                    <li key={h} className="flex items-start gap-2.5">
+                      <VorteilHaken />
                       <span>{h}</span>
                     </li>
                   ))}
                 </ul>
-                <div className="mt-4 flex flex-wrap gap-2">
+                <div className="mt-4 flex flex-wrap gap-3">
                   <Link
                     href={`/kontakt?betreff=Bewerbung%20${encodeURIComponent(job.title)}`}
-                    className="inline-flex items-center rounded-lg bg-[#0F4F68] px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-[#0c3d52] focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2"
+                    className="inline-flex min-h-[44px] items-center justify-center rounded-lg bg-[#0F4F68] px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[#0c3d52] focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2"
                   >
                     Jetzt bewerben
                   </Link>
-                  <span className="inline-flex items-center text-xs text-neutral-500 sm:text-sm">
-                    oder{" "}
-                    <a href="tel:+4983349893330" className="ml-1 font-medium text-[#0F4F68] hover:underline">
-                      08334 / 9893330
-                    </a>
-                  </span>
+                  <a
+                    href={siteConfig.indeedJobsUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex min-h-[44px] items-center justify-center rounded-lg border-2 border-[#0F4F68] bg-white px-4 py-2.5 text-sm font-semibold text-[#0F4F68] transition-colors hover:bg-[#0F4F68]/05 focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2"
+                  >
+                    Stellenbeschreibung ansehen
+                  </a>
                 </div>
               </div>
             </article>
@@ -191,7 +197,7 @@ function OffeneStellenSpalte() {
 
 function DanielKontaktSpalte() {
   return (
-    <div className="flex w-full justify-center lg:justify-end">
+    <div className="flex w-full justify-center">
       <div className="flex w-full max-w-full flex-col items-center gap-6 text-center scale-100 origin-top lg:max-w-lg lg:scale-[0.84] lg:origin-top xl:max-w-xl">
         <div className="flex w-[79.8%] max-w-full flex-col gap-6">
           <div className="flex w-full flex-col">
@@ -306,11 +312,11 @@ export function KarriereLanding() {
 
         <section id="bewerbung" className="border-t border-[#0F4F68]/10 bg-[#fafbfc] py-12 sm:py-16 lg:py-20">
           <Container>
-            <div className="mx-auto flex w-full max-w-7xl flex-col gap-10 lg:flex-row lg:items-start lg:gap-10 xl:gap-12">
-              <div className="min-w-0 w-full flex-1 lg:min-w-0 lg:pr-2">
+            <div className="mx-auto flex w-full flex-col items-stretch gap-10 lg:flex-row lg:items-start lg:justify-center lg:gap-12 xl:gap-14">
+              <div className="min-w-0 w-full lg:w-[min(100%,32rem)] xl:w-[min(100%,36rem)]">
                 <OffeneStellenSpalte />
               </div>
-              <div className="flex w-full min-w-0 shrink-0 justify-center lg:w-[min(100%,36rem)] lg:flex-none lg:justify-end lg:pl-2 xl:w-[min(100%,38rem)]">
+              <div className="flex w-full min-w-0 shrink-0 justify-center lg:w-[min(100%,26rem)] xl:w-[min(100%,28rem)]">
                 <DanielKontaktSpalte />
               </div>
             </div>
