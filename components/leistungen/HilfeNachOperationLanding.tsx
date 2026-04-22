@@ -69,12 +69,12 @@ const SCHRITTE = [
 ] as const;
 
 const LEISTUNGS_TILES = [
-  "Saugen und Wischen der Böden",
-  "Fenster putzen",
-  "Reinigung von Bad und Küche",
-  "Mahlzeiten zubereiten",
-  "Aufräumen und Ordnung halten",
-  "Wäsche waschen und bügeln",
+  "Reinigung der Wohnung",
+  "Hilfe bei Anträgen und Formularen",
+  "Einkaufsservice",
+  "Wäsche waschen & bügeln",
+  "Fahrten zum Arzt, zu Behörden usw.",
+  "Individuelle Hilfsleistungen nach Absprache",
 ] as const;
 
 export function HilfeNachOperationLanding() {
@@ -166,12 +166,18 @@ export function HilfeNachOperationLanding() {
           </svg>
           <div className="relative z-[1] mx-auto max-w-7xl">
             <RevealOnScroll>
-              <div className="mb-10 text-center sm:mb-12">
-                <h2 id="hno-leistungen-heading" className="text-3xl font-bold text-[#0F4F68] sm:text-4xl">
-                  Das übernehmen wir im Haushalt
+              <div className="mb-10 sm:mb-12">
+                <h2 id="hno-leistungen-heading" className="text-center text-3xl font-bold text-[#0F4F68] sm:text-4xl">
+                  Sie benötigen schnelle &amp; unkomplizierte Hilfe?
                 </h2>
-                <p className="mt-3 text-pretty text-neutral-600 sm:max-w-3xl sm:mx-auto">
-                  Typische haushaltsnahe Leistungen – im Detail stimmen wir alles mit Ihnen ab.
+                <p className="mx-auto mt-4 max-w-3xl text-pretty text-left text-neutral-600 sm:text-base lg:text-center">
+                  Nach einer Operation, einem Unfall oder während der Schwangerschaft stehen wir Ihnen zuverlässig zur
+                  Seite. Wir unterstützen Sie im Alltag, koordinieren notwendige Schritte und übernehmen die
+                  Kommunikation mit Kranken- und Pflegekassen. So können Sie sich ganz auf Ihre Genesung und Ihr
+                  Wohlbefinden konzentrieren.
+                </p>
+                <p className="mx-auto mt-6 max-w-3xl text-center text-lg font-semibold text-[#0F4F68] sm:text-xl">
+                  Wir bieten Ihnen folgende Hilfe:
                 </p>
               </div>
             </RevealOnScroll>
