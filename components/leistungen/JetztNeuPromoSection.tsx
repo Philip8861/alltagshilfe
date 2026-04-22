@@ -3,6 +3,10 @@ import { RevealOnScroll } from "@/components/pflegehilfsmittel/RevealOnScroll";
 /** Cache-Buster bei aktualisiertem Asset; Wert bei neuer Grafik erhöhen. */
 const JETZT_NEU_IMG = "/images/jetzt_neu.webp?v=5";
 
+/** Wie Hero-Grafiken: doppelter drop-shadow folgt der Alphamaske (kein Schatten auf transparenten Flächen). */
+const JETZT_NEU_IMG_CLASS =
+  "mx-auto block h-auto w-full object-contain object-center [filter:drop-shadow(0_10px_22px_rgba(15,79,104,0.2))_drop-shadow(0_4px_12px_rgba(15,79,104,0.12))] [will-change:filter] motion-reduce:filter-none lg:mx-0";
+
 const PROMO_ICON_HEAD =
   "inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#F78F2E]/15 sm:h-10 sm:w-10 [&_svg]:h-[1.35rem] [&_svg]:w-[1.35rem] sm:[&_svg]:h-6 sm:[&_svg]:w-6";
 
@@ -41,7 +45,7 @@ export function JetztNeuPromoSection({ headingId }: JetztNeuPromoSectionProps) {
       <div className="mx-auto max-w-7xl">
         <RevealOnScroll delayMs={80}>
           <div className="flex flex-col items-center gap-8 lg:flex-row lg:items-start lg:gap-10 xl:gap-14">
-            <div className="w-full max-w-[min(100%,30.8rem)] shrink-0 leading-none lg:max-w-[min(100%,28.6rem)] lg:pt-1">
+            <div className="w-full max-w-[min(100%,33.88rem)] shrink-0 leading-none lg:max-w-[min(100%,31.46rem)] lg:pt-1">
               {/* eslint-disable-next-line @next/next/no-img-element -- statisches Promo-Asset; ohne Karten-Rahmen, Transparenz bis zum Seitenhintergrund */}
               <img
                 src={JETZT_NEU_IMG}
@@ -50,7 +54,7 @@ export function JetztNeuPromoSection({ headingId }: JetztNeuPromoSectionProps) {
                 height={704}
                 decoding="async"
                 loading="lazy"
-                className="mx-auto block h-auto w-full object-contain object-center [filter:drop-shadow(0_12px_28px_rgba(15,79,104,0.14))] motion-reduce:filter-none lg:mx-0"
+                className={JETZT_NEU_IMG_CLASS}
               />
             </div>
             <div className="min-w-0 flex-1 space-y-6 text-center lg:text-left lg:space-y-5">
