@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 
 /** Cache-Buster bei aktualisiertem Asset; Wert bei neuer Grafik erhöhen. */
-const JETZT_NEU_IMG = "/images/jetzt_neu.webp?v=7";
+const JETZT_NEU_IMG = "/images/jetzt_neu.webp?v=8";
 
 const IMG_SHADOW =
   "[filter:drop-shadow(0_18px_40px_rgba(15,79,104,0.34))_drop-shadow(0_9px_24px_rgba(15,79,104,0.24))]";
