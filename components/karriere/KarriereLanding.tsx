@@ -296,14 +296,17 @@ function KarriereBewerbungWieKontakt() {
 export function KarriereLanding() {
   return (
     <div className="min-w-0 overflow-x-clip overflow-y-visible bg-[#fafbfc] text-neutral-700 antialiased">
-      <article id="karriere-landing" className="min-w-0 scroll-mt-24 overflow-x-clip overflow-y-visible">
+      <article
+        id="karriere-landing"
+        className="min-w-0 scroll-mt-[var(--ahs-header-scroll-padding)] overflow-x-clip overflow-y-visible"
+      >
         <section
           aria-labelledby="karriere-hero-heading"
-          className="relative isolate z-0 -mt-px min-w-0 overflow-x-clip overflow-y-visible bg-[#fafbfc] pb-7 pt-0 sm:pb-10 lg:pb-[clamp(2.45rem,5.6vh+0.7rem,3.85rem)]"
+          className="relative isolate z-0 min-w-0 overflow-x-clip overflow-y-visible bg-[#fafbfc] pb-7 pt-3 sm:pb-10 sm:pt-4 lg:pb-[clamp(2.45rem,5.6vh+0.7rem,3.85rem)] lg:pt-3"
         >
-          {/* Bild rechte Hälfte, bündig rechts & unter der weißen Nav-Zeile (kein overflow-hidden → kein Abschneiden am Header); ~10 % größer als zuvor (0,91 → 1,001) */}
+          {/* Abstand nach oben: Bild beginnt unter dem weißen Nav-Balken (wie Hero bei betrieblicher Pflegeberatung), kein Überlappen mit Sticky-Header */}
           <div className="relative min-h-[min(32vh,280px)] w-full sm:min-h-[min(31vh,266px)] lg:min-h-[min(28vh,252px)]">
-            <div className="pointer-events-none absolute top-0 right-0 bottom-0 w-1/2 max-w-[50vw] overflow-x-clip overflow-y-visible">
+            <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-1/2 max-w-[50vw] overflow-x-clip overflow-y-visible">
               <div className="absolute inset-0 origin-top-right scale-[1.001] motion-reduce:scale-100">
                 <Image
                   src={HERO_IMG}
