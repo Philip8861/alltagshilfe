@@ -299,41 +299,39 @@ export function KarriereLanding() {
       <article id="karriere-landing" className="min-w-0 scroll-mt-24 overflow-x-clip overflow-y-visible">
         <section
           aria-labelledby="karriere-hero-heading"
-          className="relative isolate z-0 min-w-0 overflow-hidden bg-[#fafbfc] pb-10 pt-0 sm:pb-14 lg:pb-[clamp(3.5rem,8vh+1rem,5.5rem)]"
+          className="relative isolate z-0 min-w-0 overflow-hidden bg-[#fafbfc] pb-7 pt-0 sm:pb-10 lg:pb-[clamp(2.45rem,5.6vh+0.7rem,3.85rem)]"
         >
-          <div className="relative mx-auto min-h-[min(46vh,400px)] w-full sm:min-h-[min(44vh,380px)] lg:min-h-[min(40vh,360px)]">
-            <div className="absolute inset-y-0 right-0 w-full overflow-visible lg:left-[min(38%,28rem)]">
-              <div className="absolute inset-y-0 right-0 w-full origin-right scale-[0.5] motion-reduce:scale-100">
-                <Image
-                  src={HERO_IMG}
-                  alt="Karriere bei der Alltagshilfe-Süd – Team und Arbeitgeber"
-                  fill
-                  priority
-                  sizes="(max-width: 1023px) 100vw, 65vw"
-                  className="object-cover object-right"
-                />
-                <div
-                  className="pointer-events-none absolute inset-0 bg-gradient-to-r from-[#fafbfc] from-0% via-[#fafbfc]/90 via-40% to-transparent to-[72%] sm:via-35% sm:to-[68%] lg:via-[#fafbfc]/70 lg:via-22% lg:to-[55%]"
-                  aria-hidden
-                />
-              </div>
+          <div className="relative mx-auto min-h-[min(32vh,280px)] w-full sm:min-h-[min(31vh,266px)] lg:min-h-[min(28vh,252px)]">
+            <div className="absolute inset-y-0 right-0 w-full lg:left-[min(38%,28rem)]">
+              <Image
+                src={HERO_IMG}
+                alt="Karriere bei der Alltagshilfe-Süd – Team und Arbeitgeber"
+                fill
+                priority
+                sizes="(max-width: 1023px) 100vw, 65vw"
+                className="object-cover object-right"
+              />
+              <div
+                className="pointer-events-none absolute inset-0 bg-gradient-to-r from-[#fafbfc] from-0% via-white/90 via-40% to-transparent to-[72%] sm:via-35% sm:via-white/88 sm:to-[68%] lg:via-white/75 lg:via-22% lg:to-[55%]"
+                aria-hidden
+              />
             </div>
-            <div className="relative z-10 mx-auto flex min-h-[min(46vh,400px)] w-full max-w-7xl flex-col justify-center px-4 py-8 sm:min-h-[min(44vh,380px)] sm:px-6 sm:py-10 lg:min-h-[min(40vh,360px)] lg:px-[var(--ahs-page-gutter)] lg:py-10">
-              <div className="max-w-[min(100%,40rem)] xl:max-w-[44rem]">
+            <div className="relative z-10 mx-auto flex min-h-[min(32vh,280px)] w-full max-w-7xl flex-col justify-center px-4 py-5 sm:min-h-[min(31vh,266px)] sm:px-6 sm:py-6 lg:min-h-[min(28vh,252px)] lg:px-[var(--ahs-page-gutter)] lg:py-7">
+              <div className="max-w-[min(100%,28rem)] sm:max-w-[min(100%,32rem)] xl:max-w-[31rem]">
                 <h1
                   id="karriere-hero-heading"
-                  className="text-pretty text-4xl font-extrabold leading-[1.12] tracking-tight text-[#0F4F68] opacity-0 motion-reduce:opacity-100 animate-fade-in-up sm:text-5xl lg:text-6xl xl:text-[clamp(2.75rem,2.2rem+2.2vw,4rem)]"
+                  className="text-pretty text-2xl font-bold leading-[1.15] tracking-tight text-[#0F4F68] opacity-0 motion-reduce:opacity-100 animate-fade-in-up sm:text-3xl md:text-4xl lg:text-[clamp(1.65rem,1.1rem+1.5vw,2.45rem)] xl:text-[clamp(1.75rem,1.2rem+1.35vw,2.65rem)]"
                   style={{ animationDelay: "0s" }}
                 >
                   Starte jetzt deine neue Karriere bei der Alltagshilfe-Süd
                 </h1>
                 <div
-                  className="mt-8 opacity-0 motion-reduce:opacity-100 animate-fade-in-up sm:mt-10"
+                  className="mt-5 opacity-0 motion-reduce:opacity-100 animate-fade-in-up sm:mt-6"
                   style={{ animationDelay: "0.15s" }}
                 >
                   <Link
                     href="#bewerbung"
-                    className="inline-flex w-full min-h-[3.5rem] transform items-center justify-center rounded-2xl bg-[#F78F2E] px-8 py-4 text-lg font-bold text-white transition hover:opacity-95 focus:outline-none focus:ring-2 focus:ring-[#F78F2E] focus:ring-offset-2 motion-reduce:transform-none sm:min-h-[3.75rem] sm:w-auto sm:px-12 sm:py-5 sm:text-xl lg:px-14 lg:py-5 lg:text-2xl"
+                    className="inline-flex w-full min-h-[2.6rem] transform items-center justify-center rounded-xl bg-[#F78F2E] px-5 py-2.5 text-sm font-semibold text-white transition hover:opacity-95 focus:outline-none focus:ring-2 focus:ring-[#F78F2E] focus:ring-offset-2 motion-reduce:transform-none sm:min-h-[2.75rem] sm:w-auto sm:px-8 sm:py-3 sm:text-base md:px-9 md:py-3.5 md:text-lg"
                   >
                     Jetzt bewerben
                   </Link>
