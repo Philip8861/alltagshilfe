@@ -48,8 +48,8 @@ export function buildStandortStyleFaq(standort: Standort | null): StandortFaqIte
 
   return [
     {
-      q: `Hat ${brand} noch freie Kapazitäten?`,
-      answerPlain: `Ja, in der Regel haben wir an all unseren Standorten noch freie Kapazitäten. Vom Erstgespräch bis zum ersten Besuch dauert es meist etwa 2 Wochen.`,
+      q: `Gibt es bei ${brand} noch freie Kapazitäten?`,
+      answerPlain: `Ja, in der Regel haben wir an allen unseren Standorten noch freie Kapazitäten. Vom Erstgespräch bis zum ersten Besuch dauert es meist etwa 2 Wochen.`,
       answer: (
         <>
           Ja, in der Regel haben wir an <strong>allen unseren Standorten</strong> noch freie Kapazitäten. Vom{" "}
