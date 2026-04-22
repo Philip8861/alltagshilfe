@@ -3,10 +3,11 @@
 import { useEffect, useRef, useState } from "react";
 
 /** Cache-Buster bei aktualisiertem Asset; Wert bei neuer Grafik erhöhen. */
-const JETZT_NEU_IMG = "/images/jetzt_neu.webp?v=8";
+const JETZT_NEU_IMG = "/images/jetzt_neu.webp?v=9";
 
+/** Standard wie Hero-Grafiken (Haushaltshilfe & Co.): doppelter drop-shadow, nicht verstärkt. */
 const IMG_SHADOW =
-  "[filter:drop-shadow(0_18px_40px_rgba(15,79,104,0.34))_drop-shadow(0_9px_24px_rgba(15,79,104,0.24))]";
+  "[filter:drop-shadow(0_10px_22px_rgba(15,79,104,0.2))_drop-shadow(0_4px_12px_rgba(15,79,104,0.12))]";
 
 const PROMO_ICON_HEAD =
   "inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#F78F2E]/15 sm:h-10 sm:w-10 [&_svg]:h-[1.35rem] [&_svg]:w-[1.35rem] sm:[&_svg]:h-6 sm:[&_svg]:w-6";
