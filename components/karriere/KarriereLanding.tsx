@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Container } from "@/components/layout/Container";
 import { KarriereForm } from "@/components/forms/KarriereForm";
+import { BewerbungTippsFab } from "@/components/karriere/BewerbungTippsDialog";
 import { siteConfig } from "@/config/site";
 
 const HERO_IMG = "/images/standort_hintergrund.webp";
@@ -97,9 +98,9 @@ function OffeneStellenSpalte() {
         Klicken Sie auf eine Stelle, um mehr zu erfahren – oder bewerben Sie sich direkt per E-Mail oder über unser
         Kontaktformular nebenan.
       </p>
-      <ul className="mt-6 grid list-none gap-6">
+      <ul className="mt-6 grid list-none grid-cols-1 gap-6 md:grid-cols-2">
         {jobs.map((job) => (
-          <li key={job.id}>
+          <li key={job.id} className="min-w-0">
             <article
               className={`group relative flex h-full flex-col overflow-hidden rounded-2xl border-2 transition-all hover:shadow-lg ${
                 job.accent === "primary"
@@ -109,8 +110,9 @@ function OffeneStellenSpalte() {
                     : "border-neutral-200 bg-[#F2F9FA]/60 hover:border-[#0F4F68]/30"
               }`}
             >
+              <BewerbungTippsFab className="absolute right-2 top-2 z-20 sm:right-3 sm:top-3" />
               <div
-                className={`px-5 py-4 sm:px-6 sm:py-5 ${
+                className={`px-5 py-4 pr-14 sm:px-6 sm:py-5 sm:pr-16 ${
                   job.accent === "primary"
                     ? "bg-[#0F4F68]/05"
                     : job.accent === "warm"
@@ -311,13 +313,15 @@ export function KarriereLanding() {
         </section>
 
         <section id="bewerbung" className="border-t border-[#0F4F68]/10 bg-[#fafbfc] py-12 sm:py-16 lg:py-20">
-          <Container>
-            <div className="mx-auto flex w-full flex-col items-stretch gap-10 lg:flex-row lg:items-start lg:justify-center lg:gap-12 xl:gap-14">
-              <div className="min-w-0 w-full lg:w-[min(100%,32rem)] xl:w-[min(100%,36rem)]">
+          <Container className="max-w-[min(100%,88rem)]">
+            <div className="grid w-full grid-cols-1 gap-10 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-start lg:gap-x-6 xl:gap-x-8">
+              <div className="min-w-0">
                 <OffeneStellenSpalte />
               </div>
-              <div className="flex w-full min-w-0 shrink-0 justify-center lg:w-[min(100%,26rem)] xl:w-[min(100%,28rem)]">
-                <DanielKontaktSpalte />
+              <div className="min-w-0 justify-self-center self-start lg:justify-self-end lg:pl-2 lg:translate-x-1 xl:translate-x-3 2xl:translate-x-5">
+                <div className="w-full lg:w-[min(100%,26rem)] xl:w-[min(100%,28rem)]">
+                  <DanielKontaktSpalte />
+                </div>
               </div>
             </div>
           </Container>
