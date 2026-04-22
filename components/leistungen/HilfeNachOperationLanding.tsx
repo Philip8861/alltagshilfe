@@ -14,7 +14,7 @@ const HERO_GLOW_CLASS =
   "[filter:drop-shadow(0_10px_22px_rgba(15,79,104,0.2))_drop-shadow(0_4px_12px_rgba(15,79,104,0.12))] [will-change:filter]";
 
 const HERO_VORTEILE = [
-  "Wir übernehmen den Kontakt zu Ihrer Krankenkasse",
+  "Wir übernehmen die Kommunikation mit Ihrer Krankenkasse",
   "Unkomplizierte und schnelle Terminvergabe",
   "Für Sie entstehen keine Kosten",
 ] as const;
@@ -55,9 +55,9 @@ const SCHRITTE = [
   },
   {
     step: "Schritt 2",
-    title: "Abstimmung mit Ihrer Krankenkasse",
+    title: "Kommunikation mit Ihrer Krankenkasse",
     description:
-      "Wir übernehmen die Abstimmung mit Ihrer Krankenkasse und informieren Sie, sobald alles geklärt ist.",
+      "Wir übernehmen die Kommunikation mit Ihrer Krankenkasse und informieren Sie, sobald alles geklärt ist.",
   },
   {
     step: "Schritt 3",
