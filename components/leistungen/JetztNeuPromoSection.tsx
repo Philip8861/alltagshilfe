@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 
 /** Cache-Buster bei aktualisiertem Asset; Wert bei neuer Grafik erhöhen. */
-const JETZT_NEU_IMG = "/images/jetzt_neu.webp?v=10";
+const JETZT_NEU_IMG = "/images/jetzt_neu.webp?v=11";
 
 /** Doppelter drop-shadow wie Hero, Deckkraft ~50 % schwächer als Standard (0.1 / 0.06). */
 const IMG_SHADOW =
