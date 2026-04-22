@@ -1,6 +1,7 @@
 "use client";
 
 import { useId, useRef } from "react";
+import { cn } from "@/lib/utils";
 
 const BEWERBUNG_TIPPS = [
   "Fülle das Bewerbungsformular sorgfältig und vollständig aus.",
@@ -42,7 +43,10 @@ export function BewerbungTippsFab({ className = "" }: BewerbungTippsFabProps) {
     <>
       <button
         type="button"
-        className={`group flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border-2 border-[#F78F2E]/40 bg-gradient-to-br from-white to-[#FFF5EB] shadow-md transition hover:border-[#F78F2E] hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-[#F78F2E] focus:ring-offset-2 sm:h-12 sm:w-12 ${className}`}
+        className={cn(
+          "group flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border-2 border-[#F78F2E]/40 bg-gradient-to-br from-white to-[#FFF5EB] shadow-md transition hover:border-[#F78F2E] hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-[#F78F2E] focus:ring-offset-2 sm:h-12 sm:w-12",
+          className,
+        )}
         aria-haspopup="dialog"
         aria-label="Tipps für deine Bewerbung öffnen"
         onClick={() => dialogRef.current?.showModal()}

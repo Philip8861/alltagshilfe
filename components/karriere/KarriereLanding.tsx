@@ -56,6 +56,14 @@ const jobs = [
   },
 ];
 
+/** Sehr leichte Innen-Tönung pro Karte (Markenfarben). */
+const JOB_INNEN_TINT: Record<string, string> = {
+  pflegefachkraft: "bg-[#0F4F68]/[0.045]",
+  betreuungskraft: "bg-[#F78F2E]/[0.065]",
+  "sachbearbeiter-pflegeberatung": "bg-[#0F4F68]/[0.028]",
+  "quereinsteiger-pflegehilfe": "bg-[#F78F2E]/[0.04]",
+};
+
 const iconPaths: Record<string, string> = {
   heart:
     "M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z",
@@ -67,7 +75,7 @@ const iconPaths: Record<string, string> = {
 function JobIcon({ name }: { name: string }) {
   const d = iconPaths[name] || iconPaths.heart;
   return (
-    <svg className="h-8 w-8 shrink-0 sm:h-10 sm:w-10" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+    <svg className="h-6 w-6 shrink-0 sm:h-7 sm:w-7 lg:h-6 lg:w-6" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
       <path d={d} />
     </svg>
   );
@@ -95,14 +103,13 @@ function OffeneStellenSpalte() {
     <div className="min-w-0 w-full">
       <h2 className="text-2xl font-bold tracking-tight text-[#0F4F68] sm:text-3xl">Offene Stellen</h2>
       <p className="mt-2 text-pretty text-sm text-neutral-600 sm:text-base">
-        Klicken Sie auf eine Stelle, um mehr zu erfahren – oder bewerben Sie sich direkt per E-Mail oder über unser
-        Kontaktformular nebenan.
+        Klicken Sie auf eine Stelle, um mehr zu erfahren – oder nutzen Sie das Bewerbungsformular weiter unten.
       </p>
-      <ul className="mt-6 grid list-none grid-cols-1 gap-6 md:grid-cols-2">
+      <ul className="mt-6 grid list-none grid-cols-1 items-stretch gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {jobs.map((job) => (
           <li key={job.id} className="min-w-0">
             <article
-              className={`group relative flex h-full flex-col overflow-hidden rounded-2xl border-2 transition-all hover:shadow-lg ${
+              className={`group relative flex h-full min-h-0 flex-col overflow-hidden rounded-2xl border-2 transition-all hover:shadow-lg ${
                 job.accent === "primary"
                   ? "border-[#0F4F68]/25 bg-white hover:border-[#0F4F68]/45"
                   : job.accent === "warm"
@@ -110,19 +117,19 @@ function OffeneStellenSpalte() {
                     : "border-neutral-200 bg-[#F2F9FA]/60 hover:border-[#0F4F68]/30"
               }`}
             >
-              <BewerbungTippsFab className="absolute right-2 top-2 z-20 sm:right-3 sm:top-3" />
+              <BewerbungTippsFab className="absolute right-1.5 top-1.5 z-20 h-9 w-9 sm:right-2 sm:top-2 sm:h-10 sm:w-10 [&_svg]:h-5 [&_svg]:w-5 sm:[&_svg]:h-5 sm:[&_svg]:w-5" />
               <div
-                className={`px-5 py-4 pr-14 sm:px-6 sm:py-5 sm:pr-16 ${
+                className={`px-3 py-3 pr-11 sm:px-4 sm:py-4 sm:pr-12 ${
                   job.accent === "primary"
                     ? "bg-[#0F4F68]/05"
                     : job.accent === "warm"
                       ? "bg-[#F78F2E]/08"
-                      : ""
+                      : "bg-[#0F4F68]/04"
                 }`}
               >
-                <div className="flex items-start gap-3">
+                <div className="flex items-start gap-2">
                   <span
-                    className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl sm:h-12 sm:w-12 ${
+                    className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg sm:h-10 sm:w-10 ${
                       job.accent === "primary"
                         ? "bg-[#0F4F68] text-white"
                         : job.accent === "warm"
@@ -133,27 +140,29 @@ function OffeneStellenSpalte() {
                     <JobIcon name={job.icon} />
                   </span>
                   <div className="min-w-0 flex-1">
-                    <p className="text-xs font-semibold uppercase tracking-wide text-neutral-500">
+                    <p className="text-[10px] font-semibold uppercase leading-tight tracking-wide text-neutral-500 sm:text-xs">
                       {job.type} · {job.location}
                     </p>
-                    <h3 className="mt-1 text-lg font-bold text-[#0F4F68] sm:text-xl">{job.title}</h3>
-                    <p className="mt-1 text-sm text-neutral-600">{job.tagline}</p>
+                    <h3 className="mt-1 text-sm font-bold leading-snug text-[#0F4F68] lg:text-base">{job.title}</h3>
+                    <p className="mt-0.5 text-xs text-neutral-600 sm:text-sm">{job.tagline}</p>
                   </div>
                 </div>
               </div>
-              <div className="flex flex-1 flex-col px-5 pb-5 sm:px-6 sm:pb-6">
-                <ul className="mt-3 space-y-2.5 text-sm text-neutral-700">
+              <div
+                className={`flex flex-1 flex-col px-3 pb-4 pt-1 sm:px-4 sm:pb-4 ${JOB_INNEN_TINT[job.id] ?? "bg-[#0F4F68]/[0.03]"}`}
+              >
+                <ul className="mt-2 space-y-1.5 text-[11px] leading-snug text-neutral-700 sm:space-y-2 sm:text-xs lg:text-[11px] xl:text-xs">
                   {STELLEN_VORTEILE.map((h) => (
-                    <li key={h} className="flex items-start gap-2.5">
+                    <li key={h} className="flex items-start gap-1.5 sm:gap-2">
                       <VorteilHaken />
                       <span>{h}</span>
                     </li>
                   ))}
                 </ul>
-                <div className="mt-4 flex flex-wrap gap-3">
+                <div className="mt-3 flex flex-1 flex-col gap-2">
                   <Link
                     href={`/kontakt?betreff=Bewerbung%20${encodeURIComponent(job.title)}`}
-                    className="inline-flex min-h-[44px] items-center justify-center rounded-lg bg-[#0F4F68] px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[#0c3d52] focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2"
+                    className="inline-flex min-h-[40px] w-full items-center justify-center rounded-lg bg-[#0F4F68] px-2 py-2 text-center text-xs font-semibold text-white transition-colors hover:bg-[#0c3d52] focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2 sm:min-h-[44px] sm:text-sm"
                   >
                     Jetzt bewerben
                   </Link>
@@ -161,7 +170,7 @@ function OffeneStellenSpalte() {
                     href={siteConfig.indeedJobsUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex min-h-[44px] items-center justify-center rounded-lg border-2 border-[#0F4F68] bg-white px-4 py-2.5 text-sm font-semibold text-[#0F4F68] transition-colors hover:bg-[#0F4F68]/05 focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2"
+                    className="inline-flex min-h-[40px] w-full items-center justify-center rounded-lg border-2 border-[#0F4F68] bg-white/80 px-2 py-2 text-center text-xs font-semibold text-[#0F4F68] transition-colors hover:bg-white focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2 sm:min-h-[44px] sm:text-sm"
                   >
                     Stellenbeschreibung ansehen
                   </a>
@@ -197,36 +206,61 @@ function OffeneStellenSpalte() {
   );
 }
 
-function DanielKontaktSpalte() {
+/** Wie `/kontakt`: Formular links, Kontaktinfos rechts (mit Daniel). */
+function KarriereBewerbungWieKontakt() {
   return (
-    <div className="flex w-full justify-center">
-      <div className="flex w-full max-w-full flex-col items-center gap-6 text-center scale-100 origin-top lg:max-w-lg lg:scale-[0.84] lg:origin-top xl:max-w-xl">
-        <div className="flex w-[79.8%] max-w-full flex-col gap-6">
-          <div className="flex w-full flex-col">
-            <div className="relative isolate w-full overflow-visible rounded-none bg-[#FAFBFC]">
-              <Image
-                src="/images/Daniel_Niebauer.webp"
-                alt="Daniel Niebauer – Alltagshilfe-Süd"
-                width={1080}
-                height={1350}
-                className="h-auto w-full object-contain object-center mix-blend-multiply [filter:drop-shadow(0_10px_22px_rgba(15,79,104,0.2))_drop-shadow(0_4px_12px_rgba(15,79,104,0.12))] [will-change:filter]"
-                sizes="(max-width: 1024px) 80vw, 38vw"
-              />
+    <div className="mx-auto mt-14 w-full max-w-6xl sm:mt-16 lg:mt-20">
+      <div className="grid w-full gap-10 lg:grid-cols-2 lg:items-start lg:gap-12">
+        <div className="order-2 flex min-w-0 flex-col lg:order-1">
+          <div className="mx-auto w-full max-w-xl rounded-2xl bg-[#F2F9FA] p-6 sm:p-8 lg:mx-0 lg:max-w-none lg:p-10">
+            <h2 className="text-3xl font-bold tracking-tight text-[#0F4F68] sm:text-4xl">Bewerbung</h2>
+            <p className="mt-4 text-neutral-600">
+              Schicken Sie uns Ihre Unterlagen über das Formular – wir melden uns zeitnah bei Ihnen.
+            </p>
+            <div className="mt-10">
+              <KarriereForm />
+            </div>
+            <p className="mt-8 text-sm text-neutral-500">
+              Weitere Informationen zur Datenverarbeitung finden Sie in unserer{" "}
+              <Link href="/datenschutz" className="underline hover:text-neutral-700">
+                Datenschutzerklärung
+              </Link>
+              .
+            </p>
+          </div>
+        </div>
+        <div className="order-1 flex min-w-0 flex-col items-center gap-6 text-center lg:order-2">
+          <div className="flex w-full flex-col items-center">
+            <div
+              className="relative aspect-[3/4] w-full max-w-[280px] overflow-visible opacity-0 animate-fade-in-up sm:max-w-xs lg:max-w-sm"
+              style={{ animationDelay: "0.12s" }}
+            >
+              <div className="relative h-full w-full isolate [transform:translateZ(0)] [backface-visibility:hidden]">
+                <Image
+                  src="/images/Daniel_Niebauer.webp"
+                  alt="Daniel Niebauer – Personalreferent, Alltagshilfe-Süd"
+                  fill
+                  className="object-contain object-top mix-blend-multiply drop-shadow-[0_4px_20px_rgba(15,79,104,0.18)]"
+                  sizes="(max-width: 1024px) 90vw, 40vw"
+                />
+              </div>
             </div>
             <div
-              className="relative z-10 -mt-10 w-full rounded-xl bg-[#F2F9FA] px-6 py-3 text-center sm:-mt-12 sm:py-4"
+              className="relative z-10 -mt-10 w-full max-w-sm rounded-xl bg-[#F2F9FA] px-6 py-3 text-center sm:-mt-12 sm:py-4"
               style={{ boxShadow: "0 -2px 12px rgba(15, 79, 104, 0.15)" }}
             >
-              <p className="text-[1.341398069rem] font-bold leading-tight text-[#0F4F68] sm:text-[1.490442188rem]">
-                Daniel Niebauer
-              </p>
-              <p className="mt-0.5 text-[0.894265313rem] font-normal text-neutral-600">Personalreferent</p>
+              <p className="text-lg font-bold text-[#0F4F68] sm:text-xl">Daniel Niebauer</p>
+              <p className="mt-0.5 text-sm text-neutral-600 sm:text-base">Personalreferent</p>
             </div>
           </div>
-          <div className="w-full">
+          <div
+            className="mx-auto w-full max-w-md opacity-0 animate-fade-in-up"
+            style={{ animationDelay: "0.2s" }}
+          >
+            <p className="text-base font-semibold text-[#0F4F68] sm:text-lg">Ihr Ansprechpartner</p>
             <a
               href="tel:+4983349893330"
-              className="inline-flex items-center justify-center gap-2 text-3xl font-bold tabular-nums text-[#0F4F68] hover:underline focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2 rounded sm:text-4xl"
+              className="mt-2 flex items-center justify-center gap-2 text-3xl font-bold tabular-nums text-[#0F4F68] hover:underline focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2 rounded sm:text-4xl"
               aria-label="Anrufen: 08334 9893330"
             >
               <svg
@@ -238,18 +272,23 @@ function DanielKontaktSpalte() {
               >
                 <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z" />
               </svg>
-              08334 / 9893330
+              <span>08334 / 9893330</span>
             </a>
-            <p className="mt-4 text-sm font-semibold text-neutral-600">E-Mail</p>
+            <ul className="mt-5 space-y-2 text-base text-neutral-700 sm:text-lg">
+              <li>
+                <span className="font-semibold text-[#0F4F68]">Mo–Do:</span> 08:30 – 12:00 und 13:00 – 16:00
+              </li>
+              <li>
+                <span className="font-semibold text-[#0F4F68]">Freitag:</span> 08:30 – 12:00
+              </li>
+            </ul>
+            <p className="mt-6 text-sm font-semibold text-neutral-600">E-Mail</p>
             <a
               href="mailto:daniel.niebauer@alltagshilfe-sued.de"
-              className="mt-1 block text-base font-medium text-[#0F4F68] hover:underline break-all"
+              className="mt-1 block break-all text-base font-medium text-[#0F4F68] hover:underline"
             >
               daniel.niebauer@alltagshilfe-sued.de
             </a>
-          </div>
-          <div className="w-full rounded-2xl border border-[#0F4F68]/10 bg-white p-6 shadow-sm sm:p-8">
-            <KarriereForm />
           </div>
         </div>
       </div>
@@ -313,17 +352,9 @@ export function KarriereLanding() {
         </section>
 
         <section id="bewerbung" className="border-t border-[#0F4F68]/10 bg-[#fafbfc] py-12 sm:py-16 lg:py-20">
-          <Container className="max-w-[min(100%,88rem)]">
-            <div className="grid w-full grid-cols-1 gap-10 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-start lg:gap-x-6 xl:gap-x-8">
-              <div className="min-w-0">
-                <OffeneStellenSpalte />
-              </div>
-              <div className="min-w-0 justify-self-center self-start lg:justify-self-end lg:pl-2 lg:translate-x-1 xl:translate-x-3 2xl:translate-x-5">
-                <div className="w-full lg:w-[min(100%,26rem)] xl:w-[min(100%,28rem)]">
-                  <DanielKontaktSpalte />
-                </div>
-              </div>
-            </div>
+          <Container className="w-full">
+            <OffeneStellenSpalte />
+            <KarriereBewerbungWieKontakt />
           </Container>
         </section>
 
