@@ -1,11 +1,12 @@
-import { RevealOnScroll } from "@/components/pflegehilfsmittel/RevealOnScroll";
+"use client";
+
+import { useEffect, useRef, useState } from "react";
 
 /** Cache-Buster bei aktualisiertem Asset; Wert bei neuer Grafik erhöhen. */
-const JETZT_NEU_IMG = "/images/jetzt_neu.webp?v=6";
+const JETZT_NEU_IMG = "/images/jetzt_neu.webp?v=7";
 
-/** Wie Hero-Grafiken: doppelter drop-shadow folgt der Alphamaske (kein Schatten auf transparenten Flächen). */
-const JETZT_NEU_IMG_CLASS =
-  "mx-auto block h-auto w-full object-contain object-center [filter:drop-shadow(0_10px_22px_rgba(15,79,104,0.2))_drop-shadow(0_4px_12px_rgba(15,79,104,0.12))] [will-change:filter] motion-reduce:filter-none lg:mx-0";
+const IMG_SHADOW =
+  "[filter:drop-shadow(0_18px_40px_rgba(15,79,104,0.34))_drop-shadow(0_9px_24px_rgba(15,79,104,0.24))]";
 
 const PROMO_ICON_HEAD =
   "inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#F78F2E]/15 sm:h-10 sm:w-10 [&_svg]:h-[1.35rem] [&_svg]:w-[1.35rem] sm:[&_svg]:h-6 sm:[&_svg]:w-6";
@@ -36,93 +37,138 @@ type JetztNeuPromoSectionProps = {
   headingId: string;
 };
 
+const FADE_STAGGER = "motion-safe:animate-fade-in-up motion-reduce:opacity-100";
+
 export function JetztNeuPromoSection({ headingId }: JetztNeuPromoSectionProps) {
+  const sectionRef = useRef<HTMLElement>(null);
+  const [animCycle, setAnimCycle] = useState(1);
+  const wasOutside = useRef(false);
+  const [reducedMotion, setReducedMotion] = useState(false);
+
+  useEffect(() => {
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    setReducedMotion(mq.matches);
+    const onChange = () => setReducedMotion(mq.matches);
+    mq.addEventListener("change", onChange);
+    return () => mq.removeEventListener("change", onChange);
+  }, []);
+
+  useEffect(() => {
+    if (reducedMotion) return;
+    const el = sectionRef.current;
+    if (!el) return;
+
+    const obs = new IntersectionObserver(
+      ([e]) => {
+        const inView = e.isIntersecting && e.intersectionRatio >= 0.1;
+        if (inView) {
+          if (wasOutside.current) setAnimCycle((c) => c + 1);
+          wasOutside.current = false;
+        } else {
+          wasOutside.current = true;
+        }
+      },
+      { root: null, rootMargin: "0px 0px -6% 0px", threshold: [0, 0.1, 0.18] }
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, [reducedMotion]);
+
+  const motionKey = reducedMotion ? "jetzt-neu-a11y" : animCycle;
+
+  const imgClass =
+    `mx-auto block h-auto w-full object-contain object-center ${IMG_SHADOW} [will-change:filter] motion-reduce:filter-none lg:mx-0 ` +
+    (reducedMotion ? "" : "motion-safe:animate-jetzt-neu-img-lift ");
+
   return (
     <section
+      ref={sectionRef}
       className="relative z-[10] overflow-x-clip bg-[#fafbfc] px-4 py-12 sm:px-6 sm:py-14 lg:px-[var(--ahs-page-gutter)] lg:py-16"
       aria-labelledby={headingId}
     >
       <div className="mx-auto max-w-7xl">
-        <RevealOnScroll delayMs={80}>
-          <div className="flex flex-col items-center gap-8 lg:flex-row lg:items-start lg:gap-10 xl:gap-14">
-            <div className="w-full max-w-[min(100%,37.27rem)] shrink-0 leading-none lg:max-w-[min(100%,34.61rem)] lg:pt-1">
-              {/* eslint-disable-next-line @next/next/no-img-element -- statisches Promo-Asset; ohne Karten-Rahmen, Transparenz bis zum Seitenhintergrund */}
-              <img
-                src={JETZT_NEU_IMG}
-                alt="Übersicht über Termine und Rechnungen in der App"
-                width={915}
-                height={704}
-                decoding="async"
-                loading="lazy"
-                className={JETZT_NEU_IMG_CLASS}
-              />
-            </div>
-            <div className="min-w-0 flex-1 space-y-6 text-center lg:text-left lg:space-y-5">
-              <div className="space-y-3">
-                <h2
-                  id={headingId}
-                  className="flex flex-wrap items-center justify-center gap-2 text-balance text-2xl font-extrabold leading-tight tracking-tight text-[#0F4F68] sm:text-3xl lg:justify-start"
-                >
-                  <PromoStar variant="head" />
-                  <span>Jetzt neu: Ihr persönlicher Überblick</span>
-                </h2>
-                <p className="text-pretty text-base font-medium leading-relaxed text-neutral-700 sm:text-lg">
-                  Behalten Sie Ihre Termine, Rechnungen und Ihr Budget jederzeit im Blick – einfach, transparent und
-                  übersichtlich.
-                </p>
-              </div>
-              <ul className="list-none space-y-5 text-pretty sm:space-y-6">
-                <li className="space-y-2">
-                  <h3 className="flex flex-wrap items-center justify-center gap-2.5 text-lg font-bold text-[#0F4F68] sm:text-xl lg:justify-start">
-                    <PromoStar variant="sm" />
-                    <span>Alles auf einen Blick</span>
-                  </h3>
-                  <p className="text-sm leading-relaxed text-neutral-700 sm:text-base">
-                    Alle wichtigen Informationen zu Terminen und Rechnungen sind jederzeit für Sie verfügbar.
-                  </p>
-                </li>
-                <li className="space-y-2">
-                  <h3 className="flex flex-wrap items-center justify-center gap-2.5 text-lg font-bold text-[#0F4F68] sm:text-xl lg:justify-start">
-                    <PromoStar variant="sm" />
-                    <span>Volle Kontrolle über Ihr Budget</span>
-                  </h3>
-                  <p className="text-sm leading-relaxed text-neutral-700 sm:text-base">
-                    Sehen Sie jederzeit, wie Ihr aktuelles Budget aussieht – klar und verständlich dargestellt.
-                  </p>
-                </li>
-                <li className="space-y-2">
-                  <h3 className="flex flex-wrap items-center justify-center gap-2.5 text-lg font-bold text-[#0F4F68] sm:text-xl lg:justify-start">
-                    <PromoStar variant="sm" />
-                    <span>Transparenz, die überzeugt</span>
-                  </h3>
-                  <p className="text-sm leading-relaxed text-neutral-700 sm:text-base">
-                    Transparenz ist uns besonders wichtig:
-                    <br />
-                    Sie haben jederzeit Zugriff auf alle relevanten Daten.
-                  </p>
-                </li>
-                <li className="space-y-2">
-                  <h3 className="flex flex-wrap items-center justify-center gap-2.5 text-lg font-bold text-[#0F4F68] sm:text-xl lg:justify-start">
-                    <PromoStar variant="sm" />
-                    <span>Jederzeit &amp; überall</span>
-                  </h3>
-                  <p className="text-sm leading-relaxed text-neutral-700 sm:text-base">
-                    Ob Laptop oder Smartphone – Ihr Zugang ist jederzeit und von überall aus möglich.
-                  </p>
-                </li>
-                <li className="space-y-2">
-                  <h3 className="flex flex-wrap items-center justify-center gap-2.5 text-lg font-bold text-[#0F4F68] sm:text-xl lg:justify-start">
-                    <PromoStar variant="sm" />
-                    <span>Kostenloser Service</span>
-                  </h3>
-                  <p className="text-sm leading-relaxed text-neutral-700 sm:text-base">
-                    Diese neue Leistung ist für alle Kunden selbstverständlich kostenlos.
-                  </p>
-                </li>
-              </ul>
-            </div>
+        <div
+          key={motionKey}
+          className="flex flex-col items-center gap-8 lg:flex-row lg:items-start lg:gap-10 xl:gap-14"
+        >
+          <div className="w-full max-w-[min(100%,41rem)] shrink-0 leading-none lg:max-w-[min(100%,38.07rem)] lg:pt-1">
+            {/* eslint-disable-next-line @next/next/no-img-element -- statisches Promo-Asset; ohne Karten-Rahmen, Transparenz bis zum Seitenhintergrund */}
+            <img
+              src={JETZT_NEU_IMG}
+              alt="Übersicht über Termine und Rechnungen in der App"
+              width={915}
+              height={704}
+              decoding="async"
+              loading="lazy"
+              className={imgClass.trim()}
+            />
           </div>
-        </RevealOnScroll>
+          <div className="min-w-0 flex-1 space-y-6 text-center lg:text-left lg:space-y-5">
+            <div className="space-y-3">
+              <h2
+                id={headingId}
+                className={`flex flex-wrap items-center justify-center gap-2 text-balance text-2xl font-extrabold leading-tight tracking-tight text-[#0F4F68] sm:text-3xl lg:justify-start ${FADE_STAGGER}`}
+                style={reducedMotion ? undefined : { animationDelay: "140ms" }}
+              >
+                <PromoStar variant="head" />
+                <span>Jetzt neu: Ihr persönlicher Überblick</span>
+              </h2>
+              <p
+                className={`text-pretty text-base font-medium leading-relaxed text-neutral-700 sm:text-lg ${FADE_STAGGER}`}
+                style={reducedMotion ? undefined : { animationDelay: "260ms" }}
+              >
+                Behalten Sie Ihre Termine, Rechnungen und Ihr Budget jederzeit im Blick – einfach, transparent und
+                übersichtlich.
+              </p>
+            </div>
+            <ul className="list-none space-y-5 text-pretty sm:space-y-6">
+              {[
+                {
+                  title: "Alles auf einen Blick",
+                  body: "Alle wichtigen Informationen zu Terminen und Rechnungen sind jederzeit für Sie verfügbar.",
+                },
+                {
+                  title: "Volle Kontrolle über Ihr Budget",
+                  body: "Sehen Sie jederzeit, wie Ihr aktuelles Budget aussieht – klar und verständlich dargestellt.",
+                },
+                {
+                  title: "Transparenz, die überzeugt",
+                  body: (
+                    <>
+                      Transparenz ist uns besonders wichtig:
+                      <br />
+                      Sie haben jederzeit Zugriff auf alle relevanten Daten.
+                    </>
+                  ),
+                },
+                {
+                  title: "Jederzeit & überall",
+                  body: "Ob Laptop oder Smartphone – Ihr Zugang ist jederzeit und von überall aus möglich.",
+                },
+                {
+                  title: "Kostenloser Service",
+                  body: "Diese neue Leistung ist für alle Kunden selbstverständlich kostenlos.",
+                },
+              ].map((item, i) => (
+                <li key={item.title} className="space-y-2">
+                  <h3
+                    className={`flex flex-wrap items-center justify-center gap-2.5 text-lg font-bold text-[#0F4F68] sm:text-xl lg:justify-start ${FADE_STAGGER}`}
+                    style={reducedMotion ? undefined : { animationDelay: `${380 + i * 95}ms` }}
+                  >
+                    <PromoStar variant="sm" />
+                    <span>{item.title}</span>
+                  </h3>
+                  <p
+                    className={`text-sm leading-relaxed text-neutral-700 sm:text-base ${FADE_STAGGER}`}
+                    style={reducedMotion ? undefined : { animationDelay: `${460 + i * 95}ms` }}
+                  >
+                    {item.body}
+                  </p>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
       </div>
     </section>
   );

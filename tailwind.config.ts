@@ -41,10 +41,17 @@ const config: Config = {
           "0%": { transform: "translateY(14px)" },
           "100%": { transform: "translateY(0)" },
         },
+        /** „Jetzt neu“-Promo: Laptop kurz hervor, endet in Ruhelage */
+        "jetzt-neu-img-lift": {
+          "0%": { opacity: "0.72", transform: "scale(0.9) translateY(22px)" },
+          "50%": { opacity: "1", transform: "scale(1.05) translateY(-10px)" },
+          "100%": { opacity: "1", transform: "scale(1) translateY(0)" },
+        },
       },
       animation: {
         "fade-in-up": "fade-in-up 0.6s ease-out forwards",
         "fade-in-rise": "fade-in-rise 0.65s cubic-bezier(0.22, 1, 0.36, 1) forwards",
+        "jetzt-neu-img-lift": "jetzt-neu-img-lift 0.95s cubic-bezier(0.22, 1, 0.36, 1) both",
         "partner-bar-fill": "partner-bar-fill 0.85s cubic-bezier(0.22, 1, 0.36, 1) both",
         "partner-col-enter": "partner-col-enter 0.55s cubic-bezier(0.22, 1, 0.36, 1) both",
         "partner-soft-float": "partner-soft-float 4s ease-in-out infinite",

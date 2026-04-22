@@ -328,6 +328,11 @@ body:has(#pflegebox-root) #main-content {
     opacity: 1 !important;
     transform: none !important;
   }
+  .animate-jetzt-neu-img-lift {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
   .animate-marker-pop-in,
   .animate-marker-slide-in {
     animation: none !important;
