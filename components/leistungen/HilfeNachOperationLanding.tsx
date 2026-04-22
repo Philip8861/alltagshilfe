@@ -115,14 +115,15 @@ export function HilfeNachOperationLanding() {
                     <span
                       className={
                         i === 0
-                          ? "min-w-0 flex-1 max-sm:text-pretty max-sm:text-[0.9375rem]"
+                          ? "min-w-0 flex-1 max-sm:text-[0.9375rem]"
                           : "min-w-0 flex-1 max-sm:text-pretty max-sm:text-[0.9375rem] sm:whitespace-nowrap"
                       }
                     >
                       {i === 0 ? (
                         <>
-                          <span className="block">Wir übernehmen die Kommunikation mit Ihrer</span>
-                          <span className="block">Krankenkasse</span>
+                          <span className="whitespace-nowrap">Wir übernehmen die Kommunikation mit Ihrer</span>
+                          <br />
+                          <span className="whitespace-nowrap">Krankenkasse</span>
                         </>
                       ) : (
                         line
