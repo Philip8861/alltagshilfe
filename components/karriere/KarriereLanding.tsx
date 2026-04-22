@@ -5,10 +5,7 @@ import { KarriereForm } from "@/components/forms/KarriereForm";
 import { BewerbungTippsFab } from "@/components/karriere/BewerbungTippsDialog";
 import { siteConfig } from "@/config/site";
 
-const HERO_IMG = "/images/standort_hintergrund.webp";
-
-const HERO_GLOW_CLASS =
-  "[filter:drop-shadow(0_10px_22px_rgba(15,79,104,0.2))_drop-shadow(0_4px_12px_rgba(15,79,104,0.12))] [will-change:filter]";
+const HERO_IMG = "/images/Karriere1.webp";
 
 /** Drei zentrale Arbeitgeber-Vorteile (einheitlich auf allen Stellenkarten). */
 const STELLEN_VORTEILE = [
@@ -300,51 +297,44 @@ export function KarriereLanding() {
   return (
     <div className="min-w-0 overflow-x-clip overflow-y-visible bg-[#fafbfc] text-neutral-700 antialiased">
       <article id="karriere-landing" className="min-w-0 scroll-mt-24 overflow-x-clip overflow-y-visible">
-        <section className="relative z-0 box-border mx-auto w-full min-w-0 max-w-7xl px-4 pb-10 pt-0 sm:px-6 sm:pb-16 lg:px-[var(--ahs-page-gutter)] lg:pb-[clamp(4rem,9vh+1.5rem,7rem)] lg:pt-[clamp(2rem,5vh+1.25rem,4.75rem)] xl:pb-[clamp(5rem,10vh+1.5rem,8rem)]">
-          <div className="flex flex-col-reverse items-center gap-10 lg:grid lg:grid-cols-[minmax(0,0.34fr)_minmax(0,0.66fr)] lg:items-center lg:justify-items-stretch lg:gap-x-[clamp(1.5rem,3vw,3.25rem)] lg:gap-y-0">
-            <div className="box-border w-full min-w-0 max-w-full space-y-[clamp(1.25rem,2vh+0.75rem,1.75rem)] lg:min-w-0 lg:justify-self-start lg:space-y-[clamp(1.15rem,1.6vh+0.7rem,1.75rem)] lg:-translate-x-[clamp(0.75rem,4.5vw,3rem)] lg:pr-0 motion-reduce:lg:translate-x-0">
-              <h1
-                className="text-3xl font-extrabold leading-tight tracking-tight text-[#0F4F68] opacity-0 motion-reduce:opacity-100 animate-fade-in-up sm:text-4xl lg:text-[clamp(1.75rem,1.05rem+2.5vw,3rem)]"
-                style={{ animationDelay: "0s" }}
-              >
-                <span className="block text-balance">Karriere bei der Alltagshilfe-Süd</span>
-              </h1>
-              <p
-                className="text-lg font-semibold leading-snug text-[#0F4F68]/90 opacity-0 motion-reduce:opacity-100 animate-fade-in-up sm:text-xl lg:text-[clamp(1.05rem,0.85rem+0.55vw,1.35rem)]"
-                style={{ animationDelay: "0.2s" }}
-              >
-                Da wirken, wo Menschen zählen
-              </p>
+        <section
+          aria-labelledby="karriere-hero-heading"
+          className="relative isolate z-0 min-w-0 overflow-hidden bg-[#fafbfc] pb-10 pt-0 sm:pb-14 lg:pb-[clamp(3.5rem,8vh+1rem,5.5rem)]"
+        >
+          <div className="relative mx-auto min-h-[min(88vh,760px)] w-full sm:min-h-[min(85vh,720px)] lg:min-h-[min(78vh,680px)]">
+            <div className="absolute inset-y-0 right-0 w-full lg:left-[min(38%,28rem)]">
+              <Image
+                src={HERO_IMG}
+                alt="Karriere bei der Alltagshilfe-Süd – Team und Arbeitgeber"
+                fill
+                priority
+                sizes="(max-width: 1023px) 100vw, 65vw"
+                className="object-cover object-right"
+              />
               <div
-                className="pt-1 opacity-0 motion-reduce:opacity-100 animate-fade-in-up"
-                style={{ animationDelay: "0.45s" }}
-              >
-                <Link
-                  href="#bewerbung"
-                  className="inline-flex w-full transform items-center justify-center gap-2 rounded-xl bg-[#F78F2E] px-6 py-3 text-base font-bold text-white shadow-lg transition hover:scale-[1.02] hover:opacity-95 focus:outline-none focus:ring-2 focus:ring-[#F78F2E] focus:ring-offset-2 motion-reduce:transform-none sm:w-auto lg:px-[clamp(1.15rem,0.85rem+1.1vw,1.65rem)] lg:py-[clamp(0.6rem,0.45rem+0.45vw,0.9rem)] lg:text-[clamp(1rem,0.82rem+0.55vw,1.15rem)]"
-                >
-                  Jetzt Bewerben
-                </Link>
-              </div>
+                className="pointer-events-none absolute inset-0 bg-gradient-to-r from-[#fafbfc] from-0% via-[#fafbfc]/90 via-40% to-transparent to-[72%] sm:via-35% sm:to-[68%] lg:via-[#fafbfc]/70 lg:via-22% lg:to-[55%]"
+                aria-hidden
+              />
             </div>
-
-            <div className="box-border w-full min-w-0 max-w-full lg:min-h-0 lg:translate-x-[clamp(0.75rem,5vw,3.5rem)] lg:justify-self-stretch lg:self-center motion-reduce:lg:translate-x-0">
-              <div className="box-border flex justify-center overflow-x-visible bg-[#fafbfc] px-4 pt-3 pb-8 sm:px-8 sm:pt-4 sm:pb-10 lg:flex lg:justify-end lg:px-0 lg:pb-[clamp(1.75rem,3.5vh+0.75rem,3.25rem)] lg:pt-0">
-                <div
-                  className="mx-auto w-full min-w-0 max-w-[min(100%,72rem)] opacity-0 motion-reduce:opacity-100 animate-fade-in-up max-lg:flex max-lg:max-w-full max-lg:justify-center lg:ml-auto lg:w-full lg:max-w-full"
-                  style={{ animationDelay: "0.08s" }}
+            <div className="relative z-10 mx-auto flex min-h-[min(88vh,760px)] w-full max-w-7xl flex-col justify-center px-4 py-10 sm:min-h-[min(85vh,720px)] sm:px-6 sm:py-12 lg:min-h-[min(78vh,680px)] lg:px-[var(--ahs-page-gutter)] lg:py-14">
+              <div className="max-w-[min(100%,40rem)] xl:max-w-[44rem]">
+                <h1
+                  id="karriere-hero-heading"
+                  className="text-pretty text-4xl font-extrabold leading-[1.12] tracking-tight text-[#0F4F68] opacity-0 motion-reduce:opacity-100 animate-fade-in-up sm:text-5xl lg:text-6xl xl:text-[clamp(2.75rem,2.2rem+2.2vw,4rem)]"
+                  style={{ animationDelay: "0s" }}
                 >
-                  {/* eslint-disable-next-line @next/next/no-img-element -- statisches Hero-Asset */}
-                  <img
-                    src={HERO_IMG}
-                    alt="Karriere bei Alltagshilfe-Süd – Team und Region"
-                    width={1200}
-                    height={800}
-                    decoding="async"
-                    fetchPriority="high"
-                    sizes="(max-width: 1023px) 100vw, (max-width: 1536px) 66vw, 1200px"
-                    className={`box-border h-auto w-full max-w-full object-contain object-center lg:object-contain lg:object-right max-lg:mx-auto max-lg:origin-center max-lg:-translate-y-2 max-lg:scale-[1.05] max-lg:motion-reduce:scale-[1.05] ${HERO_GLOW_CLASS}`}
-                  />
+                  Starte jetzt deine neue Karriere bei der Alltagshilfe-Süd
+                </h1>
+                <div
+                  className="mt-8 opacity-0 motion-reduce:opacity-100 animate-fade-in-up sm:mt-10"
+                  style={{ animationDelay: "0.15s" }}
+                >
+                  <Link
+                    href="#bewerbung"
+                    className="inline-flex w-full min-h-[3.5rem] transform items-center justify-center rounded-2xl bg-[#F78F2E] px-8 py-4 text-lg font-bold text-white transition hover:opacity-95 focus:outline-none focus:ring-2 focus:ring-[#F78F2E] focus:ring-offset-2 motion-reduce:transform-none sm:min-h-[3.75rem] sm:w-auto sm:px-12 sm:py-5 sm:text-xl lg:px-14 lg:py-5 lg:text-2xl"
+                  >
+                    Jetzt bewerben
+                  </Link>
                 </div>
               </div>
             </div>
