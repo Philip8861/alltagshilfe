@@ -1,7 +1,7 @@
 import { RevealOnScroll } from "@/components/pflegehilfsmittel/RevealOnScroll";
 
 /** Cache-Buster bei aktualisiertem Asset; Wert bei neuer Grafik erhöhen. */
-const JETZT_NEU_IMG = "/images/jetzt_neu.webp?v=4";
+const JETZT_NEU_IMG = "/images/jetzt_neu.webp?v=5";
 
 const PROMO_ICON_HEAD =
   "inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#F78F2E]/15 sm:h-10 sm:w-10 [&_svg]:h-[1.35rem] [&_svg]:w-[1.35rem] sm:[&_svg]:h-6 sm:[&_svg]:w-6";
