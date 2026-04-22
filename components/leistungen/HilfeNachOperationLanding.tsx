@@ -108,12 +108,25 @@ export function HilfeNachOperationLanding() {
                 {HERO_VORTEILE.map((line, i) => (
                   <li
                     key={line}
-                    className="flex min-w-0 flex-nowrap items-start gap-3 text-lg font-semibold leading-snug text-[#0F4F68] opacity-0 motion-reduce:opacity-100 animate-fade-in-up sm:text-xl lg:items-center lg:text-[clamp(1.05rem,0.82rem+0.5vw,1.35rem)]"
+                    className="flex min-w-0 flex-nowrap items-start gap-3 text-lg font-semibold leading-snug text-[#0F4F68] opacity-0 motion-reduce:opacity-100 animate-fade-in-up sm:text-xl lg:items-start lg:text-[clamp(1.05rem,0.82rem+0.5vw,1.35rem)]"
                     style={{ animationDelay: `${0.45 + i * 0.22}s` }}
                   >
                     <HeroCheckIcon className="mt-0.5 shrink-0 lg:mt-0" />
-                    <span className="min-w-0 flex-1 max-sm:text-pretty max-sm:text-[0.9375rem] sm:whitespace-nowrap">
-                      {line}
+                    <span
+                      className={
+                        i === 0
+                          ? "min-w-0 flex-1 max-sm:text-pretty max-sm:text-[0.9375rem]"
+                          : "min-w-0 flex-1 max-sm:text-pretty max-sm:text-[0.9375rem] sm:whitespace-nowrap"
+                      }
+                    >
+                      {i === 0 ? (
+                        <>
+                          <span className="block">Wir übernehmen die Kommunikation mit Ihrer</span>
+                          <span className="block">Krankenkasse</span>
+                        </>
+                      ) : (
+                        line
+                      )}
                     </span>
                   </li>
                 ))}
