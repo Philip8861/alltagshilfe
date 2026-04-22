@@ -55,15 +55,15 @@ const SCHRITTE = [
   },
   {
     step: "Schritt 2",
-    title: "Persönliche Abstimmung",
+    title: "Abstimmung mit Ihrer Krankenkasse",
     description:
-      "Wir stimmen Umfang, Termine und Details mit Ihnen ab. So passt die Haushaltshilfe zu Ihrem Alltag und Ihrer Lebenssituation.",
+      "Wir übernehmen die Abstimmung mit Ihrer Krankenkasse und informieren Sie, sobald alles geklärt ist.",
   },
   {
     step: "Schritt 3",
-    title: "Zuverlässige Unterstützung",
+    title: "Planung der Einsätze",
     description:
-      "Ihre festen Ansprechpartnerinnen und Ansprechpartner unterstützen Sie regelmäßig und verlässlich – damit Sie entlastet sind.",
+      "Nach der Genehmigung planen wir gemeinsam die Einsatzzeiten und sorgen dafür, dass Sie schnell Unterstützung im Alltag erhalten.",
   },
 ] as const;
 
@@ -87,14 +87,11 @@ export function HilfeNachOperationLanding() {
           <div className="flex flex-col-reverse items-center gap-10 lg:grid lg:grid-cols-[minmax(0,0.34fr)_minmax(0,0.66fr)] lg:items-center lg:justify-items-stretch lg:gap-x-[clamp(1.5rem,3vw,3.25rem)] lg:gap-y-0">
             <div className="box-border w-full min-w-0 max-w-full space-y-[clamp(1.25rem,2vh+0.75rem,1.75rem)] lg:min-w-0 lg:justify-self-start lg:space-y-[clamp(1.15rem,1.6vh+0.7rem,1.75rem)] lg:-translate-x-[clamp(0.75rem,4.5vw,3rem)] lg:pr-0 motion-reduce:lg:translate-x-0">
               <h1
-                className="text-3xl font-extrabold leading-tight tracking-tight text-[#0F4F68] opacity-0 motion-reduce:opacity-100 animate-fade-in-up sm:text-4xl lg:text-[clamp(1.6rem,0.95rem+2.1vw,2.85rem)]"
+                className="text-[clamp(1rem,3.5vw+0.45rem,2.25rem)] font-extrabold leading-tight tracking-tight text-[#0F4F68] opacity-0 motion-reduce:opacity-100 animate-fade-in-up sm:text-4xl lg:text-[clamp(1.6rem,0.95rem+2.1vw,2.85rem)]"
                 style={{ animationDelay: "0s" }}
               >
-                <span className="block text-balance">Hilfe nach Operation,</span>
-                <span className="block text-balance">
-                  Unfall{" "}
-                  <span className="whitespace-nowrap">oder Schwangerschaft</span>
-                </span>
+                <span className="block whitespace-nowrap">Hilfe nach Operation, Unfall</span>
+                <span className="block whitespace-nowrap">oder Schwangerschaft</span>
               </h1>
               <ul
                 className="mt-5 min-w-0 space-y-3 sm:mt-6 sm:space-y-3.5 lg:mt-0 lg:space-y-[clamp(0.65rem,0.35rem+0.9vw,1rem)]"
@@ -218,10 +215,10 @@ export function HilfeNachOperationLanding() {
                   id="hno-schritte-heading"
                   className="text-balance text-3xl font-bold tracking-tight text-[#0F4F68] sm:text-4xl"
                 >
-                  So einfach zur passenden Haushaltshilfe
+                  So einfach zur passenden Alltagsunterstützung
                 </h2>
                 <p className="mt-3 text-pretty text-sm text-[#8a6a55] sm:text-base">
-                  Drei Schritte zur verlässlichen Haushaltshilfe, schnell & unkompliziert
+                  Drei Schritte zur verlässlichen Alltagsunterstützung, schnell &amp; unkompliziert
                 </p>
               </div>
             </RevealOnScroll>
