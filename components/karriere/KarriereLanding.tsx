@@ -301,22 +301,24 @@ export function KarriereLanding() {
           aria-labelledby="karriere-hero-heading"
           className="relative isolate z-0 min-w-0 overflow-hidden bg-[#fafbfc] pb-10 pt-0 sm:pb-14 lg:pb-[clamp(3.5rem,8vh+1rem,5.5rem)]"
         >
-          <div className="relative mx-auto min-h-[min(88vh,760px)] w-full sm:min-h-[min(85vh,720px)] lg:min-h-[min(78vh,680px)]">
-            <div className="absolute inset-y-0 right-0 w-full lg:left-[min(38%,28rem)]">
-              <Image
-                src={HERO_IMG}
-                alt="Karriere bei der Alltagshilfe-Süd – Team und Arbeitgeber"
-                fill
-                priority
-                sizes="(max-width: 1023px) 100vw, 65vw"
-                className="object-cover object-right"
-              />
-              <div
-                className="pointer-events-none absolute inset-0 bg-gradient-to-r from-[#fafbfc] from-0% via-[#fafbfc]/90 via-40% to-transparent to-[72%] sm:via-35% sm:to-[68%] lg:via-[#fafbfc]/70 lg:via-22% lg:to-[55%]"
-                aria-hidden
-              />
+          <div className="relative mx-auto min-h-[min(46vh,400px)] w-full sm:min-h-[min(44vh,380px)] lg:min-h-[min(40vh,360px)]">
+            <div className="absolute inset-y-0 right-0 w-full overflow-visible lg:left-[min(38%,28rem)]">
+              <div className="absolute inset-y-0 right-0 w-full origin-right scale-[0.5] motion-reduce:scale-100">
+                <Image
+                  src={HERO_IMG}
+                  alt="Karriere bei der Alltagshilfe-Süd – Team und Arbeitgeber"
+                  fill
+                  priority
+                  sizes="(max-width: 1023px) 100vw, 65vw"
+                  className="object-cover object-right"
+                />
+                <div
+                  className="pointer-events-none absolute inset-0 bg-gradient-to-r from-[#fafbfc] from-0% via-[#fafbfc]/90 via-40% to-transparent to-[72%] sm:via-35% sm:to-[68%] lg:via-[#fafbfc]/70 lg:via-22% lg:to-[55%]"
+                  aria-hidden
+                />
+              </div>
             </div>
-            <div className="relative z-10 mx-auto flex min-h-[min(88vh,760px)] w-full max-w-7xl flex-col justify-center px-4 py-10 sm:min-h-[min(85vh,720px)] sm:px-6 sm:py-12 lg:min-h-[min(78vh,680px)] lg:px-[var(--ahs-page-gutter)] lg:py-14">
+            <div className="relative z-10 mx-auto flex min-h-[min(46vh,400px)] w-full max-w-7xl flex-col justify-center px-4 py-8 sm:min-h-[min(44vh,380px)] sm:px-6 sm:py-10 lg:min-h-[min(40vh,360px)] lg:px-[var(--ahs-page-gutter)] lg:py-10">
               <div className="max-w-[min(100%,40rem)] xl:max-w-[44rem]">
                 <h1
                   id="karriere-hero-heading"
