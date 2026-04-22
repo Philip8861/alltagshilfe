@@ -1,7 +1,7 @@
 import { RevealOnScroll } from "@/components/pflegehilfsmittel/RevealOnScroll";
 
 /** Cache-Buster bei aktualisiertem Asset; Wert bei neuer Grafik erhöhen. */
-const JETZT_NEU_IMG = "/images/jetzt_neu.webp?v=5";
+const JETZT_NEU_IMG = "/images/jetzt_neu.webp?v=6";
 
 /** Wie Hero-Grafiken: doppelter drop-shadow folgt der Alphamaske (kein Schatten auf transparenten Flächen). */
 const JETZT_NEU_IMG_CLASS =
@@ -45,7 +45,7 @@ export function JetztNeuPromoSection({ headingId }: JetztNeuPromoSectionProps) {
       <div className="mx-auto max-w-7xl">
         <RevealOnScroll delayMs={80}>
           <div className="flex flex-col items-center gap-8 lg:flex-row lg:items-start lg:gap-10 xl:gap-14">
-            <div className="w-full max-w-[min(100%,33.88rem)] shrink-0 leading-none lg:max-w-[min(100%,31.46rem)] lg:pt-1">
+            <div className="w-full max-w-[min(100%,37.27rem)] shrink-0 leading-none lg:max-w-[min(100%,34.61rem)] lg:pt-1">
               {/* eslint-disable-next-line @next/next/no-img-element -- statisches Promo-Asset; ohne Karten-Rahmen, Transparenz bis zum Seitenhintergrund */}
               <img
                 src={JETZT_NEU_IMG}
