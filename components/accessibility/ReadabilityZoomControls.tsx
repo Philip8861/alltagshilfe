@@ -695,11 +695,13 @@ export function ReadabilityZoomControls() {
   );
 
   if (!mounted || typeof document === "undefined") return null;
-  /* Partner, Pflegebox, Betriebliche Pflegeberatung: kein portaliertes Lesbarkeits-UI. */
+  /* Partner, Pflegebox, Betriebliche Pflegeberatung, Karriere: kein portaliertes Lesbarkeits-UI. */
   if (
     pathname.startsWith("/partner") ||
     isPflegeboxKonfiguratorPagePath(pathname) ||
-    pathname === "/pflegeberatung"
+    pathname === "/pflegeberatung" ||
+    pathname === "/karriere" ||
+    pathname.startsWith("/karriere/")
   ) {
     return null;
   }
