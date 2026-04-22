@@ -76,6 +76,18 @@ const LEISTUNGS_TILES = [
   "Individuelle Hilfsleistungen nach Absprache",
 ] as const;
 
+/** „Ihre Vorteile bei uns“: nur auf dieser Seite ohne die drei Pflege-/KK-Punkte der Startseitenliste. */
+const HNO_VORTEILE_BEI_UNS_AUSGESCHLOSSEN = new Set<string>([
+  "Zugelassen bei allen Pflege- und Krankenkassen in Deutschland",
+  "Ab Pflegegrad 1: Nutzen Sie Ihren Entlastungsbetrag von 131 Euro für unsere Leistungen",
+  "Neu ab Pflegegrad 2: Bis zu 3.539 Euro Ersatzpflege / Verhinderungspflege über uns abrechenbar",
+]);
+
+const HNO_VORTEILE_BEI_UNS = [
+  "Wir übernehmen die Kommunikation und Abrechnung mit Ihrer Krankenkasse",
+  ...STARTSEITE_VORTEILE.filter((item) => !HNO_VORTEILE_BEI_UNS_AUSGESCHLOSSEN.has(item)),
+];
+
 export function HilfeNachOperationLanding() {
   return (
     <div className="min-w-0 overflow-x-clip overflow-y-visible bg-[#fafbfc] text-neutral-700 antialiased">
@@ -280,7 +292,7 @@ export function HilfeNachOperationLanding() {
                 <p className="mt-2 text-pretty text-sm text-neutral-600 sm:text-base">{STARTSEITE_VORTEILE_INTRO}</p>
               </div>
               <ul className="mt-6 grid gap-4 sm:grid-cols-2">
-                {STARTSEITE_VORTEILE.map((item) => (
+                {HNO_VORTEILE_BEI_UNS.map((item) => (
                   <li
                     key={item}
                     className="flex items-start gap-3 rounded-xl px-2 py-1.5 transition-all duration-300 hover:bg-white/75 hover:shadow-[0_0_20px_rgba(15,79,104,0.12)]"
