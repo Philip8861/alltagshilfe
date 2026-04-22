@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { createPortal } from "react-dom";
+import Link from "next/link";
 import { findStandortByPlz, type Standort } from "@/config/standorte";
 import { cn } from "@/lib/utils";
 
@@ -16,7 +17,7 @@ type ServiceKey =
   | "hilfsmittel"
   | "essen";
 
-type KontaktArt = "rueckruf" | "email" | "selbst";
+type KontaktArt = "rueckruf" | "selbst";
 type StandortInfo = Standort;
 
 const SERVICE_OPTIONEN: { key: ServiceKey; label: string; verfuegbarkeit: "direkt" | "partner" }[] = [
@@ -231,6 +232,7 @@ export function StartEinstiegsHilfe() {
   const [email, setEmail] = useState("");
   const [kontaktWunsch, setKontaktWunsch] = useState("");
   const [nachricht, setNachricht] = useState("");
+  const [datenschutz, setDatenschutz] = useState(false);
 
   const [error, setError] = useState("");
 
@@ -281,6 +283,7 @@ export function StartEinstiegsHilfe() {
     setEmail("");
     setKontaktWunsch("");
     setNachricht("");
+    setDatenschutz(false);
     setError("");
   };
 
@@ -306,12 +309,6 @@ export function StartEinstiegsHilfe() {
     if (step === 7 && !kontaktArt) {
       setError("Bitte wählen Sie eine Kontaktart aus.");
       return;
-    }
-    if (step === 7 && (kontaktArt === "rueckruf" || kontaktArt === "email" || kontaktArt === "selbst")) {
-      if (!vorname.trim() || !nachname.trim() || !telefon.trim() || !email.trim()) {
-        setError("Bitte füllen Sie Vorname, Nachname, Telefonnummer und E-Mail aus.");
-        return;
-      }
     }
 
     setStep((s) => Math.min(7, s + 1));
@@ -376,6 +373,12 @@ export function StartEinstiegsHilfe() {
     }
     if (!vorname.trim() || !nachname.trim() || !telefon.trim() || !email.trim()) {
       setError("Bitte füllen Sie Vorname, Nachname, Telefonnummer und E-Mail aus.");
+      return;
+    }
+    if (!datenschutz) {
+      setError(
+        "Bitte bestätigen Sie, dass Sie die Datenschutzerklärung gelesen haben und der Verarbeitung Ihrer Daten zustimmen.",
+      );
       return;
     }
     if (kontaktArt !== "selbst") window.location.href = mailtoHref;
@@ -583,10 +586,13 @@ export function StartEinstiegsHilfe() {
             {step === 7 ? (
               <div className="mt-6 animate-fade-in-up">
                 <h3 className="text-lg font-bold text-[#0F4F68] sm:text-xl">Wie möchten Sie den Kontakt?</h3>
-                <div className="mt-4 grid gap-2 sm:grid-cols-3">
+                <div className="mt-4 grid gap-2 sm:grid-cols-2">
                   <button
                     type="button"
-                    onClick={() => setKontaktArt("rueckruf")}
+                    onClick={() => {
+                      setKontaktArt("rueckruf");
+                      setDatenschutz(false);
+                    }}
                     className={cn(optionButtonClass, "transition-all duration-300", kontaktArt === "rueckruf" && "border-[#F78F2E]/65 bg-[#fff8f2] shadow-[0_6px_16px_rgba(247,143,46,0.14)]")}
                   >
                     <span className="flex items-center gap-2.5">
@@ -597,18 +603,10 @@ export function StartEinstiegsHilfe() {
                   </button>
                   <button
                     type="button"
-                    onClick={() => setKontaktArt("email")}
-                    className={cn(optionButtonClass, "transition-all duration-300", kontaktArt === "email" && "border-[#F78F2E]/65 bg-[#fff8f2] shadow-[0_6px_16px_rgba(247,143,46,0.14)]")}
-                  >
-                    <span className="flex items-center gap-2.5">
-                      <SelectMark active={kontaktArt === "email"} />
-                      <StepFlatIcon kind="kontakt" />
-                      <span>Ich wünsche eine Rückmeldung per E-Mail</span>
-                    </span>
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setKontaktArt("selbst")}
+                    onClick={() => {
+                      setKontaktArt("selbst");
+                      setDatenschutz(false);
+                    }}
                     className={cn(optionButtonClass, "transition-all duration-300", kontaktArt === "selbst" && "border-[#F78F2E]/65 bg-[#fff8f2] shadow-[0_6px_16px_rgba(247,143,46,0.14)]")}
                   >
                     <span className="flex items-center gap-2.5">
@@ -626,16 +624,6 @@ export function StartEinstiegsHilfe() {
                     <input required value={telefon} onChange={(e) => setTelefon(e.target.value)} placeholder="Telefonnummer *" className="rounded-xl border border-[#0F4F68]/20 px-4 py-3 sm:col-span-2" />
                     <input value={besteZeit} onChange={(e) => setBesteZeit(e.target.value)} placeholder="Passender Tag/Uhrzeit *" className="rounded-xl border border-[#0F4F68]/20 px-4 py-3 sm:col-span-2" />
                     <input required value={email} onChange={(e) => setEmail(e.target.value)} placeholder="E-Mail *" type="email" className="rounded-xl border border-[#0F4F68]/20 px-4 py-3 sm:col-span-2" />
-                    <textarea value={nachricht} onChange={(e) => setNachricht(e.target.value)} placeholder="Ihre Nachricht an uns (optional)" className="min-h-[92px] rounded-xl border border-[#0F4F68]/20 px-4 py-3 sm:col-span-2" />
-                  </div>
-                ) : null}
-
-                {kontaktArt === "email" ? (
-                  <div className="mt-5 grid gap-3 sm:grid-cols-2">
-                    <input required value={vorname} onChange={(e) => setVorname(e.target.value)} placeholder="Vorname *" className="rounded-xl border border-[#0F4F68]/20 px-4 py-3" />
-                    <input required value={nachname} onChange={(e) => setNachname(e.target.value)} placeholder="Nachname *" className="rounded-xl border border-[#0F4F68]/20 px-4 py-3" />
-                    <input required value={email} onChange={(e) => setEmail(e.target.value)} placeholder="E-Mail *" type="email" className="rounded-xl border border-[#0F4F68]/20 px-4 py-3 sm:col-span-2" />
-                    <input required value={telefon} onChange={(e) => setTelefon(e.target.value)} placeholder="Telefonnummer *" className="rounded-xl border border-[#0F4F68]/20 px-4 py-3 sm:col-span-2" />
                     <textarea value={nachricht} onChange={(e) => setNachricht(e.target.value)} placeholder="Ihre Nachricht an uns (optional)" className="min-h-[92px] rounded-xl border border-[#0F4F68]/20 px-4 py-3 sm:col-span-2" />
                   </div>
                 ) : null}
@@ -660,6 +648,27 @@ export function StartEinstiegsHilfe() {
                       <input required value={telefon} onChange={(e) => setTelefon(e.target.value)} placeholder="Telefonnummer *" className="rounded-xl border border-[#0F4F68]/20 px-4 py-3 sm:col-span-2" />
                       <textarea value={nachricht} onChange={(e) => setNachricht(e.target.value)} placeholder="Ihre Nachricht *" className="min-h-[96px] rounded-xl border border-[#0F4F68]/20 px-4 py-3 sm:col-span-2" />
                     </div>
+                  </div>
+                ) : null}
+
+                {kontaktArt === "rueckruf" || kontaktArt === "selbst" ? (
+                  <div className="mt-5 rounded-xl border border-[#0F4F68]/12 bg-[#fafbfc] p-4 sm:p-5">
+                    <label className="flex cursor-pointer items-start gap-3 text-sm text-neutral-700 sm:text-base">
+                      <input
+                        type="checkbox"
+                        checked={datenschutz}
+                        onChange={(e) => setDatenschutz(e.target.checked)}
+                        className="mt-1 h-4 w-4 shrink-0 rounded border-neutral-300 text-[#0F4F68] focus:ring-[#0F4F68]"
+                        aria-required="true"
+                      />
+                      <span>
+                        Ich habe die{" "}
+                        <Link href="/datenschutz" className="font-semibold text-[#0F4F68] underline underline-offset-2 hover:no-underline">
+                          Datenschutzerklärung
+                        </Link>{" "}
+                        gelesen und stimme der Verarbeitung meiner Daten zum Zweck der Kontaktaufnahme zu. *
+                      </span>
+                    </label>
                   </div>
                 ) : null}
               </div>
