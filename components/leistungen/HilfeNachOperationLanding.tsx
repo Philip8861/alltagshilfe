@@ -90,8 +90,11 @@ export function HilfeNachOperationLanding() {
                 className="text-3xl font-extrabold leading-tight tracking-tight text-[#0F4F68] opacity-0 motion-reduce:opacity-100 animate-fade-in-up sm:text-4xl lg:text-[clamp(1.6rem,0.95rem+2.1vw,2.85rem)]"
                 style={{ animationDelay: "0s" }}
               >
-                <span className="block whitespace-nowrap">Hilfe nach Operation, Unfall</span>
-                <span className="block text-balance">oder Schwangerschaft</span>
+                <span className="block text-balance">Hilfe nach Operation,</span>
+                <span className="block text-balance">
+                  Unfall{" "}
+                  <span className="whitespace-nowrap">oder Schwangerschaft</span>
+                </span>
               </h1>
               <ul
                 className="mt-5 min-w-0 space-y-3 sm:mt-6 sm:space-y-3.5 lg:mt-0 lg:space-y-[clamp(0.65rem,0.35rem+0.9vw,1rem)]"
