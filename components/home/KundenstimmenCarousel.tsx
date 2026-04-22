@@ -71,9 +71,11 @@ const BEWERTUNGEN: Bewertung[] = [
 type KundenstimmenCarouselProps = {
   /** Ohne große Außenabstände und ohne eigene H2 – für Unterseiten unter bestehender Überschrift */
   embedded?: boolean;
+  /** Startseite: erschwert Drag/Rechtsklick auf Stern-Grafiken (nur Abschreckung). */
+  protectImages?: boolean;
 };
 
-export function KundenstimmenCarousel({ embedded = false }: KundenstimmenCarouselProps) {
+export function KundenstimmenCarousel({ embedded = false, protectImages = false }: KundenstimmenCarouselProps) {
   const [index, setIndex] = useState(0);
   const [starCount, setStarCount] = useState(0);
 
@@ -108,7 +110,14 @@ export function KundenstimmenCarousel({ embedded = false }: KundenstimmenCarouse
       aria-label="Kundenstimmen"
     >
       <div className={embedded ? "mx-auto w-full max-w-6xl py-2 text-center" : "mx-auto w-full max-w-6xl p-5 text-center sm:p-7"}>
-        <div className="flex flex-wrap items-center justify-center gap-2.5" aria-hidden>
+        <div
+          className={cn(
+            "flex flex-wrap items-center justify-center gap-2.5",
+            protectImages && "select-none [-webkit-user-drag:none]"
+          )}
+          aria-hidden
+          onContextMenu={protectImages ? (e) => e.preventDefault() : undefined}
+        >
           {Array.from({ length: 5 }).map((_, i) => {
             const filled = i < starCount;
             const newest = filled && i === starCount - 1;
@@ -121,6 +130,7 @@ export function KundenstimmenCarousel({ embedded = false }: KundenstimmenCarouse
                 width={39}
                 height={39}
                 sizes="39px"
+                draggable={protectImages ? false : undefined}
                 className={cn(
                   "h-[39px] w-[39px]",
                   !filled && "scale-[0.72] opacity-[0.22]",

@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { LeistungenKachelGrid } from "@/components/home/LeistungenKachelGrid";
 import { KundenstimmenCarousel } from "@/components/home/KundenstimmenCarousel";
+import { ProtectedRasterMedia } from "@/components/home/ProtectedRasterMedia";
 import { StartEinstiegsHilfe } from "@/components/home/StartEinstiegsHilfe";
 import { StandortNummerEinsReveal } from "@/components/standorte/StandortNummerEinsReveal";
 import { StandortWechselBild } from "@/components/standorte/StandortWechselBild";
@@ -82,16 +83,19 @@ export default function HomePage() {
               >
                 <div className="w-full">
                   {/* Hero: unoptimized — Next/Image-Wrapper würde die feste horizontale Einordnung verschieben. */}
-                  <Image
-                    src="/images/startseite_front.webp"
-                    alt="Gemeinsam zur passenden Unterstützung im Alltag"
-                    width={900}
-                    height={700}
-                    sizes="(max-width: 1023px) 100vw, (max-width: 1400px) 88vw, 900px"
-                    className="box-border block h-auto w-full max-w-full object-contain object-right [filter:drop-shadow(0_10px_22px_rgba(15,79,104,0.2))_drop-shadow(0_4px_12px_rgba(15,79,104,0.12))] [will-change:filter]"
-                    priority
-                    unoptimized
-                  />
+                  <ProtectedRasterMedia className="w-full select-none [-webkit-user-drag:none]">
+                    <Image
+                      src="/images/startseite_front.webp"
+                      alt="Gemeinsam zur passenden Unterstützung im Alltag"
+                      width={900}
+                      height={700}
+                      sizes="(max-width: 1023px) 100vw, (max-width: 1400px) 88vw, 900px"
+                      className="box-border block h-auto w-full max-w-full object-contain object-right [filter:drop-shadow(0_10px_22px_rgba(15,79,104,0.2))_drop-shadow(0_4px_12px_rgba(15,79,104,0.12))] [will-change:filter]"
+                      draggable={false}
+                      priority
+                      unoptimized
+                    />
+                  </ProtectedRasterMedia>
                 </div>
               </div>
             </div>
@@ -163,12 +167,12 @@ export default function HomePage() {
         <div className="mx-auto flex w-full max-w-6xl flex-col gap-6 sm:flex-row sm:items-start sm:gap-8 lg:gap-10">
           <div className="relative z-20 order-3 flex w-full max-w-full justify-center pb-2 pt-1 sm:order-1 lg:w-[50%] lg:max-w-3xl lg:shrink-0 lg:justify-center lg:px-6 lg:pb-4 lg:pt-2 sm:px-4">
             <div className="w-full max-w-full" style={{ width: "min(491px, calc(100vw - 3rem))" }}>
-              <div>
+              <ProtectedRasterMedia className="select-none [-webkit-user-drag:none]">
                 <StandortWechselBild
                   alt="Betreuung und Zuwendung: Team Alltagshilfe-Süd mit Seniorin im Freien"
                   sizes="(max-width: 640px) min(491px, 88vw), 491px"
                 />
-              </div>
+              </ProtectedRasterMedia>
             </div>
           </div>
 
@@ -186,7 +190,17 @@ export default function HomePage() {
           <ul className="mt-6 grid gap-4 sm:grid-cols-2">
             {STARTSEITE_VORTEILE.map((item) => (
               <li className="flex items-start gap-3 rounded-xl px-2 py-1.5 transition-all duration-300 hover:bg-white/75 hover:shadow-[0_0_20px_rgba(15,79,104,0.12)]" key={item}>
-                <img src="/images/haken.webp" alt="" aria-hidden width={38} height={38} className="mt-0.5 h-[38px] w-[38px] shrink-0 object-contain" />
+                <ProtectedRasterMedia className="inline-flex shrink-0 select-none [-webkit-user-drag:none]">
+                  <img
+                    src="/images/haken.webp"
+                    alt=""
+                    aria-hidden
+                    width={38}
+                    height={38}
+                    draggable={false}
+                    className="mt-0.5 h-[38px] w-[38px] object-contain"
+                  />
+                </ProtectedRasterMedia>
                 <span className="text-[1.03rem] font-medium leading-relaxed text-neutral-800 sm:text-[1.08rem]">{item}</span>
               </li>
             ))}
@@ -194,7 +208,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      <KundenstimmenCarousel />
+      <KundenstimmenCarousel protectImages />
 
       <section
         className="relative z-10 mt-10 overflow-x-clip pb-8 pt-[clamp(4rem,7vw+1.75rem,6.75rem)] sm:mt-12 sm:pb-10 sm:pt-[clamp(4.5rem,8vw+2rem,7.25rem)] lg:mt-14 lg:pb-10"
