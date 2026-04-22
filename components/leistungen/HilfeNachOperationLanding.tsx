@@ -2,7 +2,6 @@ import Link from "next/link";
 import { KundenstimmenCarousel } from "@/components/home/KundenstimmenCarousel";
 import { siteConfig } from "@/config/site";
 import { RevealOnScroll } from "@/components/pflegehilfsmittel/RevealOnScroll";
-import { JetztNeuPromoSection } from "@/components/leistungen/JetztNeuPromoSection";
 import { buildStandortStyleFaq, standortFaqJsonLd } from "@/lib/standort-faq";
 import { STARTSEITE_VORTEILE, STARTSEITE_VORTEILE_INTRO } from "@/lib/startseite-vorteile";
 
@@ -195,8 +194,6 @@ export function HilfeNachOperationLanding() {
             </RevealOnScroll>
           </div>
         </section>
-
-        <JetztNeuPromoSection headingId="hno-jetzt-neu-promo" />
 
         <section
           className="relative z-[11] overflow-x-clip bg-[#fafbfc] px-4 pb-16 pt-[clamp(2.5rem,4.5vw,4.25rem)] sm:px-6 sm:pb-20 lg:px-[var(--ahs-page-gutter)] lg:pb-24"
