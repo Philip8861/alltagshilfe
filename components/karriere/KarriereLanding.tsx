@@ -301,23 +301,26 @@ export function KarriereLanding() {
           aria-labelledby="karriere-hero-heading"
           className="relative isolate z-0 min-w-0 overflow-hidden bg-[#fafbfc] pb-7 pt-0 sm:pb-10 lg:pb-[clamp(2.45rem,5.6vh+0.7rem,3.85rem)]"
         >
-          <div className="relative mx-auto min-h-[min(32vh,280px)] w-full sm:min-h-[min(31vh,266px)] lg:min-h-[min(28vh,252px)]">
-            <div className="absolute inset-y-0 right-0 w-full lg:left-[min(38%,28rem)]">
-              <Image
-                src={HERO_IMG}
-                alt="Karriere bei der Alltagshilfe-Süd – Team und Arbeitgeber"
-                fill
-                priority
-                sizes="(max-width: 1023px) 100vw, 65vw"
-                className="object-cover object-right"
-              />
-              <div
-                className="pointer-events-none absolute inset-0 bg-gradient-to-r from-[#fafbfc] from-0% via-white/90 via-40% to-transparent to-[72%] sm:via-35% sm:via-white/88 sm:to-[68%] lg:via-white/75 lg:via-22% lg:to-[55%]"
-                aria-hidden
-              />
+          {/* Bild nur rechte Viewport-Hälfte, bündig rechts & unter dem Header (Fluss im main); 70 % Größe, Anker oben rechts */}
+          <div className="relative min-h-[min(32vh,280px)] w-full sm:min-h-[min(31vh,266px)] lg:min-h-[min(28vh,252px)]">
+            <div className="pointer-events-none absolute top-0 right-0 bottom-0 w-1/2 max-w-[50vw] overflow-hidden">
+              <div className="absolute inset-0 origin-top-right scale-[0.7] motion-reduce:scale-100">
+                <Image
+                  src={HERO_IMG}
+                  alt="Karriere bei der Alltagshilfe-Süd – Team und Arbeitgeber"
+                  fill
+                  priority
+                  sizes="50vw"
+                  className="object-cover object-right"
+                />
+                <div
+                  className="pointer-events-none absolute inset-0 bg-gradient-to-r from-[#fafbfc] from-0% via-white/90 via-35% to-transparent to-[62%] sm:via-white/85 sm:via-30% sm:to-[58%] lg:via-white/80 lg:via-25% lg:to-[52%]"
+                  aria-hidden
+                />
+              </div>
             </div>
-            <div className="relative z-10 mx-auto flex min-h-[min(32vh,280px)] w-full max-w-7xl flex-col justify-center px-4 py-5 sm:min-h-[min(31vh,266px)] sm:px-6 sm:py-6 lg:min-h-[min(28vh,252px)] lg:px-[var(--ahs-page-gutter)] lg:py-7">
-              <div className="max-w-[min(100%,28rem)] sm:max-w-[min(100%,32rem)] xl:max-w-[31rem]">
+            <div className="relative z-10 flex min-h-[min(32vh,280px)] w-1/2 max-w-[50vw] flex-col justify-center px-4 py-5 sm:min-h-[min(31vh,266px)] sm:px-5 sm:py-6 lg:min-h-[min(28vh,252px)] lg:px-[var(--ahs-page-gutter)] lg:py-7">
+              <div className="max-w-full pr-1 sm:max-w-[min(100%,26rem)]">
                 <h1
                   id="karriere-hero-heading"
                   className="text-pretty text-2xl font-bold leading-[1.15] tracking-tight text-[#0F4F68] opacity-0 motion-reduce:opacity-100 animate-fade-in-up sm:text-3xl md:text-4xl lg:text-[clamp(1.65rem,1.1rem+1.5vw,2.45rem)] xl:text-[clamp(1.75rem,1.2rem+1.35vw,2.65rem)]"
