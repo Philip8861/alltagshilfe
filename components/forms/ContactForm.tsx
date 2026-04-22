@@ -6,7 +6,18 @@ import { submitContact } from "@/lib/actions/contact";
 import { CONTACT_TOPICS } from "@/lib/validations/contact";
 import { cn } from "@/lib/utils";
 
-export function ContactForm() {
+export type ContactFormProps = {
+  /**
+   * Signiertes Token (nur von Standort-UI gesetzt). Ohne Token: reines Zentral-Routing
+   * wie auf /kontakt – manipulierte Hidden-Felder allein lösen kein Standort-CC aus.
+   */
+  standortContactProof?: string;
+  /** Nur sinnvoll mit Proof: PLZ aus URL-Kontext, serverseitig gegen den Standort geprüft. */
+  routingPlz?: string;
+};
+
+export function ContactForm(props: ContactFormProps = {}) {
+  const { standortContactProof, routingPlz } = props;
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
   const isDatenschutzError = Boolean(error?.includes("Datenschutz"));
@@ -45,6 +56,12 @@ export function ContactForm() {
       noValidate
       aria-label="Kontaktformular"
     >
+      {standortContactProof ? (
+        <>
+          <input type="hidden" name="standortContactProof" value={standortContactProof} />
+          {routingPlz ? <input type="hidden" name="routingPlz" value={routingPlz} /> : null}
+        </>
+      ) : null}
       {error && !isDatenschutzError && (
         <div
           role="alert"

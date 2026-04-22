@@ -11,6 +11,7 @@ import {
   phoneHrefToWhatsAppUrl,
   type Standort,
 } from "@/config/standorte";
+import { createStandortContactProof } from "@/lib/standort-contact-proof";
 import { StandortRegionMapInteractive } from "@/components/standorte/StandortRegionMapInteractive";
 import {
   getInteractiveRegionMapInitialView,
@@ -100,6 +101,9 @@ export type StandortLandingProps = {
 };
 
 export function StandortLanding({ standort, plzContext }: StandortLandingProps) {
+  const standortContactProof = createStandortContactProof(standort.pageSlug) || undefined;
+  const routingPlz =
+    plzContext && /^\d{5}$/.test(plzContext.plz.trim()) ? plzContext.plz.trim() : undefined;
   const hasGeo = Boolean(plzContext);
   const mapAnchorPlz = plzContext?.plz ?? standort.schemaAddress.postalCode;
   const heroLocationLine = hasGeo
@@ -290,7 +294,10 @@ export function StandortLanding({ standort, plzContext }: StandortLandingProps) 
                   ) : null}
 
                   <div className={hasGeo && plzContext ? "mt-10" : "mt-6"}>
-                    <ContactForm />
+                    <ContactForm
+                      standortContactProof={standortContactProof}
+                      routingPlz={routingPlz}
+                    />
                   </div>
                   <p className="mt-8 text-sm text-neutral-500">
                     Weitere Informationen zur Datenverarbeitung finden Sie in unserer{" "}

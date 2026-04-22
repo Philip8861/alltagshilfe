@@ -5,6 +5,11 @@ import { contactSchema, type ContactFormData } from "@/lib/validations/contact";
 import { rateLimit } from "@/lib/rate-limit";
 import { getClientIp } from "@/lib/security";
 import {
+  findStandortByPageSlug,
+  findStandortByPlz,
+} from "@/config/standorte";
+import { verifyStandortContactProof } from "@/lib/standort-contact-proof";
+import {
   buildBrandedNotificationHtml,
   type EmailDetailRow,
 } from "@/lib/email/branded-html";
@@ -15,6 +20,31 @@ import {
 } from "@/lib/email/internal-smtp";
 
 export type ContactResult = { success: boolean; error?: string };
+
+function mergeEmailRecipients(...lists: (string[] | undefined)[]): string[] {
+  const seen = new Set<string>();
+  const out: string[] = [];
+  for (const list of lists) {
+    if (!list) continue;
+    for (const raw of list) {
+      const trimmed = raw.trim();
+      if (!trimmed) continue;
+      const key = trimmed.toLowerCase();
+      if (seen.has(key)) continue;
+      seen.add(key);
+      out.push(trimmed);
+    }
+  }
+  return out;
+}
+
+function normalizeRoutingPlzForStandort(verifiedSlug: string, plzRaw: unknown): string | undefined {
+  const plz = String(plzRaw ?? "").trim();
+  if (!/^\d{5}$/.test(plz)) return undefined;
+  const byPlz = findStandortByPlz(plz);
+  if (byPlz?.pageSlug !== verifiedSlug) return undefined;
+  return plz;
+}
 
 export async function submitContact(formData: FormData): Promise<ContactResult> {
   const phoneRaw = formData.get("phone");
@@ -56,6 +86,16 @@ export async function submitContact(formData: FormData): Promise<ContactResult> 
   }
 
   const data = parsed.data as ContactFormData;
+
+  const proofRaw = formData.get("standortContactProof");
+  const verifiedSlug = verifyStandortContactProof(
+    typeof proofRaw === "string" && proofRaw.length > 0 ? proofRaw : null,
+  );
+  const routingPlz = verifiedSlug
+    ? normalizeRoutingPlzForStandort(verifiedSlug, formData.get("routingPlz"))
+    : undefined;
+  const standortCtx = verifiedSlug ? findStandortByPageSlug(verifiedSlug) : undefined;
+
   const text = [
     "Neue Kontaktanfrage über die Website",
     "",
@@ -63,6 +103,8 @@ export async function submitContact(formData: FormData): Promise<ContactResult> 
     `E-Mail: ${data.email}`,
     data.phone ? `Telefon: ${data.phone}` : null,
     `Thema: ${data.topic}`,
+    standortCtx ? `Standort (Seite): ${standortCtx.name}` : null,
+    routingPlz ? `PLZ (Kontext): ${routingPlz}` : null,
     "",
     data.message,
   ]
@@ -75,6 +117,8 @@ export async function submitContact(formData: FormData): Promise<ContactResult> 
   ];
   if (data.phone) rows.push({ label: "Telefon", value: data.phone });
   rows.push({ label: "Thema", value: data.topic });
+  if (standortCtx) rows.push({ label: "Standort (Seite)", value: standortCtx.name });
+  if (routingPlz) rows.push({ label: "PLZ (Kontext)", value: routingPlz });
 
   const html = buildBrandedNotificationHtml({
     kindBadge: "Kontakt",
@@ -100,9 +144,21 @@ export async function submitContact(formData: FormData): Promise<ContactResult> 
       })()
     : undefined;
 
+  const baseRecipients =
+    karriereContactRecipients !== undefined
+      ? karriereContactRecipients
+      : resolveRecipientsForKind("contact");
+  const standortEmail =
+    standortCtx?.email?.trim() && standortCtx.email.includes("@")
+      ? standortCtx.email.trim()
+      : undefined;
+  const finalTo = standortEmail
+    ? mergeEmailRecipients(baseRecipients, [standortEmail])
+    : baseRecipients;
+
   const mailed = await sendInternalMail({
     kind: "contact",
-    ...(karriereContactRecipients !== undefined ? { toOverride: karriereContactRecipients } : {}),
+    toOverride: finalTo,
     subject: `Kontakt: ${data.topic}`,
     text,
     html,

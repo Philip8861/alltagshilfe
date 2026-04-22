@@ -7,6 +7,8 @@ import { ContactForm } from "@/components/forms/ContactForm";
 
 export type StandortKarte = {
   name: string;
+  /** Entspricht `Standort.pageSlug` in config/standorte.ts */
+  pageSlug: string;
   subline?: string;
   address: string;
   plzOrt: string;
@@ -24,6 +26,7 @@ const STANDORT_CARD_BILD = "/images/standort_gemeinsam.webp";
 const STANDORTE: StandortKarte[] = [
   {
     name: "Standort Allgäu",
+    pageSlug: "allgaeu",
     address: "Hinter den Gärten 10",
     plzOrt: "87730 Bad Grönenbach",
     phone: "08334 / 9893330",
@@ -49,6 +52,7 @@ const STANDORTE: StandortKarte[] = [
   },
   {
     name: "Wangen (Bodenseeregion)",
+    pageSlug: "wangen",
     address: "Karlstraße 3",
     plzOrt: "88239 Wangen im Allgäu",
     phone: "07522 / 9151686",
@@ -72,6 +76,7 @@ const STANDORTE: StandortKarte[] = [
   },
   {
     name: "Standort Augsburg",
+    pageSlug: "augsburg",
     address: "Ulmer Straße 160",
     plzOrt: "86156 Augsburg",
     phone: "0821 / 48046200",
@@ -92,8 +97,9 @@ const STANDORTE: StandortKarte[] = [
     imageSrc: STANDORT_CARD_BILD,
     imageAlt: "Standort Augsburg",
   },
-   {
+  {
     name: "Standort Engen/Konstanz",
+    pageSlug: "engen",
     address: "Robert-Bosch-Straße 1",
     plzOrt: "78234 Engen",
     phone: "07733 / 948880",
@@ -118,7 +124,13 @@ const STANDORTE: StandortKarte[] = [
 /** Custom-Event von Karte: GPS-Symbol geklickt → gleiches Pop-up öffnen */
 export const STANDORTE_OPEN_CONTACT_EVENT = "standorte-open-contact";
 
-export function StandortKarten() {
+type StandortKartenProps = {
+  /** Von einer Server-Komponente erzeugt (HMAC); sonst kein Standort-CC beim Pop-up. */
+  standortContactProofsByPageSlug?: Record<string, string>;
+};
+
+export function StandortKarten(props: StandortKartenProps = {}) {
+  const { standortContactProofsByPageSlug } = props;
   const [contactPopupOpen, setContactPopupOpen] = useState(false);
   const [selectedStandortName, setSelectedStandortName] = useState<string | null>(null);
 
@@ -266,7 +278,13 @@ export function StandortKarten() {
                     Wir freuen uns über Ihre Nachricht.
                   </p>
                   <div className="mt-8">
-                    <ContactForm />
+                    <ContactForm
+                      standortContactProof={
+                        selectedStandort && standortContactProofsByPageSlug
+                          ? standortContactProofsByPageSlug[selectedStandort.pageSlug]
+                          : undefined
+                      }
+                    />
                   </div>
                   <p className="mt-6 text-sm text-neutral-500">
                     Weitere Informationen zur Datenverarbeitung finden Sie in unserer{" "}
