@@ -87,7 +87,7 @@ function JobIcon({ name }: { name: string }) {
 
 function OffeneStellenSpalte() {
   return (
-    <div className="min-w-0 flex-1 lg:max-w-none">
+    <div className="min-w-0 w-full">
       <h2 className="text-2xl font-bold tracking-tight text-[#0F4F68] sm:text-3xl">Offene Stellen</h2>
       <p className="mt-2 text-pretty text-sm text-neutral-600 sm:text-base">
         Klicken Sie auf eine Stelle, um mehr zu erfahren – oder bewerben Sie sich direkt per E-Mail oder über unser
@@ -191,54 +191,58 @@ function OffeneStellenSpalte() {
 
 function DanielKontaktSpalte() {
   return (
-    <div className="min-w-0 flex-1 lg:max-w-none">
-      <div className="flex w-full max-w-full flex-col gap-6">
-        <div className="flex w-full flex-col">
-          <div className="relative isolate w-full overflow-visible rounded-none bg-[#FAFBFC]">
-            <Image
-              src="/images/Daniel_Niebauer.webp"
-              alt="Daniel Niebauer – Alltagshilfe-Süd"
-              width={1080}
-              height={1350}
-              className="h-auto w-full object-contain object-center mix-blend-multiply [filter:drop-shadow(0_10px_22px_rgba(15,79,104,0.2))_drop-shadow(0_4px_12px_rgba(15,79,104,0.12))] [will-change:filter]"
-              sizes="(max-width: 1024px) 100vw, 45vw"
-            />
-          </div>
-          <div
-            className="relative z-10 -mt-10 w-full rounded-xl bg-[#F2F9FA] px-6 py-3 text-center sm:-mt-12 sm:py-4"
-            style={{ boxShadow: "0 -2px 12px rgba(15, 79, 104, 0.15)" }}
-          >
-            <p className="text-[1.25rem] font-bold leading-tight text-[#0F4F68] sm:text-[1.35rem]">Daniel Niebauer</p>
-            <p className="mt-0.5 text-sm font-normal text-neutral-600 sm:text-base">Personalreferent</p>
-          </div>
-        </div>
-        <div className="w-full">
-          <a
-            href="tel:+4983349893330"
-            className="inline-flex items-center justify-center gap-2 text-2xl font-bold text-[#0F4F68] hover:underline focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2 rounded sm:text-3xl"
-            aria-label="Anrufen: 08334 9893330"
-          >
-            <svg
-              className="h-7 w-7 shrink-0 sm:h-8 sm:w-8"
-              fill="currentColor"
-              viewBox="0 0 24 24"
-              aria-hidden
-              style={{ color: "#F78F2E" }}
+    <div className="flex w-full justify-center lg:justify-end">
+      <div className="flex w-full max-w-full flex-col items-center gap-6 text-center scale-100 origin-top lg:max-w-lg lg:scale-[0.84] lg:origin-top xl:max-w-xl">
+        <div className="flex w-[79.8%] max-w-full flex-col gap-6">
+          <div className="flex w-full flex-col">
+            <div className="relative isolate w-full overflow-visible rounded-none bg-[#FAFBFC]">
+              <Image
+                src="/images/Daniel_Niebauer.webp"
+                alt="Daniel Niebauer – Alltagshilfe-Süd"
+                width={1080}
+                height={1350}
+                className="h-auto w-full object-contain object-center mix-blend-multiply [filter:drop-shadow(0_10px_22px_rgba(15,79,104,0.2))_drop-shadow(0_4px_12px_rgba(15,79,104,0.12))] [will-change:filter]"
+                sizes="(max-width: 1024px) 80vw, 38vw"
+              />
+            </div>
+            <div
+              className="relative z-10 -mt-10 w-full rounded-xl bg-[#F2F9FA] px-6 py-3 text-center sm:-mt-12 sm:py-4"
+              style={{ boxShadow: "0 -2px 12px rgba(15, 79, 104, 0.15)" }}
             >
-              <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z" />
-            </svg>
-            08334 / 9893330
-          </a>
-          <p className="mt-4 text-sm font-semibold text-neutral-600">E-Mail</p>
-          <a
-            href="mailto:daniel.niebauer@alltagshilfe-sued.de"
-            className="mt-1 block text-base font-medium text-[#0F4F68] hover:underline break-all"
-          >
-            daniel.niebauer@alltagshilfe-sued.de
-          </a>
-        </div>
-        <div className="w-full rounded-2xl border border-[#0F4F68]/10 bg-white p-5 shadow-sm sm:p-7">
-          <KarriereForm />
+              <p className="text-[1.341398069rem] font-bold leading-tight text-[#0F4F68] sm:text-[1.490442188rem]">
+                Daniel Niebauer
+              </p>
+              <p className="mt-0.5 text-[0.894265313rem] font-normal text-neutral-600">Personalreferent</p>
+            </div>
+          </div>
+          <div className="w-full">
+            <a
+              href="tel:+4983349893330"
+              className="inline-flex items-center justify-center gap-2 text-3xl font-bold tabular-nums text-[#0F4F68] hover:underline focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2 rounded sm:text-4xl"
+              aria-label="Anrufen: 08334 9893330"
+            >
+              <svg
+                className="h-8 w-8 shrink-0 sm:h-9 sm:w-9"
+                fill="currentColor"
+                viewBox="0 0 24 24"
+                aria-hidden
+                style={{ color: "#F78F2E" }}
+              >
+                <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z" />
+              </svg>
+              08334 / 9893330
+            </a>
+            <p className="mt-4 text-sm font-semibold text-neutral-600">E-Mail</p>
+            <a
+              href="mailto:daniel.niebauer@alltagshilfe-sued.de"
+              className="mt-1 block text-base font-medium text-[#0F4F68] hover:underline break-all"
+            >
+              daniel.niebauer@alltagshilfe-sued.de
+            </a>
+          </div>
+          <div className="w-full rounded-2xl border border-[#0F4F68]/10 bg-white p-6 shadow-sm sm:p-8">
+            <KarriereForm />
+          </div>
         </div>
       </div>
     </div>
@@ -251,9 +255,9 @@ export function KarriereLanding() {
       <article id="karriere-landing" className="min-w-0 scroll-mt-24 overflow-x-clip overflow-y-visible">
         <section className="relative z-0 box-border mx-auto w-full min-w-0 max-w-7xl px-4 pb-10 pt-0 sm:px-6 sm:pb-16 lg:px-[var(--ahs-page-gutter)] lg:pb-[clamp(4rem,9vh+1.5rem,7rem)] lg:pt-[clamp(2rem,5vh+1.25rem,4.75rem)] xl:pb-[clamp(5rem,10vh+1.5rem,8rem)]">
           <div className="flex flex-col-reverse items-center gap-10 lg:grid lg:grid-cols-[minmax(0,0.34fr)_minmax(0,0.66fr)] lg:items-center lg:justify-items-stretch lg:gap-x-[clamp(1.5rem,3vw,3.25rem)] lg:gap-y-0">
-            <div className="box-border w-full min-w-0 max-w-full space-y-[clamp(1rem,1.8vh+0.5rem,1.5rem)] lg:min-w-0 lg:justify-self-start lg:-translate-x-[clamp(0.75rem,4.5vw,3rem)] lg:pr-0 motion-reduce:lg:translate-x-0">
+            <div className="box-border w-full min-w-0 max-w-full space-y-[clamp(1.25rem,2vh+0.75rem,1.75rem)] lg:min-w-0 lg:justify-self-start lg:space-y-[clamp(1.15rem,1.6vh+0.7rem,1.75rem)] lg:-translate-x-[clamp(0.75rem,4.5vw,3rem)] lg:pr-0 motion-reduce:lg:translate-x-0">
               <h1
-                className="text-3xl font-extrabold leading-tight tracking-tight text-[#0F4F68] opacity-0 motion-reduce:opacity-100 animate-fade-in-up sm:text-4xl lg:text-[clamp(1.65rem,1rem+2.4vw,2.85rem)]"
+                className="text-3xl font-extrabold leading-tight tracking-tight text-[#0F4F68] opacity-0 motion-reduce:opacity-100 animate-fade-in-up sm:text-4xl lg:text-[clamp(1.75rem,1.05rem+2.5vw,3rem)]"
                 style={{ animationDelay: "0s" }}
               >
                 <span className="block text-balance">Karriere bei der Alltagshilfe-Süd</span>
@@ -302,9 +306,13 @@ export function KarriereLanding() {
 
         <section id="bewerbung" className="border-t border-[#0F4F68]/10 bg-[#fafbfc] py-12 sm:py-16 lg:py-20">
           <Container>
-            <div className="mx-auto flex w-full max-w-7xl flex-col-reverse gap-10 lg:flex-row lg:items-start lg:gap-12 xl:gap-14">
-              <DanielKontaktSpalte />
-              <OffeneStellenSpalte />
+            <div className="mx-auto flex w-full max-w-7xl flex-col gap-10 lg:flex-row lg:items-start lg:gap-10 xl:gap-12">
+              <div className="min-w-0 w-full flex-1 lg:min-w-0 lg:pr-2">
+                <OffeneStellenSpalte />
+              </div>
+              <div className="flex w-full min-w-0 shrink-0 justify-center lg:w-[min(100%,36rem)] lg:flex-none lg:justify-end lg:pl-2 xl:w-[min(100%,38rem)]">
+                <DanielKontaktSpalte />
+              </div>
             </div>
           </Container>
         </section>
