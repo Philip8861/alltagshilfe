@@ -171,7 +171,7 @@ function OffeneStellenSpalte() {
                   </div>
                   <div className={cn("flex min-h-0 flex-1 flex-col px-3 pb-4 pt-3 sm:px-4 sm:pb-5", theme.inner)}>
                     <div className="flex min-h-0 flex-1 flex-col justify-center py-4 sm:py-6">
-                      <ul className="space-y-2.5 text-[11px] font-semibold leading-relaxed text-neutral-800 sm:space-y-3 sm:text-xs lg:text-[11px] xl:text-xs">
+                      <ul className="space-y-2.5 text-[11px] font-bold leading-relaxed text-neutral-800 sm:space-y-3 sm:text-xs lg:text-[11px] xl:text-xs">
                         {STELLEN_VORTEILE.map((h) => (
                           <li key={h} className="flex items-start gap-1.5 sm:gap-2">
                             <VorteilHaken />
