@@ -40,7 +40,7 @@ const JOB_CARD_THEME: Record<
       "border-[#F78F2E]/22 bg-white hover:border-[#F78F2E]/38 hover:shadow-[#F78F2E]/[0.04]",
     header: "bg-[#FFF8F2]",
     icon: "bg-[#E9A574] text-white shadow-sm",
-    inner: "bg-[#FFFCF8]/90",
+    inner: "bg-white",
     outlineBtn:
       "border-[#F78F2E]/45 bg-white/95 text-[#0F4F68] hover:bg-[#FFF8F2] focus:ring-[#F78F2E]/50",
   },
@@ -49,7 +49,7 @@ const JOB_CARD_THEME: Record<
       "border-amber-100/95 bg-white hover:border-amber-200/90 hover:shadow-amber-900/[0.035]",
     header: "bg-[#FFFCF0]",
     icon: "bg-amber-400/95 text-white shadow-sm",
-    inner: "bg-amber-50/55",
+    inner: "bg-white",
     outlineBtn:
       "border-amber-400/50 bg-white/95 text-[#0F4F68] hover:bg-[#FFFCF0] focus:ring-amber-400/45",
   },
@@ -58,7 +58,7 @@ const JOB_CARD_THEME: Record<
       "border-emerald-500/18 bg-white hover:border-emerald-500/32 hover:shadow-emerald-900/[0.04]",
     header: "bg-emerald-50/90",
     icon: "bg-emerald-500/90 text-white shadow-sm",
-    inner: "bg-emerald-50/45",
+    inner: "bg-white",
     outlineBtn:
       "border-emerald-500/40 bg-white/95 text-emerald-900/90 hover:bg-emerald-50/80 focus:ring-emerald-500/40",
   },
@@ -67,7 +67,7 @@ const JOB_CARD_THEME: Record<
       "border-sky-400/22 bg-white hover:border-sky-400/38 hover:shadow-sky-900/[0.04]",
     header: "bg-sky-50/85",
     icon: "bg-sky-500/90 text-white shadow-sm",
-    inner: "bg-sky-50/45",
+    inner: "bg-white",
     outlineBtn:
       "border-sky-500/40 bg-white/95 text-sky-900/90 hover:bg-sky-50/80 focus:ring-sky-500/40",
   },
