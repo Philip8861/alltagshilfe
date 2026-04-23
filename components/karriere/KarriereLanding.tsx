@@ -206,110 +206,101 @@ function OffeneStellenSpalte() {
   );
 }
 
-/** Wellen-Übergang ins weiße Daniel-Panel (oben gewellt, unten geschlossen), analog Hero→Stellen. */
-const DANIEL_PANEL_WAVE_D = "M0,100 L0,56 Q360,6 720,44 T1200,50 L1200,100 Z";
-
-/** Wie `/kontakt`: Formular links, Kontaktinfos rechts (mit Daniel). */
-function KarriereBewerbungWieKontakt() {
+/** Nur Bewerbung (Stellen) – getrennt vom persönlichen Kontakt zu Daniel Niebauer. */
+function KarriereBewerbungFormBlock() {
   return (
-    <div className="mx-auto mt-14 w-full max-w-6xl sm:mt-16 lg:mt-20">
-      <div className="grid w-full gap-10 lg:grid-cols-2 lg:items-start lg:gap-12">
-        <div className="order-2 flex min-w-0 flex-col lg:order-1">
-          <div className="mx-auto w-full max-w-xl rounded-2xl bg-[#F2F9FA] p-6 sm:p-8 lg:mx-0 lg:max-w-none lg:p-10">
-            <h2 className="text-3xl font-bold tracking-tight text-[#0F4F68] sm:text-4xl">Bewerbung</h2>
-            <p className="mt-4 text-neutral-600">
-              Schicken Sie uns Ihre Unterlagen über das Formular – wir melden uns zeitnah bei Ihnen.
-            </p>
-            <div className="mt-10">
-              <KarriereForm />
+    <div className="mx-auto w-full max-w-xl lg:max-w-2xl">
+      <div className="rounded-2xl bg-[#F2F9FA] p-6 sm:p-8 lg:p-10">
+        <h2 className="text-3xl font-bold tracking-tight text-[#0F4F68] sm:text-4xl">Bewerbung</h2>
+        <p className="mt-4 text-neutral-600">
+          Schicken Sie uns Ihre Unterlagen über das Formular – wir melden uns zeitnah bei Ihnen.
+        </p>
+        <div className="mt-10">
+          <KarriereForm />
+        </div>
+        <p className="mt-8 text-sm text-neutral-500">
+          Weitere Informationen zur Datenverarbeitung finden Sie in unserer{" "}
+          <Link href="/datenschutz" className="underline hover:text-neutral-700">
+            Datenschutzerklärung
+          </Link>
+          .
+        </p>
+      </div>
+    </div>
+  );
+}
+
+/** Persönlicher Kontakt (ohne Bewerbungsformular / ohne Datei-Upload) – klar vom Bewerbungsblock getrennt. */
+function KarriereDanielKontaktBlock() {
+  return (
+    <div className="mx-auto mt-10 w-full max-w-6xl sm:mt-12 lg:mt-14">
+      <div className="mx-auto flex w-full max-w-xl flex-col items-center gap-6 text-center lg:max-w-none">
+        <div className="flex w-full flex-col items-center">
+          <div
+            className="relative aspect-[3/4] w-full max-w-[280px] overflow-visible opacity-0 animate-fade-in-up sm:max-w-xs lg:max-w-sm"
+            style={{ animationDelay: "0.12s" }}
+          >
+            <div className="relative h-full w-full isolate [transform:translateZ(0)] [backface-visibility:hidden]">
+              <Image
+                src="/images/Daniel_Niebauer.webp"
+                alt="Daniel Niebauer – Personalreferent, Alltagshilfe-Süd"
+                fill
+                className="object-contain object-top mix-blend-multiply drop-shadow-[0_4px_20px_rgba(15,79,104,0.18)]"
+                sizes="(max-width: 1024px) 90vw, 40vw"
+              />
             </div>
-            <p className="mt-8 text-sm text-neutral-500">
-              Weitere Informationen zur Datenverarbeitung finden Sie in unserer{" "}
-              <Link href="/datenschutz" className="underline hover:text-neutral-700">
-                Datenschutzerklärung
-              </Link>
-              .
-            </p>
+          </div>
+          <div
+            className="relative z-10 -mt-10 w-full max-w-sm rounded-xl bg-[#F2F9FA] px-6 py-3 text-center sm:-mt-12 sm:py-4"
+            style={{ boxShadow: "0 -2px 12px rgba(15, 79, 104, 0.15)" }}
+          >
+            <p className="text-lg font-bold text-[#0F4F68] sm:text-xl">Daniel Niebauer</p>
+            <p className="mt-0.5 text-sm text-neutral-600 sm:text-base">Personalreferent</p>
           </div>
         </div>
-        <div className="order-1 flex min-w-0 flex-col items-center gap-6 text-center lg:order-2">
-          <div className="relative w-full max-w-lg pt-[clamp(2.75rem,2vw+2.25rem,3.75rem)] lg:max-w-none">
-            {/* Weißes Panel #FFFFFF mit Welle nach oben in den mint-grauen Bereich darüber */}
-            <div
-              className="pointer-events-none absolute left-1/2 z-0 w-screen max-w-[100vw] -translate-x-1/2 lg:left-0 lg:w-full lg:max-w-none lg:translate-x-0"
-              style={{
-                top: "clamp(-3.35rem, -2vw - 2.85rem, -2.85rem)",
-                height: "clamp(2.85rem, 2.25vw + 2.1rem, 3.65rem)",
-              }}
+        <div className="mx-auto w-full max-w-md opacity-0 animate-fade-in-up" style={{ animationDelay: "0.2s" }}>
+          <p className="text-base font-semibold text-[#0F4F68] sm:text-lg">Ihr Ansprechpartner</p>
+          <a
+            href="tel:+4983349893330"
+            className="mt-2 flex items-center justify-center gap-2 text-3xl font-bold tabular-nums text-[#0F4F68] hover:underline focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2 rounded sm:text-4xl"
+            aria-label="Anrufen: 08334 9893330"
+          >
+            <svg
+              className="h-8 w-8 shrink-0 sm:h-9 sm:w-9"
+              fill="currentColor"
+              viewBox="0 0 24 24"
               aria-hidden
+              style={{ color: "#F78F2E" }}
             >
-              <svg className="h-full w-full" viewBox="0 0 1200 100" preserveAspectRatio="none" aria-hidden>
-                <path d={DANIEL_PANEL_WAVE_D} fill="#FFFFFF" />
-              </svg>
-            </div>
-            <div className="relative z-10 rounded-2xl bg-[#FFFFFF] px-4 pb-8 pt-6 shadow-[0_2px_28px_rgba(15,79,104,0.07)] ring-1 ring-[#0F4F68]/8 sm:px-6 sm:pb-10 sm:pt-8">
-              <div className="flex w-full flex-col items-center">
-                <div
-                  className="relative aspect-[3/4] w-full max-w-[280px] overflow-visible opacity-0 animate-fade-in-up sm:max-w-xs lg:max-w-sm"
-                  style={{ animationDelay: "0.12s" }}
-                >
-                  <div className="relative h-full w-full isolate [transform:translateZ(0)] [backface-visibility:hidden]">
-                    <Image
-                      src="/images/Daniel_Niebauer.webp"
-                      alt="Daniel Niebauer – Personalreferent, Alltagshilfe-Süd"
-                      fill
-                      className="object-contain object-top mix-blend-multiply drop-shadow-[0_4px_20px_rgba(15,79,104,0.18)]"
-                      sizes="(max-width: 1024px) 90vw, 40vw"
-                    />
-                  </div>
-                </div>
-                <div
-                  className="relative z-10 -mt-10 w-full max-w-sm rounded-xl border border-[#0F4F68]/10 bg-[#FFFFFF] px-6 py-3 text-center shadow-sm sm:-mt-12 sm:py-4"
-                  style={{ boxShadow: "0 -2px 12px rgba(15, 79, 104, 0.08)" }}
-                >
-                  <p className="text-lg font-bold text-[#0F4F68] sm:text-xl">Daniel Niebauer</p>
-                  <p className="mt-0.5 text-sm text-neutral-600 sm:text-base">Personalreferent</p>
-                </div>
-              </div>
-              <div
-                className="mx-auto mt-6 w-full max-w-md opacity-0 animate-fade-in-up"
-                style={{ animationDelay: "0.2s" }}
-              >
-            <p className="text-base font-semibold text-[#0F4F68] sm:text-lg">Ihr Ansprechpartner</p>
-            <a
-              href="tel:+4983349893330"
-              className="mt-2 flex items-center justify-center gap-2 text-3xl font-bold tabular-nums text-[#0F4F68] hover:underline focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2 rounded sm:text-4xl"
-              aria-label="Anrufen: 08334 9893330"
+              <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z" />
+            </svg>
+            <span>08334 / 9893330</span>
+          </a>
+          <ul className="mt-5 space-y-2 text-base text-neutral-700 sm:text-lg">
+            <li>
+              <span className="font-semibold text-[#0F4F68]">Mo–Do:</span> 08:30 – 12:00 und 13:00 – 16:00
+            </li>
+            <li>
+              <span className="font-semibold text-[#0F4F68]">Freitag:</span> 08:30 – 12:00
+            </li>
+          </ul>
+          <p className="mt-6 text-sm font-semibold text-neutral-600">E-Mail</p>
+          <a
+            href="mailto:daniel.niebauer@alltagshilfe-sued.de"
+            className="mt-1 block break-all text-base font-medium text-[#0F4F68] hover:underline"
+          >
+            daniel.niebauer@alltagshilfe-sued.de
+          </a>
+          <p className="mt-6 text-sm text-neutral-600">
+            Für eine allgemeine Nachricht an uns nutzen Sie bitte das{" "}
+            <Link
+              href="/kontakt"
+              className="font-semibold text-[#0F4F68] underline underline-offset-2 hover:no-underline"
             >
-              <svg
-                className="h-8 w-8 shrink-0 sm:h-9 sm:w-9"
-                fill="currentColor"
-                viewBox="0 0 24 24"
-                aria-hidden
-                style={{ color: "#F78F2E" }}
-              >
-                <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z" />
-              </svg>
-              <span>08334 / 9893330</span>
-            </a>
-            <ul className="mt-5 space-y-2 text-base text-neutral-700 sm:text-lg">
-              <li>
-                <span className="font-semibold text-[#0F4F68]">Mo–Do:</span> 08:30 – 12:00 und 13:00 – 16:00
-              </li>
-              <li>
-                <span className="font-semibold text-[#0F4F68]">Freitag:</span> 08:30 – 12:00
-              </li>
-            </ul>
-            <p className="mt-6 text-sm font-semibold text-neutral-600">E-Mail</p>
-            <a
-              href="mailto:daniel.niebauer@alltagshilfe-sued.de"
-              className="mt-1 block break-all text-base font-medium text-[#0F4F68] hover:underline"
-            >
-              daniel.niebauer@alltagshilfe-sued.de
-            </a>
-              </div>
-            </div>
-          </div>
+              Kontaktformular
+            </Link>
+            . Bewerbungen nehmen wir ausschließlich über das Bewerbungsformular weiter oben an.
+          </p>
         </div>
       </div>
     </div>
@@ -362,7 +353,7 @@ export function KarriereLanding() {
                     style={{ animationDelay: "0.2s" }}
                   >
                     <Link
-                      href="#bewerbung"
+                      href="#bewerbung-form"
                       className="inline-flex w-full min-h-[2.75rem] transform items-center justify-center rounded-xl bg-[#F78F2E] px-4 py-2.5 text-sm font-semibold leading-snug text-white transition hover:opacity-95 focus:outline-none focus:ring-2 focus:ring-[#F78F2E] focus:ring-offset-2 motion-reduce:transform-none sm:min-h-[2.85rem] sm:w-auto sm:max-w-[min(100%,22rem)] sm:px-6 sm:py-3 sm:text-base md:px-8 md:py-3.5 md:text-lg"
                     >
                       Bewirb dich jetzt in 1 Minute
@@ -396,9 +387,17 @@ export function KarriereLanding() {
           <Container className="relative w-full pb-12 sm:pb-16 lg:pb-20">
             <OffeneStellenSpalte />
           </Container>
-          <div className="relative left-1/2 w-screen max-w-[100vw] -translate-x-1/2 bg-[#fafbfc] pb-12 pt-2 sm:pb-16 sm:pt-4 lg:pb-20">
+          <div
+            id="bewerbung-form"
+            className="relative left-1/2 w-screen max-w-[100vw] -translate-x-1/2 scroll-mt-[var(--ahs-header-scroll-padding)] bg-[#fafbfc] pb-12 pt-2 sm:pb-16 sm:pt-4 lg:pb-20"
+          >
             <Container className="relative w-full">
-              <KarriereBewerbungWieKontakt />
+              <KarriereBewerbungFormBlock />
+            </Container>
+          </div>
+          <div className="border-t border-[#0F4F68]/8 bg-white pb-12 pt-8 sm:pb-16 sm:pt-10 lg:pb-20 lg:pt-12">
+            <Container className="relative w-full">
+              <KarriereDanielKontaktBlock />
             </Container>
           </div>
         </section>
