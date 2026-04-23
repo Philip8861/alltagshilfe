@@ -309,7 +309,7 @@ export function KarriereForm({ hideFileAttachments = false }: KarriereFormProps)
           disabled={pending}
           className="w-full rounded-lg bg-[#0F4F68] px-6 py-3 font-medium text-white transition-colors hover:bg-[#0c3d52] focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2 disabled:opacity-50"
         >
-          {pending ? "Wird gesendet …" : "Bewerbung absenden"}
+          {pending ? "Wird gesendet …" : "Anfrage senden"}
         </button>
       </div>
     </form>
