@@ -33,7 +33,7 @@ export const KARRIERE_WIZARD_OFFENE_STELLEN = [
   "Alltagshelfer*in (m/w/d)",
   "Pflegeberater*in (m/w/d)",
   "Buchhalter*in (m/w/d)",
-  "Standortleiter*in (m/w/d)",
+  "Bürofachkraft (m/w/d)",
 ] as const;
 
 type WizardAnswers = {

@@ -24,10 +24,10 @@ const STELLEN_VORTEILE = [
 ] as const;
 
 const jobs = [
-  { id: "alltagshelfer", title: "Alltagshelfer*in (m/w/d)", icon: "hand" },
-  { id: "pflegeberater", title: "Pflegeberater*in (m/w/d)", icon: "heart" },
+  { id: "alltagshelfer", title: "Alltagshelfer*in (m/w/d)", icon: "heart" },
+  { id: "pflegeberater", title: "Pflegeberater*in (m/w/d)", icon: "hand" },
   { id: "buchhalter", title: "Buchhalter*in (m/w/d)", icon: "desk" },
-  { id: "standortleiter", title: "Standortleiter*in (m/w/d)", icon: "star" },
+  { id: "standortleiter", title: "Bürofachkraft (m/w/d)", icon: "star" },
 ] as const;
 
 /** Kartenfarben passend zur Seite: Orange, sanft gelb (Pflegeberater), Grün, Blau. */

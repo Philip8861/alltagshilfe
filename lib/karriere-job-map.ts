@@ -7,8 +7,9 @@ export function jobTitleToStellenangebot(jobTitle: string): KarriereStellenangeb
   const t = jobTitle.toLowerCase();
   if (t.includes("alltagshelfer")) return "Alltagshelfer";
   if (t.includes("pflegeberater")) return "Pflegeberater";
-  if (t.includes("standortleiter")) return "Standortleitung";
   if (t.includes("buchhalter")) return "Bürofachkraft";
+  if (t.includes("bürofachkraft")) return "Bürofachkraft";
+  if (t.includes("standortleiter")) return "Standortleitung";
   return "Alltagshelfer";
 }
 
