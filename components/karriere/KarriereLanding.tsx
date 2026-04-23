@@ -433,9 +433,9 @@ export function KarriereLanding() {
           className="relative z-10 -mt-px overflow-x-visible bg-[#FFFFFF] pb-0 pt-8 sm:pt-10 lg:pt-12"
         >
           <Container className="relative w-full pb-16 sm:pb-20 lg:pb-24">
-            <OffeneStellenSpalte />
+            <KarriereArbeitgeberVorteile />
             <div className="mt-16 sm:mt-20 lg:mt-24">
-              <KarriereArbeitgeberVorteile />
+              <OffeneStellenSpalte />
             </div>
           </Container>
           <div
