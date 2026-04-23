@@ -26,9 +26,9 @@ const KARRIERE_KONTAKT_WELLEN_D =
 const KARRIERE_KONTAKT_WELLEN_SVG_CLASS =
   "pointer-events-none absolute left-0 top-0 z-[1] h-16 w-full -translate-y-7 sm:h-[clamp(2.85rem,1.5rem+3.8vw,5rem)] sm:-translate-y-[clamp(0.9rem,0.35rem+2.1vw,3.2rem)]";
 
-/** Einleitung unter der Überschrift „Warum die Alltagshilfe-Süd …“, vor den Stichpunkten. */
+/** Einleitung unter der Überschrift „Die Alltagshilfe-Süd als neuer Arbeitgeber?“, vor den Stichpunkten. */
 const KARRIERE_ARBEITGEBER_INTRO =
-  "Bei uns stehen die Menschen im Mittelpunkt. Unsere Pflegebedürftigen und Mitarbeitenden sind das Herz unserer Firma. Deshalb geben wir jeden Tag unser Bestes, handeln mit Überzeugung und schaffen ein Umfeld, in dem sich der Job dem Alltag anpasst und nicht der Alltag dem Job. Weil gute Pflege und gute Arbeit nur mit Herz wirklich gelingen.";
+  "Bei uns stehen die Menschen im Mittelpunkt. Unsere Mitarbeitenden sind das Herz und Motor unserer Firma. Deshalb geben wir jeden Tag unser Bestes, handeln mit Überzeugung und schaffen ein Umfeld, in dem sich der Job dem Alltag anpasst und nicht der Alltag dem Job. Weil gute Pflege und gute Arbeit nur mit Herz wirklich gelingen.";
 
 /** Arbeitgeber-Vorteile – Darstellung wie „Ihre Vorteile bei uns“ auf der Startseite. */
 const KARRIERE_ARBEITGEBER_FAKTEN = [
@@ -215,9 +215,9 @@ function KarriereArbeitgeberVorteile() {
   return (
     <div className="mx-auto w-full max-w-6xl text-center opacity-0 motion-reduce:animate-none motion-reduce:opacity-100 animate-fade-in-up [animation-delay:0.12s] motion-reduce:[animation-delay:0s]">
       <h2 className="text-balance text-3xl font-extrabold tracking-tight text-[#0F4F68] sm:text-4xl">
-        Warum die Alltagshilfe-Süd als neuer Arbeitgeber
+        Die Alltagshilfe-Süd als neuer Arbeitgeber?
       </h2>
-      <p className="mx-auto mt-4 max-w-3xl text-pretty text-sm font-semibold leading-relaxed text-neutral-700 sm:mt-5 sm:text-base">
+      <p className="mx-auto mt-4 max-w-3xl text-pretty text-sm font-bold leading-relaxed text-neutral-800 sm:mt-5 sm:text-base">
         {KARRIERE_ARBEITGEBER_INTRO}
       </p>
       <ul
