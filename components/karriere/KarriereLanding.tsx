@@ -7,6 +7,13 @@ import { siteConfig } from "@/config/site";
 
 const HERO_IMG = "/images/Karriere1.webp";
 
+/**
+ * Bogen von Hero (#fafbfc) zu „Offene Stellen“ (#FFFFFF): eine nach oben offene Kurve,
+ * unten geschlossen; sitzt am unteren Hero-Rand (bündig zur Bildunterkante bei items-end).
+ */
+const KARRIERE_HERO_BOGEN_D =
+  "M0,100 L0,52 Q600,4 1200,52 L1200,100 L0,100 Z";
+
 /** Drei zentrale Arbeitgeber-Vorteile (einheitlich auf allen Stellenkarten). */
 const STELLEN_VORTEILE = [
   "Tarifgerechte Vergütung, planbare Zeiten und klare Strukturen im Alltag",
@@ -310,12 +317,12 @@ export function KarriereLanding() {
       >
         <section
           aria-labelledby="karriere-hero-heading"
-          className="relative isolate z-0 min-w-0 overflow-x-clip overflow-y-visible bg-[#fafbfc] pb-8 pt-0 sm:pb-10 lg:pb-[clamp(2.45rem,5.6vh+0.7rem,3.85rem)]"
+          className="relative isolate z-0 min-w-0 overflow-x-clip overflow-y-visible bg-[#fafbfc] pb-0 pt-0"
         >
-          {/* Bild ohne fill; min-h/max-h & Spalte 75vw. Weißer Verlauf z-[8] über dem Bild, unter Text (z-10). */}
+          {/* Bild: items-end + object-bottom → untere Bildkante = untere Hero-Fläche vor dem Bogen. */}
           <div className="relative min-h-[min(60vh,508px)] w-full sm:min-h-[min(56.8vh,478px)] lg:min-h-[min(54vh,448px)]">
             <div className="pointer-events-none absolute right-0 top-0 bottom-0 z-0 w-[75%] max-w-[75vw] overflow-x-clip overflow-y-visible">
-              <div className="flex h-full justify-end overflow-visible">
+              <div className="flex h-full items-end justify-end overflow-visible">
                 <Image
                   src={HERO_IMG}
                   alt="Karriere bei der Alltagshilfe-Süd – Team und Arbeitgeber"
@@ -323,7 +330,7 @@ export function KarriereLanding() {
                   height={495}
                   priority
                   sizes="75vw"
-                  className="h-auto max-h-[min(60vh,508px)] w-auto max-w-full object-contain object-right object-top sm:max-h-[min(56.8vh,478px)] lg:max-h-[min(54vh,448px)]"
+                  className="h-auto max-h-[min(60vh,508px)] w-auto max-w-full object-contain object-right object-bottom sm:max-h-[min(56.8vh,478px)] lg:max-h-[min(54vh,448px)]"
                 />
               </div>
             </div>
@@ -356,12 +363,27 @@ export function KarriereLanding() {
                 </header>
               </div>
             </div>
+            {/* Bogenübergang nach unten in den weißen Bereich „Offene Stellen“. */}
+            <div
+              className="pointer-events-none absolute inset-x-0 bottom-0 z-[9] h-[3.25rem] w-full max-sm:h-[2.75rem] sm:h-[clamp(3.5rem,2rem+4vw,5.25rem)]"
+              aria-hidden
+            >
+              <svg
+                className="h-full w-full"
+                viewBox="0 0 1200 100"
+                preserveAspectRatio="none"
+                fill="none"
+                aria-hidden
+              >
+                <path d={KARRIERE_HERO_BOGEN_D} fill="#FFFFFF" />
+              </svg>
+            </div>
           </div>
         </section>
 
         <section
           id="bewerbung"
-          className="relative z-10 overflow-x-clip bg-[#FFFFFF] pb-12 pt-10 sm:pb-16 sm:pt-12 lg:pb-20 lg:pt-14"
+          className="relative z-10 -mt-px overflow-x-clip bg-[#FFFFFF] pb-12 pt-8 sm:pb-16 sm:pt-10 lg:pb-20 lg:pt-12"
         >
           <Container className="relative w-full">
             <OffeneStellenSpalte />
