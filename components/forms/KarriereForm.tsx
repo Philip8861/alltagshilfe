@@ -13,7 +13,12 @@ import { KARRIERE_FILE_INPUT_ACCEPT, KARRIERE_MAX_ANHAENGE } from "@/lib/karrier
 import { KARRIERE_STELLENANGEBOTE } from "@/lib/validations/karriere";
 import { cn } from "@/lib/utils";
 
-export function KarriereForm() {
+export type KarriereFormProps = {
+  /** Kein Datei-Upload: Anhänge nur im Bewerbungs-Kurzcheck (Popup). */
+  hideFileAttachments?: boolean;
+};
+
+export function KarriereForm({ hideFileAttachments = false }: KarriereFormProps) {
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
   const [prefill, setPrefill] = useState<KarriereBewerbungPrefill | null>(null);
@@ -37,6 +42,7 @@ export function KarriereForm() {
   }, []);
 
   useEffect(() => {
+    if (hideFileAttachments) return;
     const list = karriereCtx?.pendingKarriereFiles;
     const input = bewerbungsdateienRef.current;
     if (!karriereCtx || !list?.length || !input) return;
@@ -48,7 +54,7 @@ export function KarriereForm() {
       /* ältere Browser / Zuweisung nicht möglich */
     }
     karriereCtx.clearPendingKarriereFiles();
-  }, [karriereCtx, karriereCtx?.pendingKarriereFiles?.length]);
+  }, [hideFileAttachments, karriereCtx, karriereCtx?.pendingKarriereFiles?.length]);
 
   /** Siehe ContactForm: verhindert leeres Formular nach Validierungsfehler (React 19). */
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
@@ -194,24 +200,26 @@ export function KarriereForm() {
         </select>
       </div>
 
-      <div>
-        <label htmlFor="karriere-bewerbungsdateien" className="block text-sm font-medium text-neutral-700">
-          Dateien anhängen (optional)
-        </label>
-        <input
-          ref={bewerbungsdateienRef}
-          id="karriere-bewerbungsdateien"
-          type="file"
-          name="bewerbungsdateien"
-          multiple
-          accept={KARRIERE_FILE_INPUT_ACCEPT}
-          disabled={pending}
-          className="mt-1 block w-full max-w-full text-sm text-neutral-700 file:mr-3 file:rounded-lg file:border-0 file:bg-[#0F4F68] file:px-4 file:py-2 file:text-sm file:font-semibold file:text-white hover:file:bg-[#0c3d52] disabled:opacity-50"
-        />
-        <p className="mt-1 text-xs text-neutral-500">
-          PDF, Word, gängige Bilder u. a.; bis zu {KARRIERE_MAX_ANHAENGE} Dateien, je max. 8 MB, gesamt max. 24 MB.
-        </p>
-      </div>
+      {!hideFileAttachments ? (
+        <div>
+          <label htmlFor="karriere-bewerbungsdateien" className="block text-sm font-medium text-neutral-700">
+            Dateien anhängen (optional)
+          </label>
+          <input
+            ref={bewerbungsdateienRef}
+            id="karriere-bewerbungsdateien"
+            type="file"
+            name="bewerbungsdateien"
+            multiple
+            accept={KARRIERE_FILE_INPUT_ACCEPT}
+            disabled={pending}
+            className="mt-1 block w-full max-w-full text-sm text-neutral-700 file:mr-3 file:rounded-lg file:border-0 file:bg-[#0F4F68] file:px-4 file:py-2 file:text-sm file:font-semibold file:text-white hover:file:bg-[#0c3d52] disabled:opacity-50"
+          />
+          <p className="mt-1 text-xs text-neutral-500">
+            PDF, Word, gängige Bilder u. a.; bis zu {KARRIERE_MAX_ANHAENGE} Dateien, je max. 8 MB, gesamt max. 24 MB.
+          </p>
+        </div>
+      ) : null}
 
       <div>
         <label htmlFor="karriere-anmerkung" className="block text-sm font-medium text-neutral-700">
