@@ -9,9 +9,9 @@ import { cn } from "@/lib/utils";
 
 const HERO_IMG = "/images/Karriere1.webp";
 
-/** Weißer Kartenrahmen (15px) + Standard-Schatten (vgl. Leistungs-Landingpages). */
+/** Weißer Kartenrahmen 10px, Eckenradius 15px + Standard-Schatten (vgl. Leistungs-Landingpages). */
 const STELLEN_WEISSER_RAHMEN =
-  "rounded-[15px] border-[15px] border-solid border-white bg-white shadow-[0_10px_40px_rgba(15,79,104,0.07)] transition-shadow duration-300 hover:shadow-[0_16px_52px_rgba(15,79,104,0.11)]";
+  "rounded-[15px] border-[10px] border-solid border-white bg-white shadow-[0_10px_40px_rgba(15,79,104,0.07)] transition-shadow duration-300 hover:shadow-[0_16px_52px_rgba(15,79,104,0.11)]";
 
 /**
  * Bogen von Hero (#fafbfc) zu „Offene Stellen“ (#FFFFFF): eine nach oben offene Kurve,
