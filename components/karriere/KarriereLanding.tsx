@@ -1,10 +1,10 @@
 import Image from "next/image";
 import Link from "next/link";
+import { ProtectedRasterMedia } from "@/components/home/ProtectedRasterMedia";
 import { Container } from "@/components/layout/Container";
 import { KarriereForm } from "@/components/forms/KarriereForm";
 import { JetztBewerbenButton } from "@/components/karriere/JetztBewerbenButton";
 import { StellenbeschreibungDialogTrigger } from "@/components/karriere/StellenbeschreibungDialog";
-import { siteConfig } from "@/config/site";
 import { cn } from "@/lib/utils";
 
 const HERO_IMG = "/images/Karriere1.webp";
@@ -15,6 +15,18 @@ const HERO_IMG = "/images/Karriere1.webp";
  */
 const KARRIERE_HERO_BOGEN_D =
   "M0,100 L0,52 Q600,4 1200,52 L1200,100 L0,100 Z";
+
+/** Acht Fakten als Arbeitgeber – Darstellung wie „Ihre Vorteile bei uns“ auf der Startseite. */
+const KARRIERE_ARBEITGEBER_FAKTEN = [
+  "Tarifgerechte Vergütung und planbare Arbeitszeiten mit klaren Strukturen",
+  "Echte Teamkultur: Einarbeitung, fester Ansprechpartner und Unterstützung vor Ort",
+  "Fort- und Weiterbildungen – wir investieren in Ihre Entwicklung",
+  "Sinnstiftende Arbeit in der Region, nah bei Menschen im Alltag",
+  "Flexible Modelle vom Minijob bis zur Vollzeit – mit Augenmaß in der Dienstplanung",
+  "Leistungsbezüge wie Kilometergeld, Sachbezugskarte und Gesundheitsbonus",
+  "30 Urlaubstage bei einer 5-Tage-Woche und faire Regelungen zu Ersatzzeiten",
+  "Unbefristete Anstellung nach Probezeit bei guter Zusammenarbeit",
+] as const;
 
 /** Drei zentrale Arbeitgeber-Vorteile (einheitlich auf allen Stellenkarten). */
 const STELLEN_VORTEILE = [
@@ -173,28 +185,41 @@ function OffeneStellenSpalte() {
           );
         })}
       </ul>
-      {siteConfig.indeedJobsUrl ? (
-        <div className="mt-8 rounded-2xl border border-[#0F4F68]/15 bg-[#F2F9FA]/80 p-5 text-center sm:p-6">
-          <p className="text-base font-semibold text-[#0F4F68] sm:text-lg">Alle Stellenangebote auch bei Indeed</p>
-          <p className="mt-1 text-sm text-neutral-600">Dort können Sie sich direkt bewerben oder Details einsehen.</p>
-          <a
-            href={siteConfig.indeedJobsUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="mt-4 inline-flex items-center justify-center gap-2 rounded-xl bg-[#2557a7] px-5 py-3 text-sm font-semibold text-white transition-opacity hover:opacity-95 focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2"
+    </div>
+  );
+}
+
+function KarriereArbeitgeberVorteile() {
+  return (
+    <div className="mx-auto w-full max-w-6xl">
+      <h3 className="text-3xl font-extrabold tracking-tight text-[#0F4F68] sm:text-4xl">Ihre Vorteile bei uns</h3>
+      <p className="mt-2 max-w-3xl text-sm text-neutral-600 sm:text-base">
+        <span className="font-semibold text-[#0F4F68]">Warum die Alltagshilfe-Süd als neuer Arbeitgeber?</span> Acht
+        Fakten, die für Sie als Bewerberin oder Bewerber zählen.
+      </p>
+      <ul className="mt-6 grid gap-4 sm:grid-cols-2" aria-label="Vorteile als Arbeitgeber Alltagshilfe-Süd">
+        {KARRIERE_ARBEITGEBER_FAKTEN.map((item) => (
+          <li
+            key={item}
+            className="flex items-start gap-3 rounded-xl px-2 py-1.5 transition-all duration-300 hover:bg-white/75 hover:shadow-[0_0_20px_rgba(15,79,104,0.12)]"
           >
-            <svg className="h-5 w-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden>
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+            <ProtectedRasterMedia className="inline-flex shrink-0 select-none [-webkit-user-drag:none]">
+              <img
+                src="/images/haken.webp"
+                alt=""
+                aria-hidden
+                width={38}
+                height={38}
+                draggable={false}
+                className="mt-0.5 h-[38px] w-[38px] object-contain"
               />
-            </svg>
-            Offene Stellen bei Indeed
-          </a>
-        </div>
-      ) : null}
+            </ProtectedRasterMedia>
+            <span className="text-[1.03rem] font-medium leading-relaxed text-neutral-800 sm:text-[1.08rem]">
+              {item}
+            </span>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }
@@ -206,10 +231,10 @@ function KarriereBewerbungUndAnsprechpartner() {
       <div className="grid w-full gap-10 lg:grid-cols-2 lg:items-start lg:gap-12">
         <div className="order-2 flex min-w-0 flex-col lg:order-1">
           <div className="mx-auto w-full max-w-xl rounded-2xl bg-[#F2F9FA] p-6 sm:p-8 lg:mx-0 lg:max-w-none lg:p-10">
-            <h2 className="text-3xl font-bold tracking-tight text-[#0F4F68] sm:text-4xl">Bewerbung</h2>
-            <p className="mt-4 text-neutral-600">
-              Schicken Sie uns Ihre Angaben über das Formular, wir melden uns zeitnah. Lebenslauf und Zeugnisse können
-              Sie optional im Bewerbungs-Kurzcheck anhängen (über „Jetzt bewerben“ auf einer Stellenkarte).
+            <h2 className="text-3xl font-bold tracking-tight text-[#0F4F68] sm:text-4xl">Kontakt</h2>
+            <p className="mt-3 text-neutral-600">
+              Schreiben Sie uns über das Formular – wir melden uns zeitnah. Unterlagen optional im Bewerbungs-Kurzcheck
+              (über „Jetzt bewerben“ auf einer Stellenkarte).
             </p>
             <div className="mt-10">
               <KarriereForm hideFileAttachments />
@@ -379,34 +404,31 @@ export function KarriereLanding() {
           </Container>
           <div
             id="bewerbung-form"
-            className="relative left-1/2 w-screen max-w-[100vw] -translate-x-1/2 scroll-mt-[var(--ahs-header-scroll-padding)] bg-[#fafbfc] pb-12 pt-2 sm:pb-16 sm:pt-4 lg:pb-20"
+            className="relative left-1/2 w-screen max-w-[100vw] -translate-x-1/2 scroll-mt-[var(--ahs-header-scroll-padding)] bg-[#fafbfc] pb-0 pt-2 sm:pt-4"
           >
-            <Container className="relative w-full">
+            <Container className="relative w-full pb-12 sm:pb-16 lg:pb-20">
               <KarriereBewerbungUndAnsprechpartner />
             </Container>
+            <div
+              className="pointer-events-none relative h-[clamp(2.75rem,2rem+3.5vw,4rem)] w-full sm:h-[clamp(3.25rem,2rem+4vw,4.5rem)]"
+              aria-hidden
+            >
+              <svg
+                className="absolute inset-x-0 bottom-0 h-full w-full"
+                viewBox="0 0 1200 100"
+                preserveAspectRatio="none"
+                fill="none"
+              >
+                <path d={KARRIERE_HERO_BOGEN_D} fill="#FAFBFC" />
+              </svg>
+            </div>
           </div>
-        </section>
 
-        <section className="border-t border-neutral-200 bg-[#FAFBFC] py-12 sm:py-16">
-          <Container>
-            <h2 className="text-center text-2xl font-bold text-[#0F4F68] sm:text-3xl">Warum zu uns?</h2>
-            <ul className="mx-auto mt-10 grid max-w-4xl gap-6 sm:grid-cols-2 lg:grid-cols-4">
-              {[
-                { title: "Faire Bezahlung", short: "Tariforientiert, transparent" },
-                { title: "Starke Teams", short: "Kollegial, wertschätzend" },
-                { title: "Weiterbildung", short: "Förderung von Qualifikation" },
-                { title: "Sinn stiften", short: "Direkt am Menschen wirken" },
-              ].map((item) => (
-                <li
-                  key={item.title}
-                  className="rounded-xl border border-[#0F4F68]/15 bg-white p-5 text-center shadow-sm transition-shadow hover:shadow-md"
-                >
-                  <p className="font-semibold text-[#0F4F68]">{item.title}</p>
-                  <p className="mt-1 text-sm text-neutral-600">{item.short}</p>
-                </li>
-              ))}
-            </ul>
-          </Container>
+          <div className="bg-[#FAFBFC] pb-12 pt-8 sm:pb-16 sm:pt-10 lg:pb-20 lg:pt-12">
+            <Container>
+              <KarriereArbeitgeberVorteile />
+            </Container>
+          </div>
         </section>
 
         <section className="border-t border-neutral-200 bg-[#FAFBFC] py-14 sm:py-16">
