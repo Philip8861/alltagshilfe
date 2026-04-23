@@ -112,15 +112,15 @@ export function StellenbeschreibungDialogTrigger({ jobTitle, className }: Stelle
         aria-labelledby={titleId}
         className={cn(
           /* Kein `flex` außer mit `open:` – sonst überschreibt Tailwind `display:none` des geschlossenen <dialog>. */
-          "fixed inset-0 z-[100] m-0 max-h-none min-h-0 w-full max-w-none border-0 bg-transparent p-3 sm:p-5 md:p-8",
-          "open:flex open:items-center open:justify-center",
+          "fixed inset-0 z-[100] m-0 max-h-none w-full max-w-none border-0 bg-transparent p-3 sm:p-5 md:p-8",
+          "open:flex open:min-h-dvh open:items-center open:justify-center",
           "[&::backdrop]:bg-[#0F4F68]/45 [&::backdrop]:backdrop-blur-[2px]",
         )}
       >
         {/* Innen-Panel: UA-Styles vom <dialog> umgehen; Rand immer sichtbar, nie breiter als Viewport. */}
         <div
           className={cn(
-            "flex min-w-0 max-h-[min(88dvh,calc(100dvh-2.5rem))] w-full max-w-[min(60rem,calc(100dvw-1.5rem))] flex-col overflow-hidden rounded-3xl border-2 border-[#0F4F68]/15 bg-white shadow-[0_25px_80px_-12px_rgba(15,79,104,0.35)]",
+            "flex min-w-0 max-h-[min(88dvh,calc(100dvh-2.5rem))] w-full max-w-[min(60rem,calc(100dvw-1.5rem))] flex-col self-center overflow-hidden rounded-3xl border-2 border-[#0F4F68]/15 bg-white shadow-[0_25px_80px_-12px_rgba(15,79,104,0.35)]",
             "sm:max-w-[min(60rem,calc(100dvw-2.5rem))]",
           )}
         >

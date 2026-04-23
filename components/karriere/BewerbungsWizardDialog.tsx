@@ -365,14 +365,15 @@ export function BewerbungsWizardDialog({ jobTitle, onDismiss }: BewerbungsWizard
       aria-labelledby={titleId}
       onClick={handleDialogClick}
       className={cn(
-        "fixed inset-0 z-[110] m-0 max-h-none min-h-0 w-full max-w-none border-0 bg-transparent p-3 sm:p-5 md:p-8",
-        "open:flex open:items-center open:justify-center",
+        "fixed inset-0 z-[110] m-0 max-h-none w-full max-w-none border-0 bg-transparent p-3 sm:p-5 md:p-8",
+        /* min-h-0 vermeiden – sonst kollabiert die Flex-Höhe und das Panel klebt am oberen Rand. */
+        "open:flex open:min-h-dvh open:items-center open:justify-center",
         "[&::backdrop]:bg-[#0F4F68]/45 [&::backdrop]:backdrop-blur-[2px]",
       )}
     >
       <div
         className={cn(
-          "relative flex min-w-0 max-h-[min(92dvh,calc(100dvh-1.5rem))] w-full max-w-[min(36rem,calc(100dvw-1.25rem))] flex-col overflow-hidden rounded-3xl border-2 border-[#0F4F68]/15 bg-white shadow-[0_25px_80px_-12px_rgba(15,79,104,0.35)] sm:max-w-[min(40rem,calc(100dvw-2rem))]",
+          "relative flex min-w-0 max-h-[min(92dvh,calc(100dvh-1.5rem))] w-full max-w-[min(36rem,calc(100dvw-1.25rem))] flex-col self-center overflow-hidden rounded-3xl border-2 border-[#0F4F68]/15 bg-white shadow-[0_25px_80px_-12px_rgba(15,79,104,0.35)] sm:max-w-[min(40rem,calc(100dvw-2rem))]",
         )}
         onClick={(e) => e.stopPropagation()}
       >
