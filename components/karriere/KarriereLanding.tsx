@@ -364,11 +364,11 @@ export function KarriereLanding() {
 
         <section
           id="bewerbung"
-          className="relative z-10 -mt-6 overflow-x-clip bg-[#fafbfc] pb-12 pt-16 sm:-mt-6 sm:pb-16 sm:pt-[4.5rem] lg:pb-20 lg:pt-20"
+          className="relative z-10 -mt-12 overflow-x-clip bg-[#F2F9FA] pb-12 pt-[5.5rem] sm:-mt-12 sm:pb-16 sm:pt-24 lg:pb-20 lg:pt-[6.5rem]"
         >
-          {/* Welle leicht über die untere Bildkante; -mt-6 + mehr pt = gleicher Abstand bis „Offene Stellen“ wie zuvor (pt-10/12/14 + 1,5rem). */}
+          {/* Welle weiter oben: stärkerer neg. Margin + höheres SVG + translate = greift ins Hero-Bild; extra pt gleicht aus für Abstand zu „Offene Stellen“. */}
           <svg
-            className="pointer-events-none absolute left-0 top-0 z-[1] h-14 w-full -translate-y-[78%] sm:h-[4.25rem] sm:-translate-y-[74%] lg:h-[4.5rem] lg:-translate-y-[72%]"
+            className="pointer-events-none absolute left-0 top-0 z-[1] h-16 w-full -translate-y-[88%] sm:h-[5.25rem] sm:-translate-y-[86%] lg:h-24 lg:-translate-y-[84%]"
             viewBox="0 0 1200 120"
             preserveAspectRatio="none"
             fill="none"
@@ -376,7 +376,7 @@ export function KarriereLanding() {
           >
             <path
               d="M0,120 C200,32 420,8 600,22 C800,38 1010,90 1200,120 L1200,120 L0,120 Z"
-              fill="#fafbfc"
+              fill="#F2F9FA"
             />
           </svg>
           <Container className="relative z-[2] w-full">
