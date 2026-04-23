@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { type ReactNode, useId, useRef } from "react";
-import { useKarriereApplyOptional } from "@/components/karriere/KarriereApplyProvider";
+import { useKarriereApplyOptional } from "@/components/karriere/karriereApplyContext";
 import { cn } from "@/lib/utils";
 
 const EINLEITUNG =

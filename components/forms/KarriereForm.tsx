@@ -1,13 +1,15 @@
 "use client";
 
-import { useEffect, useState, type FormEvent } from "react";
+import { useEffect, useRef, useState, type FormEvent } from "react";
 import Link from "next/link";
+import { useKarriereApplyOptional } from "@/components/karriere/karriereApplyContext";
 import { submitKarriere } from "@/lib/actions/karriere";
 import {
   KARRIERE_BEWERBUNG_PREFILL_KEY,
   parseKarriereBewerbungPrefill,
   type KarriereBewerbungPrefill,
 } from "@/lib/karriere-job-map";
+import { KARRIERE_FILE_INPUT_ACCEPT, KARRIERE_MAX_ANHAENGE } from "@/lib/karriere-attachments";
 import { KARRIERE_STELLENANGEBOTE } from "@/lib/validations/karriere";
 import { cn } from "@/lib/utils";
 
@@ -17,6 +19,8 @@ export function KarriereForm() {
   const [prefill, setPrefill] = useState<KarriereBewerbungPrefill | null>(null);
   const [formBoot, setFormBoot] = useState(0);
   const isAgbError = Boolean(error?.includes("AGB"));
+  const karriereCtx = useKarriereApplyOptional();
+  const bewerbungsdateienRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     try {
@@ -31,6 +35,20 @@ export function KarriereForm() {
       /* ignore */
     }
   }, []);
+
+  useEffect(() => {
+    const list = karriereCtx?.pendingKarriereFiles;
+    const input = bewerbungsdateienRef.current;
+    if (!karriereCtx || !list?.length || !input) return;
+    try {
+      const dt = new DataTransfer();
+      list.forEach((f) => dt.items.add(f));
+      input.files = dt.files;
+    } catch {
+      /* ältere Browser / Zuweisung nicht möglich */
+    }
+    karriereCtx.clearPendingKarriereFiles();
+  }, [karriereCtx, karriereCtx?.pendingKarriereFiles?.length]);
 
   /** Siehe ContactForm: verhindert leeres Formular nach Validierungsfehler (React 19). */
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
@@ -60,6 +78,7 @@ export function KarriereForm() {
     <form
       key={formBoot}
       onSubmit={handleSubmit}
+      encType="multipart/form-data"
       className="mt-6 w-full max-w-full space-y-4 border-t border-[#0F4F68]/15 pt-6 text-left"
       noValidate
       aria-label="Bewerbungsformular Karriere"
@@ -173,6 +192,25 @@ export function KarriereForm() {
             </option>
           ))}
         </select>
+      </div>
+
+      <div>
+        <label htmlFor="karriere-bewerbungsdateien" className="block text-sm font-medium text-neutral-700">
+          Dateien anhängen (optional)
+        </label>
+        <input
+          ref={bewerbungsdateienRef}
+          id="karriere-bewerbungsdateien"
+          type="file"
+          name="bewerbungsdateien"
+          multiple
+          accept={KARRIERE_FILE_INPUT_ACCEPT}
+          disabled={pending}
+          className="mt-1 block w-full max-w-full text-sm text-neutral-700 file:mr-3 file:rounded-lg file:border-0 file:bg-[#0F4F68] file:px-4 file:py-2 file:text-sm file:font-semibold file:text-white hover:file:bg-[#0c3d52] disabled:opacity-50"
+        />
+        <p className="mt-1 text-xs text-neutral-500">
+          PDF, Word, gängige Bilder u. a.; bis zu {KARRIERE_MAX_ANHAENGE} Dateien, je max. 8 MB, gesamt max. 24 MB.
+        </p>
       </div>
 
       <div>

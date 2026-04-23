@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useKarriereApplyOptional } from "@/components/karriere/KarriereApplyProvider";
+import { useKarriereApplyOptional } from "@/components/karriere/karriereApplyContext";
 import { cn } from "@/lib/utils";
 
 type JetztBewerbenButtonProps = {

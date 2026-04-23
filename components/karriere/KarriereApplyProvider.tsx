@@ -1,28 +1,14 @@
 "use client";
 
-import { createContext, useCallback, useContext, useMemo, useState, type ReactNode } from "react";
+import { useCallback, useMemo, useState, type ReactNode } from "react";
 import { BewerbungsWizardDialog } from "@/components/karriere/BewerbungsWizardDialog";
+import { KarriereApplyContext } from "@/components/karriere/karriereApplyContext";
 
-type KarriereApplyContextValue = {
-  openBewerbungsWizard: (jobTitle: string) => void;
-};
-
-const KarriereApplyContext = createContext<KarriereApplyContextValue | null>(null);
-
-export function useKarriereApplyOptional() {
-  return useContext(KarriereApplyContext);
-}
-
-export function useKarriereApply() {
-  const v = useContext(KarriereApplyContext);
-  if (!v) {
-    throw new Error("useKarriereApply muss innerhalb von KarriereApplyProvider verwendet werden.");
-  }
-  return v;
-}
+export { useKarriereApply, useKarriereApplyOptional } from "@/components/karriere/karriereApplyContext";
 
 export function KarriereApplyProvider({ children }: { children: ReactNode }) {
   const [wizardJobTitle, setWizardJobTitle] = useState<string | null>(null);
+  const [pendingKarriereFiles, setPendingKarriereFilesState] = useState<File[]>([]);
 
   const openBewerbungsWizard = useCallback((jobTitle: string) => {
     setWizardJobTitle(jobTitle);
@@ -32,7 +18,23 @@ export function KarriereApplyProvider({ children }: { children: ReactNode }) {
     setWizardJobTitle(null);
   }, []);
 
-  const value = useMemo(() => ({ openBewerbungsWizard }), [openBewerbungsWizard]);
+  const setPendingKarriereFiles = useCallback((files: File[]) => {
+    setPendingKarriereFilesState(files);
+  }, []);
+
+  const clearPendingKarriereFiles = useCallback(() => {
+    setPendingKarriereFilesState([]);
+  }, []);
+
+  const value = useMemo(
+    () => ({
+      openBewerbungsWizard,
+      pendingKarriereFiles,
+      setPendingKarriereFiles,
+      clearPendingKarriereFiles,
+    }),
+    [openBewerbungsWizard, pendingKarriereFiles, setPendingKarriereFiles, clearPendingKarriereFiles],
+  );
 
   return (
     <KarriereApplyContext.Provider value={value}>

@@ -6,12 +6,28 @@ import {
   jobTitleToStellenangebot,
   type KarriereBewerbungPrefill,
 } from "@/lib/karriere-job-map";
+import {
+  istKarriereAnhangErlaubt,
+  KARRIERE_FILE_INPUT_ACCEPT,
+  KARRIERE_MAX_ANHAENGE,
+  KARRIERE_MAX_BYTES_GESAMT,
+  KARRIERE_MAX_BYTES_PRO_DATEI,
+} from "@/lib/karriere-attachments";
+import { useKarriereApply } from "@/components/karriere/karriereApplyContext";
 import { cn } from "@/lib/utils";
 
 type BewerbungsWizardDialogProps = {
   jobTitle: string;
   onDismiss: () => void;
 };
+
+/** Gleiche Stellen wie auf der Karriere-Seite (Anzeige-Titel). */
+export const KARRIERE_WIZARD_OFFENE_STELLEN = [
+  "Alltagshelfer*in (m/w/d)",
+  "Pflegeberater*in (m/w/d)",
+  "Buchhalter*in (m/w/d)",
+  "Standortleiter*in (m/w/d)",
+] as const;
 
 type WizardAnswers = {
   eintritt: string;
@@ -23,20 +39,25 @@ type WizardAnswers = {
   nachname: string;
   email: string;
   phone: string;
+  erreichbarkeit: string;
 };
 
 const EINTRITT_OPTIONS = [
   { id: "sofort", label: "Ab sofort / sehr kurzfristig" },
   { id: "2-4w", label: "In 2–4 Wochen" },
   { id: "monat", label: "Ab nächstem Monat" },
-  { id: "gespraech", label: "Erst Gespräch, dann Planung" },
+  { id: "unbekannt", label: "Noch nicht bekannt" },
 ] as const;
 
 const PENSUM_OPTIONS = [
   { id: "vollzeit", label: "Vollzeit" },
-  { id: "teilzeit-25", label: "Teilzeit (ca. 20–35 Std./Woche)" },
-  { id: "teilzeit-klein", label: "Teilzeit unter 20 Std./Woche" },
-  { id: "offen", label: "Offen – gerne im Gespräch" },
+  { id: "h35-40", label: "35–40 Std./Woche" },
+  { id: "h30-35", label: "30–35 Std./Woche" },
+  { id: "h25-30", label: "25–30 Std./Woche" },
+  { id: "h20-25", label: "20–25 Std./Woche" },
+  { id: "h15-20", label: "15–20 Std./Woche" },
+  { id: "h10-15", label: "10–15 Std./Woche" },
+  { id: "minijob", label: "Minijob (unter 9 Stunden)" },
 ] as const;
 
 const ERFAHRUNG_OPTIONS = [
@@ -46,12 +67,31 @@ const ERFAHRUNG_OPTIONS = [
 ] as const;
 
 const MOBILITAET_OPTIONS = [
-  { id: "ja", label: "Ja, Klasse B und PKW verfügbar" },
-  { id: "bald", label: "Führerschein/PKW in Planung" },
-  { id: "nein", label: "Nein (noch nicht)" },
+  { id: "ja", label: "Ja, Führerschein Klasse B und PKW sind vorhanden" },
+  { id: "nein", label: "Nein, Führerschein oder PKW nicht vorhanden" },
 ] as const;
 
-const STEP_LABELS = ["Stelle", "Start", "Pensum", "Erfahrung", "Mobilität", "Kontakt", "Fertig"] as const;
+const ERREICHBAR_OPTIONS = [
+  { id: "vm", label: "Vormittags (ca. 8–12 Uhr)" },
+  { id: "nm", label: "Nachmittags (ca. 13–17 Uhr)" },
+  { id: "abend", label: "Abends (nach 17 Uhr)" },
+  { id: "email", label: "Am liebsten per E-Mail" },
+  { id: "flex", label: "Tagsüber flexibel erreichbar" },
+] as const;
+
+const STEP_LABELS = [
+  "Stelle",
+  "Start",
+  "Pensum",
+  "Erfahrung",
+  "Mobilität",
+  "Kontakt",
+  "Erreichbarkeit",
+  "Fertig",
+] as const;
+
+const MOBILITAET_HINWEIS =
+  "Für die Ausübung der Tätigkeit sind Führerschein Klasse B und ein PKW leider zwingend erforderlich. Ohne beides können wir eine Bewerbung in der Regel nicht weiterbearbeiten. Bitte wählen Sie „Ja“, wenn Sie die Voraussetzungen erfüllen, oder brechen Sie mit „Abbrechen“ ab.";
 
 const INITIAL: WizardAnswers = {
   eintritt: "",
@@ -63,19 +103,34 @@ const INITIAL: WizardAnswers = {
   nachname: "",
   email: "",
   phone: "",
+  erreichbarkeit: "",
 };
 
-function buildAnmerkung(jobTitle: string, a: WizardAnswers): string {
+function pensumLabel(id: string): string {
+  return PENSUM_OPTIONS.find((o) => o.id === id)?.label ?? id;
+}
+
+function buildAnmerkung(
+  primaryTitle: string,
+  additionalTitles: string[],
+  a: WizardAnswers,
+  dateiNamen: string[],
+): string {
   const lines = [
     "--- Schnellcheck Bewerbung ---",
-    `Interesse an: ${jobTitle}`,
+    `Hauptinteresse (Stelle): ${primaryTitle}`,
+    additionalTitles.length > 0 ? `Weitere Interessen: ${additionalTitles.join("; ")}` : "Weitere Interessen: –",
     `Frühester Start: ${EINTRITT_OPTIONS.find((o) => o.id === a.eintritt)?.label ?? a.eintritt}`,
-    `Pensum: ${PENSUM_OPTIONS.find((o) => o.id === a.pensum)?.label ?? a.pensum}`,
+    `Pensum: ${pensumLabel(a.pensum)}`,
     `Erfahrung: ${ERFAHRUNG_OPTIONS.find((o) => o.id === a.erfahrung)?.label ?? a.erfahrung}`,
-    `Mobilität (B/PKW): ${MOBILITAET_OPTIONS.find((o) => o.id === a.mobilitaet)?.label ?? a.mobilitaet}`,
+    `Mobilität (B + PKW): ${MOBILITAET_OPTIONS.find((o) => o.id === a.mobilitaet)?.label ?? a.mobilitaet}`,
+    `Erreichbarkeit: ${ERREICHBAR_OPTIONS.find((o) => o.id === a.erreichbarkeit)?.label ?? a.erreichbarkeit}`,
   ];
   if (a.erfahrungDetail.trim()) {
-    lines.push(`Kurz zum Werdegang: ${a.erfahrungDetail.trim()}`);
+    lines.push(`Kurz zum Werdegang / Erfahrung: ${a.erfahrungDetail.trim()}`);
+  }
+  if (dateiNamen.length > 0) {
+    lines.push(`Ausgewählte Anhänge (Kurzcheck): ${dateiNamen.join(", ")}`);
   }
   return lines.join("\n");
 }
@@ -92,7 +147,7 @@ function ChipGroup({
   name: string;
 }) {
   return (
-    <div className="mt-4 grid gap-2.5 sm:grid-cols-2">
+    <div className="mt-4 grid max-h-[min(52vh,28rem)] gap-2.5 overflow-y-auto overscroll-contain pr-1 sm:grid-cols-2">
       {options.map((opt) => {
         const selected = value === opt.id;
         return (
@@ -124,8 +179,13 @@ function ChipGroup({
 export function BewerbungsWizardDialog({ jobTitle, onDismiss }: BewerbungsWizardDialogProps) {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const titleId = useId();
+  const { setPendingKarriereFiles } = useKarriereApply();
+
   const [step, setStep] = useState(0);
   const [answers, setAnswers] = useState<WizardAnswers>(INITIAL);
+  const [additionalJobTitles, setAdditionalJobTitles] = useState<string[]>([]);
+  const [wizardFiles, setWizardFiles] = useState<File[]>([]);
+  const [fileHint, setFileHint] = useState<string | null>(null);
 
   useEffect(() => {
     const el = dialogRef.current;
@@ -141,6 +201,50 @@ export function BewerbungsWizardDialog({ jobTitle, onDismiss }: BewerbungsWizard
   const maxStep = STEP_LABELS.length - 1;
   const progressPct = useMemo(() => Math.round(((step + 1) / STEP_LABELS.length) * 100), [step]);
 
+  const toggleAdditionalJob = useCallback((title: string) => {
+    setAdditionalJobTitles((prev) =>
+      prev.includes(title) ? prev.filter((t) => t !== title) : [...prev, title],
+    );
+  }, []);
+
+  const onWizardFilesChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    setFileHint(null);
+    const picked = e.target.files;
+    if (!picked?.length) return;
+    const next: File[] = [...wizardFiles];
+    for (const f of [...picked]) {
+      if (!istKarriereAnhangErlaubt(f.name)) {
+        setFileHint(`Dateityp nicht erlaubt: „${f.name}“. Erlaubt sind u. a. PDF, Word und gängige Bildformate.`);
+        e.target.value = "";
+        return;
+      }
+      if (f.size > KARRIERE_MAX_BYTES_PRO_DATEI) {
+        setFileHint(`„${f.name}“ ist zu groß (max. 8 MB pro Datei).`);
+        e.target.value = "";
+        return;
+      }
+      if (next.length >= KARRIERE_MAX_ANHAENGE) {
+        setFileHint(`Maximal ${KARRIERE_MAX_ANHAENGE} Dateien.`);
+        e.target.value = "";
+        return;
+      }
+      const sum = next.reduce((s, x) => s + x.size, 0) + f.size;
+      if (sum > KARRIERE_MAX_BYTES_GESAMT) {
+        setFileHint("Die gewählten Dateien überschreiten zusammen 24 MB.");
+        e.target.value = "";
+        return;
+      }
+      next.push(f);
+    }
+    setWizardFiles(next);
+    e.target.value = "";
+  }, [wizardFiles]);
+
+  const removeWizardFile = useCallback((index: number) => {
+    setWizardFiles((prev) => prev.filter((_, i) => i !== index));
+    setFileHint(null);
+  }, []);
+
   const canNext = useMemo(() => {
     if (step === 0) return true;
     if (step === 1) return Boolean(answers.eintritt);
@@ -155,12 +259,17 @@ export function BewerbungsWizardDialog({ jobTitle, onDismiss }: BewerbungsWizard
         answers.phone.trim().length > 3
       );
     }
+    if (step === 6) return Boolean(answers.erreichbarkeit);
     return true;
   }, [step, answers]);
 
   const goNext = useCallback(() => {
+    if (step === 4 && answers.mobilitaet === "nein") {
+      window.alert(MOBILITAET_HINWEIS);
+      return;
+    }
     setStep((s) => Math.min(s + 1, maxStep));
-  }, [maxStep]);
+  }, [maxStep, step, answers.mobilitaet]);
 
   const goBack = useCallback(() => {
     setStep((s) => Math.max(s - 1, 0));
@@ -168,7 +277,8 @@ export function BewerbungsWizardDialog({ jobTitle, onDismiss }: BewerbungsWizard
 
   const finishToForm = useCallback(() => {
     const stellenangebot = jobTitleToStellenangebot(jobTitle);
-    const anmerkung = buildAnmerkung(jobTitle, answers);
+    const dateiNamen = wizardFiles.map((f) => f.name);
+    const anmerkung = buildAnmerkung(jobTitle, additionalJobTitles, answers, dateiNamen);
     const payload: KarriereBewerbungPrefill = {
       vorname: answers.vorname.trim(),
       nachname: answers.nachname.trim(),
@@ -177,23 +287,29 @@ export function BewerbungsWizardDialog({ jobTitle, onDismiss }: BewerbungsWizard
       stellenangebot,
       anmerkung,
     };
+    setPendingKarriereFiles(wizardFiles);
     try {
       sessionStorage.setItem(KARRIERE_BEWERBUNG_PREFILL_KEY, JSON.stringify(payload));
     } catch {
-      /* ignore quota / private mode */
+      /* ignore */
     }
     dialogRef.current?.close();
     window.requestAnimationFrame(() => {
       window.location.hash = "bewerbung";
       document.getElementById("bewerbung")?.scrollIntoView({ behavior: "smooth", block: "start" });
     });
-  }, [answers, jobTitle]);
+  }, [answers, additionalJobTitles, jobTitle, setPendingKarriereFiles, wizardFiles]);
 
   const handleDialogClick = (e: React.MouseEvent<HTMLDialogElement>) => {
     if (e.target === dialogRef.current) {
       dialogRef.current?.close();
     }
   };
+
+  const andereStellen = useMemo(
+    () => KARRIERE_WIZARD_OFFENE_STELLEN.filter((t) => t !== jobTitle),
+    [jobTitle],
+  );
 
   return (
     <dialog
@@ -218,9 +334,6 @@ export function BewerbungsWizardDialog({ jobTitle, onDismiss }: BewerbungsWizard
             <h2 id={titleId} className="mt-1 text-balance text-lg font-bold leading-tight text-[#0F4F68] sm:text-xl">
               Kurzcheck – Schritt für Schritt
             </h2>
-            <p className="mt-1 text-xs text-neutral-600 sm:text-sm">
-              Wie im Pflegehilfsmittel-Konfigurator: übersichtlich, ohne Pflichtfeld-Überraschungen am Ende.
-            </p>
           </div>
           <button
             type="button"
@@ -231,7 +344,6 @@ export function BewerbungsWizardDialog({ jobTitle, onDismiss }: BewerbungsWizard
           </button>
         </div>
 
-        {/* Schritt-Indikator (Konfigurator-Stil: verbundene Kreise + Linie) */}
         <div className="shrink-0 border-b border-[#0F4F68]/8 bg-[#f1f9fb]/90 px-3 py-3 sm:px-5">
           <div className="relative mx-auto flex max-w-full items-center justify-between gap-0.5 sm:gap-1">
             <div
@@ -279,15 +391,46 @@ export function BewerbungsWizardDialog({ jobTitle, onDismiss }: BewerbungsWizard
         <div className="min-h-0 min-w-0 flex-1 overflow-y-auto overscroll-contain px-4 py-5 sm:px-6 sm:py-6">
           {step === 0 && (
             <div>
-              <p className="text-sm font-semibold text-[#0F4F68]">Ihre ausgewählte Stelle</p>
-              <p className="mt-2 rounded-2xl border border-[#0F4F68]/12 bg-[#F2F9FA]/70 px-4 py-3 text-base font-bold text-[#0F4F68]">
+              <p className="text-sm font-semibold text-[#0F4F68]">Ihre Stelle (Hauptbewerbung)</p>
+              <p className="mt-2 rounded-2xl border-2 border-[#0F4F68]/20 bg-[#F2F9FA]/70 px-4 py-3 text-base font-bold text-[#0F4F68]">
                 {jobTitle}
               </p>
-              <p className="mt-4 text-sm leading-relaxed text-neutral-700">
+              {andereStellen.length > 0 ? (
+                <div className="mt-5">
+                  <p className="text-sm font-semibold text-[#0F4F68]">Weitere offene Stellen (optional)</p>
+                  <p className="mt-1 text-xs text-neutral-600 sm:text-sm">
+                    Wenn Sie sich parallel auf eine weitere ausgeschriebene Stelle bewerben möchten, aktivieren Sie
+                    diese hier. Im Formular bleibt Ihre Hauptstelle vorausgewählt; die weiteren Interessen fügen wir
+                    bei.
+                  </p>
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    {andereStellen.map((t) => {
+                      const on = additionalJobTitles.includes(t);
+                      return (
+                        <button
+                          key={t}
+                          type="button"
+                          onClick={() => toggleAdditionalJob(t)}
+                          className={cn(
+                            "min-h-[44px] rounded-xl border-2 px-3 py-2 text-left text-xs font-semibold transition sm:text-sm",
+                            on
+                              ? "border-[#F78F2E] bg-[#FFF7ED] text-[#0F4F68] shadow-sm"
+                              : "border-[#0F4F68]/15 bg-white text-neutral-800 hover:border-[#0F4F68]/30",
+                          )}
+                          aria-pressed={on}
+                        >
+                          {t}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              ) : null}
+              <p className="mt-5 text-sm leading-relaxed text-neutral-700">
                 In wenigen Schritten erfassen wir, was für unsere Personalplanung hilfreich ist: Startzeitpunkt,
-                Pensum, Erfahrung und Mobilität. Anschließend übernehmen wir Ihre Angaben ins Bewerbungsformular –
-                Sie ergänzen nur noch die AGB-Bestätigung und können Lebenslauf und Zeugnisse anhängen bzw.
-                nachreichen.
+                Pensum, Erfahrung und Mobilität. Anschließend übernehmen wir Ihre Angaben ins Bewerbungsformular – Sie
+                ergänzen nur noch die AGB-Bestätigung und können Lebenslauf und Zeugnisse anhängen bzw. nachreichen.
+                Zum neuen Job in wenigen Minuten. Wir freuen uns auf Ihre Bewerbung!
               </p>
             </div>
           )}
@@ -324,7 +467,7 @@ export function BewerbungsWizardDialog({ jobTitle, onDismiss }: BewerbungsWizard
             <div>
               <p className="text-sm font-semibold text-[#0F4F68]">Erfahrung im Bereich</p>
               <p className="mt-1 text-xs text-neutral-600 sm:text-sm">
-                Quereinstieg ist bei uns ausdrücklich willkommen – uns interessiert Ihre Einstellung.
+                Ein Quereinstieg ist bei uns jederzeit willkommen.
               </p>
               <ChipGroup
                 name="erfahrung"
@@ -333,7 +476,7 @@ export function BewerbungsWizardDialog({ jobTitle, onDismiss }: BewerbungsWizard
                 onChange={(id) => setAnswers((p) => ({ ...p, erfahrung: id }))}
               />
               <label className="mt-5 block text-sm font-medium text-neutral-700" htmlFor="wizard-erf-detail">
-                Optional: ein Satz zu Ihrem Werdegang oder Ihrer Motivation
+                Optional: ein Satz zu Ihrem Werdegang oder vorherige Erfahrung
               </label>
               <textarea
                 id="wizard-erf-detail"
@@ -345,6 +488,43 @@ export function BewerbungsWizardDialog({ jobTitle, onDismiss }: BewerbungsWizard
                 placeholder="z. B. bisherige Tätigkeit in der Betreuung …"
               />
               <p className="mt-1 text-xs text-neutral-500">{answers.erfahrungDetail.length}/500</p>
+
+              <div className="mt-6 rounded-2xl border border-[#0F4F68]/12 bg-[#F2F9FA]/40 p-4">
+                <p className="text-sm font-semibold text-[#0F4F68]">Lebenslauf und Zeugnisse (optional)</p>
+                <p className="mt-1 text-xs text-neutral-600 sm:text-sm">
+                  Sie können hier mehrere Dateien auswählen – PDF, Word und gängige Bildformate (z. B. JPG, PNG,
+                  WebP). Maximal {KARRIERE_MAX_ANHAENGE} Dateien, je max. 8 MB. Die Dateien werden mit Ihrer Bewerbung
+                  mitgesendet, wenn Sie das Formular absenden.
+                </p>
+                <input
+                  type="file"
+                  multiple
+                  accept={KARRIERE_FILE_INPUT_ACCEPT}
+                  className="mt-3 block w-full max-w-full text-sm text-neutral-700 file:mr-3 file:rounded-lg file:border-0 file:bg-[#0F4F68] file:px-4 file:py-2 file:text-sm file:font-semibold file:text-white hover:file:bg-[#0c3d52]"
+                  onChange={onWizardFilesChange}
+                />
+                {fileHint ? (
+                  <p className="mt-2 text-sm font-medium text-red-700" role="alert">
+                    {fileHint}
+                  </p>
+                ) : null}
+                {wizardFiles.length > 0 ? (
+                  <ul className="mt-3 space-y-2 text-sm text-neutral-800">
+                    {wizardFiles.map((f, i) => (
+                      <li key={`${f.name}-${i}`} className="flex items-center justify-between gap-2 rounded-lg bg-white/90 px-3 py-2">
+                        <span className="min-w-0 truncate">{f.name}</span>
+                        <button
+                          type="button"
+                          className="shrink-0 rounded-md border border-[#0F4F68]/20 px-2 py-1 text-xs font-semibold text-[#0F4F68] hover:bg-[#F2F9FA]"
+                          onClick={() => removeWizardFile(i)}
+                        >
+                          Entfernen
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                ) : null}
+              </div>
             </div>
           )}
 
@@ -352,7 +532,8 @@ export function BewerbungsWizardDialog({ jobTitle, onDismiss }: BewerbungsWizard
             <div>
               <p className="text-sm font-semibold text-[#0F4F68]">Mobilität</p>
               <p className="mt-1 text-xs text-neutral-600 sm:text-sm">
-                Für viele Einsätze sind Führerschein Klasse B und ein PKW relevant – bitte ehrlich angeben.
+                Bitte geben Sie an, ob Sie <strong>Führerschein Klasse B</strong> und einen <strong>PKW</strong> zur
+                Verfügung haben (beides zusammen).
               </p>
               <ChipGroup
                 name="mobilitaet"
@@ -426,18 +607,38 @@ export function BewerbungsWizardDialog({ jobTitle, onDismiss }: BewerbungsWizard
 
           {step === 6 && (
             <div>
+              <p className="text-sm font-semibold text-[#0F4F68]">Wann erreichen wir Sie am besten?</p>
+              <p className="mt-1 text-xs text-neutral-600 sm:text-sm">
+                Damit wir Sie für Rückfragen zur Bewerbung möglichst gut erreichen.
+              </p>
+              <ChipGroup
+                name="erreichbarkeit"
+                options={ERREICHBAR_OPTIONS}
+                value={answers.erreichbarkeit}
+                onChange={(id) => setAnswers((p) => ({ ...p, erreichbarkeit: id }))}
+              />
+            </div>
+          )}
+
+          {step === 7 && (
+            <div>
               <p className="text-sm font-semibold text-[#0F4F68]">Zusammenfassung</p>
               <ul className="mt-3 space-y-2 rounded-2xl border border-[#0F4F68]/10 bg-[#F2F9FA]/50 p-4 text-sm text-neutral-800">
                 <li>
-                  <span className="font-semibold text-[#0F4F68]">Stelle:</span> {jobTitle}
+                  <span className="font-semibold text-[#0F4F68]">Hauptstelle:</span> {jobTitle}
                 </li>
+                {additionalJobTitles.length > 0 ? (
+                  <li>
+                    <span className="font-semibold text-[#0F4F68]">Weitere Stellen:</span>{" "}
+                    {additionalJobTitles.join("; ")}
+                  </li>
+                ) : null}
                 <li>
                   <span className="font-semibold text-[#0F4F68]">Start:</span>{" "}
                   {EINTRITT_OPTIONS.find((o) => o.id === answers.eintritt)?.label}
                 </li>
                 <li>
-                  <span className="font-semibold text-[#0F4F68]">Pensum:</span>{" "}
-                  {PENSUM_OPTIONS.find((o) => o.id === answers.pensum)?.label}
+                  <span className="font-semibold text-[#0F4F68]">Pensum:</span> {pensumLabel(answers.pensum)}
                 </li>
                 <li>
                   <span className="font-semibold text-[#0F4F68]">Erfahrung:</span>{" "}
@@ -448,13 +649,23 @@ export function BewerbungsWizardDialog({ jobTitle, onDismiss }: BewerbungsWizard
                   {MOBILITAET_OPTIONS.find((o) => o.id === answers.mobilitaet)?.label}
                 </li>
                 <li>
+                  <span className="font-semibold text-[#0F4F68]">Erreichbarkeit:</span>{" "}
+                  {ERREICHBAR_OPTIONS.find((o) => o.id === answers.erreichbarkeit)?.label}
+                </li>
+                <li>
                   <span className="font-semibold text-[#0F4F68]">Kontakt:</span> {answers.vorname} {answers.nachname},{" "}
                   {answers.email}, {answers.phone}
                 </li>
+                {wizardFiles.length > 0 ? (
+                  <li>
+                    <span className="font-semibold text-[#0F4F68]">Anhänge:</span>{" "}
+                    {wizardFiles.map((f) => f.name).join(", ")}
+                  </li>
+                ) : null}
               </ul>
               <p className="mt-4 text-xs leading-relaxed text-neutral-600">
-                Mit „Zum Bewerbungsformular“ springen Sie zum offiziellen Formular. Dort bestätigen Sie die AGB und
-                können Dateien anhängen. Ihre Schnellcheck-Antworten fügen wir der Bewerbung als interne Notiz bei.
+                Mit „Zum Bewerbungsformular“ springen Sie zum offiziellen Formular. Dort bestätigen Sie die AGB. Ihre
+                Schnellcheck-Antworten und gewählte Dateien werden übernommen bzw. mitgesendet.
               </p>
             </div>
           )}

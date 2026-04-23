@@ -1,6 +1,7 @@
 "use server";
 
 import { redirect } from "next/navigation";
+import { karriereAnhaengeAusFormData } from "@/lib/karriere-attachments";
 import { karriereSchema, type KarriereFormData } from "@/lib/validations/karriere";
 import { rateLimit } from "@/lib/rate-limit";
 import { getClientIp } from "@/lib/security";
@@ -48,6 +49,12 @@ export async function submitKarriere(formData: FormData): Promise<KarriereResult
   }
 
   const data = parsed.data as KarriereFormData;
+
+  const anhaenge = await karriereAnhaengeAusFormData(formData);
+  if (!anhaenge.ok) {
+    return { success: false, error: anhaenge.error };
+  }
+
   const text = [
     "Neue Karriere-Anfrage über die Website",
     "",
@@ -56,6 +63,9 @@ export async function submitKarriere(formData: FormData): Promise<KarriereResult
     `Telefon: ${data.phone}`,
     `Stellenangebot: ${data.stellenangebot}`,
     ...(data.anmerkung ? ["", "Zusatzangaben:", data.anmerkung] : []),
+    ...(anhaenge.attachments.length > 0
+      ? ["", `Anhänge (${anhaenge.attachments.length}):`, ...anhaenge.attachments.map((a) => `– ${a.filename}`)]
+      : []),
   ].join("\n");
 
   const html = buildBrandedNotificationHtml({
@@ -76,6 +86,7 @@ export async function submitKarriere(formData: FormData): Promise<KarriereResult
     text,
     html,
     replyTo: data.email,
+    attachments: anhaenge.attachments.length > 0 ? anhaenge.attachments : undefined,
   });
   if (!mailed.ok && mailed.code === "smtp_not_configured") {
     console.warn(
