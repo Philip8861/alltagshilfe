@@ -20,10 +20,10 @@ const STELLEN_WEISSER_RAHMEN =
 const KARRIERE_HERO_BOGEN_D =
   "M0,100 L0,52 Q600,4 1200,52 L1200,100 L0,100 Z";
 
-/** Welle am oberen Rand des Kontakt-Mint-Streifens (#fafbfc), von Weiß herunter (vgl. HaushaltshilfeLanding). */
+/** Welle am oberen Rand: Mint-Stellenband (#F2F9FA) bzw. Kontaktbereich (#FFFFFF), von der jeweils darüber liegenden Fläche herunter (vgl. HaushaltshilfeLanding). */
 const KARRIERE_KONTAKT_WELLEN_D =
   "M0,100 C200,26 420,6 600,18 C800,32 1010,75 1200,100 L1200,100 L0,100 Z";
-const KARRIERE_KONTAKT_WELLEN_SVG_CLASS =
+const KARRIERE_WELLEN_OBEN_SVG_CLASS =
   "pointer-events-none absolute left-0 top-0 z-[1] h-16 w-full -translate-y-7 sm:h-[clamp(2.85rem,1.5rem+3.8vw,5rem)] sm:-translate-y-[clamp(0.9rem,0.35rem+2.1vw,3.2rem)]";
 
 /** Einleitung unter der Überschrift „Die Alltagshilfe-Süd als neuer Arbeitgeber?“, vor den Stichpunkten. */
@@ -84,9 +84,9 @@ const JOB_CARD_THEME: Record<string, { article: string; header: string; icon: st
   },
 };
 
-/** Sekundär-Aktion ohne Rahmen, Haustür-Petrol wie übrige Flächenbuttons. */
+/** Sekundär-Aktion auf mintfarbenem Stellen-Hintergrund (#F2F9FA): heller Kartenkontrast. */
 const STELLEN_BESCHREIBUNG_BTN =
-  "border-0 bg-[#F2F9FA] text-[#0F4F68] hover:bg-[#e4eef2] focus:ring-[#0F4F68]";
+  "border border-[#0F4F68]/12 bg-white text-[#0F4F68] hover:bg-[#f8fcfd] focus:ring-[#0F4F68]";
 
 const BTN_BASE =
   "inline-flex min-h-[40px] w-full items-center justify-center rounded-lg px-2 py-2 text-center text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 sm:min-h-[44px] sm:text-sm";
@@ -170,15 +170,17 @@ function OffeneStellenSpalte() {
                     </h3>
                   </div>
                   <div className={cn("flex min-h-0 flex-1 flex-col px-3 pb-4 pt-1 sm:px-4 sm:pb-4", theme.inner)}>
-                    <ul className="mt-2 min-h-[8.5rem] flex-1 space-y-1.5 text-[11px] leading-snug text-neutral-700 sm:min-h-[9.25rem] sm:space-y-2 sm:text-xs lg:min-h-[9rem] lg:text-[11px] xl:min-h-[9.5rem] xl:text-xs">
-                      {STELLEN_VORTEILE.map((h) => (
-                        <li key={h} className="flex items-start gap-1.5 sm:gap-2">
-                          <VorteilHaken />
-                          <span>{h}</span>
-                        </li>
-                      ))}
-                    </ul>
-                    <div className="mt-auto flex shrink-0 flex-col gap-2 pt-3">
+                    <div className="flex min-h-0 flex-1 flex-col justify-center">
+                      <ul className="space-y-1.5 text-[11px] leading-snug text-neutral-700 sm:space-y-2 sm:text-xs lg:text-[11px] xl:text-xs">
+                        {STELLEN_VORTEILE.map((h) => (
+                          <li key={h} className="flex items-start gap-1.5 sm:gap-2">
+                            <VorteilHaken />
+                            <span className="text-pretty">{h}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                    <div className="flex shrink-0 flex-col gap-2 pt-3">
                       <StellenbeschreibungDialogTrigger
                         jobTitle={job.title}
                         className={cn(BTN_BASE, STELLEN_BESCHREIBUNG_BTN)}
@@ -435,24 +437,35 @@ export function KarriereLanding() {
           id="bewerbung"
           className="relative z-10 -mt-px overflow-x-visible bg-[#FFFFFF] pb-0 pt-8 sm:pt-10 lg:pt-12"
         >
-          <Container className="relative w-full pb-16 sm:pb-20 lg:pb-24">
+          <Container className="relative w-full pb-8 sm:pb-10 lg:pb-12">
             <KarriereArbeitgeberVorteile />
-            <div className="mt-16 sm:mt-20 lg:mt-24">
-              <OffeneStellenSpalte />
-            </div>
           </Container>
-          <div
-            id="bewerbung-form"
-            className="relative left-1/2 w-screen max-w-[100vw] -translate-x-1/2 scroll-mt-[var(--ahs-header-scroll-padding)] overflow-x-clip bg-[#fafbfc] pb-12 pt-[clamp(2.75rem,4vw+1.5rem,4.5rem)] sm:pb-16 sm:pt-[clamp(3rem,4.5vw+1.5rem,4.75rem)] lg:pb-20 lg:pt-[clamp(3.25rem,5vw+1.5rem,5rem)]"
-          >
+          <div className="relative left-1/2 mt-16 w-screen max-w-[100vw] -translate-x-1/2 overflow-x-clip bg-[#F2F9FA] pb-12 sm:mt-20 sm:pb-16 lg:mt-24 lg:pb-20">
             <svg
-              className={KARRIERE_KONTAKT_WELLEN_SVG_CLASS}
+              className={KARRIERE_WELLEN_OBEN_SVG_CLASS}
               viewBox="0 0 1200 100"
               preserveAspectRatio="none"
               fill="none"
               aria-hidden
             >
-              <path d={KARRIERE_KONTAKT_WELLEN_D} fill="#fafbfc" />
+              <path d={KARRIERE_KONTAKT_WELLEN_D} fill="#F2F9FA" />
+            </svg>
+            <Container className="relative z-[2] w-full pt-[clamp(2.25rem,3vw+1rem,3.25rem)]">
+              <OffeneStellenSpalte />
+            </Container>
+          </div>
+          <div
+            id="bewerbung-form"
+            className="relative left-1/2 w-screen max-w-[100vw] -translate-x-1/2 scroll-mt-[var(--ahs-header-scroll-padding)] overflow-x-clip bg-[#FFFFFF] pb-12 pt-[clamp(2.75rem,4vw+1.5rem,4.5rem)] sm:pb-16 sm:pt-[clamp(3rem,4.5vw+1.5rem,4.75rem)] lg:pb-20 lg:pt-[clamp(3.25rem,5vw+1.5rem,5rem)]"
+          >
+            <svg
+              className={KARRIERE_WELLEN_OBEN_SVG_CLASS}
+              viewBox="0 0 1200 100"
+              preserveAspectRatio="none"
+              fill="none"
+              aria-hidden
+            >
+              <path d={KARRIERE_KONTAKT_WELLEN_D} fill="#FFFFFF" />
             </svg>
             <Container className="relative z-10 w-full">
               <KarriereBewerbungUndAnsprechpartner />
