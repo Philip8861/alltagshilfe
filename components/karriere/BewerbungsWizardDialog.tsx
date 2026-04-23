@@ -98,6 +98,19 @@ const STEP_LABELS = [
   "Fertig",
 ] as const;
 
+/** Kurzer Begleitsatz pro Schritt (ohne Gedankenstrich als Satzzeichen). */
+const WIZARD_STEP_INTROS: readonly string[] = [
+  "Ok, fangen wir direkt an.",
+  "Prima, als Nächstes Ihr möglicher Starttermin.",
+  "Weiter geht es: Welches Pensum passt zu Ihnen?",
+  "Jetzt sind Sie gefragt: Wie steht es mit Ihrer Erfahrung?",
+  "Kurz und klar: Mobilität für den Einsatz vor Ort.",
+  "So erreichen wir Sie persönlich für Rückfragen.",
+  "Noch ein Tipp: Wann sind wir am besten für Sie erreichbar?",
+  "Gleich geschafft: Schauen Sie die Zusammenfassung einmal an.",
+  "Vielen Dank, wir melden uns bei Ihnen.",
+];
+
 const MOBILITAET_HINWEIS =
   "Für die Ausübung der Tätigkeit sind Führerschein Klasse B und ein PKW leider zwingend erforderlich. Ohne beides können wir eine Bewerbung in der Regel nicht weiterbearbeiten. Bitte wählen Sie „Ja“, wenn Sie die Voraussetzungen erfüllen, oder brechen Sie mit „Abbrechen“ ab.";
 
@@ -368,8 +381,11 @@ export function BewerbungsWizardDialog({ jobTitle, onDismiss }: BewerbungsWizard
           <div className="min-w-0 pr-2">
             <p className="text-[11px] font-semibold uppercase tracking-wider text-[#F78F2E] sm:text-xs">Bewerbung</p>
             <h2 id={titleId} className="mt-1 text-balance text-lg font-bold leading-tight text-[#0F4F68] sm:text-xl">
-              Kurzcheck – Schritt für Schritt
+              Kurzcheck: Schritt für Schritt
             </h2>
+            <p className="mt-2 text-pretty text-sm font-medium leading-snug text-[#0F4F68]/85 sm:text-[0.9375rem]">
+              {WIZARD_STEP_INTROS[step] ?? ""}
+            </p>
           </div>
           <button
             type="button"
@@ -395,7 +411,7 @@ export function BewerbungsWizardDialog({ jobTitle, onDismiss }: BewerbungsWizard
                 active
                   ? "border-[#0F4F68] bg-white text-[#0F4F68] shadow-sm"
                   : done
-                    ? "border-[#0F4F68]/70 bg-[#0F4F68]/88 text-white hover:bg-[#0F4F68] hover:opacity-95"
+                    ? "border-[#0F4F68] bg-[#0F4F68] text-white shadow-sm hover:bg-[#0c3d52] hover:border-[#0c3d52]"
                     : "border-[#0F4F68]/30 bg-white text-[#0F4F68]/45",
                 canJumpBack && "cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68] focus-visible:ring-offset-2",
               );

@@ -31,18 +31,13 @@ const jobs = [
 ] as const;
 
 /** Kartenfarben passend zur Seite: Orange, sanft gelb (Pflegeberater), Grün, Blau. */
-const JOB_CARD_THEME: Record<
-  string,
-  { article: string; header: string; icon: string; inner: string; outlineBtn: string }
-> = {
+const JOB_CARD_THEME: Record<string, { article: string; header: string; icon: string; inner: string }> = {
   alltagshelfer: {
     article:
       "border-[#F78F2E]/14 bg-white hover:border-[#F78F2E]/26 hover:shadow-[#F78F2E]/[0.03]",
     header: "bg-[#FFFBF7]/95",
     icon: "bg-[#DEB896] text-white shadow-sm",
     inner: "bg-white",
-    outlineBtn:
-      "border-[#F78F2E]/32 bg-white/95 text-[#0F4F68] hover:bg-[#FFFBF7] focus:ring-[#F78F2E]/40",
   },
   pflegeberater: {
     article:
@@ -50,28 +45,26 @@ const JOB_CARD_THEME: Record<
     header: "bg-amber-50/55",
     icon: "bg-amber-300/90 text-white shadow-sm",
     inner: "bg-white",
-    outlineBtn:
-      "border-amber-300/40 bg-white/95 text-[#0F4F68] hover:bg-amber-50/50 focus:ring-amber-300/35",
   },
   buchhalter: {
     article:
       "border-emerald-400/14 bg-white hover:border-emerald-400/26 hover:shadow-emerald-900/[0.025]",
     header: "bg-emerald-50/50",
-    icon: "bg-emerald-400/88 text-white shadow-sm",
+    icon: "bg-emerald-600 text-white shadow-sm ring-1 ring-emerald-700/25",
     inner: "bg-white",
-    outlineBtn:
-      "border-emerald-400/30 bg-white/95 text-emerald-900/85 hover:bg-emerald-50/45 focus:ring-emerald-400/30",
   },
   standortleiter: {
     article:
       "border-sky-300/18 bg-white hover:border-sky-300/30 hover:shadow-sky-900/[0.025]",
     header: "bg-sky-50/50",
-    icon: "bg-sky-400/88 text-white shadow-sm",
+    icon: "bg-sky-600 text-white shadow-sm ring-1 ring-sky-800/20",
     inner: "bg-white",
-    outlineBtn:
-      "border-sky-400/32 bg-white/95 text-sky-900/85 hover:bg-sky-50/45 focus:ring-sky-400/30",
   },
 };
+
+/** Sekundär-Aktion ohne Rahmen, Haustür-Petrol wie übrige Flächenbuttons. */
+const STELLEN_BESCHREIBUNG_BTN =
+  "border-0 bg-[#F2F9FA] text-[#0F4F68] hover:bg-[#e4eef2] focus:ring-[#0F4F68]";
 
 const BTN_BASE =
   "inline-flex min-h-[40px] w-full items-center justify-center rounded-lg px-2 py-2 text-center text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 sm:min-h-[44px] sm:text-sm";
@@ -164,7 +157,7 @@ function OffeneStellenSpalte() {
                   <div className="mt-auto flex shrink-0 flex-col gap-2 pt-3">
                     <StellenbeschreibungDialogTrigger
                       jobTitle={job.title}
-                      className={cn(BTN_BASE, "border-2", theme.outlineBtn)}
+                      className={cn(BTN_BASE, STELLEN_BESCHREIBUNG_BTN)}
                     />
                     <JetztBewerbenButton
                       jobTitle={job.title}

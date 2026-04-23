@@ -12,6 +12,10 @@ export const metadata: Metadata = {
   description: `Kontaktieren Sie uns – ${siteConfig.name}.`,
 };
 
+/** Welliger Übergang am Seitenende nach oben in den Inhalt, unten bündig mit Footer (neutral-50). */
+const KONTAKT_FOOTER_WELLEN_D =
+  "M0,100 L0,52 Q600,4 1200,52 L1200,100 L0,100 Z";
+
 export default async function KontaktPage({
   searchParams,
 }: {
@@ -23,7 +27,7 @@ export default async function KontaktPage({
   const selectedStandort = selectedPlz ? findStandortByPlz(selectedPlz) : undefined;
 
   return (
-    <article className="w-full min-w-0 py-16 sm:py-24">
+    <article className="relative w-full min-w-0 bg-white pb-0 pt-16 sm:pt-24">
       <Container className="w-full">
         <div className="mx-auto grid w-full max-w-6xl gap-10 lg:grid-cols-2 lg:items-start lg:gap-12">
           <div className="order-2 flex min-w-0 flex-col lg:order-1">
@@ -191,6 +195,18 @@ export default async function KontaktPage({
           </div>
         </div>
       </Container>
+      <div
+        className="pointer-events-none relative left-1/2 mt-10 w-screen max-w-[100vw] -translate-x-1/2 sm:mt-14"
+        aria-hidden
+      >
+        <svg
+          className="h-[2.75rem] w-full max-sm:h-10 sm:h-[clamp(3.25rem,2rem+3.5vw,4.5rem)]"
+          viewBox="0 0 1200 100"
+          preserveAspectRatio="none"
+        >
+          <path d={KONTAKT_FOOTER_WELLEN_D} className="fill-neutral-50" />
+        </svg>
+      </div>
       <StandortFinderPopup />
     </article>
   );
