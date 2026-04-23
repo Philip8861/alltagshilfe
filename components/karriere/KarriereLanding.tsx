@@ -7,15 +7,6 @@ import { siteConfig } from "@/config/site";
 
 const HERO_IMG = "/images/Karriere1.webp";
 
-/**
- * Zwei Wellen (viewBox 0 0 1200 120): rechts betont, zur Mitte hin leicht ansteigend (kleineres y).
- * Hinten etwas tiefer für Tiefe; vorne = Seitenfläche #fafbfc.
- */
-const KARRIERE_WELLE_HINTEN_D =
-  "M0,120 L498,120 C568,118 648,92 718,58 C788,32 878,44 968,64 C1058,84 1132,102 1200,110 L1200,120 Z";
-const KARRIERE_WELLE_VORNE_D =
-  "M0,120 L528,120 C598,117 672,74 742,46 C812,22 902,28 992,50 C1082,72 1148,92 1200,100 L1200,120 Z";
-
 /** Drei zentrale Arbeitgeber-Vorteile (einheitlich auf allen Stellenkarten). */
 const STELLEN_VORTEILE = [
   "Tarifgerechte Vergütung, planbare Zeiten und klare Strukturen im Alltag",
@@ -107,7 +98,7 @@ function VorteilHaken() {
 function OffeneStellenSpalte() {
   return (
     <div className="min-w-0 w-full">
-      <div className="max-w-xl text-left lg:max-w-[min(100%,28rem)] lg:pr-4 xl:max-w-[32rem]">
+      <div className="mx-auto flex w-full max-w-2xl flex-col items-center text-center sm:max-w-3xl">
         <h2 className="text-balance text-2xl font-bold tracking-tight text-[#0F4F68] sm:text-3xl lg:text-[clamp(1.875rem,1.05rem+1.35vw,2.5rem)]">
           Offene Stellen
         </h2>
@@ -340,10 +331,10 @@ export function KarriereLanding() {
               className="pointer-events-none absolute right-0 top-0 bottom-0 z-[8] w-[75%] max-w-[75vw] bg-gradient-to-r from-[#fafbfc] from-0% via-white/95 via-[40%] to-transparent to-[88%]"
               aria-hidden
             />
-            {/* px wie Container + Textspalte wie /pflegeberatung (Betriebliche Pflegeberatung) */}
-            <div className="relative z-10 mx-auto flex min-h-[min(60vh,508px)] w-full max-w-7xl flex-col justify-center px-4 py-5 text-left sm:min-h-[min(56.8vh,478px)] sm:px-6 sm:py-6 lg:min-h-[min(54vh,448px)] lg:px-[var(--ahs-page-gutter)] lg:py-7">
+            {/* Text mittig untereinander, Block leicht nach rechts (wie bisherige Textspalte, nur verschoben). */}
+            <div className="relative z-10 mx-auto flex min-h-[min(60vh,508px)] w-full max-w-7xl flex-col justify-center px-4 py-5 sm:min-h-[min(56.8vh,478px)] sm:px-6 sm:py-6 lg:min-h-[min(54vh,448px)] lg:px-[var(--ahs-page-gutter)] lg:py-7">
               <div className="box-border w-full max-w-full">
-                <header className="max-w-xl lg:max-w-[min(100%,28rem)] lg:pr-4 xl:max-w-[32rem]">
+                <header className="max-w-xl translate-x-3 text-center sm:translate-x-5 lg:max-w-[min(100%,30rem)] lg:translate-x-7 xl:max-w-[34rem]">
                   <h1
                     id="karriere-hero-heading"
                     className="text-balance text-3xl font-bold leading-snug tracking-tight text-[#0F4F68] opacity-0 motion-reduce:animate-none motion-reduce:opacity-100 animate-karriere-hero-in sm:text-4xl md:text-5xl lg:text-[clamp(2rem,1.05rem+1.85vw,2.85rem)] xl:text-[clamp(2.15rem,1.15rem+1.7vw,3.05rem)]"
@@ -372,15 +363,19 @@ export function KarriereLanding() {
           id="bewerbung"
           className="relative z-10 -mt-10 overflow-x-clip bg-[#fafbfc] pb-12 pt-[5.25rem] sm:-mt-10 sm:pb-16 sm:pt-[5.75rem] lg:pb-20 lg:pt-[6.25rem]"
         >
-          <div
-            className="pointer-events-none absolute left-[8%] right-0 top-0 z-[1] h-[4rem] overflow-visible sm:left-[12%] sm:h-[4.5rem] lg:left-[16%] lg:h-[5rem] -translate-y-[78%] sm:-translate-y-[76%] lg:-translate-y-[74%]"
+          {/* Eine gleichmäßige Welle (wie Startseite), volle Breite – ruhiger Übergang ins #fafbfc. */}
+          <svg
+            className="pointer-events-none absolute left-0 top-0 z-[1] h-11 w-full -translate-y-[70%] text-[#fafbfc] sm:h-14 sm:-translate-y-[68%] lg:h-[3.75rem] lg:-translate-y-[66%]"
+            viewBox="0 0 1200 120"
+            preserveAspectRatio="none"
+            fill="none"
             aria-hidden
           >
-            <svg className="block h-full w-full" viewBox="0 0 1200 120" preserveAspectRatio="none" fill="none">
-              <path d={KARRIERE_WELLE_HINTEN_D} fill="#E2E8EC" />
-              <path d={KARRIERE_WELLE_VORNE_D} fill="#fafbfc" />
-            </svg>
-          </div>
+            <path
+              d="M0,120 C200,36 420,10 600,24 C800,40 1010,88 1200,120 L1200,120 L0,120 Z"
+              fill="currentColor"
+            />
+          </svg>
           <Container className="relative z-[2] w-full">
             <OffeneStellenSpalte />
             <KarriereBewerbungWieKontakt />
