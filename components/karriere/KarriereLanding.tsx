@@ -7,6 +7,15 @@ import { siteConfig } from "@/config/site";
 
 const HERO_IMG = "/images/Karriere1.webp";
 
+/**
+ * Zwei Wellen (viewBox 0 0 1200 120): rechts betont, zur Mitte hin leicht ansteigend (kleineres y).
+ * Hinten etwas tiefer für Tiefe; vorne = Seitenfläche #fafbfc.
+ */
+const KARRIERE_WELLE_HINTEN_D =
+  "M0,120 L498,120 C568,118 648,92 718,58 C788,32 878,44 968,64 C1058,84 1132,102 1200,110 L1200,120 Z";
+const KARRIERE_WELLE_VORNE_D =
+  "M0,120 L528,120 C598,117 672,74 742,46 C812,22 902,28 992,50 C1082,72 1148,92 1200,100 L1200,120 Z";
+
 /** Drei zentrale Arbeitgeber-Vorteile (einheitlich auf allen Stellenkarten). */
 const STELLEN_VORTEILE = [
   "Tarifgerechte Vergütung, planbare Zeiten und klare Strukturen im Alltag",
@@ -363,18 +372,15 @@ export function KarriereLanding() {
           id="bewerbung"
           className="relative z-10 -mt-10 overflow-x-clip bg-[#fafbfc] pb-12 pt-[5.25rem] sm:-mt-10 sm:pb-16 sm:pt-[5.75rem] lg:pb-20 lg:pt-[6.25rem]"
         >
-          <svg
-            className="pointer-events-none absolute left-0 top-0 z-[1] h-[3.5rem] w-full -translate-y-[76%] sm:h-16 sm:-translate-y-[74%] lg:h-[4.25rem] lg:-translate-y-[72%]"
-            viewBox="0 0 1200 120"
-            preserveAspectRatio="none"
-            fill="none"
+          <div
+            className="pointer-events-none absolute left-[8%] right-0 top-0 z-[1] h-[4rem] overflow-visible sm:left-[12%] sm:h-[4.5rem] lg:left-[16%] lg:h-[5rem] -translate-y-[78%] sm:-translate-y-[76%] lg:-translate-y-[74%]"
             aria-hidden
           >
-            <path
-              d="M0,120 C200,32 420,8 600,22 C800,38 1010,90 1200,120 L1200,120 L0,120 Z"
-              fill="#fafbfc"
-            />
-          </svg>
+            <svg className="block h-full w-full" viewBox="0 0 1200 120" preserveAspectRatio="none" fill="none">
+              <path d={KARRIERE_WELLE_HINTEN_D} fill="#E2E8EC" />
+              <path d={KARRIERE_WELLE_VORNE_D} fill="#fafbfc" />
+            </svg>
+          </div>
           <Container className="relative z-[2] w-full">
             <OffeneStellenSpalte />
             <KarriereBewerbungWieKontakt />
