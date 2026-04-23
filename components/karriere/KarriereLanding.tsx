@@ -140,7 +140,7 @@ function OffeneStellenSpalte() {
         </p>
       </div>
       <div className="relative left-1/2 mt-8 flex w-screen max-w-[100vw] -translate-x-1/2 justify-center px-3 sm:mt-10 sm:px-4 lg:px-6">
-        <ul className="grid w-full max-w-[min(100rem,calc(100vw-1.5rem))] list-none grid-cols-1 items-stretch gap-8 perspective-[1600px] sm:grid-cols-2 sm:gap-9 sm:max-w-[min(100rem,calc(100vw-2rem))] lg:grid-cols-4 lg:gap-8 xl:gap-10">
+        <ul className="grid w-full max-w-[min(100rem,calc(100vw-1.5rem))] list-none grid-cols-1 items-stretch gap-7 perspective-[1600px] sm:grid-cols-2 sm:gap-9 sm:max-w-[min(100rem,calc(100vw-2rem))] lg:grid-cols-4 lg:gap-8 xl:gap-10">
         {jobs.map((job, index) => {
           const theme = JOB_CARD_THEME[job.id] ?? JOB_CARD_THEME.alltagshelfer;
           return (
