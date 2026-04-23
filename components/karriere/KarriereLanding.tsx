@@ -328,13 +328,13 @@ export function KarriereLanding() {
               </div>
             </div>
             <div
-              className="pointer-events-none absolute right-0 top-0 bottom-0 z-[8] w-[75%] max-w-[75vw] bg-gradient-to-r from-[#fafbfc] from-0% via-white/95 via-[40%] to-transparent to-[88%]"
+              className="pointer-events-none absolute right-0 top-0 bottom-0 z-[8] w-[75%] max-w-[75vw] bg-gradient-to-r from-[#fafbfc] from-0% via-white/55 via-[28%] to-transparent to-[58%] sm:from-[#fafbfc] sm:via-white/90 sm:via-[38%] sm:to-transparent sm:to-[82%] lg:via-white/95 lg:via-[40%] lg:to-[88%]"
               aria-hidden
             />
-            {/* Text mittig untereinander, Block leicht nach rechts (wie bisherige Textspalte, nur verschoben). */}
-            <div className="relative z-10 mx-auto flex min-h-[min(60vh,508px)] w-full max-w-7xl flex-col justify-center px-4 py-5 sm:min-h-[min(56.8vh,478px)] sm:px-6 sm:py-6 lg:min-h-[min(54vh,448px)] lg:px-[var(--ahs-page-gutter)] lg:py-7">
-              <div className="box-border w-full max-w-full">
-                <header className="max-w-xl translate-x-3 text-center sm:translate-x-5 lg:max-w-[min(100%,30rem)] lg:translate-x-7 xl:max-w-[34rem]">
+            {/* Mobil: zentriert ohne translate; ab sm leicht nach rechts wie Desktop. */}
+            <div className="relative z-10 mx-auto flex min-h-[min(60vh,508px)] w-full max-w-7xl flex-col justify-center px-4 py-5 max-sm:items-center sm:min-h-[min(56.8vh,478px)] sm:items-stretch sm:px-6 sm:py-6 lg:min-h-[min(54vh,448px)] lg:px-[var(--ahs-page-gutter)] lg:py-7">
+              <div className="box-border w-full max-w-full max-sm:flex max-sm:justify-center">
+                <header className="w-full max-w-xl text-center max-sm:mx-auto max-sm:max-w-[min(100%,22rem)] max-sm:translate-x-0 sm:translate-x-5 lg:max-w-[min(100%,30rem)] lg:translate-x-7 xl:max-w-[34rem]">
                   <h1
                     id="karriere-hero-heading"
                     className="text-balance text-3xl font-bold leading-snug tracking-tight text-[#0F4F68] opacity-0 motion-reduce:animate-none motion-reduce:opacity-100 animate-karriere-hero-in sm:text-4xl md:text-5xl lg:text-[clamp(2rem,1.05rem+1.85vw,2.85rem)] xl:text-[clamp(2.15rem,1.15rem+1.7vw,3.05rem)]"
@@ -363,19 +363,18 @@ export function KarriereLanding() {
           id="bewerbung"
           className="relative z-10 -mt-10 overflow-x-clip bg-[#fafbfc] pb-12 pt-[5.25rem] sm:-mt-10 sm:pb-16 sm:pt-[5.75rem] lg:pb-20 lg:pt-[6.25rem]"
         >
-          {/* Eine gleichmäßige Welle (wie Startseite), volle Breite – ruhiger Übergang ins #fafbfc. */}
-          <svg
-            className="pointer-events-none absolute left-0 top-0 z-[1] h-11 w-full -translate-y-[70%] text-[#fafbfc] sm:h-14 sm:-translate-y-[68%] lg:h-[3.75rem] lg:-translate-y-[66%]"
-            viewBox="0 0 1200 120"
-            preserveAspectRatio="none"
-            fill="none"
+          {/* Welle beginnt rechts (links flach); mobil etwas niedriger für weniger Sprung. */}
+          <div
+            className="pointer-events-none absolute left-[6%] right-0 top-0 z-[1] h-10 overflow-visible text-[#fafbfc] max-sm:left-[4%] max-sm:h-9 sm:left-[14%] sm:h-12 lg:left-[22%] lg:h-[3.5rem] -translate-y-[68%] sm:-translate-y-[66%] lg:-translate-y-[64%]"
             aria-hidden
           >
-            <path
-              d="M0,120 C200,36 420,10 600,24 C800,40 1010,88 1200,120 L1200,120 L0,120 Z"
-              fill="currentColor"
-            />
-          </svg>
+            <svg className="block h-full w-full" viewBox="0 0 1200 120" preserveAspectRatio="none" fill="none">
+              <path
+                d="M0,120 L620,120 C688,118 748,52 818,34 C898,14 1028,26 1148,72 C1182,86 1192,94 1200,100 L1200,120 Z"
+                fill="currentColor"
+              />
+            </svg>
+          </div>
           <Container className="relative z-[2] w-full">
             <OffeneStellenSpalte />
             <KarriereBewerbungWieKontakt />
