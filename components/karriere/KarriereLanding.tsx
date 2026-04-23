@@ -201,17 +201,21 @@ function OffeneStellenSpalte() {
         })}
         </ul>
       </div>
-      <p className="mx-auto mt-8 max-w-2xl text-pretty text-center text-sm text-neutral-700 opacity-0 motion-reduce:animate-none motion-reduce:opacity-100 animate-fade-in-up sm:mt-10 sm:max-w-3xl sm:text-base [animation-delay:0.55s] motion-reduce:[animation-delay:0s]">
-        Kein Treffer in der Viererreihe? Oft entstehen die besten Teams, wenn jemand einfach „Hallo“ sagt. Erzählen Sie uns, was Sie auszeichnet – und bewerben Sie sich{" "}
-        <a
-          href="#bewerbung-form"
-          title="Zum Kontakt- und Bewerbungsformular (Daniel Niebauer)"
-          className="font-bold text-[#0F4F68] underline decoration-[#0F4F68] underline-offset-2 transition-colors hover:text-[#0c3d52] hover:decoration-[#0c3d52] focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2 rounded-sm"
-        >
-          initiativ
-        </a>{" "}
-        bei uns.
-      </p>
+      <div className="mx-auto mt-8 max-w-2xl pb-3 opacity-0 motion-reduce:animate-none motion-reduce:opacity-100 animate-fade-in-up sm:mt-10 sm:max-w-3xl sm:pb-5 [animation-delay:0.55s] motion-reduce:[animation-delay:0s]">
+        <p className="text-pretty text-center text-sm text-neutral-700 sm:text-base">
+          Keine passende Stelle dabei, aber Sie sind überzeugt, dass Sie unser Team mit Ihren Fähigkeiten bereichern können? Dann
+          erzählen Sie uns mehr über sich und bewerben Sie sich initiativ bei uns.
+        </p>
+        <div className="mt-6 flex justify-center sm:mt-7">
+          <a
+            href="#bewerbung-form"
+            title="Zum Kontakt- und Bewerbungsformular (Daniel Niebauer)"
+            className="my-3 inline-flex min-h-[2.65rem] w-full max-w-xs items-center justify-center rounded-xl bg-[#F78F2E] px-5 py-2.5 text-center text-sm font-semibold text-white shadow-sm transition hover:opacity-95 focus:outline-none focus:ring-2 focus:ring-[#F78F2E] focus:ring-offset-2 sm:my-4 sm:min-h-[2.75rem] sm:max-w-sm sm:px-6 sm:text-base"
+          >
+            Jetzt initiativ bewerben
+          </a>
+        </div>
+      </div>
     </div>
   );
 }
