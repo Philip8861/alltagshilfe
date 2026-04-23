@@ -124,9 +124,9 @@ export function StellenbeschreibungDialogTrigger({ jobTitle, className }: Stelle
             "sm:max-w-[min(60rem,calc(100dvw-2.5rem))]",
           )}
         >
-        <div className="flex shrink-0 items-start justify-between gap-4 border-b border-[#0F4F68]/10 bg-gradient-to-r from-[#FFF7ED] via-[#F2F9FA] to-white px-5 py-5 sm:px-8 sm:py-6">
+        <div className="flex shrink-0 items-start justify-between gap-4 border-b border-[#0F4F68]/8 bg-gradient-to-r from-[#FFF9F4]/95 via-[#F5FAFB]/92 to-white px-5 py-5 sm:px-8 sm:py-6">
           <div className="min-w-0 pr-2">
-            <p className="text-xs font-semibold uppercase tracking-wider text-[#F78F2E] sm:text-sm">Karriere</p>
+            <p className="text-xs font-semibold uppercase tracking-wider text-[#E8894A]/95 sm:text-sm">Karriere</p>
             <h2
               id={titleId}
               className="mt-1.5 text-balance text-xl font-bold leading-tight text-[#0F4F68] sm:text-2xl"
@@ -148,7 +148,7 @@ export function StellenbeschreibungDialogTrigger({ jobTitle, className }: Stelle
             {EINLEITUNG}
           </p>
 
-          <div className="mt-6 rounded-2xl bg-[#F2F9FA]/60 px-5 py-4 sm:mt-8 sm:px-6 sm:py-5">
+          <div className="mt-6 rounded-2xl bg-[#F2F9FA]/38 px-5 py-4 sm:mt-8 sm:px-6 sm:py-5">
             <SectionTitle className="!mt-0 sm:!mt-0">Was wir Ihnen bieten</SectionTitle>
             <BulletList items={WIR_BIETEN} />
           </div>

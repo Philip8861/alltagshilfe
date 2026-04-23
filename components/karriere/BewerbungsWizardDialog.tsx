@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useId, useMemo, useRef, useState, type KeyboardEvent } from "react";
 import {
   KARRIERE_BEWERBUNG_PREFILL_KEY,
   jobTitleToStellenangebot,
@@ -353,26 +353,52 @@ export function BewerbungsWizardDialog({ jobTitle, onDismiss }: BewerbungsWizard
             {STEP_LABELS.map((label, i) => {
               const active = i === step;
               const done = i < step;
+              const canJumpBack = i < step;
+              const circleClass = cn(
+                "flex h-8 w-8 shrink-0 items-center justify-center rounded-full border-2 text-xs font-bold transition sm:h-9 sm:w-9 sm:text-sm",
+                active
+                  ? "border-[#0F4F68] bg-white text-[#0F4F68] shadow-sm"
+                  : done
+                    ? "border-[#0F4F68]/70 bg-[#0F4F68]/88 text-white hover:bg-[#0F4F68] hover:opacity-95"
+                    : "border-[#0F4F68]/30 bg-white text-[#0F4F68]/45",
+                canJumpBack && "cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68] focus-visible:ring-offset-2",
+              );
+              const stepControl = canJumpBack ? (
+                <button
+                  type="button"
+                  className={circleClass}
+                  aria-label={`Zu Schritt ${i + 1} (${label}) zurückspringen`}
+                  onClick={() => setStep(i)}
+                >
+                  {done ? "✓" : i + 1}
+                </button>
+              ) : (
+                <span className={circleClass} aria-current={active ? "step" : undefined}>
+                  {done ? "✓" : i + 1}
+                </span>
+              );
               return (
                 <div key={label} className="relative z-[1] flex min-w-0 flex-1 flex-col items-center gap-1">
-                  <span
-                    className={cn(
-                      "flex h-8 w-8 shrink-0 items-center justify-center rounded-full border-2 text-xs font-bold sm:h-9 sm:w-9 sm:text-sm",
-                      active
-                        ? "border-[#0F4F68] bg-white text-[#0F4F68] shadow-sm"
-                        : done
-                          ? "border-[#0F4F68] bg-[#0F4F68] text-white"
-                          : "border-[#0F4F68]/30 bg-white text-[#0F4F68]/45",
-                    )}
-                    aria-current={active ? "step" : undefined}
-                  >
-                    {done ? "✓" : i + 1}
-                  </span>
+                  {stepControl}
                   <span
                     className={cn(
                       "hidden max-w-[4.5rem] truncate text-center text-[10px] font-semibold leading-tight sm:block sm:max-w-none sm:text-[11px]",
                       active ? "text-[#0F4F68]" : "text-neutral-500",
+                      canJumpBack && "cursor-pointer hover:text-[#0F4F68]/80",
                     )}
+                    {...(canJumpBack
+                      ? {
+                          role: "button",
+                          tabIndex: 0,
+                          onClick: () => setStep(i),
+                          onKeyDown: (e: KeyboardEvent) => {
+                            if (e.key === "Enter" || e.key === " ") {
+                              e.preventDefault();
+                              setStep(i);
+                            }
+                          },
+                        }
+                      : {})}
                   >
                     {label}
                   </span>
