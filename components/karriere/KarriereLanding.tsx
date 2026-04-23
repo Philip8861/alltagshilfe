@@ -139,8 +139,8 @@ function OffeneStellenSpalte() {
           Bewirb dich jetzt, es dauert nur einen kleinen Moment
         </p>
       </div>
-      <div className="relative left-1/2 mt-8 flex w-screen max-w-[100vw] -translate-x-1/2 justify-center px-3 sm:mt-10 sm:px-4 lg:px-6">
-        <ul className="grid w-full max-w-[min(100rem,calc(100vw-1.5rem))] list-none grid-cols-1 items-stretch gap-8 perspective-[1600px] sm:grid-cols-2 sm:gap-10 sm:max-w-[min(100rem,calc(100vw-2rem))] lg:grid-cols-4 lg:gap-8 xl:gap-10">
+      <div className="relative left-1/2 mt-8 flex w-screen max-w-[100vw] -translate-x-1/2 justify-center px-4 sm:mt-10 sm:px-5 lg:px-8">
+        <ul className="grid w-full max-w-[min(100rem,calc(100vw-2rem))] list-none grid-cols-1 items-stretch gap-10 perspective-[1600px] sm:grid-cols-2 sm:gap-12 sm:max-w-[min(100rem,calc(100vw-2.5rem))] lg:grid-cols-4 lg:gap-10 xl:gap-12">
         {jobs.map((job, index) => {
           const theme = JOB_CARD_THEME[job.id] ?? JOB_CARD_THEME.alltagshelfer;
           return (
@@ -169,9 +169,9 @@ function OffeneStellenSpalte() {
                       {job.title}
                     </h3>
                   </div>
-                  <div className={cn("flex min-h-0 flex-1 flex-col px-3 pb-4 pt-2 sm:px-4 sm:pb-5", theme.inner)}>
-                    <div className="flex min-h-0 flex-1 flex-col justify-center py-3 sm:py-5">
-                      <ul className="space-y-2 text-[11px] leading-snug text-neutral-700 sm:space-y-2.5 sm:text-xs lg:text-[11px] xl:text-xs">
+                  <div className={cn("flex min-h-0 flex-1 flex-col px-3 pb-4 pt-3 sm:px-4 sm:pb-5", theme.inner)}>
+                    <div className="flex min-h-0 flex-1 flex-col justify-center py-4 sm:py-6">
+                      <ul className="space-y-2.5 text-[11px] leading-relaxed text-neutral-700 sm:space-y-3 sm:text-xs lg:text-[11px] xl:text-xs">
                         {STELLEN_VORTEILE.map((h) => (
                           <li key={h} className="flex items-start gap-1.5 sm:gap-2">
                             <VorteilHaken />
@@ -180,7 +180,7 @@ function OffeneStellenSpalte() {
                         ))}
                       </ul>
                     </div>
-                    <div className="flex shrink-0 flex-col gap-2 pt-4 sm:pt-5">
+                    <div className="flex shrink-0 flex-col gap-2 pt-5 sm:pt-6">
                       <StellenbeschreibungDialogTrigger
                         jobTitle={job.title}
                         className={cn(BTN_BASE, STELLEN_BESCHREIBUNG_BTN)}
