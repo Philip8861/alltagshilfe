@@ -28,7 +28,7 @@ const KARRIERE_KONTAKT_WELLEN_SVG_CLASS =
 
 /** Einleitung unter der Überschrift „Die Alltagshilfe-Süd als neuer Arbeitgeber?“, vor den Stichpunkten. */
 const KARRIERE_ARBEITGEBER_INTRO =
-  "Bei uns stehen die Menschen im Mittelpunkt. Unsere Mitarbeitenden sind das Herz und Motor unserer Firma. Deshalb geben wir jeden Tag unser Bestes, handeln mit Überzeugung und schaffen ein Umfeld, in dem sich der Job dem Alltag anpasst und nicht der Alltag dem Job. Weil gute Pflege und gute Arbeit nur mit Herz wirklich gelingen.";
+  "Bei uns stehen die Menschen im Mittelpunkt. Unsere Mitarbeitenden sind das Herz und Motor unserer Firma. Deshalb geben wir jeden Tag unser Bestes, handeln mit Überzeugung und schaffen ein Umfeld, in dem sich der Job dem Alltag anpasst und nicht der Alltag dem Job. Weil liebevolle Hilfe und gute Arbeit nur mit Herz wirklich gelingen.";
 
 /** Arbeitgeber-Vorteile – Darstellung wie „Ihre Vorteile bei uns“ auf der Startseite. */
 const KARRIERE_ARBEITGEBER_FAKTEN = [
@@ -133,8 +133,11 @@ function OffeneStellenSpalte() {
     >
       <div className="mx-auto flex w-full max-w-2xl flex-col items-center text-center opacity-0 motion-reduce:animate-none motion-reduce:opacity-100 animate-fade-in-up sm:max-w-3xl">
         <h2 className="text-balance text-2xl font-bold tracking-tight text-[#0F4F68] sm:text-3xl lg:text-[clamp(1.875rem,1.05rem+1.35vw,2.5rem)]">
-          Offene Stellenangebote
+          Unsere offenen Stellenangebote
         </h2>
+        <p className="mt-3 max-w-2xl text-pretty text-sm font-medium text-neutral-600 sm:mt-4 sm:text-base">
+          Bewirb dich jetzt, es dauert nur einen kleinen Moment
+        </p>
       </div>
       <div className="relative left-1/2 mt-8 flex w-screen max-w-[100vw] -translate-x-1/2 justify-center px-3 sm:mt-10 sm:px-4 lg:px-6">
         <ul className="grid w-full max-w-[min(100rem,calc(100vw-1.5rem))] list-none grid-cols-1 items-stretch gap-6 perspective-[1600px] sm:grid-cols-2 sm:gap-8 sm:max-w-[min(100rem,calc(100vw-2rem))] lg:grid-cols-4 lg:gap-6 xl:gap-8">
@@ -197,7 +200,7 @@ function OffeneStellenSpalte() {
         </ul>
       </div>
       <p className="mx-auto mt-8 max-w-2xl text-pretty text-center text-sm text-neutral-700 opacity-0 motion-reduce:animate-none motion-reduce:opacity-100 animate-fade-in-up sm:mt-10 sm:max-w-3xl sm:text-base [animation-delay:0.55s] motion-reduce:[animation-delay:0s]">
-        Keine passende Stelle dabei? Zeigen Sie uns Ihre Stärken und bewerben Sie sich{" "}
+        Kein Treffer in der Viererreihe? Oft entstehen die besten Teams, wenn jemand einfach „Hallo“ sagt. Erzählen Sie uns, was Sie auszeichnet – und bewerben Sie sich{" "}
         <a
           href="#bewerbung-form"
           title="Zum Kontakt- und Bewerbungsformular (Daniel Niebauer)"
