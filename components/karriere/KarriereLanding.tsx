@@ -315,7 +315,8 @@ export function KarriereLanding() {
           {/* Bild ohne fill; +15 % zu vorher: min-h/max-h & Spalte 75vw. Weißer Verlauf eigene Schicht z-[8] über dem Bild, unter Text (z-10). */}
           <div className="relative min-h-[min(60vh,508px)] w-full sm:min-h-[min(56.8vh,478px)] lg:min-h-[min(54vh,448px)]">
             <div className="pointer-events-none absolute right-0 top-0 bottom-0 z-0 w-[75%] max-w-[75vw] overflow-x-clip overflow-y-visible">
-              <div className="flex h-full justify-end overflow-visible">
+              {/* items-end: Bildunterkante = Hero-Unterkante → Trennlinie am bottom-0 ohne weiße Lücke */}
+              <div className="flex h-full items-end justify-end overflow-visible">
                 <Image
                   src={HERO_IMG}
                   alt="Karriere bei der Alltagshilfe-Süd – Team und Arbeitgeber"
@@ -323,7 +324,7 @@ export function KarriereLanding() {
                   height={495}
                   priority
                   sizes="75vw"
-                  className="h-auto max-h-[min(60vh,508px)] w-auto max-w-full object-contain object-right object-top sm:max-h-[min(56.8vh,478px)] lg:max-h-[min(54vh,448px)]"
+                  className="h-auto max-h-[min(60vh,508px)] w-auto max-w-full object-contain object-right object-bottom sm:max-h-[min(56.8vh,478px)] lg:max-h-[min(54vh,448px)]"
                 />
               </div>
             </div>
@@ -356,10 +357,10 @@ export function KarriereLanding() {
                 </header>
               </div>
             </div>
-            {/* Feine Trennlinie über volle Breite am unteren Hero-Rand + sehr dezenter Schatten darunter. */}
+            {/* Volle Breite am unteren Hero-Rand (= Bildunterkante durch items-end); Linie minimal dicker, Schatten dezent. */}
             <div className="pointer-events-none absolute inset-x-0 bottom-0 z-[9]" aria-hidden>
-              <div className="h-px w-full bg-[#0F4F68]/[0.22] sm:bg-[#0F4F68]/[0.18]" />
-              <div className="h-1.5 w-full bg-gradient-to-b from-[rgba(15,79,104,0.06)] to-transparent sm:h-2 sm:from-[rgba(15,79,104,0.05)]" />
+              <div className="h-[2px] w-full bg-[#0F4F68]/[0.26] sm:bg-[#0F4F68]/[0.22]" />
+              <div className="h-1.5 w-full bg-gradient-to-b from-[rgba(15,79,104,0.065)] to-transparent sm:h-2 sm:from-[rgba(15,79,104,0.055)]" />
             </div>
           </div>
         </section>
