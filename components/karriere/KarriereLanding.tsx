@@ -214,7 +214,7 @@ function OffeneStellenSpalte() {
             <a
               href="#bewerbung-form"
               title="Zum Kontakt- und Bewerbungsformular (Daniel Niebauer)"
-              className="inline-flex min-h-[3rem] w-full max-w-sm items-center justify-center rounded-2xl bg-[#F78F2E] px-6 py-3 text-center text-sm font-bold tracking-wide text-white shadow-[0_6px_20px_rgba(247,143,46,0.35)] transition hover:opacity-[0.96] hover:shadow-[0_10px_28px_rgba(247,143,46,0.42)] focus:outline-none focus:ring-2 focus:ring-[#F78F2E] focus:ring-offset-2 sm:min-h-[3.125rem] sm:max-w-md sm:px-8 sm:text-base"
+              className="inline-flex min-h-[2.5rem] w-full max-w-[15.5rem] items-center justify-center rounded-xl bg-[#F78F2E] px-4 py-2 text-center text-sm font-semibold text-white shadow-sm transition hover:bg-[#ea8328] hover:shadow-md focus:outline-none focus:ring-2 focus:ring-[#0F4F68]/30 focus:ring-offset-2 sm:min-h-[2.65rem] sm:max-w-xs sm:px-5 sm:py-2.5"
             >
               Jetzt initiativ bewerben
             </a>
