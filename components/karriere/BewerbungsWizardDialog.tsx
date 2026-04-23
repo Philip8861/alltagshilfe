@@ -398,9 +398,10 @@ export function BewerbungsWizardDialog({ jobTitle, onDismiss }: BewerbungsWizard
         </div>
 
         <div className="shrink-0 border-b border-[#0F4F68]/8 bg-[#f1f9fb]/90 px-3 py-3 sm:px-5">
-          <div className="relative mx-auto flex max-w-full items-center justify-between gap-0.5 sm:gap-1">
+          <div className="relative mx-auto flex w-full max-w-full items-center justify-between gap-0.5 sm:gap-1">
+            {/* Linie von erstem bis letztem Schritt-Kreis (Mitte zu Mitte bei 8 gleichen Spalten ≈ 6.25 % Rand) */}
             <div
-              className="pointer-events-none absolute left-[8%] right-[8%] top-1/2 z-0 h-0.5 -translate-y-1/2 overflow-hidden rounded-full bg-[#0F4F68]/25"
+              className="pointer-events-none absolute left-[6.25%] right-[6.25%] top-1/2 z-0 h-0.5 -translate-y-1/2 overflow-hidden rounded-full bg-[#0F4F68]/25"
               aria-hidden
             >
               <div
@@ -464,7 +465,7 @@ export function BewerbungsWizardDialog({ jobTitle, onDismiss }: BewerbungsWizard
               );
             })}
           </div>
-          <div className="mx-auto mt-3 h-2 max-w-md overflow-hidden rounded-full bg-white shadow-inner">
+          <div className="mx-auto mt-3 h-2 w-full max-w-full overflow-hidden rounded-full bg-white shadow-inner sm:h-2.5">
             <div
               className="h-full rounded-full bg-[#0F4F68] transition-[width] duration-300 ease-out"
               style={{ width: `${progressFraction * 100}%` }}
