@@ -106,7 +106,7 @@ const WIZARD_STEP_INTROS: readonly string[] = [
   "Kurz und klar: Mobilität für den Einsatz vor Ort.",
   "So erreichen wir Sie: Kontaktdaten und gute Erreichbarkeit.",
   "Gleich geschafft: Prüfen Sie alle Angaben vor dem Absenden.",
-  "Vielen Dank, wir melden uns bei Ihnen.",
+  "Vielen Dank für Ihre Bewerbung!",
 ];
 
 const MOBILITAET_HINWEIS =
@@ -226,6 +226,7 @@ export function BewerbungsWizardDialog({ jobTitle, onDismiss }: BewerbungsWizard
   }, [step]);
 
   const maxStep = STEP_LABELS.length - 1;
+  const isSuccessStep = step === maxStep;
   /** Ab „Stelle“: erster Abschnitt schon sichtbar (Schritt 0 → 1/n). */
   const progressFraction = useMemo(
     () => Math.min(step + 1, STEP_LABELS.length) / STEP_LABELS.length,
@@ -377,27 +378,30 @@ export function BewerbungsWizardDialog({ jobTitle, onDismiss }: BewerbungsWizard
         )}
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="flex shrink-0 items-start justify-between gap-3 border-b border-[#0F4F68]/10 bg-gradient-to-r from-[#FFF7ED] via-[#F2F9FA] to-white px-4 py-4 sm:px-6 sm:py-5">
-          <div className="min-w-0 pr-2">
-            <p className="text-[11px] font-semibold uppercase tracking-wider text-[#F78F2E] sm:text-xs">
-              Bewerbung · Kurzcheck
-            </p>
-            <h2
-              id={titleId}
-              className="mt-1 text-balance text-lg font-bold leading-snug text-[#0F4F68] sm:text-xl sm:leading-snug"
+        {!isSuccessStep ? (
+          <div className="flex shrink-0 items-start justify-between gap-3 border-b border-[#0F4F68]/10 bg-gradient-to-r from-[#FFF7ED] via-[#F2F9FA] to-white px-4 py-4 sm:px-6 sm:py-5">
+            <div className="min-w-0 pr-2">
+              <p className="text-[11px] font-semibold uppercase tracking-wider text-[#F78F2E] sm:text-xs">
+                Bewerbung · Kurzcheck
+              </p>
+              <h2
+                id={titleId}
+                className="mt-1 text-balance text-lg font-bold leading-snug text-[#0F4F68] sm:text-xl sm:leading-snug"
+              >
+                {WIZARD_STEP_INTROS[step] ?? ""}
+              </h2>
+            </div>
+            <button
+              type="button"
+              className="shrink-0 rounded-xl border border-[#0F4F68]/10 bg-white/90 px-3 py-2 text-xs font-semibold text-[#0F4F68] shadow-sm transition hover:bg-[#F2F9FA] focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2 sm:px-4 sm:text-sm"
+              onClick={() => dialogRef.current?.close()}
             >
-              {WIZARD_STEP_INTROS[step] ?? ""}
-            </h2>
+              Abbrechen
+            </button>
           </div>
-          <button
-            type="button"
-            className="shrink-0 rounded-xl border border-[#0F4F68]/10 bg-white/90 px-3 py-2 text-xs font-semibold text-[#0F4F68] shadow-sm transition hover:bg-[#F2F9FA] focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2 sm:px-4 sm:text-sm"
-            onClick={() => dialogRef.current?.close()}
-          >
-            Abbrechen
-          </button>
-        </div>
+        ) : null}
 
+        {!isSuccessStep ? (
         <div className="shrink-0 border-b border-[#0F4F68]/8 bg-[#f1f9fb]/90 px-3 py-3 sm:px-5">
           <div className="relative mx-auto flex w-full max-w-full items-center justify-between gap-0.5 sm:gap-1">
             {/* Linie von erstem bis letztem Schritt-Kreis (Mitte zu Mitte bei 8 gleichen Spalten ≈ 6.25 % Rand) */}
@@ -473,6 +477,7 @@ export function BewerbungsWizardDialog({ jobTitle, onDismiss }: BewerbungsWizard
             />
           </div>
         </div>
+        ) : null}
 
         <div className="min-h-0 min-w-0 flex-1 overflow-y-auto overscroll-contain px-4 py-4 sm:px-6 sm:py-5">
           {step === 0 && (
@@ -825,22 +830,37 @@ export function BewerbungsWizardDialog({ jobTitle, onDismiss }: BewerbungsWizard
           )}
 
           {step === 7 && (
-            <div className="flex flex-col items-center text-center">
-              <div className="flex h-14 w-14 items-center justify-center rounded-full bg-[#F2F9FA] text-[#0F4F68] ring-2 ring-[#0F4F68]/20" aria-hidden>
-                <svg className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                </svg>
-              </div>
-              <p className="mt-5 text-lg font-bold text-[#0F4F68]">Vielen Dank für Ihre Bewerbung!</p>
-              <p className="mt-3 max-w-md text-sm leading-relaxed text-neutral-700">
+            <div className="flex flex-col items-center px-2 py-6 text-center sm:py-10">
+              <h2
+                id={titleId}
+                className="text-balance text-xl font-bold leading-snug text-[#0F4F68] sm:text-2xl"
+              >
+                Vielen Dank für Ihre Bewerbung!
+              </h2>
+              <p className="mt-5 max-w-md text-pretty text-sm leading-relaxed text-neutral-700 sm:text-base">
                 Wir werden uns umgehend bei Ihnen melden. Falls Sie weitere Fragen haben, dürfen Sie uns gerne
                 kontaktieren.
               </p>
               <Link
                 href="/kontakt"
-                className="mt-6 inline-flex min-h-[48px] min-w-[12rem] items-center justify-center rounded-xl bg-[#F78F2E] px-6 text-sm font-semibold text-white shadow-sm transition hover:opacity-95 focus:outline-none focus:ring-2 focus:ring-[#F78F2E] focus:ring-offset-2"
+                title="Zur Kontaktseite"
+                className="mt-8 inline-flex items-center gap-2.5 rounded-lg text-[#0F4F68] transition hover:text-[#0c3d52] focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2"
               >
-                Kontakt
+                <svg
+                  className="h-7 w-7 shrink-0 text-[#F78F2E]"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth={2.4}
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  aria-hidden
+                >
+                  <path d="M20 6 9 17l-5-5" />
+                </svg>
+                <span className="text-base font-semibold underline decoration-[#0F4F68] underline-offset-2 sm:text-lg">
+                  Kontakt
+                </span>
               </Link>
             </div>
           )}
@@ -849,7 +869,7 @@ export function BewerbungsWizardDialog({ jobTitle, onDismiss }: BewerbungsWizard
         <div
           className={cn(
             "flex shrink-0 flex-col gap-2 border-t border-[#0F4F68]/10 bg-white px-4 py-4 sm:flex-row sm:px-6 sm:py-4",
-            step === 6 ? "sm:justify-start" : "sm:justify-between",
+            isSuccessStep ? "justify-center sm:justify-center" : step === 6 ? "sm:justify-start" : "sm:justify-between",
           )}
         >
           <button
