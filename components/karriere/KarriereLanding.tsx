@@ -319,10 +319,10 @@ export function KarriereLanding() {
           aria-labelledby="karriere-hero-heading"
           className="relative isolate z-0 min-w-0 overflow-x-clip overflow-y-visible bg-[#fafbfc] pb-0 pt-0"
         >
-          {/* Bild: items-end + object-bottom → untere Bildkante = untere Hero-Fläche vor dem Bogen. */}
+          {/* Bild wie zuvor oben/rechts; Bogen unten bleibt separat am Hero-Rand. */}
           <div className="relative min-h-[min(60vh,508px)] w-full sm:min-h-[min(56.8vh,478px)] lg:min-h-[min(54vh,448px)]">
             <div className="pointer-events-none absolute right-0 top-0 bottom-0 z-0 w-[75%] max-w-[75vw] overflow-x-clip overflow-y-visible">
-              <div className="flex h-full items-end justify-end overflow-visible">
+              <div className="flex h-full justify-end overflow-visible">
                 <Image
                   src={HERO_IMG}
                   alt="Karriere bei der Alltagshilfe-Süd – Team und Arbeitgeber"
@@ -330,7 +330,7 @@ export function KarriereLanding() {
                   height={495}
                   priority
                   sizes="75vw"
-                  className="h-auto max-h-[min(60vh,508px)] w-auto max-w-full object-contain object-right object-bottom sm:max-h-[min(56.8vh,478px)] lg:max-h-[min(54vh,448px)]"
+                  className="h-auto max-h-[min(60vh,508px)] w-auto max-w-full object-contain object-right object-top sm:max-h-[min(56.8vh,478px)] lg:max-h-[min(54vh,448px)]"
                 />
               </div>
             </div>
