@@ -200,7 +200,9 @@ export function KartenMitKoordinatenErfassen({ hauptmarker, punkte, ortsLabels =
             className="object-contain object-top"
             style={{
               objectPosition: "-38% 0",
-              filter: "drop-shadow(0 2px 8px rgba(15, 79, 104, 0.25)) drop-shadow(0 4px 14px rgba(242, 249, 250, 1)) drop-shadow(0 8px 24px rgba(242, 249, 250, 1)) drop-shadow(0 12px 32px rgba(230, 245, 247, 1)) drop-shadow(0 18px 44px rgba(242, 249, 250, 0.95))",
+              /* ~25 % schwächer: Alphas und Blur mit 0,75 */
+              filter:
+                "drop-shadow(0 2px 6px rgba(15, 79, 104, 0.19)) drop-shadow(0 3px 11px rgba(242, 249, 250, 0.75)) drop-shadow(0 6px 18px rgba(242, 249, 250, 0.75)) drop-shadow(0 9px 24px rgba(230, 245, 247, 0.75)) drop-shadow(0 14px 33px rgba(242, 249, 250, 0.71))",
             }}
             priority
             sizes="(max-width: 1024px) 100vw, 50vw"
