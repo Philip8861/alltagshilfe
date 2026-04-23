@@ -103,7 +103,7 @@ function OffeneStellenSpalte() {
   return (
     <div className="min-w-0 w-full">
       <div className={offeneStellenHeadingWrap}>
-        <h2 className="text-balance text-3xl font-bold tracking-tight text-[#0F4F68] sm:text-4xl lg:text-[clamp(2.15rem,1.2rem+2.2vw,3rem)]">
+        <h2 className="text-balance text-2xl font-bold tracking-tight text-[#0F4F68] sm:text-3xl">
           Offene Stellen
         </h2>
         <p className="mt-3 max-w-2xl text-pretty text-sm text-neutral-600 sm:mt-4 sm:text-base">
@@ -364,11 +364,23 @@ export function KarriereLanding() {
 
         <section
           id="bewerbung"
-          className="relative z-10 -mt-12 overflow-x-clip bg-[#F2F9FA] pb-12 pt-[5.5rem] sm:-mt-12 sm:pb-16 sm:pt-24 lg:pb-20 lg:pt-[6.5rem]"
+          className="relative z-10 -mt-10 overflow-x-clip bg-[#F2F9FA] pb-12 pt-[5.25rem] sm:-mt-10 sm:pb-16 sm:pt-[5.75rem] lg:pb-20 lg:pt-[6.25rem]"
         >
-          {/* Welle weiter oben: stärkerer neg. Margin + höheres SVG + translate = greift ins Hero-Bild; extra pt gleicht aus für Abstand zu „Offene Stellen“. */}
+          {/* Hellgraue Welle dahinter (leicht versetzt), darüber kleinere F2F9FA-Welle. */}
           <svg
-            className="pointer-events-none absolute left-0 top-0 z-[1] h-16 w-full -translate-y-[88%] sm:h-[5.25rem] sm:-translate-y-[86%] lg:h-24 lg:-translate-y-[84%]"
+            className="pointer-events-none absolute left-0 top-1 z-0 h-12 w-full -translate-y-[70%] sm:h-14 sm:-translate-y-[68%] lg:h-[3.75rem] lg:-translate-y-[66%]"
+            viewBox="0 0 1200 120"
+            preserveAspectRatio="none"
+            fill="none"
+            aria-hidden
+          >
+            <path
+              d="M0,120 C200,32 420,8 600,22 C800,38 1010,90 1200,120 L1200,120 L0,120 Z"
+              fill="#DCE5EA"
+            />
+          </svg>
+          <svg
+            className="pointer-events-none absolute left-0 top-0 z-[1] h-[3.5rem] w-full -translate-y-[76%] sm:h-16 sm:-translate-y-[74%] lg:h-[4.25rem] lg:-translate-y-[72%]"
             viewBox="0 0 1200 120"
             preserveAspectRatio="none"
             fill="none"
