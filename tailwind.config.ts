@@ -47,9 +47,15 @@ const config: Config = {
           "50%": { opacity: "1", transform: "scale(1.05) translateY(-10px)" },
           "100%": { opacity: "1", transform: "scale(1) translateY(0)" },
         },
+        /** Karriere-Hero: Headline leicht hoch, mit Dämpfung – endet in Ruhelage */
+        "karriere-hero-in": {
+          "0%": { opacity: "0", transform: "translateY(1.35rem) scale(0.96)" },
+          "100%": { opacity: "1", transform: "translateY(0) scale(1)" },
+        },
       },
       animation: {
         "fade-in-up": "fade-in-up 0.6s ease-out forwards",
+        "karriere-hero-in": "karriere-hero-in 0.88s cubic-bezier(0.22, 1, 0.36, 1) forwards",
         "fade-in-rise": "fade-in-rise 0.65s cubic-bezier(0.22, 1, 0.36, 1) forwards",
         "jetzt-neu-img-lift": "jetzt-neu-img-lift 0.95s cubic-bezier(0.22, 1, 0.36, 1) both",
         "partner-bar-fill": "partner-bar-fill 0.85s cubic-bezier(0.22, 1, 0.36, 1) both",

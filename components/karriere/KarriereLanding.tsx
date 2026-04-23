@@ -304,47 +304,44 @@ export function KarriereLanding() {
           aria-labelledby="karriere-hero-heading"
           className="relative isolate z-0 min-w-0 overflow-x-clip overflow-y-visible bg-[#fafbfc] pb-8 pt-0 sm:pb-10 lg:pb-[clamp(2.45rem,5.6vh+0.7rem,3.85rem)]"
         >
-          {/* Kein fill: Next/Image-Wrapper nutzt overflow-hidden und kann object-contain oben/unten beschneiden. ~30 % größer: min-h/max-h und Bildspalte 50%→65%; Verlauf z-index über dem Bild. */}
-          <div className="relative min-h-[min(52vh,442px)] w-full sm:min-h-[min(49.4vh,416px)] lg:min-h-[min(46.8vh,390px)]">
-            <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-[65%] max-w-[65vw] overflow-x-clip overflow-y-visible">
-              <div className="absolute inset-0">
-                <div className="relative z-0 flex h-full justify-end overflow-visible">
-                  <Image
-                    src={HERO_IMG}
-                    alt="Karriere bei der Alltagshilfe-Süd – Team und Arbeitgeber"
-                    width={970}
-                    height={495}
-                    priority
-                    sizes="65vw"
-                    className="h-auto max-h-[min(52vh,442px)] w-auto max-w-full object-contain object-right object-top sm:max-h-[min(49.4vh,416px)] lg:max-h-[min(46.8vh,390px)]"
-                  />
-                </div>
-                <div
-                  className="pointer-events-none absolute inset-0 z-[1] bg-gradient-to-r from-[#fafbfc] from-0% via-white/92 via-38% to-transparent to-[68%] sm:via-white/88 sm:via-32% sm:to-[62%] lg:via-white/82 lg:via-28% lg:to-[56%]"
-                  aria-hidden
+          {/* Bild ohne fill; +15 % zu vorher: min-h/max-h & Spalte 75vw. Weißer Verlauf eigene Schicht z-[8] über dem Bild, unter Text (z-10). */}
+          <div className="relative min-h-[min(60vh,508px)] w-full sm:min-h-[min(56.8vh,478px)] lg:min-h-[min(54vh,448px)]">
+            <div className="pointer-events-none absolute right-0 top-0 bottom-0 z-0 w-[75%] max-w-[75vw] overflow-x-clip overflow-y-visible">
+              <div className="flex h-full justify-end overflow-visible">
+                <Image
+                  src={HERO_IMG}
+                  alt="Karriere bei der Alltagshilfe-Süd – Team und Arbeitgeber"
+                  width={970}
+                  height={495}
+                  priority
+                  sizes="75vw"
+                  className="h-auto max-h-[min(60vh,508px)] w-auto max-w-full object-contain object-right object-top sm:max-h-[min(56.8vh,478px)] lg:max-h-[min(54vh,448px)]"
                 />
               </div>
             </div>
-            {/* Gleiche horizontale Position wie Container / Leistungs-Landings (max-w-7xl + Gutter, optional leichter Offset wie Haushaltshilfe) */}
-            <div className="relative z-10 mx-auto flex min-h-[min(52vh,442px)] w-full max-w-7xl flex-col justify-center px-4 py-5 sm:min-h-[min(49.4vh,416px)] sm:px-6 sm:py-6 lg:min-h-[min(46.8vh,390px)] lg:px-[var(--ahs-page-gutter)] lg:py-7">
-              <div className="box-border max-w-full lg:-translate-x-[clamp(0.75rem,4.5vw,3rem)] lg:pr-0 motion-reduce:lg:translate-x-0">
-                <div className="max-w-[min(100%,28rem)] sm:max-w-[min(100%,32rem)] xl:max-w-[34rem]">
+            <div
+              className="pointer-events-none absolute right-0 top-0 bottom-0 z-[8] w-[75%] max-w-[75vw] bg-gradient-to-r from-[#fafbfc] from-0% via-white/95 via-[40%] to-transparent to-[88%]"
+              aria-hidden
+            />
+            <div className="relative z-10 mx-auto flex min-h-[min(60vh,508px)] w-full max-w-7xl flex-col items-center justify-center px-4 py-5 text-center sm:min-h-[min(56.8vh,478px)] sm:px-6 sm:py-6 lg:min-h-[min(54vh,448px)] lg:px-[var(--ahs-page-gutter)] lg:py-7">
+              <div className="box-border w-full max-w-full">
+                <div className="mx-auto max-w-[min(100%,34rem)] sm:max-w-[min(100%,38rem)] xl:max-w-[40rem]">
                   <h1
                     id="karriere-hero-heading"
-                    className="text-pretty text-2xl font-bold leading-[1.15] tracking-tight text-[#0F4F68] opacity-0 motion-reduce:opacity-100 animate-fade-in-up sm:text-3xl md:text-4xl lg:text-[clamp(1.65rem,1.1rem+1.5vw,2.45rem)] xl:text-[clamp(1.75rem,1.2rem+1.35vw,2.65rem)]"
-                    style={{ animationDelay: "0s" }}
+                    className="text-balance text-3xl font-bold leading-snug tracking-tight text-[#0F4F68] opacity-0 motion-reduce:animate-none motion-reduce:opacity-100 animate-karriere-hero-in sm:text-4xl md:text-5xl lg:text-[clamp(2rem,1.05rem+1.85vw,2.85rem)] xl:text-[clamp(2.15rem,1.15rem+1.7vw,3.05rem)]"
                   >
-                    Starte jetzt deine neue Karriere bei der Alltagshilfe-Süd
+                    <span className="block">Starte jetzt deine neue Karriere</span>
+                    <span className="mt-1 block sm:mt-1.5">bei der Alltagshilfe-Süd</span>
                   </h1>
                   <div
-                    className="mt-5 opacity-0 motion-reduce:opacity-100 animate-fade-in-up sm:mt-6"
-                    style={{ animationDelay: "0.15s" }}
+                    className="mt-5 opacity-0 motion-reduce:animate-none motion-reduce:opacity-100 animate-fade-in-up sm:mt-6"
+                    style={{ animationDelay: "0.2s" }}
                   >
                     <Link
                       href="#bewerbung"
-                      className="inline-flex w-full min-h-[2.6rem] transform items-center justify-center rounded-xl bg-[#F78F2E] px-5 py-2.5 text-sm font-semibold text-white transition hover:opacity-95 focus:outline-none focus:ring-2 focus:ring-[#F78F2E] focus:ring-offset-2 motion-reduce:transform-none sm:min-h-[2.75rem] sm:w-auto sm:px-8 sm:py-3 sm:text-base md:px-9 md:py-3.5 md:text-lg"
+                      className="inline-flex w-full min-h-[2.75rem] transform items-center justify-center rounded-xl bg-[#F78F2E] px-4 py-2.5 text-center text-sm font-semibold leading-snug text-white transition hover:opacity-95 focus:outline-none focus:ring-2 focus:ring-[#F78F2E] focus:ring-offset-2 motion-reduce:transform-none sm:min-h-[2.85rem] sm:w-auto sm:max-w-[min(100%,22rem)] sm:px-6 sm:py-3 sm:text-base md:px-8 md:py-3.5 md:text-lg"
                     >
-                      Jetzt bewerben
+                      Bewirb dich jetzt in 1 Minute
                     </Link>
                   </div>
                 </div>
