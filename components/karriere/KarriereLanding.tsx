@@ -96,14 +96,20 @@ function VorteilHaken() {
 }
 
 function OffeneStellenSpalte() {
+  /** Gleiche horizontale Führung wie Hero-H1 – wirkt mit Hauptüberschrift „untereinander mittig“. */
+  const offeneStellenHeadingWrap =
+    "mx-auto max-w-[min(100%,34rem)] -translate-x-2 text-center sm:max-w-[min(100%,38rem)] sm:-translate-x-5 xl:max-w-[40rem] xl:-translate-x-[clamp(1.5rem,6vw,4rem)]";
+
   return (
     <div className="min-w-0 w-full">
-      <h2 className="text-balance text-center text-3xl font-bold tracking-tight text-[#0F4F68] sm:text-4xl lg:text-[clamp(2.15rem,1.2rem+2.2vw,3rem)]">
-        Offene Stellen
-      </h2>
-      <p className="mx-auto mt-3 max-w-2xl text-pretty text-center text-sm text-neutral-600 sm:mt-4 sm:text-base">
-        Klicken Sie auf eine Stelle, um mehr zu erfahren – oder nutzen Sie das Bewerbungsformular weiter unten.
-      </p>
+      <div className={offeneStellenHeadingWrap}>
+        <h2 className="text-balance text-3xl font-bold tracking-tight text-[#0F4F68] sm:text-4xl lg:text-[clamp(2.15rem,1.2rem+2.2vw,3rem)]">
+          Offene Stellen
+        </h2>
+        <p className="mt-3 max-w-2xl text-pretty text-sm text-neutral-600 sm:mt-4 sm:text-base">
+          Klicken Sie auf eine Stelle, um mehr zu erfahren – oder nutzen Sie das Bewerbungsformular weiter unten.
+        </p>
+      </div>
       <ul className="mt-8 grid list-none grid-cols-1 items-stretch gap-4 perspective-[1600px] sm:mt-10 sm:grid-cols-2 lg:grid-cols-4">
         {jobs.map((job, index) => (
           <li
@@ -358,10 +364,11 @@ export function KarriereLanding() {
 
         <section
           id="bewerbung"
-          className="relative z-0 overflow-x-clip bg-[#F2F9FA] pb-12 pt-10 sm:pb-16 sm:pt-12 lg:pb-20 lg:pt-14"
+          className="relative z-10 -mt-6 overflow-x-clip bg-[#fafbfc] pb-12 pt-16 sm:-mt-6 sm:pb-16 sm:pt-[4.5rem] lg:pb-20 lg:pt-20"
         >
+          {/* Welle leicht über die untere Bildkante; -mt-6 + mehr pt = gleicher Abstand bis „Offene Stellen“ wie zuvor (pt-10/12/14 + 1,5rem). */}
           <svg
-            className="pointer-events-none absolute left-0 top-0 z-[1] h-12 w-full -translate-y-[68%] sm:h-16"
+            className="pointer-events-none absolute left-0 top-0 z-[1] h-14 w-full -translate-y-[78%] sm:h-[4.25rem] sm:-translate-y-[74%] lg:h-[4.5rem] lg:-translate-y-[72%]"
             viewBox="0 0 1200 120"
             preserveAspectRatio="none"
             fill="none"
@@ -369,7 +376,7 @@ export function KarriereLanding() {
           >
             <path
               d="M0,120 C200,32 420,8 600,22 C800,38 1010,90 1200,120 L1200,120 L0,120 Z"
-              fill="#F2F9FA"
+              fill="#fafbfc"
             />
           </svg>
           <Container className="relative z-[2] w-full">
