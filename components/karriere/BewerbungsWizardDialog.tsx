@@ -474,7 +474,7 @@ export function BewerbungsWizardDialog({ jobTitle, onDismiss }: BewerbungsWizard
           </div>
         </div>
 
-        <div className="min-h-0 min-w-0 flex-1 overflow-y-auto overscroll-contain px-4 py-5 sm:px-6 sm:py-6">
+        <div className="min-h-0 min-w-0 flex-1 overflow-y-auto overscroll-contain px-4 py-4 sm:px-6 sm:py-5">
           {step === 0 && (
             <div>
               <p className="text-sm font-semibold text-[#0F4F68]">Ihre Stelle (Hauptbewerbung)</p>
@@ -486,8 +486,7 @@ export function BewerbungsWizardDialog({ jobTitle, onDismiss }: BewerbungsWizard
                   <p className="text-sm font-semibold text-[#0F4F68]">Weitere offene Stellen (optional)</p>
                   <p className="mt-1 text-xs text-neutral-600 sm:text-sm">
                     Wenn Sie sich parallel auf eine weitere ausgeschriebene Stelle bewerben möchten, aktivieren Sie
-                    diese hier. Ihre Hauptstelle bleibt die Bewerbungsstelle; weitere Interessen nehmen wir in der
-                    Bewerbung mit auf.
+                    diese hier.
                   </p>
                   <div className="mt-3 flex flex-wrap gap-2">
                     {andereStellen.map((t) => {
@@ -518,9 +517,6 @@ export function BewerbungsWizardDialog({ jobTitle, onDismiss }: BewerbungsWizard
           {step === 1 && (
             <div>
               <p className="text-sm font-semibold text-[#0F4F68]">Wann könnten Sie starten?</p>
-              <p className="mt-1 text-xs text-neutral-600 sm:text-sm">
-                Hilft uns, Einsatzplanung und Einarbeitung realistisch einzuschätzen.
-              </p>
               <ChipGroup
                 name="eintritt"
                 options={EINTRITT_OPTIONS}
@@ -533,7 +529,6 @@ export function BewerbungsWizardDialog({ jobTitle, onDismiss }: BewerbungsWizard
           {step === 2 && (
             <div>
               <p className="text-sm font-semibold text-[#0F4F68]">Gewünschtes Pensum</p>
-              <p className="mt-1 text-xs text-neutral-600 sm:text-sm">Transparent für die Dienstplanung.</p>
               <ChipGroup
                 name="pensum"
                 options={PENSUM_OPTIONS}
@@ -562,18 +557,19 @@ export function BewerbungsWizardDialog({ jobTitle, onDismiss }: BewerbungsWizard
                 id="wizard-erf-detail"
                 value={answers.erfahrungDetail}
                 onChange={(e) => setAnswers((p) => ({ ...p, erfahrungDetail: e.target.value }))}
-                rows={3}
+                rows={2}
                 maxLength={500}
-                className="mt-1.5 w-full resize-y rounded-xl border border-[#0F4F68]/25 px-3 py-2.5 text-sm text-neutral-900 placeholder-neutral-400 focus:border-[#0F4F68] focus:outline-none focus:ring-1 focus:ring-[#0F4F68]"
+                className="mt-1.5 w-full resize-y rounded-xl border border-[#0F4F68]/25 px-3 py-2 text-sm text-neutral-900 placeholder-neutral-400 focus:border-[#0F4F68] focus:outline-none focus:ring-1 focus:ring-[#0F4F68]"
                 placeholder="z. B. bisherige Tätigkeit in der Betreuung …"
               />
               <p className="mt-1 text-xs text-neutral-500">{answers.erfahrungDetail.length}/500</p>
 
-              <div className="mt-6 rounded-2xl border border-[#0F4F68]/12 bg-gradient-to-b from-[#F2F9FA]/80 to-white/90 p-4 sm:p-5">
-                <p className="text-center text-sm font-semibold text-[#0F4F68]">Lebenslauf und Zeugnisse (optional)</p>
-                <p className="mt-2 text-center text-xs text-neutral-600 sm:text-sm">
-                  Mehrere Dateien möglich – PDF, Word und gängige Bildformate. Maximal {KARRIERE_MAX_ANHAENGE} Dateien,
-                  je max. 8 MB. Gesamt bis 24 MB.
+              <div className="mt-4 rounded-xl border border-[#0F4F68]/12 bg-gradient-to-b from-[#F2F9FA]/80 to-white/90 p-3 sm:p-3.5">
+                <p className="text-center text-xs font-semibold text-[#0F4F68] sm:text-sm">
+                  Lebenslauf und Zeugnisse (optional)
+                </p>
+                <p className="mt-1 text-center text-[11px] leading-snug text-neutral-600 sm:text-xs">
+                  PDF, Word, Bilder · max. {KARRIERE_MAX_ANHAENGE} Dateien, je 8 MB, gesamt 24 MB.
                 </p>
                 <input
                   ref={uploadInputRef}
@@ -584,20 +580,20 @@ export function BewerbungsWizardDialog({ jobTitle, onDismiss }: BewerbungsWizard
                   className="sr-only"
                   onChange={onWizardFilesChange}
                 />
-                <div className="mt-5 flex flex-col items-center">
+                <div className="mt-2.5 flex flex-col items-center">
                   <button
                     type="button"
                     onClick={() => uploadInputRef.current?.click()}
                     className={cn(
-                      "group flex w-full max-w-sm flex-col items-center justify-center rounded-2xl border-2 border-dashed border-[#0F4F68]/35 bg-white/80 px-6 py-8 text-center shadow-sm transition",
+                      "group flex w-full max-w-xs flex-col items-center justify-center rounded-xl border-2 border-dashed border-[#0F4F68]/35 bg-white/80 px-4 py-4 text-center shadow-sm transition sm:max-w-sm sm:py-5",
                       "hover:border-[#F78F2E] hover:bg-[#FFF7ED]/60 hover:shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68] focus-visible:ring-offset-2",
                     )}
                   >
                     <span
-                      className="flex h-12 w-12 items-center justify-center rounded-full bg-[#0F4F68]/10 text-[#0F4F68] transition group-hover:bg-[#F78F2E]/15 group-hover:text-[#c96a1a]"
+                      className="flex h-9 w-9 items-center justify-center rounded-full bg-[#0F4F68]/10 text-[#0F4F68] transition group-hover:bg-[#F78F2E]/15 group-hover:text-[#c96a1a] sm:h-10 sm:w-10"
                       aria-hidden
                     >
-                      <svg className="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
+                      <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
                         <path
                           strokeLinecap="round"
                           strokeLinejoin="round"
@@ -605,21 +601,21 @@ export function BewerbungsWizardDialog({ jobTitle, onDismiss }: BewerbungsWizard
                         />
                       </svg>
                     </span>
-                    <span className="mt-3 text-base font-bold text-[#0F4F68]">Dateien auswählen</span>
-                    <span className="mt-1 max-w-[16rem] text-xs font-medium text-neutral-500">
-                      Klicken oder tippen – dann wählen Sie Ihre Dokumente aus
+                    <span className="mt-2 text-sm font-bold text-[#0F4F68] sm:text-base">Dateien auswählen</span>
+                    <span className="mt-0.5 max-w-[14rem] text-[11px] font-medium text-neutral-500 sm:text-xs">
+                      Tippen zum Auswählen
                     </span>
                   </button>
                 </div>
                 {fileHint ? (
-                  <p className="mt-3 text-center text-sm font-medium text-red-700" role="alert">
+                  <p className="mt-2 text-center text-xs font-medium text-red-700 sm:text-sm" role="alert">
                     {fileHint}
                   </p>
                 ) : null}
                 {wizardFiles.length > 0 ? (
-                  <ul className="mt-4 space-y-2 text-sm text-neutral-800">
+                  <ul className="mt-2 space-y-1.5 text-xs text-neutral-800 sm:text-sm">
                     {wizardFiles.map((f, i) => (
-                      <li key={`${f.name}-${i}`} className="flex items-center justify-between gap-2 rounded-xl bg-white/95 px-3 py-2.5 shadow-sm ring-1 ring-[#0F4F68]/10">
+                      <li key={`${f.name}-${i}`} className="flex items-center justify-between gap-2 rounded-lg bg-white/95 px-2.5 py-2 shadow-sm ring-1 ring-[#0F4F68]/10">
                         <span className="min-w-0 truncate">{f.name}</span>
                         <button
                           type="button"
