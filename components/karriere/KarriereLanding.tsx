@@ -2,7 +2,9 @@ import Image from "next/image";
 import Link from "next/link";
 import { Container } from "@/components/layout/Container";
 import { KarriereForm } from "@/components/forms/KarriereForm";
+import { StellenbeschreibungDialogTrigger } from "@/components/karriere/StellenbeschreibungDialog";
 import { siteConfig } from "@/config/site";
+import { cn } from "@/lib/utils";
 
 const HERO_IMG = "/images/Karriere1.webp";
 
@@ -21,43 +23,52 @@ const STELLEN_VORTEILE = [
 ] as const;
 
 const jobs = [
-  {
-    id: "alltagshelfer",
-    title: "Alltagshelfer*in (m/w/d)",
-    tagline: "Praktische Hilfe und Begleitung im Alltag",
-    accent: "primary" as const,
-    icon: "hand",
-  },
-  {
-    id: "pflegeberater",
-    title: "Pflegeberater*in (m/w/d)",
-    tagline: "Beratung und verlässliche Ansprechpartner*in",
-    accent: "warm" as const,
-    icon: "heart",
-  },
-  {
-    id: "buchhalter",
-    title: "Buchhalter*in (m/w/d)",
-    tagline: "Zuverlässigkeit in Finanzen und Organisation",
-    accent: "soft" as const,
-    icon: "desk",
-  },
-  {
-    id: "standortleiter",
-    title: "Standortleiter*in (m/w/d)",
-    tagline: "Führung, Qualität und Team am Standort",
-    accent: "primary" as const,
-    icon: "star",
-  },
+  { id: "alltagshelfer", title: "Alltagshelfer*in (m/w/d)", icon: "hand" },
+  { id: "pflegeberater", title: "Pflegeberater*in (m/w/d)", icon: "heart" },
+  { id: "buchhalter", title: "Buchhalter*in (m/w/d)", icon: "desk" },
+  { id: "standortleiter", title: "Standortleiter*in (m/w/d)", icon: "star" },
 ] as const;
 
-/** Sehr leichte Innen-Tönung pro Karte (Markenfarben). */
-const JOB_INNEN_TINT: Record<string, string> = {
-  alltagshelfer: "bg-[#0F4F68]/[0.045]",
-  pflegeberater: "bg-[#F78F2E]/[0.065]",
-  buchhalter: "bg-[#0F4F68]/[0.028]",
-  standortleiter: "bg-[#F78F2E]/[0.04]",
+/** Kartenfarben passend zur Seite: Orange, Mint, Grün, Blau. */
+const JOB_CARD_THEME: Record<
+  string,
+  { article: string; header: string; icon: string; inner: string; outlineBtn: string }
+> = {
+  alltagshelfer: {
+    article: "border-[#F78F2E]/40 bg-white hover:border-[#F78F2E]/70 hover:shadow-[#F78F2E]/10",
+    header: "bg-[#FFF5EB]",
+    icon: "bg-[#F78F2E] text-white shadow-sm",
+    inner: "bg-[#FFF8F0]/80",
+    outlineBtn:
+      "border-[#F78F2E] bg-white/95 text-[#0F4F68] hover:bg-[#FFF5EB] focus:ring-[#F78F2E]",
+  },
+  pflegeberater: {
+    article: "border-[#0F4F68]/28 bg-white hover:border-[#0F4F68]/50 hover:shadow-[#0F4F68]/08",
+    header: "bg-[#F2F9FA]",
+    icon: "bg-[#0F4F68] text-white shadow-sm",
+    inner: "bg-[#F2F9FA]/75",
+    outlineBtn:
+      "border-[#0F4F68] bg-white/95 text-[#0F4F68] hover:bg-[#F2F9FA] focus:ring-[#0F4F68]",
+  },
+  buchhalter: {
+    article: "border-emerald-600/30 bg-white hover:border-emerald-600/55 hover:shadow-emerald-900/10",
+    header: "bg-emerald-50",
+    icon: "bg-emerald-600 text-white shadow-sm",
+    inner: "bg-emerald-50/70",
+    outlineBtn:
+      "border-emerald-700 bg-white/95 text-emerald-900 hover:bg-emerald-50 focus:ring-emerald-600",
+  },
+  standortleiter: {
+    article: "border-sky-600/30 bg-white hover:border-sky-600/55 hover:shadow-sky-900/10",
+    header: "bg-sky-50",
+    icon: "bg-sky-600 text-white shadow-sm",
+    inner: "bg-sky-50/70",
+    outlineBtn: "border-sky-700 bg-white/95 text-sky-900 hover:bg-sky-50 focus:ring-sky-600",
+  },
 };
+
+const BTN_BASE =
+  "inline-flex min-h-[40px] w-full items-center justify-center rounded-lg px-2 py-2 text-center text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 sm:min-h-[44px] sm:text-sm";
 
 const iconPaths: Record<string, string> = {
   heart:
@@ -108,79 +119,61 @@ function OffeneStellenSpalte() {
         </p>
       </div>
       <ul className="mt-8 grid list-none grid-cols-1 items-stretch gap-4 perspective-[1600px] sm:mt-10 sm:grid-cols-2 lg:grid-cols-4">
-        {jobs.map((job, index) => (
-          <li
-            key={job.id}
-            className="min-w-0 opacity-0 motion-reduce:animate-none motion-reduce:opacity-100 animate-karriere-stelle-flip-in [transform-style:preserve-3d]"
-            style={{ animationDelay: `${0.08 + index * 0.11}s` }}
-          >
-            <article
-              className={`group relative flex h-full min-h-0 flex-col overflow-hidden rounded-2xl border-2 transition-all hover:shadow-lg ${
-                job.accent === "primary"
-                  ? "border-[#0F4F68]/25 bg-white hover:border-[#0F4F68]/45"
-                  : job.accent === "warm"
-                    ? "border-[#F78F2E]/30 bg-white hover:border-[#F78F2E]/50"
-                    : "border-neutral-200 bg-[#F2F9FA]/60 hover:border-[#0F4F68]/30"
-              }`}
+        {jobs.map((job, index) => {
+          const theme = JOB_CARD_THEME[job.id] ?? JOB_CARD_THEME.alltagshelfer;
+          return (
+            <li
+              key={job.id}
+              className="min-w-0 opacity-0 motion-reduce:animate-none motion-reduce:opacity-100 animate-karriere-stelle-flip-in [transform-style:preserve-3d]"
+              style={{ animationDelay: `${0.08 + index * 0.11}s` }}
             >
-              <div
-                className={`px-3 py-3 sm:px-4 sm:py-4 ${
-                  job.accent === "primary"
-                    ? "bg-[#0F4F68]/05"
-                    : job.accent === "warm"
-                      ? "bg-[#F78F2E]/08"
-                      : "bg-[#0F4F68]/04"
-                }`}
+              <article
+                className={cn(
+                  "group relative flex h-full min-h-0 flex-col overflow-hidden rounded-2xl border-2 transition-all hover:shadow-lg",
+                  theme.article,
+                )}
               >
-                <div className="flex items-start gap-2">
+                <div className={cn("px-3 py-4 text-center sm:px-4 sm:py-5", theme.header)}>
                   <span
-                    className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg sm:h-10 sm:w-10 ${
-                      job.accent === "primary"
-                        ? "bg-[#0F4F68] text-white"
-                        : job.accent === "warm"
-                          ? "bg-[#F78F2E] text-white"
-                          : "bg-[#0F4F68]/15 text-[#0F4F68]"
-                    }`}
+                    className={cn(
+                      "mx-auto flex h-10 w-10 items-center justify-center rounded-xl sm:h-11 sm:w-11",
+                      theme.icon,
+                    )}
                   >
                     <JobIcon name={job.icon} />
                   </span>
-                  <div className="min-h-[4.75rem] min-w-0 flex-1 sm:min-h-[5.25rem]">
-                    <h3 className="text-sm font-bold leading-snug text-[#0F4F68] lg:text-base">{job.title}</h3>
-                    <p className="mt-1 line-clamp-2 text-xs leading-snug text-neutral-600 sm:text-sm">{job.tagline}</p>
+                  <h3 className="mt-3 text-balance text-sm font-extrabold leading-snug text-[#0F4F68] sm:text-base lg:text-[1.05rem]">
+                    {job.title}
+                  </h3>
+                </div>
+                <div className={cn("flex min-h-0 flex-1 flex-col px-3 pb-4 pt-1 sm:px-4 sm:pb-4", theme.inner)}>
+                  <ul className="mt-2 min-h-[8.5rem] flex-1 space-y-1.5 text-[11px] leading-snug text-neutral-700 sm:min-h-[9.25rem] sm:space-y-2 sm:text-xs lg:min-h-[9rem] lg:text-[11px] xl:min-h-[9.5rem] xl:text-xs">
+                    {STELLEN_VORTEILE.map((h) => (
+                      <li key={h} className="flex items-start gap-1.5 sm:gap-2">
+                        <VorteilHaken />
+                        <span>{h}</span>
+                      </li>
+                    ))}
+                  </ul>
+                  <div className="mt-auto flex shrink-0 flex-col gap-2 pt-3">
+                    <StellenbeschreibungDialogTrigger
+                      className={cn(BTN_BASE, "border-2", theme.outlineBtn)}
+                    />
+                    <Link
+                      href={`/kontakt?betreff=Bewerbung%20${encodeURIComponent(job.title)}`}
+                      className={cn(
+                        BTN_BASE,
+                        "bg-[#0F4F68] text-white hover:bg-[#0c3d52] focus:ring-[#0F4F68]",
+                      )}
+                    >
+                      Jetzt bewerben
+                    </Link>
                   </div>
                 </div>
-              </div>
-              <div
-                className={`flex min-h-0 flex-1 flex-col px-3 pb-4 pt-1 sm:px-4 sm:pb-4 ${JOB_INNEN_TINT[job.id] ?? "bg-[#0F4F68]/[0.03]"}`}
-              >
-                <ul className="mt-2 min-h-[8.5rem] flex-1 space-y-1.5 text-[11px] leading-snug text-neutral-700 sm:min-h-[9.25rem] sm:space-y-2 sm:text-xs lg:min-h-[9rem] lg:text-[11px] xl:min-h-[9.5rem] xl:text-xs">
-                  {STELLEN_VORTEILE.map((h) => (
-                    <li key={h} className="flex items-start gap-1.5 sm:gap-2">
-                      <VorteilHaken />
-                      <span>{h}</span>
-                    </li>
-                  ))}
-                </ul>
-                <div className="mt-auto flex shrink-0 flex-col gap-2 pt-3">
-                  <a
-                    href={siteConfig.indeedJobsUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex min-h-[40px] w-full items-center justify-center rounded-lg border-2 border-[#0F4F68] bg-white/80 px-2 py-2 text-center text-xs font-semibold text-[#0F4F68] transition-colors hover:bg-white focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2 sm:min-h-[44px] sm:text-sm"
-                  >
-                    Stellenbeschreibung ansehen
-                  </a>
-                  <Link
-                    href={`/kontakt?betreff=Bewerbung%20${encodeURIComponent(job.title)}`}
-                    className="inline-flex min-h-[40px] w-full items-center justify-center rounded-lg bg-[#0F4F68] px-2 py-2 text-center text-xs font-semibold text-white transition-colors hover:bg-[#0c3d52] focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2 sm:min-h-[44px] sm:text-sm"
-                  >
-                    Jetzt bewerben
-                  </Link>
-                </div>
-              </div>
-            </article>
-          </li>
-        ))}
+              </article>
+            </li>
+          );
+        })}
       </ul>
       {siteConfig.indeedJobsUrl ? (
         <div className="mt-8 rounded-2xl border border-[#0F4F68]/15 bg-[#F2F9FA]/80 p-5 text-center sm:p-6">
