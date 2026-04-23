@@ -2,7 +2,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { Container } from "@/components/layout/Container";
 import { KarriereForm } from "@/components/forms/KarriereForm";
-import { BewerbungTippsFab } from "@/components/karriere/BewerbungTippsDialog";
 import { siteConfig } from "@/config/site";
 
 const HERO_IMG = "/images/Karriere1.webp";
@@ -23,49 +22,41 @@ const STELLEN_VORTEILE = [
 
 const jobs = [
   {
-    id: "pflegefachkraft",
-    title: "Pflegefachkraft (m/w/d)",
-    tagline: "Menschen im Alltag stärken",
-    type: "Vollzeit",
-    location: "Memmingen & Umgebung",
+    id: "alltagshelfer",
+    title: "Alltagshelfer*in (m/w/d)",
+    tagline: "Praktische Hilfe und Begleitung im Alltag",
     accent: "primary" as const,
-    icon: "heart",
-  },
-  {
-    id: "betreuungskraft",
-    title: "Betreuungskraft für den Alltag (m/w/d)",
-    tagline: "Begleitung, die ankommt",
-    type: "Teilzeit / Vollzeit",
-    location: "Verschiedene Standorte",
-    accent: "warm" as const,
     icon: "hand",
   },
   {
-    id: "sachbearbeiter-pflegeberatung",
-    title: "Sachbearbeiter:in Pflegeberatung (m/w/d)",
-    tagline: "Schnittstelle zwischen Mensch und System",
-    type: "Vollzeit",
-    location: "Büro Memmingen",
+    id: "pflegeberater",
+    title: "Pflegeberater*in (m/w/d)",
+    tagline: "Beratung und verlässliche Ansprechpartner*in",
+    accent: "warm" as const,
+    icon: "heart",
+  },
+  {
+    id: "buchhalter",
+    title: "Buchhalter*in (m/w/d)",
+    tagline: "Zuverlässigkeit in Finanzen und Organisation",
     accent: "soft" as const,
     icon: "desk",
   },
   {
-    id: "quereinsteiger-pflegehilfe",
-    title: "Quereinsteiger:in Pflegehilfe (m/w/d)",
-    tagline: "Ihr Neustart in der Pflege",
-    type: "Vollzeit nach Einarbeitung",
-    location: "Alle Standorte",
+    id: "standortleiter",
+    title: "Standortleiter*in (m/w/d)",
+    tagline: "Führung, Qualität und Team am Standort",
     accent: "primary" as const,
     icon: "star",
   },
-];
+] as const;
 
 /** Sehr leichte Innen-Tönung pro Karte (Markenfarben). */
 const JOB_INNEN_TINT: Record<string, string> = {
-  pflegefachkraft: "bg-[#0F4F68]/[0.045]",
-  betreuungskraft: "bg-[#F78F2E]/[0.065]",
-  "sachbearbeiter-pflegeberatung": "bg-[#0F4F68]/[0.028]",
-  "quereinsteiger-pflegehilfe": "bg-[#F78F2E]/[0.04]",
+  alltagshelfer: "bg-[#0F4F68]/[0.045]",
+  pflegeberater: "bg-[#F78F2E]/[0.065]",
+  buchhalter: "bg-[#0F4F68]/[0.028]",
+  standortleiter: "bg-[#F78F2E]/[0.04]",
 };
 
 const iconPaths: Record<string, string> = {
@@ -110,7 +101,10 @@ function OffeneStellenSpalte() {
           Offene Stellen
         </h2>
         <p className="mt-3 max-w-2xl text-pretty text-sm text-neutral-600 sm:mt-4 sm:text-base">
-          Klicken Sie auf eine Stelle, um mehr zu erfahren – oder nutzen Sie das Bewerbungsformular weiter unten.
+          Hier sehen Sie unsere aktuellen Stellenangebote.
+        </p>
+        <p className="mt-4 max-w-2xl text-pretty text-sm font-medium text-[#0F4F68] sm:mt-5 sm:text-base">
+          Keine passende Stelle dabei? Zeigen Sie uns Ihre Stärken und bewerben Sie sich initiativ bei uns.
         </p>
       </div>
       <ul className="mt-8 grid list-none grid-cols-1 items-stretch gap-4 perspective-[1600px] sm:mt-10 sm:grid-cols-2 lg:grid-cols-4">
@@ -129,9 +123,8 @@ function OffeneStellenSpalte() {
                     : "border-neutral-200 bg-[#F2F9FA]/60 hover:border-[#0F4F68]/30"
               }`}
             >
-              <BewerbungTippsFab className="absolute right-1.5 top-1.5 z-20 h-9 w-9 sm:right-2 sm:top-2 sm:h-10 sm:w-10 [&_svg]:h-5 [&_svg]:w-5 sm:[&_svg]:h-5 sm:[&_svg]:w-5" />
               <div
-                className={`px-3 py-3 pr-11 sm:px-4 sm:py-4 sm:pr-12 ${
+                className={`px-3 py-3 sm:px-4 sm:py-4 ${
                   job.accent === "primary"
                     ? "bg-[#0F4F68]/05"
                     : job.accent === "warm"
@@ -151,19 +144,16 @@ function OffeneStellenSpalte() {
                   >
                     <JobIcon name={job.icon} />
                   </span>
-                  <div className="min-w-0 flex-1">
-                    <p className="text-[10px] font-semibold uppercase leading-tight tracking-wide text-neutral-500 sm:text-xs">
-                      {job.type} · {job.location}
-                    </p>
-                    <h3 className="mt-1 text-sm font-bold leading-snug text-[#0F4F68] lg:text-base">{job.title}</h3>
-                    <p className="mt-0.5 text-xs text-neutral-600 sm:text-sm">{job.tagline}</p>
+                  <div className="min-h-[4.75rem] min-w-0 flex-1 sm:min-h-[5.25rem]">
+                    <h3 className="text-sm font-bold leading-snug text-[#0F4F68] lg:text-base">{job.title}</h3>
+                    <p className="mt-1 line-clamp-2 text-xs leading-snug text-neutral-600 sm:text-sm">{job.tagline}</p>
                   </div>
                 </div>
               </div>
               <div
-                className={`flex flex-1 flex-col px-3 pb-4 pt-1 sm:px-4 sm:pb-4 ${JOB_INNEN_TINT[job.id] ?? "bg-[#0F4F68]/[0.03]"}`}
+                className={`flex min-h-0 flex-1 flex-col px-3 pb-4 pt-1 sm:px-4 sm:pb-4 ${JOB_INNEN_TINT[job.id] ?? "bg-[#0F4F68]/[0.03]"}`}
               >
-                <ul className="mt-2 space-y-1.5 text-[11px] leading-snug text-neutral-700 sm:space-y-2 sm:text-xs lg:text-[11px] xl:text-xs">
+                <ul className="mt-2 min-h-[8.5rem] flex-1 space-y-1.5 text-[11px] leading-snug text-neutral-700 sm:min-h-[9.25rem] sm:space-y-2 sm:text-xs lg:min-h-[9rem] lg:text-[11px] xl:min-h-[9.5rem] xl:text-xs">
                   {STELLEN_VORTEILE.map((h) => (
                     <li key={h} className="flex items-start gap-1.5 sm:gap-2">
                       <VorteilHaken />
@@ -171,13 +161,7 @@ function OffeneStellenSpalte() {
                     </li>
                   ))}
                 </ul>
-                <div className="mt-3 flex flex-1 flex-col gap-2">
-                  <Link
-                    href={`/kontakt?betreff=Bewerbung%20${encodeURIComponent(job.title)}`}
-                    className="inline-flex min-h-[40px] w-full items-center justify-center rounded-lg bg-[#0F4F68] px-2 py-2 text-center text-xs font-semibold text-white transition-colors hover:bg-[#0c3d52] focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2 sm:min-h-[44px] sm:text-sm"
-                  >
-                    Jetzt bewerben
-                  </Link>
+                <div className="mt-auto flex shrink-0 flex-col gap-2 pt-3">
                   <a
                     href={siteConfig.indeedJobsUrl}
                     target="_blank"
@@ -186,6 +170,12 @@ function OffeneStellenSpalte() {
                   >
                     Stellenbeschreibung ansehen
                   </a>
+                  <Link
+                    href={`/kontakt?betreff=Bewerbung%20${encodeURIComponent(job.title)}`}
+                    className="inline-flex min-h-[40px] w-full items-center justify-center rounded-lg bg-[#0F4F68] px-2 py-2 text-center text-xs font-semibold text-white transition-colors hover:bg-[#0c3d52] focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2 sm:min-h-[44px] sm:text-sm"
+                  >
+                    Jetzt bewerben
+                  </Link>
                 </div>
               </div>
             </article>
@@ -416,9 +406,9 @@ export function KarriereLanding() {
         <section className="border-t border-neutral-200 bg-[#FAFBFC] py-14 sm:py-16">
           <Container>
             <div className="mx-auto max-w-2xl rounded-2xl bg-[#0F4F68] px-8 py-12 text-center sm:px-12 sm:py-16">
-              <h2 className="text-2xl font-bold text-white sm:text-3xl">Keine passende Stelle dabei?</h2>
+              <h2 className="text-2xl font-bold text-white sm:text-3xl">Initiativbewerbung</h2>
               <p className="mt-4 text-white/90">
-                Initiativbewerbungen sind willkommen. Schicken Sie uns Ihre Unterlagen – wir melden uns.
+                Schicken Sie uns Ihre Unterlagen – wir melden uns bei Ihnen.
               </p>
               <Link
                 href="/kontakt?betreff=Initiativbewerbung"
