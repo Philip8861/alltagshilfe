@@ -7,13 +7,6 @@ import { siteConfig } from "@/config/site";
 
 const HERO_IMG = "/images/Karriere1.webp";
 
-/**
- * Flüssiger Übergang unter dem Hero (viewBox 0 0 1440 100): eine geschlossene Fläche #fafbfc,
- * ohne Konturlinie; rechts stärker in die Bildunterkante, links sanft in den Bereich „Offene Stellen“.
- */
-const KARRIERE_HERO_FUSS_FLAECH =
-  "M0,100 L0,68 C320,62 520,84 760,54 C980,30 1180,42 1320,46 C1380,48 1410,49 1440,50 L1440,100 Z";
-
 /** Drei zentrale Arbeitgeber-Vorteile (einheitlich auf allen Stellenkarten). */
 const STELLEN_VORTEILE = [
   "Tarifgerechte Vergütung, planbare Zeiten und klare Strukturen im Alltag",
@@ -363,25 +356,17 @@ export function KarriereLanding() {
                 </header>
               </div>
             </div>
-            {/* Welle über Bildunterkante; zieht optisch in #bewerbung – ohne Stroke. */}
-            <div
-              className="pointer-events-none absolute inset-x-0 bottom-0 z-[9] h-[4rem] overflow-visible max-sm:h-[3.5rem] sm:h-[5rem] lg:h-[5.5rem] -translate-y-[52%] sm:-translate-y-[54%] lg:-translate-y-[58%]"
-              aria-hidden
-            >
-              <svg
-                className="absolute bottom-0 left-1/2 h-full w-[min(100%,1440px)] min-w-full -translate-x-1/2"
-                viewBox="0 0 1440 100"
-                preserveAspectRatio="none"
-              >
-                <path d={KARRIERE_HERO_FUSS_FLAECH} className="fill-[#fafbfc]" />
-              </svg>
+            {/* Feine Trennlinie über volle Breite am unteren Hero-Rand + sehr dezenter Schatten darunter. */}
+            <div className="pointer-events-none absolute inset-x-0 bottom-0 z-[9]" aria-hidden>
+              <div className="h-px w-full bg-[#0F4F68]/[0.22] sm:bg-[#0F4F68]/[0.18]" />
+              <div className="h-1.5 w-full bg-gradient-to-b from-[rgba(15,79,104,0.06)] to-transparent sm:h-2 sm:from-[rgba(15,79,104,0.05)]" />
             </div>
           </div>
         </section>
 
         <section
           id="bewerbung"
-          className="relative z-10 -mt-11 overflow-x-clip bg-[#fafbfc] pb-12 pt-6 sm:-mt-12 sm:pb-16 sm:pt-7 lg:pb-20 lg:pt-9"
+          className="relative z-10 overflow-x-clip bg-[#fafbfc] pb-12 pt-10 sm:pb-16 sm:pt-12 lg:pb-20 lg:pt-14"
         >
           <Container className="relative z-[2] w-full">
             <OffeneStellenSpalte />
