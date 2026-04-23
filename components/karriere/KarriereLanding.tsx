@@ -3,10 +3,13 @@ import Link from "next/link";
 import { Container } from "@/components/layout/Container";
 import { KarriereForm } from "@/components/forms/KarriereForm";
 import { BewerbungTippsFab } from "@/components/karriere/BewerbungTippsDialog";
-import { KarriereHeroTypewriter } from "@/components/karriere/KarriereHeroTypewriter";
 import { siteConfig } from "@/config/site";
 
 const HERO_IMG = "/images/Karriere1.webp";
+
+/** Gleiche Kurve wie Standort-/Leistungs-Landings (viewBox 0 0 1200 100), Füllung #fafbfc. */
+const WELLEN_D =
+  "M0,100 C200,26 420,6 600,18 C800,32 1010,75 1200,100 L1200,100 L0,100 Z";
 
 /** Drei zentrale Arbeitgeber-Vorteile (einheitlich auf allen Stellenkarten). */
 const STELLEN_VORTEILE = [
@@ -311,13 +314,12 @@ export function KarriereLanding() {
       >
         <section
           aria-labelledby="karriere-hero-heading"
-          className="relative isolate z-0 min-w-0 overflow-x-clip overflow-y-visible bg-[#fafbfc] pb-0 pt-0"
+          className="relative isolate z-0 min-w-0 overflow-x-clip overflow-y-visible bg-[#fafbfc] pb-8 pt-0 sm:pb-10 lg:pb-[clamp(2.45rem,5.6vh+0.7rem,3.85rem)]"
         >
           {/* Bild ohne fill; +15 % zu vorher: min-h/max-h & Spalte 75vw. Weißer Verlauf eigene Schicht z-[8] über dem Bild, unter Text (z-10). */}
           <div className="relative min-h-[min(60vh,508px)] w-full sm:min-h-[min(56.8vh,478px)] lg:min-h-[min(54vh,448px)]">
             <div className="pointer-events-none absolute right-0 top-0 bottom-0 z-0 w-[75%] max-w-[75vw] overflow-x-clip overflow-y-visible">
-              {/* items-end: Bildunterkante = Hero-Unterkante → Trennlinie am bottom-0 ohne weiße Lücke */}
-              <div className="flex h-full items-end justify-end overflow-visible">
+              <div className="flex h-full justify-end overflow-visible">
                 <Image
                   src={HERO_IMG}
                   alt="Karriere bei der Alltagshilfe-Süd – Team und Arbeitgeber"
@@ -325,7 +327,7 @@ export function KarriereLanding() {
                   height={495}
                   priority
                   sizes="75vw"
-                  className="h-auto max-h-[min(60vh,508px)] w-auto max-w-full object-contain object-right object-bottom sm:max-h-[min(56.8vh,478px)] lg:max-h-[min(54vh,448px)]"
+                  className="h-auto max-h-[min(60vh,508px)] w-auto max-w-full object-contain object-right object-top sm:max-h-[min(56.8vh,478px)] lg:max-h-[min(54vh,448px)]"
                 />
               </div>
             </div>
@@ -337,21 +339,46 @@ export function KarriereLanding() {
             <div className="relative z-10 mx-auto flex min-h-[min(60vh,508px)] w-full max-w-7xl flex-col justify-center px-4 py-5 max-sm:items-center sm:min-h-[min(56.8vh,478px)] sm:items-stretch sm:px-6 sm:py-6 lg:min-h-[min(54vh,448px)] lg:px-[var(--ahs-page-gutter)] lg:py-7">
               <div className="box-border w-full max-w-full max-sm:flex max-sm:justify-center">
                 <header className="w-full max-w-xl text-center max-sm:mx-auto max-sm:max-w-[min(100%,22rem)] max-sm:translate-x-0 sm:translate-x-5 lg:max-w-[min(100%,30rem)] lg:translate-x-7 xl:max-w-[34rem]">
-                  <KarriereHeroTypewriter />
+                  <h1
+                    id="karriere-hero-heading"
+                    className="text-balance text-3xl font-bold leading-snug tracking-tight text-[#0F4F68] opacity-0 motion-reduce:animate-none motion-reduce:opacity-100 animate-karriere-hero-in sm:text-4xl md:text-5xl lg:text-[clamp(2rem,1.05rem+1.85vw,2.85rem)] xl:text-[clamp(2.15rem,1.15rem+1.7vw,3.05rem)]"
+                  >
+                    <span className="block">Starte jetzt deine neue Karriere</span>
+                    <span className="mt-1 block sm:mt-1.5">bei der Alltagshilfe-Süd</span>
+                  </h1>
+                  <div
+                    className="mt-5 opacity-0 motion-reduce:animate-none motion-reduce:opacity-100 animate-fade-in-up sm:mt-6"
+                    style={{ animationDelay: "0.2s" }}
+                  >
+                    <Link
+                      href="#bewerbung"
+                      className="inline-flex w-full min-h-[2.75rem] transform items-center justify-center rounded-xl bg-[#F78F2E] px-4 py-2.5 text-sm font-semibold leading-snug text-white transition hover:opacity-95 focus:outline-none focus:ring-2 focus:ring-[#F78F2E] focus:ring-offset-2 motion-reduce:transform-none sm:min-h-[2.85rem] sm:w-auto sm:max-w-[min(100%,22rem)] sm:px-6 sm:py-3 sm:text-base md:px-8 md:py-3.5 md:text-lg"
+                    >
+                      Bewirb dich jetzt in 1 Minute
+                    </Link>
+                  </div>
                 </header>
               </div>
             </div>
-            {/* Volle Breite am unteren Hero-Rand (= Bildunterkante durch items-end); Linie minimal dicker, Schatten dezent. */}
-            <div className="pointer-events-none absolute inset-x-0 bottom-0 z-[9]" aria-hidden>
-              <div className="h-[2px] w-full bg-[#0F4F68]/[0.26] sm:bg-[#0F4F68]/[0.22]" />
-              <div className="h-1.5 w-full bg-gradient-to-b from-[rgba(15,79,104,0.065)] to-transparent sm:h-2 sm:from-[rgba(15,79,104,0.055)]" />
+            {/* Standard-Welle nach oben in den Hero (wie andere Landings, gleiches WELLEN_D). */}
+            <div
+              className="pointer-events-none absolute inset-x-0 bottom-0 z-[9] h-[4rem] overflow-visible max-sm:h-[3.5rem] sm:h-[5rem] lg:h-[5.5rem] -translate-y-[52%] sm:-translate-y-[54%] lg:-translate-y-[58%]"
+              aria-hidden
+            >
+              <svg
+                className="absolute bottom-0 left-0 h-full w-full"
+                viewBox="0 0 1200 100"
+                preserveAspectRatio="none"
+              >
+                <path d={WELLEN_D} className="fill-[#fafbfc]" />
+              </svg>
             </div>
           </div>
         </section>
 
         <section
           id="bewerbung"
-          className="relative z-10 overflow-x-clip bg-[#fafbfc] pb-12 pt-10 sm:pb-16 sm:pt-12 lg:pb-20 lg:pt-14"
+          className="relative z-10 -mt-11 overflow-x-clip bg-[#fafbfc] pb-12 pt-6 sm:-mt-12 sm:pb-16 sm:pt-7 lg:pb-20 lg:pt-9"
         >
           <Container className="relative z-[2] w-full">
             <OffeneStellenSpalte />
