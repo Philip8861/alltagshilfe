@@ -9,9 +9,9 @@ import { cn } from "@/lib/utils";
 
 const HERO_IMG = "/images/Karriere1.webp";
 
-/** Weißer Kartenrahmen (10px) + Standard-Schatten (vgl. Leistungs-Landingpages). */
+/** Weißer Kartenrahmen (15px) + Standard-Schatten (vgl. Leistungs-Landingpages). */
 const STELLEN_WEISSER_RAHMEN =
-  "rounded-[10px] border-[10px] border-solid border-white bg-white shadow-[0_10px_40px_rgba(15,79,104,0.07)] transition-shadow duration-300 hover:shadow-[0_16px_52px_rgba(15,79,104,0.11)]";
+  "rounded-[15px] border-[15px] border-solid border-white bg-white shadow-[0_10px_40px_rgba(15,79,104,0.07)] transition-shadow duration-300 hover:shadow-[0_16px_52px_rgba(15,79,104,0.11)]";
 
 /**
  * Bogen von Hero (#fafbfc) zu „Offene Stellen“ (#FFFFFF): eine nach oben offene Kurve,
@@ -55,29 +55,25 @@ const jobs = [
 /** Kartenfarben passend zur Seite: Orange, sanft gelb (Pflegeberater), Grün, Blau. */
 const JOB_CARD_THEME: Record<string, { article: string; header: string; icon: string; inner: string }> = {
   alltagshelfer: {
-    article:
-      "border-[#F78F2E]/14 bg-white hover:border-[#F78F2E]/26 hover:shadow-[#F78F2E]/[0.03]",
+    article: "border-0 bg-white",
     header: "bg-[#FFFBF7]/95",
     icon: "bg-[#DEB896] text-white shadow-sm",
     inner: "bg-white",
   },
   pflegeberater: {
-    article:
-      "border-amber-100/70 bg-white hover:border-amber-200/55 hover:shadow-amber-900/[0.025]",
+    article: "border-0 bg-white",
     header: "bg-amber-50/55",
     icon: "bg-amber-300/90 text-white shadow-sm",
     inner: "bg-white",
   },
   buchhalter: {
-    article:
-      "border-emerald-400/14 bg-white hover:border-emerald-400/26 hover:shadow-emerald-900/[0.025]",
+    article: "border-0 bg-white",
     header: "bg-emerald-50/50",
     icon: "bg-emerald-600 text-white shadow-sm ring-1 ring-emerald-700/25",
     inner: "bg-white",
   },
   standortleiter: {
-    article:
-      "border-sky-300/18 bg-white hover:border-sky-300/30 hover:shadow-sky-900/[0.025]",
+    article: "border-0 bg-white",
     header: "bg-sky-50/50",
     icon: "bg-sky-600 text-white shadow-sm ring-1 ring-sky-800/20",
     inner: "bg-white",
@@ -142,7 +138,8 @@ function OffeneStellenSpalte() {
           Keine passende Stelle dabei? Zeigen Sie uns Ihre Stärken und bewerben Sie sich initiativ bei uns.
         </p>
       </div>
-      <ul className="mt-8 grid list-none grid-cols-1 items-stretch gap-6 perspective-[1600px] sm:mt-10 sm:grid-cols-2 sm:gap-8 lg:grid-cols-4 lg:gap-6 xl:gap-8">
+      <div className="relative left-1/2 mt-8 flex w-screen max-w-[100vw] -translate-x-1/2 justify-center px-3 sm:mt-10 sm:px-4 lg:px-6">
+        <ul className="grid w-full max-w-[min(100rem,calc(100vw-1.5rem))] list-none grid-cols-1 items-stretch gap-6 perspective-[1600px] sm:grid-cols-2 sm:gap-8 sm:max-w-[min(100rem,calc(100vw-2rem))] lg:grid-cols-4 lg:gap-6 xl:gap-8">
         {jobs.map((job, index) => {
           const theme = JOB_CARD_THEME[job.id] ?? JOB_CARD_THEME.alltagshelfer;
           return (
@@ -154,7 +151,7 @@ function OffeneStellenSpalte() {
               <div className={cn("box-border h-full min-h-0 overflow-hidden", STELLEN_WEISSER_RAHMEN)}>
                 <article
                   className={cn(
-                    "group relative flex h-full min-h-0 flex-col overflow-hidden rounded-2xl border-2 transition-all hover:shadow-lg",
+                    "group relative flex h-full min-h-0 flex-col overflow-hidden rounded-2xl border-0 transition-all hover:shadow-lg",
                     theme.article,
                   )}
                 >
@@ -199,7 +196,8 @@ function OffeneStellenSpalte() {
             </li>
           );
         })}
-      </ul>
+        </ul>
+      </div>
     </div>
   );
 }
@@ -412,7 +410,7 @@ export function KarriereLanding() {
 
         <section
           id="bewerbung"
-          className="relative z-10 -mt-px overflow-x-clip bg-[#FFFFFF] pb-0 pt-8 sm:pt-10 lg:pt-12"
+          className="relative z-10 -mt-px overflow-x-visible bg-[#FFFFFF] pb-0 pt-8 sm:pt-10 lg:pt-12"
         >
           <Container className="relative w-full pb-10 sm:pb-14 lg:pb-16">
             <OffeneStellenSpalte />
