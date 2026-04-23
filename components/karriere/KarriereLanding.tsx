@@ -171,7 +171,7 @@ function OffeneStellenSpalte() {
                   </div>
                   <div className={cn("flex min-h-0 flex-1 flex-col px-3 pb-4 pt-3 sm:px-4 sm:pb-5", theme.inner)}>
                     <div className="flex min-h-0 flex-1 flex-col justify-center py-4 sm:py-6">
-                      <ul className="space-y-2.5 text-[11px] leading-relaxed text-neutral-700 sm:space-y-3 sm:text-xs lg:text-[11px] xl:text-xs">
+                      <ul className="space-y-2.5 text-[11px] font-semibold leading-relaxed text-neutral-800 sm:space-y-3 sm:text-xs lg:text-[11px] xl:text-xs">
                         {STELLEN_VORTEILE.map((h) => (
                           <li key={h} className="flex items-start gap-1.5 sm:gap-2">
                             <VorteilHaken />
@@ -201,19 +201,24 @@ function OffeneStellenSpalte() {
         })}
         </ul>
       </div>
-      <div className="mx-auto mt-8 max-w-2xl pb-3 opacity-0 motion-reduce:animate-none motion-reduce:opacity-100 animate-fade-in-up sm:mt-10 sm:max-w-3xl sm:pb-5 [animation-delay:0.55s] motion-reduce:[animation-delay:0s]">
-        <p className="text-pretty text-center text-sm text-neutral-700 sm:text-base">
-          Keine passende Stelle dabei, aber Sie sind überzeugt, dass Sie unser Team mit Ihren Fähigkeiten bereichern können? Dann
-          erzählen Sie uns mehr über sich und bewerben Sie sich initiativ bei uns.
-        </p>
-        <div className="mt-6 flex justify-center sm:mt-7">
-          <a
-            href="#bewerbung-form"
-            title="Zum Kontakt- und Bewerbungsformular (Daniel Niebauer)"
-            className="my-3 inline-flex min-h-[2.65rem] w-full max-w-xs items-center justify-center rounded-xl bg-[#F78F2E] px-5 py-2.5 text-center text-sm font-semibold text-white shadow-sm transition hover:opacity-95 focus:outline-none focus:ring-2 focus:ring-[#F78F2E] focus:ring-offset-2 sm:my-4 sm:min-h-[2.75rem] sm:max-w-sm sm:px-6 sm:text-base"
-          >
-            Jetzt initiativ bewerben
-          </a>
+      <div className="mx-auto mt-8 max-w-2xl pb-3 opacity-0 motion-reduce:animate-none motion-reduce:opacity-100 animate-fade-in-up sm:mt-10 sm:max-w-3xl sm:pb-6 [animation-delay:0.55s] motion-reduce:[animation-delay:0s]">
+        <div className="rounded-2xl border border-[#0F4F68]/12 bg-white/95 px-5 py-6 shadow-[0_10px_40px_rgba(15,79,104,0.08)] ring-1 ring-white/60 sm:px-8 sm:py-8">
+          <p className="text-pretty text-center text-sm leading-relaxed text-neutral-700 sm:text-base">
+            Nicht jede starke Zusammenarbeit beginnt mit einer perfekt passenden Stellenanzeige. Oft entsteht etwas Besonderes
+            ganz unerwartet.
+          </p>
+          <p className="mt-4 text-pretty text-center text-sm font-medium leading-relaxed text-[#0F4F68] sm:mt-5 sm:text-base">
+            Wenn Sie glauben, dass Sie gut zu uns passen und unser Team verstärken können, dann erzählen Sie uns mehr über sich.
+          </p>
+          <div className="mt-7 flex justify-center sm:mt-8">
+            <a
+              href="#bewerbung-form"
+              title="Zum Kontakt- und Bewerbungsformular (Daniel Niebauer)"
+              className="inline-flex min-h-[3rem] w-full max-w-sm items-center justify-center rounded-2xl bg-[#F78F2E] px-6 py-3 text-center text-sm font-bold tracking-wide text-white shadow-[0_6px_20px_rgba(247,143,46,0.35)] transition hover:opacity-[0.96] hover:shadow-[0_10px_28px_rgba(247,143,46,0.42)] focus:outline-none focus:ring-2 focus:ring-[#F78F2E] focus:ring-offset-2 sm:min-h-[3.125rem] sm:max-w-md sm:px-8 sm:text-base"
+            >
+              Jetzt initiativ bewerben
+            </a>
+          </div>
         </div>
       </div>
     </div>
