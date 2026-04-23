@@ -7,9 +7,13 @@ import { siteConfig } from "@/config/site";
 
 const HERO_IMG = "/images/Karriere1.webp";
 
-/** Gleiche Kurve wie Standort-/Leistungs-Landings (viewBox 0 0 1200 100), Füllung #fafbfc. */
+/** Gleiche Kurve wie Standort-/Leistungs-Landings (viewBox 0 0 1200 100). */
 const WELLEN_D =
   "M0,100 C200,26 420,6 600,18 C800,32 1010,75 1200,100 L1200,100 L0,100 Z";
+
+/** Welle am oberen Rand von „Offene Stellen“ / #bewerbung, zieht in den #fafbfc-Hero. */
+const KARRIERE_BEWERBUNG_WELLEN_SVG_CLASS =
+  "pointer-events-none absolute left-0 top-0 z-0 h-16 w-full -translate-y-7 sm:h-[clamp(2.85rem,1.5rem+3.8vw,5rem)] sm:-translate-y-[clamp(0.9rem,0.35rem+2.1vw,3.2rem)]";
 
 /** Drei zentrale Arbeitgeber-Vorteile (einheitlich auf allen Stellenkarten). */
 const STELLEN_VORTEILE = [
@@ -360,27 +364,23 @@ export function KarriereLanding() {
                 </header>
               </div>
             </div>
-            {/* Standard-Welle nach oben in den Hero (wie andere Landings, gleiches WELLEN_D). */}
-            <div
-              className="pointer-events-none absolute inset-x-0 bottom-0 z-[9] h-[4rem] overflow-visible max-sm:h-[3.5rem] sm:h-[5rem] lg:h-[5.5rem] -translate-y-[52%] sm:-translate-y-[54%] lg:-translate-y-[58%]"
-              aria-hidden
-            >
-              <svg
-                className="absolute bottom-0 left-0 h-full w-full"
-                viewBox="0 0 1200 100"
-                preserveAspectRatio="none"
-              >
-                <path d={WELLEN_D} className="fill-[#fafbfc]" />
-              </svg>
-            </div>
           </div>
         </section>
 
         <section
           id="bewerbung"
-          className="relative z-10 -mt-11 overflow-x-clip bg-[#fafbfc] pb-12 pt-6 sm:-mt-12 sm:pb-16 sm:pt-7 lg:pb-20 lg:pt-9"
+          className="relative z-10 overflow-x-clip bg-[#FFFFFF] pb-12 pt-[clamp(2.5rem,4.5vw,4.25rem)] sm:pb-16 sm:pt-[clamp(2.75rem,5vw,4.5rem)] lg:pb-20 lg:pt-10"
         >
-          <Container className="relative z-[2] w-full">
+          <svg
+            className={KARRIERE_BEWERBUNG_WELLEN_SVG_CLASS}
+            viewBox="0 0 1200 100"
+            preserveAspectRatio="none"
+            fill="none"
+            aria-hidden
+          >
+            <path d={WELLEN_D} fill="#FFFFFF" />
+          </svg>
+          <Container className="relative z-[1] w-full">
             <OffeneStellenSpalte />
             <KarriereBewerbungWieKontakt />
           </Container>
