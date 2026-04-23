@@ -8,6 +8,8 @@ import { StellenbeschreibungDialogTrigger } from "@/components/karriere/Stellenb
 import { cn } from "@/lib/utils";
 
 const HERO_IMG = "/images/Karriere1.webp";
+/** Rahmen-Grafik für den Bereich „Offene Stellen“ (308×430, Alpha). */
+const OFFENE_STELLEN_RAHMEN_IMG = "/images/offene_stellen.webp";
 
 /**
  * Bogen von Hero (#fafbfc) zu „Offene Stellen“ (#FFFFFF): eine nach oben offene Kurve,
@@ -115,6 +117,10 @@ function VorteilHaken() {
   );
 }
 
+/** Einheitlicher Kartenschatten (vgl. Leistungs-Landingpages). */
+const OFFENE_STELLEN_RAHMEN_SHADOW =
+  "shadow-[0_10px_40px_rgba(15,79,104,0.07)] transition-shadow duration-300 hover:shadow-[0_16px_52px_rgba(15,79,104,0.11)]";
+
 function OffeneStellenSpalte() {
   return (
     <div className="min-w-0 w-full">
@@ -129,7 +135,22 @@ function OffeneStellenSpalte() {
           Keine passende Stelle dabei? Zeigen Sie uns Ihre Stärken und bewerben Sie sich initiativ bei uns.
         </p>
       </div>
-      <ul className="mt-8 grid list-none grid-cols-1 items-stretch gap-4 perspective-[1600px] sm:mt-10 sm:grid-cols-2 lg:grid-cols-4">
+      <div
+        className={cn(
+          "relative isolate mx-auto mt-8 w-full max-w-7xl overflow-hidden rounded-[clamp(1.15rem,1vw+0.85rem,1.75rem)] border border-[#0F4F68]/10 bg-white",
+          OFFENE_STELLEN_RAHMEN_SHADOW,
+        )}
+      >
+        <div className="pointer-events-none absolute inset-0 z-0" aria-hidden>
+          <Image
+            src={OFFENE_STELLEN_RAHMEN_IMG}
+            alt=""
+            fill
+            sizes="(max-width: 1280px) 100vw, 80rem"
+            className="object-cover object-center"
+          />
+        </div>
+        <ul className="relative z-10 grid list-none grid-cols-1 items-stretch gap-4 px-[clamp(0.75rem,5vw,2.25rem)] py-[clamp(1rem,6vw,2.75rem)] perspective-[1600px] sm:grid-cols-2 sm:px-[clamp(1rem,4.5vw,2.5rem)] sm:py-[clamp(1.25rem,5vw,2.5rem)] lg:grid-cols-4 lg:px-[clamp(1.25rem,3.5vw,2.75rem)] lg:py-[clamp(1.5rem,4vw,2.75rem)]">
         {jobs.map((job, index) => {
           const theme = JOB_CARD_THEME[job.id] ?? JOB_CARD_THEME.alltagshelfer;
           return (
@@ -184,7 +205,8 @@ function OffeneStellenSpalte() {
             </li>
           );
         })}
-      </ul>
+        </ul>
+      </div>
     </div>
   );
 }
