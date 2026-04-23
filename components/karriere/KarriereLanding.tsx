@@ -26,6 +26,10 @@ const KARRIERE_KONTAKT_WELLEN_D =
 const KARRIERE_KONTAKT_WELLEN_SVG_CLASS =
   "pointer-events-none absolute left-0 top-0 z-[1] h-16 w-full -translate-y-7 sm:h-[clamp(2.85rem,1.5rem+3.8vw,5rem)] sm:-translate-y-[clamp(0.9rem,0.35rem+2.1vw,3.2rem)]";
 
+/** Einleitung unter der Überschrift „Warum die Alltagshilfe-Süd …“, vor den Stichpunkten. */
+const KARRIERE_ARBEITGEBER_INTRO =
+  "Bei uns stehen die Menschen im Mittelpunkt. Unsere Pflegebedürftigen und Mitarbeitenden sind das Herz unserer Firma. Deshalb geben wir jeden Tag unser Bestes, handeln mit Überzeugung und schaffen ein Umfeld, in dem sich der Job dem Alltag anpasst und nicht der Alltag dem Job. Weil gute Pflege und gute Arbeit nur mit Herz wirklich gelingen.";
+
 /** Acht Fakten als Arbeitgeber – Darstellung wie „Ihre Vorteile bei uns“ auf der Startseite. */
 const KARRIERE_ARBEITGEBER_FAKTEN = [
   "Tarifgerechte Vergütung und planbare Arbeitszeiten mit klaren Strukturen",
@@ -208,11 +212,14 @@ function KarriereArbeitgeberVorteile() {
       <h2 className="text-balance text-3xl font-extrabold tracking-tight text-[#0F4F68] sm:text-4xl">
         Warum die Alltagshilfe-Süd als neuer Arbeitgeber
       </h2>
-      <p className="mx-auto mt-3 max-w-3xl text-pretty text-sm text-neutral-600 sm:text-base">
+      <p className="mx-auto mt-4 max-w-3xl text-pretty text-sm leading-relaxed text-neutral-600 sm:mt-5 sm:text-base">
+        {KARRIERE_ARBEITGEBER_INTRO}
+      </p>
+      <p className="mx-auto mt-5 max-w-3xl text-pretty text-sm font-medium text-[#0F4F68] sm:mt-6 sm:text-base">
         Acht Fakten, die für Sie als Bewerberin oder Bewerber zählen.
       </p>
       <ul
-        className="mt-8 grid gap-4 text-left sm:grid-cols-2 sm:gap-x-6"
+        className="mt-6 grid gap-4 text-left sm:mt-7 sm:grid-cols-2 sm:gap-x-6"
         aria-label="Vorteile als Arbeitgeber Alltagshilfe-Süd"
       >
         {KARRIERE_ARBEITGEBER_FAKTEN.map((item) => (
@@ -281,8 +288,11 @@ function KarriereBewerbungUndAnsprechpartner() {
               className="relative z-10 -mt-10 w-full max-w-sm rounded-xl bg-[#F2F9FA] px-6 py-3 text-center text-lg font-semibold text-[#0F4F68] sm:-mt-12 sm:max-w-md sm:py-4 sm:text-xl"
               style={{ boxShadow: "0 -2px 12px rgba(15, 79, 104, 0.15)" }}
             >
-              Daniel Niebauer · Personalreferent
+              Daniel Niebauer
             </div>
+            <p className="mx-auto mt-2.5 max-w-sm text-center text-xs font-medium text-neutral-600 sm:max-w-md sm:text-sm">
+              Personalreferent
+            </p>
           </div>
           <div className="mx-auto w-full max-w-md opacity-0 animate-fade-in-up" style={{ animationDelay: "0.25s" }}>
             <p className="text-base font-semibold text-[#0F4F68] sm:text-lg">Ihr Ansprechpartner</p>
