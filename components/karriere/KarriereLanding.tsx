@@ -394,8 +394,8 @@ export function KarriereLanding() {
               className="pointer-events-none absolute right-0 top-0 bottom-0 z-[8] w-[75%] max-w-[75vw] bg-gradient-to-r from-[#fafbfc] from-0% via-white/55 via-[28%] to-transparent to-[58%] sm:from-[#fafbfc] sm:via-white/90 sm:via-[38%] sm:to-transparent sm:to-[82%] lg:via-white/95 lg:via-[40%] lg:to-[88%]"
               aria-hidden
             />
-            {/* Mobil: zentriert ohne translate; ab sm leicht nach rechts wie Desktop. */}
-            <div className="relative z-10 mx-auto flex min-h-[min(60vh,508px)] w-full max-w-7xl flex-col justify-center px-4 py-5 max-sm:items-center sm:min-h-[min(56.8vh,478px)] sm:items-stretch sm:px-6 sm:py-6 lg:min-h-[min(54vh,448px)] lg:px-[var(--ahs-page-gutter)] lg:py-7">
+            {/* Mobil: Text unten im Hero (Bild unverändert); ab sm zentriert, leicht nach rechts. */}
+            <div className="relative z-10 mx-auto flex min-h-[min(60vh,508px)] w-full max-w-7xl flex-col justify-center px-4 py-5 max-sm:items-center max-sm:justify-end max-sm:pb-[clamp(3.75rem,14vw,6.25rem)] sm:min-h-[min(56.8vh,478px)] sm:items-stretch sm:justify-center sm:px-6 sm:py-6 lg:min-h-[min(54vh,448px)] lg:px-[var(--ahs-page-gutter)] lg:py-7">
               <div className="box-border w-full max-w-full max-sm:flex max-sm:justify-center">
                 <header className="w-full max-w-xl text-center max-sm:mx-auto max-sm:max-w-[min(100%,22rem)] max-sm:translate-x-0 sm:translate-x-5 lg:max-w-[min(100%,30rem)] lg:translate-x-7 xl:max-w-[34rem]">
                   <h1
@@ -475,32 +475,6 @@ export function KarriereLanding() {
               <KarriereBewerbungUndAnsprechpartner />
             </Container>
           </div>
-        </section>
-
-        <section
-          className="border-t border-neutral-200 bg-[#FAFBFC] py-8 sm:py-10"
-          aria-labelledby="karriere-initiativ-heading"
-        >
-          <Container>
-            <div className="flex flex-col items-center justify-center gap-4 text-center sm:flex-row sm:flex-wrap sm:justify-center sm:gap-6">
-              <h2
-                id="karriere-initiativ-heading"
-                className="text-base font-bold text-[#0F4F68] sm:text-lg"
-              >
-                Initiativbewerbung
-              </h2>
-              <p className="max-w-md text-pretty text-center text-sm text-neutral-600 sm:max-w-lg sm:text-base">
-                Keine passende Stelle? Schreiben Sie uns initiativ – wir melden uns bei Ihnen.
-              </p>
-              <Link
-                href="#bewerbung-form"
-                title="Zum Kontakt- und Bewerbungsformular auf dieser Seite"
-                className="inline-flex min-h-[2.5rem] shrink-0 items-center justify-center rounded-full border-2 border-[#F78F2E] bg-white px-5 py-2 text-sm font-bold tracking-wide text-[#F78F2E] shadow-[0_4px_14px_rgba(247,143,46,0.35)] ring-2 ring-[#F78F2E]/25 transition hover:bg-[#F78F2E] hover:text-white hover:shadow-[0_6px_20px_rgba(247,143,46,0.45)] focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2 sm:min-h-[2.65rem] sm:px-6 sm:text-[0.95rem]"
-              >
-                Initiativ bewerben
-              </Link>
-            </div>
-          </Container>
         </section>
       </article>
     </div>
