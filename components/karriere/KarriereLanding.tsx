@@ -29,7 +29,7 @@ const jobs = [
   { id: "standortleiter", title: "Standortleiter*in (m/w/d)", icon: "star" },
 ] as const;
 
-/** Kartenfarben passend zur Seite: Orange, Mint, Grün, Blau. */
+/** Kartenfarben passend zur Seite: Orange, sanft gelb (Pflegeberater), Grün, Blau. */
 const JOB_CARD_THEME: Record<
   string,
   { article: string; header: string; icon: string; inner: string; outlineBtn: string }
@@ -43,12 +43,12 @@ const JOB_CARD_THEME: Record<
       "border-[#F78F2E] bg-white/95 text-[#0F4F68] hover:bg-[#FFF5EB] focus:ring-[#F78F2E]",
   },
   pflegeberater: {
-    article: "border-[#0F4F68]/28 bg-white hover:border-[#0F4F68]/50 hover:shadow-[#0F4F68]/08",
-    header: "bg-[#F2F9FA]",
-    icon: "bg-[#0F4F68] text-white shadow-sm",
-    inner: "bg-[#F2F9FA]/75",
+    article: "border-amber-200/90 bg-white hover:border-amber-300 hover:shadow-amber-900/8",
+    header: "bg-[#FFFBEB]",
+    icon: "bg-amber-500 text-white shadow-sm",
+    inner: "bg-amber-50/85",
     outlineBtn:
-      "border-[#0F4F68] bg-white/95 text-[#0F4F68] hover:bg-[#F2F9FA] focus:ring-[#0F4F68]",
+      "border-amber-500/80 bg-white/95 text-[#0F4F68] hover:bg-[#FFFBEB] focus:ring-amber-500",
   },
   buchhalter: {
     article: "border-emerald-600/30 bg-white hover:border-emerald-600/55 hover:shadow-emerald-900/10",
