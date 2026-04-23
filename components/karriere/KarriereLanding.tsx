@@ -7,14 +7,6 @@ import { siteConfig } from "@/config/site";
 
 const HERO_IMG = "/images/Karriere1.webp";
 
-/** Gleiche Kurve wie Standort-/Leistungs-Landings (viewBox 0 0 1200 100). */
-const WELLEN_D =
-  "M0,100 C200,26 420,6 600,18 C800,32 1010,75 1200,100 L1200,100 L0,100 Z";
-
-/** Welle am oberen Rand von „Offene Stellen“ / #bewerbung – höher als Standard-Welle, klarere Kantenbildung zum Hero. */
-const KARRIERE_BEWERBUNG_WELLEN_SVG_CLASS =
-  "pointer-events-none absolute left-0 top-0 z-0 h-24 w-full -translate-y-11 sm:h-[clamp(3.75rem,2rem+5.5vw,6.75rem)] sm:-translate-y-[clamp(1.35rem,0.55rem+3vw,4.35rem)]";
-
 /** Drei zentrale Arbeitgeber-Vorteile (einheitlich auf allen Stellenkarten). */
 const STELLEN_VORTEILE = [
   "Tarifgerechte Vergütung, planbare Zeiten und klare Strukturen im Alltag",
@@ -318,12 +310,12 @@ export function KarriereLanding() {
       >
         <section
           aria-labelledby="karriere-hero-heading"
-          className="relative isolate z-0 min-w-0 overflow-x-clip overflow-y-visible bg-[#fafbfc] pb-0 pt-0"
+          className="relative isolate z-0 min-w-0 overflow-x-clip overflow-y-visible bg-[#fafbfc] pb-8 pt-0 sm:pb-10 lg:pb-[clamp(2.45rem,5.6vh+0.7rem,3.85rem)]"
         >
-          {/* Bild: items-end + object-bottom → Unterkante = Hero-Unterkante, kein grauer Streifen bis zur Welle. */}
+          {/* Bild ohne fill; min-h/max-h & Spalte 75vw. Weißer Verlauf z-[8] über dem Bild, unter Text (z-10). */}
           <div className="relative min-h-[min(60vh,508px)] w-full sm:min-h-[min(56.8vh,478px)] lg:min-h-[min(54vh,448px)]">
             <div className="pointer-events-none absolute right-0 top-0 bottom-0 z-0 w-[75%] max-w-[75vw] overflow-x-clip overflow-y-visible">
-              <div className="flex h-full items-end justify-end overflow-visible">
+              <div className="flex h-full justify-end overflow-visible">
                 <Image
                   src={HERO_IMG}
                   alt="Karriere bei der Alltagshilfe-Süd – Team und Arbeitgeber"
@@ -331,7 +323,7 @@ export function KarriereLanding() {
                   height={495}
                   priority
                   sizes="75vw"
-                  className="h-auto max-h-[min(60vh,508px)] w-auto max-w-full object-contain object-right object-bottom sm:max-h-[min(56.8vh,478px)] lg:max-h-[min(54vh,448px)]"
+                  className="h-auto max-h-[min(60vh,508px)] w-auto max-w-full object-contain object-right object-top sm:max-h-[min(56.8vh,478px)] lg:max-h-[min(54vh,448px)]"
                 />
               </div>
             </div>
@@ -369,18 +361,9 @@ export function KarriereLanding() {
 
         <section
           id="bewerbung"
-          className="relative z-10 -mt-px overflow-x-clip bg-[#FFFFFF] pb-12 pt-[clamp(3rem,5vw,4.75rem)] sm:pb-16 sm:pt-[clamp(3.25rem,5.5vw,5.25rem)] lg:pb-20 lg:pt-12"
+          className="relative z-10 overflow-x-clip bg-[#FFFFFF] pb-12 pt-10 sm:pb-16 sm:pt-12 lg:pb-20 lg:pt-14"
         >
-          <svg
-            className={KARRIERE_BEWERBUNG_WELLEN_SVG_CLASS}
-            viewBox="0 0 1200 100"
-            preserveAspectRatio="none"
-            fill="none"
-            aria-hidden
-          >
-            <path d={WELLEN_D} fill="#FFFFFF" />
-          </svg>
-          <Container className="relative z-[1] w-full">
+          <Container className="relative w-full">
             <OffeneStellenSpalte />
             <KarriereBewerbungWieKontakt />
           </Container>
