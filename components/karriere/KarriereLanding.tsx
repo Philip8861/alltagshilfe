@@ -123,7 +123,10 @@ function VorteilHaken() {
 
 function OffeneStellenSpalte() {
   return (
-    <div className="min-w-0 w-full">
+    <div
+      id="offene-stellen"
+      className="min-w-0 w-full scroll-mt-[var(--ahs-header-scroll-padding)]"
+    >
       <div className="mx-auto flex w-full max-w-2xl flex-col items-center text-center sm:max-w-3xl">
         <h2 className="text-balance text-2xl font-bold tracking-tight text-[#0F4F68] sm:text-3xl lg:text-[clamp(1.875rem,1.05rem+1.35vw,2.5rem)]">
           Offene Stellen
@@ -378,7 +381,7 @@ export function KarriereLanding() {
                     style={{ animationDelay: "0.2s" }}
                   >
                     <Link
-                      href="#bewerbung-form"
+                      href="#offene-stellen"
                       className="inline-flex w-full min-h-[2.75rem] transform items-center justify-center rounded-xl bg-[#F78F2E] px-4 py-2.5 text-sm font-semibold leading-snug text-white transition hover:opacity-95 focus:outline-none focus:ring-2 focus:ring-[#F78F2E] focus:ring-offset-2 motion-reduce:transform-none sm:min-h-[2.85rem] sm:w-auto sm:max-w-[min(100%,22rem)] sm:px-6 sm:py-3 sm:text-base md:px-8 md:py-3.5 md:text-lg"
                     >
                       Bewirb dich jetzt in 1 Minute
@@ -434,18 +437,27 @@ export function KarriereLanding() {
           </div>
         </section>
 
-        <section className="border-t border-neutral-200 bg-[#FAFBFC] py-14 sm:py-16">
+        <section
+          className="border-t border-neutral-200 bg-[#FAFBFC] py-8 sm:py-10"
+          aria-labelledby="karriere-initiativ-heading"
+        >
           <Container>
-            <div className="mx-auto max-w-2xl rounded-2xl bg-[#0F4F68] px-8 py-12 text-center sm:px-12 sm:py-16">
-              <h2 className="text-2xl font-bold text-white sm:text-3xl">Initiativbewerbung</h2>
-              <p className="mt-4 text-white/90">
-                Schicken Sie uns Ihre Unterlagen – wir melden uns bei Ihnen.
+            <div className="flex flex-col items-center justify-center gap-4 text-center sm:flex-row sm:flex-wrap sm:justify-center sm:gap-6">
+              <h2
+                id="karriere-initiativ-heading"
+                className="text-base font-bold text-[#0F4F68] sm:text-lg"
+              >
+                Initiativbewerbung
+              </h2>
+              <p className="max-w-md text-pretty text-center text-sm text-neutral-600 sm:max-w-lg sm:text-base">
+                Keine passende Stelle? Schreiben Sie uns initiativ – wir melden uns bei Ihnen.
               </p>
               <Link
-                href="/kontakt?betreff=Initiativbewerbung"
-                className="mt-8 inline-flex rounded-lg bg-[#F78F2E] px-6 py-3 font-semibold text-white transition-colors hover:bg-[#e07d1f] focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-[#0F4F68]"
+                href="#bewerbung-form"
+                title="Zum Kontakt- und Bewerbungsformular auf dieser Seite"
+                className="inline-flex min-h-[2.5rem] shrink-0 items-center justify-center rounded-full border-2 border-[#F78F2E] bg-white px-5 py-2 text-sm font-bold tracking-wide text-[#F78F2E] shadow-[0_4px_14px_rgba(247,143,46,0.35)] ring-2 ring-[#F78F2E]/25 transition hover:bg-[#F78F2E] hover:text-white hover:shadow-[0_6px_20px_rgba(247,143,46,0.45)] focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2 sm:min-h-[2.65rem] sm:px-6 sm:text-[0.95rem]"
               >
-                Initiativbewerbung senden
+                Initiativ bewerben
               </Link>
             </div>
           </Container>
