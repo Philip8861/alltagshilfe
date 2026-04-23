@@ -30,7 +30,7 @@ const KARRIERE_KONTAKT_WELLEN_SVG_CLASS =
 const KARRIERE_ARBEITGEBER_INTRO =
   "Bei uns stehen die Menschen im Mittelpunkt. Unsere Pflegebedürftigen und Mitarbeitenden sind das Herz unserer Firma. Deshalb geben wir jeden Tag unser Bestes, handeln mit Überzeugung und schaffen ein Umfeld, in dem sich der Job dem Alltag anpasst und nicht der Alltag dem Job. Weil gute Pflege und gute Arbeit nur mit Herz wirklich gelingen.";
 
-/** Acht Fakten als Arbeitgeber – Darstellung wie „Ihre Vorteile bei uns“ auf der Startseite. */
+/** Arbeitgeber-Vorteile – Darstellung wie „Ihre Vorteile bei uns“ auf der Startseite. */
 const KARRIERE_ARBEITGEBER_FAKTEN = [
   "Tarifgerechte Vergütung und planbare Arbeitszeiten mit klaren Strukturen",
   "Echte Teamkultur: Einarbeitung, fester Ansprechpartner und Unterstützung vor Ort",
@@ -131,16 +131,10 @@ function OffeneStellenSpalte() {
       id="offene-stellen"
       className="min-w-0 w-full scroll-mt-[var(--ahs-header-scroll-padding)]"
     >
-      <div className="mx-auto flex w-full max-w-2xl flex-col items-center text-center sm:max-w-3xl">
+      <div className="mx-auto flex w-full max-w-2xl flex-col items-center text-center opacity-0 motion-reduce:animate-none motion-reduce:opacity-100 animate-fade-in-up sm:max-w-3xl">
         <h2 className="text-balance text-2xl font-bold tracking-tight text-[#0F4F68] sm:text-3xl lg:text-[clamp(1.875rem,1.05rem+1.35vw,2.5rem)]">
-          Offene Stellen
+          Offene Stellenangebote
         </h2>
-        <p className="mt-3 max-w-2xl text-pretty text-sm text-neutral-600 sm:mt-4 sm:text-base">
-          Hier sehen Sie unsere aktuellen Stellenangebote.
-        </p>
-        <p className="mt-4 max-w-2xl text-pretty text-sm font-medium text-[#0F4F68] sm:mt-5 sm:text-base">
-          Keine passende Stelle dabei? Zeigen Sie uns Ihre Stärken und bewerben Sie sich initiativ bei uns.
-        </p>
       </div>
       <div className="relative left-1/2 mt-8 flex w-screen max-w-[100vw] -translate-x-1/2 justify-center px-3 sm:mt-10 sm:px-4 lg:px-6">
         <ul className="grid w-full max-w-[min(100rem,calc(100vw-1.5rem))] list-none grid-cols-1 items-stretch gap-6 perspective-[1600px] sm:grid-cols-2 sm:gap-8 sm:max-w-[min(100rem,calc(100vw-2rem))] lg:grid-cols-4 lg:gap-6 xl:gap-8">
@@ -202,21 +196,29 @@ function OffeneStellenSpalte() {
         })}
         </ul>
       </div>
+      <p className="mx-auto mt-8 max-w-2xl text-pretty text-center text-sm text-neutral-700 opacity-0 motion-reduce:animate-none motion-reduce:opacity-100 animate-fade-in-up sm:mt-10 sm:max-w-3xl sm:text-base [animation-delay:0.55s] motion-reduce:[animation-delay:0s]">
+        Keine passende Stelle dabei? Zeigen Sie uns Ihre Stärken und bewerben Sie sich{" "}
+        <a
+          href="#bewerbung-form"
+          title="Zum Kontakt- und Bewerbungsformular (Daniel Niebauer)"
+          className="font-bold text-[#0F4F68] underline decoration-[#0F4F68] underline-offset-2 transition-colors hover:text-[#0c3d52] hover:decoration-[#0c3d52] focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2 rounded-sm"
+        >
+          initiativ
+        </a>{" "}
+        bei uns.
+      </p>
     </div>
   );
 }
 
 function KarriereArbeitgeberVorteile() {
   return (
-    <div className="mx-auto w-full max-w-6xl text-center">
+    <div className="mx-auto w-full max-w-6xl text-center opacity-0 motion-reduce:animate-none motion-reduce:opacity-100 animate-fade-in-up [animation-delay:0.12s] motion-reduce:[animation-delay:0s]">
       <h2 className="text-balance text-3xl font-extrabold tracking-tight text-[#0F4F68] sm:text-4xl">
         Warum die Alltagshilfe-Süd als neuer Arbeitgeber
       </h2>
-      <p className="mx-auto mt-4 max-w-3xl text-pretty text-sm leading-relaxed text-neutral-600 sm:mt-5 sm:text-base">
+      <p className="mx-auto mt-4 max-w-3xl text-pretty text-sm font-semibold leading-relaxed text-neutral-700 sm:mt-5 sm:text-base">
         {KARRIERE_ARBEITGEBER_INTRO}
-      </p>
-      <p className="mx-auto mt-5 max-w-3xl text-pretty text-sm font-medium text-[#0F4F68] sm:mt-6 sm:text-base">
-        Acht Fakten, die für Sie als Bewerberin oder Bewerber zählen.
       </p>
       <ul
         className="mt-6 grid gap-4 text-left sm:mt-7 sm:grid-cols-2 sm:gap-x-6"
@@ -285,12 +287,12 @@ function KarriereBewerbungUndAnsprechpartner() {
               </div>
             </div>
             <div
-              className="relative z-10 -mt-10 w-full max-w-sm rounded-xl bg-[#F2F9FA] px-6 py-3 text-center text-lg font-semibold text-[#0F4F68] sm:-mt-12 sm:max-w-md sm:py-4 sm:text-xl"
+              className="relative z-10 -mt-10 w-full max-w-sm rounded-xl bg-[#F2F9FA] px-6 py-3 text-center text-lg font-bold text-[#0F4F68] sm:-mt-12 sm:max-w-md sm:py-4 sm:text-xl"
               style={{ boxShadow: "0 -2px 12px rgba(15, 79, 104, 0.15)" }}
             >
               Daniel Niebauer
             </div>
-            <p className="mx-auto mt-2.5 max-w-sm text-center text-xs font-medium text-neutral-600 sm:max-w-md sm:text-sm">
+            <p className="mx-auto mt-2.5 max-w-sm text-center text-xs font-semibold text-neutral-600 sm:max-w-md sm:text-sm">
               Personalreferent
             </p>
           </div>
