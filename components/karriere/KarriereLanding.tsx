@@ -241,7 +241,7 @@ function KarriereArbeitgeberVorteile() {
   );
 }
 
-/** Bewerbungsformular und Daniel Niebauer nebeneinander; Dateianhänge nur im Kurzcheck-Popup. */
+/** Bewerbungsformular links; Daniel-Foto mit Ansprechpartner-Karte direkt darunter (wie /kontakt). */
 function KarriereBewerbungUndAnsprechpartner() {
   return (
     <div className="mx-auto w-full max-w-6xl">
@@ -261,10 +261,11 @@ function KarriereBewerbungUndAnsprechpartner() {
             </p>
           </div>
         </div>
-        <div className="order-1 flex min-w-0 flex-col items-center gap-6 text-center lg:order-2">
-          <div className="flex w-full flex-col items-center">
+        <div className="order-1 flex min-w-0 flex-col items-center text-center lg:order-2">
+          {/* Eine Spalte wie auf /kontakt: Bild + Anschriften-Karte direkt darunter (ohne Lücke dazwischen). */}
+          <div className="flex w-full max-w-[280px] flex-col items-stretch sm:max-w-xs lg:max-w-sm">
             <div
-              className="relative aspect-[3/4] w-full max-w-[280px] overflow-visible opacity-0 animate-fade-in-up sm:max-w-xs lg:max-w-sm"
+              className="relative aspect-[3/4] w-full overflow-visible opacity-0 animate-fade-in-up"
               style={{ animationDelay: "0.12s" }}
             >
               <div className="relative h-full w-full isolate [transform:translateZ(0)] [backface-visibility:hidden]">
@@ -278,56 +279,59 @@ function KarriereBewerbungUndAnsprechpartner() {
               </div>
             </div>
             <div
-              className="relative z-10 -mt-10 w-full max-w-sm rounded-xl bg-[#F2F9FA] px-6 py-3 text-center sm:-mt-12 sm:py-4"
-              style={{ boxShadow: "0 -2px 12px rgba(15, 79, 104, 0.15)" }}
+              className="relative z-10 -mt-10 w-full rounded-xl bg-[#F2F9FA] px-6 py-4 opacity-0 animate-fade-in-up sm:-mt-12 sm:px-7 sm:py-5"
+              style={{
+                animationDelay: "0.2s",
+                boxShadow: "0 -2px 12px rgba(15, 79, 104, 0.15), 0 4px 14px rgba(15, 79, 104, 0.06)",
+              }}
             >
               <p className="text-lg font-bold text-[#0F4F68] sm:text-xl">Daniel Niebauer</p>
               <p className="mt-0.5 text-sm text-neutral-600 sm:text-base">Personalreferent</p>
+              <div className="mt-5 border-t border-[#0F4F68]/10 pt-5">
+                <p className="text-base font-semibold text-[#0F4F68] sm:text-lg">Ihr Ansprechpartner</p>
+                <a
+                  href="tel:+4983349893330"
+                  className="mt-2 flex items-center justify-center gap-2 text-3xl font-bold tabular-nums text-[#0F4F68] hover:underline focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2 rounded sm:text-4xl"
+                  aria-label="Anrufen: 08334 9893330"
+                >
+                  <svg
+                    className="h-8 w-8 shrink-0 sm:h-9 sm:w-9"
+                    fill="currentColor"
+                    viewBox="0 0 24 24"
+                    aria-hidden
+                    style={{ color: "#F78F2E" }}
+                  >
+                    <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z" />
+                  </svg>
+                  <span>08334 / 9893330</span>
+                </a>
+                <ul className="mt-5 space-y-2 text-base text-neutral-700 sm:text-lg">
+                  <li>
+                    <span className="font-semibold text-[#0F4F68]">Mo–Do:</span> 08:30 – 12:00 und 13:00 – 16:00
+                  </li>
+                  <li>
+                    <span className="font-semibold text-[#0F4F68]">Freitag:</span> 08:30 – 12:00
+                  </li>
+                </ul>
+                <p className="mt-6 text-sm font-semibold text-neutral-600">E-Mail</p>
+                <a
+                  href="mailto:daniel.niebauer@alltagshilfe-sued.de"
+                  className="mt-1 block break-all text-base font-medium text-[#0F4F68] hover:underline"
+                >
+                  daniel.niebauer@alltagshilfe-sued.de
+                </a>
+                <p className="mt-6 text-sm text-neutral-600">
+                  Für eine allgemeine Nachricht nutzen Sie gern unser{" "}
+                  <Link
+                    href="/kontakt"
+                    className="font-semibold text-[#0F4F68] underline underline-offset-2 hover:no-underline"
+                  >
+                    Kontaktformular
+                  </Link>
+                  .
+                </p>
+              </div>
             </div>
-          </div>
-          <div className="mx-auto w-full max-w-md opacity-0 animate-fade-in-up" style={{ animationDelay: "0.2s" }}>
-            <p className="text-base font-semibold text-[#0F4F68] sm:text-lg">Ihr Ansprechpartner</p>
-            <a
-              href="tel:+4983349893330"
-              className="mt-2 flex items-center justify-center gap-2 text-3xl font-bold tabular-nums text-[#0F4F68] hover:underline focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2 rounded sm:text-4xl"
-              aria-label="Anrufen: 08334 9893330"
-            >
-              <svg
-                className="h-8 w-8 shrink-0 sm:h-9 sm:w-9"
-                fill="currentColor"
-                viewBox="0 0 24 24"
-                aria-hidden
-                style={{ color: "#F78F2E" }}
-              >
-                <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z" />
-              </svg>
-              <span>08334 / 9893330</span>
-            </a>
-            <ul className="mt-5 space-y-2 text-base text-neutral-700 sm:text-lg">
-              <li>
-                <span className="font-semibold text-[#0F4F68]">Mo–Do:</span> 08:30 – 12:00 und 13:00 – 16:00
-              </li>
-              <li>
-                <span className="font-semibold text-[#0F4F68]">Freitag:</span> 08:30 – 12:00
-              </li>
-            </ul>
-            <p className="mt-6 text-sm font-semibold text-neutral-600">E-Mail</p>
-            <a
-              href="mailto:daniel.niebauer@alltagshilfe-sued.de"
-              className="mt-1 block break-all text-base font-medium text-[#0F4F68] hover:underline"
-            >
-              daniel.niebauer@alltagshilfe-sued.de
-            </a>
-            <p className="mt-6 text-sm text-neutral-600">
-              Für eine allgemeine Nachricht nutzen Sie gern unser{" "}
-              <Link
-                href="/kontakt"
-                className="font-semibold text-[#0F4F68] underline underline-offset-2 hover:no-underline"
-              >
-                Kontaktformular
-              </Link>
-              .
-            </p>
           </div>
         </div>
       </div>
