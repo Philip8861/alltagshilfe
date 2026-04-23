@@ -18,6 +18,12 @@ const OFFENE_STELLEN_RAHMEN_IMG = "/images/offene_stellen.webp";
 const KARRIERE_HERO_BOGEN_D =
   "M0,100 L0,52 Q600,4 1200,52 L1200,100 L0,100 Z";
 
+/** Welle am oberen Rand des Kontakt-Mint-Streifens (#fafbfc), von Weiß herunter (vgl. HaushaltshilfeLanding). */
+const KARRIERE_KONTAKT_WELLEN_D =
+  "M0,100 C200,26 420,6 600,18 C800,32 1010,75 1200,100 L1200,100 L0,100 Z";
+const KARRIERE_KONTAKT_WELLEN_SVG_CLASS =
+  "pointer-events-none absolute left-0 top-0 z-[1] h-16 w-full -translate-y-7 sm:h-[clamp(2.85rem,1.5rem+3.8vw,5rem)] sm:-translate-y-[clamp(0.9rem,0.35rem+2.1vw,3.2rem)]";
+
 /** Acht Fakten als Arbeitgeber – Darstellung wie „Ihre Vorteile bei uns“ auf der Startseite. */
 const KARRIERE_ARBEITGEBER_FAKTEN = [
   "Tarifgerechte Vergütung und planbare Arbeitszeiten mit klaren Strukturen",
@@ -213,13 +219,17 @@ function OffeneStellenSpalte() {
 
 function KarriereArbeitgeberVorteile() {
   return (
-    <div className="mx-auto w-full max-w-6xl">
-      <h3 className="text-3xl font-extrabold tracking-tight text-[#0F4F68] sm:text-4xl">Ihre Vorteile bei uns</h3>
-      <p className="mt-2 max-w-3xl text-sm text-neutral-600 sm:text-base">
-        <span className="font-semibold text-[#0F4F68]">Warum die Alltagshilfe-Süd als neuer Arbeitgeber?</span> Acht
-        Fakten, die für Sie als Bewerberin oder Bewerber zählen.
+    <div className="mx-auto w-full max-w-6xl text-center">
+      <h2 className="text-balance text-3xl font-extrabold tracking-tight text-[#0F4F68] sm:text-4xl">
+        Warum die Alltagshilfe-Süd als neuer Arbeitgeber
+      </h2>
+      <p className="mx-auto mt-3 max-w-3xl text-pretty text-sm text-neutral-600 sm:text-base">
+        Acht Fakten, die für Sie als Bewerberin oder Bewerber zählen.
       </p>
-      <ul className="mt-6 grid gap-4 sm:grid-cols-2" aria-label="Vorteile als Arbeitgeber Alltagshilfe-Süd">
+      <ul
+        className="mt-8 grid gap-4 text-left sm:grid-cols-2 sm:gap-x-6"
+        aria-label="Vorteile als Arbeitgeber Alltagshilfe-Süd"
+      >
         {KARRIERE_ARBEITGEBER_FAKTEN.map((item) => (
           <li
             key={item}
@@ -249,7 +259,7 @@ function KarriereArbeitgeberVorteile() {
 /** Bewerbungsformular und Daniel Niebauer nebeneinander; Dateianhänge nur im Kurzcheck-Popup. */
 function KarriereBewerbungUndAnsprechpartner() {
   return (
-    <div className="mx-auto mt-10 w-full max-w-6xl sm:mt-12 lg:mt-14">
+    <div className="mx-auto w-full max-w-6xl">
       <div className="grid w-full gap-10 lg:grid-cols-2 lg:items-start lg:gap-12">
         <div className="order-2 flex min-w-0 flex-col lg:order-1">
           <div className="mx-auto w-full max-w-xl rounded-2xl bg-[#F2F9FA] p-6 sm:p-8 lg:mx-0 lg:max-w-none lg:p-10">
@@ -421,34 +431,27 @@ export function KarriereLanding() {
           id="bewerbung"
           className="relative z-10 -mt-px overflow-x-clip bg-[#FFFFFF] pb-0 pt-8 sm:pt-10 lg:pt-12"
         >
-          <Container className="relative w-full pb-12 sm:pb-16 lg:pb-20">
+          <Container className="relative w-full pb-10 sm:pb-14 lg:pb-16">
             <OffeneStellenSpalte />
+            <div className="mt-12 sm:mt-14 lg:mt-16">
+              <KarriereArbeitgeberVorteile />
+            </div>
           </Container>
           <div
             id="bewerbung-form"
-            className="relative left-1/2 w-screen max-w-[100vw] -translate-x-1/2 scroll-mt-[var(--ahs-header-scroll-padding)] bg-[#fafbfc] pb-0 pt-2 sm:pt-4"
+            className="relative left-1/2 w-screen max-w-[100vw] -translate-x-1/2 scroll-mt-[var(--ahs-header-scroll-padding)] overflow-x-clip bg-[#fafbfc] pb-12 pt-[clamp(2.75rem,4vw+1.5rem,4.5rem)] sm:pb-16 sm:pt-[clamp(3rem,4.5vw+1.5rem,4.75rem)] lg:pb-20 lg:pt-[clamp(3.25rem,5vw+1.5rem,5rem)]"
           >
-            <Container className="relative w-full pb-12 sm:pb-16 lg:pb-20">
-              <KarriereBewerbungUndAnsprechpartner />
-            </Container>
-            <div
-              className="pointer-events-none relative h-[clamp(2.75rem,2rem+3.5vw,4rem)] w-full sm:h-[clamp(3.25rem,2rem+4vw,4.5rem)]"
+            <svg
+              className={KARRIERE_KONTAKT_WELLEN_SVG_CLASS}
+              viewBox="0 0 1200 100"
+              preserveAspectRatio="none"
+              fill="none"
               aria-hidden
             >
-              <svg
-                className="absolute inset-x-0 bottom-0 h-full w-full"
-                viewBox="0 0 1200 100"
-                preserveAspectRatio="none"
-                fill="none"
-              >
-                <path d={KARRIERE_HERO_BOGEN_D} fill="#FAFBFC" />
-              </svg>
-            </div>
-          </div>
-
-          <div className="bg-[#FAFBFC] pb-12 pt-8 sm:pb-16 sm:pt-10 lg:pb-20 lg:pt-12">
-            <Container>
-              <KarriereArbeitgeberVorteile />
+              <path d={KARRIERE_KONTAKT_WELLEN_D} fill="#fafbfc" />
+            </svg>
+            <Container className="relative z-10 w-full">
+              <KarriereBewerbungUndAnsprechpartner />
             </Container>
           </div>
         </section>
