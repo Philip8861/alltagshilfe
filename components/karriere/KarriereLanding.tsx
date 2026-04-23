@@ -165,7 +165,7 @@ function OffeneStellenSpalte() {
                     >
                       <JobIcon name={job.icon} />
                     </span>
-                    <h3 className="mt-3 text-balance text-sm font-extrabold leading-snug text-[#0F4F68] sm:text-base lg:text-[1.05rem]">
+                    <h3 className="mt-3 text-balance text-base font-extrabold leading-snug text-[#0F4F68] sm:text-lg lg:text-xl">
                       {job.title}
                     </h3>
                   </div>
