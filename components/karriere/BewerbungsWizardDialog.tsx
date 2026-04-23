@@ -1,11 +1,19 @@
 "use client";
 
-import { useCallback, useEffect, useId, useMemo, useRef, useState, type KeyboardEvent } from "react";
+import Link from "next/link";
 import {
-  KARRIERE_BEWERBUNG_PREFILL_KEY,
-  jobTitleToStellenangebot,
-  type KarriereBewerbungPrefill,
-} from "@/lib/karriere-job-map";
+  useCallback,
+  useEffect,
+  useId,
+  useMemo,
+  useRef,
+  useState,
+  useTransition,
+  type ChangeEvent,
+  type KeyboardEvent,
+} from "react";
+import { submitKarriere } from "@/lib/actions/karriere";
+import { jobTitleToStellenangebot } from "@/lib/karriere-job-map";
 import {
   istKarriereAnhangErlaubt,
   KARRIERE_FILE_INPUT_ACCEPT,
@@ -13,7 +21,6 @@ import {
   KARRIERE_MAX_BYTES_GESAMT,
   KARRIERE_MAX_BYTES_PRO_DATEI,
 } from "@/lib/karriere-attachments";
-import { useKarriereApply } from "@/components/karriere/karriereApplyContext";
 import { cn } from "@/lib/utils";
 
 type BewerbungsWizardDialogProps = {
@@ -63,7 +70,7 @@ const PENSUM_OPTIONS = [
 const ERFAHRUNG_OPTIONS = [
   { id: "lang", label: "Ja, mehrjährige Erfahrung" },
   { id: "wenig", label: "Erste Erfahrung / Praktika" },
-  { id: "quer", label: "Quereinstieg – motiviert und lernbereit" },
+  { id: "quer", label: "Quereinstieg." },
 ] as const;
 
 const MOBILITAET_OPTIONS = [
@@ -87,6 +94,7 @@ const STEP_LABELS = [
   "Mobilität",
   "Kontakt",
   "Erreichbarkeit",
+  "Zusammenfassung",
   "Fertig",
 ] as const;
 
@@ -178,14 +186,18 @@ function ChipGroup({
 
 export function BewerbungsWizardDialog({ jobTitle, onDismiss }: BewerbungsWizardDialogProps) {
   const dialogRef = useRef<HTMLDialogElement>(null);
+  const uploadInputRef = useRef<HTMLInputElement>(null);
   const titleId = useId();
-  const { setPendingKarriereFiles } = useKarriereApply();
+  const [isSubmitPending, startSubmitTransition] = useTransition();
 
   const [step, setStep] = useState(0);
   const [answers, setAnswers] = useState<WizardAnswers>(INITIAL);
   const [additionalJobTitles, setAdditionalJobTitles] = useState<string[]>([]);
   const [wizardFiles, setWizardFiles] = useState<File[]>([]);
   const [fileHint, setFileHint] = useState<string | null>(null);
+  const [mobilitaetModalOpen, setMobilitaetModalOpen] = useState(false);
+  const [wizardLegalConsent, setWizardLegalConsent] = useState(false);
+  const [wizardSubmitError, setWizardSubmitError] = useState<string | null>(null);
 
   useEffect(() => {
     const el = dialogRef.current;
@@ -198,8 +210,15 @@ export function BewerbungsWizardDialog({ jobTitle, onDismiss }: BewerbungsWizard
     return () => el.removeEventListener("close", onClose);
   }, [onDismiss]);
 
+  useEffect(() => {
+    if (step !== 7) setWizardSubmitError(null);
+  }, [step]);
+
   const maxStep = STEP_LABELS.length - 1;
-  const progressPct = useMemo(() => Math.round(((step + 1) / STEP_LABELS.length) * 100), [step]);
+  const progressPct = useMemo(
+    () => Math.round((Math.min(step + 1, STEP_LABELS.length) / STEP_LABELS.length) * 100),
+    [step],
+  );
 
   const toggleAdditionalJob = useCallback((title: string) => {
     setAdditionalJobTitles((prev) =>
@@ -207,7 +226,7 @@ export function BewerbungsWizardDialog({ jobTitle, onDismiss }: BewerbungsWizard
     );
   }, []);
 
-  const onWizardFilesChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+  const onWizardFilesChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
     setFileHint(null);
     const picked = e.target.files;
     if (!picked?.length) return;
@@ -265,7 +284,7 @@ export function BewerbungsWizardDialog({ jobTitle, onDismiss }: BewerbungsWizard
 
   const goNext = useCallback(() => {
     if (step === 4 && answers.mobilitaet === "nein") {
-      window.alert(MOBILITAET_HINWEIS);
+      setMobilitaetModalOpen(true);
       return;
     }
     setStep((s) => Math.min(s + 1, maxStep));
@@ -275,30 +294,47 @@ export function BewerbungsWizardDialog({ jobTitle, onDismiss }: BewerbungsWizard
     setStep((s) => Math.max(s - 1, 0));
   }, []);
 
-  const finishToForm = useCallback(() => {
+  const submitWizard = useCallback(() => {
+    setWizardSubmitError(null);
+    if (!wizardLegalConsent) {
+      setWizardSubmitError("Bitte bestätigen Sie die AGB und die Datenschutzerklärung.");
+      return;
+    }
     const stellenangebot = jobTitleToStellenangebot(jobTitle);
     const dateiNamen = wizardFiles.map((f) => f.name);
     const anmerkung = buildAnmerkung(jobTitle, additionalJobTitles, answers, dateiNamen);
-    const payload: KarriereBewerbungPrefill = {
-      vorname: answers.vorname.trim(),
-      nachname: answers.nachname.trim(),
-      email: answers.email.trim(),
-      phone: answers.phone.trim(),
-      stellenangebot,
-      anmerkung,
-    };
-    setPendingKarriereFiles(wizardFiles);
-    try {
-      sessionStorage.setItem(KARRIERE_BEWERBUNG_PREFILL_KEY, JSON.stringify(payload));
-    } catch {
-      /* ignore */
+    const fd = new FormData();
+    fd.append("vorname", answers.vorname.trim());
+    fd.append("nachname", answers.nachname.trim());
+    fd.append("email", answers.email.trim());
+    fd.append("phone", answers.phone.trim());
+    fd.append("stellenangebot", stellenangebot);
+    fd.append("anmerkung", anmerkung);
+    fd.append("website", "");
+    fd.append("agbs", "on");
+    fd.append("datenschutzBewerbung", "on");
+    fd.append("karriereWizardQuelle", "kurzcheck");
+    for (const f of wizardFiles) {
+      fd.append("bewerbungsdateien", f);
     }
-    dialogRef.current?.close();
-    window.requestAnimationFrame(() => {
-      window.location.hash = "bewerbung";
-      document.getElementById("bewerbung")?.scrollIntoView({ behavior: "smooth", block: "start" });
+    startSubmitTransition(() => {
+      void (async () => {
+        const res = await submitKarriere(fd);
+        if (res.success) {
+          setStep(maxStep);
+        } else {
+          setWizardSubmitError(res.error ?? "Senden fehlgeschlagen. Bitte versuchen Sie es erneut.");
+        }
+      })();
     });
-  }, [answers, additionalJobTitles, jobTitle, setPendingKarriereFiles, wizardFiles]);
+  }, [
+    additionalJobTitles,
+    answers,
+    jobTitle,
+    maxStep,
+    wizardFiles,
+    wizardLegalConsent,
+  ]);
 
   const handleDialogClick = (e: React.MouseEvent<HTMLDialogElement>) => {
     if (e.target === dialogRef.current) {
@@ -324,7 +360,7 @@ export function BewerbungsWizardDialog({ jobTitle, onDismiss }: BewerbungsWizard
     >
       <div
         className={cn(
-          "flex min-w-0 max-h-[min(92dvh,calc(100dvh-1.5rem))] w-full max-w-[min(36rem,calc(100dvw-1.25rem))] flex-col overflow-hidden rounded-3xl border-2 border-[#0F4F68]/15 bg-white shadow-[0_25px_80px_-12px_rgba(15,79,104,0.35)] sm:max-w-[min(40rem,calc(100dvw-2rem))]",
+          "relative flex min-w-0 max-h-[min(92dvh,calc(100dvh-1.5rem))] w-full max-w-[min(36rem,calc(100dvw-1.25rem))] flex-col overflow-hidden rounded-3xl border-2 border-[#0F4F68]/15 bg-white shadow-[0_25px_80px_-12px_rgba(15,79,104,0.35)] sm:max-w-[min(40rem,calc(100dvw-2rem))]",
         )}
         onClick={(e) => e.stopPropagation()}
       >
@@ -353,7 +389,7 @@ export function BewerbungsWizardDialog({ jobTitle, onDismiss }: BewerbungsWizard
             {STEP_LABELS.map((label, i) => {
               const active = i === step;
               const done = i < step;
-              const canJumpBack = i < step;
+              const canJumpBack = i < step && step < maxStep;
               const circleClass = cn(
                 "flex h-8 w-8 shrink-0 items-center justify-center rounded-full border-2 text-xs font-bold transition sm:h-9 sm:w-9 sm:text-sm",
                 active
@@ -426,8 +462,8 @@ export function BewerbungsWizardDialog({ jobTitle, onDismiss }: BewerbungsWizard
                   <p className="text-sm font-semibold text-[#0F4F68]">Weitere offene Stellen (optional)</p>
                   <p className="mt-1 text-xs text-neutral-600 sm:text-sm">
                     Wenn Sie sich parallel auf eine weitere ausgeschriebene Stelle bewerben möchten, aktivieren Sie
-                    diese hier. Im Formular bleibt Ihre Hauptstelle vorausgewählt; die weiteren Interessen fügen wir
-                    bei.
+                    diese hier. Ihre Hauptstelle bleibt die Bewerbungsstelle; weitere Interessen nehmen wir in der
+                    Bewerbung mit auf.
                   </p>
                   <div className="mt-3 flex flex-wrap gap-2">
                     {andereStellen.map((t) => {
@@ -452,12 +488,6 @@ export function BewerbungsWizardDialog({ jobTitle, onDismiss }: BewerbungsWizard
                   </div>
                 </div>
               ) : null}
-              <p className="mt-5 text-sm leading-relaxed text-neutral-700">
-                In wenigen Schritten erfassen wir, was für unsere Personalplanung hilfreich ist: Startzeitpunkt,
-                Pensum, Erfahrung und Mobilität. Anschließend übernehmen wir Ihre Angaben ins Bewerbungsformular – Sie
-                ergänzen nur noch die AGB-Bestätigung und können Lebenslauf und Zeugnisse anhängen bzw. nachreichen.
-                Zum neuen Job in wenigen Minuten. Wir freuen uns auf Ihre Bewerbung!
-              </p>
             </div>
           )}
 
@@ -515,33 +545,61 @@ export function BewerbungsWizardDialog({ jobTitle, onDismiss }: BewerbungsWizard
               />
               <p className="mt-1 text-xs text-neutral-500">{answers.erfahrungDetail.length}/500</p>
 
-              <div className="mt-6 rounded-2xl border border-[#0F4F68]/12 bg-[#F2F9FA]/40 p-4">
-                <p className="text-sm font-semibold text-[#0F4F68]">Lebenslauf und Zeugnisse (optional)</p>
-                <p className="mt-1 text-xs text-neutral-600 sm:text-sm">
-                  Sie können hier mehrere Dateien auswählen – PDF, Word und gängige Bildformate (z. B. JPG, PNG,
-                  WebP). Maximal {KARRIERE_MAX_ANHAENGE} Dateien, je max. 8 MB. Die Dateien werden mit Ihrer Bewerbung
-                  mitgesendet, wenn Sie das Formular absenden.
+              <div className="mt-6 rounded-2xl border border-[#0F4F68]/12 bg-gradient-to-b from-[#F2F9FA]/80 to-white/90 p-4 sm:p-5">
+                <p className="text-center text-sm font-semibold text-[#0F4F68]">Lebenslauf und Zeugnisse (optional)</p>
+                <p className="mt-2 text-center text-xs text-neutral-600 sm:text-sm">
+                  Mehrere Dateien möglich – PDF, Word und gängige Bildformate. Maximal {KARRIERE_MAX_ANHAENGE} Dateien,
+                  je max. 8 MB. Gesamt bis 24 MB.
                 </p>
                 <input
+                  ref={uploadInputRef}
+                  id="wizard-karriere-files"
                   type="file"
                   multiple
                   accept={KARRIERE_FILE_INPUT_ACCEPT}
-                  className="mt-3 block w-full max-w-full text-sm text-neutral-700 file:mr-3 file:rounded-lg file:border-0 file:bg-[#0F4F68] file:px-4 file:py-2 file:text-sm file:font-semibold file:text-white hover:file:bg-[#0c3d52]"
+                  className="sr-only"
                   onChange={onWizardFilesChange}
                 />
+                <div className="mt-5 flex flex-col items-center">
+                  <button
+                    type="button"
+                    onClick={() => uploadInputRef.current?.click()}
+                    className={cn(
+                      "group flex w-full max-w-sm flex-col items-center justify-center rounded-2xl border-2 border-dashed border-[#0F4F68]/35 bg-white/80 px-6 py-8 text-center shadow-sm transition",
+                      "hover:border-[#F78F2E] hover:bg-[#FFF7ED]/60 hover:shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68] focus-visible:ring-offset-2",
+                    )}
+                  >
+                    <span
+                      className="flex h-12 w-12 items-center justify-center rounded-full bg-[#0F4F68]/10 text-[#0F4F68] transition group-hover:bg-[#F78F2E]/15 group-hover:text-[#c96a1a]"
+                      aria-hidden
+                    >
+                      <svg className="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="m18.375 12.656-8.155 8.155a4.5 4.5 0 1 1-6.364-6.364l8.155-8.155a3 3 0 1 1 4.243 4.243L8.212 16.95a1.5 1.5 0 0 1-2.122-2.122l7.07-7.071"
+                        />
+                      </svg>
+                    </span>
+                    <span className="mt-3 text-base font-bold text-[#0F4F68]">Dateien auswählen</span>
+                    <span className="mt-1 max-w-[16rem] text-xs font-medium text-neutral-500">
+                      Klicken oder tippen – dann wählen Sie Ihre Dokumente aus
+                    </span>
+                  </button>
+                </div>
                 {fileHint ? (
-                  <p className="mt-2 text-sm font-medium text-red-700" role="alert">
+                  <p className="mt-3 text-center text-sm font-medium text-red-700" role="alert">
                     {fileHint}
                   </p>
                 ) : null}
                 {wizardFiles.length > 0 ? (
-                  <ul className="mt-3 space-y-2 text-sm text-neutral-800">
+                  <ul className="mt-4 space-y-2 text-sm text-neutral-800">
                     {wizardFiles.map((f, i) => (
-                      <li key={`${f.name}-${i}`} className="flex items-center justify-between gap-2 rounded-lg bg-white/90 px-3 py-2">
+                      <li key={`${f.name}-${i}`} className="flex items-center justify-between gap-2 rounded-xl bg-white/95 px-3 py-2.5 shadow-sm ring-1 ring-[#0F4F68]/10">
                         <span className="min-w-0 truncate">{f.name}</span>
                         <button
                           type="button"
-                          className="shrink-0 rounded-md border border-[#0F4F68]/20 px-2 py-1 text-xs font-semibold text-[#0F4F68] hover:bg-[#F2F9FA]"
+                          className="shrink-0 rounded-lg border border-[#0F4F68]/20 px-2.5 py-1 text-xs font-semibold text-[#0F4F68] hover:bg-[#F2F9FA]"
                           onClick={() => removeWizardFile(i)}
                         >
                           Entfernen
@@ -647,65 +705,144 @@ export function BewerbungsWizardDialog({ jobTitle, onDismiss }: BewerbungsWizard
           )}
 
           {step === 7 && (
-            <div>
-              <p className="text-sm font-semibold text-[#0F4F68]">Zusammenfassung</p>
-              <ul className="mt-3 space-y-2 rounded-2xl border border-[#0F4F68]/10 bg-[#F2F9FA]/50 p-4 text-sm text-neutral-800">
-                <li>
-                  <span className="font-semibold text-[#0F4F68]">Hauptstelle:</span> {jobTitle}
-                </li>
-                {additionalJobTitles.length > 0 ? (
+            <div className="space-y-5">
+              <div>
+                <p className="text-sm font-semibold text-[#0F4F68]">Zusammenfassung</p>
+                <p className="mt-1 text-xs text-neutral-600 sm:text-sm">
+                  Bitte prüfen Sie Ihre Angaben. Mit dem Absenden übermitteln Sie Ihre Bewerbung direkt an uns.
+                </p>
+                <ul className="mt-3 space-y-2 rounded-2xl border border-[#0F4F68]/10 bg-[#F2F9FA]/50 p-4 text-sm text-neutral-800">
                   <li>
-                    <span className="font-semibold text-[#0F4F68]">Weitere Stellen:</span>{" "}
-                    {additionalJobTitles.join("; ")}
+                    <span className="font-semibold text-[#0F4F68]">Hauptstelle:</span> {jobTitle}
                   </li>
-                ) : null}
-                <li>
-                  <span className="font-semibold text-[#0F4F68]">Start:</span>{" "}
-                  {EINTRITT_OPTIONS.find((o) => o.id === answers.eintritt)?.label}
-                </li>
-                <li>
-                  <span className="font-semibold text-[#0F4F68]">Pensum:</span> {pensumLabel(answers.pensum)}
-                </li>
-                <li>
-                  <span className="font-semibold text-[#0F4F68]">Erfahrung:</span>{" "}
-                  {ERFAHRUNG_OPTIONS.find((o) => o.id === answers.erfahrung)?.label}
-                </li>
-                <li>
-                  <span className="font-semibold text-[#0F4F68]">Mobilität:</span>{" "}
-                  {MOBILITAET_OPTIONS.find((o) => o.id === answers.mobilitaet)?.label}
-                </li>
-                <li>
-                  <span className="font-semibold text-[#0F4F68]">Erreichbarkeit:</span>{" "}
-                  {ERREICHBAR_OPTIONS.find((o) => o.id === answers.erreichbarkeit)?.label}
-                </li>
-                <li>
-                  <span className="font-semibold text-[#0F4F68]">Kontakt:</span> {answers.vorname} {answers.nachname},{" "}
-                  {answers.email}, {answers.phone}
-                </li>
-                {wizardFiles.length > 0 ? (
+                  {additionalJobTitles.length > 0 ? (
+                    <li>
+                      <span className="font-semibold text-[#0F4F68]">Weitere Stellen:</span>{" "}
+                      {additionalJobTitles.join("; ")}
+                    </li>
+                  ) : null}
                   <li>
-                    <span className="font-semibold text-[#0F4F68]">Anhänge:</span>{" "}
-                    {wizardFiles.map((f) => f.name).join(", ")}
+                    <span className="font-semibold text-[#0F4F68]">Start:</span>{" "}
+                    {EINTRITT_OPTIONS.find((o) => o.id === answers.eintritt)?.label}
                   </li>
-                ) : null}
-              </ul>
-              <p className="mt-4 text-xs leading-relaxed text-neutral-600">
-                Mit „Zum Bewerbungsformular“ springen Sie zum offiziellen Formular. Dort bestätigen Sie die AGB. Ihre
-                Schnellcheck-Antworten und gewählte Dateien werden übernommen bzw. mitgesendet.
+                  <li>
+                    <span className="font-semibold text-[#0F4F68]">Pensum:</span> {pensumLabel(answers.pensum)}
+                  </li>
+                  <li>
+                    <span className="font-semibold text-[#0F4F68]">Erfahrung:</span>{" "}
+                    {ERFAHRUNG_OPTIONS.find((o) => o.id === answers.erfahrung)?.label}
+                  </li>
+                  <li>
+                    <span className="font-semibold text-[#0F4F68]">Mobilität:</span>{" "}
+                    {MOBILITAET_OPTIONS.find((o) => o.id === answers.mobilitaet)?.label}
+                  </li>
+                  <li>
+                    <span className="font-semibold text-[#0F4F68]">Erreichbarkeit:</span>{" "}
+                    {ERREICHBAR_OPTIONS.find((o) => o.id === answers.erreichbarkeit)?.label}
+                  </li>
+                  <li>
+                    <span className="font-semibold text-[#0F4F68]">Kontakt:</span> {answers.vorname} {answers.nachname},{" "}
+                    {answers.email}, {answers.phone}
+                  </li>
+                  {wizardFiles.length > 0 ? (
+                    <li>
+                      <span className="font-semibold text-[#0F4F68]">Anhänge:</span>{" "}
+                      {wizardFiles.map((f) => f.name).join(", ")}
+                    </li>
+                  ) : null}
+                </ul>
+              </div>
+
+              <div className="rounded-2xl border border-[#0F4F68]/12 bg-white/90 p-4">
+                <label className="flex cursor-pointer gap-3 text-sm text-neutral-800">
+                  <input
+                    type="checkbox"
+                    checked={wizardLegalConsent}
+                    onChange={(e) => {
+                      setWizardLegalConsent(e.target.checked);
+                      setWizardSubmitError(null);
+                    }}
+                    className="mt-0.5 h-4 w-4 shrink-0 rounded border-[#0F4F68]/40 text-[#0F4F68] focus:ring-[#0F4F68]"
+                  />
+                  <span>
+                    Ich habe die{" "}
+                    <Link
+                      href="/impressum"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="font-semibold text-[#0F4F68] underline underline-offset-2 hover:no-underline"
+                    >
+                      AGB
+                    </Link>{" "}
+                    und die{" "}
+                    <Link
+                      href="/datenschutz"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="font-semibold text-[#0F4F68] underline underline-offset-2 hover:no-underline"
+                    >
+                      Datenschutzerklärung
+                    </Link>{" "}
+                    gelesen und akzeptiere diese. *
+                  </span>
+                </label>
+              </div>
+
+              {wizardSubmitError ? (
+                <p className="text-center text-sm font-medium text-red-700" role="alert">
+                  {wizardSubmitError}
+                </p>
+              ) : null}
+
+              <button
+                type="button"
+                disabled={isSubmitPending || !wizardLegalConsent}
+                onClick={submitWizard}
+                className="flex min-h-[52px] w-full items-center justify-center rounded-2xl bg-[#0F4F68] px-6 py-4 text-base font-bold text-white shadow-lg transition hover:bg-[#0c3d52] focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                {isSubmitPending ? "Wird gesendet …" : "Bewerbung abschicken"}
+              </button>
+            </div>
+          )}
+
+          {step === 8 && (
+            <div className="flex flex-col items-center text-center">
+              <div className="flex h-14 w-14 items-center justify-center rounded-full bg-[#F2F9FA] text-[#0F4F68] ring-2 ring-[#0F4F68]/20" aria-hidden>
+                <svg className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                </svg>
+              </div>
+              <p className="mt-5 text-lg font-bold text-[#0F4F68]">Vielen Dank für Ihre Bewerbung!</p>
+              <p className="mt-3 max-w-md text-sm leading-relaxed text-neutral-700">
+                Wir werden uns umgehend bei Ihnen melden. Falls Sie weitere Fragen haben, dürfen Sie uns gerne
+                kontaktieren.
               </p>
+              <Link
+                href="/kontakt"
+                className="mt-6 inline-flex min-h-[48px] min-w-[12rem] items-center justify-center rounded-xl bg-[#F78F2E] px-6 text-sm font-semibold text-white shadow-sm transition hover:opacity-95 focus:outline-none focus:ring-2 focus:ring-[#F78F2E] focus:ring-offset-2"
+              >
+                Kontakt
+              </Link>
             </div>
           )}
         </div>
 
-        <div className="flex shrink-0 flex-col gap-2 border-t border-[#0F4F68]/10 bg-white px-4 py-4 sm:flex-row sm:justify-between sm:px-6 sm:py-4">
+        <div
+          className={cn(
+            "flex shrink-0 flex-col gap-2 border-t border-[#0F4F68]/10 bg-white px-4 py-4 sm:flex-row sm:px-6 sm:py-4",
+            step === 7 ? "sm:justify-start" : "sm:justify-between",
+          )}
+        >
           <button
             type="button"
-            onClick={step === 0 ? () => dialogRef.current?.close() : goBack}
+            onClick={
+              step === 0 || step === 8 ? () => dialogRef.current?.close() : goBack
+            }
             className="order-2 min-h-[48px] rounded-xl border-2 border-[#0F4F68]/20 px-4 text-sm font-semibold text-[#0F4F68] transition hover:bg-[#F2F9FA] focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2 sm:order-1"
           >
-            {step === 0 ? "Schließen" : "Zurück"}
+            {step === 0 || step === 8 ? "Schließen" : "Zurück"}
           </button>
-          {step < maxStep ? (
+          {step < maxStep && step !== 7 ? (
             <button
               type="button"
               disabled={!canNext}
@@ -714,16 +851,50 @@ export function BewerbungsWizardDialog({ jobTitle, onDismiss }: BewerbungsWizard
             >
               Weiter
             </button>
-          ) : (
-            <button
-              type="button"
-              onClick={finishToForm}
-              className="order-1 min-h-[48px] rounded-xl bg-[#0F4F68] px-5 text-sm font-semibold text-white shadow-md transition hover:bg-[#0c3d52] focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2 sm:order-2 sm:min-w-[14rem]"
-            >
-              Zum Bewerbungsformular
-            </button>
-          )}
+          ) : null}
         </div>
+
+        {mobilitaetModalOpen ? (
+          <div
+            className="absolute inset-0 z-[70] flex items-center justify-center bg-[#0F4F68]/40 p-4 backdrop-blur-[2px]"
+            role="presentation"
+          >
+            <div
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="mobilitaet-hinweis-title"
+              className="w-full max-w-md rounded-3xl border-2 border-[#0F4F68]/15 bg-gradient-to-b from-[#FFF7ED] via-white to-[#F2F9FA] p-6 shadow-[0_20px_60px_-12px_rgba(15,79,104,0.35)]"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <p id="mobilitaet-hinweis-title" className="text-base font-bold text-[#0F4F68]">
+                Hinweis zur Mobilität
+              </p>
+              <p className="mt-3 text-sm leading-relaxed text-neutral-800">{MOBILITAET_HINWEIS}</p>
+              <div className="mt-6 flex flex-col gap-2 sm:flex-row sm:justify-end">
+                <button
+                  type="button"
+                  className="min-h-[48px] rounded-xl border-2 border-[#0F4F68]/25 bg-white px-4 text-sm font-semibold text-[#0F4F68] transition hover:bg-[#F2F9FA] focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2"
+                  onClick={() => {
+                    setMobilitaetModalOpen(false);
+                    dialogRef.current?.close();
+                  }}
+                >
+                  Abbrechen
+                </button>
+                <button
+                  type="button"
+                  className="min-h-[48px] rounded-xl bg-[#F78F2E] px-4 text-sm font-semibold text-white shadow-sm transition hover:opacity-95 focus:outline-none focus:ring-2 focus:ring-[#F78F2E] focus:ring-offset-2"
+                  onClick={() => {
+                    setMobilitaetModalOpen(false);
+                    setAnswers((p) => ({ ...p, mobilitaet: "" }));
+                  }}
+                >
+                  Zurück zur Auswahl
+                </button>
+              </div>
+            </div>
+          </div>
+        ) : null}
       </div>
     </dialog>
   );

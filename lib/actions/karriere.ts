@@ -11,6 +11,16 @@ import { sendInternalMail } from "@/lib/email/internal-smtp";
 export type KarriereResult = { success: boolean; error?: string };
 
 export async function submitKarriere(formData: FormData): Promise<KarriereResult> {
+  const wizardQuelle = String(formData.get("karriereWizardQuelle") ?? "").trim();
+  const datenschutzBewerbung = formData.get("datenschutzBewerbung") === "on";
+
+  if (wizardQuelle === "kurzcheck" && !datenschutzBewerbung) {
+    return {
+      success: false,
+      error: "Bitte bestätigen Sie die Kenntnisnahme der Datenschutzerklärung.",
+    };
+  }
+
   const raw: Record<string, unknown> = {
     vorname: formData.get("vorname") ?? "",
     nachname: formData.get("nachname") ?? "",
@@ -92,6 +102,10 @@ export async function submitKarriere(formData: FormData): Promise<KarriereResult
     console.warn(
       "[karriere] SMTP oder NOTIFICATION_TO_KARRIERE / NOTIFICATION_TO fehlt – keine E-Mail versendet",
     );
+  }
+
+  if (wizardQuelle === "kurzcheck") {
+    return { success: true };
   }
 
   redirect("/karriere/danke");
