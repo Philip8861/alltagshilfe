@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Container } from "@/components/layout/Container";
 import { KarriereForm } from "@/components/forms/KarriereForm";
 import { BewerbungTippsFab } from "@/components/karriere/BewerbungTippsDialog";
+import { KarriereHeroTypewriter } from "@/components/karriere/KarriereHeroTypewriter";
 import { siteConfig } from "@/config/site";
 
 const HERO_IMG = "/images/Karriere1.webp";
@@ -336,24 +337,7 @@ export function KarriereLanding() {
             <div className="relative z-10 mx-auto flex min-h-[min(60vh,508px)] w-full max-w-7xl flex-col justify-center px-4 py-5 max-sm:items-center sm:min-h-[min(56.8vh,478px)] sm:items-stretch sm:px-6 sm:py-6 lg:min-h-[min(54vh,448px)] lg:px-[var(--ahs-page-gutter)] lg:py-7">
               <div className="box-border w-full max-w-full max-sm:flex max-sm:justify-center">
                 <header className="w-full max-w-xl text-center max-sm:mx-auto max-sm:max-w-[min(100%,22rem)] max-sm:translate-x-0 sm:translate-x-5 lg:max-w-[min(100%,30rem)] lg:translate-x-7 xl:max-w-[34rem]">
-                  <h1
-                    id="karriere-hero-heading"
-                    className="text-balance text-3xl font-bold leading-snug tracking-tight text-[#0F4F68] opacity-0 motion-reduce:animate-none motion-reduce:opacity-100 animate-karriere-hero-in sm:text-4xl md:text-5xl lg:text-[clamp(2rem,1.05rem+1.85vw,2.85rem)] xl:text-[clamp(2.15rem,1.15rem+1.7vw,3.05rem)]"
-                  >
-                    <span className="block">Starte jetzt deine neue Karriere</span>
-                    <span className="mt-1 block sm:mt-1.5">bei der Alltagshilfe-Süd</span>
-                  </h1>
-                  <div
-                    className="mt-5 opacity-0 motion-reduce:animate-none motion-reduce:opacity-100 animate-fade-in-up sm:mt-6"
-                    style={{ animationDelay: "0.2s" }}
-                  >
-                    <Link
-                      href="#bewerbung"
-                      className="inline-flex w-full min-h-[2.75rem] transform items-center justify-center rounded-xl bg-[#F78F2E] px-4 py-2.5 text-sm font-semibold leading-snug text-white transition hover:opacity-95 focus:outline-none focus:ring-2 focus:ring-[#F78F2E] focus:ring-offset-2 motion-reduce:transform-none sm:min-h-[2.85rem] sm:w-auto sm:max-w-[min(100%,22rem)] sm:px-6 sm:py-3 sm:text-base md:px-8 md:py-3.5 md:text-lg"
-                    >
-                      Bewirb dich jetzt in 1 Minute
-                    </Link>
-                  </div>
+                  <KarriereHeroTypewriter />
                 </header>
               </div>
             </div>
