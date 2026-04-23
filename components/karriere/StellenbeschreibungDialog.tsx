@@ -94,8 +94,9 @@ export function StellenbeschreibungDialogTrigger({ className }: { className?: st
         ref={dialogRef}
         aria-labelledby={titleId}
         className={cn(
-          "fixed inset-0 z-[100] m-0 flex max-h-none min-h-0 w-full max-w-none items-center justify-center border-0 bg-transparent p-3 sm:p-5 md:p-8",
-          "open:flex",
+          /* Kein `flex` außer mit `open:` – sonst überschreibt Tailwind `display:none` des geschlossenen <dialog>. */
+          "fixed inset-0 z-[100] m-0 max-h-none min-h-0 w-full max-w-none border-0 bg-transparent p-3 sm:p-5 md:p-8",
+          "open:flex open:items-center open:justify-center",
           "[&::backdrop]:bg-[#0F4F68]/45 [&::backdrop]:backdrop-blur-[2px]",
         )}
       >
