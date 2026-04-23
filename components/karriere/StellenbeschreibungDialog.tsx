@@ -1,7 +1,11 @@
 "use client";
 
+import Link from "next/link";
 import { type ReactNode, useId, useRef } from "react";
 import { cn } from "@/lib/utils";
+
+const EINLEITUNG =
+  "Sie legen Wert auf flexible Arbeitszeiten, die sich Ihrem Alltag anpassen? Check! Sie sind Quereinsteiger und suchen eine neue berufliche Herausforderung? Kein Problem! Wichtig ist die Freude im Umgang mit Menschen und die Bereitschaft, diese in ihren alltäglichen Herausforderungen zu unterstützen. Als Alltagshelfer sind Sie nicht für pflegerische Maßnahmen zuständig, sondern helfen im Bereich Betreuung und Hauswirtschaft.";
 
 function OrangeCheck({ className }: { className?: string }) {
   return (
@@ -63,9 +67,14 @@ function BulletList({ items }: { items: readonly string[] }) {
   );
 }
 
-function SectionTitle({ children }: { children: ReactNode }) {
+function SectionTitle({ children, className }: { children: ReactNode; className?: string }) {
   return (
-    <h3 className="mt-8 border-b border-[#0F4F68]/12 pb-2.5 text-sm font-bold uppercase tracking-wide text-[#0F4F68] first:mt-0 sm:mt-10 sm:text-base">
+    <h3
+      className={cn(
+        "mt-8 border-b border-[#0F4F68]/12 pb-2.5 text-sm font-bold uppercase tracking-wide text-[#0F4F68] sm:mt-10 sm:text-base",
+        className,
+      )}
+    >
       {children}
     </h3>
   );
@@ -75,9 +84,15 @@ function SubTitle({ children }: { children: ReactNode }) {
   return <h4 className="mt-4 text-sm font-semibold text-[#0F4F68] sm:text-base">{children}</h4>;
 }
 
-export function StellenbeschreibungDialogTrigger({ className }: { className?: string }) {
+type StellenbeschreibungDialogTriggerProps = {
+  jobTitle: string;
+  className?: string;
+};
+
+export function StellenbeschreibungDialogTrigger({ jobTitle, className }: StellenbeschreibungDialogTriggerProps) {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const titleId = useId();
+  const bewerbenHref = `/kontakt?betreff=Bewerbung%20${encodeURIComponent(jobTitle)}`;
 
   return (
     <>
@@ -114,7 +129,7 @@ export function StellenbeschreibungDialogTrigger({ className }: { className?: st
               id={titleId}
               className="mt-1.5 text-balance text-xl font-bold leading-tight text-[#0F4F68] sm:text-2xl"
             >
-              Stellenbeschreibung
+              {jobTitle}
             </h2>
           </div>
           <button
@@ -127,8 +142,12 @@ export function StellenbeschreibungDialogTrigger({ className }: { className?: st
         </div>
 
         <div className="min-h-0 min-w-0 flex-1 overflow-y-auto overflow-x-hidden overscroll-contain break-words px-5 py-6 sm:px-8 sm:py-8 pb-[max(1.5rem,env(safe-area-inset-bottom,0px))]">
-          <div className="rounded-2xl bg-[#F2F9FA]/60 px-5 py-4 sm:px-6 sm:py-5">
-            <SectionTitle>Was wir Ihnen bieten</SectionTitle>
+          <p className="text-pretty text-sm font-medium leading-relaxed text-neutral-800 sm:text-base">
+            {EINLEITUNG}
+          </p>
+
+          <div className="mt-6 rounded-2xl bg-[#F2F9FA]/60 px-5 py-4 sm:mt-8 sm:px-6 sm:py-5">
+            <SectionTitle className="!mt-0 sm:!mt-0">Was wir Ihnen bieten</SectionTitle>
             <BulletList items={WIR_BIETEN} />
           </div>
 
@@ -170,19 +189,14 @@ export function StellenbeschreibungDialogTrigger({ className }: { className?: st
             (m/w/d).
           </p>
 
-          <SectionTitle>Über uns</SectionTitle>
-          <p className="mt-2 text-pretty text-sm leading-relaxed text-neutral-700 sm:text-base">
-            Die Alltagshilfe-Süd unterstützt seit vielen Jahren hilfs- und pflegebedürftige Menschen dabei, so
-            lange wie möglich selbstständig und selbstbestimmt zu Hause zu leben.
-          </p>
-          <p className="mt-3 text-pretty text-sm leading-relaxed text-neutral-700 sm:text-base">
-            Durch gute Beratung und eine herzliche Betreuung möchten wir sicherstellen, dass jede hilfsbedürftige
-            Person die benötigte Unterstützung im Alltag erhält.
-          </p>
-
-          <div className="mt-8 rounded-xl border border-[#0F4F68]/15 bg-gradient-to-br from-[#F2F9FA] to-white px-4 py-3 text-center sm:px-5">
-            <p className="text-xs font-semibold uppercase tracking-wide text-[#0F4F68]/80">Arbeitsort</p>
-            <p className="mt-1 text-base font-bold text-[#0F4F68]">Vor Ort</p>
+          <div className="mt-8 border-t border-[#0F4F68]/10 pt-6 sm:mt-10 sm:pt-8">
+            <Link
+              href={bewerbenHref}
+              className="inline-flex w-full min-h-[48px] items-center justify-center rounded-xl bg-[#0F4F68] px-5 py-3 text-center text-base font-semibold text-white shadow-md transition hover:bg-[#0c3d52] focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2"
+              onClick={() => dialogRef.current?.close()}
+            >
+              Jetzt bewerben
+            </Link>
           </div>
         </div>
         </div>

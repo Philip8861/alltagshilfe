@@ -157,6 +157,7 @@ function OffeneStellenSpalte() {
                   </ul>
                   <div className="mt-auto flex shrink-0 flex-col gap-2 pt-3">
                     <StellenbeschreibungDialogTrigger
+                      jobTitle={job.title}
                       className={cn(BTN_BASE, "border-2", theme.outlineBtn)}
                     />
                     <Link
