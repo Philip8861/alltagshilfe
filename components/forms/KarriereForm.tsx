@@ -1,15 +1,36 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import Link from "next/link";
 import { submitKarriere } from "@/lib/actions/karriere";
+import {
+  KARRIERE_BEWERBUNG_PREFILL_KEY,
+  parseKarriereBewerbungPrefill,
+  type KarriereBewerbungPrefill,
+} from "@/lib/karriere-job-map";
 import { KARRIERE_STELLENANGEBOTE } from "@/lib/validations/karriere";
 import { cn } from "@/lib/utils";
 
 export function KarriereForm() {
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
+  const [prefill, setPrefill] = useState<KarriereBewerbungPrefill | null>(null);
+  const [formBoot, setFormBoot] = useState(0);
   const isAgbError = Boolean(error?.includes("AGB"));
+
+  useEffect(() => {
+    try {
+      const raw = sessionStorage.getItem(KARRIERE_BEWERBUNG_PREFILL_KEY);
+      if (!raw) return;
+      sessionStorage.removeItem(KARRIERE_BEWERBUNG_PREFILL_KEY);
+      const parsed = parseKarriereBewerbungPrefill(raw);
+      if (!parsed) return;
+      setPrefill(parsed);
+      setFormBoot((n) => n + 1);
+    } catch {
+      /* ignore */
+    }
+  }, []);
 
   /** Siehe ContactForm: verhindert leeres Formular nach Validierungsfehler (React 19). */
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
@@ -37,11 +58,21 @@ export function KarriereForm() {
 
   return (
     <form
+      key={formBoot}
       onSubmit={handleSubmit}
       className="mt-6 w-full max-w-full space-y-4 border-t border-[#0F4F68]/15 pt-6 text-left"
       noValidate
       aria-label="Bewerbungsformular Karriere"
     >
+      {prefill ? (
+        <div
+          role="status"
+          className="rounded-lg border border-[#0F4F68]/20 bg-[#F2F9FA] px-4 py-3 text-sm text-[#0F4F68]"
+        >
+          Ihre Angaben aus dem Kurzcheck wurden übernommen. Bitte prüfen Sie die Felder, bestätigen Sie die AGB und
+          senden Sie die Bewerbung ab.
+        </div>
+      ) : null}
       {error && !isAgbError && (
         <div
           role="alert"
@@ -63,6 +94,7 @@ export function KarriereForm() {
             required
             autoComplete="family-name"
             disabled={pending}
+            defaultValue={prefill?.nachname ?? ""}
             className="mt-1 block w-full rounded-lg border border-[#0F4F68]/25 px-4 py-2.5 text-neutral-900 placeholder-neutral-400 focus:border-[#0F4F68] focus:outline-none focus:ring-1 focus:ring-[#0F4F68] disabled:opacity-50"
             placeholder="Ihr Nachname"
           />
@@ -78,6 +110,7 @@ export function KarriereForm() {
             required
             autoComplete="given-name"
             disabled={pending}
+            defaultValue={prefill?.vorname ?? ""}
             className="mt-1 block w-full rounded-lg border border-[#0F4F68]/25 px-4 py-2.5 text-neutral-900 placeholder-neutral-400 focus:border-[#0F4F68] focus:outline-none focus:ring-1 focus:ring-[#0F4F68] disabled:opacity-50"
             placeholder="Ihr Vorname"
           />
@@ -95,6 +128,7 @@ export function KarriereForm() {
           required
           autoComplete="email"
           disabled={pending}
+          defaultValue={prefill?.email ?? ""}
           className="mt-1 block w-full rounded-lg border border-[#0F4F68]/25 px-4 py-2.5 text-neutral-900 placeholder-neutral-400 focus:border-[#0F4F68] focus:outline-none focus:ring-1 focus:ring-[#0F4F68] disabled:opacity-50"
           placeholder="ihre@email.de"
         />
@@ -111,6 +145,7 @@ export function KarriereForm() {
           required
           autoComplete="tel"
           disabled={pending}
+          defaultValue={prefill?.phone ?? ""}
           className="mt-1 block w-full rounded-lg border border-[#0F4F68]/25 px-4 py-2.5 text-neutral-900 placeholder-neutral-400 focus:border-[#0F4F68] focus:outline-none focus:ring-1 focus:ring-[#0F4F68] disabled:opacity-50"
           placeholder="z. B. 08334 / 9893330"
         />
@@ -126,7 +161,7 @@ export function KarriereForm() {
           required
           disabled={pending}
           className="mt-1 block w-full rounded-lg border border-[#0F4F68]/25 px-4 py-2.5 text-neutral-900 focus:border-[#0F4F68] focus:outline-none focus:ring-1 focus:ring-[#0F4F68] disabled:opacity-50"
-          defaultValue=""
+          defaultValue={prefill?.stellenangebot ?? ""}
           aria-required="true"
         >
           <option value="" disabled>
@@ -138,6 +173,23 @@ export function KarriereForm() {
             </option>
           ))}
         </select>
+      </div>
+
+      <div>
+        <label htmlFor="karriere-anmerkung" className="block text-sm font-medium text-neutral-700">
+          Zusatzangaben (optional)
+        </label>
+        <textarea
+          id="karriere-anmerkung"
+          name="anmerkung"
+          rows={5}
+          maxLength={4000}
+          disabled={pending}
+          defaultValue={prefill?.anmerkung ?? ""}
+          className="mt-1 block w-full resize-y rounded-lg border border-[#0F4F68]/25 px-4 py-2.5 text-sm text-neutral-900 placeholder-neutral-400 focus:border-[#0F4F68] focus:outline-none focus:ring-1 focus:ring-[#0F4F68] disabled:opacity-50"
+          placeholder="z. B. Kurzcheck-Ergebnis, Verfügbarkeit, Anhänge-Hinweise …"
+        />
+        <p className="mt-1 text-xs text-neutral-500">Nur beruflich relevante Informationen; max. 4000 Zeichen.</p>
       </div>
 
       <div className="sr-only" aria-hidden="true">

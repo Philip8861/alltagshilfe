@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { type ReactNode, useId, useRef } from "react";
+import { useKarriereApplyOptional } from "@/components/karriere/KarriereApplyProvider";
 import { cn } from "@/lib/utils";
 
 const EINLEITUNG =
@@ -93,6 +94,7 @@ export function StellenbeschreibungDialogTrigger({ jobTitle, className }: Stelle
   const dialogRef = useRef<HTMLDialogElement>(null);
   const titleId = useId();
   const bewerbenHref = `/kontakt?betreff=Bewerbung%20${encodeURIComponent(jobTitle)}`;
+  const karriereApply = useKarriereApplyOptional();
 
   return (
     <>
@@ -190,13 +192,26 @@ export function StellenbeschreibungDialogTrigger({ jobTitle, className }: Stelle
           </p>
 
           <div className="mt-8 border-t border-[#0F4F68]/10 pt-6 sm:mt-10 sm:pt-8">
-            <Link
-              href={bewerbenHref}
-              className="inline-flex w-full min-h-[48px] items-center justify-center rounded-xl bg-[#0F4F68] px-5 py-3 text-center text-base font-semibold text-white shadow-md transition hover:bg-[#0c3d52] focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2"
-              onClick={() => dialogRef.current?.close()}
-            >
-              Jetzt bewerben
-            </Link>
+            {karriereApply ? (
+              <button
+                type="button"
+                className="inline-flex w-full min-h-[48px] items-center justify-center rounded-xl bg-[#0F4F68] px-5 py-3 text-center text-base font-semibold text-white shadow-md transition hover:bg-[#0c3d52] focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2"
+                onClick={() => {
+                  dialogRef.current?.close();
+                  window.requestAnimationFrame(() => karriereApply.openBewerbungsWizard(jobTitle));
+                }}
+              >
+                Jetzt bewerben
+              </button>
+            ) : (
+              <Link
+                href={bewerbenHref}
+                className="inline-flex w-full min-h-[48px] items-center justify-center rounded-xl bg-[#0F4F68] px-5 py-3 text-center text-base font-semibold text-white shadow-md transition hover:bg-[#0c3d52] focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2"
+                onClick={() => dialogRef.current?.close()}
+              >
+                Jetzt bewerben
+              </Link>
+            )}
           </div>
         </div>
         </div>

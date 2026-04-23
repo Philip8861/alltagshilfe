@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Container } from "@/components/layout/Container";
 import { KarriereForm } from "@/components/forms/KarriereForm";
+import { JetztBewerbenButton } from "@/components/karriere/JetztBewerbenButton";
 import { StellenbeschreibungDialogTrigger } from "@/components/karriere/StellenbeschreibungDialog";
 import { siteConfig } from "@/config/site";
 import { cn } from "@/lib/utils";
@@ -165,15 +166,13 @@ function OffeneStellenSpalte() {
                       jobTitle={job.title}
                       className={cn(BTN_BASE, "border-2", theme.outlineBtn)}
                     />
-                    <Link
-                      href={`/kontakt?betreff=Bewerbung%20${encodeURIComponent(job.title)}`}
+                    <JetztBewerbenButton
+                      jobTitle={job.title}
                       className={cn(
                         BTN_BASE,
                         "bg-[#0F4F68] text-white hover:bg-[#0c3d52] focus:ring-[#0F4F68]",
                       )}
-                    >
-                      Jetzt bewerben
-                    </Link>
+                    />
                   </div>
                 </div>
               </article>
@@ -207,6 +206,9 @@ function OffeneStellenSpalte() {
   );
 }
 
+/** Wellen-Übergang ins weiße Daniel-Panel (oben gewellt, unten geschlossen), analog Hero→Stellen. */
+const DANIEL_PANEL_WAVE_D = "M0,100 L0,56 Q360,6 720,44 T1200,50 L1200,100 Z";
+
 /** Wie `/kontakt`: Formular links, Kontaktinfos rechts (mit Daniel). */
 function KarriereBewerbungWieKontakt() {
   return (
@@ -231,33 +233,48 @@ function KarriereBewerbungWieKontakt() {
           </div>
         </div>
         <div className="order-1 flex min-w-0 flex-col items-center gap-6 text-center lg:order-2">
-          <div className="flex w-full flex-col items-center">
+          <div className="relative w-full max-w-lg pt-[clamp(2.75rem,2vw+2.25rem,3.75rem)] lg:max-w-none">
+            {/* Weißes Panel #FFFFFF mit Welle nach oben in den mint-grauen Bereich darüber */}
             <div
-              className="relative aspect-[3/4] w-full max-w-[280px] overflow-visible opacity-0 animate-fade-in-up sm:max-w-xs lg:max-w-sm"
-              style={{ animationDelay: "0.12s" }}
+              className="pointer-events-none absolute left-1/2 z-0 w-screen max-w-[100vw] -translate-x-1/2 lg:left-0 lg:w-full lg:max-w-none lg:translate-x-0"
+              style={{
+                top: "clamp(-3.35rem, -2vw - 2.85rem, -2.85rem)",
+                height: "clamp(2.85rem, 2.25vw + 2.1rem, 3.65rem)",
+              }}
+              aria-hidden
             >
-              <div className="relative h-full w-full isolate [transform:translateZ(0)] [backface-visibility:hidden]">
-                <Image
-                  src="/images/Daniel_Niebauer.webp"
-                  alt="Daniel Niebauer – Personalreferent, Alltagshilfe-Süd"
-                  fill
-                  className="object-contain object-top mix-blend-multiply drop-shadow-[0_4px_20px_rgba(15,79,104,0.18)]"
-                  sizes="(max-width: 1024px) 90vw, 40vw"
-                />
+              <svg className="h-full w-full" viewBox="0 0 1200 100" preserveAspectRatio="none" aria-hidden>
+                <path d={DANIEL_PANEL_WAVE_D} fill="#FFFFFF" />
+              </svg>
+            </div>
+            <div className="relative z-10 rounded-2xl bg-[#FFFFFF] px-4 pb-8 pt-6 shadow-[0_2px_28px_rgba(15,79,104,0.07)] ring-1 ring-[#0F4F68]/8 sm:px-6 sm:pb-10 sm:pt-8">
+              <div className="flex w-full flex-col items-center">
+                <div
+                  className="relative aspect-[3/4] w-full max-w-[280px] overflow-visible opacity-0 animate-fade-in-up sm:max-w-xs lg:max-w-sm"
+                  style={{ animationDelay: "0.12s" }}
+                >
+                  <div className="relative h-full w-full isolate [transform:translateZ(0)] [backface-visibility:hidden]">
+                    <Image
+                      src="/images/Daniel_Niebauer.webp"
+                      alt="Daniel Niebauer – Personalreferent, Alltagshilfe-Süd"
+                      fill
+                      className="object-contain object-top mix-blend-multiply drop-shadow-[0_4px_20px_rgba(15,79,104,0.18)]"
+                      sizes="(max-width: 1024px) 90vw, 40vw"
+                    />
+                  </div>
+                </div>
+                <div
+                  className="relative z-10 -mt-10 w-full max-w-sm rounded-xl border border-[#0F4F68]/10 bg-[#FFFFFF] px-6 py-3 text-center shadow-sm sm:-mt-12 sm:py-4"
+                  style={{ boxShadow: "0 -2px 12px rgba(15, 79, 104, 0.08)" }}
+                >
+                  <p className="text-lg font-bold text-[#0F4F68] sm:text-xl">Daniel Niebauer</p>
+                  <p className="mt-0.5 text-sm text-neutral-600 sm:text-base">Personalreferent</p>
+                </div>
               </div>
-            </div>
-            <div
-              className="relative z-10 -mt-10 w-full max-w-sm rounded-xl bg-[#F2F9FA] px-6 py-3 text-center sm:-mt-12 sm:py-4"
-              style={{ boxShadow: "0 -2px 12px rgba(15, 79, 104, 0.15)" }}
-            >
-              <p className="text-lg font-bold text-[#0F4F68] sm:text-xl">Daniel Niebauer</p>
-              <p className="mt-0.5 text-sm text-neutral-600 sm:text-base">Personalreferent</p>
-            </div>
-          </div>
-          <div
-            className="mx-auto w-full max-w-md opacity-0 animate-fade-in-up"
-            style={{ animationDelay: "0.2s" }}
-          >
+              <div
+                className="mx-auto mt-6 w-full max-w-md opacity-0 animate-fade-in-up"
+                style={{ animationDelay: "0.2s" }}
+              >
             <p className="text-base font-semibold text-[#0F4F68] sm:text-lg">Ihr Ansprechpartner</p>
             <a
               href="tel:+4983349893330"
@@ -290,6 +307,8 @@ function KarriereBewerbungWieKontakt() {
             >
               daniel.niebauer@alltagshilfe-sued.de
             </a>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -372,12 +391,16 @@ export function KarriereLanding() {
 
         <section
           id="bewerbung"
-          className="relative z-10 -mt-px overflow-x-clip bg-[#FFFFFF] pb-12 pt-8 sm:pb-16 sm:pt-10 lg:pb-20 lg:pt-12"
+          className="relative z-10 -mt-px overflow-x-clip bg-[#FFFFFF] pb-0 pt-8 sm:pt-10 lg:pt-12"
         >
-          <Container className="relative w-full">
+          <Container className="relative w-full pb-12 sm:pb-16 lg:pb-20">
             <OffeneStellenSpalte />
-            <KarriereBewerbungWieKontakt />
           </Container>
+          <div className="relative left-1/2 w-screen max-w-[100vw] -translate-x-1/2 bg-[#fafbfc] pb-12 pt-2 sm:pb-16 sm:pt-4 lg:pb-20">
+            <Container className="relative w-full">
+              <KarriereBewerbungWieKontakt />
+            </Container>
+          </div>
         </section>
 
         <section className="border-t border-neutral-200 bg-[#FAFBFC] py-12 sm:py-16">

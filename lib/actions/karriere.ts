@@ -17,6 +17,7 @@ export async function submitKarriere(formData: FormData): Promise<KarriereResult
     phone: formData.get("phone") ?? "",
     stellenangebot: formData.get("stellenangebot") ?? "",
     agbs: formData.get("agbs") === "on",
+    anmerkung: String(formData.get("anmerkung") ?? ""),
     website: formData.get("website") ?? "",
   };
 
@@ -29,6 +30,7 @@ export async function submitKarriere(formData: FormData): Promise<KarriereResult
       first.email?.[0] ??
       first.phone?.[0] ??
       first.stellenangebot?.[0] ??
+      first.anmerkung?.[0] ??
       first.agbs?.[0] ??
       "Bitte prüfen Sie Ihre Eingaben.";
     return { success: false, error: message };
@@ -53,6 +55,7 @@ export async function submitKarriere(formData: FormData): Promise<KarriereResult
     `E-Mail: ${data.email}`,
     `Telefon: ${data.phone}`,
     `Stellenangebot: ${data.stellenangebot}`,
+    ...(data.anmerkung ? ["", "Zusatzangaben:", data.anmerkung] : []),
   ].join("\n");
 
   const html = buildBrandedNotificationHtml({
@@ -63,6 +66,7 @@ export async function submitKarriere(formData: FormData): Promise<KarriereResult
       { label: "E-Mail", value: data.email },
       { label: "Telefon", value: data.phone },
       { label: "Stellenangebot", value: data.stellenangebot },
+      ...(data.anmerkung ? [{ label: "Zusatzangaben", value: data.anmerkung }] : []),
     ],
   });
 

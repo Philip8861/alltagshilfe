@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { KarriereApplyProvider } from "@/components/karriere/KarriereApplyProvider";
 import { KarriereLanding } from "@/components/karriere/KarriereLanding";
 import { siteConfig } from "@/config/site";
 
@@ -13,5 +14,9 @@ export const metadata: Metadata = {
 };
 
 export default function KarrierePage() {
-  return <KarriereLanding />;
+  return (
+    <KarriereApplyProvider>
+      <KarriereLanding />
+    </KarriereApplyProvider>
+  );
 }
