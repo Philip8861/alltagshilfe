@@ -8,13 +8,11 @@ import { siteConfig } from "@/config/site";
 const HERO_IMG = "/images/Karriere1.webp";
 
 /**
- * Übergang unter dem Hero-Bild (viewBox 0 0 1440 100): breite, asymmetrische Kurve,
- * schneidet optisch in die Bildunterkante; dezente Markenlinie oben am Verlauf.
+ * Flüssiger Übergang unter dem Hero (viewBox 0 0 1440 100): eine geschlossene Fläche #fafbfc,
+ * ohne Konturlinie; rechts stärker in die Bildunterkante, links sanft in den Bereich „Offene Stellen“.
  */
 const KARRIERE_HERO_FUSS_FLAECH =
-  "M0,100 L0,52 C200,8 380,88 620,36 C820,6 1040,58 1240,28 C1320,16 1380,38 1440,44 L1440,100 Z";
-const KARRIERE_HERO_FUSS_LINIE =
-  "M0,52 C200,8 380,88 620,36 C820,6 1040,58 1240,28 C1320,16 1380,38 1440,44";
+  "M0,100 L0,68 C320,62 520,84 760,54 C980,30 1180,42 1320,46 C1380,48 1410,49 1440,50 L1440,100 Z";
 
 /** Drei zentrale Arbeitgeber-Vorteile (einheitlich auf allen Stellenkarten). */
 const STELLEN_VORTEILE = [
@@ -365,24 +363,17 @@ export function KarriereLanding() {
                 </header>
               </div>
             </div>
-            {/* Volle Breite unter dem Bild: Kurve schiebt sich leicht unter die Foto-Kante (z über Bild/Verlauf). */}
+            {/* Welle über Bildunterkante; zieht optisch in #bewerbung – ohne Stroke. */}
             <div
-              className="pointer-events-none absolute inset-x-0 bottom-0 z-[9] h-[3.75rem] overflow-visible max-sm:h-[3.25rem] sm:h-[4.75rem] lg:h-[5.75rem] -translate-y-[48%] sm:-translate-y-[52%] lg:-translate-y-[56%]"
+              className="pointer-events-none absolute inset-x-0 bottom-0 z-[9] h-[4rem] overflow-visible max-sm:h-[3.5rem] sm:h-[5rem] lg:h-[5.5rem] -translate-y-[52%] sm:-translate-y-[54%] lg:-translate-y-[58%]"
               aria-hidden
             >
               <svg
                 className="absolute bottom-0 left-1/2 h-full w-[min(100%,1440px)] min-w-full -translate-x-1/2"
                 viewBox="0 0 1440 100"
                 preserveAspectRatio="none"
-                fill="none"
               >
                 <path d={KARRIERE_HERO_FUSS_FLAECH} className="fill-[#fafbfc]" />
-                <path
-                  d={KARRIERE_HERO_FUSS_LINIE}
-                  className="fill-none stroke-[#0F4F68]/[0.14]"
-                  strokeWidth={1.25}
-                  vectorEffect="non-scaling-stroke"
-                />
               </svg>
             </div>
           </div>
@@ -390,7 +381,7 @@ export function KarriereLanding() {
 
         <section
           id="bewerbung"
-          className="relative z-10 -mt-6 overflow-x-clip bg-[#fafbfc] pb-12 pt-12 sm:-mt-8 sm:pb-16 sm:pt-14 lg:pb-20 lg:pt-16"
+          className="relative z-10 -mt-11 overflow-x-clip bg-[#fafbfc] pb-12 pt-6 sm:-mt-12 sm:pb-16 sm:pt-7 lg:pb-20 lg:pt-9"
         >
           <Container className="relative z-[2] w-full">
             <OffeneStellenSpalte />
