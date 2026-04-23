@@ -11,9 +11,9 @@ const HERO_IMG = "/images/Karriere1.webp";
 const WELLEN_D =
   "M0,100 C200,26 420,6 600,18 C800,32 1010,75 1200,100 L1200,100 L0,100 Z";
 
-/** Welle am oberen Rand von „Offene Stellen“ / #bewerbung, zieht in den #fafbfc-Hero. */
+/** Welle am oberen Rand von „Offene Stellen“ / #bewerbung – höher als Standard-Welle, klarere Kantenbildung zum Hero. */
 const KARRIERE_BEWERBUNG_WELLEN_SVG_CLASS =
-  "pointer-events-none absolute left-0 top-0 z-0 h-16 w-full -translate-y-7 sm:h-[clamp(2.85rem,1.5rem+3.8vw,5rem)] sm:-translate-y-[clamp(0.9rem,0.35rem+2.1vw,3.2rem)]";
+  "pointer-events-none absolute left-0 top-0 z-0 h-24 w-full -translate-y-11 sm:h-[clamp(3.75rem,2rem+5.5vw,6.75rem)] sm:-translate-y-[clamp(1.35rem,0.55rem+3vw,4.35rem)]";
 
 /** Drei zentrale Arbeitgeber-Vorteile (einheitlich auf allen Stellenkarten). */
 const STELLEN_VORTEILE = [
@@ -369,7 +369,7 @@ export function KarriereLanding() {
 
         <section
           id="bewerbung"
-          className="relative z-10 overflow-x-clip bg-[#FFFFFF] pb-12 pt-[clamp(2.5rem,4.5vw,4.25rem)] sm:pb-16 sm:pt-[clamp(2.75rem,5vw,4.5rem)] lg:pb-20 lg:pt-10"
+          className="relative z-10 overflow-x-clip bg-[#FFFFFF] pb-12 pt-[clamp(3rem,5vw,4.75rem)] sm:pb-16 sm:pt-[clamp(3.25rem,5.5vw,5.25rem)] lg:pb-20 lg:pt-12"
         >
           <svg
             className={KARRIERE_BEWERBUNG_WELLEN_SVG_CLASS}
