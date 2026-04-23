@@ -56,7 +56,7 @@ function BulletList({ items }: { items: readonly string[] }) {
       {items.map((t) => (
         <li key={t} className="flex gap-2.5">
           <OrangeCheck />
-          <span className="min-w-0 flex-1 text-pretty">{t}</span>
+          <span className="min-w-0 flex-1 break-words text-pretty">{t}</span>
         </li>
       ))}
     </ul>
@@ -94,11 +94,18 @@ export function StellenbeschreibungDialogTrigger({ className }: { className?: st
         ref={dialogRef}
         aria-labelledby={titleId}
         className={cn(
-          "fixed left-1/2 top-1/2 z-[100] box-border max-h-[min(90dvh,calc(100dvh-2rem),64rem)] w-[min(92vw,calc(100vw-2rem),60rem)] max-w-[calc(100vw-2rem)] -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-3xl border-2 border-[#0F4F68]/15 bg-white p-0 shadow-[0_25px_80px_-12px_rgba(15,79,104,0.35)]",
-          "open:flex open:flex-col",
+          "fixed inset-0 z-[100] m-0 flex max-h-none min-h-0 w-full max-w-none items-center justify-center border-0 bg-transparent p-3 sm:p-5 md:p-8",
+          "open:flex",
           "[&::backdrop]:bg-[#0F4F68]/45 [&::backdrop]:backdrop-blur-[2px]",
         )}
       >
+        {/* Innen-Panel: UA-Styles vom <dialog> umgehen; Rand immer sichtbar, nie breiter als Viewport. */}
+        <div
+          className={cn(
+            "flex min-w-0 max-h-[min(88dvh,calc(100dvh-2.5rem))] w-full max-w-[min(60rem,calc(100dvw-1.5rem))] flex-col overflow-hidden rounded-3xl border-2 border-[#0F4F68]/15 bg-white shadow-[0_25px_80px_-12px_rgba(15,79,104,0.35)]",
+            "sm:max-w-[min(60rem,calc(100dvw-2.5rem))]",
+          )}
+        >
         <div className="flex shrink-0 items-start justify-between gap-4 border-b border-[#0F4F68]/10 bg-gradient-to-r from-[#FFF7ED] via-[#F2F9FA] to-white px-5 py-5 sm:px-8 sm:py-6">
           <div className="min-w-0 pr-2">
             <p className="text-xs font-semibold uppercase tracking-wider text-[#F78F2E] sm:text-sm">Karriere</p>
@@ -118,7 +125,7 @@ export function StellenbeschreibungDialogTrigger({ className }: { className?: st
           </button>
         </div>
 
-        <div className="min-h-0 min-w-0 flex-1 overflow-y-auto overscroll-contain px-5 py-6 sm:px-8 sm:py-8 pb-[max(1.5rem,env(safe-area-inset-bottom,0px))]">
+        <div className="min-h-0 min-w-0 flex-1 overflow-y-auto overflow-x-hidden overscroll-contain break-words px-5 py-6 sm:px-8 sm:py-8 pb-[max(1.5rem,env(safe-area-inset-bottom,0px))]">
           <div className="rounded-2xl bg-[#F2F9FA]/60 px-5 py-4 sm:px-6 sm:py-5">
             <SectionTitle>Was wir Ihnen bieten</SectionTitle>
             <BulletList items={WIR_BIETEN} />
@@ -176,6 +183,7 @@ export function StellenbeschreibungDialogTrigger({ className }: { className?: st
             <p className="text-xs font-semibold uppercase tracking-wide text-[#0F4F68]/80">Arbeitsort</p>
             <p className="mt-1 text-base font-bold text-[#0F4F68]">Vor Ort</p>
           </div>
+        </div>
         </div>
       </dialog>
     </>
