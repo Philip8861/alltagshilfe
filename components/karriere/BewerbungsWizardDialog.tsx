@@ -93,21 +93,19 @@ const STEP_LABELS = [
   "Erfahrung",
   "Mobilität",
   "Kontakt",
-  "Erreichbarkeit",
-  "Zusammenfassung",
+  "Kontrolle",
   "Fertig",
 ] as const;
 
-/** Kurzer Begleitsatz pro Schritt (ohne Gedankenstrich als Satzzeichen). */
+/** Spruch pro Schritt (ersetzt den festen Kurzcheck-Titel im Kopf). */
 const WIZARD_STEP_INTROS: readonly string[] = [
   "Ok, fangen wir direkt an.",
   "Prima, als Nächstes Ihr möglicher Starttermin.",
   "Weiter geht es: Welches Pensum passt zu Ihnen?",
   "Jetzt sind Sie gefragt: Wie steht es mit Ihrer Erfahrung?",
   "Kurz und klar: Mobilität für den Einsatz vor Ort.",
-  "So erreichen wir Sie persönlich für Rückfragen.",
-  "Noch ein Tipp: Wann sind wir am besten für Sie erreichbar?",
-  "Gleich geschafft: Schauen Sie die Zusammenfassung einmal an.",
+  "So erreichen wir Sie: Kontaktdaten und gute Erreichbarkeit.",
+  "Gleich geschafft: Prüfen Sie alle Angaben vor dem Absenden.",
   "Vielen Dank, wir melden uns bei Ihnen.",
 ];
 
@@ -224,12 +222,13 @@ export function BewerbungsWizardDialog({ jobTitle, onDismiss }: BewerbungsWizard
   }, [onDismiss]);
 
   useEffect(() => {
-    if (step !== 7) setWizardSubmitError(null);
+    if (step !== 6) setWizardSubmitError(null);
   }, [step]);
 
   const maxStep = STEP_LABELS.length - 1;
-  const progressPct = useMemo(
-    () => Math.round((Math.min(step + 1, STEP_LABELS.length) / STEP_LABELS.length) * 100),
+  /** Ab „Stelle“: erster Abschnitt schon sichtbar (Schritt 0 → 1/n). */
+  const progressFraction = useMemo(
+    () => Math.min(step + 1, STEP_LABELS.length) / STEP_LABELS.length,
     [step],
   );
 
@@ -288,10 +287,10 @@ export function BewerbungsWizardDialog({ jobTitle, onDismiss }: BewerbungsWizard
         answers.vorname.trim().length > 0 &&
         answers.nachname.trim().length > 0 &&
         /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(answers.email.trim()) &&
-        answers.phone.trim().length > 3
+        answers.phone.trim().length > 3 &&
+        Boolean(answers.erreichbarkeit)
       );
     }
-    if (step === 6) return Boolean(answers.erreichbarkeit);
     return true;
   }, [step, answers]);
 
@@ -379,13 +378,15 @@ export function BewerbungsWizardDialog({ jobTitle, onDismiss }: BewerbungsWizard
       >
         <div className="flex shrink-0 items-start justify-between gap-3 border-b border-[#0F4F68]/10 bg-gradient-to-r from-[#FFF7ED] via-[#F2F9FA] to-white px-4 py-4 sm:px-6 sm:py-5">
           <div className="min-w-0 pr-2">
-            <p className="text-[11px] font-semibold uppercase tracking-wider text-[#F78F2E] sm:text-xs">Bewerbung</p>
-            <h2 id={titleId} className="mt-1 text-balance text-lg font-bold leading-tight text-[#0F4F68] sm:text-xl">
-              Kurzcheck: Schritt für Schritt
-            </h2>
-            <p className="mt-2 text-pretty text-sm font-medium leading-snug text-[#0F4F68]/85 sm:text-[0.9375rem]">
-              {WIZARD_STEP_INTROS[step] ?? ""}
+            <p className="text-[11px] font-semibold uppercase tracking-wider text-[#F78F2E] sm:text-xs">
+              Bewerbung · Kurzcheck
             </p>
+            <h2
+              id={titleId}
+              className="mt-1 text-balance text-lg font-bold leading-snug text-[#0F4F68] sm:text-xl sm:leading-snug"
+            >
+              {WIZARD_STEP_INTROS[step] ?? ""}
+            </h2>
           </div>
           <button
             type="button"
@@ -399,9 +400,14 @@ export function BewerbungsWizardDialog({ jobTitle, onDismiss }: BewerbungsWizard
         <div className="shrink-0 border-b border-[#0F4F68]/8 bg-[#f1f9fb]/90 px-3 py-3 sm:px-5">
           <div className="relative mx-auto flex max-w-full items-center justify-between gap-0.5 sm:gap-1">
             <div
-              className="pointer-events-none absolute left-[8%] right-[8%] top-1/2 z-0 h-0.5 -translate-y-1/2 bg-[#0F4F68]/25"
+              className="pointer-events-none absolute left-[8%] right-[8%] top-1/2 z-0 h-0.5 -translate-y-1/2 overflow-hidden rounded-full bg-[#0F4F68]/25"
               aria-hidden
-            />
+            >
+              <div
+                className="h-full rounded-full bg-[#0F4F68] transition-[width] duration-300 ease-out"
+                style={{ width: `${progressFraction * 100}%` }}
+              />
+            </div>
             {STEP_LABELS.map((label, i) => {
               const active = i === step;
               const done = i < step;
@@ -461,7 +467,7 @@ export function BewerbungsWizardDialog({ jobTitle, onDismiss }: BewerbungsWizard
           <div className="mx-auto mt-3 h-2 max-w-md overflow-hidden rounded-full bg-white shadow-inner">
             <div
               className="h-full rounded-full bg-[#0F4F68] transition-[width] duration-300 ease-out"
-              style={{ width: `${progressPct}%` }}
+              style={{ width: `${progressFraction * 100}%` }}
             />
           </div>
         </div>
@@ -645,85 +651,84 @@ export function BewerbungsWizardDialog({ jobTitle, onDismiss }: BewerbungsWizard
           )}
 
           {step === 5 && (
-            <div className="space-y-4">
-              <p className="text-sm font-semibold text-[#0F4F68]">Kontakt für Rückfragen</p>
-              <p className="text-xs text-neutral-600 sm:text-sm">
-                Diese Daten nutzen wir nur zur Bearbeitung Ihrer Bewerbung (siehe Datenschutzerklärung).
-              </p>
-              <div className="grid gap-3 sm:grid-cols-2">
+            <div className="space-y-6">
+              <div className="space-y-4">
+                <p className="text-sm font-semibold text-[#0F4F68]">Kontakt für Rückfragen</p>
+                <p className="text-xs text-neutral-600 sm:text-sm">
+                  Diese Daten nutzen wir nur zur Bearbeitung Ihrer Bewerbung (siehe Datenschutzerklärung).
+                </p>
+                <div className="grid gap-3 sm:grid-cols-2">
+                  <div>
+                    <label className="block text-xs font-medium text-neutral-700" htmlFor="w-vorname">
+                      Vorname *
+                    </label>
+                    <input
+                      id="w-vorname"
+                      autoComplete="given-name"
+                      value={answers.vorname}
+                      onChange={(e) => setAnswers((p) => ({ ...p, vorname: e.target.value }))}
+                      className="mt-1 w-full rounded-xl border border-[#0F4F68]/25 px-3 py-2.5 text-sm focus:border-[#0F4F68] focus:outline-none focus:ring-1 focus:ring-[#0F4F68]"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-medium text-neutral-700" htmlFor="w-nachname">
+                      Nachname *
+                    </label>
+                    <input
+                      id="w-nachname"
+                      autoComplete="family-name"
+                      value={answers.nachname}
+                      onChange={(e) => setAnswers((p) => ({ ...p, nachname: e.target.value }))}
+                      className="mt-1 w-full rounded-xl border border-[#0F4F68]/25 px-3 py-2.5 text-sm focus:border-[#0F4F68] focus:outline-none focus:ring-1 focus:ring-[#0F4F68]"
+                    />
+                  </div>
+                </div>
                 <div>
-                  <label className="block text-xs font-medium text-neutral-700" htmlFor="w-vorname">
-                    Vorname *
+                  <label className="block text-xs font-medium text-neutral-700" htmlFor="w-email">
+                    E-Mail *
                   </label>
                   <input
-                    id="w-vorname"
-                    autoComplete="given-name"
-                    value={answers.vorname}
-                    onChange={(e) => setAnswers((p) => ({ ...p, vorname: e.target.value }))}
+                    id="w-email"
+                    type="email"
+                    autoComplete="email"
+                    value={answers.email}
+                    onChange={(e) => setAnswers((p) => ({ ...p, email: e.target.value }))}
                     className="mt-1 w-full rounded-xl border border-[#0F4F68]/25 px-3 py-2.5 text-sm focus:border-[#0F4F68] focus:outline-none focus:ring-1 focus:ring-[#0F4F68]"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-medium text-neutral-700" htmlFor="w-nachname">
-                    Nachname *
+                  <label className="block text-xs font-medium text-neutral-700" htmlFor="w-phone">
+                    Telefon *
                   </label>
                   <input
-                    id="w-nachname"
-                    autoComplete="family-name"
-                    value={answers.nachname}
-                    onChange={(e) => setAnswers((p) => ({ ...p, nachname: e.target.value }))}
+                    id="w-phone"
+                    type="tel"
+                    autoComplete="tel"
+                    value={answers.phone}
+                    onChange={(e) => setAnswers((p) => ({ ...p, phone: e.target.value }))}
                     className="mt-1 w-full rounded-xl border border-[#0F4F68]/25 px-3 py-2.5 text-sm focus:border-[#0F4F68] focus:outline-none focus:ring-1 focus:ring-[#0F4F68]"
                   />
                 </div>
               </div>
               <div>
-                <label className="block text-xs font-medium text-neutral-700" htmlFor="w-email">
-                  E-Mail *
-                </label>
-                <input
-                  id="w-email"
-                  type="email"
-                  autoComplete="email"
-                  value={answers.email}
-                  onChange={(e) => setAnswers((p) => ({ ...p, email: e.target.value }))}
-                  className="mt-1 w-full rounded-xl border border-[#0F4F68]/25 px-3 py-2.5 text-sm focus:border-[#0F4F68] focus:outline-none focus:ring-1 focus:ring-[#0F4F68]"
-                />
-              </div>
-              <div>
-                <label className="block text-xs font-medium text-neutral-700" htmlFor="w-phone">
-                  Telefon *
-                </label>
-                <input
-                  id="w-phone"
-                  type="tel"
-                  autoComplete="tel"
-                  value={answers.phone}
-                  onChange={(e) => setAnswers((p) => ({ ...p, phone: e.target.value }))}
-                  className="mt-1 w-full rounded-xl border border-[#0F4F68]/25 px-3 py-2.5 text-sm focus:border-[#0F4F68] focus:outline-none focus:ring-1 focus:ring-[#0F4F68]"
+                <p className="text-sm font-semibold text-[#0F4F68]">Wann erreichen wir Sie am besten?</p>
+                <p className="mt-1 text-xs text-neutral-600 sm:text-sm">
+                  Damit wir Sie für Rückfragen zur Bewerbung möglichst gut erreichen.
+                </p>
+                <ChipGroup
+                  name="erreichbarkeit"
+                  options={ERREICHBAR_OPTIONS}
+                  value={answers.erreichbarkeit}
+                  onChange={(id) => setAnswers((p) => ({ ...p, erreichbarkeit: id }))}
                 />
               </div>
             </div>
           )}
 
           {step === 6 && (
-            <div>
-              <p className="text-sm font-semibold text-[#0F4F68]">Wann erreichen wir Sie am besten?</p>
-              <p className="mt-1 text-xs text-neutral-600 sm:text-sm">
-                Damit wir Sie für Rückfragen zur Bewerbung möglichst gut erreichen.
-              </p>
-              <ChipGroup
-                name="erreichbarkeit"
-                options={ERREICHBAR_OPTIONS}
-                value={answers.erreichbarkeit}
-                onChange={(id) => setAnswers((p) => ({ ...p, erreichbarkeit: id }))}
-              />
-            </div>
-          )}
-
-          {step === 7 && (
             <div className="space-y-5">
               <div>
-                <p className="text-sm font-semibold text-[#0F4F68]">Zusammenfassung</p>
+                <p className="text-sm font-semibold text-[#0F4F68]">Kontrolle</p>
                 <p className="mt-1 text-xs text-neutral-600 sm:text-sm">
                   Bitte prüfen Sie Ihre Angaben. Mit dem Absenden übermitteln Sie Ihre Bewerbung direkt an uns.
                 </p>
@@ -821,7 +826,7 @@ export function BewerbungsWizardDialog({ jobTitle, onDismiss }: BewerbungsWizard
             </div>
           )}
 
-          {step === 8 && (
+          {step === 7 && (
             <div className="flex flex-col items-center text-center">
               <div className="flex h-14 w-14 items-center justify-center rounded-full bg-[#F2F9FA] text-[#0F4F68] ring-2 ring-[#0F4F68]/20" aria-hidden>
                 <svg className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
@@ -846,19 +851,19 @@ export function BewerbungsWizardDialog({ jobTitle, onDismiss }: BewerbungsWizard
         <div
           className={cn(
             "flex shrink-0 flex-col gap-2 border-t border-[#0F4F68]/10 bg-white px-4 py-4 sm:flex-row sm:px-6 sm:py-4",
-            step === 7 ? "sm:justify-start" : "sm:justify-between",
+            step === 6 ? "sm:justify-start" : "sm:justify-between",
           )}
         >
           <button
             type="button"
             onClick={
-              step === 0 || step === 8 ? () => dialogRef.current?.close() : goBack
+              step === 0 || step === 7 ? () => dialogRef.current?.close() : goBack
             }
             className="order-2 min-h-[48px] rounded-xl border-2 border-[#0F4F68]/20 px-4 text-sm font-semibold text-[#0F4F68] transition hover:bg-[#F2F9FA] focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2 sm:order-1"
           >
-            {step === 0 || step === 8 ? "Schließen" : "Zurück"}
+            {step === 0 || step === 7 ? "Schließen" : "Zurück"}
           </button>
-          {step < maxStep && step !== 7 ? (
+          {step < maxStep && step !== 6 ? (
             <button
               type="button"
               disabled={!canNext}
