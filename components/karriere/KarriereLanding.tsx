@@ -7,6 +7,15 @@ import { siteConfig } from "@/config/site";
 
 const HERO_IMG = "/images/Karriere1.webp";
 
+/**
+ * Übergang unter dem Hero-Bild (viewBox 0 0 1440 100): breite, asymmetrische Kurve,
+ * schneidet optisch in die Bildunterkante; dezente Markenlinie oben am Verlauf.
+ */
+const KARRIERE_HERO_FUSS_FLAECH =
+  "M0,100 L0,52 C200,8 380,88 620,36 C820,6 1040,58 1240,28 C1320,16 1380,38 1440,44 L1440,100 Z";
+const KARRIERE_HERO_FUSS_LINIE =
+  "M0,52 C200,8 380,88 620,36 C820,6 1040,58 1240,28 C1320,16 1380,38 1440,44";
+
 /** Drei zentrale Arbeitgeber-Vorteile (einheitlich auf allen Stellenkarten). */
 const STELLEN_VORTEILE = [
   "Tarifgerechte Vergütung, planbare Zeiten und klare Strukturen im Alltag",
@@ -356,25 +365,33 @@ export function KarriereLanding() {
                 </header>
               </div>
             </div>
+            {/* Volle Breite unter dem Bild: Kurve schiebt sich leicht unter die Foto-Kante (z über Bild/Verlauf). */}
+            <div
+              className="pointer-events-none absolute inset-x-0 bottom-0 z-[9] h-[3.75rem] overflow-visible max-sm:h-[3.25rem] sm:h-[4.75rem] lg:h-[5.75rem] -translate-y-[48%] sm:-translate-y-[52%] lg:-translate-y-[56%]"
+              aria-hidden
+            >
+              <svg
+                className="absolute bottom-0 left-1/2 h-full w-[min(100%,1440px)] min-w-full -translate-x-1/2"
+                viewBox="0 0 1440 100"
+                preserveAspectRatio="none"
+                fill="none"
+              >
+                <path d={KARRIERE_HERO_FUSS_FLAECH} className="fill-[#fafbfc]" />
+                <path
+                  d={KARRIERE_HERO_FUSS_LINIE}
+                  className="fill-none stroke-[#0F4F68]/[0.14]"
+                  strokeWidth={1.25}
+                  vectorEffect="non-scaling-stroke"
+                />
+              </svg>
+            </div>
           </div>
         </section>
 
         <section
           id="bewerbung"
-          className="relative z-10 -mt-10 overflow-x-clip bg-[#fafbfc] pb-12 pt-[5.25rem] sm:-mt-10 sm:pb-16 sm:pt-[5.75rem] lg:pb-20 lg:pt-[6.25rem]"
+          className="relative z-10 -mt-6 overflow-x-clip bg-[#fafbfc] pb-12 pt-12 sm:-mt-8 sm:pb-16 sm:pt-14 lg:pb-20 lg:pt-16"
         >
-          {/* Welle beginnt rechts (links flach); mobil etwas niedriger für weniger Sprung. */}
-          <div
-            className="pointer-events-none absolute left-[6%] right-0 top-0 z-[1] h-10 overflow-visible text-[#fafbfc] max-sm:left-[4%] max-sm:h-9 sm:left-[14%] sm:h-12 lg:left-[22%] lg:h-[3.5rem] -translate-y-[68%] sm:-translate-y-[66%] lg:-translate-y-[64%]"
-            aria-hidden
-          >
-            <svg className="block h-full w-full" viewBox="0 0 1200 120" preserveAspectRatio="none" fill="none">
-              <path
-                d="M0,120 L620,120 C688,118 748,52 818,34 C898,14 1028,26 1148,72 C1182,86 1192,94 1200,100 L1200,120 Z"
-                fill="currentColor"
-              />
-            </svg>
-          </div>
           <Container className="relative z-[2] w-full">
             <OffeneStellenSpalte />
             <KarriereBewerbungWieKontakt />
