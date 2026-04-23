@@ -8,11 +8,10 @@ import { StellenbeschreibungDialogTrigger } from "@/components/karriere/Stellenb
 import { cn } from "@/lib/utils";
 
 const HERO_IMG = "/images/Karriere1.webp";
-const OFFENE_STELLE_RAHMEN = "/images/offene_stelle.webp";
 
-/** Schatten je Rahmen-Grafik (wie Leistungs-Kacheln). */
-const STELLEN_RAHMEN_SHADOW =
-  "shadow-[0_10px_40px_rgba(15,79,104,0.07)] transition-shadow duration-300 hover:shadow-[0_16px_52px_rgba(15,79,104,0.11)]";
+/** Weißer Kartenrahmen (10px) + Standard-Schatten (vgl. Leistungs-Landingpages). */
+const STELLEN_WEISSER_RAHMEN =
+  "rounded-[10px] border-[10px] border-solid border-white bg-white shadow-[0_10px_40px_rgba(15,79,104,0.07)] transition-shadow duration-300 hover:shadow-[0_16px_52px_rgba(15,79,104,0.11)]";
 
 /**
  * Bogen von Hero (#fafbfc) zu „Offene Stellen“ (#FFFFFF): eine nach oben offene Kurve,
@@ -143,74 +142,59 @@ function OffeneStellenSpalte() {
           Keine passende Stelle dabei? Zeigen Sie uns Ihre Stärken und bewerben Sie sich initiativ bei uns.
         </p>
       </div>
-      <ul className="mt-8 grid list-none grid-cols-1 items-start justify-items-center gap-x-8 gap-y-12 perspective-[1600px] px-1 sm:mt-10 sm:grid-cols-2 sm:gap-x-12 sm:gap-y-14 sm:px-2 lg:grid-cols-4 lg:gap-x-10 lg:gap-y-12 xl:gap-x-12">
+      <ul className="mt-8 grid list-none grid-cols-1 items-stretch gap-6 perspective-[1600px] sm:mt-10 sm:grid-cols-2 sm:gap-8 lg:grid-cols-4 lg:gap-6 xl:gap-8">
         {jobs.map((job, index) => {
           const theme = JOB_CARD_THEME[job.id] ?? JOB_CARD_THEME.alltagshelfer;
           return (
             <li
               key={job.id}
-              className="flex w-full max-w-[18.5rem] justify-center sm:max-w-[19.5rem] lg:max-w-[17.25rem] xl:max-w-[18rem] opacity-0 motion-reduce:animate-none motion-reduce:opacity-100 animate-karriere-stelle-flip-in [transform-style:preserve-3d]"
+              className="min-w-0 opacity-0 motion-reduce:animate-none motion-reduce:opacity-100 animate-karriere-stelle-flip-in [transform-style:preserve-3d]"
               style={{ animationDelay: `${0.08 + index * 0.11}s` }}
             >
-              <div
-                className={cn(
-                  "relative isolate aspect-[308/430] w-full max-w-[min(100%,17.5rem)] sm:max-w-[min(100%,18.25rem)] lg:max-w-[min(100%,16.25rem)] xl:max-w-[min(100%,17rem)]",
-                  STELLEN_RAHMEN_SHADOW,
-                )}
-              >
-                <Image
-                  src={OFFENE_STELLE_RAHMEN}
-                  alt=""
-                  fill
-                  sizes="(max-width: 640px) 90vw, (max-width: 1024px) 45vw, 220px"
-                  className="pointer-events-none z-0 select-none object-contain object-center"
-                  aria-hidden
-                />
-                <div className="absolute inset-[11%_9.5%_12.5%_9.5%] z-10 flex min-h-0 min-w-0 flex-col sm:inset-[10.5%_9%_12%_9%]">
-                  <article
-                    className={cn(
-                      "group flex h-full min-h-0 flex-1 flex-col overflow-hidden rounded-lg border-2 transition-all",
-                      theme.article,
-                    )}
-                  >
-                    <div className={cn("px-2.5 py-3 text-center sm:px-3 sm:py-4", theme.header)}>
-                      <span
+              <div className={cn("box-border h-full min-h-0 overflow-hidden", STELLEN_WEISSER_RAHMEN)}>
+                <article
+                  className={cn(
+                    "group relative flex h-full min-h-0 flex-col overflow-hidden rounded-2xl border-2 transition-all hover:shadow-lg",
+                    theme.article,
+                  )}
+                >
+                  <div className={cn("px-3 py-4 text-center sm:px-4 sm:py-5", theme.header)}>
+                    <span
+                      className={cn(
+                        "mx-auto flex h-10 w-10 items-center justify-center rounded-xl sm:h-11 sm:w-11",
+                        theme.icon,
+                      )}
+                    >
+                      <JobIcon name={job.icon} />
+                    </span>
+                    <h3 className="mt-3 text-balance text-sm font-extrabold leading-snug text-[#0F4F68] sm:text-base lg:text-[1.05rem]">
+                      {job.title}
+                    </h3>
+                  </div>
+                  <div className={cn("flex min-h-0 flex-1 flex-col px-3 pb-4 pt-1 sm:px-4 sm:pb-4", theme.inner)}>
+                    <ul className="mt-2 min-h-[8.5rem] flex-1 space-y-1.5 text-[11px] leading-snug text-neutral-700 sm:min-h-[9.25rem] sm:space-y-2 sm:text-xs lg:min-h-[9rem] lg:text-[11px] xl:min-h-[9.5rem] xl:text-xs">
+                      {STELLEN_VORTEILE.map((h) => (
+                        <li key={h} className="flex items-start gap-1.5 sm:gap-2">
+                          <VorteilHaken />
+                          <span>{h}</span>
+                        </li>
+                      ))}
+                    </ul>
+                    <div className="mt-auto flex shrink-0 flex-col gap-2 pt-3">
+                      <StellenbeschreibungDialogTrigger
+                        jobTitle={job.title}
+                        className={cn(BTN_BASE, STELLEN_BESCHREIBUNG_BTN)}
+                      />
+                      <JetztBewerbenButton
+                        jobTitle={job.title}
                         className={cn(
-                          "mx-auto flex h-9 w-9 items-center justify-center rounded-lg sm:h-10 sm:w-10",
-                          theme.icon,
+                          BTN_BASE,
+                          "bg-[#0F4F68] text-white hover:bg-[#0c3d52] focus:ring-[#0F4F68]",
                         )}
-                      >
-                        <JobIcon name={job.icon} />
-                      </span>
-                      <h3 className="mt-2 text-balance text-xs font-extrabold leading-snug text-[#0F4F68] sm:mt-2.5 sm:text-sm lg:text-[0.8125rem]">
-                        {job.title}
-                      </h3>
+                      />
                     </div>
-                    <div className={cn("flex min-h-0 min-w-0 flex-1 flex-col px-2.5 pb-3 pt-0.5 sm:px-3 sm:pb-3", theme.inner)}>
-                      <ul className="mt-1 min-h-0 flex-1 space-y-1 text-[10px] leading-snug text-neutral-700 sm:space-y-1.5 sm:text-[11px] lg:text-[10px] xl:text-[11px]">
-                        {STELLEN_VORTEILE.map((h) => (
-                          <li key={h} className="flex items-start gap-1 sm:gap-1.5">
-                            <VorteilHaken />
-                            <span>{h}</span>
-                          </li>
-                        ))}
-                      </ul>
-                      <div className="mt-auto flex shrink-0 flex-col gap-1.5 pt-2 sm:gap-2 sm:pt-2.5">
-                        <StellenbeschreibungDialogTrigger
-                          jobTitle={job.title}
-                          className={cn(BTN_BASE, STELLEN_BESCHREIBUNG_BTN)}
-                        />
-                        <JetztBewerbenButton
-                          jobTitle={job.title}
-                          className={cn(
-                            BTN_BASE,
-                            "bg-[#0F4F68] text-white hover:bg-[#0c3d52] focus:ring-[#0F4F68]",
-                          )}
-                        />
-                      </div>
-                    </div>
-                  </article>
-                </div>
+                  </div>
+                </article>
               </div>
             </li>
           );
