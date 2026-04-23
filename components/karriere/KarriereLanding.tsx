@@ -96,17 +96,13 @@ function VorteilHaken() {
 }
 
 function OffeneStellenSpalte() {
-  /** Gleiche horizontale Führung wie Hero-H1 – wirkt mit Hauptüberschrift „untereinander mittig“. */
-  const offeneStellenHeadingWrap =
-    "mx-auto max-w-[min(100%,34rem)] -translate-x-2 text-center sm:max-w-[min(100%,38rem)] sm:-translate-x-5 xl:max-w-[40rem] xl:-translate-x-[clamp(1.5rem,6vw,4rem)]";
-
   return (
     <div className="min-w-0 w-full">
-      <div className={offeneStellenHeadingWrap}>
-        <h2 className="text-balance text-2xl font-bold tracking-tight text-[#0F4F68] sm:text-3xl">
+      <div className="mx-auto w-full max-w-2xl text-center sm:max-w-3xl">
+        <h2 className="text-balance text-2xl font-bold tracking-tight text-[#0F4F68] sm:text-3xl lg:text-[clamp(1.875rem,1.05rem+1.35vw,2.5rem)]">
           Offene Stellen
         </h2>
-        <p className="mt-3 max-w-2xl text-pretty text-sm text-neutral-600 sm:mt-4 sm:text-base">
+        <p className="mx-auto mt-3 max-w-2xl text-pretty text-sm text-neutral-600 sm:mt-4 sm:text-base">
           Klicken Sie auf eine Stelle, um mehr zu erfahren – oder nutzen Sie das Bewerbungsformular weiter unten.
         </p>
       </div>
@@ -337,7 +333,7 @@ export function KarriereLanding() {
             />
             <div className="relative z-10 mx-auto flex min-h-[min(60vh,508px)] w-full max-w-7xl flex-col items-center justify-center px-4 py-5 text-center sm:min-h-[min(56.8vh,478px)] sm:px-6 sm:py-6 lg:min-h-[min(54vh,448px)] lg:px-[var(--ahs-page-gutter)] lg:py-7">
               <div className="box-border w-full max-w-full">
-                <div className="mx-auto max-w-[min(100%,34rem)] -translate-x-2 sm:max-w-[min(100%,38rem)] sm:-translate-x-5 xl:max-w-[40rem] xl:-translate-x-[clamp(1.5rem,6vw,4rem)]">
+                <div className="mx-auto w-full max-w-[min(100%,36rem)] sm:max-w-[min(100%,40rem)]">
                   <h1
                     id="karriere-hero-heading"
                     className="text-balance text-3xl font-bold leading-snug tracking-tight text-[#0F4F68] opacity-0 motion-reduce:animate-none motion-reduce:opacity-100 animate-karriere-hero-in sm:text-4xl md:text-5xl lg:text-[clamp(2rem,1.05rem+1.85vw,2.85rem)] xl:text-[clamp(2.15rem,1.15rem+1.7vw,3.05rem)]"
@@ -364,21 +360,8 @@ export function KarriereLanding() {
 
         <section
           id="bewerbung"
-          className="relative z-10 -mt-10 overflow-x-clip bg-[#F2F9FA] pb-12 pt-[5.25rem] sm:-mt-10 sm:pb-16 sm:pt-[5.75rem] lg:pb-20 lg:pt-[6.25rem]"
+          className="relative z-10 -mt-10 overflow-x-clip bg-[#fafbfc] pb-12 pt-[5.25rem] sm:-mt-10 sm:pb-16 sm:pt-[5.75rem] lg:pb-20 lg:pt-[6.25rem]"
         >
-          {/* Hellgraue Welle dahinter (leicht versetzt), darüber kleinere F2F9FA-Welle. */}
-          <svg
-            className="pointer-events-none absolute left-0 top-1 z-0 h-12 w-full -translate-y-[70%] sm:h-14 sm:-translate-y-[68%] lg:h-[3.75rem] lg:-translate-y-[66%]"
-            viewBox="0 0 1200 120"
-            preserveAspectRatio="none"
-            fill="none"
-            aria-hidden
-          >
-            <path
-              d="M0,120 C200,32 420,8 600,22 C800,38 1010,90 1200,120 L1200,120 L0,120 Z"
-              fill="#DCE5EA"
-            />
-          </svg>
           <svg
             className="pointer-events-none absolute left-0 top-0 z-[1] h-[3.5rem] w-full -translate-y-[76%] sm:h-16 sm:-translate-y-[74%] lg:h-[4.25rem] lg:-translate-y-[72%]"
             viewBox="0 0 1200 120"
@@ -388,7 +371,7 @@ export function KarriereLanding() {
           >
             <path
               d="M0,120 C200,32 420,8 600,22 C800,38 1010,90 1200,120 L1200,120 L0,120 Z"
-              fill="#F2F9FA"
+              fill="#fafbfc"
             />
           </svg>
           <Container className="relative z-[2] w-full">
