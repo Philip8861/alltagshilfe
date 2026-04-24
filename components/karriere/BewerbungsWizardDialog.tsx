@@ -14,11 +14,9 @@ import {
 import { submitKarriere } from "@/lib/actions/karriere";
 import { jobTitleToStellenangebot } from "@/lib/karriere-job-map";
 import {
-  istKarriereAnhangErlaubt,
   KARRIERE_FILE_INPUT_ACCEPT,
   KARRIERE_MAX_ANHAENGE,
-  KARRIERE_MAX_BYTES_GESAMT,
-  KARRIERE_MAX_BYTES_PRO_DATEI,
+  validateKarriereAttachmentsList,
 } from "@/lib/karriere-attachments";
 import { cn } from "@/lib/utils";
 
@@ -263,24 +261,10 @@ export function BewerbungsWizardDialog({ jobTitle, onDismiss }: BewerbungsWizard
     if (!picked?.length) return;
     const next: File[] = [...wizardFiles];
     for (const f of [...picked]) {
-      if (!istKarriereAnhangErlaubt(f.name)) {
-        setFileHint(`Dateityp nicht erlaubt: „${f.name}“. Erlaubt sind u. a. PDF, Word und gängige Bildformate.`);
-        e.target.value = "";
-        return;
-      }
-      if (f.size > KARRIERE_MAX_BYTES_PRO_DATEI) {
-        setFileHint(`„${f.name}“ ist zu groß (max. 8 MB pro Datei).`);
-        e.target.value = "";
-        return;
-      }
-      if (next.length >= KARRIERE_MAX_ANHAENGE) {
-        setFileHint(`Maximal ${KARRIERE_MAX_ANHAENGE} Dateien.`);
-        e.target.value = "";
-        return;
-      }
-      const sum = next.reduce((s, x) => s + x.size, 0) + f.size;
-      if (sum > KARRIERE_MAX_BYTES_GESAMT) {
-        setFileHint("Die gewählten Dateien überschreiten zusammen 24 MB.");
+      const merged = [...next, f];
+      const fehler = validateKarriereAttachmentsList(merged);
+      if (fehler) {
+        setFileHint(fehler);
         e.target.value = "";
         return;
       }
@@ -332,6 +316,11 @@ export function BewerbungsWizardDialog({ jobTitle, onDismiss }: BewerbungsWizard
     setWizardSubmitError(null);
     if (!wizardLegalConsent) {
       setWizardSubmitError("Bitte bestätigen Sie die AGB und die Datenschutzerklärung.");
+      return;
+    }
+    const anhangFehler = validateKarriereAttachmentsList(wizardFiles);
+    if (anhangFehler) {
+      setWizardSubmitError(anhangFehler);
       return;
     }
     const stellenangebot = jobTitleToStellenangebot(jobTitle);
@@ -984,28 +973,30 @@ export function BewerbungsWizardDialog({ jobTitle, onDismiss }: BewerbungsWizard
         </div>
 
         {isSubmitting ? (
-          <div
-            className="absolute inset-0 z-[85] flex flex-col items-center justify-center gap-5 bg-gradient-to-b from-white/96 via-[#F2F9FA]/95 to-white/96 px-6 py-10 backdrop-blur-[4px]"
-            role="status"
-            aria-live="polite"
-            aria-busy="true"
-          >
-            <div className="max-w-sm text-center">
-              <p className="text-lg font-bold text-[#0F4F68] sm:text-xl">Bewerbung wird gesendet …</p>
-              <p className="mt-2 text-sm leading-snug text-neutral-600">
-                Bitte kurz warten – bei mehreren Anhängen kann es etwas länger dauern.
-              </p>
-            </div>
-            <div className="w-full max-w-sm">
-              <div className="h-3 w-full overflow-hidden rounded-full bg-[#0F4F68]/12 shadow-[inset_0_1px_3px_rgba(15,79,104,0.12)] ring-1 ring-[#0F4F68]/10">
-                <div
-                  className="h-full min-w-[8%] rounded-full bg-gradient-to-r from-[#0F4F68] via-[#1a6d8a] to-[#F78F2E] shadow-[0_0_14px_rgba(247,143,46,0.35)] transition-[width] duration-200 ease-out motion-reduce:transition-none"
-                  style={{ width: `${Math.min(100, Math.max(10, submitProgress))}%` }}
-                />
+          <div className="absolute inset-0 z-[85] flex items-center justify-center bg-[#0F4F68]/55 p-4 backdrop-blur-[3px]">
+            <div
+              className="relative z-[86] w-full max-w-[min(22rem,calc(100vw-2.5rem))] rounded-2xl border-2 border-[#0F4F68]/18 bg-white p-6 shadow-[0_24px_70px_-12px_rgba(15,79,104,0.45)] sm:max-w-sm sm:p-7"
+              role="status"
+              aria-live="polite"
+              aria-busy="true"
+            >
+              <div className="text-center">
+                <p className="text-base font-bold text-[#0F4F68] sm:text-lg">Bewerbung wird gesendet …</p>
+                <p className="mt-2 text-xs leading-snug text-neutral-600 sm:text-sm">
+                  Bitte kurz warten – bei mehreren Anhängen kann es etwas länger dauern.
+                </p>
               </div>
-              <p className="mt-2.5 text-center text-xs font-semibold tabular-nums tracking-wide text-[#0F4F68]/85">
-                {Math.round(Math.min(100, submitProgress))} %
-              </p>
+              <div className="mt-5 w-full">
+                <div className="h-2.5 w-full overflow-hidden rounded-full bg-[#0F4F68]/12 shadow-[inset_0_1px_3px_rgba(15,79,104,0.12)] ring-1 ring-[#0F4F68]/10">
+                  <div
+                    className="h-full min-w-[8%] rounded-full bg-gradient-to-r from-[#0F4F68] via-[#1a6d8a] to-[#F78F2E] shadow-[0_0_12px_rgba(247,143,46,0.32)] transition-[width] duration-200 ease-out motion-reduce:transition-none"
+                    style={{ width: `${Math.min(100, Math.max(10, submitProgress))}%` }}
+                  />
+                </div>
+                <p className="mt-2 text-center text-[11px] font-semibold tabular-nums tracking-wide text-[#0F4F68]/85 sm:text-xs">
+                  {Math.round(Math.min(100, submitProgress))} %
+                </p>
+              </div>
             </div>
           </div>
         ) : null}

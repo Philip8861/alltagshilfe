@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState, type FormEvent } from "react";
+import { useEffect, useRef, useState, type ChangeEvent, type FormEvent } from "react";
 import Link from "next/link";
 import { useKarriereApplyOptional } from "@/components/karriere/karriereApplyContext";
 import { submitKarriere } from "@/lib/actions/karriere";
@@ -9,7 +9,11 @@ import {
   parseKarriereBewerbungPrefill,
   type KarriereBewerbungPrefill,
 } from "@/lib/karriere-job-map";
-import { KARRIERE_FILE_INPUT_ACCEPT, KARRIERE_MAX_ANHAENGE } from "@/lib/karriere-attachments";
+import {
+  KARRIERE_FILE_INPUT_ACCEPT,
+  KARRIERE_MAX_ANHAENGE,
+  validateKarriereAttachmentsList,
+} from "@/lib/karriere-attachments";
 import { KARRIERE_STELLENANGEBOTE } from "@/lib/validations/karriere";
 import { cn } from "@/lib/utils";
 
@@ -50,6 +54,13 @@ export function KarriereForm({ hideFileAttachments = false }: KarriereFormProps)
       const dt = new DataTransfer();
       list.forEach((f) => dt.items.add(f));
       input.files = dt.files;
+      if (input.files?.length) {
+        const fehler = validateKarriereAttachmentsList([...input.files]);
+        if (fehler) {
+          setError(fehler);
+          input.value = "";
+        }
+      }
     } catch {
       /* ältere Browser / Zuweisung nicht möglich */
     }
@@ -57,13 +68,51 @@ export function KarriereForm({ hideFileAttachments = false }: KarriereFormProps)
   }, [hideFileAttachments, karriereCtx, karriereCtx?.pendingKarriereFiles?.length]);
 
   /** Siehe ContactForm: verhindert leeres Formular nach Validierungsfehler (React 19). */
+  function validateBewerbungsdateienInput(el: HTMLInputElement | null) {
+    if (!el?.files?.length) return true;
+    const files = [...el.files];
+    const fehler = validateKarriereAttachmentsList(files);
+    if (fehler) {
+      setError(fehler);
+      el.value = "";
+      return false;
+    }
+    return true;
+  }
+
+  function onBewerbungsdateienChange(e: ChangeEvent<HTMLInputElement>) {
+    const el = e.target;
+    if (!el.files?.length) {
+      setError((prev) => (prev?.includes("AGB") ? prev : null));
+      return;
+    }
+    const fehler = validateKarriereAttachmentsList([...el.files]);
+    if (fehler) {
+      setError(fehler);
+      el.value = "";
+      return;
+    }
+    setError((prev) => (prev?.includes("AGB") ? prev : null));
+  }
+
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const form = e.currentTarget;
     setError(null);
+    if (!hideFileAttachments) {
+      const fileEl = bewerbungsdateienRef.current;
+      if (!validateBewerbungsdateienInput(fileEl)) return;
+    }
     setPending(true);
     try {
       const formData = new FormData(form);
+      if (!hideFileAttachments && bewerbungsdateienRef.current?.files?.length) {
+        const nochmal = validateKarriereAttachmentsList([...bewerbungsdateienRef.current.files]);
+        if (nochmal) {
+          setError(nochmal);
+          return;
+        }
+      }
       const result = await submitKarriere(formData);
       if (!result.success && result.error) {
         setError(result.error);
@@ -262,6 +311,7 @@ export function KarriereForm({ hideFileAttachments = false }: KarriereFormProps)
             multiple
             accept={KARRIERE_FILE_INPUT_ACCEPT}
             disabled={pending}
+            onChange={onBewerbungsdateienChange}
             className="mt-1 block w-full max-w-full text-sm text-neutral-700 file:mr-3 file:rounded-lg file:border-0 file:bg-[#0F4F68] file:px-4 file:py-2 file:text-sm file:font-semibold file:text-white hover:file:bg-[#0c3d52] disabled:opacity-50"
           />
           <p className="mt-1 text-xs text-neutral-500">

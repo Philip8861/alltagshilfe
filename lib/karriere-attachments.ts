@@ -42,6 +42,34 @@ export function istKarriereAnhangErlaubt(name: string): boolean {
   return ext !== null && KARRIERE_ANHANG_EXT.has(ext);
 }
 
+/**
+ * Gleiche Regeln wie `karriereAnhaengeAusFormData` (Client): sofortige Fehlermeldung bei nicht versendbaren Dateien.
+ * @returns Fehlertext oder `null`, wenn die Liste versandfähig ist.
+ */
+export function validateKarriereAttachmentsList(files: readonly File[]): string | null {
+  if (files.length === 0) return null;
+  if (files.length > KARRIERE_MAX_ANHAENGE) {
+    return `Es sind maximal ${KARRIERE_MAX_ANHAENGE} Dateien erlaubt.`;
+  }
+  let total = 0;
+  for (const file of files) {
+    if (file.size === 0) {
+      return `Die Datei „${file.name}“ ist leer und kann nicht versendet werden. Bitte wählen Sie eine gültige Datei.`;
+    }
+    if (!istKarriereAnhangErlaubt(file.name)) {
+      return `Dateityp nicht erlaubt: „${file.name}“. Erlaubt sind u. a. PDF, Word und gängige Bildformate.`;
+    }
+    if (file.size > KARRIERE_MAX_BYTES_PRO_DATEI) {
+      return `Die Datei „${file.name}“ ist zu groß (max. 8 MB pro Datei) und kann nicht versendet werden.`;
+    }
+    total += file.size;
+    if (total > KARRIERE_MAX_BYTES_GESAMT) {
+      return "Die Anhänge insgesamt sind zu groß (max. 24 MB) und können nicht versendet werden.";
+    }
+  }
+  return null;
+}
+
 export function sanitizeKarriereDateiname(name: string): string {
   const base = name.replace(/^.*[/\\]/, "").replace(/[^\w.\- ()äöüÄÖÜß]+/g, "_").slice(0, 180);
   return base.length > 0 ? base : "anhang";
