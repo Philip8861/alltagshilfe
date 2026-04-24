@@ -3,6 +3,15 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
+  /**
+   * Karriere-Bewerbung (Kurzcheck + ggf. Formular): Anhänge bis 24 MB.
+   * Ohne Erhöhung bricht Next.js Server Actions bei ~1 MB ab – Upload wirkt dann „kaputt“.
+   */
+  experimental: {
+    serverActions: {
+      bodySizeLimit: "30mb",
+    },
+  },
   async redirects() {
     return [
       { source: "/leistungen", destination: "/", permanent: true },

@@ -73,8 +73,18 @@ export function KarriereForm({ hideFileAttachments = false }: KarriereFormProps)
           window.requestAnimationFrame(() => el?.focus());
         }
       }
-    } catch {
-      setError("Ein Fehler ist aufgetreten. Bitte versuchen Sie es später erneut.");
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : String(err);
+      const looksLikePayload =
+        /body (?:size|limit)|payload too large|413|maximum.*exceeded|1\s*mb/i.test(msg) ||
+        msg.includes("Failed to parse body");
+      if (looksLikePayload) {
+        setError(
+          "Die Datenmenge war zu groß (z. B. viele oder große Dateien). Erlaubt sind bis zu 24 MB insgesamt und 8 MB pro Datei – bitte Dateien verkleinern oder aufteilen und erneut senden.",
+        );
+      } else {
+        setError("Ein Fehler ist aufgetreten. Bitte versuchen Sie es später erneut.");
+      }
     } finally {
       setPending(false);
     }

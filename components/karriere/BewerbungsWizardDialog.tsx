@@ -373,11 +373,17 @@ export function BewerbungsWizardDialog({ jobTitle, onDismiss }: BewerbungsWizard
       }
     } catch (e) {
       clearSubmitProgressTimer();
-      const msg =
-        e instanceof Error && e.message
-          ? `Senden fehlgeschlagen: ${e.message}`
-          : "Senden fehlgeschlagen. Bitte versuchen Sie es erneut.";
-      setWizardSubmitError(msg);
+      const raw = e instanceof Error ? e.message : String(e);
+      const looksLikePayload =
+        /body (?:size|limit)|payload too large|413|maximum.*exceeded|1\s*mb/i.test(raw) ||
+        raw.includes("Failed to parse body");
+      setWizardSubmitError(
+        looksLikePayload
+          ? "Die Datenmenge war zu groß (z. B. große Anhänge). Erlaubt sind bis zu 24 MB insgesamt und 8 MB pro Datei – bitte Dateien verkleinern oder aufteilen und erneut senden."
+          : e instanceof Error && e.message
+            ? `Senden fehlgeschlagen: ${e.message}`
+            : "Senden fehlgeschlagen. Bitte versuchen Sie es erneut.",
+      );
     } finally {
       clearSubmitProgressTimer();
       setIsSubmitting(false);
