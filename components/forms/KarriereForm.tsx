@@ -176,6 +176,45 @@ export function KarriereForm({ hideFileAttachments = false }: KarriereFormProps)
         />
       </div>
 
+      <div className="grid gap-4 sm:grid-cols-2">
+        <div>
+          <label htmlFor="karriere-plz" className="block text-sm font-medium text-neutral-700">
+            Postleitzahl (PLZ) *
+          </label>
+          <input
+            id="karriere-plz"
+            type="text"
+            name="plz"
+            required
+            inputMode="numeric"
+            autoComplete="postal-code"
+            maxLength={5}
+            pattern="[0-9]{5}"
+            title="Fünf Ziffern, ohne Leerzeichen"
+            disabled={pending}
+            defaultValue={prefill?.plz ?? ""}
+            className="mt-1 block w-full rounded-lg border border-[#0F4F68]/25 px-4 py-2.5 text-neutral-900 placeholder-neutral-400 focus:border-[#0F4F68] focus:outline-none focus:ring-1 focus:ring-[#0F4F68] disabled:opacity-50"
+            placeholder="z. B. 88316"
+          />
+        </div>
+        <div>
+          <label htmlFor="karriere-ort" className="block text-sm font-medium text-neutral-700">
+            Ort *
+          </label>
+          <input
+            id="karriere-ort"
+            type="text"
+            name="ort"
+            required
+            autoComplete="address-level2"
+            disabled={pending}
+            defaultValue={prefill?.ort ?? ""}
+            className="mt-1 block w-full rounded-lg border border-[#0F4F68]/25 px-4 py-2.5 text-neutral-900 placeholder-neutral-400 focus:border-[#0F4F68] focus:outline-none focus:ring-1 focus:ring-[#0F4F68] disabled:opacity-50"
+            placeholder="z. B. Isny im Allgäu"
+          />
+        </div>
+      </div>
+
       <div>
         <label htmlFor="karriere-stellenangebot" className="block text-sm font-medium text-neutral-700">
           Für welches Stellenangebot interessieren Sie sich? *

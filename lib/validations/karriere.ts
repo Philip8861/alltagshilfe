@@ -2,6 +2,7 @@ import { z } from "zod";
 
 const MAX_NAME_LENGTH = 100;
 const MAX_PHONE_LENGTH = 50;
+const MAX_ORT_LENGTH = 100;
 const MAX_ANMERKUNG_LENGTH = 4000;
 
 export const KARRIERE_STELLENANGEBOTE = [
@@ -25,6 +26,16 @@ export const karriereSchema = z.object({
     .string()
     .min(1, "Bitte geben Sie Ihre Telefonnummer an.")
     .max(MAX_PHONE_LENGTH, `Die Telefonnummer darf maximal ${MAX_PHONE_LENGTH} Zeichen haben.`),
+  /** Nur Ziffern, genau 5 (übliche deutsche PLZ). */
+  plz: z
+    .string()
+    .transform((s) => s.replace(/\D/g, "").slice(0, 5))
+    .refine((s) => s.length === 5, { message: "Bitte geben Sie eine gültige PLZ ein (5 Ziffern)." }),
+  ort: z
+    .string()
+    .trim()
+    .min(1, "Bitte geben Sie Ihren Wohnort an.")
+    .max(MAX_ORT_LENGTH, `Der Ort darf maximal ${MAX_ORT_LENGTH} Zeichen haben.`),
   stellenangebot: z.enum(KARRIERE_STELLENANGEBOTE, {
     errorMap: () => ({ message: "Bitte wählen Sie ein Stellenangebot." }),
   }),

@@ -26,6 +26,8 @@ export async function submitKarriere(formData: FormData): Promise<KarriereResult
     nachname: formData.get("nachname") ?? "",
     email: formData.get("email") ?? "",
     phone: formData.get("phone") ?? "",
+    plz: formData.get("plz") ?? "",
+    ort: formData.get("ort") ?? "",
     stellenangebot: formData.get("stellenangebot") ?? "",
     agbs: formData.get("agbs") === "on",
     anmerkung: String(formData.get("anmerkung") ?? ""),
@@ -40,6 +42,8 @@ export async function submitKarriere(formData: FormData): Promise<KarriereResult
       first.nachname?.[0] ??
       first.email?.[0] ??
       first.phone?.[0] ??
+      first.plz?.[0] ??
+      first.ort?.[0] ??
       first.stellenangebot?.[0] ??
       first.anmerkung?.[0] ??
       first.agbs?.[0] ??
@@ -71,6 +75,7 @@ export async function submitKarriere(formData: FormData): Promise<KarriereResult
     `Name: ${data.vorname} ${data.nachname}`,
     `E-Mail: ${data.email}`,
     `Telefon: ${data.phone}`,
+    `PLZ / Ort: ${data.plz} ${data.ort}`,
     `Stellenangebot: ${data.stellenangebot}`,
     ...(data.anmerkung ? ["", "Zusatzangaben:", data.anmerkung] : []),
     ...(anhaenge.attachments.length > 0
@@ -85,6 +90,7 @@ export async function submitKarriere(formData: FormData): Promise<KarriereResult
       { label: "Name", value: `${data.vorname} ${data.nachname}` },
       { label: "E-Mail", value: data.email },
       { label: "Telefon", value: data.phone },
+      { label: "PLZ / Ort", value: `${data.plz} ${data.ort}` },
       { label: "Stellenangebot", value: data.stellenangebot },
       ...(data.anmerkung ? [{ label: "Zusatzangaben", value: data.anmerkung }] : []),
     ],

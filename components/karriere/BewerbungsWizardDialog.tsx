@@ -45,6 +45,8 @@ type WizardAnswers = {
   nachname: string;
   email: string;
   phone: string;
+  plz: string;
+  ort: string;
   erreichbarkeit: string;
 };
 
@@ -103,7 +105,7 @@ const WIZARD_STEP_INTROS: readonly string[] = [
   "Weiter geht es: Welches Pensum passt zu Ihnen?",
   "Jetzt sind Sie gefragt: Wie steht es mit Ihrer Erfahrung?",
   "Kurz und klar: Mobilität für den Einsatz vor Ort.",
-  "So erreichen wir Sie: Kontaktdaten und gute Erreichbarkeit.",
+  "So erreichen wir Sie: Kontaktdaten, PLZ, Ort und gute Erreichbarkeit.",
   "Gleich geschafft: Prüfen Sie alle Angaben vor dem Absenden.",
   "Vielen Dank für Ihre Bewerbung!",
 ];
@@ -121,6 +123,8 @@ const INITIAL: WizardAnswers = {
   nachname: "",
   email: "",
   phone: "",
+  plz: "",
+  ort: "",
   erreichbarkeit: "",
 };
 
@@ -143,6 +147,7 @@ function buildAnmerkung(
     `Erfahrung: ${ERFAHRUNG_OPTIONS.find((o) => o.id === a.erfahrung)?.label ?? a.erfahrung}`,
     `Mobilität (B + PKW): ${MOBILITAET_OPTIONS.find((o) => o.id === a.mobilitaet)?.label ?? a.mobilitaet}`,
     `Erreichbarkeit: ${ERREICHBAR_OPTIONS.find((o) => o.id === a.erreichbarkeit)?.label ?? a.erreichbarkeit}`,
+    `PLZ / Wohnort: ${a.plz} ${a.ort.trim()}`,
   ];
   if (a.erfahrungDetail.trim()) {
     lines.push(`Kurz zum Werdegang / Erfahrung: ${a.erfahrungDetail.trim()}`);
@@ -297,11 +302,14 @@ export function BewerbungsWizardDialog({ jobTitle, onDismiss }: BewerbungsWizard
     if (step === 3) return Boolean(answers.erfahrung);
     if (step === 4) return Boolean(answers.mobilitaet);
     if (step === 5) {
+      const plzDigits = answers.plz.replace(/\D/g, "");
       return (
         answers.vorname.trim().length > 0 &&
         answers.nachname.trim().length > 0 &&
         /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(answers.email.trim()) &&
         answers.phone.trim().length > 3 &&
+        plzDigits.length === 5 &&
+        answers.ort.trim().length > 0 &&
         Boolean(answers.erreichbarkeit)
       );
     }
@@ -334,6 +342,8 @@ export function BewerbungsWizardDialog({ jobTitle, onDismiss }: BewerbungsWizard
     fd.append("nachname", answers.nachname.trim());
     fd.append("email", answers.email.trim());
     fd.append("phone", answers.phone.trim());
+    fd.append("plz", answers.plz.replace(/\D/g, "").slice(0, 5));
+    fd.append("ort", answers.ort.trim());
     fd.append("stellenangebot", stellenangebot);
     fd.append("anmerkung", anmerkung);
     fd.append("website", "");
@@ -755,6 +765,41 @@ export function BewerbungsWizardDialog({ jobTitle, onDismiss }: BewerbungsWizard
                     className="mt-1 w-full rounded-xl border border-[#0F4F68]/25 px-3 py-2.5 text-sm focus:border-[#0F4F68] focus:outline-none focus:ring-1 focus:ring-[#0F4F68]"
                   />
                 </div>
+                <div className="grid gap-3 sm:grid-cols-2">
+                  <div>
+                    <label className="block text-xs font-medium text-neutral-700" htmlFor="w-plz">
+                      PLZ *
+                    </label>
+                    <input
+                      id="w-plz"
+                      type="text"
+                      inputMode="numeric"
+                      autoComplete="postal-code"
+                      maxLength={5}
+                      value={answers.plz}
+                      onChange={(e) =>
+                        setAnswers((p) => ({ ...p, plz: e.target.value.replace(/\D/g, "").slice(0, 5) }))
+                      }
+                      className="mt-1 w-full rounded-xl border border-[#0F4F68]/25 px-3 py-2.5 text-sm focus:border-[#0F4F68] focus:outline-none focus:ring-1 focus:ring-[#0F4F68]"
+                      placeholder="88316"
+                      title="Fünf Ziffern"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-medium text-neutral-700" htmlFor="w-ort">
+                      Ort *
+                    </label>
+                    <input
+                      id="w-ort"
+                      type="text"
+                      autoComplete="address-level2"
+                      value={answers.ort}
+                      onChange={(e) => setAnswers((p) => ({ ...p, ort: e.target.value }))}
+                      className="mt-1 w-full rounded-xl border border-[#0F4F68]/25 px-3 py-2.5 text-sm focus:border-[#0F4F68] focus:outline-none focus:ring-1 focus:ring-[#0F4F68]"
+                      placeholder="z. B. Isny im Allgäu"
+                    />
+                  </div>
+                </div>
               </div>
               <div>
                 <p className="text-sm font-semibold text-[#0F4F68]">Wann erreichen wir Sie am besten?</p>
@@ -810,6 +855,10 @@ export function BewerbungsWizardDialog({ jobTitle, onDismiss }: BewerbungsWizard
                   <li>
                     <span className="font-semibold text-[#0F4F68]">Kontakt:</span> {answers.vorname} {answers.nachname},{" "}
                     {answers.email}, {answers.phone}
+                  </li>
+                  <li>
+                    <span className="font-semibold text-[#0F4F68]">PLZ / Ort:</span>{" "}
+                    {answers.plz.replace(/\D/g, "").slice(0, 5)} {answers.ort.trim()}
                   </li>
                   {wizardFiles.length > 0 ? (
                     <li>
