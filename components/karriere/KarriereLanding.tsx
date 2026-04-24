@@ -399,10 +399,11 @@ export function KarriereLanding() {
               className="pointer-events-none absolute right-0 top-0 bottom-0 z-[8] w-[75%] max-w-[75vw] bg-gradient-to-r from-[#fafbfc] from-0% via-white/55 via-[28%] to-transparent to-[58%] sm:from-[#fafbfc] sm:via-white/90 sm:via-[38%] sm:to-transparent sm:to-[82%] lg:via-white/95 lg:via-[40%] lg:to-[88%]"
               aria-hidden
             />
-            {/* Mobil: Text unten im Hero (Bild unverändert); ab sm zentriert, leicht nach rechts. */}
-            <div className="relative z-10 mx-auto flex min-h-[min(60vh,508px)] w-full max-w-7xl flex-col justify-center px-4 py-5 max-sm:items-center max-sm:justify-end max-sm:pb-[clamp(3.75rem,14vw,6.25rem)] sm:min-h-[min(56.8vh,478px)] sm:items-stretch sm:justify-center sm:px-6 sm:py-6 lg:min-h-[min(54vh,448px)] lg:px-[var(--ahs-page-gutter)] lg:py-7">
+            {/* Mobil: flex-1 schiebt Kopfbereich nach unten; Bogen sitzt im <header> im Fluss (sichtbar). Ab sm: zentriert, Bogen nur absolut am Hero-Rand. */}
+            <div className="relative z-10 mx-auto flex min-h-[min(60vh,508px)] w-full max-w-7xl flex-col justify-center px-4 py-5 max-sm:items-center max-sm:pb-5 sm:min-h-[min(56.8vh,478px)] sm:items-stretch sm:justify-center sm:px-6 sm:py-6 lg:min-h-[min(54vh,448px)] lg:px-[var(--ahs-page-gutter)] lg:py-7">
+              <div className="max-sm:flex-1 max-sm:min-h-0 sm:hidden" aria-hidden />
               <div className="box-border w-full max-w-full max-sm:flex max-sm:justify-center">
-                <header className="w-full max-w-xl text-center max-sm:mx-auto max-sm:max-w-[min(100%,22rem)] max-sm:translate-x-0 sm:translate-x-5 lg:max-w-[min(100%,30rem)] lg:translate-x-7 xl:max-w-[34rem]">
+                <header className="flex w-full max-w-xl flex-col text-center max-sm:mx-auto max-sm:max-w-[min(100%,22rem)] max-sm:translate-x-0 sm:translate-x-5 lg:max-w-[min(100%,30rem)] lg:translate-x-7 xl:max-w-[34rem]">
                   <h1
                     id="karriere-hero-heading"
                     className="text-balance text-3xl font-bold leading-snug tracking-tight text-[#0F4F68] opacity-0 motion-reduce:animate-none motion-reduce:opacity-100 animate-karriere-hero-in sm:text-4xl md:text-5xl lg:text-[clamp(2rem,1.05rem+1.85vw,2.85rem)] xl:text-[clamp(2.15rem,1.15rem+1.7vw,3.05rem)]"
@@ -421,12 +422,27 @@ export function KarriereLanding() {
                       Bewirb dich jetzt in 1 Minute
                     </Link>
                   </div>
+                  {/* Mobil: gleicher Bogen wie unten, im Fluss unter dem CTA (nicht hinter z-10 verdeckt). */}
+                  <div
+                    className="pointer-events-none relative left-1/2 mt-6 h-[2.75rem] w-screen max-w-[100vw] shrink-0 -translate-x-1/2 sm:hidden"
+                    aria-hidden
+                  >
+                    <svg
+                      className="h-full w-full"
+                      viewBox="0 0 1200 100"
+                      preserveAspectRatio="none"
+                      fill="none"
+                      aria-hidden
+                    >
+                      <path d={KARRIERE_HERO_BOGEN_D} fill="#FFFFFF" />
+                    </svg>
+                  </div>
                 </header>
               </div>
             </div>
-            {/* Bogenübergang nach unten in den weißen Bereich „Offene Stellen“. */}
+            {/* Bogenübergang am Hero-Unterrand (Tablet/Desktop; Mobil siehe <header>). */}
             <div
-              className="pointer-events-none absolute inset-x-0 bottom-0 z-[9] h-[3.25rem] w-full max-sm:h-[2.75rem] sm:h-[clamp(3.5rem,2rem+4vw,5.25rem)]"
+              className="pointer-events-none absolute inset-x-0 bottom-0 z-[9] hidden h-[3.25rem] w-full sm:block sm:h-[clamp(3.5rem,2rem+4vw,5.25rem)]"
               aria-hidden
             >
               <svg

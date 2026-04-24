@@ -8,7 +8,6 @@ import {
   useMemo,
   useRef,
   useState,
-  useTransition,
   type ChangeEvent,
   type KeyboardEvent,
 } from "react";
@@ -70,7 +69,7 @@ const PENSUM_OPTIONS = [
 const ERFAHRUNG_OPTIONS = [
   { id: "lang", label: "Ja, mehrjährige Erfahrung" },
   { id: "wenig", label: "Erste Erfahrung / Praktika" },
-  { id: "quer", label: "Quereinstieg." },
+  { id: "quer", label: "Quereinstieg" },
 ] as const;
 
 const MOBILITAET_OPTIONS = [
@@ -198,8 +197,8 @@ function ChipGroup({
 export function BewerbungsWizardDialog({ jobTitle, onDismiss }: BewerbungsWizardDialogProps) {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const uploadInputRef = useRef<HTMLInputElement>(null);
+  const submitProgressTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const titleId = useId();
-  const [isSubmitPending, startSubmitTransition] = useTransition();
 
   const [step, setStep] = useState(0);
   const [answers, setAnswers] = useState<WizardAnswers>(INITIAL);
@@ -209,6 +208,20 @@ export function BewerbungsWizardDialog({ jobTitle, onDismiss }: BewerbungsWizard
   const [mobilitaetModalOpen, setMobilitaetModalOpen] = useState(false);
   const [wizardLegalConsent, setWizardLegalConsent] = useState(false);
   const [wizardSubmitError, setWizardSubmitError] = useState<string | null>(null);
+  /** useTransition deckt async Server Actions nicht zuverlässig ab – eigener State für UI + Fortschritt. */
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitProgress, setSubmitProgress] = useState(0);
+
+  const clearSubmitProgressTimer = useCallback(() => {
+    if (submitProgressTimerRef.current !== null) {
+      clearInterval(submitProgressTimerRef.current);
+      submitProgressTimerRef.current = null;
+    }
+  }, []);
+
+  useEffect(() => {
+    return () => clearSubmitProgressTimer();
+  }, [clearSubmitProgressTimer]);
 
   useEffect(() => {
     const el = dialogRef.current;
@@ -307,7 +320,7 @@ export function BewerbungsWizardDialog({ jobTitle, onDismiss }: BewerbungsWizard
     setStep((s) => Math.max(s - 1, 0));
   }, []);
 
-  const submitWizard = useCallback(() => {
+  const submitWizard = useCallback(async () => {
     setWizardSubmitError(null);
     if (!wizardLegalConsent) {
       setWizardSubmitError("Bitte bestätigen Sie die AGB und die Datenschutzerklärung.");
@@ -330,19 +343,40 @@ export function BewerbungsWizardDialog({ jobTitle, onDismiss }: BewerbungsWizard
     for (const f of wizardFiles) {
       fd.append("bewerbungsdateien", f);
     }
-    startSubmitTransition(() => {
-      void (async () => {
-        const res = await submitKarriere(fd);
-        if (res.success) {
-          setStep(maxStep);
-        } else {
-          setWizardSubmitError(res.error ?? "Senden fehlgeschlagen. Bitte versuchen Sie es erneut.");
-        }
-      })();
-    });
+
+    clearSubmitProgressTimer();
+    setIsSubmitting(true);
+    setSubmitProgress(12);
+    submitProgressTimerRef.current = setInterval(() => {
+      setSubmitProgress((p) => (p >= 88 ? p : Math.min(88, p + 4 + Math.random() * 9)));
+    }, 170);
+
+    try {
+      const res = await submitKarriere(fd);
+      clearSubmitProgressTimer();
+      if (res.success) {
+        setSubmitProgress(100);
+        await new Promise((r) => setTimeout(r, 420));
+        setStep(maxStep);
+      } else {
+        setWizardSubmitError(res.error ?? "Senden fehlgeschlagen. Bitte versuchen Sie es erneut.");
+      }
+    } catch (e) {
+      clearSubmitProgressTimer();
+      const msg =
+        e instanceof Error && e.message
+          ? `Senden fehlgeschlagen: ${e.message}`
+          : "Senden fehlgeschlagen. Bitte versuchen Sie es erneut.";
+      setWizardSubmitError(msg);
+    } finally {
+      clearSubmitProgressTimer();
+      setIsSubmitting(false);
+      setSubmitProgress(0);
+    }
   }, [
     additionalJobTitles,
     answers,
+    clearSubmitProgressTimer,
     jobTitle,
     maxStep,
     wizardFiles,
@@ -393,7 +427,8 @@ export function BewerbungsWizardDialog({ jobTitle, onDismiss }: BewerbungsWizard
             </div>
             <button
               type="button"
-              className="shrink-0 rounded-xl border border-[#0F4F68]/10 bg-white/90 px-3 py-2 text-xs font-semibold text-[#0F4F68] shadow-sm transition hover:bg-[#F2F9FA] focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2 sm:px-4 sm:text-sm"
+              disabled={isSubmitting}
+              className="shrink-0 rounded-xl border border-[#0F4F68]/10 bg-white/90 px-3 py-2 text-xs font-semibold text-[#0F4F68] shadow-sm transition hover:bg-[#F2F9FA] focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-45 sm:px-4 sm:text-sm"
               onClick={() => dialogRef.current?.close()}
             >
               Abbrechen
@@ -569,6 +604,35 @@ export function BewerbungsWizardDialog({ jobTitle, onDismiss }: BewerbungsWizard
               />
               <p className="mt-1 text-xs text-neutral-500">{answers.erfahrungDetail.length}/500</p>
 
+              {/* Ausgewählte Dateien direkt unter dem Werdegang-Feld (nicht nur in der Upload-Kachel). */}
+              {wizardFiles.length > 0 ? (
+                <ul
+                  className="mt-3 space-y-1.5 text-xs text-neutral-800 sm:text-sm"
+                  aria-label="Ausgewählte Anhänge"
+                >
+                  {wizardFiles.map((f, i) => (
+                    <li
+                      key={`${f.name}-${i}`}
+                      className="flex items-center justify-between gap-2 rounded-lg border border-[#0F4F68]/12 bg-[#F2F9FA]/60 px-2.5 py-2 shadow-sm"
+                    >
+                      <span className="min-w-0 truncate font-medium">{f.name}</span>
+                      <button
+                        type="button"
+                        className="shrink-0 rounded-lg border border-[#0F4F68]/20 bg-white px-2.5 py-1 text-xs font-semibold text-[#0F4F68] hover:bg-[#F2F9FA]"
+                        onClick={() => removeWizardFile(i)}
+                      >
+                        Entfernen
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              ) : null}
+              {fileHint ? (
+                <p className="mt-2 text-xs font-medium text-red-700 sm:text-sm" role="alert">
+                  {fileHint}
+                </p>
+              ) : null}
+
               <div className="mt-4 rounded-xl border border-[#0F4F68]/12 bg-gradient-to-b from-[#F2F9FA]/80 to-white/90 p-3 sm:p-3.5">
                 <p className="text-center text-xs font-semibold text-[#0F4F68] sm:text-sm">
                   Lebenslauf und Zeugnisse (optional)
@@ -612,27 +676,6 @@ export function BewerbungsWizardDialog({ jobTitle, onDismiss }: BewerbungsWizard
                     </span>
                   </button>
                 </div>
-                {fileHint ? (
-                  <p className="mt-2 text-center text-xs font-medium text-red-700 sm:text-sm" role="alert">
-                    {fileHint}
-                  </p>
-                ) : null}
-                {wizardFiles.length > 0 ? (
-                  <ul className="mt-2 space-y-1.5 text-xs text-neutral-800 sm:text-sm">
-                    {wizardFiles.map((f, i) => (
-                      <li key={`${f.name}-${i}`} className="flex items-center justify-between gap-2 rounded-lg bg-white/95 px-2.5 py-2 shadow-sm ring-1 ring-[#0F4F68]/10">
-                        <span className="min-w-0 truncate">{f.name}</span>
-                        <button
-                          type="button"
-                          className="shrink-0 rounded-lg border border-[#0F4F68]/20 px-2.5 py-1 text-xs font-semibold text-[#0F4F68] hover:bg-[#F2F9FA]"
-                          onClick={() => removeWizardFile(i)}
-                        >
-                          Entfernen
-                        </button>
-                      </li>
-                    ))}
-                  </ul>
-                ) : null}
               </div>
             </div>
           )}
@@ -820,17 +863,19 @@ export function BewerbungsWizardDialog({ jobTitle, onDismiss }: BewerbungsWizard
 
               <button
                 type="button"
-                disabled={isSubmitPending || !wizardLegalConsent}
-                onClick={submitWizard}
+                disabled={isSubmitting || !wizardLegalConsent}
+                onClick={() => {
+                  void submitWizard();
+                }}
                 className="flex min-h-[52px] w-full items-center justify-center rounded-2xl bg-[#0F4F68] px-6 py-4 text-base font-bold text-white shadow-lg transition hover:bg-[#0c3d52] focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
               >
-                {isSubmitPending ? "Wird gesendet …" : "Bewerbung abschicken"}
+                {isSubmitting ? "Wird gesendet …" : "Bewerbung abschicken"}
               </button>
             </div>
           )}
 
           {step === 7 && (
-            <div className="flex flex-col items-center px-2 py-6 text-center sm:py-10">
+            <div className="flex flex-col items-center px-3 py-6 text-center sm:px-5 sm:py-10">
               <h2
                 id={titleId}
                 className="text-balance text-xl font-bold leading-snug text-[#0F4F68] sm:text-2xl"
@@ -838,30 +883,19 @@ export function BewerbungsWizardDialog({ jobTitle, onDismiss }: BewerbungsWizard
                 Vielen Dank für Ihre Bewerbung!
               </h2>
               <p className="mt-5 max-w-md text-pretty text-sm leading-relaxed text-neutral-700 sm:text-base">
-                Wir werden uns umgehend bei Ihnen melden. Falls Sie weitere Fragen haben, dürfen Sie uns gerne
-                kontaktieren.
+                Wir werden uns umgehend bei Ihnen melden. Bei Rückfragen erreichen Sie Daniel Niebauer über das
+                Bewerbungsformular auf der Karriere-Seite.
               </p>
-              <Link
-                href="/kontakt"
-                title="Zur Kontaktseite"
-                className="mt-8 inline-flex items-center gap-2.5 rounded-lg text-[#0F4F68] transition hover:text-[#0c3d52] focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2"
-              >
-                <svg
-                  className="h-7 w-7 shrink-0 text-[#F78F2E]"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  strokeWidth={2.4}
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  aria-hidden
+              <div className="mt-8 flex w-full justify-center sm:mt-10">
+                <Link
+                  href="/karriere#bewerbung-form"
+                  title="Zum Kontakt- und Bewerbungsformular (Daniel Niebauer)"
+                  className="inline-flex min-h-[48px] w-full max-w-[16.5rem] items-center justify-center rounded-xl bg-[#F78F2E] px-6 py-3 text-base font-bold text-white shadow-[0_8px_24px_rgba(247,143,46,0.35)] transition hover:bg-[#ea8328] hover:shadow-[0_10px_28px_rgba(247,143,46,0.42)] focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2 sm:max-w-xs sm:py-3.5"
+                  onClick={() => dialogRef.current?.close()}
                 >
-                  <path d="M20 6 9 17l-5-5" />
-                </svg>
-                <span className="text-base font-semibold underline decoration-[#0F4F68] underline-offset-2 sm:text-lg">
                   Kontakt
-                </span>
-              </Link>
+                </Link>
+              </div>
             </div>
           )}
         </div>
@@ -874,10 +908,11 @@ export function BewerbungsWizardDialog({ jobTitle, onDismiss }: BewerbungsWizard
         >
           <button
             type="button"
+            disabled={isSubmitting && step !== 0 && step !== 7}
             onClick={
               step === 0 || step === 7 ? () => dialogRef.current?.close() : goBack
             }
-            className="order-2 min-h-[48px] rounded-xl border-2 border-[#0F4F68]/20 px-4 text-sm font-semibold text-[#0F4F68] transition hover:bg-[#F2F9FA] focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2 sm:order-1"
+            className="order-2 min-h-[48px] rounded-xl border-2 border-[#0F4F68]/20 px-4 text-sm font-semibold text-[#0F4F68] transition hover:bg-[#F2F9FA] focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-45 sm:order-1"
           >
             {step === 0 || step === 7 ? "Schließen" : "Zurück"}
           </button>
@@ -892,6 +927,33 @@ export function BewerbungsWizardDialog({ jobTitle, onDismiss }: BewerbungsWizard
             </button>
           ) : null}
         </div>
+
+        {isSubmitting ? (
+          <div
+            className="absolute inset-0 z-[85] flex flex-col items-center justify-center gap-5 bg-gradient-to-b from-white/96 via-[#F2F9FA]/95 to-white/96 px-6 py-10 backdrop-blur-[4px]"
+            role="status"
+            aria-live="polite"
+            aria-busy="true"
+          >
+            <div className="max-w-sm text-center">
+              <p className="text-lg font-bold text-[#0F4F68] sm:text-xl">Bewerbung wird gesendet …</p>
+              <p className="mt-2 text-sm leading-snug text-neutral-600">
+                Bitte kurz warten – bei mehreren Anhängen kann es etwas länger dauern.
+              </p>
+            </div>
+            <div className="w-full max-w-sm">
+              <div className="h-3 w-full overflow-hidden rounded-full bg-[#0F4F68]/12 shadow-[inset_0_1px_3px_rgba(15,79,104,0.12)] ring-1 ring-[#0F4F68]/10">
+                <div
+                  className="h-full min-w-[8%] rounded-full bg-gradient-to-r from-[#0F4F68] via-[#1a6d8a] to-[#F78F2E] shadow-[0_0_14px_rgba(247,143,46,0.35)] transition-[width] duration-200 ease-out motion-reduce:transition-none"
+                  style={{ width: `${Math.min(100, Math.max(10, submitProgress))}%` }}
+                />
+              </div>
+              <p className="mt-2.5 text-center text-xs font-semibold tabular-nums tracking-wide text-[#0F4F68]/85">
+                {Math.round(Math.min(100, submitProgress))} %
+              </p>
+            </div>
+          </div>
+        ) : null}
 
         {mobilitaetModalOpen ? (
           <div
