@@ -233,7 +233,7 @@ export function KarriereForm({ hideFileAttachments = false }: KarriereFormProps)
           </option>
           {KARRIERE_STELLENANGEBOTE.map((option) => (
             <option key={option} value={option}>
-              {option}
+              {option} (m/w/d)
             </option>
           ))}
         </select>
