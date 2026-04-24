@@ -32,7 +32,7 @@ const KARRIERE_ARBEITGEBER_INTRO =
 
 /** Arbeitgeber-Vorteile – Darstellung wie „Ihre Vorteile bei uns“ auf der Startseite. */
 const KARRIERE_ARBEITGEBER_FAKTEN = [
-  "Tarifgerechte Vergütung und planbare Arbeitszeiten mit klaren Strukturen",
+  "Keine Wochenend- und Feiertagsarbeit. Planbare Arbeitszeiten, die sich an Ihren Alltag anpassen.",
   "Echte Teamkultur: Einarbeitung, fester Ansprechpartner und Unterstützung vor Ort",
   "Fort- und Weiterbildungen – wir investieren in Ihre Entwicklung",
   "Sinnstiftende Arbeit in der Region, nah bei Menschen im Alltag",
