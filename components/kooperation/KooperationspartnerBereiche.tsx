@@ -23,6 +23,19 @@ const BETRIEBLICH_CORNER_IMG = {
   height: 403,
 } as const;
 
+const HAUSWIRTSCHAFT_CORNER_IMG = {
+  src: "/images/kooperation_hauswirtschaft.webp",
+  width: 516,
+  height: 403,
+} as const;
+
+/** Karten mit Teaserbild, das über die Kante ragt. */
+const KOOP_CORNER_OVERFLOW_IDS = new Set([
+  "pflegehilfsmittel",
+  "betriebliche-pflegeberatung",
+  "hauswirtschaft-betreuung",
+]);
+
 /** Teaser oben links/rechts; 80 % der zuletzt genutzten Maximalgröße (20 % kleiner). */
 const KOOP_CORNER_IMG_SIZE =
   "h-auto w-[min(66%,25.875rem)] max-w-[495px] sm:w-[min(62%,29.25rem)] sm:max-w-[495px] lg:max-w-[520px]";
@@ -80,6 +93,7 @@ const BEREICHE: BereichDef[] = [
     paragraphs: [
       `Dann werden Sie Kooperationspartner von ${siteConfig.name}. Wir stellen Ihnen eigene Flyer sowie einen persönlichen Partner-Code zur Verfügung, der bei jeder Bestellung angegeben werden kann. So können Sie vermittelte Vorgänge einfach zuordnen, den Status nachvollziehen und nach erfolgreichem Abschluss eine Tippgeberprovision erhalten.`,
     ],
+    featuresHeading: "Ihre Vorteile als Kooperationspartner",
     features: [
       {
         title: "Eigene Flyer für Ihre Kunden",
@@ -216,9 +230,7 @@ export function KooperationspartnerBereiche() {
                 <article
                   className={[
                     "relative mx-auto w-full max-w-full rounded-2xl border border-[#0F4F68]/12 bg-gradient-to-br p-5 shadow-[0_12px_40px_-20px_rgba(15,79,104,0.25)] sm:p-8 lg:p-10",
-                    b.id === "pflegehilfsmittel" || b.id === "betriebliche-pflegeberatung"
-                      ? "overflow-visible"
-                      : "overflow-hidden",
+                    KOOP_CORNER_OVERFLOW_IDS.has(b.id) ? "overflow-visible" : "overflow-hidden",
                     isRight
                       ? "from-white via-[#f7fbfc] to-[#eef6f9] lg:ml-8 lg:rounded-r-[2rem] lg:rounded-l-3xl lg:pl-12 lg:pr-14"
                       : "from-[#f7fbfc] via-white to-white lg:mr-8 lg:rounded-l-[2rem] lg:rounded-r-3xl lg:pl-14 lg:pr-12",
@@ -246,15 +258,26 @@ export function KooperationspartnerBereiche() {
                       className={`pointer-events-none absolute left-0 top-0 z-10 select-none sm:-top-5 sm:-left-5 lg:-left-6 lg:-top-6 ${KOOP_CORNER_IMG_SIZE} ${KOOP_CARD_IMG_SHADOW}`}
                     />
                   ) : null}
+                  {b.id === "hauswirtschaft-betreuung" ? (
+                    /* eslint-disable-next-line @next/next/no-img-element -- Teaserbild wie Hero (filter-Schatten), kein Next/Image-Wrapper */
+                    <img
+                      src={HAUSWIRTSCHAFT_CORNER_IMG.src}
+                      alt="Hauswirtschaft und Betreuung – Kooperation"
+                      width={HAUSWIRTSCHAFT_CORNER_IMG.width}
+                      height={HAUSWIRTSCHAFT_CORNER_IMG.height}
+                      decoding="async"
+                      className={`pointer-events-none absolute left-0 top-0 z-10 select-none sm:-top-5 sm:-left-5 lg:-left-6 lg:-top-6 ${KOOP_CORNER_IMG_SIZE} ${KOOP_CARD_IMG_SHADOW}`}
+                    />
+                  ) : null}
                   <div
                     className={[
                       "flex min-w-0 flex-col gap-4 text-left",
                       isRight ? "lg:items-end lg:text-right" : "lg:items-start",
-                      b.id === "pflegehilfsmittel" || b.id === "betriebliche-pflegeberatung"
-                        ? "pt-[11.5rem] sm:pt-0"
-                        : "",
+                      KOOP_CORNER_OVERFLOW_IDS.has(b.id) ? "pt-[11.5rem] sm:pt-0" : "",
                       b.id === "pflegehilfsmittel" ? KOOP_CORNER_TEXT_PR : "",
-                      b.id === "betriebliche-pflegeberatung" ? KOOP_CORNER_TEXT_PL : "",
+                      b.id === "betriebliche-pflegeberatung" || b.id === "hauswirtschaft-betreuung"
+                        ? KOOP_CORNER_TEXT_PL
+                        : "",
                     ].join(" ")}
                   >
                     <h3 className="text-xl font-bold tracking-tight text-[#0F4F68] sm:text-2xl lg:max-w-2xl">
