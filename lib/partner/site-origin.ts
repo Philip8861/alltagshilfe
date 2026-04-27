@@ -1,3 +1,5 @@
+import { siteConfig } from "@/config/site";
+
 /**
  * Basis-URL für Auth-Redirects (E-Mail-Bestätigung). Hosting-portabel über NEXT_PUBLIC_SITE_URL.
  */
@@ -47,6 +49,9 @@ export function getAuthRedirectSiteBaseUrl(requestOrigin?: string): string | nul
     }
   }
 
+  /** Build-Zeit-Basis (NEXT_PUBLIC_SITE_URL bzw. https://$VERCEL_URL) — stabil bei Server Actions ohne sinnvolle Headers. */
+  const siteBaked = siteConfig.baseUrl?.startsWith("http") ? siteConfig.baseUrl.replace(/\/$/, "") : "";
+
   const pickNonLocal = (u: string): string | null => {
     if (!u.startsWith("http")) return null;
     try {
@@ -57,7 +62,7 @@ export function getAuthRedirectSiteBaseUrl(requestOrigin?: string): string | nul
     return null;
   };
 
-  for (const c of [pickNonLocal(envUrl), pickNonLocal(reqUrl), pickNonLocal(vercelUrl)]) {
+  for (const c of [pickNonLocal(envUrl), pickNonLocal(reqUrl), pickNonLocal(siteBaked), pickNonLocal(vercelUrl)]) {
     if (c) return c;
   }
 

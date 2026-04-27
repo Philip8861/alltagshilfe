@@ -51,6 +51,9 @@ const PASSWORD_RESET_SUCCESS_DE =
  * Sendet die Supabase-Passwort-Reset-E-Mail (Link, kein Klartext-Passwort).
  * Versand nur über Supabase (`resetPasswordForEmail`) — die Links sind PKCE-kompatibel und zuverlässig.
  * Markenlayout: `supabase/email-templates/password-recovery-markenlayout.html` im Supabase-Dashboard einfügen.
+ * Absender „Alltagshilfe-Süd“: Supabase → Project Settings → Auth → SMTP (Custom SMTP wie Website).
+ * Link funktioniert nur, wenn Site URL + Redirect URLs in Supabase die Production-Domain inkl. `/auth/callback` erlauben
+ * (siehe `.env.example`). Optional `AUTH_REDIRECT_BASE_URL` setzen.
  * Gleiche Erfolgsmeldung unabhängig davon, ob die Adresse existiert (Enumerationsschutz).
  */
 export async function requestPartnerPasswordResetAction(
@@ -86,11 +89,14 @@ export async function requestPartnerPasswordResetAction(
     };
   }
 
-  const redirectTo = `${base}/auth/callback?next=${encodeURIComponent("/partner/passwort-zuruecksetzen")}`;
+  const redirectTo = new URL("/auth/callback", `${base.replace(/\/$/, "")}/`);
+  redirectTo.searchParams.set("next", "/partner/passwort-zuruecksetzen");
 
   try {
     const supabase = await createSupabaseServerClient();
-    const { error } = await supabase.auth.resetPasswordForEmail(resolved.email, { redirectTo });
+    const { error } = await supabase.auth.resetPasswordForEmail(resolved.email, {
+      redirectTo: redirectTo.toString(),
+    });
     if (error) {
       console.error("[requestPartnerPasswordResetAction] resetPasswordForEmail:", error.message);
     }
