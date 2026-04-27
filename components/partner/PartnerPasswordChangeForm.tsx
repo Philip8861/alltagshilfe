@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import { useRouter } from "next/navigation";
 import { checkPartnerPasswordChangeRateLimitAction } from "@/lib/actions/partner-auth";
 import { PartnerAuthStatusBox } from "@/components/partner/PartnerAuthStatusBox";
 import { createSupabaseBrowserClient } from "@/lib/supabase/client";
@@ -75,6 +76,7 @@ function PasswordField({
 }
 
 export function PartnerPasswordChangeForm() {
+  const router = useRouter();
   const [pending, startTransition] = useTransition();
   const [message, setMessage] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
@@ -139,6 +141,7 @@ export function PartnerPasswordChangeForm() {
             (e.target as HTMLFormElement).reset();
             setSuccess(true);
             setMessage(null);
+            router.refresh();
           } catch {
             setMessage("Unerwarteter Fehler. Bitte später erneut versuchen.");
           }

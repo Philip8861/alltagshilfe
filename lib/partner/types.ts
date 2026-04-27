@@ -20,6 +20,8 @@ export type PartnerProfile = {
   responsibility_areas?: string[] | null;
   /** Gesetzt, wenn der Partner das Passwort selbst geändert hat (kein Klartext). */
   password_changed_at?: string | null;
+  /** Wenn true: Dialog „Passwort ändern?“ nicht mehr anzeigen (Migration 014). */
+  password_change_prompt_suppress?: boolean | null;
   /** Auszahlung (Migration 011). */
   iban?: string | null;
   bic?: string | null;

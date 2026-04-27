@@ -1,6 +1,10 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { PartnerProfile } from "@/lib/partner/types";
 
+/** Alle Spalten inkl. Bankdaten + Portal-Präferenzen + Passwort-Hinweis (Migration 011 + 013 + 014). */
+const SELECT_FULL_BANK_PREFS_SUPPRESS =
+  "id, display_name, organization_name, role, created_at, updated_at, salutation, first_name, last_name, recruited_by, phone, responsibility_areas, password_changed_at, partner_referral_code, iban, bic, account_holder, portal_preferences, password_change_prompt_suppress";
+
 /** Alle Spalten inkl. Bankdaten + Portal-Präferenzen (Migration 011 + 013). */
 const SELECT_FULL_BANK_PREFS =
   "id, display_name, organization_name, role, created_at, updated_at, salutation, first_name, last_name, recruited_by, phone, responsibility_areas, password_changed_at, partner_referral_code, iban, bic, account_holder, portal_preferences";
@@ -49,6 +53,7 @@ export async function loadPartnerProfileRow(
   userId: string,
 ): Promise<{ profile: PartnerProfile | null; errorMessage?: string }> {
   const attempts = [
+    SELECT_FULL_BANK_PREFS_SUPPRESS,
     SELECT_FULL_BANK_PREFS,
     SELECT_FULL_BANK,
     SELECT_FULL,

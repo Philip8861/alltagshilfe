@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { unstable_noStore as noStore } from "next/cache";
+import { PartnerPasswordPromptReenable } from "@/components/partner/PartnerPasswordPromptReenable";
 import { requirePartnerLogin } from "@/lib/partner/auth";
 
 export const metadata: Metadata = {
@@ -47,7 +48,9 @@ function ChevronIcon() {
 
 export default async function PartnerEinstellungenPage() {
   noStore();
-  await requirePartnerLogin();
+  const { profile } = await requirePartnerLogin();
+  const showPasswordPromptReenable =
+    !profile.password_changed_at?.trim() && profile.password_change_prompt_suppress === true;
 
   return (
     <div className="space-y-8">
@@ -57,6 +60,12 @@ export default async function PartnerEinstellungenPage() {
           Wählen Sie einen Bereich — die Details öffnen sich auf der nächsten Seite.
         </p>
       </div>
+
+      {showPasswordPromptReenable ? (
+        <div className="mx-auto max-w-xl sm:max-w-2xl">
+          <PartnerPasswordPromptReenable />
+        </div>
+      ) : null}
 
       <ul className="mx-auto flex max-w-xl list-none flex-col gap-3 p-0 sm:max-w-2xl" role="list">
         {tiles.map((t) => (

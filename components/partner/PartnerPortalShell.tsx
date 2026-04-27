@@ -2,10 +2,13 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { PartnerInitialPasswordPrompt } from "@/components/partner/PartnerInitialPasswordPrompt";
 import { PartnerLogoutButton } from "@/components/partner/PartnerLogoutButton";
 
 type Props = {
   children: React.ReactNode;
+  /** Server: Hinweis zum ersten Passwortwechsel anzeigen (ohne Session-Dismiss / ohne DB-Unterdrückung). */
+  initialPasswordChangePrompt?: boolean;
 };
 
 const shell = "bg-[#F2F9FA]";
@@ -38,7 +41,7 @@ function SettingsGearIcon() {
   );
 }
 
-export function PartnerPortalShell({ children }: Props) {
+export function PartnerPortalShell({ children, initialPasswordChangePrompt = false }: Props) {
   const pathname = usePathname();
   const dashActive = pathname === "/partner/dashboard" || pathname === "/partner";
   const statActive = pathname === "/partner/statistik" || pathname.startsWith("/partner/statistik/");
@@ -89,6 +92,10 @@ export function PartnerPortalShell({ children }: Props) {
       <main className="order-1 min-w-0 flex-1 bg-[#FAFBFC] pb-[4.5rem] md:pb-0">
         <div className="mx-auto w-full max-w-[min(100%,96rem)] px-4 py-6 sm:px-6 lg:px-10 lg:py-8">{children}</div>
       </main>
+
+      {initialPasswordChangePrompt ? (
+        <PartnerInitialPasswordPrompt shouldPrompt={initialPasswordChangePrompt} />
+      ) : null}
     </div>
   );
 }

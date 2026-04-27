@@ -56,6 +56,11 @@ export function rateLimitPartnerPortalPrefs(identifier: string): { success: bool
   return rateLimitWithConfig(`partner-prefs:${identifier}`, 30, 60 * 60 * 1000);
 }
 
+/** Passwort-Hinweis unterdrücken / wieder aktivieren (Partnerportal). */
+export function rateLimitPartnerPasswordPrompt(identifier: string): { success: boolean; remaining: number } {
+  return rateLimitWithConfig(`partner-pwd-prompt:${identifier}`, 30, 60 * 60 * 1000);
+}
+
 /** Verwaltungs-Login (Partner-System-Admin, env-Zugang). */
 export function rateLimitSystemAdminLogin(identifier: string): { success: boolean; remaining: number } {
   return rateLimitWithConfig(`partner-sys-admin-login:${identifier}`, 10, 15 * 60 * 1000);

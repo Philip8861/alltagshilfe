@@ -8,6 +8,12 @@ export const metadata: Metadata = {
 };
 
 export default async function PartnerPortalLayout({ children }: { children: React.ReactNode }) {
-  await requirePartnerLogin();
-  return <PartnerPortalShell>{children}</PartnerPortalShell>;
+  const { profile } = await requirePartnerLogin();
+  const hasChangedPassword = Boolean(profile.password_changed_at?.trim());
+  const suppressPrompt = profile.password_change_prompt_suppress === true;
+  const initialPasswordChangePrompt = !hasChangedPassword && !suppressPrompt;
+
+  return (
+    <PartnerPortalShell initialPasswordChangePrompt={initialPasswordChangePrompt}>{children}</PartnerPortalShell>
+  );
 }

@@ -60,7 +60,11 @@ function statusPill(admin: PartnerTipAdminStatus): { label: string; className: s
     case "warten_auf_rueckmeldung":
       return { label, className: "bg-violet-600 text-white" };
     case "bezahlt":
-      return { label, className: "bg-teal-600 text-white" };
+      return {
+        label,
+        className:
+          "border border-green-600 bg-green-50 text-green-900 shadow-sm ring-1 ring-green-600/20",
+      };
     case "erledigt":
       return { label, className: "bg-emerald-600 text-white" };
     case "abgelehnt":
