@@ -181,17 +181,28 @@ export function PartnerDashboardClient({
         </div>
 
         <div className={`${cardBase} partner-dash-delay-2 relative z-[1]`} data-tutorial="partner-provision-monatlich">
-          <p className="text-xs font-semibold leading-snug text-[#0F4F68] sm:text-[0.8125rem]">
-            Monatliche Tippgeberprovision
-          </p>
-          <p className="mt-1 text-2xl font-semibold text-[#0F4F68] sm:text-3xl">
-            <PartnerAnimatedEuro value={provisionMonatlichEur} durationMs={1600} />
-          </p>
-          <p className="text-xs text-neutral-600">
-            {provisionMonatlichEur > 0
-              ? "Summe Monatsprovisionen (betriebliche Pflegeberatung, vertraglich erfasst)"
-              : "Noch keine Monatsprovision erfasst"}
-          </p>
+          <div className="flex items-start gap-4">
+            <div className={`${iconWrap} motion-safe:animate-partner-soft-float`} aria-hidden>
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M6 18V10" strokeLinecap="round" />
+                <path d="M12 18V6" strokeLinecap="round" />
+                <path d="M18 18v-8" strokeLinecap="round" />
+              </svg>
+            </div>
+            <div className="min-w-0">
+              <p className="text-[0.65rem] font-semibold uppercase text-[#0F4F68]">
+                Monatliche Tippgeberprovision
+              </p>
+              <p className="mt-1 text-2xl font-semibold text-[#0F4F68] sm:text-3xl">
+                <PartnerAnimatedEuro value={provisionMonatlichEur} durationMs={1600} />
+              </p>
+              <p className="mt-0.5 text-xs text-neutral-600">
+                {provisionMonatlichEur > 0
+                  ? "Summe Monatsprovisionen (betriebliche Pflegeberatung, vertraglich erfasst)"
+                  : "Noch keine Monatsprovision erfasst"}
+              </p>
+            </div>
+          </div>
         </div>
 
         <div className={`${cardBase} partner-dash-delay-3 relative z-[1]`} data-tutorial="partner-provision-einmal">
