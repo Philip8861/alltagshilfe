@@ -192,7 +192,7 @@ export function RatgeberHub() {
           {/* Hintergrundbild in eigenem Layer clippen (untere Ecken) */}
           <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden rounded-b-3xl" aria-hidden>
             <Image
-              src="/images/ratgeber_hintergrund.webp"
+              src="/images/Ratgeber/ratgeber.webp"
               alt=""
               fill
               className="object-contain object-center"
