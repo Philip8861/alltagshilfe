@@ -39,6 +39,18 @@ export default async function PartnerLoginPage({ searchParams }: Props) {
           Melden Sie sich an, um Fortschritte und abgeschlossene Konfigurationen einzusehen.
         </p>
 
+        {reason === "reset_expired" ? (
+          <div
+            className="mx-auto mt-4 max-w-md rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-left text-sm text-amber-950"
+            role="status"
+          >
+            <p className="font-semibold">Link abgelaufen oder ungültig</p>
+            <p className="mt-1 text-amber-900/90">
+              Bitte fordern Sie unten unter „Passwort vergessen?“ erneut einen Link per E-Mail an.
+            </p>
+          </div>
+        ) : null}
+
         {(session && !session.profile) || reason === "no_profile" ? (
           <div
             className="mt-6 rounded-2xl border border-amber-200 bg-amber-50 p-5 text-left text-sm text-amber-950 sm:mt-8"

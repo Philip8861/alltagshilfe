@@ -46,6 +46,11 @@ export function rateLimitPartnerPasswordChange(identifier: string): { success: b
   return rateLimitWithConfig(`partner-password:${identifier}`, 8, 60 * 60 * 1000);
 }
 
+/** Passwort per E-Mail zurücksetzen (Partner-Login). */
+export function rateLimitPartnerPasswordReset(identifier: string): { success: boolean; remaining: number } {
+  return rateLimitWithConfig(`partner-pwd-reset:${identifier}`, 5, 15 * 60 * 1000);
+}
+
 /** E-Mail-Adresse ändern (Partnerportal). */
 export function rateLimitPartnerEmailChange(identifier: string): { success: boolean; remaining: number } {
   return rateLimitWithConfig(`partner-email:${identifier}`, 5, 60 * 60 * 1000);

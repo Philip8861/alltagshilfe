@@ -7,3 +7,8 @@ export const partnerLoginSchema = z.object({
 });
 
 export type PartnerLoginInput = z.infer<typeof partnerLoginSchema>;
+
+/** Nur Anmeldename/E-Mail (Passwort-Vergessen). */
+export const partnerPasswordResetRequestSchema = z.object({
+  login: z.string().trim().min(1, "Anmeldename oder E-Mail erforderlich.").max(320),
+});

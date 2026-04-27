@@ -2,7 +2,10 @@
 
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
-import { checkPartnerLoginRateLimitAction } from "@/lib/actions/partner-auth";
+import {
+  checkPartnerLoginRateLimitAction,
+  requestPartnerPasswordResetAction,
+} from "@/lib/actions/partner-auth";
 import { PartnerAuthStatusBox } from "@/components/partner/PartnerAuthStatusBox";
 import { createSupabaseBrowserClient } from "@/lib/supabase/client";
 import { partnerLoginSchema } from "@/lib/validations/partner";
@@ -23,6 +26,10 @@ export function PartnerLoginForm({
   const [pending, startTransition] = useTransition();
   const [message, setMessage] = useState<string | null>(null);
   const [showPassword, setShowPassword] = useState(false);
+  const [resetOpen, setResetOpen] = useState(false);
+  const [resetLogin, setResetLogin] = useState("");
+  const [resetFeedback, setResetFeedback] = useState<{ ok: boolean; text: string } | null>(null);
+  const [resetSending, setResetSending] = useState(false);
 
   return (
     <form
@@ -88,7 +95,7 @@ export function PartnerLoginForm({
           type="text"
           autoComplete="username"
           required
-          disabled={disabled || pending}
+          disabled={disabled || pending || resetSending}
           className="mt-2 w-full rounded-xl border border-neutral-200 px-4 py-3 text-neutral-900 outline-none ring-[#0F4F68] focus:ring-2 disabled:opacity-60"
         />
       </div>
@@ -103,14 +110,14 @@ export function PartnerLoginForm({
             type={showPassword ? "text" : "password"}
             autoComplete="current-password"
             required
-            disabled={disabled || pending}
+            disabled={disabled || pending || resetSending}
             className="w-full rounded-xl border border-neutral-200 py-3 pl-4 pr-12 text-neutral-900 outline-none ring-[#0F4F68] focus:ring-2 disabled:opacity-60"
           />
           <button
             type="button"
             className="absolute right-1 top-1/2 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-lg text-[#0F4F68]/70 transition hover:bg-[#0F4F68]/[0.08] hover:text-[#0F4F68] disabled:opacity-40"
             onClick={() => setShowPassword((v) => !v)}
-            disabled={disabled || pending}
+            disabled={disabled || pending || resetSending}
             aria-label={showPassword ? "Passwort verbergen" : "Passwort anzeigen"}
             aria-pressed={showPassword}
           >
@@ -139,9 +146,77 @@ export function PartnerLoginForm({
           </button>
         </div>
       </div>
+
+      <div className="flex flex-col items-center gap-1 border-t border-[#0F4F68]/10 pt-4">
+        <button
+          type="button"
+          className="text-sm font-semibold text-[#0F4F68] underline underline-offset-2 hover:text-[#0c3d52] disabled:opacity-50"
+          disabled={disabled || pending || resetSending}
+          aria-expanded={resetOpen}
+          onClick={() => {
+            setResetOpen((v) => !v);
+            setResetFeedback(null);
+          }}
+        >
+          Passwort vergessen?
+        </button>
+        {resetOpen ? (
+          <div className="w-full space-y-3 pt-2 text-left">
+            <p className="text-center text-xs text-neutral-600 sm:text-sm">
+              Wir senden Ihnen eine E-Mail mit einem sicheren Link. Dort legen Sie ein neues Passwort fest (kein Passwort
+              wird per E-Mail mitgeteilt).
+            </p>
+            <div>
+              <label htmlFor="partner-reset-login" className="block text-sm font-semibold text-[#0F4F68]">
+                Anmeldename oder E-Mail
+              </label>
+              <input
+                id="partner-reset-login"
+                name="reset_login"
+                type="text"
+                autoComplete="username"
+                value={resetLogin}
+                onChange={(e) => setResetLogin(e.target.value)}
+                disabled={disabled || pending || resetSending}
+                className="mt-2 w-full rounded-xl border border-neutral-200 px-4 py-3 text-neutral-900 outline-none ring-[#0F4F68] focus:ring-2 disabled:opacity-60"
+              />
+            </div>
+            {resetFeedback ? (
+              <p
+                className={`text-sm ${resetFeedback.ok ? "text-[#0F4F68]" : "text-red-700"}`}
+                role={resetFeedback.ok ? "status" : "alert"}
+              >
+                {resetFeedback.text}
+              </p>
+            ) : null}
+            <button
+              type="button"
+              disabled={disabled || pending || resetSending}
+              className="inline-flex min-h-[44px] w-full items-center justify-center rounded-xl border border-[#0F4F68]/25 bg-white px-4 py-2.5 text-sm font-semibold text-[#0F4F68] transition hover:bg-[#0F4F68]/[0.06] disabled:cursor-not-allowed disabled:opacity-60"
+              onClick={() => {
+                setResetFeedback(null);
+                const fd = new FormData();
+                fd.set("reset_login", resetLogin);
+                void (async () => {
+                  setResetSending(true);
+                  try {
+                    const result = await requestPartnerPasswordResetAction(null, fd);
+                    setResetFeedback({ ok: result.ok, text: result.message });
+                  } finally {
+                    setResetSending(false);
+                  }
+                })();
+              }}
+            >
+              {resetSending ? "Wird gesendet…" : "Link per E-Mail anfordern"}
+            </button>
+          </div>
+        ) : null}
+      </div>
+
       <button
         type="submit"
-        disabled={disabled || pending}
+        disabled={disabled || pending || resetSending}
         className="inline-flex min-h-[48px] w-full items-center justify-center rounded-xl bg-[#0F4F68] px-4 py-3 text-sm font-semibold text-white shadow-md shadow-[#0F4F68]/25 transition hover:bg-[#0c3d52] hover:shadow-lg disabled:cursor-not-allowed disabled:opacity-60"
       >
         {pending ? "Anmeldung…" : "Anmelden"}
