@@ -17,6 +17,22 @@ const PFLEGEHILFSMITTEL_CORNER_IMG = {
   height: 403,
 } as const;
 
+const BETRIEBLICH_CORNER_IMG = {
+  src: "/images/kooperation_betriebliche_pflegeberatung.webp",
+  width: 516,
+  height: 403,
+} as const;
+
+/** Gleiche Darstellungsgröße wie Pflegehilfsmittel-Teaser (oben links bzw. rechts gespiegelt). */
+const KOOP_CORNER_IMG_SIZE =
+  "h-auto w-[min(82%,32.35rem)] max-w-[619px] sm:w-[min(78%,36.55rem)] sm:max-w-[619px] lg:max-w-[650px]";
+
+const KOOP_CORNER_TEXT_PR =
+  "pr-[clamp(9.25rem,38vw,13rem)] sm:pr-[clamp(11rem,44vw,18rem)] md:pr-[min(72%,22rem)] lg:pr-[min(78%,31.5rem)]";
+
+const KOOP_CORNER_TEXT_PL =
+  "pl-[clamp(9.25rem,38vw,13rem)] sm:pl-[clamp(11rem,44vw,18rem)] md:pl-[min(72%,22rem)] lg:pl-[min(78%,31.5rem)]";
+
 /** Gleiche Optik wie die Haken bei „Ihre Vorteile“ im Kooperations-Hero. */
 function KooperationHeroCheckIcon({ className = "" }: { className?: string }) {
   return (
@@ -200,7 +216,9 @@ export function KooperationspartnerBereiche() {
                 <article
                   className={[
                     "relative mx-auto w-full max-w-full rounded-2xl border border-[#0F4F68]/12 bg-gradient-to-br p-5 shadow-[0_12px_40px_-20px_rgba(15,79,104,0.25)] sm:p-8 lg:p-10",
-                    b.id === "pflegehilfsmittel" ? "overflow-visible" : "overflow-hidden",
+                    b.id === "pflegehilfsmittel" || b.id === "betriebliche-pflegeberatung"
+                      ? "overflow-visible"
+                      : "overflow-hidden",
                     isRight
                       ? "from-white via-[#f7fbfc] to-[#eef6f9] lg:ml-8 lg:rounded-r-[2rem] lg:rounded-l-3xl lg:pl-12 lg:pr-14"
                       : "from-[#f7fbfc] via-white to-white lg:mr-8 lg:rounded-l-[2rem] lg:rounded-r-3xl lg:pl-14 lg:pr-12",
@@ -214,16 +232,26 @@ export function KooperationspartnerBereiche() {
                       width={PFLEGEHILFSMITTEL_CORNER_IMG.width}
                       height={PFLEGEHILFSMITTEL_CORNER_IMG.height}
                       decoding="async"
-                      className={`-top-3 -right-1 pointer-events-none absolute z-10 h-auto w-[min(82%,32.35rem)] max-w-[619px] select-none sm:-top-5 sm:-right-5 sm:w-[min(78%,36.55rem)] sm:max-w-[619px] lg:-right-6 lg:-top-6 lg:max-w-[650px] ${KOOP_CARD_IMG_SHADOW}`}
+                      className={`-top-3 -right-1 pointer-events-none absolute z-10 select-none sm:-top-5 sm:-right-5 lg:-right-6 lg:-top-6 ${KOOP_CORNER_IMG_SIZE} ${KOOP_CARD_IMG_SHADOW}`}
+                    />
+                  ) : null}
+                  {b.id === "betriebliche-pflegeberatung" ? (
+                    /* eslint-disable-next-line @next/next/no-img-element -- Teaserbild wie Hero (filter-Schatten), kein Next/Image-Wrapper */
+                    <img
+                      src={BETRIEBLICH_CORNER_IMG.src}
+                      alt="Betriebliche Pflegeberatung – Kooperation"
+                      width={BETRIEBLICH_CORNER_IMG.width}
+                      height={BETRIEBLICH_CORNER_IMG.height}
+                      decoding="async"
+                      className={`-top-3 -left-1 pointer-events-none absolute z-10 select-none sm:-top-5 sm:-left-5 lg:-left-6 lg:-top-6 ${KOOP_CORNER_IMG_SIZE} ${KOOP_CARD_IMG_SHADOW}`}
                     />
                   ) : null}
                   <div
                     className={[
                       "flex min-w-0 flex-col gap-4 text-left",
                       isRight ? "lg:items-end lg:text-right" : "lg:items-start",
-                      b.id === "pflegehilfsmittel"
-                        ? "pr-[clamp(9.25rem,38vw,13rem)] sm:pr-[clamp(11rem,44vw,18rem)] md:pr-[min(72%,22rem)] lg:pr-[min(78%,31.5rem)]"
-                        : "",
+                      b.id === "pflegehilfsmittel" ? KOOP_CORNER_TEXT_PR : "",
+                      b.id === "betriebliche-pflegeberatung" ? KOOP_CORNER_TEXT_PL : "",
                     ].join(" ")}
                   >
                     <h3 className="text-xl font-bold tracking-tight text-[#0F4F68] sm:text-2xl lg:max-w-2xl">
