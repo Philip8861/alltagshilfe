@@ -55,22 +55,50 @@ function isDashboardPath(path: string): boolean {
   return path === "/partner/dashboard" || path === "/partner";
 }
 
-function computeBubbleStyle(rect: DOMRect | null, vw: number, vh: number): { top: number; left: number; width: number } {
-  const width = Math.min(22.5 * 16, vw - 32);
-  const margin = 16;
+/** Abstand unten: mobile Partner-Leiste (~4.5rem) + Puffer. */
+function viewportBottomReservePx(vw: number): number {
+  return vw < 768 ? 112 : 40;
+}
+
+/**
+ * Platziert die Sprechblase vollständig zwischen oberem Rand und (Viewport unten − Reserve).
+ * `panelH` = reale oder geschätzte Dialoghöhe in px.
+ */
+function computeBubbleStyle(
+  rect: DOMRect | null,
+  vw: number,
+  vh: number,
+  panelH: number,
+): { top: number; left: number; width: number } {
+  const margin = Math.max(10, Math.min(18, Math.round(vw * 0.028)));
+  const reserve = viewportBottomReservePx(vw);
+  const safeBottom = vh - reserve;
+  const width = Math.min(22.5 * 16, vw - 2 * margin);
+  const ph = Math.max(160, Math.min(panelH, vh - margin - reserve));
+
+  const maxTop = Math.max(margin, safeBottom - ph);
+  const clampTop = (t: number) => Math.max(margin, Math.min(t, maxTop));
+
   if (!rect || rect.width <= 0 || rect.height <= 0) {
-    return {
-      top: Math.max(margin, (vh - 280) / 2),
-      left: Math.max(margin, (vw - width) / 2),
-      width,
-    };
+    const top = clampTop((vh - ph) / 2);
+    const left = Math.max(margin, Math.min((vw - width) / 2, vw - width - margin));
+    return { top, left, width };
   }
+
+  const gap = 12;
+  let top = rect.bottom + gap;
+  if (top > maxTop) {
+    top = rect.top - gap - ph;
+  }
+  if (top > maxTop) {
+    top = maxTop;
+  }
+  top = clampTop(top);
+
   const cx = rect.left + rect.width / 2;
   let left = cx - width / 2;
   left = Math.max(margin, Math.min(left, vw - width - margin));
-  const preferBelow = rect.bottom + 220 < vh;
-  let top = preferBelow ? rect.bottom + 14 : rect.top - 14 - 200;
-  top = Math.max(margin, Math.min(top, vh - margin - 120));
+
   return { top, left, width };
 }
 
@@ -83,7 +111,14 @@ export function PartnerTutorialOverlay({ tutorialAutoShow }: Props) {
   const [stepIndex, setStepIndex] = useState(0);
   const [rect, setRect] = useState<DOMRect | null>(null);
   const [missingAnchor, setMissingAnchor] = useState(false);
-  const [bubble, setBubble] = useState(() => computeBubbleStyle(null, typeof window !== "undefined" ? window.innerWidth : 1200, typeof window !== "undefined" ? window.innerHeight : 800));
+  const [bubble, setBubble] = useState(() =>
+    computeBubbleStyle(
+      null,
+      typeof window !== "undefined" ? window.innerWidth : 1200,
+      typeof window !== "undefined" ? window.innerHeight : 800,
+      420,
+    ),
+  );
   const [actionError, setActionError] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
 
@@ -142,13 +177,15 @@ export function PartnerTutorialOverlay({ tutorialAutoShow }: Props) {
 
   const updateLayout = useCallback(() => {
     if (mode !== "steps" || !step) return;
-    const el = document.querySelector(anchorSel) as HTMLElement | null;
     const vw = window.innerWidth;
     const vh = window.innerHeight;
+    const fallbackH = Math.min(440, Math.max(220, Math.round(vh * 0.68)));
+
+    const el = document.querySelector(anchorSel) as HTMLElement | null;
     if (!el || !el.isConnected) {
       setRect(null);
       setMissingAnchor(true);
-      setBubble(computeBubbleStyle(null, vw, vh));
+      setBubble(computeBubbleStyle(null, vw, vh, fallbackH));
       return;
     }
     setMissingAnchor(false);
@@ -157,7 +194,19 @@ export function PartnerTutorialOverlay({ tutorialAutoShow }: Props) {
     const pad = 10;
     const inflated = new DOMRect(r.left - pad, r.top - pad, r.width + pad * 2, r.height + pad * 2);
     setRect(inflated);
-    setBubble(computeBubbleStyle(inflated, vw, vh));
+    setBubble(computeBubbleStyle(inflated, vw, vh, fallbackH));
+
+    const measureAndApply = () => {
+      const panel = document.getElementById("partner-tutorial-step-panel");
+      const measured = panel?.getBoundingClientRect().height;
+      const panelH =
+        measured != null && measured > 80 ? measured + 8 : Math.min(460, Math.max(240, Math.round(vh * 0.7)));
+      setBubble(computeBubbleStyle(inflated, vw, vh, panelH));
+    };
+
+    requestAnimationFrame(() => {
+      requestAnimationFrame(measureAndApply);
+    });
   }, [anchorSel, mode, step]);
 
   useLayoutEffect(() => {
@@ -207,12 +256,16 @@ export function PartnerTutorialOverlay({ tutorialAutoShow }: Props) {
   const isIntro = mode === "intro";
   const lastStep = stepIndex >= PARTNER_TUTORIAL_STEPS.length - 1;
 
-  const dialogShell = (children: ReactNode, labelledBy: string) => (
+  const dialogShell = (children: ReactNode, labelledBy: string, variant: "intro" | "step") => (
     <div
       role="dialog"
       aria-modal="true"
       aria-labelledby={labelledBy}
-      className="relative max-h-[min(88vh,36rem)] w-full overflow-y-auto rounded-2xl border border-[#0F4F68]/25 bg-white p-5 shadow-2xl sm:p-6"
+      className={
+        variant === "intro"
+          ? "relative max-h-[min(88vh,36rem)] w-full overflow-y-auto overflow-x-hidden rounded-2xl border border-[#0F4F68]/25 bg-white p-5 shadow-2xl sm:p-6"
+          : "relative min-h-0 w-full flex-1 overflow-y-auto overflow-x-hidden rounded-2xl border border-[#0F4F68]/25 bg-white p-5 shadow-2xl sm:p-6"
+      }
     >
       {children}
     </div>
@@ -274,12 +327,18 @@ export function PartnerTutorialOverlay({ tutorialAutoShow }: Props) {
               </div>
             </>,
             introTitleId,
+            "intro",
           )}
         </div>
       ) : (
         <div
-          className="fixed z-[87] p-4 transition-[top,left] duration-300 ease-out motion-reduce:transition-none"
-          style={{ top: bubble.top, left: bubble.left, width: bubble.width }}
+          id="partner-tutorial-step-panel"
+          className="fixed z-[87] box-border flex max-h-[min(100svh-6rem,36rem)] flex-col p-2 transition-[top,left] duration-300 ease-out motion-reduce:transition-none sm:max-h-[min(88vh,36rem)] sm:p-4"
+          style={{
+            top: bubble.top,
+            left: bubble.left,
+            width: bubble.width,
+          }}
         >
           {dialogShell(
             <>
@@ -329,6 +388,7 @@ export function PartnerTutorialOverlay({ tutorialAutoShow }: Props) {
               </div>
             </>,
             stepTitleId,
+            "step",
           )}
         </div>
       )}

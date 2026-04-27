@@ -63,13 +63,10 @@ function statusPill(admin: PartnerTipAdminStatus): { label: string; className: s
     case "warten_auf_rueckmeldung":
       return { label, className: "bg-violet-600 text-white" };
     case "bezahlt":
-      return {
-        label,
-        className:
-          "border border-green-600 bg-green-50 text-green-900 shadow-sm ring-1 ring-green-600/20",
-      };
+      /* Wie „Vertragsabschluss erfolgreich“: grüner Hintergrund, weiße Schrift, zentriert. */
+      return { label, className: "bg-emerald-600 px-3 py-1 font-semibold text-white" };
     case "erledigt":
-      return { label, className: "bg-emerald-600 text-white" };
+      return { label, className: "bg-emerald-600 px-3 py-1 font-semibold text-white" };
     case "abgelehnt":
       return { label, className: "bg-red-600 text-white" };
     default:

@@ -8,14 +8,11 @@ export const CHART_ROSE = "#e11d48";
 export const CHART_VIOLET = "#7c3aed";
 export const CHART_SKY = "#0284c7";
 export const CHART_SLATE = "#64748b";
-/** Status „Bezahlt“ in Diagrammen (klares Grün, gut von Erledigt/Emerald unterscheidbar). */
-export const CHART_GREEN = "#15803d";
-
 export const ADMIN_STATUS_CHART_COLOR: Record<PartnerTipAdminStatus, string> = {
   in_bearbeitung: CHART_AMBER,
   termin_vereinbart: CHART_SKY,
   warten_auf_rueckmeldung: CHART_VIOLET,
-  bezahlt: CHART_GREEN,
+  bezahlt: CHART_EMERALD,
   erledigt: CHART_EMERALD,
   abgelehnt: CHART_ROSE,
 };

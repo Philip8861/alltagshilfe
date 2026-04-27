@@ -73,7 +73,9 @@ export function PartnerStatuslisteTable({ variant, rows, emptyHint, theadClass, 
                 ) : null}
                 {cols.status ? (
                   <td className="px-3 py-3 sm:px-4">
-                    <span className={`inline-flex rounded px-2.5 py-0.5 text-xs font-medium ${r.pill.className}`}>
+                    <span
+                      className={`inline-flex items-center justify-center rounded px-2.5 py-0.5 text-center text-xs font-medium ${r.pill.className}`}
+                    >
                       {r.pill.label}
                     </span>
                   </td>
