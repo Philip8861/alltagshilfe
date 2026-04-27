@@ -219,8 +219,11 @@ export function RatgeberHub() {
               >
                 Alltagshilfe-Süd Ratgeber
               </h1>
+              <p className="mt-2 max-w-2xl text-base leading-relaxed text-neutral-700 sm:mt-3 sm:text-lg">
+                Praxistipps, Erklärungen und konkrete Hilfen rund um Pflege, Betreuung und Entlastung im Alltag.
+              </p>
               <form
-                className="mt-3 w-full max-w-[min(100%,33.6rem)] sm:mt-4"
+                className="mt-4 w-full max-w-[min(100%,33.6rem)] sm:mt-5"
                 onSubmit={(e) => {
                   e.preventDefault();
                   setSearchFocused(false);
@@ -309,9 +312,6 @@ export function RatgeberHub() {
                 ) : null}
               </div>
             </form>
-              <p className="mt-4 max-w-2xl text-base leading-relaxed text-neutral-700 sm:mt-5 sm:text-lg">
-                Praxistipps, Erklärungen und konkrete Hilfen rund um Pflege, Betreuung und Entlastung im Alltag.
-              </p>
             </div>
           </div>
         </div>
