@@ -197,6 +197,7 @@ export function RatgeberHub() {
               fill
               className="object-contain object-center"
               sizes="(min-width: 768px) 96vw, 100vw"
+              quality={92}
               priority
             />
           </div>
