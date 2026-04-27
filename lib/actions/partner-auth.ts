@@ -5,21 +5,15 @@ import {
   ensurePartnerProfileForCurrentSession,
   type EnsurePartnerProfileResult,
 } from "@/lib/partner/ensure-partner-profile";
-import { getPublicSiteBaseUrl } from "@/lib/partner/site-origin";
+import { getAuthRedirectSiteBaseUrl } from "@/lib/partner/site-origin";
 import { resolvePartnerLoginToEmail } from "@/lib/partner/resolve-partner-login-email";
 import {
   rateLimitPartnerLogin,
   rateLimitPartnerPasswordChange,
   rateLimitPartnerPasswordReset,
 } from "@/lib/rate-limit";
-import {
-  buildBrandedPartnerPasswordResetEmailHtml,
-  partnerPasswordResetOutboundSubject,
-} from "@/lib/email/branded-html";
-import { isTransactionalSmtpConfigured, sendTransactionalMail } from "@/lib/email/internal-smtp";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
-import { createSupabaseServiceRoleClient } from "@/lib/supabase/service";
 import { partnerPasswordResetRequestSchema } from "@/lib/validations/partner";
 
 async function clientIp(): Promise<string> {
@@ -42,22 +36,10 @@ async function publicSiteBaseForAuthRedirect(): Promise<string | null> {
       h.get("x-forwarded-host")?.split(",")[0]?.trim() ?? h.get("host")?.trim() ?? "";
     const proto = h.get("x-forwarded-proto") === "http" ? "http" : "https";
     const fromRequest = host ? `${proto}://${host}`.replace(/\/$/, "") : "";
-    return getPublicSiteBaseUrl(fromRequest) || fromRequest || null;
+    return getAuthRedirectSiteBaseUrl(fromRequest || undefined);
   } catch {
-    return getPublicSiteBaseUrl() || null;
+    return getAuthRedirectSiteBaseUrl();
   }
-}
-
-function extractSupabaseAdminRecoveryLink(data: unknown): string | null {
-  if (!data || typeof data !== "object") return null;
-  const props = (data as { properties?: unknown }).properties;
-  if (!props || typeof props !== "object") return null;
-  const p = props as Record<string, unknown>;
-  for (const key of ["action_link", "href"] as const) {
-    const v = p[key];
-    if (typeof v === "string" && /^https:\/\//i.test(v.trim())) return v.trim();
-  }
-  return null;
 }
 
 export type PartnerPasswordResetRequestState = { ok: true; message: string } | { ok: false; message: string };
@@ -67,6 +49,8 @@ const PASSWORD_RESET_SUCCESS_DE =
 
 /**
  * Sendet die Supabase-Passwort-Reset-E-Mail (Link, kein Klartext-Passwort).
+ * Versand nur über Supabase (`resetPasswordForEmail`) — die Links sind PKCE-kompatibel und zuverlässig.
+ * Markenlayout: `supabase/email-templates/password-recovery-markenlayout.html` im Supabase-Dashboard einfügen.
  * Gleiche Erfolgsmeldung unabhängig davon, ob die Adresse existiert (Enumerationsschutz).
  */
 export async function requestPartnerPasswordResetAction(
@@ -103,45 +87,6 @@ export async function requestPartnerPasswordResetAction(
   }
 
   const redirectTo = `${base}/auth/callback?next=${encodeURIComponent("/partner/passwort-zuruecksetzen")}`;
-
-  const svc = createSupabaseServiceRoleClient();
-  if (svc && isTransactionalSmtpConfigured()) {
-    try {
-      const { data, error } = await svc.auth.admin.generateLink({
-        type: "recovery",
-        email: resolved.email,
-        options: { redirectTo },
-      });
-      const link = extractSupabaseAdminRecoveryLink(data);
-      if (!error && link) {
-        const html = buildBrandedPartnerPasswordResetEmailHtml(link);
-        const text = [
-          "Passwort zurücksetzen",
-          "",
-          "Sie haben angefordert, Ihr Passwort für den Partnerbereich neu zu setzen.",
-          "Öffnen Sie den folgenden Link im Browser, um ein neues Passwort festzulegen:",
-          "",
-          link,
-          "",
-          "Wenn Sie diese Anfrage nicht gestellt haben, ignorieren Sie diese E-Mail.",
-        ].join("\n");
-        const mailed = await sendTransactionalMail({
-          to: resolved.email,
-          subject: partnerPasswordResetOutboundSubject(),
-          text,
-          html,
-        });
-        if (mailed.ok) {
-          return { ok: true, message: PASSWORD_RESET_SUCCESS_DE };
-        }
-        console.error("[requestPartnerPasswordResetAction] Transactional mail:", mailed.code);
-      } else if (error) {
-        console.warn("[requestPartnerPasswordResetAction] generateLink:", error.message);
-      }
-    } catch (e) {
-      console.error("[requestPartnerPasswordResetAction] branded reset path:", e);
-    }
-  }
 
   try {
     const supabase = await createSupabaseServerClient();
