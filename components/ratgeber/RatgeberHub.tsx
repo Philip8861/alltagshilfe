@@ -188,12 +188,12 @@ export function RatgeberHub() {
     <div className="min-w-0">
       {/* Hero: ein Block – Bild vollflächig, Text & Suche wie zuvor darüber */}
       <section className="relative w-full overflow-hidden" aria-labelledby="ratgeber-hub-heading">
-        <div className="relative min-h-[13rem] w-full sm:min-h-[15.5rem] md:min-h-[18rem] lg:min-h-[19.5rem]">
+        <div className="relative min-h-[13rem] w-full bg-[#FFFCFA] sm:min-h-[15.5rem] md:min-h-[18rem] lg:min-h-[19.5rem]">
           <Image
             src="/images/ratgeber_hintergrund.webp"
             alt=""
             fill
-            className="object-cover object-[83%_center] md:object-center"
+            className="object-contain object-center"
             sizes="100vw"
             priority
           />
