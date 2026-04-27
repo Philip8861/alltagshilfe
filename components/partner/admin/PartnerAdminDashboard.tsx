@@ -24,7 +24,7 @@ import {
   serviceRowAccentBorderClass,
 } from "@/lib/partner/service-slug-styles";
 import { formatProvisionEur } from "@/lib/partner/partner-tip-payout";
-import { AdminSiteTrafficPanel } from "@/components/partner/admin/AdminSiteTrafficPanel";
+import { AdminHomepageTrafficPanel } from "@/components/partner/admin/AdminHomepageTrafficPanel";
 import { PartnerAdminPayoutSection } from "@/components/partner/admin/PartnerAdminPayoutSection";
 
 const AdminStatisticsCharts = dynamic(
@@ -167,6 +167,7 @@ export function PartnerAdminDashboard({
 
   const [editProfile, setEditProfile] = useState<PartnerProfile | null>(null);
   const [chartYear, setChartYear] = useState(() => new Date().getFullYear());
+  const [statistikTeil, setStatistikTeil] = useState<"partner" | "homepage">("partner");
 
   const [tipSort, setTipSort] = useState<{ key: string; dir: SortDir }>({
     key: "created_at",
@@ -1049,9 +1050,65 @@ export function PartnerAdminDashboard({
                 <h2 id="stat-heading" className="text-xl font-bold text-[#0F4F68] sm:text-2xl">
                   Statistik
                 </h2>
-                <p className="mt-2 text-sm text-neutral-600">Gesamtübersicht und Kennzahlen je registriertem Profil.</p>
+                <p className="mt-2 text-sm text-neutral-600">
+                  {statistikTeil === "partner"
+                    ? "Partner-Programm: Profile, Tipps, Pflegebox und Kennzahlen je Partner."
+                    : "Homepage: aggregierte Seitenaufrufe der öffentlichen Website (ohne personenbezogene Daten)."}
+                </p>
               </div>
 
+              <div
+                className="flex flex-wrap gap-2 border-b border-[#0F4F68]/12 pb-3"
+                role="tablist"
+                aria-label="Statistik-Bereich"
+              >
+                <button
+                  type="button"
+                  role="tab"
+                  aria-selected={statistikTeil === "partner"}
+                  onClick={() => setStatistikTeil("partner")}
+                  className={`min-h-11 rounded-xl px-4 text-sm font-bold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68]/30 sm:px-5 sm:text-base ${
+                    statistikTeil === "partner"
+                      ? "bg-[#0F4F68] text-white shadow-sm"
+                      : "border border-[#0F4F68]/25 bg-white text-[#0F4F68] hover:bg-[#F2F9FA]"
+                  }`}
+                >
+                  Statistik Partner-Programm
+                </button>
+                <button
+                  type="button"
+                  role="tab"
+                  aria-selected={statistikTeil === "homepage"}
+                  onClick={() => setStatistikTeil("homepage")}
+                  className={`min-h-11 rounded-xl px-4 text-sm font-bold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68]/30 sm:px-5 sm:text-base ${
+                    statistikTeil === "homepage"
+                      ? "bg-[#0F4F68] text-white shadow-sm"
+                      : "border border-[#0F4F68]/25 bg-white text-[#0F4F68] hover:bg-[#F2F9FA]"
+                  }`}
+                >
+                  Statistik Homepage
+                </button>
+              </div>
+
+              <div className="mt-6 flex flex-wrap items-end gap-4">
+                <div>
+                  <label htmlFor="admin-chart-year" className="block text-xs font-bold uppercase text-[#0F4F68]/75">
+                    Jahr {statistikTeil === "homepage" ? "(Auswertung Homepage)" : "(Verlaufsdiagramm Partner)"}
+                  </label>
+                  <input
+                    id="admin-chart-year"
+                    type="number"
+                    min={2020}
+                    max={2100}
+                    value={chartYear}
+                    onChange={(e) => setChartYear(Number(e.target.value))}
+                    className="mt-2 w-28 rounded-xl border border-neutral-200 px-3 py-2 text-sm font-semibold text-neutral-900 focus:border-[#0F4F68] focus:outline-none focus:ring-2 focus:ring-[#0F4F68]/20"
+                  />
+                </div>
+              </div>
+
+              {statistikTeil === "partner" ? (
+                <>
               <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                 <div className="rounded-2xl border border-[#0F4F68]/12 bg-gradient-to-br from-[#F2F9FA] to-white p-5">
                   <p className="text-xs font-bold uppercase tracking-wide text-[#0F4F68]/65">Profile gesamt</p>
@@ -1080,22 +1137,6 @@ export function PartnerAdminDashboard({
                 </div>
               </div>
 
-              <div className="mt-6 flex flex-wrap items-end gap-4">
-                <div>
-                  <label htmlFor="admin-chart-year" className="block text-xs font-bold uppercase text-[#0F4F68]/75">
-                    Jahr für Verlaufsdiagramm
-                  </label>
-                  <input
-                    id="admin-chart-year"
-                    type="number"
-                    min={2000}
-                    max={2100}
-                    value={chartYear}
-                    onChange={(e) => setChartYear(Number(e.target.value))}
-                    className="mt-2 w-28 rounded-xl border border-neutral-200 px-3 py-2 text-sm font-semibold text-neutral-900 focus:border-[#0F4F68] focus:outline-none focus:ring-2 focus:ring-[#0F4F68]/20"
-                  />
-                </div>
-              </div>
               <AdminStatisticsCharts
                 tips={tips}
                 orders={orders}
@@ -1103,8 +1144,6 @@ export function PartnerAdminDashboard({
                 profiles={profiles}
                 authById={authById}
               />
-
-              <AdminSiteTrafficPanel chartYear={chartYear} />
 
               <div>
                 <h3 className="text-lg font-bold text-[#0F4F68]">Je Partner</h3>
@@ -1252,6 +1291,10 @@ export function PartnerAdminDashboard({
                   </table>
                 </div>
               </div>
+                </>
+              ) : (
+                <AdminHomepageTrafficPanel chartYear={chartYear} />
+              )}
             </section>
           ) : null}
 

@@ -1,0 +1,348 @@
+"use client";
+
+import { Fragment, useCallback, useEffect, useState } from "react";
+import {
+  CartesianGrid,
+  Line,
+  LineChart,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from "recharts";
+import {
+  fetchHomepagePathSeriesAction,
+  fetchHomepageTotalsSeriesAction,
+  fetchHomepageYearPathTotalsAction,
+  type HomepageSeriesPoint,
+  type HomepageTrafficGranularity,
+} from "@/lib/actions/admin-homepage-analytics";
+import { CHART_AXIS_TICK, CHART_GRID, CHART_TEAL } from "@/components/partner/partner-chart-theme";
+
+type Props = {
+  chartYear: number;
+};
+
+function GranularityToggle({
+  value,
+  onChange,
+  idPrefix,
+}: {
+  value: HomepageTrafficGranularity;
+  onChange: (g: HomepageTrafficGranularity) => void;
+  idPrefix: string;
+}) {
+  const opts: { id: HomepageTrafficGranularity; label: string }[] = [
+    { id: "tag", label: "Tag" },
+    { id: "monat", label: "Monat" },
+    { id: "jahr", label: "Jahr" },
+  ];
+  return (
+    <div className="flex flex-wrap gap-2" role="group" aria-label="Zeitraster">
+      {opts.map((o) => (
+        <button
+          key={o.id}
+          type="button"
+          id={`${idPrefix}-${o.id}`}
+          onClick={() => onChange(o.id)}
+          className={`min-h-10 rounded-xl px-4 text-sm font-semibold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68]/30 ${
+            value === o.id
+              ? "bg-[#0F4F68] text-white shadow-sm"
+              : "border border-[#0F4F68]/25 bg-white text-[#0F4F68] hover:bg-[#F2F9FA]"
+          }`}
+        >
+          {o.label}
+        </button>
+      ))}
+    </div>
+  );
+}
+
+function TrafficLineChart({ data, title }: { data: HomepageSeriesPoint[]; title: string }) {
+  const chartData = data.map((d) => ({ ...d, name: d.label }));
+  return (
+    <div className="rounded-2xl border border-[#0F4F68]/10 bg-white p-4 shadow-sm">
+      <h4 className="text-sm font-bold text-[#0F4F68]">{title}</h4>
+      <div className="mt-4 h-[min(320px,50vh)] w-full min-h-[220px]">
+        <ResponsiveContainer width="100%" height="100%">
+          <LineChart data={chartData} margin={{ top: 8, right: 12, left: 4, bottom: 0 }}>
+            <CartesianGrid stroke={CHART_GRID} strokeDasharray="4 4" />
+            <XAxis dataKey="name" tick={{ fill: CHART_AXIS_TICK, fontSize: 10 }} interval="preserveStartEnd" />
+            <YAxis allowDecimals={false} tick={{ fill: CHART_AXIS_TICK, fontSize: 11 }} width={44} />
+            <Tooltip
+              formatter={(v: number) => [v.toLocaleString("de-DE"), "Aufrufe"]}
+              contentStyle={{ borderRadius: 12, border: `1px solid ${CHART_GRID}` }}
+            />
+            <Line
+              type="monotone"
+              dataKey="views"
+              name="Aufrufe"
+              stroke={CHART_TEAL}
+              strokeWidth={2.5}
+              dot={{ r: 3 }}
+            />
+          </LineChart>
+        </ResponsiveContainer>
+      </div>
+    </div>
+  );
+}
+
+export function AdminHomepageTrafficPanel({ chartYear }: Props) {
+  const [month, setMonth] = useState(() => new Date().getMonth() + 1);
+  const [totalGran, setTotalGran] = useState<HomepageTrafficGranularity>("monat");
+  const [totalSeries, setTotalSeries] = useState<HomepageSeriesPoint[]>([]);
+  const [totalLoading, setTotalLoading] = useState(true);
+  const [totalErr, setTotalErr] = useState<string | null>(null);
+
+  const [paths, setPaths] = useState<{ path: string; view_count: number }[]>([]);
+  const [pathsLoading, setPathsLoading] = useState(true);
+  const [pathsErr, setPathsErr] = useState<string | null>(null);
+
+  const [expandedPath, setExpandedPath] = useState<string | null>(null);
+  const [pathGran, setPathGran] = useState<HomepageTrafficGranularity>("monat");
+  const [pathSeries, setPathSeries] = useState<HomepageSeriesPoint[]>([]);
+  const [pathLoading, setPathLoading] = useState(false);
+  const [pathErr, setPathErr] = useState<string | null>(null);
+
+  const loadTotals = useCallback(async () => {
+    setTotalLoading(true);
+    setTotalErr(null);
+    const res = await fetchHomepageTotalsSeriesAction(chartYear, month, totalGran);
+    if (!res.ok) {
+      setTotalErr(res.message);
+      setTotalSeries([]);
+    } else {
+      setTotalSeries(res.data);
+    }
+    setTotalLoading(false);
+  }, [chartYear, month, totalGran]);
+
+  const loadPaths = useCallback(async () => {
+    setPathsLoading(true);
+    setPathsErr(null);
+    const res = await fetchHomepageYearPathTotalsAction(chartYear);
+    if (!res.ok) {
+      setPathsErr(res.message);
+      setPaths([]);
+    } else {
+      setPaths(res.data);
+    }
+    setPathsLoading(false);
+  }, [chartYear]);
+
+  const loadPathSeries = useCallback(async () => {
+    if (!expandedPath) {
+      setPathSeries([]);
+      return;
+    }
+    setPathLoading(true);
+    setPathErr(null);
+    const res = await fetchHomepagePathSeriesAction(expandedPath, chartYear, month, pathGran);
+    if (!res.ok) {
+      setPathErr(res.message);
+      setPathSeries([]);
+    } else {
+      setPathSeries(res.data);
+    }
+    setPathLoading(false);
+  }, [expandedPath, chartYear, month, pathGran]);
+
+  useEffect(() => {
+    void loadTotals();
+  }, [loadTotals]);
+
+  useEffect(() => {
+    void loadPaths();
+  }, [loadPaths]);
+
+  useEffect(() => {
+    void loadPathSeries();
+  }, [loadPathSeries]);
+
+  const totalSum = totalSeries.reduce((s, p) => s + p.views, 0);
+
+  return (
+    <div className="space-y-8">
+      <div>
+        <h3 className="text-lg font-bold text-[#0F4F68]">Statistik Homepage</h3>
+        <p className="mt-2 text-sm leading-relaxed text-neutral-600">
+          Aggregierte <strong className="font-semibold text-neutral-800">Seitenaufrufe</strong> nach URL-Pfad
+          (Kalendertag Europe/Berlin). Keine IP-Adressen, keine Cookies — nur Summen. Keine eindeutigen Besucher.
+          Prefetch wird weitgehend ausgeschlossen. Für Zeitreihen bitte auch Migration{" "}
+          <code className="rounded bg-neutral-100 px-1">016_site_analytics_time_series.sql</code> ausführen.
+        </p>
+      </div>
+
+      <div className="flex flex-wrap items-end gap-4">
+        <div>
+          <label htmlFor="hp-traffic-month" className="block text-xs font-bold uppercase text-[#0F4F68]/75">
+            Monat (für Ansicht „Tag“ &amp; Pfad-Detail „Tag“)
+          </label>
+          <select
+            id="hp-traffic-month"
+            value={month}
+            onChange={(e) => setMonth(Number(e.target.value))}
+            className="mt-2 rounded-xl border border-neutral-200 bg-white px-3 py-2 text-sm font-semibold text-neutral-900 focus:border-[#0F4F68] focus:outline-none focus:ring-2 focus:ring-[#0F4F68]/20"
+          >
+            {Array.from({ length: 12 }, (_, i) => i + 1).map((m) => (
+              <option key={m} value={m}>
+                {new Date(chartYear, m - 1, 1).toLocaleString("de-DE", { month: "long" })}
+              </option>
+            ))}
+          </select>
+        </div>
+        <button
+          type="button"
+          onClick={() => {
+            void loadTotals();
+            void loadPaths();
+            void loadPathSeries();
+          }}
+          className="min-h-10 rounded-xl border border-[#0F4F68]/30 bg-white px-4 text-sm font-semibold text-[#0F4F68] hover:bg-[#F2F9FA]"
+        >
+          Aktualisieren
+        </button>
+      </div>
+
+      <section className="space-y-4" aria-labelledby="hp-total-heading">
+        <h3 id="hp-total-heading" className="text-base font-bold text-[#0F4F68]">
+          Aufrufe gesamt (alle Seiten)
+        </h3>
+        <p className="text-sm text-neutral-600">
+          Jahr: <strong>{chartYear}</strong> (oben einstellbar). Diagramm: Linienverlauf nach gewähltem Raster.
+          Summe sichtbarer Periode:{" "}
+          <strong className="tabular-nums text-[#0F4F68]">{totalSum.toLocaleString("de-DE")}</strong>
+        </p>
+        <GranularityToggle idPrefix="hp-total" value={totalGran} onChange={setTotalGran} />
+        {totalLoading ? <p className="text-sm text-neutral-500">Lade Gesamtverlauf…</p> : null}
+        {totalErr ? (
+          <p className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-950">{totalErr}</p>
+        ) : null}
+        {!totalLoading && !totalErr ? (
+          <TrafficLineChart
+            data={totalSeries}
+            title={
+              totalGran === "tag"
+                ? `Täglich im ${new Date(chartYear, month - 1, 1).toLocaleString("de-DE", { month: "long", year: "numeric" })}`
+                : totalGran === "monat"
+                  ? `Pro Monat im Jahr ${chartYear}`
+                  : `Pro Jahr (2020–${chartYear})`
+            }
+          />
+        ) : null}
+      </section>
+
+      <section className="space-y-4" aria-labelledby="hp-paths-heading">
+        <h3 id="hp-paths-heading" className="text-base font-bold text-[#0F4F68]">
+          Aufrufe je Seite (Pfad)
+        </h3>
+        <p className="text-sm text-neutral-600">
+          Sortiert nach Aufrufen im Jahr <strong>{chartYear}</strong>. Zeile aufklappen für Verlauf nur dieser URL.
+        </p>
+        {pathsLoading ? <p className="text-sm text-neutral-500">Lade Seitenliste…</p> : null}
+        {pathsErr ? (
+          <p className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-950">{pathsErr}</p>
+        ) : null}
+        {!pathsLoading && !pathsErr ? (
+          <div className="overflow-x-auto rounded-2xl border border-neutral-200/80">
+            <table className="w-full min-w-[320px] text-left text-sm">
+              <thead className="border-b border-[#0F4F68]/10 bg-[#F2F9FA]/60 text-xs">
+                <tr>
+                  <th className="px-3 py-2">Pfad</th>
+                  <th className="px-3 py-2 text-right">Aufrufe {chartYear}</th>
+                  <th className="px-3 py-2 w-32">Detail</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-neutral-100">
+                {paths.length === 0 ? (
+                  <tr>
+                    <td colSpan={3} className="px-3 py-8 text-center text-neutral-500">
+                      Noch keine Daten für dieses Jahr.
+                    </td>
+                  </tr>
+                ) : (
+                  paths.map((row, idx) => {
+                    const open = expandedPath === row.path;
+                    return (
+                      <Fragment key={row.path}>
+                        <tr className="hover:bg-neutral-50/80">
+                          <td className="max-w-[18rem] break-all px-3 py-2 font-mono text-xs text-neutral-800">
+                            {row.path}
+                          </td>
+                          <td className="whitespace-nowrap px-3 py-2 text-right tabular-nums font-semibold text-[#0F4F68]">
+                            {row.view_count.toLocaleString("de-DE")}
+                          </td>
+                          <td className="px-3 py-2">
+                            <button
+                              type="button"
+                              onClick={() => setExpandedPath(open ? null : row.path)}
+                              className="rounded-lg border border-[#0F4F68]/30 px-3 py-1.5 text-xs font-semibold text-[#0F4F68] hover:bg-[#F2F9FA]"
+                              aria-expanded={open}
+                            >
+                              {open ? "Schließen" : "Verlauf"}
+                            </button>
+                          </td>
+                        </tr>
+                        {open ? (
+                          <tr className="bg-[#fafcfd]">
+                            <td colSpan={3} className="px-3 py-4">
+                              <p className="text-xs font-semibold text-[#0F4F68]">Verlauf: {row.path}</p>
+                              <div className="mt-3">
+                                <GranularityToggle idPrefix={`hp-path-${idx}`} value={pathGran} onChange={setPathGran} />
+                              </div>
+                              <p className="mt-2 text-xs text-neutral-500">
+                                Monat oben steuert die Tages-Ansicht; Jahr oben steuert Monats- und Jahresansicht.
+                              </p>
+                              {pathLoading ? <p className="mt-3 text-sm text-neutral-500">Lade Verlauf…</p> : null}
+                              {pathErr ? (
+                                <p className="mt-3 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-950">
+                                  {pathErr}
+                                </p>
+                              ) : null}
+                              {!pathLoading && !pathErr ? (
+                                <div className="mt-4">
+                                  <div className="h-[min(260px,45vh)] w-full min-h-[200px]">
+                                    <ResponsiveContainer width="100%" height="100%">
+                                      <LineChart
+                                        data={pathSeries.map((d) => ({ ...d, name: d.label }))}
+                                        margin={{ top: 8, right: 12, left: 4, bottom: 0 }}
+                                      >
+                                        <CartesianGrid stroke={CHART_GRID} strokeDasharray="4 4" />
+                                        <XAxis
+                                          dataKey="name"
+                                          tick={{ fill: CHART_AXIS_TICK, fontSize: 10 }}
+                                          interval="preserveStartEnd"
+                                        />
+                                        <YAxis allowDecimals={false} tick={{ fill: CHART_AXIS_TICK, fontSize: 11 }} width={40} />
+                                        <Tooltip
+                                          formatter={(v: number) => [v.toLocaleString("de-DE"), "Aufrufe"]}
+                                          contentStyle={{ borderRadius: 12, border: `1px solid ${CHART_GRID}` }}
+                                        />
+                                        <Line
+                                          type="monotone"
+                                          dataKey="views"
+                                          stroke={CHART_TEAL}
+                                          strokeWidth={2}
+                                          dot={{ r: 2.5 }}
+                                        />
+                                      </LineChart>
+                                    </ResponsiveContainer>
+                                  </div>
+                                </div>
+                              ) : null}
+                            </td>
+                          </tr>
+                        ) : null}
+                      </Fragment>
+                    );
+                  })
+                )}
+              </tbody>
+            </table>
+          </div>
+        ) : null}
+      </section>
+    </div>
+  );
+}
