@@ -1,0 +1,75 @@
+import type { PartnerDashboardTipSerial } from "@/lib/partner/types";
+
+/**
+ * Öffentliche Demo: fiktive Tippzeilen für „Max Mustermann“ (keine DB, keine IDs aus Produktion).
+ */
+export const PARTNER_DEMO_MAX_MUSTERMANN_TIPS: PartnerDashboardTipSerial[] = [
+  {
+    id: "demo-tip-bp-1",
+    service_slug: "betriebliche_pflegeberatung",
+    payload: {
+      firmenname: "Beispiel GmbH Süd",
+      vorname: "Clara",
+      nachname: "Neumann",
+    },
+    created_at: "2025-02-03T09:15:00.000Z",
+    admin_status: "erledigt",
+    admin_visible_note: "Vertrag aktiv — reine Demo, keine Abrechnung.",
+    archived_at: null,
+    partner_archived_at: null,
+    paid_amount_eur: 120,
+    payout_settled_period_key: null,
+  },
+  {
+    id: "demo-tip-bp-2",
+    service_slug: "betriebliche_pflegeberatung",
+    payload: {
+      firmenname: "Musterwerk AG",
+      vorname: "Jonas",
+      nachname: "Weber",
+    },
+    created_at: "2025-01-18T14:40:00.000Z",
+    admin_status: "in_bearbeitung",
+    admin_visible_note: "",
+    archived_at: null,
+    partner_archived_at: null,
+    paid_amount_eur: null,
+    payout_settled_period_key: null,
+  },
+  {
+    id: "demo-tip-ph-1",
+    service_slug: "pflegehilfsmittel",
+    payload: { vorname: "Sabine", nachname: "Koch" },
+    created_at: "2025-02-10T11:00:00.000Z",
+    admin_status: "bezahlt",
+    admin_visible_note: "Kasse bewilligt — Demo.",
+    archived_at: null,
+    partner_archived_at: null,
+    paid_amount_eur: 42.5,
+    payout_settled_period_key: null,
+  },
+  {
+    id: "demo-tip-pb-1",
+    service_slug: "pflegeberatung",
+    payload: { vorname: "Thomas", nachname: "Bauer" },
+    created_at: "2025-02-12T08:30:00.000Z",
+    admin_status: "termin_vereinbart",
+    admin_visible_note: "Erstgespräch geplant.",
+    archived_at: null,
+    partner_archived_at: null,
+    paid_amount_eur: null,
+    payout_settled_period_key: null,
+  },
+  {
+    id: "demo-tip-hb-1",
+    service_slug: "hauswirtschaft_betreuung",
+    payload: { vorname: "Elena", nachname: "Fischer" },
+    created_at: "2024-12-01T16:20:00.000Z",
+    admin_status: "erledigt",
+    admin_visible_note: "",
+    archived_at: null,
+    partner_archived_at: "2025-01-05T12:00:00.000Z",
+    paid_amount_eur: 35,
+    payout_settled_period_key: null,
+  },
+];

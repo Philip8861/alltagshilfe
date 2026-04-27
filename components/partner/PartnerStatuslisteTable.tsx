@@ -11,6 +11,7 @@ type Props = {
   emptyHint: string;
   theadClass: string;
   columns: PartnerPortalTableColumns;
+  demoMode?: boolean;
 };
 
 function visibleColumnCount(variant: StatuslisteVariant, c: PartnerPortalTableColumns): number {
@@ -27,7 +28,14 @@ function visibleColumnCount(variant: StatuslisteVariant, c: PartnerPortalTableCo
   return Math.max(1, n);
 }
 
-export function PartnerStatuslisteTable({ variant, rows, emptyHint, theadClass, columns: cols }: Props) {
+export function PartnerStatuslisteTable({
+  variant,
+  rows,
+  emptyHint,
+  theadClass,
+  columns: cols,
+  demoMode = false,
+}: Props) {
   const colCount = visibleColumnCount(variant, cols);
   const showFirmaCol = variant !== "einmal" && cols.firma;
 
@@ -90,7 +98,13 @@ export function PartnerStatuslisteTable({ variant, rows, emptyHint, theadClass, 
                 ) : null}
                 {cols.archivButton ? (
                   <td className="px-3 py-3 align-top sm:px-4">
-                    <PartnerOwnArchiveTipButton tipId={r.tipId} isArchived={r.isArchived} />
+                    {demoMode ? (
+                      <span className="text-xs text-neutral-400" title="Nur im echten Partnerportal verfügbar">
+                        —
+                      </span>
+                    ) : (
+                      <PartnerOwnArchiveTipButton tipId={r.tipId} isArchived={r.isArchived} />
+                    )}
                   </td>
                 ) : null}
                 {cols.typ ? (

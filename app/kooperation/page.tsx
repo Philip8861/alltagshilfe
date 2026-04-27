@@ -94,12 +94,21 @@ export default function KooperationPage() {
                   </li>
                 ))}
               </ul>
-              <div className={`${ANIM_IN} mt-8 flex w-full justify-center lg:justify-start`} style={{ animationDelay: "400ms" }}>
+              <div
+                className={`${ANIM_IN} mt-8 flex w-full flex-col items-stretch justify-center gap-3 sm:flex-row sm:flex-wrap sm:items-center lg:justify-start`}
+                style={{ animationDelay: "400ms" }}
+              >
                 <Link
                   href="/partner/login"
                   className="inline-flex min-h-[3.625rem] min-w-[11.5rem] items-center justify-center rounded-xl bg-[#F78F2E] px-8 py-4 text-[1.2rem] font-semibold text-white hover:opacity-95 focus:outline-none focus:ring-2 focus:ring-[#F78F2E] focus:ring-offset-2 sm:min-h-[3.75rem] sm:px-9 sm:py-[1.15rem] sm:text-[1.21875rem]"
                 >
                   Partner werden
+                </Link>
+                <Link
+                  href="/partner-demo/dashboard"
+                  className="inline-flex min-h-[3.625rem] min-w-[11.5rem] items-center justify-center rounded-xl border-2 border-[#0F4F68] bg-white px-8 py-4 text-[1.2rem] font-semibold text-[#0F4F68] hover:bg-[#F2F9FA] focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2 sm:min-h-[3.75rem] sm:px-9 sm:py-[1.15rem] sm:text-[1.21875rem]"
+                >
+                  Demo ansehen
                 </Link>
               </div>
             </div>

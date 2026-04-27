@@ -71,7 +71,9 @@ export async function middleware(request: NextRequest) {
       pathname.startsWith("/_next") ||
       pathname.startsWith("/images") ||
       pathname === "/favicon.ico";
-    const isPartnerRoute = normalizedPath.startsWith("/partner");
+    /** Nur echtes Partnerportal — nicht z. B. `/partner-demo` (öffentliche Vorschau). */
+    const isPartnerRoute =
+      normalizedPath === "/partner" || normalizedPath.startsWith("/partner/");
     /** Sync-Route baut Session + Profil selbst; Middleware-Refresh hier auslassen (sonst oft „angemeldet“ ohne lesbare Session in der Route). */
     const skipPartnerMiddlewareAuth = normalizedPath === "/partner/sync-profile";
 
