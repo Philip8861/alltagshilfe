@@ -61,7 +61,7 @@ export default function KooperationPage() {
       <header className="overflow-visible bg-white">
         <div className="mx-auto max-w-7xl overflow-visible px-4 pt-2 pb-10 sm:px-6 sm:pt-4 sm:pb-14 lg:px-[var(--ahs-page-gutter)] lg:pt-16 lg:pb-20">
           <div className="mx-auto flex w-full max-w-[min(100%,72rem)] flex-col items-center gap-8 overflow-visible lg:mx-0 lg:mr-auto lg:flex-row lg:justify-start lg:items-center lg:gap-x-11 lg:gap-y-6 xl:gap-x-[3.75rem]">
-            <div className="flex w-full min-w-0 shrink-0 justify-center overflow-visible lg:max-w-[min(100%,809px)] lg:-translate-x-[40%] lg:-ml-4 lg:-mr-5 xl:-ml-6 xl:-mr-7">
+            <div className="flex w-full min-w-0 shrink-0 justify-center overflow-visible lg:max-w-[min(100%,809px)] lg:-translate-x-[30%] lg:-ml-4 lg:-mr-5 xl:-ml-6 xl:-mr-7">
               <div className="box-content w-full max-w-[min(100%,809px)] overflow-visible px-2 pt-1 pb-2 sm:px-3 sm:pb-4 lg:px-1 lg:py-2">
                 {/* eslint-disable-next-line @next/next/no-img-element -- wie Private Pflegeberatung: natives img vermeidet Next/Image-Wrapper (overflow) */}
                 <img
@@ -78,7 +78,7 @@ export default function KooperationPage() {
               </div>
             </div>
 
-            <div className="flex w-full min-w-0 max-w-xl shrink-0 flex-col items-center overflow-visible text-center lg:max-w-[min(100%,31rem)] lg:-translate-x-[20%] lg:items-start lg:text-left xl:max-w-[33rem]">
+            <div className="flex w-full min-w-0 max-w-xl shrink-0 flex-col items-center overflow-visible text-center lg:max-w-[min(100%,31rem)] lg:items-start lg:text-left xl:max-w-[33rem]">
               <h1
                 className={`${ANIM_IN} max-w-[24rem] text-balance text-[1.375rem] font-extrabold leading-snug tracking-tight text-[#0F4F68] sm:max-w-2xl sm:text-[1.65rem] sm:leading-tight lg:max-w-none lg:whitespace-nowrap lg:text-[clamp(1.5rem,0.6rem+1.4vw,2.75rem)] lg:leading-[1.12]`}
                 style={{ animationDelay: "110ms" }}
