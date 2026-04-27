@@ -7,14 +7,39 @@ import { siteConfig } from "@/config/site";
 
 const CTA_LABEL = "Jetzt Kooperationspartner werden" as const;
 
+/** Gleiche Optik wie die Haken bei „Ihre Vorteile“ im Kooperations-Hero. */
+function KooperationHeroCheckIcon({ className = "" }: { className?: string }) {
+  return (
+    <span
+      className={`inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#F78F2E]/15 text-[#F78F2E] sm:h-10 sm:w-10 ${className}`.trim()}
+      aria-hidden
+    >
+      <svg
+        className="h-[1.2rem] w-[1.2rem] sm:h-[1.35rem] sm:w-[1.35rem]"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        <path d="M20 6L9 17l-5-5" />
+      </svg>
+    </span>
+  );
+}
+
 type BereichDef = {
   id: string;
   title: string;
   lede: string;
   paragraphs: string[];
-  /** Optionale Unterpunkte mit Überschrift (z. B. Pflegehilfsmittel). */
+  /** Optional: Zwischenüberschrift vor der Vorteilsliste (orangene Haken). */
+  featuresHeading?: string;
+  /** Vorteilszeilen mit Titel + Fließtext – Darstellung wie Hero-Liste, keine Kästen. */
   features?: readonly { title: string; text: string }[];
-  info: string;
+  /** Kurzer Hinweis im Amber-Kasten; weglassen, wenn nichts Nötiges. */
+  info?: string;
   mehrHref: string;
   mehrLabel: string;
   align: "left" | "right";
@@ -49,14 +74,29 @@ const BEREICHE: BereichDef[] = [
   },
   {
     id: "betriebliche-pflegeberatung",
-    title: "Betriebliche Pflegeberatung",
+    title: "Betriebliche Pflegeberatung für Ihre Unternehmenskunden",
     align: "right",
-    lede: "Ergänzen Sie Ihr betriebliches Gesundheitsmanagement um unsere Pflegeberatung nach § 7a SGB XI – ohne Mehraufwand in Ihrer Personalabteilung.",
+    lede: "Sie beraten Firmen, Arbeitgeber oder HR-Abteilungen zu Benefits, betrieblichem Gesundheitsmanagement oder Mitarbeiterbindung?",
     paragraphs: [
-      "Wir übernehmen die strukturierte Beratung Ihrer Beschäftigten zu Pflegegrad, Entlastungsleistungen und Versorgungsoptionen – DSGVO-konform und dokumentiert.",
-      "Perfekt für Arbeitgeber, Sozialberatungen und Betriebsärzte, die ihren Teams echten Mehrwert bieten wollen.",
+      `Dann erweitern Sie Ihr Angebot um einen Beratungsbaustein mit echtem Alltagsnutzen: die betriebliche Pflegeberatung der ${siteConfig.name}.`,
+      "Wir unterstützen Beschäftigte Ihrer Unternehmenskunden bei Fragen zu Pflegegrad, Entlastungsleistungen, Versorgungsoptionen und der Organisation der häuslichen Pflege.",
+      "Hier erleben Betriebe einen Benefit, der einen echten Unterschied macht und sie auf den demografischen Wandel vorbereitet.",
     ],
-    info: "Kooperationsmodelle mit klarer Rollenverteilung; Anbindung an Ihre internen Kommunikationskanäle nach Absprache.",
+    featuresHeading: "Ihre Vorteile als Kooperationspartner",
+    features: [
+      {
+        title: "Starker Benefit für Unternehmen",
+        text: "Sie bieten Arbeitgebern eine konkrete Lösung, mit der sie ihre Mitarbeitenden in Pflegesituationen spürbar entlasten können – und Fehlzeiten nachweisbar reduzieren.",
+      },
+      {
+        title: "Mehr Argumente für Mitarbeiterbindung & Recruiting",
+        text: "Pflegeberatung ergänzt moderne Benefit- und BGM-Konzepte und stärkt die Positionierung als mitarbeiterorientierter Arbeitgeber.",
+      },
+      {
+        title: "Transparent & übersichtlich",
+        text: "Über unser Dashboard sehen Sie jeden Status und die monatliche Tippgeberprovision.",
+      },
+    ],
     mehrHref: "/pflegeberatung#betriebliche-pflegeberatung",
     mehrLabel: "Betriebliche Pflegeberatung ansehen",
   },
@@ -175,36 +215,63 @@ export function KooperationspartnerBereiche() {
                         <p key={`${b.id}-p-${i}`}>{p}</p>
                       ))}
                     </div>
+                    {b.featuresHeading ? (
+                      <h4
+                        id={`${b.id}-vorteile-heading`}
+                        className={[
+                          "max-w-2xl text-lg font-bold tracking-tight text-[#0F4F68] sm:text-xl",
+                          isRight ? "lg:ml-auto lg:text-right" : "",
+                        ].join(" ")}
+                      >
+                        {b.featuresHeading}
+                      </h4>
+                    ) : null}
                     {b.features && b.features.length > 0 ? (
                       <ul
                         className={[
-                          "list-none max-w-2xl space-y-5 text-pretty sm:space-y-6",
+                          "list-none w-full max-w-2xl space-y-3 text-pretty sm:space-y-3.5",
                           isRight ? "lg:ml-auto" : "",
                         ].join(" ")}
+                        aria-labelledby={b.featuresHeading ? `${b.id}-vorteile-heading` : undefined}
+                        aria-label={b.featuresHeading ? undefined : "Vorteile im Überblick"}
                       >
                         {b.features.map((f) => (
                           <li
                             key={f.title}
                             className={[
-                              "rounded-xl border border-[#0F4F68]/10 bg-white/70 px-4 py-4 sm:px-5 sm:py-5",
-                              isRight ? "text-right" : "text-left",
+                              "flex w-full items-start gap-3 sm:items-center lg:items-start",
+                              isRight ? "flex-row-reverse" : "",
                             ].join(" ")}
                           >
-                            <h4 className="text-base font-bold text-[#0F4F68] sm:text-lg">{f.title}</h4>
-                            <p className="mt-2 text-sm leading-relaxed text-neutral-700 sm:text-base">{f.text}</p>
+                            <KooperationHeroCheckIcon className="mt-0.5 sm:mt-0" />
+                            <div
+                              className={[
+                                "min-w-0 flex-1 space-y-1",
+                                isRight ? "text-right" : "text-left",
+                              ].join(" ")}
+                            >
+                              <p className="text-[1.05rem] font-semibold leading-snug text-[#0F4F68] sm:text-[1.125rem]">
+                                {f.title}
+                              </p>
+                              <p className="text-pretty text-sm leading-relaxed text-neutral-700 sm:text-base">
+                                {f.text}
+                              </p>
+                            </div>
                           </li>
                         ))}
                       </ul>
                     ) : null}
-                    <p
-                      className={[
-                        "max-w-2xl rounded-xl border border-amber-200/80 bg-amber-50/90 px-4 py-3 text-sm font-medium leading-snug text-amber-950 sm:text-[0.9375rem]",
-                        isRight ? "lg:ml-auto" : "",
-                      ].join(" ")}
-                    >
-                      <span className="font-semibold text-amber-900">Information: </span>
-                      {b.info}
-                    </p>
+                    {b.info?.trim() ? (
+                      <p
+                        className={[
+                          "max-w-2xl rounded-xl border border-amber-200/80 bg-amber-50/90 px-4 py-3 text-sm font-medium leading-snug text-amber-950 sm:text-[0.9375rem]",
+                          isRight ? "lg:ml-auto" : "",
+                        ].join(" ")}
+                      >
+                        <span className="font-semibold text-amber-900">Information: </span>
+                        {b.info}
+                      </p>
+                    ) : null}
                     <div
                       className={[
                         "mt-2 flex w-full max-w-2xl flex-col gap-3 sm:flex-row sm:flex-wrap",
