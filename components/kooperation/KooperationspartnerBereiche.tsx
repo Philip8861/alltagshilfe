@@ -7,6 +7,16 @@ import { siteConfig } from "@/config/site";
 
 const CTA_LABEL = "Jetzt Kooperationspartner werden" as const;
 
+/** Wie Kooperations-Hero (`HERO_IMG_BASE`): gleicher Bildschatten. */
+const KOOP_CARD_IMG_SHADOW =
+  "object-contain [filter:drop-shadow(8px_12px_20px_rgba(15,79,104,0.18))_drop-shadow(6px_6px_14px_rgba(15,79,104,0.1))] [will-change:filter]";
+
+const PFLEGEHILFSMITTEL_CORNER_IMG = {
+  src: "/images/kooperation_pflegehilfsmittel.webp",
+  width: 516,
+  height: 403,
+} as const;
+
 /** Gleiche Optik wie die Haken bei „Ihre Vorteile“ im Kooperations-Hero. */
 function KooperationHeroCheckIcon({ className = "" }: { className?: string }) {
   return (
@@ -189,16 +199,31 @@ export function KooperationspartnerBereiche() {
               <div key={b.id} role="listitem">
                 <article
                   className={[
-                    "relative overflow-hidden rounded-2xl border border-[#0F4F68]/12 bg-gradient-to-br p-6 shadow-[0_12px_40px_-20px_rgba(15,79,104,0.25)] sm:p-8 lg:p-10",
+                    "relative rounded-2xl border border-[#0F4F68]/12 bg-gradient-to-br p-6 shadow-[0_12px_40px_-20px_rgba(15,79,104,0.25)] sm:p-8 lg:p-10",
+                    b.id === "pflegehilfsmittel" ? "overflow-visible" : "overflow-hidden",
                     isRight
                       ? "from-white via-[#f7fbfc] to-[#eef6f9] lg:ml-8 lg:rounded-r-[2rem] lg:rounded-l-3xl lg:pl-12 lg:pr-14"
                       : "from-[#f7fbfc] via-white to-white lg:mr-8 lg:rounded-l-[2rem] lg:rounded-r-3xl lg:pl-14 lg:pr-12",
                   ].join(" ")}
                 >
+                  {b.id === "pflegehilfsmittel" ? (
+                    /* eslint-disable-next-line @next/next/no-img-element -- Teaserbild wie Hero (filter-Schatten), kein Next/Image-Wrapper */
+                    <img
+                      src={PFLEGEHILFSMITTEL_CORNER_IMG.src}
+                      alt="Pflegehilfsmittel – Kooperation"
+                      width={PFLEGEHILFSMITTEL_CORNER_IMG.width}
+                      height={PFLEGEHILFSMITTEL_CORNER_IMG.height}
+                      decoding="async"
+                      className={`pointer-events-none absolute right-3 top-3 z-10 h-auto w-[min(42%,11.5rem)] max-w-[220px] select-none sm:right-5 sm:top-5 sm:w-[min(40%,13rem)] ${KOOP_CARD_IMG_SHADOW}`}
+                    />
+                  ) : null}
                   <div
                     className={[
                       "flex flex-col gap-4",
                       isRight ? "lg:items-end lg:text-right" : "lg:items-start lg:text-left",
+                      b.id === "pflegehilfsmittel"
+                        ? "pr-[min(46%,12rem)] sm:pr-[min(46%,13.5rem)] lg:pr-[min(48%,15rem)]"
+                        : "",
                     ].join(" ")}
                   >
                     <h3 className="text-xl font-bold tracking-tight text-[#0F4F68] sm:text-2xl lg:max-w-2xl">
