@@ -188,7 +188,7 @@ export function RatgeberHub() {
     <div className="min-w-0">
       {/* Hero: ein Block – Bild vollflächig, Text & Suche wie zuvor darüber */}
       <section className="relative w-full overflow-hidden" aria-labelledby="ratgeber-hub-heading">
-        <div className="relative min-h-[13rem] w-full bg-[#FFFCFA] sm:min-h-[15.5rem] md:min-h-[18rem] lg:min-h-[19.5rem]">
+        <div className="relative min-h-[13rem] w-full overflow-hidden rounded-b-2xl bg-[#FFFCFA] sm:min-h-[15.5rem] md:min-h-[18rem] lg:min-h-[19.5rem]">
           <Image
             src="/images/ratgeber_hintergrund.webp"
             alt=""
@@ -362,14 +362,20 @@ export function RatgeberHub() {
                 href={`/ratgeber/${featured.slug}`}
                 className="mt-5 flex flex-col overflow-hidden rounded-2xl border border-black/[0.06] bg-white shadow-[0_16px_48px_-20px_rgba(15,79,104,0.25)] transition hover:-translate-y-0.5 hover:shadow-[0_22px_56px_-18px_rgba(15,79,104,0.28)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68] focus-visible:ring-offset-2 md:flex-row"
               >
-                <div className="relative aspect-[16/10] w-full shrink-0 md:aspect-auto md:w-[46%] md:min-h-[300px] lg:min-h-[340px]">
+                <div className="relative mx-auto aspect-[16/10] w-3/4 max-w-3xl shrink-0 overflow-hidden bg-neutral-100 md:mx-0 md:aspect-auto md:min-h-[225px] md:w-[34.5%] md:max-w-none lg:min-h-[255px]">
                   <span
                     className="absolute left-4 top-4 z-10 rounded-lg px-3 py-1 text-xs font-bold uppercase tracking-wide text-white shadow sm:text-sm"
                     style={{ backgroundColor: ORANGE }}
                   >
                     Top Thema
                   </span>
-                  <Image src={featured.image} alt={featured.imageAlt} fill className="object-cover" sizes="(min-width: 1024px) 45vw, 100vw" />
+                  <Image
+                    src={featured.image}
+                    alt={featured.imageAlt}
+                    fill
+                    className="object-contain object-center"
+                    sizes="(min-width: 1024px) 35vw, 75vw"
+                  />
                 </div>
                 <div className="flex flex-1 flex-col justify-center p-6 sm:p-8 lg:p-10">
                   <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm sm:text-base">
