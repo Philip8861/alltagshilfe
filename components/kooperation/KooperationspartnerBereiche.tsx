@@ -29,10 +29,17 @@ const HAUSWIRTSCHAFT_CORNER_IMG = {
   height: 403,
 } as const;
 
+const PRIVATE_PFLEGE_CORNER_IMG = {
+  src: "/images/kooperation_private_pflegeberatung.webp",
+  width: 516,
+  height: 403,
+} as const;
+
 /** Karten mit Teaserbild, das über die Kante ragt. */
 const KOOP_CORNER_OVERFLOW_IDS = new Set([
   "pflegehilfsmittel",
   "betriebliche-pflegeberatung",
+  "private-pflegeberatung",
   "hauswirtschaft-betreuung",
 ]);
 
@@ -144,12 +151,26 @@ const BEREICHE: BereichDef[] = [
     id: "private-pflegeberatung",
     title: "Private Pflegeberatung",
     align: "left",
-    lede: "Verweisen Sie angehörige oder Mandanten an eine erfahrene Pflegeberatung – mit festen Qualitätsstandards und nachvollziehbaren Abläufen.",
+    lede: "Sie arbeiten mit pflegebedürftigen Menschen oder Angehörigen zusammen, die Unterstützung bei Beratungsbesuchen, Anträgen oder Formularen benötigen?",
     paragraphs: [
-      "Von der ersten Orientierung bis zu Hilfsmitteln und Anträgen: wir begleiten Familien einfühlsam und fachlich fundiert.",
-      "Geeignet für Rechtsanwälte, Steuerberater, Hausärzte und soziale Träger mit Schnittstelle zur häuslichen Pflege.",
+      `Dann können Sie diese Personen vertrauensvoll an ${siteConfig.name} weiterempfehlen. Wir bieten verpflichtende Beratungsbesuche nach § 37 Abs. 3 SGB XI an und unterstützen Familien zusätzlich bei Fragen rund um Pflegegrad, Leistungen, Anträge und notwendige Unterlagen.`,
+      "Unsere geschulten Pflegeberater nehmen sich Zeit für die individuelle Situation vor Ort.",
     ],
-    info: "Sie bleiben vertrauensvoller Erstkontakt – wir liefern die Pflegeexpertise und halten Sie bei Bedarf auf dem Laufenden.",
+    featuresHeading: "Ihre Vorteile als Kooperationspartner",
+    features: [
+      {
+        title: "Verlässliche Hilfe für Pflegebedürftige und Angehörige",
+        text: "Ihre Kontakte erhalten klare Orientierung zu Beratungsbesuchen, Leistungen und Unterlagen – ohne dass Sie selbst inhaltlich in Vorleistung treten müssen.",
+      },
+      {
+        title: "Geschulte Pflegeberater mit Zeit für die Situation",
+        text: "Unsere Beratungen erfolgen durch geschulte Pflegeberater, die strukturiert beraten, zuhören und gemeinsam mit den Betroffenen sinnvolle nächste Schritte besprechen.",
+      },
+      {
+        title: "Tippgeberprovision bei erfolgreicher Beratung",
+        text: "Wird eine von Ihnen vermittelte Beratung erfolgreich durchgeführt, erhalten Sie eine Tippgeberprovision.",
+      },
+    ],
     mehrHref: "/pflegeberatung/private-pflegeberatung",
     mehrLabel: "Private Pflegeberatung ansehen",
   },
@@ -261,6 +282,17 @@ export function KooperationspartnerBereiche() {
                       className={`pointer-events-none absolute right-0 top-0 z-10 select-none sm:-top-5 sm:-right-5 lg:-right-6 lg:-top-6 ${KOOP_CORNER_IMG_SIZE} ${KOOP_CARD_IMG_SHADOW}`}
                     />
                   ) : null}
+                  {b.id === "private-pflegeberatung" ? (
+                    /* eslint-disable-next-line @next/next/no-img-element -- Teaserbild wie Hero (filter-Schatten), kein Next/Image-Wrapper */
+                    <img
+                      src={PRIVATE_PFLEGE_CORNER_IMG.src}
+                      alt="Private Pflegeberatung – Kooperation"
+                      width={PRIVATE_PFLEGE_CORNER_IMG.width}
+                      height={PRIVATE_PFLEGE_CORNER_IMG.height}
+                      decoding="async"
+                      className={`pointer-events-none absolute right-0 top-0 z-10 select-none sm:-top-5 sm:-right-5 lg:-right-6 lg:-top-6 ${KOOP_CORNER_IMG_SIZE} ${KOOP_CARD_IMG_SHADOW}`}
+                    />
+                  ) : null}
                   {b.id === "betriebliche-pflegeberatung" ? (
                     /* eslint-disable-next-line @next/next/no-img-element -- Teaserbild wie Hero (filter-Schatten), kein Next/Image-Wrapper */
                     <img
@@ -288,7 +320,9 @@ export function KooperationspartnerBereiche() {
                       "flex min-w-0 flex-col gap-4 text-left",
                       isRight ? "lg:items-end lg:text-right" : "lg:items-start",
                       KOOP_CORNER_OVERFLOW_IDS.has(b.id) ? "pt-[11.5rem] sm:pt-0" : "",
-                      b.id === "pflegehilfsmittel" ? KOOP_CORNER_TEXT_PR : "",
+                      b.id === "pflegehilfsmittel" || b.id === "private-pflegeberatung"
+                        ? KOOP_CORNER_TEXT_PR
+                        : "",
                       b.id === "betriebliche-pflegeberatung" || b.id === "hauswirtschaft-betreuung"
                         ? KOOP_CORNER_TEXT_PL
                         : "",
