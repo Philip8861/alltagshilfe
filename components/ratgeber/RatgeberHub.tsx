@@ -186,25 +186,18 @@ export function RatgeberHub() {
 
   return (
     <div className="min-w-0">
-      {/* Hero: mobil nur schmales Titelbild, Text + Suche in eigenem Kasten darunter; ab md alles im Bild-Overlay wie zuvor */}
+      {/* Hero: ein Block – Bild vollflächig, Text & Suche wie zuvor darüber */}
       <section className="relative w-full overflow-hidden" aria-labelledby="ratgeber-hub-heading">
-        <div className="relative w-full md:min-h-[16rem] lg:min-h-[19.5rem]">
-          <div
-            className="relative w-full min-h-0 max-md:aspect-[2.15/1] max-md:min-h-[10.5rem] max-md:max-h-[13.5rem] md:absolute md:inset-0 md:min-h-[16rem] lg:min-h-[19.5rem]"
-          >
-            <Image
-              src="/images/ratgeber_hintergrund.webp"
-              alt=""
-              fill
-              className="object-cover object-[83%_center] md:object-center"
-              sizes="100vw"
-              priority
-            />
-          </div>
-
-          <div
-            className="relative z-10 mx-auto flex w-full max-w-7xl flex-col max-md:mx-4 max-md:mt-2 max-md:gap-6 max-md:rounded-2xl max-md:border max-md:border-[#0F4F68]/10 max-md:bg-[#FFFBF7] max-md:px-4 max-md:py-6 max-md:shadow-[0_8px_30px_-16px_rgba(15,79,104,0.12)] sm:max-md:px-5 md:absolute md:inset-0 md:mx-0 md:mt-0 md:min-h-full md:justify-between md:rounded-none md:border-0 md:bg-transparent md:px-6 md:pb-5 md:pt-8 md:shadow-none lg:px-[var(--ahs-page-gutter)] lg:pb-6 lg:pt-12"
-          >
+        <div className="relative min-h-[13rem] w-full sm:min-h-[15.5rem] md:min-h-[18rem] lg:min-h-[19.5rem]">
+          <Image
+            src="/images/ratgeber_hintergrund.webp"
+            alt=""
+            fill
+            className="object-cover object-[83%_center] md:object-center"
+            sizes="100vw"
+            priority
+          />
+          <div className="relative z-10 mx-auto flex min-h-[13rem] w-full max-w-7xl flex-col justify-between px-4 pb-4 pt-8 sm:min-h-[15.5rem] sm:px-6 sm:pb-5 sm:pt-10 md:min-h-[18rem] lg:min-h-[19.5rem] lg:px-[var(--ahs-page-gutter)] lg:pb-6 lg:pt-12">
             <div className="max-w-4xl">
               <p className="mb-2 flex items-center gap-2 sm:mb-3">
                 <HeartOutlineIcon className="shrink-0 text-[#F78F2E]" />
@@ -228,7 +221,7 @@ export function RatgeberHub() {
             </div>
 
             <form
-              className="w-full max-w-4xl max-md:mt-0 md:mt-0"
+              className="mt-6 w-full max-w-4xl sm:mt-8"
               onSubmit={(e) => {
                 e.preventDefault();
                 setSearchFocused(false);
