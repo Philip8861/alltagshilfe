@@ -104,7 +104,7 @@ const BEREICHE: BereichDef[] = [
     features: [
       {
         title: "Eigene Flyer für Ihre Kunden",
-        text: "Sie erhalten professionelles Infomaterial, das Sie direkt an pflegebedürftige Personen und Angehörige weitergeben können.",
+        text: "Sie erhalten eigene Flyer mit Ihrem Partner-Code, die Sie direkt an pflegebedürftige Personen und Angehörige weitergeben können.",
       },
       {
         title: "Persönlicher Partner-Code",
@@ -132,12 +132,12 @@ const BEREICHE: BereichDef[] = [
     featuresHeading: "Ihre Vorteile als Kooperationspartner",
     features: [
       {
-        title: "Starker Benefit für Unternehmen",
-        text: "Sie bieten Arbeitgebern eine konkrete Lösung, mit der sie ihre Mitarbeitenden in Pflegesituationen spürbar entlasten können – und Fehlzeiten nachweisbar reduzieren.",
+        title: "Einfach vermittelbar und klar erklärbar",
+        text: "Das Angebot ist leicht verständlich und spricht ein Problem an, das viele Unternehmen bereits heute betrifft: die Vereinbarkeit von Beruf und Pflege.",
       },
       {
-        title: "Mehr Argumente für Mitarbeiterbindung & Recruiting",
-        text: "Pflegeberatung ergänzt moderne Benefit- und BGM-Konzepte und stärkt die Positionierung als mitarbeiterorientierter Arbeitgeber.",
+        title: "Professionelle Umsetzung durch Alltagshilfe-Süd",
+        text: "Die fachliche Beratung, Durchführung und Betreuung übernehmen wir. Sie können Ihren Unternehmenskunden eine hochwertige Lösung anbieten, ohne zusätzlichen Aufwand.",
       },
       {
         title: "Transparent & übersichtlich",

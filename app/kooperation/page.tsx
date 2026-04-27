@@ -18,7 +18,7 @@ const KOOPERATION_HERO_IMG = {
 const KOOPERATION_HERO_DISPLAY_MAX_PX = Math.round(KOOPERATION_HERO_IMG.width * 0.8);
 
 const HERO_KURZ_VORTEILE = [
-  "Transparenz & Übersichtlichkeit dank eigenem Dashboard",
+  "Übersichtlich & Transparent dank eigenem Dashboard",
   "Monatliche Tippgeberprovision",
   "Schnelle Bearbeitung aller Vorgänge",
 ] as const;
