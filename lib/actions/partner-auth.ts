@@ -12,8 +12,14 @@ import {
   rateLimitPartnerPasswordChange,
   rateLimitPartnerPasswordReset,
 } from "@/lib/rate-limit";
+import {
+  buildBrandedPartnerPasswordResetEmailHtml,
+  partnerPasswordResetOutboundSubject,
+} from "@/lib/email/branded-html";
+import { isTransactionalSmtpConfigured, sendTransactionalMail } from "@/lib/email/internal-smtp";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { createSupabaseServiceRoleClient } from "@/lib/supabase/service";
 import { partnerPasswordResetRequestSchema } from "@/lib/validations/partner";
 
 async function clientIp(): Promise<string> {
@@ -40,6 +46,18 @@ async function publicSiteBaseForAuthRedirect(): Promise<string | null> {
   } catch {
     return getPublicSiteBaseUrl() || null;
   }
+}
+
+function extractSupabaseAdminRecoveryLink(data: unknown): string | null {
+  if (!data || typeof data !== "object") return null;
+  const props = (data as { properties?: unknown }).properties;
+  if (!props || typeof props !== "object") return null;
+  const p = props as Record<string, unknown>;
+  for (const key of ["action_link", "href"] as const) {
+    const v = p[key];
+    if (typeof v === "string" && /^https:\/\//i.test(v.trim())) return v.trim();
+  }
+  return null;
 }
 
 export type PartnerPasswordResetRequestState = { ok: true; message: string } | { ok: false; message: string };
@@ -86,11 +104,50 @@ export async function requestPartnerPasswordResetAction(
 
   const redirectTo = `${base}/auth/callback?next=${encodeURIComponent("/partner/passwort-zuruecksetzen")}`;
 
+  const svc = createSupabaseServiceRoleClient();
+  if (svc && isTransactionalSmtpConfigured()) {
+    try {
+      const { data, error } = await svc.auth.admin.generateLink({
+        type: "recovery",
+        email: resolved.email,
+        options: { redirectTo },
+      });
+      const link = extractSupabaseAdminRecoveryLink(data);
+      if (!error && link) {
+        const html = buildBrandedPartnerPasswordResetEmailHtml(link);
+        const text = [
+          "Passwort zurücksetzen",
+          "",
+          "Sie haben angefordert, Ihr Passwort für den Partnerbereich neu zu setzen.",
+          "Öffnen Sie den folgenden Link im Browser, um ein neues Passwort festzulegen:",
+          "",
+          link,
+          "",
+          "Wenn Sie diese Anfrage nicht gestellt haben, ignorieren Sie diese E-Mail.",
+        ].join("\n");
+        const mailed = await sendTransactionalMail({
+          to: resolved.email,
+          subject: partnerPasswordResetOutboundSubject(),
+          text,
+          html,
+        });
+        if (mailed.ok) {
+          return { ok: true, message: PASSWORD_RESET_SUCCESS_DE };
+        }
+        console.error("[requestPartnerPasswordResetAction] Transactional mail:", mailed.code);
+      } else if (error) {
+        console.warn("[requestPartnerPasswordResetAction] generateLink:", error.message);
+      }
+    } catch (e) {
+      console.error("[requestPartnerPasswordResetAction] branded reset path:", e);
+    }
+  }
+
   try {
     const supabase = await createSupabaseServerClient();
     const { error } = await supabase.auth.resetPasswordForEmail(resolved.email, { redirectTo });
     if (error) {
-      console.error("[requestPartnerPasswordResetAction]", error.message);
+      console.error("[requestPartnerPasswordResetAction] resetPasswordForEmail:", error.message);
     }
   } catch (e) {
     console.error("[requestPartnerPasswordResetAction]", e);

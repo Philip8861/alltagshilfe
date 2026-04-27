@@ -30,56 +30,15 @@ function nl2brEscaped(text: string): string {
   return escapeHtml(text).replace(/\r\n/g, "\n").replace(/\n/g, "<br/>");
 }
 
-/**
- * Responsives, tabellenbasiertes HTML im Erscheinungsbild der Website.
- */
-export function buildBrandedNotificationHtml(options: {
-  /** Kurz für farbiges Badge, z. B. „Kontakt“, „Pflegebox“. */
+function brandedEmailShell(options: {
   kindBadge: string;
-  /** Hauptüberschrift im Header. */
   headline: string;
-  /** Key-Value-Zeilen (Name, E-Mail, …). */
-  rows: EmailDetailRow[];
-  /** Optional: längerer Fließtext / mehrzeilig (Nachricht, Konfigurator-Zusammenfassung). */
-  detailTitle?: string;
-  detailText?: string;
+  /** Tabellenzeilen zwischen Header und Footer (jeweils <tr>…</tr>). */
+  bodyRowsHtml: string;
 }): string {
-  const { kindBadge, headline, rows, detailTitle, detailText } = options;
+  const { kindBadge, headline, bodyRowsHtml } = options;
   const brand = escapeHtml(siteConfig.name);
   const year = new Date().getFullYear();
-
-  const rowHtml = rows
-    .map(
-      (r) => `
-          <tr>
-            <td style="padding:14px 20px;border-bottom:1px solid ${C.border};vertical-align:top;">
-              <p style="margin:0 0 4px 0;font-family:${FONT};font-size:13px;font-weight:700;color:${C.rowLabel};letter-spacing:0.02em;text-transform:uppercase;">
-                ${escapeHtml(r.label)}
-              </p>
-              <p style="margin:0;font-family:${FONT};font-size:16px;line-height:1.5;color:#1a1a1a;">
-                ${nl2brEscaped(r.value)}
-              </p>
-            </td>
-          </tr>`,
-    )
-    .join("");
-
-  const detailSection =
-    detailText && detailText.trim().length > 0
-      ? `
-        <tr>
-          <td style="padding:20px 20px 24px 20px;">
-            ${
-              detailTitle
-                ? `<p style="margin:0 0 10px 0;font-family:${FONT};font-size:13px;font-weight:700;color:${C.rowLabel};letter-spacing:0.02em;text-transform:uppercase;">${escapeHtml(detailTitle)}</p>`
-                : ""
-            }
-            <div style="font-family:${FONT};font-size:15px;line-height:1.6;color:#1a1a1a;background:#F8FBFC;border-radius:12px;border:1px solid ${C.border};padding:16px 18px;">
-              ${nl2brEscaped(detailText.trim())}
-            </div>
-          </td>
-        </tr>`
-      : "";
 
   return `<!DOCTYPE html>
 <html lang="de">
@@ -116,8 +75,7 @@ export function buildBrandedNotificationHtml(options: {
               </table>
             </td>
           </tr>
-          ${rowHtml}
-          ${detailSection}
+          ${bodyRowsHtml}
           <tr>
             <td style="padding:18px 20px 22px 20px;background:#F2F9FA;border-top:1px solid ${C.border};">
               <p style="margin:0;font-family:${FONT};font-size:12px;line-height:1.5;color:${C.muted};text-align:center;">
@@ -131,4 +89,131 @@ export function buildBrandedNotificationHtml(options: {
   </table>
 </body>
 </html>`;
+}
+
+function buildPartnerPasswordResetEmailBodyRows(ctaHrefAttr: string, ctaHrefPlainText: string): string {
+  const intro = [
+    "Sie haben angefordert, Ihr Passwort für den Partnerbereich neu zu setzen.",
+    "Klicken Sie auf den Button unten. Anschließend können Sie auf unserer Website ein neues Passwort festlegen.",
+    "Wenn Sie diese Anfrage nicht gestellt haben, ignorieren Sie diese E-Mail — Ihr Zugang bleibt unverändert.",
+  ];
+
+  const introHtml = intro
+    .map(
+      (p) =>
+        `<p style="margin:0 0 14px 0;font-family:${FONT};font-size:16px;line-height:1.55;color:#1a1a1a;">${nl2brEscaped(p)}</p>`,
+    )
+    .join("");
+
+  const ctaLabel = escapeHtml("Neues Passwort festlegen");
+
+  return `
+          <tr>
+            <td style="padding:22px 20px 8px 20px;">
+              ${introHtml}
+              <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:22px 0 8px 0;">
+                <tr>
+                  <td style="border-radius:14px;background:${C.primary};">
+                    <a href="${ctaHrefAttr}" style="display:inline-block;font-family:${FONT};font-size:16px;font-weight:700;line-height:1.2;color:#ffffff;text-decoration:none;padding:16px 28px;border-radius:14px;background:${C.primary};border:1px solid ${C.primaryDark};">
+                      ${ctaLabel}
+                    </a>
+                  </td>
+                </tr>
+              </table>
+              <p style="margin:18px 0 0 0;font-family:${FONT};font-size:13px;line-height:1.5;color:${C.muted};">
+                Alternativ können Sie diesen Link in die Adresszeile Ihres Browsers kopieren:<br/>
+                <span style="word-break:break-all;color:#1a1a1a;">${ctaHrefPlainText}</span>
+              </p>
+            </td>
+          </tr>`;
+}
+
+/**
+ * Partner-Passwort zurücksetzen – gleiche Markenoptik wie Kontakt-/Intern-Mails (serverseitig versandter Link).
+ */
+export function buildBrandedPartnerPasswordResetEmailHtml(actionUrlHttps: string): string {
+  const u = actionUrlHttps.trim();
+  if (!/^https:\/\//i.test(u)) {
+    throw new Error("[branded-html] Passwort-Reset-Link muss mit https:// beginnen.");
+  }
+  const safe = escapeHtml(u);
+  return brandedEmailShell({
+    kindBadge: "Partner",
+    headline: "Passwort zurücksetzen",
+    bodyRowsHtml: buildPartnerPasswordResetEmailBodyRows(safe, safe),
+  });
+}
+
+/**
+ * HTML für Supabase Dashboard → Authentication → E-Mail-Vorlagen → „Passwort zurücksetzen“.
+ * Platzhalter `{{ .ConfirmationURL }}` wird von Supabase ersetzt (nicht escapen).
+ * Vorgefertigte Datei (regenerierbar): `supabase/email-templates/password-recovery-markenlayout.html`.
+ */
+export function buildSupabaseDashboardPasswordRecoveryHtml(): string {
+  const ph = "{{ .ConfirmationURL }}";
+  return brandedEmailShell({
+    kindBadge: "Partner",
+    headline: "Passwort zurücksetzen",
+    bodyRowsHtml: buildPartnerPasswordResetEmailBodyRows(ph, ph),
+  });
+}
+
+export function partnerPasswordResetOutboundSubject(): string {
+  return `Passwort zurücksetzen – ${siteConfig.name}`;
+}
+
+/**
+ * Responsives, tabellenbasiertes HTML im Erscheinungsbild der Website.
+ */
+export function buildBrandedNotificationHtml(options: {
+  /** Kurz für farbiges Badge, z. B. „Kontakt“, „Pflegebox“. */
+  kindBadge: string;
+  /** Hauptüberschrift im Header. */
+  headline: string;
+  /** Key-Value-Zeilen (Name, E-Mail, …). */
+  rows: EmailDetailRow[];
+  /** Optional: längerer Fließtext / mehrzeilig (Nachricht, Konfigurator-Zusammenfassung). */
+  detailTitle?: string;
+  detailText?: string;
+}): string {
+  const { kindBadge, headline, rows, detailTitle, detailText } = options;
+
+  const rowHtml = rows
+    .map(
+      (r) => `
+          <tr>
+            <td style="padding:14px 20px;border-bottom:1px solid ${C.border};vertical-align:top;">
+              <p style="margin:0 0 4px 0;font-family:${FONT};font-size:13px;font-weight:700;color:${C.rowLabel};letter-spacing:0.02em;text-transform:uppercase;">
+                ${escapeHtml(r.label)}
+              </p>
+              <p style="margin:0;font-family:${FONT};font-size:16px;line-height:1.5;color:#1a1a1a;">
+                ${nl2brEscaped(r.value)}
+              </p>
+            </td>
+          </tr>`,
+    )
+    .join("");
+
+  const detailSection =
+    detailText && detailText.trim().length > 0
+      ? `
+        <tr>
+          <td style="padding:20px 20px 24px 20px;">
+            ${
+              detailTitle
+                ? `<p style="margin:0 0 10px 0;font-family:${FONT};font-size:13px;font-weight:700;color:${C.rowLabel};letter-spacing:0.02em;text-transform:uppercase;">${escapeHtml(detailTitle)}</p>`
+                : ""
+            }
+            <div style="font-family:${FONT};font-size:15px;line-height:1.6;color:#1a1a1a;background:#F8FBFC;border-radius:12px;border:1px solid ${C.border};padding:16px 18px;">
+              ${nl2brEscaped(detailText.trim())}
+            </div>
+          </td>
+        </tr>`
+      : "";
+
+  return brandedEmailShell({
+    kindBadge,
+    headline,
+    bodyRowsHtml: `${rowHtml}${detailSection}`,
+  });
 }

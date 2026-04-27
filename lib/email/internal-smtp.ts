@@ -58,6 +58,11 @@ export function resolveRecipientsForKind(kind: InternalNotificationKind): string
   return parseNotificationEmailList(process.env.NOTIFICATION_TO);
 }
 
+/** Nur SMTP-Verbindung (ohne NOTIFICATION_TO) – z. B. transaktionale Mails an Endnutzer. */
+export function isTransactionalSmtpConfigured(): boolean {
+  return parseSmtpConnection() !== null;
+}
+
 export function isInternalSmtpConfigured(): boolean {
   const conn = parseSmtpConnection();
   if (!conn) return false;
@@ -94,6 +99,57 @@ export type SendInternalMailInput = {
  * Versand per SMTP (z. B. ALL-INKL: *.kasserver.com, Port 465 SSL oder 587 STARTTLS).
  * Empfänger pro Kanal via NOTIFICATION_TO_CONTACT / _KARRIERE / _PFLEGEBOX, Fallback NOTIFICATION_TO.
  */
+const SIMPLE_EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+/**
+ * Transaktionaler Versand an eine einzelne Adresse (z. B. Partner-Passwort-Reset).
+ * Nutzt dieselbe SMTP-Konfiguration wie interne Benachrichtigungen.
+ */
+export async function sendTransactionalMail(input: {
+  to: string;
+  subject: string;
+  text: string;
+  html?: string;
+}): Promise<{ ok: true } | { ok: false; code: "smtp_not_configured" | "invalid_recipient" | "send_failed" }> {
+  const conn = parseSmtpConnection();
+  const to = input.to.trim();
+  if (!conn) {
+    console.warn("[transactional-mail] SMTP unvollständig (SMTP_HOST, SMTP_USER, SMTP_PASS).");
+    return { ok: false, code: "smtp_not_configured" };
+  }
+  if (!to || !SIMPLE_EMAIL_RE.test(to)) {
+    return { ok: false, code: "invalid_recipient" };
+  }
+
+  const subject = input.subject.length > 998 ? `${input.subject.slice(0, 995)}…` : input.subject;
+
+  try {
+    const transporter = nodemailer.createTransport({
+      host: conn.host,
+      port: conn.port,
+      secure: conn.secure,
+      auth: conn.auth,
+      connectionTimeout: 20_000,
+      greetingTimeout: 20_000,
+      socketTimeout: 25_000,
+      ...(conn.port === 587 && !conn.secure ? { requireTLS: true } : {}),
+    });
+
+    await transporter.sendMail({
+      from: conn.from,
+      to,
+      subject,
+      text: input.text,
+      ...(input.html ? { html: input.html } : {}),
+    });
+    return { ok: true };
+  } catch (e) {
+    const msg = e instanceof Error ? e.message : "unknown";
+    console.error("[transactional-mail] Versand fehlgeschlagen:", msg);
+    return { ok: false, code: "send_failed" };
+  }
+}
+
 export async function sendInternalMail(
   input: SendInternalMailInput,
 ): Promise<{ ok: true } | { ok: false; code: "smtp_not_configured" | "send_failed" }> {
