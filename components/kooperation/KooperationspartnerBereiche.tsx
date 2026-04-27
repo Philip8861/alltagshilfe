@@ -176,7 +176,9 @@ export function KooperationspartnerBereiche() {
             {CTA_LABEL}
           </h2>
           <p className="mt-4 text-pretty text-base leading-relaxed text-neutral-700 sm:text-lg">
-            Wählen Sie Ihr Schwerpunktfeld – wir melden uns mit den passenden Unterlagen und dem weiteren Vorgehen.
+            Wählen Sie die passende Dienstleistung für Ihre Kooperation aus. Aktuell bieten wir vier Kooperationsbereiche
+            an. Anschließend melden wir uns für ein persönliches Gespräch und stimmen gemeinsam die nächsten Schritte mit
+            Ihnen ab.
           </p>
         </header>
 
