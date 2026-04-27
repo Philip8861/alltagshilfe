@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { buildStandortPageHref, findStandortByPlz, getOrtByPlz } from "@/config/standorte";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
+import { fireSitePageViewIfEligible } from "@/lib/site-analytics/middleware-fire";
 import { applyPartnerSupabaseSession } from "@/lib/supabase/partner-middleware";
 
 function applySecurityAndSeoHeaders(
@@ -96,6 +97,9 @@ export async function middleware(request: NextRequest) {
     }
 
     applySecurityAndSeoHeaders(response, request, normalizedPath, search);
+    if (!isSkippable && !isPartnerRoute) {
+      fireSitePageViewIfEligible(request, normalizedPath);
+    }
     return response;
   } catch {
     return NextResponse.next();

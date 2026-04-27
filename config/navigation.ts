@@ -14,6 +14,8 @@ const UNSERE_LEISTUNGEN_CHILDREN: { href: string; label: string }[] = [
   { href: "/leistungen/alltagsbegleitung-betreuung", label: "Alltagsbegleitung und Betreuung" },
   { href: "/pflegeberatung/private-pflegeberatung", label: "Pflegeberatungseinsätze nach §37.3 SGB XI" },
   { href: "/pflegehilfsmittel/kostenfreie-pflegehilfsmittel", label: "Kostenfreie Pflegehilfsmittelbox im Wert von 42€" },
+  { href: "/pflegeshop", label: "Pflegeshop" },
+  { href: "/inkontinenzversorgung", label: "Inkontinenzversorgung" },
   { href: "/leistungen/essen-auf-raeder", label: "Essen auf Räder" },
   { href: "/leistungen/hilfe-nach-operation", label: "Hilfe nach Operation, Unfall oder Schwangerschaft" },
   { href: "/pflegeberatung#betriebliche-pflegeberatung", label: "Betriebliche Pflegeberatung" },

@@ -24,6 +24,7 @@ import {
   serviceRowAccentBorderClass,
 } from "@/lib/partner/service-slug-styles";
 import { formatProvisionEur } from "@/lib/partner/partner-tip-payout";
+import { AdminSiteTrafficPanel } from "@/components/partner/admin/AdminSiteTrafficPanel";
 import { PartnerAdminPayoutSection } from "@/components/partner/admin/PartnerAdminPayoutSection";
 
 const AdminStatisticsCharts = dynamic(
@@ -1102,6 +1103,8 @@ export function PartnerAdminDashboard({
                 profiles={profiles}
                 authById={authById}
               />
+
+              <AdminSiteTrafficPanel chartYear={chartYear} />
 
               <div>
                 <h3 className="text-lg font-bold text-[#0F4F68]">Je Partner</h3>
