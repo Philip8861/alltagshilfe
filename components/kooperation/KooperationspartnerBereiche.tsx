@@ -192,14 +192,14 @@ export function KooperationspartnerBereiche() {
           </p>
         </header>
 
-        <div className="mt-12 space-y-10 sm:mt-14 sm:space-y-12 lg:mt-16 lg:space-y-14" role="list">
+        <div className="mt-10 space-y-8 sm:mt-12 sm:space-y-10 lg:mt-16 lg:space-y-14" role="list">
           {BEREICHE.map((b) => {
             const isRight = b.align === "right";
             return (
-              <div key={b.id} role="listitem">
+              <div key={b.id} role="listitem" className="min-w-0 w-full max-w-full">
                 <article
                   className={[
-                    "relative rounded-2xl border border-[#0F4F68]/12 bg-gradient-to-br p-6 shadow-[0_12px_40px_-20px_rgba(15,79,104,0.25)] sm:p-8 lg:p-10",
+                    "relative mx-auto w-full max-w-full rounded-2xl border border-[#0F4F68]/12 bg-gradient-to-br p-5 shadow-[0_12px_40px_-20px_rgba(15,79,104,0.25)] sm:p-8 lg:p-10",
                     b.id === "pflegehilfsmittel" ? "overflow-visible" : "overflow-hidden",
                     isRight
                       ? "from-white via-[#f7fbfc] to-[#eef6f9] lg:ml-8 lg:rounded-r-[2rem] lg:rounded-l-3xl lg:pl-12 lg:pr-14"
@@ -214,15 +214,15 @@ export function KooperationspartnerBereiche() {
                       width={PFLEGEHILFSMITTEL_CORNER_IMG.width}
                       height={PFLEGEHILFSMITTEL_CORNER_IMG.height}
                       decoding="async"
-                      className={`-right-4 -top-4 pointer-events-none absolute z-10 h-auto w-[min(72%,25.875rem)] max-w-[495px] select-none sm:-right-6 sm:-top-6 sm:w-[min(70%,29.25rem)] sm:max-w-[495px] lg:max-w-[520px] ${KOOP_CARD_IMG_SHADOW}`}
+                      className={`-top-3 -right-1 pointer-events-none absolute z-10 h-auto w-[min(82%,32.35rem)] max-w-[619px] select-none sm:-top-5 sm:-right-5 sm:w-[min(78%,36.55rem)] sm:max-w-[619px] lg:-right-6 lg:-top-6 lg:max-w-[650px] ${KOOP_CARD_IMG_SHADOW}`}
                     />
                   ) : null}
                   <div
                     className={[
-                      "flex flex-col gap-4",
-                      isRight ? "lg:items-end lg:text-right" : "lg:items-start lg:text-left",
+                      "flex min-w-0 flex-col gap-4 text-left",
+                      isRight ? "lg:items-end lg:text-right" : "lg:items-start",
                       b.id === "pflegehilfsmittel"
-                        ? "pr-[min(72%,23.25rem)] sm:pr-[min(76%,27.75rem)] lg:pr-[min(78%,31.5rem)]"
+                        ? "pr-[clamp(9.25rem,38vw,13rem)] sm:pr-[clamp(11rem,44vw,18rem)] md:pr-[min(72%,22rem)] lg:pr-[min(78%,31.5rem)]"
                         : "",
                     ].join(" ")}
                   >
@@ -266,15 +266,15 @@ export function KooperationspartnerBereiche() {
                           <li
                             key={f.title}
                             className={[
-                              "flex w-full items-start gap-3 sm:items-center lg:items-start",
-                              isRight ? "flex-row-reverse" : "",
+                              "flex w-full min-w-0 items-start gap-3 sm:items-center lg:items-start",
+                              isRight ? "lg:flex-row-reverse" : "",
                             ].join(" ")}
                           >
-                            <KooperationHeroCheckIcon className="mt-0.5 sm:mt-0" />
+                            <KooperationHeroCheckIcon className="mt-0.5 shrink-0 sm:mt-0" />
                             <div
                               className={[
-                                "min-w-0 flex-1 space-y-1",
-                                isRight ? "text-right" : "text-left",
+                                "min-w-0 flex-1 space-y-1 text-left",
+                                isRight ? "lg:text-right" : "",
                               ].join(" ")}
                             >
                               <p className="text-[1.05rem] font-semibold leading-snug text-[#0F4F68] sm:text-[1.125rem]">
@@ -301,8 +301,8 @@ export function KooperationspartnerBereiche() {
                     ) : null}
                     <div
                       className={[
-                        "mt-2 flex w-full max-w-2xl flex-col gap-3 sm:flex-row sm:flex-wrap",
-                        isRight ? "sm:justify-end" : "sm:justify-start",
+                        "mt-2 flex w-full min-w-0 max-w-2xl flex-col gap-3 sm:flex-row sm:flex-wrap",
+                        isRight ? "sm:justify-start lg:justify-end" : "sm:justify-start",
                       ].join(" ")}
                     >
                       <button
