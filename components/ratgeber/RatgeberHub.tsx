@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useMemo, useState } from "react";
+import { Container } from "@/components/layout/Container";
 import {
   RATGEBER_BEITRAEGE,
   RATGEBER_CATEGORY_LABELS,
@@ -145,24 +146,35 @@ export function RatgeberHub() {
   };
 
   return (
-    <div className="space-y-10 sm:space-y-12">
-      {/* Hero */}
-      <section className="relative overflow-hidden rounded-[1.25rem] border border-black/[0.06] bg-white shadow-[0_12px_40px_-12px_rgba(15,79,104,0.18)] sm:rounded-2xl">
-        <div className="grid gap-8 p-6 sm:p-8 lg:grid-cols-[minmax(0,1fr)_minmax(260px,42%)] lg:items-center lg:gap-10 lg:p-10">
-          <div className="min-w-0">
-            <p className="text-[0.7rem] font-bold uppercase tracking-[0.22em] sm:text-xs" style={{ color: ORANGE }}>
-              Wissen, das entlastet
-            </p>
-            <h1 className="mt-3 text-4xl font-bold tracking-tight sm:text-5xl" style={{ color: NAVY }}>
-              Ratgeber
-            </h1>
-            <p className="mt-4 max-w-xl text-base leading-relaxed text-neutral-600 sm:text-lg">
-              Praxistipps, Erklärungen und konkrete Hilfen rund um Pflege, Betreuung und Entlastung im Alltag – verständlich
-              aufbereitet.
-            </p>
+    <div className="min-w-0">
+      {/* Vollbreite Hero: direkt unter dem weißen Header, Bild kante-zu-kante */}
+      <section className="relative w-full overflow-hidden" aria-labelledby="ratgeber-hub-heading">
+        <div className="relative min-h-[20rem] w-full sm:min-h-[24rem] md:min-h-[28rem] lg:min-h-[30rem]">
+          <Image
+            src="/images/ratgeber_hintergrund.webp"
+            alt=""
+            fill
+            className="object-cover object-center"
+            sizes="100vw"
+            priority
+          />
+          {/* leichte Lesbarkeit für Text */}
+          <div className="absolute inset-0 bg-gradient-to-b from-black/35 via-black/20 to-black/45" aria-hidden />
+          <div className="relative z-10 mx-auto flex min-h-[20rem] w-full max-w-7xl flex-col justify-between px-4 pb-5 pt-10 sm:min-h-[24rem] sm:px-6 sm:pb-6 sm:pt-12 md:min-h-[28rem] lg:min-h-[30rem] lg:px-[var(--ahs-page-gutter)] lg:pb-8 lg:pt-16">
+            <div className="max-w-4xl">
+              <h1
+                id="ratgeber-hub-heading"
+                className="text-3xl font-bold tracking-tight text-white drop-shadow-[0_2px_8px_rgba(0,0,0,0.35)] sm:text-4xl md:text-5xl"
+              >
+                Alltagshilfe-Süd Ratgeber
+              </h1>
+              <p className="mt-3 max-w-2xl text-base leading-relaxed text-white/95 drop-shadow-[0_1px_4px_rgba(0,0,0,0.35)] sm:text-lg">
+                Praxistipps, Erklärungen und konkrete Hilfen rund um Pflege, Betreuung und Entlastung im Alltag.
+              </p>
+            </div>
 
             <form
-              className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-stretch"
+              className="mt-8 flex w-full max-w-4xl flex-col gap-3 sm:mt-10 sm:flex-row sm:items-stretch"
               onSubmit={(e) => e.preventDefault()}
               role="search"
             >
@@ -173,37 +185,25 @@ export function RatgeberHub() {
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
                   placeholder="Artikel durchsuchen …"
-                  className="h-12 w-full rounded-2xl border border-neutral-200 bg-[#FAFAFA] py-3 pl-12 pr-4 text-sm text-neutral-900 outline-none ring-[#0F4F68]/20 transition placeholder:text-neutral-400 focus:border-[#0F4F68]/35 focus:bg-white focus:ring-4"
+                  className="h-12 w-full rounded-2xl border border-white/25 bg-white/95 py-3 pl-12 pr-4 text-sm text-neutral-900 shadow-lg outline-none ring-[#0F4F68]/25 backdrop-blur-sm transition placeholder:text-neutral-500 focus:border-[#0F4F68]/40 focus:bg-white focus:ring-4"
                   aria-label="Ratgeber durchsuchen"
                 />
               </div>
               <button
                 type="submit"
-                className="h-12 shrink-0 rounded-2xl px-8 text-sm font-semibold text-white shadow-md transition hover:opacity-95 active:translate-y-px sm:w-auto"
+                className="h-12 shrink-0 rounded-2xl px-8 text-sm font-semibold text-white shadow-lg transition hover:opacity-95 active:translate-y-px sm:w-auto"
                 style={{ backgroundColor: NAVY }}
               >
                 Suchen
               </button>
             </form>
           </div>
-
-          <div className="relative mx-auto aspect-[4/3] w-full max-w-md lg:mx-0 lg:max-w-none">
-            <div className="absolute -right-6 -top-6 h-32 w-32 rounded-full bg-[#F78F2E]/15 blur-2xl" aria-hidden />
-            <div className="relative h-full min-h-[200px] overflow-hidden rounded-2xl border border-neutral-100 shadow-inner sm:min-h-[260px]">
-              <Image
-                src="/images/pflegeberatung_gemeinsam.webp"
-                alt="Beratung und Zuwendung: Menschen im Gespräch"
-                fill
-                className="object-cover object-center"
-                sizes="(min-width: 1024px) 40vw, 90vw"
-                priority
-              />
-            </div>
-          </div>
         </div>
+      </section>
 
-        {/* Themen-Pills */}
-        <div className="border-t border-neutral-100 bg-[#FFFCFA] px-4 py-4 sm:px-8">
+      {/* Themen-Pills */}
+      <div className="w-full border-b border-neutral-100 bg-[#FFFCFA]">
+        <Container className="max-w-7xl py-4">
           <div className="flex gap-2 overflow-x-auto pb-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
             <button
               type="button"
@@ -233,10 +233,11 @@ export function RatgeberHub() {
               </button>
             ))}
           </div>
-        </div>
-      </section>
+        </Container>
+      </div>
 
-      <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_320px] lg:gap-12 xl:grid-cols-[minmax(0,1fr)_340px]">
+      <Container className="max-w-7xl space-y-10 pt-10 sm:space-y-12 sm:pt-12">
+        <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_320px] lg:gap-12 xl:grid-cols-[minmax(0,1fr)_340px]">
         <div className="min-w-0 space-y-10">
           {/* Empfohlener Artikel */}
           {featuredVisible ? (
@@ -435,54 +436,55 @@ export function RatgeberHub() {
         </aside>
       </div>
 
-      {/* Newsletter */}
-      <section
-        className="rounded-2xl border border-[#F78F2E]/25 px-5 py-8 sm:px-10 sm:py-10"
-        style={{ background: `linear-gradient(135deg, #FFF4E8 0%, #FFE8D4 100%)` }}
-        aria-labelledby="newsletter-heading"
-      >
-        <div className="mx-auto flex max-w-4xl flex-col gap-6 md:flex-row md:items-center md:gap-10">
-          <div className="flex shrink-0 justify-center md:justify-start">
-            <span
-              className="flex h-16 w-16 items-center justify-center rounded-2xl border-2 bg-white shadow-sm"
-              style={{ borderColor: `${ORANGE}55`, color: ORANGE }}
+        {/* Newsletter */}
+        <section
+          className="rounded-2xl border border-[#F78F2E]/25 px-5 py-8 sm:px-10 sm:py-10"
+          style={{ background: `linear-gradient(135deg, #FFF4E8 0%, #FFE8D4 100%)` }}
+          aria-labelledby="newsletter-heading"
+        >
+          <div className="mx-auto flex max-w-4xl flex-col gap-6 md:flex-row md:items-center md:gap-10">
+            <div className="flex shrink-0 justify-center md:justify-start">
+              <span
+                className="flex h-16 w-16 items-center justify-center rounded-2xl border-2 bg-white shadow-sm"
+                style={{ borderColor: `${ORANGE}55`, color: ORANGE }}
+              >
+                <EnvelopeIcon className="h-8 w-8" />
+              </span>
+            </div>
+            <div className="min-w-0 flex-1 text-center md:text-left">
+              <h2 id="newsletter-heading" className="text-xl font-bold sm:text-2xl" style={{ color: NAVY }}>
+                Nie wieder einen wichtigen Ratgeber verpassen
+              </h2>
+              <p className="mt-2 text-sm text-neutral-700 sm:text-base">
+                Melden Sie sich über unsere Kontaktseite – wir informieren Sie gern zu neuen Artikeln und Themen rund um Pflege
+                und Alltag.
+              </p>
+            </div>
+            <form
+              className="flex w-full shrink-0 flex-col gap-3 sm:flex-row md:max-w-md"
+              onSubmit={(e) => {
+                e.preventDefault();
+                window.location.assign("/kontakt");
+              }}
             >
-              <EnvelopeIcon className="h-8 w-8" />
-            </span>
+              <input
+                type="email"
+                name="email"
+                autoComplete="email"
+                placeholder="Ihre E-Mail-Adresse"
+                className="h-12 w-full flex-1 rounded-2xl border border-neutral-200 bg-white px-4 text-sm outline-none ring-[#0F4F68]/15 focus:ring-4"
+              />
+              <button
+                type="submit"
+                className="h-12 shrink-0 rounded-2xl px-6 text-sm font-bold text-white shadow-md transition hover:opacity-95"
+                style={{ backgroundColor: ORANGE }}
+              >
+                Jetzt anmelden
+              </button>
+            </form>
           </div>
-          <div className="min-w-0 flex-1 text-center md:text-left">
-            <h2 id="newsletter-heading" className="text-xl font-bold sm:text-2xl" style={{ color: NAVY }}>
-              Nie wieder einen wichtigen Ratgeber verpassen
-            </h2>
-            <p className="mt-2 text-sm text-neutral-700 sm:text-base">
-              Melden Sie sich über unsere Kontaktseite – wir informieren Sie gern zu neuen Artikeln und Themen rund um Pflege
-              und Alltag.
-            </p>
-          </div>
-          <form
-            className="flex w-full shrink-0 flex-col gap-3 sm:flex-row md:max-w-md"
-            onSubmit={(e) => {
-              e.preventDefault();
-              window.location.assign("/kontakt");
-            }}
-          >
-            <input
-              type="email"
-              name="email"
-              autoComplete="email"
-              placeholder="Ihre E-Mail-Adresse"
-              className="h-12 w-full flex-1 rounded-2xl border border-neutral-200 bg-white px-4 text-sm outline-none ring-[#0F4F68]/15 focus:ring-4"
-            />
-            <button
-              type="submit"
-              className="h-12 shrink-0 rounded-2xl px-6 text-sm font-bold text-white shadow-md transition hover:opacity-95"
-              style={{ backgroundColor: ORANGE }}
-            >
-              Jetzt anmelden
-            </button>
-          </form>
-        </div>
-      </section>
+        </section>
+      </Container>
     </div>
   );
 }
