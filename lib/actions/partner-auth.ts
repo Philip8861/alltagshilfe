@@ -45,7 +45,28 @@ async function publicSiteBaseForAuthRedirect(): Promise<string | null> {
 export type PartnerPasswordResetRequestState = { ok: true; message: string } | { ok: false; message: string };
 
 const PASSWORD_RESET_SUCCESS_DE =
-  "Wenn zu dieser Anmeldung ein Konto gehört, erhalten Sie in Kürze eine E-Mail mit einem Link. Darin können Sie ein neues Passwort festlegen.";
+  "Wenn zu dieser Anmeldung ein Konto gehört, erhalten Sie in Kürze eine E-Mail mit einem Link. Darin können Sie ein neues Passwort festlegen. Prüfen Sie ggf. den Spam-Ordner.";
+
+function messageForPasswordResetSupabaseError(message: string): string {
+  const m = message.toLowerCase();
+  if (m.includes("redirect") || m.includes("url") || m.includes("callback")) {
+    return "Supabase lehnt die Ziel-URL ab. Im Dashboard unter Authentication → URL configuration die Redirect-URLs prüfen (z. B. https://ihre-domain.de/auth/callback**).";
+  }
+  if (
+    m.includes("smtp") ||
+    m.includes("mail") ||
+    m.includes("535") ||
+    m.includes("authentication failed") ||
+    m.includes("e-mail") ||
+    m.includes("email address")
+  ) {
+    return "E-Mail-Versand schlägt fehl. In Supabase unter Project Settings → Auth → SMTP die Custom-SMTP-Daten prüfen oder vorübergehend den Standard-Versand nutzen.";
+  }
+  if (m.includes("rate") || m.includes("too many")) {
+    return "Zu viele Anfragen beim E-Mail-Dienst. Bitte in einigen Minuten erneut versuchen.";
+  }
+  return "Die E-Mail konnte technisch nicht ausgelöst werden. Bitte später erneut versuchen. Wenn das weiterhin passiert, Supabase Auth-Logs und SMTP prüfen.";
+}
 
 /**
  * Sendet die Supabase-Passwort-Reset-E-Mail (Link, kein Klartext-Passwort).
@@ -98,10 +119,16 @@ export async function requestPartnerPasswordResetAction(
       redirectTo: redirectTo.toString(),
     });
     if (error) {
-      console.error("[requestPartnerPasswordResetAction] resetPasswordForEmail:", error.message);
+      console.error("[requestPartnerPasswordResetAction] resetPasswordForEmail:", error.message, error);
+      return { ok: false, message: messageForPasswordResetSupabaseError(error.message) };
     }
   } catch (e) {
     console.error("[requestPartnerPasswordResetAction]", e);
+    return {
+      ok: false,
+      message:
+        "Technischer Fehler beim Anstoßen des Passwort-Reset. Bitte später erneut versuchen oder Administrator informieren.",
+    };
   }
 
   return { ok: true, message: PASSWORD_RESET_SUCCESS_DE };
