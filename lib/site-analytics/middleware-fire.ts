@@ -1,5 +1,7 @@
 import { createClient } from "@supabase/supabase-js";
 import type { NextRequest } from "next/server";
+import { analyticsDayBerlin } from "@/lib/site-analytics/berlin-day";
+import { deviceCategoryFromHeaders } from "@/lib/site-analytics/device-category";
 import { normalizePathForSiteAnalytics, shouldRecordSitePageView } from "@/lib/site-analytics/record-page-view";
 
 let supabaseSingleton: ReturnType<typeof createClient> | null = null;
@@ -26,16 +28,12 @@ export function fireSitePageViewIfEligible(request: NextRequest, pathnameForAnal
   if (!supabase) return;
 
   const path = normalizePathForSiteAnalytics(pathnameForAnalytics);
-  const day = new Intl.DateTimeFormat("en-CA", {
-    timeZone: "Europe/Berlin",
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-  }).format(new Date());
+  const day = analyticsDayBerlin();
+  const device = deviceCategoryFromHeaders(request.headers);
 
   /* eslint-disable @typescript-eslint/no-explicit-any -- RPC nicht im generierten DB-Typ */
   void (supabase as any)
-    .rpc("increment_site_page_view", { p_day: day, p_path: path })
+    .rpc("increment_site_page_view", { p_day: day, p_path: path, p_device: device })
     .then((res: { error: { message: string } | null }) => {
       if (res.error) console.warn("[site-analytics]", res.error.message);
     });

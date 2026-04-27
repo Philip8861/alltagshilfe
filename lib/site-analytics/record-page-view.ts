@@ -50,3 +50,34 @@ export function shouldRecordSitePageView(request: NextRequest, normalizedPath: s
 
   return true;
 }
+
+/** Nur Pfadprüfung für Client-seitige Navigation (kein sec-fetch / Prefetch-Header vom Browser). */
+export function shouldRecordClientSpaNavigation(normalizedPath: string): boolean {
+  if (normalizedPath.startsWith("/api")) return false;
+  if (normalizedPath.startsWith("/_next")) return false;
+  if (normalizedPath.startsWith("/partner")) return false;
+  if (normalizedPath.startsWith("/auth")) return false;
+  if (normalizedPath === "/favicon.ico" || normalizedPath === "/robots.txt") return false;
+  if (normalizedPath.includes(".")) {
+    const lower = normalizedPath.toLowerCase();
+    if (
+      lower.endsWith(".ico") ||
+      lower.endsWith(".png") ||
+      lower.endsWith(".jpg") ||
+      lower.endsWith(".jpeg") ||
+      lower.endsWith(".webp") ||
+      lower.endsWith(".svg") ||
+      lower.endsWith(".gif") ||
+      lower.endsWith(".txt") ||
+      lower.endsWith(".xml") ||
+      lower.endsWith(".json") ||
+      lower.endsWith(".pdf") ||
+      lower.endsWith(".woff") ||
+      lower.endsWith(".woff2")
+    ) {
+      return false;
+    }
+  }
+  if (normalizedPath.length > 2048) return false;
+  return true;
+}

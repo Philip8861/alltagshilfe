@@ -20,6 +20,7 @@ import { OrganizationJsonLd } from "@/components/seo/JsonLd";
 import { ReadabilityZoomControls } from "@/components/accessibility/ReadabilityZoomControls";
 import { GoogleTranslateBootstrap } from "@/components/layout/GoogleTranslateBootstrap";
 import { LocalSiteTranslator } from "@/components/layout/LocalSiteTranslator";
+import { SiteAnalyticsSpaNavigation } from "@/components/site-analytics/SiteAnalyticsSpaNavigation";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.baseUrl),
@@ -65,6 +66,7 @@ export default function RootLayout({
         <GoogleTranslateBootstrap />
         <LocalSiteTranslator />
         <ReadabilityZoomControls />
+        <SiteAnalyticsSpaNavigation />
       </body>
     </html>
   );

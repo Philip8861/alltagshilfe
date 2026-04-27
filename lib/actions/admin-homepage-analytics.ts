@@ -207,3 +207,37 @@ export async function fetchHomepageYearPathTotalsAction(
     : [];
   return { ok: true, data: rows };
 }
+
+export type HomepageDeviceBreakdownRow = { device_category: string; view_count: number };
+
+export async function fetchHomepageDeviceBreakdownAction(
+  year: number,
+  month: number,
+  scope: "monat" | "jahr",
+): Promise<
+  { ok: true; data: HomepageDeviceBreakdownRow[] } | { ok: false; message: string }
+> {
+  if (!(await getSystemAdminSession())) return { ok: false, message: "Nicht angemeldet." };
+  const svc = createSupabaseServiceRoleClient();
+  if (!svc) return { ok: false, message: "Service nicht konfiguriert." };
+
+  const y = Math.min(2100, Math.max(YEAR_RANGE_START, Math.floor(year)));
+  const m = Math.min(12, Math.max(1, Math.floor(month)));
+  const { from, to } = scope === "monat" ? calendarMonthBounds(y, m) : calendarYearBounds(y);
+
+  const res = await svcRpc(svc, "admin_site_traffic_device_breakdown", { p_from: from, p_to: to });
+  if (res.error) {
+    console.error("[fetchHomepageDeviceBreakdownAction]", res.error.message);
+    return { ok: false, message: "Geräte-Auswertung fehlgeschlagen (Migration 017?)." };
+  }
+  const rows = Array.isArray(res.data)
+    ? res.data.map((r: unknown) => {
+        const row = r as Record<string, unknown>;
+        return {
+          device_category: String(row.device_category ?? "unknown"),
+          view_count: Number(row.view_count ?? 0),
+        };
+      })
+    : [];
+  return { ok: true, data: rows };
+}

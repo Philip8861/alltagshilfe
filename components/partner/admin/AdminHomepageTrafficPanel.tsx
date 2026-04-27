@@ -11,13 +11,37 @@ import {
   YAxis,
 } from "recharts";
 import {
+  fetchHomepageDeviceBreakdownAction,
   fetchHomepagePathSeriesAction,
   fetchHomepageTotalsSeriesAction,
   fetchHomepageYearPathTotalsAction,
+  type HomepageDeviceBreakdownRow,
   type HomepageSeriesPoint,
   type HomepageTrafficGranularity,
 } from "@/lib/actions/admin-homepage-analytics";
 import { CHART_AXIS_TICK, CHART_GRID, CHART_TEAL } from "@/components/partner/partner-chart-theme";
+import {
+  deviceCategoryLabelDe,
+  type SiteTrafficDeviceCategory,
+} from "@/lib/site-analytics/device-category";
+
+const DEVICE_ORDER: readonly SiteTrafficDeviceCategory[] = ["mobile", "tablet", "desktop", "unknown"];
+
+function mergeDeviceBreakdown(rows: HomepageDeviceBreakdownRow[]): HomepageDeviceBreakdownRow[] {
+  const m = new Map<string, number>();
+  for (const r of rows) m.set(r.device_category, r.view_count);
+  return DEVICE_ORDER.map((device_category) => ({
+    device_category,
+    view_count: m.get(device_category) ?? 0,
+  }));
+}
+
+function deviceLabel(cat: string): string {
+  if (cat === "mobile" || cat === "tablet" || cat === "desktop" || cat === "unknown") {
+    return deviceCategoryLabelDe(cat);
+  }
+  return cat;
+}
 
 type Props = {
   chartYear: number;
@@ -105,6 +129,11 @@ export function AdminHomepageTrafficPanel({ chartYear }: Props) {
   const [pathLoading, setPathLoading] = useState(false);
   const [pathErr, setPathErr] = useState<string | null>(null);
 
+  const [deviceScope, setDeviceScope] = useState<"monat" | "jahr">("jahr");
+  const [deviceRows, setDeviceRows] = useState<HomepageDeviceBreakdownRow[]>([]);
+  const [deviceLoading, setDeviceLoading] = useState(true);
+  const [deviceErr, setDeviceErr] = useState<string | null>(null);
+
   const loadTotals = useCallback(async () => {
     setTotalLoading(true);
     setTotalErr(null);
@@ -130,6 +159,19 @@ export function AdminHomepageTrafficPanel({ chartYear }: Props) {
     }
     setPathsLoading(false);
   }, [chartYear]);
+
+  const loadDeviceBreakdown = useCallback(async () => {
+    setDeviceLoading(true);
+    setDeviceErr(null);
+    const res = await fetchHomepageDeviceBreakdownAction(chartYear, month, deviceScope);
+    if (!res.ok) {
+      setDeviceErr(res.message);
+      setDeviceRows([]);
+    } else {
+      setDeviceRows(mergeDeviceBreakdown(res.data));
+    }
+    setDeviceLoading(false);
+  }, [chartYear, month, deviceScope]);
 
   const loadPathSeries = useCallback(async () => {
     if (!expandedPath) {
@@ -157,6 +199,10 @@ export function AdminHomepageTrafficPanel({ chartYear }: Props) {
   }, [loadPaths]);
 
   useEffect(() => {
+    void loadDeviceBreakdown();
+  }, [loadDeviceBreakdown]);
+
+  useEffect(() => {
     void loadPathSeries();
   }, [loadPathSeries]);
 
@@ -169,8 +215,9 @@ export function AdminHomepageTrafficPanel({ chartYear }: Props) {
         <p className="mt-2 text-sm leading-relaxed text-neutral-600">
           Aggregierte <strong className="font-semibold text-neutral-800">Seitenaufrufe</strong> nach URL-Pfad
           (Kalendertag Europe/Berlin). Keine IP-Adressen, keine Cookies — nur Summen. Keine eindeutigen Besucher.
-          Prefetch wird weitgehend ausgeschlossen. Für Zeitreihen bitte auch Migration{" "}
-          <code className="rounded bg-neutral-100 px-1">016_site_analytics_time_series.sql</code> ausführen.
+          Interne Seitenwechsel werden per API mitgezählt. Prefetch wird weitgehend ausgeschlossen. Für Zeitreihen:{" "}
+          <code className="rounded bg-neutral-100 px-1">016_site_analytics_time_series.sql</code>, für Geräteklassen:{" "}
+          <code className="rounded bg-neutral-100 px-1">017_site_page_views_device_category.sql</code>.
         </p>
       </div>
 
@@ -197,6 +244,7 @@ export function AdminHomepageTrafficPanel({ chartYear }: Props) {
           onClick={() => {
             void loadTotals();
             void loadPaths();
+            void loadDeviceBreakdown();
             void loadPathSeries();
           }}
           className="min-h-10 rounded-xl border border-[#0F4F68]/30 bg-white px-4 text-sm font-semibold text-[#0F4F68] hover:bg-[#F2F9FA]"
@@ -230,6 +278,61 @@ export function AdminHomepageTrafficPanel({ chartYear }: Props) {
                   : `Pro Jahr (2020–${chartYear})`
             }
           />
+        ) : null}
+      </section>
+
+      <section className="space-y-4 border-t border-neutral-200/90 pt-8" aria-labelledby="hp-device-heading">
+        <h3 id="hp-device-heading" className="text-base font-bold text-[#0F4F68]">
+          Aufrufe nach Gerät (Mobil / Tablet / PC)
+        </h3>
+        <p className="text-sm text-neutral-600">
+          Einordnung per <strong className="font-semibold text-neutral-800">User-Agent</strong> und optional{" "}
+          <code className="rounded bg-neutral-100 px-1">Sec-CH-UA-Mobile</code> — grobe Kategorien, keine
+          Gerätefingerprints. „Unbekannt“ enthält ältere Zähler vor der Geräte-Migration.
+        </p>
+        <div className="flex flex-wrap gap-2" role="group" aria-label="Zeitraum Geräte">
+          <button
+            type="button"
+            onClick={() => setDeviceScope("monat")}
+            className={`min-h-10 rounded-xl px-4 text-sm font-semibold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68]/30 ${
+              deviceScope === "monat"
+                ? "bg-[#0F4F68] text-white shadow-sm"
+                : "border border-[#0F4F68]/25 bg-white text-[#0F4F68] hover:bg-[#F2F9FA]"
+            }`}
+          >
+            Monat ({new Date(chartYear, month - 1, 1).toLocaleString("de-DE", { month: "long", year: "numeric" })})
+          </button>
+          <button
+            type="button"
+            onClick={() => setDeviceScope("jahr")}
+            className={`min-h-10 rounded-xl px-4 text-sm font-semibold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68]/30 ${
+              deviceScope === "jahr"
+                ? "bg-[#0F4F68] text-white shadow-sm"
+                : "border border-[#0F4F68]/25 bg-white text-[#0F4F68] hover:bg-[#F2F9FA]"
+            }`}
+          >
+            Ganzes Jahr {chartYear}
+          </button>
+        </div>
+        {deviceLoading ? <p className="text-sm text-neutral-500">Lade Geräteverteilung…</p> : null}
+        {deviceErr ? (
+          <p className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-950">{deviceErr}</p>
+        ) : null}
+        {!deviceLoading && !deviceErr ? (
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {deviceRows.map((r) => (
+              <div
+                key={r.device_category}
+                className="rounded-2xl border border-[#0F4F68]/12 bg-gradient-to-br from-white to-[#F2F9FA]/70 p-5"
+              >
+                <p className="text-xs font-bold uppercase tracking-wide text-[#0F4F68]/65">{deviceLabel(r.device_category)}</p>
+                <p className="mt-2 text-2xl font-bold tabular-nums text-[#0F4F68]">
+                  {r.view_count.toLocaleString("de-DE")}
+                </p>
+                <p className="mt-1 text-xs text-neutral-600">Seitenaufrufe (Summe)</p>
+              </div>
+            ))}
+          </div>
         ) : null}
       </section>
 

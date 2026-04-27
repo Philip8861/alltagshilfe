@@ -76,6 +76,11 @@ export function rateLimitPflegeboxOrder(identifier: string): { success: boolean;
   return rateLimitWithConfig(`pflegebox-order:${identifier}`, 20, 60 * 60 * 1000);
 }
 
+/** SPA-Navigation / interne Seitenwechsel (POST, IP-basiert, großzügig). */
+export function rateLimitSiteAnalyticsNavigation(identifier: string): { success: boolean; remaining: number } {
+  return rateLimitWithConfig(`site-analytics-nav:${identifier}`, 200, 60 * 1000);
+}
+
 /** Partner-Code-Prüfung aus dem Konfigurator (GET, IP-basiert). */
 export function rateLimitPflegeboxPartnerLookup(identifier: string): { success: boolean; remaining: number } {
   return rateLimitWithConfig(`pflegebox-partner-lookup:${identifier}`, 45, 10 * 60 * 1000);
