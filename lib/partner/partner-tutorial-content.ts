@@ -4,6 +4,11 @@ export type PartnerTutorialStep = {
   body: string;
   /** Hinweis, wenn Anker fehlt (z. B. Liste ausgeblendet). */
   missingAnchorHint: string;
+  /**
+   * Ab md: Dialog horizontal zur Viewport-Mitte (schmale Kacheln in der 4er-Reihe,
+   * sonst wirkt die Sprechblase „verschoben“).
+   */
+  bubbleAlignViewportCenterMd?: boolean;
 };
 
 export const PARTNER_TUTORIAL_STEPS: PartnerTutorialStep[] = [
@@ -22,6 +27,7 @@ export const PARTNER_TUTORIAL_STEPS: PartnerTutorialStep[] = [
       "Diese Provision wird zu Beginn jedes neuen Monats ausgezahlt. Aktuell betrifft das nur die betriebliche Pflegeberatung. Der angezeigte Betrag wird zu Monatsbeginn nicht auf 0 zurückgesetzt, sondern bildet Ihre laufenden Monatsprovisionen ab.",
     missingAnchorHint:
       "Wechseln Sie zur Übersicht, um die Kachel „Monatliche Tippgeberprovision“ zu sehen.",
+    bubbleAlignViewportCenterMd: true,
   },
   {
     anchor: '[data-tutorial="partner-provision-einmal"]',

@@ -69,6 +69,7 @@ function computeBubbleStyle(
   vw: number,
   vh: number,
   panelH: number,
+  options?: { viewportCenterXFromMd?: boolean },
 ): { top: number; left: number; width: number } {
   const margin = Math.max(10, Math.min(18, Math.round(vw * 0.028)));
   const reserve = viewportBottomReservePx(vw);
@@ -79,10 +80,12 @@ function computeBubbleStyle(
   const maxTop = Math.max(margin, safeBottom - ph);
   const clampTop = (t: number) => Math.max(margin, Math.min(t, maxTop));
 
+  const centerXInViewport = () =>
+    Math.max(margin, Math.min((vw - width) / 2, vw - width - margin));
+
   if (!rect || rect.width <= 0 || rect.height <= 0) {
     const top = clampTop((vh - ph) / 2);
-    const left = Math.max(margin, Math.min((vw - width) / 2, vw - width - margin));
-    return { top, left, width };
+    return { top, left: centerXInViewport(), width };
   }
 
   const gap = 12;
@@ -95,9 +98,15 @@ function computeBubbleStyle(
   }
   top = clampTop(top);
 
-  const cx = rect.left + rect.width / 2;
-  let left = cx - width / 2;
-  left = Math.max(margin, Math.min(left, vw - width - margin));
+  const useViewportCenter = Boolean(options?.viewportCenterXFromMd && vw >= 768);
+  let left: number;
+  if (useViewportCenter) {
+    left = centerXInViewport();
+  } else {
+    const cx = rect.left + rect.width / 2;
+    left = cx - width / 2;
+    left = Math.max(margin, Math.min(left, vw - width - margin));
+  }
 
   return { top, left, width };
 }
@@ -117,6 +126,7 @@ export function PartnerTutorialOverlay({ tutorialAutoShow }: Props) {
       typeof window !== "undefined" ? window.innerWidth : 1200,
       typeof window !== "undefined" ? window.innerHeight : 800,
       420,
+      undefined,
     ),
   );
   const [actionError, setActionError] = useState<string | null>(null);
@@ -185,23 +195,34 @@ export function PartnerTutorialOverlay({ tutorialAutoShow }: Props) {
     if (!el || !el.isConnected) {
       setRect(null);
       setMissingAnchor(true);
-      setBubble(computeBubbleStyle(null, vw, vh, fallbackH));
+      setBubble(computeBubbleStyle(null, vw, vh, fallbackH, { viewportCenterXFromMd: step.bubbleAlignViewportCenterMd }));
       return;
     }
     setMissingAnchor(false);
-    el.scrollIntoView({ block: "center", behavior: "smooth" });
-    const r = el.getBoundingClientRect();
+    /* „auto“: sonst ist getBoundingClientRect nach smooth-Scroll auf Desktop oft noch veraltet. */
+    el.scrollIntoView({ block: "center", behavior: "auto" });
     const pad = 10;
-    const inflated = new DOMRect(r.left - pad, r.top - pad, r.width + pad * 2, r.height + pad * 2);
+    const readInflated = () => {
+      const target = document.querySelector(anchorSel) as HTMLElement | null;
+      if (!target?.isConnected) return null;
+      const b = target.getBoundingClientRect();
+      return new DOMRect(b.left - pad, b.top - pad, b.width + pad * 2, b.height + pad * 2);
+    };
+    const inflated = readInflated();
+    if (!inflated) return;
     setRect(inflated);
-    setBubble(computeBubbleStyle(inflated, vw, vh, fallbackH));
+    const bubbleOpts = { viewportCenterXFromMd: step.bubbleAlignViewportCenterMd };
+    setBubble(computeBubbleStyle(inflated, vw, vh, fallbackH, bubbleOpts));
 
     const measureAndApply = () => {
+      const refreshed = readInflated();
+      if (refreshed) setRect(refreshed);
+      const rectForBubble = refreshed ?? inflated;
       const panel = document.getElementById("partner-tutorial-step-panel");
       const measured = panel?.getBoundingClientRect().height;
       const panelH =
         measured != null && measured > 80 ? measured + 8 : Math.min(460, Math.max(240, Math.round(vh * 0.7)));
-      setBubble(computeBubbleStyle(inflated, vw, vh, panelH));
+      setBubble(computeBubbleStyle(rectForBubble, vw, vh, panelH, bubbleOpts));
     };
 
     requestAnimationFrame(() => {
