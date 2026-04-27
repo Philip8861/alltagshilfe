@@ -232,7 +232,7 @@ export function KooperationspartnerBereiche() {
                       width={PFLEGEHILFSMITTEL_CORNER_IMG.width}
                       height={PFLEGEHILFSMITTEL_CORNER_IMG.height}
                       decoding="async"
-                      className={`-top-3 -right-1 pointer-events-none absolute z-10 select-none sm:-top-5 sm:-right-5 lg:-right-6 lg:-top-6 ${KOOP_CORNER_IMG_SIZE} ${KOOP_CARD_IMG_SHADOW}`}
+                      className={`pointer-events-none absolute right-0 top-0 z-10 select-none sm:-top-5 sm:-right-5 lg:-right-6 lg:-top-6 ${KOOP_CORNER_IMG_SIZE} ${KOOP_CARD_IMG_SHADOW}`}
                     />
                   ) : null}
                   {b.id === "betriebliche-pflegeberatung" ? (
@@ -243,13 +243,16 @@ export function KooperationspartnerBereiche() {
                       width={BETRIEBLICH_CORNER_IMG.width}
                       height={BETRIEBLICH_CORNER_IMG.height}
                       decoding="async"
-                      className={`-top-3 -left-1 pointer-events-none absolute z-10 select-none sm:-top-5 sm:-left-5 lg:-left-6 lg:-top-6 ${KOOP_CORNER_IMG_SIZE} ${KOOP_CARD_IMG_SHADOW}`}
+                      className={`pointer-events-none absolute left-0 top-0 z-10 select-none sm:-top-5 sm:-left-5 lg:-left-6 lg:-top-6 ${KOOP_CORNER_IMG_SIZE} ${KOOP_CARD_IMG_SHADOW}`}
                     />
                   ) : null}
                   <div
                     className={[
                       "flex min-w-0 flex-col gap-4 text-left",
                       isRight ? "lg:items-end lg:text-right" : "lg:items-start",
+                      b.id === "pflegehilfsmittel" || b.id === "betriebliche-pflegeberatung"
+                        ? "pt-[11.5rem] sm:pt-0"
+                        : "",
                       b.id === "pflegehilfsmittel" ? KOOP_CORNER_TEXT_PR : "",
                       b.id === "betriebliche-pflegeberatung" ? KOOP_CORNER_TEXT_PL : "",
                     ].join(" ")}
