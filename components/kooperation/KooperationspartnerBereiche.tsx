@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useCallback, useEffect, useId, useRef, useState } from "react";
 import { ContactForm } from "@/components/forms/ContactForm";
+import { siteConfig } from "@/config/site";
 
 const CTA_LABEL = "Jetzt Kooperationspartner werden" as const;
 
@@ -11,6 +12,8 @@ type BereichDef = {
   title: string;
   lede: string;
   paragraphs: string[];
+  /** Optionale Unterpunkte mit Überschrift (z. B. Pflegehilfsmittel). */
+  features?: readonly { title: string; text: string }[];
   info: string;
   mehrHref: string;
   mehrLabel: string;
@@ -22,12 +25,25 @@ const BEREICHE: BereichDef[] = [
     id: "pflegehilfsmittel",
     title: "Pflegehilfsmittel",
     align: "left",
-    lede: "Werden Sie Ansprechpartner für unsere kostenfreie Pflegehilfsmittelversorgung – inklusive Pflegebox und persönlicher Beratung vor Ort.",
+    lede: "Sie arbeiten regelmäßig mit pflegebedürftigen Personen oder deren Angehörigen zusammen und empfehlen Pflegehilfsmittel für die häusliche Versorgung?",
     paragraphs: [
-      "Wir beliefern pflegebedürftige Menschen zuverlässig mit den Produkten, die der Leistungsträger freigibt – transparent dokumentiert über unser Partner-Dashboard.",
-      "Ideal für Apotheken, Sanitätshäuser, Pflegedienste oder Beratungsstellen, die ihre Kundschaft um eine starke Hilfsmittel-Lösung erweitern möchten.",
+      `Dann werden Sie Kooperationspartner von ${siteConfig.name}. Wir stellen Ihnen eigene Flyer sowie einen persönlichen Partner-Code zur Verfügung, der bei jeder Bestellung angegeben werden kann. So können Sie vermittelte Vorgänge einfach zuordnen, den Status nachvollziehen und nach erfolgreichem Abschluss eine Tippgeberprovision erhalten.`,
     ],
-    info: "Provision und Abrechnung sind vertraglich geregelt; Sie erhalten Übersicht über Tippgeberprovision und Statuslisten.",
+    features: [
+      {
+        title: "Eigene Flyer für Ihre Kunden",
+        text: "Sie erhalten professionelles Infomaterial, das Sie direkt an pflegebedürftige Personen und Angehörige weitergeben können.",
+      },
+      {
+        title: "Persönlicher Partner-Code",
+        text: "Jede Empfehlung kann über Ihren individuellen Code zugeordnet werden – transparent und nachvollziehbar.",
+      },
+      {
+        title: "Provision bei erfolgreichem Abschluss",
+        text: "Kommt es über Ihre Empfehlung zu einer erfolgreichen Versorgung, erhalten Sie eine Tippgeberprovision.",
+      },
+    ],
+    info: "Über Ihr Partner-Dashboard behalten Sie Statuslisten und ausgezahlte Provisionen im Blick.",
     mehrHref: "/pflegehilfsmittel/kostenfreie-pflegehilfsmittel",
     mehrLabel: "Mehr zu Pflegehilfsmitteln",
   },
@@ -125,7 +141,7 @@ export function KooperationspartnerBereiche() {
         </header>
 
         <div className="mt-12 space-y-10 sm:mt-14 sm:space-y-12 lg:mt-16 lg:space-y-14" role="list">
-          {BEREICHE.map((b, index) => {
+          {BEREICHE.map((b) => {
             const isRight = b.align === "right";
             return (
               <div key={b.id} role="listitem">
@@ -143,15 +159,6 @@ export function KooperationspartnerBereiche() {
                       isRight ? "lg:items-end lg:text-right" : "lg:items-start lg:text-left",
                     ].join(" ")}
                   >
-                    <span
-                      className={[
-                        "inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#0F4F68] text-sm font-bold text-white",
-                        isRight ? "lg:order-1" : "",
-                      ].join(" ")}
-                      aria-hidden
-                    >
-                      {index + 1}
-                    </span>
                     <h3 className="text-xl font-bold tracking-tight text-[#0F4F68] sm:text-2xl lg:max-w-2xl">
                       {b.title}
                     </h3>
@@ -168,6 +175,27 @@ export function KooperationspartnerBereiche() {
                         <p key={`${b.id}-p-${i}`}>{p}</p>
                       ))}
                     </div>
+                    {b.features && b.features.length > 0 ? (
+                      <ul
+                        className={[
+                          "list-none max-w-2xl space-y-5 text-pretty sm:space-y-6",
+                          isRight ? "lg:ml-auto" : "",
+                        ].join(" ")}
+                      >
+                        {b.features.map((f) => (
+                          <li
+                            key={f.title}
+                            className={[
+                              "rounded-xl border border-[#0F4F68]/10 bg-white/70 px-4 py-4 sm:px-5 sm:py-5",
+                              isRight ? "text-right" : "text-left",
+                            ].join(" ")}
+                          >
+                            <h4 className="text-base font-bold text-[#0F4F68] sm:text-lg">{f.title}</h4>
+                            <p className="mt-2 text-sm leading-relaxed text-neutral-700 sm:text-base">{f.text}</p>
+                          </li>
+                        ))}
+                      </ul>
+                    ) : null}
                     <p
                       className={[
                         "max-w-2xl rounded-xl border border-amber-200/80 bg-amber-50/90 px-4 py-3 text-sm font-medium leading-snug text-amber-950 sm:text-[0.9375rem]",
