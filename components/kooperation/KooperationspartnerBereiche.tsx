@@ -214,7 +214,7 @@ export function KooperationspartnerBereiche() {
                       width={PFLEGEHILFSMITTEL_CORNER_IMG.width}
                       height={PFLEGEHILFSMITTEL_CORNER_IMG.height}
                       decoding="async"
-                      className={`pointer-events-none absolute right-3 top-3 z-10 h-auto w-[min(42%,11.5rem)] max-w-[220px] select-none sm:right-5 sm:top-5 sm:w-[min(40%,13rem)] ${KOOP_CARD_IMG_SHADOW}`}
+                      className={`-right-2 -top-2 pointer-events-none absolute z-10 h-auto w-[min(60%,17.25rem)] max-w-[330px] select-none sm:-right-3 sm:-top-3 sm:w-[min(58%,19.5rem)] sm:max-w-[330px] lg:max-w-[345px] ${KOOP_CARD_IMG_SHADOW}`}
                     />
                   ) : null}
                   <div
@@ -222,7 +222,7 @@ export function KooperationspartnerBereiche() {
                       "flex flex-col gap-4",
                       isRight ? "lg:items-end lg:text-right" : "lg:items-start lg:text-left",
                       b.id === "pflegehilfsmittel"
-                        ? "pr-[min(46%,12rem)] sm:pr-[min(46%,13.5rem)] lg:pr-[min(48%,15rem)]"
+                        ? "pr-[min(56%,15.5rem)] sm:pr-[min(60%,18.5rem)] lg:pr-[min(62%,21rem)]"
                         : "",
                     ].join(" ")}
                   >
