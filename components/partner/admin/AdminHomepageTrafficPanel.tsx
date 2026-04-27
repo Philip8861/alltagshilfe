@@ -210,16 +210,7 @@ export function AdminHomepageTrafficPanel({ chartYear }: Props) {
 
   return (
     <div className="space-y-8">
-      <div>
-        <h3 className="text-lg font-bold text-[#0F4F68]">Statistik Homepage</h3>
-        <p className="mt-2 text-sm leading-relaxed text-neutral-600">
-          Aggregierte <strong className="font-semibold text-neutral-800">Seitenaufrufe</strong> nach URL-Pfad
-          (Kalendertag Europe/Berlin). Keine IP-Adressen, keine Cookies — nur Summen. Keine eindeutigen Besucher.
-          Interne Seitenwechsel werden per API mitgezählt. Prefetch wird weitgehend ausgeschlossen. Für Zeitreihen:{" "}
-          <code className="rounded bg-neutral-100 px-1">016_site_analytics_time_series.sql</code>, für Geräteklassen:{" "}
-          <code className="rounded bg-neutral-100 px-1">017_site_page_views_device_category.sql</code>.
-        </p>
-      </div>
+      <h3 className="text-lg font-bold text-[#0F4F68]">Statistik Homepage</h3>
 
       <div className="flex flex-wrap items-end gap-4">
         <div>
