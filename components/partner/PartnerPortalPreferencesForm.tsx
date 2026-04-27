@@ -47,7 +47,11 @@ export function PartnerPortalPreferencesForm({ initial }: Props) {
   };
 
   const resetDefaults = () => {
-    setPrefs({ ...DEFAULT_PORTAL_PREFERENCES, columns: { ...DEFAULT_PORTAL_PREFERENCES.columns } });
+    setPrefs((prev) => ({
+      ...DEFAULT_PORTAL_PREFERENCES,
+      columns: { ...DEFAULT_PORTAL_PREFERENCES.columns },
+      tutorial_hidden: prev.tutorial_hidden ?? false,
+    }));
   };
 
   return (

@@ -2,7 +2,9 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { unstable_noStore as noStore } from "next/cache";
 import { PartnerPasswordPromptReenable } from "@/components/partner/PartnerPasswordPromptReenable";
+import { PartnerTutorialSettingsCard } from "@/components/partner/PartnerTutorialSettingsCard";
 import { requirePartnerLogin } from "@/lib/partner/auth";
+import { normalizePortalPreferences, parsePortalPreferences } from "@/lib/partner/portal-preferences";
 
 export const metadata: Metadata = {
   title: "Einstellungen",
@@ -51,6 +53,8 @@ export default async function PartnerEinstellungenPage() {
   const { profile } = await requirePartnerLogin();
   const showPasswordPromptReenable =
     !profile.password_changed_at?.trim() && profile.password_change_prompt_suppress === true;
+  const portalPrefs = normalizePortalPreferences(parsePortalPreferences(profile.portal_preferences));
+  const tutorialHidden = portalPrefs.tutorial_hidden === true;
 
   return (
     <div className="space-y-8">
@@ -66,6 +70,10 @@ export default async function PartnerEinstellungenPage() {
           <PartnerPasswordPromptReenable />
         </div>
       ) : null}
+
+      <div className="mx-auto max-w-xl sm:max-w-2xl">
+        <PartnerTutorialSettingsCard tutorialHidden={tutorialHidden} />
+      </div>
 
       <ul className="mx-auto flex max-w-xl list-none flex-col gap-3 p-0 sm:max-w-2xl" role="list">
         {tiles.map((t) => (

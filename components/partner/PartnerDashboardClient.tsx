@@ -112,6 +112,7 @@ export function PartnerDashboardClient({
         </div>
         <button
           type="button"
+          data-tutorial="partner-tipp-geben"
           onClick={() => setTipOpen(true)}
           className="partner-dash-animate partner-dash-delay-2 group inline-flex w-full shrink-0 items-center justify-center gap-2 rounded-2xl bg-gradient-to-b from-[#0F4F68] to-[#0c3d52] px-5 py-3 text-sm font-semibold text-white shadow-[0_10px_22px_rgba(15,79,104,0.22),0_4px_12px_rgba(15,79,104,0.14)] ring-1 ring-[#0F4F68]/30 transition hover:from-[#0c3d52] hover:to-[#0a3446] hover:shadow-[0_14px_28px_rgba(15,79,104,0.28),0_6px_14px_rgba(15,79,104,0.16)] active:translate-y-px focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68] focus-visible:ring-offset-2 focus-visible:ring-offset-[#F2F9FA] sm:mt-0 sm:w-auto"
         >
@@ -131,7 +132,7 @@ export function PartnerDashboardClient({
       </header>
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        <div className={`${cardBase} partner-dash-delay-1 relative z-[1]`}>
+        <div className={`${cardBase} partner-dash-delay-1 relative z-[1]`} data-tutorial="partner-code">
           <div className="flex items-start gap-4">
             <div className={iconWrap} aria-hidden>
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -154,7 +155,7 @@ export function PartnerDashboardClient({
           </div>
         </div>
 
-        <div className={`${cardBase} partner-dash-delay-2 relative z-[1]`}>
+        <div className={`${cardBase} partner-dash-delay-2 relative z-[1]`} data-tutorial="partner-provision-monatlich">
           <p className="text-xs font-semibold leading-snug text-[#0F4F68] sm:text-[0.8125rem]">
             Monatliche Tippgeberprovision
           </p>
@@ -168,7 +169,7 @@ export function PartnerDashboardClient({
           </p>
         </div>
 
-        <div className={`${cardBase} partner-dash-delay-3 relative z-[1]`}>
+        <div className={`${cardBase} partner-dash-delay-3 relative z-[1]`} data-tutorial="partner-provision-einmal">
           <div className="flex items-start gap-4">
             <div className={`${iconWrap} motion-safe:animate-partner-soft-float`} aria-hidden>
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -226,6 +227,7 @@ export function PartnerDashboardClient({
         {prefs.showListMonatlich ? (
           <section
             id="partner-statusliste-monatlich"
+            data-tutorial="partner-statusliste-monatlich"
             className="scroll-mt-28 overflow-hidden rounded-xl border border-amber-300/90 bg-white shadow-[0_8px_30px_-12px_rgba(202,138,4,0.22)] ring-1 ring-amber-200/60"
             aria-labelledby="partner-statusliste-monatlich-heading"
           >
@@ -249,6 +251,7 @@ export function PartnerDashboardClient({
         {prefs.showListEinmal ? (
           <section
             id="partner-statusliste-einmal"
+            data-tutorial="partner-statusliste-einmal"
             className="scroll-mt-28 overflow-hidden rounded-xl border border-emerald-300/80 bg-white shadow-[0_8px_30px_-12px_rgba(16,185,129,0.18)] ring-1 ring-emerald-200/50"
             aria-labelledby="partner-statusliste-einmal-heading"
           >
@@ -272,6 +275,7 @@ export function PartnerDashboardClient({
         {prefs.showArchivOnDashboard ? (
           <section
             id="partner-statusliste-archiv"
+            data-tutorial="partner-statusliste-archiv"
             className="scroll-mt-28 overflow-hidden rounded-xl border border-[#0F4F68]/45 bg-white shadow-[0_8px_30px_-12px_rgba(15,79,104,0.25)] ring-1 ring-[#0F4F68]/15"
             aria-labelledby="partner-statusliste-archiv-heading"
           >

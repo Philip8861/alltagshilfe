@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { PartnerPortalShell } from "@/components/partner/PartnerPortalShell";
 import { requirePartnerLogin } from "@/lib/partner/auth";
+import { normalizePortalPreferences, parsePortalPreferences } from "@/lib/partner/portal-preferences";
 
 export const metadata: Metadata = {
   title: "Partnerportal",
@@ -12,8 +13,15 @@ export default async function PartnerPortalLayout({ children }: { children: Reac
   const hasChangedPassword = Boolean(profile.password_changed_at?.trim());
   const suppressPrompt = profile.password_change_prompt_suppress === true;
   const initialPasswordChangePrompt = !hasChangedPassword && !suppressPrompt;
+  const portalPrefs = normalizePortalPreferences(parsePortalPreferences(profile.portal_preferences));
+  const tutorialAutoShow = portalPrefs.tutorial_hidden !== true;
 
   return (
-    <PartnerPortalShell initialPasswordChangePrompt={initialPasswordChangePrompt}>{children}</PartnerPortalShell>
+    <PartnerPortalShell
+      initialPasswordChangePrompt={initialPasswordChangePrompt}
+      tutorialAutoShow={tutorialAutoShow}
+    >
+      {children}
+    </PartnerPortalShell>
   );
 }

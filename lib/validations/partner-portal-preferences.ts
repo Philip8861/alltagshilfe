@@ -17,6 +17,8 @@ export const partnerPortalPreferencesSchema = z.object({
   showListEinmal: z.boolean(),
   showArchivOnDashboard: z.boolean(),
   columns: columnSchema,
+  /** Wenn true: Rundgang nicht mehr automatisch nach Login anzeigen (nur noch über Einstellungen). */
+  tutorial_hidden: z.boolean().optional(),
 });
 
 export type PartnerPortalPreferencesInput = z.infer<typeof partnerPortalPreferencesSchema>;

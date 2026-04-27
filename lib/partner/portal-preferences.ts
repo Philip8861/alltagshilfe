@@ -29,6 +29,8 @@ export type PartnerPortalPreferences = {
   /** „Mein Archiv“-Bereich auf der Übersichtsseite */
   showArchivOnDashboard: boolean;
   columns: PartnerPortalTableColumns;
+  /** Rundgang dauerhaft ausblenden (gespeichert in portal_preferences). */
+  tutorial_hidden?: boolean;
 };
 
 export const DEFAULT_PORTAL_TABLE_COLUMNS: PartnerPortalTableColumns = {
@@ -48,6 +50,7 @@ export const DEFAULT_PORTAL_PREFERENCES: PartnerPortalPreferences = {
   showListEinmal: true,
   showArchivOnDashboard: true,
   columns: { ...DEFAULT_PORTAL_TABLE_COLUMNS },
+  tutorial_hidden: false,
 };
 
 function statusPill(admin: PartnerTipAdminStatus): { label: string; className: string } {
@@ -162,6 +165,7 @@ export function parsePortalPreferences(raw: unknown): PartnerPortalPreferences {
     showListEinmal: asBool(o.showListEinmal, true),
     showArchivOnDashboard: asBool(o.showArchivOnDashboard, true),
     columns,
+    tutorial_hidden: asBool(o.tutorial_hidden, false),
   };
 }
 

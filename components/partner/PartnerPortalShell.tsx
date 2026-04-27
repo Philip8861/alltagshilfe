@@ -4,11 +4,14 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { PartnerInitialPasswordPrompt } from "@/components/partner/PartnerInitialPasswordPrompt";
 import { PartnerLogoutButton } from "@/components/partner/PartnerLogoutButton";
+import { PartnerTutorialOverlay } from "@/components/partner/PartnerTutorialOverlay";
 
 type Props = {
   children: React.ReactNode;
   /** Server: Hinweis zum ersten Passwortwechsel anzeigen (ohne Session-Dismiss / ohne DB-Unterdrückung). */
   initialPasswordChangePrompt?: boolean;
+  /** Server: Partner-Rundgang nach Login automatisch anbieten (solange nicht „Tutorial ausblenden“). */
+  tutorialAutoShow?: boolean;
 };
 
 const shell = "bg-[#F2F9FA]";
@@ -41,7 +44,11 @@ function SettingsGearIcon() {
   );
 }
 
-export function PartnerPortalShell({ children, initialPasswordChangePrompt = false }: Props) {
+export function PartnerPortalShell({
+  children,
+  initialPasswordChangePrompt = false,
+  tutorialAutoShow = true,
+}: Props) {
   const pathname = usePathname();
   const dashActive = pathname === "/partner/dashboard" || pathname === "/partner";
   const statActive = pathname === "/partner/statistik" || pathname.startsWith("/partner/statistik/");
@@ -67,6 +74,7 @@ export function PartnerPortalShell({ children, initialPasswordChangePrompt = fal
           </Link>
           <Link
             href="/partner/statistik"
+            data-tutorial="partner-nav-statistik"
             className={iconButtonClass(statActive)}
             aria-current={statActive ? "page" : undefined}
             title="Statistik"
@@ -78,6 +86,7 @@ export function PartnerPortalShell({ children, initialPasswordChangePrompt = fal
           </Link>
           <Link
             href="/partner/einstellungen"
+            data-tutorial="partner-nav-einstellungen"
             className={iconButtonClass(settingsActive)}
             aria-current={settingsActive ? "page" : undefined}
             title="Einstellungen"
@@ -96,6 +105,8 @@ export function PartnerPortalShell({ children, initialPasswordChangePrompt = fal
       {initialPasswordChangePrompt ? (
         <PartnerInitialPasswordPrompt shouldPrompt={initialPasswordChangePrompt} />
       ) : null}
+
+      <PartnerTutorialOverlay tutorialAutoShow={tutorialAutoShow} />
     </div>
   );
 }
