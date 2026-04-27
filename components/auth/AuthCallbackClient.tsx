@@ -7,12 +7,17 @@ import { safeAuthNextPath } from "@/lib/auth/safe-auth-next-path";
 import { getSupabasePublicConfig } from "@/lib/supabase/config";
 import { createBrowserClient } from "@supabase/ssr";
 
+type AuthCallbackClientProps = {
+  /** Wenn `next` in der URL fehlt (Supabase überschreibt Query-Strings): festes Ziel, z. B. Passwort-Reset. */
+  fallbackNext?: string;
+};
+
 /**
  * Auth-Rückleitung nach E-Mail-Link (Partner-Login, Passwort-Reset).
  * Server-Route kann weder URL-Hashes lesen noch alle Supabase-Link-Varianten zuverlässig verarbeiten;
  * PKCE-Code, token_hash und Implicit-Fragment werden hier im Browser abgeschlossen.
  */
-export function AuthCallbackClient() {
+export function AuthCallbackClient({ fallbackNext = "/partner/dashboard" }: AuthCallbackClientProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const ranRef = useRef(false);
@@ -28,7 +33,7 @@ export function AuthCallbackClient() {
       return;
     }
 
-    const next = safeAuthNextPath(searchParams.get("next"));
+    const next = safeAuthNextPath(searchParams.get("next"), fallbackNext);
     const code = searchParams.get("code");
     const tokenHash = searchParams.get("token_hash");
     const type = searchParams.get("type");
@@ -91,7 +96,7 @@ export function AuthCallbackClient() {
         fail();
       }
     })();
-  }, [router, searchParams]);
+  }, [router, searchParams, fallbackNext]);
 
   return (
     <div className="mx-auto max-w-md px-4 py-16 text-center text-sm text-neutral-600">

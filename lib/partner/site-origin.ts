@@ -66,6 +66,16 @@ export function getAuthRedirectSiteBaseUrl(requestOrigin?: string): string | nul
     if (c) return c;
   }
 
+  /**
+   * Ohne diese Absicherung: Ist NEXT_PUBLIC_SITE_URL fälschlich noch localhost (z. B. von .env kopiert),
+   * landen Passwort-Links in der E-Mail auf localhost — am Handy „nicht erreichbar“.
+   * Auf Vercel / in Production niemals localhost für E-Mail-Redirects verwenden.
+   */
+  const deployed = process.env.VERCEL === "1" || process.env.NODE_ENV === "production";
+  if (deployed) {
+    return null;
+  }
+
   if (envUrl.startsWith("http")) return envUrl;
   if (reqUrl.startsWith("http")) return reqUrl;
   return null;

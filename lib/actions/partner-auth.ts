@@ -166,7 +166,8 @@ function messageForPasswordResetSupabaseError(message: string): string {
  *
  * **Fallback:** `resetPasswordForEmail` (E-Mail durch Supabase), falls Website-Versand nicht möglich oder fehlgeschlagen.
  *
- * Redirect: Supabase → Authentication → URL configuration (`/auth/callback**`). Optional `AUTH_REDIRECT_BASE_URL`.
+ * Redirect: Supabase → Authentication → URL configuration (`/auth/callback**` und `/auth/callback/passwort**`).
+ * Optional `AUTH_REDIRECT_BASE_URL`.
  * Gleiche Erfolgsmeldung unabhängig davon, ob die Adresse existiert (Enumerationsschutz).
  */
 export async function requestPartnerPasswordResetAction(
@@ -202,8 +203,8 @@ export async function requestPartnerPasswordResetAction(
     };
   }
 
-  const redirectTo = new URL("/auth/callback", `${base.replace(/\/$/, "")}/`);
-  redirectTo.searchParams.set("next", "/partner/passwort-zuruecksetzen");
+  /** Eigene Route: Supabase hängt `code`/`token_hash` an; `?next=` geht im Redirect oft verloren. */
+  const redirectTo = new URL("/auth/callback/passwort", `${base.replace(/\/$/, "")}/`);
   const redirectToStr = redirectTo.toString();
 
   const websiteMailReady =
