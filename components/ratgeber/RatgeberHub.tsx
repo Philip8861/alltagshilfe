@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Container } from "@/components/layout/Container";
 import {
   RATGEBER_BEITRAEGE,
@@ -101,6 +101,10 @@ function matchesCategory(beitrag: RatgeberBeitragMeta, cat: RatgeberCategoryId |
   return beitrag.categories.includes(cat);
 }
 
+function haystackForBeitrag(beitrag: RatgeberBeitragMeta): string {
+  return [beitrag.title, beitrag.excerpt, beitrag.tags.join(" ")].join(" ").toLocaleLowerCase("de");
+}
+
 function sortBeitraege(list: RatgeberBeitragMeta[], mode: SortMode): RatgeberBeitragMeta[] {
   const out = [...list];
   if (mode === "neueste") {
@@ -113,10 +117,15 @@ function sortBeitraege(list: RatgeberBeitragMeta[], mode: SortMode): RatgeberBei
   return out;
 }
 
+const SEARCH_SUGGESTIONS_MAX = 8;
+
 export function RatgeberHub() {
   const [query, setQuery] = useState("");
   const [activeCategory, setActiveCategory] = useState<RatgeberCategoryId | "alle">("alle");
   const [sortMode, setSortMode] = useState<SortMode>("neueste");
+  const [searchFocused, setSearchFocused] = useState(false);
+  const [highlightIndex, setHighlightIndex] = useState(-1);
+  const searchComboRef = useRef<HTMLDivElement>(null);
 
   const featured = useMemo(() => getFeaturedRatgeberBeitrag(), []);
 
@@ -124,17 +133,39 @@ export function RatgeberHub() {
     if (!matchesCategory(featured, activeCategory)) return false;
     const q = query.trim().toLocaleLowerCase("de");
     if (!q) return true;
-    const hay = [featured.title, featured.excerpt, featured.tags.join(" ")].join(" ").toLocaleLowerCase("de");
-    return hay.includes(q);
+    return haystackForBeitrag(featured).includes(q);
   }, [featured, activeCategory, query]);
 
   const filteredBySearchAndCat = useMemo(() => {
     const q = query.trim().toLocaleLowerCase("de");
     return RATGEBER_BEITRAEGE.filter((b) => matchesCategory(b, activeCategory)).filter((beitrag) => {
       if (!q) return true;
-      const hay = [beitrag.title, beitrag.excerpt, beitrag.tags.join(" ")].join(" ").toLocaleLowerCase("de");
-      return hay.includes(q);
+      return haystackForBeitrag(beitrag).includes(q);
     });
+  }, [query, activeCategory]);
+
+  /** Vorschläge nur bei eingegebenem Begriff, gleiche Kategorie wie Filter. */
+  const searchSuggestions = useMemo(() => {
+    const q = query.trim().toLocaleLowerCase("de");
+    if (!q) return [];
+    return RATGEBER_BEITRAEGE.filter((b) => matchesCategory(b, activeCategory))
+      .filter((beitrag) => haystackForBeitrag(beitrag).includes(q))
+      .slice(0, SEARCH_SUGGESTIONS_MAX);
+  }, [query, activeCategory]);
+
+  useEffect(() => {
+    const onDocDown = (e: MouseEvent) => {
+      if (!searchComboRef.current?.contains(e.target as Node)) {
+        setSearchFocused(false);
+        setHighlightIndex(-1);
+      }
+    };
+    document.addEventListener("mousedown", onDocDown);
+    return () => document.removeEventListener("mousedown", onDocDown);
+  }, []);
+
+  useEffect(() => {
+    setHighlightIndex(-1);
   }, [query, activeCategory]);
 
   const gridBeitraege = useMemo(() => {
@@ -162,7 +193,7 @@ export function RatgeberHub() {
             src="/images/ratgeber_hintergrund.webp"
             alt=""
             fill
-            className="object-cover object-center"
+            className="object-cover object-[83%_center] md:object-center"
             sizes="100vw"
             priority
           />
@@ -190,24 +221,90 @@ export function RatgeberHub() {
             </div>
 
             <form
-              className="mt-6 flex w-full max-w-4xl flex-col gap-3 sm:mt-8 sm:flex-row sm:items-stretch"
-              onSubmit={(e) => e.preventDefault()}
+              className="mt-6 flex w-full max-w-4xl flex-col gap-3 sm:mt-8 sm:flex-row sm:items-start"
+              onSubmit={(e) => {
+                e.preventDefault();
+                setSearchFocused(false);
+                setHighlightIndex(-1);
+                if (highlightIndex >= 0 && searchSuggestions[highlightIndex]) {
+                  window.location.assign(`/ratgeber/${searchSuggestions[highlightIndex].slug}`);
+                  return;
+                }
+                scrollToAlle();
+              }}
               role="search"
             >
-              <div className="relative min-w-0 flex-1">
-                <SearchIcon className="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-neutral-400" />
+              <div
+                ref={searchComboRef}
+                className="relative min-w-0 flex-1"
+                role="combobox"
+                aria-expanded={searchFocused && query.trim().length > 0}
+                aria-controls="ratgeber-search-suggestions"
+                aria-haspopup="listbox"
+              >
+                <SearchIcon className="pointer-events-none absolute left-4 top-1/2 z-[1] h-5 w-5 -translate-y-1/2 text-neutral-400" />
                 <input
                   type="search"
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
+                  onFocus={() => setSearchFocused(true)}
+                  onKeyDown={(e) => {
+                    if (!searchSuggestions.length || !query.trim()) return;
+                    if (e.key === "ArrowDown") {
+                      e.preventDefault();
+                      setHighlightIndex((i) => Math.min(i + 1, searchSuggestions.length - 1));
+                    } else if (e.key === "ArrowUp") {
+                      e.preventDefault();
+                      setHighlightIndex((i) => Math.max(i - 1, -1));
+                    } else if (e.key === "Escape") {
+                      setSearchFocused(false);
+                      setHighlightIndex(-1);
+                    }
+                  }}
                   placeholder="Artikel durchsuchen …"
                   className="h-12 w-full rounded-2xl border border-neutral-200 bg-white py-3 pl-12 pr-4 text-sm text-neutral-900 outline-none ring-[#0F4F68]/20 transition placeholder:text-neutral-500 focus:border-[#0F4F68]/35 focus:ring-4"
                   aria-label="Ratgeber durchsuchen"
+                  aria-autocomplete="list"
+                  autoComplete="off"
+                  autoCorrect="off"
+                  spellCheck={false}
                 />
+                {searchFocused && query.trim() ? (
+                  <div
+                    id="ratgeber-search-suggestions"
+                    role="listbox"
+                    aria-label="Suchvorschläge"
+                    className="absolute left-0 right-0 top-full z-50 mt-1 max-h-[min(18rem,50vh)] overflow-y-auto rounded-2xl border border-neutral-200 bg-white py-1 shadow-lg"
+                  >
+                    {searchSuggestions.length === 0 ? (
+                      <p className="px-4 py-3 text-sm text-neutral-600">Keine passenden Artikel.</p>
+                    ) : (
+                      searchSuggestions.map((beitrag, idx) => (
+                        <Link
+                          key={beitrag.slug}
+                          href={`/ratgeber/${beitrag.slug}`}
+                          role="option"
+                          aria-selected={idx === highlightIndex}
+                          className={`flex flex-col gap-0.5 px-4 py-2.5 text-left text-sm transition hover:bg-[#F2F9FA] ${
+                            idx === highlightIndex ? "bg-[#F2F9FA]" : ""
+                          }`}
+                          onMouseEnter={() => setHighlightIndex(idx)}
+                          onClick={() => {
+                            setSearchFocused(false);
+                            setHighlightIndex(-1);
+                          }}
+                        >
+                          <span className="font-semibold text-[#0F4F68]">{beitrag.title}</span>
+                          <span className="line-clamp-1 text-xs text-neutral-600">{primaryCategoryLabel(beitrag)}</span>
+                        </Link>
+                      ))
+                    )}
+                  </div>
+                ) : null}
               </div>
               <button
                 type="submit"
-                className="h-12 shrink-0 rounded-2xl px-8 text-sm font-semibold text-white transition hover:opacity-95 active:translate-y-px sm:w-auto"
+                className="h-12 w-full shrink-0 rounded-2xl px-8 text-sm font-semibold text-white transition hover:opacity-95 active:translate-y-px sm:w-auto sm:shrink-0"
                 style={{ backgroundColor: NAVY }}
               >
                 Suchen
