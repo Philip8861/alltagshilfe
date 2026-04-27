@@ -12,8 +12,14 @@ import {
   rateLimitPartnerPasswordChange,
   rateLimitPartnerPasswordReset,
 } from "@/lib/rate-limit";
+import {
+  buildBrandedPartnerPasswordResetEmailHtml,
+  partnerPasswordResetOutboundSubject,
+} from "@/lib/email/branded-html";
+import { isTransactionalSmtpConfigured, sendTransactionalMail } from "@/lib/email/internal-smtp";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { createSupabaseServiceRoleClient } from "@/lib/supabase/service";
 import { partnerPasswordResetRequestSchema } from "@/lib/validations/partner";
 
 async function clientIp(): Promise<string> {
@@ -47,20 +53,104 @@ export type PartnerPasswordResetRequestState = { ok: true; message: string } | {
 const PASSWORD_RESET_SUCCESS_DE =
   "Wenn zu dieser Anmeldung ein Konto gehört, erhalten Sie in Kürze eine E-Mail mit einem Link. Darin können Sie ein neues Passwort festlegen. Prüfen Sie ggf. den Spam-Ordner.";
 
+function isRedirectConfigurationError(message: string): boolean {
+  const m = message.toLowerCase();
+  return (
+    m.includes("redirect") ||
+    (m.includes("url") && (m.includes("invalid") || m.includes("not allowed"))) ||
+    (m.includes("verification") && m.includes("failed"))
+  );
+}
+
+/** Supabase Custom-SMTP / Mailer — Fallback über Website-SMTP sinnvoll. */
+function isLikelySupabaseSmtpOrMailerFailure(message: string): boolean {
+  if (isRedirectConfigurationError(message)) return false;
+  const m = message.toLowerCase();
+  return (
+    m.includes("smtp") ||
+    m.includes("535") ||
+    m.includes("534") ||
+    m.includes("authentication failed") ||
+    m.includes("login denied") ||
+    m.includes("could not send") ||
+    m.includes("failed to send") ||
+    m.includes("error sending") ||
+    m.includes("mailer") ||
+    m.includes("dial tcp") ||
+    m.includes("connection refused") ||
+    (m.includes("email") && (m.includes("send") || m.includes("deliver") || m.includes("dispatch"))) ||
+    (m.includes("tls") && m.includes("handshake"))
+  );
+}
+
+function extractSupabaseAdminRecoveryLink(data: unknown): string | null {
+  if (!data || typeof data !== "object") return null;
+  const props = (data as { properties?: unknown }).properties;
+  if (!props || typeof props !== "object") return null;
+  const p = props as Record<string, unknown>;
+  for (const key of ["action_link", "href"] as const) {
+    const v = p[key];
+    if (typeof v === "string" && /^https?:\/\//i.test(v.trim())) return v.trim();
+  }
+  for (const v of Object.values(p)) {
+    if (typeof v === "string" && /^https?:\/\//i.test(v.trim())) return v.trim();
+  }
+  return null;
+}
+
+async function sendPasswordResetViaWebsiteSmtp(
+  email: string,
+  redirectTo: string,
+): Promise<{ ok: true } | { ok: false; code: string }> {
+  const svc = createSupabaseServiceRoleClient();
+  if (!svc || !isTransactionalSmtpConfigured()) {
+    return { ok: false, code: "no_smtp_or_service_role" };
+  }
+  try {
+    const { data, error } = await svc.auth.admin.generateLink({
+      type: "recovery",
+      email,
+      options: { redirectTo },
+    });
+    const link = extractSupabaseAdminRecoveryLink(data);
+    if (error || !link) {
+      console.warn("[password-reset fallback] generateLink:", error?.message);
+      return { ok: false, code: "generate_link" };
+    }
+    const html = buildBrandedPartnerPasswordResetEmailHtml(link);
+    const text = [
+      "Passwort zurücksetzen",
+      "",
+      "Öffnen Sie den folgenden Link, um ein neues Passwort festzulegen:",
+      "",
+      link,
+      "",
+      "Wenn Sie diese Anfrage nicht gestellt haben, ignorieren Sie diese E-Mail.",
+    ].join("\n");
+    const mailed = await sendTransactionalMail({
+      to: email,
+      subject: partnerPasswordResetOutboundSubject(),
+      text,
+      html,
+    });
+    if (!mailed.ok) {
+      console.error("[password-reset fallback] sendTransactionalMail:", mailed.code);
+      return { ok: false, code: mailed.code };
+    }
+    return { ok: true };
+  } catch (e) {
+    console.error("[password-reset fallback]", e);
+    return { ok: false, code: "exception" };
+  }
+}
+
 function messageForPasswordResetSupabaseError(message: string): string {
   const m = message.toLowerCase();
-  if (m.includes("redirect") || m.includes("url") || m.includes("callback")) {
+  if (isRedirectConfigurationError(message)) {
     return "Supabase lehnt die Ziel-URL ab. Im Dashboard unter Authentication → URL configuration die Redirect-URLs prüfen (z. B. https://ihre-domain.de/auth/callback**).";
   }
-  if (
-    m.includes("smtp") ||
-    m.includes("mail") ||
-    m.includes("535") ||
-    m.includes("authentication failed") ||
-    m.includes("e-mail") ||
-    m.includes("email address")
-  ) {
-    return "E-Mail-Versand schlägt fehl. In Supabase unter Project Settings → Auth → SMTP die Custom-SMTP-Daten prüfen oder vorübergehend den Standard-Versand nutzen.";
+  if (isLikelySupabaseSmtpOrMailerFailure(message)) {
+    return "Supabase konnte die E-Mail nicht versenden (Custom SMTP). Bitte im Dashboard unter Project Settings → Auth → SMTP die Daten prüfen oder „Custom SMTP“ deaktivieren. Auf dem Server sind SMTP_HOST/SMTP_USER gesetzt: die Website versucht den Versand alternativ selbst — wenn beides fehlschlägt, Logs prüfen.";
   }
   if (m.includes("rate") || m.includes("too many")) {
     return "Zu viele Anfragen beim E-Mail-Dienst. Bitte in einigen Minuten erneut versuchen.";
@@ -70,7 +160,7 @@ function messageForPasswordResetSupabaseError(message: string): string {
 
 /**
  * Sendet die Supabase-Passwort-Reset-E-Mail (Link, kein Klartext-Passwort).
- * Versand nur über Supabase (`resetPasswordForEmail`) — die Links sind PKCE-kompatibel und zuverlässig.
+ * Zuerst `resetPasswordForEmail` (Supabase). Schlägt der Versand z. B. an Custom-SMTP fehl, Fallback: `generateLink` + Website-SMTP (MARKENLAYOUT).
  * Markenlayout: `supabase/email-templates/password-recovery-markenlayout.html` im Supabase-Dashboard einfügen.
  * Absender „Alltagshilfe-Süd“: Supabase → Project Settings → Auth → SMTP (Custom SMTP wie Website).
  * Link funktioniert nur, wenn Site URL + Redirect URLs in Supabase die Production-Domain inkl. `/auth/callback` erlauben
@@ -112,14 +202,22 @@ export async function requestPartnerPasswordResetAction(
 
   const redirectTo = new URL("/auth/callback", `${base.replace(/\/$/, "")}/`);
   redirectTo.searchParams.set("next", "/partner/passwort-zuruecksetzen");
+  const redirectToStr = redirectTo.toString();
 
   try {
     const supabase = await createSupabaseServerClient();
     const { error } = await supabase.auth.resetPasswordForEmail(resolved.email, {
-      redirectTo: redirectTo.toString(),
+      redirectTo: redirectToStr,
     });
     if (error) {
       console.error("[requestPartnerPasswordResetAction] resetPasswordForEmail:", error.message, error);
+      if (isLikelySupabaseSmtpOrMailerFailure(error.message)) {
+        const fb = await sendPasswordResetViaWebsiteSmtp(resolved.email, redirectToStr);
+        if (fb.ok) {
+          return { ok: true, message: PASSWORD_RESET_SUCCESS_DE };
+        }
+        console.error("[requestPartnerPasswordResetAction] SMTP-Fallback fehlgeschlagen:", fb.code);
+      }
       return { ok: false, message: messageForPasswordResetSupabaseError(error.message) };
     }
   } catch (e) {
