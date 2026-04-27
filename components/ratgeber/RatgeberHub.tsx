@@ -187,13 +187,10 @@ export function RatgeberHub() {
   return (
     <div className="min-w-0">
       {/* Hero: ein Block – Bild vollflächig, Text & Suche wie zuvor darüber */}
-      <section
-        className="relative w-full overflow-hidden px-3 sm:px-4 md:px-5"
-        aria-labelledby="ratgeber-hub-heading"
-      >
-        <div className="relative min-h-[13rem] w-full overflow-hidden rounded-b-3xl bg-[#FFFCFA] sm:min-h-[15.5rem] md:min-h-[18rem] lg:min-h-[19.5rem]">
-          {/* Bild separat clippen, damit die untere Rundung am Motiv sichtbar bleibt */}
-          <div className="pointer-events-none absolute inset-0 overflow-hidden rounded-b-3xl" aria-hidden>
+      <section className="relative w-full px-3 sm:px-4 md:px-5" aria-labelledby="ratgeber-hub-heading">
+        <div className="relative isolate min-h-[13rem] w-full overflow-hidden rounded-b-3xl bg-[#FFFCFA] sm:min-h-[15.5rem] md:min-h-[18rem] lg:min-h-[19.5rem]">
+          {/* Hintergrundbild in eigenem Layer clippen (untere Ecken) */}
+          <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden rounded-b-3xl" aria-hidden>
             <Image
               src="/images/ratgeber_hintergrund.webp"
               alt=""
@@ -203,8 +200,8 @@ export function RatgeberHub() {
               priority
             />
           </div>
-          <div className="relative z-10 mx-auto flex min-h-[13rem] w-full max-w-7xl flex-col justify-between px-4 pb-4 pt-8 sm:min-h-[15.5rem] sm:px-6 sm:pb-5 sm:pt-10 md:min-h-[18rem] lg:min-h-[19.5rem] lg:px-[var(--ahs-page-gutter)] lg:pb-6 lg:pt-12">
-            <div className="max-w-4xl">
+          <div className="relative z-10 mx-auto flex min-h-[13rem] w-full max-w-7xl flex-col px-4 pb-4 pt-8 sm:min-h-[15.5rem] sm:px-6 sm:pb-5 sm:pt-10 md:min-h-[18rem] lg:min-h-[19.5rem] lg:px-[var(--ahs-page-gutter)] lg:pb-6 lg:pt-12">
+            <div className="w-full max-w-4xl">
               <p className="mb-2 flex items-center gap-2 sm:mb-3">
                 <HeartOutlineIcon className="shrink-0 text-[#F78F2E]" />
                 <span
@@ -221,25 +218,20 @@ export function RatgeberHub() {
               >
                 Alltagshilfe-Süd Ratgeber
               </h1>
-              <p className="mt-2 max-w-2xl text-base leading-relaxed text-neutral-700 sm:mt-3 sm:text-lg">
-                Praxistipps, Erklärungen und konkrete Hilfen rund um Pflege, Betreuung und Entlastung im Alltag.
-              </p>
-            </div>
-
-            <form
-              className="mx-auto mt-6 w-full max-w-[min(100%,33.6rem)] sm:mt-8"
-              onSubmit={(e) => {
-                e.preventDefault();
-                setSearchFocused(false);
-                setHighlightIndex(-1);
-                if (highlightIndex >= 0 && searchSuggestions[highlightIndex]) {
-                  window.location.assign(`/ratgeber/${searchSuggestions[highlightIndex].slug}`);
-                  return;
-                }
-                scrollToAlle();
-              }}
-              role="search"
-            >
+              <form
+                className="mt-3 w-full max-w-[min(100%,33.6rem)] sm:mt-4"
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  setSearchFocused(false);
+                  setHighlightIndex(-1);
+                  if (highlightIndex >= 0 && searchSuggestions[highlightIndex]) {
+                    window.location.assign(`/ratgeber/${searchSuggestions[highlightIndex].slug}`);
+                    return;
+                  }
+                  scrollToAlle();
+                }}
+                role="search"
+              >
               <div
                 ref={searchComboRef}
                 className="relative min-w-0"
@@ -316,12 +308,16 @@ export function RatgeberHub() {
                 ) : null}
               </div>
             </form>
+              <p className="mt-4 max-w-2xl text-base leading-relaxed text-neutral-700 sm:mt-5 sm:text-lg">
+                Praxistipps, Erklärungen und konkrete Hilfen rund um Pflege, Betreuung und Entlastung im Alltag.
+              </p>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Themen-Pills */}
-      <div className="w-full border-b border-neutral-100 bg-[#FFFCFA]">
+      {/* Themen-Pills: Abstand, damit die abgerundete Hero-Kante auf Seitenhintergrund (#FFFBF7) sichtbar wird */}
+      <div className="mt-2 w-full border-b border-neutral-100 bg-[#FFFCFA] sm:mt-2.5">
         <Container className="max-w-7xl py-4">
           <div className="flex gap-2 overflow-x-auto pb-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
             <button
