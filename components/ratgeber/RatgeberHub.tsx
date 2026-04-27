@@ -56,6 +56,14 @@ function EnvelopeIcon({ className }: { className?: string }) {
   );
 }
 
+function HeartOutlineIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+      <path d="M20.8 4.6a5.5 5.5 0 00-7.8 0L12 5.6l-1-1a5.5 5.5 0 00-7.8 7.8L12 21l8.8-8.8a5.5 5.5 0 000-7.8z" />
+    </svg>
+  );
+}
+
 function TopicIcon({ kind }: { kind: RatgeberCategoryId }) {
   const common = { width: 22, height: 22, viewBox: "0 0 24 24" as const, fill: "none" as const, stroke: "currentColor" as const, strokeWidth: 2, "aria-hidden": true as const };
   switch (kind) {
@@ -149,7 +157,7 @@ export function RatgeberHub() {
     <div className="min-w-0">
       {/* Vollbreite Hero: direkt unter dem weißen Header, Bild kante-zu-kante */}
       <section className="relative w-full overflow-hidden" aria-labelledby="ratgeber-hub-heading">
-        <div className="relative min-h-[20rem] w-full sm:min-h-[24rem] md:min-h-[28rem] lg:min-h-[30rem]">
+        <div className="relative min-h-[13rem] w-full sm:min-h-[15.5rem] md:min-h-[18rem] lg:min-h-[19.5rem]">
           <Image
             src="/images/ratgeber_hintergrund.webp"
             alt=""
@@ -158,23 +166,31 @@ export function RatgeberHub() {
             sizes="100vw"
             priority
           />
-          {/* leichte Lesbarkeit für Text */}
-          <div className="absolute inset-0 bg-gradient-to-b from-black/35 via-black/20 to-black/45" aria-hidden />
-          <div className="relative z-10 mx-auto flex min-h-[20rem] w-full max-w-7xl flex-col justify-between px-4 pb-5 pt-10 sm:min-h-[24rem] sm:px-6 sm:pb-6 sm:pt-12 md:min-h-[28rem] lg:min-h-[30rem] lg:px-[var(--ahs-page-gutter)] lg:pb-8 lg:pt-16">
+          <div className="relative z-10 mx-auto flex min-h-[13rem] w-full max-w-7xl flex-col justify-between px-4 pb-4 pt-8 sm:min-h-[15.5rem] sm:px-6 sm:pb-5 sm:pt-10 md:min-h-[18rem] lg:min-h-[19.5rem] lg:px-[var(--ahs-page-gutter)] lg:pb-6 lg:pt-12">
             <div className="max-w-4xl">
+              <p className="mb-2 flex items-center gap-2 sm:mb-3">
+                <HeartOutlineIcon className="shrink-0 text-[#F78F2E]" />
+                <span
+                  className="text-[0.7rem] font-bold uppercase tracking-[0.18em] sm:text-xs"
+                  style={{ color: NAVY }}
+                >
+                  Wissen, das entlastet
+                </span>
+              </p>
               <h1
                 id="ratgeber-hub-heading"
-                className="text-3xl font-bold tracking-tight text-white drop-shadow-[0_2px_8px_rgba(0,0,0,0.35)] sm:text-4xl md:text-5xl"
+                className="text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl"
+                style={{ color: NAVY }}
               >
                 Alltagshilfe-Süd Ratgeber
               </h1>
-              <p className="mt-3 max-w-2xl text-base leading-relaxed text-white/95 drop-shadow-[0_1px_4px_rgba(0,0,0,0.35)] sm:text-lg">
+              <p className="mt-2 max-w-2xl text-base leading-relaxed text-neutral-700 sm:mt-3 sm:text-lg">
                 Praxistipps, Erklärungen und konkrete Hilfen rund um Pflege, Betreuung und Entlastung im Alltag.
               </p>
             </div>
 
             <form
-              className="mt-8 flex w-full max-w-4xl flex-col gap-3 sm:mt-10 sm:flex-row sm:items-stretch"
+              className="mt-6 flex w-full max-w-4xl flex-col gap-3 sm:mt-8 sm:flex-row sm:items-stretch"
               onSubmit={(e) => e.preventDefault()}
               role="search"
             >
@@ -185,13 +201,13 @@ export function RatgeberHub() {
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
                   placeholder="Artikel durchsuchen …"
-                  className="h-12 w-full rounded-2xl border border-white/25 bg-white/95 py-3 pl-12 pr-4 text-sm text-neutral-900 shadow-lg outline-none ring-[#0F4F68]/25 backdrop-blur-sm transition placeholder:text-neutral-500 focus:border-[#0F4F68]/40 focus:bg-white focus:ring-4"
+                  className="h-12 w-full rounded-2xl border border-neutral-200 bg-white py-3 pl-12 pr-4 text-sm text-neutral-900 outline-none ring-[#0F4F68]/20 transition placeholder:text-neutral-500 focus:border-[#0F4F68]/35 focus:ring-4"
                   aria-label="Ratgeber durchsuchen"
                 />
               </div>
               <button
                 type="submit"
-                className="h-12 shrink-0 rounded-2xl px-8 text-sm font-semibold text-white shadow-lg transition hover:opacity-95 active:translate-y-px sm:w-auto"
+                className="h-12 shrink-0 rounded-2xl px-8 text-sm font-semibold text-white transition hover:opacity-95 active:translate-y-px sm:w-auto"
                 style={{ backgroundColor: NAVY }}
               >
                 Suchen
