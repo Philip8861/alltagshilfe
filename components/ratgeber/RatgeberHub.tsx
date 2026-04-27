@@ -187,16 +187,22 @@ export function RatgeberHub() {
   return (
     <div className="min-w-0">
       {/* Hero: ein Block – Bild vollflächig, Text & Suche wie zuvor darüber */}
-      <section className="relative w-full overflow-hidden" aria-labelledby="ratgeber-hub-heading">
-        <div className="relative min-h-[13rem] w-full overflow-hidden rounded-b-2xl bg-[#FFFCFA] sm:min-h-[15.5rem] md:min-h-[18rem] lg:min-h-[19.5rem]">
-          <Image
-            src="/images/ratgeber_hintergrund.webp"
-            alt=""
-            fill
-            className="object-contain object-center"
-            sizes="100vw"
-            priority
-          />
+      <section
+        className="relative w-full overflow-hidden px-3 sm:px-4 md:px-5"
+        aria-labelledby="ratgeber-hub-heading"
+      >
+        <div className="relative min-h-[13rem] w-full overflow-hidden rounded-b-3xl bg-[#FFFCFA] sm:min-h-[15.5rem] md:min-h-[18rem] lg:min-h-[19.5rem]">
+          {/* Bild separat clippen, damit die untere Rundung am Motiv sichtbar bleibt */}
+          <div className="pointer-events-none absolute inset-0 overflow-hidden rounded-b-3xl" aria-hidden>
+            <Image
+              src="/images/ratgeber_hintergrund.webp"
+              alt=""
+              fill
+              className="object-contain object-center"
+              sizes="(min-width: 768px) 96vw, 100vw"
+              priority
+            />
+          </div>
           <div className="relative z-10 mx-auto flex min-h-[13rem] w-full max-w-7xl flex-col justify-between px-4 pb-4 pt-8 sm:min-h-[15.5rem] sm:px-6 sm:pb-5 sm:pt-10 md:min-h-[18rem] lg:min-h-[19.5rem] lg:px-[var(--ahs-page-gutter)] lg:pb-6 lg:pt-12">
             <div className="max-w-4xl">
               <p className="mb-2 flex items-center gap-2 sm:mb-3">
@@ -221,7 +227,7 @@ export function RatgeberHub() {
             </div>
 
             <form
-              className="mt-6 w-full max-w-4xl sm:mt-8"
+              className="mx-auto mt-6 w-full max-w-[min(100%,33.6rem)] sm:mt-8"
               onSubmit={(e) => {
                 e.preventDefault();
                 setSearchFocused(false);
