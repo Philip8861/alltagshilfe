@@ -186,18 +186,25 @@ export function RatgeberHub() {
 
   return (
     <div className="min-w-0">
-      {/* Vollbreite Hero: direkt unter dem weißen Header, Bild kante-zu-kante */}
+      {/* Hero: mobil nur schmales Titelbild, Text + Suche in eigenem Kasten darunter; ab md alles im Bild-Overlay wie zuvor */}
       <section className="relative w-full overflow-hidden" aria-labelledby="ratgeber-hub-heading">
-        <div className="relative min-h-[13rem] w-full sm:min-h-[15.5rem] md:min-h-[18rem] lg:min-h-[19.5rem]">
-          <Image
-            src="/images/ratgeber_hintergrund.webp"
-            alt=""
-            fill
-            className="object-cover object-[83%_center] md:object-center"
-            sizes="100vw"
-            priority
-          />
-          <div className="relative z-10 mx-auto flex min-h-[13rem] w-full max-w-7xl flex-col justify-between px-4 pb-4 pt-8 sm:min-h-[15.5rem] sm:px-6 sm:pb-5 sm:pt-10 md:min-h-[18rem] lg:min-h-[19.5rem] lg:px-[var(--ahs-page-gutter)] lg:pb-6 lg:pt-12">
+        <div className="relative w-full md:min-h-[16rem] lg:min-h-[19.5rem]">
+          <div
+            className="relative w-full min-h-0 max-md:aspect-[2.15/1] max-md:min-h-[10.5rem] max-md:max-h-[13.5rem] md:absolute md:inset-0 md:min-h-[16rem] lg:min-h-[19.5rem]"
+          >
+            <Image
+              src="/images/ratgeber_hintergrund.webp"
+              alt=""
+              fill
+              className="object-cover object-[83%_center] md:object-center"
+              sizes="100vw"
+              priority
+            />
+          </div>
+
+          <div
+            className="relative z-10 mx-auto flex w-full max-w-7xl flex-col max-md:mx-4 max-md:mt-2 max-md:gap-6 max-md:rounded-2xl max-md:border max-md:border-[#0F4F68]/10 max-md:bg-[#FFFBF7] max-md:px-4 max-md:py-6 max-md:shadow-[0_8px_30px_-16px_rgba(15,79,104,0.12)] sm:max-md:px-5 md:absolute md:inset-0 md:mx-0 md:mt-0 md:min-h-full md:justify-between md:rounded-none md:border-0 md:bg-transparent md:px-6 md:pb-5 md:pt-8 md:shadow-none lg:px-[var(--ahs-page-gutter)] lg:pb-6 lg:pt-12"
+          >
             <div className="max-w-4xl">
               <p className="mb-2 flex items-center gap-2 sm:mb-3">
                 <HeartOutlineIcon className="shrink-0 text-[#F78F2E]" />
@@ -221,7 +228,7 @@ export function RatgeberHub() {
             </div>
 
             <form
-              className="mt-6 flex w-full max-w-4xl flex-col gap-3 sm:mt-8 sm:flex-row sm:items-start"
+              className="w-full max-w-4xl max-md:mt-0 md:mt-0"
               onSubmit={(e) => {
                 e.preventDefault();
                 setSearchFocused(false);
@@ -236,7 +243,7 @@ export function RatgeberHub() {
             >
               <div
                 ref={searchComboRef}
-                className="relative min-w-0 flex-1"
+                className="relative min-w-0"
                 role="combobox"
                 aria-expanded={searchFocused && query.trim().length > 0}
                 aria-controls="ratgeber-search-suggestions"
@@ -262,13 +269,20 @@ export function RatgeberHub() {
                     }
                   }}
                   placeholder="Artikel durchsuchen …"
-                  className="h-12 w-full rounded-2xl border border-neutral-200 bg-white py-3 pl-12 pr-4 text-sm text-neutral-900 outline-none ring-[#0F4F68]/20 transition placeholder:text-neutral-500 focus:border-[#0F4F68]/35 focus:ring-4"
+                  className="h-12 w-full rounded-2xl border border-neutral-200 bg-white py-3 pl-12 pr-[6.25rem] text-sm text-neutral-900 outline-none ring-[#0F4F68]/20 transition placeholder:text-neutral-500 focus:border-[#0F4F68]/35 focus:ring-4 sm:pr-[7rem]"
                   aria-label="Ratgeber durchsuchen"
                   aria-autocomplete="list"
                   autoComplete="off"
                   autoCorrect="off"
                   spellCheck={false}
                 />
+                <button
+                  type="submit"
+                  className="absolute right-1.5 top-1/2 z-[2] h-9 -translate-y-1/2 rounded-xl px-3 text-sm font-semibold text-white transition hover:opacity-95 active:scale-[0.98] sm:right-2 sm:h-9 sm:px-5"
+                  style={{ backgroundColor: NAVY }}
+                >
+                  Suchen
+                </button>
                 {searchFocused && query.trim() ? (
                   <div
                     id="ratgeber-search-suggestions"
@@ -302,13 +316,6 @@ export function RatgeberHub() {
                   </div>
                 ) : null}
               </div>
-              <button
-                type="submit"
-                className="h-12 w-full shrink-0 rounded-2xl px-8 text-sm font-semibold text-white transition hover:opacity-95 active:translate-y-px sm:w-auto sm:shrink-0"
-                style={{ backgroundColor: NAVY }}
-              >
-                Suchen
-              </button>
             </form>
           </div>
         </div>
