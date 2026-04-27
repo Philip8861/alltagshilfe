@@ -3,7 +3,7 @@
 import { useState, type FormEvent } from "react";
 import Link from "next/link";
 import { submitContact } from "@/lib/actions/contact";
-import { CONTACT_TOPICS } from "@/lib/validations/contact";
+import { CONTACT_TOPICS, type ContactFormData } from "@/lib/validations/contact";
 import { cn } from "@/lib/utils";
 
 export type ContactFormProps = {
@@ -14,10 +14,28 @@ export type ContactFormProps = {
   standortContactProof?: string;
   /** Nur sinnvoll mit Proof: PLZ aus URL-Kontext, serverseitig gegen den Standort geprüft. */
   routingPlz?: string;
+  /** Präfix für alle `id`/`htmlFor` (z. B. Modal auf derselben Seite). */
+  fieldIdPrefix?: string;
+  /** Thema fest als Hidden-Feld (kein Dropdown). */
+  topicHidden?: boolean;
+  hiddenTopic?: ContactFormData["topic"];
+  /** Vorauswahl im Themen-Dropdown (nur wenn `topicHidden` nicht gesetzt). */
+  defaultTopic?: ContactFormData["topic"];
+  /** Vorbefüllter Nachrichtentext (Anwender kann ihn anpassen). */
+  initialMessage?: string;
 };
 
 export function ContactForm(props: ContactFormProps = {}) {
-  const { standortContactProof, routingPlz } = props;
+  const {
+    standortContactProof,
+    routingPlz,
+    fieldIdPrefix = "",
+    topicHidden = false,
+    hiddenTopic = "Kooperation",
+    defaultTopic,
+    initialMessage,
+  } = props;
+  const pid = (base: string) => (fieldIdPrefix ? `${fieldIdPrefix}${base}` : base);
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
   const isDatenschutzError = Boolean(error?.includes("Datenschutz"));
@@ -37,7 +55,7 @@ export function ContactForm(props: ContactFormProps = {}) {
       if (!result.success && result.error) {
         setError(result.error);
         if (result.error.includes("Datenschutz")) {
-          const el = document.getElementById("contact-datenschutz");
+          const el = document.getElementById(pid("contact-datenschutz"));
           el?.scrollIntoView({ behavior: "smooth", block: "center" });
           window.requestAnimationFrame(() => el?.focus());
         }
@@ -62,6 +80,7 @@ export function ContactForm(props: ContactFormProps = {}) {
           {routingPlz ? <input type="hidden" name="routingPlz" value={routingPlz} /> : null}
         </>
       ) : null}
+      {topicHidden ? <input type="hidden" name="topic" value={hiddenTopic} /> : null}
       {error && !isDatenschutzError && (
         <div
           role="alert"
@@ -73,11 +92,11 @@ export function ContactForm(props: ContactFormProps = {}) {
 
       <div className="grid gap-6 sm:grid-cols-2">
         <div>
-          <label htmlFor="contact-vorname" className="block text-sm font-medium text-neutral-700">
+          <label htmlFor={pid("contact-vorname")} className="block text-sm font-medium text-neutral-700">
             Vorname *
           </label>
           <input
-            id="contact-vorname"
+            id={pid("contact-vorname")}
             type="text"
             name="vorname"
             required
@@ -88,11 +107,11 @@ export function ContactForm(props: ContactFormProps = {}) {
           />
         </div>
         <div>
-          <label htmlFor="contact-nachname" className="block text-sm font-medium text-neutral-700">
+          <label htmlFor={pid("contact-nachname")} className="block text-sm font-medium text-neutral-700">
             Nachname *
           </label>
           <input
-            id="contact-nachname"
+            id={pid("contact-nachname")}
             type="text"
             name="nachname"
             required
@@ -105,11 +124,11 @@ export function ContactForm(props: ContactFormProps = {}) {
       </div>
 
       <div>
-        <label htmlFor="contact-email" className="block text-sm font-medium text-neutral-700">
+        <label htmlFor={pid("contact-email")} className="block text-sm font-medium text-neutral-700">
           E-Mail *
         </label>
         <input
-          id="contact-email"
+          id={pid("contact-email")}
           type="email"
           name="email"
           required
@@ -121,11 +140,11 @@ export function ContactForm(props: ContactFormProps = {}) {
       </div>
 
       <div>
-        <label htmlFor="contact-phone" className="block text-sm font-medium text-neutral-700">
+        <label htmlFor={pid("contact-phone")} className="block text-sm font-medium text-neutral-700">
           Telefonnummer
         </label>
         <input
-          id="contact-phone"
+          id={pid("contact-phone")}
           type="tel"
           name="phone"
           autoComplete="tel"
@@ -135,34 +154,36 @@ export function ContactForm(props: ContactFormProps = {}) {
         />
       </div>
 
-      <div>
-        <label htmlFor="contact-topic" className="block text-sm font-medium text-neutral-700">
-          Zu welchem Thema wünschen Sie Beratung? *
-        </label>
-        <select
-          id="contact-topic"
-          name="topic"
-          required
-          disabled={pending}
-          className="mt-1 block w-full rounded-lg border border-[#0F4F68]/25 px-4 py-2.5 text-neutral-900 focus:border-[#0F4F68] focus:outline-none focus:ring-1 focus:ring-[#0F4F68] disabled:opacity-50"
-          defaultValue=""
-          aria-required="true"
-        >
-          <option value="" disabled>
-            Bitte wählen …
-          </option>
-          {CONTACT_TOPICS.map((topic) => (
-            <option key={topic} value={topic}>
-              {topic}
+      {!topicHidden ? (
+        <div>
+          <label htmlFor={pid("contact-topic")} className="block text-sm font-medium text-neutral-700">
+            Zu welchem Thema wünschen Sie Beratung? *
+          </label>
+          <select
+            id={pid("contact-topic")}
+            name="topic"
+            required
+            disabled={pending}
+            className="mt-1 block w-full rounded-lg border border-[#0F4F68]/25 px-4 py-2.5 text-neutral-900 focus:border-[#0F4F68] focus:outline-none focus:ring-1 focus:ring-[#0F4F68] disabled:opacity-50"
+            defaultValue={defaultTopic ?? ""}
+            aria-required="true"
+          >
+            <option value="" disabled>
+              Bitte wählen …
             </option>
-          ))}
-        </select>
-      </div>
+            {CONTACT_TOPICS.map((topic) => (
+              <option key={topic} value={topic}>
+                {topic}
+              </option>
+            ))}
+          </select>
+        </div>
+      ) : null}
 
       <div className="sr-only" aria-hidden="true">
-        <label htmlFor="contact-website">Website</label>
+        <label htmlFor={pid("contact-website")}>Website</label>
         <input
-          id="contact-website"
+          id={pid("contact-website")}
           type="text"
           name="website"
           tabIndex={-1}
@@ -172,15 +193,16 @@ export function ContactForm(props: ContactFormProps = {}) {
       </div>
 
       <div>
-        <label htmlFor="contact-message" className="block text-sm font-medium text-neutral-700">
+        <label htmlFor={pid("contact-message")} className="block text-sm font-medium text-neutral-700">
           Nachricht *
         </label>
         <textarea
-          id="contact-message"
+          id={pid("contact-message")}
           name="message"
           required
           rows={5}
           disabled={pending}
+          defaultValue={initialMessage ?? ""}
           className="mt-1 block w-full rounded-lg border border-[#0F4F68]/25 px-4 py-2.5 text-neutral-900 placeholder-neutral-400 focus:border-[#0F4F68] focus:outline-none focus:ring-1 focus:ring-[#0F4F68] disabled:opacity-50"
           placeholder="Ihre Nachricht"
         />
@@ -196,7 +218,7 @@ export function ContactForm(props: ContactFormProps = {}) {
       >
         {isDatenschutzError && (
           <p
-            id="contact-datenschutz-error"
+            id={pid("contact-datenschutz-error")}
             role="alert"
             className="mb-3 text-sm font-semibold text-red-800"
           >
@@ -205,7 +227,7 @@ export function ContactForm(props: ContactFormProps = {}) {
         )}
         <div className="flex items-start gap-3">
           <input
-            id="contact-datenschutz"
+            id={pid("contact-datenschutz")}
             type="checkbox"
             name="datenschutz"
             required
@@ -222,14 +244,14 @@ export function ContactForm(props: ContactFormProps = {}) {
             )}
             aria-describedby={
               isDatenschutzError
-                ? "contact-datenschutz-hint contact-datenschutz-error"
-                : "contact-datenschutz-hint"
+                ? `${pid("contact-datenschutz-hint")} ${pid("contact-datenschutz-error")}`
+                : pid("contact-datenschutz-hint")
             }
             aria-invalid={isDatenschutzError}
             aria-required="true"
           />
-          <label htmlFor="contact-datenschutz" className="text-sm text-neutral-700">
-            <span id="contact-datenschutz-hint">
+          <label htmlFor={pid("contact-datenschutz")} className="text-sm text-neutral-700">
+            <span id={pid("contact-datenschutz-hint")}>
               Ich habe die{" "}
               <Link
                 href="/datenschutz"

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { HomePartnerLoginBlock } from "@/components/home/HomePartnerLoginBlock";
+import { KooperationspartnerBereiche } from "@/components/kooperation/KooperationspartnerBereiche";
 import { siteConfig } from "@/config/site";
 
 const PAGE_PATH = "/kooperation";
@@ -110,10 +111,10 @@ export default function KooperationPage() {
                 style={{ animationDelay: "400ms" }}
               >
                 <Link
-                  href="/partner/login"
+                  href="#jetzt-kooperationspartner-werden"
                   className="inline-flex min-h-[3.625rem] min-w-[11.5rem] items-center justify-center rounded-xl bg-[#F78F2E] px-8 py-4 text-[1.2rem] font-semibold text-white hover:opacity-95 focus:outline-none focus:ring-2 focus:ring-[#F78F2E] focus:ring-offset-2 sm:min-h-[3.75rem] sm:px-9 sm:py-[1.15rem] sm:text-[1.21875rem]"
                 >
-                  Partner werden
+                  Jetzt Kooperationspartner werden
                 </Link>
                 <Link
                   href="/partner-demo/dashboard"
@@ -126,6 +127,8 @@ export default function KooperationPage() {
           </div>
         </div>
       </header>
+
+      <KooperationspartnerBereiche />
 
       <HomePartnerLoginBlock />
     </article>
