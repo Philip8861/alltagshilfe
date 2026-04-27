@@ -1,4 +1,6 @@
+import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
+import { hasTranslationConsentFromCookieValue } from "@/lib/consent-server";
 
 type TranslateRequest = {
   texts?: string[];
@@ -17,6 +19,11 @@ function parseTranslatedText(data: unknown): string {
 
 export async function POST(request: Request) {
   try {
+    const cookieStore = await cookies();
+    if (!hasTranslationConsentFromCookieValue(cookieStore.get("cookie_consent")?.value)) {
+      return NextResponse.json({ error: "consent_required" }, { status: 403 });
+    }
+
     const body = (await request.json()) as TranslateRequest;
     const texts = Array.isArray(body.texts) ? body.texts.filter((t) => typeof t === "string" && t.trim().length > 0) : [];
     if (texts.length === 0) {

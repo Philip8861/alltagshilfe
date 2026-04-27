@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import { usePathname } from "next/navigation";
+import { hasTranslationConsent } from "@/lib/consent";
 
 const STORAGE_KEY_SITE_LANG = "ahs_site_lang";
 
@@ -50,6 +51,14 @@ export function LocalSiteTranslator() {
     const root = document.getElementById("app-shell");
     if (!root) return;
 
+    if (pathname === "/en" || pathname.startsWith("/en/")) {
+      if (!hasTranslationConsent()) {
+        const rest = pathname.replace(/^\/en(?=\/|$)/, "") || "/";
+        window.location.replace(`${rest}${window.location.search}${window.location.hash}`);
+        return;
+      }
+    }
+
     const getLang = (): "de" | "en" => {
       if (pathname === "/en" || pathname.startsWith("/en/")) return "en";
       try {
@@ -73,6 +82,7 @@ export function LocalSiteTranslator() {
     };
 
     const applyEnglish = async () => {
+      if (!hasTranslationConsent()) return;
       if (runningRef.current) return;
       runningRef.current = true;
       try {
@@ -143,14 +153,17 @@ export function LocalSiteTranslator() {
       if (event.key === STORAGE_KEY_SITE_LANG) run();
     };
     const onApplyLanguage = () => run();
+    const onConsent = () => run();
     window.addEventListener("storage", onStorage);
     window.addEventListener("ahs-apply-language", onApplyLanguage);
+    window.addEventListener("ahs-consent-updated", onConsent);
 
     return () => {
       observer.disconnect();
       if (debounceTimer) window.clearTimeout(debounceTimer);
       window.removeEventListener("storage", onStorage);
       window.removeEventListener("ahs-apply-language", onApplyLanguage);
+      window.removeEventListener("ahs-consent-updated", onConsent);
     };
   }, [pathname]);
 

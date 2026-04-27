@@ -2,7 +2,6 @@
 
 import dynamic from "next/dynamic";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import Link from "next/link";
 import { ArchiveTipButton } from "@/components/partner/admin/ArchiveTipButton";
 import { DeleteTipButton } from "@/components/partner/admin/DeleteTipButton";
 import { FormerBetriebCompanyButton } from "@/components/partner/admin/FormerBetriebCompanyButton";
@@ -10,7 +9,6 @@ import { CreatePartnerAccountForm } from "@/components/partner/CreatePartnerAcco
 import { DeletePartnerUserButton } from "@/components/partner/DeletePartnerUserButton";
 import { PartnerEditModal } from "@/components/partner/admin/PartnerEditModal";
 import { TipStatusEditor } from "@/components/partner/admin/TipStatusEditor";
-import { SystemAdminLogoutButton } from "@/components/partner/SystemAdminLogoutButton";
 import { PARTNER_TIP_ADMIN_STATUSES, PARTNER_TIP_STATUS_LABELS } from "@/lib/partner/partner-tip-admin";
 import { partnerTipPayloadSummary } from "@/lib/partner/partner-tip-summary";
 import {
@@ -363,26 +361,6 @@ export function PartnerAdminDashboard({
 
   return (
     <article className="mx-auto w-full max-w-[min(100%,90rem)] space-y-6 sm:space-y-8">
-      <header className="partner-payout-print-hide flex flex-col gap-4 rounded-xl border border-[#0F4F68]/12 bg-[#F2F9FA] px-6 py-6 shadow-[0_10px_22px_rgba(15,79,104,0.2),0_4px_12px_rgba(15,79,104,0.12)] sm:flex-row sm:items-center sm:justify-between sm:px-8 sm:py-7">
-        <div className="min-w-0">
-          <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#0F4F68]/55">Administration</p>
-          <h1 className="mt-2 text-2xl font-semibold tracking-tight text-[#0F4F68] sm:text-3xl">Partner-Verwaltung</h1>
-          <p className="mt-3 max-w-xl text-sm text-neutral-700 sm:text-base">
-            Tippgeber-Eingänge, Archiv, Partner anlegen, Auszahlungsberichte und Stammdaten. Navigation links in der
-            Leiste.
-          </p>
-        </div>
-        <div className="flex shrink-0 flex-wrap gap-3">
-          <Link
-            href="/partner/login"
-            className="inline-flex min-h-11 items-center justify-center rounded-2xl border border-[#0F4F68]/20 bg-white px-5 py-2.5 text-sm font-semibold text-[#0F4F68] shadow-sm transition hover:bg-white/90"
-          >
-            Zum Partner-Login
-          </Link>
-          <SystemAdminLogoutButton />
-        </div>
-      </header>
-
       {!hasServiceRole ? (
         <div className="rounded-2xl border border-amber-200/90 bg-gradient-to-br from-amber-50 to-white p-6 text-center text-sm text-amber-950 shadow-sm" role="status">
           <p className="font-semibold">SUPABASE_SERVICE_ROLE_KEY fehlt</p>

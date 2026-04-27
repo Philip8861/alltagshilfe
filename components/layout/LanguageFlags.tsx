@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { hasTranslationConsent } from "@/lib/consent";
 
 const STORAGE_KEY_SITE_LANG = "ahs_site_lang";
 const STORAGE_KEY_REOPEN_READABILITY = "ahs_reopen_readability_popup";
@@ -31,6 +32,10 @@ function setGoogleCombo(lang: "de" | "en") {
 
 function applyLanguage(lang: "de" | "en") {
   if (typeof window === "undefined") return;
+  if (lang === "en" && !hasTranslationConsent()) {
+    window.dispatchEvent(new CustomEvent("cookie-banner-show"));
+    return;
+  }
   try {
     localStorage.setItem(STORAGE_KEY_SITE_LANG, lang);
   } catch {

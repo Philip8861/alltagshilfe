@@ -7,6 +7,7 @@ import {
   normalizePathForSiteAnalytics,
   shouldRecordClientSpaNavigation,
 } from "@/lib/site-analytics/record-page-view";
+import { hasAnalyticsConsentFromCookieValue } from "@/lib/consent-server";
 import { rateLimitSiteAnalyticsNavigation } from "@/lib/rate-limit";
 import { createSupabaseServiceRoleClient } from "@/lib/supabase/service";
 
@@ -38,6 +39,10 @@ function isSameSiteRequest(request: NextRequest): boolean {
 export async function POST(request: NextRequest) {
   if (!isSameSiteRequest(request)) {
     return NextResponse.json({ ok: false }, { status: 403 });
+  }
+
+  if (!hasAnalyticsConsentFromCookieValue(request.cookies.get("cookie_consent")?.value)) {
+    return NextResponse.json({ ok: true, skipped: true, reason: "no_consent" });
   }
 
   const ip = clientIp(request);

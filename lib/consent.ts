@@ -10,6 +10,8 @@ export type ConsentState = {
   necessary: true;
   analytics: boolean;
   marketing: boolean;
+  /** Google Website Translator, englische URLs (/en) und serverseitige Übersetzungs-API. */
+  translation: boolean;
   timestamp: number;
 };
 
@@ -29,9 +31,21 @@ export function getConsent(): ConsentState | null {
   try {
     const raw = localStorage.getItem(CONSENT_STORAGE_KEY);
     if (!raw) return null;
-    const parsed = JSON.parse(raw) as ConsentState;
-    if (parsed && typeof parsed.necessary === "boolean" && typeof parsed.analytics === "boolean" && typeof parsed.marketing === "boolean") {
-      return { ...parsed, necessary: true };
+    const parsed = JSON.parse(raw) as Record<string, unknown>;
+    if (parsed && typeof parsed.analytics === "boolean" && typeof parsed.marketing === "boolean") {
+      const analytics = parsed.analytics === true;
+      const marketing = parsed.marketing === true;
+      const translation =
+        typeof parsed.translation === "boolean"
+          ? parsed.translation === true
+          : analytics && marketing;
+      return {
+        necessary: true,
+        analytics,
+        marketing,
+        translation,
+        timestamp: typeof parsed.timestamp === "number" ? parsed.timestamp : 0,
+      };
     }
     return null;
   } catch {
@@ -57,6 +71,12 @@ export function hasAnalyticsConsent(): boolean {
 export function hasMarketingConsent(): boolean {
   const c = getConsent();
   return c?.marketing === true;
+}
+
+/** Google-Übersetzung & englische Seitenversion. */
+export function hasTranslationConsent(): boolean {
+  const c = getConsent();
+  return c?.translation === true;
 }
 
 /** Entfernt gespeicherten Consent (z. B. für „Cookie-Einstellungen“ im Footer). */

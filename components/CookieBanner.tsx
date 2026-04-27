@@ -9,6 +9,7 @@ const DEFAULT_CONSENT: ConsentState = {
   necessary: true,
   analytics: false,
   marketing: false,
+  translation: false,
   timestamp: 0,
 };
 const COOKIE_BANNER_DISMISSED_KEY = "cookie-banner-dismissed";
@@ -18,16 +19,28 @@ export function CookieBanner() {
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [analytics, setAnalytics] = useState(false);
   const [marketing, setMarketing] = useState(false);
+  const [translation, setTranslation] = useState(false);
 
   useEffect(() => {
     const stored = getConsent();
     const dismissed = typeof window !== "undefined" && localStorage.getItem(COOKIE_BANNER_DISMISSED_KEY) === "1";
     if (!stored && !dismissed) setVisible(true);
+    if (stored) {
+      setAnalytics(stored.analytics);
+      setMarketing(stored.marketing);
+      setTranslation(stored.translation);
+    }
   }, []);
 
   useEffect(() => {
     const handler = () => {
       localStorage.removeItem(COOKIE_BANNER_DISMISSED_KEY);
+      const s = getConsent();
+      if (s) {
+        setAnalytics(s.analytics);
+        setMarketing(s.marketing);
+        setTranslation(s.translation);
+      }
       setVisible(true);
     };
     window.addEventListener("cookie-banner-show", handler);
@@ -35,9 +48,14 @@ export function CookieBanner() {
   }, []);
 
   const save = (state: ConsentState) => {
+    const prev = getConsent();
     setConsent(state);
+    window.dispatchEvent(new CustomEvent("ahs-consent-updated"));
     setVisible(false);
     setSettingsOpen(false);
+    if (prev?.translation && !state.translation) {
+      window.location.reload();
+    }
   };
 
   const handleClose = () => {
@@ -51,15 +69,24 @@ export function CookieBanner() {
       ...DEFAULT_CONSENT,
       analytics: true,
       marketing: true,
+      translation: true,
       timestamp: Date.now(),
     });
   };
 
   const handleNecessaryOnly = () => {
-    save({
+    const prev = getConsent();
+    const next = {
       ...DEFAULT_CONSENT,
       timestamp: Date.now(),
-    });
+    };
+    setConsent(next);
+    window.dispatchEvent(new CustomEvent("ahs-consent-updated"));
+    setVisible(false);
+    setSettingsOpen(false);
+    if (prev?.translation) {
+      window.location.reload();
+    }
   };
 
   const handleSaveSettings = () => {
@@ -67,6 +94,7 @@ export function CookieBanner() {
       ...DEFAULT_CONSENT,
       analytics,
       marketing,
+      translation,
       timestamp: Date.now(),
     });
   };
@@ -97,11 +125,12 @@ export function CookieBanner() {
         </div>
         <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between sm:gap-6">
           <div className="min-w-0 flex-1">
-            <h2 className="text-lg font-bold text-[#0F4F68]">Cookie-Hinweis</h2>
+            <h2 className="text-lg font-bold text-[#0F4F68]">Cookie- und Einwilligungshinweis</h2>
             <p className="mt-1 text-sm text-neutral-600">
-              Wir verwenden Cookies, um die Nutzung der Website zu ermöglichen und – sofern Sie
-              zustimmen – anonyme Auswertungen zu verbessern. Notwendige Cookies sind für den
-              Betrieb erforderlich. Details finden Sie in unserer{" "}
+              Wir setzen technisch notwendige Speicherungen (z. B. für die Auswahl hier) ein. Mit Ihrer Einwilligung
+              werten wir die Nutzung unserer öffentlichen Seiten in aggregierter Form aus (Statistik), binden die
+              englische Seitenversion und Google-Übersetzung ein sowie – falls Sie dies wählen – künftige
+              Marketing-Tools. Details zu Google, OpenStreetMap, Jitsi und Formularen finden Sie in der{" "}
               <Link
                 href="/datenschutz"
                 className="font-medium text-[#0F4F68] underline hover:no-underline"
@@ -121,7 +150,21 @@ export function CookieBanner() {
                     onChange={(e) => setAnalytics(e.target.checked)}
                     className="h-4 w-4 rounded border-neutral-300 text-[#0F4F68] focus:ring-[#0F4F68]"
                   />
-                  <span className="text-sm text-neutral-700">Statistik / Analytics (z. B. Besucherzahlen)</span>
+                  <span className="text-sm text-neutral-700">
+                    Statistik (aggregierte Seitenaufrufe auf unseren Systemen, kein Drittanbieter-Tracking)
+                  </span>
+                </label>
+                <label className="flex cursor-pointer items-center gap-3">
+                  <input
+                    type="checkbox"
+                    checked={translation}
+                    onChange={(e) => setTranslation(e.target.checked)}
+                    className="h-4 w-4 rounded border-neutral-300 text-[#0F4F68] focus:ring-[#0F4F68]"
+                  />
+                  <span className="text-sm text-neutral-700">
+                    Sprache Englisch / Übersetzung (Google-Skripte und -Schnittstellen; kann Daten in die USA
+                    übermitteln)
+                  </span>
                 </label>
                 <label className="flex cursor-pointer items-center gap-3">
                   <input
@@ -130,7 +173,7 @@ export function CookieBanner() {
                     onChange={(e) => setMarketing(e.target.checked)}
                     className="h-4 w-4 rounded border-neutral-300 text-[#0F4F68] focus:ring-[#0F4F68]"
                   />
-                  <span className="text-sm text-neutral-700">Marketing (optional)</span>
+                  <span className="text-sm text-neutral-700">Marketing (optional, derzeit keine Marketing-Cookies)</span>
                 </label>
               </div>
             )}

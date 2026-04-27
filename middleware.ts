@@ -2,6 +2,10 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { buildStandortPageHref, findStandortByPlz, getOrtByPlz } from "@/config/standorte";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
+import {
+  hasAnalyticsConsentFromCookieValue,
+  hasTranslationConsentFromCookieValue,
+} from "@/lib/consent-server";
 import { fireSitePageViewIfEligible } from "@/lib/site-analytics/middleware-fire";
 import { applyPartnerSupabaseSession } from "@/lib/supabase/partner-middleware";
 
@@ -52,6 +56,19 @@ export async function middleware(request: NextRequest) {
     const isEnPath = pathname === "/en" || pathname.startsWith("/en/");
     const normalizedPath = isEnPath ? pathname.replace(/^\/en(?=\/|$)/, "") || "/" : pathname;
 
+    const consentCookie = request.cookies.get("cookie_consent")?.value;
+    if (
+      isEnPath &&
+      !hasTranslationConsentFromCookieValue(consentCookie) &&
+      !normalizedPath.startsWith("/api")
+    ) {
+      const redirectUrl = request.nextUrl.clone();
+      redirectUrl.pathname = normalizedPath;
+      const response = NextResponse.redirect(redirectUrl, 307);
+      applySecurityAndSeoHeaders(response, request, normalizedPath, search);
+      return response;
+    }
+
     /** Alte PLZ-Landingpages (/standorte/87700-memmingen) → feste Standortseite mit Kontext. */
     const legacyPlzStandort = normalizedPath.match(/^\/standorte\/(\d{5})-/);
     if (legacyPlzStandort) {
@@ -97,7 +114,7 @@ export async function middleware(request: NextRequest) {
     }
 
     applySecurityAndSeoHeaders(response, request, normalizedPath, search);
-    if (!isSkippable && !isPartnerRoute) {
+    if (!isSkippable && !isPartnerRoute && hasAnalyticsConsentFromCookieValue(consentCookie)) {
       fireSitePageViewIfEligible(request, normalizedPath);
     }
     return response;
