@@ -1,4 +1,5 @@
 import nodemailer from "nodemailer";
+import { siteConfig } from "@/config/site";
 
 /** Pro Kanal eigene Zieladresse(n), kommagetrennt; sonst Fallback `NOTIFICATION_TO`. */
 export type InternalNotificationKind = "contact" | "karriere" | "pflegebox";
@@ -38,7 +39,7 @@ function parseSmtpConnection(): SmtpConnectionConfig | null {
 
   const from =
     process.env.MAIL_FROM?.trim() ||
-    `Website <${user}>`;
+    `${siteConfig.name} <${user}>`;
 
   return { host, port, secure, auth: { user, pass }, from };
 }
