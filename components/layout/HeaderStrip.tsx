@@ -79,7 +79,7 @@ export function HeaderStrip(_props: HeaderStripProps) {
               partnerActive && "text-white",
             )}
           >
-            Login
+            Partner Login
           </Link>
         </div>
       </div>

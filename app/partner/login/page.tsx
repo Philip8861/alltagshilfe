@@ -139,22 +139,29 @@ export default async function PartnerLoginPage({ searchParams }: Props) {
             <div className="partner-dash-animate partner-dash-delay-1 mt-6 text-left">
               <PartnerLoginForm />
             </div>
-            <p className="mt-5 text-sm text-neutral-600">
+          </>
+        )}
+
+        <div className="mt-8 flex flex-col items-center gap-1.5 text-center">
+          <p className="text-base font-semibold text-neutral-800 sm:text-lg">
+            <Link
+              href="/kooperation"
+              className="text-[#0F4F68] underline underline-offset-2 hover:text-[#0c3d52]"
+            >
+              Zur Kooperationsseite
+            </Link>
+          </p>
+          {configured && !(session && !session.profile) ? (
+            <p className="text-xs text-neutral-500 sm:text-sm">
               <Link
                 href="/partner/admin-login"
-                className="font-semibold text-[#0F4F68] underline underline-offset-2 hover:text-[#0c3d52]"
+                className="font-medium text-[#0F4F68] underline underline-offset-2 hover:text-[#0c3d52]"
               >
                 Partner-Verwaltung (Betrieb)
               </Link>
             </p>
-          </>
-        )}
-
-        <p className="mt-8 text-sm text-neutral-600">
-          <Link href="/" className="font-semibold text-[#0F4F68] underline underline-offset-2 hover:text-[#0c3d52]">
-            Zur Startseite
-          </Link>
-        </p>
+          ) : null}
+        </div>
       </article>
     </PartnerAuthModalShell>
   );

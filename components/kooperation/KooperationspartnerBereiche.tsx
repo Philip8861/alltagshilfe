@@ -290,7 +290,7 @@ export function KooperationspartnerBereiche() {
                       width={PRIVATE_PFLEGE_CORNER_IMG.width}
                       height={PRIVATE_PFLEGE_CORNER_IMG.height}
                       decoding="async"
-                      className={`pointer-events-none absolute right-0 top-0 z-10 select-none sm:-top-5 sm:-right-5 lg:-right-6 lg:-top-6 ${KOOP_CORNER_IMG_SIZE} ${KOOP_CARD_IMG_SHADOW}`}
+                      className={`pointer-events-none absolute right-0 top-2 z-10 select-none sm:-top-5 sm:-right-5 lg:-right-6 lg:-top-6 ${KOOP_CORNER_IMG_SIZE} ${KOOP_CARD_IMG_SHADOW}`}
                     />
                   ) : null}
                   {b.id === "betriebliche-pflegeberatung" ? (
@@ -319,7 +319,11 @@ export function KooperationspartnerBereiche() {
                     className={[
                       "flex min-w-0 flex-col gap-4 text-left",
                       isRight ? "lg:items-end lg:text-right" : "lg:items-start",
-                      KOOP_CORNER_OVERFLOW_IDS.has(b.id) ? "pt-[11.5rem] sm:pt-0" : "",
+                      KOOP_CORNER_OVERFLOW_IDS.has(b.id)
+                        ? b.id === "private-pflegeberatung"
+                          ? "pt-[13.25rem] sm:pt-0"
+                          : "pt-[11.5rem] sm:pt-0"
+                        : "",
                       b.id === "pflegehilfsmittel" || b.id === "private-pflegeberatung"
                         ? KOOP_CORNER_TEXT_PR
                         : "",
