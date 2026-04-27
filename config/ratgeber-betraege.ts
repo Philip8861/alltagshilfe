@@ -1,6 +1,8 @@
 /**
  * Zentrale Ratgeber-Metadaten für Verzeichnis, Verwandte Beiträge und Aufrufzahlen.
  */
+export type RatgeberCategoryId = "finanzen" | "pflege_zuhause" | "entlastung" | "recht";
+
 export type RatgeberBeitragMeta = {
   slug: string;
   title: string;
@@ -9,6 +11,19 @@ export type RatgeberBeitragMeta = {
   imageAlt: string;
   views: number;
   tags: string[];
+  /** Filter-Kategorien (Themen-Pills) – ein Beitrag kann mehreren zugeordnet sein. */
+  categories: RatgeberCategoryId[];
+  readMinutes: number;
+  publishedAt: string;
+  /** Wird als großer Empfehlungskasten oben angezeigt. */
+  featured?: boolean;
+};
+
+export const RATGEBER_CATEGORY_LABELS: Record<RatgeberCategoryId, string> = {
+  finanzen: "Finanzen & Leistungen",
+  pflege_zuhause: "Pflege zu Hause",
+  entlastung: "Entlastung",
+  recht: "Recht & Organisation",
 };
 
 export const RATGEBER_BEITRAEGE: RatgeberBeitragMeta[] = [
@@ -21,6 +36,9 @@ export const RATGEBER_BEITRAEGE: RatgeberBeitragMeta[] = [
     imageAlt: "Vorschaubild Hausnotruf-Ratgeber",
     views: 489,
     tags: ["Hausnotruf", "Sicherheit", "Pflegekasse", "Pflegegrad", "Notfallhilfe"],
+    categories: ["pflege_zuhause", "entlastung"],
+    readMinutes: 6,
+    publishedAt: "2025-08-12",
   },
   {
     slug: "entlastungsbetrag-131-euro",
@@ -31,6 +49,10 @@ export const RATGEBER_BEITRAEGE: RatgeberBeitragMeta[] = [
     imageAlt: "Vorschaubild Entlastungsbetrag 131 Euro",
     views: 1284,
     tags: ["Entlastungsbetrag", "Pflegekasse", "Abrechnung", "Pflegegrad"],
+    categories: ["finanzen", "entlastung"],
+    readMinutes: 5,
+    publishedAt: "2025-11-03",
+    featured: true,
   },
   {
     slug: "pflegegrad-1-der-ultimative-leitfaden",
@@ -41,6 +63,9 @@ export const RATGEBER_BEITRAEGE: RatgeberBeitragMeta[] = [
     imageAlt: "Vorschaubild Pflegegrad 1 Leitfaden",
     views: 623,
     tags: ["Pflegegrad 1", "MDK", "Begutachtung", "Leistungen", "Entlastungsbetrag"],
+    categories: ["finanzen", "recht"],
+    readMinutes: 8,
+    publishedAt: "2026-02-18",
   },
   {
     slug: "pflegegrad-2-alles-was-du-wissen-musst",
@@ -51,9 +76,25 @@ export const RATGEBER_BEITRAEGE: RatgeberBeitragMeta[] = [
     imageAlt: "Vorschaubild Pflegegrad 2",
     views: 512,
     tags: ["Pflegegrad 2", "Pflegegeld", "Pflegesachleistungen", "Ersatzpflege", "§37.3"],
+    categories: ["finanzen", "recht"],
+    readMinutes: 7,
+    publishedAt: "2026-03-22",
   },
 ];
 
 export function getVerwandteRatgeberBeitraege(currentSlug: string, limit = 4): RatgeberBeitragMeta[] {
   return RATGEBER_BEITRAEGE.filter((b) => b.slug !== currentSlug).slice(0, limit);
+}
+
+/** Erste Markierung mit `featured: true`, sonst Beitrag mit den meisten Aufrufen. */
+export function getFeaturedRatgeberBeitrag(): RatgeberBeitragMeta {
+  const featured = RATGEBER_BEITRAEGE.find((b) => b.featured);
+  if (featured) return featured;
+  return [...RATGEBER_BEITRAEGE].sort((a, b) => b.views - a.views)[0]!;
+}
+
+/** Kategorie-Label für Anzeige unter dem Titel (erste passende). */
+export function primaryCategoryLabel(beitrag: RatgeberBeitragMeta): string {
+  const first = beitrag.categories[0];
+  return first ? RATGEBER_CATEGORY_LABELS[first] : "Ratgeber";
 }
