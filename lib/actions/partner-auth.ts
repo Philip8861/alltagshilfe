@@ -114,7 +114,7 @@ async function sendPasswordResetViaWebsiteSmtp(
     });
     const link = extractSupabaseAdminRecoveryLink(data);
     if (error || !link) {
-      console.warn("[password-reset fallback] generateLink:", error?.message);
+      console.warn("[password-reset website-smtp] generateLink:", error?.message);
       return { ok: false, code: "generate_link" };
     }
     const html = buildBrandedPartnerPasswordResetEmailHtml(link);
@@ -134,12 +134,12 @@ async function sendPasswordResetViaWebsiteSmtp(
       html,
     });
     if (!mailed.ok) {
-      console.error("[password-reset fallback] sendTransactionalMail:", mailed.code);
+      console.error("[password-reset website-smtp] sendTransactionalMail:", mailed.code);
       return { ok: false, code: mailed.code };
     }
     return { ok: true };
   } catch (e) {
-    console.error("[password-reset fallback]", e);
+    console.error("[password-reset website-smtp]", e);
     return { ok: false, code: "exception" };
   }
 }
@@ -159,12 +159,14 @@ function messageForPasswordResetSupabaseError(message: string): string {
 }
 
 /**
- * Sendet die Supabase-Passwort-Reset-E-Mail (Link, kein Klartext-Passwort).
- * Zuerst `resetPasswordForEmail` (Supabase). Schlägt der Versand z. B. an Custom-SMTP fehl, Fallback: `generateLink` + Website-SMTP (MARKENLAYOUT).
- * Markenlayout: `supabase/email-templates/password-recovery-markenlayout.html` im Supabase-Dashboard einfügen.
- * Absender „Alltagshilfe-Süd“: Supabase → Project Settings → Auth → SMTP (Custom SMTP wie Website).
- * Link funktioniert nur, wenn Site URL + Redirect URLs in Supabase die Production-Domain inkl. `/auth/callback` erlauben
- * (siehe `.env.example`). Optional `AUTH_REDIRECT_BASE_URL` setzen.
+ * Passwort-Reset per E-Mail (Link, kein Klartext-Passwort).
+ *
+ * **Primär:** `generateLink` (Service Role) + Versand über **Website-SMTP** (`SMTP_*`, `MAIL_FROM`) — Absender wie
+ * Kontaktformular (Standard: „Alltagshilfe-Süd“). Voraussetzung: `SUPABASE_SERVICE_ROLE_KEY` + `SMTP_HOST`/`SMTP_USER`/…
+ *
+ * **Fallback:** `resetPasswordForEmail` (E-Mail durch Supabase), falls Website-Versand nicht möglich oder fehlgeschlagen.
+ *
+ * Redirect: Supabase → Authentication → URL configuration (`/auth/callback**`). Optional `AUTH_REDIRECT_BASE_URL`.
  * Gleiche Erfolgsmeldung unabhängig davon, ob die Adresse existiert (Enumerationsschutz).
  */
 export async function requestPartnerPasswordResetAction(
@@ -204,6 +206,17 @@ export async function requestPartnerPasswordResetAction(
   redirectTo.searchParams.set("next", "/partner/passwort-zuruecksetzen");
   const redirectToStr = redirectTo.toString();
 
+  const websiteMailReady =
+    Boolean(createSupabaseServiceRoleClient()) && isTransactionalSmtpConfigured();
+
+  if (websiteMailReady) {
+    const primary = await sendPasswordResetViaWebsiteSmtp(resolved.email, redirectToStr);
+    if (primary.ok) {
+      return { ok: true, message: PASSWORD_RESET_SUCCESS_DE };
+    }
+    console.warn("[requestPartnerPasswordResetAction] Website-SMTP-Reset fehlgeschlagen:", primary.code);
+  }
+
   try {
     const supabase = await createSupabaseServerClient();
     const { error } = await supabase.auth.resetPasswordForEmail(resolved.email, {
@@ -211,14 +224,13 @@ export async function requestPartnerPasswordResetAction(
     });
     if (error) {
       console.error("[requestPartnerPasswordResetAction] resetPasswordForEmail:", error.message, error);
-      if (isLikelySupabaseSmtpOrMailerFailure(error.message)) {
-        const fb = await sendPasswordResetViaWebsiteSmtp(resolved.email, redirectToStr);
-        if (fb.ok) {
-          return { ok: true, message: PASSWORD_RESET_SUCCESS_DE };
-        }
-        console.error("[requestPartnerPasswordResetAction] SMTP-Fallback fehlgeschlagen:", fb.code);
+      const parts: string[] = [messageForPasswordResetSupabaseError(error.message)];
+      if (!websiteMailReady) {
+        parts.push(
+          "Hinweis: Für E-Mail von Alltagshilfe-Süd ohne Supabase-Versand bitte auf dem Server SUPABASE_SERVICE_ROLE_KEY und SMTP_HOST/SMTP_USER/SMTP_PASS setzen (siehe .env.example).",
+        );
       }
-      return { ok: false, message: messageForPasswordResetSupabaseError(error.message) };
+      return { ok: false, message: parts.join(" ") };
     }
   } catch (e) {
     console.error("[requestPartnerPasswordResetAction]", e);
