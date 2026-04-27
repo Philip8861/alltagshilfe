@@ -157,12 +157,26 @@ const BEREICHE: BereichDef[] = [
     id: "hauswirtschaft-betreuung",
     title: "Hauswirtschaft & Betreuung",
     align: "right",
-    lede: "Bündeln Sie Kräfte mit uns, wenn es um Haushaltshilfe, Alltagsbegleitung und entlastende Angebote für pflegende Angehörige geht.",
+    lede: "Sie arbeiten mit Menschen, Angehörigen oder Familien zusammen, die im Alltag Unterstützung benötigen?",
     paragraphs: [
-      "Gemeinsam erreichen wir mehr Haushalte – mit abgestimmten Kapazitäten, einheitlicher Qualität und klarer Kommunikation gegenüber Kostenträgern.",
-      "Interessant für Netzwerke aus ambulanten Diensten, Sozialstationen und kommunalen Koordinierungsstellen.",
+      `Dann können Sie diese Personen unkompliziert an ${siteConfig.name} weitervermitteln. Wir helfen schnell und zuverlässig bei Anfragen rund um Haushaltshilfe, Alltagsbegleitung und Betreuung.`,
+      "Ob Unterstützung im Haushalt, Begleitung im Alltag oder Entlastung für Angehörige: Wir nehmen Kontakt auf, klären den Bedarf und begleiten die weitere Umsetzung. So erhalten die betroffenen Personen schnelle Hilfe, während Sie als vertrauter Ansprechpartner entlastet werden.",
     ],
-    info: "Wir klären Zuständigkeiten und Marketing-Botschaften mit Ihnen, damit Anfragen sauber ankommen und bearbeitet werden.",
+    featuresHeading: "Ihre Vorteile als Kooperationspartner",
+    features: [
+      {
+        title: "Schnelle Hilfe für Ihre Kontakte",
+        text: "Menschen, die Unterstützung im Alltag benötigen, erhalten über uns eine unkomplizierte erste Einschätzung und passende Hilfe.",
+      },
+      {
+        title: "Klare Weitervermittlung ohne Mehraufwand",
+        text: "Sie geben den Kontakt weiter, wir übernehmen die weitere Abstimmung, Beratung und Organisation.",
+      },
+      {
+        title: "Tippgeberprovision bei erfolgreicher Vermittlung",
+        text: "Kommt über Ihre Empfehlung eine erfolgreiche Zusammenarbeit zustande, erhalten Sie eine Tippgeberprovision.",
+      },
+    ],
     mehrHref: "/leistungen/haushaltshilfe",
     mehrLabel: "Leistung Haushaltshilfe",
   },
