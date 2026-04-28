@@ -51,9 +51,11 @@ function ChevronIcon() {
 export default async function PartnerEinstellungenPage() {
   noStore();
   const { profile } = await requirePartnerLogin();
-  const showPasswordPromptReenable =
-    !profile.password_changed_at?.trim() && profile.password_change_prompt_suppress === true;
   const portalPrefs = normalizePortalPreferences(parsePortalPreferences(profile.portal_preferences));
+  const passwordPromptDismissed =
+    profile.password_change_prompt_suppress === true || portalPrefs.password_prompt_suppressed === true;
+  const showPasswordPromptReenable =
+    !profile.password_changed_at?.trim() && passwordPromptDismissed;
   const tutorialHidden = portalPrefs.tutorial_hidden === true;
 
   return (

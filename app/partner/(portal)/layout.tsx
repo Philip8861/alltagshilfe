@@ -11,9 +11,10 @@ export const metadata: Metadata = {
 export default async function PartnerPortalLayout({ children }: { children: React.ReactNode }) {
   const { profile } = await requirePartnerLogin();
   const hasChangedPassword = Boolean(profile.password_changed_at?.trim());
-  const suppressPrompt = profile.password_change_prompt_suppress === true;
-  const initialPasswordChangePrompt = !hasChangedPassword && !suppressPrompt;
   const portalPrefs = normalizePortalPreferences(parsePortalPreferences(profile.portal_preferences));
+  const suppressPrompt =
+    profile.password_change_prompt_suppress === true || portalPrefs.password_prompt_suppressed === true;
+  const initialPasswordChangePrompt = !hasChangedPassword && !suppressPrompt;
   const tutorialAutoShow = portalPrefs.tutorial_hidden !== true;
 
   return (

@@ -217,3 +217,144 @@ export function buildBrandedNotificationHtml(options: {
     bodyRowsHtml: `${rowHtml}${detailSection}`,
   });
 }
+
+function nl2EmailLines(s: string): string {
+  return escapeHtml(s).replace(/\r\n/g, "\n").replace(/\n/g, "<br/>");
+}
+
+/** Attribut-Inhalt für Links (href, sehr eingeschränkt). */
+export function escapeEmailHrefAttr(urlOrMailto: string): string {
+  return urlOrMailto.trim().replace(/&/g, "&amp;").replace(/"/g, "&quot;");
+}
+
+export type PartnerRegistrationWelcomeInputs = {
+  vorname: string;
+  nachname: string;
+  partnerEmail: string;
+  einmalpasswort: string;
+  loginUrl: string;
+  kontaktinformationen: string;
+  tel: string;
+  teamEmail: string;
+  websiteLabel: string;
+  websiteHref: string;
+};
+
+export function partnerRegistrationWelcomeSubject(): string {
+  return `Ihre Registrierung als Kooperationspartner bei ${siteConfig.name}`;
+}
+
+/**
+ * Partner-Registrierungsbestätigung (Admin-Anlage) — gleicher Rahmen wie Passwort-Reset.
+ */
+export function buildBrandedPartnerRegistrationWelcomeHtml(inp: PartnerRegistrationWelcomeInputs): string {
+  const kindBadge = "Partner";
+  const headline = "Willkommen im Partnerbereich";
+
+  const paragraphs = (
+    blocks: string[],
+  ) =>
+    blocks
+      .map(
+        (t) =>
+          `<p style="margin:0 0 14px 0;font-family:${FONT};font-size:16px;line-height:1.55;color:#1a1a1a;">${nl2EmailLines(t)}</p>`,
+      )
+      .join("");
+
+  const intro = paragraphs([
+    `Guten Tag ${inp.vorname} ${inp.nachname},`,
+    "vielen Dank für Ihre Registrierung als Kooperationspartner bei uns. Wir freuen uns über Ihr Interesse an einer gemeinsamen Zusammenarbeit.",
+    "Über Ihr Partner-Dashboard sehen Sie künftig vermittelte Vorgänge übersichtlich, verfolgen den Bearbeitungsstand und können Informationen zu Ihren Provisionen einsehen. Zu Beginn führt Sie ein kurzes Tutorial durch die wichtigsten Funktionen.",
+  ]);
+
+  const loginTrim = inp.loginUrl.trim();
+  const loginHref = escapeEmailHrefAttr(loginTrim);
+  const loginVisible = escapeHtml(loginTrim);
+
+  const websiteHref = escapeEmailHrefAttr(inp.websiteHref.trim());
+  const websiteLabel = escapeHtml(inp.websiteLabel.trim());
+  const mailtoHref = escapeEmailHrefAttr(`mailto:${inp.teamEmail.trim()}`);
+
+  const ctaBlock = `
+          <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:8px 0 20px 0;">
+            <tr>
+              <td style="border-radius:14px;background:${C.primary};">
+                <a href="${loginHref}" style="display:inline-block;font-family:${FONT};font-size:16px;font-weight:700;line-height:1.2;color:#ffffff;text-decoration:none;padding:16px 28px;border-radius:14px;background:${C.primary};border:1px solid ${C.primaryDark};">
+                  Zum Partner-Login
+                </a>
+              </td>
+            </tr>
+          </table>
+          <p style="margin:0 0 18px 0;font-family:${FONT};font-size:13px;line-height:1.5;color:${C.muted};">
+            Direkt-Link (falls der Button nicht klickbar ist):<br/>
+            <span style="word-break:break-all;color:#1a1a1a;">${loginVisible}</span>
+          </p>`;
+
+  const credentialsCard = `
+          <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="margin:12px 0 18px 0;background:#FFF9F6;border-radius:14px;border:1px solid ${C.border};overflow:hidden;">
+            <tr>
+              <td style="padding:14px 16px;background:linear-gradient(135deg,rgba(247,143,46,0.12) 0%,rgba(15,79,104,0.06) 100%);border-bottom:1px solid ${C.border};">
+                <p style="margin:0;font-family:${FONT};font-size:13px;font-weight:800;color:${C.primary};letter-spacing:0.04em;text-transform:uppercase;">
+                  Ihre Zugangsdaten
+                </p>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding:14px 16px 16px 16px;">
+                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="font-family:${FONT};font-size:15px;line-height:1.5;color:#1a1a1a;">
+                  <tr>
+                    <td style="padding:6px 0 8px 0;color:${C.muted};font-size:13px;font-weight:700;width:170px;vertical-align:top;">Benutzername / E-Mail</td>
+                    <td style="padding:6px 0 8px 0;"><strong>${escapeHtml(inp.partnerEmail)}</strong></td>
+                  </tr>
+                  <tr>
+                    <td style="padding:6px 0 0 0;color:${C.muted};font-size:13px;font-weight:700;width:170px;vertical-align:top;">Einmalpasswort</td>
+                    <td style="padding:6px 0 0 0;">
+                      <code style="display:inline-block;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:14px;font-weight:700;color:${C.primary};background:#ffffff;border-radius:8px;padding:10px 12px;border:1px solid ${C.border};">${escapeHtml(inp.einmalpasswort)}</code>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+          </table>`;
+
+  const followUp = paragraphs([
+    "Bitte melden Sie sich zuerst mit dem Einmalpasswort an — beim ersten Login können Sie es in ein persönliches Passwort ändern.",
+    "Bei Fragen zur Anmeldung oder zum Dashboard erreichen Sie uns unter den angegebenen Kontaktdaten.",
+    "Wir freuen uns auf eine erfolgreiche Zusammenarbeit.",
+  ]);
+
+  const kontaktBlock = `
+          <hr style="border:none;border-top:1px solid ${C.border};margin:22px 0 14px 0;">
+          <p style="margin:0 0 8px 0;font-family:${FONT};font-size:13px;line-height:1.45;color:${C.muted};text-transform:uppercase;letter-spacing:0.08em;font-weight:700;">
+            Kontakt
+          </p>
+          <div style="font-family:${FONT};font-size:14px;line-height:1.55;color:#455055;">
+            ${nl2EmailLines(inp.kontaktinformationen)}<br/><br/>
+            Tel.: ${escapeHtml(inp.tel)}<br/>
+            E-Mail: <a href="${mailtoHref}" style="color:${C.primary};font-weight:600;">${escapeHtml(inp.teamEmail)}</a><br/>
+            Website: <a href="${websiteHref}" style="color:${C.primary};font-weight:600;">${websiteLabel}</a>
+          </div>`;
+
+  const signature = `
+          <p style="margin:20px 0 0 0;font-family:${FONT};font-size:16px;line-height:1.5;color:#1a1a1a;">
+            Mit freundlichen Grüßen<br/><strong style="color:${C.primary};">Ihr Team von ${escapeHtml(siteConfig.name)}</strong>
+          </p>`;
+
+  const bodyRowsHtml = `
+          <tr>
+            <td style="padding:22px 20px 8px 20px;">
+              ${intro}
+              ${ctaBlock}
+              ${credentialsCard}
+              ${followUp}
+              ${signature}
+              ${kontaktBlock}
+            </td>
+          </tr>`;
+
+  return brandedEmailShell({
+    kindBadge,
+    headline,
+    bodyRowsHtml,
+  });
+}

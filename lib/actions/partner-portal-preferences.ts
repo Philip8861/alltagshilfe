@@ -2,7 +2,7 @@
 
 import { headers } from "next/headers";
 import { revalidatePath } from "next/cache";
-import { normalizePortalPreferences, type PartnerPortalPreferences } from "@/lib/partner/portal-preferences";
+import { normalizePortalPreferences, parsePortalPreferences, type PartnerPortalPreferences } from "@/lib/partner/portal-preferences";
 import { getPartnerSession } from "@/lib/partner/auth";
 import { rateLimitPartnerPortalPrefs } from "@/lib/rate-limit";
 import { partnerPortalPreferencesSchema } from "@/lib/validations/partner-portal-preferences";
@@ -49,9 +49,25 @@ export async function savePartnerPortalPreferencesAction(
   const normalized = normalizePortalPreferences(parsed.data as PartnerPortalPreferences);
 
   const supabase = await createSupabaseServerClient();
+  const { data: prefRow, error: loadErr } = await supabase
+    .from("partner_profiles")
+    .select("portal_preferences")
+    .eq("id", session.profile.id)
+    .maybeSingle();
+
+  if (loadErr) {
+    return { ok: false, message: "Profil konnte nicht geladen werden." };
+  }
+
+  const existing = normalizePortalPreferences(parsePortalPreferences(prefRow?.portal_preferences));
+  const merged = normalizePortalPreferences({
+    ...normalized,
+    password_prompt_suppressed: existing.password_prompt_suppressed,
+  });
+
   const { error } = await supabase
     .from("partner_profiles")
-    .update({ portal_preferences: normalized })
+    .update({ portal_preferences: merged })
     .eq("id", session.profile.id);
 
   if (error) {

@@ -19,6 +19,8 @@ export const partnerPortalPreferencesSchema = z.object({
   columns: columnSchema,
   /** Wenn true: Rundgang nicht mehr automatisch nach Login anzeigen (nur noch über Einstellungen). */
   tutorial_hidden: z.boolean().optional(),
+  /** Passwort-Hinweis ausblenden (Fallback ohne Migration 014). */
+  password_prompt_suppressed: z.boolean().optional(),
 });
 
 export type PartnerPortalPreferencesInput = z.infer<typeof partnerPortalPreferencesSchema>;

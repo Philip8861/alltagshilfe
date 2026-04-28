@@ -1,24 +1,17 @@
 import { sendTransactionalMail } from "@/lib/email/internal-smtp";
+import {
+  buildBrandedPartnerRegistrationWelcomeHtml,
+  partnerRegistrationWelcomeSubject,
+  type PartnerRegistrationWelcomeInputs,
+} from "@/lib/email/branded-html";
 import { siteConfig } from "@/config/site";
 import { getPublicSiteBaseUrl } from "@/lib/partner/site-origin";
 
-function escapeHtml(s: string): string {
-  return s
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;");
-}
-
-function escapeAttr(s: string): string {
-  return s.replace(/&/g, "&amp;").replace(/"/g, "&quot;");
-}
-
-function footerBlock(): {
+function footerStrings(): {
   kontaktinformationen: string;
   telefon: string;
-  email: string;
-  website: string;
+  teamEmail: string;
+  websiteLabel: string;
   websiteHref: string;
 } {
   const websiteDisplay =
@@ -34,8 +27,8 @@ function footerBlock(): {
         "Hinter den Gärten 10 · 87730 Bad Grönenbach",
       ].join("\n"),
     telefon: process.env.PARTNER_REGISTRATION_MAIL_TELEFON?.trim() || "08334 / 9893330",
-    email: process.env.PARTNER_REGISTRATION_MAIL_TEAM_EMAIL?.trim() || "info@alltagshilfe-sued.de",
-    website: websiteDisplay,
+    teamEmail: process.env.PARTNER_REGISTRATION_MAIL_TEAM_EMAIL?.trim() || "info@alltagshilfe-sued.de",
+    websiteLabel: websiteDisplay,
     websiteHref,
   };
 }
@@ -43,6 +36,52 @@ function footerBlock(): {
 function partnerPortalLoginUrl(): string {
   const base = getPublicSiteBaseUrl() || siteConfig.baseUrl.replace(/\/$/, "");
   return `${base}/partner/login`;
+}
+
+function buildPartnerRegistrationMailPayload(params: {
+  partnerEmail: string;
+  vorname: string;
+  nachname: string;
+  einmalpasswort: string;
+}): PartnerRegistrationWelcomeInputs {
+  const f = footerStrings();
+  return {
+    vorname: params.vorname,
+    nachname: params.nachname,
+    partnerEmail: params.partnerEmail,
+    einmalpasswort: params.einmalpasswort,
+    loginUrl: partnerPortalLoginUrl(),
+    kontaktinformationen: f.kontaktinformationen,
+    tel: f.telefon,
+    teamEmail: f.teamEmail,
+    websiteLabel: f.websiteLabel,
+    websiteHref: f.websiteHref,
+  };
+}
+
+function buildPlainTextBody(inp: PartnerRegistrationWelcomeInputs): string {
+  return [
+    `Guten Tag ${inp.vorname} ${inp.nachname},`,
+    "",
+    `vielen Dank für Ihre Registrierung als Kooperationspartner bei ${siteConfig.name}.`,
+    "",
+    "Über unser Partner-Dashboard können Sie künftig Ihre vermittelten Vorgänge übersichtlich einsehen, den Bearbeitungsstatus verfolgen und Informationen zu Ihren Provisionen abrufen.",
+    "",
+    "Zu Beginn erwartet Sie ein kurzes Tutorial zu den wichtigsten Funktionen.",
+    "",
+    "Zugang:",
+    `Login: ${inp.loginUrl}`,
+    `Benutzername / E-Mail: ${inp.partnerEmail}`,
+    `Einmalpasswort: ${inp.einmalpasswort}`,
+    "",
+    "Mit freundlichen Grüßen",
+    `Ihr Team von ${siteConfig.name}`,
+    "",
+    inp.kontaktinformationen,
+    `Tel.: ${inp.tel}`,
+    `E-Mail: ${inp.teamEmail}`,
+    `Website: ${inp.websiteLabel}`,
+  ].join("\n");
 }
 
 /**
@@ -54,70 +93,52 @@ export async function sendPartnerRegistrationWelcomeMail(params: {
   nachname: string;
   einmalpasswort: string;
 }): Promise<{ ok: true } | { ok: false }> {
-  const loginLink = partnerPortalLoginUrl();
-  const f = footerBlock();
-  const e = escapeHtml;
-  const a = escapeAttr;
-
-  const text = [
-    `Guten Tag ${params.vorname} ${params.nachname},`,
-    "",
-    "vielen Dank für Ihre Registrierung als Kooperationspartner bei Alltagshilfe-Süd.",
-    "",
-    "Wir freuen uns sehr über Ihr Interesse an einer Zusammenarbeit. Über unser Partner-Dashboard können Sie künftig Ihre vermittelten Vorgänge übersichtlich einsehen, den Bearbeitungsstatus verfolgen und Informationen zu Ihren Provisionen abrufen.",
-    "",
-    "Zu Beginn erwartet Sie ein kurzes Tutorial, das Ihnen die wichtigsten Funktionen und einzelnen Schritte im Partner-Dashboard noch einmal einfach erklärt.",
-    "",
-    "Ihre Zugangsdaten für den Partner-Login:",
-    "",
-    `Login-Link: ${loginLink}`,
-    `Benutzername / E-Mail: ${params.partnerEmail}`,
-    `Einmalpasswort: ${params.einmalpasswort}`,
-    "",
-    "Bitte melden Sie sich mit dem Einmalpasswort an. Direkt beim ersten Login können Sie das Einmalpasswort in ein persönliches Passwort ändern.",
-    "",
-    "Bei Fragen zur Anmeldung, zum Partner-Dashboard oder zur weiteren Zusammenarbeit können Sie sich jederzeit gerne bei uns melden.",
-    "",
-    "Wir freuen uns auf eine erfolgreiche Zusammenarbeit.",
-    "",
-    "Mit freundlichen Grüßen",
-    "Ihr Team von Alltagshilfe-Süd",
-    "",
-    f.kontaktinformationen,
-    `Tel.: ${f.telefon}`,
-    `E-Mail: ${f.email}`,
-    `Website: ${f.website}`,
-  ].join("\n");
-
-  const html = `<!DOCTYPE html>
-<html lang="de"><body style="font-family:system-ui,sans-serif;line-height:1.6;color:#1a1a1a;font-size:16px;">
-<p>Guten Tag ${e(params.vorname)} ${e(params.nachname)},</p>
-<p>vielen Dank für Ihre Registrierung als Kooperationspartner bei Alltagshilfe-Süd.</p>
-<p>Wir freuen uns sehr über Ihr Interesse an einer Zusammenarbeit. Über unser Partner-Dashboard können Sie künftig Ihre vermittelten Vorgänge übersichtlich einsehen, den Bearbeitungsstatus verfolgen und Informationen zu Ihren Provisionen abrufen.</p>
-<p>Zu Beginn erwartet Sie ein kurzes Tutorial, das Ihnen die wichtigsten Funktionen und einzelnen Schritte im Partner-Dashboard noch einmal einfach erklärt.</p>
-<p><strong>Ihre Zugangsdaten für den Partner-Login:</strong></p>
-<ul style="margin:0 0 1em 1.1em;padding:0;">
-<li><strong>Login-Link:</strong> <a href="${a(loginLink)}">${e(loginLink)}</a></li>
-<li><strong>Benutzername / E-Mail:</strong> ${e(params.partnerEmail)}</li>
-<li><strong>Einmalpasswort:</strong> <code style="font-size:14px">${e(params.einmalpasswort)}</code></li>
-</ul>
-<p>Bitte melden Sie sich mit dem Einmalpasswort an. Direkt beim ersten Login können Sie das Einmalpasswort in ein persönliches Passwort ändern.</p>
-<p>Bei Fragen zur Anmeldung, zum Partner-Dashboard oder zur weiteren Zusammenarbeit können Sie sich jederzeit gerne bei uns melden.</p>
-<p>Wir freuen uns auf eine erfolgreiche Zusammenarbeit.</p>
-<p>Mit freundlichen Grüßen<br/>Ihr Team von Alltagshilfe-Süd</p>
-<hr style="border:none;border-top:1px solid #eee;margin:1.5em 0" />
-<p style="font-size:14px;color:#444;white-space:pre-line">${e(f.kontaktinformationen)}</p>
-<p style="font-size:14px;color:#444">${e(`Tel.: ${f.telefon}`)}</p>
-<p style="font-size:14px;color:#444">${e(`E-Mail: ${f.email}`)}</p>
-<p style="font-size:14px;color:#444"><a href="${a(f.websiteHref)}">${e(f.website)}</a></p>
-</body></html>`;
+  const inp = buildPartnerRegistrationMailPayload(params);
 
   const sent = await sendTransactionalMail({
     to: params.partnerEmail,
-    subject: `Ihre Registrierung als Kooperationspartner bei ${siteConfig.name}`,
-    text,
-    html,
+    subject: partnerRegistrationWelcomeSubject(),
+    text: buildPlainTextBody(inp),
+    html: buildBrandedPartnerRegistrationWelcomeHtml(inp),
   });
 
   return sent.ok ? { ok: true } : { ok: false };
+}
+
+function buildDemoPreviewPayload(): PartnerRegistrationWelcomeInputs {
+  const f = footerStrings();
+  const base = getPublicSiteBaseUrl() || siteConfig.baseUrl.replace(/\/$/, "");
+  return {
+    vorname: "Max",
+    nachname: "Mustermann",
+    partnerEmail: "beispiel.partner@alltagshilfe-sued.de",
+    einmalpasswort: "Aa!7xQy9",
+    loginUrl: `${base}/partner/login`,
+    kontaktinformationen: f.kontaktinformationen,
+    tel: f.telefon,
+    teamEmail: f.teamEmail,
+    websiteLabel: f.websiteLabel,
+    websiteHref: f.websiteHref,
+  };
+}
+
+/**
+ * Vorschau-Mail (Design/Beispieldaten) — z. B. aus der Verwaltung zum Testversand.
+ */
+export async function sendPartnerRegistrationWelcomePreviewMail(
+  to: string,
+): Promise<{ ok: true } | { ok: false; code: "invalid_recipient" | "smtp_not_configured" | "send_failed" }> {
+  const trimmed = to.trim().toLowerCase();
+  if (!trimmed || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed)) {
+    return { ok: false, code: "invalid_recipient" };
+  }
+
+  const demo = buildDemoPreviewPayload();
+
+  return sendTransactionalMail({
+    to: trimmed,
+    subject: `[Vorschau] ${partnerRegistrationWelcomeSubject()}`,
+    text: [`[Vorschau / Test – keine echten Zugangsdaten]`, "", buildPlainTextBody(demo)].join("\n"),
+    html: buildBrandedPartnerRegistrationWelcomeHtml(demo),
+  });
 }

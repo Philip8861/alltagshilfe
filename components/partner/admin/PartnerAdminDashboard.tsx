@@ -6,6 +6,7 @@ import { ArchiveTipButton } from "@/components/partner/admin/ArchiveTipButton";
 import { DeleteTipButton } from "@/components/partner/admin/DeleteTipButton";
 import { FormerBetriebCompanyButton } from "@/components/partner/admin/FormerBetriebCompanyButton";
 import { CreatePartnerAccountForm } from "@/components/partner/CreatePartnerAccountForm";
+import { PartnerRegistrationEmailTestBox } from "@/components/partner/PartnerRegistrationEmailTestBox";
 import { DeletePartnerUserButton } from "@/components/partner/DeletePartnerUserButton";
 import { PartnerEditModal } from "@/components/partner/admin/PartnerEditModal";
 import { TipStatusEditor } from "@/components/partner/admin/TipStatusEditor";
@@ -887,6 +888,9 @@ export function PartnerAdminDashboard({
               </h2>
               <p className="mt-2 text-sm text-neutral-600">Neues Partnerkonto inkl. einmalig angezeigtem Passwort und Code.</p>
               <div className="mt-6">
+                <PartnerRegistrationEmailTestBox />
+              </div>
+              <div className="mt-8">
                 <CreatePartnerAccountForm />
               </div>
             </section>

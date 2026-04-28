@@ -31,6 +31,8 @@ export type PartnerPortalPreferences = {
   columns: PartnerPortalTableColumns;
   /** Rundgang dauerhaft ausblenden (gespeichert in portal_preferences). */
   tutorial_hidden?: boolean;
+  /** Passwort-Hinweis dauerhaft ausblenden falls Spalte Migration 014 fehlt (Ersatz in JSON). */
+  password_prompt_suppressed?: boolean;
 };
 
 export const DEFAULT_PORTAL_TABLE_COLUMNS: PartnerPortalTableColumns = {
@@ -163,6 +165,7 @@ export function parsePortalPreferences(raw: unknown): PartnerPortalPreferences {
     showArchivOnDashboard: asBool(o.showArchivOnDashboard, true),
     columns,
     tutorial_hidden: asBool(o.tutorial_hidden, false),
+    password_prompt_suppressed: asBool(o.password_prompt_suppressed, false),
   };
 }
 
@@ -174,4 +177,13 @@ export function normalizePortalPreferences(p: PartnerPortalPreferences): Partner
     return { ...p, columns: { ...DEFAULT_PORTAL_TABLE_COLUMNS } };
   }
   return p;
+}
+
+/** Passwort-Hinweis unterdrücken/neu aktivieren als JSON-Eintrag (wenn Migration 014 fehlt). */
+export function mergePortalPrefsPasswordPromptSuppress(
+  raw: unknown,
+  suppress: boolean,
+): PartnerPortalPreferences {
+  const base = normalizePortalPreferences(parsePortalPreferences(raw));
+  return normalizePortalPreferences({ ...base, password_prompt_suppressed: suppress });
 }

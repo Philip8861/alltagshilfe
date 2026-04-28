@@ -15,7 +15,10 @@ import {
 import { createPartnerUserSchema, deletePartnerUserIdSchema } from "@/lib/validations/system-admin";
 import { generatePartnerInitialPassword } from "@/lib/partner/generate-partner-password";
 import { assignUniquePartnerReferralCode } from "@/lib/partner/generate-partner-referral-code";
-import { sendPartnerRegistrationWelcomeMail } from "@/lib/email/partner-registration-welcome";
+import {
+  sendPartnerRegistrationWelcomeMail,
+  sendPartnerRegistrationWelcomePreviewMail,
+} from "@/lib/email/partner-registration-welcome";
 
 function formatPartnerProfileWriteError(err: { code?: string; message?: string }): string {
   const code = String(err.code ?? "");
@@ -279,4 +282,41 @@ export async function deletePartnerUserAction(
   revalidatePath("/partner/admin");
 
   return { ok: true, message: "Das Partner-Konto wurde gelöscht (Auth und Profil per Kaskade)." };
+}
+
+export type PartnerRegistrationTestEmailState =
+  | { ok: true; message: string }
+  | { ok: false; message: string };
+
+/**
+ * Versand einer **Design-Vorschau** der Partner-Registrierungs-Mail (Beispieldaten). Nur System-Admin-Session.
+ */
+export async function sendPartnerRegistrationTestEmailAction(
+  _prev: PartnerRegistrationTestEmailState | null,
+  formData: FormData,
+): Promise<PartnerRegistrationTestEmailState> {
+  if (!(await getSystemAdminSession())) {
+    return { ok: false, message: "Nicht autorisiert." };
+  }
+
+  const raw = formData.get("test_email");
+  const to =
+    typeof raw === "string" && raw.includes("@")
+      ? raw.trim().toLowerCase()
+      : "philip.sonntag@web.de";
+
+  const res = await sendPartnerRegistrationWelcomePreviewMail(to);
+  if (!res.ok) {
+    const msg =
+      res.code === "smtp_not_configured"
+        ? "SMTP nicht konfiguriert (SMTP_HOST, SMTP_USER, SMTP_PASS)."
+        : res.code === "invalid_recipient"
+          ? "Ungültige E-Mail-Adresse."
+          : "Versand fehlgeschlagen.";
+    return { ok: false, message: msg };
+  }
+  return {
+    ok: true,
+    message: `Vorschau-E-Mail wurde an ${to} gesendet (Betreff enthält „[Vorschau]“).`,
+  };
 }
