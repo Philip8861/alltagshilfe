@@ -18,7 +18,7 @@ import { displayArticleViews } from "@/lib/ratgeber/article-view-totals";
 type SortMode = "neueste" | "beliebt" | "az";
 
 const NAVY = "#0F4F68";
-const CREAM_PAGE = "#FFFBF7";
+const CREAM_PAGE = "#FAFBFC";
 const ORANGE = "#F78F2E";
 
 const CATEGORY_ORDER: RatgeberCategoryId[] = ["finanzen", "pflege_zuhause", "entlastung", "recht"];
@@ -220,7 +220,7 @@ export function RatgeberHub(props?: RatgeberHubProps) {
     <div className="min-w-0">
       {/* Hero: ein Block – Bild vollflächig, Text & Suche wie zuvor darüber */}
       <section className="relative w-full px-3 sm:px-4 md:px-5" aria-labelledby="ratgeber-hub-heading">
-        <div className="relative isolate min-h-[13rem] w-full overflow-hidden rounded-b-3xl bg-[#FFFCFA] sm:min-h-[15.5rem] md:min-h-[18rem] lg:min-h-[19.5rem]">
+        <div className="relative isolate min-h-[13rem] w-full overflow-hidden rounded-b-3xl bg-[#FAFBFC] sm:min-h-[15.5rem] md:min-h-[18rem] lg:min-h-[19.5rem]">
           {/* Hintergrundbild in eigenem Layer clippen (untere Ecken) */}
           <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden rounded-b-3xl" aria-hidden>
             <Image
@@ -400,7 +400,7 @@ export function RatgeberHub(props?: RatgeberHubProps) {
                     href={`/ratgeber/${featured.slug}`}
                     className="flex flex-col overflow-hidden rounded-2xl border border-black/[0.06] bg-white shadow-[0_16px_48px_-20px_rgba(15,79,104,0.25)] transition hover:-translate-y-0.5 hover:shadow-[0_22px_56px_-18px_rgba(15,79,104,0.28)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68] focus-visible:ring-offset-2 md:flex-row md:items-center"
                   >
-                    <div className="relative mx-auto flex h-[8.75rem] w-full max-w-[18rem] shrink-0 items-center justify-center overflow-hidden bg-[#FAF8F5] sm:max-w-[22rem] md:mx-0 md:h-[11rem] md:w-[43%] md:max-w-[22rem] md:self-center lg:h-[11.75rem] lg:max-w-[24rem]">
+                    <div className="relative mx-auto flex h-[11rem] w-full max-w-[21rem] shrink-0 items-center justify-center overflow-hidden bg-[#FAF8F5] sm:h-[11.5rem] sm:max-w-[24rem] md:mx-0 md:h-[13.5rem] md:w-[46%] md:max-w-[26rem] md:self-center lg:h-[14.5rem] lg:max-w-[28rem]">
                       <span
                         className="absolute left-2.5 top-2.5 z-10 rounded-md px-2.5 py-1 text-[0.65rem] font-bold uppercase tracking-wide text-white shadow sm:text-xs"
                         style={{ backgroundColor: ORANGE }}
@@ -413,7 +413,7 @@ export function RatgeberHub(props?: RatgeberHubProps) {
                         fill
                         priority={featured.slug === visibleFeatured[0]?.slug}
                         className="object-contain object-center p-3 sm:p-4"
-                        sizes="(min-width: 768px) 360px, 90vw"
+                        sizes="(min-width: 1024px) 420px, (min-width: 768px) 360px, 90vw"
                       />
                     </div>
                     <div className="flex min-w-0 flex-1 flex-col justify-center px-5 py-4 sm:px-7 sm:py-5 md:py-6 lg:px-8 lg:py-7">
