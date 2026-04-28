@@ -12,7 +12,7 @@ export default async function RatgeberPage() {
   const { bySlug, live } = await fetchRatgeberArticleViewTotals();
 
   return (
-    <article className="min-w-0 bg-[#FAFBFC] pb-16 pt-0 sm:pb-24">
+    <article className="min-w-0 bg-[#FFFBF7] pb-16 pt-0 sm:pb-24">
       <RatgeberHub initialArticleViewTotals={bySlug} articleViewsLive={live} />
     </article>
   );

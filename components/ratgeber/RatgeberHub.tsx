@@ -18,7 +18,7 @@ import { displayArticleViews } from "@/lib/ratgeber/article-view-totals";
 type SortMode = "neueste" | "beliebt" | "az";
 
 const NAVY = "#0F4F68";
-const CREAM_PAGE = "#FAFBFC";
+const CREAM_PAGE = "#FFFBF7";
 const ORANGE = "#F78F2E";
 
 const CATEGORY_ORDER: RatgeberCategoryId[] = ["finanzen", "pflege_zuhause", "entlastung", "recht"];
@@ -220,7 +220,7 @@ export function RatgeberHub(props?: RatgeberHubProps) {
     <div className="min-w-0">
       {/* Hero: ein Block – Bild vollflächig, Text & Suche wie zuvor darüber */}
       <section className="relative w-full px-3 sm:px-4 md:px-5" aria-labelledby="ratgeber-hub-heading">
-        <div className="relative isolate min-h-[13rem] w-full overflow-hidden rounded-b-3xl bg-[#FAFBFC] sm:min-h-[15.5rem] md:min-h-[18rem] lg:min-h-[19.5rem]">
+        <div className="relative isolate min-h-[13rem] w-full overflow-hidden rounded-b-3xl bg-[#FFFCFA] sm:min-h-[15.5rem] md:min-h-[18rem] lg:min-h-[19.5rem]">
           {/* Hintergrundbild in eigenem Layer clippen (untere Ecken) */}
           <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden rounded-b-3xl" aria-hidden>
             <Image

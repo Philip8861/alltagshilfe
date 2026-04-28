@@ -50,7 +50,6 @@ export const RATGEBER_BEITRAEGE: RatgeberBeitragMeta[] = [
     approxWordCount: 940,
     readMinutes: readMinutesFromWordCount(940),
     publishedAt: "2025-08-12",
-    featured: true,
   },
   {
     slug: "entlastungsbetrag-131-euro",
@@ -72,14 +71,15 @@ export const RATGEBER_BEITRAEGE: RatgeberBeitragMeta[] = [
     title: "Pflegegrad 1: der ultimative Leitfaden (2026)",
     excerpt:
       "Leistungen, Voraussetzungen & Experten-Tipps – inklusive Vorbereitung auf die MDK-Begutachtung.",
-    image: "/images/Ratgeber/pflegegrad1.webp",
-    imageAlt: "Vorschaubild Pflegegrad 1 Leitfaden",
+    image: "/images/Ratgeber/ratgeber1.webp",
+    imageAlt: "Pflegegrad 1: Leistungen der Pflegeversicherung und Tipps zur MDK-Begutachtung",
     views: 623,
     tags: ["Pflegegrad 1", "MDK", "Begutachtung", "Leistungen", "Entlastungsbetrag"],
     categories: ["finanzen", "recht"],
     approxWordCount: 1860,
     readMinutes: readMinutesFromWordCount(1860),
     publishedAt: "2026-02-18",
+    featured: true,
   },
   {
     slug: "pflegegrad-2-alles-was-du-wissen-musst",
@@ -102,13 +102,37 @@ export function getVerwandteRatgeberBeitraege(currentSlug: string, limit = 4): R
 }
 
 /**
- * Alle mit `featured: true`, max. `limit`; fehlende Plätze: nächsthöchste `views`-Werte aus der Liste.
+ * Reihenfolge auf der Ratgeber-Übersicht: Platz 1 → Platz 2 (nur eingetragene Slugs müssen `featured: true` sein).
+ */
+const RATGEBER_FEATURED_HOME_ORDER = [
+  "entlastungsbetrag-131-euro",
+  "pflegegrad-1-der-ultimative-leitfaden",
+] as const;
+
+/**
+ * Alle mit `featured: true`; Reihenfolge nach `RATGEBER_FEATURED_HOME_ORDER`, dann fehlende Plätze per Aufrufen.
  */
 export function getFeaturedRatgeberBeitraege(limit = 2): RatgeberBeitragMeta[] {
-  const featured = RATGEBER_BEITRAEGE.filter((b) => b.featured).sort((a, b) => b.views - a.views);
-  if (featured.length >= limit) return featured.slice(0, limit);
+  const featured = RATGEBER_BEITRAEGE.filter((b) => b.featured);
+  const bySlug = new Map(featured.map((b) => [b.slug, b]));
+  const ordered: RatgeberBeitragMeta[] = [];
 
-  const out = [...featured];
+  for (const slug of RATGEBER_FEATURED_HOME_ORDER) {
+    const meta = bySlug.get(slug);
+    if (meta) ordered.push(meta);
+    if (ordered.length >= limit) return ordered;
+  }
+
+  const seenOrdered = new Set(ordered.map((b) => b.slug));
+  const leftovers = [...featured.filter((b) => !seenOrdered.has(b.slug))].sort((a, b) => b.views - a.views);
+  for (const m of leftovers) {
+    ordered.push(m);
+    if (ordered.length >= limit) break;
+  }
+
+  if (ordered.length >= limit) return ordered.slice(0, limit);
+
+  const out = [...ordered];
   const seen = new Set(out.map((b) => b.slug));
   const rest = [...RATGEBER_BEITRAEGE]
     .filter((b) => !seen.has(b.slug))
