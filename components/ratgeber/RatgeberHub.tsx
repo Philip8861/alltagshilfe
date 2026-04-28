@@ -348,17 +348,17 @@ export function RatgeberHub() {
         <div className="min-w-0 space-y-12 lg:space-y-14">
           {/* Empfohlener Artikel */}
           {featuredVisible ? (
-            <section aria-labelledby="featured-heading">
+            <section aria-labelledby="featured-heading" className="mx-auto max-w-[min(100%,40rem)] xl:max-w-[min(100%,44rem)]">
               <p id="featured-heading" className="text-xs font-bold uppercase tracking-[0.2em] text-neutral-500 sm:text-sm">
                 Empfohlener Artikel
               </p>
               <Link
                 href={`/ratgeber/${featured.slug}`}
-                className="mt-5 flex flex-col overflow-hidden rounded-2xl border border-black/[0.06] bg-white shadow-[0_16px_48px_-20px_rgba(15,79,104,0.25)] transition hover:-translate-y-0.5 hover:shadow-[0_22px_56px_-18px_rgba(15,79,104,0.28)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68] focus-visible:ring-offset-2 md:flex-row"
+                className="mt-4 flex flex-col overflow-hidden rounded-2xl border border-black/[0.06] bg-white shadow-[0_16px_48px_-20px_rgba(15,79,104,0.25)] transition hover:-translate-y-0.5 hover:shadow-[0_22px_56px_-18px_rgba(15,79,104,0.28)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68] focus-visible:ring-offset-2 md:mt-5 md:flex-row"
               >
-                <div className="relative mx-auto aspect-[16/10] w-3/4 max-w-3xl shrink-0 overflow-hidden bg-neutral-100 md:mx-0 md:aspect-auto md:min-h-[225px] md:w-[34.5%] md:max-w-none lg:min-h-[255px]">
+                <div className="relative mx-auto aspect-[16/10] w-full max-w-[18rem] shrink-0 overflow-hidden bg-neutral-100 sm:max-w-[20rem] md:mx-0 md:aspect-auto md:max-w-none md:min-h-[180px] md:w-[31%] md:max-w-[11.5rem] lg:min-h-[200px] lg:max-w-[12.5rem]">
                   <span
-                    className="absolute left-4 top-4 z-10 rounded-lg px-3 py-1 text-xs font-bold uppercase tracking-wide text-white shadow sm:text-sm"
+                    className="absolute left-2.5 top-2.5 z-10 rounded-md px-2 py-0.5 text-[0.65rem] font-bold uppercase tracking-wide text-white shadow sm:left-3 sm:top-3 sm:text-xs"
                     style={{ backgroundColor: ORANGE }}
                   >
                     Top Thema
@@ -367,11 +367,11 @@ export function RatgeberHub() {
                     src={featured.image}
                     alt={featured.imageAlt}
                     fill
-                    className="object-contain object-center"
-                    sizes="(min-width: 1024px) 35vw, 75vw"
+                    className="object-cover object-center"
+                    sizes="(min-width: 768px) 200px, 90vw"
                   />
                 </div>
-                <div className="flex flex-1 flex-col justify-center p-6 sm:p-8 lg:p-10">
+                <div className="flex min-w-0 flex-1 flex-col justify-center p-5 sm:p-6 lg:p-8">
                   <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm sm:text-base">
                     <span className="font-semibold" style={{ color: NAVY }}>
                       {primaryCategoryLabel(featured)}

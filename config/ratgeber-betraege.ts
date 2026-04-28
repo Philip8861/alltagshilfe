@@ -45,8 +45,8 @@ export const RATGEBER_BEITRAEGE: RatgeberBeitragMeta[] = [
     title: "Entlastungsbetrag 131 Euro: so nutzen Sie Ihren Anspruch richtig",
     excerpt:
       "Wer Anspruch hat, welche Leistungen bezahlt werden, wie lange ungenutzte Beträge gültig sind und wie die Abrechnung mit der Pflegekasse funktioniert.",
-    image: "/images/Ratgeber/ratgeber.webp",
-    imageAlt: "Vorschaubild Entlastungsbetrag 131 Euro",
+    image: "/images/Ratgeber/Entlastungsbetrag_131_Euro.webp",
+    imageAlt: "Symbolbild: Entlastungsbetrag 131 Euro – hauswirtschaftliche Entlastung und Pflegealltag",
     views: 1284,
     tags: ["Entlastungsbetrag", "Pflegekasse", "Abrechnung", "Pflegegrad"],
     categories: ["finanzen", "entlastung"],

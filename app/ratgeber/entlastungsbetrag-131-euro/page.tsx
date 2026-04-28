@@ -4,6 +4,8 @@ import Link from "next/link";
 import { Container } from "@/components/layout/Container";
 import { VerwandteRatgeberBeitraege } from "@/components/ratgeber/VerwandteRatgeberBeitraege";
 
+const HERO_ART = "/images/Ratgeber/Entlastungsbetrag_131_Euro.webp";
+
 export const metadata: Metadata = {
   title: "Entlastungsbetrag 131 Euro richtig nutzen",
   description:
@@ -33,17 +35,26 @@ export default function EntlastungsbetragRatgeberPage() {
                 </p>
               </div>
             </div>
-            <div className="mx-auto w-full max-w-[240px] lg:max-w-[260px]">
-              <div className="relative aspect-[4/3] overflow-hidden rounded-lg">
-                <Image
-                  src="/images/Ratgeber/ratgeber.webp"
-                  alt="Ratgeber zur Entlastung im Pflegealltag"
-                  fill
-                  className="object-cover transition-transform duration-700 hover:scale-[1.02]"
-                  sizes="260px"
-                  priority
-                />
+            <div className="relative mx-auto w-full max-w-[min(100%,17.5rem)] sm:max-w-xs lg:max-w-sm">
+              <div
+                className="absolute -inset-2 -z-10 rounded-[1.35rem] bg-gradient-to-br from-[#F78F2E]/25 via-[#0F4F68]/12 to-transparent blur-sm"
+                aria-hidden
+              />
+              <div className="relative rotate-[1.5deg] overflow-hidden rounded-2xl border-2 border-white shadow-[0_18px_40px_-12px_rgba(15,79,104,0.35)] ring-1 ring-[#0F4F68]/10">
+                <div className="relative aspect-[4/3]">
+                  <Image
+                    src={HERO_ART}
+                    alt="Illustration Entlastungsbetrag 131 Euro – Entlastung im häuslichen Pflegealltag"
+                    fill
+                    className="object-cover object-center transition-transform duration-700 hover:scale-[1.03]"
+                    sizes="(min-width: 1024px) 320px, 280px"
+                    priority
+                  />
+                </div>
               </div>
+              <p className="mt-3 text-center text-xs text-neutral-500 sm:text-left">
+                131 € pro Monat – zweckgebunden für anerkannte Hilfen im Alltag
+              </p>
             </div>
           </div>
         </header>
@@ -57,7 +68,33 @@ export default function EntlastungsbetragRatgeberPage() {
           </ul>
         </section>
 
-        <section className="mt-8 space-y-4 text-neutral-700">
+        <figure className="relative mt-12 overflow-hidden rounded-2xl border border-[#0F4F68]/10 bg-gradient-to-r from-[#F2F9FA] via-white to-[#FFF8F2] shadow-[0_20px_50px_-28px_rgba(15,79,104,0.35)] sm:mt-14">
+          <div className="pointer-events-none absolute -right-12 top-1/2 h-48 w-48 -translate-y-1/2 rounded-full bg-[#F78F2E]/15 blur-2xl" aria-hidden />
+          <div className="grid gap-0 sm:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)] sm:items-stretch">
+            <div className="relative min-h-[200px] sm:min-h-[240px]">
+              <Image
+                src={HERO_ART}
+                alt=""
+                fill
+                className="object-cover object-[center_40%]"
+                sizes="(min-width: 640px) 45vw, 100vw"
+              />
+              <div className="absolute inset-0 bg-gradient-to-r from-black/10 via-transparent to-transparent sm:from-black/20" aria-hidden />
+            </div>
+            <figcaption className="flex flex-col justify-center p-6 sm:p-8">
+              <span className="text-xs font-bold uppercase tracking-[0.2em] text-[#F78F2E]">Im Blick</span>
+              <p className="mt-2 text-lg font-bold leading-snug text-[#0F4F68] sm:text-xl">
+                Jeden Monat stehen 131 Euro bereit – gezielt einsetzen, nicht verschenken.
+              </p>
+              <p className="mt-3 text-sm leading-relaxed text-neutral-600">
+                Die Pflegekasse vergütet die Leistung direkt mit anerkannten Anbietern. So bleibt mehr Luft im Alltag – ohne
+                andere Leistungen zu kürzen.
+              </p>
+            </figcaption>
+          </div>
+        </figure>
+
+        <section className="mt-10 space-y-4 text-neutral-700 sm:mt-12">
           <h2 className="text-2xl font-bold text-[#0F4F68]">Was ist der Entlastungsbetrag?</h2>
           <p>
             Der Entlastungsbetrag ist eine zweckgebundene Leistung der Pflegekasse. Er wird nicht bar ausgezahlt,
