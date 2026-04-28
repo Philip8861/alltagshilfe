@@ -17,16 +17,11 @@ const TAGLINE_CHAR_MS = 55;
 const STRIP_TEXT_CLASS =
   "inline text-[0.68rem] font-medium leading-tight text-white/95 sm:text-[0.75rem] md:text-sm md:font-semibold";
 
-type HeaderStripProps = {
-  nunitoClass?: string;
-  balooClass?: string;
-};
-
 function isPartnerArea(pathname: string) {
   return pathname.startsWith("/partner") || pathname.startsWith("/en/partner");
 }
 
-export function HeaderStrip(_props: HeaderStripProps) {
+export function HeaderStrip() {
   const pathname = usePathname();
   const hideStripOnMobile = isPflegeboxKonfiguratorPagePath(pathname);
   const partnerLoginHref = pathname.startsWith("/en") ? "/en/partner/login" : "/partner/login";

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Nunito_Sans, Baloo_2 } from "next/font/google";
+import { Nunito_Sans } from "next/font/google";
 import "./globals.css";
 import { siteConfig } from "@/config/site";
 
@@ -8,10 +8,6 @@ const nunitoSans = Nunito_Sans({
   display: "swap",
 });
 
-const baloo2 = Baloo_2({
-  subsets: ["latin", "latin-ext"],
-  display: "swap",
-});
 
 import { Header } from "@/components/layout/Header";
 import { ConditionalFooter } from "@/components/layout/ConditionalFooter";
@@ -55,7 +51,7 @@ export default function RootLayout({
         </a>
         <div id="app-shell" className="flex min-h-dvh min-h-screen flex-col">
           <div className="flex min-h-0 flex-1 flex-col">
-            <Header nunitoClass={nunitoSans.className} balooClass={baloo2.className} />
+            <Header />
             <main id="main-content" className="flex min-h-0 min-w-0 flex-1 flex-col">
               {children}
             </main>

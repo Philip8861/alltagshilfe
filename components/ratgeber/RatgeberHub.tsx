@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useMemo, useRef, useState, useCallback } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Container } from "@/components/layout/Container";
 import {
   RATGEBER_BEITRAEGE,
@@ -134,7 +134,7 @@ export type RatgeberHubProps = {
 
 export function RatgeberHub(props?: RatgeberHubProps) {
   const { initialArticleViewTotals, articleViewsLive = false } = props ?? {};
-  const totals = initialArticleViewTotals ?? {};
+  const totals = useMemo(() => initialArticleViewTotals ?? {}, [initialArticleViewTotals]);
   const [query, setQuery] = useState("");
   const [activeCategory, setActiveCategory] = useState<RatgeberCategoryId | "alle">("alle");
   const [sortMode, setSortMode] = useState<SortMode>("neueste");
@@ -195,7 +195,7 @@ export function RatgeberHub(props?: RatgeberHubProps) {
 
   const gridBeitraege = useMemo(() => {
     const excludeSlugs = new Set(visibleFeatured.map((b) => b.slug));
-    let list =
+    const list =
       showFeaturedSlots && excludeSlugs.size > 0
         ? filteredBySearchAndCat.filter((b) => !excludeSlugs.has(b.slug))
         : filteredBySearchAndCat;
