@@ -44,9 +44,53 @@ function brandedEmailShell(options: {
   const brand = escapeHtml(siteConfig.name);
   const year = new Date().getFullYear();
   const tight = Boolean(tighterHeaderSpacing);
-  const badgeMb = tight ? "6px" : "12px";
-  const headerPad = tight ? "20px 24px 12px 24px" : "24px 24px 22px 24px";
-  const subTitleMt = tight ? "8px" : "10px";
+  const badgeMb = tight ? "4px" : "12px";
+  const headerPad = tight ? "16px 24px 8px 24px" : "24px 24px 22px 24px";
+  const subTitleMt = tight ? "4px" : "10px";
+  const headlineFontSize = tight ? "18px" : "22px";
+  const headlineLineHeight = tight ? "1.2" : "1.25";
+  /** Ohne zusätzliche <h1>-Abstände in Outlook/Gmail — Zeilen über Tabellenzeilen abstützen */
+  const headerInnerTd =
+    tight
+      ? `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                <tr>
+                  <td style="padding:0 0 4px 0;vertical-align:top;">
+                    <span style="display:inline-block;font-family:${FONT};font-size:11px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:rgba(255,255,255,0.92);background:rgba(255,255,255,0.12);padding:5px 11px;border-radius:999px;">
+                      ${escapeHtml(kindBadge)}
+                    </span>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding:0 0 2px 0;vertical-align:top;">
+                    <div style="margin:0;padding:0;font-family:${FONT};font-size:${headlineFontSize};line-height:${headlineLineHeight};font-weight:800;color:#ffffff;letter-spacing:-0.02em;">
+                      ${escapeHtml(headline)}
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding:0;vertical-align:top;">
+                    <div style="margin:${subTitleMt} 0 0 0;padding:0;font-family:${FONT};font-size:13px;line-height:1.4;color:rgba(255,255,255,0.92);">
+                      ${brand}
+                    </div>
+                  </td>
+                </tr>
+              </table>`
+      : `
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                <tr>
+                  <td>
+                    <span style="display:inline-block;font-family:${FONT};font-size:11px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:rgba(255,255,255,0.92);background:rgba(255,255,255,0.12);padding:6px 12px;border-radius:999px;margin-bottom:${badgeMb};">
+                      ${escapeHtml(kindBadge)}
+                    </span>
+                    <h1 style="margin:0;font-family:${FONT};font-size:${headlineFontSize};line-height:${headlineLineHeight};font-weight:800;color:#ffffff;letter-spacing:-0.02em;">
+                      ${escapeHtml(headline)}
+                    </h1>
+                    <p style="margin:${subTitleMt} 0 0 0;font-family:${FONT};font-size:14px;line-height:1.45;color:rgba(255,255,255,0.88);">
+                      ${brand}
+                    </p>
+                  </td>
+                </tr>
+              </table>`;
 
   return `<!DOCTYPE html>
 <html lang="de">
@@ -66,21 +110,7 @@ function brandedEmailShell(options: {
         <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="max-width:600px;background:${C.cardBg};border-radius:20px;overflow:hidden;box-shadow:0 12px 40px rgba(15,79,104,0.12);border:1px solid ${C.border};">
           <tr>
             <td style="background:linear-gradient(135deg, ${C.primary} 0%, ${C.primaryDark} 100%);padding:${headerPad};border-bottom:4px solid ${C.accent};">
-              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
-                <tr>
-                  <td>
-                    <span style="display:inline-block;font-family:${FONT};font-size:11px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:rgba(255,255,255,0.92);background:rgba(255,255,255,0.12);padding:6px 12px;border-radius:999px;margin-bottom:${badgeMb};">
-                      ${escapeHtml(kindBadge)}
-                    </span>
-                    <h1 style="margin:0;font-family:${FONT};font-size:22px;line-height:1.25;font-weight:800;color:#ffffff;letter-spacing:-0.02em;">
-                      ${escapeHtml(headline)}
-                    </h1>
-                    <p style="margin:${subTitleMt} 0 0 0;font-family:${FONT};font-size:14px;line-height:1.45;color:rgba(255,255,255,0.88);">
-                      ${brand}
-                    </p>
-                  </td>
-                </tr>
-              </table>
+${headerInnerTd}
             </td>
           </tr>
           ${bodyRowsHtml}
@@ -350,7 +380,7 @@ export function buildBrandedPartnerRegistrationWelcomeHtml(inp: PartnerRegistrat
 
   const bodyRowsHtml = `
           <tr>
-            <td style="padding:12px 20px 8px 20px;">
+            <td style="padding:8px 20px 8px 20px;">
               ${intro}
               ${ctaBlock}
               ${credentialsCard}
