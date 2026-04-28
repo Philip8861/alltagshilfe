@@ -15,6 +15,7 @@ import {
 import { createPartnerUserSchema, deletePartnerUserIdSchema } from "@/lib/validations/system-admin";
 import { generatePartnerInitialPassword } from "@/lib/partner/generate-partner-password";
 import { assignUniquePartnerReferralCode } from "@/lib/partner/generate-partner-referral-code";
+import { sendPartnerRegistrationWelcomeMail } from "@/lib/email/partner-registration-welcome";
 
 function formatPartnerProfileWriteError(err: { code?: string; message?: string }): string {
   const code = String(err.code ?? "");
@@ -86,7 +87,7 @@ export async function systemAdminLogoutAction(): Promise<void> {
 }
 
 export type CreatePartnerUserState =
-  | { ok: true; message: string; generatedPassword: string; referralCode: string }
+  | { ok: true; message: string; generatedPassword: string; referralCode: string; confirmationEmailSent: boolean }
   | { ok: false; message: string };
 
 export async function createPartnerUserAction(
@@ -221,12 +222,27 @@ export async function createPartnerUserAction(
 
   revalidatePath("/partner/admin");
 
+  const mailSent = await sendPartnerRegistrationWelcomeMail({
+    partnerEmail: authEmail,
+    vorname: parsed.data.first_name,
+    nachname: parsed.data.last_name,
+    einmalpasswort: initialPassword,
+  });
+
+  if (!mailSent.ok) {
+    console.error(
+      "[createPartnerUser] Bestätigungs-E-Mail konnte nicht gesendet werden (SMTP_HOST/SMTP_USER/SMTP_PASS prüfen).",
+    );
+  }
+
   return {
     ok: true,
     generatedPassword: initialPassword,
     referralCode,
-    message:
-      `Konto für ${authEmail} angelegt. Passwort und Partner-Code unten einmalig kopieren und dem Partner sicher übermitteln (nicht per unverschlüsselter E-Mail).`,
+    confirmationEmailSent: mailSent.ok,
+    message: mailSent.ok
+      ? `Konto für ${authEmail} angelegt. Eine Bestätigung mit den Zugangsdaten wurde an diese Adresse per E-Mail gesendet. Das Passwort und den Partner-Code unten zusätzlich einmalig kopieren (z. B. für die Akte).`
+      : `Konto für ${authEmail} angelegt. Hinweis: Die Bestätigungs-E-Mail konnte nicht versendet werden (SMTP prüfen). Passwort und Partner-Code dem Partner über eine sichere Verbindung mitteilen.`,
   };
 }
 

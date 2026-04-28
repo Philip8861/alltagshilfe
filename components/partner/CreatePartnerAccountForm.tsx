@@ -36,8 +36,9 @@ export function CreatePartnerAccountForm() {
         <h2 className="text-lg font-bold text-[#0F4F68]">Neues Partner-Konto anlegen</h2>
         <p className="mt-2 text-sm text-neutral-600">
           E-Mail ist der Login. Das Passwort wird automatisch erzeugt (8 Zeichen, Groß-/Kleinbuchstaben, Ziffer,
-          Sonderzeichen) und nach dem Anlegen einmal angezeigt — sicher an den Partner übergeben (nicht per
-          unverschlüsselter E-Mail).
+          Sonderzeichen). Nach dem Anlegen sehen Sie es hier einmalig; parallel senden wir eine Bestätigungs-Mail an
+          die angegebene Partner-Adresse mit Login-Link und Zugangsdaten (Transport per TLS, wenn SMTP korrekt
+          eingestellt ist).
         </p>
       </div>
       <PartnerAuthStatusBox
@@ -45,6 +46,15 @@ export function CreatePartnerAccountForm() {
         pending={pending}
         successHighlight={state.ok ? state.message : null}
       />
+      {state.ok && state.confirmationEmailSent === false ? (
+        <div
+          className="rounded-xl border border-amber-400/90 bg-amber-50 px-4 py-3 text-sm text-amber-950"
+          role="status"
+        >
+          Hinweis: Die Bestätigungs-E-Mail wurde nicht gesendet — SMTP-Umgebung prüfen. Zugangsdaten unten kopieren und
+          dem Partner sicher mitteilen.
+        </div>
+      ) : null}
       {state.ok ? (
         <div
           className="rounded-xl border border-amber-300/80 bg-amber-50 px-4 py-4 text-sm text-amber-950 shadow-sm"
