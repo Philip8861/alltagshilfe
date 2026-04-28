@@ -38,6 +38,27 @@ export const RATGEBER_CATEGORY_LABELS: Record<RatgeberCategoryId, string> = {
 
 export const RATGEBER_BEITRAEGE: RatgeberBeitragMeta[] = [
   {
+    slug: "pflegegrad-beantragen-checkliste",
+    title: "Pflegegrad beantragen: Checkliste, Unterlagen & Tipps 2026",
+    excerpt:
+      "Pflegegrad beantragen leicht erklärt: Checkliste zur Pflegekasse, Unterlagen, Pflegetagebuch und Begutachtung – gedacht für Angehörige.",
+    image: "/images/Ratgeber/ratgeber.webp",
+    imageAlt: "Pflegegrad beantragen: Checkliste und Tipps zur Begutachtung",
+    views: 0,
+    tags: [
+      "Pflegegrad beantragen",
+      "Pflegegrad Antrag",
+      "Begutachtung",
+      "Pflegekasse",
+      "Angehörige",
+      "MD",
+    ],
+    categories: ["recht", "finanzen"],
+    approxWordCount: 2800,
+    readMinutes: readMinutesFromWordCount(2800),
+    publishedAt: "2026-04-27",
+  },
+  {
     slug: "hausnotruf-ratgeber",
     title: "Hausnotruf-Ratgeber: Sicherheit zu Hause einfach erklärt",
     excerpt:
