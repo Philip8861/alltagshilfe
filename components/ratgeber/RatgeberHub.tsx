@@ -47,15 +47,6 @@ function SearchIcon({ className }: { className?: string }) {
   );
 }
 
-function EnvelopeIcon({ className }: { className?: string }) {
-  return (
-    <svg className={className} width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
-      <path d="M4 6h16v12H4V6z" strokeLinejoin="round" />
-      <path d="M4 7l8 6 8-6" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  );
-}
-
 function HeartOutlineIcon({ className }: { className?: string }) {
   return (
     <svg className={className} width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
@@ -557,55 +548,6 @@ export function RatgeberHub() {
           </div>
         </aside>
       </div>
-
-        {/* Newsletter */}
-        <section
-          className="rounded-2xl border border-[#F78F2E]/25 px-5 py-8 sm:px-10 sm:py-10"
-          style={{ background: `linear-gradient(135deg, #FFF4E8 0%, #FFE8D4 100%)` }}
-          aria-labelledby="newsletter-heading"
-        >
-          <div className="mx-auto flex max-w-4xl flex-col gap-6 md:flex-row md:items-center md:gap-10">
-            <div className="flex shrink-0 justify-center md:justify-start">
-              <span
-                className="flex h-16 w-16 items-center justify-center rounded-2xl border-2 bg-white shadow-sm"
-                style={{ borderColor: `${ORANGE}55`, color: ORANGE }}
-              >
-                <EnvelopeIcon className="h-8 w-8" />
-              </span>
-            </div>
-            <div className="min-w-0 flex-1 text-center md:text-left">
-              <h2 id="newsletter-heading" className="text-xl font-bold sm:text-2xl" style={{ color: NAVY }}>
-                Nie wieder einen wichtigen Ratgeber verpassen
-              </h2>
-              <p className="mt-2 text-sm text-neutral-700 sm:text-base">
-                Melden Sie sich über unsere Kontaktseite – wir informieren Sie gern zu neuen Artikeln und Themen rund um Pflege
-                und Alltag.
-              </p>
-            </div>
-            <form
-              className="flex w-full shrink-0 flex-col gap-3 sm:flex-row md:max-w-md"
-              onSubmit={(e) => {
-                e.preventDefault();
-                window.location.assign("/kontakt");
-              }}
-            >
-              <input
-                type="email"
-                name="email"
-                autoComplete="email"
-                placeholder="Ihre E-Mail-Adresse"
-                className="h-12 w-full flex-1 rounded-2xl border border-neutral-200 bg-white px-4 text-sm outline-none ring-[#0F4F68]/15 focus:ring-4"
-              />
-              <button
-                type="submit"
-                className="h-12 shrink-0 rounded-2xl px-6 text-sm font-bold text-white shadow-md transition hover:opacity-95"
-                style={{ backgroundColor: ORANGE }}
-              >
-                Jetzt anmelden
-              </button>
-            </form>
-          </div>
-        </section>
       </Container>
     </div>
   );
