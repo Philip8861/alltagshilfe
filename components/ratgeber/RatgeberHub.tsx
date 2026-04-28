@@ -2,16 +2,18 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState, useCallback } from "react";
 import { Container } from "@/components/layout/Container";
 import {
   RATGEBER_BEITRAEGE,
   RATGEBER_CATEGORY_LABELS,
   type RatgeberBeitragMeta,
   type RatgeberCategoryId,
-  getFeaturedRatgeberBeitrag,
+  getFeaturedRatgeberBeitraege,
   primaryCategoryLabel,
 } from "@/config/ratgeber-betraege";
+import { RatgeberMarquee } from "@/components/ratgeber/RatgeberMarquee";
+import { displayArticleViews } from "@/lib/ratgeber/article-view-totals";
 
 type SortMode = "neueste" | "beliebt" | "az";
 
@@ -26,6 +28,15 @@ function ClockIcon({ className }: { className?: string }) {
     <svg className={className} width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
       <circle cx="12" cy="12" r="9" />
       <path d="M12 7v5l3 2" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+function EyeIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
+      <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z" strokeLinecap="round" strokeLinejoin="round" />
+      <circle cx="12" cy="12" r="3" />
     </svg>
   );
 }
@@ -96,12 +107,16 @@ function haystackForBeitrag(beitrag: RatgeberBeitragMeta): string {
   return [beitrag.title, beitrag.excerpt, beitrag.tags.join(" ")].join(" ").toLocaleLowerCase("de");
 }
 
-function sortBeitraege(list: RatgeberBeitragMeta[], mode: SortMode): RatgeberBeitragMeta[] {
+function sortBeitraege(
+  list: RatgeberBeitragMeta[],
+  mode: SortMode,
+  getViews: (b: RatgeberBeitragMeta) => number,
+): RatgeberBeitragMeta[] {
   const out = [...list];
   if (mode === "neueste") {
     out.sort((a, b) => b.publishedAt.localeCompare(a.publishedAt));
   } else if (mode === "beliebt") {
-    out.sort((a, b) => b.views - a.views);
+    out.sort((a, b) => getViews(b) - getViews(a));
   } else {
     out.sort((a, b) => a.title.localeCompare(b.title, "de", { sensitivity: "base" }));
   }
@@ -110,7 +125,16 @@ function sortBeitraege(list: RatgeberBeitragMeta[], mode: SortMode): RatgeberBei
 
 const SEARCH_SUGGESTIONS_MAX = 8;
 
-export function RatgeberHub() {
+export type RatgeberHubProps = {
+  /** Summen aus Middleware-Analytics (site_page_views_daily), je slug. */
+  initialArticleViewTotals?: Record<string, number>;
+  /** true, wenn Supabase-Daten erfolgreich geladen wurden. */
+  articleViewsLive?: boolean;
+};
+
+export function RatgeberHub(props?: RatgeberHubProps) {
+  const { initialArticleViewTotals, articleViewsLive = false } = props ?? {};
+  const totals = initialArticleViewTotals ?? {};
   const [query, setQuery] = useState("");
   const [activeCategory, setActiveCategory] = useState<RatgeberCategoryId | "alle">("alle");
   const [sortMode, setSortMode] = useState<SortMode>("neueste");
@@ -118,14 +142,24 @@ export function RatgeberHub() {
   const [highlightIndex, setHighlightIndex] = useState(-1);
   const searchComboRef = useRef<HTMLDivElement>(null);
 
-  const featured = useMemo(() => getFeaturedRatgeberBeitrag(), []);
+  const getDisplayViews = useCallback(
+    (b: RatgeberBeitragMeta) => displayArticleViews(b.slug, b.views, totals, articleViewsLive),
+    [totals, articleViewsLive],
+  );
 
-  const featuredVisible = useMemo(() => {
-    if (!matchesCategory(featured, activeCategory)) return false;
+  const featuredList = useMemo(() => getFeaturedRatgeberBeitraege(2), []);
+
+  const visibleFeatured = useMemo(() => {
     const q = query.trim().toLocaleLowerCase("de");
-    if (!q) return true;
-    return haystackForBeitrag(featured).includes(q);
-  }, [featured, activeCategory, query]);
+    return featuredList.filter((b) => {
+      if (!matchesCategory(b, activeCategory)) return false;
+      if (!q) return true;
+      return haystackForBeitrag(b).includes(q);
+    });
+  }, [featuredList, activeCategory, query]);
+
+  /** Steuert, ob eines der Top-Themen angezeigt wird (für Raster-Dopplungen). */
+  const showFeaturedSlots = visibleFeatured.length > 0;
 
   const filteredBySearchAndCat = useMemo(() => {
     const q = query.trim().toLocaleLowerCase("de");
@@ -160,14 +194,21 @@ export function RatgeberHub() {
   }, [query, activeCategory]);
 
   const gridBeitraege = useMemo(() => {
-    const list = featuredVisible
-      ? filteredBySearchAndCat.filter((b) => b.slug !== featured.slug)
-      : filteredBySearchAndCat;
-    return sortBeitraege(list, sortMode);
-  }, [filteredBySearchAndCat, featured.slug, featuredVisible, sortMode]);
+    const excludeSlugs = new Set(visibleFeatured.map((b) => b.slug));
+    let list =
+      showFeaturedSlots && excludeSlugs.size > 0
+        ? filteredBySearchAndCat.filter((b) => !excludeSlugs.has(b.slug))
+        : filteredBySearchAndCat;
+    return sortBeitraege(list, sortMode, getDisplayViews);
+  }, [filteredBySearchAndCat, showFeaturedSlots, visibleFeatured, sortMode, getDisplayViews]);
 
   const beliebtTop = useMemo(
-    () => [...RATGEBER_BEITRAEGE].sort((a, b) => b.views - a.views).slice(0, 4),
+    () => [...RATGEBER_BEITRAEGE].sort((a, b) => getDisplayViews(b) - getDisplayViews(a)).slice(0, 4),
+    [getDisplayViews],
+  );
+
+  const marqueeAlle = useMemo(
+    () => [...RATGEBER_BEITRAEGE].sort((a, b) => b.publishedAt.localeCompare(a.publishedAt)),
     [],
   );
 
@@ -345,62 +386,82 @@ export function RatgeberHub() {
 
       <Container className="max-w-[min(100%,96rem)] space-y-10 pt-10 sm:space-y-12 sm:pt-12 lg:pl-6 lg:pr-3 xl:pl-10 xl:pr-5 2xl:pr-14">
         <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-start lg:gap-x-16 xl:gap-x-24 2xl:gap-x-32">
-        <div className="min-w-0 space-y-12 lg:space-y-14">
-          {/* Empfohlener Artikel */}
-          {featuredVisible ? (
-            <section aria-labelledby="featured-heading" className="w-full">
+        <div className="min-w-0 space-y-10 lg:space-y-12">
+          {/* Top Themen */}
+          {visibleFeatured.length > 0 ? (
+            <section aria-labelledby="featured-heading" className="w-full space-y-5">
               <p id="featured-heading" className="text-xs font-bold uppercase tracking-[0.2em] text-neutral-500 sm:text-sm">
-                Empfohlener Artikel
+                Top-Themen
               </p>
-              <Link
-                href={`/ratgeber/${featured.slug}`}
-                className="mt-3 flex flex-col overflow-hidden rounded-2xl border border-black/[0.06] bg-white shadow-[0_16px_48px_-20px_rgba(15,79,104,0.25)] transition hover:-translate-y-0.5 hover:shadow-[0_22px_56px_-18px_rgba(15,79,104,0.28)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68] focus-visible:ring-offset-2 md:mt-4 md:flex-row md:items-center"
-              >
-                <div className="relative mx-auto flex h-[7.25rem] w-full max-w-[14rem] shrink-0 items-center justify-center overflow-hidden bg-[#FAF8F5] sm:h-[7.75rem] sm:max-w-[16rem] md:mx-0 md:h-[8.75rem] md:w-[34%] md:max-w-[14rem] md:self-center lg:h-[9rem] lg:max-w-[15rem]">
-                  <span
-                    className="absolute left-2 top-2 z-10 rounded-md px-2 py-0.5 text-[0.65rem] font-bold uppercase tracking-wide text-white shadow sm:left-2.5 sm:top-2.5 sm:text-xs"
-                    style={{ backgroundColor: ORANGE }}
+              <div className="flex flex-col gap-5">
+                {visibleFeatured.map((featured) => (
+                  <Link
+                    key={featured.slug}
+                    href={`/ratgeber/${featured.slug}`}
+                    className="flex flex-col overflow-hidden rounded-2xl border border-black/[0.06] bg-white shadow-[0_16px_48px_-20px_rgba(15,79,104,0.25)] transition hover:-translate-y-0.5 hover:shadow-[0_22px_56px_-18px_rgba(15,79,104,0.28)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68] focus-visible:ring-offset-2 md:flex-row md:items-center"
                   >
-                    Top Thema
-                  </span>
-                  <Image
-                    src={featured.image}
-                    alt={featured.imageAlt}
-                    fill
-                    priority
-                    className="object-contain object-center p-2 sm:p-3"
-                    sizes="(min-width: 768px) 220px, 90vw"
-                  />
-                </div>
-                <div className="flex min-w-0 flex-1 flex-col justify-center px-4 py-3 sm:px-5 sm:py-4 md:py-3.5 lg:px-6 lg:py-4">
-                  <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs sm:text-sm">
-                    <span className="font-semibold" style={{ color: NAVY }}>
-                      {primaryCategoryLabel(featured)}
-                    </span>
-                    <span className="flex items-center gap-1.5 text-neutral-500">
-                      <ClockIcon className="h-3.5 w-3.5 text-neutral-400" />
-                      {featured.readMinutes} Min. Lesezeit
-                    </span>
-                  </div>
-                  <h2 className="mt-1.5 text-lg font-bold leading-snug tracking-tight sm:text-xl md:text-2xl" style={{ color: NAVY }}>
-                    {featured.title}
-                  </h2>
-                  <p className="mt-2 line-clamp-2 text-sm leading-relaxed text-neutral-600 sm:text-base">{featured.excerpt}</p>
-                  <span className="mt-3 inline-flex items-center gap-2 text-xs font-bold sm:text-sm" style={{ color: NAVY }}>
-                    Artikel lesen
-                    <ArrowRightIcon />
-                  </span>
-                </div>
-              </Link>
+                    <div className="relative mx-auto flex h-[8.75rem] w-full max-w-[18rem] shrink-0 items-center justify-center overflow-hidden bg-[#FAF8F5] sm:max-w-[22rem] md:mx-0 md:h-[11rem] md:w-[43%] md:max-w-[22rem] md:self-center lg:h-[11.75rem] lg:max-w-[24rem]">
+                      <span
+                        className="absolute left-2.5 top-2.5 z-10 rounded-md px-2.5 py-1 text-[0.65rem] font-bold uppercase tracking-wide text-white shadow sm:text-xs"
+                        style={{ backgroundColor: ORANGE }}
+                      >
+                        Top Thema
+                      </span>
+                      <Image
+                        src={featured.image}
+                        alt={featured.imageAlt}
+                        fill
+                        priority={featured.slug === visibleFeatured[0]?.slug}
+                        className="object-contain object-center p-3 sm:p-4"
+                        sizes="(min-width: 768px) 360px, 90vw"
+                      />
+                    </div>
+                    <div className="flex min-w-0 flex-1 flex-col justify-center px-5 py-4 sm:px-7 sm:py-5 md:py-6 lg:px-8 lg:py-7">
+                      <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs sm:text-sm">
+                        <span className="font-semibold" style={{ color: NAVY }}>
+                          {primaryCategoryLabel(featured)}
+                        </span>
+                        <span className="flex items-center gap-1 text-neutral-600">
+                          <EyeIcon className="h-3.5 w-3.5 text-neutral-400" aria-hidden />
+                          {getDisplayViews(featured).toLocaleString("de-DE")} Aufrufe
+                        </span>
+                        <span className="flex items-center gap-1 text-neutral-500">
+                          <ClockIcon className="h-3.5 w-3.5 text-neutral-400" />
+                          {featured.readMinutes} Min. Lesezeit
+                        </span>
+                      </div>
+                      <h2 className="mt-2 text-xl font-bold leading-snug tracking-tight sm:text-2xl md:text-[1.6rem] lg:text-[1.75rem]" style={{ color: NAVY }}>
+                        {featured.title}
+                      </h2>
+                      <p className="mt-3 line-clamp-3 text-base leading-relaxed text-neutral-600 sm:text-lg">{featured.excerpt}</p>
+                      <span className="mt-4 inline-flex items-center gap-2 text-sm font-bold" style={{ color: NAVY }}>
+                        Artikel lesen
+                        <ArrowRightIcon />
+                      </span>
+                    </div>
+                  </Link>
+                ))}
+              </div>
             </section>
           ) : null}
 
           {/* Raster */}
           <section id="alle-ratgeber" className="scroll-mt-24">
-            <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-              <h2 className="text-3xl font-bold sm:text-4xl" style={{ color: NAVY }}>
-                Alle Ratgeber
-              </h2>
+            <h2 className="text-3xl font-bold sm:text-4xl" style={{ color: NAVY }}>
+              Alle Ratgeber
+            </h2>
+            <p className="mt-2 max-w-2xl text-sm text-neutral-600 sm:text-base">
+              Alle Beiträge im Vorbeilauf — darunter können Sie nach Thema suchen und sortieren.
+            </p>
+
+            <div className="mt-8">
+              <RatgeberMarquee beitraege={marqueeAlle} getViews={getDisplayViews} />
+            </div>
+
+            <div className="mt-10 flex flex-col gap-4 sm:mt-12 sm:flex-row sm:items-end sm:justify-between">
+              <h3 className="text-lg font-semibold text-neutral-800 sm:text-xl">
+                Alle Beiträge <span className="text-neutral-500">&ndash;</span> Liste
+              </h3>
               <label className="flex items-center gap-2 text-sm text-neutral-600 sm:text-base">
                 <span className="shrink-0 font-medium">Sortieren nach:</span>
                 <select
@@ -441,8 +502,12 @@ export function RatgeberHub() {
                           <span className="font-semibold" style={{ color: NAVY }}>
                             {primaryCategoryLabel(beitrag)}
                           </span>
+                          <span className="flex items-center gap-1 text-neutral-600">
+                            <EyeIcon className="h-3.5 w-3.5 shrink-0 text-neutral-400" aria-hidden />
+                            {getDisplayViews(beitrag).toLocaleString("de-DE")} Aufrufe
+                          </span>
                           <span className="flex items-center gap-1 text-neutral-500">
-                            <ClockIcon className="h-3.5 w-3.5 text-neutral-400" />
+                            <ClockIcon className="h-3.5 w-3.5 text-neutral-400" aria-hidden />
                             {beitrag.readMinutes} Min.
                           </span>
                         </div>
@@ -486,9 +551,18 @@ export function RatgeberHub() {
                       <p className="line-clamp-2 text-sm font-bold leading-snug group-hover:underline" style={{ color: NAVY }}>
                         {beitrag.title}
                       </p>
-                      <p className="mt-1 flex items-center gap-1 text-xs text-neutral-500">
-                        <ClockIcon className="h-3 w-3" />
-                        {beitrag.readMinutes} Min.
+                      <p className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-neutral-500">
+                        <span className="inline-flex items-center gap-1">
+                          <EyeIcon className="h-3 w-3 text-neutral-400" aria-hidden />
+                          {getDisplayViews(beitrag).toLocaleString("de-DE")}
+                        </span>
+                        <span className="text-neutral-300" aria-hidden>
+                          ·
+                        </span>
+                        <span className="inline-flex items-center gap-1">
+                          <ClockIcon className="h-3 w-3 text-neutral-400" aria-hidden />
+                          {beitrag.readMinutes} Min.
+                        </span>
                       </p>
                     </div>
                     <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-lg border border-neutral-100">

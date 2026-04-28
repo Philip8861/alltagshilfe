@@ -63,6 +63,11 @@ const config: Config = {
             transform: "perspective(56rem) rotateY(0deg) translateX(0)",
           },
         },
+        /** Ratgeber-Hub: Laufband durch alle Beiträge (Duplikat des Inhalts → -50 % Verschiebung) */
+        "ratgeber-marquee": {
+          "0%": { transform: "translateX(0)" },
+          "100%": { transform: "translateX(-50%)" },
+        },
       },
       animation: {
         "fade-in-up": "fade-in-up 0.6s ease-out forwards",
@@ -75,6 +80,7 @@ const config: Config = {
         "partner-soft-float": "partner-soft-float 4s ease-in-out infinite",
         "partner-icon-nudge": "partner-icon-nudge 2.8s ease-in-out infinite",
         "star-pop-in": "star-pop-in 0.48s cubic-bezier(0.34, 1.45, 0.64, 1) both",
+        "ratgeber-marquee": "ratgeber-marquee 70s linear infinite",
       },
     },
   },

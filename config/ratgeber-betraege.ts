@@ -9,15 +9,25 @@ export type RatgeberBeitragMeta = {
   excerpt: string;
   image: string;
   imageAlt: string;
+  /** Referenz-Aufrufzahl (Fallback, wenn Live-Analytics nicht verfügbar). */
   views: number;
   tags: string[];
   /** Filter-Kategorien (Themen-Pills) – ein Beitrag kann mehreren zugeordnet sein. */
   categories: RatgeberCategoryId[];
+  /** Rohtext-Menge (Seiteninhalt) zur Lesezeit-Schätzung (~200 Wörter/Min.). */
+  approxWordCount: number;
   readMinutes: number;
   publishedAt: string;
-  /** Wird als großer Empfehlungskasten oben angezeigt. */
+  /** Wird als großer Empfehlungskasten („Top Thema“) oben angezeigt. */
   featured?: boolean;
 };
+
+/** Für informative Texte DE (Median ~175–225 W/min). */
+export const RATGEBER_WORDS_PER_MINUTE = 200;
+
+export function readMinutesFromWordCount(words: number): number {
+  return Math.max(1, Math.round(words / RATGEBER_WORDS_PER_MINUTE));
+}
 
 export const RATGEBER_CATEGORY_LABELS: Record<RatgeberCategoryId, string> = {
   finanzen: "Finanzen & Leistungen",
@@ -37,8 +47,10 @@ export const RATGEBER_BEITRAEGE: RatgeberBeitragMeta[] = [
     views: 489,
     tags: ["Hausnotruf", "Sicherheit", "Pflegekasse", "Pflegegrad", "Notfallhilfe"],
     categories: ["pflege_zuhause", "entlastung"],
-    readMinutes: 6,
+    approxWordCount: 940,
+    readMinutes: readMinutesFromWordCount(940),
     publishedAt: "2025-08-12",
+    featured: true,
   },
   {
     slug: "entlastungsbetrag-131-euro",
@@ -50,7 +62,8 @@ export const RATGEBER_BEITRAEGE: RatgeberBeitragMeta[] = [
     views: 1284,
     tags: ["Entlastungsbetrag", "Pflegekasse", "Abrechnung", "Pflegegrad"],
     categories: ["finanzen", "entlastung"],
-    readMinutes: 5,
+    approxWordCount: 520,
+    readMinutes: readMinutesFromWordCount(520),
     publishedAt: "2025-11-03",
     featured: true,
   },
@@ -64,7 +77,8 @@ export const RATGEBER_BEITRAEGE: RatgeberBeitragMeta[] = [
     views: 623,
     tags: ["Pflegegrad 1", "MDK", "Begutachtung", "Leistungen", "Entlastungsbetrag"],
     categories: ["finanzen", "recht"],
-    readMinutes: 8,
+    approxWordCount: 1860,
+    readMinutes: readMinutesFromWordCount(1860),
     publishedAt: "2026-02-18",
   },
   {
@@ -77,7 +91,8 @@ export const RATGEBER_BEITRAEGE: RatgeberBeitragMeta[] = [
     views: 512,
     tags: ["Pflegegrad 2", "Pflegegeld", "Pflegesachleistungen", "Ersatzpflege", "§37.3"],
     categories: ["finanzen", "recht"],
-    readMinutes: 7,
+    approxWordCount: 1320,
+    readMinutes: readMinutesFromWordCount(1320),
     publishedAt: "2026-03-22",
   },
 ];
@@ -86,11 +101,30 @@ export function getVerwandteRatgeberBeitraege(currentSlug: string, limit = 4): R
   return RATGEBER_BEITRAEGE.filter((b) => b.slug !== currentSlug).slice(0, limit);
 }
 
-/** Erste Markierung mit `featured: true`, sonst Beitrag mit den meisten Aufrufen. */
+/**
+ * Alle mit `featured: true`, max. `limit`; fehlende Plätze: nächsthöchste `views`-Werte aus der Liste.
+ */
+export function getFeaturedRatgeberBeitraege(limit = 2): RatgeberBeitragMeta[] {
+  const featured = RATGEBER_BEITRAEGE.filter((b) => b.featured).sort((a, b) => b.views - a.views);
+  if (featured.length >= limit) return featured.slice(0, limit);
+
+  const out = [...featured];
+  const seen = new Set(out.map((b) => b.slug));
+  const rest = [...RATGEBER_BEITRAEGE]
+    .filter((b) => !seen.has(b.slug))
+    .sort((a, b) => b.views - a.views);
+  for (const r of rest) {
+    if (out.length >= limit) break;
+    out.push(r);
+    seen.add(r.slug);
+  }
+  return out.slice(0, limit);
+}
+
+/** @deprecated Einzel‑Featured – Nutzung: getFeaturedRatgeberBeitraege(1)[0]. */
 export function getFeaturedRatgeberBeitrag(): RatgeberBeitragMeta {
-  const featured = RATGEBER_BEITRAEGE.find((b) => b.featured);
-  if (featured) return featured;
-  return [...RATGEBER_BEITRAEGE].sort((a, b) => b.views - a.views)[0]!;
+  const [first] = getFeaturedRatgeberBeitraege(1);
+  return first!;
 }
 
 /** Kategorie-Label für Anzeige unter dem Titel (erste passende). */
