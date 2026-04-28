@@ -343,22 +343,22 @@ export function RatgeberHub() {
         </Container>
       </div>
 
-      <Container className="max-w-[min(100%,96rem)] space-y-10 pt-10 sm:space-y-12 sm:pt-12 lg:pl-6 lg:pr-3 xl:pl-10 xl:pr-5">
-        <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-start lg:gap-x-12 xl:gap-x-16 2xl:gap-x-20">
+      <Container className="max-w-[min(100%,96rem)] space-y-10 pt-10 sm:space-y-12 sm:pt-12 lg:pl-6 lg:pr-3 xl:pl-10 xl:pr-5 2xl:pr-14">
+        <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-start lg:gap-x-16 xl:gap-x-24 2xl:gap-x-32">
         <div className="min-w-0 space-y-12 lg:space-y-14">
           {/* Empfohlener Artikel */}
           {featuredVisible ? (
-            <section aria-labelledby="featured-heading" className="mx-auto max-w-[min(100%,40rem)] xl:max-w-[min(100%,44rem)]">
+            <section aria-labelledby="featured-heading" className="w-full">
               <p id="featured-heading" className="text-xs font-bold uppercase tracking-[0.2em] text-neutral-500 sm:text-sm">
                 Empfohlener Artikel
               </p>
               <Link
                 href={`/ratgeber/${featured.slug}`}
-                className="mt-4 flex flex-col overflow-hidden rounded-2xl border border-black/[0.06] bg-white shadow-[0_16px_48px_-20px_rgba(15,79,104,0.25)] transition hover:-translate-y-0.5 hover:shadow-[0_22px_56px_-18px_rgba(15,79,104,0.28)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68] focus-visible:ring-offset-2 md:mt-5 md:flex-row"
+                className="mt-3 flex flex-col overflow-hidden rounded-2xl border border-black/[0.06] bg-white shadow-[0_16px_48px_-20px_rgba(15,79,104,0.25)] transition hover:-translate-y-0.5 hover:shadow-[0_22px_56px_-18px_rgba(15,79,104,0.28)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68] focus-visible:ring-offset-2 md:mt-4 md:flex-row md:items-center"
               >
-                <div className="relative mx-auto aspect-[16/10] w-full max-w-[18rem] shrink-0 overflow-hidden bg-neutral-100 sm:max-w-[20rem] md:mx-0 md:aspect-auto md:max-w-none md:min-h-[180px] md:w-[31%] md:max-w-[11.5rem] lg:min-h-[200px] lg:max-w-[12.5rem]">
+                <div className="relative mx-auto flex h-[7.25rem] w-full max-w-[14rem] shrink-0 items-center justify-center overflow-hidden bg-[#FAF8F5] sm:h-[7.75rem] sm:max-w-[16rem] md:mx-0 md:h-[8.75rem] md:w-[34%] md:max-w-[14rem] md:self-center lg:h-[9rem] lg:max-w-[15rem]">
                   <span
-                    className="absolute left-2.5 top-2.5 z-10 rounded-md px-2 py-0.5 text-[0.65rem] font-bold uppercase tracking-wide text-white shadow sm:left-3 sm:top-3 sm:text-xs"
+                    className="absolute left-2 top-2 z-10 rounded-md px-2 py-0.5 text-[0.65rem] font-bold uppercase tracking-wide text-white shadow sm:left-2.5 sm:top-2.5 sm:text-xs"
                     style={{ backgroundColor: ORANGE }}
                   >
                     Top Thema
@@ -367,25 +367,26 @@ export function RatgeberHub() {
                     src={featured.image}
                     alt={featured.imageAlt}
                     fill
-                    className="object-cover object-center"
-                    sizes="(min-width: 768px) 200px, 90vw"
+                    priority
+                    className="object-contain object-center p-2 sm:p-3"
+                    sizes="(min-width: 768px) 220px, 90vw"
                   />
                 </div>
-                <div className="flex min-w-0 flex-1 flex-col justify-center p-5 sm:p-6 lg:p-8">
-                  <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm sm:text-base">
+                <div className="flex min-w-0 flex-1 flex-col justify-center px-4 py-3 sm:px-5 sm:py-4 md:py-3.5 lg:px-6 lg:py-4">
+                  <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs sm:text-sm">
                     <span className="font-semibold" style={{ color: NAVY }}>
                       {primaryCategoryLabel(featured)}
                     </span>
                     <span className="flex items-center gap-1.5 text-neutral-500">
-                      <ClockIcon className="text-neutral-400" />
+                      <ClockIcon className="h-3.5 w-3.5 text-neutral-400" />
                       {featured.readMinutes} Min. Lesezeit
                     </span>
                   </div>
-                  <h2 className="mt-3 text-2xl font-bold leading-tight tracking-tight sm:text-3xl lg:text-4xl" style={{ color: NAVY }}>
+                  <h2 className="mt-1.5 text-lg font-bold leading-snug tracking-tight sm:text-xl md:text-2xl" style={{ color: NAVY }}>
                     {featured.title}
                   </h2>
-                  <p className="mt-4 line-clamp-3 text-base leading-relaxed text-neutral-600 sm:line-clamp-4 sm:text-lg">{featured.excerpt}</p>
-                  <span className="mt-6 inline-flex items-center gap-2 text-sm font-bold sm:text-base" style={{ color: NAVY }}>
+                  <p className="mt-2 line-clamp-2 text-sm leading-relaxed text-neutral-600 sm:text-base">{featured.excerpt}</p>
+                  <span className="mt-3 inline-flex items-center gap-2 text-xs font-bold sm:text-sm" style={{ color: NAVY }}>
                     Artikel lesen
                     <ArrowRightIcon />
                   </span>
@@ -462,8 +463,8 @@ export function RatgeberHub() {
           </section>
         </div>
 
-        {/* Sidebar: schmaler Spalte, am rechten Rand des Rasters ausgerichtet */}
-        <aside className="min-w-0 space-y-8 lg:sticky lg:top-24 lg:col-start-2 lg:row-start-1 lg:ml-auto lg:w-full lg:max-w-[min(100%,20.5rem)] xl:max-w-[22rem] 2xl:max-w-[23rem]">
+        {/* Sidebar: nach rechts rücken (größerer Abstand zur Hauptspalte, näher am Viewport-Rand) */}
+        <aside className="min-w-0 space-y-8 lg:sticky lg:top-24 lg:col-start-2 lg:row-start-1 lg:ml-6 lg:w-full lg:max-w-[min(100%,20.5rem)] lg:justify-self-end xl:ml-10 xl:max-w-[22rem] 2xl:ml-14 2xl:max-w-[23rem]">
           <div className="rounded-2xl border border-black/[0.06] bg-white p-6 shadow-[0_12px_36px_-16px_rgba(15,79,104,0.2)] sm:p-7">
             <h2 className="text-xl font-bold sm:text-2xl" style={{ color: NAVY }}>
               Beliebt
