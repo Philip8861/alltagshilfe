@@ -72,7 +72,7 @@ export const RATGEBER_BEITRAEGE: RatgeberBeitragMeta[] = [
     title: "Pflegegrad 1: der ultimative Leitfaden (2026)",
     excerpt:
       "Leistungen, Voraussetzungen & Experten-Tipps – inklusive Vorbereitung auf die MDK-Begutachtung.",
-    image: "/images/Ratgeber/ratgeber.webp",
+    image: "/images/Ratgeber/pflegegrad1.webp",
     imageAlt: "Vorschaubild Pflegegrad 1 Leitfaden",
     views: 623,
     tags: ["Pflegegrad 1", "MDK", "Begutachtung", "Leistungen", "Entlastungsbetrag"],

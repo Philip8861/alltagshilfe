@@ -46,8 +46,8 @@ export default function Pflegegrad1RatgeberPage() {
             <div className="mx-auto w-full max-w-[260px]">
               <div className="relative aspect-[4/3] overflow-hidden rounded-lg">
                 <Image
-                  src="/images/Ratgeber/ratgeber.webp"
-                  alt="Ratgeber-Vorschaubild Pflegegrad 1"
+                  src="/images/Ratgeber/pflegegrad1.webp"
+                  alt="Ratgeber-Vorschaubild Pflegegrad 1 – Leistungen und Begutachtung"
                   fill
                   className="object-cover transition-transform duration-700 hover:scale-[1.02]"
                   sizes="260px"
