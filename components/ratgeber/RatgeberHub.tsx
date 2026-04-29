@@ -15,10 +15,8 @@ import {
 import { RatgeberMarquee } from "@/components/ratgeber/RatgeberMarquee";
 import { displayArticleViews } from "@/lib/ratgeber/article-view-totals";
 
-type SortMode = "neueste" | "beliebt" | "az";
-
-const NAVY = "#0F4F68";
 const ORANGE = "#F78F2E";
+const NAVY = "#0F4F68";
 
 const CATEGORY_ORDER: RatgeberCategoryId[] = [
   "pflegegrad_leistungen",
@@ -155,21 +153,7 @@ function haystackForBeitrag(beitrag: RatgeberBeitragMeta): string {
   return [beitrag.title, beitrag.excerpt, beitrag.tags.join(" ")].join(" ").toLocaleLowerCase("de");
 }
 
-function sortBeitraege(
-  list: RatgeberBeitragMeta[],
-  mode: SortMode,
-  getViews: (b: RatgeberBeitragMeta) => number,
-): RatgeberBeitragMeta[] {
-  const out = [...list];
-  if (mode === "neueste") {
-    out.sort((a, b) => b.publishedAt.localeCompare(a.publishedAt));
-  } else if (mode === "beliebt") {
-    out.sort((a, b) => getViews(b) - getViews(a));
-  } else {
-    out.sort((a, b) => a.title.localeCompare(b.title, "de", { sensitivity: "base" }));
-  }
-  return out;
-}
+
 
 const SEARCH_SUGGESTIONS_MAX = 8;
 
@@ -205,17 +189,19 @@ function RatgeberArticleTeaserCard({
             TOP THEMA
           </span>
         ) : null}
-        <Image
-          src={hubSrc}
-          alt=""
-          fill
-          className="z-0 object-cover object-center transition duration-300 group-hover:scale-[1.03]"
-          sizes="(min-width: 1280px) 26vw, (min-width: 768px) 32vw, 90vw"
-          priority={false}
-        />
+        <div className="absolute inset-[12.5%] z-0 overflow-hidden">
+          <Image
+            src={hubSrc}
+            alt=""
+            fill
+            className="object-contain object-center transition duration-300 group-hover:scale-[1.02]"
+            sizes="(min-width: 1280px) 26vw, (min-width: 768px) 32vw, 90vw"
+            priority={false}
+          />
+        </div>
         <div className="pointer-events-none absolute inset-0 z-[1] flex items-center justify-center bg-gradient-to-t from-black/[0.05] to-transparent" aria-hidden />
         <div className="pointer-events-none absolute inset-0 z-[2] flex items-center justify-center p-4">
-          <span className="inline-flex h-[4.25rem] w-[4.25rem] items-center justify-center text-[#0F4F68] drop-shadow-[0_2px_8px_rgba(255,255,255,0.85)] sm:h-[4.75rem] sm:w-[4.75rem] [&>svg]:h-full [&>svg]:w-full [&>svg]:max-h-[3.5rem] [&>svg]:max-w-[3.5rem]">
+          <span className="inline-flex h-[5.5rem] w-[5.5rem] items-center justify-center text-[#0F4F68] drop-shadow-[0_2px_8px_rgba(255,255,255,0.85)] sm:h-[6.25rem] sm:w-[6.25rem] [&>svg]:h-full [&>svg]:w-full [&>svg]:max-h-[4.5rem] [&>svg]:max-w-[4.5rem]">
             <TopicIcon kind={ik} />
           </span>
         </div>
@@ -251,7 +237,6 @@ export function RatgeberHub(props?: RatgeberHubProps) {
   const totals = useMemo(() => initialArticleViewTotals ?? {}, [initialArticleViewTotals]);
   const [query, setQuery] = useState("");
   const [activeCategory, setActiveCategory] = useState<RatgeberCategoryId | "alle">("alle");
-  const [sortMode, setSortMode] = useState<SortMode>("neueste");
   const [searchFocused, setSearchFocused] = useState(false);
   const [highlightIndex, setHighlightIndex] = useState(-1);
   const [mobileTopicsOpen, setMobileTopicsOpen] = useState(false);
@@ -305,18 +290,10 @@ export function RatgeberHub(props?: RatgeberHubProps) {
     return () => document.removeEventListener("mousedown", onDown);
   }, []);
 
-  /** „Alle“: Sortierung wählbar; einzelnes Thema: nur nach Aufrufen. */
+  /** Immer nach Beliebtheit (Aufrufe), neuester zuerst bei Gleichstand optional – hier strikt Views. */
   const gridBeitraege = useMemo(() => {
-    if (isCategoryFocused) {
-      return [...filteredBySearchAndCat].sort((a, b) => getDisplayViews(b) - getDisplayViews(a));
-    }
-    return sortBeitraege(filteredBySearchAndCat, sortMode, getDisplayViews);
-  }, [filteredBySearchAndCat, isCategoryFocused, sortMode, getDisplayViews]);
-
-  const beliebtTop = useMemo(
-    () => [...RATGEBER_BEITRAEGE].sort((a, b) => getDisplayViews(b) - getDisplayViews(a)).slice(0, 4),
-    [getDisplayViews],
-  );
+    return [...filteredBySearchAndCat].sort((a, b) => getDisplayViews(b) - getDisplayViews(a));
+  }, [filteredBySearchAndCat, getDisplayViews]);
 
   const marqueeAlle = useMemo(
     () => [...RATGEBER_BEITRAEGE].sort((a, b) => b.publishedAt.localeCompare(a.publishedAt)),
@@ -476,7 +453,7 @@ export function RatgeberHub(props?: RatgeberHubProps) {
             onClick={() => setMobileTopicsOpen((o) => !o)}
             className="inline-flex min-h-[48px] w-full max-w-md items-center justify-center gap-2 rounded-2xl border border-neutral-300 bg-white px-6 py-3 text-sm font-bold text-neutral-800 shadow-sm transition hover:border-neutral-400 hover:bg-neutral-50"
           >
-            <span>{mobileTopicsOpen ? "Alle Themen schließen" : "Alle Themen öffnen"}</span>
+            <span>{mobileTopicsOpen ? "Auswahl schließen" : "Beliebte Artikel & Themen"}</span>
             <svg
               className={`h-5 w-5 shrink-0 transition-transform ${mobileTopicsOpen ? "rotate-180" : ""}`}
               viewBox="0 0 24 24"
@@ -506,7 +483,7 @@ export function RatgeberHub(props?: RatgeberHubProps) {
                 }}
                 style={activeCategory !== "alle" ? { color: NAVY } : undefined}
               >
-                Alle Themen
+                Beliebte Artikel
               </button>
               {CATEGORY_ORDER.map((id) => (
                 <button
@@ -535,7 +512,7 @@ export function RatgeberHub(props?: RatgeberHubProps) {
         <Container className="max-w-7xl py-4">
           <div
             className="flex flex-wrap justify-center gap-x-2 gap-y-2.5 px-2"
-            aria-label="Ratgeber nach Thema filtern"
+            aria-label="Beliebte Artikel und Themen filtern"
           >
             <button
               type="button"
@@ -547,7 +524,7 @@ export function RatgeberHub(props?: RatgeberHubProps) {
               }`}
               style={activeCategory === "alle" ? { backgroundColor: NAVY } : undefined}
             >
-              Alle Themen
+              Beliebte Artikel
             </button>
             {CATEGORY_ORDER.map((id) => (
               <button
@@ -571,9 +548,8 @@ export function RatgeberHub(props?: RatgeberHubProps) {
         </Container>
       </div>
 
-      <Container className="max-w-[min(100%,96rem)] space-y-10 pt-10 sm:space-y-12 sm:pt-12 lg:px-6 xl:pl-10 xl:pr-12 2xl:pr-16">
-        <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(22rem,31rem)] lg:items-stretch lg:justify-items-stretch lg:gap-x-8 xl:gap-x-10 2xl:gap-x-12">
-        <div className="min-h-0 min-w-0 space-y-10 lg:space-y-12">
+      <Container className="mx-auto max-w-6xl space-y-10 px-4 pt-10 sm:space-y-12 sm:px-6 sm:pt-12 lg:px-8">
+        <div className="mx-auto min-h-0 min-w-0 max-w-6xl space-y-10 lg:space-y-12">
           <section id="alle-ratgeber" className="scroll-mt-24">
             {isCategoryFocused ? <h2 className="sr-only">{categoryLabel}</h2> : null}
 
@@ -614,55 +590,30 @@ export function RatgeberHub(props?: RatgeberHubProps) {
             ) : null}
 
             <div
-              className={`flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-end ${
+              className={`flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-center ${
                 !isCategoryFocused ? "mt-10 sm:mt-12" : "mt-2 sm:mt-3"
               }`}
             >
               {!isCategoryFocused ? (
-                <label className="flex w-full items-center justify-end gap-2 text-sm text-neutral-600 sm:text-base">
-                  <span className="shrink-0 font-medium">Sortieren nach:</span>
-                  <select
-                    value={sortMode}
-                    onChange={(e) => setSortMode(e.target.value as SortMode)}
-                    className="rounded-xl border border-neutral-300 bg-white py-2.5 pl-3 pr-9 text-sm font-semibold text-neutral-800 shadow-sm outline-none focus:border-neutral-400 focus:ring-2 focus:ring-neutral-200 sm:text-base"
-                  >
-                    <option value="neueste">Neueste zuerst</option>
-                    <option value="beliebt">Beliebteste</option>
-                    <option value="az">A–Z</option>
-                  </select>
-                </label>
+                <p className="text-center text-sm text-neutral-600 sm:text-base">Alle Einträge nach Beliebtheit (Aufrufen) sortiert.</p>
               ) : (
-                <p className="text-right text-sm font-medium text-neutral-500">
+                <p className="mx-auto max-w-3xl text-center text-sm font-medium text-neutral-500">
                   Sortierung: Beliebtheit (Aufrufe) · {categoryLabel}
                 </p>
               )}
             </div>
 
             {gridBeitraege.length === 0 ? (
-              <p className="mt-8 rounded-2xl border border-dashed border-neutral-200 bg-white p-8 text-center text-neutral-600">
+              <p className="mx-auto mt-8 max-w-2xl rounded-2xl border border-dashed border-neutral-200 bg-white p-8 text-center text-neutral-600">
                 Keine Artikel für diese Auswahl. Andere Themen oder Suchbegriff probieren.
               </p>
-            ) : isCategoryFocused ? (
-              <div className="mt-8 flex w-full justify-center">
-                <ul className="grid w-full max-w-md grid-cols-2 gap-4 justify-items-stretch sm:max-w-3xl md:max-w-6xl md:grid-cols-4 md:gap-6">
-                  {gridBeitraege.map((beitrag, idx) => (
-                    <li key={beitrag.slug} className="min-h-0 w-full max-w-[16rem] justify-self-center md:max-w-none">
-                      <RatgeberArticleTeaserCard
-                        beitrag={beitrag}
-                        showTopBadge={idx < 2}
-                        getDisplayViews={getDisplayViews}
-                      />
-                    </li>
-                  ))}
-                </ul>
-              </div>
             ) : (
-              <ul className="mt-8 grid gap-7 justify-items-stretch sm:grid-cols-2 xl:grid-cols-3 xl:gap-8">
-                {gridBeitraege.map((beitrag) => (
-                  <li key={beitrag.slug} className="min-h-0 w-full">
+              <ul className="mx-auto mt-8 grid w-full max-w-6xl grid-cols-2 justify-items-stretch gap-x-4 gap-y-6 sm:max-w-none sm:gap-x-5 md:grid-cols-3 md:gap-y-7 lg:grid-cols-4 lg:gap-x-6 xl:gap-8">
+                {gridBeitraege.map((beitrag, idx) => (
+                  <li key={beitrag.slug} className="min-h-0 w-full justify-self-center">
                     <RatgeberArticleTeaserCard
                       beitrag={beitrag}
-                      showTopBadge={false}
+                      showTopBadge={idx < 2}
                       getDisplayViews={getDisplayViews}
                     />
                   </li>
@@ -671,72 +622,6 @@ export function RatgeberHub(props?: RatgeberHubProps) {
             )}
           </section>
         </div>
-
-        <aside className="flex min-h-0 w-full flex-col lg:col-start-2 lg:row-span-1 lg:h-full lg:justify-self-stretch">
-          <div className="relative flex h-full min-h-[min(100%,24rem)] flex-1 flex-col overflow-hidden rounded-2xl border border-neutral-200/90 bg-gradient-to-b from-white to-neutral-50/50 p-5 shadow-md sm:p-6">
-            <div
-              aria-hidden
-              className="pointer-events-none absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-neutral-100/40 to-transparent"
-            />
-            <div className="relative shrink-0 border-b border-neutral-200/80 pb-4 text-center sm:pb-5">
-              <div className="mx-auto mb-3 h-px w-12 rounded-full bg-neutral-300/90" />
-              <h2 className="text-xl font-bold tracking-tight sm:text-2xl" style={{ color: NAVY }}>
-                Beliebte Artikel
-              </h2>
-              <p className="mx-auto mt-1.5 max-w-[18rem] text-xs leading-relaxed text-neutral-600 sm:text-sm">
-                Nach Aufrufen – meist gelesen
-              </p>
-            </div>
-            <ol className="relative mt-5 flex flex-1 flex-col justify-between gap-0 sm:mt-6">
-              {beliebtTop.map((beitrag, i) => (
-                <li key={beitrag.slug} className="min-h-0 shrink-0">
-                  <Link
-                    href={`/ratgeber/${beitrag.slug}`}
-                    className="group flex items-start gap-3 rounded-xl border border-transparent px-1.5 py-2 transition hover:border-neutral-200 hover:bg-neutral-50/90 sm:gap-3.5 sm:px-2 sm:py-2.5"
-                  >
-                    <span
-                      className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-xs font-bold text-white shadow-sm ring-1 ring-black/5"
-                      style={{ backgroundColor: i === 0 ? ORANGE : NAVY }}
-                    >
-                      {i + 1}
-                    </span>
-                    <div className="min-w-0 flex-1 text-left">
-                      <p className="line-clamp-2 text-sm font-bold leading-snug group-hover:underline sm:text-[0.95rem]" style={{ color: NAVY }}>
-                        {beitrag.title}
-                      </p>
-                      <p className="mt-2 flex flex-wrap items-center gap-x-2 gap-y-1 text-[0.7rem] text-neutral-500 sm:text-xs">
-                        <span className="inline-flex items-center gap-1">
-                          <EyeIcon className="h-3 w-3 text-neutral-400" aria-hidden />
-                          {getDisplayViews(beitrag).toLocaleString("de-DE")}
-                        </span>
-                        <span className="text-neutral-300" aria-hidden>
-                          ·
-                        </span>
-                        <span className="inline-flex items-center gap-1">
-                          <ClockIcon className="h-3 w-3 text-neutral-400" aria-hidden />
-                          {beitrag.readMinutes} Min.
-                        </span>
-                      </p>
-                    </div>
-                  </Link>
-                </li>
-              ))}
-            </ol>
-            <div className="relative mt-auto shrink-0 pt-5 sm:pt-6">
-              <button
-                type="button"
-                onClick={() => {
-                  setSortMode("beliebt");
-                  scrollToAlle();
-                }}
-                className="w-full rounded-xl border border-neutral-300 bg-white py-3 text-sm font-semibold text-[#0F4F68] shadow-sm transition hover:border-neutral-400 hover:bg-neutral-50 sm:py-3.5 sm:text-base"
-              >
-                Alle beliebten Beiträge ansehen
-              </button>
-            </div>
-          </div>
-        </aside>
-      </div>
       </Container>
     </div>
   );
