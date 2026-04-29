@@ -119,7 +119,7 @@ function RatgeberArticleTeaserCard({
         <div className="pointer-events-none absolute inset-0 z-[2] flex items-center justify-center px-2 py-2 sm:px-3 sm:py-3 md:px-4 md:py-4">
           <span
             id={titleId}
-            className="line-clamp-6 max-h-[min(92%,14.5rem)] w-full max-w-[min(100%,22rem)] hyphens-auto px-1 text-center text-sm font-extrabold leading-tight tracking-tight text-balance sm:max-h-[min(90%,15.5rem)] sm:max-w-[min(100%,24rem)] sm:text-base sm:leading-snug md:line-clamp-[7] md:max-h-[min(88%,16rem)] md:text-[1.05rem] lg:text-[1.1rem] lg:leading-snug"
+            className="line-clamp-6 max-h-[min(92%,15rem)] w-full max-w-[min(100%,23rem)] hyphens-auto px-1 text-center text-base font-extrabold leading-tight tracking-tight text-balance sm:max-h-[min(90%,16rem)] sm:max-w-[min(100%,24.5rem)] sm:text-lg sm:leading-snug md:line-clamp-[7] md:max-h-[min(88%,17rem)] md:text-[1.125rem] lg:text-[1.2rem] lg:leading-snug xl:text-[1.25rem]"
             style={{
               color: NAVY,
               textShadow:
@@ -134,7 +134,7 @@ function RatgeberArticleTeaserCard({
         className="flex flex-col px-2.5 pb-2.5 pt-2 sm:px-3 sm:pb-3 sm:pt-2.5"
         style={{ backgroundColor: CARD_CANVAS }}
       >
-        <div className="flex flex-wrap items-start gap-x-3 gap-y-0.5 text-[0.65rem] leading-relaxed text-neutral-500 sm:text-xs sm:leading-relaxed">
+        <div className="flex flex-wrap items-start gap-x-3 gap-y-0.5 text-[0.7rem] leading-relaxed text-neutral-500 sm:text-[0.8125rem] sm:leading-relaxed">
           <span className="inline-flex items-center gap-1">
             <EyeIcon className="h-2.5 w-2.5 shrink-0 text-neutral-400" aria-hidden />
             {getDisplayViews(beitrag).toLocaleString("de-DE")} Aufrufe

@@ -115,7 +115,6 @@ const BEREICHE: BereichDef[] = [
         text: "Kommt es über Ihre Empfehlung zu einer erfolgreichen Versorgung, erhalten Sie eine Tippgeberprovision.",
       },
     ],
-    info: "Über Ihr Partner-Dashboard behalten Sie Statuslisten und ausgezahlte Provisionen im Blick.",
     mehrHref: "/pflegehilfsmittel/kostenfreie-pflegehilfsmittel",
     mehrLabel: "Mehr zu Pflegehilfsmitteln",
   },

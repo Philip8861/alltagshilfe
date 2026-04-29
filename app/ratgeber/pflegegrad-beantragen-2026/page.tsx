@@ -1,11 +1,10 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import Link from "next/link";
 import { PflegegradBeantragen2026Article } from "@/components/ratgeber/PflegegradBeantragen2026Article";
+import { RatgeberArticleHero } from "@/components/ratgeber/RatgeberArticleHero";
 import { VerwandteRatgeberBeitraege } from "@/components/ratgeber/VerwandteRatgeberBeitraege";
 import { Container } from "@/components/layout/Container";
 import { siteConfig } from "@/config/site";
-import { RATGEBER_CATEGORY_LABELS } from "@/config/ratgeber-betraege";
 import { serializeRatgeberArticleJsonLd } from "@/lib/ratgeber/article-json-ld";
 
 const CANONICAL_PATH = "/ratgeber/pflegegrad-beantragen-2026" as const;
@@ -125,9 +124,9 @@ export default function PflegegradBeantragen2026RatgeberPage() {
   });
 
   return (
-    <article className="min-w-0 bg-[#FFFBF7] pb-16 pt-6 sm:pb-24 sm:pt-10">
+    <article className="min-w-0 bg-[#FFFBF7] pb-16 sm:pb-24">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
-      <Container className="max-w-3xl">
+      <Container className="max-w-3xl pt-6 sm:pt-10">
         <nav aria-label="Brotkrumen" className="mb-8 text-sm text-neutral-600">
           <ol className="flex flex-wrap gap-1">
             <li>
@@ -149,69 +148,29 @@ export default function PflegegradBeantragen2026RatgeberPage() {
             <li className="font-medium text-[#0F4F68]">Pflegegrad beantragen 2026</li>
           </ol>
         </nav>
+      </Container>
 
-        <header className="rounded-2xl border border-[#0F4F68]/12 bg-gradient-to-br from-[#fffaf4] via-white to-[#f7fbfc] p-6 sm:p-8">
-          <div className="flex flex-wrap items-center gap-2 text-sm font-semibold text-[#0F4F68]">
-            <Link
-              href="/ratgeber"
-              className="rounded-full bg-[#0F4F68]/10 px-3 py-1 text-[#0F4F68] transition hover:bg-[#0F4F68]/18"
-            >
-              {RATGEBER_CATEGORY_LABELS.pflegegrad_leistungen}
-            </Link>
-            <span className="text-neutral-500">· Pflegegrad beantragen</span>
-          </div>
-          <div className="mt-6 grid gap-8 lg:grid-cols-[1.05fr_minmax(0,0.42fr)] lg:items-start">
-            <div>
-              <h1 className="text-balance text-3xl font-extrabold leading-tight text-[#0F4F68] sm:text-4xl lg:text-[2.125rem]">
-                {H1_TITLE}
-              </h1>
-              <p className="mt-4 text-lg leading-relaxed text-neutral-700">{EXCERPT}</p>
-              <div className="mt-5 flex flex-wrap items-center gap-4 text-sm text-neutral-600">
-                <span>
-                  Lesedauer: ca. <span className="font-semibold text-[#0F4F68]">16 Min.</span>
-                </span>
-                <span aria-hidden>|</span>
-                <span>
-                  Stand:{" "}
-                  <time dateTime="2026-04-29">29. April 2026</time>
-                  {" · "}Aktualisiert
-                </span>
-                <span aria-hidden>|</span>
-                <span className="italic">Redaktion {siteConfig.name}</span>
-              </div>
-              <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-                <Link
-                  href="/kontakt"
-                  className="inline-flex min-h-[46px] items-center justify-center rounded-xl bg-[#F78F2E] px-6 py-3 text-base font-bold text-white shadow hover:bg-[#e67e22] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0F4F68]"
-                >
-                  Pflegeberatung anfragen
-                </Link>
-                <Link
-                  href="/ratgeber/pflegegrad-beantragen-checkliste"
-                  className="inline-flex min-h-[46px] items-center justify-center rounded-xl border border-[#0F4F68]/35 bg-white px-6 py-3 text-base font-semibold text-[#0F4F68] hover:bg-[#F2F9FA]"
-                >
-                  Checkliste & weiterführender Ratgeber
-                </Link>
-              </div>
-              <div className="mt-8 rounded-xl border border-[#0F4F68]/14 bg-[#F2F9FA]/50 p-4 text-sm leading-relaxed text-neutral-700">
-                <strong className="text-[#0F4F68]">Orientierungshinweis:</strong> Hier finden Sie allgemeine
-                Information – keine Rechtsberatung. Verbindliche Leistungen klärt Ihre Pflegekasse im Einzelfall.
-              </div>
-            </div>
-            <div className="relative mx-auto w-full max-w-sm lg:justify-self-end">
-              <div className="relative aspect-[5/4] overflow-hidden rounded-2xl border border-[#0F4F68]/10 shadow-[0_12px_32px_-16px_rgba(15,79,104,0.45)]">
-                <Image
-                  src={HERO_IMAGE}
-                  alt="Ratgeber: Pflegegrad beantragen – Antrag, Begutachtung und Leistungen im Überblick"
-                  fill
-                  className="object-cover object-center"
-                  sizes="384px"
-                  priority
-                />
-              </div>
-            </div>
-          </div>
-        </header>
+      <RatgeberArticleHero
+        title={H1_TITLE}
+        footer={
+          <Link
+            href="/ratgeber/pflegegrad-beantragen-checkliste"
+            className="inline-flex min-h-[44px] items-center justify-center rounded-xl border border-[#0F4F68]/35 bg-white px-5 py-2.5 text-center text-base font-semibold text-[#0F4F68] transition hover:bg-[#F2F9FA] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0F4F68] sm:min-h-[46px]"
+          >
+            Checkliste &amp; weiterführender Ratgeber
+          </Link>
+        }
+      />
+
+      <Container className="max-w-3xl pt-8 sm:pt-10">
+        <p className="text-pretty text-lg leading-relaxed text-neutral-700">{EXCERPT}</p>
+        <p className="mt-3 text-sm text-neutral-600">
+          Lesedauer: ca. <span className="font-semibold text-[#0F4F68]">16 Min.</span>
+        </p>
+        <div className="mt-6 rounded-xl border border-[#0F4F68]/14 bg-[#F2F9FA]/50 p-4 text-sm leading-relaxed text-neutral-700">
+          <strong className="text-[#0F4F68]">Orientierungshinweis:</strong> Hier finden Sie allgemeine Information – keine
+          Rechtsberatung. Verbindliche Leistungen klärt Ihre Pflegekasse im Einzelfall.
+        </div>
 
         <div className="mt-10 space-y-10">
           <PflegegradBeantragen2026Article />

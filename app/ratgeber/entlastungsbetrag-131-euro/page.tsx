@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { Container } from "@/components/layout/Container";
+import { RatgeberArticleHero } from "@/components/ratgeber/RatgeberArticleHero";
 import { VerwandteRatgeberBeitraege } from "@/components/ratgeber/VerwandteRatgeberBeitraege";
 
 const HERO_ART = "/images/Ratgeber/Entlastungsbetrag_131_Euro.webp";
@@ -14,50 +15,20 @@ export const metadata: Metadata = {
 
 export default function EntlastungsbetragRatgeberPage() {
   return (
-    <article className="py-14 sm:py-20">
-      <Container className="max-w-4xl">
-        <header className="rounded-2xl border border-[#efcba7]/45 bg-gradient-to-br from-[#fffaf4] via-white to-[#f7fbfc] p-5 sm:p-7">
-          <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1.15fr_0.85fr] lg:items-center">
-            <div>
-              <p className="text-sm font-semibold text-[#0F4F68]">Ratgeber-Beitrag</p>
-              <h1 className="mt-2 text-3xl font-bold leading-tight text-[#0F4F68] sm:text-4xl">
-                Entlastungsbetrag 131 Euro sinnvoll nutzen
-              </h1>
-              <p className="mt-4 text-base leading-relaxed text-neutral-700 sm:text-lg">
-                Pflegebedürftige Menschen mit Pflegegrad haben Anspruch auf den Entlastungsbetrag von 131 Euro pro Monat
-                (1.572 Euro pro Jahr). Dieser Beitrag erklärt kompakt, wie Sie den Betrag richtig einsetzen und worauf Sie
-                achten sollten.
-              </p>
-              <div className="mt-5 rounded-xl border border-[#0F4F68]/12 bg-[#F2F9FA]/40 p-4 text-sm text-neutral-700">
-                <p>
-                  <strong className="text-[#0F4F68]">Kurzüberblick:</strong> 131 Euro monatlich, 1.572 Euro jährlich,
-                  Übertrag ungenutzter Beträge bis 30.06. des Folgejahres.
-                </p>
-              </div>
-            </div>
-            <div className="relative mx-auto w-full max-w-[min(100%,17.5rem)] sm:max-w-xs lg:max-w-sm">
-              <div
-                className="absolute -inset-2 -z-10 rounded-[1.35rem] bg-gradient-to-br from-[#F78F2E]/25 via-[#0F4F68]/12 to-transparent blur-sm"
-                aria-hidden
-              />
-              <div className="relative rotate-[1.5deg] overflow-hidden rounded-2xl border-2 border-white shadow-[0_18px_40px_-12px_rgba(15,79,104,0.35)] ring-1 ring-[#0F4F68]/10">
-                <div className="relative aspect-[4/3]">
-                  <Image
-                    src={HERO_ART}
-                    alt="Illustration Entlastungsbetrag 131 Euro – Entlastung im häuslichen Pflegealltag"
-                    fill
-                    className="object-cover object-center transition-transform duration-700 hover:scale-[1.03]"
-                    sizes="(min-width: 1024px) 320px, 280px"
-                    priority
-                  />
-                </div>
-              </div>
-              <p className="mt-3 text-center text-xs text-neutral-500 sm:text-left">
-                131 € pro Monat – zweckgebunden für anerkannte Hilfen im Alltag
-              </p>
-            </div>
-          </div>
-        </header>
+    <article className="min-w-0 pb-14 sm:pb-20">
+      <RatgeberArticleHero title="Entlastungsbetrag 131 Euro sinnvoll nutzen" />
+
+      <Container className="max-w-4xl pt-10 sm:pt-12">
+        <p className="text-lg leading-relaxed text-neutral-700">
+          Pflegebedürftige Menschen mit Pflegegrad haben Anspruch auf den Entlastungsbetrag von 131 Euro pro Monat (1.572 Euro
+          pro Jahr). Dieser Beitrag erklärt kompakt, wie Sie den Betrag richtig einsetzen und worauf Sie achten sollten.
+        </p>
+        <div className="mt-6 rounded-xl border border-[#0F4F68]/12 bg-[#F2F9FA]/40 p-4 text-sm text-neutral-700">
+          <p>
+            <strong className="text-[#0F4F68]">Kurzüberblick:</strong> 131 Euro monatlich, 1.572 Euro jährlich,
+            Übertrag ungenutzter Beträge bis 30.06. des Folgejahres.
+          </p>
+        </div>
 
         <section className="mt-10 space-y-4 text-neutral-700">
           <h2 className="text-2xl font-bold text-[#0F4F68]">Voraussetzungen</h2>

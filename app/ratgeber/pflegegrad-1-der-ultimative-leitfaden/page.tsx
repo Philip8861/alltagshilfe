@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import Link from "next/link";
+import Image from "next/image";
 import { Container } from "@/components/layout/Container";
+import { RatgeberArticleHero } from "@/components/ratgeber/RatgeberArticleHero";
 import { VerwandteRatgeberBeitraege } from "@/components/ratgeber/VerwandteRatgeberBeitraege";
 
 export const metadata: Metadata = {
@@ -11,63 +12,53 @@ export const metadata: Metadata = {
 
 export default function Pflegegrad1RatgeberPage() {
   return (
-    <article className="py-14 sm:py-20">
-      <Container className="max-w-4xl">
-        <header className="rounded-2xl border border-[#efcba7]/45 bg-gradient-to-br from-[#fffaf4] via-white to-[#f7fbfc] p-5 sm:p-7">
-          <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1.15fr_0.85fr] lg:items-center">
-            <div>
-              <p className="text-sm font-semibold text-[#0F4F68]">Ratgeber-Beitrag</p>
-              <h1 className="mt-2 text-3xl font-bold leading-tight text-[#0F4F68] sm:text-4xl">
-                Pflegegrad 1: der ultimative Leitfaden (2026)
-              </h1>
-              <p className="mt-4 text-base leading-relaxed text-neutral-700 sm:text-lg">
-                Viele denken: „Pflegegrad 1 lohnt sich doch gar nicht!“ Doch auch in dieser Einstiegsstufe gibt es
-                wertvolle Unterstützungsleistungen. Dieser Beitrag zeigt Ihnen kompakt, was Pflegegrad 1 bedeutet,
-                welche Voraussetzungen gelten und wie Sie sich optimal auf die Begutachtung vorbereiten.
+    <article className="min-w-0 pb-14 sm:pb-20">
+      <RatgeberArticleHero
+        title="Pflegegrad 1: der ultimative Leitfaden (2026)"
+        footer={
+          <a
+            href="/images/Ratgeber/Pflegegrad%201_%20Der%20ultimative%20Leitfaden.pdf"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex min-h-[44px] items-center justify-center rounded-lg border border-[#0F4F68]/25 bg-white px-4 py-2 text-center font-semibold text-[#0F4F68] transition-colors hover:bg-[#f2f9fa] focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2 sm:min-h-0"
+          >
+            PDF herunterladen
+          </a>
+        }
+      />
+
+      <Container className="max-w-4xl pt-10 sm:pt-12">
+        <p className="text-lg leading-relaxed text-neutral-700">
+          Viele denken: „Pflegegrad 1 lohnt sich doch gar nicht!“ Doch auch in dieser Einstiegsstufe gibt es wertvolle
+          Unterstützungsleistungen. Dieser Beitrag zeigt Ihnen kompakt, was Pflegegrad 1 bedeutet, welche Voraussetzungen
+          gelten und wie Sie sich optimal auf die Begutachtung vorbereiten.
+        </p>
+
+        <figure className="relative mt-10 overflow-hidden rounded-2xl border border-[#0F4F68]/12 bg-neutral-50/80 sm:mt-12">
+          <div className="grid gap-6 p-6 sm:grid-cols-[1fr_auto] sm:items-center sm:gap-8 sm:p-8">
+            <div className="space-y-3 text-neutral-700">
+              <p className="text-sm font-bold uppercase tracking-wide text-[#0F4F68]">Kurz einordnen</p>
+              <p>
+                Bei der Begutachtung zählen die Punkte aus dem neuen Begutachtungsassessment – im typischen Bereich für
+                Pflegegrad 1 etwa <strong>mind. 12,5 bis unter 27 Punkte</strong>.
               </p>
-              <div className="mt-5 flex flex-wrap gap-3">
-                <Link
-                  href="/kontakt"
-                  className="inline-flex items-center rounded-lg bg-[#0F4F68] px-4 py-2 font-semibold text-white transition-colors hover:bg-[#0c3d52] focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2"
-                >
-                  Jetzt beraten lassen
-                </Link>
-                <a
-                  href="/images/Ratgeber/Pflegegrad%201_%20Der%20ultimative%20Leitfaden.pdf"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center rounded-lg border border-[#0F4F68]/25 px-4 py-2 font-semibold text-[#0F4F68] transition-colors hover:bg-[#f2f9fa] focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2"
-                >
-                  PDF herunterladen
-                </a>
-              </div>
+              <p className="text-[#0F4F68] font-semibold">
+                Der Entlastungsbetrag von 131 Euro monatlich steht bereits ab Pflegegrad 1 oft zur Verfügung – sofern die
+                Voraussetzungen greifen.
+              </p>
             </div>
-
-            <div className="mx-auto w-full max-w-[260px]">
-              <div className="relative aspect-[4/3] overflow-hidden rounded-lg">
-                <Image
-                  src="/images/Ratgeber/pflegegrad1.webp"
-                  alt="Ratgeber-Vorschaubild Pflegegrad 1 – Leistungen und Begutachtung"
-                  fill
-                  className="object-cover transition-transform duration-700 hover:scale-[1.02]"
-                  sizes="260px"
-                  priority
-                />
-              </div>
-
-              <div className="mt-4 grid grid-cols-1 gap-3">
-                <div className="rounded-xl border border-[#0F4F68]/12 bg-white/95 p-3 text-[#0F4F68] shadow-sm">
-                  <p className="font-semibold">Anerkennung</p>
-                  <p className="mt-1 text-neutral-700 text-sm">mind. 12,5 bis &lt; 27 Punkte</p>
-                </div>
-                <div className="rounded-xl border border-[#0F4F68]/12 bg-white/95 p-3 text-[#0F4F68] shadow-sm">
-                  <p className="font-semibold">Entlastung</p>
-                  <p className="mt-1 text-neutral-700 text-sm">131 Euro pro Monat</p>
-                </div>
-              </div>
+            <div className="relative mx-auto aspect-[4/3] w-full max-w-[280px] overflow-hidden rounded-xl sm:mx-0 sm:max-w-[220px]">
+              <Image
+                src="/images/Ratgeber/pflegegrad1.webp"
+                alt="Pflege zu Hause – Leitfaden Pflegegrad 1"
+                fill
+                className="object-cover object-center transition-transform duration-700 hover:scale-[1.02]"
+                sizes="280px"
+                priority={false}
+              />
             </div>
           </div>
-        </header>
+        </figure>
 
         <section className="mt-10 space-y-4 text-neutral-700">
           <h2 className="text-2xl font-bold text-[#0F4F68]">Was ist der Pflegegrad 1?</h2>

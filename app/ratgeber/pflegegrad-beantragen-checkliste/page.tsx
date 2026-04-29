@@ -1,13 +1,15 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import Link from "next/link";
 import { siteConfig } from "@/config/site";
 import { Container } from "@/components/layout/Container";
+import { RatgeberArticleHero } from "@/components/ratgeber/RatgeberArticleHero";
 import { VerwandteRatgeberBeitraege } from "@/components/ratgeber/VerwandteRatgeberBeitraege";
 import { PflegegradBeantragenLeadForm } from "@/components/ratgeber/PflegegradBeantragenLeadForm";
 
 const CANONICAL_PATH = "/ratgeber/pflegegrad-beantragen-checkliste" as const;
-const HERO_IMAGE = "/images/Ratgeber/ratgeber.webp";
+const HERO_IMAGE = "/images/Ratgeber/ratgeber_blog_backgrounds.webp";
+const ARTICLE_HEADLINE =
+  "Pflegegrad beantragen: Die große Checkliste für Angehörige" as const;
 
 const META_TITLE = "Pflegegrad beantragen: Checkliste, Unterlagen & Tipps 2026" as const;
 const META_DESCRIPTION =
@@ -93,7 +95,7 @@ export const metadata: Metadata = {
 const articleJsonLd = {
   "@context": "https://schema.org",
   "@type": "Article",
-  headline: META_TITLE,
+  headline: ARTICLE_HEADLINE,
   description: META_DESCRIPTION,
   image: absUrl(HERO_IMAGE),
   datePublished: publishedISO,
@@ -113,7 +115,7 @@ const breadcrumbJsonLd = {
   itemListElement: [
     { "@type": "ListItem", position: 1, name: "Start", item: absUrl("/") },
     { "@type": "ListItem", position: 2, name: "Ratgeber", item: absUrl("/ratgeber") },
-    { "@type": "ListItem", position: 3, name: META_TITLE, item: absUrl(CANONICAL_PATH) },
+    { "@type": "ListItem", position: 3, name: ARTICLE_HEADLINE, item: absUrl(CANONICAL_PATH) },
   ],
 };
 
@@ -166,12 +168,12 @@ const TOC_ENTRIES: { href: string; label: string }[] = [
 
 export default function PflegegradBeantragenRatgeberPage() {
   return (
-    <article className="bg-[#FFFBF7] pb-16 pt-12 sm:pb-24 sm:pt-16">
+    <article className="bg-[#FFFBF7] pb-16 sm:pb-24">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }} />
 
-      <Container className="max-w-5xl">
+      <Container className="max-w-5xl pt-6 sm:pt-10">
         <nav aria-label="Brotkrumen" className="mb-8 text-sm text-neutral-600">
           <ol className="flex flex-wrap items-center gap-2">
             <li>
@@ -189,95 +191,25 @@ export default function PflegegradBeantragenRatgeberPage() {
             <li className="font-medium text-neutral-700">Pflegegrad beantragen</li>
           </ol>
         </nav>
+      </Container>
 
-        <header className="overflow-hidden rounded-3xl border border-[#efcba7]/50 bg-gradient-to-br from-[#fffaf4] via-white to-[#f7fbfc] p-6 shadow-sm sm:p-10">
-          <div className="flex flex-wrap items-center gap-2">
-            <span className="inline-flex rounded-full bg-[#0F4F68]/90 px-3 py-1 text-xs font-semibold text-white">
-              Aktualisiert 2026
-            </span>
-            <span className="inline-flex rounded-full border border-[#0F4F68]/20 bg-white px-3 py-1 text-xs font-semibold text-[#0F4F68]">
-              Mit Checkliste
-            </span>
-            <span className="inline-flex rounded-full border border-[#F47C20]/35 bg-[#FFF4ED] px-3 py-1 text-xs font-semibold text-[#c45a0c]">
-              Für Angehörige
-            </span>
-          </div>
+      <RatgeberArticleHero
+        title={ARTICLE_HEADLINE}
+        footer={
+          <a
+            href="#kompakte-checkliste"
+            className="inline-flex min-h-[44px] items-center justify-center rounded-xl border border-[#0F4F68]/35 bg-white px-5 py-2.5 text-center text-base font-semibold text-[#0F4F68] transition hover:bg-[#F2F9FA] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0F4F68] sm:min-h-[46px]"
+          >
+            Checkliste ansehen
+          </a>
+        }
+      />
 
-          <div className="mt-6 grid gap-10 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,0.85fr)] lg:items-center">
-            <div>
-              <p className="text-sm font-semibold uppercase tracking-wide text-[#0F4F68]/80">Ratgeber</p>
-              <h1 className="mt-2 text-balance text-3xl font-extrabold leading-tight text-[#0F4F68] sm:text-4xl lg:text-[2.35rem]">
-                Pflegegrad beantragen: Die große Checkliste für Angehörige
-              </h1>
-              <p className="mt-4 max-w-prose text-lg leading-relaxed text-neutral-700">
-                Klare Schritte, realistische Vorbereitung auf die Begutachtung und die richtigen Unterlagen –
-                ohne Juristendeutsch, dafür mit Praxisbezug für Ihren Pflegealltag.
-              </p>
-
-              <ul className="mt-6 flex flex-wrap gap-3 gap-y-4 text-xs text-neutral-600 sm:text-sm">
-                <li className="flex items-center gap-2 rounded-xl border border-[#0F4F68]/15 bg-white/90 px-3 py-2">
-                  <svg className="h-5 w-5 shrink-0 text-emerald-600" viewBox="0 0 24 24" fill="none" aria-hidden>
-                    <path d="M12 21s-8-4.5-8-11l8-4 8 4c0 6.5-8 11-8 11z" stroke="currentColor" strokeWidth="1.75" />
-                    <path d="M9 12l2 2 4-4" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" />
-                  </svg>
-                  Fachlich geprüft
-                </li>
-                <li className="flex items-center gap-2 rounded-xl border border-[#0F4F68]/15 bg-white/90 px-3 py-2">
-                  <svg className="h-5 w-5 shrink-0 text-[#0F4F68]" viewBox="0 0 24 24" fill="none" aria-hidden>
-                    <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="1.75" />
-                    <path d="M12 7v6l4 2" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" />
-                  </svg>
-                  Aktualisiert 2026
-                </li>
-                <li className="flex items-center gap-2 rounded-xl border border-[#0F4F68]/15 bg-white/90 px-3 py-2">
-                  <svg className="h-5 w-5 shrink-0 text-[#F47C20]" viewBox="0 0 24 24" fill="none" aria-hidden>
-                    <path
-                      d="M8 21h8v-9a5 5 0 00-10 0v9zm4-12a3 3 0 013 3"
-                      stroke="currentColor"
-                      strokeWidth="1.75"
-                      strokeLinecap="round"
-                    />
-                    <circle cx="12" cy="6" r="3" stroke="currentColor" strokeWidth="1.75" />
-                  </svg>
-                  Für Angehörige erklärt
-                </li>
-              </ul>
-
-              <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-                <a
-                  href="#kompakte-checkliste"
-                  className="inline-flex min-h-[44px] items-center justify-center rounded-full bg-[#F47C20] px-8 py-3 text-center text-sm font-semibold text-white shadow-md transition hover:bg-[#e06d15] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0F4F68]"
-                >
-                  Checkliste ansehen
-                </a>
-                <Link
-                  href="/kontakt"
-                  className="inline-flex min-h-[44px] items-center justify-center rounded-full border-2 border-[#0F4F68]/30 bg-white px-8 py-3 text-center text-sm font-semibold text-[#0F4F68] transition hover:bg-[#F2F9FA] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0F4F68]"
-                >
-                  Beratung anfragen
-                </Link>
-              </div>
-            </div>
-
-            <div className="relative mx-auto w-full max-w-md">
-              <div
-                className="absolute -inset-2 -z-10 rounded-[2rem] bg-gradient-to-br from-[#F78F2E]/25 via-transparent to-[#0F4F68]/15 blur-md"
-                aria-hidden
-              />
-              <div className="relative overflow-hidden rounded-[1.65rem] border border-white shadow-[0_22px_50px_-20px_rgba(15,79,104,0.45)]">
-                <Image
-                  src={HERO_IMAGE}
-                  alt="Beratende Person mit Unterlagen – Pflegegrad-Antrag und Organisation im Familienalltag"
-                  width={560}
-                  height={420}
-                  className="h-auto w-full object-cover object-center"
-                  priority
-                  sizes="(max-width: 1024px) 100vw, 400px"
-                />
-              </div>
-            </div>
-          </div>
-        </header>
+      <Container className="max-w-5xl pt-10 sm:pt-12">
+        <p className="max-w-prose text-lg leading-relaxed text-neutral-700">
+          Klare Schritte, realistische Vorbereitung auf die Begutachtung und die richtigen Unterlagen – ohne
+          Juristendeutsch, dafür mit Praxisbezug für Ihren Pflegealltag.
+        </p>
 
         <div className="mt-12 grid gap-10 lg:grid-cols-[minmax(0,1fr)_14.5rem] xl:grid-cols-[minmax(0,1fr)_17rem]">
           <aside className="order-first lg:order-last">
