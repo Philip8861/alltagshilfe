@@ -73,9 +73,9 @@ export default function HomePage() {
       style={{ backgroundColor: "#fafbfc" }}
     >
       <section className="box-border w-full pt-0 pb-6 sm:pb-8 lg:pb-[clamp(1.5rem,2vw+0.75rem,2.5rem)]">
-        {/* Hero: wie Ratgeber — px-3 … md:px-5, Bild object-contain mit #FFFCFA-Rändern */}
-        <div className="relative w-full px-3 sm:px-4 md:px-5" aria-label="Einstieg">
-          <div className="relative isolate min-h-[13rem] w-full overflow-hidden rounded-b-3xl bg-[#FFFCFA] sm:min-h-[15.5rem] md:min-h-[18rem] lg:min-h-[19.5rem]">
+        {/* Hero: seitlicher Abstand 5cm (md+), Bild ~25 % höher als zuvor */}
+        <div className="relative w-full px-3 sm:px-4 md:px-[5cm]" aria-label="Einstieg">
+          <div className="relative isolate min-h-[16.25rem] w-full overflow-hidden rounded-b-3xl bg-[#FFFCFA] sm:min-h-[19.375rem] md:min-h-[22.5rem] lg:min-h-[24.375rem]">
             <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden rounded-b-3xl" aria-hidden>
               <ProtectedRasterMedia className="relative block h-full w-full select-none [-webkit-user-drag:none]">
                 <Image
@@ -89,7 +89,7 @@ export default function HomePage() {
                 />
               </ProtectedRasterMedia>
             </div>
-            <div className="relative z-10 mx-auto flex w-full max-w-7xl flex-col justify-center px-4 pb-4 pt-8 sm:min-h-[15.5rem] sm:px-6 sm:pb-5 sm:pt-10 md:min-h-[18rem] lg:min-h-[19.5rem] lg:px-[var(--ahs-page-gutter)] lg:pb-6 lg:pt-12">
+            <div className="relative z-10 mx-auto flex w-full max-w-7xl flex-col justify-center px-4 pb-4 pt-8 sm:min-h-[19.375rem] sm:px-6 sm:pb-5 sm:pt-10 md:min-h-[22.5rem] lg:min-h-[24.375rem] lg:px-[var(--ahs-page-gutter)] lg:pb-6 lg:pt-12">
               <header className="max-w-lg text-left sm:max-w-xl lg:max-w-[min(42vw,clamp(22rem,32vw+8rem,30rem))] xl:max-w-[min(38vw,clamp(23rem,28vw+9rem,31rem))] 2xl:max-w-[min(34vw,clamp(24rem,26vw+10rem,32rem))]">
                 <h1
                   className="text-balance text-3xl font-extrabold leading-tight tracking-tight text-[#0F4F68] opacity-0 motion-reduce:opacity-100 animate-fade-in-up sm:text-4xl lg:text-[clamp(2rem,1.05rem+2.6vw,3rem)]"
