@@ -517,8 +517,8 @@ export function RatgeberHub(props?: RatgeberHubProps) {
       </div>
 
       <Container className="max-w-[min(100%,96rem)] space-y-10 pt-10 sm:space-y-12 sm:pt-12 lg:px-6 xl:pl-10 xl:pr-12 2xl:pr-16">
-        <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(17.5rem,20rem)] lg:items-start lg:justify-items-stretch lg:gap-x-10 xl:gap-x-14 2xl:gap-x-[4.25rem]">
-        <div className="min-w-0 space-y-10 lg:space-y-12">
+        <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(22rem,31rem)] lg:items-stretch lg:justify-items-stretch lg:gap-x-8 xl:gap-x-10 2xl:gap-x-12">
+        <div className="min-h-0 min-w-0 space-y-10 lg:space-y-12">
           <section id="alle-ratgeber" className="scroll-mt-24">
             {isCategoryFocused ? <h2 className="sr-only">{categoryLabel}</h2> : null}
 
@@ -694,32 +694,39 @@ export function RatgeberHub(props?: RatgeberHubProps) {
           </section>
         </div>
 
-        <aside className="min-w-0 lg:sticky lg:top-24 lg:col-start-2 lg:row-start-1 lg:w-full lg:justify-self-end lg:pl-2 xl:pl-6 2xl:pl-10">
-          <div className="rounded-2xl border-2 border-[#0F4F68]/10 bg-white p-8 shadow-[0_20px_48px_-22px_rgba(15,79,104,0.35)] sm:p-10 lg:max-w-none">
-            <div className="border-b border-neutral-200/90 pb-6 text-center">
-              <h2 className="text-xl font-bold sm:text-2xl" style={{ color: NAVY }}>
+        <aside className="flex min-h-0 w-full flex-col lg:col-start-2 lg:row-span-1 lg:h-full lg:justify-self-stretch">
+          <div className="relative flex h-full min-h-[min(100%,28rem)] flex-1 flex-col overflow-hidden rounded-3xl border-2 border-[#0F4F68]/12 bg-gradient-to-b from-white via-[#FAFCFE] to-[#F0F5F8] p-7 shadow-[0_20px_56px_-24px_rgba(15,79,104,0.38),inset_0_1px_0_rgba(255,255,255,0.95)] ring-1 ring-[#0F4F68]/8 sm:p-9">
+            <div
+              aria-hidden
+              className="pointer-events-none absolute inset-x-0 top-0 h-28 bg-gradient-to-b from-[#0F4F68]/[0.06] to-transparent"
+            />
+            <div className="relative shrink-0 border-b border-neutral-200/70 pb-5 text-center sm:pb-6">
+              <div className="mx-auto mb-3 h-1 w-14 rounded-full bg-gradient-to-r from-transparent via-[#F78F2E] to-transparent opacity-95" />
+              <h2 className="text-xl font-bold tracking-tight sm:text-2xl" style={{ color: NAVY }}>
                 Beliebte Artikel
               </h2>
-              <p className="mt-1.5 text-xs text-neutral-500 sm:text-sm">Nach Aufrufen – meist gelesen</p>
+              <p className="mx-auto mt-2 max-w-[18rem] text-xs leading-relaxed text-neutral-600 sm:text-sm">
+                Nach Aufrufen – meist gelesen
+              </p>
             </div>
-            <ol className="mt-6 space-y-4 sm:space-y-5">
+            <ol className="relative mt-6 flex flex-1 flex-col justify-between gap-0 sm:mt-7">
               {beliebtTop.map((beitrag, i) => (
-                <li key={beitrag.slug}>
+                <li key={beitrag.slug} className="min-h-0 shrink-0">
                   <Link
                     href={`/ratgeber/${beitrag.slug}`}
-                    className="group flex items-start gap-3 rounded-xl border border-transparent px-1 py-2 transition hover:border-neutral-100 hover:bg-neutral-50/80 sm:gap-4"
+                    className="group flex items-start gap-3 rounded-2xl border border-transparent px-2 py-2.5 transition hover:border-[#0F4F68]/10 hover:bg-white/90 hover:shadow-sm sm:gap-3.5 sm:px-2.5 sm:py-3"
                   >
                     <span
-                      className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-sm font-bold text-white shadow-sm"
+                      className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-sm font-bold text-white shadow-md ring-2 ring-white/40"
                       style={{ backgroundColor: i === 0 ? ORANGE : NAVY }}
                     >
                       {i + 1}
                     </span>
                     <div className="min-w-0 flex-1 text-left">
-                      <p className="line-clamp-2 text-sm font-bold leading-snug group-hover:underline" style={{ color: NAVY }}>
+                      <p className="line-clamp-2 text-sm font-bold leading-snug group-hover:underline sm:text-[0.95rem]" style={{ color: NAVY }}>
                         {beitrag.title}
                       </p>
-                      <p className="mt-2 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-neutral-500">
+                      <p className="mt-2 flex flex-wrap items-center gap-x-2 gap-y-1 text-[0.7rem] text-neutral-500 sm:text-xs">
                         <span className="inline-flex items-center gap-1">
                           <EyeIcon className="h-3 w-3 text-neutral-400" aria-hidden />
                           {getDisplayViews(beitrag).toLocaleString("de-DE")}
@@ -737,17 +744,19 @@ export function RatgeberHub(props?: RatgeberHubProps) {
                 </li>
               ))}
             </ol>
-            <button
-              type="button"
-              onClick={() => {
-                setSortMode("beliebt");
-                scrollToAlle();
-              }}
-              className="mt-8 w-full rounded-2xl border-2 py-3.5 text-sm font-semibold transition hover:bg-neutral-50 sm:text-base"
-              style={{ borderColor: NAVY, color: NAVY }}
-            >
-              Alle beliebten Beiträge ansehen
-            </button>
+            <div className="relative mt-auto shrink-0 pt-6 sm:pt-7">
+              <button
+                type="button"
+                onClick={() => {
+                  setSortMode("beliebt");
+                  scrollToAlle();
+                }}
+                className="w-full rounded-2xl border-2 py-3.5 text-sm font-semibold shadow-sm transition hover:border-[#0F4F68]/50 hover:bg-white/80 sm:py-4 sm:text-base"
+                style={{ borderColor: NAVY, color: NAVY }}
+              >
+                Alle beliebten Beiträge ansehen
+              </button>
+            </div>
           </div>
         </aside>
       </div>
