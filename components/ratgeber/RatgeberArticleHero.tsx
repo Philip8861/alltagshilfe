@@ -56,7 +56,7 @@ export function RatgeberArticleHero({
 }: RatgeberArticleHeroProps) {
   return (
     <section aria-labelledby="ratgeber-artikel-heading" className="relative isolate overflow-hidden">
-      <div className="pointer-events-none absolute inset-0 -z-20 min-h-[20rem] sm:min-h-[22rem]">
+      <div className="pointer-events-none absolute inset-0 -z-20 min-h-[14rem] sm:min-h-[15.4rem]">
         <Image
           src={BG_SRC}
           alt=""
@@ -71,11 +71,14 @@ export function RatgeberArticleHero({
         aria-hidden
       />
 
-      <Container className="relative z-10 max-w-4xl py-11 sm:py-14 lg:py-16">
-        <p className="text-sm font-bold uppercase tracking-[0.16em] text-[#0F4F68]">
+      <Container className="relative z-10 max-w-4xl py-8 sm:py-10 lg:py-11">
+        <p className="text-xs font-bold uppercase tracking-[0.14em] text-[#0F4F68] sm:text-sm">
           Ratgeber
         </p>
-        <h1 id="ratgeber-artikel-heading" className="mt-3 max-w-[min(100%,52rem)] text-balance text-3xl font-extrabold leading-tight text-[#0F4F68] sm:text-4xl sm:leading-[1.12] lg:text-[2.15rem]">
+        <h1
+          id="ratgeber-artikel-heading"
+          className="mt-2 max-w-[min(100%,52rem)] text-balance text-[1.31rem] font-extrabold leading-tight tracking-tight text-[#0F4F68] sm:text-[1.575rem] sm:leading-[1.14] lg:text-[1.505rem]"
+        >
           {title}
         </h1>
 
@@ -109,7 +112,7 @@ export function RatgeberArticleHero({
             href={ctaHref}
             className="inline-flex min-h-[3rem] max-w-[min(100%,28rem)] items-center justify-center rounded-xl bg-[#F78F2E] px-6 py-3.5 text-center text-base font-bold leading-snug text-white shadow-[0_12px_32px_-12px_rgba(247,143,46,0.55)] transition hover:opacity-[0.97] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68] focus-visible:ring-offset-2 sm:min-h-[3.25rem] sm:px-8 sm:text-lg"
           >
-            Wir beraten Sie gerne! Jetzt Termin vereinbaren
+            Noch Fragen? Wir beraten Sie gerne! Jetzt Termin vereinbaren
           </Link>
         </div>
         {footer ? <div className="mt-6 flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:items-center">{footer}</div> : null}
