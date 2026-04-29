@@ -45,7 +45,7 @@ export default function RootLayout({
         <OrganizationJsonLd />
         <a
           href="#main-content"
-          className="absolute -left-[9999px] top-4 z-[100] rounded bg-white px-4 py-2 font-medium text-neutral-900 shadow-lg outline-none focus:left-4 focus:block focus:ring-2 focus:ring-neutral-900"
+          className="absolute -left-[9999px] top-4 z-[110] rounded bg-white px-4 py-2 font-medium text-neutral-900 shadow-lg outline-none focus:left-4 focus:block focus:ring-2 focus:ring-neutral-900"
         >
           Zum Inhalt springen
         </a>

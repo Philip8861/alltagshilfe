@@ -6,6 +6,8 @@ type Props = {
   post: BlogPostMeta;
   categoryTitle: string;
   featured?: boolean;
+  /** Badge neben der Kategorie, wenn „featured“ (z. B. Blog-Übersicht vs. Kategorieseite) */
+  featuredBadgeLabel?: string;
 };
 
 function fmtDeDate(iso: string) {
@@ -18,7 +20,7 @@ function fmtDeDate(iso: string) {
   }
 }
 
-export function BlogCard({ post, categoryTitle, featured }: Props) {
+export function BlogCard({ post, categoryTitle, featured, featuredBadgeLabel }: Props) {
   return (
     <article
       className={`group rounded-2xl border border-[#0F4F68]/12 bg-white p-5 shadow-sm transition hover:border-[#0F4F68]/25 hover:shadow-md ${
@@ -41,7 +43,7 @@ export function BlogCard({ post, categoryTitle, featured }: Props) {
         <span className="rounded-full bg-[#0F4F68]/10 px-2.5 py-1 font-semibold text-[#0F4F68]">{categoryTitle}</span>
         {featured ? (
           <span className="rounded-full bg-[#F78F2E]/15 px-2.5 py-1 font-semibold text-[#A3560D]">
-            Aktueller Schwerpunkt
+            {featuredBadgeLabel ?? "Aktueller Schwerpunkt"}
           </span>
         ) : null}
         <span className="inline-flex items-center gap-1" title="Stand der Aktualität">

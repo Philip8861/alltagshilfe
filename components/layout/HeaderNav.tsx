@@ -179,7 +179,7 @@ export function HeaderNav() {
         </button>
       </div>
 
-      {/* Backdrop per Portal unter body: liegt garantiert über dem Seiteninhalt (z-[45] unter Header z-50), nur mobil */}
+      {/* Backdrop per Portal unter body: liegt über dem Seiteninhalt, unter dem sticky Header (z-[100]), nur mobil */}
       {mounted &&
         mobileOpen &&
         typeof document !== "undefined" &&

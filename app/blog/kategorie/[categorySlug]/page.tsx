@@ -43,6 +43,11 @@ export default async function BlogCategoryPage({ params }: Props) {
     (a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime(),
   );
 
+  const topSlug = cat.featuredPostSlug;
+  const topPost =
+    topSlug ? posts.find((p) => p.slug === topSlug) : undefined;
+  const listPosts = topPost ? posts.filter((p) => p.slug !== topPost.slug) : posts;
+
   const serviceLinks =
     cat.slug === "pflegegrad-leistungen"
       ? [
@@ -101,15 +106,41 @@ export default async function BlogCategoryPage({ params }: Props) {
           <p className="mt-4 text-pretty leading-relaxed text-neutral-700">{cat.shortIntro}</p>
         </header>
 
-        {posts.length > 0 ? (
-          <ul className="mt-12 grid list-none gap-8 md:grid-cols-2">
-            {posts.map((post) => (
-              <li key={post.slug}>
-                <BlogCard post={post} categoryTitle={cat.title} />
-              </li>
-            ))}
-          </ul>
-        ) : (
+        {topPost ? (
+          <section aria-labelledby="blog-kategorie-top-heading" className="mt-12 max-w-4xl" id="top-thema">
+            <p
+              id="blog-kategorie-top-heading"
+              className="text-xs font-bold uppercase tracking-[0.2em] text-neutral-500 sm:text-sm"
+            >
+              Top-Thema
+            </p>
+            <div className="mt-4">
+              <BlogCard
+                post={topPost}
+                categoryTitle={cat.title}
+                featured
+                featuredBadgeLabel="Top-Thema"
+              />
+            </div>
+          </section>
+        ) : null}
+
+        {listPosts.length > 0 ? (
+          <div className={topPost ? "mt-14" : "mt-12"}>
+            {topPost ? (
+              <h2 className="font-heading text-xl font-bold text-[#0F4F68] sm:text-2xl">Weitere Beiträge</h2>
+            ) : null}
+            <ul className={`grid list-none gap-8 md:grid-cols-2 ${topPost ? "mt-8" : ""}`}>
+              {listPosts.map((post) => (
+                <li key={post.slug}>
+                  <BlogCard post={post} categoryTitle={cat.title} />
+                </li>
+              ))}
+            </ul>
+          </div>
+        ) : null}
+
+        {!topPost && posts.length === 0 ? (
           <p className="mt-12 max-w-2xl rounded-2xl border border-[#0F4F68]/12 bg-white p-6 text-neutral-700 shadow-sm">
             In dieser Kategorie liegt noch kein veröffentlichter Pflege‑Blog‑Beitrag vor. Für vertiefende Themen schauen Sie
             gern in den{" "}
@@ -122,7 +153,7 @@ export default async function BlogCategoryPage({ params }: Props) {
             </Link>
             .
           </p>
-        )}
+        ) : null}
 
         <section aria-labelledby="cat-services" className="mt-14 max-w-2xl">
           <h2 id="cat-services" className="font-heading text-xl font-bold text-[#0F4F68]">

@@ -39,4 +39,6 @@ export type BlogCategoryDef = {
   shortIntro: string;
   seoTitle: string;
   metaDescription: string;
+  /** Optionaler Blog-Slug: wird auf `/blog/kategorie/[slug]` als „Top-Thema“ prominent gesetzt */
+  featuredPostSlug?: string;
 };

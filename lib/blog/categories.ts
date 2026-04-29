@@ -9,6 +9,7 @@ export const BLOG_CATEGORIES: BlogCategoryDef[] = [
     seoTitle: "Pflegegrad & Pflegeleistungen: Ratgeber für Angehörige",
     metaDescription:
       "Alle wichtigen Informationen zu Pflegegrad, Pflegegeld, MD-/MDK-Begutachtung, Leistungen und Antragstellung.",
+    featuredPostSlug: "pflegegrad-beantragen-2026",
   },
   {
     slug: "haushaltshilfe-entlastungsbetrag",
