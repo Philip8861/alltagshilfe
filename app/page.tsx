@@ -22,7 +22,7 @@ const STARTSEITE_FAQ_BG = "#ffffff";
 const STARTSEITE_FAQ_WELLEN_D =
   "M0,120 C200,32 420,8 600,22 C800,38 1010,90 1200,120 L1200,120 L0,120 Z";
 
-/** Bogenfüllung Übergang Hero → „Unsere Leistungen“ (nach oben gewölbt) */
+/** Bogenfüllung Übergang Hero → „Unsere Leistungen“ / weitere Blöcke (nach oben gewölbt) */
 const STARTSEITE_LEISTUNGEN_BOGEN_D =
   "M0,120 C320,28 880,28 1200,120 L1200,120 L0,120 Z";
 
@@ -177,8 +177,17 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="relative z-20 mt-12 w-full px-4 sm:mt-14 sm:px-6 lg:mt-16 lg:px-[var(--ahs-page-gutter)]">
-        <div className="mx-auto w-full max-w-6xl">
+      <section className="relative z-20 mt-12 w-full bg-[#F2F9FA] px-4 pt-[1.35rem] pb-8 sm:mt-14 sm:px-6 sm:pt-[2rem] sm:pb-[2.4rem] lg:mt-16 lg:px-[var(--ahs-page-gutter)] lg:pt-[2rem] lg:pb-10">
+        <svg
+          className="pointer-events-none absolute left-0 top-0 h-12 w-full -translate-y-[68%] sm:h-16"
+          viewBox="0 0 1200 120"
+          preserveAspectRatio="none"
+          fill="none"
+          aria-hidden
+        >
+          <path d={STARTSEITE_LEISTUNGEN_BOGEN_D} fill="#F2F9FA" />
+        </svg>
+        <div className="relative z-[1] mx-auto w-full max-w-6xl">
           <h3 className="text-center text-3xl font-extrabold tracking-tight text-[#0F4F68] sm:text-4xl">
             Ihre Vorteile bei uns
           </h3>
