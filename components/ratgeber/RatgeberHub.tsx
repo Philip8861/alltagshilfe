@@ -661,7 +661,7 @@ export function RatgeberHub(props?: RatgeberHubProps) {
                 Keine Artikel für diese Auswahl. Andere Themen oder Suchbegriff probieren.
               </p>
             ) : isCategoryFocused ? (
-              <ul className="mt-8 grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4 lg:gap-5">
+              <ul className="mt-8 grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-4 md:gap-5">
                 {gridBeitraege.map((beitrag, idx) => (
                   <li key={beitrag.slug} className="aspect-square">
                     <Link
