@@ -73,10 +73,10 @@ export function RatgeberArticleHero({
           <div className="pointer-events-none absolute inset-0 z-[1] bg-gradient-to-t from-white/65 via-transparent to-transparent" aria-hidden />
 
           <div className="absolute inset-0 z-[2] flex flex-col justify-center px-5 py-6 sm:px-10 sm:py-8 lg:px-14">
-            <div className="mx-auto flex w-full min-w-0 max-w-xl flex-col items-center text-center sm:max-w-2xl">
+            <div className="flex w-full min-w-0 max-w-[min(38rem,100%)] flex-col items-start text-left">
               <h1
                 id="ratgeber-artikel-heading"
-                className="text-balance text-2xl font-extrabold leading-tight text-[#0F4F68] shadow-sm sm:text-[1.72rem] sm:leading-[1.22] lg:text-[2rem]"
+                className="w-full text-balance text-left text-2xl font-extrabold leading-tight text-[#0F4F68] shadow-sm sm:text-[1.72rem] sm:leading-[1.22] lg:text-[2rem]"
               >
                 {title}
               </h1>
