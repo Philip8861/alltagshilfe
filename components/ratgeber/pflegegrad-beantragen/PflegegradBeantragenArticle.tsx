@@ -1,4 +1,3 @@
-import type { ReactNode } from "react";
 import Link from "next/link";
 
 import { PflegegradChecklistSection } from "@/components/ratgeber/pflegegrad-beantragen/PflegegradChecklistSection";
@@ -14,6 +13,8 @@ import { PFLEGEGRAD_ARTICLE_FAQ } from "@/components/ratgeber/pflegegrad-beantra
 import { PFLEGEGRAD_ARTICLE_TOC_ENTRIES } from "@/components/ratgeber/pflegegrad-beantragen/pflegegrad-toc-config";
 import {
   ArticleSectionHeading,
+  ArticleStepHeading,
+  ArticleSubtitle,
   PflegegradCallout,
 } from "@/components/ratgeber/pflegegrad-beantragen/pflegegrad-visual-primitives";
 import { cn } from "@/lib/utils";
@@ -21,19 +22,15 @@ import { cn } from "@/lib/utils";
 const PROSE = "text-[1.125rem] leading-[1.7] text-neutral-800";
 const LINK = "font-medium text-[#0F4F68] underline-offset-2 hover:underline";
 
-function ArticleH3({ id, children }: { id?: string; children: ReactNode }) {
-  return (
-    <h3 id={id} className="mt-8 scroll-mt-28 text-lg font-semibold text-[#0F4F68] first:mt-0">
-      {children}
-    </h3>
-  );
-}
-
 export function PflegegradBeantragenArticle() {
   return (
     <div className={cn(PROSE, "min-w-0")}>
-      <details className="group mb-10 rounded-2xl border border-neutral-200 bg-white lg:hidden">
-        <summary className="cursor-pointer list-none px-4 py-3.5 text-sm font-semibold text-[#0F4F68] [&::-webkit-details-marker]:hidden">
+      <details className="group mb-11 overflow-hidden rounded-2xl border border-neutral-200/95 bg-white shadow-[0_12px_40px_-28px_rgba(15,79,104,0.22)] lg:hidden">
+        <summary className="relative cursor-pointer list-none px-4 py-3.5 text-sm font-semibold text-[#0F4F68] [&::-webkit-details-marker]:hidden">
+          <span
+            aria-hidden
+            className="absolute inset-x-0 top-0 h-[3px] bg-gradient-to-r from-[#0F4F68]/45 to-[#F78F2E]/35"
+          />
           <span className="flex items-center justify-between gap-2">
             INHALT
             <span aria-hidden className="text-neutral-400 transition group-open:rotate-180">
@@ -95,9 +92,7 @@ export function PflegegradBeantragenArticle() {
           Einschätzung, beim Antrag und bei der Vorbereitung auf die Begutachtung unterstützen.
         </p>
 
-        <h3 className="mt-12 scroll-mt-28 text-xl font-semibold tracking-tight text-[#0F4F68]">
-          Das Wichtigste auf einen Blick
-        </h3>
+        <ArticleSubtitle eyebrow="Überblick">Das Wichtigste auf einen Blick</ArticleSubtitle>
         <PflegegradFactsOverviewTable />
       </ArticleSectionHeading>
 
@@ -108,11 +103,11 @@ export function PflegegradBeantragenArticle() {
       >
         <PflegegradStepsTimeline />
 
-        <ArticleH3>Schritt 1: Pflegekasse kontaktieren</ArticleH3>
+        <ArticleStepHeading>Schritt 1: Pflegekasse kontaktieren</ArticleStepHeading>
         <p className="mt-3">
           Der erste Schritt ist die Kontaktaufnahme mit der Pflegekasse. Sie können dort anrufen und sagen:
         </p>
-        <blockquote className="my-5 border-l-2 border-[#0F4F68]/35 pl-4 text-[1.05rem] text-neutral-700 not-italic">
+        <blockquote className="relative my-6 overflow-hidden rounded-xl border border-[#0F4F68]/14 bg-[linear-gradient(135deg,#f9fcfc_0%,#ffffff_52%,#fafafa_100%)] px-[1.15rem] py-4 shadow-[inset_0_1px_0_0_rgba(15,79,104,0.06)] not-italic before:absolute before:inset-y-0 before:left-0 before:w-1 before:rounded-full before:bg-gradient-to-b before:from-[#0F4F68] before:to-[#3d8ea0]/80 before:content-[''] md:px-6 md:py-[1.1rem]">
           „Ich möchte für Frau/Herrn [Name] Leistungen der Pflegeversicherung beantragen und bitte um Prüfung eines
           Pflegegrades.“
         </blockquote>
@@ -125,7 +120,7 @@ export function PflegegradBeantragenArticle() {
           Das Antragsdatum ist wichtig, weil Leistungen der Pflegeversicherung grundsätzlich nur auf Antrag gewährt werden.
         </p>
 
-        <ArticleH3>Schritt 2: Antragsformular ausfüllen</ArticleH3>
+        <ArticleStepHeading>Schritt 2: Antragsformular ausfüllen</ArticleStepHeading>
         <p className="mt-3">
           Nach der ersten Kontaktaufnahme sendet die Pflegekasse meist ein Formular zu. Darin werden persönliche Daten,
           Versicherungsnummer, Wohnsituation, behandelnde Ärzte, Angaben zur Pflegeperson und gewünschte Leistungen
@@ -144,7 +139,7 @@ export function PflegegradBeantragenArticle() {
           .
         </p>
 
-        <ArticleH3>Schritt 3: Unterlagen sammeln</ArticleH3>
+        <ArticleStepHeading>Schritt 3: Unterlagen sammeln</ArticleStepHeading>
         <p className="mt-3">
           Je besser die Situation dokumentiert ist, desto nachvollziehbarer wird der tatsächliche Hilfebedarf. Sammeln Sie
           deshalb vor der Begutachtung wichtige Unterlagen.
@@ -167,7 +162,7 @@ export function PflegegradBeantragenArticle() {
         id="begutachtung-vorbereiten"
         heading="Begutachtung vorbereiten"
       >
-        <ArticleH3>Schritt 4: Begutachtungstermin vorbereiten</ArticleH3>
+        <ArticleStepHeading>Schritt 4: Begutachtungstermin vorbereiten</ArticleStepHeading>
         <p className="mt-3">
           Nach Antragstellung meldet sich der Medizinische Dienst beziehungsweise die zuständige Gutachterstelle zur
           Begutachtung. Die Begutachtung findet in der Regel bei der betroffenen Person zu Hause statt. Dadurch soll die
@@ -190,9 +185,9 @@ export function PflegegradBeantragenArticle() {
           </p>
         </PflegegradCallout>
 
-        <h3 id="was-wird-begutachtet" className="mt-12 scroll-mt-28 text-xl font-semibold text-[#0F4F68]">
+        <ArticleSubtitle id="was-wird-begutachtet" eyebrow="Begutachtung">
           Was wird bei der Pflegebegutachtung geprüft?
-        </h3>
+        </ArticleSubtitle>
         <p className="mt-4">
           Bei der Pflegebegutachtung geht es nicht allein um Krankheiten oder Diagnosen. Entscheidend ist, wie selbstständig
           die betroffene Person im Alltag ist. Der Medizinische Dienst bewertet verschiedene Lebensbereiche.
@@ -217,7 +212,7 @@ export function PflegegradBeantragenArticle() {
           Pflegeversicherung vor.
         </p>
 
-        <ArticleH3>Schritt 5: Bescheid prüfen</ArticleH3>
+        <ArticleStepHeading>Schritt 5: Bescheid prüfen</ArticleStepHeading>
         <p className="mt-3">
           Nach der Begutachtung erhält die Pflegekasse das Gutachten und entscheidet über den Pflegegrad. Anschließend
           bekommen Sie einen Bescheid. In diesem steht, ob ein Pflegegrad bewilligt wurde und welcher Pflegegrad anerkannt
@@ -235,30 +230,28 @@ export function PflegegradBeantragenArticle() {
           Die Pflegegrade reichen von Pflegegrad 1 bis Pflegegrad 5. Sie richten sich nach dem Grad der Beeinträchtigung der
           Selbstständigkeit oder Fähigkeiten.
         </p>
-        <ul className="mt-4 list-none space-y-3">
-          <li>
+        <ul className="mt-6 divide-y divide-neutral-200/90 rounded-xl border border-neutral-200/95 bg-[linear-gradient(180deg,#fafcfc_0%,#ffffff_40%)] px-0 py-0 shadow-[0_1px_0_0_rgba(15,79,104,0.04)] sm:px-1">
+          <li className="px-4 py-3.5 first:rounded-t-xl sm:px-5">
             <strong className="text-[#0F4F68]">Pflegegrad 1:</strong> 12,5 bis unter 27 Punkte – geringe Beeinträchtigung der
             Selbstständigkeit oder Fähigkeiten.
           </li>
-          <li>
+          <li className="px-4 py-3.5 sm:px-5">
             <strong className="text-[#0F4F68]">Pflegegrad 2:</strong> 27 bis unter 47,5 Punkte – erhebliche Beeinträchtigung.
           </li>
-          <li>
+          <li className="px-4 py-3.5 sm:px-5">
             <strong className="text-[#0F4F68]">Pflegegrad 3:</strong> 47,5 bis unter 70 Punkte – schwere Beeinträchtigung.
           </li>
-          <li>
+          <li className="px-4 py-3.5 sm:px-5">
             <strong className="text-[#0F4F68]">Pflegegrad 4:</strong> 70 bis unter 90 Punkte – schwerste Beeinträchtigung.
           </li>
-          <li>
+          <li className="px-4 py-3.5 last:rounded-b-xl sm:px-5">
             <strong className="text-[#0F4F68]">Pflegegrad 5:</strong> 90 bis 100 Punkte – schwerste Beeinträchtigung mit
             besonderen Anforderungen an die pflegerische Versorgung.
           </li>
         </ul>
         <p className="mt-4">Die Einstufung entscheidet darüber, welche Leistungen der Pflegeversicherung genutzt werden können.</p>
 
-        <h3 className="mt-10 scroll-mt-28 text-xl font-semibold text-[#0F4F68]">
-          Welche Leistungen können nach einem Pflegegrad wichtig werden?
-        </h3>
+        <ArticleSubtitle eyebrow="Leistungen">Welche Leistungen können nach einem Pflegegrad wichtig werden?</ArticleSubtitle>
         <p className="mt-4">
           Welche Leistungen genutzt werden können, hängt vom Pflegegrad und von der Versorgungssituation ab. Für die häusliche
           Pflege sind besonders Pflegegeld, Pflegesachleistungen, der Entlastungsbetrag, Pflegehilfsmittel, Verhinderungspflege,
@@ -336,7 +329,7 @@ export function PflegegradBeantragenArticle() {
           Begründung kann nachgereicht werden.
         </p>
         <p className="mt-4">Eine mögliche Formulierung lautet:</p>
-        <blockquote className="my-5 border-l-2 border-[#0F4F68]/35 pl-4 text-neutral-700 italic">
+        <blockquote className="relative my-6 overflow-hidden rounded-xl border border-[#0F4F68]/14 bg-neutral-50/80 px-[1.15rem] py-4 pl-6 italic text-neutral-800 shadow-[inset_0_1px_0_0_rgba(15,79,104,0.05)] before:absolute before:inset-y-0 before:left-0 before:w-[3px] before:bg-[#F78F2E]/80 before:content-[''] md:px-6 md:py-[1rem] md:pl-7">
           „Hiermit lege ich fristgerecht Widerspruch gegen den Bescheid vom [Datum] ein. Eine ausführliche Begründung reiche ich
           nach. Bitte senden Sie mir das vollständige Gutachten zu.“
         </blockquote>
@@ -352,10 +345,18 @@ export function PflegegradBeantragenArticle() {
         </p>
       </ArticleSectionHeading>
 
-      <section aria-labelledby="praxis-heading" className="mt-16 scroll-mt-28 border-t border-neutral-100 pt-12">
-        <h2 id="praxis-heading" className="text-xl font-semibold text-[#0F4F68]">
-          Praxisbeispiel: Warum Vorbereitung so wichtig ist
-        </h2>
+      <section
+        aria-labelledby="praxis-heading"
+        className="mt-16 scroll-mt-28 rounded-2xl border border-neutral-200/90 bg-[linear-gradient(165deg,#fafcfc_0%,#ffffff_55%,#f8fafb_100%)] p-6 shadow-[0_1px_0_0_rgba(15,79,104,0.05)] sm:p-8"
+      >
+        <div className="flex flex-wrap items-center gap-3 gap-y-2 border-b border-neutral-200/80 pb-4">
+          <span className="rounded-md border border-[#F78F2E]/35 bg-[#fff9f4] px-2.5 py-1 text-[0.68rem] font-semibold uppercase tracking-[0.08em] text-[#b85a1a]">
+            Fall
+          </span>
+          <h2 id="praxis-heading" className="text-[1.15rem] font-semibold leading-snug text-[#0F4F68] sm:text-[1.25rem]">
+            Praxisbeispiel: Warum Vorbereitung so wichtig ist
+          </h2>
+        </div>
         <p className="mt-4">
           Frau Müller ist 82 Jahre alt und lebt allein. Ihre Tochter hilft täglich beim Einkaufen, bei Medikamenten, beim
           Duschen, bei der Wäsche und bei Arztterminen. Beim Begutachtungstermin sagt Frau Müller mehrmals: „Ich komme
@@ -443,10 +444,19 @@ export function PflegegradBeantragenArticle() {
 
 function PflegegradQuellenSection() {
   return (
-    <section id="quellen-pflegegrad" className="mt-16 rounded-xl border border-neutral-200 bg-neutral-50/50 px-5 py-6 sm:px-6">
-      <h2 id="quellen-stand-heading" className="scroll-mt-28 text-lg font-semibold text-[#0F4F68]">
-        Quellen &amp; Stand
-      </h2>
+    <section
+      id="quellen-pflegegrad"
+      className="mt-16 rounded-2xl border border-neutral-200/90 bg-[linear-gradient(165deg,#f9fafb_0%,#ffffff_52%,#f7fafb_100%)] px-5 py-7 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.85)] sm:px-8 sm:py-8"
+    >
+      <div className="flex flex-wrap items-end gap-3 gap-y-2 border-b border-neutral-200/85 pb-4">
+        <h2 id="quellen-stand-heading" className="scroll-mt-28 text-lg font-semibold tracking-tight text-[#0F4F68]">
+          Quellen &amp; Stand
+        </h2>
+        <span
+          aria-hidden
+          className="mb-0.5 h-px min-w-[2.5rem] flex-1 rounded-full bg-gradient-to-r from-[#0F4F68]/25 to-transparent max-sm:hidden"
+        />
+      </div>
       <p className="mt-3 text-sm text-neutral-600">
         <strong className="text-neutral-900">Stand:</strong> April 2026
       </p>
@@ -523,19 +533,23 @@ function PflegegradRelatedSection() {
     "Pflegeberatung nach §37.3 SGB XI",
   ];
   return (
-    <section className="mt-14 border-t border-neutral-200 pt-10">
-      <h2 className="text-lg font-semibold text-[#0F4F68]">Verwandte Themen</h2>
-      <p className="mt-2 text-[1rem] text-neutral-600">
+    <section className="mt-14 rounded-2xl border border-dashed border-neutral-200/95 bg-neutral-50/40 px-5 py-8 sm:px-7">
+      <h2 className="text-lg font-semibold tracking-tight text-[#0F4F68]">Verwandte Themen</h2>
+      <p className="mt-3 text-[1rem] leading-relaxed text-neutral-600">
         Weitere vertiefende Artikel folgen sukzessive. Aktuell finden Sie in der{" "}
         <Link href="/ratgeber" className={LINK}>
           Ratgeber-Übersicht
         </Link>{" "}
         unsere weiteren Beiträge.
       </p>
-      <ul className="mt-6 list-none space-y-3 text-[1rem] text-neutral-800">
+      <ul className="mt-6 list-none space-y-2 text-[1rem] text-neutral-800">
         {items.map((t) => (
-          <li key={t} className="border-l-[3px] border-[#0F4F68]/35 pl-3">
-            {t}
+          <li
+            key={t}
+            className="flex gap-3 rounded-lg border border-transparent py-1.5 pl-1 hover:border-neutral-200/90 hover:bg-white"
+          >
+            <span className="mt-2 h-6 w-1 shrink-0 rounded-full bg-gradient-to-b from-[#0F4F68] to-[#4a93a8]" aria-hidden />
+            <span className="leading-relaxed">{t}</span>
           </li>
         ))}
       </ul>

@@ -94,7 +94,11 @@ export default function PflegegradBeantragenRatgeberPage() {
           <div className="mt-10 flex flex-col gap-10 lg:mt-12 lg:flex-row lg:items-start lg:gap-12">
             <aside className="hidden shrink-0 lg:block lg:w-[240px]">
               <div className="sticky top-28 space-y-6">
-                <nav aria-label="Inhalt" className="rounded-2xl border border-neutral-200 bg-white px-4 py-4 sm:px-5 sm:py-5">
+                <nav
+                  aria-label="Inhalt"
+                  className="relative overflow-hidden rounded-2xl border border-neutral-200/95 bg-white px-4 py-4 shadow-[0_2px_16px_-10px_rgba(15,79,104,0.1)] sm:px-5 sm:py-5"
+                >
+                  <div aria-hidden className="absolute inset-x-0 top-0 h-[3px] bg-gradient-to-r from-[#0F4F68]/45 to-[#F78F2E]/35" />
                   <p className="text-xs font-semibold uppercase tracking-[0.14em] text-neutral-500">Inhalt</p>
                   <ol className="mt-3 space-y-2.5">
                     {[...PFLEGEGRAD_ARTICLE_TOC_ENTRIES].map((e, i) => (
@@ -110,7 +114,8 @@ export default function PflegegradBeantragenRatgeberPage() {
                   </ol>
                 </nav>
 
-                <div className="rounded-2xl border border-neutral-200 bg-white px-4 py-4 sm:px-5 sm:py-5">
+                <div className="relative overflow-hidden rounded-2xl border border-neutral-200/95 bg-[linear-gradient(180deg,#fdfefe_0%,#ffffff_100%)] px-4 py-4 shadow-[0_2px_14px_-10px_rgba(15,79,104,0.1)] sm:px-5 sm:py-5">
+                  <div aria-hidden className="absolute inset-x-0 top-0 h-[3px] bg-gradient-to-r from-[#F78F2E]/50 to-[#0F4F68]/25" />
                   <p className="text-sm font-semibold text-[#0F4F68]">Persönliche Beratung</p>
                   <p className="mt-2 text-sm leading-relaxed text-neutral-600">
                     Sie möchten Unterstützung beim Pflegegrad-Antrag?

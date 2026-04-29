@@ -29,10 +29,14 @@ function CheckBullet() {
 export function PflegegradServiceSupportSection() {
   return (
     <aside
-      className="rounded-2xl border border-neutral-200 bg-white px-5 py-6 sm:px-7 sm:py-8"
+      className="relative overflow-hidden rounded-2xl border border-neutral-200/90 bg-[linear-gradient(180deg,#fafcfc_0%,#ffffff_40%)] px-5 py-7 shadow-[0_2px_16px_-8px_rgba(15,79,104,0.12)] sm:px-8 sm:py-9"
       aria-labelledby="ahs-service-support-heading"
     >
-      <h2 id="ahs-service-support-heading" className="text-xl font-semibold text-[#0F4F68]">
+      <div
+        aria-hidden
+        className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-[#0F4F68] via-[#3d9aaa] to-[#F78F2E]/90"
+      />
+      <h2 id="ahs-service-support-heading" className="mt-1 text-xl font-semibold tracking-tight text-[#0F4F68] sm:text-[1.35rem]">
         Wir unterstützen Sie beim Pflegegrad-Antrag
       </h2>
       <p className="mt-3 max-w-[40rem] text-[1.0625rem] leading-relaxed text-neutral-700">

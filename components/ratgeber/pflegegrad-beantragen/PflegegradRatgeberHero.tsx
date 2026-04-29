@@ -31,7 +31,12 @@ export function PflegegradRatgeberHero() {
         </ol>
       </nav>
 
-      <div className="mt-8 flex flex-col gap-8 lg:mt-10 lg:flex-row lg:items-start lg:justify-between lg:gap-10">
+      <div
+        className="mt-7 h-[3px] w-28 max-w-[40%] rounded-full bg-gradient-to-r from-[#0F4F68]/90 via-[#4a93a8] to-[#F78F2E]/80 sm:w-24"
+        aria-hidden
+      />
+
+      <div className="mt-8 flex flex-col gap-8 lg:mt-9 lg:flex-row lg:items-start lg:justify-between lg:gap-10">
         <div className="min-w-0 max-w-xl flex-1">
           <p className="inline-flex rounded-full border border-neutral-200 bg-white px-3 py-1 text-xs font-semibold uppercase tracking-[0.12em] text-[#0F4F68]">
             Ratgeber
@@ -48,7 +53,7 @@ export function PflegegradRatgeberHero() {
           </p>
         </div>
 
-        <div className="relative w-full max-w-md shrink-0 overflow-hidden rounded-2xl border border-neutral-100 lg:max-w-[380px] xl:max-w-[420px]">
+        <div className="relative w-full max-w-md shrink-0 overflow-hidden rounded-2xl border border-neutral-100 shadow-[0_12px_40px_-28px_rgba(15,79,104,0.35)] ring-1 ring-[#0F4F68]/10 lg:max-w-[380px] xl:max-w-[420px]">
           <Image
             src="/images/Ratgeber/ratgeber.webp"
             alt="Pflegeberatung: Gespräch mit älterer Person in vertrautem Umfeld"

@@ -2,9 +2,54 @@ import type { ReactNode } from "react";
 
 import { cn } from "@/lib/utils";
 
-const ACCENT = "#F78F2E";
 
-/** Absatz mit orangefarbener Nr. + H2 – optional Kinder für den gesamten Abschnitt in einem gemeinsamen `<section id>`. */
+/** Größere Zwischenüberschrift (unterhalb von H2) mit dekorativer Linie — semantisches H3 */
+export function ArticleSubtitle({
+  id,
+  eyebrow,
+  children,
+  className,
+}: {
+  id?: string;
+  /** z. B. „Orientierung“, optional */
+  eyebrow?: string;
+  children: ReactNode;
+  className?: string;
+}) {
+  return (
+    <div className={cn("scroll-mt-28 pt-11 first:pt-6", className)}>
+      {eyebrow ? (
+        <p className="mb-2 text-[0.7rem] font-semibold uppercase tracking-[0.22em] text-[#5a959e]">{eyebrow}</p>
+      ) : null}
+      <div className="flex flex-wrap items-end gap-x-5 gap-y-3">
+        <h3
+          id={id}
+          className="text-[1.25rem] font-semibold leading-snug tracking-tight text-[#0F4F68] sm:text-[1.35rem]"
+        >
+          {children}
+        </h3>
+        <span
+          className="h-px min-w-[3rem] flex-1 rounded-full bg-gradient-to-r from-[#F78F2E]/85 via-[#0F4F68]/35 to-transparent"
+          aria-hidden
+        />
+      </div>
+    </div>
+  );
+}
+
+/** Kleine Schritt-/Detailüberschrift (H3) mit Akzentstreifen links */
+export function ArticleStepHeading({ id, children }: { id?: string; children: ReactNode }) {
+  return (
+    <h3
+      id={id}
+      className="mt-9 scroll-mt-28 border-l-[4px] border-[#F78F2E]/90 pl-[0.875rem] text-[1.0625rem] font-semibold leading-snug text-[#0F4F68] first:mt-2 sm:text-[1.09rem]"
+    >
+      {children}
+    </h3>
+  );
+}
+
+/** Absatz mit grafischer Hauptüberschrift (Nummer im Badge + Verlauf). */
 export function ArticleSectionHeading({
   sectionNum,
   id,
@@ -17,30 +62,37 @@ export function ArticleSectionHeading({
   sectionNum: string;
   id: string;
   heading: ReactNode;
-  /** Abschnittstext nach der Überschrift */
   children?: ReactNode;
   className?: string;
-  /** Erster Abschnitt im Artikel: ohne oberen Rand/Border */
   isFirst?: boolean;
 }) {
   return (
     <section
       id={id}
       className={cn(
-        "scroll-mt-28 border-t border-neutral-200/80 pt-11",
+        "scroll-mt-28 border-t border-neutral-200/90 pt-[2.625rem]",
         isFirst ? "border-t-0 pt-0" : undefined,
         className,
       )}
     >
-      <div className="flex flex-wrap items-baseline gap-x-3 gap-y-2">
-        <span className="text-sm font-semibold tabular-nums" style={{ color: ACCENT }}>
+      <header className="flex flex-col gap-3 sm:flex-row sm:items-start sm:gap-5">
+        <span
+          className="inline-flex h-[2.5rem] min-w-[3.25rem] shrink-0 items-center justify-center rounded-xl border border-[#0F4F68]/22 bg-[#0f4f6810] text-[0.95rem] font-bold tabular-nums text-[PETROL]"
+          aria-hidden
+        >
           {sectionNum}
         </span>
-        <h2 className="text-2xl font-semibold tracking-tight text-[#0F4F68] sm:text-[1.65rem] sm:leading-snug">
-          {heading}
-        </h2>
-      </div>
-      {children ? <div className="mt-6 min-w-0">{children}</div> : null}
+        <div className="min-w-0 flex-1">
+          <h2 className="text-[1.45rem] font-semibold leading-snug tracking-tight text-[#0F4F68] sm:text-[1.7rem] sm:leading-[1.3]">
+            {heading}
+          </h2>
+          <div
+            className="mt-[0.55rem] h-[3px] w-[min(100%,14rem)] rounded-full bg-gradient-to-r from-[#0F4F68] via-[#3d8ea0] to-[#F78F2E]/90"
+            aria-hidden
+          />
+        </div>
+      </header>
+      {children ? <div className={cn(isFirst ? "mt-8" : "mt-9", "min-w-0")}>{children}</div> : null}
     </section>
   );
 }
@@ -56,15 +108,14 @@ export function PflegegradCallout({
 }) {
   const tint =
     variant === "orange"
-      ? "border-[#F78F2E]/35 bg-[#fffbf7]"
-      : "border-[#0F4F68]/18 bg-[#f6fafb]";
+      ? "border-[#F78F2E]/38 bg-[linear-gradient(160deg,#fffdfb_0%,#fff8f4_55%,#fafafa_100%)]"
+      : "border-[#0F4F68]/22 bg-[linear-gradient(160deg,#f9fcfc_0%,#f3f9fa_50%,#ffffff_100%)]";
+  const stripe = variant === "orange" ? "from-[#F78F2E]" : "from-[#0F4F68]";
   return (
-    <aside
-      className={cn("mt-6 rounded-xl border px-4 py-3 text-[1.0625rem] leading-relaxed text-neutral-700", tint)}
-      aria-label={title}
-    >
-      <p className="text-xs font-semibold uppercase tracking-wide text-[#0F4F68]/75">{title}</p>
-      <div className="mt-1.5">{children}</div>
+    <aside className={cn("relative mt-8 overflow-hidden rounded-xl border px-4 py-[0.95rem] pl-[1.125rem]", tint)} aria-label={title}>
+      <div className={cn("absolute inset-y-2 left-0 w-[3px] rounded-full bg-gradient-to-b to-transparent opacity-90", stripe)} aria-hidden />
+      <p className="text-[0.6875rem] font-semibold uppercase tracking-[0.12em] text-[#5a959e]">{title}</p>
+      <div className="mt-2 text-[1.0625rem] leading-relaxed text-neutral-700">{children}</div>
     </aside>
   );
 }
