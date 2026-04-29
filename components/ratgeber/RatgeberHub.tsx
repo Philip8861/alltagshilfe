@@ -276,8 +276,8 @@ export function RatgeberHub(props?: RatgeberHubProps) {
   return (
     <div className="min-w-0">
       {/* Hero: ein Block – Bild vollflächig, Text & Suche wie zuvor darüber */}
-      <section className="relative w-full px-3 sm:px-4 md:px-5" aria-labelledby="ratgeber-hub-heading">
-        <div className="relative isolate min-h-[13rem] w-full overflow-hidden rounded-b-3xl bg-[#FFFCFA] sm:min-h-[15.5rem] md:min-h-[18rem] lg:min-h-[19.5rem]">
+      <section className="relative z-[60] w-full px-3 sm:px-4 md:px-5" aria-labelledby="ratgeber-hub-heading">
+        <div className="relative isolate min-h-[13rem] w-full rounded-b-3xl bg-[#FFFCFA] sm:min-h-[15.5rem] md:min-h-[18rem] lg:min-h-[19.5rem]">
           {/* Hintergrundbild in eigenem Layer clippen (untere Ecken) */}
           <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden rounded-b-3xl" aria-hidden>
             <Image
@@ -327,7 +327,7 @@ export function RatgeberHub(props?: RatgeberHubProps) {
               >
               <div
                 ref={searchComboRef}
-                className="relative min-w-0"
+                className="relative z-[80] min-w-0"
                 role="combobox"
                 aria-expanded={searchFocused && query.trim().length > 0}
                 aria-controls="ratgeber-search-suggestions"
@@ -372,7 +372,7 @@ export function RatgeberHub(props?: RatgeberHubProps) {
                     id="ratgeber-search-suggestions"
                     role="listbox"
                     aria-label="Suchvorschläge"
-                    className="absolute left-0 right-0 top-full z-50 mt-1 max-h-[min(18rem,50vh)] overflow-y-auto rounded-2xl border border-neutral-200 bg-white py-1 shadow-lg"
+                    className="absolute left-0 right-0 top-full z-[90] mt-1 max-h-[min(26rem,72vh)] overflow-y-auto overscroll-contain rounded-2xl border border-neutral-200 bg-white py-1 shadow-xl ring-1 ring-black/5"
                   >
                     {searchSuggestions.length === 0 ? (
                       <p className="px-4 py-3 text-sm text-neutral-600">Keine passenden Artikel.</p>
@@ -407,7 +407,7 @@ export function RatgeberHub(props?: RatgeberHubProps) {
       </section>
 
       {/* Themen-Pills: Abstand, damit die abgerundete Hero-Kante auf Seitenhintergrund (#FFFBF7) sichtbar wird */}
-      <div className="mt-2 w-full border-b border-neutral-100 bg-[#FFFCFA] sm:mt-2.5">
+      <div className="relative z-10 mt-2 w-full border-b border-neutral-100 bg-[#FFFCFA] sm:mt-2.5">
         <Container className="max-w-7xl py-4">
           <div className="flex flex-wrap gap-x-2 gap-y-2.5" aria-label="Ratgeber nach Thema filtern">
             <button
