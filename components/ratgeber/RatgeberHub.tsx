@@ -509,30 +509,36 @@ export function RatgeberHub(props?: RatgeberHubProps) {
                 Beliebte Artikel
               </h3>
               <ol className="mt-3 space-y-2">
-                {beliebtListe.map((b, i) => (
-                  <li key={b.slug}>
-                    <Link
-                      href={`/ratgeber/${b.slug}`}
-                      className="group flex items-center gap-2.5 rounded-lg py-1.5 pr-1 transition hover:bg-[#F2F9FA]"
-                    >
-                      <span
-                        className="flex h-[1.625rem] min-w-[1.625rem] shrink-0 items-center justify-center rounded text-[0.65rem] font-extrabold leading-none text-white"
-                        style={{ backgroundColor: i === 0 ? ORANGE : NAVY }}
-                        aria-hidden
-                      >
-                        {i + 1}
-                      </span>
-                      <div className="min-w-0 flex-1">
-                        <span className="line-clamp-4 text-left text-[0.75rem] font-extrabold leading-snug text-[#0F4F68] group-hover:underline sm:text-[0.8rem]">
-                          {b.title}
-                        </span>
-                        <span className="mt-0.5 block text-[0.6rem] text-neutral-500">
-                          {getDisplayViews(b).toLocaleString("de-DE")} Aufrufe
-                        </span>
-                      </div>
-                    </Link>
+                {beliebtListe.length === 0 ? (
+                  <li className="rounded-lg border border-dashed border-neutral-200 bg-[#fafcfb] px-3 py-4 text-center text-[0.72rem] font-medium leading-snug text-neutral-500 sm:text-[0.75rem]">
+                    Noch keine Artikel eingetragen.
                   </li>
-                ))}
+                ) : (
+                  beliebtListe.map((b, i) => (
+                    <li key={b.slug}>
+                      <Link
+                        href={`/ratgeber/${b.slug}`}
+                        className="group flex items-center gap-2.5 rounded-lg py-1.5 pr-1 transition hover:bg-[#F2F9FA]"
+                      >
+                        <span
+                          className="flex h-[1.625rem] min-w-[1.625rem] shrink-0 items-center justify-center rounded text-[0.65rem] font-extrabold leading-none text-white"
+                          style={{ backgroundColor: i === 0 ? ORANGE : NAVY }}
+                          aria-hidden
+                        >
+                          {i + 1}
+                        </span>
+                        <div className="min-w-0 flex-1">
+                          <span className="line-clamp-4 text-left text-[0.75rem] font-extrabold leading-snug text-[#0F4F68] group-hover:underline sm:text-[0.8rem]">
+                            {b.title}
+                          </span>
+                          <span className="mt-0.5 block text-[0.6rem] text-neutral-500">
+                            {getDisplayViews(b).toLocaleString("de-DE")} Aufrufe
+                          </span>
+                        </div>
+                      </Link>
+                    </li>
+                  ))
+                )}
               </ol>
             </aside>
           </div>

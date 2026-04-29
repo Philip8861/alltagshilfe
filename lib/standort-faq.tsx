@@ -92,13 +92,13 @@ export function buildStandortStyleFaq(standort: Standort | null): StandortFaqIte
     {
       q: "Kann der Entlastungsbetrag von 131 € über uns genutzt werden?",
       answerPlain:
-        "Ja. Wir sind bei allen Pflegekassen in Deutschland zugelassen, sodass die Abrechnung problemlos möglich ist.",
+        "Ja. Wir sind bei allen Pflegekassen in Deutschland zugelassen, sodass die Abrechnung problemlos möglich ist. Hintergrundinfos finden Sie im Ratgeber-Bereich auf unserer Website.",
       answer: (
         <>
           <strong>Ja.</strong> Wir sind bei <strong>allen Pflegekassen in Deutschland</strong> zugelassen, sodass die
-          Abrechnung problemlos möglich ist. Hintergrundinfos finden Sie in unserem{" "}
-          <Link href="/ratgeber/entlastungsbetrag-131-euro" className={STANDORT_FAQ_LINK_CLASS}>
-            Ratgeber zum Entlastungsbetrag
+          Abrechnung problemlos möglich ist. Hintergrundinfos zu Pflege-Leistungen und dem Alltag finden Sie in unserem{" "}
+          <Link href="/ratgeber" className={STANDORT_FAQ_LINK_CLASS}>
+            Ratgeber-Bereich
           </Link>
           .
         </>

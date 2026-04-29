@@ -12,6 +12,9 @@ export async function fetchRatgeberArticleViewTotals(): Promise<{ bySlug: Record
   }
 
   const paths = RATGEBER_BEITRAEGE.map((b) => `/ratgeber/${b.slug}`);
+  if (paths.length === 0) {
+    return { bySlug: {}, live: false };
+  }
   /* eslint-disable @typescript-eslint/no-explicit-any -- generischer Supabase Client */
   const { data, error } = await (svc as any)
     .from("site_page_views_daily")
