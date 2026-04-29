@@ -6,6 +6,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Container } from "@/components/layout/Container";
 import {
   RATGEBER_BEITRAEGE,
+  RATGEBER_CATEGORY_LABELS,
   ratgeberHubCardImage,
   type RatgeberBeitragMeta,
   type RatgeberCategoryId,
@@ -19,7 +20,7 @@ const NAVY = "#0F4F68";
 /** Wie die Aquarell-Blog-Teaser (blog_1–blog_7), ohne grauen Rand */
 const CARD_CANVAS = "#FEFEFE";
 
-const CATEGORY_FALLBACK_ORDER: RatgeberCategoryId[] = [
+const CATEGORY_ORDER: RatgeberCategoryId[] = [
   "pflegegrad_leistungen",
   "haushalt_betreuung",
   "pflegehilfsmittel_42eur",
@@ -146,12 +147,89 @@ function haystackForBeitrag(beitrag: RatgeberBeitragMeta): string {
   return [beitrag.title, beitrag.excerpt, beitrag.tags.join(" ")].join(" ").toLocaleLowerCase("de");
 }
 
+function matchesCategory(beitrag: RatgeberBeitragMeta, cat: RatgeberCategoryId | "alle"): boolean {
+  if (cat === "alle") return true;
+  return beitrag.categories.includes(cat);
+}
+
 
 
 const SEARCH_SUGGESTIONS_MAX = 8;
 
 function hubIconCategory(beitrag: RatgeberBeitragMeta): RatgeberCategoryId {
-  return beitrag.categories[0] ?? CATEGORY_FALLBACK_ORDER[0];
+  return beitrag.categories[0] ?? CATEGORY_ORDER[0];
+}
+
+const OV = {
+  xmlns: "http://www.w3.org/2000/svg",
+  viewBox: "0 0 24 24",
+  fill: "none" as const,
+  stroke: "currentColor",
+  strokeWidth: 1.75,
+  strokeLinecap: "round" as const,
+  strokeLinejoin: "round" as const,
+  className: "h-full w-full",
+  "aria-hidden": true as const,
+};
+
+/** Eigenes Overlay-Symbol je Artikel-Slug — saubere Formen auf dem Aquarell. */
+function HubOverlayIcon({
+  slug,
+  fallbackCategory,
+}: {
+  slug: string;
+  fallbackCategory: RatgeberCategoryId;
+}) {
+  switch (slug) {
+    case "pflegegrad-beantragen-2026":
+      return (
+        <svg {...OV}>
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+          <polyline points="14 2 14 8 20 8" />
+          <line x1="9" x2="15" y1="13" y2="13" />
+          <line x1="9" x2="15" y1="17" y2="17" />
+        </svg>
+      );
+    case "pflegegrad-beantragen-checkliste":
+      return (
+        <svg {...OV}>
+          <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" />
+          <path d="M9 13h8M12 17h5" />
+          <path d="M9 13l3 3 6-8" />
+        </svg>
+      );
+    case "hausnotruf-ratgeber":
+      return (
+        <svg {...OV}>
+          <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
+        </svg>
+      );
+    case "entlastungsbetrag-131-euro":
+      return (
+        <svg {...OV}>
+          <line x1="12" x2="12" y1="2" y2="22" />
+          <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+        </svg>
+      );
+    case "pflegegrad-1-der-ultimative-leitfaden":
+      return (
+        <svg {...OV}>
+          <path d="M6 3h12v18H6z" />
+          <path d="M9 9h7M9 13h7M9 17h5" />
+        </svg>
+      );
+    case "pflegegrad-2-alles-was-du-wissen-musst":
+      return (
+        <svg {...OV}>
+          <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+          <path d="M20 22V10H6a2 2 0 0 0-2 2v10" />
+          <circle cx="12" cy="7.5" r="3.5" />
+          <circle cx="18.5" cy="10.5" r="1" />
+        </svg>
+      );
+    default:
+      return <TopicIcon kind={fallbackCategory} />;
+  }
 }
 
 function RatgeberArticleTeaserCard({
@@ -194,10 +272,10 @@ function RatgeberArticleTeaserCard({
           sizes="(min-width: 1280px) 18vw, (min-width: 768px) 22vw, 42vw"
           priority={false}
         />
-        <div className="pointer-events-none absolute inset-0 z-[2] flex items-center justify-center p-2 sm:p-2.5">
-          <span className="flex h-[5.125rem] w-[5.125rem] items-center justify-center text-[#0F4F68] sm:h-[5.875rem] sm:w-[5.875rem]">
-            <span className="flex h-[3.875rem] w-[3.875rem] items-center justify-center sm:h-[4.25rem] sm:w-[4.25rem]">
-              <TopicIcon kind={ik} />
+        <div className="pointer-events-none absolute inset-0 z-[2] flex items-center justify-center p-2 sm:p-3">
+          <span className="flex h-[6.5rem] w-[6.5rem] items-center justify-center text-[#0F4F68] sm:h-[7.5rem] sm:w-[7.5rem] md:h-[8rem] md:w-[8rem]">
+            <span className="flex h-[4.75rem] w-[4.75rem] items-center justify-center sm:h-[5.5rem] sm:w-[5.5rem] md:h-[5.75rem] md:w-[5.75rem]">
+              <HubOverlayIcon slug={beitrag.slug} fallbackCategory={ik} />
             </span>
           </span>
         </div>
@@ -208,7 +286,7 @@ function RatgeberArticleTeaserCard({
       >
         <span
           id={titleId}
-          className="line-clamp-3 text-left text-[0.7rem] font-bold leading-snug tracking-tight sm:text-xs"
+          className="line-clamp-3 text-left text-xs font-extrabold leading-snug tracking-tight text-balance sm:text-sm"
           style={{ color: NAVY }}
         >
           {beitrag.title}
@@ -239,30 +317,35 @@ export function RatgeberHub(props?: RatgeberHubProps) {
   const { initialArticleViewTotals, articleViewsLive = false } = props ?? {};
   const totals = useMemo(() => initialArticleViewTotals ?? {}, [initialArticleViewTotals]);
   const [query, setQuery] = useState("");
+  const [activeCategory, setActiveCategory] = useState<RatgeberCategoryId | "alle">("alle");
   const [searchFocused, setSearchFocused] = useState(false);
   const [highlightIndex, setHighlightIndex] = useState(-1);
+  const [mobileTopicsOpen, setMobileTopicsOpen] = useState(false);
   /** views = Beliebtheit (Aufrufe), date = neueste zuerst */
   const [sortMode, setSortMode] = useState<"views" | "date">("views");
   const searchComboRef = useRef<HTMLDivElement>(null);
+  const mobileTopicsRef = useRef<HTMLDivElement>(null);
 
   const getDisplayViews = useCallback(
     (b: RatgeberBeitragMeta) => displayArticleViews(b.slug, b.views, totals, articleViewsLive),
     [totals, articleViewsLive],
   );
 
-  const filteredBySearch = useMemo(() => {
+  const filteredBySearchAndCat = useMemo(() => {
     const q = query.trim().toLocaleLowerCase("de");
-    return RATGEBER_BEITRAEGE.filter((beitrag) => {
+    return RATGEBER_BEITRAEGE.filter((b) => matchesCategory(b, activeCategory)).filter((beitrag) => {
       if (!q) return true;
       return haystackForBeitrag(beitrag).includes(q);
     });
-  }, [query]);
+  }, [query, activeCategory]);
 
   const searchSuggestions = useMemo(() => {
     const q = query.trim().toLocaleLowerCase("de");
     if (!q) return [];
-    return RATGEBER_BEITRAEGE.filter((beitrag) => haystackForBeitrag(beitrag).includes(q)).slice(0, SEARCH_SUGGESTIONS_MAX);
-  }, [query]);
+    return RATGEBER_BEITRAEGE.filter((b) => matchesCategory(b, activeCategory))
+      .filter((beitrag) => haystackForBeitrag(beitrag).includes(q))
+      .slice(0, SEARCH_SUGGESTIONS_MAX);
+  }, [query, activeCategory]);
 
   useEffect(() => {
     const onDocDown = (e: MouseEvent) => {
@@ -277,17 +360,34 @@ export function RatgeberHub(props?: RatgeberHubProps) {
 
   useEffect(() => {
     setHighlightIndex(-1);
-  }, [query]);
+  }, [query, activeCategory]);
+
+  useEffect(() => {
+    const onDown = (e: MouseEvent) => {
+      if (!mobileTopicsRef.current?.contains(e.target as Node)) setMobileTopicsOpen(false);
+    };
+    document.addEventListener("mousedown", onDown);
+    return () => document.removeEventListener("mousedown", onDown);
+  }, []);
+
+  const isCategoryFocused = activeCategory !== "alle";
+  const categoryLabel = activeCategory !== "alle" ? RATGEBER_CATEGORY_LABELS[activeCategory] : "";
+
+  const beliebtListe = useMemo(() => {
+    return [...RATGEBER_BEITRAEGE]
+      .sort((a, b) => getDisplayViews(b) - getDisplayViews(a))
+      .slice(0, 8);
+  }, [getDisplayViews]);
 
   const gridBeitraege = useMemo(() => {
-    const arr = [...filteredBySearch];
+    const arr = [...filteredBySearchAndCat];
     if (sortMode === "views") {
       arr.sort((a, b) => getDisplayViews(b) - getDisplayViews(a));
     } else {
       arr.sort((a, b) => b.publishedAt.localeCompare(a.publishedAt));
     }
     return arr;
-  }, [filteredBySearch, sortMode, getDisplayViews]);
+  }, [filteredBySearchAndCat, sortMode, getDisplayViews]);
 
   const marqueeBeitraege = useMemo(
     () => [...RATGEBER_BEITRAEGE].sort((a, b) => b.publishedAt.localeCompare(a.publishedAt)),
@@ -434,55 +534,238 @@ export function RatgeberHub(props?: RatgeberHubProps) {
         </div>
       </section>
 
-      <Container className="mx-auto max-w-5xl space-y-5 px-4 pt-4 sm:space-y-6 sm:px-6 sm:pt-6 lg:px-8">
-        <div className="mx-auto min-h-0 min-w-0 max-w-5xl space-y-5 sm:space-y-6">
-          <section id="alle-ratgeber" className="scroll-mt-24">
-            <div className="mt-2 sm:mt-3">
-              <RatgeberMarquee beitraege={marqueeBeitraege} getViews={getDisplayViews} />
-            </div>
-
-            <div className="mt-5 flex flex-col gap-3 sm:mt-6 sm:flex-row sm:items-end sm:justify-between">
-              <h2 className="text-base font-bold tracking-tight sm:text-lg" style={{ color: NAVY }}>
+      <div ref={mobileTopicsRef} className="relative z-10 px-4 md:hidden">
+        <div className="mx-auto mt-6 flex max-w-2xl flex-col items-center">
+          <button
+            type="button"
+            aria-expanded={mobileTopicsOpen}
+            aria-controls="ratgeber-mobile-themen-panel"
+            onClick={() => setMobileTopicsOpen((o) => !o)}
+            className="inline-flex min-h-[48px] w-full max-w-md items-center justify-center gap-2 rounded-2xl border border-neutral-300 bg-white px-6 py-3 text-sm font-bold text-neutral-800 shadow-sm transition hover:border-neutral-400 hover:bg-neutral-50"
+          >
+            <span>{mobileTopicsOpen ? "Auswahl schließen" : "Beliebte Artikel & Themen"}</span>
+            <svg
+              className={`h-5 w-5 shrink-0 transition-transform ${mobileTopicsOpen ? "rotate-180" : ""}`}
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              aria-hidden
+            >
+              <path d="M6 9l6 6 6-6" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </button>
+          {mobileTopicsOpen ? (
+            <div
+              id="ratgeber-mobile-themen-panel"
+              role="region"
+              aria-label="Ratgeber-Themen wählen"
+              className="mt-3 w-full max-w-md rounded-2xl border border-neutral-200 bg-white p-2 shadow-xl"
+            >
+              <button
+                type="button"
+                className={`w-full rounded-xl px-4 py-3 text-left text-sm font-semibold transition ${
+                  activeCategory === "alle" ? "bg-[#0F4F68] text-white" : "hover:bg-neutral-50"
+                }`}
+                onClick={() => {
+                  setActiveCategory("alle");
+                  setMobileTopicsOpen(false);
+                }}
+                style={activeCategory !== "alle" ? { color: NAVY } : undefined}
+              >
                 Beliebte Artikel
-              </h2>
-              <div className="flex flex-wrap items-center gap-2 sm:justify-end">
-                <label htmlFor="ratgeber-sortierung" className="text-xs font-medium text-neutral-600 sm:text-sm">
-                  Sortierung
-                </label>
-                <select
-                  id="ratgeber-sortierung"
-                  value={sortMode}
-                  onChange={(e) => setSortMode(e.target.value === "date" ? "date" : "views")}
-                  className="min-h-[44px] min-w-[11.5rem] cursor-pointer rounded-xl border border-neutral-300 bg-white px-2.5 py-2 text-xs font-semibold text-neutral-900 shadow-sm outline-none transition hover:border-neutral-400 focus:border-[#0F4F68]/40 focus:ring-2 focus:ring-[#0F4F68]/20 sm:min-w-[12rem] sm:px-3 sm:text-sm"
+              </button>
+              {CATEGORY_ORDER.map((id) => (
+                <button
+                  key={id}
+                  type="button"
+                  className={`mt-1 w-full rounded-xl px-4 py-3 text-left text-sm font-semibold transition ${
+                    activeCategory === id ? "bg-[#0F4F68] text-white" : "hover:bg-neutral-50"
+                  }`}
+                  onClick={() => {
+                    setActiveCategory(id);
+                    setMobileTopicsOpen(false);
+                    scrollToAlle();
+                  }}
+                  style={activeCategory !== id ? { color: NAVY } : undefined}
                 >
-                  <option value="views">Beliebtheit (Aufrufe)</option>
-                  <option value="date">Neueste zuerst</option>
-                </select>
+                  {RATGEBER_CATEGORY_LABELS[id]}
+                </button>
+              ))}
+            </div>
+          ) : null}
+        </div>
+      </div>
+
+      <div className="relative z-0 mt-2 hidden w-full border-b border-neutral-100 bg-[#FFFCFA] md:mt-2.5 md:block">
+        <Container className="max-w-7xl py-4">
+          <div
+            className="flex flex-wrap justify-center gap-x-2 gap-y-2.5 px-2"
+            aria-label="Beliebte Artikel und Themen filtern"
+          >
+            <button
+              type="button"
+              onClick={() => setActiveCategory("alle")}
+              className={`rounded-full px-4 py-2 text-center text-sm font-semibold transition ${
+                activeCategory === "alle"
+                  ? "text-white shadow-sm"
+                  : "border border-neutral-300 bg-white text-neutral-800 hover:border-neutral-400"
+              }`}
+              style={activeCategory === "alle" ? { backgroundColor: NAVY } : undefined}
+            >
+              Beliebte Artikel
+            </button>
+            {CATEGORY_ORDER.map((id) => (
+              <button
+                key={id}
+                type="button"
+                onClick={() => {
+                  setActiveCategory(id);
+                  scrollToAlle();
+                }}
+                className={`rounded-full px-4 py-2 text-center text-sm font-semibold transition ${
+                  activeCategory === id
+                    ? "text-white shadow-sm"
+                    : "border border-neutral-300 bg-white text-neutral-800 hover:border-neutral-400"
+                }`}
+                style={activeCategory === id ? { backgroundColor: NAVY } : undefined}
+              >
+                {RATGEBER_CATEGORY_LABELS[id]}
+              </button>
+            ))}
+          </div>
+        </Container>
+      </div>
+
+      <Container className="mx-auto max-w-7xl px-4 pt-5 sm:px-6 sm:pt-6 lg:px-8">
+        <section id="alle-ratgeber" className="scroll-mt-24">
+          {!isCategoryFocused ? (
+            <div className="mx-auto mb-8 max-w-4xl space-y-4">
+              <p className="text-center text-sm font-semibold text-neutral-600 sm:text-base">Themen wählen</p>
+              <div className="flex w-full justify-center">
+                <ul className="grid w-full max-w-md grid-cols-2 gap-3 justify-items-center sm:max-w-2xl sm:grid-cols-3 sm:gap-4 lg:max-w-4xl lg:grid-cols-4">
+                  {CATEGORY_ORDER.map((id) => (
+                    <li key={id} className="aspect-square w-full max-w-[9.5rem] min-w-0 sm:max-w-[10.25rem]">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setActiveCategory(id);
+                          scrollToAlle();
+                        }}
+                        className="flex h-full w-full flex-col items-center justify-center gap-2 rounded-2xl border border-neutral-200/95 bg-gradient-to-br from-white to-neutral-50/90 p-3 text-center shadow-sm transition hover:-translate-y-0.5 hover:border-neutral-300 hover:shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-neutral-400/40 focus-visible:ring-offset-2 sm:gap-2.5 sm:p-3.5"
+                        style={{ color: NAVY }}
+                      >
+                        <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-neutral-200/90 bg-white text-[#0F4F68] shadow-inner sm:h-14 sm:w-14 [&>svg]:scale-110">
+                          <TopicIcon kind={id} />
+                        </span>
+                        <span className="line-clamp-3 text-[0.65rem] font-bold leading-tight sm:text-[0.7rem]">
+                          {RATGEBER_CATEGORY_LABELS[id]}
+                        </span>
+                      </button>
+                    </li>
+                  ))}
+                </ul>
               </div>
             </div>
+          ) : null}
 
-            {gridBeitraege.length === 0 ? (
-              <p
-                className="mx-auto mt-4 max-w-2xl rounded-2xl border border-dashed border-neutral-200 p-6 text-center text-sm text-neutral-600 sm:p-8"
-                style={{ backgroundColor: CARD_CANVAS }}
+          <div className="mt-2 sm:mt-3">
+            <RatgeberMarquee beitraege={marqueeBeitraege} getViews={getDisplayViews} />
+          </div>
+
+          <div className="mt-8 flex flex-col gap-8 lg:mt-10 lg:flex-row lg:items-start lg:gap-8">
+            <aside
+              className="w-full shrink-0 border border-neutral-200/80 bg-white/90 p-4 shadow-sm sm:p-4 lg:sticky lg:top-24 lg:w-[13.5rem] lg:max-w-[13.5rem] xl:w-[15rem] xl:max-w-[15rem]"
+              style={{ borderRadius: "0.85rem" }}
+              aria-labelledby="ratgeber-beliebt-heading"
+            >
+              <h3
+                id="ratgeber-beliebt-heading"
+                className="border-b border-neutral-200/90 pb-2.5 text-[0.7rem] font-extrabold uppercase tracking-[0.12em] text-neutral-500"
               >
-                Keine Treffer für Ihre Suche. Suchbegriff anpassen oder löschen.
-              </p>
-            ) : (
-              <ul className="mx-auto mt-4 grid w-full max-w-5xl grid-cols-2 justify-items-stretch gap-x-2.5 gap-y-5 sm:gap-x-4 md:grid-cols-3 md:gap-y-6 lg:grid-cols-4 lg:gap-x-4 xl:gap-x-5">
-                {gridBeitraege.map((beitrag, idx) => (
-                  <li key={beitrag.slug} className="min-h-0 w-full justify-self-center">
-                    <RatgeberArticleTeaserCard
-                      beitrag={beitrag}
-                      showTopBadge={idx < 2}
-                      getDisplayViews={getDisplayViews}
-                    />
+                Beliebte Artikel
+              </h3>
+              <ol className="mt-3 space-y-1">
+                {beliebtListe.map((b, i) => (
+                  <li key={b.slug}>
+                    <Link
+                      href={`/ratgeber/${b.slug}`}
+                      className="group flex gap-2.5 rounded-lg py-1.5 pl-0.5 pr-1 transition hover:bg-[#F2F9FA]"
+                    >
+                      <span
+                        className="flex h-6 w-6 shrink-0 items-center justify-center rounded-md text-[0.65rem] font-extrabold text-white"
+                        style={{ backgroundColor: NAVY }}
+                        aria-hidden
+                      >
+                        {i + 1}
+                      </span>
+                      <div className="relative h-11 w-11 shrink-0 overflow-hidden rounded-md" style={{ backgroundColor: CARD_CANVAS }}>
+                        <Image
+                          src={ratgeberHubCardImage(b.slug)}
+                          alt=""
+                          fill
+                          className="object-cover object-center"
+                          sizes="88px"
+                        />
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <span className="line-clamp-3 text-left text-[0.68rem] font-extrabold leading-snug text-[#0F4F68] group-hover:underline">
+                          {b.title}
+                        </span>
+                        <span className="mt-0.5 block text-[0.6rem] text-neutral-500">
+                          {getDisplayViews(b).toLocaleString("de-DE")} Aufrufe
+                        </span>
+                      </div>
+                    </Link>
                   </li>
                 ))}
-              </ul>
-            )}
-          </section>
-        </div>
+              </ol>
+            </aside>
+
+            <div className="min-w-0 flex-1">
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+                <h2 className="text-base font-bold tracking-tight sm:text-lg" style={{ color: NAVY }}>
+                  {isCategoryFocused ? categoryLabel : "Artikel"}
+                </h2>
+                <div className="flex flex-wrap items-center gap-2 sm:justify-end">
+                  <label htmlFor="ratgeber-sortierung" className="text-xs font-medium text-neutral-600 sm:text-sm">
+                    Sortierung
+                  </label>
+                  <select
+                    id="ratgeber-sortierung"
+                    value={sortMode}
+                    onChange={(e) => setSortMode(e.target.value === "date" ? "date" : "views")}
+                    className="min-h-[44px] min-w-[11.5rem] cursor-pointer rounded-xl border border-neutral-300 bg-white px-2.5 py-2 text-xs font-semibold text-neutral-900 shadow-sm outline-none transition hover:border-neutral-400 focus:border-[#0F4F68]/40 focus:ring-2 focus:ring-[#0F4F68]/20 sm:min-w-[12rem] sm:px-3 sm:text-sm"
+                  >
+                    <option value="views">Beliebtheit (Aufrufe)</option>
+                    <option value="date">Neueste zuerst</option>
+                  </select>
+                </div>
+              </div>
+
+              {gridBeitraege.length === 0 ? (
+                <p
+                  className="mx-auto mt-4 rounded-2xl border border-dashed border-neutral-200 p-6 text-center text-sm text-neutral-600 sm:p-8"
+                  style={{ backgroundColor: CARD_CANVAS }}
+                >
+                  Keine Artikel für diese Auswahl. Anderes Thema wählen oder Suchbegriff anpassen.
+                </p>
+              ) : (
+                <ul className="mx-auto mt-4 grid grid-cols-2 gap-x-3 gap-y-6 sm:gap-x-4 md:grid-cols-3 md:gap-y-7 lg:grid-cols-4 lg:gap-x-4 xl:gap-x-5">
+                  {gridBeitraege.map((beitrag, idx) => (
+                    <li key={beitrag.slug} className="min-h-0 w-full justify-self-stretch">
+                      <RatgeberArticleTeaserCard
+                        beitrag={beitrag}
+                        showTopBadge={idx < 2}
+                        getDisplayViews={getDisplayViews}
+                      />
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          </div>
+        </section>
       </Container>
     </div>
   );
