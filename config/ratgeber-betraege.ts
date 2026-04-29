@@ -1,7 +1,15 @@
 /**
  * Zentrale Ratgeber-Metadaten für Verzeichnis, Verwandte Beiträge und Aufrufzahlen.
  */
-export type RatgeberCategoryId = "finanzen" | "pflege_zuhause" | "entlastung" | "recht";
+export type RatgeberCategoryId =
+  | "pflegegrad_leistungen"
+  | "haushalt_betreuung"
+  | "pflegehilfsmittel_42eur"
+  | "inkontinenz"
+  | "pflegeberatung_beratungseinsaetze"
+  | "pflegende_angehoerige"
+  | "pflegealltag_zuhause"
+  | "antraege_checklisten_downloads";
 
 export type RatgeberBeitragMeta = {
   slug: string;
@@ -30,10 +38,14 @@ export function readMinutesFromWordCount(words: number): number {
 }
 
 export const RATGEBER_CATEGORY_LABELS: Record<RatgeberCategoryId, string> = {
-  finanzen: "Finanzen & Leistungen",
-  pflege_zuhause: "Pflege zu Hause",
-  entlastung: "Entlastung",
-  recht: "Recht & Organisation",
+  pflegegrad_leistungen: "Pflegegrad & Pflegeleistungen",
+  haushalt_betreuung: "Haushaltshilfe & Betreuung",
+  pflegehilfsmittel_42eur: "Pflegehilfsmittel & 42€ Pauschale",
+  inkontinenz: "Inkontinenzversorgung",
+  pflegeberatung_beratungseinsaetze: "Pflegeberatung & Beratungseinsätze",
+  pflegende_angehoerige: "Pflegende Angehörige",
+  pflegealltag_zuhause: "Pflegealltag zu Hause",
+  antraege_checklisten_downloads: "Anträge, Checklisten & Downloads",
 };
 
 export const RATGEBER_BEITRAEGE: RatgeberBeitragMeta[] = [
@@ -53,7 +65,11 @@ export const RATGEBER_BEITRAEGE: RatgeberBeitragMeta[] = [
       "Angehörige",
       "MD",
     ],
-    categories: ["recht", "finanzen"],
+    categories: [
+      "antraege_checklisten_downloads",
+      "pflegende_angehoerige",
+      "pflegegrad_leistungen",
+    ],
     approxWordCount: 2800,
     readMinutes: readMinutesFromWordCount(2800),
     publishedAt: "2026-04-27",
@@ -67,7 +83,7 @@ export const RATGEBER_BEITRAEGE: RatgeberBeitragMeta[] = [
     imageAlt: "Vorschaubild Hausnotruf-Ratgeber",
     views: 489,
     tags: ["Hausnotruf", "Sicherheit", "Pflegekasse", "Pflegegrad", "Notfallhilfe"],
-    categories: ["pflege_zuhause", "entlastung"],
+    categories: ["pflegealltag_zuhause", "pflegegrad_leistungen"],
     approxWordCount: 940,
     readMinutes: readMinutesFromWordCount(940),
     publishedAt: "2025-08-12",
@@ -81,7 +97,7 @@ export const RATGEBER_BEITRAEGE: RatgeberBeitragMeta[] = [
     imageAlt: "Symbolbild: Entlastungsbetrag 131 Euro – hauswirtschaftliche Entlastung und Pflegealltag",
     views: 1284,
     tags: ["Entlastungsbetrag", "Pflegekasse", "Abrechnung", "Pflegegrad"],
-    categories: ["finanzen", "entlastung"],
+    categories: ["pflegegrad_leistungen", "haushalt_betreuung"],
     approxWordCount: 520,
     readMinutes: readMinutesFromWordCount(520),
     publishedAt: "2025-11-03",
@@ -96,7 +112,7 @@ export const RATGEBER_BEITRAEGE: RatgeberBeitragMeta[] = [
     imageAlt: "Pflegegrad 1: Leistungen der Pflegeversicherung und Tipps zur MDK-Begutachtung",
     views: 623,
     tags: ["Pflegegrad 1", "MDK", "Begutachtung", "Leistungen", "Entlastungsbetrag"],
-    categories: ["finanzen", "recht"],
+    categories: ["pflegegrad_leistungen"],
     approxWordCount: 1860,
     readMinutes: readMinutesFromWordCount(1860),
     publishedAt: "2026-02-18",
@@ -111,7 +127,7 @@ export const RATGEBER_BEITRAEGE: RatgeberBeitragMeta[] = [
     imageAlt: "Vorschaubild Pflegegrad 2",
     views: 512,
     tags: ["Pflegegrad 2", "Pflegegeld", "Pflegesachleistungen", "Ersatzpflege", "§37.3"],
-    categories: ["finanzen", "recht"],
+    categories: ["pflegegrad_leistungen", "pflegeberatung_beratungseinsaetze"],
     approxWordCount: 1320,
     readMinutes: readMinutesFromWordCount(1320),
     publishedAt: "2026-03-22",

@@ -21,7 +21,16 @@ const NAVY = "#0F4F68";
 const CREAM_PAGE = "#FFFBF7";
 const ORANGE = "#F78F2E";
 
-const CATEGORY_ORDER: RatgeberCategoryId[] = ["finanzen", "pflege_zuhause", "entlastung", "recht"];
+const CATEGORY_ORDER: RatgeberCategoryId[] = [
+  "pflegegrad_leistungen",
+  "haushalt_betreuung",
+  "pflegehilfsmittel_42eur",
+  "inkontinenz",
+  "pflegeberatung_beratungseinsaetze",
+  "pflegende_angehoerige",
+  "pflegealltag_zuhause",
+  "antraege_checklisten_downloads",
+];
 
 function ClockIcon({ className }: { className?: string }) {
   return (
@@ -67,34 +76,82 @@ function HeartOutlineIcon({ className }: { className?: string }) {
 }
 
 function TopicIcon({ kind }: { kind: RatgeberCategoryId }) {
-  const common = { width: 22, height: 22, viewBox: "0 0 24 24" as const, fill: "none" as const, stroke: "currentColor" as const, strokeWidth: 2, "aria-hidden": true as const };
+  const common = {
+    width: 22,
+    height: 22,
+    viewBox: "0 0 24 24" as const,
+    fill: "none" as const,
+    stroke: "currentColor" as const,
+    strokeWidth: 2,
+    "aria-hidden": true as const,
+  };
   switch (kind) {
-    case "finanzen":
+    case "pflegegrad_leistungen":
       return (
         <svg {...common}>
-          <path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6" strokeLinecap="round" strokeLinejoin="round" />
+          <path d="M12 3v18M6 8h12M8 16h8" strokeLinecap="round" strokeLinejoin="round" />
+          <path d="M9 5h6M9 19h6" strokeLinecap="round" />
         </svg>
       );
-    case "pflege_zuhause":
+    case "haushalt_betreuung":
+      return (
+        <svg {...common}>
+          <path d="M3 11l9-8 9 8M5 10v10h14V10" strokeLinecap="round" strokeLinejoin="round" />
+          <path d="M9 18v-4h6v4" strokeLinecap="round" />
+        </svg>
+      );
+    case "pflegehilfsmittel_42eur":
+      return (
+        <svg {...common}>
+          <rect x="4" y="6" width="16" height="14" rx="2" strokeLinejoin="round" />
+          <path d="M8 10h8M8 14h5" strokeLinecap="round" />
+        </svg>
+      );
+    case "inkontinenz":
+      return (
+        <svg {...common}>
+          <path
+            d="M12 3c-3 4-5 7-5 10a5 5 0 0010 0c0-3-2-6-5-10z"
+            strokeLinejoin="round"
+          />
+          <path d="M10 14h4" strokeLinecap="round" />
+        </svg>
+      );
+    case "pflegeberatung_beratungseinsaetze":
+      return (
+        <svg {...common}>
+          <path
+            d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"
+            strokeLinejoin="round"
+          />
+        </svg>
+      );
+    case "pflegende_angehoerige":
+      return (
+        <svg {...common}>
+          <path d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2" strokeLinecap="round" />
+          <circle cx="9" cy="7" r="4" />
+          <path d="M22 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75" strokeLinecap="round" />
+        </svg>
+      );
+    case "pflegealltag_zuhause":
       return (
         <svg {...common}>
           <path d="M3 11l9-8 9 8M5 10v10h14V10" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
       );
-    case "entlastung":
+    case "antraege_checklisten_downloads":
       return (
         <svg {...common}>
-          <path d="M20.8 4.6a5.5 5.5 0 00-7.8 0L12 5.6l-1-1a5.5 5.5 0 00-7.8 7.8L12 21l8.8-8.8a5.5 5.5 0 000-7.8z" strokeLinejoin="round" />
+          <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2" strokeLinejoin="round" />
+          <path d="M9 5a2 2 0 012-2h2a2 2 0 012 2v0a2 2 0 01-2 2H9a2 2 0 01-2-2v0z" strokeLinejoin="round" />
+          <path d="M9 12h6M9 16h6" strokeLinecap="round" />
         </svg>
       );
-    case "recht":
-      return (
-        <svg {...common}>
-          <path d="M12 3l7 4v6c0 5-3.5 9-7 10-3.5-1-7-5-7-10V7l7-4z" strokeLinejoin="round" />
-        </svg>
-      );
-    default:
-      return null;
+    default: {
+      const _exhaustive: never = kind;
+      return _exhaustive;
+    }
   }
 }
 
