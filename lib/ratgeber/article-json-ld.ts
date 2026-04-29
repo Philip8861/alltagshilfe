@@ -5,9 +5,10 @@ function abs(path: string) {
   return `${base}${path.startsWith("/") ? path : `/${path}`}`;
 }
 
-export type FaqLd = { question: string; answer: string };
+export type FaqLdRatgeber = { question: string; answer: string };
 
-export function serializeBlogArticleJsonLd(params: {
+/** JSON-LD Graph: Article, BreadcrumbList, optional FAQPage (wie Ratgeber-Langartikel). */
+export function serializeRatgeberArticleJsonLd(params: {
   headline: string;
   description: string;
   articleUrlPath: string;
@@ -15,11 +16,11 @@ export function serializeBlogArticleJsonLd(params: {
   dateModified: string;
   imageUrl?: string;
   breadcrumbs: { name: string; path: string }[];
-  faq: FaqLd[];
+  faq: FaqLdRatgeber[];
 }) {
   const articleUrl = abs(params.articleUrlPath);
-  const blogPosting: Record<string, unknown> = {
-    "@type": "BlogPosting",
+  const article: Record<string, unknown> = {
+    "@type": "Article",
     headline: params.headline,
     description: params.description,
     datePublished: params.datePublished,
@@ -29,7 +30,7 @@ export function serializeBlogArticleJsonLd(params: {
     mainEntityOfPage: { "@type": "WebPage", "@id": articleUrl },
   };
   if (params.imageUrl) {
-    blogPosting.image = params.imageUrl.startsWith("http") ? params.imageUrl : abs(params.imageUrl);
+    article.image = params.imageUrl.startsWith("http") ? params.imageUrl : abs(params.imageUrl);
   }
 
   const breadcrumb = {
@@ -42,7 +43,7 @@ export function serializeBlogArticleJsonLd(params: {
     })),
   };
 
-  const graph: unknown[] = [blogPosting, breadcrumb];
+  const graph: unknown[] = [article, breadcrumb];
 
   if (params.faq.length > 0) {
     graph.push({

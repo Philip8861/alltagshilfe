@@ -50,6 +50,28 @@ export const RATGEBER_CATEGORY_LABELS: Record<RatgeberCategoryId, string> = {
 
 export const RATGEBER_BEITRAEGE: RatgeberBeitragMeta[] = [
   {
+    slug: "pflegegrad-beantragen-2026",
+    title: "Pflegegrad beantragen 2026: Schritt-für-Schritt-Anleitung für Angehörige",
+    excerpt:
+      "Pflegegrad beantragen 2026: So stellen Angehörige den Antrag richtig. Mit Ablauf, Fristen, MD-/MDK-Begutachtung, Leistungen und Checkliste.",
+    image: "/images/Ratgeber/ratgeber.webp",
+    imageAlt: "Ratgeber: Pflegegrad beantragen – Antrag, Begutachtung und Leistungen im Überblick",
+    views: 0,
+    tags: [
+      "pflegegrad beantragen",
+      "Pflegegrad Antrag",
+      "MDK",
+      "Pflegekasse",
+      "Angehörige",
+      "2026",
+    ],
+    categories: ["pflegegrad_leistungen", "antraege_checklisten_downloads", "pflegende_angehoerige"],
+    approxWordCount: 3200,
+    readMinutes: readMinutesFromWordCount(3200),
+    publishedAt: "2026-01-15",
+    featured: true,
+  },
+  {
     slug: "pflegegrad-beantragen-checkliste",
     title: "Pflegegrad beantragen: Checkliste, Unterlagen & Tipps 2026",
     excerpt:
@@ -135,13 +157,23 @@ export const RATGEBER_BEITRAEGE: RatgeberBeitragMeta[] = [
 ];
 
 export function getVerwandteRatgeberBeitraege(currentSlug: string, limit = 4): RatgeberBeitragMeta[] {
-  return RATGEBER_BEITRAEGE.filter((b) => b.slug !== currentSlug).slice(0, limit);
+  const current = RATGEBER_BEITRAEGE.find((b) => b.slug === currentSlug);
+  const others = RATGEBER_BEITRAEGE.filter((b) => b.slug !== currentSlug);
+  if (!current) return others.slice(0, limit);
+  const catSet = new Set(current.categories);
+  const scored = others.map((b) => ({
+    b,
+    score: b.categories.reduce((acc, c) => acc + (catSet.has(c) ? 2 : 0), 0),
+  }));
+  scored.sort((a, b) => b.score - a.score || b.b.views - a.b.views);
+  return scored.slice(0, limit).map((s) => s.b);
 }
 
 /**
  * Reihenfolge auf der Ratgeber-Übersicht: Platz 1 → Platz 2 (nur eingetragene Slugs müssen `featured: true` sein).
  */
 const RATGEBER_FEATURED_HOME_ORDER = [
+  "pflegegrad-beantragen-2026",
   "entlastungsbetrag-131-euro",
   "pflegegrad-1-der-ultimative-leitfaden",
 ] as const;

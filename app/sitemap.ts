@@ -2,8 +2,7 @@ import { siteConfig } from "@/config/site";
 import type { MetadataRoute } from "next";
 import leistungenData from "@/content/leistungen.json";
 import { getAllStandortPageSlugs } from "@/config/standorte";
-import { getCategorySlugList } from "@/lib/blog/categories";
-import { getAllBlogSlugParams } from "@/lib/blog/posts-data";
+import { RATGEBER_BEITRAEGE } from "@/config/ratgeber-betraege";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const base = siteConfig.baseUrl;
@@ -42,6 +41,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${base}/inkontinenzversorgung`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.6 },
     { url: `${base}/impressum`, lastModified: new Date(), changeFrequency: "yearly", priority: 0.3 },
     { url: `${base}/datenschutz`, lastModified: new Date(), changeFrequency: "yearly", priority: 0.3 },
+    { url: `${base}/ratgeber`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.75 },
   ];
   const leistungen = leistungenData.map(
     (item: { slug: string }) => ({
@@ -57,17 +57,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
     changeFrequency: "monthly" as const,
     priority: 0.65,
   }));
-  const blogPosts = getAllBlogSlugParams().map(({ slug }) => ({
-    url: `${base}/blog/${slug}`,
+  const ratgeberArtikel = RATGEBER_BEITRAEGE.map((b) => ({
+    url: `${base}/ratgeber/${b.slug}`,
     lastModified: new Date(),
     changeFrequency: "monthly" as const,
     priority: 0.72,
   }));
-  const blogCategories = getCategorySlugList().map((categorySlug) => ({
-    url: `${base}/blog/kategorie/${categorySlug}`,
-    lastModified: new Date(),
-    changeFrequency: "monthly" as const,
-    priority: 0.68,
-  }));
-  return [...staticRoutes, ...leistungen, ...standortSeiten, ...blogPosts, ...blogCategories];
+  return [...staticRoutes, ...leistungen, ...standortSeiten, ...ratgeberArtikel];
 }

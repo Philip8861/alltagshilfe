@@ -14,6 +14,8 @@ const nextConfig: NextConfig = {
   },
   async redirects() {
     return [
+      { source: "/blog", destination: "/ratgeber", permanent: true },
+      { source: "/blog/:path*", destination: "/ratgeber", permanent: true },
       { source: "/leistungen", destination: "/", permanent: true },
       {
         source: "/leistungen/pflegeberatung-einsaetze",

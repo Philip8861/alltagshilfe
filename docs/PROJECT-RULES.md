@@ -25,7 +25,7 @@ Diese Datei ist die verbindliche Referenz für Architektur, Tech-Stack, Seitenst
 ## 1. Empfohlene Architektur
 
 - **Next.js 15** mit App Router: maximale Nutzung von Server Components, Streaming, React Server Components.
-- **Hybrid-Rendering**: Startseite, Landingpages, rechtliche Seiten und Blog-Listen **statisch** (SSG) wo möglich; dynamische Teile (Formulare, Konfigurator) über Server Actions / minimale Client Components.
+- **Hybrid-Rendering**: Startseite, Landingpages, rechtliche Seiten und Ratgeber-Hub **statisch** (SSG) wo möglich; dynamische Teile (Formulare, Konfigurator) über Server Actions / minimale Client Components.
 - **Strikte Trennung**: UI-Komponenten, Business-Logik (Validierung, Rate-Limiting), Content (MD/JSON/CMS-ready) und Konfiguration (Env, Feature-Flags) getrennt.
 - **Security-by-Design**: Validierung immer serverseitig (z. B. Zod), keine sensiblen Daten im Client, CSP und Security-Headers zentral.
 
@@ -42,7 +42,7 @@ Diese Datei ist die verbindliche Referenz für Architektur, Tech-Stack, Seitenst
 | `/landing/[slug]` | SSG/dynamisch | Landingpages |
 | `/kontakt` | Hybrid | Kontaktseite + Formular (Server Action) |
 | `/kontakt/danke` | SSG | Danke-Seite nach Formularversand |
-| `/blog`, `/blog/[slug]` | SSG | Blog-Übersicht und Einzelbeitrag |
+| `/ratgeber`, `/ratgeber/[slug]` | SSG | Ratgeber-Übersicht und Einzelratgeber (Metadaten in `config/ratgeber-betraege.ts`) |
 | `/faq` | SSG | FAQ |
 | `/referenzen`, `/team` | SSG | Referenzen, Team |
 | `/konfigurator`, `/konfigurator/zusammenfassung` | Hybrid | Konfigurator + Lead-Erfassung |
@@ -93,7 +93,7 @@ Diese Datei ist die verbindliche Referenz für Architektur, Tech-Stack, Seitenst
 - **components/partner/**: Login, Logout (geschützter Bereich).
 - **supabase/migrations/**: SQL für PostgreSQL (Supabase EU), siehe `001_partner_portal.sql`.
 - **lib/**: rate-limit.ts, security.ts, utils.ts.
-- **content/**: pages, leistungen, landing, blog, faq, site.json.
+- **content/**: pages, leistungen, landing, faq, site.json; Ratgeber-Metadaten in **config/ratgeber-betraege.ts**.
 - **config/**: site.ts, navigation.ts, features.ts, **start-einstieg.ts** (Startseite: Texte/Links für den geführten Einstiegsbereich unter dem Hero).
 - **config/standorte.ts** + **config/standorte-plz-generated.json**: PLZ-Zuordnung zu den vier Hauptstandorten (Quelle: `public/Standortlisten.pdf`). PLZ-Suche nutzt `findStandortByPlz` und `getOrtByPlz` (Ortsnamen zeilenweise aus der PDF). Bei PDF-Update: Text extrahieren (`npx pdf-parse text public/Standortlisten.pdf`), UTF-8 in `scripts/standortlisten-extract.txt`, dann `node scripts/parse-standort-pdf-text.js --ts`.
 - **middleware.ts**: Security-Headers, CSP (inkl. Supabase für Partnerportal), i18n-Rewrites `/en/*`, Session-Refresh nur unter `/partner/*` wenn Supabase konfiguriert.
@@ -106,7 +106,7 @@ Diese Datei ist die verbindliche Referenz für Architektur, Tech-Stack, Seitenst
 Next.js 15 + TS + Tailwind + App Router. Startseite (Hero, Leistungen, Trust, Referenzen, FAQ, CTA, Footer). Header, Footer. Kontaktformular mit Zod, Honeypot, Rate-Limiting, Danke-Seite. Über uns, Leistungen + [slug], Impressum, Datenschutz. Eine Beispiel-Landingpage. SEO (Metadata, OG, Twitter, Canonical, robots.txt, sitemap.xml, JSON-LD). Security-Headers, CSP. 404, Barrierefreiheit-Basis. next/image, next/font, kleine Bundles.
 
 ### Phase 2
-Blog (Liste + [slug]). FAQ-Seite + Section auf Landingpages. Konfigurator (mehrstufig, State, Zusammenfassung, Lead-Erfassung). Mehr Landingpages, Trust, FAQ-, CTA-Module. Cookie/Consent-UI. FAQ-Schema, BreadcrumbList, Article-Schema.
+Ratgeber-Hub (`/ratgeber`) mit einzelnen Artikeln unter `/ratgeber/[slug]` (Siehe MVP-Erweiterung). FAQ-Seite + Section auf Landingpages. Konfigurator (mehrstufig, State, Zusammenfassung, Lead-Erfassung). Mehr Landingpages, Trust, FAQ-, CTA-Module. Cookie/Consent-UI. FAQ-Schema, BreadcrumbList, Article-Schema.
 
 ### Phase 3
 Mehrsprachigkeit, CMS-Anbindung, Download-Seiten, E2E-Tests, Redis Rate-Limiting, Analytics/Consent-Integration.

@@ -27,7 +27,7 @@ const TOC: TocItem[] = [
   { id: "faq", label: "FAQ" },
 ];
 
-function BlogCTABox(props: {
+function RatgeberCTABox(props: {
   title: string;
   children?: ReactNode;
   buttons: { href: string; label: string }[];
@@ -93,11 +93,11 @@ export function PflegegradBeantragen2026Article() {
       </section>
 
       <div className="mt-10 space-y-8">
-        <BlogCTABox title="Sie möchten Unterstützung beim Pflegegrad-Antrag?" buttons={[{ href: "/kontakt", label: "Pflegeberatung anfragen" }]}>
+        <RatgeberCTABox title="Sie möchten Unterstützung beim Pflegegrad-Antrag?" buttons={[{ href: "/kontakt", label: "Pflegeberatung anfragen" }]}>
           <p>
             Wir helfen Ihnen, die nächsten Schritten zu strukturieren und die Begutachtung aus Ihrer Alltagsperspektive vorzubereiten – ohne Druck und ohne Überforderungsrhetorik.
           </p>
-        </BlogCTABox>
+        </RatgeberCTABox>
 
         <article className={flow}>
           <h2 className={h2} id="was-ist-ein-pflegegrad">
@@ -238,12 +238,12 @@ export function PflegegradBeantragen2026Article() {
           </p>
         </article>
 
-        <BlogCTABox
+        <RatgeberCTABox
           title="Entlastungsbetrag für Haushaltshilfe & Betreuung"
           buttons={[{ href: "/leistungen/haushaltshilfe", label: "Haushaltshilfe prüfen" }]}
         >
           Mit anerkanntem Pflegegrad stehen strukturelle Entlastungen und der Entlastungsbetrag oft kombinierbar zur Verfügung – ohne Garantierung einzelbetraglicher Kombination ohne Bescheid.
-        </BlogCTABox>
+        </RatgeberCTABox>
 
         <article className={flow}>
           <h2 className={h2} id="pflegegrad-zu-niedrig">
@@ -283,12 +283,12 @@ export function PflegegradBeantragen2026Article() {
           </p>
         </article>
 
-        <BlogCTABox
+        <RatgeberCTABox
           title="Pflegehilfsmittel (monatlicher Freibetrag)"
           buttons={[{ href: "/pflegehilfsmittel/kostenfreie-pflegehilfsmittel", label: "Pflegehilfsmittel anfragen" }]}
         >
           Über die strukturelle Pauschalgestaltungsoption über Hilfs-/Verbrauchshilfen hinaus dokumentieren wir Ihnen sachorientiert Bewilligungswege – jedoch ohne konkrete Erfolgsgarantieren je nach individuellen Bescheid.
-        </BlogCTABox>
+        </RatgeberCTABox>
 
         <aside className="rounded-2xl border border-dashed border-[#0F4F68]/35 bg-[#F2F9FA]/50 p-6" aria-labelledby="download-heading">
           <h2 id="download-heading" className="text-xl font-bold text-[#0F4F68]">
@@ -311,7 +311,7 @@ export function PflegegradBeantragen2026Article() {
           </div>
         </aside>
 
-        <BlogCTABox
+        <RatgeberCTABox
           title="Nächste Schritte zusammen strukturieren"
           buttons={[
             { href: "/kontakt", label: "Pflegeberatung anfragen" },
@@ -320,7 +320,7 @@ export function PflegegradBeantragen2026Article() {
           ]}
         >
           Transparente Orientierung statt Überforderungsversprechens – konkrete Bescheid- und Kombinationsbezugspfad bleiben bei der Pflegekasse.
-        </BlogCTABox>
+        </RatgeberCTABox>
 
         <section id="faq" className={`${flow} scroll-mt-[calc(var(--ahs-header-white-min-height)+6rem)]`}>
           <h2 className={h2}>FAQ – häufige Fragen</h2>
