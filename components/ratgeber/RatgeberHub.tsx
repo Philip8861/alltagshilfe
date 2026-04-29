@@ -12,7 +12,6 @@ import {
   type RatgeberCategoryId,
   primaryCategoryLabel,
 } from "@/config/ratgeber-betraege";
-import { RatgeberMarquee } from "@/components/ratgeber/RatgeberMarquee";
 import { displayArticleViews } from "@/lib/ratgeber/article-view-totals";
 
 const ORANGE = "#F78F2E";
@@ -160,15 +159,17 @@ function hubIconCategory(beitrag: RatgeberBeitragMeta): RatgeberCategoryId {
   return beitrag.categories[0] ?? CATEGORY_ORDER[0];
 }
 
+const overlayIconSvgClass =
+  "block h-full w-full max-h-[6rem] max-w-[6rem] shrink-0 [overflow:visible]";
 const OV = {
   xmlns: "http://www.w3.org/2000/svg",
   viewBox: "0 0 24 24",
   fill: "none" as const,
   stroke: "currentColor",
-  strokeWidth: 1.75,
+  strokeWidth: 1.85,
   strokeLinecap: "round" as const,
   strokeLinejoin: "round" as const,
-  className: "h-full w-full",
+  className: overlayIconSvgClass,
   "aria-hidden": true as const,
 };
 
@@ -186,29 +187,41 @@ function HubOverlayIcon({
         <svg {...OV}>
           <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
           <polyline points="14 2 14 8 20 8" />
-          <line x1="9" x2="15" y1="13" y2="13" />
-          <line x1="9" x2="15" y1="17" y2="17" />
+          <path d="M9 13h8" />
+          <path d="M9 17h5" />
         </svg>
       );
     case "pflegegrad-beantragen-checkliste":
       return (
         <svg {...OV}>
-          <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" />
-          <path d="M9 13h8M12 17h5" />
-          <path d="M9 13l3 3 6-8" />
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+          <polyline points="14 2 14 8 20 8" />
+          <path d="m9 14 2 2 7-9" />
         </svg>
       );
     case "hausnotruf-ratgeber":
       return (
         <svg {...OV}>
-          <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
+          <rect x="6" y="3" width="12" height="18" rx="2" ry="2" />
+          <path d="M11 17h3" strokeWidth="2.2" strokeLinecap="round" />
         </svg>
       );
     case "entlastungsbetrag-131-euro":
       return (
-        <svg {...OV}>
-          <line x1="12" x2="12" y1="2" y2="22" />
-          <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden className={overlayIconSvgClass}>
+          <text
+            x="12"
+            y="16"
+            dominantBaseline="middle"
+            textAnchor="middle"
+            stroke="none"
+            fill="currentColor"
+            fontFamily="system-ui, -apple-system, 'Segoe UI', sans-serif"
+            fontWeight={700}
+            fontSize={21}
+          >
+            €
+          </text>
         </svg>
       );
     case "pflegegrad-1-der-ultimative-leitfaden":
@@ -221,14 +234,18 @@ function HubOverlayIcon({
     case "pflegegrad-2-alles-was-du-wissen-musst":
       return (
         <svg {...OV}>
-          <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
-          <path d="M20 22V10H6a2 2 0 0 0-2 2v10" />
-          <circle cx="12" cy="7.5" r="3.5" />
-          <circle cx="18.5" cy="10.5" r="1" />
+          <circle cx="12" cy="8" r="5" />
+          <path d="M4 21c0-3.5 3.5-6 8-6s8 2.5 8 6" />
         </svg>
       );
     default:
-      return <TopicIcon kind={fallbackCategory} />;
+      return (
+        <span className="flex h-full w-full items-center justify-center text-[#0F4F68]">
+          <span className="block h-[5.125rem] w-[5.125rem] shrink-0 [&>svg]:h-full [&>svg]:w-full">
+            <TopicIcon kind={fallbackCategory} />
+          </span>
+        </span>
+      );
   }
 }
 
@@ -272,12 +289,10 @@ function RatgeberArticleTeaserCard({
           sizes="(min-width: 1280px) 18vw, (min-width: 768px) 22vw, 42vw"
           priority={false}
         />
-        <div className="pointer-events-none absolute inset-0 z-[2] flex items-center justify-center p-2 sm:p-3">
-          <span className="flex h-[6.5rem] w-[6.5rem] items-center justify-center text-[#0F4F68] sm:h-[7.5rem] sm:w-[7.5rem] md:h-[8rem] md:w-[8rem]">
-            <span className="flex h-[4.75rem] w-[4.75rem] items-center justify-center sm:h-[5.5rem] sm:w-[5.5rem] md:h-[5.75rem] md:w-[5.75rem]">
-              <HubOverlayIcon slug={beitrag.slug} fallbackCategory={ik} />
-            </span>
-          </span>
+        <div className="pointer-events-none absolute inset-0 z-[2] flex items-center justify-center p-3">
+          <div className="flex h-[5.5rem] w-[5.5rem] shrink-0 items-center justify-center sm:h-[6.25rem] sm:w-[6.25rem] md:h-[6.5rem] md:w-[6.5rem]">
+            <HubOverlayIcon slug={beitrag.slug} fallbackCategory={ik} />
+          </div>
         </div>
       </div>
       <div
@@ -388,11 +403,6 @@ export function RatgeberHub(props?: RatgeberHubProps) {
     }
     return arr;
   }, [filteredBySearchAndCat, sortMode, getDisplayViews]);
-
-  const marqueeBeitraege = useMemo(
-    () => [...RATGEBER_BEITRAEGE].sort((a, b) => b.publishedAt.localeCompare(a.publishedAt)),
-    [],
-  );
 
   const scrollToAlle = () => {
     document.getElementById("alle-ratgeber")?.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -543,7 +553,7 @@ export function RatgeberHub(props?: RatgeberHubProps) {
             onClick={() => setMobileTopicsOpen((o) => !o)}
             className="inline-flex min-h-[48px] w-full max-w-md items-center justify-center gap-2 rounded-2xl border border-neutral-300 bg-white px-6 py-3 text-sm font-bold text-neutral-800 shadow-sm transition hover:border-neutral-400 hover:bg-neutral-50"
           >
-            <span>{mobileTopicsOpen ? "Auswahl schließen" : "Beliebte Artikel & Themen"}</span>
+            <span>{mobileTopicsOpen ? "Auswahl schließen" : "Themen & Filter"}</span>
             <svg
               className={`h-5 w-5 shrink-0 transition-transform ${mobileTopicsOpen ? "rotate-180" : ""}`}
               viewBox="0 0 24 24"
@@ -559,7 +569,7 @@ export function RatgeberHub(props?: RatgeberHubProps) {
             <div
               id="ratgeber-mobile-themen-panel"
               role="region"
-              aria-label="Ratgeber-Themen wählen"
+              aria-label="Themenbereich Ratgeber wählen"
               className="mt-3 w-full max-w-md rounded-2xl border border-neutral-200 bg-white p-2 shadow-xl"
             >
               <button
@@ -573,7 +583,7 @@ export function RatgeberHub(props?: RatgeberHubProps) {
                 }}
                 style={activeCategory !== "alle" ? { color: NAVY } : undefined}
               >
-                Beliebte Artikel
+                Alle Artikel
               </button>
               {CATEGORY_ORDER.map((id) => (
                 <button
@@ -601,7 +611,7 @@ export function RatgeberHub(props?: RatgeberHubProps) {
         <Container className="max-w-7xl py-4">
           <div
             className="flex flex-wrap justify-center gap-x-2 gap-y-2.5 px-2"
-            aria-label="Beliebte Artikel und Themen filtern"
+            aria-label="Themenbereiche filtern"
           >
             <button
               type="button"
@@ -613,7 +623,7 @@ export function RatgeberHub(props?: RatgeberHubProps) {
               }`}
               style={activeCategory === "alle" ? { backgroundColor: NAVY } : undefined}
             >
-              Beliebte Artikel
+              Alle Artikel
             </button>
             {CATEGORY_ORDER.map((id) => (
               <button
@@ -669,59 +679,7 @@ export function RatgeberHub(props?: RatgeberHubProps) {
             </div>
           ) : null}
 
-          <div className="mt-2 sm:mt-3">
-            <RatgeberMarquee beitraege={marqueeBeitraege} getViews={getDisplayViews} />
-          </div>
-
-          <div className="mt-8 flex flex-col gap-8 lg:mt-10 lg:flex-row lg:items-start lg:gap-8">
-            <aside
-              className="w-full shrink-0 border border-neutral-200/80 bg-white/90 p-4 shadow-sm sm:p-4 lg:sticky lg:top-24 lg:w-[13.5rem] lg:max-w-[13.5rem] xl:w-[15rem] xl:max-w-[15rem]"
-              style={{ borderRadius: "0.85rem" }}
-              aria-labelledby="ratgeber-beliebt-heading"
-            >
-              <h3
-                id="ratgeber-beliebt-heading"
-                className="border-b border-neutral-200/90 pb-2.5 text-[0.7rem] font-extrabold uppercase tracking-[0.12em] text-neutral-500"
-              >
-                Beliebte Artikel
-              </h3>
-              <ol className="mt-3 space-y-1">
-                {beliebtListe.map((b, i) => (
-                  <li key={b.slug}>
-                    <Link
-                      href={`/ratgeber/${b.slug}`}
-                      className="group flex gap-2.5 rounded-lg py-1.5 pl-0.5 pr-1 transition hover:bg-[#F2F9FA]"
-                    >
-                      <span
-                        className="flex h-6 w-6 shrink-0 items-center justify-center rounded-md text-[0.65rem] font-extrabold text-white"
-                        style={{ backgroundColor: NAVY }}
-                        aria-hidden
-                      >
-                        {i + 1}
-                      </span>
-                      <div className="relative h-11 w-11 shrink-0 overflow-hidden rounded-md" style={{ backgroundColor: CARD_CANVAS }}>
-                        <Image
-                          src={ratgeberHubCardImage(b.slug)}
-                          alt=""
-                          fill
-                          className="object-cover object-center"
-                          sizes="88px"
-                        />
-                      </div>
-                      <div className="min-w-0 flex-1">
-                        <span className="line-clamp-3 text-left text-[0.68rem] font-extrabold leading-snug text-[#0F4F68] group-hover:underline">
-                          {b.title}
-                        </span>
-                        <span className="mt-0.5 block text-[0.6rem] text-neutral-500">
-                          {getDisplayViews(b).toLocaleString("de-DE")} Aufrufe
-                        </span>
-                      </div>
-                    </Link>
-                  </li>
-                ))}
-              </ol>
-            </aside>
-
+          <div className="mt-8 flex flex-col gap-8 lg:mt-10 lg:flex-row lg:items-start lg:gap-8 xl:gap-10">
             <div className="min-w-0 flex-1">
               <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
                 <h2 className="text-base font-bold tracking-tight sm:text-lg" style={{ color: NAVY }}>
@@ -764,6 +722,54 @@ export function RatgeberHub(props?: RatgeberHubProps) {
                 </ul>
               )}
             </div>
+
+            <aside
+              className="w-full shrink-0 border border-neutral-200/80 bg-white/90 p-4 shadow-sm sm:p-4 lg:sticky lg:top-24 lg:w-[15rem] lg:max-w-[15rem] xl:w-[16rem] xl:max-w-[16rem]"
+              style={{ borderRadius: "0.85rem" }}
+              aria-labelledby="ratgeber-beliebt-heading"
+            >
+              <h3
+                id="ratgeber-beliebt-heading"
+                className="border-b border-neutral-200/90 pb-2.5 text-[0.7rem] font-extrabold uppercase tracking-[0.12em] text-neutral-500"
+              >
+                Beliebte Artikel
+              </h3>
+              <ol className="mt-3 space-y-2">
+                {beliebtListe.map((b, i) => (
+                  <li key={b.slug}>
+                    <Link
+                      href={`/ratgeber/${b.slug}`}
+                      className="group flex items-start gap-2 rounded-lg py-1 pr-1 transition hover:bg-[#F2F9FA]"
+                    >
+                      <span
+                        className="flex h-[1.625rem] min-w-[1.625rem] shrink-0 items-center justify-center rounded text-[0.65rem] font-extrabold leading-none text-white"
+                        style={{ backgroundColor: i === 0 ? ORANGE : NAVY }}
+                        aria-hidden
+                      >
+                        {i + 1}
+                      </span>
+                      <span className="relative block h-[3.85rem] w-[4.05rem] shrink-0 overflow-hidden rounded-md shadow-sm ring-1 ring-neutral-100" style={{ backgroundColor: CARD_CANVAS }}>
+                        <Image
+                          src={ratgeberHubCardImage(b.slug)}
+                          alt=""
+                          fill
+                          className="object-contain object-center"
+                          sizes="128px"
+                        />
+                      </span>
+                      <div className="min-w-0 flex-1">
+                        <span className="line-clamp-3 text-left text-[0.7rem] font-extrabold leading-snug text-[#0F4F68] group-hover:underline">
+                          {b.title}
+                        </span>
+                        <span className="mt-0.5 block text-[0.6rem] text-neutral-500">
+                          {getDisplayViews(b).toLocaleString("de-DE")} Aufrufe
+                        </span>
+                      </div>
+                    </Link>
+                  </li>
+                ))}
+              </ol>
+            </aside>
           </div>
         </section>
       </Container>
