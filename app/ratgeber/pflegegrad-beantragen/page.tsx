@@ -93,39 +93,36 @@ export default function PflegegradBeantragenRatgeberPage() {
       <article className="min-w-0 bg-[#FFFBF7] pb-16 pt-0 sm:pb-24">
         <RatgeberArticleHero
           title="Pflegegrad beantragen: So erhalten Sie Schritt für Schritt die richtige Unterstützung"
-          topicCategoryBadge="Pflegegrad & Pflegeleistungen"
-          lead={`Wenn im Alltag dauerhaft Hilfe gebraucht wird, ist der erste Schritt oft: einen Pflegegrad beantragen. So werden Leistungen der Pflegeversicherung wie Pflegegeld, Entlastungsbetrag oder Hilfsmittel nutzbar. Dieser Ratgeber führt Sie verständlich durch Antrag, Begutachtung und typische Stolpersteine – besonders für Angehörige.`}
           updatedDisplay="April 2026"
           updatedISO="2026-04-29"
-          belowImageSlot={
-            <nav aria-label="Brotkrumen" className="text-sm leading-relaxed text-neutral-600">
-              <ol className="flex flex-wrap items-center gap-2">
-                <li>
-                  <Link href="/" className="font-medium text-[#0F4F68] underline underline-offset-2 hover:text-[#0c3d52]">
-                    Start
-                  </Link>
-                </li>
-                <li aria-hidden className="text-neutral-400">
-                  /
-                </li>
-                <li>
-                  <Link
-                    href="/ratgeber"
-                    className="font-medium text-[#0F4F68] underline underline-offset-2 hover:text-[#0c3d52]"
-                  >
-                    Ratgeber
-                  </Link>
-                </li>
-                <li aria-hidden className="text-neutral-400">
-                  /
-                </li>
-                <li className="font-semibold text-neutral-800">Pflegegrad beantragen</li>
-              </ol>
-            </nav>
-          }
         />
 
         <Container className="pt-8 pb-4 sm:pt-10 sm:pb-6">
+          <nav aria-label="Brotkrumen" className="mx-auto mb-8 max-w-[min(76rem,100%)] text-sm leading-relaxed text-neutral-600 sm:mb-10">
+            <ol className="flex flex-wrap items-center gap-2">
+              <li>
+                <Link href="/" className="font-medium text-[#0F4F68] underline underline-offset-2 hover:text-[#0c3d52]">
+                  Start
+                </Link>
+              </li>
+              <li aria-hidden className="text-neutral-400">
+                /
+              </li>
+              <li>
+                <Link
+                  href="/ratgeber"
+                  className="font-medium text-[#0F4F68] underline underline-offset-2 hover:text-[#0c3d52]"
+                >
+                  Ratgeber
+                </Link>
+              </li>
+              <li aria-hidden className="text-neutral-400">
+                /
+              </li>
+              <li className="font-semibold text-neutral-800">Pflegegrad beantragen</li>
+            </ol>
+          </nav>
+
           <div className="mx-auto flex w-full max-w-[min(76rem,100%)] flex-col gap-12 lg:flex-row lg:items-start lg:gap-14">
             <aside className="sticky top-28 order-2 hidden w-full max-w-[18rem] shrink-0 self-start lg:order-none lg:block">
               <div className="max-h-[min(70vh,32rem)] overflow-y-auto rounded-2xl border border-[#0F4F68]/11 bg-[#fafcfb] px-4 py-4 shadow-sm">

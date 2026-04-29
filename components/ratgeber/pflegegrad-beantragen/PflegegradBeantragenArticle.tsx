@@ -84,6 +84,14 @@ export function PflegegradBeantragenArticle() {
         <RatTocNav entries={[...PFLEGEGRAD_ARTICLE_TOC_ENTRIES]} />
       </div>
 
+      <div className="mb-10">
+        <RatProseParagraph>
+          Wenn im Alltag dauerhaft Hilfe gebraucht wird, ist der erste Schritt oft: einen Pflegegrad beantragen. So werden
+          Leistungen der Pflegeversicherung wie Pflegegeld, Entlastungsbetrag oder Hilfsmittel nutzbar. Dieser Ratgeber
+          führt Sie verständlich durch Antrag, Begutachtung und typische Stolpersteine – besonders für Angehörige.
+        </RatProseParagraph>
+      </div>
+
       <RatQuickAnswerBox
         title="Kurzantwort: Wie beantragt man einen Pflegegrad?"
         note={
