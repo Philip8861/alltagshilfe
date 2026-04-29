@@ -48,11 +48,39 @@ export const RATGEBER_CATEGORY_LABELS: Record<RatgeberCategoryId, string> = {
   antraege_checklisten_downloads: "Anträge, Checklisten & Downloads",
 };
 
-/** Aktuell keine eingetragenen Artikel – neue Beiträge hier und als Seite unter `/ratgeber/[slug]` ergänzen. */
-export const RATGEBER_BEITRAEGE: RatgeberBeitragMeta[] = [];
+const PFLEGEGRAD_BEANTRAGEN_WORDS = 3000;
+
+export const RATGEBER_BEITRAEGE: RatgeberBeitragMeta[] = [
+  {
+    slug: "pflegegrad-beantragen",
+    title: "Pflegegrad beantragen: So erhalten Sie Schritt für Schritt die richtige Unterstützung",
+    excerpt:
+      "Wer im Alltag dauerhaft Unterstützung benötigt, kann einen Pflegegrad beantragen. Dieser Ratgeber erklärt Schritt für Schritt, wie der Antrag funktioniert, wie die Begutachtung abläuft und worauf Angehörige achten sollten.",
+    image: "/images/Ratgeber/ratgeber.webp",
+    imageAlt: "Ratgeber: Pflege und Unterstützung zu Hause, verständlich erklärt",
+    views: 720,
+    tags: [
+      "Pflegegrad beantragen",
+      "Pflegegrad Antrag",
+      "Pflegegrad beantragen 2026",
+      "Pflegekasse Antrag",
+      "MD Begutachtung",
+      "Pflegegrad abgelehnt",
+      "Pflegegeld beantragen",
+      "Pflegeleistungen 2026",
+    ],
+    categories: ["pflegegrad_leistungen"],
+    approxWordCount: PFLEGEGRAD_BEANTRAGEN_WORDS,
+    readMinutes: readMinutesFromWordCount(PFLEGEGRAD_BEANTRAGEN_WORDS),
+    publishedAt: "2026-04-29",
+    featured: true,
+  },
+];
 
 /** Aquarell-Teaserbilde für Ratgeber-Hub-Karten (optional pro Slug). */
-const RATGEBER_HUB_CARD_IMAGES: Record<string, string> = {};
+const RATGEBER_HUB_CARD_IMAGES: Record<string, string> = {
+  "pflegegrad-beantragen": "/images/Ratgeber/ratgeber.webp",
+};
 
 export function ratgeberHubCardImage(slug: string): string {
   return RATGEBER_HUB_CARD_IMAGES[slug] ?? "/images/Ratgeber/ratgeber.webp";
@@ -74,7 +102,7 @@ export function getVerwandteRatgeberBeitraege(currentSlug: string, limit = 4): R
 /**
  * Reihenfolge auf der Ratgeber-Übersicht: Platz 1 → Platz 2 (nur eingetragene Slugs mit `featured: true`).
  */
-const RATGEBER_FEATURED_HOME_ORDER: readonly string[] = [];
+const RATGEBER_FEATURED_HOME_ORDER: readonly string[] = ["pflegegrad-beantragen"];
 
 /**
  * Alle mit `featured: true`; Reihenfolge nach `RATGEBER_FEATURED_HOME_ORDER`, dann fehlende Plätze per Aufrufen.

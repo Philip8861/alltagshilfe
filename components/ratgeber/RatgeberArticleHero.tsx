@@ -32,6 +32,10 @@ function RatgeberHeroCheckIcon({ className = "" }: { className?: string }) {
 export type RatgeberArticleHeroProps = {
   /** Hauptüberschrift des Artikels (eindeutig pro Seite, SEO-H1). */
   title: string;
+  /** Themen-Badge (z. B. aus der Ratgeber-Kategorie), unter dem Ratgeber-Kicker. */
+  topicCategoryBadge?: string;
+  /** Kurzer Einleitungstext direkt unter der H1. */
+  lead?: string;
   /** Anzeige-Datum wie „01.05.2026“. */
   updatedDisplay?: string;
   /** ISO für `<time dateTime="">`. */
@@ -48,6 +52,8 @@ export type RatgeberArticleHeroProps = {
  */
 export function RatgeberArticleHero({
   title,
+  topicCategoryBadge,
+  lead,
   updatedDisplay = DEFAULT_UPDATED_DISPLAY,
   updatedISO = DEFAULT_UPDATED_ISO,
   ctaHref = DEFAULT_CTA_HREF,
@@ -79,12 +85,24 @@ export function RatgeberArticleHero({
             <p className="text-sm font-bold uppercase tracking-[0.16em] text-[#0F4F68]">
               Ratgeber
             </p>
+            {topicCategoryBadge ? (
+              <p className="mt-3">
+                <span className="inline-flex max-w-full items-center rounded-full border border-[#0F4F68]/28 bg-[#0F4F68]/06 px-3 py-1.5 text-xs font-bold leading-snug text-[#0F4F68] shadow-sm">
+                  {topicCategoryBadge}
+                </span>
+              </p>
+            ) : null}
             <h1
               id="ratgeber-artikel-heading"
-              className="mt-3 max-w-[min(100%,52rem)] text-balance text-3xl font-extrabold leading-tight text-[#0F4F68] sm:text-4xl sm:leading-[1.12] lg:text-[2.15rem]"
+              className="mt-4 max-w-[min(100%,52rem)] text-balance text-3xl font-extrabold leading-tight text-[#0F4F68] sm:text-4xl sm:leading-[1.12] lg:text-[2.15rem]"
             >
               {title}
             </h1>
+            {lead ? (
+              <p className="mt-4 max-w-[min(100%,52rem)] text-pretty text-lg leading-relaxed text-neutral-700 sm:text-[1.08rem] sm:leading-relaxed">
+                {lead}
+              </p>
+            ) : null}
 
             <ul
               className="mt-6 max-w-2xl space-y-3.5 text-pretty sm:mt-8 sm:space-y-4"
