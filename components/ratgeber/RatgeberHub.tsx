@@ -9,7 +9,6 @@ import {
   RATGEBER_CATEGORY_LABELS,
   type RatgeberBeitragMeta,
   type RatgeberCategoryId,
-  getFeaturedRatgeberBeitraege,
   primaryCategoryLabel,
 } from "@/config/ratgeber-betraege";
 import { RatgeberMarquee } from "@/components/ratgeber/RatgeberMarquee";
@@ -18,7 +17,6 @@ import { displayArticleViews } from "@/lib/ratgeber/article-view-totals";
 type SortMode = "neueste" | "beliebt" | "az";
 
 const NAVY = "#0F4F68";
-const CREAM_PAGE = "#FFFBF7";
 const ORANGE = "#F78F2E";
 
 const CATEGORY_ORDER: RatgeberCategoryId[] = [
@@ -206,20 +204,6 @@ export function RatgeberHub(props?: RatgeberHubProps) {
     [totals, articleViewsLive],
   );
 
-  const featuredList = useMemo(() => getFeaturedRatgeberBeitraege(2), []);
-
-  const visibleFeatured = useMemo(() => {
-    const q = query.trim().toLocaleLowerCase("de");
-    return featuredList.filter((b) => {
-      if (!matchesCategory(b, activeCategory)) return false;
-      if (!q) return true;
-      return haystackForBeitrag(b).includes(q);
-    });
-  }, [featuredList, activeCategory, query]);
-
-  /** Steuert, ob eines der Top-Themen angezeigt wird (für Raster-Dopplungen). */
-  const showFeaturedSlots = visibleFeatured.length > 0;
-
   const filteredBySearchAndCat = useMemo(() => {
     const q = query.trim().toLocaleLowerCase("de");
     return RATGEBER_BEITRAEGE.filter((b) => matchesCategory(b, activeCategory)).filter((beitrag) => {
@@ -262,25 +246,13 @@ export function RatgeberHub(props?: RatgeberHubProps) {
     return () => document.removeEventListener("mousedown", onDown);
   }, []);
 
-  /** „Alle“: Raster wie bisher mit Sortierung; einzelnes Thema: alle Beiträge der Kategorie, nur nach Aufrufen. */
+  /** „Alle“: Sortierung wählbar; einzelnes Thema: nur nach Aufrufen. */
   const gridBeitraege = useMemo(() => {
     if (isCategoryFocused) {
       return [...filteredBySearchAndCat].sort((a, b) => getDisplayViews(b) - getDisplayViews(a));
     }
-    const excludeSlugs = new Set(visibleFeatured.map((b) => b.slug));
-    const list =
-      showFeaturedSlots && excludeSlugs.size > 0
-        ? filteredBySearchAndCat.filter((b) => !excludeSlugs.has(b.slug))
-        : filteredBySearchAndCat;
-    return sortBeitraege(list, sortMode, getDisplayViews);
-  }, [
-    filteredBySearchAndCat,
-    isCategoryFocused,
-    showFeaturedSlots,
-    visibleFeatured,
-    sortMode,
-    getDisplayViews,
-  ]);
+    return sortBeitraege(filteredBySearchAndCat, sortMode, getDisplayViews);
+  }, [filteredBySearchAndCat, isCategoryFocused, sortMode, getDisplayViews]);
 
   const beliebtTop = useMemo(
     () => [...RATGEBER_BEITRAEGE].sort((a, b) => getDisplayViews(b) - getDisplayViews(a)).slice(0, 4),
@@ -296,10 +268,11 @@ export function RatgeberHub(props?: RatgeberHubProps) {
     document.getElementById("alle-ratgeber")?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
-  const sectionHeading =
-    activeCategory === "alle"
-      ? "Alle Ratgeber"
-      : RATGEBER_CATEGORY_LABELS[activeCategory as RatgeberCategoryId];
+  const categoryLabel =
+    activeCategory !== "alle" ? RATGEBER_CATEGORY_LABELS[activeCategory] : "";
+
+  const iconCategoryForBeitrag = (beitrag: RatgeberBeitragMeta): RatgeberCategoryId =>
+    beitrag.categories[0] ?? CATEGORY_ORDER[0];
 
   return (
     <div className="min-w-0">
@@ -546,100 +519,53 @@ export function RatgeberHub(props?: RatgeberHubProps) {
       <Container className="max-w-[min(100%,96rem)] space-y-10 pt-10 sm:space-y-12 sm:pt-12 lg:px-6 xl:pl-10 xl:pr-12 2xl:pr-16">
         <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(17.5rem,20rem)] lg:items-start lg:justify-items-stretch lg:gap-x-10 xl:gap-x-14 2xl:gap-x-[4.25rem]">
         <div className="min-w-0 space-y-10 lg:space-y-12">
-          {/* Top Themen nur bei „Alle Themen“, nicht wenn ein konkretes Thema gewählt ist */}
-          {!isCategoryFocused && visibleFeatured.length > 0 ? (
-            <section aria-labelledby="featured-heading" className="w-full space-y-5">
-              <p id="featured-heading" className="text-xs font-bold uppercase tracking-[0.2em] text-neutral-500 sm:text-sm">
-                Top-Themen
-              </p>
-              <div className="flex flex-col gap-5">
-                {visibleFeatured.map((featured) => (
-                  <Link
-                    key={featured.slug}
-                    href={`/ratgeber/${featured.slug}`}
-                    className="flex flex-col overflow-hidden rounded-2xl border border-black/[0.06] bg-white shadow-[0_16px_48px_-20px_rgba(15,79,104,0.25)] transition hover:-translate-y-0.5 hover:shadow-[0_22px_56px_-18px_rgba(15,79,104,0.28)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68] focus-visible:ring-offset-2 md:flex-row md:items-center"
-                  >
-                    <div className="relative mx-auto flex h-[11rem] w-full max-w-[21rem] shrink-0 items-center justify-center overflow-hidden bg-[#FAF8F5] sm:h-[11.5rem] sm:max-w-[24rem] max-md:mx-0 max-md:h-48 max-md:max-w-none md:mx-0 md:h-[13.5rem] md:w-[46%] md:max-w-[26rem] md:self-center lg:h-[14.5rem] lg:max-w-[28rem]">
-                      <span
-                        className="absolute left-2.5 top-2.5 z-10 hidden rounded-md px-2.5 py-1 text-[0.65rem] font-bold uppercase tracking-wide text-white shadow sm:inline-block sm:text-xs"
-                        style={{ backgroundColor: ORANGE }}
-                      >
-                        Top Thema
-                      </span>
-                      <Image
-                        src={featured.image}
-                        alt={featured.imageAlt}
-                        fill
-                        priority={featured.slug === visibleFeatured[0]?.slug}
-                        className="object-contain object-center p-3 sm:p-4 max-md:object-cover max-md:object-[50%_center] max-md:p-0 max-md:scale-[1.2] max-md:-translate-x-[50%]"
-                        sizes="(min-width: 1024px) 420px, (min-width: 768px) 360px, 90vw"
-                      />
-                    </div>
-                    <div className="flex min-w-0 flex-1 flex-col justify-center px-5 pb-5 pt-0 max-md:pt-5 sm:px-7 sm:py-5 md:py-6 lg:px-8 lg:py-7">
-                      <div className="hidden flex-wrap items-center gap-x-4 gap-y-1 text-xs sm:flex sm:text-sm">
-                        <span className="font-semibold" style={{ color: NAVY }}>
-                          {primaryCategoryLabel(featured)}
-                        </span>
-                        <span className="flex items-center gap-1 text-neutral-600">
-                          <EyeIcon className="h-3.5 w-3.5 text-neutral-400" aria-hidden />
-                          {getDisplayViews(featured).toLocaleString("de-DE")} Aufrufe
-                        </span>
-                        <span className="flex items-center gap-1 text-neutral-500">
-                          <ClockIcon className="h-3.5 w-3.5 text-neutral-400" />
-                          {featured.readMinutes} Min. Lesezeit
-                        </span>
-                      </div>
-                      <div className="flex sm:hidden">
-                        <span className="text-xs font-semibold" style={{ color: NAVY }}>
-                          {primaryCategoryLabel(featured)}
-                        </span>
-                      </div>
-                      <h2 className="mt-2 text-xl font-bold leading-snug tracking-tight sm:text-2xl md:text-[1.6rem] lg:text-[1.75rem]" style={{ color: NAVY }}>
-                        {featured.title}
-                      </h2>
-                      <p className="mt-3 line-clamp-3 text-base leading-relaxed text-neutral-600 sm:text-lg">{featured.excerpt}</p>
-                      <span className="mt-4 inline-flex items-center gap-2 text-sm font-bold" style={{ color: NAVY }}>
-                        Artikel lesen
-                        <ArrowRightIcon />
-                      </span>
-                    </div>
-                  </Link>
-                ))}
-              </div>
-            </section>
-          ) : null}
-
-          {/* Raster */}
           <section id="alle-ratgeber" className="scroll-mt-24">
-            <h2 className="text-3xl font-bold sm:text-4xl" style={{ color: NAVY }}>
-              {sectionHeading}
-            </h2>
-            <p className="mt-2 max-w-2xl text-sm text-neutral-600 sm:text-base">
-              {isCategoryFocused
-                ? "Alle Artikel zu diesem Thema, sortiert nach Beliebtheit (Aufrufen). Die beiden meistgelesenen sind als TOP THEMA gekennzeichnet."
-                : "Alle Beiträge im Vorbeilauf — darunter können Sie nach Thema suchen und sortieren."}
-            </p>
+            {isCategoryFocused ? <h2 className="sr-only">{categoryLabel}</h2> : null}
 
             {!isCategoryFocused ? (
-              <div className="mt-8">
+              <div className="space-y-4">
+                <p className="text-center text-sm font-semibold text-neutral-600 sm:text-base">Themen wählen</p>
+                <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-4">
+                  {CATEGORY_ORDER.map((id) => (
+                    <li key={id} className="aspect-square min-h-0">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setActiveCategory(id);
+                          scrollToAlle();
+                        }}
+                        className="flex h-full w-full flex-col items-center justify-center gap-2 rounded-2xl border-2 border-[#0F4F68]/12 bg-gradient-to-br from-white via-[#FAFCFE] to-[#E8F2F6] p-3 text-center shadow-[0_10px_36px_-18px_rgba(15,79,104,0.35)] ring-1 ring-[#0F4F68]/8 transition hover:-translate-y-0.5 hover:border-[#0F4F68]/28 hover:shadow-[0_16px_44px_-16px_rgba(15,79,104,0.38)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68] focus-visible:ring-offset-2 sm:gap-3 sm:p-4"
+                        style={{ color: NAVY }}
+                      >
+                        <span
+                          className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border bg-white/90 text-[#0F4F68] shadow-inner sm:h-14 sm:w-14"
+                          style={{ borderColor: `${NAVY}22` }}
+                        >
+                          <TopicIcon kind={id} />
+                        </span>
+                        <span className="line-clamp-3 text-[0.7rem] font-bold leading-tight sm:text-xs">
+                          {RATGEBER_CATEGORY_LABELS[id]}
+                        </span>
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ) : null}
+
+            {!isCategoryFocused ? (
+              <div className="mt-10">
                 <RatgeberMarquee beitraege={marqueeAlle} getViews={getDisplayViews} />
               </div>
             ) : null}
 
-            <div className="mt-10 flex flex-col gap-4 sm:mt-12 sm:flex-row sm:items-end sm:justify-between">
-              <h3 className="text-lg font-semibold text-neutral-800 sm:text-xl">
-                {isCategoryFocused ? (
-                  <>
-                    Alle Beiträge <span className="text-neutral-500">&ndash;</span> {sectionHeading}
-                  </>
-                ) : (
-                  <>
-                    Alle Beiträge <span className="text-neutral-500">&ndash;</span> Liste
-                  </>
-                )}
-              </h3>
+            <div
+              className={`flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-end ${
+                !isCategoryFocused ? "mt-10 sm:mt-12" : "mt-2 sm:mt-3"
+              }`}
+            >
               {!isCategoryFocused ? (
-                <label className="flex items-center gap-2 text-sm text-neutral-600 sm:text-base">
+                <label className="flex w-full items-center justify-end gap-2 text-sm text-neutral-600 sm:text-base">
                   <span className="shrink-0 font-medium">Sortieren nach:</span>
                   <select
                     value={sortMode}
@@ -652,7 +578,9 @@ export function RatgeberHub(props?: RatgeberHubProps) {
                   </select>
                 </label>
               ) : (
-                <p className="text-sm font-medium text-neutral-500">Sortierung: Beliebtheit (Aufrufe)</p>
+                <p className="text-right text-sm font-medium text-neutral-500">
+                  Sortierung: Beliebtheit (Aufrufe) · {categoryLabel}
+                </p>
               )}
             </div>
 
@@ -661,125 +589,137 @@ export function RatgeberHub(props?: RatgeberHubProps) {
                 Keine Artikel für diese Auswahl. Andere Themen oder Suchbegriff probieren.
               </p>
             ) : isCategoryFocused ? (
-              <ul className="mt-8 grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-4 md:gap-5">
-                {gridBeitraege.map((beitrag, idx) => (
-                  <li key={beitrag.slug} className="aspect-square">
-                    <Link
-                      href={`/ratgeber/${beitrag.slug}`}
-                      className="group relative flex h-full w-full overflow-hidden rounded-2xl border border-black/[0.06] bg-neutral-900 shadow-[0_8px_30px_-12px_rgba(15,79,104,0.2)] transition hover:-translate-y-0.5 hover:shadow-[0_16px_40px_-14px_rgba(15,79,104,0.28)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68] focus-visible:ring-offset-2"
-                      aria-labelledby={`kat-card-${beitrag.slug}-title`}
-                    >
-                      {idx < 2 ? (
-                        <span
-                          className="absolute left-2 top-2 z-20 rounded-md px-2 py-1 text-[0.62rem] font-bold uppercase tracking-wide text-white shadow sm:left-2.5 sm:top-2.5 sm:text-[0.65rem]"
-                          style={{ backgroundColor: ORANGE }}
-                        >
-                          TOP THEMA
-                        </span>
-                      ) : null}
-                      <Image
-                        src={beitrag.image}
-                        alt={beitrag.imageAlt}
-                        fill
-                        className="object-cover transition duration-300 group-hover:scale-[1.04]"
-                        sizes="(min-width: 1024px) 22vw, (min-width: 640px) 45vw, 48vw"
-                      />
-                      <div
-                        className="pointer-events-none absolute inset-0 z-[1] bg-gradient-to-t from-black/82 via-black/35 to-transparent"
-                        aria-hidden
-                      />
-                      <div className="absolute inset-x-0 bottom-0 z-[2] flex flex-col justify-end p-2.5 sm:p-3.5">
-                        <span id={`kat-card-${beitrag.slug}-title`} className="line-clamp-3 text-[0.8125rem] font-bold leading-snug tracking-tight text-white drop-shadow sm:text-sm md:text-[0.95rem]">
-                          {beitrag.title}
-                        </span>
-                        <span className="mt-1.5 inline-flex flex-wrap items-center gap-1 text-[10px] font-medium leading-tight text-white/92 sm:text-xs">
-                          <EyeIcon className="h-3 w-3 shrink-0 opacity-90" aria-hidden />
-                          <span>{getDisplayViews(beitrag).toLocaleString("de-DE")} Aufrufe</span>
-                          <span className="opacity-60" aria-hidden>
-                            ·
+              <ul className="mt-8 grid grid-cols-2 gap-4 md:grid-cols-4 md:gap-5">
+                {gridBeitraege.map((beitrag, idx) => {
+                  const ik = iconCategoryForBeitrag(beitrag);
+                  return (
+                    <li key={beitrag.slug} className="aspect-square min-h-0">
+                      <Link
+                        href={`/ratgeber/${beitrag.slug}`}
+                        className="group relative flex h-full w-full flex-col overflow-hidden rounded-2xl border-2 border-[#0F4F68]/12 bg-gradient-to-br from-[#FFFCFA] via-white to-[#EEF6F9] p-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.9),0_12px_32px_-20px_rgba(15,79,104,0.45)] ring-1 ring-[#0F4F68]/10 transition hover:-translate-y-1 hover:border-[#0F4F68]/26 hover:shadow-[0_18px_44px_-18px_rgba(15,79,104,0.38)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68] focus-visible:ring-offset-2 sm:p-4"
+                        aria-labelledby={`kat-card-${beitrag.slug}-title`}
+                      >
+                        {idx < 2 ? (
+                          <span
+                            className="absolute left-2 top-2 z-10 rounded-md px-2 py-0.5 text-[0.58rem] font-bold uppercase tracking-wide text-white shadow sm:left-2.5 sm:top-2.5 sm:text-[0.62rem]"
+                            style={{ backgroundColor: ORANGE }}
+                          >
+                            TOP THEMA
                           </span>
-                          <ClockIcon className="h-3 w-3 shrink-0 opacity-90" aria-hidden />
-                          <span>{beitrag.readMinutes} Min.</span>
-                        </span>
-                      </div>
-                    </Link>
-                  </li>
-                ))}
+                        ) : null}
+                        <div className="flex min-h-[5rem] flex-1 flex-col items-center justify-center rounded-xl bg-white/85 p-3 shadow-inner ring-1 ring-[#0F4F68]/10 sm:min-h-[6rem]">
+                          <span
+                            className="text-[#0F4F68] transition-transform group-hover:scale-105 [&>svg]:h-9 [&>svg]:w-9 sm:[&>svg]:h-11 sm:[&>svg]:w-11"
+                            aria-hidden
+                          >
+                            <TopicIcon kind={ik} />
+                          </span>
+                        </div>
+                        <div className="mt-3 flex min-h-0 flex-1 flex-col">
+                          <span
+                            id={`kat-card-${beitrag.slug}-title`}
+                            className="line-clamp-4 text-center text-[0.72rem] font-bold leading-snug tracking-tight sm:text-sm"
+                            style={{ color: NAVY }}
+                          >
+                            {beitrag.title}
+                          </span>
+                          <span className="mt-auto flex flex-wrap items-center justify-center gap-x-1.5 gap-y-0.5 pt-2 text-center text-[0.62rem] text-neutral-600 sm:text-[0.7rem]">
+                            <EyeIcon className="h-3 w-3 shrink-0 opacity-80" aria-hidden />
+                            <span>{getDisplayViews(beitrag).toLocaleString("de-DE")}</span>
+                            <span className="text-neutral-300" aria-hidden>
+                              ·
+                            </span>
+                            <ClockIcon className="h-3 w-3 shrink-0 opacity-80" aria-hidden />
+                            <span>{beitrag.readMinutes} Min.</span>
+                          </span>
+                        </div>
+                      </Link>
+                    </li>
+                  );
+                })}
               </ul>
             ) : (
-              <ul className="mt-8 grid gap-6 sm:grid-cols-2 sm:gap-7 xl:grid-cols-3 xl:gap-8">
-                {gridBeitraege.map((beitrag) => (
-                  <li key={beitrag.slug}>
-                    <Link
-                      href={`/ratgeber/${beitrag.slug}`}
-                      className="group flex h-full flex-col overflow-hidden rounded-2xl border border-black/[0.06] bg-white shadow-[0_8px_30px_-12px_rgba(15,79,104,0.2)] transition hover:-translate-y-1 hover:shadow-[0_16px_40px_-14px_rgba(15,79,104,0.25)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68] focus-visible:ring-offset-2"
-                    >
-                      <div className="relative aspect-[16/10] w-full overflow-hidden sm:aspect-[16/9]">
-                        <Image
-                          src={beitrag.image}
-                          alt={beitrag.imageAlt}
-                          fill
-                          className="object-cover transition duration-300 group-hover:scale-[1.03]"
-                          sizes="(min-width: 1280px) 30vw, (min-width: 640px) 45vw, 100vw"
-                        />
-                      </div>
-                      <div className="flex flex-1 flex-col p-5 sm:p-6">
-                        <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs sm:text-sm">
-                          <span className="font-semibold" style={{ color: NAVY }}>
-                            {primaryCategoryLabel(beitrag)}
+              <ul className="mt-8 grid gap-5 sm:grid-cols-2 sm:gap-6 xl:grid-cols-3 xl:gap-7">
+                {gridBeitraege.map((beitrag) => {
+                  const ik = iconCategoryForBeitrag(beitrag);
+                  return (
+                    <li key={beitrag.slug}>
+                      <Link
+                        href={`/ratgeber/${beitrag.slug}`}
+                        className="group flex h-full flex-col rounded-2xl border border-black/[0.08] bg-white p-5 shadow-[0_8px_28px_-14px_rgba(15,79,104,0.22)] transition hover:-translate-y-0.5 hover:shadow-[0_14px_36px_-16px_rgba(15,79,104,0.28)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68] focus-visible:ring-offset-2 sm:p-6"
+                      >
+                        <div className="flex items-start gap-3">
+                          <span
+                            className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border bg-[#FAFBFC]"
+                            style={{ borderColor: `${NAVY}18`, color: NAVY }}
+                            aria-hidden
+                          >
+                            <TopicIcon kind={ik} />
                           </span>
-                          <span className="hidden items-center gap-1 text-neutral-600 sm:flex">
+                          <div className="min-w-0 flex-1">
+                            <span className="text-xs font-semibold" style={{ color: NAVY }}>
+                              {primaryCategoryLabel(beitrag)}
+                            </span>
+                            <h3 className="mt-1 line-clamp-2 text-lg font-bold leading-snug sm:text-xl" style={{ color: NAVY }}>
+                              {beitrag.title}
+                            </h3>
+                          </div>
+                        </div>
+                        <p className="mt-3 line-clamp-3 flex-1 text-sm leading-relaxed text-neutral-600 sm:text-[0.95rem]">
+                          {beitrag.excerpt}
+                        </p>
+                        <div className="mt-4 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-neutral-500">
+                          <span className="inline-flex items-center gap-1">
                             <EyeIcon className="h-3.5 w-3.5 shrink-0 text-neutral-400" aria-hidden />
                             {getDisplayViews(beitrag).toLocaleString("de-DE")} Aufrufe
                           </span>
-                          <span className="hidden items-center gap-1 text-neutral-500 sm:flex">
+                          <span className="text-neutral-300" aria-hidden>
+                            ·
+                          </span>
+                          <span className="inline-flex items-center gap-1">
                             <ClockIcon className="h-3.5 w-3.5 text-neutral-400" aria-hidden />
                             {beitrag.readMinutes} Min.
                           </span>
                         </div>
-                        <h3 className="mt-2 line-clamp-2 text-lg font-bold leading-snug sm:text-xl lg:text-2xl" style={{ color: NAVY }}>
-                          {beitrag.title}
-                        </h3>
-                        <p className="mt-2 line-clamp-3 flex-1 text-sm leading-relaxed text-neutral-600 sm:text-base">{beitrag.excerpt}</p>
-                        <span className="mt-4 inline-flex items-center gap-1.5 text-sm font-bold sm:text-base" style={{ color: NAVY }}>
+                        <span className="mt-4 inline-flex items-center gap-1.5 text-sm font-bold" style={{ color: NAVY }}>
                           Weiterlesen
                           <ArrowRightIcon className="h-4 w-4" />
                         </span>
-                      </div>
-                    </Link>
-                  </li>
-                ))}
+                      </Link>
+                    </li>
+                  );
+                })}
               </ul>
             )}
           </section>
         </div>
 
-        <aside className="min-w-0 space-y-8 lg:sticky lg:top-24 lg:col-start-2 lg:row-start-1 lg:w-full lg:justify-self-end lg:pl-2 xl:pl-6 2xl:pl-10">
-          <div className="rounded-2xl border border-black/[0.06] bg-white p-6 shadow-[0_12px_36px_-16px_rgba(15,79,104,0.2)] sm:p-7 lg:max-w-none lg:justify-self-end">
-            <div className="lg:text-right">
+        <aside className="min-w-0 lg:sticky lg:top-24 lg:col-start-2 lg:row-start-1 lg:w-full lg:justify-self-end lg:pl-2 xl:pl-6 2xl:pl-10">
+          <div className="rounded-2xl border-2 border-[#0F4F68]/10 bg-white p-8 shadow-[0_20px_48px_-22px_rgba(15,79,104,0.35)] sm:p-10 lg:max-w-none">
+            <div className="border-b border-neutral-200/90 pb-6 text-center">
               <h2 className="text-xl font-bold sm:text-2xl" style={{ color: NAVY }}>
                 Beliebte Artikel
               </h2>
-              <p className="mt-1 text-xs text-neutral-500 sm:text-sm">Nach Aufrufen – meist gelesen</p>
+              <p className="mt-1.5 text-xs text-neutral-500 sm:text-sm">Nach Aufrufen – meist gelesen</p>
             </div>
-            <ol className="mt-5 space-y-4">
+            <ol className="mt-6 space-y-4 sm:space-y-5">
               {beliebtTop.map((beitrag, i) => (
                 <li key={beitrag.slug}>
                   <Link
                     href={`/ratgeber/${beitrag.slug}`}
-                    className="group flex items-start gap-3 rounded-xl border border-transparent p-1 transition hover:border-neutral-100 hover:bg-neutral-50/80"
+                    className="group flex items-start gap-3 rounded-xl border border-transparent px-1 py-2 transition hover:border-neutral-100 hover:bg-neutral-50/80 sm:gap-4"
                   >
                     <span
-                      className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-sm font-bold text-white"
+                      className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-sm font-bold text-white shadow-sm"
                       style={{ backgroundColor: i === 0 ? ORANGE : NAVY }}
                     >
                       {i + 1}
                     </span>
-                    <div className="min-w-0 flex-1">
+                    <div className="min-w-0 flex-1 text-left">
                       <p className="line-clamp-2 text-sm font-bold leading-snug group-hover:underline" style={{ color: NAVY }}>
                         {beitrag.title}
                       </p>
-                      <p className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-neutral-500">
+                      <p className="mt-2 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-neutral-500">
                         <span className="inline-flex items-center gap-1">
                           <EyeIcon className="h-3 w-3 text-neutral-400" aria-hidden />
                           {getDisplayViews(beitrag).toLocaleString("de-DE")}
@@ -793,9 +733,6 @@ export function RatgeberHub(props?: RatgeberHubProps) {
                         </span>
                       </p>
                     </div>
-                    <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-lg border border-neutral-100">
-                      <Image src={beitrag.image} alt="" fill className="object-cover" sizes="56px" />
-                    </div>
                   </Link>
                 </li>
               ))}
@@ -806,47 +743,10 @@ export function RatgeberHub(props?: RatgeberHubProps) {
                 setSortMode("beliebt");
                 scrollToAlle();
               }}
-              className="mt-6 w-full rounded-2xl border-2 py-3 text-sm font-semibold transition hover:bg-neutral-50 sm:text-base"
+              className="mt-8 w-full rounded-2xl border-2 py-3.5 text-sm font-semibold transition hover:bg-neutral-50 sm:text-base"
               style={{ borderColor: NAVY, color: NAVY }}
             >
               Alle beliebten Beiträge ansehen
-            </button>
-          </div>
-
-          <div className="rounded-2xl border border-black/[0.06] bg-white p-6 shadow-[0_12px_36px_-16px_rgba(15,79,104,0.2)] sm:p-7">
-            <h2 className="text-xl font-bold sm:text-2xl" style={{ color: NAVY }}>
-              Themen
-            </h2>
-            <div className="mt-5 grid grid-cols-2 gap-3">
-              {CATEGORY_ORDER.map((id) => (
-                <button
-                  key={id}
-                  type="button"
-                  onClick={() => setActiveCategory(id)}
-                  className={`flex flex-col items-center gap-2 rounded-xl border p-4 text-center text-xs font-semibold transition sm:text-sm ${
-                    activeCategory === id
-                      ? "border-[#0F4F68]/40 bg-[#F2F9FA]"
-                      : "border-neutral-200 bg-[#FAFAFA] hover:border-neutral-300"
-                  }`}
-                  style={{ color: NAVY }}
-                >
-                  <span
-                    className="flex h-11 w-11 items-center justify-center rounded-full border text-[#0F4F68]"
-                    style={{ borderColor: `${NAVY}33`, background: `${CREAM_PAGE}` }}
-                  >
-                    <TopicIcon kind={id} />
-                  </span>
-                  {RATGEBER_CATEGORY_LABELS[id]}
-                </button>
-              ))}
-            </div>
-            <button
-              type="button"
-              onClick={() => setActiveCategory("alle")}
-              className="mt-6 w-full rounded-2xl border-2 py-3 text-sm font-semibold transition hover:bg-neutral-50 sm:text-base"
-              style={{ borderColor: NAVY, color: NAVY }}
-            >
-              Alle Themen entdecken
             </button>
           </div>
         </aside>
