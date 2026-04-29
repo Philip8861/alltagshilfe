@@ -2,6 +2,8 @@ import { siteConfig } from "@/config/site";
 import type { MetadataRoute } from "next";
 import leistungenData from "@/content/leistungen.json";
 import { getAllStandortPageSlugs } from "@/config/standorte";
+import { getCategorySlugList } from "@/lib/blog/categories";
+import { getAllBlogSlugParams } from "@/lib/blog/posts-data";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const base = siteConfig.baseUrl;
@@ -55,5 +57,17 @@ export default function sitemap(): MetadataRoute.Sitemap {
     changeFrequency: "monthly" as const,
     priority: 0.65,
   }));
-  return [...staticRoutes, ...leistungen, ...standortSeiten];
+  const blogPosts = getAllBlogSlugParams().map(({ slug }) => ({
+    url: `${base}/blog/${slug}`,
+    lastModified: new Date(),
+    changeFrequency: "monthly" as const,
+    priority: 0.72,
+  }));
+  const blogCategories = getCategorySlugList().map((categorySlug) => ({
+    url: `${base}/blog/kategorie/${categorySlug}`,
+    lastModified: new Date(),
+    changeFrequency: "monthly" as const,
+    priority: 0.68,
+  }));
+  return [...staticRoutes, ...leistungen, ...standortSeiten, ...blogPosts, ...blogCategories];
 }

@@ -45,6 +45,7 @@ export const navLinks: NavLink[] = [
     ],
   },
   { href: "/ratgeber", label: "Ratgeber", activeWhenPathStartsWith: "/ratgeber" },
+  { href: "/blog", label: "Blog", activeWhenPathStartsWith: "/blog" },
   {
     href: "/pflegehilfsmittel/kostenfreie-pflegehilfsmittel",
     label: "Pflegehilfsmittel",

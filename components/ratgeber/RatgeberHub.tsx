@@ -409,11 +409,11 @@ export function RatgeberHub(props?: RatgeberHubProps) {
       {/* Themen-Pills: Abstand, damit die abgerundete Hero-Kante auf Seitenhintergrund (#FFFBF7) sichtbar wird */}
       <div className="mt-2 w-full border-b border-neutral-100 bg-[#FFFCFA] sm:mt-2.5">
         <Container className="max-w-7xl py-4">
-          <div className="flex gap-2 overflow-x-auto pb-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+          <div className="flex flex-wrap gap-x-2 gap-y-2.5" aria-label="Ratgeber nach Thema filtern">
             <button
               type="button"
               onClick={() => setActiveCategory("alle")}
-              className={`shrink-0 rounded-full px-4 py-2 text-sm font-semibold transition ${
+              className={`rounded-full px-4 py-2 text-left text-sm font-semibold transition ${
                 activeCategory === "alle"
                   ? "text-white shadow-sm"
                   : "border border-neutral-300 bg-white text-neutral-800 hover:border-neutral-400"
@@ -427,7 +427,7 @@ export function RatgeberHub(props?: RatgeberHubProps) {
                 key={id}
                 type="button"
                 onClick={() => setActiveCategory(id)}
-                className={`shrink-0 rounded-full px-4 py-2 text-sm font-semibold transition ${
+                className={`rounded-full px-4 py-2 text-left text-sm font-semibold transition ${
                   activeCategory === id
                     ? "text-white shadow-sm"
                     : "border border-neutral-300 bg-white text-neutral-800 hover:border-neutral-400"
@@ -457,9 +457,9 @@ export function RatgeberHub(props?: RatgeberHubProps) {
                     href={`/ratgeber/${featured.slug}`}
                     className="flex flex-col overflow-hidden rounded-2xl border border-black/[0.06] bg-white shadow-[0_16px_48px_-20px_rgba(15,79,104,0.25)] transition hover:-translate-y-0.5 hover:shadow-[0_22px_56px_-18px_rgba(15,79,104,0.28)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68] focus-visible:ring-offset-2 md:flex-row md:items-center"
                   >
-                    <div className="relative mx-auto flex h-[11rem] w-full max-w-[21rem] shrink-0 items-center justify-center overflow-hidden bg-[#FAF8F5] sm:h-[11.5rem] sm:max-w-[24rem] md:mx-0 md:h-[13.5rem] md:w-[46%] md:max-w-[26rem] md:self-center lg:h-[14.5rem] lg:max-w-[28rem]">
+                    <div className="relative mx-auto flex h-[11rem] w-full max-w-[21rem] shrink-0 items-center justify-center overflow-hidden bg-[#FAF8F5] sm:h-[11.5rem] sm:max-w-[24rem] max-md:mx-0 max-md:h-48 max-md:max-w-none md:mx-0 md:h-[13.5rem] md:w-[46%] md:max-w-[26rem] md:self-center lg:h-[14.5rem] lg:max-w-[28rem]">
                       <span
-                        className="absolute left-2.5 top-2.5 z-10 rounded-md px-2.5 py-1 text-[0.65rem] font-bold uppercase tracking-wide text-white shadow sm:text-xs"
+                        className="absolute left-2.5 top-2.5 z-10 hidden rounded-md px-2.5 py-1 text-[0.65rem] font-bold uppercase tracking-wide text-white shadow sm:inline-block sm:text-xs"
                         style={{ backgroundColor: ORANGE }}
                       >
                         Top Thema
@@ -469,12 +469,12 @@ export function RatgeberHub(props?: RatgeberHubProps) {
                         alt={featured.imageAlt}
                         fill
                         priority={featured.slug === visibleFeatured[0]?.slug}
-                        className="object-contain object-center p-3 sm:p-4"
+                        className="object-contain object-center p-3 sm:p-4 max-md:object-cover max-md:object-[50%_center] max-md:p-0 max-md:scale-[1.2] max-md:-translate-x-[50%]"
                         sizes="(min-width: 1024px) 420px, (min-width: 768px) 360px, 90vw"
                       />
                     </div>
-                    <div className="flex min-w-0 flex-1 flex-col justify-center px-5 py-4 sm:px-7 sm:py-5 md:py-6 lg:px-8 lg:py-7">
-                      <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs sm:text-sm">
+                    <div className="flex min-w-0 flex-1 flex-col justify-center px-5 pb-5 pt-0 max-md:pt-5 sm:px-7 sm:py-5 md:py-6 lg:px-8 lg:py-7">
+                      <div className="hidden flex-wrap items-center gap-x-4 gap-y-1 text-xs sm:flex sm:text-sm">
                         <span className="font-semibold" style={{ color: NAVY }}>
                           {primaryCategoryLabel(featured)}
                         </span>
@@ -485,6 +485,11 @@ export function RatgeberHub(props?: RatgeberHubProps) {
                         <span className="flex items-center gap-1 text-neutral-500">
                           <ClockIcon className="h-3.5 w-3.5 text-neutral-400" />
                           {featured.readMinutes} Min. Lesezeit
+                        </span>
+                      </div>
+                      <div className="flex sm:hidden">
+                        <span className="text-xs font-semibold" style={{ color: NAVY }}>
+                          {primaryCategoryLabel(featured)}
                         </span>
                       </div>
                       <h2 className="mt-2 text-xl font-bold leading-snug tracking-tight sm:text-2xl md:text-[1.6rem] lg:text-[1.75rem]" style={{ color: NAVY }}>
@@ -559,11 +564,11 @@ export function RatgeberHub(props?: RatgeberHubProps) {
                           <span className="font-semibold" style={{ color: NAVY }}>
                             {primaryCategoryLabel(beitrag)}
                           </span>
-                          <span className="flex items-center gap-1 text-neutral-600">
+                          <span className="hidden items-center gap-1 text-neutral-600 sm:flex">
                             <EyeIcon className="h-3.5 w-3.5 shrink-0 text-neutral-400" aria-hidden />
                             {getDisplayViews(beitrag).toLocaleString("de-DE")} Aufrufe
                           </span>
-                          <span className="flex items-center gap-1 text-neutral-500">
+                          <span className="hidden items-center gap-1 text-neutral-500 sm:flex">
                             <ClockIcon className="h-3.5 w-3.5 text-neutral-400" aria-hidden />
                             {beitrag.readMinutes} Min.
                           </span>
