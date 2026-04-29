@@ -16,8 +16,8 @@ import { STARTSEITE_VORTEILE, STARTSEITE_VORTEILE_INTRO } from "@/lib/startseite
 
 const HAUSHALTSHILFE_FAQ_ANCHOR = "/leistungen/haushaltshilfe#haushalt-faq-heading";
 
-/** Hintergrund FAQ-Bereich (Startseite), inkl. Wellenfüllung – wie übrige Seite #FFFFFF */
-const STARTSEITE_FAQ_BG = "#ffffff";
+/** Hintergrund FAQ-Bereich „Häufige Fragen“ (Startseite), inkl. Wellenfüllung */
+const STARTSEITE_FAQ_BG = "#FAFBFC";
 
 const STARTSEITE_FAQ_WELLEN_D =
   "M0,120 C200,32 420,8 600,22 C800,38 1010,90 1200,120 L1200,120 L0,120 Z";
