@@ -116,10 +116,15 @@ function RatgeberArticleTeaserCard({
           sizes="(min-width: 1280px) 18vw, (min-width: 768px) 22vw, 42vw"
           priority={false}
         />
-        <div className="pointer-events-none absolute inset-0 z-[2] flex items-center justify-center p-3 sm:p-4">
+        <div className="pointer-events-none absolute inset-0 z-[2] flex items-center justify-center p-2 sm:p-3 md:p-4">
           <span
             id={titleId}
-            className="line-clamp-5 max-h-[min(88%,10.5rem)] w-full max-w-[min(100%,17rem)] rounded-xl border border-white/35 bg-[#0F4F68]/88 px-2.5 py-2 text-center text-[0.7rem] font-extrabold leading-snug tracking-tight text-balance text-white shadow-[0_6px_24px_-4px_rgba(15,79,104,0.55)] backdrop-blur-[2px] sm:max-h-[min(88%,11.5rem)] sm:max-w-[min(100%,18.5rem)] sm:px-3 sm:py-2.5 sm:text-xs md:line-clamp-4 md:text-sm"
+            className="line-clamp-5 max-h-[min(90%,12rem)] w-full max-w-[min(100%,19rem)] px-1 text-center text-[0.7rem] font-extrabold leading-snug tracking-tight text-balance sm:max-h-[min(88%,12rem)] sm:text-xs md:line-clamp-4 md:text-sm"
+            style={{
+              color: NAVY,
+              textShadow:
+                "0 0 20px rgba(255,255,255,0.98), 0 0 8px rgba(255,255,255,0.95), 0 1px 3px rgba(255,255,255,1), 0 2px 14px rgba(255,255,255,0.75)",
+            }}
           >
             {beitrag.title}
           </span>
@@ -444,11 +449,11 @@ export function RatgeberHub(props?: RatgeberHubProps) {
         </Container>
       </div>
 
-      <Container className="mx-auto max-w-7xl px-4 pt-5 sm:px-6 sm:pt-6 lg:px-6 lg:pb-2 xl:px-8 xl:pl-6 xl:pr-4 2xl:pr-3">
+      <Container className="mx-auto max-w-[min(96rem,calc(100vw-1.5rem))] px-4 pt-5 sm:px-6 sm:pt-6 lg:pb-2 lg:pl-6 lg:pr-4 xl:pl-12 xl:pr-5 2xl:pl-16 2xl:pr-6">
         <section id="alle-ratgeber" className="scroll-mt-24">
-          <div className="mt-8 flex flex-col gap-8 lg:mt-10 lg:flex-row lg:items-start lg:justify-between lg:gap-5 xl:gap-8 2xl:gap-12">
-            <div className="flex min-h-0 w-full min-w-0 flex-1 justify-center lg:pr-2">
-              <div className="w-full max-w-[min(100%,62rem)]">
+          <div className="mx-auto mt-8 flex w-full max-w-full flex-col gap-8 lg:mt-10 lg:flex-row lg:flex-nowrap lg:items-start lg:justify-center lg:gap-10 xl:gap-14 2xl:gap-16">
+            <div className="flex w-full min-w-0 flex-col items-stretch lg:w-[62rem] lg:max-w-[62rem] lg:flex-none">
+              <div className="w-full">
                 <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
                   <h2 className="text-center text-base font-bold tracking-tight sm:text-left sm:text-lg" style={{ color: NAVY }}>
                     {categoryLabel}
@@ -477,9 +482,9 @@ export function RatgeberHub(props?: RatgeberHubProps) {
                     Keine Artikel für diese Auswahl. Anderes Thema wählen oder Suchbegriff anpassen.
                   </p>
                 ) : (
-                  <ul className="mx-auto mt-4 grid w-full max-w-[min(100%,62rem)] grid-cols-2 justify-items-center gap-x-3 gap-y-6 sm:gap-x-4 md:grid-cols-3 md:gap-y-7 lg:grid-cols-4 lg:gap-x-5 lg:gap-y-8 xl:gap-x-6">
+                  <ul className="mx-auto mt-4 grid w-full grid-cols-2 gap-x-3 gap-y-6 sm:gap-x-4 md:grid-cols-3 md:gap-y-7 lg:grid-cols-4 lg:gap-x-4 lg:gap-y-8 xl:gap-x-5">
                     {gridBeitraege.map((beitrag, idx) => (
-                      <li key={beitrag.slug} className="min-h-0 w-full max-w-[15.5rem] justify-self-center sm:max-w-none">
+                      <li key={beitrag.slug} className="min-h-0 w-full justify-self-stretch">
                         <RatgeberArticleTeaserCard
                           beitrag={beitrag}
                           showTopBadge={idx < 2}
@@ -493,7 +498,7 @@ export function RatgeberHub(props?: RatgeberHubProps) {
             </div>
 
             <aside
-              className="w-full shrink-0 border border-neutral-200/80 bg-white/90 p-4 shadow-sm sm:p-4 lg:sticky lg:top-24 lg:ml-auto lg:w-[min(18rem,calc(100vw-2rem))] lg:max-w-[18rem] lg:flex-shrink-0 lg:self-start"
+              className="w-full shrink-0 border border-neutral-200/80 bg-white/90 p-4 shadow-sm sm:p-4 lg:sticky lg:top-24 lg:w-[18rem] lg:max-w-[18rem] lg:flex-none lg:self-start lg:translate-x-1 xl:translate-x-2"
               style={{ borderRadius: "0.85rem" }}
               aria-labelledby="ratgeber-beliebt-heading"
             >
