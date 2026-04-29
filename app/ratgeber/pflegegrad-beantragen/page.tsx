@@ -1,12 +1,10 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 
-import {
-  PflegegradBeantragenArticle,
-  PFLEGEGRAD_ARTICLE_TOC_ENTRIES,
-  pflegegradBeantragenFaqForJsonLd,
-} from "@/components/ratgeber/pflegegrad-beantragen/PflegegradBeantragenArticle";
+import { PflegegradBeantragenArticle } from "@/components/ratgeber/pflegegrad-beantragen/PflegegradBeantragenArticle";
 import { PflegegradRatgeberHero } from "@/components/ratgeber/pflegegrad-beantragen/PflegegradRatgeberHero";
+import { PFLEGEGRAD_ARTICLE_TOC_ENTRIES } from "@/components/ratgeber/pflegegrad-beantragen/pflegegrad-toc-config";
+import { pflegegradBeantragenFaqForJsonLd } from "@/components/ratgeber/pflegegrad-beantragen/pflegegrad-beantragen-faq-data";
 import { siteConfig } from "@/config/site";
 import { serializeRatgeberArticleJsonSchemas } from "@/lib/ratgeber/article-jsonld";
 
@@ -18,7 +16,7 @@ const META_DESC =
   "Pflegegrad beantragen 2026: Antrag, Begutachtung, Unterlagen, Fristen, Pflegegeld und Tipps für Angehörige einfach erklärt.";
 
 const TOC_LINK =
-  "text-[0.9375rem] font-medium text-[#0F4F68] underline-offset-2 hover:underline";
+  "text-[0.9375rem] font-medium text-neutral-700 underline-offset-[3px] decoration-neutral-300 hover:text-[#0F4F68] hover:underline";
 
 export const metadata: Metadata = {
   title: META_TITLE,
@@ -94,14 +92,16 @@ export default function PflegegradBeantragenRatgeberPage() {
           <PflegegradRatgeberHero />
 
           <div className="mt-10 flex flex-col gap-10 lg:mt-12 lg:flex-row lg:items-start lg:gap-12">
-            <aside className="hidden shrink-0 lg:block lg:w-[200px]">
-              <div className="sticky top-28 space-y-8">
-                <nav aria-label="Inhalt">
-                  <p className="text-xs font-semibold uppercase tracking-[0.12em] text-neutral-500">Inhalt</p>
+            <aside className="hidden shrink-0 lg:block lg:w-[240px]">
+              <div className="sticky top-28 space-y-6">
+                <nav aria-label="Inhalt" className="rounded-2xl border border-neutral-200 bg-white px-4 py-4 sm:px-5 sm:py-5">
+                  <p className="text-xs font-semibold uppercase tracking-[0.14em] text-neutral-500">Inhalt</p>
                   <ol className="mt-3 space-y-2.5">
                     {[...PFLEGEGRAD_ARTICLE_TOC_ENTRIES].map((e, i) => (
-                      <li key={e.id} className="text-sm leading-snug text-neutral-700">
-                        <span className="text-neutral-400">{String(i + 1).padStart(2, "0")}</span>{" "}
+                      <li key={e.id} className="flex gap-1.5 text-sm leading-snug">
+                        <span className="w-7 shrink-0 font-semibold tabular-nums text-[#F78F2E]">
+                          {String(i + 1).padStart(2, "0")}
+                        </span>
                         <a href={`#${e.id}`} className={TOC_LINK}>
                           {e.label}
                         </a>
@@ -109,14 +109,15 @@ export default function PflegegradBeantragenRatgeberPage() {
                     ))}
                   </ol>
                 </nav>
-                <div className="rounded-lg border border-neutral-200 bg-neutral-50/80 px-3 py-4">
+
+                <div className="rounded-2xl border border-neutral-200 bg-white px-4 py-4 sm:px-5 sm:py-5">
                   <p className="text-sm font-semibold text-[#0F4F68]">Persönliche Beratung</p>
                   <p className="mt-2 text-sm leading-relaxed text-neutral-600">
                     Sie möchten Unterstützung beim Pflegegrad-Antrag?
                   </p>
                   <Link
                     href="/kontakt"
-                    className="mt-3 inline-flex text-sm font-semibold text-[#0F4F68] underline-offset-2 hover:underline"
+                    className="mt-4 inline-flex min-h-[2.75rem] w-full items-center justify-center rounded-lg border border-[#F78F2E] bg-transparent px-3 text-[0.9rem] font-semibold text-[#F78F2E] transition hover:bg-[#fffbf7]"
                   >
                     Beratung anfragen
                   </Link>
@@ -125,7 +126,7 @@ export default function PflegegradBeantragenRatgeberPage() {
             </aside>
 
             <div className="min-w-0 w-full flex-1">
-              <div className="mx-auto w-full max-w-[780px]">
+              <div className="mx-auto w-full max-w-[760px]">
                 <PflegegradBeantragenArticle />
               </div>
             </div>

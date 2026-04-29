@@ -1,5 +1,7 @@
-/** FAQ nur für diese Ratgeberseite (JSON-LD + Darstellung). */
-export const PFLEGEGRAD_ARTICLE_FAQ: { id: string; question: string; answer: string }[] = [
+export type PflegegradFaqItem = { id: string; question: string; answer: string };
+
+/** FAQ nur für diese Ratgeberseite (JSON-LD + Darstellung): 8 Fragen. */
+export const PFLEGEGRAD_ARTICLE_FAQ: PflegegradFaqItem[] = [
   {
     id: "faq-antwort-beantrag-wo",
     question: "Wie beantrage ich einen Pflegegrad?",
@@ -43,21 +45,13 @@ export const PFLEGEGRAD_ARTICLE_FAQ: { id: string; question: string; answer: str
       "Sie können Widerspruch einlegen. Die Frist beträgt grundsätzlich einen Monat ab Zugang des Bescheids. Fordern Sie das Gutachten an, prüfen Sie die Bewertung und begründen Sie den Widerspruch möglichst konkret. Alltagshilfe-Süd kann Sie dabei unterstützen.",
   },
   {
-    id: "faq-rueckwirkend",
-    question: "Kann ich Pflegeleistungen rückwirkend erhalten?",
-    answer:
-      "Leistungen der Pflegeversicherung sind grundsätzlich an die Antragstellung gebunden. Deshalb ist es wichtig, den Antrag frühzeitig zu stellen und das Datum der Antragstellung zu dokumentieren.",
-  },
-  {
-    id: "faq-leistungen-wichtig",
-    question: "Welche Leistungen sind nach einem Pflegegrad besonders wichtig?",
-    answer:
-      "Je nach Pflegegrad können Pflegegeld, Pflegesachleistungen, Entlastungsbetrag, Pflegehilfsmittel, Verhinderungspflege, Wohnumfeldverbesserung, Pflegeberatung, Haushaltshilfe, Betreuung oder Inkontinenzversorgung wichtig werden.",
-  },
-  {
     id: "faq-alltagshilfe-hilft",
     question: "Kann Alltagshilfe-Süd beim Pflegegrad helfen?",
     answer:
       "Ja. Alltagshilfe-Süd unterstützt bei der ersten Orientierung, beim Pflegegrad-Antrag, bei der Vorbereitung auf die Begutachtung und beim Widerspruch. Außerdem helfen wir bei passenden Leistungen wie Entlastungsbetrag, Haushaltsreinigung, Alltagsbegleitung, Pflegehilfsmitteln, Inkontinenzversorgung über Rezept und weiteren Unterstützungsangeboten.",
   },
 ];
+
+export function pflegegradBeantragenFaqForJsonLd(): { question: string; answer: string }[] {
+  return PFLEGEGRAD_ARTICLE_FAQ.map((item) => ({ question: item.question, answer: item.answer }));
+}

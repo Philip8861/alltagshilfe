@@ -1,0 +1,64 @@
+import Link from "next/link";
+
+const ITEMS = [
+  "Unterstützung beim Pflegegrad-Antrag",
+  "Hilfe beim Widerspruch",
+  "Private Pflegeberatung",
+  "Haushaltsreinigung",
+  "Alltagsbegleitung & Betreuung",
+  "Entlastungsbetrag über Alltagshilfe-Süd nutzbar",
+  "Ersatzpflege / Verhinderungspflege",
+  "Pflegehilfsmittel im Wert von bis zu 42 €",
+  "Inkontinenzversorgung über Rezept",
+  "Pflegeshop",
+  "Essen auf Rädern",
+  "Hausnotruf über Kooperationspartner",
+  "Treppenlift über Kooperationspartner",
+  "Begehbare Dusche über Kooperationspartner",
+  "Abrechnung über alle Kranken- und Pflegekassen möglich",
+];
+
+function CheckBullet() {
+  return (
+    <span className="mt-0.5 flex h-[1.125rem] w-[1.125rem] shrink-0 items-center justify-center rounded-sm border border-[#F78F2E]/50 text-[0.65rem] font-bold text-[#F78F2E]">
+      ✓
+    </span>
+  );
+}
+
+export function PflegegradServiceSupportSection() {
+  return (
+    <aside
+      className="rounded-2xl border border-neutral-200 bg-white px-5 py-6 sm:px-7 sm:py-8"
+      aria-labelledby="ahs-service-support-heading"
+    >
+      <h2 id="ahs-service-support-heading" className="text-xl font-semibold text-[#0F4F68]">
+        Wir unterstützen Sie beim Pflegegrad-Antrag
+      </h2>
+      <p className="mt-3 max-w-[40rem] text-[1.0625rem] leading-relaxed text-neutral-700">
+        Alltagshilfe-Süd hilft beim Antrag, bei der Begutachtung und bei weiteren Versorgungsfragen – verständlich und
+        abgestimmt auf Ihre Situation. Pflegeberatung erfolgt hier im Rahmen der{" "}
+        <Link href="/pflegeberatung/private-pflegeberatung" className="font-medium text-[#0F4F68] underline underline-offset-2 hover:text-[#0c3d52]">
+          privaten Pflegeberatung
+        </Link>
+        .
+      </p>
+
+      <ul className="mt-6 grid gap-x-10 gap-y-3 sm:grid-cols-2">
+        {ITEMS.map((t) => (
+          <li key={t} className="flex gap-3 text-[1rem] leading-snug text-neutral-800">
+            <CheckBullet />
+            <span>{t}</span>
+          </li>
+        ))}
+      </ul>
+
+      <Link
+        href="/kontakt"
+        className="mt-8 inline-flex min-h-[2.875rem] items-center justify-center rounded-lg bg-[#F78F2E] px-6 text-[0.95rem] font-semibold text-white transition hover:bg-[#e8862a] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68] focus-visible:ring-offset-2"
+      >
+        Jetzt Beratungsgespräch vereinbaren
+      </Link>
+    </aside>
+  );
+}
