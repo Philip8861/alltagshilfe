@@ -91,7 +91,7 @@ export default function HomePage() {
                     src="/images/Startseite_header.webp"
                     alt=""
                     fill
-                    className="object-contain object-center"
+                    className="max-md:object-cover max-md:object-[70%_center] md:object-contain md:object-center"
                     sizes="(min-width: 768px) 96vw, 100vw"
                     quality={92}
                     priority
