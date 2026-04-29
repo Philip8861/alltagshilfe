@@ -80,7 +80,7 @@ export default function HomePage() {
         {/* Hero: seitlicher Abstand 5cm (md+), Bild zusätzlich ~25 % höher */}
         <div className="relative w-full px-3 sm:px-4 md:px-[5cm]" aria-label="Einstieg">
           <HilfefinderProvider>
-            <div className="relative isolate flex w-full flex-col overflow-hidden rounded-b-3xl bg-[#FFFCFA] md:relative md:block md:min-h-[28.125rem] lg:min-h-[30.46875rem]">
+            <div className="relative isolate flex w-full flex-col overflow-hidden rounded-b-3xl bg-transparent md:relative md:block md:min-h-[28.125rem] lg:min-h-[30.46875rem]">
               {/* Mobil: Bild oben nur als Streifen | md+: wie bisher über volle Höhe unter dem Text */}
               <div
                 className="pointer-events-none relative z-0 w-full shrink-0 overflow-hidden max-md:h-[min(17.5rem,52vw)] sm:max-md:h-[min(21rem,48vw)] md:absolute md:inset-0 md:h-full md:min-h-[28.125rem] lg:min-h-[30.46875rem]"
@@ -98,7 +98,7 @@ export default function HomePage() {
                   />
                 </ProtectedRasterMedia>
               </div>
-              <div className="relative z-10 mx-auto flex w-full max-w-7xl flex-col justify-center px-4 pb-5 pt-5 max-md:bg-[#FFFCFA] sm:px-6 md:absolute md:inset-0 md:min-h-[28.125rem] md:pb-4 md:pt-7 lg:min-h-[30.46875rem] lg:px-[var(--ahs-page-gutter)] lg:pb-5 lg:pt-8">
+              <div className="relative z-10 mx-auto flex w-full max-w-7xl flex-col justify-center px-4 pb-5 pt-5 max-md:bg-transparent sm:px-6 md:absolute md:inset-0 md:min-h-[28.125rem] md:pb-4 md:pt-7 lg:min-h-[30.46875rem] lg:px-[var(--ahs-page-gutter)] lg:pb-5 lg:pt-8">
                 <header className="max-w-lg text-left sm:max-w-xl lg:max-w-[min(42vw,clamp(22rem,32vw+8rem,30rem))] xl:max-w-[min(38vw,clamp(23rem,28vw+9rem,31rem))] 2xl:max-w-[min(34vw,clamp(24rem,26vw+10rem,32rem))]">
                   <h1
                     className="text-balance text-3xl font-extrabold leading-tight tracking-tight text-[#0F4F68] opacity-0 motion-reduce:opacity-100 animate-fade-in-up sm:text-4xl lg:text-[clamp(2rem,1.05rem+2.6vw,3rem)]"
