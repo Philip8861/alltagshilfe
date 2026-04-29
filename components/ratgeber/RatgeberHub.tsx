@@ -116,10 +116,10 @@ function RatgeberArticleTeaserCard({
           sizes="(min-width: 1280px) 18vw, (min-width: 768px) 22vw, 42vw"
           priority={false}
         />
-        <div className="pointer-events-none absolute inset-0 z-[2] flex items-center justify-center p-2 sm:p-3 md:p-4">
+        <div className="pointer-events-none absolute inset-0 z-[2] flex items-center justify-center px-2 py-2 sm:px-3 sm:py-3 md:px-4 md:py-4">
           <span
             id={titleId}
-            className="line-clamp-5 max-h-[min(90%,12rem)] w-full max-w-[min(100%,19rem)] px-1 text-center text-[0.7rem] font-extrabold leading-snug tracking-tight text-balance sm:max-h-[min(88%,12rem)] sm:text-xs md:line-clamp-4 md:text-sm"
+            className="line-clamp-6 max-h-[min(92%,14.5rem)] w-full max-w-[min(100%,22rem)] hyphens-auto px-1 text-center text-sm font-extrabold leading-tight tracking-tight text-balance sm:max-h-[min(90%,15.5rem)] sm:max-w-[min(100%,24rem)] sm:text-base sm:leading-snug md:line-clamp-[7] md:max-h-[min(88%,16rem)] md:text-[1.05rem] lg:text-[1.1rem] lg:leading-snug"
             style={{
               color: NAVY,
               textShadow:
@@ -134,7 +134,7 @@ function RatgeberArticleTeaserCard({
         className="flex flex-col px-2.5 pb-2.5 pt-2 sm:px-3 sm:pb-3 sm:pt-2.5"
         style={{ backgroundColor: CARD_CANVAS }}
       >
-        <div className="flex flex-wrap items-start gap-x-3 gap-y-0.5 text-[0.6rem] leading-relaxed text-neutral-500 sm:text-[0.65rem]">
+        <div className="flex flex-wrap items-start gap-x-3 gap-y-0.5 text-[0.65rem] leading-relaxed text-neutral-500 sm:text-xs sm:leading-relaxed">
           <span className="inline-flex items-center gap-1">
             <EyeIcon className="h-2.5 w-2.5 shrink-0 text-neutral-400" aria-hidden />
             {getDisplayViews(beitrag).toLocaleString("de-DE")} Aufrufe
@@ -449,9 +449,9 @@ export function RatgeberHub(props?: RatgeberHubProps) {
         </Container>
       </div>
 
-      <Container className="mx-auto max-w-[min(96rem,calc(100vw-1.5rem))] px-4 pt-5 sm:px-6 sm:pt-6 lg:pb-2 lg:pl-6 lg:pr-4 xl:pl-12 xl:pr-5 2xl:pl-16 2xl:pr-6">
+      <Container className="mx-auto max-w-[min(96rem,calc(100vw-1.5rem))] overflow-x-clip px-3 pt-5 sm:px-6 sm:pt-6 lg:pb-2 lg:pl-3 lg:pr-10 xl:pl-4 xl:pr-14 2xl:pl-6 2xl:pr-16">
         <section id="alle-ratgeber" className="scroll-mt-24">
-          <div className="mx-auto mt-8 flex w-full max-w-full flex-col gap-8 lg:mt-10 lg:flex-row lg:flex-nowrap lg:items-start lg:justify-center lg:gap-10 xl:gap-14 2xl:gap-16">
+          <div className="mx-auto mt-8 flex w-full max-w-full flex-col gap-8 lg:mt-10 lg:flex-row lg:flex-nowrap lg:items-start lg:justify-end lg:gap-10 lg:translate-x-[min(1.75rem,3.5vw)] xl:gap-14 xl:translate-x-[min(2.5rem,5vw)] 2xl:gap-16 2xl:translate-x-[min(3rem,5.5vw)]">
             <div className="flex w-full min-w-0 flex-col items-stretch lg:w-[62rem] lg:max-w-[62rem] lg:flex-none">
               <div className="w-full">
                 <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
@@ -498,7 +498,7 @@ export function RatgeberHub(props?: RatgeberHubProps) {
             </div>
 
             <aside
-              className="w-full shrink-0 border border-neutral-200/80 bg-white/90 p-4 shadow-sm sm:p-4 lg:sticky lg:top-24 lg:w-[18rem] lg:max-w-[18rem] lg:flex-none lg:self-start lg:translate-x-1 xl:translate-x-2"
+              className="w-full shrink-0 border border-neutral-200/80 bg-white/90 p-4 shadow-sm sm:p-4 lg:sticky lg:top-24 lg:w-[18rem] lg:max-w-[18rem] lg:flex-none lg:self-start lg:translate-x-2 xl:translate-x-3 2xl:translate-x-4"
               style={{ borderRadius: "0.85rem" }}
               aria-labelledby="ratgeber-beliebt-heading"
             >
