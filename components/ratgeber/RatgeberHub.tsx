@@ -72,69 +72,63 @@ function TopicIcon({ kind }: { kind: RatgeberCategoryId }) {
     fill: "none" as const,
     stroke: "currentColor" as const,
     strokeWidth: 2,
+    strokeLinecap: "round" as const,
+    strokeLinejoin: "round" as const,
     "aria-hidden": true as const,
   };
   switch (kind) {
     case "pflegegrad_leistungen":
       return (
         <svg {...common}>
-          <path d="M12 3v18M6 8h12M8 16h8" strokeLinecap="round" strokeLinejoin="round" />
-          <path d="M9 5h6M9 19h6" strokeLinecap="round" />
+          <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z" />
+          <path d="M14 2v6h6" />
+          <path d="M8 13h8M8 17h6" />
         </svg>
       );
     case "haushalt_betreuung":
       return (
         <svg {...common}>
-          <path d="M3 11l9-8 9 8M5 10v10h14V10" strokeLinecap="round" strokeLinejoin="round" />
-          <path d="M9 18v-4h6v4" strokeLinecap="round" />
+          <path d="M3 10.5L12 3l9 7.5V20a1 1 0 01-1 1h-5v-6H9v6H4a1 1 0 01-1-1v-9.5z" />
         </svg>
       );
     case "pflegehilfsmittel_42eur":
       return (
         <svg {...common}>
-          <rect x="4" y="6" width="16" height="14" rx="2" strokeLinejoin="round" />
-          <path d="M8 10h8M8 14h5" strokeLinecap="round" />
+          <path d="M16.5 9.4l-9-5.19M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z" />
+          <path d="M3.27 6.96L12 12.01l8.73-5.05" />
         </svg>
       );
     case "inkontinenz":
       return (
         <svg {...common}>
-          <path
-            d="M12 3c-3 4-5 7-5 10a5 5 0 0010 0c0-3-2-6-5-10z"
-            strokeLinejoin="round"
-          />
-          <path d="M10 14h4" strokeLinecap="round" />
+          <path d="M12 22a7 7 0 007-7c0-4-7-13-7-13S5 11 5 15a7 7 0 007 7z" />
         </svg>
       );
     case "pflegeberatung_beratungseinsaetze":
       return (
         <svg {...common}>
-          <path
-            d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"
-            strokeLinejoin="round"
-          />
+          <path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8.5z" />
         </svg>
       );
     case "pflegende_angehoerige":
       return (
         <svg {...common}>
-          <path d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2" strokeLinecap="round" />
+          <path d="M17 21v-2a4 4 0 00-4-4H7a4 4 0 00-4 4v2" />
           <circle cx="9" cy="7" r="4" />
-          <path d="M22 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75" strokeLinecap="round" />
+          <path d="M23 21v-2a4 4 0 00-3-3.87M17 4.13a4 4 0 010 7.75" />
         </svg>
       );
     case "pflegealltag_zuhause":
       return (
         <svg {...common}>
-          <path d="M3 11l9-8 9 8M5 10v10h14V10" strokeLinecap="round" strokeLinejoin="round" />
+          <path d="M20.8 4.6a5.5 5.5 0 00-7.8 0L12 6.05l-.95-1a5.49 5.49 0 00-9.53 5.53c.28.93.71 1.8 1.28 2.56L12 21l9.05-11.62c.93-1.2 1.4-2.64 1.4-4.09a5.53 5.53 0 00-1.65-3.73v0z" />
         </svg>
       );
     case "antraege_checklisten_downloads":
       return (
         <svg {...common}>
-          <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2" strokeLinejoin="round" />
-          <path d="M9 5a2 2 0 012-2h2a2 2 0 012 2v0a2 2 0 01-2 2H9a2 2 0 01-2-2v0z" strokeLinejoin="round" />
-          <path d="M9 12h6M9 16h6" strokeLinecap="round" />
+          <path d="M9 5h4l5 5v11a2 2 0 01-2 2H9a2 2 0 01-2-2v-14a2 2 0 012-2z" />
+          <path d="M9 13h7M9 17h7M14 5v5h5" />
         </svg>
       );
     default: {
@@ -180,7 +174,7 @@ function RatgeberArticleTeaserCard({
       className="group flex h-full min-h-0 flex-col overflow-hidden rounded-[1.125rem] bg-white shadow-[0_10px_36px_-16px_rgba(15,79,104,0.22)] transition hover:-translate-y-0.5 hover:shadow-[0_16px_44px_-18px_rgba(15,79,104,0.26)] focus:outline-none focus-visible:ring-2 focus-visible:ring-neutral-400/50 focus-visible:ring-offset-2"
       aria-labelledby={titleId}
     >
-      <div className="relative aspect-[4/5] w-full shrink-0 overflow-hidden rounded-t-[1.125rem] bg-neutral-100">
+      <div className="relative w-full shrink-0 overflow-hidden rounded-t-[1.125rem] bg-neutral-100 aspect-[4/5]">
         {showTopBadge ? (
           <span
             className="absolute left-2.5 top-2.5 z-20 rounded-md px-2 py-1 text-[0.65rem] font-bold uppercase tracking-wide text-white shadow-sm sm:left-3 sm:top-3"
@@ -189,19 +183,17 @@ function RatgeberArticleTeaserCard({
             TOP THEMA
           </span>
         ) : null}
-        <div className="absolute inset-[12.5%] z-0 overflow-hidden">
-          <Image
-            src={hubSrc}
-            alt=""
-            fill
-            className="object-contain object-center transition duration-300 group-hover:scale-[1.02]"
-            sizes="(min-width: 1280px) 26vw, (min-width: 768px) 32vw, 90vw"
-            priority={false}
-          />
-        </div>
-        <div className="pointer-events-none absolute inset-0 z-[1] flex items-center justify-center bg-gradient-to-t from-black/[0.05] to-transparent" aria-hidden />
-        <div className="pointer-events-none absolute inset-0 z-[2] flex items-center justify-center p-4">
-          <span className="inline-flex h-[5.5rem] w-[5.5rem] items-center justify-center text-[#0F4F68] drop-shadow-[0_2px_8px_rgba(255,255,255,0.85)] sm:h-[6.25rem] sm:w-[6.25rem] [&>svg]:h-full [&>svg]:w-full [&>svg]:max-h-[4.5rem] [&>svg]:max-w-[4.5rem]">
+        <Image
+          src={hubSrc}
+          alt=""
+          fill
+          className="object-contain object-center transition duration-300 group-hover:scale-[1.02]"
+          sizes="(min-width: 1280px) 26vw, (min-width: 768px) 32vw, 90vw"
+          priority={false}
+        />
+        <div className="pointer-events-none absolute inset-0 z-[1] flex items-center justify-center bg-gradient-to-t from-black/[0.06] to-transparent" aria-hidden />
+        <div className="pointer-events-none absolute inset-0 z-[2] flex items-center justify-center p-3 sm:p-4">
+          <span className="inline-flex h-[6.875rem] w-[6.875rem] items-center justify-center text-[#0F4F68] drop-shadow-[0_2px_8px_rgba(255,255,255,0.9)] sm:h-[7.8125rem] sm:w-[7.8125rem] [&>svg]:h-full [&>svg]:w-full [&>svg]:max-h-[5.625rem] [&>svg]:max-w-[5.625rem]">
             <TopicIcon kind={ik} />
           </span>
         </div>
@@ -240,6 +232,8 @@ export function RatgeberHub(props?: RatgeberHubProps) {
   const [searchFocused, setSearchFocused] = useState(false);
   const [highlightIndex, setHighlightIndex] = useState(-1);
   const [mobileTopicsOpen, setMobileTopicsOpen] = useState(false);
+  /** views = Beliebtheit (Aufrufe), date = neueste zuerst */
+  const [sortMode, setSortMode] = useState<"views" | "date">("views");
   const searchComboRef = useRef<HTMLDivElement>(null);
   const mobileTopicsRef = useRef<HTMLDivElement>(null);
 
@@ -290,10 +284,15 @@ export function RatgeberHub(props?: RatgeberHubProps) {
     return () => document.removeEventListener("mousedown", onDown);
   }, []);
 
-  /** Immer nach Beliebtheit (Aufrufe), neuester zuerst bei Gleichstand optional – hier strikt Views. */
   const gridBeitraege = useMemo(() => {
-    return [...filteredBySearchAndCat].sort((a, b) => getDisplayViews(b) - getDisplayViews(a));
-  }, [filteredBySearchAndCat, getDisplayViews]);
+    const arr = [...filteredBySearchAndCat];
+    if (sortMode === "views") {
+      arr.sort((a, b) => getDisplayViews(b) - getDisplayViews(a));
+    } else {
+      arr.sort((a, b) => b.publishedAt.localeCompare(a.publishedAt));
+    }
+    return arr;
+  }, [filteredBySearchAndCat, sortMode, getDisplayViews]);
 
   const marqueeAlle = useMemo(
     () => [...RATGEBER_BEITRAEGE].sort((a, b) => b.publishedAt.localeCompare(a.publishedAt)),
@@ -548,11 +547,9 @@ export function RatgeberHub(props?: RatgeberHubProps) {
         </Container>
       </div>
 
-      <Container className="mx-auto max-w-6xl space-y-10 px-4 pt-10 sm:space-y-12 sm:px-6 sm:pt-12 lg:px-8">
-        <div className="mx-auto min-h-0 min-w-0 max-w-6xl space-y-10 lg:space-y-12">
+      <Container className="mx-auto max-w-6xl space-y-8 px-4 pt-6 sm:space-y-10 sm:px-6 sm:pt-8 lg:px-8">
+        <div className="mx-auto min-h-0 min-w-0 max-w-6xl space-y-8 lg:space-y-10">
           <section id="alle-ratgeber" className="scroll-mt-24">
-            {isCategoryFocused ? <h2 className="sr-only">{categoryLabel}</h2> : null}
-
             {!isCategoryFocused ? (
               <div className="space-y-4">
                 <p className="text-center text-sm font-semibold text-neutral-600 sm:text-base">Themen wählen</p>
@@ -569,7 +566,7 @@ export function RatgeberHub(props?: RatgeberHubProps) {
                           className="flex h-full w-full flex-col items-center justify-center gap-2 rounded-2xl border border-neutral-200/95 bg-gradient-to-br from-white to-neutral-50/90 p-3 text-center shadow-sm transition hover:-translate-y-0.5 hover:border-neutral-300 hover:shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-neutral-400/40 focus-visible:ring-offset-2 sm:gap-3 sm:p-4"
                           style={{ color: NAVY }}
                         >
-                          <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-neutral-200/90 bg-white text-[#0F4F68] shadow-inner sm:h-14 sm:w-14">
+                          <span className="flex h-[3.75rem] w-[3.75rem] shrink-0 items-center justify-center rounded-2xl border border-neutral-200/90 bg-white text-[#0F4F68] shadow-inner sm:h-[4.375rem] sm:w-[4.375rem] [&>svg]:scale-125">
                             <TopicIcon kind={id} />
                           </span>
                           <span className="line-clamp-3 text-[0.7rem] font-bold leading-tight sm:text-xs">
@@ -584,31 +581,41 @@ export function RatgeberHub(props?: RatgeberHubProps) {
             ) : null}
 
             {!isCategoryFocused ? (
-              <div className="mt-10">
+              <div className="mt-6 sm:mt-8">
                 <RatgeberMarquee beitraege={marqueeAlle} getViews={getDisplayViews} />
               </div>
             ) : null}
 
             <div
-              className={`flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-center ${
-                !isCategoryFocused ? "mt-10 sm:mt-12" : "mt-2 sm:mt-3"
+              className={`flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between ${
+                !isCategoryFocused ? "mt-6 sm:mt-8" : "mt-2 sm:mt-3"
               }`}
             >
-              {!isCategoryFocused ? (
-                <p className="text-center text-sm text-neutral-600 sm:text-base">Alle Einträge nach Beliebtheit (Aufrufen) sortiert.</p>
-              ) : (
-                <p className="mx-auto max-w-3xl text-center text-sm font-medium text-neutral-500">
-                  Sortierung: Beliebtheit (Aufrufe) · {categoryLabel}
-                </p>
-              )}
+              <h2 className="text-lg font-bold tracking-tight sm:text-xl" style={{ color: NAVY }}>
+                {isCategoryFocused ? `${categoryLabel}` : "Artikel"}
+              </h2>
+              <div className="flex flex-wrap items-center gap-2 sm:justify-end">
+                <label htmlFor="ratgeber-sortierung" className="text-sm font-medium text-neutral-600">
+                  Sortierung
+                </label>
+                <select
+                  id="ratgeber-sortierung"
+                  value={sortMode}
+                  onChange={(e) => setSortMode(e.target.value === "date" ? "date" : "views")}
+                  className="min-h-[44px] min-w-[12rem] cursor-pointer rounded-xl border border-neutral-300 bg-white px-3 py-2 text-sm font-semibold text-neutral-900 shadow-sm outline-none transition hover:border-neutral-400 focus:border-[#0F4F68]/40 focus:ring-2 focus:ring-[#0F4F68]/20"
+                >
+                  <option value="views">Beliebtheit (Aufrufe)</option>
+                  <option value="date">Neueste zuerst</option>
+                </select>
+              </div>
             </div>
 
             {gridBeitraege.length === 0 ? (
-              <p className="mx-auto mt-8 max-w-2xl rounded-2xl border border-dashed border-neutral-200 bg-white p-8 text-center text-neutral-600">
+              <p className="mx-auto mt-5 max-w-2xl rounded-2xl border border-dashed border-neutral-200 bg-white p-8 text-center text-neutral-600">
                 Keine Artikel für diese Auswahl. Andere Themen oder Suchbegriff probieren.
               </p>
             ) : (
-              <ul className="mx-auto mt-8 grid w-full max-w-6xl grid-cols-2 justify-items-stretch gap-x-4 gap-y-6 sm:max-w-none sm:gap-x-5 md:grid-cols-3 md:gap-y-7 lg:grid-cols-4 lg:gap-x-6 xl:gap-8">
+              <ul className="mx-auto mt-5 grid w-full max-w-6xl grid-cols-2 justify-items-stretch gap-x-4 gap-y-6 sm:max-w-none sm:gap-x-5 md:grid-cols-3 md:gap-y-7 lg:grid-cols-4 lg:gap-x-6 xl:gap-8">
                 {gridBeitraege.map((beitrag, idx) => (
                   <li key={beitrag.slug} className="min-h-0 w-full justify-self-center">
                     <RatgeberArticleTeaserCard
