@@ -2,7 +2,11 @@ import Image from "next/image";
 import Link from "next/link";
 import type { ReactNode } from "react";
 
-const BG_SRC = "/images/Ratgeber/ratgeber_blog_backgrounds.webp" as const;
+import { cn } from "@/lib/utils";
+/** Natürliche Pixelmaße von `ratgeber_blog_backgrounds.webp` (VP8X-Canvas), Anzeige 1:1. */
+export const RATGEBER_ARTICLE_HERO_BG_SRC = "/images/Ratgeber/ratgeber_blog_backgrounds.webp" as const;
+export const RATGEBER_ARTICLE_HERO_BG_WIDTH = 1520 as const;
+export const RATGEBER_ARTICLE_HERO_BG_HEIGHT = 434 as const;
 const DEFAULT_UPDATED_ISO = "2026-05-01" as const;
 const DEFAULT_UPDATED_DISPLAY = "01.05.2026" as const;
 const DEFAULT_CTA_HREF = "/kontakt" as const;
@@ -44,10 +48,12 @@ export type RatgeberArticleHeroProps = {
   ctaHref?: string;
   /** Optional: zweite Reihe unter dem Haupt-Button (z. B. „PDF herunterladen“, Anker-Link). */
   footer?: ReactNode;
+  /** Optional: z. B. Brotkrumen direkt unter der Kopfgrafik, vor Textkarte/H1-Inhalt */
+  belowImageSlot?: ReactNode;
 };
 
 /**
- * Gemeinsamer Ratgeber-Artikelkopf: BG-Bild, Kicker „Ratgeber“, H1,
+ * Gemeinsamer Ratgeber-Artikelkopf: Illustration in Originalgröße oben, danach Kicker „Ratgeber“, H1,
  * drei Vertrauens-Zeilen mit Haken, primärer CTA.
  */
 export function RatgeberArticleHero({
@@ -58,23 +64,33 @@ export function RatgeberArticleHero({
   updatedISO = DEFAULT_UPDATED_ISO,
   ctaHref = DEFAULT_CTA_HREF,
   footer,
+  belowImageSlot,
 }: RatgeberArticleHeroProps) {
   return (
-    <section
-      className="relative isolate w-full px-4 pt-0 sm:px-6 md:px-8 lg:px-10"
-      aria-labelledby="ratgeber-artikel-heading"
-    >
-      <div className="relative isolate w-full overflow-hidden rounded-[0.85rem] bg-[#FFFBF7] shadow-[0_8px_28px_-14px_rgba(15,79,104,0.18)] sm:rounded-2xl">
-        <div className="pointer-events-none absolute inset-0 overflow-hidden rounded-[inherit]" aria-hidden>
-          <Image
-            src={BG_SRC}
-            alt=""
-            fill
-            priority
-            className="origin-center object-cover object-center scale-[0.828]"
-            sizes="(max-width: 640px) calc(100vw - 2rem), (max-width: 768px) calc(100vw - 3rem), min(80rem, calc(100vw - 5rem))"
-          />
-        </div>
+    <section className="w-full pt-0" aria-labelledby="ratgeber-artikel-heading">
+      {/* Grafik exakt mit Original Pixelmaßen (horizontal scrollbar wenn Viewport schmaler) */}
+      <div className="w-full overflow-x-auto bg-white">
+        <Image
+          src={RATGEBER_ARTICLE_HERO_BG_SRC}
+          width={RATGEBER_ARTICLE_HERO_BG_WIDTH}
+          height={RATGEBER_ARTICLE_HERO_BG_HEIGHT}
+          sizes={`${RATGEBER_ARTICLE_HERO_BG_WIDTH}px`}
+          priority
+          alt=""
+          className="block h-auto max-w-none shrink-0"
+          style={{ width: RATGEBER_ARTICLE_HERO_BG_WIDTH }}
+        />
+      </div>
+
+      {belowImageSlot ? (
+        <div className="mx-auto mt-5 w-full max-w-7xl px-4 sm:px-6 md:px-8 lg:px-[var(--ahs-page-gutter)]">{belowImageSlot}</div>
+      ) : null}
+      <div
+        className={cn(
+          "relative isolate mx-4 mb-0 w-auto overflow-hidden rounded-[0.85rem] bg-[#FFFBF7] shadow-[0_8px_28px_-14px_rgba(15,79,104,0.18)] sm:mx-6 sm:rounded-2xl md:mx-8 lg:mx-auto lg:max-w-[min(80rem,calc(100%-5rem))] lg:rounded-2xl",
+          belowImageSlot ? "mt-6 sm:mt-8" : "mt-8 sm:mt-10",
+        )}
+      >
         <div
           className="pointer-events-none absolute inset-0 rounded-[inherit] bg-gradient-to-b from-white/93 via-[#fffbf8]/94 to-[#f5f9fb]"
           aria-hidden

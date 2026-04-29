@@ -91,39 +91,38 @@ export default function PflegegradBeantragenRatgeberPage() {
       />
 
       <article className="min-w-0 bg-[#FFFBF7] pb-16 pt-0 sm:pb-24">
-        <Container className="pt-4 sm:pt-6">
-          <nav aria-label="Brotkrumen" className="text-sm leading-relaxed text-neutral-600">
-            <ol className="flex flex-wrap items-center gap-2">
-              <li>
-                <Link href="/" className="font-medium text-[#0F4F68] underline underline-offset-2 hover:text-[#0c3d52]">
-                  Start
-                </Link>
-              </li>
-              <li aria-hidden className="text-neutral-400">
-                /
-              </li>
-              <li>
-                <Link
-                  href="/ratgeber"
-                  className="font-medium text-[#0F4F68] underline underline-offset-2 hover:text-[#0c3d52]"
-                >
-                  Ratgeber
-                </Link>
-              </li>
-              <li aria-hidden className="text-neutral-400">
-                /
-              </li>
-              <li className="font-semibold text-neutral-800">Pflegegrad beantragen</li>
-            </ol>
-          </nav>
-        </Container>
-
         <RatgeberArticleHero
           title="Pflegegrad beantragen: So erhalten Sie Schritt für Schritt die richtige Unterstützung"
           topicCategoryBadge="Pflegegrad & Pflegeleistungen"
           lead={`Wenn im Alltag dauerhaft Hilfe gebraucht wird, ist der erste Schritt oft: einen Pflegegrad beantragen. So werden Leistungen der Pflegeversicherung wie Pflegegeld, Entlastungsbetrag oder Hilfsmittel nutzbar. Dieser Ratgeber führt Sie verständlich durch Antrag, Begutachtung und typische Stolpersteine – besonders für Angehörige.`}
           updatedDisplay="April 2026"
           updatedISO="2026-04-29"
+          belowImageSlot={
+            <nav aria-label="Brotkrumen" className="text-sm leading-relaxed text-neutral-600">
+              <ol className="flex flex-wrap items-center gap-2">
+                <li>
+                  <Link href="/" className="font-medium text-[#0F4F68] underline underline-offset-2 hover:text-[#0c3d52]">
+                    Start
+                  </Link>
+                </li>
+                <li aria-hidden className="text-neutral-400">
+                  /
+                </li>
+                <li>
+                  <Link
+                    href="/ratgeber"
+                    className="font-medium text-[#0F4F68] underline underline-offset-2 hover:text-[#0c3d52]"
+                  >
+                    Ratgeber
+                  </Link>
+                </li>
+                <li aria-hidden className="text-neutral-400">
+                  /
+                </li>
+                <li className="font-semibold text-neutral-800">Pflegegrad beantragen</li>
+              </ol>
+            </nav>
+          }
         />
 
         <Container className="pb-4 sm:pb-6">
