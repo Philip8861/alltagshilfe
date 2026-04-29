@@ -65,83 +65,6 @@ function HeartOutlineIcon({ className }: { className?: string }) {
   );
 }
 
-/** Einheitlich 24×24, mittig, gleiche Strichdicke für alle Kategorien. */
-function TopicIcon({ kind }: { kind: RatgeberCategoryId }) {
-  const s = {
-    xmlns: "http://www.w3.org/2000/svg",
-    viewBox: "0 0 24 24",
-    fill: "none",
-    stroke: "currentColor",
-    strokeWidth: 1.35,
-    strokeLinecap: "round" as const,
-    strokeLinejoin: "round" as const,
-    className: "h-full w-full shrink-0",
-    "aria-hidden": true as const,
-  };
-  switch (kind) {
-    case "pflegegrad_leistungen":
-      return (
-        <svg {...s}>
-          <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9" />
-          <path d="M13 2v7h7" />
-          <path d="M8 13h8M8 17h5" />
-        </svg>
-      );
-    case "haushalt_betreuung":
-      return (
-        <svg {...s}>
-          <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
-          <path d="M9 22V12h6v10" />
-        </svg>
-      );
-    case "pflegehilfsmittel_42eur":
-      return (
-        <svg {...s}>
-          <path d="m7.5 4.27 9 5.15a2 2 0 0 1 1 1.73v9.7a2 2 0 0 1-1 1.73l-9 5.17a2 2 0 0 1-2 0l-9-5.17a2 2 0 0 1-1-1.73v-9.7a2 2 0 0 1 1-1.73l9-5.15a2 2 0 0 1 2 0z" />
-          <path d="M3.29 10.71 12 14.93l8.71-4.22" />
-        </svg>
-      );
-    case "inkontinenz":
-      return (
-        <svg {...s}>
-          <path d="M12 22a8 8 0 0 0 8-8c0-4.5-8-13-8-13S4 9.5 4 14a8 8 0 0 0 8 8z" />
-        </svg>
-      );
-    case "pflegeberatung_beratungseinsaetze":
-      return (
-        <svg {...s}>
-          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-        </svg>
-      );
-    case "pflegende_angehoerige":
-      return (
-        <svg {...s}>
-          <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
-          <circle cx="9" cy="7" r="4" />
-          <path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" />
-        </svg>
-      );
-    case "pflegealltag_zuhause":
-      return (
-        <svg {...s}>
-          <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
-        </svg>
-      );
-    case "antraege_checklisten_downloads":
-      return (
-        <svg {...s}>
-          <rect width="8" height="4" x="8" y="2" rx="1" ry="1" />
-          <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" />
-          <path d="M9 14h6M9 18h6M15 11h4" />
-        </svg>
-      );
-    default: {
-      const _exhaustive: never = kind;
-      return _exhaustive;
-    }
-  }
-}
-
 function haystackForBeitrag(beitrag: RatgeberBeitragMeta): string {
   return [beitrag.title, beitrag.excerpt, beitrag.tags.join(" ")].join(" ").toLocaleLowerCase("de");
 }
@@ -154,122 +77,6 @@ function matchesCategory(beitrag: RatgeberBeitragMeta, cat: RatgeberCategoryId):
 
 const SEARCH_SUGGESTIONS_MAX = 8;
 
-function hubIconCategory(beitrag: RatgeberBeitragMeta): RatgeberCategoryId {
-  return beitrag.categories[0] ?? CATEGORY_ORDER[0];
-}
-
-const overlayIconSvgClass = "block h-full w-full shrink-0 overflow-visible";
-const OV = {
-  xmlns: "http://www.w3.org/2000/svg",
-  viewBox: "0 0 24 24",
-  fill: "none" as const,
-  stroke: "currentColor",
-  strokeWidth: 1.35,
-  strokeLinecap: "round" as const,
-  strokeLinejoin: "round" as const,
-  className: overlayIconSvgClass,
-  "aria-hidden": true as const,
-};
-
-/** Eigenes Overlay-Symbol je Artikel-Slug — saubere Formen auf dem Aquarell. */
-function HubOverlayIcon({
-  slug,
-  fallbackCategory,
-}: {
-  slug: string;
-  fallbackCategory: RatgeberCategoryId;
-}) {
-  switch (slug) {
-    case "pflegegrad-beantragen-2026":
-      return (
-        <svg {...OV}>
-          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-          <polyline points="14 2 14 8 20 8" />
-          <path d="M9 13h8" />
-          <path d="M9 17h5" />
-        </svg>
-      );
-    case "pflegegrad-beantragen-checkliste":
-      return (
-        <svg {...OV}>
-          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-          <polyline points="14 2 14 8 20 8" />
-          <path d="m9 14 2 2 7-9" />
-        </svg>
-      );
-    case "hausnotruf-ratgeber":
-      return (
-        <svg {...OV}>
-          <rect x="7" y="4" width="10" height="16" rx="2" />
-          <path d="M11 17.25h4" strokeLinecap="round" />
-        </svg>
-      );
-    case "entlastungsbetrag-131-euro":
-      return (
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden className={overlayIconSvgClass}>
-          <text
-            x="12"
-            y="15.75"
-            dominantBaseline="middle"
-            textAnchor="middle"
-            stroke="none"
-            fill="currentColor"
-            fillOpacity={0.55}
-            fontFamily="system-ui, -apple-system, 'Segoe UI', sans-serif"
-            fontWeight={600}
-            fontSize={17}
-          >
-            €
-          </text>
-        </svg>
-      );
-    case "pflegegrad-1-der-ultimative-leitfaden":
-      return (
-        <svg {...OV}>
-          <path d="M6 3h12v18H6z" />
-          <path d="M9 9h7M9 13h7M9 17h5" />
-        </svg>
-      );
-    case "pflegegrad-2-alles-was-du-wissen-musst":
-      return (
-        <svg {...OV}>
-          <circle cx="12" cy="8" r="5" />
-          <path d="M4 21c0-3.5 3.5-6 8-6s8 2.5 8 6" />
-        </svg>
-      );
-    default:
-      return (
-        <span className="flex h-full w-full items-center justify-center opacity-50">
-          <span className="block h-[4.25rem] w-[4.25rem] [&>svg]:h-full [&>svg]:w-full">
-            <TopicIcon kind={fallbackCategory} />
-          </span>
-        </span>
-      );
-  }
-}
-
-/** Kompakte Pflege-Glyphe in „Beliebte Artikel“ (ersetzt Mini-Blog-Thumbnails). */
-function BeliebtSidebarGlyph({
-  slug,
-  fallbackCategory,
-}: {
-  slug: string;
-  fallbackCategory: RatgeberCategoryId;
-}) {
-  return (
-    <span
-      className="relative flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-md bg-[#FEFEFE]/85"
-      aria-hidden
-    >
-      <span className="flex h-[2.75rem] w-[2.75rem] items-center justify-center opacity-[0.5]" style={{ color: NAVY }}>
-        <span className="block h-[5.25rem] w-[5.25rem] shrink-0 origin-center scale-[0.52] [&>span]:block [&>span]:h-full [&>span]:w-full">
-          <HubOverlayIcon slug={slug} fallbackCategory={fallbackCategory} />
-        </span>
-      </span>
-    </span>
-  );
-}
-
 function RatgeberArticleTeaserCard({
   beitrag,
   showTopBadge,
@@ -280,7 +87,6 @@ function RatgeberArticleTeaserCard({
   getDisplayViews: (b: RatgeberBeitragMeta) => number;
 }) {
   const hubSrc = ratgeberHubCardImage(beitrag.slug);
-  const ik = hubIconCategory(beitrag);
   const titleId = `ratgeber-teaser-${beitrag.slug}-title`;
 
   return (
@@ -310,26 +116,22 @@ function RatgeberArticleTeaserCard({
           sizes="(min-width: 1280px) 18vw, (min-width: 768px) 22vw, 42vw"
           priority={false}
         />
-        <div className="pointer-events-none absolute inset-0 z-[2] flex items-center justify-center p-3">
-          <div className="flex h-[5.25rem] w-[5.25rem] shrink-0 items-center justify-center sm:h-[6rem] sm:w-[6rem] md:h-[6.25rem] md:w-[6.25rem]" style={{ color: NAVY }}>
-            <div className="opacity-[0.48] [&_svg]:block [&_svg]:max-h-full [&_svg]:max-w-full">
-              <HubOverlayIcon slug={beitrag.slug} fallbackCategory={ik} />
-            </div>
-          </div>
+        <div
+          className="pointer-events-none absolute inset-x-0 bottom-0 z-[2] flex flex-col justify-end gap-1 bg-gradient-to-t from-[#0F4F68]/93 via-[#0F4F68]/72 to-transparent px-2 pb-3 pt-14 text-left shadow-[inset_0_-1px_0_0_rgba(255,255,255,0.06)] sm:px-2.5 sm:pb-3.5 sm:pt-16"
+        >
+          <span
+            id={titleId}
+            className="line-clamp-[4] text-left text-[0.7rem] font-extrabold leading-snug tracking-tight text-balance text-white drop-shadow-[0_1px_3px_rgba(0,0,0,0.45)] sm:text-sm md:line-clamp-3 lg:text-[0.8125rem]"
+          >
+            {beitrag.title}
+          </span>
         </div>
       </div>
       <div
         className="flex flex-col px-2.5 pb-2.5 pt-2 sm:px-3 sm:pb-3 sm:pt-2.5"
         style={{ backgroundColor: CARD_CANVAS }}
       >
-        <span
-          id={titleId}
-          className="line-clamp-3 text-left text-xs font-extrabold leading-snug tracking-tight text-balance sm:text-sm"
-          style={{ color: NAVY }}
-        >
-          {beitrag.title}
-        </span>
-        <div className="mt-2 flex flex-wrap items-start gap-x-3 gap-y-0.5 text-[0.6rem] leading-relaxed text-neutral-500 sm:text-[0.65rem]">
+        <div className="flex flex-wrap items-start gap-x-3 gap-y-0.5 text-[0.6rem] leading-relaxed text-neutral-500 sm:text-[0.65rem]">
           <span className="inline-flex items-center gap-1">
             <EyeIcon className="h-2.5 w-2.5 shrink-0 text-neutral-400" aria-hidden />
             {getDisplayViews(beitrag).toLocaleString("de-DE")} Aufrufe
@@ -715,7 +517,15 @@ export function RatgeberHub(props?: RatgeberHubProps) {
                       >
                         {i + 1}
                       </span>
-                      <BeliebtSidebarGlyph slug={b.slug} fallbackCategory={hubIconCategory(b)} />
+                      <span className="relative block h-[3.85rem] w-[4.05rem] shrink-0 overflow-hidden rounded-md shadow-sm ring-1 ring-neutral-100" style={{ backgroundColor: CARD_CANVAS }}>
+                        <Image
+                          src={ratgeberHubCardImage(b.slug)}
+                          alt=""
+                          fill
+                          className="object-contain object-center"
+                          sizes="128px"
+                        />
+                      </span>
                       <div className="min-w-0 flex-1">
                         <span className="line-clamp-4 text-left text-[0.75rem] font-extrabold leading-snug text-[#0F4F68] group-hover:underline sm:text-[0.8rem]">
                           {b.title}
