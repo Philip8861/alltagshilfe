@@ -197,7 +197,9 @@ export function RatgeberHub(props?: RatgeberHubProps) {
   const [sortMode, setSortMode] = useState<SortMode>("neueste");
   const [searchFocused, setSearchFocused] = useState(false);
   const [highlightIndex, setHighlightIndex] = useState(-1);
+  const [mobileTopicsOpen, setMobileTopicsOpen] = useState(false);
   const searchComboRef = useRef<HTMLDivElement>(null);
+  const mobileTopicsRef = useRef<HTMLDivElement>(null);
 
   const getDisplayViews = useCallback(
     (b: RatgeberBeitragMeta) => displayArticleViews(b.slug, b.views, totals, articleViewsLive),
@@ -250,14 +252,35 @@ export function RatgeberHub(props?: RatgeberHubProps) {
     setHighlightIndex(-1);
   }, [query, activeCategory]);
 
+  const isCategoryFocused = activeCategory !== "alle";
+
+  useEffect(() => {
+    const onDown = (e: MouseEvent) => {
+      if (!mobileTopicsRef.current?.contains(e.target as Node)) setMobileTopicsOpen(false);
+    };
+    document.addEventListener("mousedown", onDown);
+    return () => document.removeEventListener("mousedown", onDown);
+  }, []);
+
+  /** „Alle“: Raster wie bisher mit Sortierung; einzelnes Thema: alle Beiträge der Kategorie, nur nach Aufrufen. */
   const gridBeitraege = useMemo(() => {
+    if (isCategoryFocused) {
+      return [...filteredBySearchAndCat].sort((a, b) => getDisplayViews(b) - getDisplayViews(a));
+    }
     const excludeSlugs = new Set(visibleFeatured.map((b) => b.slug));
     const list =
       showFeaturedSlots && excludeSlugs.size > 0
         ? filteredBySearchAndCat.filter((b) => !excludeSlugs.has(b.slug))
         : filteredBySearchAndCat;
     return sortBeitraege(list, sortMode, getDisplayViews);
-  }, [filteredBySearchAndCat, showFeaturedSlots, visibleFeatured, sortMode, getDisplayViews]);
+  }, [
+    filteredBySearchAndCat,
+    isCategoryFocused,
+    showFeaturedSlots,
+    visibleFeatured,
+    sortMode,
+    getDisplayViews,
+  ]);
 
   const beliebtTop = useMemo(
     () => [...RATGEBER_BEITRAEGE].sort((a, b) => getDisplayViews(b) - getDisplayViews(a)).slice(0, 4),
@@ -272,6 +295,11 @@ export function RatgeberHub(props?: RatgeberHubProps) {
   const scrollToAlle = () => {
     document.getElementById("alle-ratgeber")?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
+
+  const sectionHeading =
+    activeCategory === "alle"
+      ? "Alle Ratgeber"
+      : RATGEBER_CATEGORY_LABELS[activeCategory as RatgeberCategoryId];
 
   return (
     <div className="min-w-0">
@@ -409,14 +437,82 @@ export function RatgeberHub(props?: RatgeberHubProps) {
         </div>
       </section>
 
-      {/* Themen-Pills: Abstand, damit die abgerundete Hero-Kante auf Seitenhintergrund (#FFFBF7) sichtbar wird */}
-      <div className="relative z-0 mt-2 w-full border-b border-neutral-100 bg-[#FFFCFA] sm:mt-2.5">
+      {/* Mobil: Themen-Dropdown mittig unter dem Hero */}
+      <div ref={mobileTopicsRef} className="relative z-10 px-4 md:hidden">
+        <div className="mx-auto mt-6 flex max-w-2xl flex-col items-center">
+          <button
+            type="button"
+            aria-expanded={mobileTopicsOpen}
+            aria-controls="ratgeber-mobile-themen-panel"
+            onClick={() => setMobileTopicsOpen((o) => !o)}
+            className="inline-flex min-h-[48px] w-full max-w-md items-center justify-center gap-2 rounded-2xl border-2 px-6 py-3 text-sm font-bold shadow-sm transition hover:bg-neutral-50"
+            style={{ borderColor: NAVY, color: NAVY }}
+          >
+            <span>{mobileTopicsOpen ? "Alle Themen schließen" : "Alle Themen öffnen"}</span>
+            <svg
+              className={`h-5 w-5 shrink-0 transition-transform ${mobileTopicsOpen ? "rotate-180" : ""}`}
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              aria-hidden
+            >
+              <path d="M6 9l6 6 6-6" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </button>
+          {mobileTopicsOpen ? (
+            <div
+              id="ratgeber-mobile-themen-panel"
+              role="region"
+              aria-label="Ratgeber-Themen wählen"
+              className="mt-3 w-full max-w-md rounded-2xl border border-neutral-200 bg-white p-2 shadow-xl"
+            >
+              <button
+                type="button"
+                className={`w-full rounded-xl px-4 py-3 text-left text-sm font-semibold transition ${
+                  activeCategory === "alle" ? "bg-[#0F4F68] text-white" : "hover:bg-neutral-50"
+                }`}
+                onClick={() => {
+                  setActiveCategory("alle");
+                  setMobileTopicsOpen(false);
+                }}
+                style={activeCategory !== "alle" ? { color: NAVY } : undefined}
+              >
+                Alle Themen
+              </button>
+              {CATEGORY_ORDER.map((id) => (
+                <button
+                  key={id}
+                  type="button"
+                  className={`mt-1 w-full rounded-xl px-4 py-3 text-left text-sm font-semibold transition ${
+                    activeCategory === id ? "bg-[#0F4F68] text-white" : "hover:bg-neutral-50"
+                  }`}
+                  onClick={() => {
+                    setActiveCategory(id);
+                    setMobileTopicsOpen(false);
+                    scrollToAlle();
+                  }}
+                  style={activeCategory !== id ? { color: NAVY } : undefined}
+                >
+                  {RATGEBER_CATEGORY_LABELS[id]}
+                </button>
+              ))}
+            </div>
+          ) : null}
+        </div>
+      </div>
+
+      {/* Desktop: Themen mittig */}
+      <div className="relative z-0 mt-2 hidden w-full border-b border-neutral-100 bg-[#FFFCFA] md:mt-2.5 md:block">
         <Container className="max-w-7xl py-4">
-          <div className="flex flex-wrap gap-x-2 gap-y-2.5" aria-label="Ratgeber nach Thema filtern">
+          <div
+            className="flex flex-wrap justify-center gap-x-2 gap-y-2.5 px-2"
+            aria-label="Ratgeber nach Thema filtern"
+          >
             <button
               type="button"
               onClick={() => setActiveCategory("alle")}
-              className={`rounded-full px-4 py-2 text-left text-sm font-semibold transition ${
+              className={`rounded-full px-4 py-2 text-center text-sm font-semibold transition ${
                 activeCategory === "alle"
                   ? "text-white shadow-sm"
                   : "border border-neutral-300 bg-white text-neutral-800 hover:border-neutral-400"
@@ -429,8 +525,11 @@ export function RatgeberHub(props?: RatgeberHubProps) {
               <button
                 key={id}
                 type="button"
-                onClick={() => setActiveCategory(id)}
-                className={`rounded-full px-4 py-2 text-left text-sm font-semibold transition ${
+                onClick={() => {
+                  setActiveCategory(id);
+                  scrollToAlle();
+                }}
+                className={`rounded-full px-4 py-2 text-center text-sm font-semibold transition ${
                   activeCategory === id
                     ? "text-white shadow-sm"
                     : "border border-neutral-300 bg-white text-neutral-800 hover:border-neutral-400"
@@ -444,11 +543,11 @@ export function RatgeberHub(props?: RatgeberHubProps) {
         </Container>
       </div>
 
-      <Container className="max-w-[min(100%,96rem)] space-y-10 pt-10 sm:space-y-12 sm:pt-12 lg:pl-6 lg:pr-3 xl:pl-10 xl:pr-5 2xl:pr-14">
-        <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-start lg:gap-x-16 xl:gap-x-24 2xl:gap-x-32">
+      <Container className="max-w-[min(100%,96rem)] space-y-10 pt-10 sm:space-y-12 sm:pt-12 lg:px-6 xl:pl-10 xl:pr-12 2xl:pr-16">
+        <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(17.5rem,20rem)] lg:items-start lg:justify-items-stretch lg:gap-x-10 xl:gap-x-14 2xl:gap-x-[4.25rem]">
         <div className="min-w-0 space-y-10 lg:space-y-12">
-          {/* Top Themen */}
-          {visibleFeatured.length > 0 ? (
+          {/* Top Themen nur bei „Alle Themen“, nicht wenn ein konkretes Thema gewählt ist */}
+          {!isCategoryFocused && visibleFeatured.length > 0 ? (
             <section aria-labelledby="featured-heading" className="w-full space-y-5">
               <p id="featured-heading" className="text-xs font-bold uppercase tracking-[0.2em] text-neutral-500 sm:text-sm">
                 Top-Themen
@@ -513,38 +612,100 @@ export function RatgeberHub(props?: RatgeberHubProps) {
           {/* Raster */}
           <section id="alle-ratgeber" className="scroll-mt-24">
             <h2 className="text-3xl font-bold sm:text-4xl" style={{ color: NAVY }}>
-              Alle Ratgeber
+              {sectionHeading}
             </h2>
             <p className="mt-2 max-w-2xl text-sm text-neutral-600 sm:text-base">
-              Alle Beiträge im Vorbeilauf — darunter können Sie nach Thema suchen und sortieren.
+              {isCategoryFocused
+                ? "Alle Artikel zu diesem Thema, sortiert nach Beliebtheit (Aufrufen). Die beiden meistgelesenen sind als TOP THEMA gekennzeichnet."
+                : "Alle Beiträge im Vorbeilauf — darunter können Sie nach Thema suchen und sortieren."}
             </p>
 
-            <div className="mt-8">
-              <RatgeberMarquee beitraege={marqueeAlle} getViews={getDisplayViews} />
-            </div>
+            {!isCategoryFocused ? (
+              <div className="mt-8">
+                <RatgeberMarquee beitraege={marqueeAlle} getViews={getDisplayViews} />
+              </div>
+            ) : null}
 
             <div className="mt-10 flex flex-col gap-4 sm:mt-12 sm:flex-row sm:items-end sm:justify-between">
               <h3 className="text-lg font-semibold text-neutral-800 sm:text-xl">
-                Alle Beiträge <span className="text-neutral-500">&ndash;</span> Liste
+                {isCategoryFocused ? (
+                  <>
+                    Alle Beiträge <span className="text-neutral-500">&ndash;</span> {sectionHeading}
+                  </>
+                ) : (
+                  <>
+                    Alle Beiträge <span className="text-neutral-500">&ndash;</span> Liste
+                  </>
+                )}
               </h3>
-              <label className="flex items-center gap-2 text-sm text-neutral-600 sm:text-base">
-                <span className="shrink-0 font-medium">Sortieren nach:</span>
-                <select
-                  value={sortMode}
-                  onChange={(e) => setSortMode(e.target.value as SortMode)}
-                  className="rounded-xl border border-neutral-300 bg-white py-2.5 pl-3 pr-9 text-sm font-semibold text-neutral-800 shadow-sm outline-none focus:border-[#0F4F68]/40 focus:ring-2 focus:ring-[#0F4F68]/15 sm:text-base"
-                >
-                  <option value="neueste">Neueste zuerst</option>
-                  <option value="beliebt">Beliebteste</option>
-                  <option value="az">A–Z</option>
-                </select>
-              </label>
+              {!isCategoryFocused ? (
+                <label className="flex items-center gap-2 text-sm text-neutral-600 sm:text-base">
+                  <span className="shrink-0 font-medium">Sortieren nach:</span>
+                  <select
+                    value={sortMode}
+                    onChange={(e) => setSortMode(e.target.value as SortMode)}
+                    className="rounded-xl border border-neutral-300 bg-white py-2.5 pl-3 pr-9 text-sm font-semibold text-neutral-800 shadow-sm outline-none focus:border-[#0F4F68]/40 focus:ring-2 focus:ring-[#0F4F68]/15 sm:text-base"
+                  >
+                    <option value="neueste">Neueste zuerst</option>
+                    <option value="beliebt">Beliebteste</option>
+                    <option value="az">A–Z</option>
+                  </select>
+                </label>
+              ) : (
+                <p className="text-sm font-medium text-neutral-500">Sortierung: Beliebtheit (Aufrufe)</p>
+              )}
             </div>
 
             {gridBeitraege.length === 0 ? (
               <p className="mt-8 rounded-2xl border border-dashed border-neutral-200 bg-white p-8 text-center text-neutral-600">
                 Keine Artikel für diese Auswahl. Andere Themen oder Suchbegriff probieren.
               </p>
+            ) : isCategoryFocused ? (
+              <ul className="mt-8 grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4 lg:gap-5">
+                {gridBeitraege.map((beitrag, idx) => (
+                  <li key={beitrag.slug} className="aspect-square">
+                    <Link
+                      href={`/ratgeber/${beitrag.slug}`}
+                      className="group relative flex h-full w-full overflow-hidden rounded-2xl border border-black/[0.06] bg-neutral-900 shadow-[0_8px_30px_-12px_rgba(15,79,104,0.2)] transition hover:-translate-y-0.5 hover:shadow-[0_16px_40px_-14px_rgba(15,79,104,0.28)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68] focus-visible:ring-offset-2"
+                      aria-labelledby={`kat-card-${beitrag.slug}-title`}
+                    >
+                      {idx < 2 ? (
+                        <span
+                          className="absolute left-2 top-2 z-20 rounded-md px-2 py-1 text-[0.62rem] font-bold uppercase tracking-wide text-white shadow sm:left-2.5 sm:top-2.5 sm:text-[0.65rem]"
+                          style={{ backgroundColor: ORANGE }}
+                        >
+                          TOP THEMA
+                        </span>
+                      ) : null}
+                      <Image
+                        src={beitrag.image}
+                        alt={beitrag.imageAlt}
+                        fill
+                        className="object-cover transition duration-300 group-hover:scale-[1.04]"
+                        sizes="(min-width: 1024px) 22vw, (min-width: 640px) 45vw, 48vw"
+                      />
+                      <div
+                        className="pointer-events-none absolute inset-0 z-[1] bg-gradient-to-t from-black/82 via-black/35 to-transparent"
+                        aria-hidden
+                      />
+                      <div className="absolute inset-x-0 bottom-0 z-[2] flex flex-col justify-end p-2.5 sm:p-3.5">
+                        <span id={`kat-card-${beitrag.slug}-title`} className="line-clamp-3 text-[0.8125rem] font-bold leading-snug tracking-tight text-white drop-shadow sm:text-sm md:text-[0.95rem]">
+                          {beitrag.title}
+                        </span>
+                        <span className="mt-1.5 inline-flex flex-wrap items-center gap-1 text-[10px] font-medium leading-tight text-white/92 sm:text-xs">
+                          <EyeIcon className="h-3 w-3 shrink-0 opacity-90" aria-hidden />
+                          <span>{getDisplayViews(beitrag).toLocaleString("de-DE")} Aufrufe</span>
+                          <span className="opacity-60" aria-hidden>
+                            ·
+                          </span>
+                          <ClockIcon className="h-3 w-3 shrink-0 opacity-90" aria-hidden />
+                          <span>{beitrag.readMinutes} Min.</span>
+                        </span>
+                      </div>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
             ) : (
               <ul className="mt-8 grid gap-6 sm:grid-cols-2 sm:gap-7 xl:grid-cols-3 xl:gap-8">
                 {gridBeitraege.map((beitrag) => (
@@ -593,12 +754,14 @@ export function RatgeberHub(props?: RatgeberHubProps) {
           </section>
         </div>
 
-        {/* Sidebar: nach rechts rücken (größerer Abstand zur Hauptspalte, näher am Viewport-Rand) */}
-        <aside className="min-w-0 space-y-8 lg:sticky lg:top-24 lg:col-start-2 lg:row-start-1 lg:ml-6 lg:w-full lg:max-w-[min(100%,20.5rem)] lg:justify-self-end xl:ml-10 xl:max-w-[22rem] 2xl:ml-14 2xl:max-w-[23rem]">
-          <div className="rounded-2xl border border-black/[0.06] bg-white p-6 shadow-[0_12px_36px_-16px_rgba(15,79,104,0.2)] sm:p-7">
-            <h2 className="text-xl font-bold sm:text-2xl" style={{ color: NAVY }}>
-              Beliebt
-            </h2>
+        <aside className="min-w-0 space-y-8 lg:sticky lg:top-24 lg:col-start-2 lg:row-start-1 lg:w-full lg:justify-self-end lg:pl-2 xl:pl-6 2xl:pl-10">
+          <div className="rounded-2xl border border-black/[0.06] bg-white p-6 shadow-[0_12px_36px_-16px_rgba(15,79,104,0.2)] sm:p-7 lg:max-w-none lg:justify-self-end">
+            <div className="lg:text-right">
+              <h2 className="text-xl font-bold sm:text-2xl" style={{ color: NAVY }}>
+                Beliebte Artikel
+              </h2>
+              <p className="mt-1 text-xs text-neutral-500 sm:text-sm">Nach Aufrufen – meist gelesen</p>
+            </div>
             <ol className="mt-5 space-y-4">
               {beliebtTop.map((beitrag, i) => (
                 <li key={beitrag.slug}>
