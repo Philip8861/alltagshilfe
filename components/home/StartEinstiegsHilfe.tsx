@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 import Link from "next/link";
 import { findStandortByPlz, type Standort } from "@/config/standorte";
@@ -77,6 +77,24 @@ const BAD_GROENENBACH_STANDORT: StandortInfo = {
     addressCountry: "DE",
   },
 };
+
+const HilfefinderCtx = createContext<{ open: () => void } | null>(null);
+
+export function HilfefinderOpenButton({ className = "" }: { className?: string }) {
+  const ctx = useContext(HilfefinderCtx);
+  return (
+    <button
+      type="button"
+      onClick={() => ctx?.open()}
+      className={cn(
+        "inline-flex min-h-[50px] items-center justify-center rounded-xl bg-[#F78F2E] px-6 py-3 text-base font-semibold text-white shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#e67e22] hover:shadow-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0F4F68]",
+        className,
+      )}
+    >
+      In 60 Sekunden die passende Hilfe finden
+    </button>
+  );
+}
 
 const optionButtonClass =
   "min-h-[54px] w-full rounded-xl border border-[#0F4F68]/18 bg-white px-4 py-3.5 text-left text-[1.03rem] font-medium text-[#0F4F68] transition-colors hover:border-[#F78F2E]/60 hover:bg-[#fff8f2] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#F78F2E]";
@@ -213,7 +231,7 @@ function StepFlatIcon({ kind }: { kind: "pflegegrad" | "person" | "kontakt" }) {
   );
 }
 
-export function StartEinstiegsHilfe() {
+export function HilfefinderProvider({ children }: { children: ReactNode }) {
   const [started, setStarted] = useState(false);
   /** Portal-Ziel erst nach Mount: Overlay liegt dann außerhalb transformierter Vorfahren (z. B. Startseite scale-90). */
   const [portalReady, setPortalReady] = useState(false);
@@ -385,27 +403,12 @@ export function StartEinstiegsHilfe() {
     setStep(8);
   };
 
-  return (
-    <section className="mt-12 w-full sm:mt-14 lg:mt-16" aria-labelledby="hilfefinder-headline">
-      <h2 id="hilfefinder-headline" className="text-2xl font-bold leading-tight text-[#0F4F68] sm:text-3xl lg:text-[1.85rem]">
-        Welche Unterstützung benötigen Sie aktuell?
-      </h2>
-      <p className="mt-3 max-w-3xl text-base leading-relaxed text-neutral-700 sm:text-lg">
-        Finden Sie in nur 60 Sekunden die passende Hilfe.
-      </p>
+  const openFinder = useCallback(() => setStarted(true), []);
 
-      {!started ? (
-        <div className="mt-6 animate-fade-in-up">
-          <button
-            type="button"
-            onClick={() => setStarted(true)}
-            className="inline-flex min-h-[50px] items-center justify-center rounded-xl bg-[#F78F2E] px-6 py-3 text-base font-semibold text-white shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#e67e22] hover:shadow-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0F4F68]"
-          >
-            Passende Hilfe finden
-          </button>
-          <p className="mt-3 text-sm text-neutral-600">Sie müssen nicht alles schon wissen - wir führen Sie Schritt für Schritt.</p>
-        </div>
-      ) : portalReady ? (
+  return (
+    <HilfefinderCtx.Provider value={{ open: openFinder }}>
+      {children}
+      {started && portalReady ? (
         createPortal(
           <div className="fixed inset-0 z-[100] flex items-center justify-center overflow-y-auto bg-[#0F4F68]/45 p-3 backdrop-blur-[2px] sm:p-6">
             <div className="max-h-[92vh] w-full max-w-4xl overflow-y-auto animate-fade-in-up rounded-2xl border border-[#0F4F68]/15 bg-white p-5 shadow-2xl sm:p-7">
@@ -760,6 +763,6 @@ export function StartEinstiegsHilfe() {
           document.body
         )
       ) : null}
-    </section>
+    </HilfefinderCtx.Provider>
   );
 }

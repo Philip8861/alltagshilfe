@@ -12,20 +12,34 @@ type Props = {
   className?: string;
   /** Zusatzklassen für die Überschrift (z. B. scroll-mt auf der Startseite) */
   headingClassName?: string;
+  /** Startseite: Einleitung zentriert unter dem Header-Bild */
+  introAlign?: "left" | "center";
 };
 
-export function LeistungenKachelGrid({ id, heading, subtitle, className = "", headingClassName = "" }: Props) {
+export function LeistungenKachelGrid({
+  id,
+  heading,
+  subtitle,
+  className = "",
+  headingClassName = "",
+  introAlign = "left",
+}: Props) {
   const titleClass = `text-2xl font-bold text-[#0F4F68] sm:text-3xl ${headingClassName}`.trim();
+  const introCenter = introAlign === "center";
   return (
     <div className={className}>
       {id ? (
-        <h2 id={id} className={titleClass}>
+        <h2 id={id} className={`${titleClass} ${introCenter ? "mx-auto max-w-3xl text-center" : ""}`.trim()}>
           {heading}
         </h2>
       ) : (
-        <h2 className={titleClass}>{heading}</h2>
+        <h2 className={`${titleClass} ${introCenter ? "mx-auto max-w-3xl text-center" : ""}`.trim()}>{heading}</h2>
       )}
-      <p className="mt-2 text-sm text-[#8a6a55] sm:text-base">{subtitle}</p>
+      <p
+        className={`mt-2 text-sm text-[#8a6a55] sm:text-base ${introCenter ? "mx-auto max-w-2xl text-center" : ""}`.trim()}
+      >
+        {subtitle}
+      </p>
       <div className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
         {STARTSEITE_LEISTUNGEN_KACHELN.map((leistung, index) => (
           <Link

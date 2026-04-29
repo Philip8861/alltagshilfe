@@ -3,7 +3,7 @@ import Link from "next/link";
 import { LeistungenKachelGrid } from "@/components/home/LeistungenKachelGrid";
 import { KundenstimmenCarousel } from "@/components/home/KundenstimmenCarousel";
 import { ProtectedRasterMedia } from "@/components/home/ProtectedRasterMedia";
-import { StartEinstiegsHilfe } from "@/components/home/StartEinstiegsHilfe";
+import { HilfefinderOpenButton, HilfefinderProvider } from "@/components/home/StartEinstiegsHilfe";
 import { StandortNummerEinsReveal } from "@/components/standorte/StandortNummerEinsReveal";
 import { StandortWechselBild } from "@/components/standorte/StandortWechselBild";
 import { RevealOnScroll } from "@/components/pflegehilfsmittel/RevealOnScroll";
@@ -21,6 +21,10 @@ const STARTSEITE_FAQ_BG = "#f0f9fa";
 
 const STARTSEITE_FAQ_WELLEN_D =
   "M0,120 C200,32 420,8 600,22 C800,38 1010,90 1200,120 L1200,120 L0,120 Z";
+
+/** Bogenfüllung Übergang Hero → „Unsere Leistungen“ (nach oben gewölbt) */
+const STARTSEITE_LEISTUNGEN_BOGEN_D =
+  "M0,120 C320,28 880,28 1200,120 L1200,120 L0,120 Z";
 
 const HERO_INTRO = {
   brand: "Alltagshilfe-Süd",
@@ -75,64 +79,61 @@ export default function HomePage() {
       <section className="box-border w-full pt-0 pb-6 sm:pb-8 lg:pb-[clamp(1.5rem,2vw+0.75rem,2.5rem)]">
         {/* Hero: seitlicher Abstand 5cm (md+), Bild zusätzlich ~25 % höher */}
         <div className="relative w-full px-3 sm:px-4 md:px-[5cm]" aria-label="Einstieg">
-          <div className="relative isolate min-h-[20.3125rem] w-full overflow-hidden rounded-b-3xl bg-[#FFFCFA] sm:min-h-[24.21875rem] md:min-h-[28.125rem] lg:min-h-[30.46875rem]">
-            <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden rounded-b-3xl" aria-hidden>
-              <ProtectedRasterMedia className="relative block h-full w-full select-none [-webkit-user-drag:none]">
-                <Image
-                  src="/images/Startseite_header.webp"
-                  alt=""
-                  fill
-                  className="object-contain object-center"
-                  sizes="(min-width: 768px) 96vw, 100vw"
-                  quality={92}
-                  priority
-                />
-              </ProtectedRasterMedia>
+          <HilfefinderProvider>
+            <div className="relative isolate min-h-[20.3125rem] w-full overflow-hidden rounded-b-3xl bg-[#FFFCFA] sm:min-h-[24.21875rem] md:min-h-[28.125rem] lg:min-h-[30.46875rem]">
+              <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden rounded-b-3xl" aria-hidden>
+                <ProtectedRasterMedia className="relative block h-full w-full select-none [-webkit-user-drag:none]">
+                  <Image
+                    src="/images/Startseite_header.webp"
+                    alt=""
+                    fill
+                    className="object-contain object-center"
+                    sizes="(min-width: 768px) 96vw, 100vw"
+                    quality={92}
+                    priority
+                  />
+                </ProtectedRasterMedia>
+              </div>
+              <div className="relative z-10 mx-auto flex w-full max-w-7xl flex-col justify-center px-4 pb-4 pt-6 sm:min-h-[24.21875rem] sm:px-6 sm:pb-4 sm:pt-7 md:min-h-[28.125rem] lg:min-h-[30.46875rem] lg:px-[var(--ahs-page-gutter)] lg:pb-5 lg:pt-8">
+                <header className="max-w-lg text-left sm:max-w-xl lg:max-w-[min(42vw,clamp(22rem,32vw+8rem,30rem))] xl:max-w-[min(38vw,clamp(23rem,28vw+9rem,31rem))] 2xl:max-w-[min(34vw,clamp(24rem,26vw+10rem,32rem))]">
+                  <h1
+                    className="text-balance text-3xl font-extrabold leading-tight tracking-tight text-[#0F4F68] opacity-0 motion-reduce:opacity-100 animate-fade-in-up sm:text-4xl lg:text-[clamp(2rem,1.05rem+2.6vw,3rem)]"
+                    style={{ animationDelay: "0s" }}
+                  >
+                    {HERO_INTRO.brand}
+                  </h1>
+                  <ul
+                    className="mt-4 space-y-3 sm:mt-5 sm:space-y-3.5 lg:space-y-[clamp(0.65rem,0.35rem+0.9vw,1rem)]"
+                    aria-label="Ihre Vorteile auf einen Blick"
+                  >
+                    {HERO_INTRO.taglineLines.map((line, i) => (
+                      <li
+                        key={line}
+                        className="flex items-center gap-3 text-pretty text-lg font-semibold leading-snug text-[#0F4F68] opacity-0 motion-reduce:opacity-100 animate-fade-in-up sm:text-xl lg:text-[clamp(1.05rem,0.82rem+0.5vw,1.35rem)]"
+                        style={{
+                          animationDelay: `${0.68 + i * 0.26}s`,
+                        }}
+                      >
+                        <HeroCheckIcon />
+                        <span>{line}</span>
+                      </li>
+                    ))}
+                  </ul>
+                  <p
+                    className="mt-4 max-w-prose text-pretty text-lg font-normal leading-relaxed text-neutral-600 opacity-0 motion-reduce:opacity-100 animate-fade-in-up sm:mt-5 sm:text-xl lg:text-[clamp(1.05rem,0.85rem+0.42vw,1.3rem)]"
+                    style={{ animationDelay: "1.22s" }}
+                  >
+                    {HERO_INTRO.partnerLine}
+                  </p>
+                  <HilfefinderOpenButton className="mt-3 w-full min-[420px]:w-auto sm:mt-4" />
+                </header>
+              </div>
             </div>
-            <div className="relative z-10 mx-auto flex w-full max-w-7xl flex-col justify-center px-4 pb-4 pt-8 sm:min-h-[24.21875rem] sm:px-6 sm:pb-5 sm:pt-10 md:min-h-[28.125rem] lg:min-h-[30.46875rem] lg:px-[var(--ahs-page-gutter)] lg:pb-6 lg:pt-12">
-              <header className="max-w-lg text-left sm:max-w-xl lg:max-w-[min(42vw,clamp(22rem,32vw+8rem,30rem))] xl:max-w-[min(38vw,clamp(23rem,28vw+9rem,31rem))] 2xl:max-w-[min(34vw,clamp(24rem,26vw+10rem,32rem))]">
-                <h1
-                  className="text-balance text-3xl font-extrabold leading-tight tracking-tight text-[#0F4F68] opacity-0 motion-reduce:opacity-100 animate-fade-in-up sm:text-4xl lg:text-[clamp(2rem,1.05rem+2.6vw,3rem)]"
-                  style={{ animationDelay: "0s" }}
-                >
-                  {HERO_INTRO.brand}
-                </h1>
-                <ul
-                  className="mt-5 space-y-3 sm:mt-6 sm:space-y-3.5 lg:space-y-[clamp(0.65rem,0.35rem+0.9vw,1rem)]"
-                  aria-label="Ihre Vorteile auf einen Blick"
-                >
-                  {HERO_INTRO.taglineLines.map((line, i) => (
-                    <li
-                      key={line}
-                      className="flex items-center gap-3 text-pretty text-lg font-semibold leading-snug text-[#0F4F68] opacity-0 motion-reduce:opacity-100 animate-fade-in-up sm:text-xl lg:text-[clamp(1.05rem,0.82rem+0.5vw,1.35rem)]"
-                      style={{
-                        animationDelay: `${0.68 + i * 0.26}s`,
-                      }}
-                    >
-                      <HeroCheckIcon />
-                      <span>{line}</span>
-                    </li>
-                  ))}
-                </ul>
-                <p
-                  className="mt-5 max-w-prose text-pretty text-lg font-normal leading-relaxed text-neutral-600 opacity-0 motion-reduce:opacity-100 animate-fade-in-up sm:mt-6 sm:text-xl lg:text-[clamp(1.05rem,0.85rem+0.42vw,1.3rem)]"
-                  style={{ animationDelay: "1.22s" }}
-                >
-                  {HERO_INTRO.partnerLine}
-                </p>
-              </header>
-            </div>
-          </div>
-        </div>
-
-        <div className="box-border mx-auto w-full min-w-0 max-w-7xl px-4 sm:px-6 lg:px-[var(--ahs-page-gutter)]">
-          <div className="mt-6 sm:mt-8 lg:mt-10">
-            <StartEinstiegsHilfe />
-          </div>
+          </HilfefinderProvider>
         </div>
       </section>
 
-      <section className="relative z-20 mt-2 w-full bg-[#F2F9FA] px-4 pt-[1.6rem] pb-8 sm:mt-4 sm:px-6 sm:pt-[2.4rem] sm:pb-[2.4rem] lg:px-[var(--ahs-page-gutter)]">
+      <section className="relative z-20 mt-0 w-full bg-[#F2F9FA] px-4 pt-[1.35rem] pb-8 sm:px-6 sm:pt-[2rem] sm:pb-[2.4rem] lg:px-[var(--ahs-page-gutter)]">
         <svg
           className="pointer-events-none absolute left-0 top-0 h-12 w-full -translate-y-[68%] sm:h-16"
           viewBox="0 0 1200 120"
@@ -140,7 +141,7 @@ export default function HomePage() {
           fill="none"
           aria-hidden
         >
-          <path d="M0,120 C200,32 420,8 600,22 C800,38 1010,90 1200,120 L1200,120 L0,120 Z" fill="#F2F9FA" />
+          <path d={STARTSEITE_LEISTUNGEN_BOGEN_D} fill="#F2F9FA" />
         </svg>
         <div className="mx-auto w-full max-w-6xl">
           <LeistungenKachelGrid
@@ -148,6 +149,7 @@ export default function HomePage() {
             heading="Unsere Leistungen im Überblick"
             subtitle="Persönlich, zuverlässig und mit viel Herz im Alltag."
             headingClassName="scroll-mt-[calc(2.45rem+var(--ahs-header-white-min-height)+0.75rem)]"
+            introAlign="center"
           />
         </div>
       </section>
