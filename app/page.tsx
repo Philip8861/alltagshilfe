@@ -73,39 +73,30 @@ export default function HomePage() {
       style={{ backgroundColor: "#fafbfc" }}
     >
       <section className="box-border w-full pt-0 pb-6 sm:pb-8 lg:pb-[clamp(1.5rem,2vw+0.75rem,2.5rem)]">
-        <div className="box-border mx-auto w-full min-w-0 max-w-7xl px-4 sm:px-6 lg:px-[var(--ahs-page-gutter)]">
-          {/* Bild rechts bis an den Viewport-Rand (lg:mr calc), Text links (Desktop) */}
-          <div className="relative min-w-0">
-            <div className="flex min-w-0 justify-end">
-              <div
-                className="relative ml-auto w-full min-w-0 max-w-full -mr-4 opacity-0 animate-fade-in-up motion-reduce:opacity-100 sm:-mr-6 lg:mr-[calc((100vw-100%)/-2)] lg:max-w-[min(88vw,min(100%,52rem))]"
-                style={{ animationDelay: "0.08s" }}
-              >
-                <div className="w-full">
-                  {/* Hero: unoptimized — Next/Image-Wrapper würde die feste horizontale Einordnung verschieben. */}
-                  <ProtectedRasterMedia className="w-full select-none [-webkit-user-drag:none]">
-                    <Image
-                      src="/images/startseite_front.webp"
-                      alt="Gemeinsam zur passenden Unterstützung im Alltag"
-                      width={900}
-                      height={700}
-                      sizes="(max-width: 1023px) 100vw, (max-width: 1400px) 88vw, 900px"
-                      className="box-border block h-auto w-full max-w-full object-contain object-right [filter:drop-shadow(0_10px_22px_rgba(15,79,104,0.2))_drop-shadow(0_4px_12px_rgba(15,79,104,0.12))] [will-change:filter]"
-                      draggable={false}
-                      priority
-                      unoptimized
-                    />
-                  </ProtectedRasterMedia>
-                </div>
-              </div>
+        {/* Hero: Hintergrund wie Ratgeber – Text darüber */}
+        <div className="relative w-full px-3 sm:px-4 md:px-5" aria-label="Einstieg">
+          <div className="relative isolate mx-auto min-h-[13rem] w-full overflow-hidden rounded-b-3xl bg-[#FFFCFA] sm:min-h-[15.5rem] md:min-h-[18rem] lg:min-h-[22rem]">
+            <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden rounded-b-3xl" aria-hidden>
+              <ProtectedRasterMedia className="relative block h-full w-full select-none [-webkit-user-drag:none]">
+                <Image
+                  src="/images/Startseite_header.webp"
+                  alt=""
+                  fill
+                  className="object-cover object-center"
+                  sizes="(max-width: 1024px) 100vw, min(100rem, 96vw)"
+                  quality={92}
+                  priority
+                />
+              </ProtectedRasterMedia>
             </div>
-
             <div
-              className="relative z-10 mt-8 max-w-lg text-left sm:max-w-xl lg:absolute lg:left-0 lg:right-auto lg:top-[clamp(34%,calc(33%+0.35vw),40%)] lg:mt-0 lg:w-full lg:max-w-none lg:-translate-y-1/2 lg:-translate-x-[5%]"
-            >
-              <header className="text-left lg:max-w-[min(42vw,clamp(22rem,32vw+8rem,30rem))] xl:max-w-[min(38vw,clamp(23rem,28vw+9rem,31rem))] 2xl:max-w-[min(34vw,clamp(24rem,26vw+10rem,32rem))]">
+              className="pointer-events-none absolute inset-0 z-[1] bg-gradient-to-br from-[#FFFCFA]/95 via-[#fafbfc]/50 to-transparent sm:from-[#fafbfc]/85 sm:via-white/35 sm:to-transparent"
+              aria-hidden
+            />
+            <div className="relative z-10 mx-auto flex w-full max-w-7xl flex-col justify-center px-4 pb-6 pt-8 sm:min-h-[15.5rem] sm:px-6 sm:pb-8 sm:pt-10 md:min-h-[18rem] lg:min-h-[22rem] lg:px-[var(--ahs-page-gutter)] lg:pb-10 lg:pt-12">
+              <header className="max-w-lg text-left sm:max-w-xl lg:max-w-[min(42vw,clamp(22rem,32vw+8rem,30rem))] xl:max-w-[min(38vw,clamp(23rem,28vw+9rem,31rem))] 2xl:max-w-[min(34vw,clamp(24rem,26vw+10rem,32rem))]">
                 <h1
-                  className="text-balance text-3xl font-extrabold leading-tight tracking-tight text-[#0F4F68] opacity-0 motion-reduce:opacity-100 animate-fade-in-up sm:text-4xl lg:text-[clamp(2rem,1.05rem+2.6vw,3rem)]"
+                  className="text-balance text-3xl font-extrabold leading-tight tracking-tight text-[#0F4F68] opacity-0 motion-reduce:opacity-100 animate-fade-in-up sm:text-4xl lg:text-[clamp(2rem,1.05rem+2.6vw,3rem)] [text-shadow:0_1px_2px_rgba(255,255,255,0.75)]"
                   style={{ animationDelay: "0s" }}
                 >
                   {HERO_INTRO.brand}
@@ -117,7 +108,7 @@ export default function HomePage() {
                   {HERO_INTRO.taglineLines.map((line, i) => (
                     <li
                       key={line}
-                      className="flex items-center gap-3 text-pretty text-lg font-semibold leading-snug text-[#0F4F68] opacity-0 motion-reduce:opacity-100 animate-fade-in-up sm:text-xl lg:text-[clamp(1.05rem,0.82rem+0.5vw,1.35rem)]"
+                      className="flex items-center gap-3 text-pretty text-lg font-semibold leading-snug text-[#0F4F68] opacity-0 motion-reduce:opacity-100 animate-fade-in-up sm:text-xl lg:text-[clamp(1.05rem,0.82rem+0.5vw,1.35rem)] [text-shadow:0_1px_2px_rgba(255,255,255,0.72)]"
                       style={{
                         animationDelay: `${0.68 + i * 0.26}s`,
                       }}
@@ -128,7 +119,7 @@ export default function HomePage() {
                   ))}
                 </ul>
                 <p
-                  className="mt-5 max-w-prose text-pretty text-lg font-normal leading-relaxed text-neutral-600 opacity-0 motion-reduce:opacity-100 animate-fade-in-up sm:mt-6 sm:text-xl lg:text-[clamp(1.05rem,0.85rem+0.42vw,1.3rem)]"
+                  className="mt-5 max-w-prose text-pretty text-lg font-normal leading-relaxed text-neutral-600 opacity-0 motion-reduce:opacity-100 animate-fade-in-up sm:mt-6 sm:text-xl lg:text-[clamp(1.05rem,0.85rem+0.42vw,1.3rem)] [text-shadow:0_1px_1px_rgba(255,255,255,0.65)]"
                   style={{ animationDelay: "1.22s" }}
                 >
                   {HERO_INTRO.partnerLine}
@@ -136,8 +127,10 @@ export default function HomePage() {
               </header>
             </div>
           </div>
+        </div>
 
-          <div className="lg:-mt-[clamp(6%,8vw,10%)] lg:-translate-x-[5%]">
+        <div className="box-border mx-auto w-full min-w-0 max-w-7xl px-4 sm:px-6 lg:px-[var(--ahs-page-gutter)]">
+          <div className="mt-6 sm:mt-8 lg:mt-10">
             <StartEinstiegsHilfe />
           </div>
         </div>
