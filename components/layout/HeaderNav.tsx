@@ -25,6 +25,14 @@ function navParentOrChildActive(item: NavLink, pathname: string | null) {
   return false;
 }
 
+function isSimpleNavLinkActive(item: NavLink, pathname: string | null): boolean {
+  if (!pathname || item.children) return false;
+  if (item.activeWhenPathStartsWith) {
+    return pathname === item.href || pathname.startsWith(`${item.activeWhenPathStartsWith}/`);
+  }
+  return pathname === item.href;
+}
+
 export function HeaderNav() {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -124,7 +132,7 @@ export function HeaderNav() {
                 href={item.href}
                 className={cn(
                   "shrink-0 whitespace-nowrap rounded px-1 py-0.5 font-semibold text-neutral-600 hover:text-neutral-900 focus:outline-none focus:ring-2 focus:ring-neutral-500 focus:ring-offset-2 lg:px-1.5 xl:px-2",
-                  pathname === item.href && "text-neutral-900"
+                  isSimpleNavLinkActive(item, pathname) && "text-neutral-900"
                 )}
                 style={{ fontSize: "clamp(0.6875rem, 1.1vw, 1rem)" }}
               >
@@ -275,7 +283,7 @@ export function HeaderNav() {
                     onClick={() => setMobileOpen(false)}
                     className={cn(
                       "block rounded-lg px-4 py-3 text-base font-semibold text-neutral-600 hover:bg-neutral-50 hover:text-neutral-900 focus:outline-none focus:ring-2 focus:ring-neutral-500 focus:ring-inset",
-                      pathname === item.href && "bg-neutral-50 text-neutral-900"
+                      isSimpleNavLinkActive(item, pathname) && "bg-neutral-50 text-neutral-900"
                     )}
                   >
                     {item.label}

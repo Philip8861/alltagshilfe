@@ -6,6 +6,8 @@ export type NavLink = {
   href: string;
   label: string;
   children?: { href: string; label: string }[];
+  /** Nav-Punkt als aktiv, wenn `pathname` unter diesem Pfad liegt (z. B. Ratgeber-Artikel unter `/ratgeber/...`). */
+  activeWhenPathStartsWith?: string;
 };
 
 /** Reihenfolge wie zuvor in der Leistungsübersicht; drei Einträge verweisen auf ausgearbeitete Unterseiten. */
@@ -22,6 +24,7 @@ const UNSERE_LEISTUNGEN_CHILDREN: { href: string; label: string }[] = [
 ];
 
 export const navLinks: NavLink[] = [
+  { href: "/", label: "Startseite" },
   { href: "/#unsere-leistungen", label: "Unsere Leistungen", children: UNSERE_LEISTUNGEN_CHILDREN },
   { href: "/standorte", label: "Standorte" },
   {
@@ -39,9 +42,9 @@ export const navLinks: NavLink[] = [
     children: [
       { href: "/pflegeberatung/private-pflegeberatung", label: "Private Pflegeberatung" },
       { href: "/pflegeberatung#betriebliche-pflegeberatung", label: "Betriebliche Pflegeberatung" },
-      { href: "/ratgeber", label: "Ratgeber" },
     ],
   },
+  { href: "/ratgeber", label: "Ratgeber", activeWhenPathStartsWith: "/ratgeber" },
   {
     href: "/pflegehilfsmittel/kostenfreie-pflegehilfsmittel",
     label: "Pflegehilfsmittel",
