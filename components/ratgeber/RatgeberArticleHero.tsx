@@ -55,7 +55,7 @@ export function RatgeberArticleHero({
 }: RatgeberArticleHeroProps) {
   return (
     <section
-      className="relative isolate w-full px-4 sm:px-6 md:px-8 lg:px-10"
+      className="relative isolate w-full px-4 pt-6 sm:px-6 sm:pt-8 md:px-8 md:pt-9 lg:px-10 lg:pt-10"
       aria-labelledby="ratgeber-artikel-heading"
     >
       <div className="relative isolate w-full overflow-hidden rounded-[0.85rem] bg-[#FFFBF7] shadow-[0_8px_28px_-14px_rgba(15,79,104,0.18)] sm:rounded-2xl">
@@ -65,7 +65,7 @@ export function RatgeberArticleHero({
             alt=""
             fill
             priority
-            className="origin-center object-cover object-center scale-[0.49]"
+            className="origin-center object-cover object-center scale-[0.637]"
             sizes="(max-width: 640px) calc(100vw - 2rem), (max-width: 768px) calc(100vw - 3rem), min(80rem, calc(100vw - 5rem))"
           />
         </div>
