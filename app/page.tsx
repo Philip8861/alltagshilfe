@@ -180,8 +180,12 @@ export default function HomePage() {
 
       <section className="relative z-20 mt-12 w-full px-4 sm:mt-14 sm:px-6 lg:mt-16 lg:px-[var(--ahs-page-gutter)]">
         <div className="mx-auto w-full max-w-6xl">
-          <h3 className="text-3xl font-extrabold tracking-tight text-[#0F4F68] sm:text-4xl">Ihre Vorteile bei uns</h3>
-          <p className="mt-2 max-w-3xl text-sm text-neutral-600 sm:text-base">{STARTSEITE_VORTEILE_INTRO}</p>
+          <h3 className="text-center text-3xl font-extrabold tracking-tight text-[#0F4F68] sm:text-4xl">
+            Ihre Vorteile bei uns
+          </h3>
+          <p className="mx-auto mt-2 max-w-3xl text-center text-sm text-neutral-600 sm:text-base">
+            {STARTSEITE_VORTEILE_INTRO}
+          </p>
           <ul className="mt-6 grid gap-4 sm:grid-cols-2">
             {STARTSEITE_VORTEILE.map((item) => (
               <li className="flex items-start gap-3 rounded-xl px-2 py-1.5 transition-all duration-300 hover:bg-white/75 hover:shadow-[0_0_20px_rgba(15,79,104,0.12)]" key={item}>
