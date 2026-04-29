@@ -72,7 +72,7 @@ function TopicIcon({ kind }: { kind: RatgeberCategoryId }) {
     viewBox: "0 0 24 24",
     fill: "none",
     stroke: "currentColor",
-    strokeWidth: 1.75,
+    strokeWidth: 1.35,
     strokeLinecap: "round" as const,
     strokeLinejoin: "round" as const,
     className: "h-full w-full shrink-0",
@@ -146,8 +146,7 @@ function haystackForBeitrag(beitrag: RatgeberBeitragMeta): string {
   return [beitrag.title, beitrag.excerpt, beitrag.tags.join(" ")].join(" ").toLocaleLowerCase("de");
 }
 
-function matchesCategory(beitrag: RatgeberBeitragMeta, cat: RatgeberCategoryId | "alle"): boolean {
-  if (cat === "alle") return true;
+function matchesCategory(beitrag: RatgeberBeitragMeta, cat: RatgeberCategoryId): boolean {
   return beitrag.categories.includes(cat);
 }
 
@@ -159,14 +158,13 @@ function hubIconCategory(beitrag: RatgeberBeitragMeta): RatgeberCategoryId {
   return beitrag.categories[0] ?? CATEGORY_ORDER[0];
 }
 
-const overlayIconSvgClass =
-  "block h-full w-full max-h-[6rem] max-w-[6rem] shrink-0 [overflow:visible]";
+const overlayIconSvgClass = "block h-full w-full shrink-0 overflow-visible";
 const OV = {
   xmlns: "http://www.w3.org/2000/svg",
   viewBox: "0 0 24 24",
   fill: "none" as const,
   stroke: "currentColor",
-  strokeWidth: 1.85,
+  strokeWidth: 1.35,
   strokeLinecap: "round" as const,
   strokeLinejoin: "round" as const,
   className: overlayIconSvgClass,
@@ -202,8 +200,8 @@ function HubOverlayIcon({
     case "hausnotruf-ratgeber":
       return (
         <svg {...OV}>
-          <rect x="6" y="3" width="12" height="18" rx="2" ry="2" />
-          <path d="M11 17h3" strokeWidth="2.2" strokeLinecap="round" />
+          <rect x="7" y="4" width="10" height="16" rx="2" />
+          <path d="M11 17.25h4" strokeLinecap="round" />
         </svg>
       );
     case "entlastungsbetrag-131-euro":
@@ -211,14 +209,15 @@ function HubOverlayIcon({
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden className={overlayIconSvgClass}>
           <text
             x="12"
-            y="16"
+            y="15.75"
             dominantBaseline="middle"
             textAnchor="middle"
             stroke="none"
             fill="currentColor"
+            fillOpacity={0.55}
             fontFamily="system-ui, -apple-system, 'Segoe UI', sans-serif"
-            fontWeight={700}
-            fontSize={21}
+            fontWeight={600}
+            fontSize={17}
           >
             €
           </text>
@@ -240,13 +239,35 @@ function HubOverlayIcon({
       );
     default:
       return (
-        <span className="flex h-full w-full items-center justify-center text-[#0F4F68]">
-          <span className="block h-[5.125rem] w-[5.125rem] shrink-0 [&>svg]:h-full [&>svg]:w-full">
+        <span className="flex h-full w-full items-center justify-center opacity-50">
+          <span className="block h-[4.25rem] w-[4.25rem] [&>svg]:h-full [&>svg]:w-full">
             <TopicIcon kind={fallbackCategory} />
           </span>
         </span>
       );
   }
+}
+
+/** Kompakte Pflege-Glyphe in „Beliebte Artikel“ (ersetzt Mini-Blog-Thumbnails). */
+function BeliebtSidebarGlyph({
+  slug,
+  fallbackCategory,
+}: {
+  slug: string;
+  fallbackCategory: RatgeberCategoryId;
+}) {
+  return (
+    <span
+      className="relative flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-md bg-[#FEFEFE]/85"
+      aria-hidden
+    >
+      <span className="flex h-[2.75rem] w-[2.75rem] items-center justify-center opacity-[0.5]" style={{ color: NAVY }}>
+        <span className="block h-[5.25rem] w-[5.25rem] shrink-0 origin-center scale-[0.52] [&>span]:block [&>span]:h-full [&>span]:w-full">
+          <HubOverlayIcon slug={slug} fallbackCategory={fallbackCategory} />
+        </span>
+      </span>
+    </span>
+  );
 }
 
 function RatgeberArticleTeaserCard({
@@ -290,8 +311,10 @@ function RatgeberArticleTeaserCard({
           priority={false}
         />
         <div className="pointer-events-none absolute inset-0 z-[2] flex items-center justify-center p-3">
-          <div className="flex h-[5.5rem] w-[5.5rem] shrink-0 items-center justify-center sm:h-[6.25rem] sm:w-[6.25rem] md:h-[6.5rem] md:w-[6.5rem]">
-            <HubOverlayIcon slug={beitrag.slug} fallbackCategory={ik} />
+          <div className="flex h-[5.25rem] w-[5.25rem] shrink-0 items-center justify-center sm:h-[6rem] sm:w-[6rem] md:h-[6.25rem] md:w-[6.25rem]" style={{ color: NAVY }}>
+            <div className="opacity-[0.48] [&_svg]:block [&_svg]:max-h-full [&_svg]:max-w-full">
+              <HubOverlayIcon slug={beitrag.slug} fallbackCategory={ik} />
+            </div>
           </div>
         </div>
       </div>
@@ -332,7 +355,7 @@ export function RatgeberHub(props?: RatgeberHubProps) {
   const { initialArticleViewTotals, articleViewsLive = false } = props ?? {};
   const totals = useMemo(() => initialArticleViewTotals ?? {}, [initialArticleViewTotals]);
   const [query, setQuery] = useState("");
-  const [activeCategory, setActiveCategory] = useState<RatgeberCategoryId | "alle">("alle");
+  const [activeCategory, setActiveCategory] = useState<RatgeberCategoryId>("pflegegrad_leistungen");
   const [searchFocused, setSearchFocused] = useState(false);
   const [highlightIndex, setHighlightIndex] = useState(-1);
   const [mobileTopicsOpen, setMobileTopicsOpen] = useState(false);
@@ -385,14 +408,13 @@ export function RatgeberHub(props?: RatgeberHubProps) {
     return () => document.removeEventListener("mousedown", onDown);
   }, []);
 
-  const isCategoryFocused = activeCategory !== "alle";
-  const categoryLabel = activeCategory !== "alle" ? RATGEBER_CATEGORY_LABELS[activeCategory] : "";
+  const categoryLabel = RATGEBER_CATEGORY_LABELS[activeCategory];
 
   const beliebtListe = useMemo(() => {
-    return [...RATGEBER_BEITRAEGE]
-      .sort((a, b) => getDisplayViews(b) - getDisplayViews(a))
-      .slice(0, 8);
-  }, [getDisplayViews]);
+    const inCat = RATGEBER_BEITRAEGE.filter((b) => matchesCategory(b, activeCategory));
+    const pool = inCat.length > 0 ? inCat : [...RATGEBER_BEITRAEGE];
+    return [...pool].sort((a, b) => getDisplayViews(b) - getDisplayViews(a)).slice(0, 8);
+  }, [getDisplayViews, activeCategory]);
 
   const gridBeitraege = useMemo(() => {
     const arr = [...filteredBySearchAndCat];
@@ -572,19 +594,6 @@ export function RatgeberHub(props?: RatgeberHubProps) {
               aria-label="Themenbereich Ratgeber wählen"
               className="mt-3 w-full max-w-md rounded-2xl border border-neutral-200 bg-white p-2 shadow-xl"
             >
-              <button
-                type="button"
-                className={`w-full rounded-xl px-4 py-3 text-left text-sm font-semibold transition ${
-                  activeCategory === "alle" ? "bg-[#0F4F68] text-white" : "hover:bg-neutral-50"
-                }`}
-                onClick={() => {
-                  setActiveCategory("alle");
-                  setMobileTopicsOpen(false);
-                }}
-                style={activeCategory !== "alle" ? { color: NAVY } : undefined}
-              >
-                Alle Artikel
-              </button>
               {CATEGORY_ORDER.map((id) => (
                 <button
                   key={id}
@@ -613,18 +622,6 @@ export function RatgeberHub(props?: RatgeberHubProps) {
             className="flex flex-wrap justify-center gap-x-2 gap-y-2.5 px-2"
             aria-label="Themenbereiche filtern"
           >
-            <button
-              type="button"
-              onClick={() => setActiveCategory("alle")}
-              className={`rounded-full px-4 py-2 text-center text-sm font-semibold transition ${
-                activeCategory === "alle"
-                  ? "text-white shadow-sm"
-                  : "border border-neutral-300 bg-white text-neutral-800 hover:border-neutral-400"
-              }`}
-              style={activeCategory === "alle" ? { backgroundColor: NAVY } : undefined}
-            >
-              Alle Artikel
-            </button>
             {CATEGORY_ORDER.map((id) => (
               <button
                 key={id}
@@ -649,41 +646,11 @@ export function RatgeberHub(props?: RatgeberHubProps) {
 
       <Container className="mx-auto max-w-7xl px-4 pt-5 sm:px-6 sm:pt-6 lg:px-8">
         <section id="alle-ratgeber" className="scroll-mt-24">
-          {!isCategoryFocused ? (
-            <div className="mx-auto mb-8 max-w-4xl space-y-4">
-              <p className="text-center text-sm font-semibold text-neutral-600 sm:text-base">Themen wählen</p>
-              <div className="flex w-full justify-center">
-                <ul className="grid w-full max-w-md grid-cols-2 gap-3 justify-items-center sm:max-w-2xl sm:grid-cols-3 sm:gap-4 lg:max-w-4xl lg:grid-cols-4">
-                  {CATEGORY_ORDER.map((id) => (
-                    <li key={id} className="aspect-square w-full max-w-[9.5rem] min-w-0 sm:max-w-[10.25rem]">
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setActiveCategory(id);
-                          scrollToAlle();
-                        }}
-                        className="flex h-full w-full flex-col items-center justify-center gap-2 rounded-2xl border border-neutral-200/95 bg-gradient-to-br from-white to-neutral-50/90 p-3 text-center shadow-sm transition hover:-translate-y-0.5 hover:border-neutral-300 hover:shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-neutral-400/40 focus-visible:ring-offset-2 sm:gap-2.5 sm:p-3.5"
-                        style={{ color: NAVY }}
-                      >
-                        <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-neutral-200/90 bg-white text-[#0F4F68] shadow-inner sm:h-14 sm:w-14 [&>svg]:scale-110">
-                          <TopicIcon kind={id} />
-                        </span>
-                        <span className="line-clamp-3 text-[0.65rem] font-bold leading-tight sm:text-[0.7rem]">
-                          {RATGEBER_CATEGORY_LABELS[id]}
-                        </span>
-                      </button>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div>
-          ) : null}
-
           <div className="mt-8 flex flex-col gap-8 lg:mt-10 lg:flex-row lg:items-start lg:gap-8 xl:gap-10">
             <div className="min-w-0 flex-1">
               <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
                 <h2 className="text-base font-bold tracking-tight sm:text-lg" style={{ color: NAVY }}>
-                  {isCategoryFocused ? categoryLabel : "Artikel"}
+                  {categoryLabel}
                 </h2>
                 <div className="flex flex-wrap items-center gap-2 sm:justify-end">
                   <label htmlFor="ratgeber-sortierung" className="text-xs font-medium text-neutral-600 sm:text-sm">
@@ -748,17 +715,9 @@ export function RatgeberHub(props?: RatgeberHubProps) {
                       >
                         {i + 1}
                       </span>
-                      <span className="relative block h-[3.85rem] w-[4.05rem] shrink-0 overflow-hidden rounded-md shadow-sm ring-1 ring-neutral-100" style={{ backgroundColor: CARD_CANVAS }}>
-                        <Image
-                          src={ratgeberHubCardImage(b.slug)}
-                          alt=""
-                          fill
-                          className="object-contain object-center"
-                          sizes="128px"
-                        />
-                      </span>
+                      <BeliebtSidebarGlyph slug={b.slug} fallbackCategory={hubIconCategory(b)} />
                       <div className="min-w-0 flex-1">
-                        <span className="line-clamp-3 text-left text-[0.7rem] font-extrabold leading-snug text-[#0F4F68] group-hover:underline">
+                        <span className="line-clamp-4 text-left text-[0.75rem] font-extrabold leading-snug text-[#0F4F68] group-hover:underline sm:text-[0.8rem]">
                           {b.title}
                         </span>
                         <span className="mt-0.5 block text-[0.6rem] text-neutral-500">
