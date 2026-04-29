@@ -156,6 +156,20 @@ export const RATGEBER_BEITRAEGE: RatgeberBeitragMeta[] = [
   },
 ];
 
+/** Aquarell-Teaserbilde für die Ratgeber-Hub-Karten (ein Bild pro Artikel, Fallback blog_7). */
+const RATGEBER_HUB_CARD_IMAGES: Record<string, string> = {
+  "pflegegrad-beantragen-2026": "/images/Ratgeber/blog_1.webp",
+  "pflegegrad-beantragen-checkliste": "/images/Ratgeber/blog_2.webp",
+  "hausnotruf-ratgeber": "/images/Ratgeber/blog_3.webp",
+  "entlastungsbetrag-131-euro": "/images/Ratgeber/blog_4.webp",
+  "pflegegrad-1-der-ultimative-leitfaden": "/images/Ratgeber/blog_5.webp",
+  "pflegegrad-2-alles-was-du-wissen-musst": "/images/Ratgeber/blog_6.webp",
+};
+
+export function ratgeberHubCardImage(slug: string): string {
+  return RATGEBER_HUB_CARD_IMAGES[slug] ?? "/images/Ratgeber/blog_7.webp";
+}
+
 export function getVerwandteRatgeberBeitraege(currentSlug: string, limit = 4): RatgeberBeitragMeta[] {
   const current = RATGEBER_BEITRAEGE.find((b) => b.slug === currentSlug);
   const others = RATGEBER_BEITRAEGE.filter((b) => b.slug !== currentSlug);

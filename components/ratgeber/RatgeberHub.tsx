@@ -7,6 +7,7 @@ import { Container } from "@/components/layout/Container";
 import {
   RATGEBER_BEITRAEGE,
   RATGEBER_CATEGORY_LABELS,
+  ratgeberHubCardImage,
   type RatgeberBeitragMeta,
   type RatgeberCategoryId,
   primaryCategoryLabel,
@@ -44,14 +45,6 @@ function EyeIcon({ className }: { className?: string }) {
     <svg className={className} width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
       <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z" strokeLinecap="round" strokeLinejoin="round" />
       <circle cx="12" cy="12" r="3" />
-    </svg>
-  );
-}
-
-function ArrowRightIcon({ className }: { className?: string }) {
-  return (
-    <svg className={className} width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" aria-hidden>
-      <path d="M5 12h14M13 5l7 7-7 7" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );
 }
@@ -180,6 +173,72 @@ function sortBeitraege(
 
 const SEARCH_SUGGESTIONS_MAX = 8;
 
+function hubIconCategory(beitrag: RatgeberBeitragMeta): RatgeberCategoryId {
+  return beitrag.categories[0] ?? CATEGORY_ORDER[0];
+}
+
+function RatgeberArticleTeaserCard({
+  beitrag,
+  showTopBadge,
+  getDisplayViews,
+}: {
+  beitrag: RatgeberBeitragMeta;
+  showTopBadge: boolean;
+  getDisplayViews: (b: RatgeberBeitragMeta) => number;
+}) {
+  const hubSrc = ratgeberHubCardImage(beitrag.slug);
+  const ik = hubIconCategory(beitrag);
+  const titleId = `ratgeber-teaser-${beitrag.slug}-title`;
+
+  return (
+    <Link
+      href={`/ratgeber/${beitrag.slug}`}
+      className="group flex h-full min-h-0 flex-col overflow-hidden rounded-[1.125rem] bg-white shadow-[0_10px_36px_-16px_rgba(15,79,104,0.22)] transition hover:-translate-y-0.5 hover:shadow-[0_16px_44px_-18px_rgba(15,79,104,0.26)] focus:outline-none focus-visible:ring-2 focus-visible:ring-neutral-400/50 focus-visible:ring-offset-2"
+      aria-labelledby={titleId}
+    >
+      <div className="relative aspect-[4/5] w-full shrink-0 overflow-hidden rounded-t-[1.125rem] bg-neutral-100">
+        {showTopBadge ? (
+          <span
+            className="absolute left-2.5 top-2.5 z-20 rounded-md px-2 py-1 text-[0.65rem] font-bold uppercase tracking-wide text-white shadow-sm sm:left-3 sm:top-3"
+            style={{ backgroundColor: ORANGE }}
+          >
+            TOP THEMA
+          </span>
+        ) : null}
+        <Image
+          src={hubSrc}
+          alt=""
+          fill
+          className="z-0 object-cover object-center transition duration-300 group-hover:scale-[1.03]"
+          sizes="(min-width: 1280px) 26vw, (min-width: 768px) 32vw, 90vw"
+          priority={false}
+        />
+        <div className="pointer-events-none absolute inset-0 z-[1] flex items-center justify-center bg-gradient-to-t from-black/[0.05] to-transparent" aria-hidden />
+        <div className="pointer-events-none absolute inset-0 z-[2] flex items-center justify-center p-4">
+          <span className="inline-flex h-[4.25rem] w-[4.25rem] items-center justify-center text-[#0F4F68] drop-shadow-[0_2px_8px_rgba(255,255,255,0.85)] sm:h-[4.75rem] sm:w-[4.75rem] [&>svg]:h-full [&>svg]:w-full [&>svg]:max-h-[3.5rem] [&>svg]:max-w-[3.5rem]">
+            <TopicIcon kind={ik} />
+          </span>
+        </div>
+      </div>
+      <div className="flex flex-col px-3 pb-3 pt-2.5 sm:px-4 sm:pb-4 sm:pt-3">
+        <span id={titleId} className="line-clamp-3 text-left text-sm font-bold leading-snug tracking-tight sm:text-[0.95rem]" style={{ color: NAVY }}>
+          {beitrag.title}
+        </span>
+        <div className="mt-3 flex flex-wrap items-start gap-x-5 gap-y-1 text-[0.7rem] leading-relaxed text-neutral-500 sm:text-xs">
+          <span className="inline-flex items-center gap-1">
+            <EyeIcon className="h-3 w-3 shrink-0 text-neutral-400" aria-hidden />
+            {getDisplayViews(beitrag).toLocaleString("de-DE")} Aufrufe
+          </span>
+          <span className="inline-flex items-center gap-1">
+            <ClockIcon className="h-3 w-3 shrink-0 text-neutral-400" aria-hidden />
+            {beitrag.readMinutes} Min.
+          </span>
+        </div>
+      </div>
+    </Link>
+  );
+}
+
 export type RatgeberHubProps = {
   /** Summen aus Middleware-Analytics (site_page_views_daily), je slug. */
   initialArticleViewTotals?: Record<string, number>;
@@ -270,9 +329,6 @@ export function RatgeberHub(props?: RatgeberHubProps) {
 
   const categoryLabel =
     activeCategory !== "alle" ? RATGEBER_CATEGORY_LABELS[activeCategory] : "";
-
-  const iconCategoryForBeitrag = (beitrag: RatgeberBeitragMeta): RatgeberCategoryId =>
-    beitrag.categories[0] ?? CATEGORY_ORDER[0];
 
   return (
     <div className="min-w-0">
@@ -588,103 +644,29 @@ export function RatgeberHub(props?: RatgeberHubProps) {
               </p>
             ) : isCategoryFocused ? (
               <div className="mt-8 flex w-full justify-center">
-                <ul className="grid w-full max-w-md grid-cols-2 gap-4 justify-items-center sm:max-w-3xl md:max-w-5xl md:grid-cols-4 md:gap-5">
-                  {gridBeitraege.map((beitrag, idx) => {
-                    const ik = iconCategoryForBeitrag(beitrag);
-                    return (
-                      <li key={beitrag.slug} className="aspect-square w-full max-w-[11rem] min-h-0 md:max-w-[13rem]">
-                        <Link
-                          href={`/ratgeber/${beitrag.slug}`}
-                          className="group relative flex h-full w-full flex-col overflow-hidden rounded-2xl border border-neutral-200/95 bg-gradient-to-br from-white to-neutral-50/80 p-3 shadow-sm transition hover:-translate-y-0.5 hover:border-neutral-300 hover:shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-neutral-400/40 focus-visible:ring-offset-2 sm:p-4"
-                          aria-labelledby={`kat-card-${beitrag.slug}-title`}
-                        >
-                          {idx < 2 ? (
-                            <span className="absolute left-2 top-2 z-10 rounded-md bg-neutral-700/90 px-2 py-0.5 text-[0.58rem] font-bold uppercase tracking-wide text-white shadow-sm sm:left-2.5 sm:top-2.5 sm:text-[0.62rem]">
-                              TOP THEMA
-                            </span>
-                          ) : null}
-                          <div className="flex min-h-[5rem] flex-1 flex-col items-center justify-center rounded-xl border border-neutral-100 bg-white/90 p-3 shadow-inner sm:min-h-[6rem]">
-                            <span
-                              className="text-[#0F4F68] transition-transform group-hover:scale-105 [&>svg]:h-9 [&>svg]:w-9 sm:[&>svg]:h-11 sm:[&>svg]:w-11"
-                              aria-hidden
-                            >
-                              <TopicIcon kind={ik} />
-                            </span>
-                          </div>
-                          <div className="mt-3 flex min-h-0 flex-1 flex-col">
-                            <span
-                              id={`kat-card-${beitrag.slug}-title`}
-                              className="line-clamp-4 text-center text-[0.72rem] font-bold leading-snug tracking-tight sm:text-sm"
-                              style={{ color: NAVY }}
-                            >
-                              {beitrag.title}
-                            </span>
-                            <span className="mt-auto flex flex-wrap items-center justify-center gap-x-1.5 gap-y-0.5 pt-2 text-center text-[0.62rem] text-neutral-600 sm:text-[0.7rem]">
-                              <EyeIcon className="h-3 w-3 shrink-0 opacity-80" aria-hidden />
-                              <span>{getDisplayViews(beitrag).toLocaleString("de-DE")}</span>
-                              <span className="text-neutral-300" aria-hidden>
-                                ·
-                              </span>
-                              <ClockIcon className="h-3 w-3 shrink-0 opacity-80" aria-hidden />
-                              <span>{beitrag.readMinutes} Min.</span>
-                            </span>
-                          </div>
-                        </Link>
-                      </li>
-                    );
-                  })}
+                <ul className="grid w-full max-w-md grid-cols-2 gap-4 justify-items-stretch sm:max-w-3xl md:max-w-6xl md:grid-cols-4 md:gap-6">
+                  {gridBeitraege.map((beitrag, idx) => (
+                    <li key={beitrag.slug} className="min-h-0 w-full max-w-[16rem] justify-self-center md:max-w-none">
+                      <RatgeberArticleTeaserCard
+                        beitrag={beitrag}
+                        showTopBadge={idx < 2}
+                        getDisplayViews={getDisplayViews}
+                      />
+                    </li>
+                  ))}
                 </ul>
               </div>
             ) : (
-              <ul className="mt-8 grid gap-5 sm:grid-cols-2 sm:gap-6 xl:grid-cols-3 xl:gap-7">
-                {gridBeitraege.map((beitrag) => {
-                  const ik = iconCategoryForBeitrag(beitrag);
-                  return (
-                    <li key={beitrag.slug}>
-                      <Link
-                        href={`/ratgeber/${beitrag.slug}`}
-                        className="group flex h-full flex-col rounded-2xl border border-neutral-200/90 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:border-neutral-300 hover:shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-neutral-400/50 focus-visible:ring-offset-2 sm:p-6"
-                      >
-                        <div className="flex items-start gap-3">
-                          <span
-                            className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border border-neutral-200 bg-[#FAFBFC] text-[#0F4F68]"
-                            aria-hidden
-                          >
-                            <TopicIcon kind={ik} />
-                          </span>
-                          <div className="min-w-0 flex-1">
-                            <span className="text-xs font-semibold" style={{ color: NAVY }}>
-                              {primaryCategoryLabel(beitrag)}
-                            </span>
-                            <h3 className="mt-1 line-clamp-2 text-lg font-bold leading-snug sm:text-xl" style={{ color: NAVY }}>
-                              {beitrag.title}
-                            </h3>
-                          </div>
-                        </div>
-                        <p className="mt-3 line-clamp-3 flex-1 text-sm leading-relaxed text-neutral-600 sm:text-[0.95rem]">
-                          {beitrag.excerpt}
-                        </p>
-                        <div className="mt-4 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-neutral-500">
-                          <span className="inline-flex items-center gap-1">
-                            <EyeIcon className="h-3.5 w-3.5 shrink-0 text-neutral-400" aria-hidden />
-                            {getDisplayViews(beitrag).toLocaleString("de-DE")} Aufrufe
-                          </span>
-                          <span className="text-neutral-300" aria-hidden>
-                            ·
-                          </span>
-                          <span className="inline-flex items-center gap-1">
-                            <ClockIcon className="h-3.5 w-3.5 text-neutral-400" aria-hidden />
-                            {beitrag.readMinutes} Min.
-                          </span>
-                        </div>
-                        <span className="mt-4 inline-flex items-center gap-1.5 text-sm font-bold" style={{ color: NAVY }}>
-                          Weiterlesen
-                          <ArrowRightIcon className="h-4 w-4" />
-                        </span>
-                      </Link>
-                    </li>
-                  );
-                })}
+              <ul className="mt-8 grid gap-7 justify-items-stretch sm:grid-cols-2 xl:grid-cols-3 xl:gap-8">
+                {gridBeitraege.map((beitrag) => (
+                  <li key={beitrag.slug} className="min-h-0 w-full">
+                    <RatgeberArticleTeaserCard
+                      beitrag={beitrag}
+                      showTopBadge={false}
+                      getDisplayViews={getDisplayViews}
+                    />
+                  </li>
+                ))}
               </ul>
             )}
           </section>
