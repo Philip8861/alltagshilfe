@@ -197,7 +197,7 @@ export function HeaderNav() {
       <div
         id="mobile-menu"
         className={cn(
-          "absolute left-0 right-0 top-full z-50 border-b border-[#0F4F68]/15 bg-white md:hidden",
+          "absolute left-0 right-0 top-full z-50 max-h-[min(90dvh,calc(100dvh-env(safe-area-inset-bottom,0px)-6rem))] overflow-y-auto overscroll-contain border-b border-[#0F4F68]/15 bg-white md:hidden [-webkit-overflow-scrolling:touch]",
           mobileOpen ? "block" : "hidden",
         )}
         role="dialog"
@@ -254,8 +254,10 @@ export function HeaderNav() {
                       role="region"
                       aria-labelledby={`mobile-trigger-${item.href.replace(/\//g, "-")}`}
                       className={cn(
-                        "flex flex-col gap-1 border-l-2 border-[#0F4F68]/20 pl-4 ml-4 overflow-hidden transition-[height] duration-200",
-                        openMobileDropdown === item.href ? "visible max-h-96 opacity-100" : "invisible max-h-0 opacity-0"
+                        "flex flex-col gap-1 border-l-2 border-[#0F4F68]/20 pl-4 ml-4 transition-[max-height] duration-200 ease-out motion-reduce:transition-none",
+                        openMobileDropdown === item.href
+                          ? "visible max-h-[min(75vh,32rem)] overflow-y-auto overscroll-contain opacity-100 [scrollbar-gutter:stable] [-webkit-overflow-scrolling:touch]"
+                          : "invisible max-h-0 overflow-hidden opacity-0"
                       )}
                     >
                       {item.children.map((child) => (
