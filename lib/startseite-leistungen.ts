@@ -1,12 +1,7 @@
-/** Kacheln „Unsere Leistungen“ – gleiche Daten wie Startseite & Standort-Landings.
- *  thumbnailSrc optional: Foto-Thumbnails mit Glow (wie Hero-Motive z. B. Haushaltshilfe). */
+/** Kacheln „Unsere Leistungen“ – gleiche Daten wie Startseite & Standort-Landings. */
 export const STARTSEITE_LEISTUNGEN_KACHELN = [
   { title: "Haushaltshilfe", icon: "home" as const },
-  {
-    title: "Alltagsbegleitung und Betreuung",
-    icon: "people" as const,
-    thumbnailSrc: "/images/leistungen_alltagsbegleitung.webp",
-  },
+  { title: "Alltagsbegleitung und Betreuung", icon: "people" as const },
   { title: "Pflegeberatung nach §37.3 SGB XI", icon: "chat" as const },
   { title: "Kostenfreie Pflegehilfsmittel", icon: "box" as const },
   { title: "Inkontinenzversorgung", icon: "shield" as const },

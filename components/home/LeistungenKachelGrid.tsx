@@ -1,15 +1,9 @@
-import Image from "next/image";
 import Link from "next/link";
-import { ProtectedRasterMedia } from "@/components/home/ProtectedRasterMedia";
 import {
   LEISTUNGS_LINKS_BY_ICON,
   type LeistungKachelIcon,
   STARTSEITE_LEISTUNGEN_KACHELN,
 } from "@/lib/startseite-leistungen";
-
-/** Wie Haushaltshilfe-Landing / Standort-Hero: weicher Blau-Schatten ums Motiv */
-const KACHEL_BILD_GLOW =
-  "[filter:drop-shadow(0_10px_22px_rgba(15,79,104,0.2))_drop-shadow(0_4px_12px_rgba(15,79,104,0.12))] [will-change:filter]";
 
 type Props = {
   id?: string;
@@ -93,39 +87,6 @@ function LeistungIconGlyph({ icon }: { icon: LeistungKachelIcon }) {
   );
 }
 
-function LeistungKachelLeadingMedia({
-  icon,
-  thumbnailSrc,
-}: {
-  icon: LeistungKachelIcon;
-  thumbnailSrc?: string;
-}) {
-  if (thumbnailSrc) {
-    return (
-      <span className="mt-0.5 shrink-0" aria-hidden>
-        <ProtectedRasterMedia className="inline-flex select-none [-webkit-user-drag:none]">
-          <Image
-            src={thumbnailSrc}
-            alt=""
-            width={48}
-            height={48}
-            sizes="(max-width: 640px) 30vw, 120px"
-            className={`h-12 w-12 rounded-xl object-cover ${KACHEL_BILD_GLOW}`}
-          />
-        </ProtectedRasterMedia>
-      </span>
-    );
-  }
-  return (
-    <span
-      className="mt-0.5 inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-[#0F4F68] text-white"
-      aria-hidden
-    >
-      <LeistungIconGlyph icon={icon} />
-    </span>
-  );
-}
-
 export function LeistungenKachelGrid({
   id,
   heading,
@@ -159,10 +120,12 @@ export function LeistungenKachelGrid({
             style={{ animationDelay: `${0.06 * (index + 1)}s` }}
           >
             <article className="flex items-start gap-3">
-              <LeistungKachelLeadingMedia
-                icon={leistung.icon}
-                thumbnailSrc={"thumbnailSrc" in leistung ? leistung.thumbnailSrc : undefined}
-              />
+              <span
+                className="mt-0.5 inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-[#0F4F68] text-white"
+                aria-hidden
+              >
+                <LeistungIconGlyph icon={leistung.icon} />
+              </span>
               <p className="text-lg font-semibold leading-snug text-[#0F4F68]">{leistung.title}</p>
             </article>
           </Link>
