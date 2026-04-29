@@ -16,8 +16,8 @@ import { STARTSEITE_VORTEILE, STARTSEITE_VORTEILE_INTRO } from "@/lib/startseite
 
 const HAUSHALTSHILFE_FAQ_ANCHOR = "/leistungen/haushaltshilfe#haushalt-faq-heading";
 
-/** Hintergrund FAQ-Bereich (Startseite), inkl. Wellenfüllung */
-const STARTSEITE_FAQ_BG = "#f0f9fa";
+/** Hintergrund FAQ-Bereich (Startseite), inkl. Wellenfüllung – wie übrige Seite #FFFFFF */
+const STARTSEITE_FAQ_BG = "#ffffff";
 
 const STARTSEITE_FAQ_WELLEN_D =
   "M0,120 C200,32 420,8 600,22 C800,38 1010,90 1200,120 L1200,120 L0,120 Z";
@@ -73,8 +73,7 @@ export default function HomePage() {
 
   return (
     <article
-      className="flex min-h-[60vh] w-full max-w-[100vw] flex-col overflow-x-clip pt-0 pb-0"
-      style={{ backgroundColor: "#fafbfc" }}
+      className="flex min-h-[60vh] w-full max-w-[100vw] flex-col overflow-x-clip bg-white pt-0 pb-0"
     >
       <section className="box-border w-full pt-0 pb-6 sm:pb-8 lg:pb-[clamp(1.5rem,2vw+0.75rem,2.5rem)]">
         {/* Hero: seitlicher Abstand 5cm (md+), Bild zusätzlich ~25 % höher */}
