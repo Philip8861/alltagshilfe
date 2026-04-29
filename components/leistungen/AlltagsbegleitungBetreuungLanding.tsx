@@ -81,9 +81,9 @@ export function AlltagsbegleitungBetreuungLanding() {
   return (
     <div className="min-w-0 overflow-x-clip overflow-y-visible bg-[#fafbfc] text-neutral-700 antialiased">
       <article id="alltagsbegleitung-betreuung-hero" className="min-w-0 scroll-mt-24 overflow-x-clip overflow-y-visible">
-        <section className="relative z-0 box-border mx-auto w-full min-w-0 max-w-7xl px-4 pb-6 pt-9 sm:px-6 sm:pb-12 sm:pt-10 lg:px-[var(--ahs-page-gutter)] lg:pb-[clamp(2.75rem,6.5vh+1rem,5.25rem)] lg:pt-[clamp(2.25rem,0.95rem+1.75vw,3.35rem)] xl:pb-[clamp(4rem,8.5vh+1.25rem,6.5rem)]">
-          <div className="flex flex-col-reverse items-center gap-10 lg:grid lg:grid-cols-[minmax(0,0.42fr)_minmax(0,0.58fr)] lg:items-start lg:justify-items-stretch lg:gap-x-[clamp(1.5rem,3vw,3.25rem)] lg:gap-y-0">
-            <div className="box-border w-full min-w-0 max-w-full space-y-[clamp(1.25rem,2vh+0.75rem,1.75rem)] lg:min-w-0 lg:max-w-none lg:justify-self-stretch lg:space-y-[clamp(1.15rem,1.6vh+0.7rem,1.75rem)] lg:-translate-x-[clamp(0.35rem,2.5vw,1.75rem)] lg:pr-0 motion-reduce:lg:translate-x-0">
+        <section className="relative z-0 box-border mx-auto w-full min-w-0 max-w-7xl px-4 pb-10 pt-0 sm:px-6 sm:pb-16 lg:px-[var(--ahs-page-gutter)] lg:pb-[clamp(4rem,9vh+1.5rem,7rem)] lg:pt-[clamp(2rem,5vh+1.25rem,4.75rem)] xl:pb-[clamp(5rem,10vh+1.5rem,8rem)]">
+          <div className="flex flex-col-reverse items-center gap-10 lg:grid lg:grid-cols-[minmax(0,0.34fr)_minmax(0,0.66fr)] lg:items-center lg:justify-items-stretch lg:gap-x-[clamp(1.5rem,3vw,3.25rem)] lg:gap-y-0">
+            <div className="box-border w-full min-w-0 max-w-full space-y-[clamp(1.25rem,2vh+0.75rem,1.75rem)] lg:min-w-0 lg:justify-self-start lg:space-y-[clamp(1.15rem,1.6vh+0.7rem,1.75rem)] lg:-translate-x-[clamp(0.75rem,4.5vw,3rem)] lg:pr-0 motion-reduce:lg:translate-x-0">
               <h1
                 className="text-3xl font-extrabold leading-tight tracking-tight text-[#0F4F68] opacity-0 motion-reduce:opacity-100 animate-fade-in-up sm:text-4xl lg:text-[clamp(1.75rem,1.05rem+2.5vw,3rem)]"
                 style={{ animationDelay: "0s" }}
@@ -123,7 +123,7 @@ export function AlltagsbegleitungBetreuungLanding() {
             </div>
 
             <div className="box-border w-full min-w-0 max-w-full lg:min-h-0 lg:translate-x-[clamp(0.75rem,5vw,3.5rem)] lg:justify-self-stretch lg:self-center motion-reduce:lg:translate-x-0">
-              <div className="box-border flex justify-center overflow-x-visible bg-[#fafbfc] px-4 pt-0 pb-8 sm:px-8 sm:pb-10 lg:flex lg:justify-end lg:px-0 lg:pb-[clamp(1.75rem,3.5vh+0.75rem,3.25rem)] lg:pt-0">
+              <div className="box-border flex justify-center overflow-x-visible bg-[#fafbfc] px-4 pt-3 pb-8 sm:px-8 sm:pt-4 sm:pb-10 lg:flex lg:justify-end lg:px-0 lg:pb-[clamp(1.75rem,3.5vh+0.75rem,3.25rem)] lg:pt-0">
                 <div
                   className="mx-auto w-full min-w-0 max-w-[min(100%,72rem)] opacity-0 motion-reduce:opacity-100 animate-fade-in-up max-lg:flex max-lg:max-w-full max-lg:justify-center lg:ml-auto lg:w-full lg:max-w-full"
                   style={{ animationDelay: "0.08s" }}
@@ -136,8 +136,8 @@ export function AlltagsbegleitungBetreuungLanding() {
                     height={800}
                     decoding="async"
                     fetchPriority="high"
-                    sizes="(max-width: 1023px) 80vw, (max-width: 1536px) 51vw, 958px"
-                    className={`box-border h-auto w-[79.7%] max-w-full object-contain object-center max-lg:mx-auto lg:ml-auto lg:mr-0 lg:w-[79.7%] lg:object-contain lg:object-right ${HERO_GLOW_CLASS}`}
+                    sizes="(max-width: 1023px) 100vw, (max-width: 1536px) 66vw, 1200px"
+                    className={`box-border h-auto w-full max-w-full object-contain object-center lg:object-contain lg:object-right max-lg:mx-auto max-lg:origin-center max-lg:translate-x-0 max-lg:-translate-y-2 max-lg:scale-[1.05] max-lg:motion-reduce:scale-[1.05] ${HERO_GLOW_CLASS}`}
                   />
                 </div>
               </div>
