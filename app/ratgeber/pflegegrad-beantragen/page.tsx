@@ -125,7 +125,7 @@ export default function PflegegradBeantragenRatgeberPage() {
           }
         />
 
-        <Container className="pb-4 sm:pb-6">
+        <Container className="pt-8 pb-4 sm:pt-10 sm:pb-6">
           <div className="mx-auto flex w-full max-w-[min(76rem,100%)] flex-col gap-12 lg:flex-row lg:items-start lg:gap-14">
             <aside className="sticky top-28 order-2 hidden w-full max-w-[18rem] shrink-0 self-start lg:order-none lg:block">
               <div className="max-h-[min(70vh,32rem)] overflow-y-auto rounded-2xl border border-[#0F4F68]/11 bg-[#fafcfb] px-4 py-4 shadow-sm">
