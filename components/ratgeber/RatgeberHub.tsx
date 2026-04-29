@@ -116,12 +116,10 @@ function RatgeberArticleTeaserCard({
           sizes="(min-width: 1280px) 18vw, (min-width: 768px) 22vw, 42vw"
           priority={false}
         />
-        <div
-          className="pointer-events-none absolute inset-x-0 bottom-0 z-[2] flex flex-col justify-end gap-1 bg-gradient-to-t from-[#0F4F68]/93 via-[#0F4F68]/72 to-transparent px-2 pb-3 pt-14 text-left shadow-[inset_0_-1px_0_0_rgba(255,255,255,0.06)] sm:px-2.5 sm:pb-3.5 sm:pt-16"
-        >
+        <div className="pointer-events-none absolute inset-0 z-[2] flex items-center justify-center p-3 sm:p-4">
           <span
             id={titleId}
-            className="line-clamp-[4] text-left text-[0.7rem] font-extrabold leading-snug tracking-tight text-balance text-white drop-shadow-[0_1px_3px_rgba(0,0,0,0.45)] sm:text-sm md:line-clamp-3 lg:text-[0.8125rem]"
+            className="line-clamp-5 max-h-[min(88%,10.5rem)] w-full max-w-[min(100%,17rem)] rounded-xl border border-white/35 bg-[#0F4F68]/88 px-2.5 py-2 text-center text-[0.7rem] font-extrabold leading-snug tracking-tight text-balance text-white shadow-[0_6px_24px_-4px_rgba(15,79,104,0.55)] backdrop-blur-[2px] sm:max-h-[min(88%,11.5rem)] sm:max-w-[min(100%,18.5rem)] sm:px-3 sm:py-2.5 sm:text-xs md:line-clamp-4 md:text-sm"
           >
             {beitrag.title}
           </span>
@@ -446,54 +444,56 @@ export function RatgeberHub(props?: RatgeberHubProps) {
         </Container>
       </div>
 
-      <Container className="mx-auto max-w-7xl px-4 pt-5 sm:px-6 sm:pt-6 lg:px-8">
+      <Container className="mx-auto max-w-7xl px-4 pt-5 sm:px-6 sm:pt-6 lg:px-6 lg:pb-2 xl:px-8 xl:pl-6 xl:pr-4 2xl:pr-3">
         <section id="alle-ratgeber" className="scroll-mt-24">
-          <div className="mt-8 flex flex-col gap-8 lg:mt-10 lg:flex-row lg:items-start lg:gap-8 xl:gap-10">
-            <div className="min-w-0 flex-1">
-              <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-                <h2 className="text-base font-bold tracking-tight sm:text-lg" style={{ color: NAVY }}>
-                  {categoryLabel}
-                </h2>
-                <div className="flex flex-wrap items-center gap-2 sm:justify-end">
-                  <label htmlFor="ratgeber-sortierung" className="text-xs font-medium text-neutral-600 sm:text-sm">
-                    Sortierung
-                  </label>
-                  <select
-                    id="ratgeber-sortierung"
-                    value={sortMode}
-                    onChange={(e) => setSortMode(e.target.value === "date" ? "date" : "views")}
-                    className="min-h-[44px] min-w-[11.5rem] cursor-pointer rounded-xl border border-neutral-300 bg-white px-2.5 py-2 text-xs font-semibold text-neutral-900 shadow-sm outline-none transition hover:border-neutral-400 focus:border-[#0F4F68]/40 focus:ring-2 focus:ring-[#0F4F68]/20 sm:min-w-[12rem] sm:px-3 sm:text-sm"
-                  >
-                    <option value="views">Beliebtheit (Aufrufe)</option>
-                    <option value="date">Neueste zuerst</option>
-                  </select>
+          <div className="mt-8 flex flex-col gap-8 lg:mt-10 lg:flex-row lg:items-start lg:justify-between lg:gap-5 xl:gap-8 2xl:gap-12">
+            <div className="flex min-h-0 w-full min-w-0 flex-1 justify-center lg:pr-2">
+              <div className="w-full max-w-[min(100%,62rem)]">
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+                  <h2 className="text-center text-base font-bold tracking-tight sm:text-left sm:text-lg" style={{ color: NAVY }}>
+                    {categoryLabel}
+                  </h2>
+                  <div className="flex flex-wrap items-center justify-center gap-2 sm:justify-end">
+                    <label htmlFor="ratgeber-sortierung" className="text-xs font-medium text-neutral-600 sm:text-sm">
+                      Sortierung
+                    </label>
+                    <select
+                      id="ratgeber-sortierung"
+                      value={sortMode}
+                      onChange={(e) => setSortMode(e.target.value === "date" ? "date" : "views")}
+                      className="min-h-[44px] min-w-[11.5rem] cursor-pointer rounded-xl border border-neutral-300 bg-white px-2.5 py-2 text-xs font-semibold text-neutral-900 shadow-sm outline-none transition hover:border-neutral-400 focus:border-[#0F4F68]/40 focus:ring-2 focus:ring-[#0F4F68]/20 sm:min-w-[12rem] sm:px-3 sm:text-sm"
+                    >
+                      <option value="views">Beliebtheit (Aufrufe)</option>
+                      <option value="date">Neueste zuerst</option>
+                    </select>
+                  </div>
                 </div>
-              </div>
 
-              {gridBeitraege.length === 0 ? (
-                <p
-                  className="mx-auto mt-4 rounded-2xl border border-dashed border-neutral-200 p-6 text-center text-sm text-neutral-600 sm:p-8"
-                  style={{ backgroundColor: CARD_CANVAS }}
-                >
-                  Keine Artikel für diese Auswahl. Anderes Thema wählen oder Suchbegriff anpassen.
-                </p>
-              ) : (
-                <ul className="mx-auto mt-4 grid grid-cols-2 gap-x-3 gap-y-6 sm:gap-x-4 md:grid-cols-3 md:gap-y-7 lg:grid-cols-4 lg:gap-x-4 xl:gap-x-5">
-                  {gridBeitraege.map((beitrag, idx) => (
-                    <li key={beitrag.slug} className="min-h-0 w-full justify-self-stretch">
-                      <RatgeberArticleTeaserCard
-                        beitrag={beitrag}
-                        showTopBadge={idx < 2}
-                        getDisplayViews={getDisplayViews}
-                      />
-                    </li>
-                  ))}
-                </ul>
-              )}
+                {gridBeitraege.length === 0 ? (
+                  <p
+                    className="mx-auto mt-4 rounded-2xl border border-dashed border-neutral-200 p-6 text-center text-sm text-neutral-600 sm:p-8"
+                    style={{ backgroundColor: CARD_CANVAS }}
+                  >
+                    Keine Artikel für diese Auswahl. Anderes Thema wählen oder Suchbegriff anpassen.
+                  </p>
+                ) : (
+                  <ul className="mx-auto mt-4 grid w-full max-w-[min(100%,62rem)] grid-cols-2 justify-items-center gap-x-3 gap-y-6 sm:gap-x-4 md:grid-cols-3 md:gap-y-7 lg:grid-cols-4 lg:gap-x-5 lg:gap-y-8 xl:gap-x-6">
+                    {gridBeitraege.map((beitrag, idx) => (
+                      <li key={beitrag.slug} className="min-h-0 w-full max-w-[15.5rem] justify-self-center sm:max-w-none">
+                        <RatgeberArticleTeaserCard
+                          beitrag={beitrag}
+                          showTopBadge={idx < 2}
+                          getDisplayViews={getDisplayViews}
+                        />
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
             </div>
 
             <aside
-              className="w-full shrink-0 border border-neutral-200/80 bg-white/90 p-4 shadow-sm sm:p-4 lg:sticky lg:top-24 lg:w-[15rem] lg:max-w-[15rem] xl:w-[16rem] xl:max-w-[16rem]"
+              className="w-full shrink-0 border border-neutral-200/80 bg-white/90 p-4 shadow-sm sm:p-4 lg:sticky lg:top-24 lg:ml-auto lg:w-[min(18rem,calc(100vw-2rem))] lg:max-w-[18rem] lg:flex-shrink-0 lg:self-start"
               style={{ borderRadius: "0.85rem" }}
               aria-labelledby="ratgeber-beliebt-heading"
             >
@@ -508,7 +508,7 @@ export function RatgeberHub(props?: RatgeberHubProps) {
                   <li key={b.slug}>
                     <Link
                       href={`/ratgeber/${b.slug}`}
-                      className="group flex items-start gap-2 rounded-lg py-1 pr-1 transition hover:bg-[#F2F9FA]"
+                      className="group flex items-center gap-2.5 rounded-lg py-1.5 pr-1 transition hover:bg-[#F2F9FA]"
                     >
                       <span
                         className="flex h-[1.625rem] min-w-[1.625rem] shrink-0 items-center justify-center rounded text-[0.65rem] font-extrabold leading-none text-white"
@@ -516,15 +516,6 @@ export function RatgeberHub(props?: RatgeberHubProps) {
                         aria-hidden
                       >
                         {i + 1}
-                      </span>
-                      <span className="relative block h-[3.85rem] w-[4.05rem] shrink-0 overflow-hidden rounded-md shadow-sm ring-1 ring-neutral-100" style={{ backgroundColor: CARD_CANVAS }}>
-                        <Image
-                          src={ratgeberHubCardImage(b.slug)}
-                          alt=""
-                          fill
-                          className="object-contain object-center"
-                          sizes="128px"
-                        />
                       </span>
                       <div className="min-w-0 flex-1">
                         <span className="line-clamp-4 text-left text-[0.75rem] font-extrabold leading-snug text-[#0F4F68] group-hover:underline sm:text-[0.8rem]">
