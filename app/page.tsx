@@ -137,7 +137,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="relative z-20 mt-0 w-full bg-[#F2F9FA] px-4 pt-[1.35rem] pb-8 sm:px-6 sm:pt-[2rem] sm:pb-[2.4rem] lg:px-[var(--ahs-page-gutter)]">
+      <section className="relative z-20 mt-0 w-full bg-[#FAFBFC] px-4 pt-[1.35rem] pb-8 sm:px-6 sm:pt-[2rem] sm:pb-[2.4rem] lg:px-[var(--ahs-page-gutter)]">
         <svg
           className="pointer-events-none absolute left-0 top-0 h-12 w-full -translate-y-[68%] sm:h-16"
           viewBox="0 0 1200 120"
@@ -145,7 +145,7 @@ export default function HomePage() {
           fill="none"
           aria-hidden
         >
-          <path d={STARTSEITE_LEISTUNGEN_BOGEN_D} fill="#F2F9FA" />
+          <path d={STARTSEITE_LEISTUNGEN_BOGEN_D} fill="#FAFBFC" />
         </svg>
         <div className="mx-auto w-full max-w-6xl">
           <LeistungenKachelGrid
