@@ -418,8 +418,7 @@ export function RatgeberHub(props?: RatgeberHubProps) {
             aria-expanded={mobileTopicsOpen}
             aria-controls="ratgeber-mobile-themen-panel"
             onClick={() => setMobileTopicsOpen((o) => !o)}
-            className="inline-flex min-h-[48px] w-full max-w-md items-center justify-center gap-2 rounded-2xl border-2 px-6 py-3 text-sm font-bold shadow-sm transition hover:bg-neutral-50"
-            style={{ borderColor: NAVY, color: NAVY }}
+            className="inline-flex min-h-[48px] w-full max-w-md items-center justify-center gap-2 rounded-2xl border border-neutral-300 bg-white px-6 py-3 text-sm font-bold text-neutral-800 shadow-sm transition hover:border-neutral-400 hover:bg-neutral-50"
           >
             <span>{mobileTopicsOpen ? "Alle Themen schließen" : "Alle Themen öffnen"}</span>
             <svg
@@ -525,31 +524,30 @@ export function RatgeberHub(props?: RatgeberHubProps) {
             {!isCategoryFocused ? (
               <div className="space-y-4">
                 <p className="text-center text-sm font-semibold text-neutral-600 sm:text-base">Themen wählen</p>
-                <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-4">
-                  {CATEGORY_ORDER.map((id) => (
-                    <li key={id} className="aspect-square min-h-0">
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setActiveCategory(id);
-                          scrollToAlle();
-                        }}
-                        className="flex h-full w-full flex-col items-center justify-center gap-2 rounded-2xl border-2 border-[#0F4F68]/12 bg-gradient-to-br from-white via-[#FAFCFE] to-[#E8F2F6] p-3 text-center shadow-[0_10px_36px_-18px_rgba(15,79,104,0.35)] ring-1 ring-[#0F4F68]/8 transition hover:-translate-y-0.5 hover:border-[#0F4F68]/28 hover:shadow-[0_16px_44px_-16px_rgba(15,79,104,0.38)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68] focus-visible:ring-offset-2 sm:gap-3 sm:p-4"
-                        style={{ color: NAVY }}
-                      >
-                        <span
-                          className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border bg-white/90 text-[#0F4F68] shadow-inner sm:h-14 sm:w-14"
-                          style={{ borderColor: `${NAVY}22` }}
+                <div className="flex w-full justify-center">
+                  <ul className="grid w-full max-w-md grid-cols-2 gap-3 justify-items-center sm:max-w-2xl sm:grid-cols-3 sm:gap-4 lg:max-w-4xl lg:grid-cols-4">
+                    {CATEGORY_ORDER.map((id) => (
+                      <li key={id} className="aspect-square w-full max-w-[10.25rem] min-w-0 sm:max-w-[11rem]">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setActiveCategory(id);
+                            scrollToAlle();
+                          }}
+                          className="flex h-full w-full flex-col items-center justify-center gap-2 rounded-2xl border border-neutral-200/95 bg-gradient-to-br from-white to-neutral-50/90 p-3 text-center shadow-sm transition hover:-translate-y-0.5 hover:border-neutral-300 hover:shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-neutral-400/40 focus-visible:ring-offset-2 sm:gap-3 sm:p-4"
+                          style={{ color: NAVY }}
                         >
-                          <TopicIcon kind={id} />
-                        </span>
-                        <span className="line-clamp-3 text-[0.7rem] font-bold leading-tight sm:text-xs">
-                          {RATGEBER_CATEGORY_LABELS[id]}
-                        </span>
-                      </button>
-                    </li>
-                  ))}
-                </ul>
+                          <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-neutral-200/90 bg-white text-[#0F4F68] shadow-inner sm:h-14 sm:w-14">
+                            <TopicIcon kind={id} />
+                          </span>
+                          <span className="line-clamp-3 text-[0.7rem] font-bold leading-tight sm:text-xs">
+                            {RATGEBER_CATEGORY_LABELS[id]}
+                          </span>
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
               </div>
             ) : null}
 
@@ -570,7 +568,7 @@ export function RatgeberHub(props?: RatgeberHubProps) {
                   <select
                     value={sortMode}
                     onChange={(e) => setSortMode(e.target.value as SortMode)}
-                    className="rounded-xl border border-neutral-300 bg-white py-2.5 pl-3 pr-9 text-sm font-semibold text-neutral-800 shadow-sm outline-none focus:border-[#0F4F68]/40 focus:ring-2 focus:ring-[#0F4F68]/15 sm:text-base"
+                    className="rounded-xl border border-neutral-300 bg-white py-2.5 pl-3 pr-9 text-sm font-semibold text-neutral-800 shadow-sm outline-none focus:border-neutral-400 focus:ring-2 focus:ring-neutral-200 sm:text-base"
                   >
                     <option value="neueste">Neueste zuerst</option>
                     <option value="beliebt">Beliebteste</option>
@@ -589,55 +587,54 @@ export function RatgeberHub(props?: RatgeberHubProps) {
                 Keine Artikel für diese Auswahl. Andere Themen oder Suchbegriff probieren.
               </p>
             ) : isCategoryFocused ? (
-              <ul className="mt-8 grid grid-cols-2 gap-4 md:grid-cols-4 md:gap-5">
-                {gridBeitraege.map((beitrag, idx) => {
-                  const ik = iconCategoryForBeitrag(beitrag);
-                  return (
-                    <li key={beitrag.slug} className="aspect-square min-h-0">
-                      <Link
-                        href={`/ratgeber/${beitrag.slug}`}
-                        className="group relative flex h-full w-full flex-col overflow-hidden rounded-2xl border-2 border-[#0F4F68]/12 bg-gradient-to-br from-[#FFFCFA] via-white to-[#EEF6F9] p-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.9),0_12px_32px_-20px_rgba(15,79,104,0.45)] ring-1 ring-[#0F4F68]/10 transition hover:-translate-y-1 hover:border-[#0F4F68]/26 hover:shadow-[0_18px_44px_-18px_rgba(15,79,104,0.38)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68] focus-visible:ring-offset-2 sm:p-4"
-                        aria-labelledby={`kat-card-${beitrag.slug}-title`}
-                      >
-                        {idx < 2 ? (
-                          <span
-                            className="absolute left-2 top-2 z-10 rounded-md px-2 py-0.5 text-[0.58rem] font-bold uppercase tracking-wide text-white shadow sm:left-2.5 sm:top-2.5 sm:text-[0.62rem]"
-                            style={{ backgroundColor: ORANGE }}
-                          >
-                            TOP THEMA
-                          </span>
-                        ) : null}
-                        <div className="flex min-h-[5rem] flex-1 flex-col items-center justify-center rounded-xl bg-white/85 p-3 shadow-inner ring-1 ring-[#0F4F68]/10 sm:min-h-[6rem]">
-                          <span
-                            className="text-[#0F4F68] transition-transform group-hover:scale-105 [&>svg]:h-9 [&>svg]:w-9 sm:[&>svg]:h-11 sm:[&>svg]:w-11"
-                            aria-hidden
-                          >
-                            <TopicIcon kind={ik} />
-                          </span>
-                        </div>
-                        <div className="mt-3 flex min-h-0 flex-1 flex-col">
-                          <span
-                            id={`kat-card-${beitrag.slug}-title`}
-                            className="line-clamp-4 text-center text-[0.72rem] font-bold leading-snug tracking-tight sm:text-sm"
-                            style={{ color: NAVY }}
-                          >
-                            {beitrag.title}
-                          </span>
-                          <span className="mt-auto flex flex-wrap items-center justify-center gap-x-1.5 gap-y-0.5 pt-2 text-center text-[0.62rem] text-neutral-600 sm:text-[0.7rem]">
-                            <EyeIcon className="h-3 w-3 shrink-0 opacity-80" aria-hidden />
-                            <span>{getDisplayViews(beitrag).toLocaleString("de-DE")}</span>
-                            <span className="text-neutral-300" aria-hidden>
-                              ·
+              <div className="mt-8 flex w-full justify-center">
+                <ul className="grid w-full max-w-md grid-cols-2 gap-4 justify-items-center sm:max-w-3xl md:max-w-5xl md:grid-cols-4 md:gap-5">
+                  {gridBeitraege.map((beitrag, idx) => {
+                    const ik = iconCategoryForBeitrag(beitrag);
+                    return (
+                      <li key={beitrag.slug} className="aspect-square w-full max-w-[11rem] min-h-0 md:max-w-[13rem]">
+                        <Link
+                          href={`/ratgeber/${beitrag.slug}`}
+                          className="group relative flex h-full w-full flex-col overflow-hidden rounded-2xl border border-neutral-200/95 bg-gradient-to-br from-white to-neutral-50/80 p-3 shadow-sm transition hover:-translate-y-0.5 hover:border-neutral-300 hover:shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-neutral-400/40 focus-visible:ring-offset-2 sm:p-4"
+                          aria-labelledby={`kat-card-${beitrag.slug}-title`}
+                        >
+                          {idx < 2 ? (
+                            <span className="absolute left-2 top-2 z-10 rounded-md bg-neutral-700/90 px-2 py-0.5 text-[0.58rem] font-bold uppercase tracking-wide text-white shadow-sm sm:left-2.5 sm:top-2.5 sm:text-[0.62rem]">
+                              TOP THEMA
                             </span>
-                            <ClockIcon className="h-3 w-3 shrink-0 opacity-80" aria-hidden />
-                            <span>{beitrag.readMinutes} Min.</span>
-                          </span>
-                        </div>
-                      </Link>
-                    </li>
-                  );
-                })}
-              </ul>
+                          ) : null}
+                          <div className="flex min-h-[5rem] flex-1 flex-col items-center justify-center rounded-xl border border-neutral-100 bg-white/90 p-3 shadow-inner sm:min-h-[6rem]">
+                            <span
+                              className="text-[#0F4F68] transition-transform group-hover:scale-105 [&>svg]:h-9 [&>svg]:w-9 sm:[&>svg]:h-11 sm:[&>svg]:w-11"
+                              aria-hidden
+                            >
+                              <TopicIcon kind={ik} />
+                            </span>
+                          </div>
+                          <div className="mt-3 flex min-h-0 flex-1 flex-col">
+                            <span
+                              id={`kat-card-${beitrag.slug}-title`}
+                              className="line-clamp-4 text-center text-[0.72rem] font-bold leading-snug tracking-tight sm:text-sm"
+                              style={{ color: NAVY }}
+                            >
+                              {beitrag.title}
+                            </span>
+                            <span className="mt-auto flex flex-wrap items-center justify-center gap-x-1.5 gap-y-0.5 pt-2 text-center text-[0.62rem] text-neutral-600 sm:text-[0.7rem]">
+                              <EyeIcon className="h-3 w-3 shrink-0 opacity-80" aria-hidden />
+                              <span>{getDisplayViews(beitrag).toLocaleString("de-DE")}</span>
+                              <span className="text-neutral-300" aria-hidden>
+                                ·
+                              </span>
+                              <ClockIcon className="h-3 w-3 shrink-0 opacity-80" aria-hidden />
+                              <span>{beitrag.readMinutes} Min.</span>
+                            </span>
+                          </div>
+                        </Link>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </div>
             ) : (
               <ul className="mt-8 grid gap-5 sm:grid-cols-2 sm:gap-6 xl:grid-cols-3 xl:gap-7">
                 {gridBeitraege.map((beitrag) => {
@@ -646,12 +643,11 @@ export function RatgeberHub(props?: RatgeberHubProps) {
                     <li key={beitrag.slug}>
                       <Link
                         href={`/ratgeber/${beitrag.slug}`}
-                        className="group flex h-full flex-col rounded-2xl border border-black/[0.08] bg-white p-5 shadow-[0_8px_28px_-14px_rgba(15,79,104,0.22)] transition hover:-translate-y-0.5 hover:shadow-[0_14px_36px_-16px_rgba(15,79,104,0.28)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68] focus-visible:ring-offset-2 sm:p-6"
+                        className="group flex h-full flex-col rounded-2xl border border-neutral-200/90 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:border-neutral-300 hover:shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-neutral-400/50 focus-visible:ring-offset-2 sm:p-6"
                       >
                         <div className="flex items-start gap-3">
                           <span
-                            className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border bg-[#FAFBFC]"
-                            style={{ borderColor: `${NAVY}18`, color: NAVY }}
+                            className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border border-neutral-200 bg-[#FAFBFC] text-[#0F4F68]"
                             aria-hidden
                           >
                             <TopicIcon kind={ik} />
@@ -695,29 +691,29 @@ export function RatgeberHub(props?: RatgeberHubProps) {
         </div>
 
         <aside className="flex min-h-0 w-full flex-col lg:col-start-2 lg:row-span-1 lg:h-full lg:justify-self-stretch">
-          <div className="relative flex h-full min-h-[min(100%,28rem)] flex-1 flex-col overflow-hidden rounded-3xl border-2 border-[#0F4F68]/12 bg-gradient-to-b from-white via-[#FAFCFE] to-[#F0F5F8] p-7 shadow-[0_20px_56px_-24px_rgba(15,79,104,0.38),inset_0_1px_0_rgba(255,255,255,0.95)] ring-1 ring-[#0F4F68]/8 sm:p-9">
+          <div className="relative flex h-full min-h-[min(100%,24rem)] flex-1 flex-col overflow-hidden rounded-2xl border border-neutral-200/90 bg-gradient-to-b from-white to-neutral-50/50 p-5 shadow-md sm:p-6">
             <div
               aria-hidden
-              className="pointer-events-none absolute inset-x-0 top-0 h-28 bg-gradient-to-b from-[#0F4F68]/[0.06] to-transparent"
+              className="pointer-events-none absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-neutral-100/40 to-transparent"
             />
-            <div className="relative shrink-0 border-b border-neutral-200/70 pb-5 text-center sm:pb-6">
-              <div className="mx-auto mb-3 h-1 w-14 rounded-full bg-gradient-to-r from-transparent via-[#F78F2E] to-transparent opacity-95" />
+            <div className="relative shrink-0 border-b border-neutral-200/80 pb-4 text-center sm:pb-5">
+              <div className="mx-auto mb-3 h-px w-12 rounded-full bg-neutral-300/90" />
               <h2 className="text-xl font-bold tracking-tight sm:text-2xl" style={{ color: NAVY }}>
                 Beliebte Artikel
               </h2>
-              <p className="mx-auto mt-2 max-w-[18rem] text-xs leading-relaxed text-neutral-600 sm:text-sm">
+              <p className="mx-auto mt-1.5 max-w-[18rem] text-xs leading-relaxed text-neutral-600 sm:text-sm">
                 Nach Aufrufen – meist gelesen
               </p>
             </div>
-            <ol className="relative mt-6 flex flex-1 flex-col justify-between gap-0 sm:mt-7">
+            <ol className="relative mt-5 flex flex-1 flex-col justify-between gap-0 sm:mt-6">
               {beliebtTop.map((beitrag, i) => (
                 <li key={beitrag.slug} className="min-h-0 shrink-0">
                   <Link
                     href={`/ratgeber/${beitrag.slug}`}
-                    className="group flex items-start gap-3 rounded-2xl border border-transparent px-2 py-2.5 transition hover:border-[#0F4F68]/10 hover:bg-white/90 hover:shadow-sm sm:gap-3.5 sm:px-2.5 sm:py-3"
+                    className="group flex items-start gap-3 rounded-xl border border-transparent px-1.5 py-2 transition hover:border-neutral-200 hover:bg-neutral-50/90 sm:gap-3.5 sm:px-2 sm:py-2.5"
                   >
                     <span
-                      className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-sm font-bold text-white shadow-md ring-2 ring-white/40"
+                      className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-xs font-bold text-white shadow-sm ring-1 ring-black/5"
                       style={{ backgroundColor: i === 0 ? ORANGE : NAVY }}
                     >
                       {i + 1}
@@ -744,15 +740,14 @@ export function RatgeberHub(props?: RatgeberHubProps) {
                 </li>
               ))}
             </ol>
-            <div className="relative mt-auto shrink-0 pt-6 sm:pt-7">
+            <div className="relative mt-auto shrink-0 pt-5 sm:pt-6">
               <button
                 type="button"
                 onClick={() => {
                   setSortMode("beliebt");
                   scrollToAlle();
                 }}
-                className="w-full rounded-2xl border-2 py-3.5 text-sm font-semibold shadow-sm transition hover:border-[#0F4F68]/50 hover:bg-white/80 sm:py-4 sm:text-base"
-                style={{ borderColor: NAVY, color: NAVY }}
+                className="w-full rounded-xl border border-neutral-300 bg-white py-3 text-sm font-semibold text-[#0F4F68] shadow-sm transition hover:border-neutral-400 hover:bg-neutral-50 sm:py-3.5 sm:text-base"
               >
                 Alle beliebten Beiträge ansehen
               </button>
