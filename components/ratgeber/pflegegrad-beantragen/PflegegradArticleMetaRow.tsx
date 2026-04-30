@@ -1,5 +1,6 @@
-import { DecorativeIcon } from "@/components/ratgeber/pflegegrad-beantragen/pflegegrad-visual-primitives";
+import { getRatgeberBeitragReadMinutes } from "@/config/ratgeber-betraege";
 import { RatgeberArticleQualityLines } from "@/components/ratgeber/RatgeberArticleQualityLines";
+import { DecorativeIcon } from "@/components/ratgeber/pflegegrad-beantragen/pflegegrad-visual-primitives";
 
 function IconClock() {
   return (
@@ -28,7 +29,7 @@ export function PflegegradArticleMetaRow() {
         </p>
         <p className="flex items-center gap-2 text-sm text-neutral-600">
           <IconClock />
-          Lesezeit: ca. 8 Minuten
+          Lesezeit: ca. {getRatgeberBeitragReadMinutes("pflegegrad-beantragen")} Minuten
         </p>
       </div>
       <RatgeberArticleQualityLines />

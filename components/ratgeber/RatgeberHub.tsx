@@ -476,7 +476,7 @@ export function RatgeberHub(props?: RatgeberHubProps) {
                     Keine Artikel für diese Auswahl. Anderes Thema wählen oder Suchbegriff anpassen.
                   </p>
                 ) : (
-                  <ul className="mx-auto mt-4 grid w-full grid-cols-2 gap-x-4 gap-y-7 sm:gap-x-5 md:grid-cols-3 md:gap-y-8 lg:gap-x-5 lg:gap-y-10 xl:gap-x-6">
+                  <ul className="mx-auto mt-4 grid w-full grid-cols-2 gap-x-4 gap-y-7 sm:gap-x-5 md:grid-cols-3 md:gap-y-8 lg:grid-cols-4 lg:gap-x-5 lg:gap-y-10 xl:gap-x-6">
                     {gridBeitraege.map((beitrag, idx) => (
                       <li key={beitrag.slug} className="min-h-0 w-full justify-self-stretch">
                         <RatgeberArticleTeaserCard

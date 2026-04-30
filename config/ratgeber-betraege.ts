@@ -37,6 +37,12 @@ export function readMinutesFromWordCount(words: number): number {
   return Math.max(1, Math.round(words / RATGEBER_WORDS_PER_MINUTE));
 }
 
+/** Einheitliche Lesezeit für Übersicht, Karten und Artikel-Meta (Quelle: `RATGEBER_BEITRAEGE`). */
+export function getRatgeberBeitragReadMinutes(slug: string): number {
+  const b = RATGEBER_BEITRAEGE.find((x) => x.slug === slug);
+  return b?.readMinutes ?? readMinutesFromWordCount(2000);
+}
+
 export const RATGEBER_CATEGORY_LABELS: Record<RatgeberCategoryId, string> = {
   pflegegrad_leistungen: "Pflegegrad & Pflegeleistungen",
   haushalt_betreuung: "Haushaltshilfe & Betreuung",
@@ -48,10 +54,40 @@ export const RATGEBER_CATEGORY_LABELS: Record<RatgeberCategoryId, string> = {
   antraege_checklisten_downloads: "Anträge, Checklisten & Downloads",
 };
 
-const PFLEGEGRAD_BEANTRAGEN_WORDS = 3000;
+const PFLEGEGRAD_BEANTRAGEN_WORDS = 1600;
 const PFLEGEGRAD1_WORDS = 3000;
 
+const PLATZHALTER_WORDS = 200;
+
 export const RATGEBER_BEITRAEGE: RatgeberBeitragMeta[] = [
+  {
+    slug: "platzhalter-layout-a",
+    title: "Demo-Ratgeber Platzhalter A (Layout-Test)",
+    excerpt:
+      "Interner Platzhalter zum Prüfen der Ratgeber-Karten – z. B. vier Spalten nebeneinander. Kein inhaltlicher Beitrag.",
+    image: "/images/Ratgeber/ratgeber.webp",
+    imageAlt: "Platzhalter-Grafik – nur Layout-Test",
+    views: 48,
+    tags: ["Platzhalter", "Layout", "Demo"],
+    categories: ["pflegegrad_leistungen"],
+    approxWordCount: PLATZHALTER_WORDS,
+    readMinutes: readMinutesFromWordCount(PLATZHALTER_WORDS),
+    publishedAt: "2026-04-30",
+  },
+  {
+    slug: "platzhalter-layout-b",
+    title: "Demo-Ratgeber Platzhalter B (Layout-Test)",
+    excerpt:
+      "Zweiter Platzhalter mit gleicher Kartenoptik für Raster-Vorschauen. Bitte vor Go-Live entfernen oder ersetzen.",
+    image: "/images/Ratgeber/ratgeber.webp",
+    imageAlt: "Platzhalter-Grafik – nur Layout-Test",
+    views: 46,
+    tags: ["Platzhalter", "Layout", "Demo"],
+    categories: ["pflegegrad_leistungen"],
+    approxWordCount: PLATZHALTER_WORDS,
+    readMinutes: readMinutesFromWordCount(PLATZHALTER_WORDS),
+    publishedAt: "2026-04-30",
+  },
   {
     slug: "pflegegrad-1",
     title: "Pflegegrad 1: Voraussetzungen, Leistungen und Tipps für Angehörige",
