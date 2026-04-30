@@ -1,6 +1,5 @@
 import Link from "next/link";
 
-import { RatgeberArticleReadProgressStack } from "@/components/ratgeber/RatgeberArticleReadProgress";
 import { RatgeberBeratungCtaButton, RatgeberSidebarBeratungTeaser } from "@/components/ratgeber/RatgeberBeratungDialog";
 import { PflegegeldrechnerCalculator } from "@/components/ratgeber/pflegegeldrechner/PflegegeldrechnerCalculator";
 import { PFLEGEGELDRECHNER_FAQ_ITEMS } from "@/components/ratgeber/pflegegeldrechner/pflegegeldrechner-faq-data";
@@ -43,15 +42,6 @@ export function PflegegeldrechnerArticle() {
           </ol>
         </nav>
       </details>
-
-      <div className="mb-11 space-y-4 lg:hidden">
-        <RatgeberSidebarBeratungTeaser
-          supportLine="Fragen zu Pflegegeld, Pflegegrad oder Widerspruch?"
-          preselectedServices={["pflegegrad_beantrag_widerspruch"]}
-          contextNote="Ratgeber: Pflegegeldrechner (mobil)"
-        />
-        <RatgeberArticleReadProgressStack sectionIds={PFLEGEGELDRECHNER_TOC_ENTRIES.map((e) => e.id)} />
-      </div>
 
       <PflegegeldrechnerCalculator className="mb-12" />
 
@@ -231,6 +221,14 @@ export function PflegegeldrechnerArticle() {
           </li>
         </ul>
       </section>
+
+      <div className="mt-12 lg:hidden">
+        <RatgeberSidebarBeratungTeaser
+          supportLine="Fragen zu Pflegegeld, Pflegegrad oder Widerspruch?"
+          preselectedServices={["pflegegrad_beantrag_widerspruch"]}
+          contextNote="Ratgeber: Pflegegeldrechner (mobil)"
+        />
+      </div>
     </div>
   );
 }

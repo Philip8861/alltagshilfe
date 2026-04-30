@@ -1,6 +1,5 @@
 import Link from "next/link";
 
-import { RatgeberArticleReadProgressStack } from "@/components/ratgeber/RatgeberArticleReadProgress";
 import { RatgeberSidebarBeratungTeaser } from "@/components/ratgeber/RatgeberBeratungDialog";
 import { PflegegradChecklistSection } from "@/components/ratgeber/pflegegrad-beantragen/PflegegradChecklistSection";
 import { PflegegradFaqAccordion } from "@/components/ratgeber/pflegegrad-beantragen/PflegegradFaqAccordion";
@@ -55,15 +54,6 @@ export function PflegegradBeantragenArticle() {
           </ol>
         </nav>
       </details>
-
-      <div className="mb-11 space-y-4 lg:hidden">
-        <RatgeberSidebarBeratungTeaser
-          supportLine="Sie möchten Unterstützung beim Pflegegrad-Antrag?"
-          preselectedServices={["pflegegrad_beantrag_widerspruch"]}
-          contextNote="Ratgeber: Pflegegrad beantragen (mobil)"
-        />
-        <RatgeberArticleReadProgressStack sectionIds={PFLEGEGRAD_ARTICLE_TOC_ENTRIES.map((e) => e.id)} />
-      </div>
 
       <ArticleSectionHeading sectionNum="01" id="kurzantwort" isFirst heading="Kurzantwort">
         <PflegegradQuickAnswerBox>
@@ -449,6 +439,14 @@ export function PflegegradBeantragenArticle() {
 
       <PflegegradQuellenSection />
       <PflegegradRelatedSection />
+
+      <div className="mt-14 lg:hidden">
+        <RatgeberSidebarBeratungTeaser
+          supportLine="Sie möchten Unterstützung beim Pflegegrad-Antrag?"
+          preselectedServices={["pflegegrad_beantrag_widerspruch"]}
+          contextNote="Ratgeber: Pflegegrad beantragen (mobil)"
+        />
+      </div>
     </div>
   );
 }
