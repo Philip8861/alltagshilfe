@@ -21,12 +21,12 @@ export function VerwandteRatgeberBeitraege({ currentSlug }: Props) {
       <p className="mt-2 max-w-2xl text-sm text-neutral-600 sm:text-base">
         Weitere Ratgeber-Themen, die gut zu diesem Beitrag passen.
       </p>
-      <ul className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
+      <ul className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 sm:items-stretch">
         {verwandte.map((beitrag) => (
-          <li key={beitrag.slug}>
+          <li key={beitrag.slug} className="flex min-h-0 sm:h-full">
             <Link
               href={`/ratgeber/${beitrag.slug}`}
-              className="group flex gap-4 rounded-xl border border-[#0F4F68]/10 bg-white/90 p-4 shadow-sm transition hover:-translate-y-0.5 hover:border-[#0F4F68]/25 hover:shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68] focus-visible:ring-offset-2"
+              className="group flex min-h-[11.5rem] w-full items-start gap-4 rounded-xl border border-[#0F4F68]/10 bg-white/90 p-4 shadow-sm transition hover:-translate-y-0.5 hover:border-[#0F4F68]/25 hover:shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68] focus-visible:ring-offset-2 sm:h-full sm:min-h-0"
             >
               <div className="relative h-24 w-32 shrink-0 overflow-hidden rounded-lg">
                 <Image
@@ -37,10 +37,12 @@ export function VerwandteRatgeberBeitraege({ currentSlug }: Props) {
                   sizes="128px"
                 />
               </div>
-              <div className="min-w-0 flex-1">
+              <div className="flex min-h-0 min-w-0 flex-1 flex-col">
                 <p className="text-xs font-semibold uppercase tracking-wide text-[#0F4F68]/75">Ratgeber</p>
-                <p className="mt-1 text-base font-bold text-[#0F4F68] group-hover:underline">{beitrag.title}</p>
-                <p className="mt-2 line-clamp-2 text-sm text-neutral-600">{beitrag.excerpt}</p>
+                <p className="mt-1 line-clamp-3 text-base font-bold leading-snug text-[#0F4F68] group-hover:underline">
+                  {beitrag.title}
+                </p>
+                <p className="mt-2 line-clamp-2 text-sm text-neutral-600 sm:mt-auto sm:pt-2">{beitrag.excerpt}</p>
               </div>
             </Link>
           </li>
