@@ -90,11 +90,11 @@ export default function Pflegegrad1RatgeberPage() {
           <Pflegegrad1RatgeberHero />
 
           <div className="mt-10 flex flex-col gap-10 lg:mt-12 lg:flex-row lg:items-stretch lg:gap-12">
-            <aside className="hidden shrink-0 lg:block lg:w-[240px] lg:max-w-[240px]">
-              <div className="sticky top-24 z-10 flex max-h-[calc(100dvh-5.5rem)] flex-col gap-6 self-start overflow-y-auto overscroll-contain py-1 [-webkit-overflow-scrolling:touch] [scrollbar-gutter:stable]">
+            <aside className="hidden shrink-0 lg:block lg:w-[280px] lg:max-w-[280px]">
+              <div className="sticky top-24 z-10 flex max-h-[calc(100dvh-5.5rem)] min-h-0 flex-col gap-5 self-start">
                 <nav
                   aria-label="Inhalt"
-                  className="relative overflow-hidden rounded-2xl border border-neutral-200/95 bg-white px-4 py-4 shadow-[0_2px_16px_-10px_rgba(15,79,104,0.1)] sm:px-5 sm:py-5"
+                  className="relative shrink-0 overflow-hidden rounded-2xl border border-neutral-200/95 bg-white px-4 py-4 shadow-[0_2px_16px_-10px_rgba(15,79,104,0.1)] sm:px-5 sm:py-5"
                 >
                   <div aria-hidden className="absolute inset-x-0 top-0 h-[3px] bg-gradient-to-r from-[#0F4F68]/45 to-[#F78F2E]/35" />
                   <p className="text-xs font-semibold uppercase tracking-[0.14em] text-neutral-500">Inhalt</p>
@@ -112,12 +112,14 @@ export default function Pflegegrad1RatgeberPage() {
                   </ol>
                 </nav>
 
-                <RatgeberSidebarBeratungTeaser
-                  supportLine="Fragen zu Pflegegrad 1, Entlastungsbetrag oder Antrag?"
-                  preselectedServices={["pflegegrad_beantrag_widerspruch"]}
-                  contextNote="Ratgeber: Pflegegrad 1"
-                  articleSectionIds={PFLEGEGRAD1_ARTICLE_TOC_ENTRIES.map((e) => e.id)}
-                />
+                <div className="min-h-0 flex-1 overflow-y-auto overflow-x-hidden overscroll-contain [-webkit-overflow-scrolling:touch] [scrollbar-gutter:stable] pr-0.5">
+                  <RatgeberSidebarBeratungTeaser
+                    supportLine="Fragen zu Pflegegrad 1, Entlastungsbetrag oder Antrag?"
+                    preselectedServices={["pflegegrad_beantrag_widerspruch"]}
+                    contextNote="Ratgeber: Pflegegrad 1"
+                    articleSectionIds={PFLEGEGRAD1_ARTICLE_TOC_ENTRIES.map((e) => e.id)}
+                  />
+                </div>
               </div>
             </aside>
 

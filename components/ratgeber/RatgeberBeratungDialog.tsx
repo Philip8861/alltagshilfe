@@ -471,11 +471,11 @@ type SidebarTeaserIconId = "shop" | "box" | "beratung";
 
 function SidebarTeaserIconMark({ id }: { id: SidebarTeaserIconId }) {
   const boxClass =
-    "flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border-2 border-[#F78F2E]/40 bg-gradient-to-br from-[#fff8f2] to-white shadow-[0_6px_16px_-8px_rgba(247,143,46,0.55)]";
+    "flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-[#F2F9FA] via-white to-[#fff8f2] text-[#0F4F68] shadow-[0_8px_28px_-14px_rgba(15,79,104,0.4)] ring-1 ring-[#0F4F68]/10";
   return (
     <span className={boxClass} aria-hidden>
       {id === "shop" ? (
-        <svg className="h-6 w-6 text-[#0F4F68]" viewBox="0 0 24 24" fill="none" aria-hidden>
+        <svg className="h-8 w-8" viewBox="0 0 24 24" fill="none" aria-hidden>
           <path
             stroke="currentColor"
             strokeWidth="2"
@@ -485,7 +485,7 @@ function SidebarTeaserIconMark({ id }: { id: SidebarTeaserIconId }) {
           />
         </svg>
       ) : id === "box" ? (
-        <svg className="h-6 w-6 text-[#0F4F68]" viewBox="0 0 24 24" fill="none" aria-hidden>
+        <svg className="h-8 w-8" viewBox="0 0 24 24" fill="none" aria-hidden>
           <path
             stroke="currentColor"
             strokeWidth="2"
@@ -502,7 +502,7 @@ function SidebarTeaserIconMark({ id }: { id: SidebarTeaserIconId }) {
           />
         </svg>
       ) : (
-        <svg className="h-6 w-6 text-[#0F4F68]" viewBox="0 0 24 24" fill="none" aria-hidden>
+        <svg className="h-8 w-8" viewBox="0 0 24 24" fill="none" aria-hidden>
           <path
             stroke="currentColor"
             strokeWidth="2"
@@ -520,11 +520,8 @@ type SidebarTeaserSlide =
   | { kind: "link"; icon: SidebarTeaserIconId; headline: string; body: string; href: string; ctaLabel: string; dotLabel: string }
   | { kind: "beratung"; icon: SidebarTeaserIconId; headline: string; body: string; ctaLabel: string; dotLabel: string };
 
-const sidebarLinkCtaClass =
-  "mt-4 inline-flex min-h-[2.75rem] w-full items-center justify-center rounded-lg border border-[#F78F2E] bg-[#F78F2E] px-3 text-[0.9rem] font-semibold text-white transition-all duration-300 hover:bg-[#e8862a] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68] focus-visible:ring-offset-2";
-
-const sidebarBeratungButtonClass =
-  "mt-4 inline-flex min-h-[2.75rem] w-full items-center justify-center rounded-lg border border-[#F78F2E] bg-[#F78F2E] px-3 text-[0.9rem] font-semibold text-white transition-all duration-300 hover:bg-[#e8862a] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68] focus-visible:ring-offset-2";
+const sidebarPromoCtaClass =
+  "mt-5 inline-flex min-h-[3rem] w-full items-center justify-center rounded-xl bg-[#F78F2E] px-4 text-[0.95rem] font-bold text-white shadow-[0_10px_28px_-10px_rgba(247,143,46,0.65)] transition hover:bg-[#e8862a] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68] focus-visible:ring-offset-2";
 
 /** Sticky-Sidebar-Kachel „Persönliche Beratung“ (Desktop): rotiert Shop, Pflegebox und Beratungs-Popup. */
 export function RatgeberSidebarBeratungTeaser({
@@ -618,69 +615,100 @@ export function RatgeberSidebarBeratungTeaser({
   const slide = slides[adIndex]!;
 
   return (
-    <div className="relative overflow-hidden rounded-2xl border-2 border-[#F78F2E]/30 bg-[linear-gradient(165deg,#fffdfb_0%,#ffffff_55%,#f8fcfd_100%)] px-4 py-4 shadow-[0_12px_36px_-14px_rgba(15,79,104,0.28)] ring-1 ring-[#0F4F68]/8 sm:px-5 sm:py-5">
-      <div aria-hidden className="absolute inset-x-0 top-0 h-[4px] bg-gradient-to-r from-[#F78F2E] via-[#ffb366] to-[#0F4F68]/40" />
-      <p
-        className={cn(
-          "text-[0.65rem] font-bold uppercase tracking-[0.12em] transition-all duration-300 ease-out",
-          eyebrowGlow && adIndex === 2
-            ? "scale-[1.03] text-[#F78F2E] drop-shadow-[0_0_14px_rgba(247,143,46,0.9)]"
-            : "text-[#0F4F68]/65",
-        )}
-      >
-        Persönliche Beratung
-      </p>
-      {articleSectionIds && articleSectionIds.length > 0 ? (
-        <RatgeberArticleReadProgressBar
-          sectionIds={articleSectionIds}
-          compact
-          className="mt-3 border-b border-neutral-200/80 pb-3"
-        />
-      ) : null}
+    <div className="relative overflow-hidden rounded-3xl border border-[#0F4F68]/10 bg-white px-5 pb-5 pt-5 shadow-[0_16px_48px_-20px_rgba(15,79,104,0.38)] sm:px-6 sm:pb-6 sm:pt-6">
       <div
-        className="mt-3 min-h-[9.25rem] sm:min-h-[8.75rem]"
+        aria-hidden
+        className="pointer-events-none absolute inset-0 bg-[radial-gradient(120%_90%_at_100%_-10%,rgba(247,143,46,0.14)_0%,transparent_55%),radial-gradient(100%_70%_at_-15%_110%,rgba(15,79,104,0.07)_0%,transparent_52%)]"
+      />
+      <div
+        aria-hidden
+        className="absolute inset-x-0 top-0 h-[3px] bg-gradient-to-r from-[#0F4F68] via-[#0a3d52] to-[#F78F2E]"
+      />
+
+      <div className="relative flex items-start justify-between gap-3">
+        <p
+          className={cn(
+            "text-[0.68rem] font-extrabold uppercase tracking-[0.14em] transition-all duration-300 ease-out",
+            eyebrowGlow && adIndex === 2
+              ? "text-[#F78F2E] drop-shadow-[0_0_12px_rgba(247,143,46,0.75)]"
+              : "text-[#0F4F68]/55",
+          )}
+        >
+          Persönliche Beratung
+        </p>
+        <span
+          className="shrink-0 rounded-full bg-[#F2F9FA] px-2.5 py-1 text-[0.65rem] font-extrabold tabular-nums text-[#0F4F68]/70 ring-1 ring-[#0F4F68]/8"
+          aria-hidden
+        >
+          {adIndex + 1}/{slides.length}
+        </span>
+      </div>
+
+      <div
+        className="relative mt-5 min-h-[12.5rem] sm:min-h-[12rem]"
         role="region"
         aria-roledescription="Karussell"
         aria-label="Wechselnde Hinweise zu Angeboten und Beratung"
       >
         <div key={adIndex} className="animate-fade-in-up">
-          <div className="flex gap-3">
+          <div className="flex gap-4">
             <SidebarTeaserIconMark id={slide.icon} />
-            <div className="min-w-0 flex-1">
-              <p className="text-sm font-semibold text-[#0F4F68]">{slide.headline}</p>
-              <p className="mt-2 text-sm leading-relaxed text-neutral-600">{slide.body}</p>
+            <div className="min-w-0 flex-1 pt-0.5">
+              <p className="text-[1.05rem] font-extrabold leading-snug tracking-tight text-[#0F4F68] sm:text-[1.12rem]">
+                {slide.headline}
+              </p>
+              <p className="mt-3 text-[0.9375rem] leading-relaxed text-neutral-600">{slide.body}</p>
             </div>
           </div>
           {slide.kind === "link" ? (
-            <Link href={slide.href} className={cn(sidebarLinkCtaClass, "mt-3")}>
+            <Link href={slide.href} className={sidebarPromoCtaClass}>
               {slide.ctaLabel}
             </Link>
           ) : (
             <button
               type="button"
               onClick={() => ctx?.open({ preselectedServices, contextNote })}
-              className={cn(sidebarBeratungButtonClass, "mt-3")}
+              className={sidebarPromoCtaClass}
             >
               {slide.ctaLabel}
             </button>
           )}
         </div>
       </div>
-      <nav className="mt-3 flex justify-center gap-2" aria-label="Hinweis auswählen">
+
+      <nav
+        className="relative mt-5 grid grid-cols-3 gap-1 rounded-2xl bg-[#F2F9FA] p-1 ring-1 ring-[#0F4F68]/6"
+        aria-label="Hinweis auswählen"
+        role="tablist"
+      >
         {slides.map((s, i) => (
           <button
             key={i}
             type="button"
+            role="tab"
             aria-label={s.dotLabel}
+            aria-selected={i === adIndex}
             aria-current={i === adIndex ? "true" : undefined}
             onClick={() => setAdIndex(i)}
             className={cn(
-              "h-2.5 w-2.5 rounded-full transition focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68] focus-visible:ring-offset-2",
-              i === adIndex ? "bg-[#F78F2E]" : "bg-neutral-300 hover:bg-neutral-400",
+              "rounded-xl py-2.5 text-center text-[0.62rem] font-extrabold uppercase tracking-[0.06em] transition focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68] focus-visible:ring-offset-2",
+              i === adIndex
+                ? "bg-white text-[#0F4F68] shadow-[0_3px_14px_-6px_rgba(15,79,104,0.28)]"
+                : "text-[#0F4F68]/45 hover:bg-white/70 hover:text-[#0F4F68]/78",
             )}
-          />
+          >
+            {i === 0 ? "Shop" : i === 1 ? "Box" : "Beratung"}
+          </button>
         ))}
       </nav>
+
+      {articleSectionIds && articleSectionIds.length > 0 ? (
+        <RatgeberArticleReadProgressBar
+          sectionIds={articleSectionIds}
+          compact
+          className="relative mt-5 border-t border-neutral-200/90 pt-4"
+        />
+      ) : null}
     </div>
   );
 }
