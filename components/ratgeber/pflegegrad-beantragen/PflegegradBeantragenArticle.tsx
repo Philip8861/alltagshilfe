@@ -58,7 +58,7 @@ export function PflegegradBeantragenArticle() {
       <div className="mb-11 lg:hidden">
         <RatgeberSidebarBeratungTeaser
           supportLine="Sie möchten Unterstützung beim Pflegegrad-Antrag?"
-          preselectedServices={["pflegeberatung"]}
+          preselectedServices={["pflegegrad_beantrag_widerspruch"]}
           contextNote="Ratgeber: Pflegegrad beantragen (mobil)"
         />
       </div>

@@ -52,7 +52,7 @@ export function Pflegegrad1Article() {
       <div className="mb-11 lg:hidden">
         <RatgeberSidebarBeratungTeaser
           supportLine="Fragen zu Pflegegrad 1, Entlastungsbetrag oder Antrag?"
-          preselectedServices={["pflegeberatung"]}
+          preselectedServices={["pflegegrad_beantrag_widerspruch"]}
           contextNote="Ratgeber: Pflegegrad 1 (mobil)"
         />
       </div>
@@ -537,7 +537,7 @@ export function Pflegegrad1Article() {
           <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
             <RatgeberBeratungCtaButton
               className="w-full sm:w-auto"
-              preselectedServices={["pflegeberatung"]}
+              preselectedServices={["pflegegrad_beantrag_widerspruch"]}
               contextNote="Ratgeber: Pflegegrad 1 – Leistungsmöglichkeiten"
             >
               Jetzt kostenlos beraten lassen

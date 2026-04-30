@@ -2,6 +2,7 @@ import type { HilfefinderServiceKey } from "@/config/hilfefinder-services";
 import type { ContactFormData } from "@/lib/validations/contact";
 
 const MAP: Record<HilfefinderServiceKey, ContactFormData["topic"]> = {
+  pflegegrad_beantrag_widerspruch: "Private Pflegeberatung",
   haushalt: "Haushaltshilfe & Betreuung",
   pflegeberatung: "Private Pflegeberatung",
   pflegebox: "Kostenfreie Pflegehilfsmittel",

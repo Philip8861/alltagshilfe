@@ -4,6 +4,7 @@ import type { Standort } from "@/config/standorte";
  * Leistungsauswahl wie im Hilfe-Finder (Startseite) – eine Quelle für alle Flows mit gleichem Angebot.
  */
 export type HilfefinderServiceKey =
+  | "pflegegrad_beantrag_widerspruch"
   | "haushalt"
   | "pflegeberatung"
   | "pflegebox"
@@ -19,6 +20,11 @@ export const HILFEFINDER_SERVICE_OPTIONEN: {
   label: string;
   verfuegbarkeit: "direkt" | "partner";
 }[] = [
+  {
+    key: "pflegegrad_beantrag_widerspruch",
+    label: "Hilfe beim Beantragen oder Widerspruch des Pflegegrads",
+    verfuegbarkeit: "direkt",
+  },
   { key: "haushalt", label: "Alltagsbegleitung & Haushaltsreinigung", verfuegbarkeit: "direkt" },
   { key: "pflegeberatung", label: "Halb-, vierteljährliche Pflegeberatung nach §37.3", verfuegbarkeit: "direkt" },
   { key: "pflegebox", label: "Kostenlose Pflegebox (Einmalhandschuhe, Händedesinfektionsmittel usw.)", verfuegbarkeit: "direkt" },

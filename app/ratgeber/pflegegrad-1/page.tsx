@@ -114,7 +114,7 @@ export default function Pflegegrad1RatgeberPage() {
 
                 <RatgeberSidebarBeratungTeaser
                   supportLine="Fragen zu Pflegegrad 1, Entlastungsbetrag oder Antrag?"
-                  preselectedServices={["pflegeberatung"]}
+                  preselectedServices={["pflegegrad_beantrag_widerspruch"]}
                   contextNote="Ratgeber: Pflegegrad 1"
                 />
               </div>

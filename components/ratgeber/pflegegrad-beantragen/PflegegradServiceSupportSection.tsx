@@ -63,7 +63,7 @@ export function PflegegradServiceSupportSection() {
 
       <RatgeberBeratungCtaButton
         className="mt-8 inline-flex min-h-[2.875rem] w-full items-center justify-center px-6 sm:w-auto"
-        preselectedServices={["pflegeberatung", "haushalt"]}
+        preselectedServices={["pflegegrad_beantrag_widerspruch", "haushalt"]}
         contextNote="Ratgeber: Pflegegrad beantragen – Wir unterstützen Sie"
       >
         Jetzt kostenlos beraten lassen

@@ -116,7 +116,7 @@ export default function PflegegradBeantragenRatgeberPage() {
 
                 <RatgeberSidebarBeratungTeaser
                   supportLine="Sie möchten Unterstützung beim Pflegegrad-Antrag?"
-                  preselectedServices={["pflegeberatung"]}
+                  preselectedServices={["pflegegrad_beantrag_widerspruch"]}
                   contextNote="Ratgeber: Pflegegrad beantragen"
                 />
               </div>
