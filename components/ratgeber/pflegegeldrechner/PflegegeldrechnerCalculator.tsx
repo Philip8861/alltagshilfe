@@ -158,16 +158,46 @@ export function PflegegeldrechnerCalculator({ className }: { className?: string 
         <p className="mx-auto max-w-xl text-[0.7rem] font-semibold uppercase tracking-[0.14em] text-[#0F4F68]/80">
           Bewilligungszeitraum
         </p>
-        <div className="mx-auto mt-3 flex max-w-xl flex-col items-start gap-2 text-left sm:flex-row sm:items-center sm:gap-3">
+        <div className="mx-auto mt-4 flex w-full max-w-xl flex-col items-center px-1">
           <input
             id="pflegegeld-eigenes-bewilligungsdatum"
             type="checkbox"
             checked={useCustomApprovalDate}
             onChange={(e) => setUseCustomApprovalDate(e.target.checked)}
-            className="mt-0.5 h-[1.125rem] w-[1.125rem] shrink-0 rounded border-neutral-300 text-[#0F4F68] focus:ring-[#0F4F68]"
+            className="peer sr-only"
           />
-          <label htmlFor="pflegegeld-eigenes-bewilligungsdatum" className="text-sm font-medium text-neutral-800">
-            Anderes Bewilligungsdatum verwenden (Kalendertag der Bewilligung wählen)
+          <label
+            htmlFor="pflegegeld-eigenes-bewilligungsdatum"
+            className={cn(
+              "flex w-full max-w-[22rem] cursor-pointer select-none flex-col items-center gap-3 rounded-2xl border px-4 py-4 text-center shadow-sm transition sm:max-w-xl sm:flex-row sm:py-3.5 sm:text-left",
+              "peer-focus-visible:outline-none peer-focus-visible:ring-2 peer-focus-visible:ring-[#0F4F68] peer-focus-visible:ring-offset-2",
+              useCustomApprovalDate
+                ? "border-[#0F4F68]/45 bg-[linear-gradient(165deg,#f2fafc_0%,#ffffff_55%)] ring-1 ring-[#0F4F68]/10"
+                : "border-neutral-200/95 bg-white hover:border-[#0F4F68]/25 hover:bg-[#fafcfc]",
+            )}
+          >
+            <span
+              aria-hidden
+              className={cn(
+                "relative inline-flex h-8 w-[3.25rem] shrink-0 rounded-full p-1 transition-colors",
+                useCustomApprovalDate ? "bg-[#0F4F68]" : "bg-neutral-300",
+              )}
+            >
+              <span
+                className={cn(
+                  "block h-6 w-6 rounded-full bg-white shadow-md transition-transform duration-200 ease-out",
+                  useCustomApprovalDate ? "translate-x-5" : "translate-x-0",
+                )}
+              />
+            </span>
+            <span className="min-w-0 flex-1">
+              <span className="block text-[0.95rem] font-bold leading-snug text-[#0F4F68]">
+                Eigenes Bewilligungsdatum
+              </span>
+              <span className="mt-1 block text-xs font-medium leading-snug text-neutral-600">
+                Kalendertag der Bewilligung wählen (statt 12 Monate ab 01.01.2026)
+              </span>
+            </span>
           </label>
         </div>
 
