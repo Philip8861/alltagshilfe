@@ -51,11 +51,12 @@ export const RATGEBER_CATEGORY_LABELS: Record<RatgeberCategoryId, string> = {
   pflegeberatung_beratungseinsaetze: "Pflegeberatung & Beratungseinsätze",
   pflegende_angehoerige: "Pflegende Angehörige",
   pflegealltag_zuhause: "Pflegealltag zu Hause",
-  antraege_checklisten_downloads: "Anträge, Checklisten & Downloads",
+  antraege_checklisten_downloads: "Anträge, Rechner & Downloads",
 };
 
 const PFLEGEGRAD_BEANTRAGEN_WORDS = 1600;
 const PFLEGEGRAD1_WORDS = 3000;
+const PFLEGEGELDRECHNER_WORDS = 520;
 
 export const RATGEBER_BEITRAEGE: RatgeberBeitragMeta[] = [
   {
@@ -105,12 +106,34 @@ export const RATGEBER_BEITRAEGE: RatgeberBeitragMeta[] = [
     publishedAt: "2026-04-29",
     featured: true,
   },
+  {
+    slug: "pflegegeldrechner",
+    title: "Pflegegeldrechner 2026: Pflegegeld je Pflegegrad berechnen",
+    excerpt:
+      "Berechnen Sie schnell Ihr monatliches Pflegegeld 2026. Pflegegrad auswählen und Betrag sofort sehen. Alltagshilfe-Süd hilft beim Antrag und Widerspruch.",
+    image: "/images/Ratgeber/pflegegrad_rechner.webp",
+    imageAlt: "Pflegegeldrechner: Beträge nach Pflegegrad 2026 übersichtlich",
+    views: 120,
+    tags: [
+      "Pflegegeldrechner",
+      "Pflegegeld 2026",
+      "Pflegegeld berechnen",
+      "Pflegegeld Pflegegrad",
+      "häusliche Pflege",
+      "Pflegekasse",
+    ],
+    categories: ["antraege_checklisten_downloads", "pflegegrad_leistungen"],
+    approxWordCount: PFLEGEGELDRECHNER_WORDS,
+    readMinutes: readMinutesFromWordCount(PFLEGEGELDRECHNER_WORDS),
+    publishedAt: "2026-04-30",
+  },
 ];
 
 /** Aquarell-Teaserbilde für Ratgeber-Hub-Karten (optional pro Slug). */
 const RATGEBER_HUB_CARD_IMAGES: Record<string, string> = {
   "pflegegrad-1": "/images/Ratgeber/pflegegrad_1.webp",
   "pflegegrad-beantragen": "/images/Ratgeber/Pflegegrad_beantragen.webp",
+  pflegegeldrechner: "/images/Ratgeber/pflegegrad_rechner.webp",
 };
 
 export function ratgeberHubCardImage(slug: string): string {
