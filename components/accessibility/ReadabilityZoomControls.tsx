@@ -77,7 +77,6 @@ export function ReadabilityZoomControls() {
   const [open, setOpen] = useState(false);
   const panelRef = useRef<HTMLDivElement>(null);
   const [widgetHidden, setWidgetHidden] = useState(false);
-  const [showUndo, setShowUndo] = useState(false);
   const [isKonfiguratorOpen, setIsKonfiguratorOpen] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [hasReadOnce, setHasReadOnce] = useState(false);
@@ -92,7 +91,6 @@ export function ReadabilityZoomControls() {
       if (sessionStorage.getItem(STORAGE_KEY_REOPEN_READABILITY) === "1") {
         sessionStorage.removeItem(STORAGE_KEY_REOPEN_READABILITY);
         setWidgetHidden(false);
-        setShowUndo(false);
         setOpen(true);
       }
     } catch {
@@ -104,7 +102,6 @@ export function ReadabilityZoomControls() {
     const onOpenFromFooter = () => {
       if (pathname === "/pflegeberatung") return;
       setWidgetHidden(false);
-      setShowUndo(false);
       setOpen(true);
     };
     window.addEventListener(AHS_READABILITY_OPEN_EVENT, onOpenFromFooter);
@@ -367,12 +364,6 @@ export function ReadabilityZoomControls() {
     }
   }, []);
 
-  useEffect(() => {
-    if (!showUndo) return;
-    const t = window.setTimeout(() => setShowUndo(false), 6500);
-    return () => window.clearTimeout(t);
-  }, [showUndo]);
-
   /** Kein Launcher im Header: schwebender Button; bei geöffnetem Panel ausblenden (Lupe/% nur im Dialog unter der Überschrift). */
   const launcherNode =
     hideLauncher || open ? null : widgetHidden ? (
@@ -381,7 +372,6 @@ export function ReadabilityZoomControls() {
           type="button"
           onClick={() => {
             setWidgetHidden(false);
-            setShowUndo(false);
           }}
           aria-label="Lesbarkeits-Widget wieder einblenden"
           className="flex h-7 w-7 items-center justify-center rounded-lg shadow-[0_8px_18px_rgba(15,79,104,0.34)] transition hover:opacity-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68] focus-visible:ring-offset-2"
@@ -423,7 +413,6 @@ export function ReadabilityZoomControls() {
           type="button"
           onClick={() => {
             setWidgetHidden(true);
-            setShowUndo(true);
             setOpen(false);
           }}
           aria-label="Lesbarkeits-Widget schließen"
@@ -438,22 +427,6 @@ export function ReadabilityZoomControls() {
 
   const overlayNode = (
     <div ref={panelRef}>
-      {!hideLauncher && showUndo ? (
-        <div
-          className="fixed right-4 w-[min(92vw,22rem)] rounded-2xl border border-[#0F4F68]/15 bg-white/95 p-4 shadow-[0_12px_30px_rgba(15,79,104,0.18)] backdrop-blur"
-          style={{ zIndex: 2147483647, bottom: "max(1rem, calc(env(safe-area-inset-bottom, 0px) + 1rem))" }}
-          role="status"
-          aria-live="polite"
-        >
-          <p className="text-sm font-semibold text-[#0F4F68]">Lesbarkeits-Widget ausgeblendet</p>
-          <p className="mt-1 text-xs text-neutral-600">Sie können es jederzeit wieder einblenden.</p>
-          <div className="mt-3 flex gap-2">
-            <button type="button" onClick={() => { setWidgetHidden(false); setShowUndo(false); }} className="inline-flex min-h-11 flex-1 items-center justify-center rounded-xl bg-[#0F4F68] px-3 py-2 text-sm font-semibold text-white transition hover:bg-[#0c3d52]">Rückgängig</button>
-            <button type="button" onClick={() => setShowUndo(false)} className="inline-flex min-h-11 flex-1 items-center justify-center rounded-xl border border-[#0F4F68]/20 bg-white px-3 py-2 text-sm font-semibold text-[#0F4F68] transition hover:bg-[#F2F9FA]">OK</button>
-          </div>
-        </div>
-      ) : null}
-
       {open ? (
         <div className="fixed inset-0 bg-[#0F4F68]/38" style={{ zIndex: 2147483647 }} onClick={() => setOpen(false)} aria-hidden>
           <div
