@@ -49,7 +49,7 @@ export function PflegegradRatgeberHero() {
             >
               Pflegegrad beantragen: So erhalten Sie Schritt für Schritt die richtige Unterstützung
             </h1>
-            <p className={`${PROSE} mt-4 w-full max-w-[40rem] text-center sm:mt-5 lg:mx-0 lg:text-left`}>
+            <p className={`${PROSE} mt-5 max-w-[40rem] text-center lg:mt-6 lg:text-left`}>
               Ein Pflegegrad eröffnet Ihnen oder Ihren Angehörigen wichtige Leistungen der Pflegeversicherung. Hier erfahren
               Sie, wie der Antrag funktioniert, was begutachtet wird und welche Unterstützung Ihnen zusteht.
             </p>

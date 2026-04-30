@@ -49,7 +49,7 @@ export function Pflegegrad1RatgeberHero() {
             >
               Pflegegrad 1: Voraussetzungen, Leistungen und Tipps für Angehörige
             </h1>
-            <p className={`${PROSE} mt-4 w-full max-w-[40rem] text-center sm:mt-5 lg:mx-0 lg:text-left`}>
+            <p className={`${PROSE} mt-5 max-w-[40rem] text-center lg:mt-6 lg:text-left`}>
               Pflegegrad 1 ist oft der erste Schritt in die Unterstützung durch die Pflegeversicherung. Der Ratgeber erklärt
               Voraussetzungen, Leistungen 2026 und sinnvolle Schritte für Familien — ruhig formuliert und ohne Schlagworte.
             </p>

@@ -48,7 +48,7 @@ export function PflegegeldrechnerHero() {
             >
               Pflegegeldrechner 2026: So viel Pflegegeld steht Ihnen zu
             </h1>
-            <p className={`${PROSE} mt-4 w-full max-w-[40rem] text-center sm:mt-5 lg:mx-0 lg:text-left`}>
+            <p className={`${PROSE} mt-5 max-w-[40rem] text-center lg:mt-6 lg:text-left`}>
               Mit unserem Pflegegeldrechner sehen Sie den Regelbetrag je Pflegegrad sowie den anteiligen Betrag im Monat der
               Bewilligung (ab dem gewählten Tag bis Monatsende) und die Summe im Kalenderjahr der Bewilligung. Wählen Sie
               Pflegegrad und Bewilligungsdatum – die Werte aktualisieren sich sofort.
