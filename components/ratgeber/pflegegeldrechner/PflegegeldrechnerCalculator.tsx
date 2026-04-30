@@ -64,16 +64,25 @@ function defaultApprovalDateISO(): string {
   return `${y}-${m}-${d}`;
 }
 
+/** Standard-Bewilligungszeitraum: volles Kalenderjahr 2026 ab 01.01. (12 volle Monate). */
+const FIXED_APPROVAL_2026 = { y: 2026, m: 1, d: 1 } as const;
+
 export function PflegegeldrechnerCalculator({ className }: { className?: string }) {
   const [selected, setSelected] = useState<1 | 2 | 3 | 4 | 5>(2);
   const [approvalISO, setApprovalISO] = useState(defaultApprovalDateISO);
+  const [useCustomApprovalDate, setUseCustomApprovalDate] = useState(false);
 
   const parsed = useMemo(() => parseISODate(approvalISO), [approvalISO]);
+
+  const activeParsed = useMemo(() => {
+    if (!useCustomApprovalDate) return FIXED_APPROVAL_2026;
+    return parsed;
+  }, [useCustomApprovalDate, parsed]);
 
   const monthly = PFLEGEGELD_2026[selected];
 
   const { partialRounded, partialExact, daysCount, dim, monthLabel, yearTotalRounded } = useMemo(() => {
-    if (!parsed || selected === 1) {
+    if (!activeParsed || selected === 1) {
       return {
         partialRounded: 0,
         partialExact: 0,
@@ -83,7 +92,7 @@ export function PflegegeldrechnerCalculator({ className }: { className?: string 
         yearTotalRounded: 0,
       };
     }
-    const { y, m, d } = parsed;
+    const { y, m, d } = activeParsed;
     const dimLocal = daysInMonth(y, m);
     const days = daysFromApprovalThroughMonthEnd(y, m, d);
     const partialExactLocal = partialFirstMonthAmount(monthly, y, m, d);
@@ -97,7 +106,7 @@ export function PflegegeldrechnerCalculator({ className }: { className?: string 
       monthLabel: monthLabelLocal,
       yearTotalRounded: Math.round(yearTotal),
     };
-  }, [parsed, monthly, selected]);
+  }, [activeParsed, monthly, selected]);
 
   const hint = useMemo(() => {
     if (selected === 1) {
@@ -106,7 +115,8 @@ export function PflegegeldrechnerCalculator({ className }: { className?: string 
     return "Pflegegeld erhalten Pflegebedürftige, wenn die häusliche Pflege privat organisiert wird, zum Beispiel durch Angehörige. Im Monat der Bewilligung wird das Pflegegeld in der Regel nur für die Tage ab dem Bewilligungsdatum bis zum Monatsende angesetzt.";
   }, [selected]);
 
-  const showPartial = selected >= 2 && parsed !== null;
+  const showPartial = selected >= 2 && activeParsed !== null;
+  const customDateInvalid = useCustomApprovalDate && parsed === null;
 
   return (
     <div
@@ -145,30 +155,57 @@ export function PflegegeldrechnerCalculator({ className }: { className?: string 
       </fieldset>
 
       <div className="mt-6 border-t border-neutral-100 pt-6">
-        <label
-          htmlFor="pflegegeld-bewilligung"
-          className="mx-auto block max-w-xl text-[0.7rem] font-semibold uppercase tracking-[0.14em] text-[#0F4F68]/80"
-        >
-          Bewilligungsdatum (Tag der Bewilligung)
-        </label>
-        <p className="mx-auto mt-1.5 max-w-xl text-sm leading-snug text-neutral-600">
-          Ab diesem Kalendertag gilt der Pflegegrad; im selben Monat wird das Pflegegeld nur für die verbleibenden Tage
-          (einschließlich Bewilligungstag) hochgerechnet – z.&nbsp;B. Bewilligung am 30.01.: 2 von 31 Tagen im Januar.
+        <p className="mx-auto max-w-xl text-[0.7rem] font-semibold uppercase tracking-[0.14em] text-[#0F4F68]/80">
+          Bewilligungszeitraum
         </p>
-        <input
-          id="pflegegeld-bewilligung"
-          type="date"
-          value={approvalISO}
-          min="2017-01-01"
-          max="2035-12-31"
-          onChange={(e) => setApprovalISO(e.target.value)}
-          className="mx-auto mt-3 block w-full max-w-[18rem] rounded-xl border border-neutral-200 bg-white px-3 py-2.5 text-[0.9375rem] font-medium text-neutral-900 shadow-sm focus:border-[#0F4F68]/40 focus:outline-none focus:ring-2 focus:ring-[#0F4F68]/25"
-        />
-        {parsed === null ? (
-          <p className="mt-2 text-sm text-[#b42318]" role="alert">
-            Bitte gültiges Datum wählen.
-          </p>
-        ) : null}
+        <div className="mx-auto mt-3 flex max-w-xl flex-col items-start gap-2 text-left sm:flex-row sm:items-center sm:gap-3">
+          <input
+            id="pflegegeld-eigenes-bewilligungsdatum"
+            type="checkbox"
+            checked={useCustomApprovalDate}
+            onChange={(e) => setUseCustomApprovalDate(e.target.checked)}
+            className="mt-0.5 h-[1.125rem] w-[1.125rem] shrink-0 rounded border-neutral-300 text-[#0F4F68] focus:ring-[#0F4F68]"
+          />
+          <label htmlFor="pflegegeld-eigenes-bewilligungsdatum" className="text-sm font-medium text-neutral-800">
+            Anderes Bewilligungsdatum verwenden (Kalendertag der Bewilligung wählen)
+          </label>
+        </div>
+
+        {!useCustomApprovalDate ? (
+          <div className="mx-auto mt-4 max-w-xl rounded-xl border border-neutral-200/90 bg-[#f8fcfc] px-4 py-3 text-sm leading-relaxed text-neutral-700">
+            <strong className="font-semibold text-[#0F4F68]">Standard:</strong> Es werden{" "}
+            <strong className="font-semibold text-neutral-900">12 volle Monate ab dem 01.01.2026</strong> angesetzt
+            (volles Kalenderjahr 2026 bis 31.12.2026, jeweils Regelbetrag pro Monat).
+          </div>
+        ) : (
+          <>
+            <label
+              htmlFor="pflegegeld-bewilligung"
+              className="mx-auto mt-4 block max-w-xl text-[0.7rem] font-semibold uppercase tracking-[0.14em] text-[#0F4F68]/80"
+            >
+              Bewilligungsdatum (Tag der Bewilligung)
+            </label>
+            <p className="mx-auto mt-1.5 max-w-xl text-sm leading-snug text-neutral-600">
+              Ab diesem Kalendertag gilt der Pflegegrad; im selben Monat wird das Pflegegeld nur für die verbleibenden
+              Tage (einschließlich Bewilligungstag) hochgerechnet – z.&nbsp;B. Bewilligung am 30.01.: 2 von 31 Tagen im
+              Januar.
+            </p>
+            <input
+              id="pflegegeld-bewilligung"
+              type="date"
+              value={approvalISO}
+              min="2017-01-01"
+              max="2035-12-31"
+              onChange={(e) => setApprovalISO(e.target.value)}
+              className="mx-auto mt-3 block w-full max-w-[18rem] rounded-xl border border-neutral-200 bg-white px-3 py-2.5 text-[0.9375rem] font-medium text-neutral-900 shadow-sm focus:border-[#0F4F68]/40 focus:outline-none focus:ring-2 focus:ring-[#0F4F68]/25"
+            />
+            {customDateInvalid ? (
+              <p className="mt-2 text-sm text-[#b42318]" role="alert">
+                Bitte gültiges Datum wählen.
+              </p>
+            ) : null}
+          </>
+        )}
       </div>
 
       <div className="mt-6 border-t border-neutral-100 pt-6">
@@ -201,7 +238,9 @@ export function PflegegeldrechnerCalculator({ className }: { className?: string 
           <p className="mx-auto mt-3 max-w-[22rem] text-xs leading-relaxed text-neutral-600 sm:text-sm">
             {selected === 1
               ? "—"
-              : "Summe im Kalenderjahr der Bewilligung: Anteil Bewilligungsmonat plus alle vollen Monate bis 31.12. desselben Jahres"}
+              : useCustomApprovalDate
+                ? "Summe im Kalenderjahr der Bewilligung: Anteil Bewilligungsmonat plus alle vollen Monate bis 31.12. desselben Jahres"
+                : "Summe für das volle Kalenderjahr 2026: 12 Monate à Regelbetrag (Bewilligung ab 01.01.2026)."}
           </p>
         </div>
       </div>
