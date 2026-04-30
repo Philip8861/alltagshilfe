@@ -40,10 +40,13 @@ export function useRatgeberBeratung() {
 }
 
 const STEP_MOTIVATION: Record<number, string> = {
-  1: "In drei Schritten zum passenden Ansprechpartner.",
+  1: "In vier Schritten zum passenden Ansprechpartner.",
   2: "Damit wir den richtigen Standort für Sie anzeigen können.",
-  3: "Ihr Ansprechpartner und unser Kontaktformular.",
+  3: "Neu: Pflegeshop und Inkontinenz – vielleicht auch für Sie interessant.",
+  4: "Ihr Ansprechpartner und unser Kontaktformular.",
 };
+
+const TOTAL_STEPS = 4;
 
 export function RatgeberBeratungProvider({ children }: { children: ReactNode }) {
   const [started, setStarted] = useState(false);
@@ -132,7 +135,7 @@ export function RatgeberBeratungProvider({ children }: { children: ReactNode }) 
       setError("Bitte geben Sie eine gültige 5-stellige PLZ ein – oder überspringen Sie den Schritt.");
       return;
     }
-    setStep((s) => Math.min(3, s + 1));
+    setStep((s) => Math.min(TOTAL_STEPS, s + 1));
   };
 
   const zurueck = () => {
@@ -143,7 +146,7 @@ export function RatgeberBeratungProvider({ children }: { children: ReactNode }) 
   const plzUeberspringen = () => {
     setError("");
     setPlz("");
-    setStep(3);
+    setStep(3); // Pflegeshop-/Inkontinenz-Hinweis, danach Kontakt
   };
 
   const ortFromPlz = plzNorm.length === 5 ? getOrtByPlz(plzNorm) : "";
@@ -157,7 +160,7 @@ export function RatgeberBeratungProvider({ children }: { children: ReactNode }) 
     contextNote,
     plz: plzNorm,
     serviceLabels: ausgewaehlte.map((a) => a.label),
-    usedFallbackStandort: !standort && step === 3,
+    usedFallbackStandort: !standort && step === 4,
   });
 
   const formKey = `${plzNorm}-${leistungen.join(",")}-s${step}`;
@@ -185,7 +188,7 @@ export function RatgeberBeratungProvider({ children }: { children: ReactNode }) 
               >
                 <div className="mb-4 grid grid-cols-[1fr_auto_1fr] items-center gap-3">
                   <p className="justify-self-start text-sm font-bold uppercase tracking-wide text-[#0F4F68]/80">
-                    Schritt {step} von 3
+                    Schritt {step} von {TOTAL_STEPS}
                   </p>
                   <p className="text-center text-xl font-extrabold text-[#0F4F68] sm:text-2xl">
                     {STEP_MOTIVATION[step]}
@@ -258,13 +261,72 @@ export function RatgeberBeratungProvider({ children }: { children: ReactNode }) 
                         Überspringen
                       </button>
                       <span className="ml-3 text-sm text-neutral-600">
-                        Dann zeigen wir Ihnen die Zentrale in Bad Grönenbach.
+                        Ohne PLZ geht es weiter – zuerst ein kurzer Hinweis zu Shop und Inkontinenz, dann zu Ihrem
+                        Ansprechpartner.
                       </span>
                     </div>
                   </div>
                 ) : null}
 
                 {step === 3 ? (
+                  <div className="mt-6 animate-fade-in-up space-y-5">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <span className="inline-flex items-center rounded-full bg-[#F78F2E] px-3 py-1 text-xs font-extrabold uppercase tracking-wide text-white">
+                        Jetzt neu
+                      </span>
+                      <span className="text-sm font-semibold text-[#0F4F68]">Pflegeshop und Inkontinenzversorgung</span>
+                    </div>
+                    <h3 className="text-lg font-bold text-[#0F4F68] sm:text-xl">
+                      Das bieten wir Ihnen zusätzlich – kompakt erklärt
+                    </h3>
+                    <p className="text-[1.02rem] leading-relaxed text-neutral-700">
+                      Seit kurzem können Sie bei uns nicht nur Beratung und klassische Leistungen anfragen: In unserem{" "}
+                      <strong className="font-semibold text-neutral-900">Pflegeshop</strong> finden Sie ausgewählte,
+                      hochwertige Artikel rund um Pflege und Alltag zu Hause – von hilfreichen Hilfsmitteln bis zu
+                      Produkten, die den Pflegealltag erleichtern. Alles ist übersichtlich zusammengestellt, damit Sie
+                      schnell Orientierung haben.
+                    </p>
+                    <p className="text-[1.02rem] leading-relaxed text-neutral-700">
+                      Zusätzlich ist eine{" "}
+                      <strong className="font-semibold text-neutral-900">Inkontinenzversorgung über uns</strong> möglich:{" "}
+                      In vielen Fällen können Sie die Abrechnung über ein Rezept nutzen – wir erklären Ihnen gern, wie der
+                      Ablauf funktioniert und welche Voraussetzungen dazugehören.
+                    </p>
+                    <p className="text-[1.02rem] leading-relaxed text-neutral-700">
+                      Für die <strong className="font-semibold text-neutral-900">Pflegebox</strong> (kostenfreie
+                      Pflegehilfsmittel im Rahmen der Kranken- und Pflegekasse) steht Ihnen zudem ein{" "}
+                      <strong className="font-semibold text-neutral-900">Online-Konfigurator</strong> zur Verfügung: Damit
+                      stellen Sie Ihre Auswahl schnell und verständlich zusammen und kommen ohne Umwege an die passenden
+                      Artikel.
+                    </p>
+                    <div className="flex flex-col gap-3 rounded-xl border border-[#0F4F68]/12 bg-[#f8fcfd] p-4 sm:flex-row sm:flex-wrap sm:gap-4 sm:p-5">
+                      <Link
+                        href="/pflegeshop"
+                        className="inline-flex min-h-[44px] flex-1 items-center justify-center rounded-xl bg-[#0F4F68] px-4 py-2.5 text-center text-sm font-semibold text-white hover:bg-[#0c3d52] sm:flex-initial sm:px-5"
+                      >
+                        Zum Pflegeshop
+                      </Link>
+                      <Link
+                        href="/inkontinenzversorgung"
+                        className="inline-flex min-h-[44px] flex-1 items-center justify-center rounded-xl border-2 border-[#0F4F68] bg-white px-4 py-2.5 text-center text-sm font-semibold text-[#0F4F68] hover:bg-[#f2f9fa] sm:flex-initial sm:px-5"
+                      >
+                        Inkontinenzversorgung
+                      </Link>
+                      <Link
+                        href="/pflegehilfsmittel/pflegebox-konfigurator"
+                        className="inline-flex min-h-[44px] flex-1 items-center justify-center rounded-xl border border-[#F78F2E]/60 bg-[#fff8f2] px-4 py-2.5 text-center text-sm font-semibold text-[#b35f18] hover:bg-[#fff0e6] sm:flex-initial sm:px-5"
+                      >
+                        Zum Pflegebox-Konfigurator
+                      </Link>
+                    </div>
+                    <p className="text-sm text-neutral-600">
+                      Wenn Sie möchten, klicken Sie sich die Angebote in Ruhe durch. Mit „Weiter“ geht es danach zu Ihrem
+                      Ansprechpartner und dem Kontaktformular.
+                    </p>
+                  </div>
+                ) : null}
+
+                {step === 4 ? (
                   <div className="mt-6 animate-fade-in-up space-y-6">
                     {!standort && plzNorm.length === 5 ? (
                       <p className="rounded-xl border border-[#F78F2E]/35 bg-[#fff8f2] px-4 py-3 text-sm font-medium text-[#7a4d28]">
@@ -318,7 +380,8 @@ export function RatgeberBeratungProvider({ children }: { children: ReactNode }) 
                         <ContactForm
                           key={formKey}
                           fieldIdPrefix="ratgeber-beratung-"
-                          defaultTopic={contactTopic}
+                          topicHidden
+                          hiddenTopic={contactTopic}
                           initialMessage={initialMessage}
                         />
                       </div>
@@ -333,7 +396,7 @@ export function RatgeberBeratungProvider({ children }: { children: ReactNode }) 
                 ) : null}
 
                 <div className="mt-6 flex flex-wrap gap-3">
-                  {step > 1 && step < 4 ? (
+                  {step > 1 ? (
                     <button
                       type="button"
                       onClick={zurueck}
@@ -342,7 +405,7 @@ export function RatgeberBeratungProvider({ children }: { children: ReactNode }) 
                       Zurück
                     </button>
                   ) : null}
-                  {step < 3 ? (
+                  {step < 4 ? (
                     <button
                       type="button"
                       onClick={weiter}
