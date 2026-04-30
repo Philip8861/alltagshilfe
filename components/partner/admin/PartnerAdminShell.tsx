@@ -73,9 +73,9 @@ export function PartnerAdminShell({ children }: Props) {
           <Link
             href="/partner/login"
             className={iconButtonClass(false)}
-            title="Partner-Login"
+            title="Partnerportal (separate Anmeldung für Partner-Unternehmen)"
           >
-            <span className="sr-only">Partner-Login</span>
+            <span className="sr-only">Zum Partnerportal (Supabase-Anmeldung)</span>
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
               <path d="M15 3h4a2 2 0 012 2v14a2 2 0 01-2 2h-4M10 17l5-5-5-5M15 12H3" strokeLinecap="round" strokeLinejoin="round" />
             </svg>

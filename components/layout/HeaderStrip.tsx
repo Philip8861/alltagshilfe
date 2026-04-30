@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { isPflegeboxKonfiguratorPagePath } from "@/lib/pflegebox-konfigurator-path";
 import { cn } from "@/lib/utils";
 
@@ -12,6 +12,8 @@ type PartnerStripSession = {
   hasProfile: boolean;
   displayName: string | null;
   firstName: string | null;
+  /** Betriebs-Login `/partner/admin-login` (Cookie, kein Supabase-Partner). */
+  systemAdminSession: boolean;
 };
 
 const emptySession: PartnerStripSession = {
@@ -20,6 +22,7 @@ const emptySession: PartnerStripSession = {
   hasProfile: false,
   displayName: null,
   firstName: null,
+  systemAdminSession: false,
 };
 
 function stripGreetingName(firstName: string | null, displayName: string | null, maxLen = 26): string {
@@ -41,37 +44,66 @@ export function HeaderStrip() {
   const en = pathname === "/en" || pathname.startsWith("/en/");
   const partnerLoginHref = en ? "/en/partner/login" : "/partner/login";
   const partnerDashboardHref = en ? "/en/partner/dashboard" : "/partner/dashboard";
+  const partnerAdminHref = en ? "/en/partner/admin" : "/partner/admin";
   const partnerActive =
     pathname.startsWith("/partner") || pathname.startsWith("/en/partner");
 
   const [session, setSession] = useState<PartnerStripSession | null>(null);
 
-  useEffect(() => {
-    let cancelled = false;
+  const loadSession = useCallback(() => {
     void (async () => {
       try {
-        const res = await fetch("/api/partner/session", { credentials: "same-origin", cache: "no-store" });
-        const json = (await res.json()) as Partial<PartnerStripSession>;
-        if (cancelled) return;
+        const res = await fetch("/api/partner/session", {
+          credentials: "include",
+          cache: "no-store",
+          headers: { Accept: "application/json" },
+        });
+        const raw = await res.text();
+        let json: Partial<PartnerStripSession> = {};
+        try {
+          json = raw ? (JSON.parse(raw) as Partial<PartnerStripSession>) : {};
+        } catch {
+          setSession(emptySession);
+          return;
+        }
         setSession({
           configured: Boolean(json.configured),
           authenticated: Boolean(json.authenticated),
           hasProfile: Boolean(json.hasProfile),
           displayName: typeof json.displayName === "string" ? json.displayName : null,
           firstName: typeof json.firstName === "string" ? json.firstName : null,
+          systemAdminSession: json.systemAdminSession === true,
         });
       } catch {
-        if (!cancelled) setSession(emptySession);
+        setSession(emptySession);
       }
     })();
-    return () => {
-      cancelled = true;
-    };
   }, []);
 
+  useEffect(() => {
+    loadSession();
+  }, [pathname, loadSession]);
+
+  useEffect(() => {
+    const onResume = () => {
+      if (document.visibilityState === "visible") loadSession();
+    };
+    document.addEventListener("visibilitychange", onResume);
+    window.addEventListener("focus", loadSession);
+    return () => {
+      document.removeEventListener("visibilitychange", onResume);
+      window.removeEventListener("focus", loadSession);
+    };
+  }, [loadSession]);
+
   const configured = session?.configured ?? false;
-  const loggedIn = configured && session?.authenticated && session?.hasProfile;
-  const greeting = stripGreetingName(session?.firstName ?? null, session?.displayName ?? null);
+  const loggedInPartner = configured && session?.authenticated && session?.hasProfile;
+  const loggedInSystemAdmin = session?.systemAdminSession === true;
+  const showPartnerStrip = loggedInPartner || loggedInSystemAdmin;
+  const greeting = loggedInSystemAdmin
+    ? "Admin"
+    : stripGreetingName(session?.firstName ?? null, session?.displayName ?? null);
+  const stripHref = loggedInSystemAdmin ? partnerAdminHref : partnerDashboardHref;
 
   return (
     <div
@@ -79,19 +111,29 @@ export function HeaderStrip() {
       style={{ backgroundColor: "#0F4F68", minHeight: "2.45rem" }}
     >
       <div className="flex w-full flex-row items-center justify-end gap-4 px-4 py-1.5 sm:px-6 lg:px-[var(--ahs-page-gutter)]">
-        {loggedIn ? (
+        {showPartnerStrip ? (
           <Link
-            href={partnerDashboardHref}
+            href={stripHref}
             aria-label={
-              en
-                ? `Partner area: Hello, ${greeting}`
-                : `Partnerbereich: Hallo, ${greeting}`
+              loggedInSystemAdmin
+                ? en
+                  ? "Admin area: Hello, Admin"
+                  : "Verwaltung: Hallo, Admin"
+                : en
+                  ? `Partner area: Hello, ${greeting}`
+                  : `Partnerbereich: Hallo, ${greeting}`
             }
             className={cn(
               "inline-flex min-h-8 max-w-[min(100%,20rem)] items-center justify-end truncate rounded-md py-0.5 text-sm font-bold text-white/95 no-underline transition-colors hover:text-white focus:outline-none focus:ring-2 focus:ring-white/80 focus:ring-offset-2 focus:ring-offset-[#0F4F68]",
               partnerActive && "text-white",
             )}
-            title={session?.displayName ?? undefined}
+            title={
+              loggedInSystemAdmin
+                ? en
+                  ? "Partner administration"
+                  : "Partner-Verwaltung (Betrieb)"
+                : (session?.displayName ?? undefined)
+            }
           >
             {en ? "Hello," : "Hallo,"}{" "}
             <span className="ml-1 truncate">{greeting}</span>

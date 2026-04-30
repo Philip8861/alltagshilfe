@@ -107,7 +107,12 @@ async function copyTextToClipboard(text: string): Promise<boolean> {
   }
 }
 
-export function RatgeberRedaktionsHelfer() {
+type RatgeberRedaktionsHelferProps = {
+  /** Aus Server-Layout (Cookie/JWT): zuverlässig bei vollem Seitenaufruf; Client-Fetch ergänzt nach Login ohne Reload. */
+  initialShowEditor?: boolean;
+};
+
+export function RatgeberRedaktionsHelfer({ initialShowEditor = false }: RatgeberRedaktionsHelferProps) {
   const pathname = usePathname() ?? "/";
   const en = pathname === "/en" || pathname.startsWith("/en/");
   const [session, setSession] = useState<PartnerSessionPayload | null>(null);
@@ -156,7 +161,8 @@ export function RatgeberRedaktionsHelfer() {
   /** Profilrolle `admin` (Supabase) oder angemeldete Partner-Verwaltung (System-Admin-Cookie). */
   const isEditor =
     Boolean(session?.systemAdminSession) ||
-    Boolean(session?.authenticated && session.hasProfile && session.role === "admin");
+    Boolean(session?.authenticated && session.hasProfile && session.role === "admin") ||
+    (session === null && initialShowEditor);
 
   const copySelection = useCallback(async () => {
     const sel = typeof window !== "undefined" ? window.getSelection()?.toString() ?? "" : "";
