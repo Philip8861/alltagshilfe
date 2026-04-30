@@ -92,8 +92,8 @@ export default function PflegegradBeantragenRatgeberPage() {
           <PflegegradRatgeberHero />
 
           <div className="mt-10 flex flex-col gap-10 lg:mt-12 lg:flex-row lg:items-stretch lg:gap-12">
-            <aside className="hidden shrink-0 lg:block lg:w-[280px] lg:max-w-[280px]">
-              <div className="sticky top-[var(--ahs-header-scroll-padding)] z-10 flex flex-col gap-5 self-start">
+            <aside className="hidden min-h-0 shrink-0 lg:block lg:w-[280px] lg:max-w-[280px]">
+              <div className="sticky top-[var(--ahs-header-scroll-padding)] z-10 self-start">
                 <nav
                   aria-label="Inhalt"
                   className="relative max-h-[min(70dvh,calc(100dvh-var(--ahs-header-scroll-padding)-10rem))] overflow-x-hidden overflow-y-auto overscroll-contain rounded-2xl border border-neutral-200/95 bg-white px-4 py-4 shadow-[0_2px_16px_-10px_rgba(15,79,104,0.1)] [-webkit-overflow-scrolling:touch] [scrollbar-gutter:stable] sm:px-5 sm:py-5"
@@ -113,14 +113,14 @@ export default function PflegegradBeantragenRatgeberPage() {
                     ))}
                   </ol>
                 </nav>
-                <div className="min-h-0 max-h-[calc(100dvh-var(--ahs-header-scroll-padding)-max(26vh,13rem))] overflow-y-auto overflow-x-hidden overscroll-contain [-webkit-overflow-scrolling:touch] [scrollbar-gutter:stable] pr-0.5">
-                  <RatgeberSidebarBeratungTeaser
-                    supportLine="Sie möchten Unterstützung beim Pflegegrad-Antrag?"
-                    preselectedServices={["pflegegrad_beantrag_widerspruch"]}
-                    contextNote="Ratgeber: Pflegegrad beantragen"
-                    articleSectionIds={PFLEGEGRAD_ARTICLE_TOC_ENTRIES.map((e) => e.id)}
-                  />
-                </div>
+              </div>
+              <div className="mt-5 min-w-0">
+                <RatgeberSidebarBeratungTeaser
+                  supportLine="Sie möchten Unterstützung beim Pflegegrad-Antrag?"
+                  preselectedServices={["pflegegrad_beantrag_widerspruch"]}
+                  contextNote="Ratgeber: Pflegegrad beantragen"
+                  articleSectionIds={PFLEGEGRAD_ARTICLE_TOC_ENTRIES.map((e) => e.id)}
+                />
               </div>
             </aside>
 
