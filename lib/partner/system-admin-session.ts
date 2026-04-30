@@ -71,16 +71,21 @@ export async function setSystemAdminSessionCookie(): Promise<void> {
   const exp = Math.floor(Date.now() / 1000) + MAX_AGE_SEC;
   const token = signToken(exp, secret);
   const cookieStore = await cookies();
+  /** Frühere `path: /partner`-Variante entfernen (sonst zwei Cookies gleichen Namens möglich). */
+  cookieStore.set(COOKIE_NAME, "", { path: "/partner", maxAge: 0 });
+  /** Site-weit nötig, damit z. B. `/api/partner/session` und `/ratgeber` die Sitzung sehen (Redaktions-Helfer). */
   cookieStore.set(COOKIE_NAME, token, {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
     sameSite: "lax",
-    path: "/partner",
+    path: "/",
     maxAge: MAX_AGE_SEC,
   });
 }
 
 export async function clearSystemAdminSessionCookie(): Promise<void> {
   const cookieStore = await cookies();
+  cookieStore.set(COOKIE_NAME, "", { path: "/", maxAge: 0 });
+  /** Alte Cookies mit früherem Path `/partner` entfernen. */
   cookieStore.set(COOKIE_NAME, "", { path: "/partner", maxAge: 0 });
 }

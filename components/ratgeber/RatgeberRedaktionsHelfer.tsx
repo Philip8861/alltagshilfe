@@ -8,6 +8,8 @@ type PartnerSessionPayload = {
   authenticated: boolean;
   hasProfile: boolean;
   role: "partner" | "admin" | null;
+  /** Partner-Verwaltung unter `/partner/admin-login` (nicht Supabase-Partner). */
+  systemAdminSession: boolean;
 };
 
 function buildChangeRequestBlock(params: {
@@ -62,9 +64,17 @@ export function RatgeberRedaktionsHelfer() {
           authenticated: Boolean(json.authenticated),
           hasProfile: Boolean(json.hasProfile),
           role: json.role === "admin" || json.role === "partner" ? json.role : null,
+          systemAdminSession: Boolean(json.systemAdminSession),
         });
       } catch {
-        if (!cancelled) setSession({ configured: false, authenticated: false, hasProfile: false, role: null });
+        if (!cancelled)
+          setSession({
+            configured: false,
+            authenticated: false,
+            hasProfile: false,
+            role: null,
+            systemAdminSession: false,
+          });
       }
     })();
     return () => {
@@ -72,7 +82,10 @@ export function RatgeberRedaktionsHelfer() {
     };
   }, []);
 
-  const isAdmin = session?.authenticated && session.hasProfile && session.role === "admin";
+  /** Profilrolle `admin` (Supabase) oder angemeldete Partner-Verwaltung (System-Admin-Cookie). */
+  const isEditor =
+    Boolean(session?.systemAdminSession) ||
+    Boolean(session?.authenticated && session.hasProfile && session.role === "admin");
 
   const copySelection = useCallback(async () => {
     const sel = typeof window !== "undefined" ? window.getSelection()?.toString() ?? "" : "";
@@ -109,7 +122,7 @@ export function RatgeberRedaktionsHelfer() {
     }
   }, [pathname, desired, en]);
 
-  if (!isAdmin) return null;
+  if (!isEditor) return null;
 
   return (
     <div
@@ -140,7 +153,7 @@ export function RatgeberRedaktionsHelfer() {
           <p className="mt-2 text-xs leading-relaxed text-neutral-600">
             {en
               ? "Select text in the article, optionally describe the change below, then copy the block for Cursor/AI."
-              : "Text im Artikel markieren, unten optional die gewünschte Fassung notieren, dann den Block kopieren und in Cursor einfügen."}
+              : "Nur für Admins: Partner-Verwaltung (Betrieb) oder Supabase-Profil mit Rolle „admin“. Text im Artikel markieren, unten optional die gewünschte Fassung notieren, dann den Block kopieren und in Cursor einfügen."}
           </p>
           <label htmlFor="ratgeber-redaktion-wunsch" className="mt-3 block text-xs font-semibold text-neutral-700">
             {en ? "Desired wording (optional)" : "Gewünschter Text (optional)"}
