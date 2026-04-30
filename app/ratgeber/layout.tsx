@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 
 import { RatgeberBeratungProvider } from "@/components/ratgeber/RatgeberBeratungDialog";
+import { RatgeberRedaktionsHelfer } from "@/components/ratgeber/RatgeberRedaktionsHelfer";
 
 import { buildStandortContactProofsByPageSlug } from "@/lib/standort-contact-proof";
 
@@ -9,6 +10,7 @@ export default function RatgeberLayout({ children }: { children: ReactNode }) {
   return (
     <RatgeberBeratungProvider standortContactProofsBySlug={standortContactProofsBySlug}>
       {children}
+      <RatgeberRedaktionsHelfer />
     </RatgeberBeratungProvider>
   );
 }
