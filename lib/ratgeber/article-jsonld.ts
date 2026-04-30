@@ -1,3 +1,7 @@
+import {
+  RATGEBER_ARTICLE_JSONLD_AUTHOR,
+  RATGEBER_ARTICLE_JSONLD_REVIEWER,
+} from "@/config/ratgeber-article-byline";
 import { siteConfig } from "@/config/site";
 
 function absolutize(path: string): string {
@@ -33,7 +37,8 @@ export function serializeRatgeberArticleJsonSchemas(params: {
     inLanguage: "de-DE",
     datePublished: params.datePublishedISO,
     dateModified: params.dateModifiedISO,
-    author: { "@type": "Organization", name: siteConfig.name },
+    author: { ...RATGEBER_ARTICLE_JSONLD_AUTHOR },
+    contributor: { ...RATGEBER_ARTICLE_JSONLD_REVIEWER },
     publisher: { "@type": "Organization", name: siteConfig.name },
     mainEntityOfPage: { "@type": "WebPage", "@id": pageUrl },
   };

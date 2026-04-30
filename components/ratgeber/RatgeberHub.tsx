@@ -113,22 +113,22 @@ function RatgeberArticleTeaserCard({
           alt={beitrag.imageAlt}
           fill
           className="object-cover object-center"
-          sizes="(min-width: 1280px) 18vw, (min-width: 768px) 22vw, 42vw"
+          sizes="(min-width: 1280px) 28vw, (min-width: 768px) 32vw, 48vw"
           priority={false}
         />
       </div>
       <div
-        className="flex flex-col px-2.5 pb-2.5 pt-1.5 sm:px-3 sm:pb-3 sm:pt-2"
+        className="flex flex-col px-3.5 pb-3 pt-2 sm:px-5 sm:pb-4 sm:pt-2.5"
         style={{ backgroundColor: CARD_CANVAS }}
       >
         <p
           id={titleId}
-          className="line-clamp-6 w-full hyphens-auto text-center text-base font-extrabold leading-tight tracking-tight text-balance sm:text-lg sm:leading-snug md:line-clamp-[7] md:text-[1.125rem] lg:text-[1.2rem] lg:leading-snug xl:text-[1.25rem]"
+          className="line-clamp-7 w-full hyphens-auto text-center text-[1.0625rem] font-extrabold leading-normal tracking-tight text-balance sm:text-[1.125rem] sm:leading-snug md:line-clamp-[8] md:text-[1.1875rem] md:leading-snug lg:text-[1.25rem] xl:text-[1.3125rem]"
           style={{ color: NAVY }}
         >
           {beitrag.title}
         </p>
-        <div className="mt-1.5 flex flex-wrap items-center justify-center gap-x-3 gap-y-0.5 text-[0.7rem] leading-relaxed text-neutral-500 sm:mt-2 sm:text-[0.8125rem] sm:leading-relaxed">
+        <div className="mt-2 flex flex-wrap items-center justify-center gap-x-3 gap-y-0.5 text-[0.75rem] leading-relaxed text-neutral-500 sm:mt-2.5 sm:text-[0.8125rem] sm:leading-relaxed">
           <span className="inline-flex items-center gap-1">
             <EyeIcon className="h-2.5 w-2.5 shrink-0 text-neutral-400" aria-hidden />
             {getDisplayViews(beitrag).toLocaleString("de-DE")} Aufrufe
@@ -476,7 +476,7 @@ export function RatgeberHub(props?: RatgeberHubProps) {
                     Keine Artikel für diese Auswahl. Anderes Thema wählen oder Suchbegriff anpassen.
                   </p>
                 ) : (
-                  <ul className="mx-auto mt-4 grid w-full grid-cols-2 gap-x-3 gap-y-6 sm:gap-x-4 md:grid-cols-3 md:gap-y-7 lg:grid-cols-4 lg:gap-x-4 lg:gap-y-8 xl:gap-x-5">
+                  <ul className="mx-auto mt-4 grid w-full grid-cols-2 gap-x-4 gap-y-7 sm:gap-x-5 md:grid-cols-3 md:gap-y-8 lg:gap-x-5 lg:gap-y-10 xl:gap-x-6">
                     {gridBeitraege.map((beitrag, idx) => (
                       <li key={beitrag.slug} className="min-h-0 w-full justify-self-stretch">
                         <RatgeberArticleTeaserCard

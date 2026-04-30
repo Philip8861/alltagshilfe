@@ -1,0 +1,20 @@
+/** Inhaltsverzeichnis — Ratgeber Pflegegrad 1 */
+export const PFLEGEGRAD1_ARTICLE_TOC_ENTRIES = [
+  { id: "zusammenfassung", label: "Kurze Zusammenfassung" },
+  { id: "was-ist-pflegegrad-1", label: "Was bedeutet Pflegegrad 1?" },
+  { id: "voraussetzungen", label: "Voraussetzungen und Begutachtung" },
+  { id: "leistungen-tabelle", label: "Leistungen bei Pflegegrad 1" },
+  { id: "entlastungsbetrag", label: "Entlastungsbetrag verständlich erklärt" },
+  { id: "haushalt-alltag", label: "Haushaltshilfe und Alltagsbegleitung" },
+  { id: "pflegehilfsmittel", label: "Pflegehilfsmittel bei Pflegegrad 1" },
+  { id: "wohnraum-technik", label: "Wohnraumanpassung und technische Hilfen" },
+  { id: "was-nicht", label: "Was Pflegegrad 1 nicht enthält" },
+  { id: "antrag", label: "Pflegegrad 1 beantragen" },
+  { id: "widerspruch", label: "Ablehnung oder zu niedriger Grad" },
+  { id: "wann-lohnt-sich", label: "Wann lohnt sich Pflegegrad 1?" },
+  { id: "tipps-angehoerige", label: "Tipps für Angehörige" },
+  { id: "service-ahs", label: "Unterstützung durch Alltagshilfe-Süd" },
+  { id: "faq-pflegegrad-1", label: "Häufige Fragen" },
+  { id: "quellen-pflegegrad-1", label: "Quellen" },
+  { id: "interne-links", label: "Weiterführend im Überblick" },
+] as const;

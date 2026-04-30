@@ -2,7 +2,9 @@
 
 import { useState } from "react";
 
-import type { PflegegradFaqItem } from "@/components/ratgeber/pflegegrad-beantragen/pflegegrad-beantragen-faq-data";
+import type { RatgeberFaqAccordionItem } from "@/components/ratgeber/ratgeber-faq-types";
+
+export type { RatgeberFaqAccordionItem };
 
 function Chevron({ open }: { open: boolean }) {
   return (
@@ -17,8 +19,8 @@ function Chevron({ open }: { open: boolean }) {
   );
 }
 
-/** Dezentes FAQ-Accordion (nur diese Seite) */
-export function PflegegradFaqAccordion({ items }: { items: PflegegradFaqItem[] }) {
+/** Dezentes FAQ-Accordion (Ratgeber-Artikel) */
+export function PflegegradFaqAccordion({ items }: { items: RatgeberFaqAccordionItem[] }) {
   const [openId, setOpenId] = useState<string | null>(items[0]?.id ?? null);
 
   return (

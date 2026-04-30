@@ -1,7 +1,9 @@
-export type PflegegradFaqItem = { id: string; question: string; answer: string };
+import type { RatgeberFaqAccordionItem } from "@/components/ratgeber/ratgeber-faq-types";
+
+export type PflegegradFaqItem = RatgeberFaqAccordionItem;
 
 /** FAQ nur für diese Ratgeberseite (JSON-LD + Darstellung): 8 Fragen. */
-export const PFLEGEGRAD_ARTICLE_FAQ: PflegegradFaqItem[] = [
+export const PFLEGEGRAD_ARTICLE_FAQ: RatgeberFaqAccordionItem[] = [
   {
     id: "faq-antwort-beantrag-wo",
     question: "Wie beantrage ich einen Pflegegrad?",

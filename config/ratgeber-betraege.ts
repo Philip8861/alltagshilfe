@@ -49,8 +49,31 @@ export const RATGEBER_CATEGORY_LABELS: Record<RatgeberCategoryId, string> = {
 };
 
 const PFLEGEGRAD_BEANTRAGEN_WORDS = 3000;
+const PFLEGEGRAD1_WORDS = 3000;
 
 export const RATGEBER_BEITRAEGE: RatgeberBeitragMeta[] = [
+  {
+    slug: "pflegegrad-1",
+    title: "Pflegegrad 1: Voraussetzungen, Leistungen und Tipps für Angehörige",
+    excerpt:
+      "Pflegegrad 1 steht für eine geringe Beeinträchtigung im Alltag – mit Entlastungsbetrag, Pflegehilfsmitteln und weiteren Ansprüchen. So beantragen Sie Leistungen und nutzen Unterstützung sinnvoll.",
+    image: "/images/Ratgeber/pflegegrad_1.webp",
+    imageAlt: "Pflegegrad 1: Leistungen, Antrag und Entlastung im Alltag verständlich erklärt",
+    views: 540,
+    tags: [
+      "Pflegegrad 1",
+      "Pflegegrad 1 Leistungen",
+      "Pflegegrad 1 Entlastungsbetrag",
+      "Pflegegrad 1 beantragen",
+      "Entlastungsbetrag",
+      "Pflegehilfsmittel",
+      "Haushaltshilfe Pflegegrad 1",
+    ],
+    categories: ["pflegegrad_leistungen", "pflegende_angehoerige"],
+    approxWordCount: PFLEGEGRAD1_WORDS,
+    readMinutes: readMinutesFromWordCount(PFLEGEGRAD1_WORDS),
+    publishedAt: "2026-04-30",
+  },
   {
     slug: "pflegegrad-beantragen",
     title: "Pflegegrad beantragen: So erhalten Sie Schritt für Schritt die richtige Unterstützung",
@@ -80,6 +103,7 @@ export const RATGEBER_BEITRAEGE: RatgeberBeitragMeta[] = [
 
 /** Aquarell-Teaserbilde für Ratgeber-Hub-Karten (optional pro Slug). */
 const RATGEBER_HUB_CARD_IMAGES: Record<string, string> = {
+  "pflegegrad-1": "/images/Ratgeber/pflegegrad_1.webp",
   "pflegegrad-beantragen": "/images/Ratgeber/Pflegegrad_beantragen.webp",
 };
 

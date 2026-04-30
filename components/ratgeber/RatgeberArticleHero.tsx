@@ -1,6 +1,10 @@
 import Image from "next/image";
 import Link from "next/link";
 
+import {
+  RATGEBER_BYLINE_AUTHOR_TEXT,
+  RATGEBER_BYLINE_REVIEWER_TEXT,
+} from "@/config/ratgeber-article-byline";
 import { cn } from "@/lib/utils";
 
 /** Natürliche Pixelmaße von `ratgeber_blog_backgrounds.webp` (VP8X-Canvas). */
@@ -88,13 +92,13 @@ export function RatgeberArticleHero({
                 <li className="flex gap-3 sm:gap-3.5">
                   <RatgeberHeroCheckIcon className="mt-0.5 shrink-0" />
                   <span className="min-w-0 pt-0 text-sm font-semibold leading-snug text-[#0F4F68] shadow-sm sm:text-[0.98rem] sm:leading-snug drop-shadow-[0_0_12px_rgba(255,255,255,0.9)]">
-                    Autor: Alltagshilfe-Süd Redaktion
+                    {RATGEBER_BYLINE_REVIEWER_TEXT}
                   </span>
                 </li>
                 <li className="flex gap-3 sm:gap-3.5">
                   <RatgeberHeroCheckIcon className="mt-0.5 shrink-0" />
                   <span className="min-w-0 pt-0 text-sm font-semibold leading-snug text-[#0F4F68] shadow-sm sm:text-[0.98rem] sm:leading-snug drop-shadow-[0_0_12px_rgba(255,255,255,0.9)]">
-                    Fachlich geprüfter Artikel von Luisa Gölder (zertifizierte Pflegeberaterin nach § 7a SGB XI)
+                    {RATGEBER_BYLINE_AUTHOR_TEXT}
                   </span>
                 </li>
                 <li className="flex gap-3 sm:gap-3.5">

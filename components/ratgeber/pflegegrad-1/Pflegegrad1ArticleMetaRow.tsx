@@ -17,8 +17,7 @@ function IconCalendar() {
   );
 }
 
-/** Metazeile unter dem Hero (kleine Icons, kein farbiger Kasten) */
-export function PflegegradArticleMetaRow() {
+export function Pflegegrad1ArticleMetaRow() {
   return (
     <div className="mt-8 flex flex-col gap-4 border-t border-neutral-200 pt-6">
       <div className="flex flex-wrap gap-x-8 gap-y-3">
@@ -28,7 +27,7 @@ export function PflegegradArticleMetaRow() {
         </p>
         <p className="flex items-center gap-2 text-sm text-neutral-600">
           <IconClock />
-          Lesezeit: ca. 8 Minuten
+          Lesezeit: ca. 15 Minuten
         </p>
       </div>
       <RatgeberArticleQualityLines />
