@@ -237,7 +237,7 @@ export function RatgeberHub(props?: RatgeberHubProps) {
         aria-labelledby="ratgeber-hub-heading"
       >
         <div className="relative isolate flex w-full flex-col overflow-hidden rounded-b-3xl bg-[#FFFCFA] md:min-h-[18rem] lg:min-h-[19.5rem]">
-          {/* Mobil: Band noch niedriger; Bild nach rechts ausrichten (links stärker beschneiden) */}
+          {/* Mobil: Band niedrig; rechte Bildhälfte priorisieren (~linkes Drittel aus dem sichtbaren Ausschnitt) */}
           <div
             className="pointer-events-none relative z-0 h-[5.5rem] w-full shrink-0 overflow-hidden sm:h-[6.5rem] md:absolute md:inset-0 md:h-auto md:rounded-b-3xl"
             aria-hidden
@@ -246,7 +246,7 @@ export function RatgeberHub(props?: RatgeberHubProps) {
               src="/images/Ratgeber/ratgeber.webp"
               alt=""
               fill
-              className="object-cover object-[72%_center] scale-[1.18] max-md:-translate-x-[2%] md:translate-x-0 md:scale-100 md:object-contain md:object-center"
+              className="object-cover object-center max-md:object-right max-md:scale-[1.22] md:scale-100 md:object-contain md:object-center"
               sizes="(min-width: 768px) 96vw, 100vw"
               quality={92}
               priority
