@@ -52,9 +52,12 @@ function applyZoom(level: number) {
   document.documentElement.style.fontSize = `${level}%`;
 }
 
+/** Fest unten rechts am Viewport (nicht links/zentriert); left: auto verhindert Konflikte mit RTL/Erbstyles. */
 function fixedLaunchStyle(partial: Pick<CSSProperties, "right" | "bottom">): CSSProperties {
   return {
     position: "fixed",
+    left: "auto",
+    top: "auto",
     zIndex: 2147483647,
     visibility: "visible",
     opacity: 1,
@@ -370,7 +373,7 @@ export function ReadabilityZoomControls() {
   /** Kein Launcher im Header: schwebender Button; bei geöffnetem Panel ausblenden (Lupe/% nur im Dialog unter der Überschrift). */
   const launcherNode =
     hideLauncher || open ? null : widgetHidden ? (
-      <div style={buttonWrapStyle}>
+      <div className="select-none" style={buttonWrapStyle}>
         <button
           type="button"
           onClick={() => {
@@ -387,7 +390,7 @@ export function ReadabilityZoomControls() {
         </button>
       </div>
     ) : (
-      <div style={buttonWrapStyle}>
+      <div className="select-none" style={buttonWrapStyle}>
         <button
           type="button"
           onClick={() => setOpen((v) => !v)}
