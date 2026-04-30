@@ -110,31 +110,25 @@ function RatgeberArticleTeaserCard({
         ) : null}
         <Image
           src={hubSrc}
-          alt=""
+          alt={beitrag.imageAlt}
           fill
           className="object-contain object-center"
           sizes="(min-width: 1280px) 18vw, (min-width: 768px) 22vw, 42vw"
           priority={false}
         />
-        <div className="pointer-events-none absolute inset-0 z-[2] flex items-center justify-center px-2 py-2 sm:px-3 sm:py-3 md:px-4 md:py-4">
-          <span
-            id={titleId}
-            className="line-clamp-6 max-h-[min(92%,15rem)] w-full max-w-[min(100%,23rem)] hyphens-auto px-1 text-center text-base font-extrabold leading-tight tracking-tight text-balance sm:max-h-[min(90%,16rem)] sm:max-w-[min(100%,24.5rem)] sm:text-lg sm:leading-snug md:line-clamp-[7] md:max-h-[min(88%,17rem)] md:text-[1.125rem] lg:text-[1.2rem] lg:leading-snug xl:text-[1.25rem]"
-            style={{
-              color: NAVY,
-              textShadow:
-                "0 0 20px rgba(255,255,255,0.98), 0 0 8px rgba(255,255,255,0.95), 0 1px 3px rgba(255,255,255,1), 0 2px 14px rgba(255,255,255,0.75)",
-            }}
-          >
-            {beitrag.title}
-          </span>
-        </div>
       </div>
       <div
         className="flex flex-col px-2.5 pb-2.5 pt-2 sm:px-3 sm:pb-3 sm:pt-2.5"
         style={{ backgroundColor: CARD_CANVAS }}
       >
-        <div className="flex flex-wrap items-start gap-x-3 gap-y-0.5 text-[0.7rem] leading-relaxed text-neutral-500 sm:text-[0.8125rem] sm:leading-relaxed">
+        <p
+          id={titleId}
+          className="line-clamp-6 hyphens-auto text-center text-base font-extrabold leading-tight tracking-tight text-balance sm:text-lg sm:leading-snug md:line-clamp-[7] md:text-[1.125rem] lg:text-[1.2rem] lg:leading-snug xl:text-[1.25rem]"
+          style={{ color: NAVY }}
+        >
+          {beitrag.title}
+        </p>
+        <div className="mt-2 flex flex-wrap items-start justify-center gap-x-3 gap-y-0.5 text-[0.7rem] leading-relaxed text-neutral-500 sm:text-[0.8125rem] sm:leading-relaxed">
           <span className="inline-flex items-center gap-1">
             <EyeIcon className="h-2.5 w-2.5 shrink-0 text-neutral-400" aria-hidden />
             {getDisplayViews(beitrag).toLocaleString("de-DE")} Aufrufe

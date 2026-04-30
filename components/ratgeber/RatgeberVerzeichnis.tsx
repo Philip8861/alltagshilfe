@@ -64,23 +64,27 @@ export function RatgeberVerzeichnis() {
         <ul className="mt-5 space-y-4">
           {gefilterteBeitraege.map((beitrag) => (
             <li key={beitrag.slug} className="rounded-xl border border-[#0F4F68]/10 bg-[#F2F9FA]/45 p-4 transition hover:shadow-sm">
-              <div className="flex flex-col gap-3 sm:flex-row">
-                <div className="relative h-24 w-full overflow-hidden rounded-lg sm:h-20 sm:w-36">
-                  <Image src={beitrag.image} alt={beitrag.imageAlt} fill className="object-cover" sizes="144px" />
+              <div className="flex flex-col gap-3">
+                <div className="relative mx-auto aspect-[4/3] w-full max-w-lg overflow-hidden rounded-lg">
+                  <Image
+                    src={beitrag.image}
+                    alt={beitrag.imageAlt}
+                    fill
+                    className="object-cover"
+                    sizes="(max-width: 640px) 100vw, 32rem"
+                  />
                 </div>
-                <div className="min-w-0 flex-1">
-                  <p className="text-xs font-semibold uppercase tracking-wide text-[#0F4F68]/80">Ratgeber</p>
-                  <h3 className="mt-1 text-lg font-bold text-[#0F4F68]">{beitrag.title}</h3>
-                  <p className="mt-2 text-sm leading-relaxed text-neutral-700">{beitrag.excerpt}</p>
-                  <div className="mt-3 flex items-center justify-between gap-3">
-                    <span className="text-xs font-semibold text-[#0F4F68]/75">{beitrag.views.toLocaleString("de-DE")} Aufrufe</span>
-                    <Link
-                      href={`/ratgeber/${beitrag.slug}`}
-                      className="inline-flex items-center rounded-lg bg-[#0F4F68] px-3 py-1.5 text-sm font-semibold text-white transition-colors hover:bg-[#0c3d52]"
-                    >
-                      Lesen
-                    </Link>
-                  </div>
+                <p className="text-center text-xs font-semibold uppercase tracking-wide text-[#0F4F68]/80">Ratgeber</p>
+                <h3 className="text-center text-lg font-bold text-[#0F4F68]">{beitrag.title}</h3>
+                <p className="mt-1 text-sm leading-relaxed text-neutral-700">{beitrag.excerpt}</p>
+                <div className="mt-3 flex items-center justify-between gap-3">
+                  <span className="text-xs font-semibold text-[#0F4F68]/75">{beitrag.views.toLocaleString("de-DE")} Aufrufe</span>
+                  <Link
+                    href={`/ratgeber/${beitrag.slug}`}
+                    className="inline-flex items-center rounded-lg bg-[#0F4F68] px-3 py-1.5 text-sm font-semibold text-white transition-colors hover:bg-[#0c3d52]"
+                  >
+                    Lesen
+                  </Link>
                 </div>
               </div>
             </li>

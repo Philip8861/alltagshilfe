@@ -56,8 +56,9 @@ export const RATGEBER_BEITRAEGE: RatgeberBeitragMeta[] = [
     title: "Pflegegrad beantragen: So erhalten Sie Schritt für Schritt die richtige Unterstützung",
     excerpt:
       "Wer im Alltag dauerhaft Unterstützung benötigt, kann einen Pflegegrad beantragen. Dieser Ratgeber erklärt Schritt für Schritt, wie der Antrag funktioniert, wie die Begutachtung abläuft und worauf Angehörige achten sollten.",
-    image: "/images/Ratgeber/ratgeber.webp",
-    imageAlt: "Ratgeber: Pflege und Unterstützung zu Hause, verständlich erklärt",
+    image: "/images/Ratgeber/Pflegegrad_beantragen.webp",
+    imageAlt:
+      "Pflegegrad beantragen: Antrag, Unterlagen und Weg zur Begutachtung – verständlich erklärt",
     views: 720,
     tags: [
       "Pflegegrad beantragen",
@@ -79,7 +80,7 @@ export const RATGEBER_BEITRAEGE: RatgeberBeitragMeta[] = [
 
 /** Aquarell-Teaserbilde für Ratgeber-Hub-Karten (optional pro Slug). */
 const RATGEBER_HUB_CARD_IMAGES: Record<string, string> = {
-  "pflegegrad-beantragen": "/images/Ratgeber/ratgeber.webp",
+  "pflegegrad-beantragen": "/images/Ratgeber/Pflegegrad_beantragen.webp",
 };
 
 export function ratgeberHubCardImage(slug: string): string {

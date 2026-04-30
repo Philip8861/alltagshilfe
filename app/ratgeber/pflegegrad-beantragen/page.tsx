@@ -57,7 +57,7 @@ export default function PflegegradBeantragenRatgeberPage() {
     articlePath: ARTICLE_PATH,
     datePublishedISO: "2026-04-29T08:00:00+02:00",
     dateModifiedISO: "2026-04-29T08:00:00+02:00",
-    imageUrl: "/images/Ratgeber/ratgeber.webp",
+    imageUrl: "/images/Ratgeber/Pflegegrad_beantragen.webp",
     breadcrumbs: [
       { name: "Startseite", path: "/" },
       { name: "Ratgeber", path: "/ratgeber" },

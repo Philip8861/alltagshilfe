@@ -36,34 +36,37 @@ export function PflegegradRatgeberHero() {
         aria-hidden
       />
 
-      <div className="mt-8 flex flex-col gap-8 lg:mt-9 lg:flex-row lg:items-start lg:justify-between lg:gap-10">
-        <div className="min-w-0 max-w-xl flex-1">
-          <p className="inline-flex rounded-full border border-neutral-200 bg-white px-3 py-1 text-xs font-semibold uppercase tracking-[0.12em] text-[#0F4F68]">
-            Ratgeber
-          </p>
-          <h1
-            id="ratgeber-artikel-heading"
-            className="mt-4 text-balance text-3xl font-bold tracking-tight text-[#0F4F68] sm:text-4xl lg:text-[2.35rem] lg:leading-[1.2]"
-          >
-            Pflegegrad beantragen: So erhalten Sie Schritt für Schritt die richtige Unterstützung
-          </h1>
-          <p className={`${PROSE} mt-5 max-w-[40rem]`}>
-            Ein Pflegegrad eröffnet Ihnen oder Ihren Angehörigen wichtige Leistungen der Pflegeversicherung. Hier erfahren
-            Sie, wie der Antrag funktioniert, was begutachtet wird und welche Unterstützung Ihnen zusteht.
-          </p>
+      <div className="mt-8 space-y-6 lg:mt-9 lg:space-y-8">
+        <div className="flex flex-row items-start gap-4 sm:gap-6 lg:gap-10">
+          <div className="min-w-0 flex-1">
+            <p className="inline-flex rounded-full border border-neutral-200 bg-white px-3 py-1 text-xs font-semibold uppercase tracking-[0.12em] text-[#0F4F68]">
+              Ratgeber
+            </p>
+            <h1
+              id="ratgeber-artikel-heading"
+              className="mt-4 text-balance text-3xl font-bold tracking-tight text-[#0F4F68] sm:text-4xl lg:text-[2.35rem] lg:leading-[1.2]"
+            >
+              Pflegegrad beantragen: So erhalten Sie Schritt für Schritt die richtige Unterstützung
+            </h1>
+          </div>
+
+          <div className="relative w-[min(38vw,220px)] shrink-0 overflow-hidden rounded-2xl border border-neutral-100 shadow-[0_12px_40px_-28px_rgba(15,79,104,0.35)] ring-1 ring-[#0F4F68]/10 sm:w-[min(34vw,300px)] lg:max-w-[420px] lg:w-[min(36%,420px)]">
+            <Image
+              src="/images/Ratgeber/Pflegegrad_beantragen.webp"
+              alt="Pflegegrad beantragen: Antrag, Unterlagen und Weg zur Begutachtung – verständlich erklärt"
+              width={1117}
+              height={724}
+              className="h-auto w-full object-cover"
+              sizes="(max-width:1024px) 38vw, 420px"
+              priority
+            />
+          </div>
         </div>
 
-        <div className="relative w-full max-w-md shrink-0 overflow-hidden rounded-2xl border border-neutral-100 shadow-[0_12px_40px_-28px_rgba(15,79,104,0.35)] ring-1 ring-[#0F4F68]/10 lg:max-w-[380px] xl:max-w-[420px]">
-          <Image
-            src="/images/Ratgeber/ratgeber.webp"
-            alt="Pflegeberatung: Gespräch mit älterer Person in vertrautem Umfeld"
-            width={840}
-            height={560}
-            className="h-auto w-full object-cover"
-            sizes="(max-width: 1024px) 100vw, 420px"
-            priority
-          />
-        </div>
+        <p className={`${PROSE} max-w-[40rem]`}>
+          Ein Pflegegrad eröffnet Ihnen oder Ihren Angehörigen wichtige Leistungen der Pflegeversicherung. Hier erfahren
+          Sie, wie der Antrag funktioniert, was begutachtet wird und welche Unterstützung Ihnen zusteht.
+        </p>
       </div>
 
       <PflegegradArticleMetaRow />
