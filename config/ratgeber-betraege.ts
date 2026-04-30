@@ -58,6 +58,7 @@ const PFLEGEGRAD_BEANTRAGEN_WORDS = 1600;
 const PFLEGEGRAD1_WORDS = 3000;
 /** Inhalt + Rechner/FAQ; Lesezeit redaktionell 5 Min. (Hub/Meta/JSON konsistent über `readMinutes`). */
 const PFLEGEGELDRECHNER_WORDS = 1000;
+const KOSTENFREIE_PFLEGEHILFSMITTEL_42_WORDS = 2000;
 
 export const RATGEBER_BEITRAEGE: RatgeberBeitragMeta[] = [
   {
@@ -128,6 +129,28 @@ export const RATGEBER_BEITRAEGE: RatgeberBeitragMeta[] = [
     readMinutes: 5,
     publishedAt: "2026-04-30",
   },
+  {
+    slug: "kostenfreie-pflegehilfsmittel-42-euro",
+    title: "Kostenfreie Pflegehilfsmittel im Wert von 42 € monatlich",
+    excerpt:
+      "Mit Pflegegrad ab 1: bis zu 42 € monatlich für Verbrauchsmaterialien wie Handschuhe und Desinfektion – Anspruch, Antrag, Erstattung oder Direktabrechnung verständlich erklärt.",
+    image: "/images/Ratgeber/ratgeber_pflegehilfsmittel.webp",
+    imageAlt:
+      "Kostenfreie Pflegehilfsmittel: Verbrauchsmaterialien im häuslichen Pflegealltag – Übersicht und Anspruch",
+    views: 95,
+    tags: [
+      "kostenfreie Pflegehilfsmittel 42 Euro",
+      "Pflegehilfsmittel beantragen",
+      "Pflegehilfsmittel zum Verbrauch",
+      "42 Euro Pflegebox",
+      "Pflegegrad Pflegehilfsmittel",
+      "kostenlose Pflegehilfsmittel",
+    ],
+    categories: ["pflegehilfsmittel_42eur", "pflegegrad_leistungen", "inkontinenz"],
+    approxWordCount: KOSTENFREIE_PFLEGEHILFSMITTEL_42_WORDS,
+    readMinutes: readMinutesFromWordCount(KOSTENFREIE_PFLEGEHILFSMITTEL_42_WORDS),
+    publishedAt: "2026-04-30",
+  },
 ];
 
 /** Aquarell-Teaserbilde für Ratgeber-Hub-Karten (optional pro Slug). */
@@ -135,6 +158,7 @@ const RATGEBER_HUB_CARD_IMAGES: Record<string, string> = {
   "pflegegrad-1": "/images/Ratgeber/pflegegrad_1.webp",
   "pflegegrad-beantragen": "/images/Ratgeber/Pflegegrad_beantragen.webp",
   pflegegeldrechner: "/images/Ratgeber/pflegegrad_rechner.webp",
+  "kostenfreie-pflegehilfsmittel-42-euro": "/images/Ratgeber/ratgeber_pflegehilfsmittel.webp",
 };
 
 export function ratgeberHubCardImage(slug: string): string {
