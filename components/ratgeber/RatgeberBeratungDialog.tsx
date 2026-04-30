@@ -6,6 +6,7 @@ import {
   useContext,
   useEffect,
   useMemo,
+  useRef,
   useState,
   type ReactNode,
 } from "react";
@@ -22,6 +23,7 @@ import {
   type HilfefinderServiceKey,
 } from "@/config/hilfefinder-services";
 import { buildStandortPageHref, findStandortByPlz, getOrtByPlz, type Standort } from "@/config/standorte";
+import { RatgeberArticleReadProgressBar } from "@/components/ratgeber/RatgeberArticleReadProgress";
 import { buildRatgeberBeratungInitialMessage } from "@/lib/ratgeber/beratung-dialog-message";
 import { contactTopicFromHilfefinderServices } from "@/lib/ratgeber/contact-topic-from-services";
 import { cn } from "@/lib/utils";
@@ -456,6 +458,9 @@ export function RatgeberBeratungCtaButton({
   );
 }
 
+const SIDEBAR_ATTENTION_MS = 30_000;
+const SIDEBAR_ATTENTION_DURATION_MS = 900;
+
 /** Sticky-Sidebar-Kachel „Persönliche Beratung“ (Desktop). */
 export function RatgeberSidebarBeratungTeaser({
   supportLine,
@@ -463,14 +468,41 @@ export function RatgeberSidebarBeratungTeaser({
   buttonText = "Jetzt kostenlos beraten lassen",
   preselectedServices,
   contextNote,
+  articleSectionIds,
 }: {
   supportLine: string;
   title?: string;
   buttonText?: string;
   preselectedServices?: HilfefinderServiceKey[];
   contextNote?: string;
+  /** Anker-IDs der Kapitel (Reihenfolge wie Inhaltsverzeichnis) für den Lesefortschritt. */
+  articleSectionIds?: readonly string[];
 }) {
   const ctx = useRatgeberBeratung();
+  const [attentionPulse, setAttentionPulse] = useState(false);
+  const attentionClearRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    if (typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      return;
+    }
+
+    const trigger = () => {
+      if (attentionClearRef.current) clearTimeout(attentionClearRef.current);
+      setAttentionPulse(true);
+      attentionClearRef.current = setTimeout(() => {
+        setAttentionPulse(false);
+        attentionClearRef.current = null;
+      }, SIDEBAR_ATTENTION_DURATION_MS);
+    };
+
+    const intervalId = window.setInterval(trigger, SIDEBAR_ATTENTION_MS);
+    return () => {
+      clearInterval(intervalId);
+      if (attentionClearRef.current) clearTimeout(attentionClearRef.current);
+    };
+  }, []);
+
   return (
     <div className="relative overflow-hidden rounded-2xl border border-neutral-200/95 bg-[linear-gradient(180deg,#fdfefe_0%,#ffffff_100%)] px-4 py-4 shadow-[0_2px_14px_-10px_rgba(15,79,104,0.1)] sm:px-5 sm:py-5">
       <div aria-hidden className="absolute inset-x-0 top-0 h-[3px] bg-gradient-to-r from-[#F78F2E]/50 to-[#0F4F68]/25" />
@@ -479,10 +511,17 @@ export function RatgeberSidebarBeratungTeaser({
       <button
         type="button"
         onClick={() => ctx?.open({ preselectedServices, contextNote })}
-        className="mt-4 inline-flex min-h-[2.75rem] w-full items-center justify-center rounded-lg border border-[#F78F2E] bg-[#F78F2E] px-3 text-[0.9rem] font-semibold text-white transition hover:bg-[#e8862a] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68] focus-visible:ring-offset-2"
+        className={cn(
+          "mt-4 inline-flex min-h-[2.75rem] w-full items-center justify-center rounded-lg border border-[#F78F2E] bg-[#F78F2E] px-3 text-[0.9rem] font-semibold text-white transition-all duration-300 hover:bg-[#e8862a] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68] focus-visible:ring-offset-2",
+          attentionPulse &&
+            "scale-[1.02] shadow-[0_0_22px_rgba(247,143,46,0.75)] ring-2 ring-[#F78F2E]/90 ring-offset-2 ring-offset-white",
+        )}
       >
         {buttonText}
       </button>
+      {articleSectionIds && articleSectionIds.length > 0 ? (
+        <RatgeberArticleReadProgressBar sectionIds={articleSectionIds} />
+      ) : null}
     </div>
   );
 }
