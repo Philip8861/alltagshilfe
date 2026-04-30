@@ -1,3 +1,4 @@
+import { RatgeberArticleReadProgressStack } from "@/components/ratgeber/RatgeberArticleReadProgress";
 import { RatgeberSidebarBeratungTeaser } from "@/components/ratgeber/RatgeberBeratungDialog";
 import type { HilfefinderServiceKey } from "@/config/hilfefinder-services";
 
@@ -50,14 +51,14 @@ export function RatgeberArticleDesktopSidebar({
       </nav>
 
       <div className="sticky top-[var(--ahs-header-scroll-padding)] z-10 mt-5 min-w-0 self-start">
-        <div className="max-h-[calc(100dvh-var(--ahs-header-scroll-padding)-max(26vh,13rem))] overflow-y-auto overflow-x-hidden overscroll-contain [-webkit-overflow-scrolling:touch] [scrollbar-gutter:stable] pr-0.5">
+        <div className="max-h-[calc(100dvh-var(--ahs-header-scroll-padding)-max(26vh,13rem)-5.5rem)] overflow-y-auto overflow-x-hidden overscroll-contain [-webkit-overflow-scrolling:touch] [scrollbar-gutter:stable] pr-0.5">
           <RatgeberSidebarBeratungTeaser
             supportLine={supportLine}
             preselectedServices={preselectedServices}
             contextNote={contextNote}
-            articleSectionIds={sectionIds}
           />
         </div>
+        <RatgeberArticleReadProgressStack sectionIds={sectionIds} className="mt-4 pb-1" />
       </div>
     </aside>
   );

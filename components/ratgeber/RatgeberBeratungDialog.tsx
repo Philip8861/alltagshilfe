@@ -23,7 +23,6 @@ import {
   type HilfefinderServiceKey,
 } from "@/config/hilfefinder-services";
 import { buildStandortPageHref, findStandortByPlz, getOrtByPlz, type Standort } from "@/config/standorte";
-import { RatgeberArticleReadProgressBar } from "@/components/ratgeber/RatgeberArticleReadProgress";
 import { buildRatgeberBeratungInitialMessage } from "@/lib/ratgeber/beratung-dialog-message";
 import { contactTopicFromHilfefinderServices } from "@/lib/ratgeber/contact-topic-from-services";
 import { cn } from "@/lib/utils";
@@ -531,15 +530,12 @@ export function RatgeberSidebarBeratungTeaser({
   buttonText = "Jetzt kostenlos beraten lassen",
   preselectedServices,
   contextNote,
-  articleSectionIds,
 }: {
   supportLine: string;
   title?: string;
   buttonText?: string;
   preselectedServices?: HilfefinderServiceKey[];
   contextNote?: string;
-  /** Anker-IDs der Kapitel (Reihenfolge wie Inhaltsverzeichnis) für den Lesefortschritt. */
-  articleSectionIds?: readonly string[];
 }) {
   const ctx = useRatgeberBeratung();
   const [eyebrowGlow, setEyebrowGlow] = useState(false);
@@ -626,7 +622,7 @@ export function RatgeberSidebarBeratungTeaser({
         className="absolute inset-x-0 top-0 h-[3px] bg-gradient-to-r from-[#0F4F68] via-[#0a3d52] to-[#F78F2E]"
       />
 
-      <div className="relative flex items-start justify-between gap-2.5">
+      <div className="relative">
         <p
           className={cn(
             "text-[0.51rem] font-extrabold uppercase tracking-[0.14em] transition-colors duration-300 ease-out sm:text-[0.53rem]",
@@ -635,12 +631,6 @@ export function RatgeberSidebarBeratungTeaser({
         >
           Persönliche Beratung
         </p>
-        <span
-          className="shrink-0 rounded-full bg-[#F2F9FA] px-2 py-0.5 text-[0.49rem] font-extrabold tabular-nums text-[#0F4F68]/70 ring-1 ring-[#0F4F68]/8 sm:px-2 sm:py-1 sm:text-[0.52rem]"
-          aria-hidden
-        >
-          {adIndex + 1}/{slides.length}
-        </span>
       </div>
 
       <div
@@ -674,40 +664,6 @@ export function RatgeberSidebarBeratungTeaser({
           )}
         </div>
       </div>
-
-      <nav
-        className="relative mt-3.5 grid grid-cols-3 gap-0.5 rounded-xl bg-[#F2F9FA] p-0.5 ring-1 ring-[#0F4F68]/6 sm:mt-4 sm:gap-1 sm:rounded-2xl sm:p-1"
-        aria-label="Hinweis auswählen"
-        role="tablist"
-      >
-        {slides.map((s, i) => (
-          <button
-            key={i}
-            type="button"
-            role="tab"
-            aria-label={s.dotLabel}
-            aria-selected={i === adIndex}
-            aria-current={i === adIndex ? "true" : undefined}
-            onClick={() => setAdIndex(i)}
-            className={cn(
-              "rounded-lg py-1.5 text-center text-[0.55rem] font-extrabold uppercase tracking-[0.06em] transition focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68] focus-visible:ring-offset-2 sm:rounded-xl sm:py-2 sm:text-[0.58rem]",
-              i === adIndex
-                ? "bg-white text-[#0F4F68] shadow-none ring-1 ring-[#0F4F68]/10"
-                : "text-[#0F4F68]/45 hover:bg-white/70 hover:text-[#0F4F68]/78",
-            )}
-          >
-            {i === 0 ? "Shop" : i === 1 ? "Box" : "Beratung"}
-          </button>
-        ))}
-      </nav>
-
-      {articleSectionIds && articleSectionIds.length > 0 ? (
-        <RatgeberArticleReadProgressBar
-          sectionIds={articleSectionIds}
-          compact
-          className="relative mt-3.5 border-t border-neutral-200/90 pt-3 sm:mt-4 sm:pt-3.5"
-        />
-      ) : null}
     </div>
   );
 }

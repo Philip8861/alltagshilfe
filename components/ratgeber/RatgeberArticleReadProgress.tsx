@@ -92,3 +92,30 @@ export function RatgeberArticleReadProgressBar({
     </div>
   );
 }
+
+/** Kompakt unter dem Sidebar-Teaser: Label + Prozent, ohne Fortschrittsbalken. */
+export function RatgeberArticleReadProgressStack({
+  sectionIds,
+  className = "",
+}: {
+  sectionIds: readonly string[];
+  className?: string;
+}) {
+  const pct = useArticleSectionReadPercent(sectionIds);
+
+  if (sectionIds.length === 0) return null;
+
+  return (
+    <div className={`flex w-full flex-col items-center text-center ${className}`.trim()}>
+      <p className="text-[0.65rem] font-semibold uppercase tracking-[0.14em] text-[#0F4F68]/85 sm:text-xs">Lesefortschritt</p>
+      <p
+        className="mt-1.5 text-2xl font-extrabold tabular-nums leading-none text-[#0F4F68] sm:text-[1.65rem]"
+        aria-live="polite"
+        aria-atomic="true"
+        aria-label={`Lesefortschritt: ${pct} Prozent`}
+      >
+        {pct}%
+      </p>
+    </div>
+  );
+}

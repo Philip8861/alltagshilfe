@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import { RatgeberArticleReadProgressStack } from "@/components/ratgeber/RatgeberArticleReadProgress";
 import { RatgeberBeratungCtaButton, RatgeberSidebarBeratungTeaser } from "@/components/ratgeber/RatgeberBeratungDialog";
 import { PflegegradFaqAccordion } from "@/components/ratgeber/pflegegrad-beantragen/PflegegradFaqAccordion";
 import { PflegegradQuickAnswerBox } from "@/components/ratgeber/pflegegrad-beantragen/PflegegradQuickAnswerAndFacts";
@@ -49,11 +50,14 @@ export function Pflegegrad1Article() {
         </nav>
       </details>
 
-      <div className="mb-11 lg:hidden">
+      <div className="mb-11 space-y-4 lg:hidden">
         <RatgeberSidebarBeratungTeaser
           supportLine="Fragen zu Pflegegrad 1, Entlastungsbetrag oder Antrag?"
           preselectedServices={["pflegegrad_beantrag_widerspruch"]}
           contextNote="Ratgeber: Pflegegrad 1 (mobil)"
+        />
+        <RatgeberArticleReadProgressStack
+          sectionIds={PFLEGEGRAD1_ARTICLE_TOC_ENTRIES.map((e) => e.id)}
         />
       </div>
 
