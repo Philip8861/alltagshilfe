@@ -55,7 +55,7 @@ Diese Datei ist die verbindliche Referenz für Architektur, Tech-Stack, Seitenst
 
 **Skalierbarkeit**: Neue Landingpages = neuer Eintrag in Konfiguration (z. B. `content/landing/*.json`) + Route `/landing/[slug]`; keine neuen Dateien pro Seite nötig.
 
-**Ratgeber-Artikel (Desktop, lg+):** Für die linke Spalte (Inhalt + Teaser) immer **`RatgeberArticleDesktopSidebar`** (`components/ratgeber/RatgeberArticleDesktopSidebar.tsx`) verwenden: das Inhaltsverzeichnis scrollt mit dem Dokument, **`RatgeberSidebarBeratungTeaser`** bleibt unter dem Header klebend (`position: sticky`).
+**Ratgeber-Artikel (Desktop, lg+):** Für die linke Spalte (Inhalt + Teaser) immer **`RatgeberArticleDesktopSidebar`** (`components/ratgeber/RatgeberArticleDesktopSidebar.tsx`) verwenden: das Inhaltsverzeichnis scrollt mit dem Dokument, **`RatgeberSidebarBeratungTeaser`** bleibt unter dem Header klebend (`position: sticky`). **`RatgeberSidebarBeratungTeaser`** nicht auf der Ratgeber-Übersicht `/ratgeber` einbinden — nur in Artikeln (Desktop-Sidebar und mobile `lg:hidden`-Blöcke in den Artikelkomponenten).
 
 ---
 

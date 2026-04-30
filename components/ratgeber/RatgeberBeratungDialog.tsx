@@ -471,11 +471,11 @@ type SidebarTeaserIconId = "shop" | "box" | "beratung";
 
 function SidebarTeaserIconMark({ id }: { id: SidebarTeaserIconId }) {
   const boxClass =
-    "flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-[#F2F9FA] via-white to-[#fff8f2] text-[#0F4F68] shadow-[0_8px_28px_-14px_rgba(15,79,104,0.4)] ring-1 ring-[#0F4F68]/10";
+    "flex h-[2.625rem] w-[2.625rem] shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-[#F2F9FA] via-white to-[#fff8f2] text-[#0F4F68] shadow-none ring-1 ring-[#0F4F68]/10 sm:h-[2.75rem] sm:w-[2.75rem]";
   return (
     <span className={boxClass} aria-hidden>
       {id === "shop" ? (
-        <svg className="h-8 w-8" viewBox="0 0 24 24" fill="none" aria-hidden>
+        <svg className="h-6 w-6 sm:h-[1.65rem] sm:w-[1.65rem]" viewBox="0 0 24 24" fill="none" aria-hidden>
           <path
             stroke="currentColor"
             strokeWidth="2"
@@ -485,7 +485,7 @@ function SidebarTeaserIconMark({ id }: { id: SidebarTeaserIconId }) {
           />
         </svg>
       ) : id === "box" ? (
-        <svg className="h-8 w-8" viewBox="0 0 24 24" fill="none" aria-hidden>
+        <svg className="h-6 w-6 sm:h-[1.65rem] sm:w-[1.65rem]" viewBox="0 0 24 24" fill="none" aria-hidden>
           <path
             stroke="currentColor"
             strokeWidth="2"
@@ -502,7 +502,7 @@ function SidebarTeaserIconMark({ id }: { id: SidebarTeaserIconId }) {
           />
         </svg>
       ) : (
-        <svg className="h-8 w-8" viewBox="0 0 24 24" fill="none" aria-hidden>
+        <svg className="h-6 w-6 sm:h-[1.65rem] sm:w-[1.65rem]" viewBox="0 0 24 24" fill="none" aria-hidden>
           <path
             stroke="currentColor"
             strokeWidth="2"
@@ -520,8 +520,9 @@ type SidebarTeaserSlide =
   | { kind: "link"; icon: SidebarTeaserIconId; headline: string; body: string; href: string; ctaLabel: string; dotLabel: string }
   | { kind: "beratung"; icon: SidebarTeaserIconId; headline: string; body: string; ctaLabel: string; dotLabel: string };
 
+/** Gleiche Marke wie Überschrift (#0F4F68), ohne Schlagschatten-Glanz. */
 const sidebarPromoCtaClass =
-  "mt-5 inline-flex min-h-[3rem] w-full items-center justify-center rounded-xl bg-[#F78F2E] px-4 text-[0.95rem] font-bold text-white shadow-[0_10px_28px_-10px_rgba(247,143,46,0.65)] transition hover:bg-[#e8862a] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68] focus-visible:ring-offset-2";
+  "mt-4 inline-flex min-h-9 w-full items-center justify-center rounded-lg border border-[#0F4F68]/20 bg-[#0F4F68] px-3 text-[0.72rem] font-bold text-white shadow-none transition hover:bg-[#0c3d52] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68] focus-visible:ring-offset-2 sm:min-h-[2.25rem] sm:px-3.5 sm:text-[0.75rem]";
 
 /** Sticky-Sidebar-Kachel „Persönliche Beratung“ (Desktop): rotiert Shop, Pflegebox und Beratungs-Popup. */
 export function RatgeberSidebarBeratungTeaser({
@@ -615,29 +616,27 @@ export function RatgeberSidebarBeratungTeaser({
   const slide = slides[adIndex]!;
 
   return (
-    <div className="relative overflow-hidden rounded-3xl border border-[#0F4F68]/10 bg-white px-5 pb-5 pt-5 shadow-[0_16px_48px_-20px_rgba(15,79,104,0.38)] sm:px-6 sm:pb-6 sm:pt-6">
+    <div className="relative overflow-hidden rounded-2xl border border-[#0F4F68]/10 bg-white px-3.5 pb-3.5 pt-3.5 shadow-[0_6px_20px_-10px_rgba(15,79,104,0.18)] sm:px-4 sm:pb-4 sm:pt-4">
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-0 bg-[radial-gradient(120%_90%_at_100%_-10%,rgba(247,143,46,0.14)_0%,transparent_55%),radial-gradient(100%_70%_at_-15%_110%,rgba(15,79,104,0.07)_0%,transparent_52%)]"
+        className="pointer-events-none absolute inset-0 bg-[radial-gradient(120%_90%_at_100%_-10%,rgba(247,143,46,0.08)_0%,transparent_50%),radial-gradient(100%_70%_at_-15%_110%,rgba(15,79,104,0.05)_0%,transparent_48%)]"
       />
       <div
         aria-hidden
         className="absolute inset-x-0 top-0 h-[3px] bg-gradient-to-r from-[#0F4F68] via-[#0a3d52] to-[#F78F2E]"
       />
 
-      <div className="relative flex items-start justify-between gap-3">
+      <div className="relative flex items-start justify-between gap-2.5">
         <p
           className={cn(
-            "text-[0.68rem] font-extrabold uppercase tracking-[0.14em] transition-all duration-300 ease-out",
-            eyebrowGlow && adIndex === 2
-              ? "text-[#F78F2E] drop-shadow-[0_0_12px_rgba(247,143,46,0.75)]"
-              : "text-[#0F4F68]/55",
+            "text-[0.51rem] font-extrabold uppercase tracking-[0.14em] transition-colors duration-300 ease-out sm:text-[0.53rem]",
+            eyebrowGlow && adIndex === 2 ? "text-[#F78F2E]" : "text-[#0F4F68]/55",
           )}
         >
           Persönliche Beratung
         </p>
         <span
-          className="shrink-0 rounded-full bg-[#F2F9FA] px-2.5 py-1 text-[0.65rem] font-extrabold tabular-nums text-[#0F4F68]/70 ring-1 ring-[#0F4F68]/8"
+          className="shrink-0 rounded-full bg-[#F2F9FA] px-2 py-0.5 text-[0.49rem] font-extrabold tabular-nums text-[#0F4F68]/70 ring-1 ring-[#0F4F68]/8 sm:px-2 sm:py-1 sm:text-[0.52rem]"
           aria-hidden
         >
           {adIndex + 1}/{slides.length}
@@ -645,19 +644,19 @@ export function RatgeberSidebarBeratungTeaser({
       </div>
 
       <div
-        className="relative mt-5 min-h-[12.5rem] sm:min-h-[12rem]"
+        className="relative mt-3.5 min-h-[9.5rem] sm:min-h-[9rem]"
         role="region"
         aria-roledescription="Karussell"
         aria-label="Wechselnde Hinweise zu Angeboten und Beratung"
       >
         <div key={adIndex} className="animate-fade-in-up">
-          <div className="flex gap-4">
+          <div className="flex gap-3">
             <SidebarTeaserIconMark id={slide.icon} />
             <div className="min-w-0 flex-1 pt-0.5">
-              <p className="text-[1.05rem] font-extrabold leading-snug tracking-tight text-[#0F4F68] sm:text-[1.12rem]">
+              <p className="text-[0.8125rem] font-extrabold leading-snug tracking-tight text-[#0F4F68] sm:text-[0.85rem]">
                 {slide.headline}
               </p>
-              <p className="mt-3 text-[0.9375rem] leading-relaxed text-neutral-600">{slide.body}</p>
+              <p className="mt-2 text-[0.7rem] leading-relaxed text-neutral-600 sm:mt-2.5 sm:text-[0.73rem]">{slide.body}</p>
             </div>
           </div>
           {slide.kind === "link" ? (
@@ -677,7 +676,7 @@ export function RatgeberSidebarBeratungTeaser({
       </div>
 
       <nav
-        className="relative mt-5 grid grid-cols-3 gap-1 rounded-2xl bg-[#F2F9FA] p-1 ring-1 ring-[#0F4F68]/6"
+        className="relative mt-3.5 grid grid-cols-3 gap-0.5 rounded-xl bg-[#F2F9FA] p-0.5 ring-1 ring-[#0F4F68]/6 sm:mt-4 sm:gap-1 sm:rounded-2xl sm:p-1"
         aria-label="Hinweis auswählen"
         role="tablist"
       >
@@ -691,9 +690,9 @@ export function RatgeberSidebarBeratungTeaser({
             aria-current={i === adIndex ? "true" : undefined}
             onClick={() => setAdIndex(i)}
             className={cn(
-              "rounded-xl py-2.5 text-center text-[0.62rem] font-extrabold uppercase tracking-[0.06em] transition focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68] focus-visible:ring-offset-2",
+              "rounded-lg py-1.5 text-center text-[0.55rem] font-extrabold uppercase tracking-[0.06em] transition focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68] focus-visible:ring-offset-2 sm:rounded-xl sm:py-2 sm:text-[0.58rem]",
               i === adIndex
-                ? "bg-white text-[#0F4F68] shadow-[0_3px_14px_-6px_rgba(15,79,104,0.28)]"
+                ? "bg-white text-[#0F4F68] shadow-none ring-1 ring-[#0F4F68]/10"
                 : "text-[#0F4F68]/45 hover:bg-white/70 hover:text-[#0F4F68]/78",
             )}
           >
@@ -706,7 +705,7 @@ export function RatgeberSidebarBeratungTeaser({
         <RatgeberArticleReadProgressBar
           sectionIds={articleSectionIds}
           compact
-          className="relative mt-5 border-t border-neutral-200/90 pt-4"
+          className="relative mt-3.5 border-t border-neutral-200/90 pt-3 sm:mt-4 sm:pt-3.5"
         />
       ) : null}
     </div>
