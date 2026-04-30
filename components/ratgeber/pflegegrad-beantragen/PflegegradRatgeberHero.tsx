@@ -37,7 +37,7 @@ export function PflegegradRatgeberHero() {
         aria-hidden
       />
 
-      <div className="mt-8 space-y-6 lg:mt-9 lg:space-y-8">
+      <div className="mt-8 lg:mt-9">
         <div className="flex w-full flex-col items-center gap-5 text-center sm:gap-6 lg:flex-row lg:items-start lg:justify-between lg:gap-10 lg:text-left">
           <div className="order-2 flex min-w-0 w-full max-w-none flex-1 flex-col items-center lg:order-1 lg:max-w-[min(100%,42rem)] lg:items-start lg:pr-2">
             <p className="inline-flex rounded-full border border-neutral-200 bg-white px-3 py-1 text-xs font-semibold uppercase tracking-[0.12em] text-[#0F4F68]">
@@ -49,6 +49,10 @@ export function PflegegradRatgeberHero() {
             >
               Pflegegrad beantragen: So erhalten Sie Schritt für Schritt die richtige Unterstützung
             </h1>
+            <p className={`${PROSE} mt-4 w-full max-w-[40rem] text-center sm:mt-5 lg:mx-0 lg:text-left`}>
+              Ein Pflegegrad eröffnet Ihnen oder Ihren Angehörigen wichtige Leistungen der Pflegeversicherung. Hier erfahren
+              Sie, wie der Antrag funktioniert, was begutachtet wird und welche Unterstützung Ihnen zusteht.
+            </p>
           </div>
 
           <div className="order-1 flex w-full max-w-[21.9375rem] shrink-0 flex-col items-center sm:max-w-[25.59375rem] lg:order-2 lg:ml-auto lg:w-[min(43.875%,512px)] lg:max-w-[512px] lg:shrink-0">
@@ -71,11 +75,6 @@ export function PflegegradRatgeberHero() {
             />
           </div>
         </div>
-
-        <p className={`${PROSE} mx-auto max-w-[40rem] text-center lg:mx-0 lg:text-left`}>
-          Ein Pflegegrad eröffnet Ihnen oder Ihren Angehörigen wichtige Leistungen der Pflegeversicherung. Hier erfahren
-          Sie, wie der Antrag funktioniert, was begutachtet wird und welche Unterstützung Ihnen zusteht.
-        </p>
       </div>
 
       <PflegegradArticleMetaRow />

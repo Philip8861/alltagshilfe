@@ -36,7 +36,7 @@ export function PflegegeldrechnerHero() {
         aria-hidden
       />
 
-      <div className="mt-8 space-y-6 lg:mt-9 lg:space-y-8">
+      <div className="mt-8 lg:mt-9">
         <div className="flex w-full flex-col items-center gap-5 text-center sm:gap-6 lg:flex-row lg:items-start lg:justify-between lg:gap-10 lg:text-left">
           <div className="order-2 flex min-w-0 w-full max-w-none flex-1 flex-col items-center lg:order-1 lg:max-w-[min(100%,42rem)] lg:items-start lg:pr-2">
             <p className="inline-flex rounded-full border border-neutral-200 bg-white px-3 py-1 text-xs font-semibold uppercase tracking-[0.12em] text-[#0F4F68]">
@@ -48,6 +48,11 @@ export function PflegegeldrechnerHero() {
             >
               Pflegegeldrechner 2026: So viel Pflegegeld steht Ihnen zu
             </h1>
+            <p className={`${PROSE} mt-4 w-full max-w-[40rem] text-center sm:mt-5 lg:mx-0 lg:text-left`}>
+              Mit unserem Pflegegeldrechner sehen Sie den Regelbetrag je Pflegegrad sowie den anteiligen Betrag im Monat der
+              Bewilligung (ab dem gewählten Tag bis Monatsende) und die Summe im Kalenderjahr der Bewilligung. Wählen Sie
+              Pflegegrad und Bewilligungsdatum – die Werte aktualisieren sich sofort.
+            </p>
           </div>
 
           <div className="order-1 flex w-full max-w-[21.9375rem] shrink-0 flex-col items-center sm:max-w-[25.59375rem] lg:order-2 lg:ml-auto lg:w-[min(43.875%,512px)] lg:max-w-[512px] lg:shrink-0">
@@ -70,12 +75,6 @@ export function PflegegeldrechnerHero() {
             />
           </div>
         </div>
-
-        <p className={`${PROSE} mx-auto max-w-[40rem] text-center lg:mx-0 lg:text-left`}>
-          Mit unserem Pflegegeldrechner sehen Sie den Regelbetrag je Pflegegrad sowie den anteiligen Betrag im Monat der
-          Bewilligung (ab dem gewählten Tag bis Monatsende) und die Summe im Kalenderjahr der Bewilligung. Wählen Sie
-          Pflegegrad und Bewilligungsdatum – die Werte aktualisieren sich sofort.
-        </p>
       </div>
 
       <PflegegeldrechnerArticleMetaRow />
