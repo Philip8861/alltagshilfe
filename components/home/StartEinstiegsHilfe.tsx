@@ -337,7 +337,7 @@ export function HilfefinderProvider({ children }: { children: ReactNode }) {
                 <p className="mt-2 text-neutral-700">Mehrfachauswahl ist möglich.</p>
                 <ul className="mt-4 grid list-none gap-2 sm:grid-cols-2">
                   {HILFEFINDER_SERVICE_OPTIONEN.map((opt) => (
-                    <li key={opt.key}>
+                    <li key={opt.key} className="flex min-h-0 h-full">
                       <HilfefinderServiceOptionButton
                         opt={opt}
                         active={leistungen.includes(opt.key)}

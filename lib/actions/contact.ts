@@ -15,27 +15,42 @@ import {
 } from "@/lib/email/branded-html";
 import {
   parseNotificationEmailList,
-  resolveRecipientsForKind,
   sendInternalMail,
 } from "@/lib/email/internal-smtp";
 
 export type ContactResult = { success: boolean; error?: string };
 
-function mergeEmailRecipients(...lists: (string[] | undefined)[]): string[] {
-  const seen = new Set<string>();
-  const out: string[] = [];
-  for (const list of lists) {
-    if (!list) continue;
-    for (const raw of list) {
-      const trimmed = raw.trim();
-      if (!trimmed) continue;
-      const key = trimmed.toLowerCase();
-      if (seen.has(key)) continue;
-      seen.add(key);
-      out.push(trimmed);
-    }
+/** Zentrale Adresse, wenn weder NOTIFICATION_TO_CONTACT noch NOTIFICATION_TO gesetzt sind. */
+const DEFAULT_CONTACT_INBOX = "info@alltagshilfe-sued.de";
+
+function getDefaultContactRecipients(): string[] {
+  const contact = parseNotificationEmailList(process.env.NOTIFICATION_TO_CONTACT);
+  if (contact.length > 0) return contact;
+  const general = parseNotificationEmailList(process.env.NOTIFICATION_TO);
+  if (general.length > 0) return general;
+  return [DEFAULT_CONTACT_INBOX];
+}
+
+/**
+ * E-Mail des zuständigen Standorts — nur wenn das Formular einen gültigen Standort-Proof hat und
+ * eine ggf. mitgeschickte PLZ zum Proof-Standort passt (oder keine PLZ mitgeschickt wurde).
+ */
+function resolveRegionalContactEmail(
+  verifiedSlug: string | null,
+  routingPlzRaw: unknown,
+): string | null {
+  if (!verifiedSlug) return null;
+  const standort = findStandortByPageSlug(verifiedSlug);
+  if (!standort) return null;
+  const raw = String(routingPlzRaw ?? "").trim();
+  if (raw !== "") {
+    if (!/^\d{5}$/.test(raw)) return null;
+    const normalized = normalizeRoutingPlzForStandort(verifiedSlug, raw);
+    if (!normalized) return null;
   }
-  return out;
+  const email = standort.email?.trim();
+  if (!email?.includes("@")) return null;
+  return email;
 }
 
 function normalizeRoutingPlzForStandort(verifiedSlug: string, plzRaw: unknown): string | undefined {
@@ -91,10 +106,20 @@ export async function submitContact(formData: FormData): Promise<ContactResult> 
   const verifiedSlug = verifyStandortContactProof(
     typeof proofRaw === "string" && proofRaw.length > 0 ? proofRaw : null,
   );
-  const routingPlz = verifiedSlug
-    ? normalizeRoutingPlzForStandort(verifiedSlug, formData.get("routingPlz"))
+  const routingPlzRaw = formData.get("routingPlz");
+
+  /** Thema „Karriere“: eigene Empfänger — explizit hier, damit es nicht mit dem Standard-Kontakt vermischt wird. */
+  const isKarriereTopic =
+    data.topic === "Karriere" || data.topic.trim().toLowerCase() === "karriere";
+
+  const regionalEmail = !isKarriereTopic
+    ? resolveRegionalContactEmail(verifiedSlug, routingPlzRaw)
+    : null;
+  const standortCtxForEmail =
+    regionalEmail && verifiedSlug ? findStandortByPageSlug(verifiedSlug) : undefined;
+  const routingPlzNormalized = verifiedSlug
+    ? normalizeRoutingPlzForStandort(verifiedSlug, routingPlzRaw)
     : undefined;
-  const standortCtx = verifiedSlug ? findStandortByPageSlug(verifiedSlug) : undefined;
 
   const text = [
     "Neue Kontaktanfrage über die Website",
@@ -103,8 +128,8 @@ export async function submitContact(formData: FormData): Promise<ContactResult> 
     `E-Mail: ${data.email}`,
     data.phone ? `Telefon: ${data.phone}` : null,
     `Thema: ${data.topic}`,
-    standortCtx ? `Standort (Seite): ${standortCtx.name}` : null,
-    routingPlz ? `PLZ (Kontext): ${routingPlz}` : null,
+    standortCtxForEmail ? `Standort (Seite): ${standortCtxForEmail.name}` : null,
+    routingPlzNormalized ? `PLZ (Kontext): ${routingPlzNormalized}` : null,
     "",
     data.message,
   ]
@@ -117,8 +142,8 @@ export async function submitContact(formData: FormData): Promise<ContactResult> 
   ];
   if (data.phone) rows.push({ label: "Telefon", value: data.phone });
   rows.push({ label: "Thema", value: data.topic });
-  if (standortCtx) rows.push({ label: "Standort (Seite)", value: standortCtx.name });
-  if (routingPlz) rows.push({ label: "PLZ (Kontext)", value: routingPlz });
+  if (standortCtxForEmail) rows.push({ label: "Standort (Seite)", value: standortCtxForEmail.name });
+  if (routingPlzNormalized) rows.push({ label: "PLZ (Kontext)", value: routingPlzNormalized });
 
   const html = buildBrandedNotificationHtml({
     kindBadge: "Kontakt",
@@ -128,10 +153,6 @@ export async function submitContact(formData: FormData): Promise<ContactResult> 
     detailText: data.message,
   });
 
-  /** Thema „Karriere“: eigene Empfänger — explizit hier, damit es nicht mit dem Standard-Kontakt vermischt wird. */
-  const isKarriereTopic =
-    data.topic === "Karriere" || data.topic.trim().toLowerCase() === "karriere";
-
   const karriereContactRecipients = isKarriereTopic
     ? (() => {
         const onlyContact = parseNotificationEmailList(
@@ -140,21 +161,18 @@ export async function submitContact(formData: FormData): Promise<ContactResult> 
         if (onlyContact.length > 0) return onlyContact;
         const sameAsKarrierePage = parseNotificationEmailList(process.env.NOTIFICATION_TO_KARRIERE);
         if (sameAsKarrierePage.length > 0) return sameAsKarrierePage;
-        return resolveRecipientsForKind("contact");
+        return getDefaultContactRecipients();
       })()
     : undefined;
 
-  const baseRecipients =
-    karriereContactRecipients !== undefined
-      ? karriereContactRecipients
-      : resolveRecipientsForKind("contact");
-  const standortEmail =
-    standortCtx?.email?.trim() && standortCtx.email.includes("@")
-      ? standortCtx.email.trim()
-      : undefined;
-  const finalTo = standortEmail
-    ? mergeEmailRecipients(baseRecipients, [standortEmail])
-    : baseRecipients;
+  let finalTo: string[];
+  if (isKarriereTopic && karriereContactRecipients) {
+    finalTo = karriereContactRecipients;
+  } else if (regionalEmail) {
+    finalTo = [regionalEmail];
+  } else {
+    finalTo = getDefaultContactRecipients();
+  }
 
   const mailed = await sendInternalMail({
     kind: "contact",
@@ -167,7 +185,9 @@ export async function submitContact(formData: FormData): Promise<ContactResult> 
   if (!mailed.ok) {
     if (mailed.code === "smtp_not_configured") {
       console.warn(
-        "[contact] SMTP oder Empfänger fehlt (NOTIFICATION_TO_CONTACT / NOTIFICATION_TO; Thema Karriere: NOTIFICATION_TO_CONTACT_TOPIC_KARRIERE oder NOTIFICATION_TO_KARRIERE) – keine E-Mail versendet",
+        "[contact] SMTP oder Empfänger fehlt (SMTP_* / NOTIFICATION_TO_*; ohne Konfiguration: Ziel wäre " +
+          DEFAULT_CONTACT_INBOX +
+          " für allgemeine Kontakte) – keine E-Mail versendet",
       );
     }
   }

@@ -33,7 +33,10 @@ export type RatgeberBeratungOpenOptions = {
   contextNote?: string;
 };
 
-type RatgeberBeratungCtxValue = { open: (opts?: RatgeberBeratungOpenOptions) => void };
+type RatgeberBeratungCtxValue = {
+  open: (opts?: RatgeberBeratungOpenOptions) => void;
+  standortContactProofsBySlug: Record<string, string>;
+};
 
 const RatgeberBeratungCtx = createContext<RatgeberBeratungCtxValue | null>(null);
 
@@ -50,7 +53,14 @@ const STEP_MOTIVATION: Record<number, string> = {
 
 const TOTAL_STEPS = 4;
 
-export function RatgeberBeratungProvider({ children }: { children: ReactNode }) {
+export function RatgeberBeratungProvider({
+  children,
+  standortContactProofsBySlug = {},
+}: {
+  children: ReactNode;
+  /** Serverseitig erzeugte Proofs für Standort-Slugs (Ratgeber-Kontakt mit PLZ-Zuordnung). */
+  standortContactProofsBySlug?: Record<string, string>;
+}) {
   const [started, setStarted] = useState(false);
   const [portalReady, setPortalReady] = useState(false);
   const [step, setStep] = useState(1);
@@ -168,7 +178,7 @@ export function RatgeberBeratungProvider({ children }: { children: ReactNode }) 
   const formKey = `${plzNorm}-${leistungen.join(",")}-s${step}`;
 
   return (
-    <RatgeberBeratungCtx.Provider value={{ open: openDialog }}>
+    <RatgeberBeratungCtx.Provider value={{ open: openDialog, standortContactProofsBySlug }}>
       {children}
       {started && portalReady
         ? createPortal(
@@ -220,7 +230,7 @@ export function RatgeberBeratungProvider({ children }: { children: ReactNode }) 
                     <p className="mt-2 text-neutral-700">Mehrfachauswahl ist möglich.</p>
                     <ul className="mt-4 grid list-none gap-2 sm:grid-cols-2">
                       {HILFEFINDER_SERVICE_OPTIONEN.map((opt) => (
-                        <li key={opt.key}>
+                        <li key={opt.key} className="flex min-h-0 h-full">
                           <HilfefinderServiceOptionButton
                             opt={opt}
                             active={leistungen.includes(opt.key)}
@@ -379,6 +389,8 @@ export function RatgeberBeratungProvider({ children }: { children: ReactNode }) 
                           topicHidden
                           hiddenTopic={contactTopic}
                           initialMessage={initialMessage}
+                          standortContactProof={standortContactProofsBySlug[finalerStandort.pageSlug]}
+                          routingPlz={plzNorm.length === 5 ? plzNorm : undefined}
                         />
                       </div>
                     </div>
@@ -452,9 +464,8 @@ export function RatgeberBeratungCtaButton({
   );
 }
 
-const SIDEBAR_ATTENTION_MS = 30_000;
-const SIDEBAR_ATTENTION_DURATION_MS = 900;
-const SIDEBAR_AD_ROTATE_MS = 8_000;
+const SIDEBAR_AD_ROTATE_MS = 30_000;
+const SIDEBAR_BERATUNG_EYEBROW_GLOW_MS = 950;
 
 type SidebarTeaserSlide =
   | { kind: "link"; headline: string; body: string; href: string; ctaLabel: string; dotLabel: string }
@@ -484,8 +495,8 @@ export function RatgeberSidebarBeratungTeaser({
   articleSectionIds?: readonly string[];
 }) {
   const ctx = useRatgeberBeratung();
-  const [attentionPulse, setAttentionPulse] = useState(false);
-  const attentionClearRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [eyebrowGlow, setEyebrowGlow] = useState(false);
+  const eyebrowGlowClearRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [adIndex, setAdIndex] = useState(0);
   const [reduceMotion, setReduceMotion] = useState(false);
 
@@ -533,32 +544,40 @@ export function RatgeberSidebarBeratungTeaser({
   }, [reduceMotion]);
 
   useEffect(() => {
-    if (typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    if (adIndex !== 2) {
+      setEyebrowGlow(false);
       return;
     }
-
-    const trigger = () => {
-      if (attentionClearRef.current) clearTimeout(attentionClearRef.current);
-      setAttentionPulse(true);
-      attentionClearRef.current = setTimeout(() => {
-        setAttentionPulse(false);
-        attentionClearRef.current = null;
-      }, SIDEBAR_ATTENTION_DURATION_MS);
-    };
-
-    const intervalId = window.setInterval(trigger, SIDEBAR_ATTENTION_MS);
+    if (reduceMotion) {
+      setEyebrowGlow(false);
+      return;
+    }
+    if (eyebrowGlowClearRef.current) clearTimeout(eyebrowGlowClearRef.current);
+    setEyebrowGlow(true);
+    eyebrowGlowClearRef.current = setTimeout(() => {
+      setEyebrowGlow(false);
+      eyebrowGlowClearRef.current = null;
+    }, SIDEBAR_BERATUNG_EYEBROW_GLOW_MS);
     return () => {
-      clearInterval(intervalId);
-      if (attentionClearRef.current) clearTimeout(attentionClearRef.current);
+      if (eyebrowGlowClearRef.current) clearTimeout(eyebrowGlowClearRef.current);
     };
-  }, []);
+  }, [adIndex, reduceMotion]);
 
   const slide = slides[adIndex]!;
 
   return (
     <div className="relative overflow-hidden rounded-2xl border border-neutral-200/95 bg-[linear-gradient(180deg,#fdfefe_0%,#ffffff_100%)] px-4 py-4 shadow-[0_2px_14px_-10px_rgba(15,79,104,0.1)] sm:px-5 sm:py-5">
       <div aria-hidden className="absolute inset-x-0 top-0 h-[3px] bg-gradient-to-r from-[#F78F2E]/50 to-[#0F4F68]/25" />
-      <p className="text-[0.65rem] font-bold uppercase tracking-[0.12em] text-[#0F4F68]/65">Persönliche Beratung</p>
+      <p
+        className={cn(
+          "text-[0.65rem] font-bold uppercase tracking-[0.12em] transition-all duration-300 ease-out",
+          eyebrowGlow && adIndex === 2
+            ? "scale-[1.03] text-[#F78F2E] drop-shadow-[0_0_14px_rgba(247,143,46,0.9)]"
+            : "text-[#0F4F68]/65",
+        )}
+      >
+        Persönliche Beratung
+      </p>
       <div
         className="mt-2 min-h-[11.5rem] sm:min-h-[10.75rem]"
         role="region"
@@ -576,12 +595,7 @@ export function RatgeberSidebarBeratungTeaser({
             <button
               type="button"
               onClick={() => ctx?.open({ preselectedServices, contextNote })}
-              className={cn(
-                sidebarBeratungButtonClass,
-                attentionPulse &&
-                  adIndex === 2 &&
-                  "scale-[1.02] shadow-[0_0_22px_rgba(247,143,46,0.75)] ring-2 ring-[#F78F2E]/90 ring-offset-2 ring-offset-white",
-              )}
+              className={sidebarBeratungButtonClass}
             >
               {slide.ctaLabel}
             </button>

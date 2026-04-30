@@ -175,14 +175,14 @@ export function HilfefinderServiceOptionButton({
       onClick={onToggle}
       className={cn(
         hilfefinderOptionButtonClass,
-        "transition-all duration-300",
+        "flex h-full min-h-[54px] text-left transition-all duration-300",
         active && "border-[#F78F2E]/65 bg-[#fff8f2] shadow-[0_6px_16px_rgba(247,143,46,0.14)]",
       )}
     >
-      <span className="flex items-start gap-2.5">
+      <span className="flex min-h-0 w-full flex-1 items-center gap-2.5">
         <HilfefinderSelectMark active={active} />
         <HilfefinderServiceIcon service={opt.key} />
-        <span className="block">{opt.label}</span>
+        <span className="min-w-0 flex-1 text-left leading-snug">{opt.label}</span>
       </span>
     </button>
   );
