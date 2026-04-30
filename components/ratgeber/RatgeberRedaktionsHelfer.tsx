@@ -1,7 +1,7 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 type PartnerSessionPayload = {
   configured: boolean;
@@ -44,6 +44,69 @@ function buildChangeRequestBlock(params: {
   ].join("\n");
 }
 
+function normalizeRole(role: unknown): "partner" | "admin" | null {
+  if (typeof role !== "string") return null;
+  const r = role.trim().toLowerCase();
+  if (r === "admin") return "admin";
+  if (r === "partner") return "partner";
+  return null;
+}
+
+function parseSessionPayload(raw: string): PartnerSessionPayload | null {
+  try {
+    const json = JSON.parse(raw) as Partial<PartnerSessionPayload>;
+    return {
+      configured: Boolean(json.configured),
+      authenticated: Boolean(json.authenticated),
+      hasProfile: Boolean(json.hasProfile),
+      role: normalizeRole(json.role),
+      systemAdminSession: json.systemAdminSession === true,
+    };
+  } catch {
+    return null;
+  }
+}
+
+async function fetchPartnerSessionPayload(): Promise<PartnerSessionPayload> {
+  const res = await fetch("/api/partner/session", {
+    credentials: "include",
+    cache: "no-store",
+    headers: { Accept: "application/json" },
+  });
+  const raw = await res.text();
+  const parsed = parseSessionPayload(raw);
+  if (parsed) return parsed;
+  return {
+    configured: false,
+    authenticated: false,
+    hasProfile: false,
+    role: null,
+    systemAdminSession: false,
+  };
+}
+
+async function copyTextToClipboard(text: string): Promise<boolean> {
+  try {
+    await navigator.clipboard.writeText(text);
+    return true;
+  } catch {
+    try {
+      const ta = document.createElement("textarea");
+      ta.value = text;
+      ta.setAttribute("readonly", "");
+      ta.style.position = "fixed";
+      ta.style.left = "-9999px";
+      document.body.appendChild(ta);
+      ta.select();
+      const ok = document.execCommand("copy");
+      document.body.removeChild(ta);
+      return ok;
+    } catch {
+      return false;
+    }
+  }
+}
+
 export function RatgeberRedaktionsHelfer() {
   const pathname = usePathname() ?? "/";
   const en = pathname === "/en" || pathname.startsWith("/en/");
@@ -51,36 +114,44 @@ export function RatgeberRedaktionsHelfer() {
   const [open, setOpen] = useState(false);
   const [desired, setDesired] = useState("");
   const [copied, setCopied] = useState(false);
+  const [copyError, setCopyError] = useState(false);
+  const loadSeq = useRef(0);
 
-  useEffect(() => {
-    let cancelled = false;
+  const loadSession = useCallback(() => {
+    const seq = ++loadSeq.current;
     void (async () => {
       try {
-        const res = await fetch("/api/partner/session", { credentials: "same-origin", cache: "no-store" });
-        const json = (await res.json()) as Partial<PartnerSessionPayload>;
-        if (cancelled) return;
-        setSession({
-          configured: Boolean(json.configured),
-          authenticated: Boolean(json.authenticated),
-          hasProfile: Boolean(json.hasProfile),
-          role: json.role === "admin" || json.role === "partner" ? json.role : null,
-          systemAdminSession: Boolean(json.systemAdminSession),
-        });
+        const next = await fetchPartnerSessionPayload();
+        if (seq !== loadSeq.current) return;
+        setSession(next);
       } catch {
-        if (!cancelled)
-          setSession({
-            configured: false,
-            authenticated: false,
-            hasProfile: false,
-            role: null,
-            systemAdminSession: false,
-          });
+        if (seq !== loadSeq.current) return;
+        setSession({
+          configured: false,
+          authenticated: false,
+          hasProfile: false,
+          role: null,
+          systemAdminSession: false,
+        });
       }
     })();
-    return () => {
-      cancelled = true;
-    };
   }, []);
+
+  useEffect(() => {
+    loadSession();
+  }, [pathname, loadSession]);
+
+  useEffect(() => {
+    const onResume = () => {
+      if (document.visibilityState === "visible") loadSession();
+    };
+    document.addEventListener("visibilitychange", onResume);
+    window.addEventListener("focus", loadSession);
+    return () => {
+      document.removeEventListener("visibilitychange", onResume);
+      window.removeEventListener("focus", loadSession);
+    };
+  }, [loadSession]);
 
   /** Profilrolle `admin` (Supabase) oder angemeldete Partner-Verwaltung (System-Admin-Cookie). */
   const isEditor =
@@ -96,12 +167,14 @@ export function RatgeberRedaktionsHelfer() {
       desiredText: desired,
       en,
     });
-    try {
-      await navigator.clipboard.writeText(text);
+    setCopyError(false);
+    const ok = await copyTextToClipboard(text);
+    if (ok) {
       setCopied(true);
       window.setTimeout(() => setCopied(false), 2400);
-    } catch {
+    } else {
       setCopied(false);
+      setCopyError(true);
     }
   }, [pathname, desired, en]);
 
@@ -113,12 +186,14 @@ export function RatgeberRedaktionsHelfer() {
       desiredText: desired,
       en,
     });
-    try {
-      await navigator.clipboard.writeText(text);
+    setCopyError(false);
+    const ok = await copyTextToClipboard(text);
+    if (ok) {
       setCopied(true);
       window.setTimeout(() => setCopied(false), 2400);
-    } catch {
+    } else {
       setCopied(false);
+      setCopyError(true);
     }
   }, [pathname, desired, en]);
 
@@ -126,7 +201,7 @@ export function RatgeberRedaktionsHelfer() {
 
   return (
     <div
-      className="pointer-events-auto fixed bottom-4 left-4 z-[2147483000] max-w-[min(calc(100vw-2rem),22rem)] text-left"
+      className="pointer-events-auto fixed bottom-[max(1rem,env(safe-area-inset-bottom,0px))] left-[max(1rem,env(safe-area-inset-left,0px))] z-[2147483000] max-w-[min(calc(100vw-2rem),22rem)] text-left"
       lang={en ? "en" : "de"}
     >
       {!open ? (
@@ -184,6 +259,13 @@ export function RatgeberRedaktionsHelfer() {
           {copied ? (
             <p className="mt-2 text-xs font-semibold text-emerald-700" role="status">
               {en ? "Copied." : "In die Zwischenablage kopiert."}
+            </p>
+          ) : null}
+          {copyError ? (
+            <p className="mt-2 text-xs font-semibold text-red-700" role="alert">
+              {en
+                ? "Clipboard blocked. Use HTTPS, click the button again, or copy from a manual selection."
+                : "Zwischenablage nicht verfügbar (Browser/HTTPS). Erneut auf die Schaltfläche klicken oder Text manuell markieren und kopieren."}
             </p>
           ) : null}
         </div>
