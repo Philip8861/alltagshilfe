@@ -237,22 +237,22 @@ export function RatgeberHub(props?: RatgeberHubProps) {
         aria-labelledby="ratgeber-hub-heading"
       >
         <div className="relative isolate flex w-full flex-col overflow-hidden rounded-b-3xl bg-[#FFFCFA] md:min-h-[18rem] lg:min-h-[19.5rem]">
-          {/* Mobil: kompakteres Bildfeld (~40 % weniger Höhe als zuvor), Darstellung vergrößert (cover + leichter Zoom) */}
+          {/* Mobil: Band noch niedriger; Bild nach rechts ausrichten (links stärker beschneiden) */}
           <div
-            className="pointer-events-none relative z-0 h-[7.8rem] w-full shrink-0 overflow-hidden sm:h-[9.3rem] md:absolute md:inset-0 md:h-auto md:rounded-b-3xl"
+            className="pointer-events-none relative z-0 h-[5.5rem] w-full shrink-0 overflow-hidden sm:h-[6.5rem] md:absolute md:inset-0 md:h-auto md:rounded-b-3xl"
             aria-hidden
           >
             <Image
               src="/images/Ratgeber/ratgeber.webp"
               alt=""
               fill
-              className="object-cover object-center scale-[1.14] md:scale-100 md:object-contain"
+              className="object-cover object-[72%_center] scale-[1.18] max-md:-translate-x-[2%] md:translate-x-0 md:scale-100 md:object-contain md:object-center"
               sizes="(min-width: 768px) 96vw, 100vw"
               quality={92}
               priority
             />
           </div>
-          <div className="relative z-10 mx-auto flex w-full max-w-7xl flex-col px-4 pb-4 pt-5 sm:px-6 sm:pb-5 sm:pt-6 md:min-h-[18rem] md:pb-6 md:pt-12 lg:min-h-[19.5rem] lg:px-[var(--ahs-page-gutter)] lg:pt-12">
+          <div className="relative z-10 mx-auto flex w-full max-w-7xl flex-col px-4 pb-4 pt-3.5 sm:px-6 sm:pb-5 sm:pt-4 md:min-h-[18rem] md:pb-6 md:pt-12 lg:min-h-[19.5rem] lg:px-[var(--ahs-page-gutter)] lg:pt-12">
             <div className="w-full max-w-4xl">
               <p className="mb-2 flex items-center gap-2 sm:mb-3">
                 <HeartOutlineIcon className="shrink-0 text-[#F78F2E]" />
