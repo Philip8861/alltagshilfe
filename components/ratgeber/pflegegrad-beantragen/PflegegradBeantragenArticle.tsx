@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import { RatgeberSidebarBeratungTeaser } from "@/components/ratgeber/RatgeberBeratungDialog";
 import { PflegegradChecklistSection } from "@/components/ratgeber/pflegegrad-beantragen/PflegegradChecklistSection";
 import { PflegegradFaqAccordion } from "@/components/ratgeber/pflegegrad-beantragen/PflegegradFaqAccordion";
 import { PflegegradLeistungenMatrix } from "@/components/ratgeber/pflegegrad-beantragen/PflegegradLeistungenMatrix";
@@ -53,6 +54,14 @@ export function PflegegradBeantragenArticle() {
           </ol>
         </nav>
       </details>
+
+      <div className="mb-11 lg:hidden">
+        <RatgeberSidebarBeratungTeaser
+          supportLine="Sie möchten Unterstützung beim Pflegegrad-Antrag?"
+          preselectedServices={["pflegeberatung"]}
+          contextNote="Ratgeber: Pflegegrad beantragen (mobil)"
+        />
+      </div>
 
       <ArticleSectionHeading sectionNum="01" id="kurzantwort" isFirst heading="Kurzantwort">
         <PflegegradQuickAnswerBox>

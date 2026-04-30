@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import { RatgeberBeratungCtaButton, RatgeberSidebarBeratungTeaser } from "@/components/ratgeber/RatgeberBeratungDialog";
 import { PflegegradFaqAccordion } from "@/components/ratgeber/pflegegrad-beantragen/PflegegradFaqAccordion";
 import { PflegegradQuickAnswerBox } from "@/components/ratgeber/pflegegrad-beantragen/PflegegradQuickAnswerAndFacts";
 import { PFLEGEGRAD1_ARTICLE_FAQ } from "@/components/ratgeber/pflegegrad-1/pflegegrad1-faq-data";
@@ -47,6 +48,14 @@ export function Pflegegrad1Article() {
           </ol>
         </nav>
       </details>
+
+      <div className="mb-11 lg:hidden">
+        <RatgeberSidebarBeratungTeaser
+          supportLine="Fragen zu Pflegegrad 1, Entlastungsbetrag oder Antrag?"
+          preselectedServices={["pflegeberatung"]}
+          contextNote="Ratgeber: Pflegegrad 1 (mobil)"
+        />
+      </div>
 
       <div className="mb-10 space-y-4 border-b border-neutral-100 pb-10">
         <p>
@@ -526,12 +535,13 @@ export function Pflegegrad1Article() {
             Sie möchten wissen, welche Leistungen bei Pflegegrad 1 für Sie möglich sind? Wir beraten Sie gerne.
           </p>
           <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-            <Link
-              href="/kontakt"
-              className="inline-flex min-h-[2.875rem] items-center justify-center rounded-lg bg-[#F78F2E] px-6 text-[0.95rem] font-semibold text-white transition hover:bg-[#e8862a] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68] focus-visible:ring-offset-2"
+            <RatgeberBeratungCtaButton
+              className="w-full sm:w-auto"
+              preselectedServices={["pflegeberatung"]}
+              contextNote="Ratgeber: Pflegegrad 1 – Leistungsmöglichkeiten"
             >
-              Jetzt Unterstützung anfragen
-            </Link>
+              Jetzt kostenlos beraten lassen
+            </RatgeberBeratungCtaButton>
             <Link
               href="/ratgeber/pflegegrad-beantragen"
               className="inline-flex min-h-[2.875rem] items-center justify-center rounded-lg border border-[#0F4F68]/35 bg-white px-6 text-[0.95rem] font-semibold text-[#0F4F68] transition hover:bg-[#f6fafc] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68] focus-visible:ring-offset-2"

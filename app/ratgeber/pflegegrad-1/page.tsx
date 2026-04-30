@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 
 import { Pflegegrad1Article } from "@/components/ratgeber/pflegegrad-1/Pflegegrad1Article";
+import { RatgeberSidebarBeratungTeaser } from "@/components/ratgeber/RatgeberBeratungDialog";
 import { Pflegegrad1RatgeberHero } from "@/components/ratgeber/pflegegrad-1/Pflegegrad1RatgeberHero";
 import { PFLEGEGRAD1_ARTICLE_TOC_ENTRIES } from "@/components/ratgeber/pflegegrad-1/pflegegrad1-toc-config";
 import { pflegegrad1FaqForJsonLd } from "@/components/ratgeber/pflegegrad-1/pflegegrad1-faq-data";
@@ -112,19 +112,11 @@ export default function Pflegegrad1RatgeberPage() {
                   </ol>
                 </nav>
 
-                <div className="relative overflow-hidden rounded-2xl border border-neutral-200/95 bg-[linear-gradient(180deg,#fdfefe_0%,#ffffff_100%)] px-4 py-4 shadow-[0_2px_14px_-10px_rgba(15,79,104,0.1)] sm:px-5 sm:py-5">
-                  <div aria-hidden className="absolute inset-x-0 top-0 h-[3px] bg-gradient-to-r from-[#F78F2E]/50 to-[#0F4F68]/25" />
-                  <p className="text-sm font-semibold text-[#0F4F68]">Persönliche Beratung</p>
-                  <p className="mt-2 text-sm leading-relaxed text-neutral-600">
-                    Fragen zu Pflegegrad 1, Entlastungsbetrag oder Antrag?
-                  </p>
-                  <Link
-                    href="/kontakt"
-                    className="mt-4 inline-flex min-h-[2.75rem] w-full items-center justify-center rounded-lg border border-[#F78F2E] bg-transparent px-3 text-[0.9rem] font-semibold text-[#F78F2E] transition hover:bg-[#fffbf7]"
-                  >
-                    Beratung anfragen
-                  </Link>
-                </div>
+                <RatgeberSidebarBeratungTeaser
+                  supportLine="Fragen zu Pflegegrad 1, Entlastungsbetrag oder Antrag?"
+                  preselectedServices={["pflegeberatung"]}
+                  contextNote="Ratgeber: Pflegegrad 1"
+                />
               </div>
             </aside>
 

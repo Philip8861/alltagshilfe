@@ -1,4 +1,8 @@
+"use client";
+
 import Link from "next/link";
+
+import { RatgeberBeratungCtaButton } from "@/components/ratgeber/RatgeberBeratungDialog";
 
 const ITEMS = [
   "Unterstützung beim Pflegegrad-Antrag",
@@ -57,12 +61,13 @@ export function PflegegradServiceSupportSection() {
         ))}
       </ul>
 
-      <Link
-        href="/kontakt"
-        className="mt-8 inline-flex min-h-[2.875rem] items-center justify-center rounded-lg bg-[#F78F2E] px-6 text-[0.95rem] font-semibold text-white transition hover:bg-[#e8862a] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68] focus-visible:ring-offset-2"
+      <RatgeberBeratungCtaButton
+        className="mt-8 inline-flex min-h-[2.875rem] w-full items-center justify-center px-6 sm:w-auto"
+        preselectedServices={["pflegeberatung", "haushalt"]}
+        contextNote="Ratgeber: Pflegegrad beantragen – Wir unterstützen Sie"
       >
-        Jetzt Beratungsgespräch vereinbaren
-      </Link>
+        Jetzt kostenlos beraten lassen
+      </RatgeberBeratungCtaButton>
     </aside>
   );
 }

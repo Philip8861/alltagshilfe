@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 
 import { PflegegradBeantragenArticle } from "@/components/ratgeber/pflegegrad-beantragen/PflegegradBeantragenArticle";
+import { RatgeberSidebarBeratungTeaser } from "@/components/ratgeber/RatgeberBeratungDialog";
 import { PflegegradRatgeberHero } from "@/components/ratgeber/pflegegrad-beantragen/PflegegradRatgeberHero";
 import { PFLEGEGRAD_ARTICLE_TOC_ENTRIES } from "@/components/ratgeber/pflegegrad-beantragen/pflegegrad-toc-config";
 import { pflegegradBeantragenFaqForJsonLd } from "@/components/ratgeber/pflegegrad-beantragen/pflegegrad-beantragen-faq-data";
@@ -114,19 +114,11 @@ export default function PflegegradBeantragenRatgeberPage() {
                   </ol>
                 </nav>
 
-                <div className="relative overflow-hidden rounded-2xl border border-neutral-200/95 bg-[linear-gradient(180deg,#fdfefe_0%,#ffffff_100%)] px-4 py-4 shadow-[0_2px_14px_-10px_rgba(15,79,104,0.1)] sm:px-5 sm:py-5">
-                  <div aria-hidden className="absolute inset-x-0 top-0 h-[3px] bg-gradient-to-r from-[#F78F2E]/50 to-[#0F4F68]/25" />
-                  <p className="text-sm font-semibold text-[#0F4F68]">Persönliche Beratung</p>
-                  <p className="mt-2 text-sm leading-relaxed text-neutral-600">
-                    Sie möchten Unterstützung beim Pflegegrad-Antrag?
-                  </p>
-                  <Link
-                    href="/kontakt"
-                    className="mt-4 inline-flex min-h-[2.75rem] w-full items-center justify-center rounded-lg border border-[#F78F2E] bg-transparent px-3 text-[0.9rem] font-semibold text-[#F78F2E] transition hover:bg-[#fffbf7]"
-                  >
-                    Beratung anfragen
-                  </Link>
-                </div>
+                <RatgeberSidebarBeratungTeaser
+                  supportLine="Sie möchten Unterstützung beim Pflegegrad-Antrag?"
+                  preselectedServices={["pflegeberatung"]}
+                  contextNote="Ratgeber: Pflegegrad beantragen"
+                />
               </div>
             </aside>
 

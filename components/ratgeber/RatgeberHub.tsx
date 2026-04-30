@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Container } from "@/components/layout/Container";
+import { RatgeberSidebarBeratungTeaser } from "@/components/ratgeber/RatgeberBeratungDialog";
 import {
   RATGEBER_BEITRAEGE,
   RATGEBER_CATEGORY_LABELS,
@@ -534,6 +535,13 @@ export function RatgeberHub(props?: RatgeberHubProps) {
                   ))
                 )}
               </ol>
+              <div className="mt-5 border-t border-neutral-200/90 pt-5">
+                <RatgeberSidebarBeratungTeaser
+                  supportLine="Sie möchten zu einem Thema persönlich beraten werden?"
+                  preselectedServices={["pflegeberatung"]}
+                  contextNote="Ratgeber-Übersicht"
+                />
+              </div>
             </aside>
           </div>
         </section>
