@@ -51,19 +51,22 @@ export function Pflegegrad1RatgeberHero() {
             </h1>
           </div>
 
-          <div className="order-1 flex w-full max-w-[18rem] shrink-0 flex-col items-stretch sm:max-w-[21rem] lg:order-2 lg:max-w-[420px] lg:w-[min(36%,420px)]">
-            <div className="overflow-hidden rounded-2xl border border-neutral-100 shadow-[0_12px_40px_-28px_rgba(15,79,104,0.35)] ring-1 ring-[#0F4F68]/10">
-              <Image
-                src="/images/Ratgeber/pflegegrad_1.webp"
-                alt="Pflegegrad 1: Orientierung zu Entlastungsbetrag, Antrag und Leistungen der Pflegeversicherung"
-                width={1117}
-                height={724}
-                className="h-auto w-full object-cover"
-                sizes="(max-width:1024px) 90vw, 420px"
-                priority
-              />
+          <div className="order-1 flex w-full shrink-0 flex-col items-center lg:order-2 lg:items-start">
+            <div className="w-full max-w-[23.4rem] sm:max-w-[27.3rem] lg:w-[min(46.8%,546px)] lg:max-w-[546px]">
+              <div className="overflow-hidden rounded-2xl border border-neutral-100 shadow-[0_12px_40px_-28px_rgba(15,79,104,0.35)] ring-1 ring-[#0F4F68]/10">
+                <Image
+                  src="/images/Ratgeber/pflegegrad_1.webp"
+                  alt="Pflegegrad 1: Orientierung zu Entlastungsbetrag, Antrag und Leistungen der Pflegeversicherung"
+                  width={1117}
+                  height={724}
+                  className="h-auto w-full object-cover"
+                  sizes="(max-width: 1024px) 90vw, 546px"
+                  priority
+                />
+              </div>
             </div>
             <RatgeberArticleImageBeratungCta
+              className="w-full max-w-[18rem] self-center sm:max-w-[21rem] lg:max-w-[420px] lg:self-start"
               contextNote="Ratgeber: Pflegegrad 1 (Artikelbild)"
               preselectedServices={["pflegegrad_beantrag_widerspruch"]}
             />
