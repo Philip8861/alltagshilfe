@@ -46,20 +46,25 @@ export function useArticleSectionReadPercent(sectionIds: readonly string[], opti
 export function RatgeberArticleReadProgressBar({
   sectionIds,
   className = "",
+  compact = false,
 }: {
   sectionIds: readonly string[];
   className?: string;
+  /** Kompaktere Darstellung (z. B. in der Seitenleiste oben). */
+  compact?: boolean;
 }) {
   const pct = useArticleSectionReadPercent(sectionIds);
 
   if (sectionIds.length === 0) return null;
 
   return (
-    <div className={`mt-4 ${className}`.trim()}>
-      <div className="flex items-center justify-between gap-2 text-xs text-neutral-600">
+    <div className={`${compact ? "mt-0" : "mt-4"} ${className}`.trim()}>
+      <div
+        className={`flex items-center justify-between gap-2 text-neutral-600 ${compact ? "text-[0.7rem]" : "text-xs"}`}
+      >
         <span className="font-medium text-[#0F4F68]">Lesefortschritt</span>
         <span
-          className="tabular-nums font-semibold text-[#0F4F68]"
+          className={`tabular-nums font-semibold text-[#0F4F68] ${compact ? "text-[0.8rem]" : ""}`}
           aria-live="polite"
           aria-atomic="true"
         >
@@ -67,7 +72,7 @@ export function RatgeberArticleReadProgressBar({
         </span>
       </div>
       <div
-        className="mt-2 h-2 w-full overflow-hidden rounded-full bg-neutral-200/90"
+        className={`${compact ? "mt-1.5 h-1.5" : "mt-2 h-2"} w-full overflow-hidden rounded-full bg-neutral-200/90`}
         role="progressbar"
         aria-valuemin={0}
         aria-valuemax={100}
@@ -79,9 +84,11 @@ export function RatgeberArticleReadProgressBar({
           style={{ width: `${pct}%` }}
         />
       </div>
-      <p className="mt-1.5 text-[0.65rem] leading-snug text-neutral-500">
-        Orientierung anhand des Kapitels, in dem Sie sich gerade befinden.
-      </p>
+      {!compact ? (
+        <p className="mt-1.5 text-[0.65rem] leading-snug text-neutral-500">
+          Orientierung anhand des Kapitels, in dem Sie sich gerade befinden.
+        </p>
+      ) : null}
     </div>
   );
 }

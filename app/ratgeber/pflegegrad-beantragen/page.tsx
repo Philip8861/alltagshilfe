@@ -93,7 +93,7 @@ export default function PflegegradBeantragenRatgeberPage() {
 
           <div className="mt-10 flex flex-col gap-10 lg:mt-12 lg:flex-row lg:items-stretch lg:gap-12">
             <aside className="hidden shrink-0 lg:block lg:w-[240px] lg:max-w-[240px]">
-              <div className="sticky top-24 z-10 flex max-h-[calc(100dvh-6rem)] flex-col gap-6 self-start overflow-y-auto overscroll-contain py-1 [-webkit-overflow-scrolling:touch] [scrollbar-gutter:stable]">
+              <div className="sticky top-24 z-10 flex max-h-[calc(100dvh-5.5rem)] flex-col gap-6 self-start overflow-y-auto overscroll-contain py-1 [-webkit-overflow-scrolling:touch] [scrollbar-gutter:stable]">
                 <nav
                   aria-label="Inhalt"
                   className="relative overflow-hidden rounded-2xl border border-neutral-200/95 bg-white px-4 py-4 shadow-[0_2px_16px_-10px_rgba(15,79,104,0.1)] sm:px-5 sm:py-5"

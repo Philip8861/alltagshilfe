@@ -467,9 +467,58 @@ export function RatgeberBeratungCtaButton({
 const SIDEBAR_AD_ROTATE_MS = 30_000;
 const SIDEBAR_BERATUNG_EYEBROW_GLOW_MS = 950;
 
+type SidebarTeaserIconId = "shop" | "box" | "beratung";
+
+function SidebarTeaserIconMark({ id }: { id: SidebarTeaserIconId }) {
+  const boxClass =
+    "flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border-2 border-[#F78F2E]/40 bg-gradient-to-br from-[#fff8f2] to-white shadow-[0_6px_16px_-8px_rgba(247,143,46,0.55)]";
+  return (
+    <span className={boxClass} aria-hidden>
+      {id === "shop" ? (
+        <svg className="h-6 w-6 text-[#0F4F68]" viewBox="0 0 24 24" fill="none" aria-hidden>
+          <path
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M16 11V7a4 4 0 00-8 0v4M5 9h14l-1 9H6L5 9z"
+          />
+        </svg>
+      ) : id === "box" ? (
+        <svg className="h-6 w-6 text-[#0F4F68]" viewBox="0 0 24 24" fill="none" aria-hidden>
+          <path
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"
+          />
+          <path
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M3.27 6.96L12 12.01l8.73-5.05M12 22.08V12"
+          />
+        </svg>
+      ) : (
+        <svg className="h-6 w-6 text-[#0F4F68]" viewBox="0 0 24 24" fill="none" aria-hidden>
+          <path
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"
+          />
+        </svg>
+      )}
+    </span>
+  );
+}
+
 type SidebarTeaserSlide =
-  | { kind: "link"; headline: string; body: string; href: string; ctaLabel: string; dotLabel: string }
-  | { kind: "beratung"; headline: string; body: string; ctaLabel: string; dotLabel: string };
+  | { kind: "link"; icon: SidebarTeaserIconId; headline: string; body: string; href: string; ctaLabel: string; dotLabel: string }
+  | { kind: "beratung"; icon: SidebarTeaserIconId; headline: string; body: string; ctaLabel: string; dotLabel: string };
 
 const sidebarLinkCtaClass =
   "mt-4 inline-flex min-h-[2.75rem] w-full items-center justify-center rounded-lg border border-[#F78F2E] bg-[#F78F2E] px-3 text-[0.9rem] font-semibold text-white transition-all duration-300 hover:bg-[#e8862a] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68] focus-visible:ring-offset-2";
@@ -504,6 +553,7 @@ export function RatgeberSidebarBeratungTeaser({
     return [
       {
         kind: "link",
+        icon: "shop",
         headline: "Pflegeshop",
         body: "Ausgewählte Pflege- und Alltagshilfen für zu Hause: übersichtlich und direkt über unseren Partnershop.",
         href: "/pflegeshop",
@@ -512,6 +562,7 @@ export function RatgeberSidebarBeratungTeaser({
       },
       {
         kind: "link",
+        icon: "box",
         headline: "Kostenfreie Pflegehilfsmittelbox",
         body: "Pflegehilfsmittel über die Pflegekasse: Wunschliste online erstellen und bequem nach Hause liefern lassen.",
         href: "/pflegehilfsmittel/kostenfreie-pflegehilfsmittel",
@@ -520,6 +571,7 @@ export function RatgeberSidebarBeratungTeaser({
       },
       {
         kind: "beratung",
+        icon: "beratung",
         headline: title,
         body: supportLine,
         ctaLabel: buttonText,
@@ -566,8 +618,8 @@ export function RatgeberSidebarBeratungTeaser({
   const slide = slides[adIndex]!;
 
   return (
-    <div className="relative overflow-hidden rounded-2xl border border-neutral-200/95 bg-[linear-gradient(180deg,#fdfefe_0%,#ffffff_100%)] px-4 py-4 shadow-[0_2px_14px_-10px_rgba(15,79,104,0.1)] sm:px-5 sm:py-5">
-      <div aria-hidden className="absolute inset-x-0 top-0 h-[3px] bg-gradient-to-r from-[#F78F2E]/50 to-[#0F4F68]/25" />
+    <div className="relative overflow-hidden rounded-2xl border-2 border-[#F78F2E]/30 bg-[linear-gradient(165deg,#fffdfb_0%,#ffffff_55%,#f8fcfd_100%)] px-4 py-4 shadow-[0_12px_36px_-14px_rgba(15,79,104,0.28)] ring-1 ring-[#0F4F68]/8 sm:px-5 sm:py-5">
+      <div aria-hidden className="absolute inset-x-0 top-0 h-[4px] bg-gradient-to-r from-[#F78F2E] via-[#ffb366] to-[#0F4F68]/40" />
       <p
         className={cn(
           "text-[0.65rem] font-bold uppercase tracking-[0.12em] transition-all duration-300 ease-out",
@@ -578,24 +630,36 @@ export function RatgeberSidebarBeratungTeaser({
       >
         Persönliche Beratung
       </p>
+      {articleSectionIds && articleSectionIds.length > 0 ? (
+        <RatgeberArticleReadProgressBar
+          sectionIds={articleSectionIds}
+          compact
+          className="mt-3 border-b border-neutral-200/80 pb-3"
+        />
+      ) : null}
       <div
-        className="mt-2 min-h-[11.5rem] sm:min-h-[10.75rem]"
+        className="mt-3 min-h-[9.25rem] sm:min-h-[8.75rem]"
         role="region"
         aria-roledescription="Karussell"
         aria-label="Wechselnde Hinweise zu Angeboten und Beratung"
       >
         <div key={adIndex} className="animate-fade-in-up">
-          <p className="text-sm font-semibold text-[#0F4F68]">{slide.headline}</p>
-          <p className="mt-2 text-sm leading-relaxed text-neutral-600">{slide.body}</p>
+          <div className="flex gap-3">
+            <SidebarTeaserIconMark id={slide.icon} />
+            <div className="min-w-0 flex-1">
+              <p className="text-sm font-semibold text-[#0F4F68]">{slide.headline}</p>
+              <p className="mt-2 text-sm leading-relaxed text-neutral-600">{slide.body}</p>
+            </div>
+          </div>
           {slide.kind === "link" ? (
-            <Link href={slide.href} className={sidebarLinkCtaClass}>
+            <Link href={slide.href} className={cn(sidebarLinkCtaClass, "mt-3")}>
               {slide.ctaLabel}
             </Link>
           ) : (
             <button
               type="button"
               onClick={() => ctx?.open({ preselectedServices, contextNote })}
-              className={sidebarBeratungButtonClass}
+              className={cn(sidebarBeratungButtonClass, "mt-3")}
             >
               {slide.ctaLabel}
             </button>
@@ -617,9 +681,6 @@ export function RatgeberSidebarBeratungTeaser({
           />
         ))}
       </nav>
-      {articleSectionIds && articleSectionIds.length > 0 ? (
-        <RatgeberArticleReadProgressBar sectionIds={articleSectionIds} />
-      ) : null}
     </div>
   );
 }

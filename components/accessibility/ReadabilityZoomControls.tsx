@@ -334,6 +334,7 @@ export function ReadabilityZoomControls() {
   };
 
   const isKontakt = useMemo(() => pathname === "/kontakt", [pathname]);
+  const isRatgeberArticle = useMemo(() => pathname.startsWith("/ratgeber/"), [pathname]);
   /** Kostenfrei-Landing: schwebender Lesbarkeits-Button aus – dort Pflegeboxi unten links; Barrierefreiheit weiter über Footer-Link. */
   const hideLauncher =
     isKontakt || isKonfiguratorOpen || isKostenfreiePflegehilfsmittelLandingPath(pathname);
@@ -351,9 +352,11 @@ export function ReadabilityZoomControls() {
         right: "max(1rem, env(safe-area-inset-right, 0px))",
         bottom: isKontakt
           ? "min(42vh, calc(env(safe-area-inset-bottom, 0px) + max(2rem, 11rem)))"
-          : "max(1rem, env(safe-area-inset-bottom, 0px))",
+          : isRatgeberArticle
+            ? "calc(env(safe-area-inset-bottom, 0px) + max(1.1rem, 5.25rem))"
+            : "max(1rem, env(safe-area-inset-bottom, 0px))",
       }),
-    [isKontakt],
+    [isKontakt, isRatgeberArticle],
   );
 
   useEffect(() => {
