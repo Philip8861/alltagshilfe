@@ -29,10 +29,11 @@
     }
   }
 
-  /* Kein horizontaler Scroll durch 100vw/Überlauf — clip auf #app-shell statt html, damit position:sticky (z. B. Ratgeber-TOC) funktioniert. */
-  #app-shell {
-    overflow-x: clip;
-  }
+  /*
+   * Kein overflow-x auf #app-shell/html/body: Jeder Wert außer visible am Vorfahren
+   * bricht position:sticky (z. B. Ratgeber-Inhalt) in gängigen Browsern.
+   * Horizontaler Überlauf: min-w-0 / max-w-full in Flex-Spalten (Projektweit).
+   */
 
   html {
     scroll-padding-top: var(--ahs-header-scroll-padding);
@@ -53,12 +54,6 @@
   @media (prefers-reduced-motion: reduce) {
     html.scroll-smooth {
       scroll-behavior: auto;
-    }
-  }
-
-  @supports not (overflow: clip) {
-    #app-shell {
-      overflow-x: hidden;
     }
   }
 

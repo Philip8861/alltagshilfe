@@ -51,7 +51,7 @@ export function PflegegradRatgeberHero() {
             </h1>
           </div>
 
-          <div className="order-1 flex w-full max-w-[29.25rem] shrink-0 flex-col items-center sm:max-w-[34.125rem] lg:order-2 lg:ml-auto lg:w-[min(58.5%,682px)] lg:max-w-[682px] lg:shrink-0">
+          <div className="order-1 flex w-full max-w-[21.9375rem] shrink-0 flex-col items-center sm:max-w-[25.59375rem] lg:order-2 lg:ml-auto lg:w-[min(43.875%,512px)] lg:max-w-[512px] lg:shrink-0">
             <div className="w-full">
               <div className="overflow-hidden rounded-2xl border border-neutral-100 shadow-[0_12px_40px_-28px_rgba(15,79,104,0.35)] ring-1 ring-[#0F4F68]/10">
                 <Image
@@ -60,7 +60,7 @@ export function PflegegradRatgeberHero() {
                   width={1117}
                   height={724}
                   className="h-auto w-full object-cover"
-                  sizes="(max-width: 1024px) 90vw, 682px"
+                  sizes="(max-width: 1024px) 90vw, 512px"
                   priority
                 />
               </div>
