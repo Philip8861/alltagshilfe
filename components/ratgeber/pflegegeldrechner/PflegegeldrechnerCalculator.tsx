@@ -191,20 +191,18 @@ export function PflegegeldrechnerCalculator({ className }: { className?: string 
           </div>
         ) : null}
 
-        <div className="mx-auto mt-6 grid w-full max-w-md grid-cols-1 justify-items-stretch gap-3 sm:grid-cols-2 sm:gap-4">
-          <div className="rounded-xl border border-neutral-200/90 bg-white px-3 py-3 text-center sm:px-4">
-            <p className="text-[0.65rem] font-semibold uppercase tracking-[0.08em] text-neutral-500">Pro Monat (Regel)</p>
-            <p className="mt-1 text-lg font-bold tabular-nums text-[#0F4F68]">{eur0(monthly)}</p>
-          </div>
-          <div className="rounded-xl border border-neutral-200/90 bg-white px-3 py-3 text-center sm:px-4">
-            <p className="text-[0.65rem] font-semibold uppercase tracking-[0.08em] text-neutral-500">Kalenderjahr ab Bewilligung</p>
-            <p className="mt-1 text-lg font-bold tabular-nums text-[#0F4F68]">{selected === 1 ? eur0(0) : eur0(yearTotalRounded)}</p>
-            <p className="mt-1 text-[0.65rem] leading-snug text-neutral-500">
-              {selected === 1
-                ? "—"
-                : "Anteil Bewilligungsmonat plus alle vollen Monate bis 31.12. desselben Jahres"}
-            </p>
-          </div>
+        <div className="mx-auto mt-6 w-full max-w-md rounded-xl border border-[#0F4F68]/18 bg-white px-4 py-5 text-center shadow-sm sm:px-6 sm:py-6">
+          <p className="text-[0.8rem] font-bold uppercase leading-snug tracking-[0.12em] text-[#0F4F68]/90 sm:text-[0.95rem] sm:tracking-[0.14em]">
+            Kalenderjahr ab Bewilligung
+          </p>
+          <p className="mt-3 text-2xl font-extrabold tabular-nums tracking-tight text-[#0F4F68] sm:text-3xl" aria-live="polite">
+            {selected === 1 ? eur0(0) : eur0(yearTotalRounded)}
+          </p>
+          <p className="mx-auto mt-3 max-w-[22rem] text-xs leading-relaxed text-neutral-600 sm:text-sm">
+            {selected === 1
+              ? "—"
+              : "Summe im Kalenderjahr der Bewilligung: Anteil Bewilligungsmonat plus alle vollen Monate bis 31.12. desselben Jahres"}
+          </p>
         </div>
       </div>
 
