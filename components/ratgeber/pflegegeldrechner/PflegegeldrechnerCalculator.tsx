@@ -112,15 +112,15 @@ export function PflegegeldrechnerCalculator({ className }: { className?: string 
     <div
       id="rechner"
       className={cn(
-        "scroll-mt-28 rounded-2xl border border-neutral-200/95 bg-[linear-gradient(180deg,#ffffff_0%,#fafcfc_100%)] p-5 shadow-[0_8px_28px_-18px_rgba(15,79,104,0.2)] sm:p-6",
+        "scroll-mt-28 rounded-2xl border border-neutral-200/95 bg-[linear-gradient(180deg,#ffffff_0%,#fafcfc_100%)] p-5 text-center shadow-[0_8px_28px_-18px_rgba(15,79,104,0.2)] sm:p-6",
         className,
       )}
     >
       <fieldset>
-        <legend className="text-[0.7rem] font-semibold uppercase tracking-[0.14em] text-[#0F4F68]/80">
+        <legend className="mx-auto w-full max-w-xl text-[0.7rem] font-semibold uppercase tracking-[0.14em] text-[#0F4F68]/80">
           Pflegegrad wählen
         </legend>
-        <div className="mt-3 flex flex-wrap gap-2">
+        <div className="mt-3 flex flex-wrap justify-center gap-2">
           {GRADES.map((g) => {
             const active = selected === g;
             return (
@@ -145,10 +145,13 @@ export function PflegegeldrechnerCalculator({ className }: { className?: string 
       </fieldset>
 
       <div className="mt-6 border-t border-neutral-100 pt-6">
-        <label htmlFor="pflegegeld-bewilligung" className="text-[0.7rem] font-semibold uppercase tracking-[0.14em] text-[#0F4F68]/80">
+        <label
+          htmlFor="pflegegeld-bewilligung"
+          className="mx-auto block max-w-xl text-[0.7rem] font-semibold uppercase tracking-[0.14em] text-[#0F4F68]/80"
+        >
           Bewilligungsdatum (Tag der Bewilligung)
         </label>
-        <p className="mt-1.5 text-sm leading-snug text-neutral-600">
+        <p className="mx-auto mt-1.5 max-w-xl text-sm leading-snug text-neutral-600">
           Ab diesem Kalendertag gilt der Pflegegrad; im selben Monat wird das Pflegegeld nur für die verbleibenden Tage
           (einschließlich Bewilligungstag) hochgerechnet – z.&nbsp;B. Bewilligung am 30.01.: 2 von 31 Tagen im Januar.
         </p>
@@ -159,9 +162,13 @@ export function PflegegeldrechnerCalculator({ className }: { className?: string 
           min="2017-01-01"
           max="2035-12-31"
           onChange={(e) => setApprovalISO(e.target.value)}
-          className="mt-3 w-full max-w-[18rem] rounded-xl border border-neutral-200 bg-white px-3 py-2.5 text-[0.9375rem] font-medium text-neutral-900 shadow-sm focus:border-[#0F4F68]/40 focus:outline-none focus:ring-2 focus:ring-[#0F4F68]/25"
+          className="mx-auto mt-3 block w-full max-w-[18rem] rounded-xl border border-neutral-200 bg-white px-3 py-2.5 text-[0.9375rem] font-medium text-neutral-900 shadow-sm focus:border-[#0F4F68]/40 focus:outline-none focus:ring-2 focus:ring-[#0F4F68]/25"
         />
-        {parsed === null ? <p className="mt-2 text-sm text-[#b42318]">Bitte gültiges Datum wählen.</p> : null}
+        {parsed === null ? (
+          <p className="mt-2 text-sm text-[#b42318]" role="alert">
+            Bitte gültiges Datum wählen.
+          </p>
+        ) : null}
       </div>
 
       <div className="mt-6 border-t border-neutral-100 pt-6">
@@ -184,7 +191,7 @@ export function PflegegeldrechnerCalculator({ className }: { className?: string 
           </div>
         ) : null}
 
-        <div className="mx-auto mt-6 grid max-w-md grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4">
+        <div className="mx-auto mt-6 grid w-full max-w-md grid-cols-1 justify-items-stretch gap-3 sm:grid-cols-2 sm:gap-4">
           <div className="rounded-xl border border-neutral-200/90 bg-white px-3 py-3 text-center sm:px-4">
             <p className="text-[0.65rem] font-semibold uppercase tracking-[0.08em] text-neutral-500">Pro Monat (Regel)</p>
             <p className="mt-1 text-lg font-bold tabular-nums text-[#0F4F68]">{eur0(monthly)}</p>
@@ -201,16 +208,16 @@ export function PflegegeldrechnerCalculator({ className }: { className?: string 
         </div>
       </div>
 
-      <p className="mt-5 text-[0.9375rem] leading-relaxed text-neutral-700">{hint}</p>
+      <p className="mx-auto mt-5 max-w-xl text-[0.9375rem] leading-relaxed text-neutral-700">{hint}</p>
 
-      <p className="mt-4 text-sm leading-relaxed text-neutral-600">
+      <p className="mx-auto mt-4 max-w-xl text-sm leading-relaxed text-neutral-600">
         Der Rechner dient zur Orientierung und ersetzt keine individuelle Beratung durch die Pflegekasse. Abrechnung und
         Auszahlungstermine können abweichen.
       </p>
 
-      <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:justify-center">
+      <div className="mx-auto mt-6 flex w-full max-w-xl flex-col items-stretch gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:justify-center">
         <RatgeberBeratungCtaButton
-          className="w-full justify-center sm:w-auto sm:min-w-[16rem]"
+          className="w-full justify-center sm:mx-auto sm:w-auto sm:min-w-[16rem]"
           contextNote="Ratgeber: Pflegegeldrechner – Hilfe beim Pflegegrad-Antrag"
           preselectedServices={["pflegegrad_beantrag_widerspruch"]}
         >
@@ -218,7 +225,7 @@ export function PflegegeldrechnerCalculator({ className }: { className?: string 
         </RatgeberBeratungCtaButton>
         <Link
           href="/ratgeber/pflegegrad-beantragen#widerspruch"
-          className="inline-flex min-h-[44px] w-full items-center justify-center rounded-xl border border-[#0F4F68]/25 bg-white px-4 text-sm font-semibold text-[#0F4F68] transition hover:bg-[#f3f9fa] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68] focus-visible:ring-offset-2 sm:w-auto"
+          className="inline-flex min-h-[44px] w-full items-center justify-center rounded-xl border border-[#0F4F68]/25 bg-white px-4 text-sm font-semibold text-[#0F4F68] transition hover:bg-[#f3f9fa] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68] focus-visible:ring-offset-2 sm:mx-auto sm:w-auto"
         >
           Widerspruch prüfen lassen
         </Link>
