@@ -634,7 +634,7 @@ export function RatgeberSidebarBeratungTeaser({
       </div>
 
       <div
-        className="relative mt-3.5 min-h-[9.5rem] sm:min-h-[9rem]"
+        className="relative mt-3.5 min-h-[11.25rem] sm:min-h-[10.75rem]"
         role="region"
         aria-roledescription="Karussell"
         aria-label="Wechselnde Hinweise zu Angeboten und Beratung"
@@ -643,7 +643,7 @@ export function RatgeberSidebarBeratungTeaser({
           <div className="flex gap-3">
             <SidebarTeaserIconMark id={slide.icon} />
             <div className="min-w-0 flex-1 pt-0.5">
-              <p className="text-[0.8125rem] font-extrabold leading-snug tracking-tight text-[#0F4F68] sm:text-[0.85rem]">
+              <p className="text-2xl font-extrabold leading-snug tracking-tight text-[#0F4F68] sm:text-[1.65rem]">
                 {slide.headline}
               </p>
               <p className="mt-2 text-[0.7rem] leading-relaxed text-neutral-600 sm:mt-2.5 sm:text-[0.73rem]">{slide.body}</p>

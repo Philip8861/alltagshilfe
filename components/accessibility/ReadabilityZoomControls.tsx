@@ -52,17 +52,19 @@ function applyZoom(level: number) {
   document.documentElement.style.fontSize = `${level}%`;
 }
 
-/** Fest unten rechts am Viewport (nicht links/zentriert); left: auto verhindert Konflikte mit RTL/Erbstyles. */
-function fixedLaunchStyle(partial: Pick<CSSProperties, "right" | "bottom">): CSSProperties {
+/** FAB unten rechts: logische Insets + Safe-Area, Top/Left explizit auto (kein Zentrierungs-Erbstyle). */
+function fixedLaunchStyle(bottom: string): CSSProperties {
   return {
     position: "fixed",
-    left: "auto",
-    top: "auto",
+    insetBlockStart: "auto",
+    insetInlineStart: "auto",
+    insetBlockEnd: bottom,
+    insetInlineEnd: "max(1rem, env(safe-area-inset-right, 0px))",
+    margin: 0,
     zIndex: 2147483647,
     visibility: "visible",
     opacity: 1,
     pointerEvents: "auto",
-    ...partial,
   };
 }
 
@@ -337,7 +339,6 @@ export function ReadabilityZoomControls() {
   };
 
   const isKontakt = useMemo(() => pathname === "/kontakt", [pathname]);
-  const isRatgeberArticle = useMemo(() => pathname.startsWith("/ratgeber/"), [pathname]);
   /** Kostenfrei-Landing: schwebender Lesbarkeits-Button aus – dort Pflegeboxi unten links; Barrierefreiheit weiter über Footer-Link. */
   const hideLauncher =
     isKontakt || isKonfiguratorOpen || isKostenfreiePflegehilfsmittelLandingPath(pathname);
@@ -351,15 +352,12 @@ export function ReadabilityZoomControls() {
 
   const buttonWrapStyle = useMemo(
     () =>
-      fixedLaunchStyle({
-        right: "max(1rem, env(safe-area-inset-right, 0px))",
-        bottom: isKontakt
+      fixedLaunchStyle(
+        isKontakt
           ? "min(42vh, calc(env(safe-area-inset-bottom, 0px) + max(2rem, 11rem)))"
-          : isRatgeberArticle
-            ? "calc(env(safe-area-inset-bottom, 0px) + max(1.1rem, 5.25rem))"
-            : "max(1rem, env(safe-area-inset-bottom, 0px))",
-      }),
-    [isKontakt, isRatgeberArticle],
+          : "max(1rem, env(safe-area-inset-bottom, 0px))",
+      ),
+    [isKontakt],
   );
 
   useEffect(() => {
@@ -373,7 +371,7 @@ export function ReadabilityZoomControls() {
   /** Kein Launcher im Header: schwebender Button; bei geöffnetem Panel ausblenden (Lupe/% nur im Dialog unter der Überschrift). */
   const launcherNode =
     hideLauncher || open ? null : widgetHidden ? (
-      <div className="select-none" style={buttonWrapStyle}>
+      <div className="flex flex-col items-end select-none" style={buttonWrapStyle}>
         <button
           type="button"
           onClick={() => {
@@ -390,7 +388,7 @@ export function ReadabilityZoomControls() {
         </button>
       </div>
     ) : (
-      <div className="select-none" style={buttonWrapStyle}>
+      <div className="flex flex-col-reverse items-end gap-1 select-none" style={buttonWrapStyle}>
         <button
           type="button"
           onClick={() => setOpen((v) => !v)}
@@ -422,7 +420,7 @@ export function ReadabilityZoomControls() {
             setOpen(false);
           }}
           aria-label="Lesbarkeits-Widget schließen"
-          className="absolute -right-2 -top-8 inline-flex h-7 w-7 items-center justify-center rounded-full bg-[#0F4F68] text-white shadow-[0_10px_20px_rgba(15,79,104,0.25)] transition hover:opacity-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68] focus-visible:ring-offset-2"
+          className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-[#0F4F68] text-white shadow-[0_10px_20px_rgba(15,79,104,0.25)] transition hover:opacity-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68] focus-visible:ring-offset-2"
         >
           <span aria-hidden className="text-lg leading-none font-extrabold">
             ×
