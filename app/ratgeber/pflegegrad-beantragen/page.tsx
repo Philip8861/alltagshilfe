@@ -93,7 +93,7 @@ export default function PflegegradBeantragenRatgeberPage() {
 
           <div className="mt-10 flex flex-col gap-10 lg:mt-12 lg:flex-row lg:items-stretch lg:gap-12">
             <aside className="hidden shrink-0 lg:block lg:w-[280px] lg:max-w-[280px]">
-              <div className="sticky top-24 z-10 flex max-h-[calc(100dvh-5.5rem)] min-h-0 flex-col gap-5 self-start">
+              <div className="sticky top-24 z-10 flex flex-col gap-5 self-start">
                 <nav
                   aria-label="Inhalt"
                   className="relative shrink-0 overflow-hidden rounded-2xl border border-neutral-200/95 bg-white px-4 py-4 shadow-[0_2px_16px_-10px_rgba(15,79,104,0.1)] sm:px-5 sm:py-5"
@@ -114,7 +114,7 @@ export default function PflegegradBeantragenRatgeberPage() {
                   </ol>
                 </nav>
 
-                <div className="min-h-0 flex-1 overflow-y-auto overflow-x-hidden overscroll-contain [-webkit-overflow-scrolling:touch] [scrollbar-gutter:stable] pr-0.5">
+                <div className="min-h-0 max-h-[calc(100dvh-6.5rem-max(26vh,13rem))] overflow-y-auto overflow-x-hidden overscroll-contain [-webkit-overflow-scrolling:touch] [scrollbar-gutter:stable] pr-0.5">
                   <RatgeberSidebarBeratungTeaser
                     supportLine="Sie möchten Unterstützung beim Pflegegrad-Antrag?"
                     preselectedServices={["pflegegrad_beantrag_widerspruch"]}
