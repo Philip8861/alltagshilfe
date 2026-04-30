@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 
 import { Pflegegrad1Article } from "@/components/ratgeber/pflegegrad-1/Pflegegrad1Article";
-import { RatgeberSidebarBeratungTeaser } from "@/components/ratgeber/RatgeberBeratungDialog";
+import { RatgeberArticleDesktopSidebar } from "@/components/ratgeber/RatgeberArticleDesktopSidebar";
 import { Pflegegrad1RatgeberHero } from "@/components/ratgeber/pflegegrad-1/Pflegegrad1RatgeberHero";
 import { PFLEGEGRAD1_ARTICLE_TOC_ENTRIES } from "@/components/ratgeber/pflegegrad-1/pflegegrad1-toc-config";
 import { pflegegrad1FaqForJsonLd } from "@/components/ratgeber/pflegegrad-1/pflegegrad1-faq-data";
@@ -90,37 +90,13 @@ export default function Pflegegrad1RatgeberPage() {
           <Pflegegrad1RatgeberHero />
 
           <div className="mt-10 flex flex-col gap-10 lg:mt-12 lg:flex-row lg:items-stretch lg:gap-12">
-            <aside className="hidden min-h-0 shrink-0 lg:block lg:w-[280px] lg:max-w-[280px]">
-              <div className="sticky top-[var(--ahs-header-scroll-padding)] z-10 self-start">
-                <nav
-                  aria-label="Inhalt"
-                  className="relative max-h-[min(70dvh,calc(100dvh-var(--ahs-header-scroll-padding)-10rem))] overflow-x-hidden overflow-y-auto overscroll-contain rounded-2xl border border-neutral-200/95 bg-white px-4 py-4 shadow-[0_2px_16px_-10px_rgba(15,79,104,0.1)] [-webkit-overflow-scrolling:touch] [scrollbar-gutter:stable] sm:px-5 sm:py-5"
-                >
-                  <div aria-hidden className="absolute inset-x-0 top-0 h-[3px] bg-gradient-to-r from-[#0F4F68]/45 to-[#F78F2E]/35" />
-                  <p className="text-xs font-semibold uppercase tracking-[0.14em] text-neutral-500">Inhalt</p>
-                  <ol className="mt-3 space-y-2.5">
-                    {[...PFLEGEGRAD1_ARTICLE_TOC_ENTRIES].map((e, i) => (
-                      <li key={e.id} className="flex gap-1.5 text-sm leading-snug">
-                        <span className="w-7 shrink-0 font-semibold tabular-nums text-[#F78F2E]">
-                          {String(i + 1).padStart(2, "0")}
-                        </span>
-                        <a href={`#${e.id}`} className={TOC_LINK}>
-                          {e.label}
-                        </a>
-                      </li>
-                    ))}
-                  </ol>
-                </nav>
-              </div>
-              <div className="mt-5 min-w-0">
-                <RatgeberSidebarBeratungTeaser
-                  supportLine="Fragen zu Pflegegrad 1, Entlastungsbetrag oder Antrag?"
-                  preselectedServices={["pflegegrad_beantrag_widerspruch"]}
-                  contextNote="Ratgeber: Pflegegrad 1"
-                  articleSectionIds={PFLEGEGRAD1_ARTICLE_TOC_ENTRIES.map((e) => e.id)}
-                />
-              </div>
-            </aside>
+            <RatgeberArticleDesktopSidebar
+              tocEntries={PFLEGEGRAD1_ARTICLE_TOC_ENTRIES}
+              tocLinkClassName={TOC_LINK}
+              supportLine="Fragen zu Pflegegrad 1, Entlastungsbetrag oder Antrag?"
+              preselectedServices={["pflegegrad_beantrag_widerspruch"]}
+              contextNote="Ratgeber: Pflegegrad 1"
+            />
 
             <div className="min-w-0 w-full flex-1">
               <div className="mx-auto w-full max-w-[760px]">
