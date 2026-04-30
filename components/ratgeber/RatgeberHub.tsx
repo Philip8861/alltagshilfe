@@ -231,25 +231,28 @@ export function RatgeberHub(props?: RatgeberHubProps) {
 
   return (
     <div className="min-w-0">
-      {/* Hero: ein Block – Bild vollflächig, Text & Suche wie zuvor darüber */}
+      {/* Hero: mobil Bild oben (kürzeres Band, stärkeres Bild), Text & Suche darunter; ab md wie zuvor über dem Bild */}
       <section
         className="relative z-10 w-full px-3 sm:px-4 md:px-5"
         aria-labelledby="ratgeber-hub-heading"
       >
-        <div className="relative isolate min-h-[13rem] w-full rounded-b-3xl bg-[#FFFCFA] sm:min-h-[15.5rem] md:min-h-[18rem] lg:min-h-[19.5rem]">
-          {/* Hintergrundbild in eigenem Layer clippen (untere Ecken) */}
-          <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden rounded-b-3xl" aria-hidden>
+        <div className="relative isolate flex w-full flex-col overflow-hidden rounded-b-3xl bg-[#FFFCFA] md:min-h-[18rem] lg:min-h-[19.5rem]">
+          {/* Mobil: kompakteres Bildfeld (~40 % weniger Höhe als zuvor), Darstellung vergrößert (cover + leichter Zoom) */}
+          <div
+            className="pointer-events-none relative z-0 h-[7.8rem] w-full shrink-0 overflow-hidden sm:h-[9.3rem] md:absolute md:inset-0 md:h-auto md:rounded-b-3xl"
+            aria-hidden
+          >
             <Image
               src="/images/Ratgeber/ratgeber.webp"
               alt=""
               fill
-              className="object-contain object-center"
+              className="object-cover object-center scale-[1.14] md:scale-100 md:object-contain"
               sizes="(min-width: 768px) 96vw, 100vw"
               quality={92}
               priority
             />
           </div>
-          <div className="relative z-10 mx-auto flex min-h-[13rem] w-full max-w-7xl flex-col px-4 pb-4 pt-8 sm:min-h-[15.5rem] sm:px-6 sm:pb-5 sm:pt-10 md:min-h-[18rem] lg:min-h-[19.5rem] lg:px-[var(--ahs-page-gutter)] lg:pb-6 lg:pt-12">
+          <div className="relative z-10 mx-auto flex w-full max-w-7xl flex-col px-4 pb-4 pt-5 sm:px-6 sm:pb-5 sm:pt-6 md:min-h-[18rem] md:pb-6 md:pt-12 lg:min-h-[19.5rem] lg:px-[var(--ahs-page-gutter)] lg:pt-12">
             <div className="w-full max-w-4xl">
               <p className="mb-2 flex items-center gap-2 sm:mb-3">
                 <HeartOutlineIcon className="shrink-0 text-[#F78F2E]" />
