@@ -56,7 +56,8 @@ export const RATGEBER_CATEGORY_LABELS: Record<RatgeberCategoryId, string> = {
 
 const PFLEGEGRAD_BEANTRAGEN_WORDS = 1600;
 const PFLEGEGRAD1_WORDS = 3000;
-const PFLEGEGELDRECHNER_WORDS = 520;
+/** Inhalt + Rechner/FAQ; Lesezeit redaktionell 5 Min. (Hub/Meta/JSON konsistent über `readMinutes`). */
+const PFLEGEGELDRECHNER_WORDS = 1000;
 
 export const RATGEBER_BEITRAEGE: RatgeberBeitragMeta[] = [
   {
@@ -124,7 +125,7 @@ export const RATGEBER_BEITRAEGE: RatgeberBeitragMeta[] = [
     ],
     categories: ["antraege_checklisten_downloads", "pflegegrad_leistungen"],
     approxWordCount: PFLEGEGELDRECHNER_WORDS,
-    readMinutes: readMinutesFromWordCount(PFLEGEGELDRECHNER_WORDS),
+    readMinutes: 5,
     publishedAt: "2026-04-30",
   },
 ];
