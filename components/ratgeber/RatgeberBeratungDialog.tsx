@@ -643,7 +643,10 @@ export function RatgeberSidebarBeratungTeaser({
           <div className="flex gap-3">
             <SidebarTeaserIconMark id={slide.icon} />
             <div className="min-w-0 flex-1 pt-0.5">
-              <p className="text-2xl font-extrabold leading-snug tracking-tight text-[#0F4F68] sm:text-[1.65rem]">
+              <p
+                lang="de"
+                className="break-words text-[1.0625rem] font-extrabold leading-snug tracking-tight text-[#0F4F68] hyphens-auto sm:text-[1.125rem]"
+              >
                 {slide.headline}
               </p>
               <p className="mt-2 text-[0.7rem] leading-relaxed text-neutral-600 sm:mt-2.5 sm:text-[0.73rem]">{slide.body}</p>

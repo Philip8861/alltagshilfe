@@ -72,8 +72,9 @@ export function PflegegeldrechnerHero() {
         </div>
 
         <p className={`${PROSE} mx-auto max-w-[40rem] text-center lg:mx-0 lg:text-left`}>
-          Mit unserem Pflegegeldrechner sehen Sie sofort, wie viel Pflegegeld Ihnen je nach Pflegegrad monatlich zusteht.
-          Wählen Sie einfach den Pflegegrad aus – der Rechner zeigt den monatlichen und jährlichen Betrag.
+          Mit unserem Pflegegeldrechner sehen Sie den Regelbetrag je Pflegegrad sowie den anteiligen Betrag im Monat der
+          Bewilligung (ab dem gewählten Tag bis Monatsende) und die Summe im Kalenderjahr der Bewilligung. Wählen Sie
+          Pflegegrad und Bewilligungsdatum – die Werte aktualisieren sich sofort.
         </p>
       </div>
 

@@ -123,7 +123,11 @@ export function PflegegeldrechnerArticle() {
             </tbody>
           </table>
         </div>
-        <p className="mt-4 text-sm text-neutral-600">Stand: 2026. Maßgeblich sind immer die aktuellen Angaben der Pflegekasse.</p>
+        <p className="mt-4 text-sm text-neutral-600">
+          Stand: 2026. Die Jahresspalte entspricht zwölf vollen Monaten; bei Bewilligung mitten im Monat ist der erste Monat
+          anteilig – das berücksichtigt der Rechner oben über das Bewilligungsdatum. Maßgeblich sind die Angaben Ihrer
+          Pflegekasse.
+        </p>
       </ArticleSectionHeading>
 
       <ArticleSectionHeading sectionNum="03" id="hilfe-ahs" heading="Unsicher beim Pflegegrad? Alltagshilfe-Süd unterstützt Sie">
