@@ -97,7 +97,7 @@ function RatgeberArticleTeaserCard({
       aria-labelledby={titleId}
     >
       <div
-        className="relative aspect-[4/5] w-full shrink-0 overflow-hidden rounded-t-[0.85rem]"
+        className="relative aspect-[3/2] w-full shrink-0 overflow-hidden rounded-t-[0.85rem]"
         style={{ backgroundColor: CARD_CANVAS }}
       >
         {showTopBadge ? (
@@ -112,23 +112,23 @@ function RatgeberArticleTeaserCard({
           src={hubSrc}
           alt={beitrag.imageAlt}
           fill
-          className="object-contain object-center"
+          className="object-cover object-center"
           sizes="(min-width: 1280px) 18vw, (min-width: 768px) 22vw, 42vw"
           priority={false}
         />
       </div>
       <div
-        className="flex flex-col px-2.5 pb-2.5 pt-2 sm:px-3 sm:pb-3 sm:pt-2.5"
+        className="flex flex-col px-2.5 pb-2.5 pt-1.5 sm:px-3 sm:pb-3 sm:pt-2"
         style={{ backgroundColor: CARD_CANVAS }}
       >
         <p
           id={titleId}
-          className="line-clamp-6 hyphens-auto text-center text-base font-extrabold leading-tight tracking-tight text-balance sm:text-lg sm:leading-snug md:line-clamp-[7] md:text-[1.125rem] lg:text-[1.2rem] lg:leading-snug xl:text-[1.25rem]"
+          className="line-clamp-6 w-full hyphens-auto text-center text-base font-extrabold leading-tight tracking-tight text-balance sm:text-lg sm:leading-snug md:line-clamp-[7] md:text-[1.125rem] lg:text-[1.2rem] lg:leading-snug xl:text-[1.25rem]"
           style={{ color: NAVY }}
         >
           {beitrag.title}
         </p>
-        <div className="mt-2 flex flex-wrap items-start justify-center gap-x-3 gap-y-0.5 text-[0.7rem] leading-relaxed text-neutral-500 sm:text-[0.8125rem] sm:leading-relaxed">
+        <div className="mt-1.5 flex flex-wrap items-center justify-center gap-x-3 gap-y-0.5 text-[0.7rem] leading-relaxed text-neutral-500 sm:mt-2 sm:text-[0.8125rem] sm:leading-relaxed">
           <span className="inline-flex items-center gap-1">
             <EyeIcon className="h-2.5 w-2.5 shrink-0 text-neutral-400" aria-hidden />
             {getDisplayViews(beitrag).toLocaleString("de-DE")} Aufrufe
