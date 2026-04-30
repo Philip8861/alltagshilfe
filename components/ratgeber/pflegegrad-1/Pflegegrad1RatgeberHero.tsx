@@ -38,8 +38,8 @@ export function Pflegegrad1RatgeberHero() {
       />
 
       <div className="mt-8 space-y-6 lg:mt-9 lg:space-y-8">
-        <div className="flex flex-col items-center gap-5 text-center sm:gap-6 lg:flex-row lg:items-start lg:gap-10 lg:text-left">
-          <div className="order-2 flex min-w-0 w-full flex-1 flex-col items-center lg:order-1 lg:items-start">
+        <div className="flex w-full flex-col items-center gap-5 text-center sm:gap-6 lg:flex-row lg:items-start lg:justify-between lg:gap-10 lg:text-left">
+          <div className="order-2 flex min-w-0 w-full max-w-none flex-1 flex-col items-center lg:order-1 lg:max-w-[min(100%,42rem)] lg:items-start lg:pr-2">
             <p className="inline-flex rounded-full border border-neutral-200 bg-white px-3 py-1 text-xs font-semibold uppercase tracking-[0.12em] text-[#0F4F68]">
               Ratgeber · Pflegewissen
             </p>
@@ -51,8 +51,8 @@ export function Pflegegrad1RatgeberHero() {
             </h1>
           </div>
 
-          <div className="order-1 flex w-full shrink-0 flex-col items-center lg:order-2 lg:items-start">
-            <div className="w-full max-w-[23.4rem] sm:max-w-[27.3rem] lg:w-[min(46.8%,546px)] lg:max-w-[546px]">
+          <div className="order-1 flex w-full max-w-[29.25rem] shrink-0 flex-col items-center sm:max-w-[34.125rem] lg:order-2 lg:ml-auto lg:w-[min(58.5%,682px)] lg:max-w-[682px] lg:shrink-0">
+            <div className="w-full">
               <div className="overflow-hidden rounded-2xl border border-neutral-100 shadow-[0_12px_40px_-28px_rgba(15,79,104,0.35)] ring-1 ring-[#0F4F68]/10">
                 <Image
                   src="/images/Ratgeber/pflegegrad_1.webp"
@@ -60,13 +60,12 @@ export function Pflegegrad1RatgeberHero() {
                   width={1117}
                   height={724}
                   className="h-auto w-full object-cover"
-                  sizes="(max-width: 1024px) 90vw, 546px"
+                  sizes="(max-width: 1024px) 90vw, 682px"
                   priority
                 />
               </div>
             </div>
             <RatgeberArticleImageBeratungCta
-              className="w-full max-w-[18rem] self-center sm:max-w-[21rem] lg:max-w-[420px] lg:self-start"
               contextNote="Ratgeber: Pflegegrad 1 (Artikelbild)"
               preselectedServices={["pflegegrad_beantrag_widerspruch"]}
             />

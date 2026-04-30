@@ -15,9 +15,9 @@ export function RatgeberArticleImageBeratungCta({
   className?: string;
 }) {
   return (
-    <div className={cn("mt-4 flex w-full flex-col items-stretch sm:mt-3", className)}>
+    <div className={cn("mt-4 flex w-full flex-col items-center sm:mt-3", className)}>
       <RatgeberBeratungCtaButton
-        className="w-full justify-center px-4 text-[0.9rem] sm:max-w-none"
+        className="w-full max-w-[18rem] justify-center px-4 text-[0.9rem] sm:max-w-[21rem]"
         contextNote={contextNote}
         preselectedServices={preselectedServices ?? ["pflegegrad_beantrag_widerspruch"]}
       >
