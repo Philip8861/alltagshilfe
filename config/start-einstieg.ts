@@ -6,6 +6,14 @@
  * - `SERVICE_KEYS` / `serviceLinks` / `ergebnisInhalte`
  */
 
+import { features } from "@/config/features";
+
+/** Zeilen mit `key: "essen"` ausblenden, wenn Essen auf Räder temporär unsichtbar ist. */
+function filterEssenOptions<T extends { key: ServiceErgebnisKey }>(optionen: readonly T[]): T[] {
+  if (features.essenAufRaederVisible) return [...optionen];
+  return optionen.filter((o) => o.key !== "essen");
+}
+
 /** Interne Schlüssel für Ergebnis-CTAs und Links */
 export type ServiceErgebnisKey =
   | "haushalt"
@@ -75,11 +83,13 @@ export const HAUPT_KARTEN: {
   {
     id: "bestimmt",
     titel: "Ich suche etwas Bestimmtes",
-    text: "Inkontinenzversorgung, Pflegeshop oder Essen auf Räder im Raum Kempten",
+    text: features.essenAufRaederVisible
+      ? "Inkontinenzversorgung, Pflegeshop oder Essen auf Räder im Raum Kempten"
+      : "Inkontinenzversorgung, Pflegeshop und weitere Leistungen finden",
   },
 ];
 
-export const UNTER_BEREICHE: Record<
+const UNTER_BEREICHE_BASE: Record<
   HauptKartenId,
   {
     ueberschrift: string;
@@ -131,7 +141,20 @@ export const UNTER_BEREICHE: Record<
   },
 };
 
-export const MINI_ASSISTENT_SCHRITTE = {
+export const UNTER_BEREICHE: typeof UNTER_BEREICHE_BASE = {
+  ...UNTER_BEREICHE_BASE,
+  alltag: {
+    ...UNTER_BEREICHE_BASE.alltag,
+    optionen: filterEssenOptions(UNTER_BEREICHE_BASE.alltag.optionen),
+  },
+  bestimmt: {
+    ...UNTER_BEREICHE_BASE.bestimmt,
+    optionen: filterEssenOptions(UNTER_BEREICHE_BASE.bestimmt.optionen),
+  },
+  beratung: UNTER_BEREICHE_BASE.beratung,
+};
+
+const MINI_ASSISTENT_SCHRITTE_BASE = {
   schritt1: {
     frage: "Wobei dürfen wir helfen?",
     optionen: [
@@ -159,6 +182,14 @@ export const MINI_ASSISTENT_SCHRITTE = {
       { id: "rueckruf", label: "Rückruf erhalten" },
       { id: "leistung", label: "Passende Leistung anzeigen" },
     ],
+  },
+};
+
+export const MINI_ASSISTENT_SCHRITTE = {
+  ...MINI_ASSISTENT_SCHRITTE_BASE,
+  schritt1: {
+    ...MINI_ASSISTENT_SCHRITTE_BASE.schritt1,
+    optionen: filterEssenOptions(MINI_ASSISTENT_SCHRITTE_BASE.schritt1.optionen),
   },
 };
 

@@ -18,6 +18,7 @@ import {
   ArticleSubtitle,
   PflegegradCallout,
 } from "@/components/ratgeber/pflegegrad-beantragen/pflegegrad-visual-primitives";
+import { features } from "@/config/features";
 import { cn } from "@/lib/utils";
 
 const PROSE = "text-[1.125rem] leading-[1.7] text-neutral-800";
@@ -281,8 +282,8 @@ export function PflegegradBeantragenArticle() {
         <p className="mt-4">
           Gut zu wissen: Nach einem anerkannten Pflegegrad können auch Pflegehilfsmittel, Inkontinenzversorgung über Rezept,
           private Pflegeberatung, Unterstützung im Haushalt, Alltagsbegleitung, Ersatzpflege beziehungsweise Verhinderungspflege
-          oder Essen auf Rädern wichtig werden. Alltagshilfe-Süd hilft Ihnen dabei, passende Leistungen zu verstehen und sinnvoll
-          zu nutzen.
+          {features.essenAufRaederVisible ? " oder Essen auf Rädern" : ""} wichtig werden. Alltagshilfe-Süd hilft Ihnen
+          dabei, passende Leistungen zu verstehen und sinnvoll zu nutzen.
         </p>
       </ArticleSectionHeading>
 

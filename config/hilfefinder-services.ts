@@ -1,4 +1,5 @@
 import type { Standort } from "@/config/standorte";
+import { features } from "@/config/features";
 
 /**
  * Leistungsauswahl wie im Hilfe-Finder (Startseite) – eine Quelle für alle Flows mit gleichem Angebot.
@@ -15,7 +16,7 @@ export type HilfefinderServiceKey =
   | "hilfsmittel"
   | "essen";
 
-export const HILFEFINDER_SERVICE_OPTIONEN: {
+const HILFEFINDER_SERVICE_OPTIONEN_ALL: {
   key: HilfefinderServiceKey;
   label: string;
   verfuegbarkeit: "direkt" | "partner";
@@ -35,6 +36,10 @@ export const HILFEFINDER_SERVICE_OPTIONEN: {
   { key: "hilfsmittel", label: "Pflegehilfsmittel (Rollator, Duschhocker usw.)", verfuegbarkeit: "direkt" },
   { key: "essen", label: "Essen auf Rädern", verfuegbarkeit: "direkt" },
 ];
+
+export const HILFEFINDER_SERVICE_OPTIONEN = features.essenAufRaederVisible
+  ? HILFEFINDER_SERVICE_OPTIONEN_ALL
+  : HILFEFINDER_SERVICE_OPTIONEN_ALL.filter((o) => o.key !== "essen");
 
 /** Fallback, wenn keine PLZ zugeordnet werden kann – Zentrale Bad Grönenbach. */
 export const HILFEFINDER_FALLBACK_BAD_GROENENBACH: Standort = {

@@ -2,6 +2,8 @@
  * Hauptnavigation – zentrale Pfade.
  * Einträge mit `children` werden als Dropdown dargestellt.
  */
+import { features } from "@/config/features";
+
 export type NavLink = {
   href: string;
   label: string;
@@ -11,7 +13,7 @@ export type NavLink = {
 };
 
 /** Reihenfolge wie zuvor in der Leistungsübersicht; drei Einträge verweisen auf ausgearbeitete Unterseiten. */
-const UNSERE_LEISTUNGEN_CHILDREN: { href: string; label: string }[] = [
+const UNSERE_LEISTUNGEN_CHILDREN_ALL: { href: string; label: string }[] = [
   { href: "/leistungen/haushaltshilfe", label: "Haushaltshilfe" },
   { href: "/leistungen/alltagsbegleitung-betreuung", label: "Alltagsbegleitung und Betreuung" },
   { href: "/pflegeberatung/private-pflegeberatung", label: "Pflegeberatungseinsätze nach §37.3 SGB XI" },
@@ -21,6 +23,10 @@ const UNSERE_LEISTUNGEN_CHILDREN: { href: string; label: string }[] = [
   { href: "/leistungen/hilfe-nach-operation", label: "Hilfe nach Operation, Unfall oder Schwangerschaft" },
   { href: "/pflegeberatung#betriebliche-pflegeberatung", label: "Betriebliche Pflegeberatung" },
 ];
+
+const UNSERE_LEISTUNGEN_CHILDREN = features.essenAufRaederVisible
+  ? UNSERE_LEISTUNGEN_CHILDREN_ALL
+  : UNSERE_LEISTUNGEN_CHILDREN_ALL.filter((c) => c.href !== "/leistungen/essen-auf-raeder");
 
 export const navLinks: NavLink[] = [
   { href: "/", label: "Startseite" },

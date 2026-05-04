@@ -1,4 +1,5 @@
 import { siteConfig } from "@/config/site";
+import { features } from "@/config/features";
 import type { MetadataRoute } from "next";
 import leistungenData from "@/content/leistungen.json";
 import { getAllStandortPageSlugs } from "@/config/standorte";
@@ -42,7 +43,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${base}/datenschutz`, lastModified: new Date(), changeFrequency: "yearly", priority: 0.3 },
     { url: `${base}/ratgeber`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.75 },
   ];
-  const leistungen = leistungenData.map(
+  const leistungen = leistungenData
+    .filter(
+      (item: { slug: string }) =>
+        features.essenAufRaederVisible || item.slug !== "essen-auf-raeder"
+    )
+    .map(
     (item: { slug: string }) => ({
       url: `${base}/leistungen/${item.slug}`,
       lastModified: new Date(),

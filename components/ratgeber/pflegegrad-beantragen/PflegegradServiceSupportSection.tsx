@@ -3,24 +3,27 @@
 import Link from "next/link";
 
 import { RatgeberBeratungCtaButton } from "@/components/ratgeber/RatgeberBeratungDialog";
+import { features } from "@/config/features";
 
-const ITEMS = [
-  "Unterstützung beim Pflegegrad-Antrag",
-  "Hilfe beim Widerspruch",
-  "Private Pflegeberatung",
-  "Haushaltsreinigung",
-  "Alltagsbegleitung & Betreuung",
-  "Entlastungsbetrag über Alltagshilfe-Süd nutzbar",
-  "Ersatzpflege / Verhinderungspflege",
-  "Pflegehilfsmittel im Wert von bis zu 42 €",
-  "Inkontinenzversorgung über Rezept",
-  "Pflegeshop",
-  "Essen auf Rädern",
-  "Hausnotruf über Kooperationspartner",
-  "Treppenlift über Kooperationspartner",
-  "Begehbare Dusche über Kooperationspartner",
-  "Abrechnung über alle Kranken- und Pflegekassen möglich",
-];
+const ITEMS = (
+  [
+    "Unterstützung beim Pflegegrad-Antrag",
+    "Hilfe beim Widerspruch",
+    "Private Pflegeberatung",
+    "Haushaltsreinigung",
+    "Alltagsbegleitung & Betreuung",
+    "Entlastungsbetrag über Alltagshilfe-Süd nutzbar",
+    "Ersatzpflege / Verhinderungspflege",
+    "Pflegehilfsmittel im Wert von bis zu 42 €",
+    "Inkontinenzversorgung über Rezept",
+    "Pflegeshop",
+    "Essen auf Rädern",
+    "Hausnotruf über Kooperationspartner",
+    "Treppenlift über Kooperationspartner",
+    "Begehbare Dusche über Kooperationspartner",
+    "Abrechnung über alle Kranken- und Pflegekassen möglich",
+  ] as const
+).filter((t) => t !== "Essen auf Rädern" || features.essenAufRaederVisible);
 
 function CheckBullet() {
   return (
