@@ -165,8 +165,8 @@ const BEREICHE: BereichDef[] = [
         text: "Wenn eine von Ihnen vermittelte Pflegeberatung erfolgreich durchgeführt wird, erhalten Sie eine faire Tippgeberprovision.",
       },
       {
-        title: "Entlastung im Alltag und professionelle Weiterleitung Ihrer Kontakte",
-        text: "Sie können pflegebedürftige Menschen und Angehörige unkompliziert an einen verlässlichen Partner weiterleiten.",
+        title: `Professionelle Umsetzung durch ${siteConfig.name}`,
+        text: "Die fachliche Beratung übernehmen wir. Sie haben nach der Vermittlung keine weitere Arbeit mehr.",
       },
     ],
     mehrHref: "/pflegeberatung/private-pflegeberatung",
@@ -179,7 +179,7 @@ const BEREICHE: BereichDef[] = [
     lede: "Sie arbeiten mit Menschen, Angehörigen oder Familien zusammen, die im Alltag Unterstützung benötigen?",
     paragraphs: [
       `Dann können Sie diese Personen unkompliziert an ${siteConfig.name} weitervermitteln. Wir helfen schnell und zuverlässig bei Anfragen rund um Haushaltshilfe, Alltagsbegleitung und Betreuung.`,
-      "Ob Unterstützung im Haushalt, Begleitung im Alltag oder Entlastung für Angehörige: Wir nehmen Kontakt auf, klären den Bedarf und begleiten die weitere Umsetzung. So erhalten die betroffenen Personen schnelle Hilfe, während Sie als vertrauter Ansprechpartner entlastet werden.",
+      "Ob Unterstützung im Haushalt, Begleitung im Alltag oder Entlastung für Angehörige: Wir nehmen Kontakt auf und klären den weiteren Bedarf. Die betroffenen Personen erhalten eine schnelle Versorgung, ohne lange Wartezeit.",
     ],
     featuresHeading: "Ihre Vorteile als Kooperationspartner",
     features: [
