@@ -2,16 +2,9 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { KundenstimmenCarousel } from "@/components/home/KundenstimmenCarousel";
 import { ProtectedRasterMedia } from "@/components/home/ProtectedRasterMedia";
-import { RevealOnScroll } from "@/components/pflegehilfsmittel/RevealOnScroll";
 import { siteConfig } from "@/config/site";
-import {
-  buildStandortStyleFaq,
-  standortFaqJsonLd,
-  STANDORT_FAQ_LINK_CLASS,
-} from "@/lib/standort-faq";
 import { STARTSEITE_VORTEILE_INTRO } from "@/lib/startseite-vorteile";
 
-const HAUSHALTSHILFE_FAQ_ANCHOR = "/leistungen/haushaltshilfe#haushalt-faq-heading";
 const PLEGEBEDARF_URL = "https://deinPflegebedarf.de";
 const PFLEGEBOX_KONFIGURATOR_HREF = "/pflegehilfsmittel/pflegebox-konfigurator";
 
@@ -31,9 +24,6 @@ const PFLEGESHOP_HERO_IMG = { w: 1099, h: 645 } as const;
 const HERO_GLOW_CLASS =
   "[filter:drop-shadow(0_10px_22px_rgba(15,79,104,0.2))_drop-shadow(0_4px_12px_rgba(15,79,104,0.12))] [will-change:filter]";
 
-const STARTSEITE_FAQ_BG = "#FAFBFC";
-const STARTSEITE_FAQ_WELLEN_D =
-  "M0,120 C200,32 420,8 600,22 C800,38 1010,90 1200,120 L1200,120 L0,120 Z";
 const HERO_INTRO = {
   brand: "Pflegeshop & Inkontinenzversorgung",
   partnerLine:
@@ -46,9 +36,6 @@ export const metadata: Metadata = {
 };
 
 export default function PflegeshopPage() {
-  const faqItems = buildStandortStyleFaq(null);
-  const faqJsonLd = standortFaqJsonLd(faqItems);
-
   return (
     <article className="flex min-h-[60vh] w-full max-w-[100vw] flex-col overflow-x-clip overflow-y-visible bg-[#fafbfc] pt-0 pb-0 text-neutral-700 antialiased">
       <div id="pflegeshop-hero" className="min-w-0 scroll-mt-24 overflow-x-clip overflow-y-visible">
@@ -207,68 +194,6 @@ export default function PflegeshopPage() {
       </section>
 
       <KundenstimmenCarousel protectImages />
-
-      <section
-        className="relative z-10 mt-10 overflow-x-clip pb-8 pt-[clamp(4rem,7vw+1.75rem,6.75rem)] sm:mt-12 sm:pb-10 sm:pt-[clamp(4.5rem,8vw+2rem,7.25rem)] lg:mt-14 lg:pb-10"
-        style={{ backgroundColor: STARTSEITE_FAQ_BG }}
-        aria-labelledby="pflegeshop-faq-heading"
-      >
-        <svg
-          className="pointer-events-none absolute left-0 top-0 z-0 h-12 w-full -translate-y-[68%] sm:h-16"
-          viewBox="0 0 1200 120"
-          preserveAspectRatio="none"
-          fill="none"
-          aria-hidden
-        >
-          <path d={STARTSEITE_FAQ_WELLEN_D} fill={STARTSEITE_FAQ_BG} />
-        </svg>
-        <div className="relative z-[1] mx-auto max-w-3xl px-4 sm:px-6 lg:max-w-4xl">
-          <RevealOnScroll>
-            <h2
-              id="pflegeshop-faq-heading"
-              className="text-center text-2xl font-extrabold tracking-tight text-[#0F4F68] sm:text-3xl"
-            >
-              Häufige Fragen
-            </h2>
-            <p className="mx-auto mt-2 max-w-2xl text-center text-sm font-medium text-[#0F4F68]/85 sm:text-base">
-              Antworten zu Region, Leistungen, Kosten, Kasse, Entlastungsbetrag und Ablauf – ergänzend zur{" "}
-              <Link href={HAUSHALTSHILFE_FAQ_ANCHOR} className={STANDORT_FAQ_LINK_CLASS}>
-                FAQ Haushaltshilfe
-              </Link>
-              .
-            </p>
-          </RevealOnScroll>
-          <RevealOnScroll delayMs={100}>
-            <div className="mt-8 space-y-3 sm:mt-10">
-              {faqItems.map((item) => (
-                <details
-                  key={item.q}
-                  className="group rounded-2xl border border-[#0F4F68]/12 bg-white shadow-[0_2px_16px_rgba(15,79,104,0.06)] transition hover:border-[#F78F2E]/35 hover:shadow-[0_8px_28px_rgba(15,79,104,0.1)] open:border-[#0F4F68]/18 open:shadow-[0_10px_32px_rgba(15,79,104,0.12)]"
-                >
-                  <summary className="flex cursor-pointer list-none items-center justify-between gap-4 px-4 py-4 text-left text-[#0F4F68] sm:px-5 [&::-webkit-details-marker]:hidden">
-                    <span className="text-base font-semibold leading-snug sm:text-[1.05rem]">{item.q}</span>
-                    <span
-                      className="inline-flex shrink-0 rounded-full bg-[#F78F2E]/12 p-1.5 text-[#F78F2E] transition-transform duration-200 group-open:rotate-180"
-                      aria-hidden
-                    >
-                      <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-                      </svg>
-                    </span>
-                  </summary>
-                  <div className="border-t border-[#0F4F68]/8 px-4 pb-4 pt-2 text-pretty text-sm leading-relaxed text-neutral-600 sm:px-5 sm:text-base">
-                    {item.answer}
-                  </div>
-                </details>
-              ))}
-            </div>
-          </RevealOnScroll>
-        </div>
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
-        />
-      </section>
     </article>
   );
 }
