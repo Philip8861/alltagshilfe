@@ -1,12 +1,9 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import { LeistungenKachelGrid } from "@/components/home/LeistungenKachelGrid";
 import { KundenstimmenCarousel } from "@/components/home/KundenstimmenCarousel";
 import { ProtectedRasterMedia } from "@/components/home/ProtectedRasterMedia";
 import { HilfefinderOpenButton, HilfefinderProvider } from "@/components/home/StartEinstiegsHilfe";
-import { StandortNummerEinsReveal } from "@/components/standorte/StandortNummerEinsReveal";
-import { StandortWechselBild } from "@/components/standorte/StandortWechselBild";
 import { RevealOnScroll } from "@/components/pflegehilfsmittel/RevealOnScroll";
 import { siteConfig } from "@/config/site";
 import {
@@ -22,9 +19,6 @@ const PLEGEBEDARF_URL = "https://deinPflegebedarf.de";
 const STARTSEITE_FAQ_BG = "#FAFBFC";
 const STARTSEITE_FAQ_WELLEN_D =
   "M0,120 C200,32 420,8 600,22 C800,38 1010,90 1200,120 L1200,120 L0,120 Z";
-const STARTSEITE_LEISTUNGEN_BOGEN_D =
-  "M0,120 C320,28 880,28 1200,120 L1200,120 L0,120 Z";
-
 const HERO_INTRO = {
   brand: "Pflegeshop",
   taglineLines: [
@@ -35,15 +29,6 @@ const HERO_INTRO = {
   partnerLine:
     "Bestellen Sie bequem online – wir stehen Ihnen bei Fragen zu Leistungen und Anträgen weiterhin persönlich zur Seite.",
 } as const;
-
-const LEISTUNGEN_INTRO = {
-  heading: "Mit viel Herz und Engagement sind wir für Sie da.",
-  text: "Was uns besonders wichtig ist: Wir möchten dazu beitragen, dass Sie Ihren Alltag so lange wie möglich selbstbestimmt gestalten und in Ihrem vertrauten Zuhause bleiben können. Unsere Unterstützung orientiert sich dabei an Ihren individuellen Bedürfnissen und Ihrer persönlichen Lebenssituation.",
-};
-
-const HEADING_CLASS =
-  "text-3xl font-bold text-[#0F4F68] sm:text-4xl w-full max-w-lg self-start";
-const INTRO_BODY_CLASS = "text-lg text-neutral-700 leading-relaxed sm:text-xl";
 
 export const metadata: Metadata = {
   title: "Pflegeshop",
@@ -82,15 +67,15 @@ export default function PflegeshopPage() {
           <HilfefinderProvider>
             <div className="relative isolate flex w-full flex-col overflow-hidden rounded-b-3xl bg-transparent md:relative md:block md:min-h-[28.125rem] lg:min-h-[30.46875rem]">
               <div
-                className="pointer-events-none relative z-0 w-full shrink-0 overflow-hidden max-md:h-[min(17.5rem,52vw)] sm:max-md:h-[min(21rem,48vw)] md:absolute md:inset-0 md:h-full md:min-h-[28.125rem] lg:min-h-[30.46875rem]"
+                className="pointer-events-none relative z-0 w-full shrink-0 overflow-hidden rounded-2xl max-md:h-[min(17.5rem,52vw)] sm:max-md:h-[min(21rem,48vw)] md:absolute md:inset-0 md:h-full md:min-h-[28.125rem] md:rounded-3xl lg:min-h-[30.46875rem]"
                 aria-hidden
               >
-                <ProtectedRasterMedia className="relative block h-full w-full select-none [-webkit-user-drag:none]">
+                <ProtectedRasterMedia className="relative block h-full w-full overflow-hidden rounded-2xl select-none [-webkit-user-drag:none] md:rounded-3xl">
                   <Image
                     src="/images/pflegeshop_image.webp"
                     alt="Pflegeshop: Sortiment an Pflegehilfsmitteln"
                     fill
-                    className="max-md:object-cover max-md:object-[82%_center] md:object-contain md:object-center"
+                    className="rounded-2xl object-cover object-[82%_center] md:rounded-3xl md:object-cover md:object-center"
                     sizes="(min-width: 768px) 96vw, 100vw"
                     quality={92}
                     priority
@@ -154,7 +139,7 @@ export default function PflegeshopPage() {
         </div>
       </section>
 
-      <section className="relative z-20 mt-0 w-full bg-[#FAFBFC] px-4 pt-[1.35rem] pb-8 sm:px-6 sm:pt-[2rem] sm:pb-[2.4rem] lg:px-[var(--ahs-page-gutter)]">
+      <section className="relative z-20 mt-0 w-full bg-[#F2F9FA] px-4 pt-[1.35rem] pb-8 sm:px-6 sm:pt-[2rem] sm:pb-[2.4rem] lg:px-[var(--ahs-page-gutter)] lg:pt-[2rem] lg:pb-10">
         <svg
           className="pointer-events-none absolute left-0 top-0 h-12 w-full -translate-y-[68%] sm:h-16"
           viewBox="0 0 1200 120"
@@ -162,48 +147,10 @@ export default function PflegeshopPage() {
           fill="none"
           aria-hidden
         >
-          <path d={STARTSEITE_LEISTUNGEN_BOGEN_D} fill="#FAFBFC" />
-        </svg>
-        <div className="mx-auto w-full max-w-6xl">
-          <LeistungenKachelGrid
-            id="pflegeshop-unsere-leistungen"
-            heading="Unsere Leistungen im Überblick"
-            subtitle="Persönlich, zuverlässig und mit viel Herz im Alltag."
-            headingClassName="scroll-mt-[calc(2.45rem+var(--ahs-header-white-min-height)+0.75rem)]"
-            introAlign="center"
+          <path
+            d="M0,120 C320,28 880,28 1200,120 L1200,120 L0,120 Z"
+            fill="#F2F9FA"
           />
-        </div>
-      </section>
-
-      <section className="relative z-20 mt-12 w-full px-4 sm:mt-16 sm:px-6 lg:mt-20 lg:px-[var(--ahs-page-gutter)]">
-        <div className="mx-auto flex w-full max-w-6xl flex-col gap-6 sm:flex-row sm:items-start sm:gap-8 lg:gap-10">
-          <div className="relative z-20 order-3 flex w-full max-w-full justify-center pb-2 pt-1 sm:order-1 lg:w-[50%] lg:max-w-3xl lg:shrink-0 lg:justify-center lg:px-6 lg:pb-4 lg:pt-2 sm:px-4">
-            <div className="w-full max-w-full" style={{ width: "min(491px, calc(100vw - 3rem))" }}>
-              <ProtectedRasterMedia className="select-none [-webkit-user-drag:none]">
-                <StandortWechselBild
-                  alt="Betreuung und Zuwendung: Team Alltagshilfe-Süd mit Seniorin im Freien"
-                  sizes="(max-width: 640px) min(491px, 88vw), 491px"
-                />
-              </ProtectedRasterMedia>
-            </div>
-          </div>
-
-          <StandortNummerEinsReveal className="order-1 w-full min-w-0 px-4 sm:order-2 sm:px-6 lg:flex-1 lg:max-w-lg lg:self-start lg:px-[var(--ahs-page-gutter)]">
-            <h2 className={HEADING_CLASS}>{LEISTUNGEN_INTRO.heading}</h2>
-            <p className={INTRO_BODY_CLASS}>{LEISTUNGEN_INTRO.text}</p>
-          </StandortNummerEinsReveal>
-        </div>
-      </section>
-
-      <section className="relative z-20 mt-12 w-full bg-[#F2F9FA] px-4 pt-[1.35rem] pb-8 sm:mt-14 sm:px-6 sm:pt-[2rem] sm:pb-[2.4rem] lg:mt-16 lg:px-[var(--ahs-page-gutter)] lg:pt-[2rem] lg:pb-10">
-        <svg
-          className="pointer-events-none absolute left-0 top-0 h-12 w-full -translate-y-[68%] sm:h-16"
-          viewBox="0 0 1200 120"
-          preserveAspectRatio="none"
-          fill="none"
-          aria-hidden
-        >
-          <path d={STARTSEITE_LEISTUNGEN_BOGEN_D} fill="#F2F9FA" />
         </svg>
         <div className="relative z-[1] mx-auto w-full max-w-6xl">
           <h3 className="text-center text-3xl font-extrabold tracking-tight text-[#0F4F68] sm:text-4xl">
