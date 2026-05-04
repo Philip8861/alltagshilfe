@@ -16,26 +16,23 @@ import { STARTSEITE_VORTEILE, STARTSEITE_VORTEILE_INTRO } from "@/lib/startseite
 const HAUSHALTSHILFE_FAQ_ANCHOR = "/leistungen/haushaltshilfe#haushalt-faq-heading";
 const PLEGEBEDARF_URL = "https://deinPflegebedarf.de";
 
-/** Natürliche Pixelmaße von `public/images/pflegeshop_image.webp` (Originalgröße im Layout) */
-const PFLEGESHOP_HERO_IMG = { w: 1901, h: 806 } as const;
-
 const STARTSEITE_FAQ_BG = "#FAFBFC";
 const STARTSEITE_FAQ_WELLEN_D =
   "M0,120 C200,32 420,8 600,22 C800,38 1010,90 1200,120 L1200,120 L0,120 Z";
 const HERO_INTRO = {
-  brand: "Pflegeshop",
+  brand: "Alltagshilfe-Süd Pflegeshop",
   taglineLines: [
-    "Pflegehilfsmittel und mehr für zu Hause",
+    "Artikel von Pflegekräften empfohlen",
+    "Sortiment für den Pflegealltag zu Hause",
     "In Kooperation mit deinPflegebedarf.de",
-    "Beratung zu Kostenübernahme und Pflegekasse",
   ],
   partnerLine:
     "Bestellen Sie bequem online – wir stehen Ihnen bei Fragen zu Leistungen und Anträgen weiterhin persönlich zur Seite.",
 } as const;
 
 export const metadata: Metadata = {
-  title: "Pflegeshop",
-  description: `Pflegehilfsmittel und Pflegebedarf online – unser Pflegeshop mit deinPflegebedarf.de. ${siteConfig.name}.`,
+  title: "Alltagshilfe-Süd Pflegeshop",
+  description: `Pflegehilfsmittel und Pflegebedarf online – Alltagshilfe-Süd Pflegeshop mit deinPflegebedarf.de. ${siteConfig.name}.`,
 };
 
 function HeroCheckIcon({ className = "" }: { className?: string }) {
@@ -65,28 +62,27 @@ export default function PflegeshopPage() {
 
   return (
     <article className="flex min-h-[60vh] w-full max-w-[100vw] flex-col overflow-x-clip bg-white pt-0 pb-0">
-      <section className="box-border w-full pt-0 pb-6 sm:pb-8 lg:pb-[clamp(1.5rem,2vw+0.75rem,2.5rem)]">
+      <section className="box-border w-full pt-4 pb-6 sm:pt-5 sm:pb-8 md:pt-8 lg:pb-[clamp(1.5rem,2vw+0.75rem,2.5rem)]">
         <div className="relative w-full px-3 sm:px-4 md:px-[5cm]" aria-label="Einstieg Pflegeshop">
           <HilfefinderProvider>
             <div className="relative isolate flex w-full flex-col overflow-hidden rounded-b-3xl bg-transparent md:relative md:block md:min-h-[28.125rem] lg:min-h-[30.46875rem]">
               <div
-                className="pointer-events-none relative z-0 w-full shrink-0 overflow-hidden max-md:px-4 max-md:pt-4 max-md:pb-2 sm:max-md:px-6 md:absolute md:inset-0 md:flex md:min-h-[28.125rem] md:items-center md:justify-center md:px-6 md:py-6 lg:min-h-[30.46875rem] lg:px-[var(--ahs-page-gutter)] lg:py-8"
+                className="pointer-events-none relative z-0 w-full shrink-0 overflow-hidden max-md:h-[min(17.5rem,52vw)] sm:max-md:h-[min(21rem,48vw)] md:absolute md:inset-0 md:h-full md:min-h-[28.125rem] lg:min-h-[30.46875rem]"
                 aria-hidden
               >
-                <ProtectedRasterMedia className="relative mx-auto block w-full max-w-full select-none [-webkit-user-drag:none] md:max-w-[1901px]">
+                <ProtectedRasterMedia className="relative block h-full w-full select-none [-webkit-user-drag:none]">
                   <Image
                     src="/images/pflegeshop_image.webp"
                     alt="Pflegeshop: Sortiment an Pflegehilfsmitteln"
-                    width={PFLEGESHOP_HERO_IMG.w}
-                    height={PFLEGESHOP_HERO_IMG.h}
-                    className="h-auto w-full max-w-[1901px] rounded-2xl md:rounded-3xl"
-                    sizes="(min-width: 1536px) 1901px, (min-width: 768px) min(1901px, calc(100vw - 10cm - 3rem)), calc(100vw - 2rem)"
+                    fill
+                    className="max-md:object-cover max-md:object-[82%_center] md:object-contain md:object-center"
+                    sizes="(min-width: 768px) 96vw, 100vw"
                     quality={92}
                     priority
                   />
                 </ProtectedRasterMedia>
               </div>
-              <div className="relative z-10 mx-auto flex w-full max-w-7xl flex-col justify-center px-4 pb-5 pt-5 max-md:bg-transparent sm:px-6 md:absolute md:inset-0 md:min-h-[28.125rem] md:pb-4 md:pt-7 lg:min-h-[30.46875rem] lg:px-[var(--ahs-page-gutter)] lg:pb-5 lg:pt-8">
+              <div className="relative z-10 mx-auto flex w-full max-w-7xl flex-col justify-center px-4 pb-6 pt-7 max-md:bg-transparent sm:px-6 sm:pb-7 sm:pt-8 md:absolute md:inset-0 md:min-h-[28.125rem] md:pb-5 md:pt-12 lg:min-h-[30.46875rem] lg:px-[var(--ahs-page-gutter)] lg:pb-6 lg:pt-14">
                 <header className="max-w-lg text-left sm:max-w-xl lg:max-w-[min(42vw,clamp(22rem,32vw+8rem,30rem))] xl:max-w-[min(38vw,clamp(23rem,28vw+9rem,31rem))] 2xl:max-w-[min(34vw,clamp(24rem,26vw+10rem,32rem))]">
                   <h1
                     className="text-balance text-3xl font-extrabold leading-tight tracking-tight text-[#0F4F68] opacity-0 motion-reduce:opacity-100 animate-fade-in-up sm:text-4xl lg:text-[clamp(2rem,1.05rem+2.6vw,3rem)]"
@@ -117,13 +113,13 @@ export default function PflegeshopPage() {
                   >
                     {HERO_INTRO.partnerLine}
                   </p>
-                  <div className="mt-3 flex flex-col gap-3 min-[420px]:flex-row min-[420px]:flex-wrap min-[420px]:items-center sm:mt-4">
-                    <HilfefinderOpenButton className="w-full min-[420px]:w-auto" />
+                  <div className="mt-4 flex flex-col gap-3 min-[420px]:flex-row min-[420px]:flex-wrap min-[420px]:items-center sm:mt-5">
+                    <HilfefinderOpenButton className="w-full min-[420px]:w-auto">Kontakt & Beratung</HilfefinderOpenButton>
                     <a
                       href={PLEGEBEDARF_URL}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex w-full min-h-[48px] min-[420px]:w-auto items-center justify-center gap-2 rounded-xl border-2 border-[#0F4F68] bg-white px-5 py-3 text-sm font-semibold text-[#0F4F68] shadow-sm transition hover:bg-[#F2F9FA] focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2 sm:text-base"
+                      className="inline-flex w-full min-h-[48px] min-[420px]:w-auto items-center justify-center gap-2 rounded-xl bg-[#F78F2E] px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-[#ea8328] hover:shadow-md focus:outline-none focus:ring-2 focus:ring-[#F78F2E] focus:ring-offset-2 sm:text-base"
                     >
                       Zum Sortiment auf deinPflegebedarf.de
                       <svg className="h-5 w-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden>

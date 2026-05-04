@@ -50,7 +50,14 @@ const BAD_GROENENBACH_STANDORT: StandortInfo = HILFEFINDER_FALLBACK_BAD_GROENENB
 
 const HilfefinderCtx = createContext<{ open: () => void } | null>(null);
 
-export function HilfefinderOpenButton({ className = "" }: { className?: string }) {
+export function HilfefinderOpenButton({
+  className = "",
+  children,
+}: {
+  className?: string;
+  /** Ohne children: Standard-Label der Startseite. */
+  children?: ReactNode;
+}) {
   const ctx = useContext(HilfefinderCtx);
   return (
     <button
@@ -61,7 +68,7 @@ export function HilfefinderOpenButton({ className = "" }: { className?: string }
         className,
       )}
     >
-      In 60 Sekunden die passende Hilfe finden
+      {children ?? "In 60 Sekunden die passende Hilfe finden"}
     </button>
   );
 }
