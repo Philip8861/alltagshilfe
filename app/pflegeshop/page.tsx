@@ -16,6 +16,9 @@ import { STARTSEITE_VORTEILE, STARTSEITE_VORTEILE_INTRO } from "@/lib/startseite
 const HAUSHALTSHILFE_FAQ_ANCHOR = "/leistungen/haushaltshilfe#haushalt-faq-heading";
 const PLEGEBEDARF_URL = "https://deinPflegebedarf.de";
 
+/** Natürliche Pixelmaße von `public/images/pflegeshop_image.webp` (Originalgröße im Layout) */
+const PFLEGESHOP_HERO_IMG = { w: 1901, h: 806 } as const;
+
 const STARTSEITE_FAQ_BG = "#FAFBFC";
 const STARTSEITE_FAQ_WELLEN_D =
   "M0,120 C200,32 420,8 600,22 C800,38 1010,90 1200,120 L1200,120 L0,120 Z";
@@ -67,16 +70,17 @@ export default function PflegeshopPage() {
           <HilfefinderProvider>
             <div className="relative isolate flex w-full flex-col overflow-hidden rounded-b-3xl bg-transparent md:relative md:block md:min-h-[28.125rem] lg:min-h-[30.46875rem]">
               <div
-                className="pointer-events-none relative z-0 w-full shrink-0 overflow-hidden rounded-2xl max-md:h-[min(17.5rem,52vw)] sm:max-md:h-[min(21rem,48vw)] md:absolute md:inset-0 md:h-full md:min-h-[28.125rem] md:rounded-3xl lg:min-h-[30.46875rem]"
+                className="pointer-events-none relative z-0 w-full shrink-0 overflow-hidden max-md:px-4 max-md:pt-4 max-md:pb-2 sm:max-md:px-6 md:absolute md:inset-0 md:flex md:min-h-[28.125rem] md:items-center md:justify-center md:px-6 md:py-6 lg:min-h-[30.46875rem] lg:px-[var(--ahs-page-gutter)] lg:py-8"
                 aria-hidden
               >
-                <ProtectedRasterMedia className="relative block h-full w-full overflow-hidden rounded-2xl bg-[#F2F9FA] select-none [-webkit-user-drag:none] md:rounded-3xl">
+                <ProtectedRasterMedia className="relative mx-auto block w-full max-w-full select-none [-webkit-user-drag:none] md:max-w-[1901px]">
                   <Image
                     src="/images/pflegeshop_image.webp"
                     alt="Pflegeshop: Sortiment an Pflegehilfsmitteln"
-                    fill
-                    className="rounded-2xl object-contain object-center md:rounded-3xl"
-                    sizes="(min-width: 768px) 96vw, 100vw"
+                    width={PFLEGESHOP_HERO_IMG.w}
+                    height={PFLEGESHOP_HERO_IMG.h}
+                    className="h-auto w-full max-w-[1901px] rounded-2xl md:rounded-3xl"
+                    sizes="(min-width: 1536px) 1901px, (min-width: 768px) min(1901px, calc(100vw - 10cm - 3rem)), calc(100vw - 2rem)"
                     quality={92}
                     priority
                   />
