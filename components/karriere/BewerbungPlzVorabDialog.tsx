@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useId, useRef, useState, type KeyboardEvent, type MouseEvent } from "react";
+import { findStandortByPlz } from "@/config/standorte";
 import { isAlltagshelferJobTitle } from "@/lib/karriere-job-map";
 import { cn } from "@/lib/utils";
 
@@ -12,6 +13,16 @@ type BewerbungPlzVorabDialogProps = {
   onInitiativScrollToForm: () => void;
 };
 
+/** Anzeigename im Satz „Ihre Stelle als …“ ohne Zusatz (m/w/d). */
+function karriereJobDisplayName(title: string): string {
+  return title.replace(/\s*\(m\/w\/d\)\s*$/i, "").trim();
+}
+
+function isJobShownAsAvailableInPlz(jobTitle: string, plz5: string): boolean {
+  if (!isAlltagshelferJobTitle(jobTitle)) return false;
+  return Boolean(findStandortByPlz(plz5));
+}
+
 export function BewerbungPlzVorabDialog({
   jobTitle,
   onDismiss,
@@ -22,9 +33,12 @@ export function BewerbungPlzVorabDialog({
   const titleId = useId();
   const plzInputId = useId();
   const errorId = useId();
+  const resultLiveId = useId();
 
-  const [phase, setPhase] = useState<"plz" | "initiativ">("plz");
+  const [phase, setPhase] = useState<"plz" | "result">("plz");
   const [plz, setPlz] = useState("");
+  const [submittedPlz, setSubmittedPlz] = useState("");
+  const [resultAvailable, setResultAvailable] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -39,7 +53,14 @@ export function BewerbungPlzVorabDialog({
   }, [onDismiss]);
 
   const normalizedPlz = plz.replace(/\D/g, "").slice(0, 5);
-  const alltagshelfer = isAlltagshelferJobTitle(jobTitle);
+  const jobLabel = karriereJobDisplayName(jobTitle);
+
+  const headline =
+    phase === "plz"
+      ? "Kurz vorweg"
+      : resultAvailable
+        ? "Stelle verfügbar"
+        : "Initiativbewerbung";
 
   const handleWeiter = useCallback(() => {
     setError(null);
@@ -47,12 +68,16 @@ export function BewerbungPlzVorabDialog({
       setError("Bitte geben Sie eine Postleitzahl mit genau fünf Ziffern ein.");
       return;
     }
-    if (alltagshelfer) {
-      onAlltagshelferContinue(normalizedPlz, jobTitle);
-      return;
-    }
-    setPhase("initiativ");
-  }, [alltagshelfer, jobTitle, normalizedPlz, onAlltagshelferContinue]);
+    setSubmittedPlz(normalizedPlz);
+    setResultAvailable(isJobShownAsAvailableInPlz(jobTitle, normalizedPlz));
+    setPhase("result");
+  }, [jobTitle, normalizedPlz]);
+
+  const goBackToPlz = useCallback(() => {
+    setPhase("plz");
+    setError(null);
+    setSubmittedPlz("");
+  }, []);
 
   const onPlzKeyDown = useCallback(
     (e: KeyboardEvent<HTMLInputElement>) => {
@@ -94,7 +119,7 @@ export function BewerbungPlzVorabDialog({
               id={titleId}
               className="mt-1 text-balance text-lg font-bold leading-snug text-[#0F4F68] sm:text-xl sm:leading-snug"
             >
-              {phase === "plz" ? "Kurz vorweg" : "Initiativbewerbung"}
+              {headline}
             </h2>
           </div>
           <button
@@ -110,15 +135,9 @@ export function BewerbungPlzVorabDialog({
           {phase === "plz" ? (
             <>
               <p className="text-pretty text-sm font-medium leading-relaxed text-neutral-800 sm:text-base">
-                Bevor der Bewerbungsweg beginnt, möchten wir Sie kurz nach Ihrer Postleitzahl fragen. So können wir
-                prüfen, ob diese Stelle in Ihrer Region derzeit vergeben wird, und Ihre Angaben gleich dem passenden
-                Team zuordnen.
+                Bevor Sie mit Ihrer Bewerbung starten, fragen wir kurz Ihre Postleitzahl ab. So können wir direkt
+                prüfen, ob wir aktuell eine passende Stelle in Ihrer Region anbieten.
               </p>
-              {alltagshelfer ? (
-                <p className="mt-4 text-pretty text-sm leading-relaxed text-neutral-700 sm:text-base">
-                  Als Alltagshelferin oder Alltagshelfer sind wir für Sie an allen unseren Standorten aktiv.
-                </p>
-              ) : null}
               <div className="mt-6">
                 <label htmlFor={plzInputId} className="block text-sm font-semibold text-[#0F4F68]">
                   Ihre Postleitzahl
@@ -157,22 +176,52 @@ export function BewerbungPlzVorabDialog({
                 </button>
               </div>
             </>
+          ) : resultAvailable ? (
+            <div className="space-y-6" aria-live="polite" id={resultLiveId}>
+              <div
+                className="rounded-2xl border-2 border-emerald-500/45 bg-emerald-50/95 px-4 py-4 sm:px-5 sm:py-5"
+                role="status"
+              >
+                <p className="text-pretty text-sm font-semibold leading-relaxed text-emerald-950 sm:text-base">
+                  Ihre Stelle als {jobLabel} in {submittedPlz} ist verfügbar.
+                </p>
+              </div>
+              <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
+                <button
+                  type="button"
+                  className="inline-flex min-h-[48px] flex-1 items-center justify-center rounded-xl bg-emerald-700 px-5 py-3 text-center text-base font-semibold text-white shadow-md transition hover:bg-emerald-800 focus:outline-none focus:ring-2 focus:ring-emerald-700 focus:ring-offset-2 sm:flex-none sm:min-w-[12rem]"
+                  onClick={() => onAlltagshelferContinue(submittedPlz, jobTitle)}
+                >
+                  Jetzt bewerben
+                </button>
+                <button
+                  type="button"
+                  className="inline-flex min-h-[48px] items-center justify-center rounded-xl border border-[#0F4F68]/20 bg-white px-4 py-3 text-sm font-semibold text-[#0F4F68] transition hover:bg-[#F2F9FA] focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2"
+                  onClick={goBackToPlz}
+                >
+                  Postleitzahl ändern
+                </button>
+              </div>
+            </div>
           ) : (
-            <>
-              <p className="text-pretty text-sm font-medium leading-relaxed text-neutral-800 sm:text-base">
-                Vielen Dank für Ihre Angabe. Für die von Ihnen ausgewählte Stelle nehmen wir in Ihrer Region aktuell
-                keine planbaren Einstellungen vor. Das kann sich ändern. Gerne freuen wir uns trotzdem über eine
-                Initiativbewerbung.
-              </p>
-              <p className="mt-5 text-pretty text-sm leading-relaxed text-neutral-800 sm:text-base">
+            <div className="space-y-5" aria-live="polite" id={resultLiveId}>
+              <div
+                className="rounded-2xl border-2 border-[#F78F2E]/55 bg-[#FFF8F0] px-4 py-4 sm:px-5 sm:py-5"
+                role="status"
+              >
+                <p className="text-pretty text-sm font-semibold leading-relaxed text-neutral-900 sm:text-base">
+                  Ihre Stelle als {jobLabel} in {submittedPlz} ist derzeit leider nicht verfügbar.
+                </p>
+              </div>
+              <p className="text-pretty text-sm leading-relaxed text-neutral-800 sm:text-base">
                 Nicht jede starke Zusammenarbeit beginnt mit einer perfekt passenden Stellenanzeige. Oft entsteht etwas
                 Besonderes ganz unerwartet.
               </p>
-              <p className="mt-4 text-pretty text-sm leading-relaxed text-neutral-800 sm:text-base">
+              <p className="text-pretty text-sm leading-relaxed text-neutral-800 sm:text-base">
                 Wenn Sie glauben, dass Sie gut zu uns passen und unser Team verstärken können, dann erzählen Sie uns
                 mehr über sich.
               </p>
-              <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
+              <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
                 <button
                   type="button"
                   className="inline-flex min-h-[48px] flex-1 items-center justify-center rounded-xl bg-[#F78F2E] px-5 py-3 text-center text-base font-semibold text-white shadow-md transition hover:bg-[#ea8328] focus:outline-none focus:ring-2 focus:ring-[#0F4F68]/30 focus:ring-offset-2 sm:flex-none sm:min-w-[14rem]"
@@ -183,15 +232,12 @@ export function BewerbungPlzVorabDialog({
                 <button
                   type="button"
                   className="inline-flex min-h-[48px] items-center justify-center rounded-xl border border-[#0F4F68]/20 bg-white px-4 py-3 text-sm font-semibold text-[#0F4F68] transition hover:bg-[#F2F9FA] focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2"
-                  onClick={() => {
-                    setPhase("plz");
-                    setError(null);
-                  }}
+                  onClick={goBackToPlz}
                 >
                   Postleitzahl ändern
                 </button>
               </div>
-            </>
+            </div>
           )}
         </div>
       </div>
