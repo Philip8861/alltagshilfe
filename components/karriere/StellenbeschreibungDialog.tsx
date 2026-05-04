@@ -108,42 +108,36 @@ const PFLEGEBERATER_PROFIL = [
 ] as const;
 
 const BUCHHALTER_EINLEITUNG =
-  "Sie arbeiten gerne strukturiert, behalten auch bei vielen Aufgaben den Überblick und möchten mit Ihrer Arbeit etwas Sinnvolles unterstützen? Dann könnte diese Stelle genau zu Ihnen passen. Bei uns verbinden Sie Buchhaltung, Organisation und Verwaltung mit einer Aufgabe, die direkt den Menschen in der Region zugutekommt. Sie sorgen im Hintergrund dafür, dass Abläufe funktionieren, Anfragen bearbeitet werden und unser Team zuverlässig arbeiten kann. Gleichzeitig profitieren Sie von einem Gleitzeitarbeitsmodell, echter Teamkultur, festen Ansprechpartnern und einer leistungsgerechten Vergütung.";
+  "Sie arbeiten gerne zahlen- und sachgerecht, behalten bei Buchungs- und Verwaltungsvorgängen den Überblick und möchten Ihre Kompetenz sinnvoll einbringen? Bei uns stellen Sie die finanzielle und organisatorische Basis sicher – im Hintergrund, damit unser Team im Alltag zuverlässig für Menschen in der Region da sein kann. Dazu gehören vertraulicher Umgang mit Daten, klare Abläufe und enger Austausch mit Kolleg*innen. Gleichzeitig profitieren Sie vom Gleitzeitarbeitsmodell, echter Teamkultur, festen Ansprechpartner*innen und einer leistungsgerechten Vergütung.";
 
 const BUCHHALTER_WIR_BIETEN = [
   "Leistungsgerechte und attraktive Vergütung, abgestimmt auf Ihre Qualifikation und Erfahrung",
   "Gleitzeitarbeitsmodell für mehr Flexibilität im Alltag",
-  "30 Tage Urlaub und betriebliche Altersvorsorge",
+  "30 Urlaubstage und betriebliche Altersvorsorge",
   "Wellpass oder Sachbezugskarte",
   "Echte Teamkultur, feste Ansprechpartner und ein wertschätzendes Arbeitsumfeld",
   "Umfassende Einarbeitung, damit Sie sich von Anfang an sicher fühlen",
   "Abwechslungsreicher Arbeitsplatz in einem jungen und dynamischen Unternehmen",
-  "Sinnstiftende Arbeit in der Region, dort, wo Hilfe für Menschen ankommt",
+  "Sinnstiftende Arbeit in einem werteorientierten regionalen Umfeld",
 ] as const;
 
 const BUCHHALTER_AUFGABEN = [
-  "Bearbeitung laufender Buchhaltungs- und Verwaltungsaufgaben",
-  "Prüfung, Vorbereitung und Ablage von Rechnungen, Belegen und Unterlagen",
-  "Unterstützung bei Abrechnungen, Zahlungsübersichten und internen Auswertungen",
-  "Verwaltung und Bearbeitung von Anfragen sowie Klientenkorrespondenz",
-  "Terminplanung und Unterstützung bei der Organisation von Betreuungseinsätzen",
-  "Unterstützung bei Dienstplangestaltung und Koordination von Mitarbeiteranfragen",
-  "Allgemeine Büroaufgaben wie Telefonannahme, Postbearbeitung und Verwaltung von Büromaterial",
-  "Zusammenarbeit mit verschiedenen Abteilungen, damit Abläufe zuverlässig funktionieren",
+  "Bearbeitung laufender Buchhaltungs- und kaufmännischen Verwaltungsaufgaben",
+  "Prüfung, Kontierung, Vorbereitung und Ablage von Rechnungen, Belegen und Unterlagen",
+  "Unterstützung bei Abrechnungen, Zahlungsübersichten, Mahnwesen und internen Auswertungen",
+  "Bearbeitung von Rückfragen und Abstimmungen zu Belegen, Zahlungen und buchungsrelevanten Vorgängen",
+  "Enge Zusammenarbeit mit Kolleg*innen und externen Partnern, damit Abläufe zuverlässig und nachvollziehbar bleiben",
 ] as const;
 
-const BUCHHALTER_HINWEIS =
-  "Buchhalter*innen übernehmen typischerweise Aufgaben im Rechnungswesen wie das Vorbereiten von Abschlüssen, das Prüfen von Belegen und die Bearbeitung finanzieller Vorgänge. Deshalb passen Buchhaltungsaufgaben und strukturierte Verwaltung hier gut zusammen.";
-
 const BUCHHALTER_PROFIL = [
-  "Abgeschlossene kaufmännische Ausbildung, idealerweise als Bürokaufmann oder Bürokauffrau, Kaufmann oder Kauffrau für Büromanagement oder eine vergleichbare Qualifikation",
-  "Quereinstieg möglich, wenn Sie gute organisatorische Fähigkeiten und sichere Computerkenntnisse mitbringen",
-  "Erste Erfahrung im administrativen Bereich, idealerweise im Gesundheits- oder Sozialwesen",
-  "Sicherer Umgang mit digitalen Arbeitsmitteln und gängigen Office-Programmen",
-  "Strukturierte, organisierte und engagierte Arbeitsweise",
-  "Verantwortungsbewusstsein, Genauigkeit und Freude an klaren Abläufen",
-  "Teamgeist und starke Kommunikationsfähigkeiten",
-  "Sehr gute Deutschkenntnisse in Wort und Schrift",
+  "Abgeschlossene kaufmännische Ausbildung oder eine vergleichbare Qualifikation.",
+  "Erste Erfahrung in der vorbereitenden Buchhaltung, Rechnungsprüfung, Abrechnung oder kaufmännischen Verwaltung ist von Vorteil.",
+  "Quereinstieg möglich: Sie arbeiten zuverlässig, bringen ein gutes Zahlenverständnis mit und sind mit PC und gängigen Office-Anwendungen sicher.",
+  "Sorgfältiger und diskreter Umgang mit Rechnungen, Belegen, Daten und vertraulichen Unterlagen.",
+  "Strukturierte, genaue Arbeitsweise – auch bei parallelen Vorgängen behalten Sie Prioritäten im Blick.",
+  "Sicherer Umgang mit Office-Programmen; Offenheit für digitale Buchhaltungs- und Verwaltungssoftware.",
+  "Freundliche und verbindliche Kommunikation mit Kolleg*innen, Klient*innen, Angehörigen und externen Stellen.",
+  "Sehr gute Deutschkenntnisse in Wort und Schrift.",
 ] as const;
 
 const BUEROFACHKRAFT_EINLEITUNG_ABSÄTZE = [
@@ -317,10 +311,6 @@ function StelleninhaltBuchhalter() {
 
       <SectionTitle>Ihre Aufgaben als Buchhalter*in</SectionTitle>
       <BulletList items={BUCHHALTER_AUFGABEN} />
-
-      <p className="mt-4 text-pretty text-sm leading-relaxed text-neutral-700 sm:mt-6 sm:text-base">
-        {BUCHHALTER_HINWEIS}
-      </p>
 
       <SectionTitle>Ihr Profil</SectionTitle>
       <BulletList items={BUCHHALTER_PROFIL} />
