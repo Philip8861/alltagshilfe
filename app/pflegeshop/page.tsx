@@ -3,7 +3,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { KundenstimmenCarousel } from "@/components/home/KundenstimmenCarousel";
 import { ProtectedRasterMedia } from "@/components/home/ProtectedRasterMedia";
-import { HilfefinderOpenButton, HilfefinderProvider } from "@/components/home/StartEinstiegsHilfe";
 import { RevealOnScroll } from "@/components/pflegehilfsmittel/RevealOnScroll";
 import { siteConfig } from "@/config/site";
 import {
@@ -15,6 +14,9 @@ import { STARTSEITE_VORTEILE, STARTSEITE_VORTEILE_INTRO } from "@/lib/startseite
 
 const HAUSHALTSHILFE_FAQ_ANCHOR = "/leistungen/haushaltshilfe#haushalt-faq-heading";
 const PLEGEBEDARF_URL = "https://deinPflegebedarf.de";
+
+/** Natürliche Pixelmaße `public/images/pflegeshop_image.webp` */
+const PFLEGESHOP_HERO_IMG = { w: 1901, h: 806 } as const;
 
 const STARTSEITE_FAQ_BG = "#FAFBFC";
 const STARTSEITE_FAQ_WELLEN_D =
@@ -64,19 +66,19 @@ export default function PflegeshopPage() {
     <article className="flex min-h-[60vh] w-full max-w-[100vw] flex-col overflow-x-clip bg-white pt-0 pb-0">
       <section className="box-border w-full pt-4 pb-6 sm:pt-5 sm:pb-8 md:pt-8 lg:pb-[clamp(1.5rem,2vw+0.75rem,2.5rem)]">
         <div className="relative w-full px-3 sm:px-4 md:px-[5cm]" aria-label="Einstieg Pflegeshop">
-          <HilfefinderProvider>
             <div className="relative isolate flex w-full flex-col overflow-hidden rounded-b-3xl bg-transparent md:relative md:block md:min-h-[28.125rem] lg:min-h-[30.46875rem]">
               <div
-                className="pointer-events-none relative z-0 w-full shrink-0 overflow-hidden max-md:h-[min(17.5rem,52vw)] sm:max-md:h-[min(21rem,48vw)] md:absolute md:inset-0 md:h-full md:min-h-[28.125rem] lg:min-h-[30.46875rem]"
+                className="pointer-events-none relative z-0 w-full shrink-0 overflow-hidden max-md:px-4 max-md:pt-4 max-md:pb-2 sm:max-md:px-6 md:absolute md:inset-0 md:flex md:min-h-[28.125rem] md:items-center md:justify-center md:px-6 md:py-6 lg:min-h-[30.46875rem] lg:px-[var(--ahs-page-gutter)] lg:py-8"
                 aria-hidden
               >
-                <ProtectedRasterMedia className="relative block h-full w-full select-none [-webkit-user-drag:none]">
+                <ProtectedRasterMedia className="relative mx-auto block w-full max-w-full overflow-hidden rounded-2xl bg-[#F2F9FA] select-none [-webkit-user-drag:none] md:max-w-[1901px] md:rounded-3xl">
                   <Image
                     src="/images/pflegeshop_image.webp"
                     alt="Pflegeshop: Sortiment an Pflegehilfsmitteln"
-                    fill
-                    className="max-md:object-cover max-md:object-[82%_center] md:object-contain md:object-center"
-                    sizes="(min-width: 768px) 96vw, 100vw"
+                    width={PFLEGESHOP_HERO_IMG.w}
+                    height={PFLEGESHOP_HERO_IMG.h}
+                    className="h-auto w-full max-w-[1901px] rounded-2xl object-contain object-center md:rounded-3xl"
+                    sizes="(min-width: 1536px) 1901px, (min-width: 768px) min(1901px, calc(100vw - 10cm - 3rem)), calc(100vw - 2rem)"
                     quality={92}
                     priority
                   />
@@ -113,8 +115,7 @@ export default function PflegeshopPage() {
                   >
                     {HERO_INTRO.partnerLine}
                   </p>
-                  <div className="mt-4 flex flex-col gap-3 min-[420px]:flex-row min-[420px]:flex-wrap min-[420px]:items-center sm:mt-5">
-                    <HilfefinderOpenButton className="w-full min-[420px]:w-auto">Kontakt & Beratung</HilfefinderOpenButton>
+                  <div className="mt-4 sm:mt-5">
                     <a
                       href={PLEGEBEDARF_URL}
                       target="_blank"
@@ -135,7 +136,6 @@ export default function PflegeshopPage() {
                 </header>
               </div>
             </div>
-          </HilfefinderProvider>
         </div>
       </section>
 
