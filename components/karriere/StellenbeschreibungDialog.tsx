@@ -107,12 +107,55 @@ const PFLEGEBERATER_PROFIL = [
   "Freude daran, unterwegs zu sein und Klient*innen in ihrem Zuhause zu beraten",
 ] as const;
 
+const BUCHHALTER_EINLEITUNG =
+  "Sie arbeiten gerne strukturiert, behalten auch bei vielen Aufgaben den Überblick und möchten mit Ihrer Arbeit etwas Sinnvolles unterstützen? Dann könnte diese Stelle genau zu Ihnen passen. Bei uns verbinden Sie Buchhaltung, Organisation und Verwaltung mit einer Aufgabe, die direkt den Menschen in der Region zugutekommt. Sie sorgen im Hintergrund dafür, dass Abläufe funktionieren, Anfragen bearbeitet werden und unser Team zuverlässig arbeiten kann. Gleichzeitig profitieren Sie von einem Gleitzeitarbeitsmodell, echter Teamkultur, festen Ansprechpartnern und einer leistungsgerechten Vergütung.";
+
+const BUCHHALTER_WIR_BIETEN = [
+  "Leistungsgerechte und attraktive Vergütung, abgestimmt auf Ihre Qualifikation und Erfahrung",
+  "Gleitzeitarbeitsmodell für mehr Flexibilität im Alltag",
+  "30 Tage Urlaub und betriebliche Altersvorsorge",
+  "Wellpass oder Sachbezugskarte",
+  "Echte Teamkultur, feste Ansprechpartner und ein wertschätzendes Arbeitsumfeld",
+  "Umfassende Einarbeitung, damit Sie sich von Anfang an sicher fühlen",
+  "Abwechslungsreicher Arbeitsplatz in einem jungen und dynamischen Unternehmen",
+  "Sinnstiftende Arbeit in der Region, dort, wo Hilfe für Menschen ankommt",
+] as const;
+
+const BUCHHALTER_AUFGABEN = [
+  "Bearbeitung laufender Buchhaltungs- und Verwaltungsaufgaben",
+  "Prüfung, Vorbereitung und Ablage von Rechnungen, Belegen und Unterlagen",
+  "Unterstützung bei Abrechnungen, Zahlungsübersichten und internen Auswertungen",
+  "Verwaltung und Bearbeitung von Anfragen sowie Klientenkorrespondenz",
+  "Terminplanung und Unterstützung bei der Organisation von Betreuungseinsätzen",
+  "Unterstützung bei Dienstplangestaltung und Koordination von Mitarbeiteranfragen",
+  "Allgemeine Büroaufgaben wie Telefonannahme, Postbearbeitung und Verwaltung von Büromaterial",
+  "Zusammenarbeit mit verschiedenen Abteilungen, damit Abläufe zuverlässig funktionieren",
+] as const;
+
+const BUCHHALTER_HINWEIS =
+  "Buchhalter*innen übernehmen typischerweise Aufgaben im Rechnungswesen wie das Vorbereiten von Abschlüssen, das Prüfen von Belegen und die Bearbeitung finanzieller Vorgänge. Deshalb passen Buchhaltungsaufgaben und strukturierte Verwaltung hier gut zusammen.";
+
+const BUCHHALTER_PROFIL = [
+  "Abgeschlossene kaufmännische Ausbildung, idealerweise als Bürokaufmann oder Bürokauffrau, Kaufmann oder Kauffrau für Büromanagement oder eine vergleichbare Qualifikation",
+  "Quereinstieg möglich, wenn Sie gute organisatorische Fähigkeiten und sichere Computerkenntnisse mitbringen",
+  "Erste Erfahrung im administrativen Bereich, idealerweise im Gesundheits- oder Sozialwesen",
+  "Sicherer Umgang mit digitalen Arbeitsmitteln und gängigen Office-Programmen",
+  "Strukturierte, organisierte und engagierte Arbeitsweise",
+  "Verantwortungsbewusstsein, Genauigkeit und Freude an klaren Abläufen",
+  "Teamgeist und starke Kommunikationsfähigkeiten",
+  "Sehr gute Deutschkenntnisse in Wort und Schrift",
+] as const;
+
 function isPflegeberaterStelle(jobTitle: string) {
   return jobTitle.includes("Pflegeberater");
 }
 
 function isAlltagshelferStelle(jobTitle: string) {
   return jobTitle.includes("Alltagshelfer");
+}
+
+function isBuchhalterStelle(jobTitle: string) {
+  return jobTitle.includes("Buchhalter");
 }
 
 function BulletList({ items }: { items: readonly string[] }) {
@@ -217,11 +260,38 @@ function StelleninhaltPflegeberater() {
   );
 }
 
+function StelleninhaltBuchhalter() {
+  return (
+    <>
+      <p className="text-pretty text-sm font-medium leading-relaxed text-neutral-800 sm:text-base">
+        {BUCHHALTER_EINLEITUNG}
+      </p>
+
+      <div className="mt-6 rounded-2xl bg-[#F2F9FA]/38 px-5 py-4 sm:mt-8 sm:px-6 sm:py-5">
+        <SectionTitle className="!mt-0 sm:!mt-0">Was wir Ihnen bieten</SectionTitle>
+        <BulletList items={BUCHHALTER_WIR_BIETEN} />
+      </div>
+
+      <SectionTitle>Ihre Aufgaben als Buchhalter*in</SectionTitle>
+      <BulletList items={BUCHHALTER_AUFGABEN} />
+
+      <p className="mt-4 text-pretty text-sm leading-relaxed text-neutral-700 sm:mt-6 sm:text-base">
+        {BUCHHALTER_HINWEIS}
+      </p>
+
+      <SectionTitle>Ihr Profil</SectionTitle>
+      <BulletList items={BUCHHALTER_PROFIL} />
+    </>
+  );
+}
+
 export function StellenbeschreibungDialogTrigger({ jobTitle, className }: StellenbeschreibungDialogTriggerProps) {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const titleId = useId();
   const bewerbenHref = `/kontakt?betreff=Bewerbung%20${encodeURIComponent(jobTitle)}`;
   const karriereApply = useKarriereApplyOptional();
+  const interesseFormulierungSie =
+    isPflegeberaterStelle(jobTitle) || isBuchhalterStelle(jobTitle);
 
   return (
     <>
@@ -275,6 +345,8 @@ export function StellenbeschreibungDialogTrigger({ jobTitle, className }: Stelle
             <StelleninhaltPflegeberater />
           ) : isAlltagshelferStelle(jobTitle) ? (
             <StelleninhaltAlltagshelfer />
+          ) : isBuchhalterStelle(jobTitle) ? (
+            <StelleninhaltBuchhalter />
           ) : (
             <StelleninhaltSonstigeStelle jobTitle={jobTitle} />
           )}
@@ -290,8 +362,17 @@ export function StellenbeschreibungDialogTrigger({ jobTitle, className }: Stelle
               Interesse?
             </h3>
             <p className="mt-3 text-pretty text-sm font-medium leading-relaxed text-neutral-800 sm:text-base">
-              Dann freuen wir uns auf deine Bewerbung. Werde Teil der {siteConfig.name} und unterstütze uns
-              dabei, Senior*innen und hilfsbedürftigen Menschen den Alltag zu erleichtern.
+              {interesseFormulierungSie ? (
+                <>
+                  Dann freuen wir uns auf Ihre Bewerbung. Werden Sie Teil der {siteConfig.name} und unterstützen Sie
+                  uns dabei, Senior*innen und hilfsbedürftigen Menschen den Alltag zu erleichtern.
+                </>
+              ) : (
+                <>
+                  Dann freuen wir uns auf deine Bewerbung. Werde Teil der {siteConfig.name} und unterstütze uns
+                  dabei, Senior*innen und hilfsbedürftigen Menschen den Alltag zu erleichtern.
+                </>
+              )}
             </p>
           </section>
 
