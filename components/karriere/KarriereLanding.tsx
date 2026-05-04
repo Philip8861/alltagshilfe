@@ -42,11 +42,20 @@ const KARRIERE_ARBEITGEBER_FAKTEN = [
   "Unbefristete Anstellung nach Probezeit bei guter Zusammenarbeit",
 ] as const;
 
-/** Drei zentrale Vorteile – Alltagshelfer*in, Buchhalter*in, Bürofachkraft. */
+/** Drei zentrale Vorteile – Buchhalter*in, Bürofachkraft. */
 const STELLEN_VORTEILE = [
   "Tarifgerechte Vergütung, planbare Zeiten und klare Strukturen im Alltag",
   "Echte Teamkultur: Einarbeitung, fester Ansprechpartner und Unterstützung vor Ort",
   "Sinnstiftende Arbeit in der Region – dort, wo Hilfe für Menschen ankommt",
+] as const;
+
+/** Fünf Haken auf der Karte Alltagshelfer*in. */
+const STELLEN_VORTEILE_ALLTAGSHELFER = [
+  "Flexibel arbeiten, passend zum Alltag",
+  "Quereinstieg ohne Vorkenntnisse möglich",
+  "Sinnvolle Arbeit direkt bei Menschen zuhause",
+  "Faire Vergütung plus starke Extras",
+  "Feste Ansprechpartner und verlässliche Planung",
 ] as const;
 
 /** Fünf Haken nur auf der Karte Pflegeberater*in. */
@@ -153,7 +162,11 @@ function OffeneStellenSpalte() {
         {jobs.map((job, index) => {
           const theme = JOB_CARD_THEME[job.id] ?? JOB_CARD_THEME.alltagshelfer;
           const kartenHaken =
-            job.id === "pflegeberater" ? STELLEN_VORTEILE_PFLEGEBERATER : STELLEN_VORTEILE;
+            job.id === "pflegeberater"
+              ? STELLEN_VORTEILE_PFLEGEBERATER
+              : job.id === "alltagshelfer"
+                ? STELLEN_VORTEILE_ALLTAGSHELFER
+                : STELLEN_VORTEILE;
           return (
             <li
               key={job.id}

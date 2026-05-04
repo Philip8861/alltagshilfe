@@ -5,8 +5,55 @@ import { type ReactNode, useId, useRef } from "react";
 import { useKarriereApplyOptional } from "@/components/karriere/karriereApplyContext";
 import { cn } from "@/lib/utils";
 
-const EINLEITUNG =
-  "Sie legen Wert auf flexible Arbeitszeiten, die sich Ihrem Alltag anpassen? Check! Sie sind Quereinsteiger und suchen eine neue berufliche Herausforderung? Kein Problem! Wichtig ist die Freude im Umgang mit Menschen und die Bereitschaft, diese in ihren alltäglichen Herausforderungen zu unterstützen. Als Alltagshelfer sind Sie nicht für pflegerische Maßnahmen zuständig, sondern helfen im Bereich Betreuung und Hauswirtschaft.";
+const ALLTAGSHELFER_EINLEITUNG_ABSÄTZE = [
+  "Sie legen Wert auf flexible Arbeitszeiten, die sich Ihrem Alltag anpassen? Sie möchten mit Menschen arbeiten, Verantwortung übernehmen und dabei wirklich etwas bewirken? Dann könnte die Tätigkeit als Alltagshelfer*in genau zu Ihnen passen.",
+  "Bei uns unterstützen Sie hilfs- und pflegebedürftige Menschen direkt in ihrem Zuhause. Sie helfen im Alltag, begleiten bei Erledigungen, unterstützen im Haushalt und schenken Zeit, Aufmerksamkeit und Entlastung. Pflegerische Maßnahmen gehören nicht zu Ihren Aufgaben. Wichtig sind Freude am Umgang mit Menschen, Zuverlässigkeit und die Bereitschaft, sich auf unterschiedliche Lebenssituationen einzulassen.",
+  "Ein Quereinstieg ist jederzeit möglich. Die notwendige Weiterbildung nach § 45b SGB XI wird vollständig von uns finanziert und kann bequem von zu Hause aus absolviert werden.",
+] as const;
+
+const ALLTAGSHELFER_WIR_BIETEN = [
+  "Freundliches und offenes Arbeitsklima",
+  "Flexible Arbeitszeiten, die sich gut mit Ihrem Alltag vereinbaren lassen",
+  "Leistungsgerechte und attraktive Vergütung",
+  "Sachbezugskarte oder Wellpass",
+  "Gesundheitsbonus",
+  "Kilometergeld und volle Fahrtkostenerstattung",
+  "Vergütung der Fahrzeiten zwischen den Einsätzen",
+  "30 Urlaubstage, angerechnet auf eine 5-Tage-Woche",
+  "Fort- und Weiterbildungen",
+  "Verantwortungsvolle und abwechslungsreiche Arbeit direkt bei Menschen zuhause",
+] as const;
+
+const ALLTAGSHELFER_BETREUUNG = [
+  "Begleitung bei Einkäufen, Terminen und Alltagserledigungen",
+  "Unterstützung bei sozialen Aktivitäten",
+  "Hilfe beim Aufbau und Erhalt einer Tagesstruktur",
+  "Botengänge, zum Beispiel Apotheke, Post oder kleinere Erledigungen",
+  "Zeit schenken, zuhören und im Alltag Sicherheit geben",
+] as const;
+
+const ALLTAGSHELFER_HAUSHALT = [
+  "Lebensmitteleinkäufe erledigen",
+  "Mahlzeiten vorbereiten oder zubereiten",
+  "Reinigung des direkten Lebensbereiches",
+  "Abfall trennen und entsorgen",
+  "Wäsche waschen, bügeln, falten und einräumen",
+  "Zimmerpflanzen versorgen",
+  "Unterstützung bei der Versorgung von Haustieren",
+] as const;
+
+const ALLTAGSHELFER_PROFIL = [
+  "Quereinstieg jederzeit möglich",
+  "Freude am Umgang mit älteren, hilfs- oder pflegebedürftigen Menschen",
+  "Zuverlässige, verantwortungsbewusste und selbstständige Arbeitsweise",
+  "Einfühlungsvermögen, Geduld und ein freundliches Auftreten",
+  "Bereitschaft zur Weiterbildung als Alltagshelfer*in gemäß § 45b SGB XI",
+  "Sicherer Umgang mit Smartphone, Laptop oder Computer für die Online-Weiterbildung",
+  "Führerschein Klasse B und eigener Pkw zwingend erforderlich, da wir unsere Klient*innen zuhause besuchen",
+] as const;
+
+const ALLTAGSHELFER_ABSCHLUSS =
+  "Vorkenntnisse sind nicht erforderlich. Wichtig ist, dass Sie zuverlässig sind, gerne mit Menschen arbeiten und bereit sind, an der Weiterbildung zur Alltagshelfer*in gemäß § 45b SGB XI teilzunehmen. Die Weiterbildung umfasst insgesamt 22 Stunden, wird vollständig von uns finanziert und kann bequem von zu Hause aus besucht werden. Sie benötigen lediglich ein Smartphone, einen Laptop oder einen Computer mit Internetanschluss. Wir begleiten Sie bei allen Schritten, damit der Einstieg für Sie stressfrei gelingt.";
 
 function OrangeCheck({ className }: { className?: string }) {
   return (
@@ -24,36 +71,6 @@ function OrangeCheck({ className }: { className?: string }) {
     </svg>
   );
 }
-
-const WIR_BIETEN = [
-  "ein freundliches, offenes Arbeitsklima",
-  "flexible Arbeitszeiten",
-  "leistungsgerechte, attraktive Vergütung",
-  "Sachbezugskarte / Wellpass",
-  "Gesundheitsbonus",
-  "Kilometergeld",
-  "30 Urlaubstage (angerechnet auf eine 5-Tage-Woche)",
-  "Fort- und Weiterbildungen",
-  "eine verantwortungsvolle und abwechslungsreiche Arbeit",
-  "Vergütung für Fahrzeiten zwischen den Einsätzen",
-] as const;
-
-const BETREUUNG = [
-  "soziale Aktivitäten",
-  "Begleitungen wie z. B. Einkäufe, Alltagserledigungen",
-  "Hilfe zur Entwicklung und Aufrechterhaltung einer Tagesstruktur",
-  "Botengänge wie z. B. Apothekenbesuche, Postaufgaben",
-] as const;
-
-const HAUSHALT = [
-  "Lebensmitteleinkauf",
-  "Zubereiten von Mahlzeiten",
-  "Reinigung des Lebensbereiches",
-  "Trennung und Entsorgung des Abfalls",
-  "Wäschewaschen, -bügeln, -falten und in den Kleiderschrank einräumen",
-  "Bewässern der Zimmerpflanzen",
-  "Versorgung von Haustieren",
-] as const;
 
 const PFLEGEBERATER_EINLEITUNG =
   "Sie möchten weiterhin nah am Menschen arbeiten, aber ohne Wochenenddienste, Feiertagsdienste und ständige Diskussionen um freie Tage? Dann könnte die ambulante Pflegeberatung genau der richtige nächste Schritt für Sie sein. Bei uns besuchen Sie pflegebedürftige Menschen und ihre Angehörigen zuhause, beraten zu möglichen Leistungen, geben praktische Tipps für den Alltag und helfen dabei, gute Lösungen für die Versorgung zu Hause zu finden. Gleichzeitig profitieren Sie von planbaren Arbeitszeiten, teilweise Homeoffice, mobilem Arbeiten und einer leistungsgerechten, attraktiven Vergütung.";
@@ -94,6 +111,10 @@ function isPflegeberaterStelle(jobTitle: string) {
   return jobTitle.includes("Pflegeberater");
 }
 
+function isAlltagshelferStelle(jobTitle: string) {
+  return jobTitle.includes("Alltagshelfer");
+}
+
 function BulletList({ items }: { items: readonly string[] }) {
   return (
     <ul className="mt-2 space-y-2.5 text-sm leading-relaxed text-neutral-700 sm:text-base">
@@ -129,54 +150,46 @@ type StellenbeschreibungDialogTriggerProps = {
   className?: string;
 };
 
+function StelleninhaltSonstigeStelle({ jobTitle }: { jobTitle: string }) {
+  return (
+    <p className="text-pretty text-sm leading-relaxed text-neutral-800 sm:text-base">
+      Für die Stelle „{jobTitle}“ beschreiben wir Ihnen Aufgaben und Rahmenbedingungen gern im persönlichen
+      Gespräch. Bewerben Sie sich über den Button unten – wir melden uns bei Ihnen.
+    </p>
+  );
+}
+
 function StelleninhaltAlltagshelfer() {
   return (
     <>
-      <p className="text-pretty text-sm font-medium leading-relaxed text-neutral-800 sm:text-base">
-        {EINLEITUNG}
-      </p>
+      <div className="space-y-4">
+        {ALLTAGSHELFER_EINLEITUNG_ABSÄTZE.map((absatz) => (
+          <p
+            key={absatz}
+            className="text-pretty text-sm font-medium leading-relaxed text-neutral-800 sm:text-base"
+          >
+            {absatz}
+          </p>
+        ))}
+      </div>
 
       <div className="mt-6 rounded-2xl bg-[#F2F9FA]/38 px-5 py-4 sm:mt-8 sm:px-6 sm:py-5">
         <SectionTitle className="!mt-0 sm:!mt-0">Was wir Ihnen bieten</SectionTitle>
-        <BulletList items={WIR_BIETEN} />
+        <SubTitle>Flexible Arbeit mit Sinn und Wertschätzung</SubTitle>
+        <BulletList items={ALLTAGSHELFER_WIR_BIETEN} />
       </div>
 
-      <SectionTitle>Zu Ihren Aufgaben gehören</SectionTitle>
-      <SubTitle>Betreuungsmaßnahmen</SubTitle>
-      <BulletList items={BETREUUNG} />
-      <SubTitle>Haushaltshilfe</SubTitle>
-      <BulletList items={HAUSHALT} />
+      <SectionTitle>Ihre Aufgaben als Alltagshelfer*in</SectionTitle>
+      <SubTitle>Betreuung und Alltagsbegleitung</SubTitle>
+      <BulletList items={ALLTAGSHELFER_BETREUUNG} />
+      <SubTitle>Haushaltshilfe und praktische Unterstützung</SubTitle>
+      <BulletList items={ALLTAGSHELFER_HAUSHALT} />
 
       <SectionTitle>Ihr Profil</SectionTitle>
-      <ul className="mt-2 space-y-3 text-sm leading-relaxed text-neutral-700 sm:text-base">
-        <li className="flex gap-2.5">
-          <OrangeCheck className="mt-1" />
-          <span className="text-pretty">Ein unkomplizierter Quereinstieg ist jederzeit möglich.</span>
-        </li>
-        <li className="flex gap-2.5">
-          <OrangeCheck className="mt-1" />
-          <span className="text-pretty">
-            Eine zuverlässige, verantwortungsbewusste und selbstständige Arbeitsweise.
-          </span>
-        </li>
-      </ul>
-      <p className="mt-4 text-pretty text-sm leading-relaxed text-neutral-700 sm:text-base">
-        Vorkenntnisse sind nicht erforderlich. Sie sollten jedoch bereit sein, an einer Weiterbildung zum/r
-        Alltagshelfer/in gemäß § 45b SGB XI teilzunehmen. Diese Weiterbildung umfasst insgesamt 22 Stunden
-        und wird von uns voll finanziert. Der Unterricht kann bequem von zu Hause aus besucht werden. Sie
-        benötigen lediglich ein Smartphone, einen Laptop oder einen Computer mit Internetanschluss. Wir
-        unterstützen Sie bei allen Schritten, um Ihnen eine stressfreie Weiterbildung zu ermöglichen.
-      </p>
-      <p className="mt-4 text-pretty text-sm leading-relaxed text-neutral-700 sm:text-base">
-        Ein Führerschein der Klasse B (PKW) ist bei uns zwingend erforderlich, da wir unsere Klienten zuhause
-        besuchen und betreuen. Zusätzlich ist ein Privat-PKW notwendig. Sie erhalten eine volle
-        Fahrtkostenerstattung.
-      </p>
-      <p className="mt-4 text-pretty text-sm font-medium leading-relaxed text-[#0F4F68] sm:text-base">
-        Ab sofort suchen wir Mitarbeiter (m/w/d) aus folgenden Bereichen: Alltagshelfer (m/w/d),
-        Betreuungskraft (m/w/d), Seniorenbegleiter (m/w/d), Haushaltshilfe mit Betreuungstätigkeit (m/w/d),
-        Persönlicher Alltagsassistent (m/w/d), Mitarbeiter für soziale Betreuung und Alltagsunterstützung
-        (m/w/d).
+      <BulletList items={ALLTAGSHELFER_PROFIL} />
+
+      <p className="mt-4 text-pretty text-sm leading-relaxed text-neutral-700 sm:text-base sm:mt-6">
+        {ALLTAGSHELFER_ABSCHLUSS}
       </p>
     </>
   );
@@ -258,7 +271,13 @@ export function StellenbeschreibungDialogTrigger({ jobTitle, className }: Stelle
         </div>
 
         <div className="min-h-0 min-w-0 flex-1 overflow-y-auto overflow-x-hidden overscroll-contain break-words px-5 py-6 sm:px-8 sm:py-8 pb-[max(1.5rem,env(safe-area-inset-bottom,0px))]">
-          {isPflegeberaterStelle(jobTitle) ? <StelleninhaltPflegeberater /> : <StelleninhaltAlltagshelfer />}
+          {isPflegeberaterStelle(jobTitle) ? (
+            <StelleninhaltPflegeberater />
+          ) : isAlltagshelferStelle(jobTitle) ? (
+            <StelleninhaltAlltagshelfer />
+          ) : (
+            <StelleninhaltSonstigeStelle jobTitle={jobTitle} />
+          )}
 
           <div className="mt-8 border-t border-[#0F4F68]/10 pt-6 sm:mt-10 sm:pt-8">
             {karriereApply ? (
