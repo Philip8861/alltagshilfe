@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import Link from "next/link";
 import { KundenstimmenCarousel } from "@/components/home/KundenstimmenCarousel";
 import { ProtectedRasterMedia } from "@/components/home/ProtectedRasterMedia";
@@ -16,7 +15,10 @@ const HAUSHALTSHILFE_FAQ_ANCHOR = "/leistungen/haushaltshilfe#haushalt-faq-headi
 const PLEGEBEDARF_URL = "https://deinPflegebedarf.de";
 
 /** Natürliche Pixelmaße `public/images/pflegeshop_image.webp` (bei neuem Asset anpassen) */
-const PFLEGESHOP_HERO_IMG = { w: 2534, h: 1075 } as const;
+const PFLEGESHOP_HERO_IMG = { w: 1566, h: 933 } as const;
+
+const HERO_GLOW_CLASS =
+  "[filter:drop-shadow(0_10px_22px_rgba(15,79,104,0.2))_drop-shadow(0_4px_12px_rgba(15,79,104,0.12))] [will-change:filter]";
 
 const STARTSEITE_FAQ_BG = "#FAFBFC";
 const STARTSEITE_FAQ_WELLEN_D =
@@ -63,82 +65,87 @@ export default function PflegeshopPage() {
   const faqJsonLd = standortFaqJsonLd(faqItems);
 
   return (
-    <article className="flex min-h-[60vh] w-full max-w-[100vw] flex-col overflow-x-clip bg-white pt-0 pb-0">
-      <section className="box-border w-full pt-0 pb-6 sm:pb-8 lg:pb-[clamp(1.5rem,2vw+0.75rem,2.5rem)]">
-        <div className="relative w-full px-3 sm:px-4 md:px-[5cm]" aria-label="Einstieg Pflegeshop">
-            <div className="relative isolate flex w-full flex-col overflow-hidden rounded-b-3xl bg-transparent md:relative md:block md:min-h-[28.125rem] lg:min-h-[30.46875rem]">
-              <div
-                className="pointer-events-none relative z-0 w-full shrink-0 overflow-hidden max-md:h-[min(17.5rem,52vw)] sm:max-md:h-[min(21rem,48vw)] md:absolute md:inset-0 md:h-full md:min-h-[28.125rem] lg:min-h-[30.46875rem]"
-                aria-hidden
+    <article className="flex min-h-[60vh] w-full max-w-[100vw] flex-col overflow-x-clip overflow-y-visible bg-[#fafbfc] pt-0 pb-0 text-neutral-700 antialiased">
+      <div id="pflegeshop-hero" className="min-w-0 scroll-mt-24 overflow-x-clip overflow-y-visible">
+        <section
+          className="relative z-0 box-border mx-auto w-full min-w-0 max-w-7xl px-4 pb-10 pt-0 sm:px-6 sm:pb-16 lg:px-[var(--ahs-page-gutter)] lg:pb-[clamp(4rem,9vh+1.5rem,7rem)] lg:pt-[clamp(2rem,5vh+1.25rem,4.75rem)] xl:pb-[clamp(5rem,10vh+1.5rem,8rem)]"
+          aria-label="Einstieg Pflegeshop"
+        >
+          <div className="flex flex-col-reverse items-center gap-10 lg:grid lg:grid-cols-[minmax(0,0.34fr)_minmax(0,0.66fr)] lg:items-center lg:justify-items-stretch lg:gap-x-[clamp(1.5rem,3vw,3.25rem)] lg:gap-y-0">
+            <div className="box-border w-full min-w-0 max-w-full space-y-[clamp(1.25rem,2vh+0.75rem,1.75rem)] lg:min-w-0 lg:justify-self-start lg:space-y-[clamp(1.15rem,1.6vh+0.7rem,1.75rem)] lg:-translate-x-[clamp(0.75rem,4.5vw,3rem)] lg:pr-0 motion-reduce:lg:translate-x-0">
+              <h1
+                className="text-balance text-3xl font-extrabold leading-tight tracking-tight text-[#0F4F68] opacity-0 motion-reduce:opacity-100 animate-fade-in-up sm:text-4xl lg:text-[clamp(1.75rem,1.05rem+2.5vw,3rem)]"
+                style={{ animationDelay: "0s" }}
               >
-                <ProtectedRasterMedia className="relative block h-full w-full select-none [-webkit-user-drag:none]">
-                  <Image
-                    src="/images/pflegeshop_image.webp"
-                    alt="Pflegeshop: Sortiment an Pflegehilfsmitteln"
-                    fill
-                    width={PFLEGESHOP_HERO_IMG.w}
-                    height={PFLEGESHOP_HERO_IMG.h}
-                    className="object-contain object-center"
-                    sizes="(min-width: 768px) 96vw, 100vw"
-                    quality={92}
-                    priority
-                  />
-                </ProtectedRasterMedia>
-              </div>
-              <div className="relative z-10 mx-auto flex w-full max-w-7xl flex-col justify-center px-4 pb-5 pt-5 max-md:bg-transparent sm:px-6 md:absolute md:inset-0 md:min-h-[28.125rem] md:pb-4 md:pt-7 lg:min-h-[30.46875rem] lg:px-[var(--ahs-page-gutter)] lg:pb-5 lg:pt-8">
-                <header className="max-w-lg text-left sm:max-w-xl lg:max-w-[min(42vw,clamp(22rem,32vw+8rem,30rem))] xl:max-w-[min(38vw,clamp(23rem,28vw+9rem,31rem))] 2xl:max-w-[min(34vw,clamp(24rem,26vw+10rem,32rem))]">
-                  <h1
-                    className="text-balance text-3xl font-extrabold leading-tight tracking-tight text-[#0F4F68] opacity-0 motion-reduce:opacity-100 animate-fade-in-up sm:text-4xl lg:text-[clamp(2rem,1.05rem+2.6vw,3rem)]"
-                    style={{ animationDelay: "0s" }}
+                <span className="block">{HERO_INTRO.brand}</span>
+              </h1>
+              <ul
+                className="mt-5 min-w-0 space-y-3 sm:mt-6 sm:space-y-3.5 lg:mt-0 lg:space-y-[clamp(0.65rem,0.35rem+0.9vw,1rem)]"
+                aria-label="Vorteile Pflegeshop auf einen Blick"
+              >
+                {HERO_INTRO.taglineLines.map((line, i) => (
+                  <li
+                    key={line}
+                    className="flex min-w-0 items-start gap-3 text-lg font-semibold leading-snug text-[#0F4F68] opacity-0 motion-reduce:opacity-100 animate-fade-in-up sm:text-xl lg:items-center lg:text-[clamp(1.05rem,0.82rem+0.5vw,1.35rem)]"
+                    style={{ animationDelay: `${0.45 + i * 0.22}s` }}
                   >
-                    {HERO_INTRO.brand}
-                  </h1>
-                  <ul
-                    className="mt-4 space-y-3 sm:mt-5 sm:space-y-3.5 lg:space-y-[clamp(0.65rem,0.35rem+0.9vw,1rem)]"
-                    aria-label="Vorteile Pflegeshop auf einen Blick"
-                  >
-                    {HERO_INTRO.taglineLines.map((line, i) => (
-                      <li
-                        key={line}
-                        className="flex items-center gap-3 text-pretty text-lg font-semibold leading-snug text-[#0F4F68] opacity-0 motion-reduce:opacity-100 animate-fade-in-up sm:text-xl lg:text-[clamp(1.05rem,0.82rem+0.5vw,1.35rem)]"
-                        style={{
-                          animationDelay: `${0.68 + i * 0.26}s`,
-                        }}
-                      >
-                        <HeroCheckIcon />
-                        <span>{line}</span>
-                      </li>
-                    ))}
-                  </ul>
-                  <p
-                    className="mt-4 max-w-prose text-pretty text-lg font-normal leading-relaxed text-neutral-600 opacity-0 motion-reduce:opacity-100 animate-fade-in-up sm:mt-5 sm:text-xl lg:text-[clamp(1.05rem,0.85rem+0.42vw,1.3rem)]"
-                    style={{ animationDelay: "1.22s" }}
-                  >
-                    {HERO_INTRO.partnerLine}
-                  </p>
-                  <div className="mt-4 sm:mt-5">
-                    <a
-                      href={PLEGEBEDARF_URL}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex w-full min-h-[48px] min-[420px]:w-auto items-center justify-center gap-2 rounded-xl bg-[#F78F2E] px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-[#ea8328] hover:shadow-md focus:outline-none focus:ring-2 focus:ring-[#F78F2E] focus:ring-offset-2 sm:text-base"
-                    >
-                      Zum Sortiment auf deinPflegebedarf.de
-                      <svg className="h-5 w-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden>
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
-                        />
-                      </svg>
-                    </a>
-                  </div>
-                </header>
+                    <HeroCheckIcon className="mt-0.5 lg:mt-0" />
+                    <span className="min-w-0 flex-1 text-pretty">{line}</span>
+                  </li>
+                ))}
+              </ul>
+              <p
+                className="max-w-prose text-pretty text-lg font-normal leading-relaxed text-neutral-600 opacity-0 motion-reduce:opacity-100 animate-fade-in-up sm:text-xl lg:text-[clamp(1.05rem,0.85rem+0.42vw,1.3rem)]"
+                style={{ animationDelay: "1.12s" }}
+              >
+                {HERO_INTRO.partnerLine}
+              </p>
+              <div
+                className="pt-2 opacity-0 motion-reduce:opacity-100 animate-fade-in-up"
+                style={{ animationDelay: "1.18s" }}
+              >
+                <a
+                  href={PLEGEBEDARF_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex w-full transform items-center justify-center gap-2 rounded-xl bg-[#F78F2E] px-6 py-3 text-lg font-bold text-white shadow-lg transition hover:scale-[1.02] hover:opacity-95 focus:outline-none focus:ring-2 focus:ring-[#F78F2E] focus:ring-offset-2 motion-reduce:transform-none sm:w-auto lg:w-auto lg:px-[clamp(1.15rem,0.85rem+1.1vw,1.65rem)] lg:py-[clamp(0.6rem,0.45rem+0.45vw,0.9rem)] lg:text-[clamp(1rem,0.82rem+0.55vw,1.15rem)]"
+                >
+                  Zum Sortiment auf deinPflegebedarf.de
+                  <svg className="h-5 w-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden>
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                    />
+                  </svg>
+                </a>
               </div>
             </div>
-        </div>
-      </section>
+
+            <div className="box-border w-full min-w-0 max-w-full lg:min-h-0 lg:translate-x-[clamp(0.75rem,5vw,3.5rem)] lg:justify-self-stretch lg:self-center motion-reduce:lg:translate-x-0">
+              <div className="box-border flex justify-center overflow-x-visible bg-[#fafbfc] px-4 pt-3 pb-8 sm:px-8 sm:pt-4 sm:pb-10 lg:flex lg:justify-end lg:px-0 lg:pb-[clamp(1.75rem,3.5vh+0.75rem,3.25rem)] lg:pt-0">
+                <div
+                  className="mx-auto w-full min-w-0 max-w-[min(100%,72rem)] opacity-0 motion-reduce:opacity-100 animate-fade-in-up max-lg:flex max-lg:max-w-full max-lg:justify-center lg:ml-auto lg:w-full lg:max-w-full"
+                  style={{ animationDelay: "0.08s" }}
+                >
+                  {/* eslint-disable-next-line @next/next/no-img-element -- statisches Hero-Asset wie Haushaltshilfe-Landing */}
+                  <img
+                    src="/images/pflegeshop_image.webp"
+                    alt="Pflegeshop: Sortiment an Pflegehilfsmitteln"
+                    width={PFLEGESHOP_HERO_IMG.w}
+                    height={PFLEGESHOP_HERO_IMG.h}
+                    decoding="async"
+                    fetchPriority="high"
+                    sizes="(max-width: 1023px) 100vw, (max-width: 1536px) 66vw, 1200px"
+                    className={`box-border h-auto w-full max-w-full object-contain object-center lg:object-contain lg:object-right max-lg:mx-auto max-lg:origin-center max-lg:translate-x-0 max-lg:-translate-y-2 max-lg:scale-[1.05] max-lg:motion-reduce:scale-[1.05] ${HERO_GLOW_CLASS}`}
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
 
       <section className="relative z-20 mt-0 w-full bg-[#F2F9FA] px-4 pt-[1.35rem] pb-8 sm:px-6 sm:pt-[2rem] sm:pb-[2.4rem] lg:px-[var(--ahs-page-gutter)] lg:pt-[2rem] lg:pb-10">
         <svg
