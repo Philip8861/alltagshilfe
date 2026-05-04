@@ -98,7 +98,7 @@ const BEREICHE: BereichDef[] = [
     align: "left",
     lede: "Sie arbeiten regelmäßig mit pflegebedürftigen Personen oder deren Angehörigen zusammen und empfehlen Pflegehilfsmittel für die häusliche Versorgung?",
     paragraphs: [
-      `Dann werden Sie Kooperationspartner von ${siteConfig.name}. Wir stellen Ihnen eigene Flyer sowie einen persönlichen Partner-Code zur Verfügung, der bei jeder Bestellung angegeben werden kann. So können Sie vermittelte Vorgänge einfach zuordnen, den Status nachvollziehen und nach erfolgreichem Abschluss eine Tippgeberprovision erhalten.`,
+      `Dann werden Sie Kooperationspartner der ${siteConfig.name}. Wir stellen Ihnen eigene Flyer sowie einen persönlichen Partner-Code zur Verfügung, der bei jeder Bestellung angegeben werden kann. So können Sie vermittelte Vorgänge einfach zuordnen, den Status nachvollziehen und nach erfolgreichem Abschluss eine Tippgeberprovision erhalten.`,
     ],
     featuresHeading: "Ihre Vorteile als Kooperationspartner",
     features: [
@@ -151,7 +151,7 @@ const BEREICHE: BereichDef[] = [
     align: "left",
     lede: "Sie arbeiten mit pflegebedürftigen Menschen oder Angehörigen zusammen, die Unterstützung bei Anträgen oder Formularen benötigen?",
     paragraphs: [
-      `Dann können Sie diese Personen vertrauensvoll an ${siteConfig.name} weiterempfehlen. Wir bieten verpflichtende Beratungsbesuche nach § 37 Abs. 3 SGB XI an und unterstützen Familien zusätzlich bei Fragen rund um Pflegegrad, Leistungen, Anträge und notwendige Unterlagen.`,
+      `Dann können Sie diese Personen vertrauensvoll an die ${siteConfig.name} weiterempfehlen. Wir führen verpflichtende Beratungsbesuche nach § 37 Abs. 3 SGB XI durch und unterstützen Familien zusätzlich bei allen wichtigen Fragen zu Pflegegrad, Pflegeleistungen, Anträgen und den erforderlichen Unterlagen.`,
       "Unsere geschulten Pflegeberater nehmen sich Zeit für die individuelle Situation vor Ort.",
     ],
     featuresHeading: "Ihre Vorteile als Kooperationspartner",
@@ -178,7 +178,7 @@ const BEREICHE: BereichDef[] = [
     align: "right",
     lede: "Sie arbeiten mit Menschen, Angehörigen oder Familien zusammen, die im Alltag Unterstützung benötigen?",
     paragraphs: [
-      `Dann können Sie diese Personen unkompliziert an ${siteConfig.name} weitervermitteln. Wir helfen schnell und zuverlässig bei Anfragen rund um Haushaltshilfe, Alltagsbegleitung und Betreuung.`,
+      `Dann können Sie diese Personen unkompliziert an die ${siteConfig.name} weitervermitteln. Wir helfen schnell und zuverlässig bei Anfragen rund um Haushaltshilfe, Alltagsbegleitung und Betreuung.`,
       "Ob Unterstützung im Haushalt, Begleitung im Alltag oder Entlastung für Angehörige: Wir nehmen Kontakt auf und klären den weiteren Bedarf. Die betroffenen Personen erhalten eine schnelle Versorgung, ohne lange Wartezeit.",
     ],
     featuresHeading: "Ihre Vorteile als Kooperationspartner",

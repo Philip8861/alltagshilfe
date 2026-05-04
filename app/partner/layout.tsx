@@ -5,7 +5,7 @@ export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Kooperationspartner",
-  description: "Geschützter Bereich für Kooperationspartner von Alltagshilfe-Süd.",
+  description: "Geschützter Bereich für Kooperationspartner der Alltagshilfe-Süd.",
   robots: { index: false, follow: false, googleBot: { index: false, follow: false } },
 };
 
