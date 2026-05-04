@@ -12,14 +12,14 @@ type Bewertung = {
 
 const BEWERTUNGEN: Bewertung[] = [
   {
-    name: "Sabine Schäfer",
-    meta: "6 Rezensionen · Neu · vor 3 Stunden",
-    text: "Ich brauchte mit erstmal Pflegestufe 1 Hilfe im Haushalt. Es war gar nicht so leicht überhaupt jemanden zu finden, der mich mit dem geringen Bedarf im Haushaltsbereich überhaupt unterstützt. Die Damen bei der Organisation waren freundlich und konnten sofort helfen. Meine Haushaltshilfe ist sehr freundlich und fleißig. Jetzt habe ich die Hilfe schon über ein Jahr und bin zufrieden und sehr entlastet dadurch. Das ist einfach spitze und erleichtert mein Leben sehr. Da bin ich von Herzen dankbar. Auch die Abrechnung klappt komplikationslos. Das ist einfach toll!",
-  },
-  {
     name: "TMy",
     meta: "86 Rezensionen · vor einer Woche",
     text: "Gerade ist bei uns ziemlich Chaos. Mein Onkel ist im Krankenhaus und ich kümmer mich aktuell um meine Oma. Deshalb war ich echt dankbar für schnelle Hilfe. Die Terminverschiebung ging super unkompliziert und Frau Wagenzink war total freundlich und verständnisvoll. Genau so wünscht man sich Unterstützung, wenn eh schon alles drunter und drüber geht. Vielen lieben Dank!",
+  },
+  {
+    name: "Sabine Schäfer",
+    meta: "6 Rezensionen · Neu · vor 3 Stunden",
+    text: "Ich brauchte mit erstmal Pflegestufe 1 Hilfe im Haushalt. Es war gar nicht so leicht überhaupt jemanden zu finden, der mich mit dem geringen Bedarf im Haushaltsbereich überhaupt unterstützt. Die Damen bei der Organisation waren freundlich und konnten sofort helfen. Meine Haushaltshilfe ist sehr freundlich und fleißig. Jetzt habe ich die Hilfe schon über ein Jahr und bin zufrieden und sehr entlastet dadurch. Das ist einfach spitze und erleichtert mein Leben sehr. Da bin ich von Herzen dankbar. Auch die Abrechnung klappt komplikationslos. Das ist einfach toll!",
   },
   {
     name: "Tati",
@@ -180,7 +180,7 @@ export function KundenstimmenCarousel({ embedded = false, protectImages = false 
                   ? "border-[#F78F2E] bg-[#F78F2E] text-white"
                   : "border-[#0F4F68]/25 bg-white text-[#0F4F68]/45 hover:border-[#0F4F68]/45 hover:text-[#0F4F68]/65"
               )}
-              aria-label={`Bewertung ${i + 1} anzeigen`}
+              aria-label={`Bewertung ${i + 1} von ${count}: ${BEWERTUNGEN[i]?.name ?? ""}`}
             >
               <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
                 <path d="M20 6L9 17l-5-5" />
@@ -188,6 +188,27 @@ export function KundenstimmenCarousel({ embedded = false, protectImages = false 
             </button>
           ))}
         </div>
+
+        <details className="mt-8 rounded-2xl border border-[#0F4F68]/12 bg-white/90 px-4 py-3 text-left shadow-sm sm:px-5">
+          <summary className="cursor-pointer list-none text-center text-sm font-semibold text-[#0F4F68] [&::-webkit-details-marker]:hidden">
+            <span className="underline decoration-[#0F4F68]/35 underline-offset-2 hover:decoration-[#F78F2E]">
+              Alle {count} Kundenstimmen anzeigen
+            </span>
+          </summary>
+          <ul className="mt-5 space-y-8 border-t border-[#0F4F68]/10 pt-5">
+            {BEWERTUNGEN.map((b, i) => (
+              <li key={`alle-${i}-${b.name}`}>
+                <blockquote className="text-sm leading-relaxed text-neutral-700 sm:text-base">
+                  <span aria-hidden>&bdquo;</span>
+                  {b.text}
+                  <span aria-hidden>&ldquo;</span>
+                </blockquote>
+                <p className="mt-2 text-sm font-semibold text-[#0F4F68]">{b.name}</p>
+                <p className="mt-0.5 text-xs text-neutral-500">{b.meta}</p>
+              </li>
+            ))}
+          </ul>
+        </details>
       </div>
     </section>
   );
