@@ -5,6 +5,7 @@ export type KarriereStellenangebotValue = (typeof KARRIERE_STELLENANGEBOTE)[numb
 /** Mappt freie Stellentitel von der Karriere-Seite auf die festen Formular-Werte. */
 export function jobTitleToStellenangebot(jobTitle: string): KarriereStellenangebotValue {
   const t = jobTitle.toLowerCase();
+  if (t.includes("initiativ")) return "Initiativbewerbung";
   if (t.includes("alltagshelfer")) return "Alltagshelfer";
   if (t.includes("pflegeberater")) return "Pflegeberater";
   if (t.includes("buchhalter")) return "Bürofachkraft";

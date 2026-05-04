@@ -8,8 +8,9 @@ const MAX_ANMERKUNG_LENGTH = 4000;
 export const KARRIERE_STELLENANGEBOTE = [
   "Alltagshelfer",
   "Bürofachkraft",
-  "Standortleitung",
+  "Initiativbewerbung",
   "Pflegeberater",
+  "Standortleitung",
 ] as const;
 
 export const karriereSchema = z.object({

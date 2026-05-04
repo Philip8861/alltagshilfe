@@ -3,6 +3,7 @@ import Link from "next/link";
 import { ProtectedRasterMedia } from "@/components/home/ProtectedRasterMedia";
 import { Container } from "@/components/layout/Container";
 import { KarriereForm } from "@/components/forms/KarriereForm";
+import { InitiativBewerbenLandingButton } from "@/components/karriere/InitiativBewerbenLandingButton";
 import { JetztBewerbenButton } from "@/components/karriere/JetztBewerbenButton";
 import { StellenbeschreibungDialogTrigger } from "@/components/karriere/StellenbeschreibungDialog";
 import { cn } from "@/lib/utils";
@@ -252,13 +253,9 @@ function OffeneStellenSpalte() {
             Wenn Sie glauben, dass Sie gut zu uns passen und unser Team verstärken können, dann erzählen Sie uns mehr über sich.
           </p>
           <div className="mt-7 flex justify-center sm:mt-8">
-            <a
-              href="#bewerbung-form"
-              title="Zum Kontakt- und Bewerbungsformular (Daniel Niebauer)"
+            <InitiativBewerbenLandingButton
               className="inline-flex min-h-[2.5rem] w-full max-w-[15.5rem] items-center justify-center rounded-xl bg-[#F78F2E] px-4 py-2 text-center text-sm font-semibold text-white shadow-sm transition hover:bg-[#ea8328] hover:shadow-md focus:outline-none focus:ring-2 focus:ring-[#0F4F68]/30 focus:ring-offset-2 sm:min-h-[2.65rem] sm:max-w-xs sm:px-5 sm:py-2.5"
-            >
-              Jetzt initiativ bewerben
-            </a>
+            />
           </div>
         </div>
       </div>

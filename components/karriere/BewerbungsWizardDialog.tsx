@@ -270,6 +270,8 @@ export function BewerbungsWizardDialog({ jobTitle, initialPlz, onDismiss }: Bewe
     [step],
   );
 
+  const isInitiativWizard = useMemo(() => jobTitle.toLowerCase().includes("initiativ"), [jobTitle]);
+
   const toggleAdditionalJob = useCallback((title: string) => {
     setAdditionalJobTitles((prev) =>
       prev.includes(title) ? prev.filter((t) => t !== title) : [...prev, title],
@@ -322,12 +324,12 @@ export function BewerbungsWizardDialog({ jobTitle, initialPlz, onDismiss }: Bewe
   }, [step, answers]);
 
   const goNext = useCallback(() => {
-    if (step === 4 && answers.mobilitaet === "nein") {
+    if (step === 4 && answers.mobilitaet === "nein" && !isInitiativWizard) {
       setMobilitaetModalOpen(true);
       return;
     }
     setStep((s) => Math.min(s + 1, maxStep));
-  }, [maxStep, step, answers.mobilitaet]);
+  }, [maxStep, step, answers.mobilitaet, isInitiativWizard]);
 
   const goBack = useCallback(() => {
     setStep((s) => Math.max(s - 1, 0));
@@ -712,10 +714,18 @@ export function BewerbungsWizardDialog({ jobTitle, initialPlz, onDismiss }: Bewe
           {step === 4 && (
             <div>
               <p className="text-sm font-semibold text-[#0F4F68]">Mobilität</p>
-              <p className="mt-1 text-xs text-neutral-600 sm:text-sm">
-                Bitte geben Sie an, ob Sie <strong>Führerschein Klasse B</strong> und einen <strong>PKW</strong> zur
-                Verfügung haben (beides zusammen).
-              </p>
+              {isInitiativWizard ? (
+                <p className="mt-1 text-xs text-neutral-600 sm:text-sm">
+                  Wenn Ihre Initiativbewerbung Einsätze oder Fahrten im Außendienst betrifft, geben Sie bitte an, ob Sie{" "}
+                  <strong>Führerschein Klasse B</strong> und einen <strong>PKW</strong> zur Verfügung haben. Sonst
+                  können Sie den Schritt nach Ihrer Situation beantworten; es folgt keine automatische Ablehnung.
+                </p>
+              ) : (
+                <p className="mt-1 text-xs text-neutral-600 sm:text-sm">
+                  Bitte geben Sie an, ob Sie <strong>Führerschein Klasse B</strong> und einen <strong>PKW</strong> zur
+                  Verfügung haben (beides zusammen).
+                </p>
+              )}
               <ChipGroup
                 name="mobilitaet"
                 options={MOBILITAET_OPTIONS}

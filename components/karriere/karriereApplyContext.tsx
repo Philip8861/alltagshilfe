@@ -3,7 +3,10 @@
 import { createContext, useContext } from "react";
 
 export type KarriereApplyContextValue = {
-  openBewerbungsWizard: (jobTitle: string) => void;
+  openBewerbungsWizard: (
+    jobTitle: string,
+    options?: { skipPlzGate?: boolean; initialPlz?: string },
+  ) => void;
   pendingKarriereFiles: File[];
   setPendingKarriereFiles: (files: File[]) => void;
   clearPendingKarriereFiles: () => void;

@@ -7,30 +7,40 @@ import { KarriereApplyContext } from "@/components/karriere/karriereApplyContext
 
 export { useKarriereApply, useKarriereApplyOptional } from "@/components/karriere/karriereApplyContext";
 
-function scrollToBewerbungFormAnchor() {
-  const el = document.getElementById("bewerbung-form");
-  if (el) {
-    el.scrollIntoView({ behavior: "smooth", block: "start" });
-  }
-}
-
 export function KarriereApplyProvider({ children }: { children: ReactNode }) {
   const [gateJobTitle, setGateJobTitle] = useState<string | null>(null);
-  const [wizardState, setWizardState] = useState<{ jobTitle: string; initialPlz: string } | null>(null);
+  const [wizardState, setWizardState] = useState<{
+    jobTitle: string;
+    initialPlz?: string;
+  } | null>(null);
   const [pendingKarriereFiles, setPendingKarriereFilesState] = useState<File[]>([]);
 
-  const openBewerbungsWizard = useCallback((jobTitle: string) => {
-    setGateJobTitle(jobTitle);
-  }, []);
+  const openBewerbungsWizard = useCallback(
+    (jobTitle: string, options?: { skipPlzGate?: boolean; initialPlz?: string }) => {
+      if (options?.skipPlzGate) {
+        setGateJobTitle(null);
+        const p = options.initialPlz?.replace(/\D/g, "").slice(0, 5) ?? "";
+        setWizardState({
+          jobTitle,
+          ...(p.length === 5 ? { initialPlz: p } : {}),
+        });
+        return;
+      }
+      setGateJobTitle(jobTitle);
+    },
+    [],
+  );
 
   const closeWizard = useCallback(() => {
     setWizardState(null);
   }, []);
 
-  const closeGateAndScrollToInitiativ = useCallback(() => {
+  const openInitiativWizardFromGate = useCallback((plz: string, sourceJobTitle: string) => {
     setGateJobTitle(null);
-    requestAnimationFrame(() => {
-      requestAnimationFrame(() => scrollToBewerbungFormAnchor());
+    const p = plz.replace(/\D/g, "").slice(0, 5);
+    setWizardState({
+      jobTitle: `Initiativbewerbung (vorab gewählt: ${sourceJobTitle})`,
+      ...(p.length === 5 ? { initialPlz: p } : {}),
     });
   }, []);
 
@@ -65,7 +75,7 @@ export function KarriereApplyProvider({ children }: { children: ReactNode }) {
           jobTitle={gateJobTitle}
           onDismiss={() => setGateJobTitle(null)}
           onAlltagshelferContinue={handleAlltagshelferFromGate}
-          onInitiativScrollToForm={closeGateAndScrollToInitiativ}
+          onInitiativOpenWizard={openInitiativWizardFromGate}
         />
       ) : null}
       {wizardState ? (

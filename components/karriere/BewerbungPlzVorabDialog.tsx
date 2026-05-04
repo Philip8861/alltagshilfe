@@ -9,8 +9,8 @@ type BewerbungPlzVorabDialogProps = {
   jobTitle: string;
   onDismiss: () => void;
   onAlltagshelferContinue: (plz: string, jobTitle: string) => void;
-  /** Schließt den Dialog und scrollt zum Bewerbungsformular (Initiativweg). */
-  onInitiativScrollToForm: () => void;
+  /** Schließt die Vorfrage und öffnet den Bewerbungskurzcheck als Initiativbewerbung (mit PLZ). */
+  onInitiativOpenWizard: (plz: string, sourceJobTitle: string) => void;
 };
 
 /** Anzeigename im Satz „Ihre Stelle als …“ ohne Zusatz (m/w/d). */
@@ -72,7 +72,7 @@ export function BewerbungPlzVorabDialog({
   jobTitle,
   onDismiss,
   onAlltagshelferContinue,
-  onInitiativScrollToForm,
+  onInitiativOpenWizard,
 }: BewerbungPlzVorabDialogProps) {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const titleId = useId();
@@ -278,7 +278,7 @@ export function BewerbungPlzVorabDialog({
                 <button
                   type="button"
                   className="inline-flex min-h-[48px] flex-1 items-center justify-center rounded-xl bg-[#F78F2E] px-5 py-3 text-center text-base font-semibold text-white shadow-md transition hover:bg-[#ea8328] focus:outline-none focus:ring-2 focus:ring-[#0F4F68]/30 focus:ring-offset-2 sm:flex-none sm:min-w-[14rem]"
-                  onClick={() => onInitiativScrollToForm()}
+                  onClick={() => onInitiativOpenWizard(submittedPlz, jobTitle)}
                 >
                   Jetzt initiativ bewerben
                 </button>

@@ -292,7 +292,7 @@ export function KarriereForm({ hideFileAttachments = false }: KarriereFormProps)
           </option>
           {KARRIERE_STELLENANGEBOTE.map((option) => (
             <option key={option} value={option}>
-              {option} (m/w/d)
+              {option === "Initiativbewerbung" ? "Initiativbewerbung" : `${option} (m/w/d)`}
             </option>
           ))}
         </select>
