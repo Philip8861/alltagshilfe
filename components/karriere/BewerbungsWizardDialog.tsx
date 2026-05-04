@@ -204,6 +204,7 @@ function ChipGroup({
 
 export function BewerbungsWizardDialog({ jobTitle, onDismiss }: BewerbungsWizardDialogProps) {
   const dialogRef = useRef<HTMLDialogElement>(null);
+  const wizardContentScrollRef = useRef<HTMLDivElement>(null);
   const uploadInputRef = useRef<HTMLInputElement>(null);
   const submitProgressTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const titleId = useId();
@@ -244,6 +245,10 @@ export function BewerbungsWizardDialog({ jobTitle, onDismiss }: BewerbungsWizard
 
   useEffect(() => {
     if (step !== 6) setWizardSubmitError(null);
+  }, [step]);
+
+  useEffect(() => {
+    wizardContentScrollRef.current?.scrollTo({ top: 0, left: 0, behavior: "auto" });
   }, [step]);
 
   const maxStep = STEP_LABELS.length - 1;
@@ -524,7 +529,10 @@ export function BewerbungsWizardDialog({ jobTitle, onDismiss }: BewerbungsWizard
         </div>
         ) : null}
 
-        <div className="min-h-0 min-w-0 flex-1 overflow-y-auto overscroll-contain px-4 py-4 sm:px-6 sm:py-5">
+        <div
+          ref={wizardContentScrollRef}
+          className="min-h-0 min-w-0 flex-1 overflow-y-auto overscroll-contain px-4 py-4 sm:px-6 sm:py-5"
+        >
           {step === 0 && (
             <div>
               <p className="text-sm font-semibold text-[#0F4F68]">Ihre Stelle (Hauptbewerbung)</p>
