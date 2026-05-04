@@ -17,6 +17,11 @@ const BEWERTUNGEN: Bewertung[] = [
     text: "Ich brauchte mit erstmal Pflegestufe 1 Hilfe im Haushalt. Es war gar nicht so leicht überhaupt jemanden zu finden, der mich mit dem geringen Bedarf im Haushaltsbereich überhaupt unterstützt. Die Damen bei der Organisation waren freundlich und konnten sofort helfen. Meine Haushaltshilfe ist sehr freundlich und fleißig. Jetzt habe ich die Hilfe schon über ein Jahr und bin zufrieden und sehr entlastet dadurch. Das ist einfach spitze und erleichtert mein Leben sehr. Da bin ich von Herzen dankbar. Auch die Abrechnung klappt komplikationslos. Das ist einfach toll!",
   },
   {
+    name: "TMy",
+    meta: "86 Rezensionen · vor einer Woche",
+    text: "Gerade ist bei uns ziemlich Chaos. Mein Onkel ist im Krankenhaus und ich kümmer mich aktuell um meine Oma. Deshalb war ich echt dankbar für schnelle Hilfe. Die Terminverschiebung ging super unkompliziert und Frau Wagenzink war total freundlich und verständnisvoll. Genau so wünscht man sich Unterstützung, wenn eh schon alles drunter und drüber geht. Vielen lieben Dank!",
+  },
+  {
     name: "Tati",
     meta: "5 Rezensionen · vor 2 Monaten",
     text: "Sehr freundliche telefonische Beratung. Absolut empfehlenswert.",
