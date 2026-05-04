@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { type ReactNode, useId, useRef } from "react";
 import { useKarriereApplyOptional } from "@/components/karriere/karriereApplyContext";
+import { siteConfig } from "@/config/site";
 import { cn } from "@/lib/utils";
 
 const ALLTAGSHELFER_EINLEITUNG_ABSÄTZE = [
@@ -277,6 +278,22 @@ export function StellenbeschreibungDialogTrigger({ jobTitle, className }: Stelle
           ) : (
             <StelleninhaltSonstigeStelle jobTitle={jobTitle} />
           )}
+
+          <section
+            className="mt-8 rounded-2xl border border-[#0F4F68]/10 bg-[#F2F9FA]/40 px-5 py-5 sm:mt-10 sm:px-6 sm:py-6"
+            aria-labelledby="karriere-stellenbeschreibung-interesse-heading"
+          >
+            <h3
+              id="karriere-stellenbeschreibung-interesse-heading"
+              className="text-lg font-bold tracking-tight text-[#0F4F68] sm:text-xl"
+            >
+              Interesse?
+            </h3>
+            <p className="mt-3 text-pretty text-sm font-medium leading-relaxed text-neutral-800 sm:text-base">
+              Dann freuen wir uns auf deine Bewerbung. Werde Teil der {siteConfig.name} und unterstütze uns
+              dabei, Senior*innen und hilfsbedürftigen Menschen den Alltag zu erleichtern.
+            </p>
+          </section>
 
           <div className="mt-8 border-t border-[#0F4F68]/10 pt-6 sm:mt-10 sm:pt-8">
             {karriereApply ? (
