@@ -21,7 +21,6 @@ const ALLTAGSHELFER_WIR_BIETEN = [
   "Vergütung der Fahrzeiten zwischen den Einsätzen",
   "30 Urlaubstage, angerechnet auf eine 5-Tage-Woche",
   "Fort- und Weiterbildungen",
-  "Verantwortungsvolle und abwechslungsreiche Arbeit direkt bei Menschen zuhause",
 ] as const;
 
 const ALLTAGSHELFER_BETREUUNG = [
