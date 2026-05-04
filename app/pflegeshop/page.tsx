@@ -70,12 +70,12 @@ export default function PflegeshopPage() {
                 className="pointer-events-none relative z-0 w-full shrink-0 overflow-hidden rounded-2xl max-md:h-[min(17.5rem,52vw)] sm:max-md:h-[min(21rem,48vw)] md:absolute md:inset-0 md:h-full md:min-h-[28.125rem] md:rounded-3xl lg:min-h-[30.46875rem]"
                 aria-hidden
               >
-                <ProtectedRasterMedia className="relative block h-full w-full overflow-hidden rounded-2xl select-none [-webkit-user-drag:none] md:rounded-3xl">
+                <ProtectedRasterMedia className="relative block h-full w-full overflow-hidden rounded-2xl bg-[#F2F9FA] select-none [-webkit-user-drag:none] md:rounded-3xl">
                   <Image
                     src="/images/pflegeshop_image.webp"
                     alt="Pflegeshop: Sortiment an Pflegehilfsmitteln"
                     fill
-                    className="rounded-2xl object-cover object-[82%_center] md:rounded-3xl md:object-cover md:object-center"
+                    className="rounded-2xl object-contain object-center md:rounded-3xl"
                     sizes="(min-width: 768px) 96vw, 100vw"
                     quality={92}
                     priority
