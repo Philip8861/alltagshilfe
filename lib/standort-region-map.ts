@@ -78,8 +78,8 @@ export function getServiceRegionMapView(): { lat: number; lng: number; zoom: num
   return { lat, lng, zoom };
 }
 
-/** Eine Zoomstufe weiter heraus (~ wie „−“ in der Karte), damit mehr Umland sichtbar ist. */
-const FOCUS_ZOOM = 8;
+/** Lokaler Fokus bei PLZ/Ort auf der Standortkarte (höher = näher an den Ort). */
+const FOCUS_ZOOM = 9;
 
 /**
  * Kartenstart für Standort-Unterseiten: Fokus auf gesuchte PLZ bzw. Büro-PLZ des Standorts,

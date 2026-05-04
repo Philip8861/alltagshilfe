@@ -83,6 +83,17 @@ const PUNKTE = [
   { left: 31.8, top: 60.9 },
   { left: 37.9, top: 69.1 },
   { left: 47.7, top: 57.4 },
+  /* Zollernalb / Sigmaringen / Oberschwaben (Engen/Konstanz-Einzugsgebiet, grob zur statischen Karte) */
+  { left: 55.2, top: 60.8 },
+  { left: 56.1, top: 59.6 },
+  { left: 57.0, top: 58.8 },
+  { left: 57.8, top: 58.0 },
+  { left: 58.6, top: 57.2 },
+  { left: 56.5, top: 58.2 },
+  { left: 59.2, top: 56.5 },
+  { left: 60.0, top: 55.8 },
+  { left: 58.0, top: 59.2 },
+  { left: 55.8, top: 59.0 },
 ];
 
 const STANDORTE_INTRO = {
