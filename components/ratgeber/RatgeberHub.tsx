@@ -237,16 +237,16 @@ export function RatgeberHub(props?: RatgeberHubProps) {
         aria-labelledby="ratgeber-hub-heading"
       >
         <div className="relative isolate flex w-full flex-col overflow-hidden rounded-b-3xl bg-[#FFFCFA] md:min-h-[18rem] lg:min-h-[19.5rem]">
-          {/* Mobil: Band ~30 % höher; linkes Bilddrittel aus dem Ausschnitt (object-position + Zoom, volle Breite); ab md unverändert */}
+          {/* Mobil: Bandhöhe inkl. +25 % (weniger vertikaler Ausschnitt); rechts fokussiert; ab md unverändert */}
           <div
-            className="pointer-events-none relative z-0 h-[calc(5.5rem*1.3)] w-full shrink-0 overflow-hidden sm:h-[calc(6.5rem*1.3)] md:absolute md:inset-0 md:h-auto md:rounded-b-3xl"
+            className="pointer-events-none relative z-0 h-[calc(5.5rem*1.3*1.25)] w-full shrink-0 overflow-hidden sm:h-[calc(6.5rem*1.3*1.25)] md:absolute md:inset-0 md:h-auto md:rounded-b-3xl"
             aria-hidden
           >
             <Image
               src="/images/Ratgeber/ratgeber.webp"
               alt=""
               fill
-              className="object-cover object-center max-md:object-right max-md:scale-[1.35] md:scale-100 md:object-contain md:object-center"
+              className="object-cover object-center max-md:object-right max-md:scale-[1.26] md:scale-100 md:object-contain md:object-center"
               sizes="(min-width: 768px) 96vw, 100vw"
               quality={92}
               priority
