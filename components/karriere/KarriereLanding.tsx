@@ -42,7 +42,7 @@ const KARRIERE_ARBEITGEBER_FAKTEN = [
   "Unbefristete Anstellung nach Probezeit bei guter Zusammenarbeit",
 ] as const;
 
-/** Drei zentrale Vorteile – Buchhalter*in, Bürofachkraft. */
+/** Drei zentrale Vorteile – nur Bürofachkraft. */
 const STELLEN_VORTEILE = [
   "Tarifgerechte Vergütung, planbare Zeiten und klare Strukturen im Alltag",
   "Echte Teamkultur: Einarbeitung, fester Ansprechpartner und Unterstützung vor Ort",
@@ -56,6 +56,15 @@ const STELLEN_VORTEILE_ALLTAGSHELFER = [
   "Sinnvolle Arbeit direkt bei Menschen zuhause",
   "Faire Vergütung plus starke Extras",
   "Feste Ansprechpartner und verlässliche Planung",
+] as const;
+
+/** Fünf Haken auf der Karte Buchhalter*in. */
+const STELLEN_VORTEILE_BUCHHALTER = [
+  "Leistungsgerechte und attraktive Vergütung",
+  "Gleitzeit für mehr Flexibilität",
+  "Echte Teamkultur mit festen Ansprechpartnern",
+  "Abwechslungsreiche Aufgaben im Büroalltag",
+  "Sinnvolle Arbeit in der Region",
 ] as const;
 
 /** Fünf Haken nur auf der Karte Pflegeberater*in. */
@@ -170,7 +179,9 @@ function OffeneStellenSpalte() {
               ? STELLEN_VORTEILE_PFLEGEBERATER
               : job.id === "alltagshelfer"
                 ? STELLEN_VORTEILE_ALLTAGSHELFER
-                : STELLEN_VORTEILE;
+                : job.id === "buchhalter"
+                  ? STELLEN_VORTEILE_BUCHHALTER
+                  : STELLEN_VORTEILE;
           return (
             <li
               key={job.id}
