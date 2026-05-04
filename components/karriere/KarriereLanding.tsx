@@ -70,8 +70,8 @@ const STELLEN_VORTEILE_PFLEGEBERATER = [
 const jobs = [
   { id: "alltagshelfer", title: "Alltagshelfer*in (m/w/d)", icon: "heart" },
   { id: "pflegeberater", title: "Pflegeberater*in (m/w/d)", icon: "hand" },
-  { id: "buchhalter", title: "Buchhalter*in (m/w/d)", icon: "desk" },
-  { id: "standortleiter", title: "Bürofachkraft (m/w/d)", icon: "star" },
+  { id: "buchhalter", title: "Buchhalter*in (m/w/d)", icon: "document" },
+  { id: "standortleiter", title: "Bürofachkraft (m/w/d)", icon: "phone" },
 ] as const;
 
 /** Kartenfarben passend zur Seite: Orange, sanft gelb (Pflegeberater), Grün, Blau. */
@@ -113,8 +113,12 @@ const iconPaths: Record<string, string> = {
   heart:
     "M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z",
   hand: "M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z",
-  desk: "M4 6h16v2H4zm0 5h16v2H4zm0 5h10v2H4z",
-  star: "M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z",
+  /** Einfaches Dokument (Material „Description“-Stil). */
+  document:
+    "M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z",
+  /** Telefonhörer (klassisch, gefüllt). */
+  phone:
+    "M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z",
 };
 
 function JobIcon({ name }: { name: string }) {
