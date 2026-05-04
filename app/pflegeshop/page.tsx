@@ -19,7 +19,8 @@ const PFLEGESHOP_VORTEILE_BEI_UNS = [
   "Artikelfinder statt langes Suchen",
   "Versandkostenfrei ab 150 Euro",
   "Abo Modell ohne ständiges Nachbestellen möglich",
-  "Telefonischer Kundenservice zu unseren Produkten und Inkontinenzversorgung mit Rezeptabrechnung möglich",
+  "Telefonischer Kundenservice zu unseren Produkten",
+  "Inkontinenzversorgung mit Rezeptabrechnung",
 ] as const;
 
 /** Natürliche Pixelmaße `public/images/pflegeshop_image.webp` (bei neuem Asset anpassen) */
