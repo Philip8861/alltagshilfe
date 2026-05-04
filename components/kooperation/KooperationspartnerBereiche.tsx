@@ -130,7 +130,7 @@ const BEREICHE: BereichDef[] = [
     featuresHeading: "Ihre Vorteile als Kooperationspartner",
     features: [
       {
-        title: "Einfach vermittelbar und klar erklärbar",
+        title: "Einfach erklärt & nachvollziehbar",
         text: "Das Angebot ist leicht verständlich und spricht ein Problem an, das viele Unternehmen bereits heute betrifft: die Vereinbarkeit von Beruf und Pflege.",
       },
       {
@@ -149,7 +149,7 @@ const BEREICHE: BereichDef[] = [
     id: "private-pflegeberatung",
     title: "Private Pflegeberatung",
     align: "left",
-    lede: "Sie arbeiten mit pflegebedürftigen Menschen oder Angehörigen zusammen, die Unterstützung bei Beratungsbesuchen, Anträgen oder Formularen benötigen?",
+    lede: "Sie arbeiten mit pflegebedürftigen Menschen oder Angehörigen zusammen, die Unterstützung bei Anträgen oder Formularen benötigen?",
     paragraphs: [
       `Dann können Sie diese Personen vertrauensvoll an ${siteConfig.name} weiterempfehlen. Wir bieten verpflichtende Beratungsbesuche nach § 37 Abs. 3 SGB XI an und unterstützen Familien zusätzlich bei Fragen rund um Pflegegrad, Leistungen, Anträge und notwendige Unterlagen.`,
       "Unsere geschulten Pflegeberater nehmen sich Zeit für die individuelle Situation vor Ort.",
@@ -157,16 +157,16 @@ const BEREICHE: BereichDef[] = [
     featuresHeading: "Ihre Vorteile als Kooperationspartner",
     features: [
       {
-        title: "Verlässliche Hilfe für Pflegebedürftige und Angehörige",
-        text: "Ihre Kontakte erhalten klare Orientierung zu Beratungsbesuchen, Leistungen und Unterlagen – ohne dass Sie selbst inhaltlich in Vorleistung treten müssen.",
+        title: "Transparenz durch Ihr Online-Dashboard",
+        text: "Über Ihr persönliches Online-Dashboard behalten Sie den Überblick über Ihre vermittelten Kontakte und den aktuellen Bearbeitungsstand.",
       },
       {
-        title: "Geschulte Pflegeberater mit Zeit für die Situation",
-        text: "Unsere Beratungen erfolgen durch geschulte Pflegeberater, die strukturiert beraten, zuhören und gemeinsam mit den Betroffenen sinnvolle nächste Schritte besprechen.",
+        title: "Attraktive Tippgeberprovision bei erfolgreicher Beratung",
+        text: "Wenn eine von Ihnen vermittelte Pflegeberatung erfolgreich durchgeführt wird, erhalten Sie eine faire Tippgeberprovision.",
       },
       {
-        title: "Tippgeberprovision bei erfolgreicher Beratung",
-        text: "Wird eine von Ihnen vermittelte Beratung erfolgreich durchgeführt, erhalten Sie eine Tippgeberprovision.",
+        title: "Entlastung im Alltag und professionelle Weiterleitung Ihrer Kontakte",
+        text: "Sie können pflegebedürftige Menschen und Angehörige unkompliziert an einen verlässlichen Partner weiterleiten.",
       },
     ],
     mehrHref: "/pflegeberatung/private-pflegeberatung",
