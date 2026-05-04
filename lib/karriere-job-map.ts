@@ -13,6 +13,11 @@ export function jobTitleToStellenangebot(jobTitle: string): KarriereStellenangeb
   return "Alltagshelfer";
 }
 
+/** Karriere: Bewerbungsweg für Alltagshelfer (immer alle Standorte). */
+export function isAlltagshelferJobTitle(jobTitle: string): boolean {
+  return jobTitle.toLowerCase().includes("alltagshelfer");
+}
+
 export const KARRIERE_BEWERBUNG_PREFILL_KEY = "karriere-bewerbung-prefill";
 
 export type KarriereBewerbungPrefill = {

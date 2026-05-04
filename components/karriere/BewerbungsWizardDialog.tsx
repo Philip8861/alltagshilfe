@@ -11,6 +11,7 @@ import {
   type ChangeEvent,
   type KeyboardEvent,
 } from "react";
+import { getOrtByPlz } from "@/config/standorte";
 import { submitKarriere } from "@/lib/actions/karriere";
 import { jobTitleToStellenangebot } from "@/lib/karriere-job-map";
 import {
@@ -22,6 +23,8 @@ import { cn } from "@/lib/utils";
 
 type BewerbungsWizardDialogProps = {
   jobTitle: string;
+  /** Vom PLZ Vorabdialog; Kontaktschritt wird vorausgefüllt wenn bekannt. */
+  initialPlz?: string;
   onDismiss: () => void;
 };
 
@@ -126,6 +129,14 @@ const INITIAL: WizardAnswers = {
   erreichbarkeit: "",
 };
 
+function buildInitialWizardAnswers(initialPlz?: string): WizardAnswers {
+  if (!initialPlz || !/^\d{5}$/.test(initialPlz)) {
+    return INITIAL;
+  }
+  const ort = getOrtByPlz(initialPlz)?.trim() ?? "";
+  return { ...INITIAL, plz: initialPlz, ort };
+}
+
 function pensumLabel(id: string): string {
   return PENSUM_OPTIONS.find((o) => o.id === id)?.label ?? id;
 }
@@ -202,7 +213,7 @@ function ChipGroup({
   );
 }
 
-export function BewerbungsWizardDialog({ jobTitle, onDismiss }: BewerbungsWizardDialogProps) {
+export function BewerbungsWizardDialog({ jobTitle, initialPlz, onDismiss }: BewerbungsWizardDialogProps) {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const wizardContentScrollRef = useRef<HTMLDivElement>(null);
   const uploadInputRef = useRef<HTMLInputElement>(null);
@@ -210,7 +221,7 @@ export function BewerbungsWizardDialog({ jobTitle, onDismiss }: BewerbungsWizard
   const titleId = useId();
 
   const [step, setStep] = useState(0);
-  const [answers, setAnswers] = useState<WizardAnswers>(INITIAL);
+  const [answers, setAnswers] = useState<WizardAnswers>(() => buildInitialWizardAnswers(initialPlz));
   const [additionalJobTitles, setAdditionalJobTitles] = useState<string[]>([]);
   const [wizardFiles, setWizardFiles] = useState<File[]>([]);
   const [fileHint, setFileHint] = useState<string | null>(null);

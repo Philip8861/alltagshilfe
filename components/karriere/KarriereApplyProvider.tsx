@@ -1,21 +1,42 @@
 "use client";
 
 import { useCallback, useMemo, useState, type ReactNode } from "react";
+import { BewerbungPlzVorabDialog } from "@/components/karriere/BewerbungPlzVorabDialog";
 import { BewerbungsWizardDialog } from "@/components/karriere/BewerbungsWizardDialog";
 import { KarriereApplyContext } from "@/components/karriere/karriereApplyContext";
 
 export { useKarriereApply, useKarriereApplyOptional } from "@/components/karriere/karriereApplyContext";
 
+function scrollToBewerbungFormAnchor() {
+  const el = document.getElementById("bewerbung-form");
+  if (el) {
+    el.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+}
+
 export function KarriereApplyProvider({ children }: { children: ReactNode }) {
-  const [wizardJobTitle, setWizardJobTitle] = useState<string | null>(null);
+  const [gateJobTitle, setGateJobTitle] = useState<string | null>(null);
+  const [wizardState, setWizardState] = useState<{ jobTitle: string; initialPlz: string } | null>(null);
   const [pendingKarriereFiles, setPendingKarriereFilesState] = useState<File[]>([]);
 
   const openBewerbungsWizard = useCallback((jobTitle: string) => {
-    setWizardJobTitle(jobTitle);
+    setGateJobTitle(jobTitle);
   }, []);
 
   const closeWizard = useCallback(() => {
-    setWizardJobTitle(null);
+    setWizardState(null);
+  }, []);
+
+  const closeGateAndScrollToInitiativ = useCallback(() => {
+    setGateJobTitle(null);
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => scrollToBewerbungFormAnchor());
+    });
+  }, []);
+
+  const handleAlltagshelferFromGate = useCallback((plz: string, jobTitle: string) => {
+    setGateJobTitle(null);
+    setWizardState({ jobTitle, initialPlz: plz });
   }, []);
 
   const setPendingKarriereFiles = useCallback((files: File[]) => {
@@ -39,8 +60,20 @@ export function KarriereApplyProvider({ children }: { children: ReactNode }) {
   return (
     <KarriereApplyContext.Provider value={value}>
       {children}
-      {wizardJobTitle ? (
-        <BewerbungsWizardDialog jobTitle={wizardJobTitle} onDismiss={closeWizard} />
+      {gateJobTitle ? (
+        <BewerbungPlzVorabDialog
+          jobTitle={gateJobTitle}
+          onDismiss={() => setGateJobTitle(null)}
+          onAlltagshelferContinue={handleAlltagshelferFromGate}
+          onInitiativScrollToForm={closeGateAndScrollToInitiativ}
+        />
+      ) : null}
+      {wizardState ? (
+        <BewerbungsWizardDialog
+          jobTitle={wizardState.jobTitle}
+          initialPlz={wizardState.initialPlz}
+          onDismiss={closeWizard}
+        />
       ) : null}
     </KarriereApplyContext.Provider>
   );
