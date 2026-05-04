@@ -26,6 +26,11 @@ const HERO_GLOW_CLASS =
 
 const HERO_INTRO = {
   brand: "Pflegeshop & Inkontinenzversorgung",
+  taglineLines: [
+    "Von Pflegekräften empfohlen",
+    "Geprüfte Markenprodukte",
+    "Schnell & diskret geliefert",
+  ],
   partnerLine:
     "Vertrauen Sie unserer Erfahrung. Wir helfen Ihnen, passende Pflegeartikel zu finden, und stehen Ihnen bei Fragen persönlich zur Seite.",
 } as const;
@@ -34,6 +39,27 @@ export const metadata: Metadata = {
   title: "Pflegeshop & Inkontinenzversorgung",
   description: `Pflegehilfsmittel, Pflegebedarf online und Beratung zur Inkontinenzversorgung – mit deinPflegebedarf.de. ${siteConfig.name}.`,
 };
+
+function HeroCheckIcon({ className = "" }: { className?: string }) {
+  return (
+    <span
+      className={`inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#F78F2E]/15 text-[#F78F2E] ${className}`.trim()}
+      aria-hidden
+    >
+      <svg
+        className="h-[1.1rem] w-[1.1rem] sm:h-5 sm:w-5"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        <path d="M20 6L9 17l-5-5" />
+      </svg>
+    </span>
+  );
+}
 
 export default function PflegeshopPage() {
   return (
@@ -51,15 +77,30 @@ export default function PflegeshopPage() {
               >
                 <span className="block">{HERO_INTRO.brand}</span>
               </h1>
+              <ul
+                className="mt-5 min-w-0 space-y-3 sm:mt-6 sm:space-y-3.5 lg:mt-0 lg:space-y-[clamp(0.65rem,0.35rem+0.9vw,1rem)]"
+                aria-label="Vorteile Pflegeshop auf einen Blick"
+              >
+                {HERO_INTRO.taglineLines.map((line, i) => (
+                  <li
+                    key={line}
+                    className="flex min-w-0 items-start gap-3 text-lg font-semibold leading-snug text-[#0F4F68] opacity-0 motion-reduce:opacity-100 animate-fade-in-up sm:text-xl lg:items-center lg:text-[clamp(1.05rem,0.82rem+0.5vw,1.35rem)]"
+                    style={{ animationDelay: `${0.45 + i * 0.22}s` }}
+                  >
+                    <HeroCheckIcon className="mt-0.5 lg:mt-0" />
+                    <span className="min-w-0 flex-1 text-pretty">{line}</span>
+                  </li>
+                ))}
+              </ul>
               <p
-                className="mt-5 max-w-prose text-pretty text-lg font-normal leading-relaxed text-neutral-600 opacity-0 motion-reduce:opacity-100 animate-fade-in-up sm:mt-6 sm:text-xl lg:mt-0 lg:text-[clamp(1.05rem,0.85rem+0.42vw,1.3rem)]"
-                style={{ animationDelay: "0.45s" }}
+                className="max-w-prose text-pretty text-lg font-normal leading-relaxed text-neutral-600 opacity-0 motion-reduce:opacity-100 animate-fade-in-up sm:text-xl lg:text-[clamp(1.05rem,0.85rem+0.42vw,1.3rem)]"
+                style={{ animationDelay: "1.12s" }}
               >
                 {HERO_INTRO.partnerLine}
               </p>
               <div
                 className="pt-2 opacity-0 motion-reduce:opacity-100 animate-fade-in-up"
-                style={{ animationDelay: "0.55s" }}
+                style={{ animationDelay: "1.18s" }}
               >
                 <a
                   href={PLEGEBEDARF_URL}
