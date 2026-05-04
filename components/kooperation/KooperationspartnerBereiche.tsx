@@ -125,7 +125,6 @@ const BEREICHE: BereichDef[] = [
     lede: "Sie beraten Firmen, Arbeitgeber oder HR-Abteilungen zu Benefits, betrieblichem Gesundheitsmanagement oder Mitarbeiterbindung?",
     paragraphs: [
       `Dann erweitern Sie Ihr Angebot um einen Beratungsbaustein mit echtem Alltagsnutzen: die betriebliche Pflegeberatung der ${siteConfig.name}.`,
-      "Wir unterstützen Beschäftigte Ihrer Unternehmenskunden bei Fragen zu Pflegegrad, Entlastungsleistungen, Versorgungsoptionen und der Organisation der häuslichen Pflege.",
       "Hier erleben Betriebe einen Benefit, der einen echten Unterschied macht und sie auf den demografischen Wandel vorbereitet.",
     ],
     featuresHeading: "Ihre Vorteile als Kooperationspartner",
