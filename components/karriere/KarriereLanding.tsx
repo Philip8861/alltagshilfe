@@ -42,11 +42,20 @@ const KARRIERE_ARBEITGEBER_FAKTEN = [
   "Unbefristete Anstellung nach Probezeit bei guter Zusammenarbeit",
 ] as const;
 
-/** Drei zentrale Vorteile – einheitlich auf allen Stellenkarten (inkl. Pflegeberater*in). */
+/** Drei zentrale Vorteile – Alltagshelfer*in, Buchhalter*in, Bürofachkraft. */
 const STELLEN_VORTEILE = [
   "Tarifgerechte Vergütung, planbare Zeiten und klare Strukturen im Alltag",
   "Echte Teamkultur: Einarbeitung, fester Ansprechpartner und Unterstützung vor Ort",
   "Sinnstiftende Arbeit in der Region – dort, wo Hilfe für Menschen ankommt",
+] as const;
+
+/** Fünf Haken nur auf der Karte Pflegeberater*in. */
+const STELLEN_VORTEILE_PFLEGEBERATER = [
+  "Leistungsgerechte und attraktive Vergütung",
+  "Keine Wochenenden und keine Feiertage",
+  "Teilweise Homeoffice und mobiles Arbeiten möglich",
+  "Nah am Menschen, ohne klassische Pflegebelastung",
+  "Gute Einarbeitung, echtes Team und sinnvolle Arbeit in der Region",
 ] as const;
 
 const jobs = [
@@ -143,6 +152,8 @@ function OffeneStellenSpalte() {
         <ul className="grid w-full max-w-[min(100rem,calc(100vw-2rem))] list-none grid-cols-1 items-stretch gap-10 perspective-[1600px] sm:grid-cols-2 sm:gap-12 sm:max-w-[min(100rem,calc(100vw-2.5rem))] lg:grid-cols-4 lg:gap-10 xl:gap-12">
         {jobs.map((job, index) => {
           const theme = JOB_CARD_THEME[job.id] ?? JOB_CARD_THEME.alltagshelfer;
+          const kartenHaken =
+            job.id === "pflegeberater" ? STELLEN_VORTEILE_PFLEGEBERATER : STELLEN_VORTEILE;
           return (
             <li
               key={job.id}
@@ -172,7 +183,7 @@ function OffeneStellenSpalte() {
                   <div className={cn("flex min-h-0 flex-1 flex-col px-3 pb-4 pt-3 sm:px-4 sm:pb-5", theme.inner)}>
                     <div className="flex min-h-0 flex-1 flex-col justify-center py-4 sm:py-6">
                       <ul className="space-y-2.5 text-[11px] font-bold leading-relaxed text-neutral-800 sm:space-y-3 sm:text-xs lg:text-[11px] xl:text-xs">
-                        {STELLEN_VORTEILE.map((h) => (
+                        {kartenHaken.map((h) => (
                           <li key={h} className="flex items-start gap-1.5 sm:gap-2">
                             <VorteilHaken />
                             <span className="text-pretty">{h}</span>

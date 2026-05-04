@@ -55,6 +55,45 @@ const HAUSHALT = [
   "Versorgung von Haustieren",
 ] as const;
 
+const PFLEGEBERATER_EINLEITUNG =
+  "Sie möchten weiterhin nah am Menschen arbeiten, aber ohne Wochenenddienste, Feiertagsdienste und ständige Diskussionen um freie Tage? Dann könnte die ambulante Pflegeberatung genau der richtige nächste Schritt für Sie sein. Bei uns besuchen Sie pflegebedürftige Menschen und ihre Angehörigen zuhause, beraten zu möglichen Leistungen, geben praktische Tipps für den Alltag und helfen dabei, gute Lösungen für die Versorgung zu Hause zu finden. Gleichzeitig profitieren Sie von planbaren Arbeitszeiten, teilweise Homeoffice, mobilem Arbeiten und einer leistungsgerechten, attraktiven Vergütung.";
+
+const PFLEGEBERATER_WIR_BIETEN = [
+  "Bis zu 37,5 Stunden pro Woche in Vollzeit oder Teilzeit",
+  "30 frei planbare Urlaubstage pro Jahr",
+  "Leistungsgerechte und attraktive Vergütung mit zusätzlichen Bonusprogrammen und Provisionen",
+  "Keine Wochenend- oder Feiertagsarbeit",
+  "Teilweise Homeoffice und mobiles Arbeiten möglich",
+  "Diensthandy für die tägliche Arbeit",
+  "Umfassende Einarbeitung, die Sie optimal auf Ihr neues Berufsfeld vorbereitet",
+  "Attraktive Konditionen und langfristige Sicherheit",
+] as const;
+
+const PFLEGEBERATER_AUFGABEN = [
+  "Beratung von pflegebedürftigen Menschen und Angehörigen zu möglichen Leistungen der Pflegeversicherung",
+  "Unterstützung bei Fragen rund um Pflegegrad, Entlastungsangebote, Versorgung zuhause und Alltagshilfen",
+  "Durchführung von Beratungsgesprächen vor Ort, telefonisch oder digital",
+  "Einschätzung der individuellen Pflegesituation und Erkennen von Unterstützungsbedarf",
+  "Praktische Tipps geben, damit die Pflege zuhause leichter und sicherer gelingt",
+  "Angehörige entlasten, Orientierung geben und passende nächste Schritte aufzeigen",
+  "Dokumentation der Beratungsgespräche und sorgfältige Nachbereitung",
+] as const;
+
+const PFLEGEBERATER_PROFIL = [
+  "Zertifikat als Pflegeberater*in nach § 7a SGB XI wünschenswert oder die Bereitschaft, diese Qualifikation mit unserer Unterstützung zu erwerben",
+  "Abgeschlossene Ausbildung im Pflegebereich, zum Beispiel als Pflegefachkraft, Altenpfleger*in, Gesundheits- und Krankenpfleger*in oder eine vergleichbare Qualifikation",
+  "Freude an Beratung, Kommunikation und verständlicher Erklärung von Pflegeleistungen",
+  "Einfühlungsvermögen, Geduld und ein sicheres Auftreten",
+  "Selbstständige, strukturierte und zuverlässige Arbeitsweise",
+  "Sicherer Umgang mit digitalen Arbeitsmitteln oder die Bereitschaft, sich einzuarbeiten",
+  "Führerschein Klasse B zwingend erforderlich",
+  "Freude daran, unterwegs zu sein und Klient*innen in ihrem Zuhause zu beraten",
+] as const;
+
+function isPflegeberaterStelle(jobTitle: string) {
+  return jobTitle.includes("Pflegeberater");
+}
+
 function BulletList({ items }: { items: readonly string[] }) {
   return (
     <ul className="mt-2 space-y-2.5 text-sm leading-relaxed text-neutral-700 sm:text-base">
@@ -89,6 +128,81 @@ type StellenbeschreibungDialogTriggerProps = {
   jobTitle: string;
   className?: string;
 };
+
+function StelleninhaltAlltagshelfer() {
+  return (
+    <>
+      <p className="text-pretty text-sm font-medium leading-relaxed text-neutral-800 sm:text-base">
+        {EINLEITUNG}
+      </p>
+
+      <div className="mt-6 rounded-2xl bg-[#F2F9FA]/38 px-5 py-4 sm:mt-8 sm:px-6 sm:py-5">
+        <SectionTitle className="!mt-0 sm:!mt-0">Was wir Ihnen bieten</SectionTitle>
+        <BulletList items={WIR_BIETEN} />
+      </div>
+
+      <SectionTitle>Zu Ihren Aufgaben gehören</SectionTitle>
+      <SubTitle>Betreuungsmaßnahmen</SubTitle>
+      <BulletList items={BETREUUNG} />
+      <SubTitle>Haushaltshilfe</SubTitle>
+      <BulletList items={HAUSHALT} />
+
+      <SectionTitle>Ihr Profil</SectionTitle>
+      <ul className="mt-2 space-y-3 text-sm leading-relaxed text-neutral-700 sm:text-base">
+        <li className="flex gap-2.5">
+          <OrangeCheck className="mt-1" />
+          <span className="text-pretty">Ein unkomplizierter Quereinstieg ist jederzeit möglich.</span>
+        </li>
+        <li className="flex gap-2.5">
+          <OrangeCheck className="mt-1" />
+          <span className="text-pretty">
+            Eine zuverlässige, verantwortungsbewusste und selbstständige Arbeitsweise.
+          </span>
+        </li>
+      </ul>
+      <p className="mt-4 text-pretty text-sm leading-relaxed text-neutral-700 sm:text-base">
+        Vorkenntnisse sind nicht erforderlich. Sie sollten jedoch bereit sein, an einer Weiterbildung zum/r
+        Alltagshelfer/in gemäß § 45b SGB XI teilzunehmen. Diese Weiterbildung umfasst insgesamt 22 Stunden
+        und wird von uns voll finanziert. Der Unterricht kann bequem von zu Hause aus besucht werden. Sie
+        benötigen lediglich ein Smartphone, einen Laptop oder einen Computer mit Internetanschluss. Wir
+        unterstützen Sie bei allen Schritten, um Ihnen eine stressfreie Weiterbildung zu ermöglichen.
+      </p>
+      <p className="mt-4 text-pretty text-sm leading-relaxed text-neutral-700 sm:text-base">
+        Ein Führerschein der Klasse B (PKW) ist bei uns zwingend erforderlich, da wir unsere Klienten zuhause
+        besuchen und betreuen. Zusätzlich ist ein Privat-PKW notwendig. Sie erhalten eine volle
+        Fahrtkostenerstattung.
+      </p>
+      <p className="mt-4 text-pretty text-sm font-medium leading-relaxed text-[#0F4F68] sm:text-base">
+        Ab sofort suchen wir Mitarbeiter (m/w/d) aus folgenden Bereichen: Alltagshelfer (m/w/d),
+        Betreuungskraft (m/w/d), Seniorenbegleiter (m/w/d), Haushaltshilfe mit Betreuungstätigkeit (m/w/d),
+        Persönlicher Alltagsassistent (m/w/d), Mitarbeiter für soziale Betreuung und Alltagsunterstützung
+        (m/w/d).
+      </p>
+    </>
+  );
+}
+
+function StelleninhaltPflegeberater() {
+  return (
+    <>
+      <p className="text-pretty text-sm font-medium leading-relaxed text-neutral-800 sm:text-base">
+        {PFLEGEBERATER_EINLEITUNG}
+      </p>
+
+      <div className="mt-6 rounded-2xl bg-[#F2F9FA]/38 px-5 py-4 sm:mt-8 sm:px-6 sm:py-5">
+        <SectionTitle className="!mt-0 sm:!mt-0">Was wir Ihnen bieten</SectionTitle>
+        <SubTitle>Mehr Freizeit und Flexibilität in Ihrem Leben</SubTitle>
+        <BulletList items={PFLEGEBERATER_WIR_BIETEN} />
+      </div>
+
+      <SectionTitle>Ihre Aufgaben als Pflegeberater*in</SectionTitle>
+      <BulletList items={PFLEGEBERATER_AUFGABEN} />
+
+      <SectionTitle>Ihr Profil</SectionTitle>
+      <BulletList items={PFLEGEBERATER_PROFIL} />
+    </>
+  );
+}
 
 export function StellenbeschreibungDialogTrigger({ jobTitle, className }: StellenbeschreibungDialogTriggerProps) {
   const dialogRef = useRef<HTMLDialogElement>(null);
@@ -144,52 +258,7 @@ export function StellenbeschreibungDialogTrigger({ jobTitle, className }: Stelle
         </div>
 
         <div className="min-h-0 min-w-0 flex-1 overflow-y-auto overflow-x-hidden overscroll-contain break-words px-5 py-6 sm:px-8 sm:py-8 pb-[max(1.5rem,env(safe-area-inset-bottom,0px))]">
-          <p className="text-pretty text-sm font-medium leading-relaxed text-neutral-800 sm:text-base">
-            {EINLEITUNG}
-          </p>
-
-          <div className="mt-6 rounded-2xl bg-[#F2F9FA]/38 px-5 py-4 sm:mt-8 sm:px-6 sm:py-5">
-            <SectionTitle className="!mt-0 sm:!mt-0">Was wir Ihnen bieten</SectionTitle>
-            <BulletList items={WIR_BIETEN} />
-          </div>
-
-          <SectionTitle>Zu Ihren Aufgaben gehören</SectionTitle>
-          <SubTitle>Betreuungsmaßnahmen</SubTitle>
-          <BulletList items={BETREUUNG} />
-          <SubTitle>Haushaltshilfe</SubTitle>
-          <BulletList items={HAUSHALT} />
-
-          <SectionTitle>Ihr Profil</SectionTitle>
-          <ul className="mt-2 space-y-3 text-sm leading-relaxed text-neutral-700 sm:text-base">
-            <li className="flex gap-2.5">
-              <OrangeCheck className="mt-1" />
-              <span className="text-pretty">Ein unkomplizierter Quereinstieg ist jederzeit möglich.</span>
-            </li>
-            <li className="flex gap-2.5">
-              <OrangeCheck className="mt-1" />
-              <span className="text-pretty">
-                Eine zuverlässige, verantwortungsbewusste und selbstständige Arbeitsweise.
-              </span>
-            </li>
-          </ul>
-          <p className="mt-4 text-pretty text-sm leading-relaxed text-neutral-700 sm:text-base">
-            Vorkenntnisse sind nicht erforderlich. Sie sollten jedoch bereit sein, an einer Weiterbildung zum/r
-            Alltagshelfer/in gemäß § 45b SGB XI teilzunehmen. Diese Weiterbildung umfasst insgesamt 22 Stunden
-            und wird von uns voll finanziert. Der Unterricht kann bequem von zu Hause aus besucht werden. Sie
-            benötigen lediglich ein Smartphone, einen Laptop oder einen Computer mit Internetanschluss. Wir
-            unterstützen Sie bei allen Schritten, um Ihnen eine stressfreie Weiterbildung zu ermöglichen.
-          </p>
-          <p className="mt-4 text-pretty text-sm leading-relaxed text-neutral-700 sm:text-base">
-            Ein Führerschein der Klasse B (PKW) ist bei uns zwingend erforderlich, da wir unsere Klienten zuhause
-            besuchen und betreuen. Zusätzlich ist ein Privat-PKW notwendig. Sie erhalten eine volle
-            Fahrtkostenerstattung.
-          </p>
-          <p className="mt-4 text-pretty text-sm font-medium leading-relaxed text-[#0F4F68] sm:text-base">
-            Ab sofort suchen wir Mitarbeiter (m/w/d) aus folgenden Bereichen: Alltagshelfer (m/w/d),
-            Betreuungskraft (m/w/d), Seniorenbegleiter (m/w/d), Haushaltshilfe mit Betreuungstätigkeit (m/w/d),
-            Persönlicher Alltagsassistent (m/w/d), Mitarbeiter für soziale Betreuung und Alltagsunterstützung
-            (m/w/d).
-          </p>
+          {isPflegeberaterStelle(jobTitle) ? <StelleninhaltPflegeberater /> : <StelleninhaltAlltagshelfer />}
 
           <div className="mt-8 border-t border-[#0F4F68]/10 pt-6 sm:mt-10 sm:pt-8">
             {karriereApply ? (
