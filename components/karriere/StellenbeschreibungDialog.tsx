@@ -432,13 +432,14 @@ export function StellenbeschreibungDialogTrigger({ jobTitle, className }: Stelle
               id="karriere-stellenbeschreibung-interesse-heading"
               className="text-lg font-bold tracking-tight text-[#0F4F68] sm:text-xl"
             >
-              Interesse?
+              {isBuerofachkraftStelle(jobTitle) ? "Interesse oder Fragen?" : "Interesse?"}
             </h3>
             <p className="mt-3 text-pretty text-sm font-medium leading-relaxed text-neutral-800 sm:text-base">
               {isBuerofachkraftStelle(jobTitle) ? (
                 <>
                   Dann freuen wir uns auf Ihre Bewerbung. Werden Sie Teil der {siteConfig.name} und unterstützen Sie uns
-                  dabei, Senior*innen und pflegebedürftigen Menschen den Alltag zu erleichtern.
+                  dabei, Senior*innen und pflegebedürftigen Menschen den Alltag zu erleichtern. Sie haben noch Fragen?
+                  Wir stehen Ihnen gerne zur Verfügung!
                 </>
               ) : interesseFormulierungSie ? (
                 <>
@@ -454,7 +455,7 @@ export function StellenbeschreibungDialogTrigger({ jobTitle, className }: Stelle
             </p>
           </section>
 
-          <div className="mt-8 border-t border-[#0F4F68]/10 pt-6 sm:mt-10 sm:pt-8">
+          <div className="mt-8 space-y-3 border-t border-[#0F4F68]/10 pt-6 sm:mt-10 sm:space-y-4 sm:pt-8">
             {karriereApply ? (
               <button
                 type="button"
@@ -475,6 +476,16 @@ export function StellenbeschreibungDialogTrigger({ jobTitle, className }: Stelle
                 Jetzt bewerben
               </Link>
             )}
+            {isBuerofachkraftStelle(jobTitle) ? (
+              <Link
+                href="/karriere#bewerbung-form"
+                title="Kontaktformular mit Daniel Niebauer auf der Karriereseite"
+                className="inline-flex w-full min-h-[48px] items-center justify-center rounded-xl border-2 border-[#0F4F68]/20 bg-white px-5 py-3 text-center text-base font-semibold text-[#0F4F68] shadow-sm transition hover:bg-[#F2F9FA] focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2"
+                onClick={() => dialogRef.current?.close()}
+              >
+                Jetzt Kontakt aufnehmen
+              </Link>
+            ) : null}
           </div>
         </div>
         </div>
