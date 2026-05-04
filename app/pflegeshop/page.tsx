@@ -154,10 +154,22 @@ export default function PflegeshopPage() {
 
       <section
         id="qualitaetsversprechen-pflegeshop"
-        className="scroll-mt-24 border-t border-[#0F4F68]/10 bg-white px-4 py-10 sm:px-6 sm:py-12 lg:px-[var(--ahs-page-gutter)] lg:py-14"
+        className="relative z-20 scroll-mt-24 bg-white px-4 pt-[1.35rem] pb-10 sm:px-6 sm:pt-[2rem] sm:pb-12 lg:px-[var(--ahs-page-gutter)] lg:pt-[2rem] lg:pb-14"
         aria-labelledby="pflegeshop-qualitaet-heading"
       >
-        <div className="mx-auto flex max-w-3xl flex-col items-center text-center">
+        <svg
+          className="pointer-events-none absolute left-0 top-0 h-12 w-full -translate-y-[68%] sm:h-16"
+          viewBox="0 0 1200 120"
+          preserveAspectRatio="none"
+          fill="none"
+          aria-hidden
+        >
+          <path
+            d="M0,120 C320,28 880,28 1200,120 L1200,120 L0,120 Z"
+            fill="#ffffff"
+          />
+        </svg>
+        <div className="relative z-[1] mx-auto flex max-w-3xl flex-col items-center text-center">
           <h2
             id="pflegeshop-qualitaet-heading"
             className="text-balance text-2xl font-extrabold tracking-tight text-[#0F4F68] sm:text-3xl"
