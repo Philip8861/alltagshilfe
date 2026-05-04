@@ -13,6 +13,7 @@ import { STARTSEITE_VORTEILE, STARTSEITE_VORTEILE_INTRO } from "@/lib/startseite
 
 const HAUSHALTSHILFE_FAQ_ANCHOR = "/leistungen/haushaltshilfe#haushalt-faq-heading";
 const PLEGEBEDARF_URL = "https://deinPflegebedarf.de";
+const PFLEGEBOX_KONFIGURATOR_HREF = "/pflegehilfsmittel/pflegebox-konfigurator";
 
 /** Natürliche Pixelmaße `public/images/pflegeshop_image.webp` (bei neuem Asset anpassen) */
 const PFLEGESHOP_HERO_IMG = { w: 1099, h: 645 } as const;
@@ -208,6 +209,39 @@ export default function PflegeshopPage() {
               </li>
             ))}
           </ul>
+        </div>
+      </section>
+
+      <section
+        id="qualitaetsversprechen-pflegeshop"
+        className="border-t border-[#0F4F68]/10 bg-white px-4 py-10 sm:px-6 sm:py-12 lg:px-[var(--ahs-page-gutter)] lg:py-14"
+        aria-labelledby="pflegeshop-qualitaet-heading"
+      >
+        <div className="mx-auto flex max-w-3xl flex-col items-center text-center">
+          <h2
+            id="pflegeshop-qualitaet-heading"
+            className="text-balance text-2xl font-extrabold tracking-tight text-[#0F4F68] sm:text-3xl"
+          >
+            Unser Qualitätsversprechen im Pflegeshop
+          </h2>
+          <p className="mt-6 max-w-prose text-pretty text-lg leading-relaxed text-neutral-600">
+            Aus eigener Erfahrung wissen wir, worauf es im Pflegealltag wirklich ankommt. Deshalb finden Sie in unserem
+            Pflegeshop nur Artikel, von denen wir selbst überzeugt sind und die sich im Alltag bewähren. Wir wählen unsere
+            Produkte mit dem Blick aus der Praxis aus, damit Sie sich nicht durch unzählige Angebote kämpfen müssen.
+          </p>
+          <p className="mt-4 max-w-prose text-pretty text-lg leading-relaxed text-neutral-600">
+            Mit unserem Konfigurator finden Sie schnell und einfach die passenden Pflegeartikel für Ihre persönliche
+            Situation. So erhalten Sie genau die Produkte, die den Pflegealltag erleichtern, verständlich ausgewählt und mit
+            Erfahrung empfohlen.
+          </p>
+          <div className="mt-8 w-full sm:w-auto">
+            <Link
+              href={PFLEGEBOX_KONFIGURATOR_HREF}
+              className="inline-flex min-h-[44px] w-full transform items-center justify-center gap-2 rounded-xl bg-[#F78F2E] px-6 py-3 text-lg font-bold text-white shadow-lg transition hover:scale-[1.02] hover:opacity-95 focus:outline-none focus:ring-2 focus:ring-[#F78F2E] focus:ring-offset-2 motion-reduce:transform-none sm:w-auto"
+            >
+              Passende Pflegeartikel finden
+            </Link>
+          </div>
         </div>
       </section>
 
