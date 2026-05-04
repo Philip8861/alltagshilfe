@@ -15,7 +15,7 @@ const HAUSHALTSHILFE_FAQ_ANCHOR = "/leistungen/haushaltshilfe#haushalt-faq-headi
 const PLEGEBEDARF_URL = "https://deinPflegebedarf.de";
 
 /** Natürliche Pixelmaße `public/images/pflegeshop_image.webp` (bei neuem Asset anpassen) */
-const PFLEGESHOP_HERO_IMG = { w: 1566, h: 933 } as const;
+const PFLEGESHOP_HERO_IMG = { w: 1099, h: 645 } as const;
 
 const HERO_GLOW_CLASS =
   "[filter:drop-shadow(0_10px_22px_rgba(15,79,104,0.2))_drop-shadow(0_4px_12px_rgba(15,79,104,0.12))] [will-change:filter]";
