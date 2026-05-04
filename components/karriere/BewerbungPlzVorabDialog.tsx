@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useId, useRef, useState, type KeyboardEvent, type MouseEvent } from "react";
-import { findStandortByPlz } from "@/config/standorte";
+import { findStandortByPlz, getOrtByPlz } from "@/config/standorte";
 import { isAlltagshelferJobTitle } from "@/lib/karriere-job-map";
 import { cn } from "@/lib/utils";
 
@@ -16,6 +16,51 @@ type BewerbungPlzVorabDialogProps = {
 /** Anzeigename im Satz „Ihre Stelle als …“ ohne Zusatz (m/w/d). */
 function karriereJobDisplayName(title: string): string {
   return title.replace(/\s*\(m\/w\/d\)\s*$/i, "").trim();
+}
+
+/** „78234 Engen“ bzw. nur PLZ wenn kein Ortsname hinterlegt. */
+function plzOrtDisplay(plz5: string): { plz: string; ort: string; ortszeile: string } {
+  const ort = getOrtByPlz(plz5)?.trim() ?? "";
+  const plz = plz5;
+  return {
+    plz,
+    ort,
+    ortszeile: ort ? `${plz} ${ort}` : plz,
+  };
+}
+
+function ErfolgHakenIcon({ className }: { className?: string }) {
+  return (
+    <span
+      className={cn(
+        "flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-emerald-600 text-white shadow-md ring-2 ring-emerald-500/30",
+        className,
+      )}
+      aria-hidden
+    >
+      <svg className="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.6} strokeLinecap="round" strokeLinejoin="round">
+        <path d="M20 6 9 17l-5-5" />
+      </svg>
+    </span>
+  );
+}
+
+function HinweisIconOrange({ className }: { className?: string }) {
+  return (
+    <span
+      className={cn(
+        "flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#F78F2E]/18 text-[#c55f0a] shadow-sm ring-2 ring-[#F78F2E]/35",
+        className,
+      )}
+      aria-hidden
+    >
+      <svg className="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.4} strokeLinecap="round" strokeLinejoin="round">
+        <circle cx="12" cy="12" r="10" />
+        <path d="M12 8v5" />
+        <circle cx="12" cy="17" r="1" fill="currentColor" stroke="none" />
+      </svg>
+    </span>
+  );
 }
 
 function isJobShownAsAvailableInPlz(jobTitle: string, plz5: string): boolean {
@@ -54,6 +99,7 @@ export function BewerbungPlzVorabDialog({
 
   const normalizedPlz = plz.replace(/\D/g, "").slice(0, 5);
   const jobLabel = karriereJobDisplayName(jobTitle);
+  const ergebnisOrt = phase === "result" && submittedPlz.length === 5 ? plzOrtDisplay(submittedPlz) : null;
 
   const headline =
     phase === "plz"
@@ -182,9 +228,12 @@ export function BewerbungPlzVorabDialog({
                 className="rounded-2xl border-2 border-emerald-500/45 bg-emerald-50/95 px-4 py-4 sm:px-5 sm:py-5"
                 role="status"
               >
-                <p className="text-pretty text-sm font-semibold leading-relaxed text-emerald-950 sm:text-base">
-                  Ihre Stelle als {jobLabel} in {submittedPlz} ist verfügbar.
-                </p>
+                <div className="flex gap-3.5 sm:gap-4">
+                  <ErfolgHakenIcon className="mt-0.5" />
+                  <p className="min-w-0 text-pretty text-sm font-semibold leading-relaxed text-emerald-950 sm:text-base">
+                    Ihre Stelle als {jobLabel} ist in {ergebnisOrt?.ortszeile ?? submittedPlz} verfügbar.
+                  </p>
+                </div>
               </div>
               <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
                 <button
@@ -209,9 +258,13 @@ export function BewerbungPlzVorabDialog({
                 className="rounded-2xl border-2 border-[#F78F2E]/55 bg-[#FFF8F0] px-4 py-4 sm:px-5 sm:py-5"
                 role="status"
               >
-                <p className="text-pretty text-sm font-semibold leading-relaxed text-neutral-900 sm:text-base">
-                  Ihre Stelle als {jobLabel} in {submittedPlz} ist derzeit leider nicht verfügbar.
-                </p>
+                <div className="flex gap-3.5 sm:gap-4">
+                  <HinweisIconOrange className="mt-0.5" />
+                  <p className="min-w-0 text-pretty text-sm font-semibold leading-relaxed text-neutral-900 sm:text-base">
+                    Ihre Stelle als {jobLabel} ist in {ergebnisOrt?.ortszeile ?? submittedPlz} derzeit leider nicht
+                    verfügbar.
+                  </p>
+                </div>
               </div>
               <p className="text-pretty text-sm leading-relaxed text-neutral-800 sm:text-base">
                 Nicht jede starke Zusammenarbeit beginnt mit einer perfekt passenden Stellenanzeige. Oft entsteht etwas
