@@ -168,7 +168,12 @@ function ChipGroup({
   name: string;
 }) {
   return (
-    <div className="mt-4 grid max-h-[min(52vh,28rem)] gap-2.5 overflow-y-auto overscroll-contain pr-1 sm:grid-cols-2">
+    <div
+      className={
+        /* min-h-0: Grid sonst min-content-Höhe → max-h + overflow-y schneidet mobil ab statt zu scrollen */
+        "mt-4 grid min-h-0 max-h-[min(48dvh,26rem)] gap-2.5 overflow-y-auto overflow-x-hidden overscroll-contain pb-1 pr-1 touch-pan-y sm:max-h-[min(52dvh,28rem)] sm:grid-cols-2"
+      }
+    >
       {options.map((opt) => {
         const selected = value === opt.id;
         return (
