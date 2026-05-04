@@ -9,11 +9,21 @@ import {
   standortFaqJsonLd,
   STANDORT_FAQ_LINK_CLASS,
 } from "@/lib/standort-faq";
-import { STARTSEITE_VORTEILE, STARTSEITE_VORTEILE_INTRO } from "@/lib/startseite-vorteile";
+import { STARTSEITE_VORTEILE_INTRO } from "@/lib/startseite-vorteile";
 
 const HAUSHALTSHILFE_FAQ_ANCHOR = "/leistungen/haushaltshilfe#haushalt-faq-heading";
 const PLEGEBEDARF_URL = "https://deinPflegebedarf.de";
 const PFLEGEBOX_KONFIGURATOR_HREF = "/pflegehilfsmittel/pflegebox-konfigurator";
+
+/** Nur auf /pflegeshop – „Ihre Vorteile bei uns“ (Partnershop). */
+const PFLEGESHOP_VORTEILE_BEI_UNS = [
+  "Geprüfte Markenqualität",
+  "Schneller und diskreter Versand",
+  "Von Pflegekräften empfohlen",
+  "Artikelfinder statt langes Suchen",
+  "Versandkostenfrei ab 150 Euro",
+  "Abo Modell ohne ständiges Nachbestellen",
+] as const;
 
 /** Natürliche Pixelmaße `public/images/pflegeshop_image.webp` (bei neuem Asset anpassen) */
 const PFLEGESHOP_HERO_IMG = { w: 1099, h: 645 } as const;
@@ -26,15 +36,6 @@ const STARTSEITE_FAQ_WELLEN_D =
   "M0,120 C200,32 420,8 600,22 C800,38 1010,90 1200,120 L1200,120 L0,120 Z";
 const HERO_INTRO = {
   brand: "Pflegeshop & Inkontinenzversorgung",
-  taglineLines: [
-    "Geprüfte Markenqualität",
-    "Schneller und diskreter Versand",
-    "Von Pflegekräften empfohlen",
-    "Artikelfinder statt langes Suchen",
-    "Versandkostenfrei ab 150 Euro",
-    "Abo Modell ohne ständiges Nachbestellen",
-    "Telefonischer Kundenservice zu unseren Produkten",
-  ],
   partnerLine:
     "Vertrauen Sie unserer Erfahrung. Wir helfen Ihnen, passende Pflegeartikel zu finden, und stehen Ihnen bei Fragen persönlich zur Seite.",
 } as const;
@@ -43,27 +44,6 @@ export const metadata: Metadata = {
   title: "Pflegeshop & Inkontinenzversorgung",
   description: `Pflegehilfsmittel, Pflegebedarf online und Beratung zur Inkontinenzversorgung – mit deinPflegebedarf.de. ${siteConfig.name}.`,
 };
-
-function HeroCheckIcon({ className = "" }: { className?: string }) {
-  return (
-    <span
-      className={`inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#F78F2E]/15 text-[#F78F2E] ${className}`.trim()}
-      aria-hidden
-    >
-      <svg
-        className="h-[1.1rem] w-[1.1rem] sm:h-5 sm:w-5"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="2.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      >
-        <path d="M20 6L9 17l-5-5" />
-      </svg>
-    </span>
-  );
-}
 
 export default function PflegeshopPage() {
   const faqItems = buildStandortStyleFaq(null);
@@ -84,30 +64,15 @@ export default function PflegeshopPage() {
               >
                 <span className="block">{HERO_INTRO.brand}</span>
               </h1>
-              <ul
-                className="mt-5 min-w-0 space-y-3 sm:mt-6 sm:space-y-3.5 lg:mt-0 lg:space-y-[clamp(0.65rem,0.35rem+0.9vw,1rem)]"
-                aria-label="Vorteile Pflegeshop auf einen Blick"
-              >
-                {HERO_INTRO.taglineLines.map((line, i) => (
-                  <li
-                    key={line}
-                    className="flex min-w-0 items-start gap-3 text-lg font-semibold leading-snug text-[#0F4F68] opacity-0 motion-reduce:opacity-100 animate-fade-in-up sm:text-xl lg:items-center lg:text-[clamp(1.05rem,0.82rem+0.5vw,1.35rem)]"
-                    style={{ animationDelay: `${0.45 + i * 0.22}s` }}
-                  >
-                    <HeroCheckIcon className="mt-0.5 lg:mt-0" />
-                    <span className="min-w-0 flex-1 text-pretty">{line}</span>
-                  </li>
-                ))}
-              </ul>
               <p
-                className="max-w-prose text-pretty text-lg font-normal leading-relaxed text-neutral-600 opacity-0 motion-reduce:opacity-100 animate-fade-in-up sm:text-xl lg:text-[clamp(1.05rem,0.85rem+0.42vw,1.3rem)]"
-                style={{ animationDelay: "1.12s" }}
+                className="mt-5 max-w-prose text-pretty text-lg font-normal leading-relaxed text-neutral-600 opacity-0 motion-reduce:opacity-100 animate-fade-in-up sm:mt-6 sm:text-xl lg:mt-0 lg:text-[clamp(1.05rem,0.85rem+0.42vw,1.3rem)]"
+                style={{ animationDelay: "0.45s" }}
               >
                 {HERO_INTRO.partnerLine}
               </p>
               <div
                 className="pt-2 opacity-0 motion-reduce:opacity-100 animate-fade-in-up"
-                style={{ animationDelay: "1.18s" }}
+                style={{ animationDelay: "0.55s" }}
               >
                 <a
                   href={PLEGEBEDARF_URL}
@@ -218,7 +183,7 @@ export default function PflegeshopPage() {
             {STARTSEITE_VORTEILE_INTRO}
           </p>
           <ul className="mt-6 grid gap-4 sm:grid-cols-2">
-            {STARTSEITE_VORTEILE.map((item) => (
+            {PFLEGESHOP_VORTEILE_BEI_UNS.map((item) => (
               <li
                 className="flex items-start gap-3 rounded-xl px-2 py-1.5 transition-all duration-300 hover:bg-white/75 hover:shadow-[0_0_20px_rgba(15,79,104,0.12)]"
                 key={item}
