@@ -27,12 +27,16 @@ const STARTSEITE_FAQ_WELLEN_D =
 const HERO_INTRO = {
   brand: "Pflegeshop & Inkontinenzversorgung",
   taglineLines: [
+    "Geprüfte Markenqualität",
+    "Schneller und diskreter Versand",
     "Von Pflegekräften empfohlen",
-    "Geprüfte Markenprodukte",
-    "Schnell & diskret geliefert",
+    "Artikelfinder statt langes Suchen",
+    "Versandkostenfrei ab 150 Euro",
+    "Abo Modell ohne ständiges Nachbestellen",
+    "Telefonischer Kundenservice zu unseren Produkten",
   ],
   partnerLine:
-    "Bestellen Sie bequem online – wir stehen Ihnen bei Fragen zu Leistungen und Anträgen weiterhin persönlich zur Seite.",
+    "Vertrauen Sie unserer Erfahrung. Wir helfen Ihnen, passende Pflegeartikel zu finden, und stehen Ihnen bei Fragen persönlich zur Seite.",
 } as const;
 
 export const metadata: Metadata = {
