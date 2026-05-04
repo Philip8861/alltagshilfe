@@ -170,8 +170,8 @@ function ChipGroup({
   return (
     <div
       className={
-        /* min-h-0: Grid sonst min-content-Höhe → max-h + overflow-y schneidet mobil ab statt zu scrollen */
-        "mt-4 grid min-h-0 max-h-[min(48dvh,26rem)] gap-2.5 overflow-y-auto overflow-x-hidden overscroll-contain pb-1 pr-1 touch-pan-y sm:max-h-[min(52dvh,28rem)] sm:grid-cols-2"
+        /* Mobil: kein eigenes max-h/scroll — vermeidet Nested-Scroll + Scroll-Anker („Minijob“ springt zurück). Ab sm: kompaktes Panel mit internem Scroll. */
+        "mt-4 grid min-h-0 gap-2.5 pr-1 pb-1 max-sm:max-h-none max-sm:overflow-visible sm:max-h-[min(52dvh,28rem)] sm:overflow-y-auto sm:overflow-x-hidden sm:overscroll-contain sm:touch-pan-y sm:grid-cols-2"
       }
     >
       {options.map((opt) => {
