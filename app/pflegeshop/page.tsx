@@ -3,10 +3,13 @@ import Link from "next/link";
 import { KundenstimmenCarousel } from "@/components/home/KundenstimmenCarousel";
 import { ProtectedRasterMedia } from "@/components/home/ProtectedRasterMedia";
 import { siteConfig } from "@/config/site";
-import { STARTSEITE_VORTEILE_INTRO } from "@/lib/startseite-vorteile";
 
 const PLEGEBEDARF_URL = "https://deinPflegebedarf.de";
 const PFLEGEBOX_KONFIGURATOR_HREF = "/pflegehilfsmittel/pflegebox-konfigurator";
+
+/** Nur auf /pflegeshop – Einleitung unter „Ihre Vorteile bei uns“. */
+const PFLEGESHOP_VORTEILE_INTRO =
+  "Pflegebedarf und Inkontinenzversorgung einfach, diskret und mit gutem Gefühl bestellen. Wir helfen bei der Auswahl passender Produkte und sind bei Fragen persönlich für Sie da.";
 
 /** Nur auf /pflegeshop – „Ihre Vorteile bei uns“ (Partnershop). */
 const PFLEGESHOP_VORTEILE_BEI_UNS = [
@@ -15,7 +18,7 @@ const PFLEGESHOP_VORTEILE_BEI_UNS = [
   "Von Pflegekräften empfohlen",
   "Artikelfinder statt langes Suchen",
   "Versandkostenfrei ab 150 Euro",
-  "Abo Modell ohne ständiges Nachbestellen",
+  "Abo Modell ohne ständiges Nachbestellen möglich",
 ] as const;
 
 /** Natürliche Pixelmaße `public/images/pflegeshop_image.webp` (bei neuem Asset anpassen) */
@@ -208,7 +211,7 @@ export default function PflegeshopPage() {
             Ihre Vorteile bei uns
           </h3>
           <p className="mx-auto mt-2 max-w-3xl text-center text-sm text-neutral-600 sm:text-base">
-            {STARTSEITE_VORTEILE_INTRO}
+            {PFLEGESHOP_VORTEILE_INTRO}
           </p>
           <ul className="mt-6 grid gap-4 sm:grid-cols-2">
             {PFLEGESHOP_VORTEILE_BEI_UNS.map((item) => (
