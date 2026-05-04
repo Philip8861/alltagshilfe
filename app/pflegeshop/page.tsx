@@ -19,6 +19,7 @@ const PFLEGESHOP_VORTEILE_BEI_UNS = [
   "Artikelfinder statt langes Suchen",
   "Versandkostenfrei ab 150 Euro",
   "Abo Modell ohne ständiges Nachbestellen möglich",
+  "Telefonischer Kundenservice zu unseren Produkten und Inkontinenzversorgung mit Rezeptabrechnung möglich",
 ] as const;
 
 /** Natürliche Pixelmaße `public/images/pflegeshop_image.webp` (bei neuem Asset anpassen) */
@@ -33,6 +34,7 @@ const HERO_INTRO = {
     "Von Pflegekräften empfohlen",
     "Geprüfte Markenprodukte",
     "Schnell & diskret geliefert",
+    "Rezeptabrechnung möglich",
   ],
   partnerLine:
     "Vertrauen Sie unserer Erfahrung. Wir helfen Ihnen, passende Pflegeartikel zu finden, und stehen Ihnen bei Fragen persönlich zur Seite.",
