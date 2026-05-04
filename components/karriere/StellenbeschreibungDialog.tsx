@@ -146,6 +146,54 @@ const BUCHHALTER_PROFIL = [
   "Sehr gute Deutschkenntnisse in Wort und Schrift",
 ] as const;
 
+const BUEROFACHKRAFT_EINLEITUNG_ABSÄTZE = [
+  "Sie arbeiten gerne organisiert, behalten auch bei vielen Anfragen den Überblick und möchten Teil eines Teams sein, das Menschen im Alltag wirklich unterstützt? Dann könnte diese Stelle genau zu Ihnen passen.",
+  "Bei uns sorgen Sie im Büro dafür, dass Anfragen, Termine, Betreuungseinsätze und interne Abläufe zuverlässig koordiniert werden. Sie sind eine wichtige Schnittstelle zwischen Klient*innen, Angehörigen und Mitarbeitenden und tragen dazu bei, dass Hilfe dort ankommt, wo sie gebraucht wird.",
+] as const;
+
+const BUEROFACHKRAFT_WIR_BIETEN = [
+  "Ein sicherer Büroarbeitsplatz mit Struktur, Teamgefühl und Sinn",
+  "Bis zu 35 Stunden pro Woche",
+  "Planbare Arbeitszeiten von Montag bis Freitag",
+  "30 Urlaubstage, angerechnet auf eine 5-Tage-Woche",
+  "Attraktive Vergütung, abgestimmt auf Qualifikation und Erfahrung",
+  "Betriebliche Altersvorsorge",
+  "Mitarbeiterrabatte und Givve Card",
+  "Gleitzeit nach Absprache",
+  "Kostenloser Parkplatz",
+  "Betriebliche Weiterbildung",
+  "Firmenevents",
+  "Mentoring und feste Ansprechpartner",
+  "Umfassende Einarbeitung, damit Sie sich von Anfang an wohlfühlen",
+  "Wertschätzendes Arbeitsumfeld und ein tolles Team",
+  "Abwechslungsreicher Arbeitsplatz in einem wachsenden Unternehmen",
+] as const;
+
+const BUEROFACHKRAFT_AUFGABEN = [
+  "Verwaltung und Bearbeitung von Anfragen",
+  "Schriftliche und telefonische Klientenkorrespondenz",
+  "Terminplanung und Unterstützung bei der Organisation von Betreuungseinsätzen",
+  "Unterstützung bei der Dienstplangestaltung",
+  "Koordination von Mitarbeiteranfragen",
+  "Telefonannahme und Weiterleitung von Anliegen",
+  "Postbearbeitung und allgemeine Büroorganisation",
+  "Verwaltung von Büromaterial",
+  "Pflege und Bearbeitung digitaler Unterlagen",
+  "Zusammenarbeit mit verschiedenen Bereichen, damit interne Abläufe zuverlässig funktionieren",
+] as const;
+
+const BUEROFACHKRAFT_PROFIL = [
+  "Abgeschlossene kaufmännische Ausbildung, idealerweise als Bürokaufmann oder Bürokauffrau, Kaufmann oder Kauffrau für Büromanagement oder eine vergleichbare Qualifikation",
+  "Quereinstieg möglich, wenn Sie gute organisatorische Fähigkeiten und sichere Computerkenntnisse mitbringen",
+  "Erste Erfahrung im administrativen Bereich wünschenswert, idealerweise im Gesundheits- oder Sozialwesen",
+  "Strukturierte, organisierte und engagierte Arbeitsweise",
+  "Teamgeist und starke Kommunikationsfähigkeiten",
+  "Freude am Umgang mit Menschen, sowohl telefonisch als auch schriftlich",
+  "Sicherer Umgang mit digitalen Arbeitsmitteln und gängigen Office-Programmen",
+  "Sehr gute Deutschkenntnisse in Wort und Schrift",
+  "Verantwortungsbewusstsein, Zuverlässigkeit und ein freundliches Auftreten",
+] as const;
+
 function isPflegeberaterStelle(jobTitle: string) {
   return jobTitle.includes("Pflegeberater");
 }
@@ -156,6 +204,10 @@ function isAlltagshelferStelle(jobTitle: string) {
 
 function isBuchhalterStelle(jobTitle: string) {
   return jobTitle.includes("Buchhalter");
+}
+
+function isBuerofachkraftStelle(jobTitle: string) {
+  return jobTitle.toLowerCase().includes("bürofachkraft");
 }
 
 function BulletList({ items }: { items: readonly string[] }) {
@@ -285,13 +337,41 @@ function StelleninhaltBuchhalter() {
   );
 }
 
+function StelleninhaltBuerofachkraft() {
+  return (
+    <>
+      <div className="space-y-4">
+        {BUEROFACHKRAFT_EINLEITUNG_ABSÄTZE.map((absatz) => (
+          <p
+            key={absatz}
+            className="text-pretty text-sm font-medium leading-relaxed text-neutral-800 sm:text-base"
+          >
+            {absatz}
+          </p>
+        ))}
+      </div>
+
+      <div className="mt-6 rounded-2xl bg-[#F2F9FA]/38 px-5 py-4 sm:mt-8 sm:px-6 sm:py-5">
+        <SectionTitle className="!mt-0 sm:!mt-0">Was wir Ihnen bieten</SectionTitle>
+        <BulletList items={BUEROFACHKRAFT_WIR_BIETEN} />
+      </div>
+
+      <SectionTitle>Ihre Aufgaben als Bürofachkraft</SectionTitle>
+      <BulletList items={BUEROFACHKRAFT_AUFGABEN} />
+
+      <SectionTitle>Ihr Profil</SectionTitle>
+      <BulletList items={BUEROFACHKRAFT_PROFIL} />
+    </>
+  );
+}
+
 export function StellenbeschreibungDialogTrigger({ jobTitle, className }: StellenbeschreibungDialogTriggerProps) {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const titleId = useId();
   const bewerbenHref = `/kontakt?betreff=Bewerbung%20${encodeURIComponent(jobTitle)}`;
   const karriereApply = useKarriereApplyOptional();
   const interesseFormulierungSie =
-    isPflegeberaterStelle(jobTitle) || isBuchhalterStelle(jobTitle);
+    isPflegeberaterStelle(jobTitle) || isBuchhalterStelle(jobTitle) || isBuerofachkraftStelle(jobTitle);
 
   return (
     <>
@@ -347,6 +427,8 @@ export function StellenbeschreibungDialogTrigger({ jobTitle, className }: Stelle
             <StelleninhaltAlltagshelfer />
           ) : isBuchhalterStelle(jobTitle) ? (
             <StelleninhaltBuchhalter />
+          ) : isBuerofachkraftStelle(jobTitle) ? (
+            <StelleninhaltBuerofachkraft />
           ) : (
             <StelleninhaltSonstigeStelle jobTitle={jobTitle} />
           )}
@@ -362,15 +444,20 @@ export function StellenbeschreibungDialogTrigger({ jobTitle, className }: Stelle
               Interesse?
             </h3>
             <p className="mt-3 text-pretty text-sm font-medium leading-relaxed text-neutral-800 sm:text-base">
-              {interesseFormulierungSie ? (
+              {isBuerofachkraftStelle(jobTitle) ? (
+                <>
+                  Dann freuen wir uns auf Ihre Bewerbung. Werden Sie Teil der {siteConfig.name} und unterstützen Sie uns
+                  dabei, Senior*innen und pflegebedürftigen Menschen den Alltag zu erleichtern.
+                </>
+              ) : interesseFormulierungSie ? (
                 <>
                   Dann freuen wir uns auf Ihre Bewerbung. Werden Sie Teil der {siteConfig.name} und unterstützen Sie
                   uns dabei, Senior*innen und hilfsbedürftigen Menschen den Alltag zu erleichtern.
                 </>
               ) : (
                 <>
-                  Dann freuen wir uns auf deine Bewerbung. Werde Teil der {siteConfig.name} und unterstütze uns
-                  dabei, Senior*innen und hilfsbedürftigen Menschen den Alltag zu erleichtern.
+                  Dann freuen wir uns auf deine Bewerbung. Werde Teil der {siteConfig.name} und unterstütze uns dabei,
+                  Senior*innen und hilfsbedürftigen Menschen den Alltag zu erleichtern.
                 </>
               )}
             </p>

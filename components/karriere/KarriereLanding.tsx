@@ -42,11 +42,13 @@ const KARRIERE_ARBEITGEBER_FAKTEN = [
   "Unbefristete Anstellung nach Probezeit bei guter Zusammenarbeit",
 ] as const;
 
-/** Drei zentrale Vorteile – nur Bürofachkraft. */
-const STELLEN_VORTEILE = [
-  "Tarifgerechte Vergütung, planbare Zeiten und klare Strukturen im Alltag",
-  "Echte Teamkultur: Einarbeitung, fester Ansprechpartner und Unterstützung vor Ort",
-  "Sinnstiftende Arbeit in der Region – dort, wo Hilfe für Menschen ankommt",
+/** Fünf Haken auf der Karte Bürofachkraft (m/w/d). */
+const STELLEN_VORTEILE_BUEROFACHKRAFT = [
+  "Abwechslungsreicher Büroalltag",
+  "Attraktive leistungsgerechte Vergütung",
+  "Tolles Team und gute Einarbeitung",
+  "Sinnvolle Arbeit in der Region",
+  "Planbare feste Arbeitszeiten",
 ] as const;
 
 /** Fünf Haken auf der Karte Alltagshelfer*in. */
@@ -181,7 +183,7 @@ function OffeneStellenSpalte() {
                 ? STELLEN_VORTEILE_ALLTAGSHELFER
                 : job.id === "buchhalter"
                   ? STELLEN_VORTEILE_BUCHHALTER
-                  : STELLEN_VORTEILE;
+                  : STELLEN_VORTEILE_BUEROFACHKRAFT;
           return (
             <li
               key={job.id}
