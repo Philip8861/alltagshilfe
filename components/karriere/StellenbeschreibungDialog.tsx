@@ -152,33 +152,24 @@ const BUEROFACHKRAFT_EINLEITUNG_ABSÄTZE = [
 ] as const;
 
 const BUEROFACHKRAFT_WIR_BIETEN = [
-  "Ein sicherer Büroarbeitsplatz mit Struktur, Teamgefühl und Sinn",
-  "Bis zu 35 Stunden pro Woche",
+  "Ein sicherer, moderner Büroarbeitsplatz mit tollem Team",
+  "Bis zu 37,5 Stunden pro Woche",
   "Planbare Arbeitszeiten von Montag bis Freitag",
   "30 Urlaubstage, angerechnet auf eine 5-Tage-Woche",
   "Attraktive Vergütung, abgestimmt auf Qualifikation und Erfahrung",
   "Betriebliche Altersvorsorge",
-  "Mitarbeiterrabatte und Givve Card",
-  "Gleitzeit nach Absprache",
-  "Kostenloser Parkplatz",
-  "Betriebliche Weiterbildung",
-  "Firmenevents",
-  "Mentoring und feste Ansprechpartner",
+  "Wellpass oder Sachbezugskarte",
   "Umfassende Einarbeitung, damit Sie sich von Anfang an wohlfühlen",
-  "Wertschätzendes Arbeitsumfeld und ein tolles Team",
   "Abwechslungsreicher Arbeitsplatz in einem wachsenden Unternehmen",
 ] as const;
 
 const BUEROFACHKRAFT_AUFGABEN = [
   "Verwaltung und Bearbeitung von Anfragen",
   "Schriftliche und telefonische Klientenkorrespondenz",
-  "Terminplanung und Unterstützung bei der Organisation von Betreuungseinsätzen",
-  "Unterstützung bei der Dienstplangestaltung",
+  "Terminplanung und Unterstützung bei der Organisation von Beratungs- und Betreuungseinsätzen",
   "Koordination von Mitarbeiteranfragen",
   "Telefonannahme und Weiterleitung von Anliegen",
   "Postbearbeitung und allgemeine Büroorganisation",
-  "Verwaltung von Büromaterial",
-  "Pflege und Bearbeitung digitaler Unterlagen",
   "Zusammenarbeit mit verschiedenen Bereichen, damit interne Abläufe zuverlässig funktionieren",
 ] as const;
 
@@ -189,7 +180,7 @@ const BUEROFACHKRAFT_PROFIL = [
   "Strukturierte, organisierte und engagierte Arbeitsweise",
   "Teamgeist und starke Kommunikationsfähigkeiten",
   "Freude am Umgang mit Menschen, sowohl telefonisch als auch schriftlich",
-  "Sicherer Umgang mit digitalen Arbeitsmitteln und gängigen Office-Programmen",
+  "Sicherer Umgang mit digitalen Arbeitsmitteln",
   "Sehr gute Deutschkenntnisse in Wort und Schrift",
   "Verantwortungsbewusstsein, Zuverlässigkeit und ein freundliches Auftreten",
 ] as const;
