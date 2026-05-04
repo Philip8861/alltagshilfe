@@ -1,23 +1,8 @@
-import type { Metadata } from "next";
-import { Container } from "@/components/layout/Container";
-import { siteConfig } from "@/config/site";
+import { permanentRedirect } from "next/navigation";
 
-export const metadata: Metadata = {
-  title: "Inkontinenzversorgung",
-  description: `Inkontinenzversorgung – ${siteConfig.name}.`,
-};
-
-export default function InkontinenzversorgungPage() {
-  return (
-    <article className="py-16 sm:py-24">
-      <Container>
-        <h1 className="text-3xl font-bold tracking-tight text-[#0F4F68] sm:text-4xl">
-          Inkontinenzversorgung
-        </h1>
-        <p className="mt-6 max-w-2xl text-neutral-600">
-          Informationen zur Inkontinenzversorgung folgen in Kürze.
-        </p>
-      </Container>
-    </article>
-  );
+/**
+ * Ehemalige Einzelseite – Inhalt mit /pflegeshop zusammengeführt (SEO: 308 Permanent Redirect).
+ */
+export default function InkontinenzversorgungRedirectPage() {
+  permanentRedirect("/pflegeshop");
 }

@@ -305,7 +305,7 @@ export function KostenfreiePflegehilfsmittel42Article() {
           <li>der passenden Versorgung mit Pflegehilfsmitteln,</li>
           <li>
             der{" "}
-            <Link href="/inkontinenzversorgung" className={LINK}>
+            <Link href="/pflegeshop#inkontinenzversorgung" className={LINK}>
               Inkontinenzversorgung über Rezept
             </Link>
             ,
@@ -368,7 +368,7 @@ export function KostenfreiePflegehilfsmittel42Article() {
         <p className="mt-4">
           Körpernahe Inkontinenzprodukte wie Windeln, Pants oder Vorlagen laufen dagegen häufig über die Krankenkasse. Dafür
           wird in der Regel eine ärztliche Verordnung benötigt. Mehr dazu:{" "}
-          <Link href="/inkontinenzversorgung" className={LINK}>
+          <Link href="/pflegeshop#inkontinenzversorgung" className={LINK}>
             Inkontinenzversorgung über Rezept
           </Link>
           .

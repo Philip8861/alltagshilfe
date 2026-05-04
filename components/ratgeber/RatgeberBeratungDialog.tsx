@@ -309,13 +309,7 @@ export function RatgeberBeratungProvider({
                         href="/pflegeshop"
                         className="inline-flex min-h-[44px] flex-1 items-center justify-center rounded-xl bg-[#0F4F68] px-4 py-2.5 text-center text-sm font-semibold text-white hover:bg-[#0c3d52] sm:flex-initial sm:px-5"
                       >
-                        Zum Pflegeshop
-                      </Link>
-                      <Link
-                        href="/inkontinenzversorgung"
-                        className="inline-flex min-h-[44px] flex-1 items-center justify-center rounded-xl border-2 border-[#0F4F68] bg-white px-4 py-2.5 text-center text-sm font-semibold text-[#0F4F68] hover:bg-[#f2f9fa] sm:flex-initial sm:px-5"
-                      >
-                        Inkontinenzversorgung
+                        Pflegeshop & Inkontinenzversorgung
                       </Link>
                       <Link
                         href="/pflegehilfsmittel/pflegebox-konfigurator"
@@ -548,11 +542,11 @@ export function RatgeberSidebarBeratungTeaser({
       {
         kind: "link",
         icon: "shop",
-        headline: "Pflegeshop",
-        body: "Ausgewählte Pflege- und Alltagshilfen für zu Hause: übersichtlich und direkt über unseren Partnershop.",
+        headline: "Pflegeshop & Inkontinenzversorgung",
+        body: "Ausgewählte Pflege- und Alltagshilfen für zu Hause sowie Hinweise zur Versorgung auf Rezept – übersichtlich über unsere Seite und den Partnershop.",
         href: "/pflegeshop",
-        ctaLabel: "Zum Pflegeshop",
-        dotLabel: "Pflegeshop",
+        ctaLabel: "Zur Seite",
+        dotLabel: "Pflegeshop & Inkontinenz",
       },
       {
         kind: "link",

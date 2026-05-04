@@ -34,7 +34,7 @@ export const serviceLinks: Record<
     kontakt: "/kontakt",
   },
   inkontinenz: {
-    mehr: "/inkontinenzversorgung",
+    mehr: "/pflegeshop#inkontinenzversorgung",
     kontakt: "/kontakt",
   },
   pflegeshop: {

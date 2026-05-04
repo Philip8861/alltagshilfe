@@ -38,7 +38,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.7,
     },
     { url: `${base}/pflegeshop`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.6 },
-    { url: `${base}/inkontinenzversorgung`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.6 },
     { url: `${base}/impressum`, lastModified: new Date(), changeFrequency: "yearly", priority: 0.3 },
     { url: `${base}/datenschutz`, lastModified: new Date(), changeFrequency: "yearly", priority: 0.3 },
     { url: `${base}/ratgeber`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.75 },

@@ -24,7 +24,7 @@ const STARTSEITE_FAQ_BG = "#FAFBFC";
 const STARTSEITE_FAQ_WELLEN_D =
   "M0,120 C200,32 420,8 600,22 C800,38 1010,90 1200,120 L1200,120 L0,120 Z";
 const HERO_INTRO = {
-  brand: "Alltagshilfe-Süd Pflegeshop",
+  brand: "Pflegeshop & Inkontinenzversorgung",
   taglineLines: [
     "Artikel von Pflegekräften empfohlen",
     "Sortiment für den Pflegealltag zu Hause",
@@ -35,8 +35,8 @@ const HERO_INTRO = {
 } as const;
 
 export const metadata: Metadata = {
-  title: "Alltagshilfe-Süd Pflegeshop",
-  description: `Pflegehilfsmittel und Pflegebedarf online – Alltagshilfe-Süd Pflegeshop mit deinPflegebedarf.de. ${siteConfig.name}.`,
+  title: "Pflegeshop & Inkontinenzversorgung",
+  description: `Pflegehilfsmittel, Pflegebedarf online und Beratung zur Inkontinenzversorgung – mit deinPflegebedarf.de. ${siteConfig.name}.`,
 };
 
 function HeroCheckIcon({ className = "" }: { className?: string }) {
@@ -69,7 +69,7 @@ export default function PflegeshopPage() {
       <div id="pflegeshop-hero" className="min-w-0 scroll-mt-24 overflow-x-clip overflow-y-visible">
         <section
           className="relative z-0 box-border mx-auto w-full min-w-0 max-w-7xl px-4 pb-10 pt-0 sm:px-6 sm:pb-16 lg:px-[var(--ahs-page-gutter)] lg:pb-[clamp(4rem,9vh+1.5rem,7rem)] lg:pt-[clamp(2rem,5vh+1.25rem,4.75rem)] xl:pb-[clamp(5rem,10vh+1.5rem,8rem)]"
-          aria-label="Einstieg Pflegeshop"
+          aria-label="Einstieg Pflegeshop und Inkontinenzversorgung"
         >
           <div className="flex flex-col-reverse items-center gap-10 lg:grid lg:grid-cols-[minmax(0,0.34fr)_minmax(0,0.66fr)] lg:items-center lg:justify-items-stretch lg:gap-x-[clamp(1.5rem,3vw,3.25rem)] lg:gap-y-0">
             <div className="box-border w-full min-w-0 max-w-full space-y-[clamp(1.25rem,2vh+0.75rem,1.75rem)] lg:min-w-0 lg:justify-self-start lg:space-y-[clamp(1.15rem,1.6vh+0.7rem,1.75rem)] lg:-translate-x-[clamp(0.75rem,4.5vw,3rem)] lg:pr-0 motion-reduce:lg:translate-x-0">
@@ -146,6 +146,26 @@ export default function PflegeshopPage() {
           </div>
         </section>
       </div>
+
+      <section
+        id="inkontinenzversorgung"
+        className="scroll-mt-24 border-t border-[#0F4F68]/10 bg-white px-4 py-10 sm:px-6 sm:py-12 lg:px-[var(--ahs-page-gutter)]"
+        aria-labelledby="pflegeshop-inkontinenz-heading"
+      >
+        <div className="mx-auto max-w-3xl">
+          <h2
+            id="pflegeshop-inkontinenz-heading"
+            className="text-2xl font-extrabold tracking-tight text-[#0F4F68] sm:text-3xl"
+          >
+            Inkontinenzversorgung
+          </h2>
+          <p className="mt-4 text-pretty text-lg leading-relaxed text-neutral-600">
+            Informationen zur Inkontinenzversorgung (z. B. auf Rezept) ergänzen wir hier in Kürze. Bis dahin erreichen
+            Sie uns telefonisch oder über das Kontaktformular – wir erklären Ihnen gern den Ablauf und die
+            Voraussetzungen.
+          </p>
+        </div>
+      </section>
 
       <section className="relative z-20 mt-0 w-full bg-[#F2F9FA] px-4 pt-[1.35rem] pb-8 sm:px-6 sm:pt-[2rem] sm:pb-[2.4rem] lg:px-[var(--ahs-page-gutter)] lg:pt-[2rem] lg:pb-10">
         <svg

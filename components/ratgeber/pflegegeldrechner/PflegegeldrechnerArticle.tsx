@@ -152,7 +152,7 @@ export function PflegegeldrechnerArticle() {
           </li>
           <li>
             Unterstützung bei{" "}
-            <Link href="/inkontinenzversorgung" className={LINK}>
+            <Link href="/pflegeshop#inkontinenzversorgung" className={LINK}>
               Inkontinenzversorgung über Rezept
             </Link>
             , falls relevant

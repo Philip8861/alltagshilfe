@@ -46,13 +46,6 @@ function LeistungIconGlyph({ icon }: { icon: LeistungKachelIcon }) {
       </svg>
     );
   }
-  if (icon === "shield") {
-    return (
-      <svg className="h-6 w-6" viewBox="0 0 24 24" fill="currentColor">
-        <path d="M12 2 4 5.2v6.1c0 5.1 3.4 9.8 8 10.7 4.6-.9 8-5.6 8-10.7V5.2L12 2zm-1 13.2-3-3 1.4-1.4 1.6 1.6 3.6-3.6 1.4 1.4-5 5z" />
-      </svg>
-    );
-  }
   if (icon === "cart") {
     return (
       <svg className="h-6 w-6" viewBox="0 0 24 24" fill="currentColor">

@@ -256,23 +256,16 @@ export function Pflegegrad1Article() {
         </ul>
         <p className="mt-6">
           Diese Hilfsmittel können Angehörige entlasten und die häusliche Versorgung hygienischer und sicherer machen.
-          Passende Produkte finden Sie auch im{" "}
+          Passende Produkte und Hinweise zur Inkontinenzversorgung finden Sie unter{" "}
           <Link href="/pflegeshop" className={LINK}>
-            Pflegeshop
-          </Link>{" "}
-          von Alltagshilfe-Süd. Hintergrund zur Pauschale:{" "}
+            Pflegeshop & Inkontinenzversorgung
+          </Link>
+          . Hintergrund zur Pauschale:{" "}
           <Link href="/pflegehilfsmittel/kostenfreie-pflegehilfsmittel" className={LINK}>
             Kostenfreie Pflegehilfsmittel (42 Euro monatlich)
           </Link>
-          .
-        </p>
-        <p className="mt-4">
-          Falls Inkontinenz eine Rolle spielt, sollte zusätzlich geprüft werden, ob eine Inkontinenzversorgung über Rezept
-          möglich ist. Informationen dazu bietet unsere Seite zur{" "}
-          <Link href="/inkontinenzversorgung" className={LINK}>
-            Inkontinenzversorgung
-          </Link>
-          ; in einem persönlichen Gespräch können wir prüfen, ob kostenlose Musterprodukte infrage kommen.
+          . Falls Inkontinenz eine Rolle spielt, prüfen wir in einem persönlichen Gespräch gern, ob eine Versorgung über
+          Rezept möglich ist und ob kostenlose Musterprodukte infrage kommen.
         </p>
       </ArticleSectionHeading>
 
@@ -619,8 +612,7 @@ export function Pflegegrad1Article() {
             { href: "/leistungen/haushaltshilfe", label: "Haushaltshilfe" },
             { href: "/leistungen/alltagsbegleitung-betreuung", label: "Alltagsbegleitung und Betreuung" },
             { href: "/pflegehilfsmittel/kostenfreie-pflegehilfsmittel", label: "Pflegehilfsmittel (42 € monatlich)" },
-            { href: "/pflegeshop", label: "Pflegeshop" },
-            { href: "/inkontinenzversorgung", label: "Inkontinenzversorgung" },
+            { href: "/pflegeshop", label: "Pflegeshop & Inkontinenzversorgung" },
             { href: "/kooperation", label: "Kooperationspartner (z. B. Hausnotruf, Treppenlift, begehbare Dusche)" },
             { href: "/kontakt", label: "Kontakt" },
             { href: "/ratgeber", label: "Alle Ratgeber-Beiträge" },
