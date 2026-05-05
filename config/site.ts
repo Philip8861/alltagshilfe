@@ -63,6 +63,9 @@ function getIndeedJobsUrl(): string {
   }
 }
 
+/** Standard-Vorschaubild für Open Graph / Twitter (unter `public/`). */
+export const DEFAULT_OG_IMAGE_PATH = "/images/Startseite_header.webp" as const;
+
 export const siteConfig = {
   name: "Alltagshilfe-Süd",
   description: "Liebevolle Pflegeberatung, Haushaltshilfe und Betreuung aus einer Hand",

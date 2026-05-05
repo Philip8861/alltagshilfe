@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Nunito_Sans } from "next/font/google";
 import "./globals.css";
-import { siteConfig } from "@/config/site";
+import { DEFAULT_OG_IMAGE_PATH, siteConfig } from "@/config/site";
 
 const nunitoSans = Nunito_Sans({
   subsets: ["latin", "latin-ext"],
@@ -28,9 +28,17 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "de_DE",
+    siteName: siteConfig.name,
+    images: [
+      {
+        url: DEFAULT_OG_IMAGE_PATH,
+        alt: `${siteConfig.name} – Pflegeberatung, Haushaltshilfe und Betreuung`,
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
+    images: [DEFAULT_OG_IMAGE_PATH],
   },
 };
 

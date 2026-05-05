@@ -1,3 +1,10 @@
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Technischer Test",
+  robots: { index: false, follow: false, googleBot: { index: false, follow: false } },
+};
+
 export default function TestPage() {
   return (
     <div className="p-8">

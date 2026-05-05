@@ -1,5 +1,7 @@
+import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
+import { DEFAULT_OG_IMAGE_PATH, siteConfig } from "@/config/site";
 import { LeistungenKachelGrid } from "@/components/home/LeistungenKachelGrid";
 import { KundenstimmenCarousel } from "@/components/home/KundenstimmenCarousel";
 import { ProtectedRasterMedia } from "@/components/home/ProtectedRasterMedia";
@@ -13,6 +15,37 @@ import {
   STANDORT_FAQ_LINK_CLASS,
 } from "@/lib/standort-faq";
 import { STARTSEITE_VORTEILE, STARTSEITE_VORTEILE_INTRO } from "@/lib/startseite-vorteile";
+
+const HOME_META_TITLE = "Haushaltshilfe, Pflegeberatung & Betreuung in Süddeutschland";
+
+const HOME_META_DESCRIPTION =
+  "Pflegeberatung nach §37.3 SGB XI, Haushaltshilfe, Alltagsbegleitung und Pflegehilfsmittel – regional im Allgäu, Bodensee, Augsburg und Umgebung. Anerkannte Pflegeberatungsstelle, zugelassen bei allen Krankenkassen.";
+
+export const metadata: Metadata = {
+  title: HOME_META_TITLE,
+  description: HOME_META_DESCRIPTION,
+  alternates: { canonical: "/" },
+  openGraph: {
+    title: `${HOME_META_TITLE} | ${siteConfig.name}`,
+    description: HOME_META_DESCRIPTION,
+    url: "/",
+    type: "website",
+    locale: "de_DE",
+    siteName: siteConfig.name,
+    images: [
+      {
+        url: DEFAULT_OG_IMAGE_PATH,
+        alt: `${siteConfig.name}: Pflegeberatung, Haushaltshilfe und Betreuung in Süddeutschland`,
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: `${HOME_META_TITLE} | ${siteConfig.name}`,
+    description: HOME_META_DESCRIPTION,
+    images: [DEFAULT_OG_IMAGE_PATH],
+  },
+};
 
 const HAUSHALTSHILFE_FAQ_ANCHOR = "/leistungen/haushaltshilfe#haushalt-faq-heading";
 

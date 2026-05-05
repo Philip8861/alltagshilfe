@@ -10,6 +10,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const staticRoutes: MetadataRoute.Sitemap = [
     { url: base, lastModified: new Date(), changeFrequency: "weekly", priority: 1 },
     { url: `${base}/ueber-uns`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.8 },
+    { url: `${base}/neuigkeiten`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.65 },
+    { url: `${base}/kooperation`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.72 },
+    { url: `${base}/barrierefreiheit`, lastModified: new Date(), changeFrequency: "yearly", priority: 0.45 },
     { url: `${base}/kontakt`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.8 },
     { url: `${base}/standorte`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.7 },
     { url: `${base}/karriere`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.7 },

@@ -6,6 +6,7 @@ type OrganizationSchema = {
   name: string;
   description: string;
   url: string;
+  logo: { "@type": "ImageObject"; url: string };
 };
 
 export function OrganizationJsonLd() {
@@ -15,6 +16,10 @@ export function OrganizationJsonLd() {
     name: siteConfig.name,
     description: siteConfig.description,
     url: siteConfig.baseUrl,
+    logo: {
+      "@type": "ImageObject",
+      url: `${siteConfig.baseUrl}/images/logo_header.webp`,
+    },
   };
   return (
     <script
