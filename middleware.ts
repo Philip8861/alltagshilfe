@@ -18,9 +18,10 @@ function applySecurityAndSeoHeaders(
   response.headers.set("X-Frame-Options", "SAMEORIGIN");
   response.headers.set("X-Content-Type-Options", "nosniff");
   response.headers.set("Referrer-Policy", "strict-origin-when-cross-origin");
+  response.headers.set("X-DNS-Prefetch-Control", "off");
   response.headers.set(
     "Permissions-Policy",
-    "camera=(self), microphone=(self), geolocation=()",
+    "camera=(self), microphone=(self), geolocation=(), interest-cohort=()",
   );
   if (request.nextUrl.protocol === "https:") {
     response.headers.set("Strict-Transport-Security", "max-age=31536000; includeSubDomains; preload");
@@ -28,11 +29,12 @@ function applySecurityAndSeoHeaders(
 
   const csp = [
     "default-src 'self'",
+    "object-src 'none'",
     "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://translate.google.com https://translate.googleapis.com https://www.google.com https://www.gstatic.com https://meet.jit.si",
     "style-src 'self' 'unsafe-inline' https://translate.googleapis.com https://translate.google.com https://www.google.com",
     "img-src 'self' data: https:",
     "font-src 'self' https://fonts.gstatic.com https://www.gstatic.com",
-    "connect-src 'self' https://translate.google.com https://translate.googleapis.com https://www.google.com https://www.gstatic.com https://meet.jit.si wss://meet.jit.si https://*.supabase.co wss://*.supabase.co https://tile.openstreetmap.org",
+    "connect-src 'self' https://translate.google.com https://translate.googleapis.com https://www.google.com https://www.gstatic.com https://meet.jit.si wss://meet.jit.si https://*.supabase.co wss://*.supabase.co",
     "worker-src 'self' blob:",
     "frame-src 'self' https://translate.google.com https://translate.googleapis.com https://*.google.com https://meet.jit.si",
     "frame-ancestors 'self'",
@@ -81,7 +83,9 @@ export async function middleware(request: NextRequest) {
         const redirectUrl = request.nextUrl.clone();
         redirectUrl.pathname = isEnPath ? `/en${dest.pathname}` : dest.pathname;
         redirectUrl.search = dest.search;
-        return NextResponse.redirect(redirectUrl, 308);
+        const redirectResponse = NextResponse.redirect(redirectUrl, 308);
+        applySecurityAndSeoHeaders(redirectResponse, request, normalizedPath, search);
+        return redirectResponse;
       }
     }
     const isSkippable =
@@ -119,7 +123,16 @@ export async function middleware(request: NextRequest) {
     }
     return response;
   } catch {
-    return NextResponse.next();
+    try {
+      const { pathname, search } = request.nextUrl;
+      const isEnPath = pathname === "/en" || pathname.startsWith("/en/");
+      const normalizedPath = isEnPath ? pathname.replace(/^\/en(?=\/|$)/, "") || "/" : pathname;
+      const res = NextResponse.next();
+      applySecurityAndSeoHeaders(res, request, normalizedPath, search);
+      return res;
+    } catch {
+      return NextResponse.next();
+    }
   }
 }
 

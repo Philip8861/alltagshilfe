@@ -185,21 +185,11 @@ export default function DatenschutzPage() {
           </section>
 
           <section className="space-y-2">
-            <h2 className="text-xl font-bold text-[#0F4F68]">9. Karten (OpenStreetMap)</h2>
+            <h2 className="text-xl font-bold text-[#0F4F68]">9. Karten</h2>
             <p>
-              Auf Seiten mit regionalen Karten können Kartenausschnitte über{" "}
-              <strong className="text-neutral-900">OpenStreetMap</strong>-Kacheln (OpenStreetMap Foundation) geladen werden.
-              Beim Abruf der Kacheln wird technisch Ihre IP-Adresse an die Server von OpenStreetMap übermittelt.
-              Rechtsgrundlage ist Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse an der Darstellung unserer
-              Standorte). Weitere Informationen:{" "}
-              <a
-                href="https://wiki.osmfoundation.org/wiki/Privacy_Policy"
-                className="text-[#0F4F68] underline"
-                rel="noopener noreferrer"
-              >
-                OpenStreetMap Foundation – Privacy
-              </a>
-              .
+              Wir binden derzeit keine eingebetteten interaktiven Karten mit Kartendaten von Drittanbietern (z. B.
+              OpenStreetMap-Kacheln) auf unseren Seiten ein. Über externe Verlinkungen zu Kartendiensten können beim
+              Aufruf dort eigene Datenschutzbestimmungen gelten.
             </p>
           </section>
 

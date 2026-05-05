@@ -130,7 +130,7 @@ export function CookieBanner() {
               Wir setzen technisch notwendige Speicherungen (z. B. für die Auswahl hier) ein. Mit Ihrer Einwilligung
               werten wir die Nutzung unserer öffentlichen Seiten in aggregierter Form aus (Statistik), binden die
               englische Seitenversion und Google-Übersetzung ein sowie – falls Sie dies wählen – künftige
-              Marketing-Tools. Details zu Google, OpenStreetMap, Jitsi und Formularen finden Sie in der{" "}
+              Marketing-Tools. Details zu Google, Jitsi und Formularen finden Sie in der{" "}
               <Link
                 href="/datenschutz"
                 className="font-medium text-[#0F4F68] underline hover:no-underline"

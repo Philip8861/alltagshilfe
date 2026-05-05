@@ -12,11 +12,6 @@ import {
   type Standort,
 } from "@/config/standorte";
 import { createStandortContactProof } from "@/lib/standort-contact-proof";
-import { StandortRegionMapInteractive } from "@/components/standorte/StandortRegionMapInteractive";
-import {
-  getInteractiveRegionMapInitialView,
-  getPlzMarkersForRegionMap,
-} from "@/lib/standort-region-map";
 import {
   buildStandortStyleFaq,
   standortFaqJsonLd,
@@ -37,8 +32,6 @@ const WELLEN_D =
 
 const WELLEN_SVG_CLASS =
   "pointer-events-none absolute left-0 top-0 z-0 h-16 w-full -translate-y-7 sm:h-[clamp(2.85rem,1.5rem+3.8vw,5rem)] sm:-translate-y-[clamp(0.9rem,0.35rem+2.1vw,3.2rem)]";
-
-const REGION_MAP_MARKERS = getPlzMarkersForRegionMap();
 
 /** Wie Startseite (app/page.tsx) – gleiche Kästchengröße in den Hero-Bullets. */
 function HeroCheckIcon({ className = "" }: { className?: string }) {
@@ -105,7 +98,6 @@ export function StandortLanding({ standort, plzContext }: StandortLandingProps) 
   const routingPlz =
     plzContext && /^\d{5}$/.test(plzContext.plz.trim()) ? plzContext.plz.trim() : undefined;
   const hasGeo = Boolean(plzContext);
-  const mapAnchorPlz = plzContext?.plz ?? standort.schemaAddress.postalCode;
   const heroLocationLine = hasGeo
     ? `in ${plzContext!.plz} ${plzContext!.ort}`
     : standort.heroLocationGeneral;
@@ -117,8 +109,6 @@ export function StandortLanding({ standort, plzContext }: StandortLandingProps) 
   const hoursParts = standort.hours.split(/\s*·\s*/).filter(Boolean);
   const standortPlzOrteSorted = buildSortedStandortPlzOrte(standort);
   const plzLetterGroups = groupPlzOrteByInitialLetter(standortPlzOrteSorted);
-  const regionMapInitialView = getInteractiveRegionMapInitialView(mapAnchorPlz, standort);
-
   return (
     <div className="min-w-0 overflow-x-clip overflow-y-visible bg-[#fafbfc] text-neutral-700 antialiased">
       <article id="standort-landing" className="min-w-0 scroll-mt-24 overflow-x-clip overflow-y-visible">
@@ -446,7 +436,7 @@ export function StandortLanding({ standort, plzContext }: StandortLandingProps) 
 
         <section
           className="relative z-10 overflow-x-clip bg-[#fafbfc] py-12 sm:py-14"
-          aria-labelledby="standort-karten-titel"
+          aria-labelledby="standort-plz-liste-heading"
         >
           <svg
             className={WELLEN_SVG_CLASS}
@@ -459,28 +449,7 @@ export function StandortLanding({ standort, plzContext }: StandortLandingProps) 
           </svg>
           <RevealOnScroll>
             <div className="relative z-[1] mx-auto max-w-5xl px-4 sm:px-6">
-              <div
-                className="relative z-[1] mx-auto w-full max-w-[min(100%,29.5rem)] -translate-y-2 overflow-hidden rounded-xl border border-[#0F4F68]/20 bg-[#F2F9FA]/80 shadow-[0_16px_32px_rgba(15,79,104,0.22),0_6px_0_rgba(15,79,104,0.08)] sm:-translate-y-3"
-                role="region"
-                aria-labelledby="standort-karten-titel"
-              >
-                <div className="border-b border-[#0F4F68]/15 bg-[#F2F9FA] px-4 py-3 text-center sm:px-5">
-                  <p
-                    id="standort-karten-titel"
-                    className="text-base font-semibold text-neutral-700 sm:text-lg"
-                  >
-                    Regionalkarte ·{" "}
-                    {hasGeo && plzContext ? `${plzContext.plz} ${plzContext.ort}` : standort.name}
-                  </p>
-                </div>
-                <StandortRegionMapInteractive
-                  markers={REGION_MAP_MARKERS}
-                  currentPlz={mapAnchorPlz}
-                  initialView={regionMapInitialView}
-                />
-              </div>
-
-              <div className="relative mx-auto mt-10 max-w-5xl rounded-2xl border border-[#0F4F68]/12 bg-gradient-to-br from-white via-[#F2F9FA]/90 to-white p-5 shadow-[0_8px_30px_rgba(15,79,104,0.08)] sm:p-8">
+              <div className="relative mx-auto max-w-5xl rounded-2xl border border-[#0F4F68]/12 bg-gradient-to-br from-white via-[#F2F9FA]/90 to-white p-5 shadow-[0_8px_30px_rgba(15,79,104,0.08)] sm:p-8">
                 <div
                   className="pointer-events-none absolute -right-6 -top-6 h-24 w-24 rounded-full bg-[#F78F2E]/10 blur-2xl sm:h-32 sm:w-32"
                   aria-hidden
