@@ -13,18 +13,20 @@ export default function UeberUnsPage() {
     <article className="pt-0 pb-16 sm:pb-24">
       <Container>
         <section className="relative pt-0">
-          <div className="flex justify-end">
-            <div className="relative ml-auto w-full max-w-[50rem] lg:mr-[calc((100vw-100%)/-2)]">
-              <div className="w-full [filter:drop-shadow(0_10px_22px_rgba(15,79,104,0.2))_drop-shadow(0_4px_12px_rgba(15,79,104,0.12))]">
-                <Image
-                  src="/images/über_uns.webp"
-                  alt="Alltagshilfe-Süd Teamvorstellung"
-                  width={900}
-                  height={700}
-                  className="block h-auto w-full object-contain object-right"
-                  priority
-                  unoptimized
-                />
+          <div className="-mx-4 min-w-0 sm:-mx-6 lg:mx-0">
+            <div className="flex min-w-0 justify-end">
+              <div className="relative ml-auto w-full min-w-0 max-w-[50rem] lg:mr-[calc((100vw-100%)/-2)]">
+                <div className="w-full min-w-0 [filter:drop-shadow(0_10px_22px_rgba(15,79,104,0.2))_drop-shadow(0_4px_12px_rgba(15,79,104,0.12))]">
+                  <Image
+                    src="/images/über_uns.webp"
+                    alt="Alltagshilfe-Süd Teamvorstellung"
+                    width={900}
+                    height={700}
+                    className="block h-auto w-full object-contain object-right"
+                    priority
+                    unoptimized
+                  />
+                </div>
               </div>
             </div>
           </div>
