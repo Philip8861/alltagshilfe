@@ -12,6 +12,11 @@ type Bewertung = {
 
 const BEWERTUNGEN: Bewertung[] = [
   {
+    name: "Günter Bautz",
+    meta: "Rezension aus Google · 5/5 · Neu · vor 51 Minuten",
+    text: "Ich freue mich, dass ich von einer so guten Organisation mit einer überaus freundlichen und kompetenten Mitarbeiterin, Frau Riegel betreut werde.",
+  },
+  {
     name: "TMy",
     meta: "86 Rezensionen · vor einer Woche",
     text: "Gerade ist bei uns ziemlich Chaos. Mein Onkel ist im Krankenhaus und ich kümmer mich aktuell um meine Oma. Deshalb war ich echt dankbar für schnelle Hilfe. Die Terminverschiebung ging super unkompliziert und Frau Wagenzink war total freundlich und verständnisvoll. Genau so wünscht man sich Unterstützung, wenn eh schon alles drunter und drüber geht. Vielen lieben Dank!",
