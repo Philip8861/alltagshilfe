@@ -9,6 +9,9 @@
  *
  * Aktivierung:
  * - `NEXT_PUBLIC_GA_MEASUREMENT_ID` in den Hosting-Env-Variablen setzen (z. B. `G-XXXXXXXXXX`).
+ * - Wichtig: NEXT_PUBLIC_*-Variablen werden zur Build-Zeit ins Bundle gebrannt.
+ *   Nach dem Hinzufuegen muss in Vercel/Hosting NEU deployed werden, sonst ist
+ *   der Wert im Browser leer und es wird nichts geladen.
  * - Ohne ID wird nichts geladen (kein Tracking).
  *
  * Datenschutz-Voreinstellungen:
@@ -20,7 +23,7 @@
 
 import Script from "next/script";
 import { usePathname, useSearchParams } from "next/navigation";
-import { Suspense, useEffect, useRef, useState } from "react";
+import { Suspense, useCallback, useEffect, useRef, useState } from "react";
 import { getConsent } from "@/lib/consent";
 
 const GA_ID = (process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID ?? "").trim();
@@ -33,13 +36,11 @@ declare global {
   }
 }
 
-function pushDataLayer(...args: unknown[]) {
-  if (typeof window === "undefined") return;
-  window.dataLayer = window.dataLayer || [];
-  window.dataLayer.push(args);
-}
-
-/** Initialer Consent-Mode (vor Skript-Laden setzen, im Inline-Snippet erledigt). */
+/**
+ * Initialer Consent-Mode (vor Skript-Laden setzen, im Inline-Snippet erledigt).
+ * Definiert global `window.gtag` als Funktion, die `arguments` in den dataLayer pusht
+ * (genau diese Form erwartet GTM/GA – ein normales Array reicht NICHT!).
+ */
 const CONSENT_DEFAULT_SNIPPET = `
 window.dataLayer = window.dataLayer || [];
 function gtag(){dataLayer.push(arguments);}
@@ -61,6 +62,8 @@ function GoogleAnalyticsInner() {
   const searchParams = useSearchParams();
   const [analyticsAllowed, setAnalyticsAllowed] = useState(false);
   const [marketingAllowed, setMarketingAllowed] = useState(false);
+  const [scriptReady, setScriptReady] = useState(false);
+  const configuredRef = useRef(false);
   const lastPagePath = useRef<string | null>(null);
 
   useEffect(() => {
@@ -74,6 +77,7 @@ function GoogleAnalyticsInner() {
     return () => window.removeEventListener("ahs-consent-updated", sync);
   }, []);
 
+  /** Consent-Updates an gtag durchreichen (auch nachtraeglich, wenn Skript bereit ist). */
   useEffect(() => {
     if (!GA_ID) return;
     if (typeof window === "undefined" || typeof window.gtag !== "function") return;
@@ -83,22 +87,42 @@ function GoogleAnalyticsInner() {
       ad_user_data: marketingAllowed ? "granted" : "denied",
       ad_personalization: marketingAllowed ? "granted" : "denied",
     });
-  }, [analyticsAllowed, marketingAllowed]);
+  }, [analyticsAllowed, marketingAllowed, scriptReady]);
 
+  /** Konfiguriert GA einmal, sobald Skript geladen ist und Statistik erlaubt. */
   useEffect(() => {
     if (!GA_ID) return;
-    if (!analyticsAllowed) return;
+    if (!scriptReady) return;
+    if (configuredRef.current) return;
     if (typeof window === "undefined" || typeof window.gtag !== "function") return;
+    window.gtag("config", GA_ID, {
+      anonymize_ip: true,
+      send_page_view: false,
+    });
+    configuredRef.current = true;
+  }, [scriptReady]);
+
+  const sendPageView = useCallback(() => {
+    if (!GA_ID) return false;
+    if (!analyticsAllowed) return false;
+    if (typeof window === "undefined" || typeof window.gtag !== "function") return false;
+    if (!configuredRef.current) return false;
     const qs = searchParams?.toString();
     const fullPath = qs ? `${pathname}?${qs}` : pathname;
-    if (lastPagePath.current === fullPath) return;
+    if (lastPagePath.current === fullPath) return true;
     lastPagePath.current = fullPath;
     window.gtag("event", "page_view", {
       page_path: fullPath,
-      page_location: typeof window !== "undefined" ? window.location.href : undefined,
-      page_title: typeof document !== "undefined" ? document.title : undefined,
+      page_location: window.location.href,
+      page_title: document.title,
     });
-  }, [pathname, searchParams, analyticsAllowed]);
+    return true;
+  }, [analyticsAllowed, pathname, searchParams]);
+
+  /** Page-View bei jedem Pfadwechsel + sobald das Skript fertig geladen ist. */
+  useEffect(() => {
+    sendPageView();
+  }, [sendPageView, scriptReady]);
 
   if (!GA_ID) return null;
 
@@ -110,19 +134,13 @@ function GoogleAnalyticsInner() {
         dangerouslySetInnerHTML={{ __html: CONSENT_DEFAULT_SNIPPET }}
       />
       {analyticsAllowed ? (
-        <>
-          <Script
-            id="ga-loader"
-            src={`https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(GA_ID)}`}
-            strategy="afterInteractive"
-            onLoad={() => {
-              pushDataLayer("config", GA_ID, {
-                anonymize_ip: true,
-                send_page_view: false,
-              });
-            }}
-          />
-        </>
+        <Script
+          id="ga-loader"
+          src={`https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(GA_ID)}`}
+          strategy="afterInteractive"
+          onLoad={() => setScriptReady(true)}
+          onReady={() => setScriptReady(true)}
+        />
       ) : null}
     </>
   );
