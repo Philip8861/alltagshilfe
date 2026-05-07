@@ -202,6 +202,12 @@ export function CookieBanner() {
   const buttonBase =
     "inline-flex min-h-[48px] flex-1 items-center justify-center rounded-xl border-2 border-[#0F4F68] bg-white px-3 text-sm font-semibold text-[#0F4F68] shadow-sm transition hover:bg-[#F2F9FA] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68] focus-visible:ring-offset-2 sm:px-4";
 
+  /** „Alle akzeptieren“: kaum sichtbares Orange-Glühen (Marke), ohne die gleichwertige Button-Optik zu dominieren. */
+  const buttonAccept = cn(
+    buttonBase,
+    "shadow-[0_1px_2px_rgba(15,79,104,0.06),0_0_0_1px_rgba(247,143,46,0.18),0_0_18px_rgba(247,143,46,0.08)] hover:shadow-[0_1px_2px_rgba(15,79,104,0.06),0_0_0_1px_rgba(247,143,46,0.22),0_0_22px_rgba(247,143,46,0.11)]",
+  );
+
   return createPortal(
     <div
       className="fixed inset-0 z-[200] flex items-end justify-center bg-[#0F4F68]/40 p-0 sm:items-center sm:p-4"
@@ -319,7 +325,7 @@ export function CookieBanner() {
               <button type="button" className={buttonBase} onClick={openSettings}>
                 Auswahl anpassen
               </button>
-              <button type="button" className={buttonBase} onClick={handleAcceptAll}>
+              <button type="button" className={buttonAccept} onClick={handleAcceptAll}>
                 Alle akzeptieren
               </button>
             </div>
@@ -331,7 +337,7 @@ export function CookieBanner() {
               <button type="button" className={buttonBase} onClick={handleSaveSelection}>
                 Auswahl speichern
               </button>
-              <button type="button" className={buttonBase} onClick={handleAcceptAll}>
+              <button type="button" className={buttonAccept} onClick={handleAcceptAll}>
                 Alle akzeptieren
               </button>
             </div>
