@@ -15,6 +15,7 @@ import {
   fetchHomepagePathSeriesAction,
   fetchHomepageTotalsSeriesAction,
   fetchHomepageYearPathTotalsAction,
+  resetHomepageSiteAnalyticsAction,
   type HomepageDeviceBreakdownRow,
   type HomepageSeriesPoint,
   type HomepageTrafficGranularity,
@@ -134,6 +135,9 @@ export function AdminHomepageTrafficPanel({ chartYear }: Props) {
   const [deviceLoading, setDeviceLoading] = useState(true);
   const [deviceErr, setDeviceErr] = useState<string | null>(null);
 
+  const [resetBusy, setResetBusy] = useState(false);
+  const [resetErr, setResetErr] = useState<string | null>(null);
+
   const loadTotals = useCallback(async () => {
     setTotalLoading(true);
     setTotalErr(null);
@@ -238,11 +242,41 @@ export function AdminHomepageTrafficPanel({ chartYear }: Props) {
             void loadDeviceBreakdown();
             void loadPathSeries();
           }}
-          className="min-h-10 rounded-xl border border-[#0F4F68]/30 bg-white px-4 text-sm font-semibold text-[#0F4F68] hover:bg-[#F2F9FA]"
+          disabled={resetBusy}
+          className="min-h-10 rounded-xl border border-[#0F4F68]/30 bg-white px-4 text-sm font-semibold text-[#0F4F68] hover:bg-[#F2F9FA] disabled:opacity-50"
         >
           Aktualisieren
         </button>
+        <button
+          type="button"
+          disabled={resetBusy}
+          onClick={async () => {
+            const ok = window.confirm(
+              "Alle Homepage-Aufrufstatistiken unwiderruflich löschen? (Alle Tage, Pfade und Geräte – Zähler starten bei null. Auch Ratgeber-Live-Zähler basieren auf denselben Daten.)",
+            );
+            if (!ok) return;
+            setResetBusy(true);
+            setResetErr(null);
+            const res = await resetHomepageSiteAnalyticsAction();
+            setResetBusy(false);
+            if (!res.ok) {
+              setResetErr(res.message);
+              return;
+            }
+            setExpandedPath(null);
+            void loadTotals();
+            void loadPaths();
+            void loadDeviceBreakdown();
+            void loadPathSeries();
+          }}
+          className="min-h-10 rounded-xl border border-red-200 bg-white px-4 text-sm font-semibold text-red-700 hover:bg-red-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-300 disabled:opacity-50"
+        >
+          {resetBusy ? "Wird geleert…" : "Alle Zähler zurücksetzen"}
+        </button>
       </div>
+      {resetErr ? (
+        <p className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-950">{resetErr}</p>
+      ) : null}
 
       <section className="space-y-4" aria-labelledby="hp-total-heading">
         <h3 id="hp-total-heading" className="text-base font-bold text-[#0F4F68]">

@@ -1,5 +1,6 @@
 "use server";
 
+import { revalidatePath } from "next/cache";
 import { calendarMonthBounds, calendarYearBounds } from "@/lib/site-analytics/month-bounds";
 import { getSystemAdminSession } from "@/lib/partner/system-admin-session";
 import { createSupabaseServiceRoleClient } from "@/lib/supabase/service";
@@ -240,4 +241,27 @@ export async function fetchHomepageDeviceBreakdownAction(
       })
     : [];
   return { ok: true, data: rows };
+}
+
+/**
+ * Löscht alle aggregierten Homepage-Seitenaufrufe (`site_page_views_daily`).
+ * Nur System-Admin; nicht rückgängig zu machen.
+ */
+export async function resetHomepageSiteAnalyticsAction(): Promise<
+  { ok: true } | { ok: false; message: string }
+> {
+  if (!(await getSystemAdminSession())) return { ok: false, message: "Nicht angemeldet." };
+  const svc = createSupabaseServiceRoleClient();
+  if (!svc) return { ok: false, message: "Service nicht konfiguriert." };
+
+  try {
+    /* PostgREST verlangt einen Filter; alle Zeilen haben views >= 0 */
+    const { error } = await svc.from("site_page_views_daily").delete().gte("views", 0);
+    if (error) throw new Error(error.message);
+    revalidatePath("/partner/admin");
+    return { ok: true };
+  } catch (e) {
+    console.error("[resetHomepageSiteAnalyticsAction]", e);
+    return { ok: false, message: "Zähler konnten nicht zurückgesetzt werden." };
+  }
 }
