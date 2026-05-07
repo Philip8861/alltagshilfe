@@ -283,7 +283,7 @@ export const standorteByPlz: Standort[] = [
     address: "Hinter den Gärten 10, 87730 Bad Grönenbach",
     phone: "08334 / 9893330",
     phoneHref: "tel:+4983349893330",
-    email: "Info@alltagshilfe-sued.de",
+    email: "info@alltagshilfe-sued.de",
     hours: HOURS,
     plzList: data["Allgäu"] ?? [],
     localIntro: [

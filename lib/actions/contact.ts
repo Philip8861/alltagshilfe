@@ -23,6 +23,21 @@ export type ContactResult = { success: boolean; error?: string };
 /** Zentrale Adresse, wenn weder NOTIFICATION_TO_CONTACT noch NOTIFICATION_TO gesetzt sind. */
 const DEFAULT_CONTACT_INBOX = "info@alltagshilfe-sued.de";
 
+/** Gleiche Adresse kleingeschrieben für Dubletten-Vergleich. */
+function dedupeEmails(emails: string[]): string[] {
+  const seen = new Set<string>();
+  const out: string[] = [];
+  for (const raw of emails) {
+    const e = raw.trim();
+    if (!e.includes("@")) continue;
+    const key = e.toLowerCase();
+    if (seen.has(key)) continue;
+    seen.add(key);
+    out.push(e);
+  }
+  return out;
+}
+
 function getDefaultContactRecipients(): string[] {
   const contact = parseNotificationEmailList(process.env.NOTIFICATION_TO_CONTACT);
   if (contact.length > 0) return contact;
@@ -169,7 +184,12 @@ export async function submitContact(formData: FormData): Promise<ContactResult> 
   if (isKarriereTopic && karriereContactRecipients) {
     finalTo = karriereContactRecipients;
   } else if (regionalEmail) {
-    finalTo = [regionalEmail];
+    /**
+     * Standort-Kontakt (signiertes Formular): immer auch die zentrale Inbox — zusätzlich zur
+     * regionalen Adresse aus `standorte` (z. B. augsburg@, engen@, wangen@, info@ für Allgäu/Bad Grönenbach).
+     * Dubletten entfallen (z. B. Allgäu und Zentralpostfach sind identisch).
+     */
+    finalTo = dedupeEmails([...getDefaultContactRecipients(), regionalEmail]);
   } else {
     finalTo = getDefaultContactRecipients();
   }

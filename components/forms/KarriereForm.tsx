@@ -391,7 +391,7 @@ export function KarriereForm({ hideFileAttachments = false }: KarriereFormProps)
             <span id="karriere-agbs-hint">
               Ich habe die{" "}
               <Link
-                href="/impressum"
+                href="/impressum#agb"
                 className="font-medium text-[#0F4F68] underline hover:no-underline"
               >
                 AGB

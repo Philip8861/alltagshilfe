@@ -1,5 +1,46 @@
 import type { NextConfig } from "next";
 
+/**
+ * Alte WordPress-/Stadt-Landing-URLs (ohne www, Pfad ab Root) → aktuelle Standortseiten.
+ * Zuordnung über PLZ-Gebiete in config/standorte-plz-generated.json (Allgäu, Wangen, Augsburg, Engen/Konstanz).
+ */
+const LEGACY_STADT_PATH_TO_STANDORT_SLUG: Record<string, string> = {
+  augsburg: "augsburg",
+  "bad-woerishofen": "allgaeu",
+  friedrichshafen: "wangen",
+  fuessen: "allgaeu",
+  isny: "wangen",
+  kaufbeuren: "allgaeu",
+  kempten: "allgaeu",
+  konstanz: "engen",
+  "leutkirch-im-allgaeu": "wangen",
+  lindau: "wangen",
+  lindenberg: "wangen",
+  memmingen: "wangen",
+  ravensburg: "wangen",
+  "sonthofen-immenstadt": "allgaeu",
+  tettnang: "wangen",
+  ueberlingen: "engen",
+  "wangen-3": "wangen",
+};
+
+function legacyStadtRedirects(): {
+  source: string;
+  destination: string;
+  permanent: boolean;
+}[] {
+  const out: { source: string; destination: string; permanent: boolean }[] = [];
+  for (const [stadtPath, standortSlug] of Object.entries(LEGACY_STADT_PATH_TO_STANDORT_SLUG)) {
+    const destination = `/standorte/${standortSlug}`;
+    out.push(
+      { source: `/${stadtPath}`, destination, permanent: true },
+      { source: `/${stadtPath}/`, destination, permanent: true },
+      { source: `/${stadtPath}/:path+`, destination, permanent: true },
+    );
+  }
+  return out;
+}
+
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
@@ -14,6 +55,7 @@ const nextConfig: NextConfig = {
   },
   async redirects() {
     return [
+      ...legacyStadtRedirects(),
       { source: "/blog", destination: "/ratgeber", permanent: true },
       { source: "/blog/:path*", destination: "/ratgeber", permanent: true },
       { source: "/leistungen", destination: "/", permanent: true },

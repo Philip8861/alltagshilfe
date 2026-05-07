@@ -912,7 +912,7 @@ export function BewerbungsWizardDialog({ jobTitle, initialPlz, onDismiss }: Bewe
                   <span>
                     Ich habe die{" "}
                     <Link
-                      href="/impressum"
+                      href="/impressum#agb"
                       target="_blank"
                       rel="noopener noreferrer"
                       className="font-semibold text-[#0F4F68] underline underline-offset-2 hover:no-underline"

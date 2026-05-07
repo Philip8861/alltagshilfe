@@ -54,6 +54,34 @@ export default function ImpressumPage() {
             <p><strong>IK-Nummer:</strong> 460956028</p>
           </section>
 
+          <section className="space-y-2">
+            <h2 className="text-lg font-bold text-[#0F4F68]">Hosting und Domain</h2>
+            <p className="mt-2">
+              Die Auslieferung dieser Website erfolgt technisch über die Hosting-Plattform{" "}
+              <strong className="text-neutral-900">Vercel Inc.</strong> (USA). Beim Aufruf können dabei
+              Verbindungsdaten in Rechenzentren außerhalb der EU verarbeitet werden; es gelten die mit dem Anbieter
+              vereinbarten datenschutzrechtlichen Regelungen (u. a. Auftragsverarbeitung, ggf. EU-Standardvertragsklauseln).
+            </p>
+            <p>
+              Die Domain <strong className="text-neutral-900">alltagshilfe-sued.de</strong> und die dort genutzten
+              E-Mail-Postfächer (z. B. die Kontaktadresse oben) werden über den Anbieter{" "}
+              <strong className="text-neutral-900">ALL-INKL.COM – Neue Medien Münnich</strong> (Deutschland) bzw. die
+              zugehörige All-Inkl-Infrastruktur geführt.
+            </p>
+          </section>
+
+          <section id="agb" className="scroll-mt-24 space-y-2">
+            <h2 className="text-lg font-bold text-[#0F4F68]">Allgemeine Geschäftsbedingungen (AGB)</h2>
+            <p className="mt-2">
+              Für konkrete Leistungen gelten – soweit schriftlich oder im Angebot vereinbart – die jeweiligen Bedingungen
+              des Angebots bzw. Vertrags. Auf dieser Website liegt{" "}
+              <strong className="text-neutral-900">keine eigenständige, allgemein für alle Geschäftsbeziehungen
+              gültige AGB-Textfassung</strong> vor. Im Online-Bewerbungsverfahren und bei Formularhinweisen bezieht sich
+              der Verweis auf „AGB“ auf diese Erläuterung sowie auf das vorliegende Impressum und die
+              Datenschutzerklärung.
+            </p>
+          </section>
+
           <section>
             <h2 className="text-lg font-bold text-[#0F4F68]">Haftung für Inhalte</h2>
             <p className="mt-2">

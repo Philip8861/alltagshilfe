@@ -569,7 +569,7 @@
         <div class="wiz-check-row">
           <label class="wiz-check">
             <input type="checkbox" id="wiz-agb" ${data.agbAccepted ? "checked" : ""} />
-            <span>Ich habe die <a href="/impressum" target="_blank" rel="noopener noreferrer" class="inline-link">AGB</a> zur Kenntnis genommen und akzeptiere sie. *</span>
+            <span>Ich habe die <a href="/impressum#agb" target="_blank" rel="noopener noreferrer" class="inline-link">AGB</a> zur Kenntnis genommen und akzeptiere sie. *</span>
           </label>
         </div>
         <div class="wiz-check-row">
