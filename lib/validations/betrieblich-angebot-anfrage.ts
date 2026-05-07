@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { CONTACT_SOURCE_VALUES } from "@/lib/contact-source";
 
 const MAX_NAME_LENGTH = 100;
 const MAX_PHONE_LENGTH = 50;
@@ -45,6 +46,9 @@ export const betrieblichAngebotAnfrageSchema = z.object({
     },
     z.string().max(MAX_BEMERKUNG, `Die Bemerkung darf maximal ${MAX_BEMERKUNG} Zeichen haben.`).optional(),
   ),
+  contactSource: z.enum(CONTACT_SOURCE_VALUES as unknown as [string, ...string[]], {
+    errorMap: () => ({ message: "Bitte geben Sie an, wie Sie auf uns aufmerksam geworden sind." }),
+  }),
   datenschutz: z.literal(true, {
     errorMap: () => ({ message: "Bitte stimmen Sie der Datenschutzerklärung zu." }),
   }),

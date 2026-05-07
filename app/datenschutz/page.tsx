@@ -245,6 +245,17 @@ export default function DatenschutzPage() {
               ergänzend über eine sichere Schnittstelle gemeldet werden, damit Aufrufe ohne vollständigen Dokumenten-Reload
               berücksichtigt werden können.
             </p>
+            <p>
+              Zusätzlich werten wir aggregiert aus, über welche Quelle Anfragende auf uns aufmerksam geworden sind
+              (Pflichtfrage in unseren Kontaktformularen, z. B. Google, Freunde &amp; Bekannte, Social Media, Plakat- oder
+              Flyerwerbung, Pflegeberatung/Vermittlung, Per E-Mail, Sonstiges). Gespeichert werden ausschließlich
+              <strong className="text-neutral-900"> aggregierte Zählwerte je Tag, Quelle und Formular-Typ</strong> in der
+              Datenbank bei Supabase. Es werden weder Name, E-Mail-Adresse noch IP-Adresse zu diesen Zählwerten
+              gespeichert; Rückschlüsse auf einzelne Personen sind ausgeschlossen. Rechtsgrundlage für diese
+              Aggregat-Auswertung ist Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse an der Optimierung unserer
+              Marketingmaßnahmen). Ein Widerspruchsrecht nach Art. 21 DSGVO bleibt unberührt; bei Widerspruch löschen wir
+              den entsprechenden Aggregat-Zähler nicht, da kein Personenbezug besteht.
+            </p>
           </section>
 
           <section className="space-y-2">

@@ -15,6 +15,7 @@ import {
   validateKarriereAttachmentsList,
 } from "@/lib/karriere-attachments";
 import { KARRIERE_STELLENANGEBOTE } from "@/lib/validations/karriere";
+import { ContactSourceSelect } from "@/components/forms/ContactSourceSelect";
 import { cn } from "@/lib/utils";
 
 export type KarriereFormProps = {
@@ -336,6 +337,8 @@ export function KarriereForm({ hideFileAttachments = false }: KarriereFormProps)
         />
         <p className="mt-1 text-xs text-neutral-500">Nur beruflich relevante Informationen; max. 4000 Zeichen.</p>
       </div>
+
+      <ContactSourceSelect id="karriere-source" disabled={pending} />
 
       <div className="sr-only" aria-hidden="true">
         <label htmlFor="karriere-website">Website</label>

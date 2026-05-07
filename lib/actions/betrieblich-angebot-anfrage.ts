@@ -5,6 +5,8 @@ import { rateLimit } from "@/lib/rate-limit";
 import { getClientIp } from "@/lib/security";
 import { buildBrandedNotificationHtml, type EmailDetailRow } from "@/lib/email/branded-html";
 import { parseNotificationEmailList, sendInternalMail } from "@/lib/email/internal-smtp";
+import { getContactSourceLabel } from "@/lib/contact-source";
+import { recordContactSource } from "@/lib/contact-source-tracking";
 
 const DEFAULT_BETRIEBLICH_ANGEBOT_TO = "philip.sonntag@alltagshilfe-sued.de";
 
@@ -26,6 +28,7 @@ export async function submitBetrieblichAngebotAnfrage(formData: FormData): Promi
     phone: phoneRaw && String(phoneRaw).trim() !== "" ? String(phoneRaw).trim() : undefined,
     mitarbeiteranzahl: formData.get("mitarbeiteranzahl") ?? "",
     bemerkung: formData.get("bemerkung") ?? "",
+    contactSource: formData.get("contactSource") ?? "",
     datenschutz: formData.get("datenschutz") === "on",
     website: formData.get("website") ?? "",
   };
@@ -41,6 +44,7 @@ export async function submitBetrieblichAngebotAnfrage(formData: FormData): Promi
       first.phone?.[0] ??
       first.mitarbeiteranzahl?.[0] ??
       first.bemerkung?.[0] ??
+      first.contactSource?.[0] ??
       first.datenschutz?.[0] ??
       "Bitte prüfen Sie Ihre Eingaben.";
     return { success: false, error: message };
@@ -58,6 +62,8 @@ export async function submitBetrieblichAngebotAnfrage(formData: FormData): Promi
   }
 
   const data = parsed.data;
+  const sourceLabel = getContactSourceLabel(data.contactSource);
+
   const text = [
     "Neue Anfrage: Betriebliche Pflegeberatung (Angebot)",
     "",
@@ -66,6 +72,7 @@ export async function submitBetrieblichAngebotAnfrage(formData: FormData): Promi
     `E-Mail: ${data.email}`,
     ...(data.phone ? [`Telefon: ${data.phone}`] : []),
     `Mitarbeiteranzahl: ${data.mitarbeiteranzahl}`,
+    `Wie auf uns aufmerksam geworden: ${sourceLabel}`,
     ...(data.bemerkung ? ["", "Bemerkung:", data.bemerkung] : []),
   ].join("\n");
 
@@ -76,6 +83,7 @@ export async function submitBetrieblichAngebotAnfrage(formData: FormData): Promi
   rows.push({ label: "E-Mail", value: data.email });
   if (data.phone) rows.push({ label: "Telefon", value: data.phone });
   rows.push({ label: "Mitarbeiteranzahl", value: data.mitarbeiteranzahl });
+  rows.push({ label: "Aufmerksam geworden über", value: sourceLabel });
   if (data.bemerkung) rows.push({ label: "Bemerkung", value: data.bemerkung });
 
   const html = buildBrandedNotificationHtml({
@@ -98,6 +106,9 @@ export async function submitBetrieblichAngebotAnfrage(formData: FormData): Promi
       "[betrieblich-angebot] SMTP oder Empfänger fehlt – keine E-Mail versendet (NOTIFICATION_TO_* / SMTP_*)",
     );
   }
+
+  /* Anonyme Aggregat-Statistik (kein Personenbezug). */
+  await recordContactSource(data.contactSource, "betrieblich-angebot");
 
   return { success: true };
 }

@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { CONTACT_SOURCE_VALUES } from "@/lib/contact-source";
 
 const MAX_NAME_LENGTH = 100;
 const MAX_PHONE_LENGTH = 50;
@@ -42,6 +43,9 @@ export const karriereSchema = z.object({
   }),
   agbs: z.literal(true, {
     errorMap: () => ({ message: "Bitte akzeptieren Sie die AGB." }),
+  }),
+  contactSource: z.enum(CONTACT_SOURCE_VALUES as unknown as [string, ...string[]], {
+    errorMap: () => ({ message: "Bitte geben Sie an, wie Sie auf uns aufmerksam geworden sind." }),
   }),
   /** Optional: Kurzcheck / freie Hinweise (nur beruflich relevante Angaben). */
   anmerkung: z

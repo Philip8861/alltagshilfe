@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { CONTACT_SOURCE_VALUES } from "@/lib/contact-source";
 
 const MAX_MESSAGE_LENGTH = 5000;
 const MAX_NAME_LENGTH = 100;
@@ -35,6 +36,9 @@ export const contactSchema = z.object({
     .string()
     .min(1, "Bitte geben Sie eine Nachricht ein.")
     .max(MAX_MESSAGE_LENGTH, `Die Nachricht darf maximal ${MAX_MESSAGE_LENGTH} Zeichen haben.`),
+  contactSource: z.enum(CONTACT_SOURCE_VALUES as unknown as [string, ...string[]], {
+    errorMap: () => ({ message: "Bitte geben Sie an, wie Sie auf uns aufmerksam geworden sind." }),
+  }),
   datenschutz: z.literal(true, {
     errorMap: () => ({ message: "Bitte stimmen Sie der Datenschutzerklärung zu." }),
   }),

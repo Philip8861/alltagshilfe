@@ -24,6 +24,7 @@ import {
 } from "@/lib/partner/service-slug-styles";
 import { formatProvisionEur } from "@/lib/partner/partner-tip-payout";
 import { AdminHomepageTrafficPanel } from "@/components/partner/admin/AdminHomepageTrafficPanel";
+import { AdminContactSourcesPanel } from "@/components/partner/admin/AdminContactSourcesPanel";
 import { PartnerAdminPayoutSection } from "@/components/partner/admin/PartnerAdminPayoutSection";
 
 const AdminStatisticsCharts = dynamic(
@@ -1275,7 +1276,12 @@ export function PartnerAdminDashboard({
               </div>
                 </>
               ) : (
-                <AdminHomepageTrafficPanel chartYear={chartYear} />
+                <>
+                  <AdminHomepageTrafficPanel chartYear={chartYear} />
+                  <div className="mt-10 border-t border-[#0F4F68]/15 pt-8">
+                    <AdminContactSourcesPanel chartYear={chartYear} />
+                  </div>
+                </>
               )}
             </section>
           ) : null}

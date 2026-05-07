@@ -265,3 +265,77 @@ export async function resetHomepageSiteAnalyticsAction(): Promise<
     return { ok: false, message: "Zähler konnten nicht zurückgesetzt werden." };
   }
 }
+
+/* ───────────── Kontaktquellen-Statistik (anonyme Aggregate) ───────────── */
+
+export type ContactSourceStatsRow = {
+  source: string;
+  kind: string;
+  view_count: number;
+};
+
+/**
+ * Aggregiert alle Anfragen nach (Quelle, Formular-Typ) im gewählten Zeitraum.
+ * Liest aus `contact_sources_daily` (Service Role); Personenbezug ist ausgeschlossen,
+ * weil die Tabelle nur (Tag, Quelle, Formular-Typ, Anzahl) speichert.
+ */
+export async function fetchContactSourceStatsAction(
+  year: number,
+  month: number,
+  scope: "monat" | "jahr",
+): Promise<{ ok: true; data: ContactSourceStatsRow[] } | { ok: false; message: string }> {
+  if (!(await getSystemAdminSession())) return { ok: false, message: "Nicht angemeldet." };
+  const svc = createSupabaseServiceRoleClient();
+  if (!svc) return { ok: false, message: "Service nicht konfiguriert." };
+
+  const y = Math.min(2100, Math.max(YEAR_RANGE_START, Math.floor(year)));
+  const m = Math.min(12, Math.max(1, Math.floor(month)));
+  const { from, to } = scope === "monat" ? calendarMonthBounds(y, m) : calendarYearBounds(y);
+
+  const res = await svcRpc(svc, "admin_contact_sources_by_range", {
+    p_from: from,
+    p_to: to,
+  });
+  if (res.error) {
+    console.error("[fetchContactSourceStatsAction]", res.error.message);
+    return {
+      ok: false,
+      message:
+        "Quellen-Auswertung fehlgeschlagen (Migration 018 ausgeführt? Tabelle contact_sources_daily verfügbar?).",
+    };
+  }
+
+  const rows: ContactSourceStatsRow[] = Array.isArray(res.data)
+    ? res.data.map((r: unknown) => {
+        const row = r as Record<string, unknown>;
+        return {
+          source: String(row.source ?? ""),
+          kind: String(row.kind ?? "contact"),
+          view_count: Number(row.view_count ?? 0),
+        };
+      })
+    : [];
+  return { ok: true, data: rows };
+}
+
+/**
+ * Löscht alle aggregierten Kontaktquellen (`contact_sources_daily`).
+ * Nur System-Admin; nicht rückgängig zu machen.
+ */
+export async function resetContactSourceStatsAction(): Promise<
+  { ok: true } | { ok: false; message: string }
+> {
+  if (!(await getSystemAdminSession())) return { ok: false, message: "Nicht angemeldet." };
+  const svc = createSupabaseServiceRoleClient();
+  if (!svc) return { ok: false, message: "Service nicht konfiguriert." };
+
+  try {
+    const { error } = await svc.from("contact_sources_daily").delete().gte("views", 0);
+    if (error) throw new Error(error.message);
+    revalidatePath("/partner/admin");
+    return { ok: true };
+  } catch (e) {
+    console.error("[resetContactSourceStatsAction]", e);
+    return { ok: false, message: "Zähler konnten nicht zurückgesetzt werden." };
+  }
+}

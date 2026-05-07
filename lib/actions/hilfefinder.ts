@@ -11,6 +11,11 @@ import {
   parseNotificationEmailList,
   sendInternalMail,
 } from "@/lib/email/internal-smtp";
+import {
+  getContactSourceLabel,
+  isValidContactSource,
+} from "@/lib/contact-source";
+import { recordContactSource } from "@/lib/contact-source-tracking";
 
 /** Zentrale Adresse, wenn weder NOTIFICATION_TO_CONTACT noch NOTIFICATION_TO gesetzt sind. */
 const DEFAULT_CONTACT_INBOX = "info@alltagshilfe-sued.de";
@@ -53,6 +58,8 @@ export type HilfefinderInput = {
   /** Vom Nutzer ausgewählte Leistungen (Anzeigetexte). */
   leistungen?: string[];
   kontaktArt: HilfefinderKontaktArt;
+  /** Pflichtangabe „Wie sind Sie auf uns aufmerksam geworden?" (Slug). */
+  contactSource?: string;
   datenschutz: boolean;
   /** Honeypot (sollte stets leer bleiben). */
   website?: string;
@@ -95,6 +102,14 @@ export async function submitHilfefinder(input: HilfefinderInput): Promise<Hilfef
         "Bitte bestätigen Sie, dass Sie die Datenschutzerklärung gelesen haben und der Verarbeitung Ihrer Daten zustimmen.",
     };
   }
+  if (!isValidContactSource(input.contactSource)) {
+    return {
+      success: false,
+      error: "Bitte geben Sie an, wie Sie auf uns aufmerksam geworden sind.",
+    };
+  }
+  const contactSource = input.contactSource;
+  const sourceLabel = getContactSourceLabel(contactSource);
 
   const ip = await getClientIp();
   const { success: allowed } = rateLimit(`hilfefinder:${ip}`);
@@ -138,6 +153,7 @@ export async function submitHilfefinder(input: HilfefinderInput): Promise<Hilfef
     `Für wen: ${fuerWenLabel}`,
     `PLZ: ${plzNorm || "-"}`,
     standort ? `Standort: ${standort.name}` : null,
+    `Wie auf uns aufmerksam geworden: ${sourceLabel}`,
     "",
     "Ausgewählte Leistungen:",
     leistungenBlock,
@@ -160,6 +176,7 @@ export async function submitHilfefinder(input: HilfefinderInput): Promise<Hilfef
     { label: "PLZ", value: plzNorm || "-" },
   ];
   if (standort) rows.push({ label: "Standort", value: standort.name });
+  rows.push({ label: "Aufmerksam geworden über", value: sourceLabel });
   rows.push({ label: "Leistungen", value: leistungenInline });
   rows.push({ label: "Name", value: `${vorname} ${nachname}` });
   rows.push({ label: "E-Mail", value: email });
@@ -190,6 +207,8 @@ export async function submitHilfefinder(input: HilfefinderInput): Promise<Hilfef
           finalTo.join(", ") +
           ")",
       );
+      /* Auch ohne SMTP-Konfiguration die Statistik zählen, damit der Admin sieht, dass ein Versuch erfolgte. */
+      await recordContactSource(contactSource, "hilfefinder");
       /* In Entwicklungsumgebungen ohne SMTP nicht hart abbrechen, sonst Erfolgseindruck. */
       return { success: true };
     }
@@ -198,6 +217,9 @@ export async function submitHilfefinder(input: HilfefinderInput): Promise<Hilfef
       error: "Die Anfrage konnte nicht gesendet werden. Bitte versuchen Sie es später erneut.",
     };
   }
+
+  /* Anonyme Aggregat-Statistik (kein Personenbezug). */
+  await recordContactSource(contactSource, "hilfefinder");
 
   return { success: true };
 }

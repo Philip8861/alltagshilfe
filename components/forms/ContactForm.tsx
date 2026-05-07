@@ -4,6 +4,7 @@ import { useState, type FormEvent } from "react";
 import Link from "next/link";
 import { submitContact } from "@/lib/actions/contact";
 import { CONTACT_TOPICS, type ContactFormData } from "@/lib/validations/contact";
+import { ContactSourceSelect } from "@/components/forms/ContactSourceSelect";
 import { cn } from "@/lib/utils";
 
 export type ContactFormProps = {
@@ -210,6 +211,8 @@ export function ContactForm(props: ContactFormProps = {}) {
           placeholder="Ihre Nachricht"
         />
       </div>
+
+      <ContactSourceSelect id={pid("contact-source")} disabled={pending} />
 
       <div
         className={cn(

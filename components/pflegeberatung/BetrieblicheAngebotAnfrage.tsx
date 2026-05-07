@@ -14,6 +14,7 @@ import {
 } from "react";
 import { createPortal } from "react-dom";
 import { submitBetrieblichAngebotAnfrage } from "@/lib/actions/betrieblich-angebot-anfrage";
+import { ContactSourceSelect } from "@/components/forms/ContactSourceSelect";
 import { cn } from "@/lib/utils";
 
 type AngebotCtx = { open: () => void };
@@ -273,6 +274,8 @@ export function BetrieblichAngebotDialogProvider({ children }: { children: React
                       placeholder="Ihr Anliegen in wenigen Sätzen"
                     />
                   </div>
+
+                  <ContactSourceSelect id="betrieblich-source" disabled={pending} />
 
                   <input type="text" name="website" autoComplete="off" tabIndex={-1} className="sr-only" aria-hidden />
 

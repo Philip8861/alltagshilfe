@@ -19,6 +19,7 @@ import {
   KARRIERE_MAX_ANHAENGE,
   validateKarriereAttachmentsList,
 } from "@/lib/karriere-attachments";
+import { CONTACT_SOURCE_OPTIONS, getContactSourceLabel } from "@/lib/contact-source";
 import { cn } from "@/lib/utils";
 
 type BewerbungsWizardDialogProps = {
@@ -49,6 +50,8 @@ type WizardAnswers = {
   plz: string;
   ort: string;
   erreichbarkeit: string;
+  /** Slug aus CONTACT_SOURCE_OPTIONS – Pflicht im Schritt „Kontakt". */
+  contactSource: string;
 };
 
 const EINTRITT_OPTIONS = [
@@ -127,6 +130,7 @@ const INITIAL: WizardAnswers = {
   plz: "",
   ort: "",
   erreichbarkeit: "",
+  contactSource: "",
 };
 
 function buildInitialWizardAnswers(initialPlz?: string): WizardAnswers {
@@ -317,7 +321,8 @@ export function BewerbungsWizardDialog({ jobTitle, initialPlz, onDismiss }: Bewe
         answers.phone.trim().length > 3 &&
         plzDigits.length === 5 &&
         answers.ort.trim().length > 0 &&
-        Boolean(answers.erreichbarkeit)
+        Boolean(answers.erreichbarkeit) &&
+        Boolean(answers.contactSource)
       );
     }
     return true;
@@ -358,6 +363,7 @@ export function BewerbungsWizardDialog({ jobTitle, initialPlz, onDismiss }: Bewe
     fd.append("ort", answers.ort.trim());
     fd.append("stellenangebot", stellenangebot);
     fd.append("anmerkung", anmerkung);
+    fd.append("contactSource", answers.contactSource);
     fd.append("website", "");
     fd.append("agbs", "on");
     fd.append("datenschutzBewerbung", "on");
@@ -842,6 +848,34 @@ export function BewerbungsWizardDialog({ jobTitle, initialPlz, onDismiss }: Bewe
                   onChange={(id) => setAnswers((p) => ({ ...p, erreichbarkeit: id }))}
                 />
               </div>
+
+              <div>
+                <label
+                  htmlFor="wizard-contact-source"
+                  className="block text-sm font-semibold text-[#0F4F68]"
+                >
+                  Wie sind Sie auf uns aufmerksam geworden? *
+                </label>
+                <select
+                  id="wizard-contact-source"
+                  name="contactSource"
+                  required
+                  value={answers.contactSource}
+                  onChange={(e) =>
+                    setAnswers((p) => ({ ...p, contactSource: e.target.value }))
+                  }
+                  className="mt-1 block w-full rounded-lg border border-[#0F4F68]/25 px-4 py-2.5 text-neutral-900 focus:border-[#0F4F68] focus:outline-none focus:ring-1 focus:ring-[#0F4F68]"
+                >
+                  <option value="" disabled>
+                    Bitte wählen …
+                  </option>
+                  {CONTACT_SOURCE_OPTIONS.map((opt) => (
+                    <option key={opt.value} value={opt.value}>
+                      {opt.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
             </div>
           )}
 
@@ -888,6 +922,10 @@ export function BewerbungsWizardDialog({ jobTitle, initialPlz, onDismiss }: Bewe
                   <li>
                     <span className="font-semibold text-[#0F4F68]">PLZ / Ort:</span>{" "}
                     {answers.plz.replace(/\D/g, "").slice(0, 5)} {answers.ort.trim()}
+                  </li>
+                  <li>
+                    <span className="font-semibold text-[#0F4F68]">Aufmerksam geworden über:</span>{" "}
+                    {getContactSourceLabel(answers.contactSource)}
                   </li>
                   {wizardFiles.length > 0 ? (
                     <li>

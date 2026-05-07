@@ -7,6 +7,8 @@ import { rateLimit } from "@/lib/rate-limit";
 import { getClientIp } from "@/lib/security";
 import { buildBrandedNotificationHtml } from "@/lib/email/branded-html";
 import { sendInternalMail } from "@/lib/email/internal-smtp";
+import { getContactSourceLabel } from "@/lib/contact-source";
+import { recordContactSource } from "@/lib/contact-source-tracking";
 
 export type KarriereResult = { success: boolean; error?: string };
 
@@ -30,6 +32,7 @@ export async function submitKarriere(formData: FormData): Promise<KarriereResult
     ort: formData.get("ort") ?? "",
     stellenangebot: formData.get("stellenangebot") ?? "",
     agbs: formData.get("agbs") === "on",
+    contactSource: formData.get("contactSource") ?? "",
     anmerkung: String(formData.get("anmerkung") ?? ""),
     website: formData.get("website") ?? "",
   };
@@ -46,6 +49,7 @@ export async function submitKarriere(formData: FormData): Promise<KarriereResult
       first.ort?.[0] ??
       first.stellenangebot?.[0] ??
       first.anmerkung?.[0] ??
+      first.contactSource?.[0] ??
       first.agbs?.[0] ??
       "Bitte prüfen Sie Ihre Eingaben.";
     return { success: false, error: message };
@@ -69,6 +73,8 @@ export async function submitKarriere(formData: FormData): Promise<KarriereResult
     return { success: false, error: anhaenge.error };
   }
 
+  const sourceLabel = getContactSourceLabel(data.contactSource);
+
   const text = [
     "Neue Karriere-Anfrage über die Website",
     "",
@@ -77,6 +83,7 @@ export async function submitKarriere(formData: FormData): Promise<KarriereResult
     `Telefon: ${data.phone}`,
     `PLZ / Ort: ${data.plz} ${data.ort}`,
     `Stellenangebot: ${data.stellenangebot}`,
+    `Wie auf uns aufmerksam geworden: ${sourceLabel}`,
     ...(data.anmerkung ? ["", "Zusatzangaben:", data.anmerkung] : []),
     ...(anhaenge.attachments.length > 0
       ? ["", `Anhänge (${anhaenge.attachments.length}):`, ...anhaenge.attachments.map((a) => `– ${a.filename}`)]
@@ -92,6 +99,7 @@ export async function submitKarriere(formData: FormData): Promise<KarriereResult
       { label: "Telefon", value: data.phone },
       { label: "PLZ / Ort", value: `${data.plz} ${data.ort}` },
       { label: "Stellenangebot", value: data.stellenangebot },
+      { label: "Aufmerksam geworden über", value: sourceLabel },
       ...(data.anmerkung ? [{ label: "Zusatzangaben", value: data.anmerkung }] : []),
     ],
   });
@@ -109,6 +117,9 @@ export async function submitKarriere(formData: FormData): Promise<KarriereResult
       "[karriere] SMTP oder NOTIFICATION_TO_KARRIERE / NOTIFICATION_TO fehlt – keine E-Mail versendet",
     );
   }
+
+  /* Anonyme Aggregat-Statistik (kein Personenbezug). */
+  await recordContactSource(data.contactSource, "karriere");
 
   if (wizardQuelle === "kurzcheck") {
     return { success: true };

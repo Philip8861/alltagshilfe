@@ -17,6 +17,8 @@ import {
   parseNotificationEmailList,
   sendInternalMail,
 } from "@/lib/email/internal-smtp";
+import { getContactSourceLabel } from "@/lib/contact-source";
+import { recordContactSource } from "@/lib/contact-source-tracking";
 
 export type ContactResult = { success: boolean; error?: string };
 
@@ -85,6 +87,7 @@ export async function submitContact(formData: FormData): Promise<ContactResult> 
     phone: phoneRaw && String(phoneRaw).trim() !== "" ? String(phoneRaw).trim() : undefined,
     topic: formData.get("topic") ?? "",
     message: formData.get("message") ?? "",
+    contactSource: formData.get("contactSource") ?? "",
     datenschutz: formData.get("datenschutz") === "on",
     website: formData.get("website") ?? "",
   };
@@ -99,6 +102,7 @@ export async function submitContact(formData: FormData): Promise<ContactResult> 
       first.phone?.[0] ??
       first.topic?.[0] ??
       first.message?.[0] ??
+      first.contactSource?.[0] ??
       first.datenschutz?.[0] ??
       "Bitte prüfen Sie Ihre Eingaben.";
     return { success: false, error: message };
@@ -136,6 +140,8 @@ export async function submitContact(formData: FormData): Promise<ContactResult> 
     ? normalizeRoutingPlzForStandort(verifiedSlug, routingPlzRaw)
     : undefined;
 
+  const sourceLabel = getContactSourceLabel(data.contactSource);
+
   const text = [
     "Neue Kontaktanfrage über die Website",
     "",
@@ -145,6 +151,7 @@ export async function submitContact(formData: FormData): Promise<ContactResult> 
     `Thema: ${data.topic}`,
     standortCtxForEmail ? `Standort (Seite): ${standortCtxForEmail.name}` : null,
     routingPlzNormalized ? `PLZ (Kontext): ${routingPlzNormalized}` : null,
+    `Wie auf uns aufmerksam geworden: ${sourceLabel}`,
     "",
     data.message,
   ]
@@ -159,6 +166,7 @@ export async function submitContact(formData: FormData): Promise<ContactResult> 
   rows.push({ label: "Thema", value: data.topic });
   if (standortCtxForEmail) rows.push({ label: "Standort (Seite)", value: standortCtxForEmail.name });
   if (routingPlzNormalized) rows.push({ label: "PLZ (Kontext)", value: routingPlzNormalized });
+  rows.push({ label: "Aufmerksam geworden über", value: sourceLabel });
 
   const html = buildBrandedNotificationHtml({
     kindBadge: "Kontakt",
@@ -211,6 +219,9 @@ export async function submitContact(formData: FormData): Promise<ContactResult> 
       );
     }
   }
+
+  /* Anonyme Aggregat-Statistik (kein Personenbezug). */
+  await recordContactSource(data.contactSource, "contact");
 
   redirect("/kontakt/danke");
 }

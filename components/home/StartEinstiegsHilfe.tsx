@@ -16,6 +16,7 @@ import {
 } from "@/components/hilfefinder/HilfefinderServiceMarkups";
 import { findStandortByPlz, type Standort } from "@/config/standorte";
 import { submitHilfefinder } from "@/lib/actions/hilfefinder";
+import { CONTACT_SOURCE_OPTIONS } from "@/lib/contact-source";
 import { cn } from "@/lib/utils";
 
 type ServiceKey = HilfefinderServiceKey;
@@ -93,6 +94,7 @@ export function HilfefinderProvider({ children }: { children: ReactNode }) {
   const [email, setEmail] = useState("");
   const [kontaktWunsch, setKontaktWunsch] = useState("");
   const [nachricht, setNachricht] = useState("");
+  const [contactSource, setContactSource] = useState("");
   const [datenschutz, setDatenschutz] = useState(false);
 
   const [error, setError] = useState("");
@@ -145,6 +147,7 @@ export function HilfefinderProvider({ children }: { children: ReactNode }) {
     setEmail("");
     setKontaktWunsch("");
     setNachricht("");
+    setContactSource("");
     setDatenschutz(false);
     setError("");
     setSubmitting(false);
@@ -213,6 +216,10 @@ export function HilfefinderProvider({ children }: { children: ReactNode }) {
       setError("Bitte füllen Sie Vorname, Nachname, Telefonnummer und E-Mail aus.");
       return;
     }
+    if (!contactSource) {
+      setError("Bitte geben Sie an, wie Sie auf uns aufmerksam geworden sind.");
+      return;
+    }
     if (!datenschutz) {
       setError(
         "Bitte bestätigen Sie, dass Sie die Datenschutzerklärung gelesen haben und der Verarbeitung Ihrer Daten zustimmen.",
@@ -234,6 +241,7 @@ export function HilfefinderProvider({ children }: { children: ReactNode }) {
         plz: plzNorm,
         leistungen: ausgewaehlteLeistungen.map((l) => l.label),
         kontaktArt: kontaktArt as KontaktArt,
+        contactSource,
         datenschutz,
       });
       if (!result.success) {
@@ -487,24 +495,51 @@ export function HilfefinderProvider({ children }: { children: ReactNode }) {
                 ) : null}
 
                 {kontaktArt === "rueckruf" || kontaktArt === "selbst" ? (
-                  <div className="mt-5 rounded-xl border border-[#0F4F68]/12 bg-[#fafbfc] p-4 sm:p-5">
-                    <label className="flex cursor-pointer items-start gap-3 text-sm text-neutral-700 sm:text-base">
-                      <input
-                        type="checkbox"
-                        checked={datenschutz}
-                        onChange={(e) => setDatenschutz(e.target.checked)}
-                        className="mt-1 h-4 w-4 shrink-0 rounded border-neutral-300 text-[#0F4F68] focus:ring-[#0F4F68]"
-                        aria-required="true"
-                      />
-                      <span>
-                        Ich habe die{" "}
-                        <Link href="/datenschutz" className="font-semibold text-[#0F4F68] underline underline-offset-2 hover:no-underline">
-                          Datenschutzerklärung
-                        </Link>{" "}
-                        gelesen und stimme der Verarbeitung meiner Daten zum Zweck der Kontaktaufnahme zu. *
-                      </span>
-                    </label>
-                  </div>
+                  <>
+                    <div className="mt-5">
+                      <label
+                        htmlFor="hilfefinder-contact-source"
+                        className="block text-sm font-semibold text-[#0F4F68]"
+                      >
+                        Wie sind Sie auf uns aufmerksam geworden? *
+                      </label>
+                      <select
+                        id="hilfefinder-contact-source"
+                        name="contactSource"
+                        required
+                        value={contactSource}
+                        onChange={(e) => setContactSource(e.target.value)}
+                        className="mt-1 block w-full rounded-xl border border-[#0F4F68]/20 px-4 py-3 text-base outline-none ring-0 transition focus:border-[#0F4F68]/45"
+                      >
+                        <option value="" disabled>
+                          Bitte wählen …
+                        </option>
+                        {CONTACT_SOURCE_OPTIONS.map((opt) => (
+                          <option key={opt.value} value={opt.value}>
+                            {opt.label}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                    <div className="mt-5 rounded-xl border border-[#0F4F68]/12 bg-[#fafbfc] p-4 sm:p-5">
+                      <label className="flex cursor-pointer items-start gap-3 text-sm text-neutral-700 sm:text-base">
+                        <input
+                          type="checkbox"
+                          checked={datenschutz}
+                          onChange={(e) => setDatenschutz(e.target.checked)}
+                          className="mt-1 h-4 w-4 shrink-0 rounded border-neutral-300 text-[#0F4F68] focus:ring-[#0F4F68]"
+                          aria-required="true"
+                        />
+                        <span>
+                          Ich habe die{" "}
+                          <Link href="/datenschutz" className="font-semibold text-[#0F4F68] underline underline-offset-2 hover:no-underline">
+                            Datenschutzerklärung
+                          </Link>{" "}
+                          gelesen und stimme der Verarbeitung meiner Daten zum Zweck der Kontaktaufnahme zu. *
+                        </span>
+                      </label>
+                    </div>
+                  </>
                 ) : null}
               </div>
             ) : null}
