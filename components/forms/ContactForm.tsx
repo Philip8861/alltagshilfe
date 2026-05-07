@@ -23,6 +23,8 @@ export type ContactFormProps = {
   defaultTopic?: ContactFormData["topic"];
   /** Vorbefüllter Nachrichtentext (Anwender kann ihn anpassen). */
   initialMessage?: string;
+  /** Ausrichtung des Submit-Buttons: `"left"` (Standard) oder `"center"`. */
+  submitAlign?: "left" | "center";
 };
 
 export function ContactForm(props: ContactFormProps = {}) {
@@ -34,6 +36,7 @@ export function ContactForm(props: ContactFormProps = {}) {
     hiddenTopic = "Kooperation",
     defaultTopic,
     initialMessage,
+    submitAlign = "left",
   } = props;
   const pid = (base: string) => (fieldIdPrefix ? `${fieldIdPrefix}${base}` : base);
   const [error, setError] = useState<string | null>(null);
@@ -265,7 +268,7 @@ export function ContactForm(props: ContactFormProps = {}) {
         </div>
       </div>
 
-      <div>
+      <div className={submitAlign === "center" ? "flex justify-center" : undefined}>
         <button
           type="submit"
           disabled={pending}

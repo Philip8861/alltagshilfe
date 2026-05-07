@@ -112,13 +112,13 @@ export default function KooperationPage() {
                 style={{ animationDelay: "400ms" }}
               >
                 <KooperationHeroCTAButton
-                  className="inline-flex min-h-[3.625rem] min-w-[11.5rem] items-center justify-center rounded-xl bg-[#F78F2E] px-8 py-4 text-[1.2rem] font-semibold text-white hover:opacity-95 focus:outline-none focus:ring-2 focus:ring-[#F78F2E] focus:ring-offset-2 sm:min-h-[3.75rem] sm:px-9 sm:py-[1.15rem] sm:text-[1.21875rem]"
+                  className="inline-flex min-h-[3.625rem] min-w-[11.5rem] items-center justify-center whitespace-nowrap rounded-xl bg-[#F78F2E] px-4 py-4 text-[clamp(0.95rem,3.4vw+0.2rem,1.2rem)] font-semibold text-white hover:opacity-95 focus:outline-none focus:ring-2 focus:ring-[#F78F2E] focus:ring-offset-2 sm:min-h-[3.75rem] sm:px-9 sm:py-[1.15rem] sm:text-[1.21875rem]"
                 >
                   Jetzt Kooperationspartner werden
                 </KooperationHeroCTAButton>
                 <Link
                   href="/partner-demo/dashboard"
-                  className="inline-flex min-h-[3.625rem] min-w-[11.5rem] items-center justify-center rounded-xl border-2 border-[#0F4F68] bg-white px-8 py-4 text-[1.2rem] font-semibold text-[#0F4F68] hover:bg-[#F2F9FA] focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2 sm:min-h-[3.75rem] sm:px-9 sm:py-[1.15rem] sm:text-[1.21875rem]"
+                  className="inline-flex min-h-[3.625rem] min-w-[11.5rem] items-center justify-center whitespace-nowrap rounded-xl border-2 border-[#0F4F68] bg-white px-4 py-4 text-[clamp(0.95rem,3.4vw+0.2rem,1.2rem)] font-semibold text-[#0F4F68] hover:bg-[#F2F9FA] focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2 sm:min-h-[3.75rem] sm:px-9 sm:py-[1.15rem] sm:text-[1.21875rem]"
                 >
                   Demo ansehen
                 </Link>

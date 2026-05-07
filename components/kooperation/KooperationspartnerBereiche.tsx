@@ -517,6 +517,7 @@ export function KooperationspartnerBereiche() {
                 topicHidden
                 hiddenTopic="Kooperation"
                 initialMessage={modalMessageFor(openBereich)}
+                submitAlign="center"
               />
             </div>
           </div>
