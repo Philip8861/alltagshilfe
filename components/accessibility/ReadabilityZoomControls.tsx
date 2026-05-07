@@ -61,7 +61,6 @@ export function ReadabilityZoomControls() {
   const [enhancedCursor, setEnhancedCursor] = useState(false);
   const [open, setOpen] = useState(false);
   const panelRef = useRef<HTMLDivElement>(null);
-  const [isKonfiguratorOpen, setIsKonfiguratorOpen] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [hasReadOnce, setHasReadOnce] = useState(false);
   const [readAloudError, setReadAloudError] = useState("");
@@ -99,9 +98,7 @@ export function ReadabilityZoomControls() {
   useEffect(() => {
     const onKonfiguratorState = (event: Event) => {
       const custom = event as CustomEvent<{ open?: boolean }>;
-      const openState = Boolean(custom.detail?.open);
-      setIsKonfiguratorOpen(openState);
-      if (openState) setOpen(false);
+      if (Boolean(custom.detail?.open)) setOpen(false);
     };
     window.addEventListener("ahs-konfigurator-open-state", onKonfiguratorState as EventListener);
     return () => window.removeEventListener("ahs-konfigurator-open-state", onKonfiguratorState as EventListener);
