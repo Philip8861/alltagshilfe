@@ -14,14 +14,14 @@ export default function UeberUnsPage() {
       <Container>
         <section className="relative pt-0">
           {/*
-           * Mobile/Tablet: Wrapper darf weiterhin über das Container-Padding hinausragen (-mx-4/-mx-6),
-           * bekommt aber px-3 sm:px-4 Innenreserve, damit der Drop-Shadow rechts/unten nicht am Viewport-
-           * bzw. Container-Rand abgeschnitten wird. Desktop-Layout (lg:) bleibt unverändert.
+           * Bild auf Mobile/Tablet wieder bündig zum rechten Viewport-Rand (-mx-…).
+           * Der Drop-Shadow ist dezenter (kleinere Blur-Werte), damit der Halo nicht am Rand abgeschnitten wirkt.
+           * Desktop-Layout (lg:) bleibt unverändert.
            */}
-          <div className="-mx-4 min-w-0 px-3 pb-2 sm:-mx-6 sm:px-4 sm:pb-3 lg:mx-0 lg:px-0 lg:pb-0">
+          <div className="-mx-4 min-w-0 sm:-mx-6 lg:mx-0">
             <div className="flex min-w-0 justify-end">
               <div className="relative ml-auto w-full min-w-0 max-w-[50rem] lg:mr-[calc((100vw-100%)/-2)]">
-                <div className="w-full min-w-0 [filter:drop-shadow(0_10px_22px_rgba(15,79,104,0.2))_drop-shadow(0_4px_12px_rgba(15,79,104,0.12))]">
+                <div className="w-full min-w-0 [filter:drop-shadow(0_8px_14px_rgba(15,79,104,0.18))_drop-shadow(0_3px_6px_rgba(15,79,104,0.10))]">
                   <Image
                     src="/images/über_uns.webp"
                     alt="Alltagshilfe-Süd Teamvorstellung"
