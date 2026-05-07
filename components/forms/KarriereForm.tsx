@@ -321,6 +321,8 @@ export function KarriereForm({ hideFileAttachments = false }: KarriereFormProps)
         </div>
       ) : null}
 
+      <ContactSourceSelect id="karriere-source" disabled={pending} />
+
       <div>
         <label htmlFor="karriere-anmerkung" className="block text-sm font-medium text-neutral-700">
           Zusatzangaben (optional)
@@ -337,8 +339,6 @@ export function KarriereForm({ hideFileAttachments = false }: KarriereFormProps)
         />
         <p className="mt-1 text-xs text-neutral-500">Nur beruflich relevante Informationen; max. 4000 Zeichen.</p>
       </div>
-
-      <ContactSourceSelect id="karriere-source" disabled={pending} />
 
       <div className="sr-only" aria-hidden="true">
         <label htmlFor="karriere-website">Website</label>

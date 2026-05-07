@@ -261,6 +261,8 @@ export function BetrieblichAngebotDialogProvider({ children }: { children: React
                     />
                   </div>
 
+                  <ContactSourceSelect id="betrieblich-source" disabled={pending} />
+
                   <div>
                     <label htmlFor="betrieblich-bemerkung" className="block text-sm font-medium text-neutral-700">
                       Bemerkung (optional)
@@ -274,8 +276,6 @@ export function BetrieblichAngebotDialogProvider({ children }: { children: React
                       placeholder="Ihr Anliegen in wenigen Sätzen"
                     />
                   </div>
-
-                  <ContactSourceSelect id="betrieblich-source" disabled={pending} />
 
                   <input type="text" name="website" autoComplete="off" tabIndex={-1} className="sr-only" aria-hidden />
 

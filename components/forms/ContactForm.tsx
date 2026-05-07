@@ -196,6 +196,8 @@ export function ContactForm(props: ContactFormProps = {}) {
         />
       </div>
 
+      <ContactSourceSelect id={pid("contact-source")} disabled={pending} />
+
       <div>
         <label htmlFor={pid("contact-message")} className="block text-sm font-medium text-neutral-700">
           Nachricht *
@@ -211,8 +213,6 @@ export function ContactForm(props: ContactFormProps = {}) {
           placeholder="Ihre Nachricht"
         />
       </div>
-
-      <ContactSourceSelect id={pid("contact-source")} disabled={pending} />
 
       <div
         className={cn(
