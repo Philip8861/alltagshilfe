@@ -15,6 +15,7 @@ import {
   hilfefinderOptionButtonClass,
 } from "@/components/hilfefinder/HilfefinderServiceMarkups";
 import { findStandortByPlz, type Standort } from "@/config/standorte";
+import { submitHilfefinder } from "@/lib/actions/hilfefinder";
 import { cn } from "@/lib/utils";
 
 type ServiceKey = HilfefinderServiceKey;
@@ -95,6 +96,7 @@ export function HilfefinderProvider({ children }: { children: ReactNode }) {
   const [datenschutz, setDatenschutz] = useState(false);
 
   const [error, setError] = useState("");
+  const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
     setPortalReady(true);
@@ -145,6 +147,7 @@ export function HilfefinderProvider({ children }: { children: ReactNode }) {
     setNachricht("");
     setDatenschutz(false);
     setError("");
+    setSubmitting(false);
   };
 
   const weiter = () => {
@@ -199,34 +202,9 @@ export function HilfefinderProvider({ children }: { children: ReactNode }) {
     }
     return ausgewaehlteLeistungen;
   }, [ausgewaehlteLeistungen]);
-  const leistungsText = useMemo(
-    () => ausgewaehlteLeistungen.map((s) => `- ${s.label}`).join("\n"),
-    [ausgewaehlteLeistungen]
-  );
-  const mailtoHref = useMemo(() => {
-    const body = [
-      "Anfrage aus dem Hilfe-Finder",
-      "",
-      `Pflegegrad: ${pflegegrad || "-"}`,
-      `Für wen: ${fuerWen === "selbst" ? "Für mich" : fuerWen === "andere" ? "Für Angehörige/Bekannte" : "-"}`,
-      `PLZ: ${plzNorm || "-"}`,
-      "",
-      "Ausgewählte Leistungen:",
-      leistungsText || "-",
-      "",
-      `Vorname: ${vorname || "-"}`,
-      `Nachname: ${nachname || "-"}`,
-      `Telefon: ${telefon || "-"}`,
-      `E-Mail: ${email || "-"}`,
-      `Passender Tag/Uhrzeit: ${besteZeit || "-"}`,
-      `Hinweis: ${kontaktWunsch || "-"}`,
-      `Nachricht: ${nachricht || "-"}`,
-    ].join("\n");
-    return `mailto:info@alltagshilfe-sued.de?subject=${encodeURIComponent("Anfrage über Hilfe-Finder")}&body=${encodeURIComponent(body)}`;
-  }, [besteZeit, email, fuerWen, kontaktWunsch, leistungsText, nachricht, pflegegrad, plzNorm, nachname, telefon, vorname]);
-
-  const absenden = () => {
+  const absenden = async () => {
     setError("");
+    if (submitting) return;
     if (!kontaktArt) {
       setError("Bitte wählen Sie eine Kontaktart aus.");
       return;
@@ -241,8 +219,34 @@ export function HilfefinderProvider({ children }: { children: ReactNode }) {
       );
       return;
     }
-    if (kontaktArt !== "selbst") window.location.href = mailtoHref;
-    setStep(8);
+
+    setSubmitting(true);
+    try {
+      const result = await submitHilfefinder({
+        vorname,
+        nachname,
+        email,
+        telefon,
+        besteZeit,
+        nachricht: kontaktWunsch ? `${kontaktWunsch}\n\n${nachricht}`.trim() : nachricht,
+        pflegegrad,
+        fuerWen,
+        plz: plzNorm,
+        leistungen: ausgewaehlteLeistungen.map((l) => l.label),
+        kontaktArt: kontaktArt as KontaktArt,
+        datenschutz,
+      });
+      if (!result.success) {
+        setError(result.error ?? "Die Anfrage konnte nicht gesendet werden. Bitte versuchen Sie es später erneut.");
+        return;
+      }
+      setStep(8);
+    } catch (e) {
+      console.error("[hilfefinder] submit error", e);
+      setError("Die Anfrage konnte nicht gesendet werden. Bitte versuchen Sie es später erneut.");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const openFinder = useCallback(() => setStarted(true), []);
@@ -580,9 +584,10 @@ export function HilfefinderProvider({ children }: { children: ReactNode }) {
                 <button
                   type="button"
                   onClick={absenden}
-                  className="inline-flex min-h-[50px] items-center justify-center rounded-xl bg-[#F78F2E] px-6 py-2.5 text-[1.03rem] font-semibold text-white hover:bg-[#e67e22]"
+                  disabled={submitting}
+                  className="inline-flex min-h-[50px] items-center justify-center rounded-xl bg-[#F78F2E] px-6 py-2.5 text-[1.03rem] font-semibold text-white hover:bg-[#e67e22] disabled:cursor-not-allowed disabled:opacity-70"
                 >
-                  Anfrage senden
+                  {submitting ? "Wird gesendet …" : "Anfrage senden"}
                 </button>
               ) : null}
             </div>
