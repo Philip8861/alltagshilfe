@@ -4,8 +4,15 @@ import Link from "next/link";
 import { useCallback, useEffect, useId, useRef, useState } from "react";
 import { ContactForm } from "@/components/forms/ContactForm";
 import { siteConfig } from "@/config/site";
+import { KOOP_OPEN_ANFRAGE_EVENT } from "@/components/kooperation/KooperationHeroCTAButton";
 
 const CTA_LABEL = "Jetzt Kooperationspartner werden" as const;
+
+/** „Allgemein“: aus dem Hero-CTA, ohne festen Kooperationsbereich – sammelt Wunsch im Nachrichtenfeld. */
+const ALLGEMEINE_ANFRAGE_BEREICH = {
+  id: "allgemein",
+  title: "Allgemeine Kooperationsanfrage",
+} as const;
 
 /** Wie Kooperations-Hero (`HERO_IMG_BASE`): gleicher Bildschatten. */
 const KOOP_CARD_IMG_SHADOW =
@@ -207,7 +214,9 @@ const BEREICHE: BereichDef[] = [
   },
 ];
 
-function modalMessageFor(bereich: BereichDef): string {
+type ModalAnfrage = { id: string; title: string };
+
+function modalMessageFor(bereich: ModalAnfrage): string {
   return [
     `Kooperationsanfrage – Bereich: ${bereich.title}`,
     "",
@@ -217,7 +226,7 @@ function modalMessageFor(bereich: BereichDef): string {
 }
 
 export function KooperationspartnerBereiche() {
-  const [openBereich, setOpenBereich] = useState<BereichDef | null>(null);
+  const [openBereich, setOpenBereich] = useState<ModalAnfrage | null>(null);
   const closeRef = useRef<HTMLButtonElement>(null);
   const titleId = useId();
 
@@ -241,6 +250,15 @@ export function KooperationspartnerBereiche() {
       document.body.style.overflow = prev;
     };
   }, [openBereich, close]);
+
+  /** Hero-CTA „Jetzt Kooperationspartner werden“ öffnet das Modal mit einer allgemeinen Anfrage. */
+  useEffect(() => {
+    const onOpenAllgemein = () => {
+      setOpenBereich({ id: ALLGEMEINE_ANFRAGE_BEREICH.id, title: ALLGEMEINE_ANFRAGE_BEREICH.title });
+    };
+    window.addEventListener(KOOP_OPEN_ANFRAGE_EVENT, onOpenAllgemein);
+    return () => window.removeEventListener(KOOP_OPEN_ANFRAGE_EVENT, onOpenAllgemein);
+  }, []);
 
   return (
     <section
@@ -459,27 +477,40 @@ export function KooperationspartnerBereiche() {
             role="dialog"
             aria-modal="true"
             aria-labelledby="koop-anfrage-dialog-title"
-            className="relative z-[101] flex max-h-[min(92dvh,920px)] w-full max-w-lg flex-col rounded-t-2xl border border-[#0F4F68]/15 bg-white shadow-2xl sm:max-h-[90vh] sm:rounded-2xl"
+            className="relative z-[101] flex max-h-[min(92dvh,920px)] w-full max-w-lg flex-col overflow-hidden rounded-t-2xl border border-[#0F4F68]/15 bg-white shadow-2xl sm:max-h-[90vh] sm:rounded-2xl"
           >
-            <div className="flex shrink-0 items-start justify-between gap-3 border-b border-neutral-200 px-5 py-4 sm:px-6">
-              <div className="min-w-0">
-                <h2 id="koop-anfrage-dialog-title" className="text-lg font-bold text-[#0F4F68] sm:text-xl">
-                  Anfrage stellen
-                </h2>
-                <p className="mt-1 text-sm text-neutral-600">
-                  Bereich: <span className="font-semibold text-neutral-800">{openBereich.title}</span>
-                </p>
-              </div>
+            <div className="relative shrink-0 border-b border-[#0F4F68]/10 bg-[#EAF3F6] px-5 py-5 text-center sm:px-6 sm:py-6">
+              <h2 id="koop-anfrage-dialog-title" className="text-balance text-lg font-bold text-[#0F4F68] sm:text-xl">
+                Anfrage stellen
+              </h2>
+              <p className="mt-1 text-sm text-neutral-700">
+                Bereich:{" "}
+                <span className="font-semibold text-[#0F4F68]">{openBereich.title}</span>
+              </p>
               <button
                 ref={closeRef}
                 type="button"
                 onClick={close}
-                className="shrink-0 rounded-lg border border-neutral-200 px-3 py-1.5 text-sm font-medium text-neutral-700 transition hover:bg-neutral-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68]"
+                aria-label="Dialog schließen"
+                title="Schließen"
+                className="absolute right-3 top-3 inline-flex h-10 w-10 items-center justify-center rounded-full bg-[#F78F2E] text-white shadow-sm transition hover:opacity-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#F78F2E] focus-visible:ring-offset-2 sm:right-4 sm:top-4"
               >
-                Schließen
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.4"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="h-5 w-5"
+                  aria-hidden
+                >
+                  <path d="M6 6L18 18" />
+                  <path d="M18 6L6 18" />
+                </svg>
               </button>
             </div>
-            <div className="min-h-0 flex-1 overflow-y-auto px-5 py-5 sm:px-6 sm:py-6">
+            <div className="min-h-0 flex-1 overflow-y-auto bg-white px-5 py-5 sm:px-6 sm:py-6">
               <ContactForm
                 key={openBereich.id}
                 fieldIdPrefix="koop-anfrage-"
