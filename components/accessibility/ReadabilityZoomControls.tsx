@@ -1,23 +1,14 @@
 "use client";
 
 import { createPortal } from "react-dom";
-import { useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
+import { useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
-import { AHS_READABILITY_OPEN_EVENT } from "@/components/accessibility/ReadabilityLaunchLink";
+import {
+  AHS_READABILITY_OPEN_EVENT,
+  AHS_READABILITY_TOGGLE_PANEL_EVENT,
+  AHS_READABILITY_UPDATED_EVENT,
+} from "@/lib/readability-constants";
 import { isPflegeboxKonfiguratorPagePath } from "@/lib/pflegebox-konfigurator-path";
-
-const KOSTENFREIE_PFLEGEHILFSMITTEL_LANDING = "/pflegehilfsmittel/kostenfreie-pflegehilfsmittel";
-
-function isKostenfreiePflegehilfsmittelLandingPath(pathname: string | null): boolean {
-  if (!pathname) return false;
-  return (
-    pathname === KOSTENFREIE_PFLEGEHILFSMITTEL_LANDING ||
-    pathname.startsWith(`${KOSTENFREIE_PFLEGEHILFSMITTEL_LANDING}/`)
-  );
-}
-
-const ICON_STROKE = "#FFFFFF";
-const ICON_BG = "#0F4F68";
 
 const STORAGE_KEY_LEVEL = "ahs_readability_zoom_level";
 const STORAGE_KEY_REDUCE_MOTION = "ahs_readability_reduce_motion";
@@ -52,20 +43,9 @@ function applyZoom(level: number) {
   document.documentElement.style.fontSize = `${level}%`;
 }
 
-/** FAB unten rechts: logische Insets + Safe-Area, Top/Left explizit auto (kein Zentrierungs-Erbstyle). */
-function fixedLaunchStyle(bottom: string): CSSProperties {
-  return {
-    position: "fixed",
-    insetBlockStart: "auto",
-    insetInlineStart: "auto",
-    insetBlockEnd: bottom,
-    insetInlineEnd: "max(1rem, env(safe-area-inset-right, 0px))",
-    margin: 0,
-    zIndex: 2147483647,
-    visibility: "visible",
-    opacity: 1,
-    pointerEvents: "auto",
-  };
+function emitReadabilityUpdated(zoomLevel: number) {
+  if (typeof window === "undefined") return;
+  window.dispatchEvent(new CustomEvent(AHS_READABILITY_UPDATED_EVENT, { detail: { zoomLevel } }));
 }
 
 export function ReadabilityZoomControls() {
@@ -81,7 +61,6 @@ export function ReadabilityZoomControls() {
   const [enhancedCursor, setEnhancedCursor] = useState(false);
   const [open, setOpen] = useState(false);
   const panelRef = useRef<HTMLDivElement>(null);
-  const [widgetHidden, setWidgetHidden] = useState(false);
   const [isKonfiguratorOpen, setIsKonfiguratorOpen] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [hasReadOnce, setHasReadOnce] = useState(false);
@@ -95,7 +74,6 @@ export function ReadabilityZoomControls() {
     try {
       if (sessionStorage.getItem(STORAGE_KEY_REOPEN_READABILITY) === "1") {
         sessionStorage.removeItem(STORAGE_KEY_REOPEN_READABILITY);
-        setWidgetHidden(false);
         setOpen(true);
       }
     } catch {
@@ -106,12 +84,17 @@ export function ReadabilityZoomControls() {
   useEffect(() => {
     const onOpenFromFooter = () => {
       if (pathname === "/pflegeberatung") return;
-      setWidgetHidden(false);
       setOpen(true);
     };
     window.addEventListener(AHS_READABILITY_OPEN_EVENT, onOpenFromFooter);
     return () => window.removeEventListener(AHS_READABILITY_OPEN_EVENT, onOpenFromFooter);
   }, [pathname]);
+
+  useEffect(() => {
+    const onToggle = () => setOpen((v) => !v);
+    window.addEventListener(AHS_READABILITY_TOGGLE_PANEL_EVENT, onToggle);
+    return () => window.removeEventListener(AHS_READABILITY_TOGGLE_PANEL_EVENT, onToggle);
+  }, []);
 
   useEffect(() => {
     const onKonfiguratorState = (event: Event) => {
@@ -130,6 +113,7 @@ export function ReadabilityZoomControls() {
     const nextLevel = Number.isFinite(parsed) ? clampZoom(parsed) : 100;
     setZoomLevel(nextLevel);
     applyZoom(nextLevel);
+    emitReadabilityUpdated(nextLevel);
     const storedBwMode = window.localStorage.getItem(STORAGE_KEY_BW_MODE) === "1";
     const storedLineHeightRaw = window.localStorage.getItem(STORAGE_KEY_LINE_HEIGHT);
     const parsedLineHeight = storedLineHeightRaw ? Number.parseInt(storedLineHeightRaw, 10) : 100;
@@ -196,6 +180,7 @@ export function ReadabilityZoomControls() {
     setZoomLevel(level);
     applyZoom(level);
     window.localStorage.setItem(STORAGE_KEY_LEVEL, String(level));
+    emitReadabilityUpdated(level);
   };
 
   const getReadablePageText = () => {
@@ -338,10 +323,6 @@ export function ReadabilityZoomControls() {
     window.localStorage.setItem(STORAGE_KEY_CURSOR_ENHANCED, "0");
   };
 
-  const isKontakt = useMemo(() => pathname === "/kontakt", [pathname]);
-  /** Kostenfrei-Landing: schwebender Lesbarkeits-Button aus – dort Pflegeboxi unten links; Barrierefreiheit weiter über Footer-Link. */
-  const hideLauncher =
-    isKontakt || isKonfiguratorOpen || isKostenfreiePflegehilfsmittelLandingPath(pathname);
   const selectedFontIndex = FONT_OPTIONS.findIndex((f) => f.id === selectedFont);
   const cycleFont = (direction: -1 | 1) => {
     const nextIndex = (selectedFontIndex + direction + FONT_OPTIONS.length) % FONT_OPTIONS.length;
@@ -349,85 +330,6 @@ export function ReadabilityZoomControls() {
     setSelectedFont(nextFont);
     window.localStorage.setItem(STORAGE_KEY_FONT, nextFont);
   };
-
-  const buttonWrapStyle = useMemo(
-    () =>
-      fixedLaunchStyle(
-        isKontakt
-          ? "min(42vh, calc(env(safe-area-inset-bottom, 0px) + max(2rem, 11rem)))"
-          : "max(1rem, env(safe-area-inset-bottom, 0px))",
-      ),
-    [isKontakt],
-  );
-
-  useEffect(() => {
-    try {
-      window.localStorage.removeItem("ahs_readability_zoom_widget_hidden");
-    } catch {
-      // ignore
-    }
-  }, []);
-
-  /** Kein Launcher im Header: schwebender Button; bei geöffnetem Panel ausblenden (Lupe/% nur im Dialog unter der Überschrift). */
-  const launcherNode =
-    hideLauncher || open ? null : widgetHidden ? (
-      <div className="flex flex-col items-end select-none" style={buttonWrapStyle}>
-        <button
-          type="button"
-          onClick={() => {
-            setWidgetHidden(false);
-          }}
-          aria-label="Lesbarkeits-Widget wieder einblenden"
-          className="flex h-7 w-7 items-center justify-center rounded-lg shadow-[0_8px_18px_rgba(15,79,104,0.34)] transition hover:opacity-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68] focus-visible:ring-offset-2"
-          style={{ backgroundColor: ICON_BG }}
-        >
-          <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke={ICON_STROKE} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-            <path d="M21 21l-4.35-4.35" />
-            <circle cx="11" cy="11" r="7" />
-          </svg>
-        </button>
-      </div>
-    ) : (
-      <div className="flex flex-col-reverse items-end gap-1 select-none" style={buttonWrapStyle}>
-        <button
-          type="button"
-          onClick={() => setOpen((v) => !v)}
-          aria-haspopup="menu"
-          aria-expanded={open}
-          aria-label={`Lesbarkeit Einstellungen öffnen. Aktuelle Schriftgröße: ${zoomLevel}%`}
-          className="flex min-h-[60px] min-w-[60px] flex-col items-center justify-center gap-0.5 rounded-2xl px-3 py-2 shadow-[0_10px_36px_rgba(15,79,104,0.34)] transition hover:opacity-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68] focus-visible:ring-offset-2"
-          style={{ backgroundColor: ICON_BG }}
-        >
-          <svg
-            className="h-7 w-7 shrink-0"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke={ICON_STROKE}
-            strokeWidth="2.75"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            aria-hidden
-          >
-            <path d="M21 21l-4.35-4.35" />
-            <circle cx="11" cy="11" r="7" />
-          </svg>
-          <span className="text-[15px] font-extrabold tracking-wide text-white">{zoomLevel}%</span>
-        </button>
-        <button
-          type="button"
-          onClick={() => {
-            setWidgetHidden(true);
-            setOpen(false);
-          }}
-          aria-label="Lesbarkeits-Widget schließen"
-          className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-[#0F4F68] text-white shadow-[0_10px_20px_rgba(15,79,104,0.25)] transition hover:opacity-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68] focus-visible:ring-offset-2"
-        >
-          <span aria-hidden className="text-lg leading-none font-extrabold">
-            ×
-          </span>
-        </button>
-      </div>
-    );
 
   const overlayNode = (
     <div ref={panelRef}>
@@ -675,6 +577,7 @@ export function ReadabilityZoomControls() {
   /* Partner, Pflegebox, Betriebliche Pflegeberatung, Karriere, Kooperation: kein portaliertes Lesbarkeits-UI. */
   if (
     pathname.startsWith("/partner") ||
+    pathname.startsWith("/en/partner") ||
     isPflegeboxKonfiguratorPagePath(pathname) ||
     pathname === "/pflegeberatung" ||
     pathname === "/karriere" ||
@@ -684,10 +587,5 @@ export function ReadabilityZoomControls() {
     return null;
   }
 
-  return (
-    <>
-      {createPortal(overlayNode, document.body)}
-      {launcherNode ? createPortal(launcherNode, document.body) : null}
-    </>
-  );
+  return createPortal(overlayNode, document.body);
 }

@@ -1,7 +1,8 @@
 "use client";
 
-/** Event-Name: Lesbarkeits-Widget öffnen (z. B. Footer-Link). */
-export const AHS_READABILITY_OPEN_EVENT = "ahs-open-readability";
+import { AHS_READABILITY_OPEN_EVENT } from "@/lib/readability-constants";
+
+export { AHS_READABILITY_OPEN_EVENT };
 
 export function ReadabilityLaunchLink({ className }: { className?: string }) {
   return (

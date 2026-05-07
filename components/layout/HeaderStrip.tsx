@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import { isPflegeboxKonfiguratorPagePath } from "@/lib/pflegebox-konfigurator-path";
+import { ReadabilityHeaderLauncher } from "@/components/accessibility/ReadabilityHeaderLauncher";
 import { cn } from "@/lib/utils";
 
 type PartnerStripSession = {
@@ -110,7 +111,9 @@ export function HeaderStrip() {
       className={cn("w-full text-xs font-medium text-white/95", hideStripOnMobile ? "hidden md:block" : "block")}
       style={{ backgroundColor: "#0F4F68", minHeight: "2.45rem" }}
     >
-      <div className="flex w-full flex-row items-center justify-end gap-4 px-4 py-1.5 sm:px-6 lg:px-[var(--ahs-page-gutter)]">
+      <div className="flex w-full flex-row items-center justify-between gap-3 px-4 py-1.5 sm:px-6 lg:px-[var(--ahs-page-gutter)]">
+        <ReadabilityHeaderLauncher />
+        <div className="flex min-w-0 flex-1 justify-end">
         {showPartnerStrip ? (
           <Link
             href={stripHref}
@@ -149,6 +152,7 @@ export function HeaderStrip() {
             Partner Login
           </Link>
         )}
+        </div>
       </div>
     </div>
   );
