@@ -30,11 +30,11 @@ function applySecurityAndSeoHeaders(
   const csp = [
     "default-src 'self'",
     "object-src 'none'",
-    "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://translate.google.com https://translate.googleapis.com https://www.google.com https://www.gstatic.com https://meet.jit.si",
+    "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://translate.google.com https://translate.googleapis.com https://www.google.com https://www.gstatic.com https://meet.jit.si https://www.googletagmanager.com https://*.googletagmanager.com",
     "style-src 'self' 'unsafe-inline' https://translate.googleapis.com https://translate.google.com https://www.google.com",
     "img-src 'self' data: https:",
     "font-src 'self' https://fonts.gstatic.com https://www.gstatic.com",
-    "connect-src 'self' https://translate.google.com https://translate.googleapis.com https://www.google.com https://www.gstatic.com https://meet.jit.si wss://meet.jit.si https://*.supabase.co wss://*.supabase.co",
+    "connect-src 'self' https://translate.google.com https://translate.googleapis.com https://www.google.com https://www.gstatic.com https://meet.jit.si wss://meet.jit.si https://*.supabase.co wss://*.supabase.co https://www.googletagmanager.com https://*.google-analytics.com https://*.analytics.google.com https://stats.g.doubleclick.net",
     "worker-src 'self' blob:",
     "frame-src 'self' https://translate.google.com https://translate.googleapis.com https://*.google.com https://meet.jit.si",
     "frame-ancestors 'self'",

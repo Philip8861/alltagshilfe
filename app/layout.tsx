@@ -17,6 +17,10 @@ import { ReadabilityZoomControls } from "@/components/accessibility/ReadabilityZ
 import { GoogleTranslateBootstrap } from "@/components/layout/GoogleTranslateBootstrap";
 import { LocalSiteTranslator } from "@/components/layout/LocalSiteTranslator";
 import { SiteAnalyticsSpaNavigation } from "@/components/site-analytics/SiteAnalyticsSpaNavigation";
+import { GoogleAnalytics } from "@/components/analytics/GoogleAnalytics";
+
+/** Google Search Console – Verifizierung per Meta-Tag (Wert aus Env). */
+const GOOGLE_SITE_VERIFICATION = process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION?.trim() || undefined;
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.baseUrl),
@@ -25,6 +29,9 @@ export const metadata: Metadata = {
   icons: {
     icon: "/images/Herz.webp",
   },
+  verification: GOOGLE_SITE_VERIFICATION
+    ? { google: GOOGLE_SITE_VERIFICATION }
+    : undefined,
   openGraph: {
     type: "website",
     locale: "de_DE",
@@ -71,6 +78,7 @@ export default function RootLayout({
         <LocalSiteTranslator />
         <ReadabilityZoomControls />
         <SiteAnalyticsSpaNavigation />
+        <GoogleAnalytics />
       </body>
     </html>
   );

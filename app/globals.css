@@ -471,13 +471,55 @@ body {
   padding-bottom: 0 !important;
 }
 
-/* Scrollbar ausblenden, Scrollen bleibt möglich */
-* {
+/*
+ * Standard-Scrollbalken am Hauptdokument (html/body) bleibt sichtbar – wie auf jeder
+ * gewöhnlichen Webseite. Innerhalb von Scroll-Containern (Modal-Dialoge, Dropdowns,
+ * Sidebars, Tabellen-Wrapper …) blenden wir den Balken dezent aus, damit das Layout
+ * dieser Komponenten unverändert bleibt. Scrollen per Rad/Touch funktioniert überall.
+ */
+*:not(html):not(body) {
   -ms-overflow-style: none;
-  scrollbar-width: none;
+  scrollbar-width: thin;
 }
 
-*::-webkit-scrollbar {
+*:not(html):not(body)::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+  display: none;
+}
+
+/* Hauptdokument: dezenter, schmaler Browser-Scrollbalken (Firefox + Chromium). */
+html {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(15, 79, 104, 0.45) transparent;
+}
+
+html::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+html::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+html::-webkit-scrollbar-thumb {
+  background-color: rgba(15, 79, 104, 0.35);
+  border-radius: 9999px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+
+html::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(15, 79, 104, 0.55);
+}
+
+/* Konfigurator-Seite (eingebetteter Iframe) bleibt ohne sichtbaren Seiten-Scrollbalken. */
+html:has(#pflegebox-root) {
+  scrollbar-width: none;
+  scrollbar-color: auto;
+}
+html:has(#pflegebox-root)::-webkit-scrollbar {
   width: 0;
   height: 0;
   display: none;

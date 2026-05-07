@@ -47,11 +47,17 @@ const KOOP_CORNER_OVERFLOW_IDS = new Set([
 const KOOP_CORNER_IMG_SIZE =
   "h-auto w-[min(66%,25.875rem)] max-w-[495px] sm:w-[min(62%,29.25rem)] sm:max-w-[495px] lg:max-w-[520px]";
 
+/**
+ * Ab `sm`: Text steht NEBEN dem Eckbild und braucht seitliches Padding,
+ * damit er nicht unter das Bild rutscht. Auf Mobile (<sm) liegt der Text
+ * komplett UNTER dem Bild (siehe `pt-[11.5rem]` weiter unten) – kein
+ * seitliches Padding nötig, sonst wirkt der Text auf eine Seite gepresst.
+ */
 const KOOP_CORNER_TEXT_PR =
-  "pr-[clamp(7.4rem,30vw,10.5rem)] sm:pr-[clamp(8.8rem,35vw,14.5rem)] md:pr-[min(58%,17.6rem)] lg:pr-[min(72%,25.2rem)]";
+  "sm:pr-[clamp(8.8rem,35vw,14.5rem)] md:pr-[min(58%,17.6rem)] lg:pr-[min(72%,25.2rem)]";
 
 const KOOP_CORNER_TEXT_PL =
-  "pl-[clamp(7.4rem,30vw,10.5rem)] sm:pl-[clamp(8.8rem,35vw,14.5rem)] md:pl-[min(58%,17.6rem)] lg:pl-[min(72%,25.2rem)]";
+  "sm:pl-[clamp(8.8rem,35vw,14.5rem)] md:pl-[min(58%,17.6rem)] lg:pl-[min(72%,25.2rem)]";
 
 /** Gleiche Optik wie die Haken bei „Ihre Vorteile“ im Kooperations-Hero. */
 function KooperationHeroCheckIcon({ className = "" }: { className?: string }) {

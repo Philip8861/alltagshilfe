@@ -248,6 +248,60 @@ export default function DatenschutzPage() {
           </section>
 
           <section className="space-y-2">
+            <h2 className="text-xl font-bold text-[#0F4F68]">8a. Reichweitenmessung mit Google Analytics 4 (GA4)</h2>
+            <p>
+              Sofern aktiviert und nur bei Ihrer Einwilligung in die Kategorie „Statistik“ setzen wir den Webanalyse-Dienst
+              <strong className="text-neutral-900"> Google Analytics 4</strong> der Google Ireland Limited, Gordon House,
+              Barrow Street, Dublin 4, Irland („Google“) ein. Verarbeitet werden insbesondere gekürzte IP-Adresse,
+              Geräte- und Browserinformationen, Referrer, aufgerufene Seiten, Verweildauer sowie aus diesen Angaben gebildete
+              pseudonyme Kennungen. Eine Übermittlung an Google-Server, auch in den USA, ist möglich.
+            </p>
+            <p>
+              Wir aktivieren in GA4 die <strong className="text-neutral-900">IP-Anonymisierung</strong> und nutzen den
+              <strong className="text-neutral-900"> Google Consent Mode v2</strong>: Vor Ihrer Einwilligung sind die
+              Speicherkategorien <em>analytics_storage</em>, <em>ad_storage</em>, <em>ad_user_data</em> und
+              <em> ad_personalization</em> auf <em>denied</em> voreingestellt. Erst nach Ihrer Zustimmung werden die
+              entsprechenden Kategorien auf <em>granted</em> gesetzt und das GA4-Skript geladen.
+            </p>
+            <p>
+              Rechtsgrundlage für das Setzen oder Auslesen von Informationen in Ihrem Endgerät und die anschließende
+              Verarbeitung ist Ihre Einwilligung gemäß Art. 6 Abs. 1 lit. a DSGVO sowie § 25 Abs. 1 TTDSG. Sie können Ihre
+              Einwilligung jederzeit mit Wirkung für die Zukunft über die Cookie-Einstellungen widerrufen.
+            </p>
+            <p>
+              Weitere Informationen zur Datenverarbeitung durch Google finden Sie in der Datenschutzerklärung von Google
+              unter{" "}
+              <a
+                href="https://policies.google.com/privacy"
+                rel="noopener noreferrer"
+                target="_blank"
+                className="text-[#0F4F68] underline underline-offset-2 hover:text-[#F78F2E]"
+              >
+                policies.google.com/privacy
+              </a>
+              .
+            </p>
+          </section>
+
+          <section className="space-y-2">
+            <h2 className="text-xl font-bold text-[#0F4F68]">8b. Google Search Console</h2>
+            <p>
+              Zur Auswertung der Sichtbarkeit unserer Website in der Google-Suche nutzen wir die
+              <strong className="text-neutral-900"> Google Search Console</strong>. Hierfür weisen wir Google die
+              Eigentümerschaft an unserer Domain entweder per DNS-Eintrag oder durch ein Verifizierungs-Meta-Tag im
+              <code className="rounded bg-neutral-100 px-1 text-sm">{`<head>`}</code> nach. Es werden <strong>keine</strong>
+              {" "}personenbezogenen Daten unserer Besucherinnen und Besucher an Google übertragen, auch nicht
+              {" "}IP-Adressen oder Endgerätedaten.
+            </p>
+            <p>
+              In der Search Console erhalten wir aggregierte Auswertungen zu Suchanfragen, Klickraten, durchschnittlichen
+              Positionen sowie zu Indexierungs- und Crawling-Status. Rechtsgrundlage ist Art. 6 Abs. 1 lit. f DSGVO; unser
+              berechtigtes Interesse liegt in der technischen Optimierung und Erreichbarkeit der Website über die
+              Google-Suche.
+            </p>
+          </section>
+
+          <section className="space-y-2">
             <h2 className="text-xl font-bold text-[#0F4F68]">9. Cookies, lokale Speicher und Einwilligung</h2>
             <p>
               Wir verwenden Cookies und den lokalen Speicher Ihres Browsers, um Ihre Entscheidung im Cookie-Hinweis zu
