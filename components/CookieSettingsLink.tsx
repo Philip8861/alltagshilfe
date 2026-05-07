@@ -1,12 +1,11 @@
 "use client";
 
-import { clearConsent } from "@/lib/consent";
-
 export function CookieSettingsLink() {
   const handleClick = (e: React.MouseEvent) => {
     e.preventDefault();
-    clearConsent();
-    window.dispatchEvent(new CustomEvent("cookie-banner-show"));
+    window.dispatchEvent(
+      new CustomEvent("cookie-banner-show", { detail: { view: "settings" as const } }),
+    );
   };
 
   return (

@@ -1,22 +1,40 @@
 import type { ConsentState } from "@/lib/consent";
+import { CONSENT_VERSION } from "@/lib/consent";
 
-function normalizeParsedConsent(parsed: Record<string, unknown>): ConsentState | null {
-  if (typeof parsed.analytics !== "boolean" || typeof parsed.marketing !== "boolean") {
-    return null;
-  }
-  const analytics = parsed.analytics === true;
-  const marketing = parsed.marketing === true;
-  const translation =
-    typeof parsed.translation === "boolean"
-      ? parsed.translation === true
-      : analytics && marketing;
+function stateFromCategories(cat: Record<string, unknown>): ConsentState | null {
+  if (cat.necessary !== true) return null;
   return {
     necessary: true,
-    analytics,
-    marketing,
-    translation,
-    timestamp: typeof parsed.timestamp === "number" ? parsed.timestamp : 0,
+    analytics: cat.statistics === true,
+    marketing: cat.marketing === true,
+    translation: cat.translation === true,
+    timestamp: Date.now(),
   };
+}
+
+function normalizeParsedConsent(parsed: Record<string, unknown>): ConsentState | null {
+  if (parsed.version === CONSENT_VERSION && parsed.categories && typeof parsed.categories === "object") {
+    return stateFromCategories(parsed.categories as Record<string, unknown>);
+  }
+
+  if (typeof parsed.version === "string" && parsed.version !== CONSENT_VERSION) {
+    return null;
+  }
+
+  if (typeof parsed.analytics === "boolean" && typeof parsed.marketing === "boolean") {
+    const analytics = parsed.analytics === true;
+    const marketing = parsed.marketing === true;
+    const translation =
+      typeof parsed.translation === "boolean" ? parsed.translation === true : analytics && marketing;
+    return {
+      necessary: true,
+      analytics,
+      marketing,
+      translation,
+      timestamp: typeof parsed.timestamp === "number" ? parsed.timestamp : 0,
+    };
+  }
+  return null;
 }
 
 /** Parst den Wert des Cookies `cookie_consent` (wie von setConsent gesetzt). */

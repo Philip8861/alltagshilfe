@@ -77,8 +77,7 @@ export default function UeberUnsPage() {
             wurde die Alltagshilfe-Süd offiziell von Philip Sonntag und Valentin Maucher gegründet. Beide sind
             examinierte Gesundheits- und Krankenpfleger und brachten von Anfang an ihre pflegerische Fachkompetenz,
             ihre Praxiserfahrung und ihr Verständnis für die tatsächlichen Bedürfnisse pflegebedürftiger Menschen in
-            den Aufbau des Unternehmens ein. In den ersten Jahren waren die Gründer selbst täglich im Einsatz und
-            konnten dadurch die Versorgungssituation in der Region unmittelbar mitgestalten.
+            den Aufbau des Unternehmens ein.
           </p>
           <p>
             Mit der steigenden Nachfrage entwickelte sich das Unternehmen kontinuierlich weiter. Im Jahr 2022 eröffnete
@@ -98,12 +97,12 @@ export default function UeberUnsPage() {
             Zu Beginn des Jahres 2026 wurde die regionale Präsenz gezielt ausgebaut: Am 01.01.2026 eröffnete Frau
             Riegel den neuen Standort Augsburg. Ebenfalls am 01.01.2026 wurde der Standort Konstanz/Engen unter der
             Leitung von Frau Maucher eröffnet. Anfang 2026 folgte darüber hinaus der Umzug in größere Räumlichkeiten
-            nach Bad Grönenbach, nachdem zuvor bereits 2024 der Umzug nach Sulzberg erfolgt war. Diese Entwicklung
+            nach Bad Grönenbach, nachdem zuvor bereits 2023 der Umzug nach Sulzberg erfolgt war. Diese Entwicklung
             spiegelt das kontinuierliche Wachstum des Unternehmens und die steigende Bedeutung professioneller
             Unterstützungs- und Beratungsangebote für pflegebedürftige Menschen in Süddeutschland wider.
           </p>
           <p>
-            Am 01.05.2026 folgte die Eröffnung unseres Pflegeshops. Heute steht die Alltagshilfe-Süd für fachlich fundierte Dienstleistungen, regionale Nähe und eine
+            Am 01.06.2026 folgte die Eröffnung unseres Pflegeshops. Heute steht die Alltagshilfe-Süd für fachlich fundierte Dienstleistungen, regionale Nähe und eine
             professionelle Pflegeberatung mit persönlichem Anspruch. Das Leistungsportfolio wird fortlaufend
             weiterentwickelt, unter anderem durch den geplanten Ausbau der Inkontinenzversorgung und weitere regionale
             Projekte. Der Anspruch bleibt dabei unverändert: pflegebedürftige Menschen kompetent, verlässlich und
