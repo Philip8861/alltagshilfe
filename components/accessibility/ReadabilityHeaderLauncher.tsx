@@ -83,9 +83,9 @@ export function ReadabilityHeaderLauncher() {
           ? `Open accessibility settings. Current text size: ${zoomLevel} percent.`
           : `Barrierefreie Einstellungen öffnen. Aktuelle Schriftgröße: ${zoomLevel} Prozent.`
       }
-      className="inline-flex shrink-0 flex-col items-stretch rounded-md border border-white/50 bg-white/[0.06] px-2 py-0.5 text-white shadow-sm transition-colors hover:bg-white/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/90 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0F4F68] sm:px-2.5 sm:py-0.5"
+      className="inline-flex shrink-0 flex-col items-stretch gap-0 rounded-md border border-white/50 bg-white/[0.06] px-2 py-0 text-white shadow-sm transition-colors hover:bg-white/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/90 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0F4F68] sm:px-2.5"
     >
-      <span className="-mb-px inline-flex items-center gap-1" aria-hidden>
+      <span className="-mb-1 inline-flex items-center gap-0.5 leading-none" aria-hidden>
         <span className="inline-flex h-7 w-7 shrink-0 items-center justify-center sm:h-6 sm:w-6">
           <svg
             className="h-4 w-4 shrink-0 sm:h-[0.95rem] sm:w-[0.95rem]"
@@ -100,9 +100,9 @@ export function ReadabilityHeaderLauncher() {
             <circle cx="11" cy="11" r="7" />
           </svg>
         </span>
-        <span className="text-xs font-extrabold tabular-nums tracking-wide sm:text-[0.8125rem]">{zoomLevel}%</span>
+        <span className="text-xs font-extrabold tabular-nums tracking-wide leading-none sm:text-[0.8125rem]">{zoomLevel}%</span>
       </span>
-      <span className="max-w-[10rem] text-left text-[0.625rem] font-semibold leading-tight text-white/95 sm:max-w-[11rem] sm:text-[0.6875rem]">
+      <span className="-mt-0.5 max-w-[10rem] text-left text-[0.625rem] font-semibold leading-none text-white/95 sm:max-w-[11rem] sm:text-[0.6875rem]">
         {en ? "Accessible homepage" : "Barrierefreie Homepage"}
       </span>
     </button>
