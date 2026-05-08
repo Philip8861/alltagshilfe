@@ -335,19 +335,19 @@ export function KostenfreiePflegehilfsmittelLanding() {
               </span>
             </h1>
             <ul
-              className="mt-5 min-w-0 space-y-3 overflow-x-auto overflow-y-visible pb-1 sm:mt-6 sm:space-y-3.5 lg:mt-0 lg:space-y-[clamp(0.65rem,0.35rem+0.9vw,1rem)]"
+              className="mt-5 min-w-0 space-y-3 overflow-x-clip pb-1 sm:mt-6 sm:space-y-3.5 lg:mt-0 lg:space-y-[clamp(0.65rem,0.35rem+0.9vw,1rem)]"
               aria-label="Ihre Vorteile auf einen Blick"
             >
               {KOSTENFREI_HERO_VORTEILE.map((line, i) => (
                 <li
                   key={line}
-                  className="flex min-w-0 flex-nowrap items-center gap-3 text-lg font-semibold leading-snug text-[#0F4F68] opacity-0 motion-reduce:opacity-100 animate-fade-in-up sm:text-xl lg:text-[clamp(1.05rem,0.82rem+0.5vw,1.35rem)]"
+                  className="flex min-w-0 items-start gap-3 text-lg font-semibold leading-snug text-[#0F4F68] opacity-0 motion-reduce:opacity-100 animate-fade-in-up sm:text-xl lg:items-center lg:text-[clamp(1.05rem,0.82rem+0.5vw,1.35rem)]"
                   style={{
                     animationDelay: `${0.45 + i * 0.22}s`,
                   }}
                 >
                   <KostenfreiHeroCheckIcon />
-                  <span className="whitespace-nowrap">{line}</span>
+                  <span className="min-w-0 text-pretty whitespace-normal lg:whitespace-nowrap">{line}</span>
                 </li>
               ))}
             </ul>
@@ -370,7 +370,7 @@ export function KostenfreiePflegehilfsmittelLanding() {
           </div>
 
             <div className="box-border w-full min-w-0 max-w-full lg:min-h-0 lg:translate-x-[clamp(0.75rem,5vw,3.5rem)] lg:justify-self-stretch lg:self-center motion-reduce:lg:translate-x-0">
-              <div className="box-border flex justify-center overflow-x-visible bg-[#fafbfc] px-4 pt-3 pb-8 sm:px-8 sm:pt-4 sm:pb-10 lg:flex lg:justify-end lg:px-0 lg:pb-[clamp(1.75rem,3.5vh+0.75rem,3.25rem)] lg:pt-0">
+              <div className="box-border flex justify-center overflow-x-clip overflow-y-visible bg-[#fafbfc] px-4 pt-3 pb-8 sm:px-8 sm:pt-4 sm:pb-10 lg:flex lg:justify-end lg:overflow-x-visible lg:px-0 lg:pb-[clamp(1.75rem,3.5vh+0.75rem,3.25rem)] lg:pt-0">
                 <div
                   className="mx-auto w-full min-w-0 max-w-[min(100%,72rem)] opacity-0 motion-reduce:opacity-100 animate-fade-in-up max-lg:flex max-lg:max-w-full max-lg:justify-center lg:ml-auto lg:w-full lg:max-w-full"
                   style={{ animationDelay: "0.08s" }}
