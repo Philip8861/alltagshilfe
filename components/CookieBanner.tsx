@@ -200,11 +200,11 @@ export function CookieBanner() {
   if (!visible) return null;
 
   const buttonBase =
-    "inline-flex min-h-[48px] flex-1 items-center justify-center rounded-xl border-2 border-[#0F4F68] bg-white px-3 text-sm font-semibold text-[#0F4F68] shadow-sm transition hover:bg-[#F2F9FA] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68] focus-visible:ring-offset-2 sm:px-4";
+    "inline-flex min-h-[48px] flex-1 items-center justify-center rounded-xl border-2 border-[#0F4F68] bg-white px-3 text-sm font-semibold text-[#0F4F68] shadow-sm transition hover:bg-[#F2F9FA] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68] focus-visible:ring-offset-0 sm:px-4";
 
-  /** „Alle akzeptieren“: leicht orangefarbener Fläche (Marke #F78F2E), gut lesbar mit Petrol-Text. */
+  /** Gleicher Rahmen wie buttonBase; nur Füllfarbe und Hover leicht orange (Marke). */
   const buttonAccept = cn(
-    "inline-flex min-h-[48px] flex-1 items-center justify-center rounded-xl border-2 border-[#F78F2E] bg-[#FFF1E0] px-3 text-sm font-semibold text-[#0F4F68] shadow-sm transition hover:bg-[#ffe8cf] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#F78F2E] focus-visible:ring-offset-2 sm:px-4",
+    "inline-flex min-h-[48px] flex-1 items-center justify-center rounded-xl border-2 border-[#0F4F68] bg-[#FFF1E0] px-3 text-sm font-semibold text-[#0F4F68] shadow-sm transition hover:bg-[#ffe8cf] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68] focus-visible:ring-offset-0 sm:px-4",
   );
 
   return createPortal(
@@ -317,27 +317,27 @@ export function CookieBanner() {
 
         <footer className="shrink-0 border-t border-[#0F4F68]/10 bg-[#F8FBFC] px-4 py-4 sm:px-8">
           {layer === "main" ? (
-            <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:justify-stretch sm:gap-3">
+            <div className="flex flex-col gap-2 sm:flex-row sm:flex-nowrap sm:justify-stretch sm:gap-3">
               <button type="button" className={buttonBase} onClick={handleRejectAll}>
                 Alle ablehnen
+              </button>
+              <button type="button" className={buttonAccept} onClick={handleAcceptAll}>
+                Alle akzeptieren
               </button>
               <button type="button" className={buttonBase} onClick={openSettings}>
                 Auswahl anpassen
               </button>
-              <button type="button" className={buttonAccept} onClick={handleAcceptAll}>
-                Alle akzeptieren
-              </button>
             </div>
           ) : (
-            <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:justify-stretch sm:gap-3">
+            <div className="flex flex-col gap-2 sm:flex-row sm:flex-nowrap sm:justify-stretch sm:gap-3">
               <button type="button" className={buttonBase} onClick={handleRejectAll}>
                 Alle ablehnen
               </button>
-              <button type="button" className={buttonBase} onClick={handleSaveSelection}>
-                Auswahl speichern
-              </button>
               <button type="button" className={buttonAccept} onClick={handleAcceptAll}>
                 Alle akzeptieren
+              </button>
+              <button type="button" className={buttonBase} onClick={handleSaveSelection}>
+                Auswahl speichern
               </button>
             </div>
           )}
