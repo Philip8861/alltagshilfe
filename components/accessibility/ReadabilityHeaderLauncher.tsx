@@ -69,6 +69,8 @@ export function ReadabilityHeaderLauncher() {
 
   if (shouldHideLauncher(pathname)) return null;
 
+  const en = pathname === "/en" || pathname.startsWith("/en/");
+
   return (
     <button
       type="button"
@@ -76,24 +78,33 @@ export function ReadabilityHeaderLauncher() {
         window.dispatchEvent(new Event(AHS_READABILITY_TOGGLE_PANEL_EVENT));
       }}
       aria-haspopup="dialog"
-      aria-label={`Barrierefreie Einstellungen öffnen. Aktuelle Schriftgröße: ${zoomLevel} Prozent.`}
-      className="inline-flex shrink-0 items-center gap-2 rounded-md py-1 pl-1 pr-2 text-white transition-colors hover:bg-white/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/90 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0F4F68] sm:py-1.5 sm:pl-1.5 sm:pr-3"
+      aria-label={
+        en
+          ? `Open accessibility settings. Current text size: ${zoomLevel} percent.`
+          : `Barrierefreie Einstellungen öffnen. Aktuelle Schriftgröße: ${zoomLevel} Prozent.`
+      }
+      className="inline-flex shrink-0 flex-col items-stretch rounded-md border border-white/50 bg-white/[0.06] px-2 py-1 text-white shadow-sm transition-colors hover:bg-white/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/90 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0F4F68] sm:px-2.5 sm:py-1"
     >
-      <span className="inline-flex h-9 w-9 items-center justify-center sm:h-8 sm:w-8" aria-hidden>
-        <svg
-          className="h-5 w-5 shrink-0 sm:h-[1.35rem] sm:w-[1.35rem]"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2.5"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        >
-          <path d="M21 21l-4.35-4.35" />
-          <circle cx="11" cy="11" r="7" />
-        </svg>
+      <span className="inline-flex items-center gap-1.5" aria-hidden>
+        <span className="inline-flex h-7 w-7 shrink-0 items-center justify-center sm:h-6 sm:w-6">
+          <svg
+            className="h-4 w-4 shrink-0 sm:h-[0.95rem] sm:w-[0.95rem]"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <path d="M21 21l-4.35-4.35" />
+            <circle cx="11" cy="11" r="7" />
+          </svg>
+        </span>
+        <span className="text-xs font-extrabold tabular-nums tracking-wide sm:text-[0.8125rem]">{zoomLevel}%</span>
       </span>
-      <span className="text-sm font-extrabold tabular-nums tracking-wide sm:text-base">{zoomLevel}%</span>
+      <span className="mt-0.5 max-w-[10rem] text-left text-[0.625rem] font-semibold leading-snug text-white/95 sm:max-w-[11rem] sm:text-[0.6875rem]">
+        {en ? "Accessible homepage" : "Barrierefreie Homepage"}
+      </span>
     </button>
   );
 }

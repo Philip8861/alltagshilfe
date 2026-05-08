@@ -109,9 +109,9 @@ export function HeaderStrip() {
   return (
     <div
       className={cn("w-full text-xs font-medium text-white/95", hideStripOnMobile ? "hidden md:block" : "block")}
-      style={{ backgroundColor: "#0F4F68", minHeight: "2.45rem" }}
+      style={{ backgroundColor: "#0F4F68" }}
     >
-      <div className="flex w-full flex-row items-center justify-between gap-3 px-4 py-1.5 sm:px-6 lg:px-[var(--ahs-page-gutter)]">
+      <div className="flex min-h-[2.75rem] w-full flex-row items-center justify-between gap-3 px-4 py-1.5 sm:min-h-[3rem] sm:px-6 lg:px-[var(--ahs-page-gutter)]">
         <ReadabilityHeaderLauncher />
         <div className="flex min-w-0 flex-1 justify-end">
         {showPartnerStrip ? (
