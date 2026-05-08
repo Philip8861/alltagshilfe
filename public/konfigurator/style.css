@@ -2334,6 +2334,120 @@ html.kfg-embed .hero-overlay {
 
 }
 
+/*
+ * Tablet (768–900px): gleicher 1-Spalten-Flow wie Mobil (max-width 900), aber
+ * mit mehr Bild/Text-Raum und stabilerem Stack — Phones ≤767px unverändert,
+ * Desktop ≥901px unverändert.
+ */
+@media (min-width: 768px) and (max-width: 900px) {
+  .item-list {
+    gap: 14px;
+  }
+
+  .item .item-image-frame {
+    min-height: clamp(148px, 30vw, 252px);
+  }
+
+  .item.item--double-width .item-image-frame {
+    min-height: clamp(156px, 28vw, 268px);
+  }
+
+  .item .item-image-frame .item-image {
+    max-height: min(52vh, 320px);
+  }
+
+  .item .item-name {
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+  }
+
+  .item.item--double-width .item-name {
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+  }
+
+  .item .item-description {
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+  }
+
+  /* Sicherheit über fixierter Budget-Leiste (z-index 30), ohne Mobil zu ändern */
+  .btn-next-step {
+    z-index: 45;
+  }
+
+  .cart-item-name {
+    font-size: clamp(0.98rem, 2.4vw, 1.15rem);
+  }
+
+  /* Wizard: lange Schritte im Iframe scrollen, nicht abschneiden */
+  .pflege-wizard-modal:not(.pflege-wizard-modal--success-final) {
+    max-height: min(92dvh, 56rem);
+    overflow-x: hidden;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .wiz-birth-grid {
+    grid-template-columns: 1fr;
+    gap: 0.65rem;
+    align-items: stretch;
+  }
+
+  .pflege-wizard-nav .admin-btn,
+  .pflege-wizard-nav .btn-primary {
+    min-height: 2.875rem;
+  }
+
+  .pflege-wizard-sig-canvas-wrap {
+    min-height: 180px;
+    max-height: min(38dvh, 300px);
+  }
+
+  .handschuh-dialog.handschuh-dialog--size-only,
+  .handschuh-dialog.handschuh-dialog--ml-variant {
+    max-width: min(500px, calc(100vw - 20px));
+  }
+
+  html.kfg-embed .pflege-wizard-body .wiz-field-row {
+    grid-template-columns: 1fr;
+    gap: 0.65rem;
+  }
+}
+
+/*
+ * Eingebetteter Konfigurator, schmales 2-Spalten-Fenster (typ. Tablet quer):
+ * 901–1024px — breitere Desktop-Ansichten unverändert.
+ */
+@media (min-width: 901px) and (max-width: 1024px) {
+  html.kfg-embed .layout {
+    grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr);
+    gap: clamp(14px, 1.8vw, 22px);
+  }
+
+  html.kfg-embed .layout > .panel:first-of-type > h2 {
+    min-height: clamp(4.5rem, 11vw, 8.75rem);
+  }
+
+  html.kfg-embed .pflege-wizard-modal {
+    max-width: min(38rem, calc(100% - 1.25rem));
+  }
+
+  html.kfg-embed .pflege-wizard-sig-panel {
+    width: min(880px, 100%);
+  }
+}
+
+/*
+ * Eingebettet: etwas weniger Zoom als 0.823 nur im Tablet-Fenster — Lesbarkeit,
+ * ohne schmale Phones (unter 768px) und ohne breites Desktop (über 1024px).
+ */
+@media (min-width: 768px) and (max-width: 1024px) {
+  html.kfg-embed .hero-overlay {
+    zoom: 0.88;
+  }
+}
+
 /* Mehrschritt-Flow & Pflegebox-Abschluss */
 .flow-step-wrap {
   width: 100%;
