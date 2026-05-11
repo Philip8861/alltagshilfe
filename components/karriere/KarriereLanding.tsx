@@ -3,6 +3,7 @@ import Link from "next/link";
 import { ProtectedRasterMedia } from "@/components/home/ProtectedRasterMedia";
 import { Container } from "@/components/layout/Container";
 import { KarriereForm } from "@/components/forms/KarriereForm";
+import { ContactForm } from "@/components/forms/ContactForm";
 import { InitiativBewerbenLandingButton } from "@/components/karriere/InitiativBewerbenLandingButton";
 import { JetztBewerbenButton } from "@/components/karriere/JetztBewerbenButton";
 import { StellenbeschreibungDialogTrigger } from "@/components/karriere/StellenbeschreibungDialog";
@@ -302,7 +303,7 @@ function KarriereArbeitgeberVorteile() {
   );
 }
 
-/** Bewerbungsformular links; rechte Spalte wie app/kontakt/page.tsx, Inhalt Daniel Niebauer. */
+/** Bewerbung links; rechts Ansprechpartner. Zusätzlich: gleiches Karriere-Kontakt wie /kontakt?thema Karriere. */
 function KarriereBewerbungUndAnsprechpartner() {
   return (
     <div className="mx-auto w-full max-w-6xl">
@@ -310,9 +311,36 @@ function KarriereBewerbungUndAnsprechpartner() {
         <div className="order-2 flex min-w-0 flex-col lg:order-1">
           <div className="mx-auto w-full max-w-xl rounded-2xl bg-[#F2F9FA] p-6 sm:p-8 lg:mx-0 lg:max-w-none lg:p-10">
             <h2 className="text-3xl font-bold tracking-tight text-[#0F4F68] sm:text-4xl">Kontakt</h2>
+            <p className="mt-3 max-w-prose text-sm text-neutral-600 sm:text-base">
+              Bewerbung über das folgende Formular – mit denselben Abläufen und Empfängern wie unsere Karriere-E-Mails.
+            </p>
             <div className="mt-8 sm:mt-10">
+              <h3 className="text-lg font-semibold text-[#0F4F68]">Bewerbung / Stellenanfrage</h3>
               <KarriereForm hideFileAttachments />
             </div>
+
+            <div
+              id="karriere-allgemein-kontakt"
+              className="mt-10 scroll-mt-[var(--ahs-header-scroll-padding)] border-t border-[#0F4F68]/15 pt-10"
+            >
+              <h3 className="text-lg font-semibold text-[#0F4F68]">Allgemeine Karrierefrage</h3>
+              <p className="mt-2 max-w-prose text-sm text-neutral-600 sm:text-base">
+                Ohne konkrete Bewerbung: dieselbe Bearbeitung wie beim Thema „Karriere“ auf der Seite{" "}
+                <Link href="/kontakt" className="font-medium text-[#0F4F68] underline hover:no-underline">
+                  Kontakt
+                </Link>{" "}
+                (Empfänger und Datenschutz wie dort).
+              </p>
+              <div className="mt-6">
+                <ContactForm
+                  topicHidden
+                  hiddenTopic="Karriere"
+                  fieldIdPrefix="karriere-seite-kontakt-"
+                  submitAlign="left"
+                />
+              </div>
+            </div>
+
             <p className="mt-8 text-sm text-neutral-500">
               Weitere Informationen zur Datenverarbeitung finden Sie in unserer{" "}
               <Link href="/datenschutz" className="underline hover:text-neutral-700">
@@ -390,12 +418,13 @@ function KarriereBewerbungUndAnsprechpartner() {
                 daniel.niebauer@alltagshilfe-sued.de
               </a>
               <p className="mt-5 text-sm text-neutral-700">
-                Für eine allgemeine Nachricht nutzen Sie gern unser{" "}
+                Allgemeine Karrierefragen ohne Bewerbung können Sie links im Bereich „Allgemeine Karrierefrage“ stellen –
+                oder weiterhin zentral unter{" "}
                 <Link
                   href="/kontakt"
                   className="font-semibold text-[#0F4F68] underline underline-offset-2 hover:no-underline"
                 >
-                  Kontaktformular
+                  Kontakt
                 </Link>
                 .
               </p>

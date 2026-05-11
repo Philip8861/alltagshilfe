@@ -1,8 +1,10 @@
 "use client";
 
-import { CONTACT_SOURCE_OPTIONS } from "@/lib/contact-source";
+import { CONTACT_SOURCE_OPTIONS, KARRIERE_CONTACT_SOURCE_OPTIONS } from "@/lib/contact-source";
 
 export type ContactSourceSelectProps = {
+  /** `karriere`: nur Optionen für Bewerbung / Kurzcheck (ohne Plakat/Flyer etc.). */
+  variant?: "general" | "karriere";
   /** Eindeutige ID des Selects (mehrere Formulare auf einer Seite). */
   id: string;
   /** Name im FormData (Default: `contactSource`). */
@@ -21,11 +23,12 @@ export type ContactSourceSelectProps = {
 
 /**
  * Wiederverwendbares Pflichtfeld „Wie sind Sie auf uns aufmerksam geworden?".
- * Alle Optionen kommen aus `lib/contact-source.ts` (eine zentrale Quelle).
+ * Optionen aus `lib/contact-source.ts` (`general` oder `karriere`).
  * Slug landet im FormData; serverseitig wird er geprüft, in die E-Mail aufgenommen
  * und anonym in der Tagesstatistik aggregiert.
  */
 export function ContactSourceSelect({
+  variant = "general",
   id,
   name = "contactSource",
   disabled = false,
@@ -34,6 +37,7 @@ export function ContactSourceSelect({
   selectClassName,
   required = true,
 }: ContactSourceSelectProps) {
+  const options = variant === "karriere" ? KARRIERE_CONTACT_SOURCE_OPTIONS : CONTACT_SOURCE_OPTIONS;
   const labelId = `${id}-label`;
   return (
     <div className={wrapperClassName}>
@@ -60,7 +64,7 @@ export function ContactSourceSelect({
         <option value="" disabled>
           Bitte wählen …
         </option>
-        {CONTACT_SOURCE_OPTIONS.map((opt) => (
+        {options.map((opt) => (
           <option key={opt.value} value={opt.value}>
             {opt.label}
           </option>

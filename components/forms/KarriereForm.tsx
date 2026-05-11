@@ -321,7 +321,7 @@ export function KarriereForm({ hideFileAttachments = false }: KarriereFormProps)
         </div>
       ) : null}
 
-      <ContactSourceSelect id="karriere-source" disabled={pending} />
+      <ContactSourceSelect variant="karriere" id="karriere-source" disabled={pending} />
 
       <div>
         <label htmlFor="karriere-anmerkung" className="block text-sm font-medium text-neutral-700">

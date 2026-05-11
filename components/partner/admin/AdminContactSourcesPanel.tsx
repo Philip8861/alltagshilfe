@@ -6,14 +6,22 @@ import {
   resetContactSourceStatsAction,
   type ContactSourceStatsRow,
 } from "@/lib/actions/admin-homepage-analytics";
-import { CONTACT_SOURCE_OPTIONS, getContactSourceLabel } from "@/lib/contact-source";
+import {
+  CONTACT_SOURCE_OPTIONS,
+  getContactSourceLabel,
+  KARRIERE_CONTACT_SOURCE_OPTIONS,
+} from "@/lib/contact-source";
 
 type Scope = "monat" | "jahr";
+
+const KARRIERE_PAGE_SOURCE_KINDS = ["karriere", "karriere-form", "karriere-wizard"] as const;
 
 const KIND_LABELS: Record<string, string> = {
   contact: "Kontaktformular",
   hilfefinder: "Hilfe-Finder",
-  karriere: "Karriere / Bewerbung",
+  karriere: "Karriere (Legacy)",
+  "karriere-form": "Karriere: Formular (Seite)",
+  "karriere-wizard": "Karriere: Kurzcheck",
   "betrieblich-angebot": "Betriebliches Angebot",
 };
 
@@ -86,10 +94,44 @@ export function AdminContactSourcesPanel({ chartYear }: Props) {
     const set = new Set<string>();
     for (const r of rows) set.add(r.kind);
     /* Stabile Reihenfolge: bekannte zuerst, restliche alphabetisch. */
-    const known = ["contact", "hilfefinder", "karriere", "betrieblich-angebot"];
+    const known = [
+      "contact",
+      "hilfefinder",
+      "karriere",
+      "karriere-form",
+      "karriere-wizard",
+      "betrieblich-angebot",
+    ];
     const ordered = known.filter((k) => set.has(k));
     const rest = [...set].filter((k) => !known.includes(k)).sort();
     return [...ordered, ...rest];
+  }, [rows]);
+
+  const karrierePage = useMemo(() => {
+    const sub = rows.filter((r) =>
+      (KARRIERE_PAGE_SOURCE_KINDS as readonly string[]).includes(r.kind),
+    );
+    const bySource = new Map<string, number>();
+    const bySourceKind = new Map<string, Map<string, number>>();
+    let gesamt = 0;
+    for (const r of sub) {
+      gesamt += r.view_count;
+      bySource.set(r.source, (bySource.get(r.source) ?? 0) + r.view_count);
+      const inner = bySourceKind.get(r.source) ?? new Map<string, number>();
+      inner.set(r.kind, (inner.get(r.kind) ?? 0) + r.view_count);
+      bySourceKind.set(r.source, inner);
+    }
+    const ordered: { source: string; label: string; count: number }[] = [];
+    for (const opt of KARRIERE_CONTACT_SOURCE_OPTIONS) {
+      const c = bySource.get(opt.value) ?? 0;
+      ordered.push({ source: opt.value, label: opt.label, count: c });
+      bySource.delete(opt.value);
+    }
+    for (const [source, count] of bySource) {
+      ordered.push({ source, label: getContactSourceLabel(source), count });
+    }
+    const kindsPresent = KARRIERE_PAGE_SOURCE_KINDS.filter((k) => sub.some((r) => r.kind === k));
+    return { ordered, gesamt, bySourceKind, kindsPresent };
   }, [rows]);
 
   return (
@@ -244,6 +286,95 @@ export function AdminContactSourcesPanel({ chartYear }: Props) {
               );
             })}
           </ul>
+
+          {/* Nur Einreichungen von der Karriereseite (Bewerbung), ohne allgemeines Kontaktformular. */}
+          {karrierePage.gesamt > 0 ? (
+            <div className="space-y-4 rounded-2xl border border-[#0F4F68]/18 bg-[#F2F9FA]/40 p-5">
+              <div>
+                <h4 className="text-base font-bold text-[#0F4F68]">Karriereseite – Bewerbungen (Quellen)</h4>
+                <p className="mt-1 text-sm text-neutral-600">
+                  Nur Bewerbungen über das Karriere-Formular oder den Kurzcheck („Jetzt bewerben“). Allgemeine
+                  Kontaktanfragen zum Thema Karriere über /kontakt sind hier nicht enthalten.
+                </p>
+              </div>
+              <p className="text-sm text-neutral-700">
+                Bewerbungen gesamt:{" "}
+                <strong className="tabular-nums text-[#0F4F68]">
+                  {karrierePage.gesamt.toLocaleString("de-DE")}
+                </strong>
+              </p>
+              <ul className="space-y-2">
+                {karrierePage.ordered.map((row) => {
+                  const pct =
+                    karrierePage.gesamt > 0 ? Math.round((row.count / karrierePage.gesamt) * 100) : 0;
+                  return (
+                    <li
+                      key={`k-${row.source}`}
+                      className="rounded-xl border border-[#0F4F68]/12 bg-white p-3 shadow-sm"
+                    >
+                      <div className="flex items-center justify-between gap-3 text-sm">
+                        <span className="font-semibold text-[#0F4F68]">{row.label}</span>
+                        <span className="tabular-nums text-neutral-700">
+                          {row.count.toLocaleString("de-DE")}
+                          {row.count > 0 ? (
+                            <span className="ml-2 text-[#0F4F68]/70">({pct}%)</span>
+                          ) : null}
+                        </span>
+                      </div>
+                      <div className="mt-2 h-2 w-full overflow-hidden rounded-full bg-neutral-100">
+                        <div
+                          className="h-full rounded-full bg-[#F78F2E]/90"
+                          style={{ width: `${row.count > 0 ? Math.max(2, pct) : 0}%` }}
+                          aria-hidden
+                        />
+                      </div>
+                    </li>
+                  );
+                })}
+              </ul>
+              {karrierePage.kindsPresent.length > 1 ? (
+                <div className="overflow-x-auto rounded-2xl border border-[#0F4F68]/10 bg-white shadow-sm">
+                  <table className="min-w-full text-sm">
+                    <thead className="bg-[#F2F9FA] text-left text-xs font-bold uppercase tracking-wide text-[#0F4F68]/80">
+                      <tr>
+                        <th scope="col" className="px-4 py-3">
+                          Quelle
+                        </th>
+                        {karrierePage.kindsPresent.map((k) => (
+                          <th key={k} scope="col" className="px-4 py-3 text-right">
+                            {kindLabel(k)}
+                          </th>
+                        ))}
+                        <th scope="col" className="px-4 py-3 text-right">
+                          Gesamt
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-[#0F4F68]/10">
+                      {karrierePage.ordered.map((row) => {
+                        const inner = karrierePage.bySourceKind.get(row.source);
+                        return (
+                          <tr key={`kt-${row.source}`} className="hover:bg-[#F2F9FA]/50">
+                            <th scope="row" className="px-4 py-3 font-medium text-neutral-900">
+                              {row.label}
+                            </th>
+                            {karrierePage.kindsPresent.map((k) => (
+                              <td key={k} className="px-4 py-3 text-right tabular-nums text-neutral-700">
+                                {(inner?.get(k) ?? 0).toLocaleString("de-DE")}
+                              </td>
+                            ))}
+                            <td className="px-4 py-3 text-right font-semibold tabular-nums text-[#0F4F68]">
+                              {row.count.toLocaleString("de-DE")}
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+              ) : null}
+            </div>
+          ) : null}
 
           {/* Aufschlüsselung nach Formular-Typ (nur wenn mehrere Typen vorhanden). */}
           {allKinds.length > 0 ? (

@@ -8,7 +8,7 @@ import { getClientIp } from "@/lib/security";
 import { buildBrandedNotificationHtml } from "@/lib/email/branded-html";
 import { sendInternalMail } from "@/lib/email/internal-smtp";
 import { getContactSourceLabel } from "@/lib/contact-source";
-import { recordContactSource } from "@/lib/contact-source-tracking";
+import { recordContactSource, type ContactSourceKind } from "@/lib/contact-source-tracking";
 
 export type KarriereResult = { success: boolean; error?: string };
 
@@ -118,8 +118,10 @@ export async function submitKarriere(formData: FormData): Promise<KarriereResult
     );
   }
 
-  /* Anonyme Aggregat-Statistik (kein Personenbezug). */
-  await recordContactSource(data.contactSource, "karriere");
+  /* Anonyme Aggregat-Statistik (kein Personenbezug): Karriereseite vs. Kurzcheck unterscheidbar. */
+  const contactKind: ContactSourceKind =
+    wizardQuelle === "kurzcheck" ? "karriere-wizard" : "karriere-form";
+  await recordContactSource(data.contactSource, contactKind);
 
   if (wizardQuelle === "kurzcheck") {
     return { success: true };

@@ -1,12 +1,22 @@
 import { createSupabaseServiceRoleClient } from "@/lib/supabase/service";
-import { isValidContactSource } from "@/lib/contact-source";
+import { isValidContactSource, isValidKarriereContactSource } from "@/lib/contact-source";
 import { analyticsDayBerlin } from "@/lib/site-analytics/berlin-day";
 
 export type ContactSourceKind =
   | "contact"
   | "hilfefinder"
+  /** @deprecated Früher alle Karriere-Einreichungen; weiterhin in Auswertungen mitzählen. */
   | "karriere"
+  | "karriere-form"
+  | "karriere-wizard"
   | "betrieblich-angebot";
+
+function isValidSourceForKind(source: string, kind: ContactSourceKind): boolean {
+  if (kind === "karriere" || kind === "karriere-form" || kind === "karriere-wizard") {
+    return isValidKarriereContactSource(source);
+  }
+  return isValidContactSource(source);
+}
 
 /**
  * Inkrementiert den Aggregat-Zähler für (Tag, Quelle, Formular-Typ).
@@ -18,7 +28,7 @@ export async function recordContactSource(
   source: string | undefined,
   kind: ContactSourceKind,
 ): Promise<void> {
-  if (!isValidContactSource(source)) return;
+  if (!source || !isValidSourceForKind(source, kind)) return;
   const svc = createSupabaseServiceRoleClient();
   if (!svc) return;
   try {

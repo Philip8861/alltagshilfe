@@ -19,7 +19,7 @@ import {
   KARRIERE_MAX_ANHAENGE,
   validateKarriereAttachmentsList,
 } from "@/lib/karriere-attachments";
-import { CONTACT_SOURCE_OPTIONS, getContactSourceLabel } from "@/lib/contact-source";
+import { getContactSourceLabel, KARRIERE_CONTACT_SOURCE_OPTIONS } from "@/lib/contact-source";
 import { cn } from "@/lib/utils";
 
 type BewerbungsWizardDialogProps = {
@@ -50,7 +50,7 @@ type WizardAnswers = {
   plz: string;
   ort: string;
   erreichbarkeit: string;
-  /** Slug aus CONTACT_SOURCE_OPTIONS – Pflicht im Schritt „Kontakt". */
+  /** Slug aus KARRIERE_CONTACT_SOURCE_OPTIONS – Pflicht im Schritt „Kontakt". */
   contactSource: string;
 };
 
@@ -869,7 +869,7 @@ export function BewerbungsWizardDialog({ jobTitle, initialPlz, onDismiss }: Bewe
                   <option value="" disabled>
                     Bitte wählen …
                   </option>
-                  {CONTACT_SOURCE_OPTIONS.map((opt) => (
+                  {KARRIERE_CONTACT_SOURCE_OPTIONS.map((opt) => (
                     <option key={opt.value} value={opt.value}>
                       {opt.label}
                     </option>
