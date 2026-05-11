@@ -24,12 +24,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.75,
     },
     {
-      url: `${base}/pflegeberatung/online-videoberatung`,
-      lastModified: new Date(),
-      changeFrequency: "monthly",
-      priority: 0.65,
-    },
-    {
       url: `${base}/pflegehilfsmittel/kostenfreie-pflegehilfsmittel`,
       lastModified: new Date(),
       changeFrequency: "monthly",

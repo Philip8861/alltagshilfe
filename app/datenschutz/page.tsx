@@ -416,18 +416,14 @@ export default function DatenschutzPage() {
           <section className="space-y-2">
             <h2 className="text-xl font-bold text-[#0F4F68]">13. Online-Videokonferenz über Jitsi</h2>
             <p>
-              Die Seite zur Online-Videoberatung kann – nach Ihrer aktiven Auswahl – eine Verbindung zum Dienst Jitsi Meet
-              unter <code className="rounded bg-neutral-100 px-1 text-sm">meet.jit.si</code> herstellen. Dabei werden
-              Skripte und technische Ressourcen von Jitsi geladen. Bei der Nutzung einer Videokonferenz werden insbesondere
-              Audio-, Video- und Metadaten der Konferenz von den Betreibern von Jitsi bzw. der eingesetzten Infrastruktur
-              verarbeitet.
+              Die öffentlich erreichbare Seite zur Online-Videoberatung wird nicht mehr angeboten und ist unter der
+              früheren Adresse nicht mehr aufrufbar. Über diese Website wird derzeit keine Verbindung zum Dienst Jitsi Meet
+              unter <code className="rounded bg-neutral-100 px-1 text-sm">meet.jit.si</code> hergestellt und es werden
+              keine zugehörigen Skripte geladen.
             </p>
-            <p>Bitte beachten Sie die Datenschutzhinweise von 8x8 / Jitsi.</p>
             <p>
-              Die Nutzung und Übermittlung personenbezogener Daten im Rahmen der Konferenz erfolgt auf Grundlage Ihrer
-              aktiven Teilnahme. Rechtsgrundlage ist je nach Kontext Art. 6 Abs. 1 lit. b DSGVO, soweit die Videoberatung
-              zur Durchführung vorvertraglicher oder vertraglicher Maßnahmen erfolgt, oder Art. 6 Abs. 1 lit. a DSGVO,
-              soweit Sie freiwillig in die Nutzung einwilligen.
+              Soweit im Einzelfall eine Videokonferenz genutzt wird, gelten die Datenschutzhinweise des jeweiligen
+              Anbieters (z. B. 8x8 / Jitsi).
             </p>
           </section>
 
