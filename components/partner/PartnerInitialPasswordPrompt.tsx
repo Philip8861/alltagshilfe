@@ -3,10 +3,8 @@
 import { useCallback, useEffect, useId, useLayoutEffect, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { setPartnerPasswordPromptSuppressAction } from "@/lib/actions/partner-password-prompt";
-import {
-  PARTNER_PASSWORD_PROMPT_SESSION_KEY,
-} from "@/lib/partner/password-prompt-session";
-import { PARTNER_TUTORIAL_DEFER_AFTER_PW_PROMPT_YES } from "@/lib/partner/tutorial-session";
+import { PartnerPasswordChangeForm } from "@/components/partner/PartnerPasswordChangeForm";
+import { PARTNER_PASSWORD_PROMPT_SESSION_KEY } from "@/lib/partner/password-prompt-session";
 
 type Props = {
   /** Vom Server: noch kein Passwortwechsel protokolliert und keine dauerhafte Unterdrückung. */
@@ -15,6 +13,10 @@ type Props = {
   onGateChange?: (blocked: boolean) => void;
 };
 
+/**
+ * Erstlogin: ein einziges Pop-up mit direktem Passwortwechsel (aktuelles Passwort i. d. R. aus
+ * der Anmeldung vorausgefüllt). Kein Zwischen-Schritt „Jetzt ändern?“.
+ */
 export function PartnerInitialPasswordPrompt({ shouldPrompt, onGateChange }: Props) {
   const router = useRouter();
   const headingId = useId();
@@ -43,16 +45,20 @@ export function PartnerInitialPasswordPrompt({ shouldPrompt, onGateChange }: Pro
     onGateChange?.(true);
   }, [shouldPrompt, onGateChange]);
 
+  const unlockTutorial = useCallback(() => {
+    setOpen(false);
+    setError(null);
+    onGateChange?.(false);
+  }, [onGateChange]);
+
   const dismissSessionOnly = useCallback(() => {
     try {
       window.sessionStorage.setItem(PARTNER_PASSWORD_PROMPT_SESSION_KEY, "1");
     } catch {
       /* ignore */
     }
-    setOpen(false);
-    setError(null);
-    onGateChange?.(false);
-  }, [onGateChange]);
+    unlockTutorial();
+  }, [unlockTutorial]);
 
   useEffect(() => {
     if (!open) return;
@@ -66,20 +72,7 @@ export function PartnerInitialPasswordPrompt({ shouldPrompt, onGateChange }: Pro
     return () => window.removeEventListener("keydown", onKey);
   }, [open, dismissSessionOnly]);
 
-  function handleChangePassword() {
-    try {
-      window.sessionStorage.setItem(PARTNER_PASSWORD_PROMPT_SESSION_KEY, "1");
-      window.sessionStorage.setItem(PARTNER_TUTORIAL_DEFER_AFTER_PW_PROMPT_YES, "1");
-    } catch {
-      /* ignore */
-    }
-    setOpen(false);
-    setError(null);
-    onGateChange?.(false);
-    router.push("/partner/einstellungen/passwort");
-  }
-
-  function handleNo() {
+  function handleSkip() {
     setError(null);
     if (dontAskAgain) {
       startTransition(async () => {
@@ -88,8 +81,7 @@ export function PartnerInitialPasswordPrompt({ shouldPrompt, onGateChange }: Pro
           setError(res.message);
           return;
         }
-        setOpen(false);
-        onGateChange?.(false);
+        dismissSessionOnly();
         router.refresh();
       });
       return;
@@ -112,53 +104,53 @@ export function PartnerInitialPasswordPrompt({ shouldPrompt, onGateChange }: Pro
         aria-modal="true"
         aria-labelledby={headingId}
         aria-describedby={descId}
-        className="w-full max-w-md rounded-2xl border border-[#0F4F68]/20 bg-white p-5 shadow-xl sm:p-6"
+        className="max-h-[min(92vh,40rem)] w-full max-w-md overflow-y-auto rounded-2xl border border-[#0F4F68]/20 bg-white p-5 shadow-xl sm:max-w-lg sm:p-6"
         onMouseDown={(e) => e.stopPropagation()}
       >
         <h2 id={headingId} className="text-lg font-bold text-[#0F4F68] sm:text-xl">
-          Passwort jetzt ändern?
+          Persönliches Passwort festlegen
         </h2>
         <p id={descId} className="mt-2 text-sm text-neutral-600">
-          Sie haben Ihr Passwort seit der Einrichtung noch nicht selbst geändert. Aus Sicherheitsgründen empfehlen wir,
-          jetzt ein eigenes Passwort festzulegen.
+          Sie haben sich mit dem Zugang aus der E-Mail angemeldet. Bitte wählen Sie jetzt ein eigenes Passwort. Das
+          aktuelle Passwort ist vorausgefüllt — Sie müssen nur noch das neue Passwort eingeben.
         </p>
 
-        <div className="mt-4 flex items-start gap-3 rounded-xl border border-neutral-200 bg-[#F2F9FA]/60 px-3 py-3">
-          <input
-            id={checkboxId}
-            type="checkbox"
-            checked={dontAskAgain}
-            onChange={(e) => setDontAskAgain(e.target.checked)}
-            disabled={pending}
-            className="mt-0.5 h-4 w-4 shrink-0 rounded border-neutral-300 text-[#0F4F68] focus:ring-[#0F4F68]"
+        <div className="mt-5">
+          <PartnerPasswordChangeForm
+            fieldIdPrefix="partner-initial-pw"
+            submitButtonClassName="w-full rounded-xl bg-[#F78F2E] px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:opacity-[0.96] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#F78F2E] focus-visible:ring-offset-2 disabled:opacity-60"
+            submitLabel="Passwort speichern"
           />
-          <label htmlFor={checkboxId} className="text-sm text-neutral-700">
-            Nicht mehr nachfragen (nur unter Einstellungen wieder möglich)
-          </label>
         </div>
 
-        {error ? (
-          <p className="mt-3 text-sm font-medium text-red-700" role="alert">
-            {error}
-          </p>
-        ) : null}
+        <div className="mt-5 border-t border-neutral-200 pt-4">
+          <div className="flex items-start gap-3 rounded-xl border border-neutral-200 bg-[#F2F9FA]/60 px-3 py-3">
+            <input
+              id={checkboxId}
+              type="checkbox"
+              checked={dontAskAgain}
+              onChange={(e) => setDontAskAgain(e.target.checked)}
+              disabled={pending}
+              className="mt-0.5 h-4 w-4 shrink-0 rounded border-neutral-300 text-[#0F4F68] focus:ring-[#0F4F68]"
+            />
+            <label htmlFor={checkboxId} className="text-sm text-neutral-700">
+              Nicht mehr nachfragen (nur unter Einstellungen wieder möglich)
+            </label>
+          </div>
 
-        <div className="mt-5 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end sm:gap-3">
+          {error ? (
+            <p className="mt-3 text-sm font-medium text-red-700" role="alert">
+              {error}
+            </p>
+          ) : null}
+
           <button
             type="button"
             disabled={pending}
-            onClick={handleNo}
-            className="inline-flex min-h-11 w-full items-center justify-center rounded-xl border border-[#0F4F68]/25 bg-white px-4 py-2.5 text-sm font-semibold text-[#0F4F68] hover:bg-[#0F4F68]/5 disabled:opacity-60 sm:w-auto"
+            onClick={handleSkip}
+            className="mt-4 inline-flex min-h-11 w-full items-center justify-center rounded-xl border border-[#0F4F68]/25 bg-white px-4 py-2.5 text-sm font-semibold text-[#0F4F68] hover:bg-[#0F4F68]/5 disabled:opacity-60"
           >
-            {pending && dontAskAgain ? "Speichern…" : "Nein"}
-          </button>
-          <button
-            type="button"
-            disabled={pending}
-            onClick={handleChangePassword}
-            className="inline-flex min-h-11 w-full items-center justify-center rounded-xl bg-[#F78F2E] px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:opacity-[0.96] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#F78F2E] focus-visible:ring-offset-2 disabled:opacity-60 sm:w-auto"
-          >
-            Jetzt Passwort ändern
+            {pending && dontAskAgain ? "Speichern…" : "Später erinnern"}
           </button>
         </div>
       </div>

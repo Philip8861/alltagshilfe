@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { PartnerInitialPasswordPrompt } from "@/components/partner/PartnerInitialPasswordPrompt";
 import { PartnerLogoutButton } from "@/components/partner/PartnerLogoutButton";
@@ -57,6 +57,13 @@ export function PartnerPortalShell({
   const onPasswordPromptGateChange = useCallback((blocked: boolean) => {
     setPasswordPromptGateBlocked(blocked);
   }, []);
+
+  useEffect(() => {
+    if (!initialPasswordChangePrompt) {
+      setPasswordPromptGateBlocked(false);
+    }
+  }, [initialPasswordChangePrompt]);
+
   const dashActive = pathname === "/partner/dashboard" || pathname === "/partner";
   const statActive = pathname === "/partner/statistik" || pathname.startsWith("/partner/statistik/");
   const settingsActive = pathname === "/partner/einstellungen" || pathname.startsWith("/partner/einstellungen/");

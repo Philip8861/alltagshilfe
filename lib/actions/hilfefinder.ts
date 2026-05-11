@@ -129,7 +129,9 @@ export async function submitHilfefinder(input: HilfefinderInput): Promise<Hilfef
   }
 
   const kontaktLabel =
-    input.kontaktArt === "rueckruf" ? "Rückruf gewünscht" : "Möchte selbst Kontakt aufnehmen";
+    input.kontaktArt === "rueckruf"
+      ? "Rückruf gewünscht"
+      : "Die Person wünscht, dass man mit ihr Kontakt aufnimmt";
   const fuerWenLabel =
     input.fuerWen === "selbst"
       ? "Für mich"

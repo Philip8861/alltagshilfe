@@ -248,6 +248,10 @@ export interface Standort {
   address: string;
   phone: string;
   phoneHref: string;
+  /**
+   * Optional: nur für WhatsApp (wa.me), wenn die Hauptnummer (`phoneHref`) nicht bei WhatsApp genutzt wird.
+   */
+  whatsappPhoneHref?: string;
   email: string;
   hours: string;
   plzList: string[];
@@ -283,6 +287,7 @@ export const standorteByPlz: Standort[] = [
     address: "Hinter den Gärten 10, 87730 Bad Grönenbach",
     phone: "08334 / 9893330",
     phoneHref: "tel:+4983349893330",
+    whatsappPhoneHref: "tel:+4983769769317",
     email: "info@alltagshilfe-sued.de",
     hours: HOURS,
     plzList: data["Allgäu"] ?? [],
@@ -415,6 +420,11 @@ export function phoneHrefToWhatsAppUrl(phoneHref: string): string {
   const digits = phoneHref.replace(/^tel:/i, "").replace(/\D/g, "");
   if (!digits) return "https://wa.me/";
   return `https://wa.me/${digits}`;
+}
+
+/** WhatsApp-Link zum Standort: optional abweichend von der Telefon-Hauptnummer. */
+export function standortWhatsAppUrl(standort: Standort): string {
+  return phoneHrefToWhatsAppUrl(standort.whatsappPhoneHref ?? standort.phoneHref);
 }
 
 /** Google-Maps-Karte einbetten (iframe src). Bei `mapsEmbedSrc` am Standort: exakte Karte, sonst Suche nach `address`. */

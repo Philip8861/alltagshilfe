@@ -8,7 +8,7 @@ import { LeistungenKachelGrid } from "@/components/home/LeistungenKachelGrid";
 import {
   buildStandortPageHref,
   getOrtByPlz,
-  phoneHrefToWhatsAppUrl,
+  standortWhatsAppUrl,
   type Standort,
 } from "@/config/standorte";
 import { createStandortContactProof } from "@/lib/standort-contact-proof";
@@ -105,7 +105,7 @@ export function StandortLanding({ standort, plzContext }: StandortLandingProps) 
   const FAQ = buildStandortStyleFaq(standort);
   const faqJsonLd = standortFaqJsonLd(FAQ);
 
-  const whatsappHref = phoneHrefToWhatsAppUrl(standort.phoneHref);
+  const whatsappHref = standortWhatsAppUrl(standort);
   const hoursParts = standort.hours.split(/\s*·\s*/).filter(Boolean);
   const standortPlzOrteSorted = buildSortedStandortPlzOrte(standort);
   const plzLetterGroups = groupPlzOrteByInitialLetter(standortPlzOrteSorted);

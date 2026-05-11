@@ -168,7 +168,7 @@ export default async function KontaktPage({
                 </p>
                 <div className="mt-4 flex justify-center">
                   <a
-                    href="https://wa.me/4983349893330"
+                    href="https://wa.me/4983769769317"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center gap-2 rounded-lg px-5 py-3 text-base font-bold uppercase tracking-wide text-white transition-opacity hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-[#25D366]"

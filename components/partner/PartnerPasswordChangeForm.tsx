@@ -5,7 +5,10 @@ import { useRouter } from "next/navigation";
 import { checkPartnerPasswordChangeRateLimitAction } from "@/lib/actions/partner-auth";
 import { PartnerAuthStatusBox } from "@/components/partner/PartnerAuthStatusBox";
 import { createSupabaseBrowserClient } from "@/lib/supabase/client";
-import { PARTNER_LAST_LOGIN_PASSWORD_FOR_CHANGE_KEY } from "@/lib/partner/password-prompt-session";
+import {
+  PARTNER_LAST_LOGIN_PASSWORD_FOR_CHANGE_KEY,
+  PARTNER_PASSWORD_PROMPT_SESSION_KEY,
+} from "@/lib/partner/password-prompt-session";
 import { partnerPasswordChangeSchema } from "@/lib/validations/partner-settings";
 
 function EyeIcon({ open }: { open: boolean }) {
@@ -79,11 +82,32 @@ function PasswordField({
   );
 }
 
-export function PartnerPasswordChangeForm() {
+export type PartnerPasswordChangeFormProps = {
+  /** Eindeutige Präfixe für `id`/`name`, wenn mehrere Formulare möglich sind. */
+  fieldIdPrefix?: string;
+  submitLabel?: string;
+  submitButtonClassName?: string;
+  /**
+   * Nach erfolgreicher Änderung (z. B. Erstlogin-Modal: Dialog schließen vor/nach Refresh).
+   * Wird nach optionalem Kurz-Hinweis und ggf. `successAutoCloseMs` aufgerufen.
+   */
+  onAfterSuccess?: () => void;
+  /** Wenn gesetzt &gt; 0: nach Erfolg diese ms warten, dann `onAfterSuccess`. Sonst sofort. */
+  successAutoCloseMs?: number;
+};
+
+export function PartnerPasswordChangeForm({
+  fieldIdPrefix = "",
+  submitLabel = "Passwort speichern",
+  submitButtonClassName,
+  onAfterSuccess,
+  successAutoCloseMs = 0,
+}: PartnerPasswordChangeFormProps) {
   const router = useRouter();
   const [pending, startTransition] = useTransition();
   const [message, setMessage] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
+  const pid = (id: string) => (fieldIdPrefix ? `${fieldIdPrefix}-${id}` : id);
   const [prefillCurrentPassword] = useState(() => {
     if (typeof window === "undefined") return "";
     try {
@@ -152,6 +176,7 @@ export function PartnerPasswordChangeForm() {
             await supabase.from("partner_profiles").update({ password_changed_at: changedAt }).eq("id", user.id);
             try {
               window.sessionStorage.removeItem(PARTNER_LAST_LOGIN_PASSWORD_FOR_CHANGE_KEY);
+              window.sessionStorage.setItem(PARTNER_PASSWORD_PROMPT_SESSION_KEY, "1");
             } catch {
               /* ignore */
             }
@@ -159,6 +184,15 @@ export function PartnerPasswordChangeForm() {
             setSuccess(true);
             setMessage(null);
             router.refresh();
+            if (onAfterSuccess) {
+              if (successAutoCloseMs > 0) {
+                window.setTimeout(() => {
+                  onAfterSuccess();
+                }, successAutoCloseMs);
+              } else {
+                onAfterSuccess();
+              }
+            }
           } catch {
             setMessage("Unerwarteter Fehler. Bitte später erneut versuchen.");
           }
@@ -172,7 +206,7 @@ export function PartnerPasswordChangeForm() {
         </p>
       ) : null}
       <PasswordField
-        id="pw-current"
+        id={pid("pw-current")}
         name="currentPassword"
         label="Aktuelles Passwort"
         autoComplete="current-password"
@@ -185,7 +219,7 @@ export function PartnerPasswordChangeForm() {
         }
       />
       <PasswordField
-        id="pw-new"
+        id={pid("pw-new")}
         name="newPassword"
         label="Neues Passwort"
         autoComplete="new-password"
@@ -193,7 +227,7 @@ export function PartnerPasswordChangeForm() {
         hint="Mindestens 6 Zeichen, mind. ein Buchstabe, eine Ziffer und ein Sonderzeichen."
       />
       <PasswordField
-        id="pw-confirm"
+        id={pid("pw-confirm")}
         name="confirmPassword"
         label="Neues Passwort wiederholen"
         autoComplete="new-password"
@@ -202,9 +236,12 @@ export function PartnerPasswordChangeForm() {
       <button
         type="submit"
         disabled={pending}
-        className="inline-flex min-h-11 w-full items-center justify-center rounded-xl bg-[#0F4F68] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#0c3d52] disabled:opacity-60 sm:w-auto"
+        className={
+          submitButtonClassName ??
+          "inline-flex min-h-11 w-full items-center justify-center rounded-xl bg-[#0F4F68] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#0c3d52] disabled:opacity-60 sm:w-auto"
+        }
       >
-        {pending ? "Speichern…" : "Passwort speichern"}
+        {pending ? "Speichern…" : submitLabel}
       </button>
     </form>
   );
