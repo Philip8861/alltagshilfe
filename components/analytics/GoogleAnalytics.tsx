@@ -23,7 +23,7 @@
 
 import Script from "next/script";
 import { usePathname, useSearchParams } from "next/navigation";
-import { Suspense, useCallback, useEffect, useRef, useState } from "react";
+import { Suspense, useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { getConsent } from "@/lib/consent";
 
 const GA_ID = (process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID ?? "").trim();
@@ -66,16 +66,29 @@ function GoogleAnalyticsInner() {
   const configuredRef = useRef(false);
   const lastPagePath = useRef<string | null>(null);
 
-  useEffect(() => {
-    const sync = () => {
-      const c = getConsent();
-      setAnalyticsAllowed(c?.analytics === true);
-      setMarketingAllowed(c?.marketing === true);
-    };
-    sync();
-    window.addEventListener("ahs-consent-updated", sync);
-    return () => window.removeEventListener("ahs-consent-updated", sync);
+  const syncConsent = useCallback(() => {
+    const c = getConsent();
+    setAnalyticsAllowed(c?.analytics === true);
+    setMarketingAllowed(c?.marketing === true);
   }, []);
+
+  /** Direkt nach Hydration Consent lesen, damit gtag bei wiederkehrenden Besuchern früher starten kann. */
+  useLayoutEffect(() => {
+    syncConsent();
+  }, [syncConsent]);
+
+  useEffect(() => {
+    window.addEventListener("ahs-consent-updated", syncConsent);
+    return () => window.removeEventListener("ahs-consent-updated", syncConsent);
+  }, [syncConsent]);
+
+  /** Statistik widerrufen: neu zulassen muss config + page_view erneut zuverlässig triggern. */
+  useEffect(() => {
+    if (analyticsAllowed) return;
+    configuredRef.current = false;
+    lastPagePath.current = null;
+    setScriptReady(false);
+  }, [analyticsAllowed]);
 
   /** Consent-Updates an gtag durchreichen (auch nachtraeglich, wenn Skript bereit ist). */
   useEffect(() => {
@@ -119,9 +132,12 @@ function GoogleAnalyticsInner() {
     return true;
   }, [analyticsAllowed, pathname, searchParams]);
 
-  /** Page-View bei jedem Pfadwechsel + sobald das Skript fertig geladen ist. */
+  /** Page-View bei jedem Pfadwechsel; kurz verzögert, damit document.title aus Metadata meist gesetzt ist. */
   useEffect(() => {
-    sendPageView();
+    const id = window.setTimeout(() => {
+      sendPageView();
+    }, 0);
+    return () => window.clearTimeout(id);
   }, [sendPageView, scriptReady]);
 
   if (!GA_ID) return null;
