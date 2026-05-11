@@ -6,6 +6,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { setPartnerTutorialHiddenAction } from "@/lib/actions/partner-tutorial";
 import { PARTNER_TUTORIAL_STEPS } from "@/lib/partner/partner-tutorial-content";
 import {
+  PARTNER_TUTORIAL_DEFER_AFTER_PW_PROMPT_YES,
   PARTNER_TUTORIAL_OPEN_EVENT,
   PARTNER_TUTORIAL_PENDING_DASHBOARD_KEY,
   PARTNER_TUTORIAL_SESSION_DONE_KEY,
@@ -16,6 +17,8 @@ type Mode = "off" | "intro" | "steps";
 type Props = {
   /** false, sobald der Partner „Tutorial ausblenden“ gespeichert hat (kein Auto-Start nach Login). */
   tutorialAutoShow: boolean;
+  /** true, solange der Erst-Login-Passwortdialog offen ist — kein Rundgang darunter. */
+  passwordPromptGateBlocked?: boolean;
 };
 
 function readSessionDone(): boolean {
@@ -69,12 +72,13 @@ function computeBubbleStyle(
   vw: number,
   vh: number,
   panelH: number,
-  options?: { viewportCenterXFromMd?: boolean },
+  options?: { viewportCenterXFromMd?: boolean; maxBubbleWidthPx?: number },
 ): { top: number; left: number; width: number } {
   const margin = Math.max(10, Math.min(18, Math.round(vw * 0.028)));
   const reserve = viewportBottomReservePx(vw);
   const safeBottom = vh - reserve;
-  const width = Math.min(22.5 * 16, vw - 2 * margin);
+  const maxBubble = options?.maxBubbleWidthPx ?? 22.5 * 16;
+  const width = Math.min(maxBubble, vw - 2 * margin);
   const ph = Math.max(160, Math.min(panelH, vh - margin - reserve));
 
   const maxTop = Math.max(margin, safeBottom - ph);
@@ -111,7 +115,10 @@ function computeBubbleStyle(
   return { top, left, width };
 }
 
-export function PartnerTutorialOverlay({ tutorialAutoShow }: Props) {
+export function PartnerTutorialOverlay({
+  tutorialAutoShow,
+  passwordPromptGateBlocked = false,
+}: Props) {
   const router = useRouter();
   const pathname = usePathname() ?? "";
   const introTitleId = useId();
@@ -153,11 +160,30 @@ export function PartnerTutorialOverlay({ tutorialAutoShow }: Props) {
     });
   }, [closeAll, router]);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
+    if (pathname !== "/partner/einstellungen/passwort") {
+      try {
+        if (window.sessionStorage.getItem(PARTNER_TUTORIAL_DEFER_AFTER_PW_PROMPT_YES)) {
+          window.sessionStorage.removeItem(PARTNER_TUTORIAL_DEFER_AFTER_PW_PROMPT_YES);
+          if (tutorialAutoShow && !passwordPromptGateBlocked && !readSessionDone()) {
+            setMode("intro");
+          }
+        }
+      } catch {
+        /* ignore */
+      }
+    }
+
     if (!tutorialAutoShow) return;
+    if (passwordPromptGateBlocked) return;
     if (readSessionDone()) return;
-    setMode("intro");
-  }, [tutorialAutoShow]);
+    try {
+      if (window.sessionStorage.getItem(PARTNER_TUTORIAL_DEFER_AFTER_PW_PROMPT_YES)) return;
+    } catch {
+      /* ignore */
+    }
+    setMode((m) => (m === "off" ? "intro" : m));
+  }, [tutorialAutoShow, passwordPromptGateBlocked, pathname]);
 
   useEffect(() => {
     const onOpen = () => {
@@ -195,7 +221,12 @@ export function PartnerTutorialOverlay({ tutorialAutoShow }: Props) {
     if (!el || !el.isConnected) {
       setRect(null);
       setMissingAnchor(true);
-      setBubble(computeBubbleStyle(null, vw, vh, fallbackH, { viewportCenterXFromMd: step.bubbleAlignViewportCenterMd }));
+      setBubble(
+        computeBubbleStyle(null, vw, vh, fallbackH, {
+          viewportCenterXFromMd: step.bubbleAlignViewportCenterMd,
+          maxBubbleWidthPx: stepIndex === 0 ? 18 * 16 : 22.5 * 16,
+        }),
+      );
       return;
     }
     setMissingAnchor(false);
@@ -211,7 +242,10 @@ export function PartnerTutorialOverlay({ tutorialAutoShow }: Props) {
     const inflated = readInflated();
     if (!inflated) return;
     setRect(inflated);
-    const bubbleOpts = { viewportCenterXFromMd: step.bubbleAlignViewportCenterMd };
+    const bubbleOpts = {
+      viewportCenterXFromMd: step.bubbleAlignViewportCenterMd,
+      maxBubbleWidthPx: stepIndex === 0 ? 18 * 16 : 22.5 * 16,
+    };
     setBubble(computeBubbleStyle(inflated, vw, vh, fallbackH, bubbleOpts));
 
     const measureAndApply = () => {
@@ -228,7 +262,7 @@ export function PartnerTutorialOverlay({ tutorialAutoShow }: Props) {
     requestAnimationFrame(() => {
       requestAnimationFrame(measureAndApply);
     });
-  }, [anchorSel, mode, step]);
+  }, [anchorSel, mode, step, stepIndex]);
 
   useLayoutEffect(() => {
     if (mode !== "steps") return;
@@ -284,7 +318,7 @@ export function PartnerTutorialOverlay({ tutorialAutoShow }: Props) {
       aria-labelledby={labelledBy}
       className={
         variant === "intro"
-          ? "relative max-h-[min(88vh,36rem)] w-full overflow-y-auto overflow-x-hidden rounded-2xl border border-[#0F4F68]/25 bg-white p-5 shadow-2xl sm:p-6"
+          ? "relative max-h-[min(88vh,34rem)] w-full overflow-y-auto overflow-x-hidden rounded-2xl border border-[#0F4F68]/25 bg-white p-5 shadow-2xl sm:p-6"
           : "relative min-h-0 w-full flex-1 overflow-y-auto overflow-x-hidden rounded-2xl border border-[#0F4F68]/25 bg-white p-5 shadow-2xl sm:p-6"
       }
     >
@@ -313,43 +347,45 @@ export function PartnerTutorialOverlay({ tutorialAutoShow }: Props) {
       )}
 
       {isIntro ? (
-        <div className="pointer-events-none fixed inset-0 z-[87] flex items-end justify-center p-4 sm:items-center">
-          {dialogShell(
-            <>
-              <h2 id={introTitleId} className="pr-8 text-lg font-bold text-[#0F4F68] sm:text-xl">
-                Kurzer Rundgang
-              </h2>
-              <p className="mt-3 text-sm leading-relaxed text-neutral-700">
-                In wenigen Schritten zeigen wir Ihnen die wichtigsten Bereiche des Partnerportals — Partner-Code,
-                Provisionen, Statuslisten und mehr. Es geht nur kurz; Sie können direkt{" "}
-                <strong className="font-semibold text-neutral-900">starten</strong>, ohne etwas ablehnen zu müssen.
-              </p>
-              {actionError ? (
-                <p className="mt-3 text-sm font-medium text-red-700" role="alert">
-                  {actionError}
+        <div className="pointer-events-none fixed inset-0 z-[87] flex items-center justify-center p-4">
+          <div className="pointer-events-auto w-full max-w-md">
+            {dialogShell(
+              <>
+                <h2 id={introTitleId} className="pr-8 text-center text-lg font-bold text-[#0F4F68] sm:text-xl">
+                  Kurzer Rundgang
+                </h2>
+                <p className="mt-3 text-center text-sm leading-relaxed text-neutral-700">
+                  In wenigen Schritten zeigen wir Ihnen die wichtigsten Bereiche des Partnerportals — Partner-Code,
+                  Provisionen, Statuslisten und mehr. Es geht nur kurz; Sie können direkt{" "}
+                  <strong className="font-semibold text-neutral-900">starten</strong>, ohne etwas ablehnen zu müssen.
                 </p>
-              ) : null}
-              <div className="mt-5 flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center">
-                <button
-                  type="button"
-                  onClick={startFromIntro}
-                  className="pointer-events-auto inline-flex min-h-11 items-center justify-center rounded-xl bg-[#0F4F68] px-5 py-2.5 text-sm font-semibold text-white hover:bg-[#0c3d52]"
-                >
-                  Tutorial starten
-                </button>
-                <button
-                  type="button"
-                  disabled={pending}
-                  onClick={hideForever}
-                  className="pointer-events-auto text-left text-sm font-semibold text-neutral-600 underline decoration-neutral-400 underline-offset-2 hover:text-[#0F4F68] disabled:opacity-50 sm:ml-2"
-                >
-                  Tutorial ausblenden
-                </button>
-              </div>
-            </>,
-            introTitleId,
-            "intro",
-          )}
+                {actionError ? (
+                  <p className="mt-3 text-center text-sm font-medium text-red-700" role="alert">
+                    {actionError}
+                  </p>
+                ) : null}
+                <div className="mt-5 flex flex-col items-stretch gap-2 sm:flex-col">
+                  <button
+                    type="button"
+                    onClick={startFromIntro}
+                    className="pointer-events-auto inline-flex min-h-11 w-full items-center justify-center rounded-xl bg-[#F78F2E] px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:opacity-[0.96] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#F78F2E] focus-visible:ring-offset-2"
+                  >
+                    Jetzt Rundgang starten
+                  </button>
+                  <button
+                    type="button"
+                    disabled={pending}
+                    onClick={hideForever}
+                    className="pointer-events-auto text-center text-sm font-semibold text-neutral-600 underline decoration-neutral-400 underline-offset-2 hover:text-[#0F4F68] disabled:opacity-50"
+                  >
+                    Tutorial ausblenden
+                  </button>
+                </div>
+              </>,
+              introTitleId,
+              "intro",
+            )}
+          </div>
         </div>
       ) : (
         <div

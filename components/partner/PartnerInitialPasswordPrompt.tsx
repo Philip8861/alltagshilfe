@@ -1,16 +1,21 @@
 "use client";
 
-import { useCallback, useEffect, useId, useState, useTransition } from "react";
+import { useCallback, useEffect, useId, useLayoutEffect, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { setPartnerPasswordPromptSuppressAction } from "@/lib/actions/partner-password-prompt";
-import { PARTNER_PASSWORD_PROMPT_SESSION_KEY } from "@/lib/partner/password-prompt-session";
+import {
+  PARTNER_PASSWORD_PROMPT_SESSION_KEY,
+} from "@/lib/partner/password-prompt-session";
+import { PARTNER_TUTORIAL_DEFER_AFTER_PW_PROMPT_YES } from "@/lib/partner/tutorial-session";
 
 type Props = {
   /** Vom Server: noch kein Passwortwechsel protokolliert und keine dauerhafte Unterdrückung. */
   shouldPrompt: boolean;
+  /** true solange der Dialog den Rundgang blockieren soll (synchron vor erstem Tutorial-Paint). */
+  onGateChange?: (blocked: boolean) => void;
 };
 
-export function PartnerInitialPasswordPrompt({ shouldPrompt }: Props) {
+export function PartnerInitialPasswordPrompt({ shouldPrompt, onGateChange }: Props) {
   const router = useRouter();
   const headingId = useId();
   const descId = useId();
@@ -20,16 +25,23 @@ export function PartnerInitialPasswordPrompt({ shouldPrompt }: Props) {
   const [error, setError] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
 
-  useEffect(() => {
-    if (!shouldPrompt) return;
-    if (typeof window === "undefined") return;
+  useLayoutEffect(() => {
+    if (!shouldPrompt) {
+      onGateChange?.(false);
+      return;
+    }
     try {
-      if (window.sessionStorage.getItem(PARTNER_PASSWORD_PROMPT_SESSION_KEY)) return;
+      if (window.sessionStorage.getItem(PARTNER_PASSWORD_PROMPT_SESSION_KEY)) {
+        onGateChange?.(false);
+        return;
+      }
     } catch {
+      onGateChange?.(false);
       return;
     }
     setOpen(true);
-  }, [shouldPrompt]);
+    onGateChange?.(true);
+  }, [shouldPrompt, onGateChange]);
 
   const dismissSessionOnly = useCallback(() => {
     try {
@@ -39,7 +51,8 @@ export function PartnerInitialPasswordPrompt({ shouldPrompt }: Props) {
     }
     setOpen(false);
     setError(null);
-  }, []);
+    onGateChange?.(false);
+  }, [onGateChange]);
 
   useEffect(() => {
     if (!open) return;
@@ -53,14 +66,16 @@ export function PartnerInitialPasswordPrompt({ shouldPrompt }: Props) {
     return () => window.removeEventListener("keydown", onKey);
   }, [open, dismissSessionOnly]);
 
-  function handleYes() {
+  function handleChangePassword() {
     try {
       window.sessionStorage.setItem(PARTNER_PASSWORD_PROMPT_SESSION_KEY, "1");
+      window.sessionStorage.setItem(PARTNER_TUTORIAL_DEFER_AFTER_PW_PROMPT_YES, "1");
     } catch {
       /* ignore */
     }
     setOpen(false);
     setError(null);
+    onGateChange?.(false);
     router.push("/partner/einstellungen/passwort");
   }
 
@@ -74,6 +89,7 @@ export function PartnerInitialPasswordPrompt({ shouldPrompt }: Props) {
           return;
         }
         setOpen(false);
+        onGateChange?.(false);
         router.refresh();
       });
       return;
@@ -139,10 +155,10 @@ export function PartnerInitialPasswordPrompt({ shouldPrompt }: Props) {
           <button
             type="button"
             disabled={pending}
-            onClick={handleYes}
-            className="inline-flex min-h-11 w-full items-center justify-center rounded-xl bg-[#0F4F68] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#0c3d52] disabled:opacity-60 sm:w-auto"
+            onClick={handleChangePassword}
+            className="inline-flex min-h-11 w-full items-center justify-center rounded-xl bg-[#F78F2E] px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:opacity-[0.96] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#F78F2E] focus-visible:ring-offset-2 disabled:opacity-60 sm:w-auto"
           >
-            Ja, Passwort ändern
+            Jetzt Passwort ändern
           </button>
         </div>
       </div>

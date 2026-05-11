@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { PARTNER_LAST_LOGIN_PASSWORD_FOR_CHANGE_KEY } from "@/lib/partner/password-prompt-session";
 import { createSupabaseBrowserClient } from "@/lib/supabase/client";
 
 type Props = { variant?: "default" | "sidebar" };
@@ -27,6 +28,11 @@ export function PartnerLogoutButton({ variant = "default" }: Props) {
           try {
             const supabase = createSupabaseBrowserClient();
             await supabase.auth.signOut();
+            try {
+              window.sessionStorage.removeItem(PARTNER_LAST_LOGIN_PASSWORD_FOR_CHANGE_KEY);
+            } catch {
+              /* ignore */
+            }
           } catch {
             /* Session ggf. schon ungültig */
           }

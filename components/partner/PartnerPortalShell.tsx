@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useCallback, useState } from "react";
 import { usePathname } from "next/navigation";
 import { PartnerInitialPasswordPrompt } from "@/components/partner/PartnerInitialPasswordPrompt";
 import { PartnerLogoutButton } from "@/components/partner/PartnerLogoutButton";
@@ -50,6 +51,12 @@ export function PartnerPortalShell({
   tutorialAutoShow = true,
 }: Props) {
   const pathname = usePathname();
+  const [passwordPromptGateBlocked, setPasswordPromptGateBlocked] = useState(
+    () => Boolean(initialPasswordChangePrompt),
+  );
+  const onPasswordPromptGateChange = useCallback((blocked: boolean) => {
+    setPasswordPromptGateBlocked(blocked);
+  }, []);
   const dashActive = pathname === "/partner/dashboard" || pathname === "/partner";
   const statActive = pathname === "/partner/statistik" || pathname.startsWith("/partner/statistik/");
   const settingsActive = pathname === "/partner/einstellungen" || pathname.startsWith("/partner/einstellungen/");
@@ -103,10 +110,16 @@ export function PartnerPortalShell({
       </main>
 
       {initialPasswordChangePrompt ? (
-        <PartnerInitialPasswordPrompt shouldPrompt={initialPasswordChangePrompt} />
+        <PartnerInitialPasswordPrompt
+          shouldPrompt={initialPasswordChangePrompt}
+          onGateChange={onPasswordPromptGateChange}
+        />
       ) : null}
 
-      <PartnerTutorialOverlay tutorialAutoShow={tutorialAutoShow} />
+      <PartnerTutorialOverlay
+        tutorialAutoShow={tutorialAutoShow}
+        passwordPromptGateBlocked={passwordPromptGateBlocked}
+      />
     </div>
   );
 }

@@ -10,6 +10,7 @@ import { PartnerAuthStatusBox } from "@/components/partner/PartnerAuthStatusBox"
 import { createSupabaseBrowserClient } from "@/lib/supabase/client";
 import { partnerLoginSchema } from "@/lib/validations/partner";
 import { resolvePartnerLoginToEmail } from "@/lib/partner/resolve-partner-login-email";
+import { PARTNER_LAST_LOGIN_PASSWORD_FOR_CHANGE_KEY } from "@/lib/partner/password-prompt-session";
 
 type PartnerLoginFormProps = {
   disabled?: boolean;
@@ -92,6 +93,11 @@ export function PartnerLoginForm({
               return;
             }
             if (typeof window !== "undefined") {
+              try {
+                window.sessionStorage.setItem(PARTNER_LAST_LOGIN_PASSWORD_FOR_CHANGE_KEY, parsed.data.password);
+              } catch {
+                /* ignore */
+              }
               window.location.assign("/partner/sync-profile");
             } else {
               router.push("/partner/sync-profile");

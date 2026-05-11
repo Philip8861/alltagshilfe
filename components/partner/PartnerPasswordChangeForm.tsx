@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { checkPartnerPasswordChangeRateLimitAction } from "@/lib/actions/partner-auth";
 import { PartnerAuthStatusBox } from "@/components/partner/PartnerAuthStatusBox";
 import { createSupabaseBrowserClient } from "@/lib/supabase/client";
+import { PARTNER_LAST_LOGIN_PASSWORD_FOR_CHANGE_KEY } from "@/lib/partner/password-prompt-session";
 import { partnerPasswordChangeSchema } from "@/lib/validations/partner-settings";
 
 function EyeIcon({ open }: { open: boolean }) {
@@ -34,6 +35,7 @@ function PasswordField({
   autoComplete,
   disabled,
   hint,
+  defaultValue,
 }: {
   id: string;
   name: string;
@@ -41,6 +43,7 @@ function PasswordField({
   autoComplete: string;
   disabled: boolean;
   hint?: string;
+  defaultValue?: string;
 }) {
   const [visible, setVisible] = useState(false);
 
@@ -55,6 +58,7 @@ function PasswordField({
           name={name}
           type={visible ? "text" : "password"}
           autoComplete={autoComplete}
+          defaultValue={defaultValue ?? ""}
           required
           disabled={disabled}
           className="w-full rounded-xl border border-neutral-200 py-3 pl-4 pr-12 text-neutral-900 outline-none ring-[#0F4F68] focus:ring-2 disabled:opacity-60"
@@ -80,6 +84,14 @@ export function PartnerPasswordChangeForm() {
   const [pending, startTransition] = useTransition();
   const [message, setMessage] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
+  const [prefillCurrentPassword] = useState(() => {
+    if (typeof window === "undefined") return "";
+    try {
+      return window.sessionStorage.getItem(PARTNER_LAST_LOGIN_PASSWORD_FOR_CHANGE_KEY) ?? "";
+    } catch {
+      return "";
+    }
+  });
 
   return (
     <form
@@ -138,6 +150,11 @@ export function PartnerPasswordChangeForm() {
             }
             const changedAt = new Date().toISOString();
             await supabase.from("partner_profiles").update({ password_changed_at: changedAt }).eq("id", user.id);
+            try {
+              window.sessionStorage.removeItem(PARTNER_LAST_LOGIN_PASSWORD_FOR_CHANGE_KEY);
+            } catch {
+              /* ignore */
+            }
             (e.target as HTMLFormElement).reset();
             setSuccess(true);
             setMessage(null);
@@ -160,6 +177,12 @@ export function PartnerPasswordChangeForm() {
         label="Aktuelles Passwort"
         autoComplete="current-password"
         disabled={pending}
+        defaultValue={prefillCurrentPassword}
+        hint={
+          prefillCurrentPassword
+            ? "Ihr zuletzt bei der Anmeldung genutztes Passwort ist vorausgefüllt — Sie können es bei Bedarf anpassen."
+            : undefined
+        }
       />
       <PasswordField
         id="pw-new"

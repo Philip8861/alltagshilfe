@@ -19,6 +19,7 @@ export const PARTNER_TUTORIAL_STEPS: PartnerTutorialStep[] = [
       "Das ist Ihr eindeutiger Code. Kundinnen und Kunden geben ihn z. B. bei der Bestellung von Pflegehilfsmitteln an. Sie finden ihn auch auf Infomaterial zum Ausdrucken wieder.",
     missingAnchorHint:
       "Öffnen Sie die Übersicht — dort sehen Sie Ihren Partner-Code in der ersten Kachel.",
+    bubbleAlignViewportCenterMd: true,
   },
   {
     anchor: '[data-tutorial="partner-provision-monatlich"]',
