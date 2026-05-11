@@ -5,7 +5,7 @@
  * eines bestehenden Eintrags ändern (sonst stimmen historische Statistiken nicht mehr).
  *
  * Karriere (`KARRIERE_CONTACT_SOURCE_OPTIONS`): eigene Auswahl ohne Plakat/Flyer/
- * Pflegeberatung-Vermittlung; zusätzlich Stellenbörsen (Indeed, eBay Kleinanzeigen).
+ * Pflegeberatung-Vermittlung; zusätzlich Indeed (eBay Kleinanzeigen auch im allgemeinen Kontakt).
  */
 export const CONTACT_SOURCE_OPTIONS = [
   { value: "google", label: "Google" },
@@ -16,6 +16,7 @@ export const CONTACT_SOURCE_OPTIONS = [
     value: "pflegeberatung_vermittlung",
     label: "Durch eine Pflegeberatung oder professionelle Vermittlung",
   },
+  { value: "ebay_kleinanzeigen", label: "eBay Kleinanzeigen" },
   { value: "flyer_arztpraxis", label: "Flyer entdeckt (z. B. in einer Arztpraxis)" },
   { value: "flyer_briefkasten", label: "Flyer im Briefkasten" },
   { value: "email", label: "Per E-Mail" },
