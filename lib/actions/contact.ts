@@ -25,6 +25,9 @@ export type ContactResult = { success: boolean; error?: string };
 /** Zentrale Adresse, wenn weder NOTIFICATION_TO_CONTACT noch NOTIFICATION_TO gesetzt sind. */
 const DEFAULT_CONTACT_INBOX = "info@alltagshilfe-sued.de";
 
+/** Kooperationsanfragen (/kooperation, Modal „Jetzt Kooperationspartner werden“): fester Empfänger. */
+const KOOPERATION_PORTAL_INBOX = "philip.sonntag@alltagshilfe-sued.de";
+
 /** Gleiche Adresse kleingeschrieben für Dubletten-Vergleich. */
 function dedupeEmails(emails: string[]): string[] {
   const seen = new Set<string>();
@@ -131,7 +134,10 @@ export async function submitContact(formData: FormData): Promise<ContactResult> 
   const isKarriereTopic =
     data.topic === "Karriere" || data.topic.trim().toLowerCase() === "karriere";
 
-  const regionalEmail = !isKarriereTopic
+  /** Thema „Kooperation“: Anfragen aus dem Kooperationsportal (öffentliche Seite + Modal). */
+  const isKooperationTopic = data.topic === "Kooperation";
+
+  const regionalEmail = !isKarriereTopic && !isKooperationTopic
     ? resolveRegionalContactEmail(verifiedSlug, routingPlzRaw)
     : null;
   const standortCtxForEmail =
@@ -189,7 +195,9 @@ export async function submitContact(formData: FormData): Promise<ContactResult> 
     : undefined;
 
   let finalTo: string[];
-  if (isKarriereTopic && karriereContactRecipients) {
+  if (isKooperationTopic) {
+    finalTo = [KOOPERATION_PORTAL_INBOX];
+  } else if (isKarriereTopic && karriereContactRecipients) {
     finalTo = karriereContactRecipients;
   } else if (regionalEmail) {
     /**

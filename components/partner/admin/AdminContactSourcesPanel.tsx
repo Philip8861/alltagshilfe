@@ -23,6 +23,7 @@ const KIND_LABELS: Record<string, string> = {
   "karriere-form": "Karriere: Formular (Seite)",
   "karriere-wizard": "Karriere: Kurzcheck",
   "betrieblich-angebot": "Betriebliches Angebot",
+  pflegebox: "Pflegebox (Konfigurator)",
 };
 
 function kindLabel(kind: string): string {
@@ -97,6 +98,7 @@ export function AdminContactSourcesPanel({ chartYear }: Props) {
     const known = [
       "contact",
       "hilfefinder",
+      "pflegebox",
       "karriere",
       "karriere-form",
       "karriere-wizard",
@@ -105,6 +107,26 @@ export function AdminContactSourcesPanel({ chartYear }: Props) {
     const ordered = known.filter((k) => set.has(k));
     const rest = [...set].filter((k) => !known.includes(k)).sort();
     return [...ordered, ...rest];
+  }, [rows]);
+
+  const pflegeboxPage = useMemo(() => {
+    const sub = rows.filter((r) => r.kind === "pflegebox");
+    const bySource = new Map<string, number>();
+    let gesamt = 0;
+    for (const r of sub) {
+      gesamt += r.view_count;
+      bySource.set(r.source, (bySource.get(r.source) ?? 0) + r.view_count);
+    }
+    const ordered: { source: string; label: string; count: number }[] = [];
+    for (const opt of CONTACT_SOURCE_OPTIONS) {
+      const c = bySource.get(opt.value) ?? 0;
+      ordered.push({ source: opt.value, label: opt.label, count: c });
+      bySource.delete(opt.value);
+    }
+    for (const [source, count] of bySource) {
+      ordered.push({ source, label: getContactSourceLabel(source), count });
+    }
+    return { ordered, gesamt };
   }, [rows]);
 
   const karrierePage = useMemo(() => {
@@ -286,6 +308,55 @@ export function AdminContactSourcesPanel({ chartYear }: Props) {
               );
             })}
           </ul>
+
+          {pflegeboxPage.gesamt > 0 ? (
+            <div className="space-y-4 rounded-2xl border border-[#0F4F68]/18 bg-[#F2F9FA]/40 p-5">
+              <div>
+                <h4 className="text-base font-bold text-[#0F4F68]">
+                  Pflegebox-Konfigurator – Aufmerksamkeit (Quellen)
+                </h4>
+                <p className="mt-1 text-sm text-neutral-600">
+                  Auswahl im Schritt „Adresse &amp; Geburtsdatum“; Zähler nur für abgeschlossene Bestellungen
+                  (Kind „pflegebox“), getrennt von Kontaktformular und Hilfe-Finder.
+                </p>
+              </div>
+              <p className="text-sm text-neutral-700">
+                Pflegebox-Bestellungen mit Quelle:{" "}
+                <strong className="tabular-nums text-[#0F4F68]">
+                  {pflegeboxPage.gesamt.toLocaleString("de-DE")}
+                </strong>
+              </p>
+              <ul className="space-y-2">
+                {pflegeboxPage.ordered.map((row) => {
+                  const pct =
+                    pflegeboxPage.gesamt > 0 ? Math.round((row.count / pflegeboxPage.gesamt) * 100) : 0;
+                  return (
+                    <li
+                      key={`pb-${row.source}`}
+                      className="rounded-xl border border-[#0F4F68]/12 bg-white p-3 shadow-sm"
+                    >
+                      <div className="flex items-center justify-between gap-3 text-sm">
+                        <span className="font-semibold text-[#0F4F68]">{row.label}</span>
+                        <span className="tabular-nums text-neutral-700">
+                          {row.count.toLocaleString("de-DE")}
+                          {row.count > 0 ? (
+                            <span className="ml-2 text-[#0F4F68]/70">({pct}%)</span>
+                          ) : null}
+                        </span>
+                      </div>
+                      <div className="mt-2 h-2 w-full overflow-hidden rounded-full bg-neutral-100">
+                        <div
+                          className="h-full rounded-full bg-[#25D366]/90"
+                          style={{ width: `${row.count > 0 ? Math.max(2, pct) : 0}%` }}
+                          aria-hidden
+                        />
+                      </div>
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+          ) : null}
 
           {/* Nur Einreichungen von der Karriereseite (Bewerbung), ohne allgemeines Kontaktformular. */}
           {karrierePage.gesamt > 0 ? (

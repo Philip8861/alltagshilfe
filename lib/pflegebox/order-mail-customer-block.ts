@@ -1,4 +1,5 @@
 import type { PflegeboxOrderBody } from "@/lib/validations/pflegebox-order";
+import { getContactSourceLabel } from "@/lib/contact-source";
 
 type Contact = PflegeboxOrderBody["contact"];
 
@@ -33,6 +34,7 @@ export function buildPflegeboxCustomerDetailsMailText(c: Contact): string {
   lines.push(`PLZ: ${c.postalCode.trim()}`);
   lines.push(`Ort: ${c.city.trim()}`);
   lines.push(`Geburtsdatum: ${birthIsoToDe(c.birthDate)}`);
+  lines.push(`Aufmerksam geworden über: ${getContactSourceLabel(c.contactSource)}`);
   lines.push(`Versicherung: ${c.privatversichert ? "Privatversichert" : "Gesetzlich versichert (GKV)"}`);
 
   if (!c.privatversichert) {

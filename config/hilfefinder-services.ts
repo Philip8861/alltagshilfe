@@ -49,7 +49,6 @@ export const HILFEFINDER_FALLBACK_BAD_GROENENBACH: Standort = {
   address: "Hinter den Gärten 10, 87730 Bad Grönenbach",
   phone: "08334 / 9893330",
   phoneHref: "tel:+4983349893330",
-  whatsappPhoneHref: "tel:+4983769769317",
   email: "info@alltagshilfe-sued.de",
   hours: "Mo-Do 08:30-12:00 & 13:00-16:00, Fr 08:30-12:00",
   plzList: [],

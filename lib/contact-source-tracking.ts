@@ -9,11 +9,15 @@ export type ContactSourceKind =
   | "karriere"
   | "karriere-form"
   | "karriere-wizard"
-  | "betrieblich-angebot";
+  | "betrieblich-angebot"
+  | "pflegebox";
 
 function isValidSourceForKind(source: string, kind: ContactSourceKind): boolean {
   if (kind === "karriere" || kind === "karriere-form" || kind === "karriere-wizard") {
     return isValidKarriereContactSource(source);
+  }
+  if (kind === "pflegebox") {
+    return isValidContactSource(source);
   }
   return isValidContactSource(source);
 }

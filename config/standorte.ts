@@ -248,10 +248,6 @@ export interface Standort {
   address: string;
   phone: string;
   phoneHref: string;
-  /**
-   * Optional: nur für WhatsApp (wa.me), wenn die Hauptnummer (`phoneHref`) nicht bei WhatsApp genutzt wird.
-   */
-  whatsappPhoneHref?: string;
   email: string;
   hours: string;
   plzList: string[];
@@ -287,7 +283,6 @@ export const standorteByPlz: Standort[] = [
     address: "Hinter den Gärten 10, 87730 Bad Grönenbach",
     phone: "08334 / 9893330",
     phoneHref: "tel:+4983349893330",
-    whatsappPhoneHref: "tel:+4983769769317",
     email: "info@alltagshilfe-sued.de",
     hours: HOURS,
     plzList: data["Allgäu"] ?? [],
@@ -412,6 +407,9 @@ export function resolvePlzContextForStandortPage(
   return { plz, ort };
 }
 
+/** Eine zentrale WhatsApp-Rufnummer für alle Standorte (nur wa.me, nicht das örtliche Telefon). */
+export const ZENTRALE_WHATSAPP_TEL_HREF = "tel:+4983769769317";
+
 /**
  * Wandelt eine tel:-URL (E.164) in eine WhatsApp-wa.me-Adresse um.
  * z. B. tel:+4975229151686 → https://wa.me/4975229151686
@@ -422,9 +420,12 @@ export function phoneHrefToWhatsAppUrl(phoneHref: string): string {
   return `https://wa.me/${digits}`;
 }
 
-/** WhatsApp-Link zum Standort: optional abweichend von der Telefon-Hauptnummer. */
-export function standortWhatsAppUrl(standort: Standort): string {
-  return phoneHrefToWhatsAppUrl(standort.whatsappPhoneHref ?? standort.phoneHref);
+/** Kanonische wa.me-URL zur zentralen WhatsApp-Nummer (für Kontaktseite, Standorte, …). */
+export const ZENTRALE_WHATSAPP_WA_ME_URL = phoneHrefToWhatsAppUrl(ZENTRALE_WHATSAPP_TEL_HREF);
+
+/** WhatsApp-Link: immer die zentrale Nummer; `standort` bleibt in der Signatur für Aufrufer-Klarheit. */
+export function standortWhatsAppUrl(_standort: Standort): string {
+  return ZENTRALE_WHATSAPP_WA_ME_URL;
 }
 
 /** Google-Maps-Karte einbetten (iframe src). Bei `mapsEmbedSrc` am Standort: exakte Karte, sonst Suche nach `address`. */

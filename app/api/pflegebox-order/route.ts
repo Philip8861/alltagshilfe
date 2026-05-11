@@ -11,6 +11,8 @@ import {
 import { resolveFormV1TemplatePath } from "@/lib/pdf/resolve-form-v1-template";
 import { formatPflegeboxCartLineForMail } from "@/lib/pflegebox/cart-line-mail-text";
 import { buildPflegeboxCustomerDetailsMailText } from "@/lib/pflegebox/order-mail-customer-block";
+import { recordContactSource } from "@/lib/contact-source-tracking";
+import { getContactSourceLabel } from "@/lib/contact-source";
 import { rateLimitPflegeboxOrder } from "@/lib/rate-limit";
 import { pflegeboxOrderBodySchema, type PflegeboxOrderBody } from "@/lib/validations/pflegebox-order";
 import { createSupabaseServiceRoleClient, resolvePartnerProfileId } from "@/lib/supabase/service";
@@ -140,6 +142,7 @@ export async function POST(request: Request) {
       beratungKanal: c.beratungKanal ?? null,
       beratungTelefon: c.beratungTelefon?.trim() || null,
       orderNote: c.orderNote ?? null,
+      contactSource: c.contactSource,
       email: c.email?.trim() || null,
       phone: c.phone?.trim() || null,
     },
@@ -162,6 +165,8 @@ export async function POST(request: Request) {
     return NextResponse.json({ ok: false, error: "save_failed" }, { status: 500 });
   }
 
+  await recordContactSource(c.contactSource, "pflegebox");
+
   const orderId = data?.id as string | undefined;
 
   if (partnerId && orderId) {
@@ -182,6 +187,8 @@ export async function POST(request: Request) {
       beratung_kanal: c.beratungKanal ?? null,
       kein_beratung_grund: c.keinBeratungGrund ?? null,
       bestell_anmerkung: c.orderNote ?? null,
+      kontakt_quelle: c.contactSource,
+      kontakt_quelle_label: getContactSourceLabel(c.contactSource),
       notiz,
       pflegebox_order_id: orderId,
       external_reference: externalRef,

@@ -20,6 +20,7 @@ export const CONTACT_SOURCE_OPTIONS = [
   { value: "flyer_arztpraxis", label: "Flyer entdeckt (z. B. in einer Arztpraxis)" },
   { value: "flyer_briefkasten", label: "Flyer im Briefkasten" },
   { value: "email", label: "Per E-Mail" },
+  { value: "firmen_intern_vermittelt", label: "Firmen intern vermittelt" },
   { value: "sonstiges", label: "Sonstiges" },
 ] as const;
 

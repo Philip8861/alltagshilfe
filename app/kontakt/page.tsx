@@ -4,7 +4,12 @@ import Link from "next/link";
 import { Container } from "@/components/layout/Container";
 import { ContactForm } from "@/components/forms/ContactForm";
 import { StandortFinderPopup } from "@/components/contact/StandortFinderPopup";
-import { buildStandortPageHref, findStandortByPlz, getOrtByPlz } from "@/config/standorte";
+import {
+  buildStandortPageHref,
+  findStandortByPlz,
+  getOrtByPlz,
+  ZENTRALE_WHATSAPP_WA_ME_URL,
+} from "@/config/standorte";
 import { siteConfig } from "@/config/site";
 
 export const metadata: Metadata = {
@@ -168,7 +173,7 @@ export default async function KontaktPage({
                 </p>
                 <div className="mt-4 flex justify-center">
                   <a
-                    href="https://wa.me/4983769769317"
+                    href={ZENTRALE_WHATSAPP_WA_ME_URL}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center gap-2 rounded-lg px-5 py-3 text-base font-bold uppercase tracking-wide text-white transition-opacity hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-[#25D366]"

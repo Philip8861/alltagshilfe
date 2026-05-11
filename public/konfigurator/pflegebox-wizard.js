@@ -27,7 +27,7 @@
   /** Pflegeboxi: Kurztext zum aktuellen Schritt. */
   const BOXI_STEP_INTROS = [
     "Hier geben Sie Ihre persönlichen Daten ein: Anrede, Vor- und Nachname.",
-    "Jetzt Ihre Adresse, PLZ, Ort und Ihr Geburtsdatum.",
+    "Jetzt Ihre Adresse, PLZ, Ort, Ihr Geburtsdatum – und wie Sie auf uns aufmerksam geworden sind.",
     "Hier geht es um Ihre Krankenversicherung, gesetzlich oder privat.",
     "Auf dieser Seite wählen Sie Ihren Pflegegrad.",
     "Hier sagen Sie, ob Sie eine persönliche Beratung wünschen und auf welche Weise diese erfolgen soll.",
@@ -37,6 +37,24 @@
     "Optional: Tragen Sie einen Partner-Code ein, falls wir empfohlen wurden.",
     "Zum Schluss fehlt nur noch Ihre Unterschrift. Tippen Sie auf „Jetzt unterschreiben“.",
     "Hura! Deine Bestellung ist bei uns angekommen – wir freuen uns!",
+  ];
+
+  /** Gleiche Werte wie lib/contact-source.ts CONTACT_SOURCE_OPTIONS (Pflegebox-Konfigurator). */
+  const CONTACT_SOURCE_WIZARD_OPTIONS = [
+    { value: "google", label: "Google" },
+    { value: "freunde_bekannte", label: "Freunde & Bekannte" },
+    { value: "social_media", label: "Social Media (Facebook, Instagram)" },
+    { value: "plakat", label: "Plakatwerbung" },
+    {
+      value: "pflegeberatung_vermittlung",
+      label: "Durch eine Pflegeberatung oder professionelle Vermittlung",
+    },
+    { value: "ebay_kleinanzeigen", label: "eBay Kleinanzeigen" },
+    { value: "flyer_arztpraxis", label: "Flyer entdeckt (z. B. in einer Arztpraxis)" },
+    { value: "flyer_briefkasten", label: "Flyer im Briefkasten" },
+    { value: "email", label: "Per E-Mail" },
+    { value: "firmen_intern_vermittelt", label: "Firmen intern vermittelt" },
+    { value: "sonstiges", label: "Sonstiges" },
   ];
 
   function $(id) {
@@ -148,6 +166,7 @@
     privacyAccepted: false,
     partnerCode: "",
     partnerLookupOk: null,
+    contactSource: "",
   };
 
   let sigCanvas = null;
@@ -248,6 +267,9 @@
       if (!data.birthDate || !isValidBirthIso(data.birthDate)) {
         return "Bitte gültiges Geburtsdatum wählen (Tag, Monat und Jahr).";
       }
+      if (!data.contactSource || !String(data.contactSource).trim()) {
+        return "Bitte geben Sie an, wie Sie auf uns aufmerksam geworden sind.";
+      }
     }
     if (s.key === "v1") {
       if (data.privatversichert) return "";
@@ -347,6 +369,7 @@
     if ($("wiz-kontakt-email")) data.contactEmail = $("wiz-kontakt-email").value ?? "";
     if ($("wiz-kontakt-phone")) data.contactPhone = $("wiz-kontakt-phone").value ?? "";
     if ($("wiz-note")) data.orderNote = $("wiz-note").value ?? "";
+    if ($("wiz-contact-source")) data.contactSource = $("wiz-contact-source").value ?? "";
     if ($("wiz-agb")) data.agbAccepted = $("wiz-agb").checked === true;
     if ($("wiz-privacy")) data.privacyAccepted = $("wiz-privacy").checked === true;
     if ($("wiz-partner")) data.partnerCode = $("wiz-partner").value ?? "";
@@ -469,7 +492,11 @@
               <select id="wiz-birth-y" autocomplete="bday-year" aria-label="Geburtsjahr">${buildBirthYearOptions(splitBirthDate(data.birthDate))}</select>
             </div>
           </div>
-        </fieldset>`;
+        </fieldset>
+        <div class="wiz-field wiz-field--contact-source">
+          <label for="wiz-contact-source">Wie sind Sie auf uns aufmerksam geworden? *</label>
+          <select id="wiz-contact-source" name="contactSource" required autocomplete="off" aria-required="true">${buildContactSourceSelectOptions(data.contactSource)}</select>
+        </div>`;
     } else if (meta.key === "v1") {
       const gkvHidden = data.privatversichert ? "hidden" : "";
       const beihHidden = data.privatversichert ? "" : "hidden";
@@ -666,6 +693,23 @@
 
   function escHtml(s) {
     return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  }
+
+  function buildContactSourceSelectOptions(selected) {
+    let html = '<option value="" disabled' + (selected ? "" : " selected") + ">Bitte wählen …</option>";
+    for (let i = 0; i < CONTACT_SOURCE_WIZARD_OPTIONS.length; i++) {
+      const o = CONTACT_SOURCE_WIZARD_OPTIONS[i];
+      const sel = selected === o.value ? " selected" : "";
+      html +=
+        '<option value="' +
+        escapeAttr(o.value) +
+        '"' +
+        sel +
+        ">" +
+        escHtml(o.label) +
+        "</option>";
+    }
+    return html;
   }
 
   function wireBirthSelects() {
@@ -1146,6 +1190,7 @@
     }
     const note = data.orderNote.trim();
     if (note) contact.orderNote = note;
+    contact.contactSource = data.contactSource.trim();
 
     const payload = {
       cartLines: config.getCartLines(),
@@ -1228,6 +1273,7 @@
       partnerCode: "",
       partnerLookupOk: null,
       privatversichert: false,
+      contactSource: "",
     });
     const bd = $("pflegebox-wizard-backdrop");
     if (bd) bd.hidden = false;
