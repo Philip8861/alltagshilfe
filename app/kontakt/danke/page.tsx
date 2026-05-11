@@ -6,6 +6,8 @@ import { siteConfig } from "@/config/site";
 export const metadata: Metadata = {
   title: "Nachricht gesendet",
   description: `Ihre Nachricht wurde gesendet – ${siteConfig.name}.`,
+  alternates: { canonical: "/kontakt/danke" },
+  robots: { index: true, follow: true, googleBot: { index: true, follow: true } },
 };
 
 export default function KontaktDankePage() {

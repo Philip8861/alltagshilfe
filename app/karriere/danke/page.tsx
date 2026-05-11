@@ -6,6 +6,8 @@ import { siteConfig } from "@/config/site";
 export const metadata: Metadata = {
   title: "Bewerbung gesendet",
   description: `Ihre Bewerbung wurde gesendet – ${siteConfig.name}.`,
+  alternates: { canonical: "/karriere/danke" },
+  robots: { index: true, follow: true, googleBot: { index: true, follow: true } },
 };
 
 export default function KarriereDankePage() {

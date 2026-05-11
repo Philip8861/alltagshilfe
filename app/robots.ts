@@ -1,13 +1,25 @@
 import { siteConfig } from "@/config/site";
 import type { MetadataRoute } from "next";
 
+/**
+ * Öffentliche Seiten crawlen; geschützte, technische und Vorschau-Routen ausschließen.
+ * `/partner/` deckt Login, Portal, Admin und Passwort-Flows ab.
+ */
 export default function robots(): MetadataRoute.Robots {
   return {
     rules: [
       {
         userAgent: "*",
         allow: "/",
-        disallow: ["/partner/", "/en/partner/", "/test", "/landing"],
+        disallow: [
+          "/api/",
+          "/auth/",
+          "/partner/",
+          "/partner-demo/",
+          "/en/partner/",
+          "/test",
+          "/landing",
+        ],
       },
     ],
     sitemap: `${siteConfig.baseUrl}/sitemap.xml`,

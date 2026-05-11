@@ -26,6 +26,8 @@ export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.baseUrl),
   title: { default: siteConfig.name, template: `%s | ${siteConfig.name}` },
   description: siteConfig.description,
+  /** Öffentliche Marketing-Seiten: explizit indexierbar (private Routen setzen eigenes `robots` / Layout). */
+  robots: { index: true, follow: true, googleBot: { index: true, follow: true } },
   icons: {
     icon: "/images/Herz.webp",
   },

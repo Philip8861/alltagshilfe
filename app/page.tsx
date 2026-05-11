@@ -25,6 +25,7 @@ export const metadata: Metadata = {
   title: HOME_META_TITLE,
   description: HOME_META_DESCRIPTION,
   alternates: { canonical: "/" },
+  robots: { index: true, follow: true, googleBot: { index: true, follow: true } },
   openGraph: {
     title: `${HOME_META_TITLE} | ${siteConfig.name}`,
     description: HOME_META_DESCRIPTION,

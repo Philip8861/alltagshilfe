@@ -14,8 +14,20 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${base}/kooperation`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.72 },
     { url: `${base}/barrierefreiheit`, lastModified: new Date(), changeFrequency: "yearly", priority: 0.45 },
     { url: `${base}/kontakt`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.8 },
+    {
+      url: `${base}/kontakt/danke`,
+      lastModified: new Date(),
+      changeFrequency: "monthly",
+      priority: 0.35,
+    },
     { url: `${base}/standorte`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.7 },
     { url: `${base}/karriere`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.7 },
+    {
+      url: `${base}/karriere/danke`,
+      lastModified: new Date(),
+      changeFrequency: "monthly",
+      priority: 0.35,
+    },
     { url: `${base}/pflegeberatung`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.7 },
     {
       url: `${base}/pflegeberatung/private-pflegeberatung`,

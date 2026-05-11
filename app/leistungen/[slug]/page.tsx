@@ -33,9 +33,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const item = (leistungenData as LeistungItem[]).find((l) => l.slug === slug);
   if (!item) return {};
+  const path = `/leistungen/${slug}`;
   return {
     title: item.title,
     description: item.description,
+    alternates: { canonical: path },
+    robots: { index: true, follow: true, googleBot: { index: true, follow: true } },
   };
 }
 
