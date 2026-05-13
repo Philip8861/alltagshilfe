@@ -65,3 +65,71 @@ export function serviceTipTableTypCellClass(slug: string): string {
   const s = slug as PartnerResponsibilitySlug;
   return SERVICE_SLUG_TIP_TABLE_CELL[s] ?? "border-l-[3px] border-l-neutral-400 bg-neutral-50/90";
 }
+
+/** Große farbige Karten für Admin „Aktuelle Aufträge“ (pro Leistung). */
+export const SERVICE_SLUG_AUFTRAEGE_ADMIN_CARD: Record<
+  PartnerResponsibilitySlug,
+  {
+    wrap: string;
+    header: string;
+    stripe: string;
+    kicker: string;
+    title: string;
+    counter: string;
+    counterLabel: string;
+    thead: string;
+  }
+> = {
+  betriebliche_pflegeberatung: {
+    wrap: "rounded-2xl border-2 border-sky-300/95 bg-gradient-to-br from-sky-50/95 via-white to-sky-50/40 shadow-[0_12px_40px_-18px_rgba(14,165,233,0.45)] ring-1 ring-sky-200/50",
+    header: "border-b border-sky-200/80 bg-sky-100/50",
+    stripe: "bg-sky-500 shadow-sm",
+    kicker: "text-sky-800/90",
+    title: "text-sky-950",
+    counter:
+      "min-w-[4.5rem] rounded-2xl border border-sky-200/90 bg-white/95 px-3 py-2 text-center shadow-inner ring-1 ring-sky-100/80",
+    counterLabel: "text-sky-800/80",
+    thead: "border-b border-sky-200/80 bg-sky-50/90 text-sky-950",
+  },
+  pflegehilfsmittel: {
+    wrap: "rounded-2xl border-2 border-cyan-300/95 bg-gradient-to-br from-cyan-50/95 via-white to-cyan-50/40 shadow-[0_12px_40px_-18px_rgba(6,182,212,0.4)] ring-1 ring-cyan-200/50",
+    header: "border-b border-cyan-200/80 bg-cyan-100/45",
+    stripe: "bg-cyan-500 shadow-sm",
+    kicker: "text-cyan-900/85",
+    title: "text-cyan-950",
+    counter:
+      "min-w-[4.5rem] rounded-2xl border border-cyan-200/90 bg-white/95 px-3 py-2 text-center shadow-inner ring-1 ring-cyan-100/80",
+    counterLabel: "text-cyan-900/75",
+    thead: "border-b border-cyan-200/80 bg-cyan-50/90 text-cyan-950",
+  },
+  hauswirtschaft_betreuung: {
+    wrap: "rounded-2xl border-2 border-indigo-300/95 bg-gradient-to-br from-indigo-50/95 via-white to-indigo-50/40 shadow-[0_12px_40px_-18px_rgba(99,102,241,0.35)] ring-1 ring-indigo-200/50",
+    header: "border-b border-indigo-200/80 bg-indigo-100/40",
+    stripe: "bg-indigo-500 shadow-sm",
+    kicker: "text-indigo-900/85",
+    title: "text-indigo-950",
+    counter:
+      "min-w-[4.5rem] rounded-2xl border border-indigo-200/90 bg-white/95 px-3 py-2 text-center shadow-inner ring-1 ring-indigo-100/80",
+    counterLabel: "text-indigo-900/75",
+    thead: "border-b border-indigo-200/80 bg-indigo-50/90 text-indigo-950",
+  },
+  pflegeberatung: {
+    wrap: "rounded-2xl border-2 border-fuchsia-300/95 bg-gradient-to-br from-fuchsia-50/95 via-white to-fuchsia-50/40 shadow-[0_12px_40px_-18px_rgba(217,70,239,0.32)] ring-1 ring-fuchsia-200/50",
+    header: "border-b border-fuchsia-200/80 bg-fuchsia-100/40",
+    stripe: "bg-fuchsia-500 shadow-sm",
+    kicker: "text-fuchsia-900/85",
+    title: "text-fuchsia-950",
+    counter:
+      "min-w-[4.5rem] rounded-2xl border border-fuchsia-200/90 bg-white/95 px-3 py-2 text-center shadow-inner ring-1 ring-fuchsia-100/80",
+    counterLabel: "text-fuchsia-900/75",
+    thead: "border-b border-fuchsia-200/80 bg-fuchsia-50/90 text-fuchsia-950",
+  },
+};
+
+export type ServiceAuftraegeAdminCardClasses =
+  (typeof SERVICE_SLUG_AUFTRAEGE_ADMIN_CARD)[PartnerResponsibilitySlug];
+
+export function serviceAuftraegeAdminCardClasses(slug: string): ServiceAuftraegeAdminCardClasses {
+  const s = slug as PartnerResponsibilitySlug;
+  return SERVICE_SLUG_AUFTRAEGE_ADMIN_CARD[s] ?? SERVICE_SLUG_AUFTRAEGE_ADMIN_CARD.betriebliche_pflegeberatung;
+}

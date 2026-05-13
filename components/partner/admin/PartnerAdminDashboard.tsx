@@ -18,6 +18,7 @@ import {
 } from "@/lib/partner/responsibility-areas";
 import {
   SERVICE_SLUG_ORDER,
+  serviceAuftraegeAdminCardClasses,
   serviceBadgeClass,
   serviceRowAccentBorderClass,
 } from "@/lib/partner/service-slug-styles";
@@ -411,110 +412,141 @@ export function PartnerAdminDashboard({
                 Tippgeber-Meldungen aus dem Partnerportal, <strong className="font-semibold text-neutral-800">nach den vier
                 Dienstleistungen getrennt.</strong> Spaltenköpfe sortieren innerhalb der jeweiligen Liste.
               </p>
-              <div className="mt-6 space-y-10">
+              <div className="mt-6 space-y-12">
                 {auftraegeQueueTips.length === 0 ? (
                   <div className="overflow-x-auto rounded-2xl border border-neutral-200/80 bg-[#F2F9FA]/30 px-4 py-12 text-center text-neutral-600">
                     Keine aktiven Tippgeber-Eingänge.
                   </div>
                 ) : (
-                  auftraegeTipsByService.map(({ slug, label, tips: groupTips }) => (
-                    <div key={slug} className="scroll-mt-4">
-                      <h3 className="flex flex-wrap items-center gap-2 text-base font-bold text-[#0F4F68] sm:text-lg">
-                        <span
-                          className={`inline-block rounded-full border px-2.5 py-1 text-xs font-semibold ${serviceBadgeClass(slug)}`}
+                  auftraegeTipsByService.map(({ slug, label, tips: groupTips }) => {
+                    const card = serviceAuftraegeAdminCardClasses(slug);
+                    return (
+                      <div key={slug} className={`scroll-mt-4 overflow-hidden ${card.wrap}`}>
+                        <div
+                          className={`flex flex-col gap-4 px-4 py-4 sm:flex-row sm:items-stretch sm:justify-between sm:gap-6 sm:px-6 sm:py-5 ${card.header}`}
                         >
-                          {label}
-                        </span>
-                        <span className="text-sm font-normal tabular-nums text-neutral-500">{groupTips.length} Einträge</span>
-                      </h3>
-                      <div className="mt-3 overflow-x-auto rounded-2xl border border-neutral-200/80">
-                        <table className="min-w-[840px] w-full text-left text-sm">
-                          <thead className="border-b border-[#0F4F68]/10 bg-[#F2F9FA]/70 text-xs">
-                            <tr>
-                              <th className="px-3 py-3">
-                                <SortButton
-                                  label="Datum"
-                                  active={tipSort.key === "created_at"}
-                                  dir={tipSort.dir}
-                                  onClick={() => toggleTipSort("created_at")}
-                                />
-                              </th>
-                              <th className="px-3 py-3">
-                                <SortButton
-                                  label="Partner"
-                                  active={tipSort.key === "partner"}
-                                  dir={tipSort.dir}
-                                  onClick={() => toggleTipSort("partner")}
-                                />
-                              </th>
-                              <th className="px-3 py-3">Kurzinfo</th>
-                              <th className="px-3 py-3">
-                                <SortButton
-                                  label="Status"
-                                  active={tipSort.key === "status"}
-                                  dir={tipSort.dir}
-                                  onClick={() => toggleTipSort("status")}
-                                />
-                              </th>
-                              <th className="whitespace-nowrap px-3 py-3">Archiv</th>
-                            </tr>
-                          </thead>
-                          <tbody className="divide-y divide-neutral-100">
-                            {groupTips.length === 0 ? (
-                              <tr>
-                                <td colSpan={5} className="px-4 py-8 text-center text-sm text-neutral-500">
-                                  Keine Einträge in dieser Leistung.
-                                </td>
-                              </tr>
-                            ) : (
-                              groupTips.map((t) => {
-                                const pd = partnerDisplay(t.partner_id);
-                                return (
-                                  <tr
-                                    id={`partner-admin-tip-${t.id}`}
-                                    key={t.id}
-                                    className={`align-top transition-colors hover:bg-[#f8fbfc] ${serviceRowAccentBorderClass(t.service_slug)}`}
-                                  >
-                                    <td className="whitespace-nowrap px-3 py-3 text-neutral-700">
-                                      {new Date(t.created_at).toLocaleString("de-DE", {
-                                        dateStyle: "short",
-                                        timeStyle: "short",
-                                      })}
-                                    </td>
-                                    <td className="px-3 py-3">
-                                      <span className="font-medium text-neutral-900">{pd.name}</span>
-                                      {pd.code ? (
-                                        <span className="ml-1 font-mono text-xs font-bold text-[#0F4F68]">{pd.code}</span>
-                                      ) : null}
-                                      <div className="break-all text-xs text-neutral-500">{pd.email}</div>
-                                    </td>
-                                    <td className="max-w-[240px] px-3 py-3 text-xs text-neutral-700">
-                                      {partnerTipPayloadSummary(t.payload, t.service_slug)}
-                                    </td>
-                                    <td className="px-3 py-3">
-                                      <TipStatusEditor
-                                        tipId={t.id}
-                                        status={t.admin_status}
-                                        adminVisibleNote={t.admin_visible_note}
-                                        serviceSlug={t.service_slug}
-                                        paidAmountEur={t.paid_amount_eur}
-                                      />
-                                    </td>
-                                    <td className="px-3 py-3 align-top">
-                                      <div className="flex flex-col gap-2">
-                                        <ArchiveTipButton tipId={t.id} isArchived={false} />
-                                        <DeleteTipButton tipId={t.id} />
-                                      </div>
+                          <div className="flex min-w-0 flex-1 items-start gap-4">
+                            <span
+                              className={`mt-1 h-16 w-2.5 shrink-0 rounded-full sm:h-[4.25rem] sm:w-3 ${card.stripe}`}
+                              aria-hidden
+                            />
+                            <div className="min-w-0 pt-0.5">
+                              <p
+                                className={`text-[0.7rem] font-bold uppercase tracking-[0.14em] sm:text-xs ${card.kicker}`}
+                              >
+                                Dienstleistung
+                              </p>
+                              <h3
+                                className={`mt-1 text-balance text-xl font-extrabold leading-snug tracking-tight sm:text-2xl ${card.title}`}
+                              >
+                                {label}
+                              </h3>
+                            </div>
+                          </div>
+                          <div
+                            className={`flex shrink-0 flex-col items-center justify-center self-stretch sm:self-auto ${card.counter}`}
+                          >
+                            <span className={`text-3xl font-extrabold tabular-nums leading-none sm:text-4xl ${card.title}`}>
+                              {groupTips.length}
+                            </span>
+                            <span
+                              className={`mt-1.5 text-[0.7rem] font-bold uppercase tracking-[0.1em] ${card.counterLabel}`}
+                            >
+                              {groupTips.length === 1 ? "Eintrag" : "Einträge"}
+                            </span>
+                          </div>
+                        </div>
+                        <div className="p-2 pt-0 sm:p-4 sm:pt-0">
+                          <div className="overflow-x-auto rounded-xl border border-white/60 bg-white/95 shadow-inner ring-1 ring-black/[0.06]">
+                            <table className="min-w-[840px] w-full text-left text-sm">
+                              <thead className={`text-xs font-semibold ${card.thead}`}>
+                                <tr>
+                                  <th className="px-3 py-3">
+                                    <SortButton
+                                      label="Datum"
+                                      active={tipSort.key === "created_at"}
+                                      dir={tipSort.dir}
+                                      onClick={() => toggleTipSort("created_at")}
+                                    />
+                                  </th>
+                                  <th className="px-3 py-3">
+                                    <SortButton
+                                      label="Partner"
+                                      active={tipSort.key === "partner"}
+                                      dir={tipSort.dir}
+                                      onClick={() => toggleTipSort("partner")}
+                                    />
+                                  </th>
+                                  <th className="px-3 py-3">Kurzinfo</th>
+                                  <th className="px-3 py-3">
+                                    <SortButton
+                                      label="Status"
+                                      active={tipSort.key === "status"}
+                                      dir={tipSort.dir}
+                                      onClick={() => toggleTipSort("status")}
+                                    />
+                                  </th>
+                                  <th className="whitespace-nowrap px-3 py-3">Archiv</th>
+                                </tr>
+                              </thead>
+                              <tbody className="divide-y divide-neutral-100 bg-white">
+                                {groupTips.length === 0 ? (
+                                  <tr>
+                                    <td colSpan={5} className="px-4 py-10 text-center text-sm text-neutral-500">
+                                      Keine Einträge in dieser Leistung.
                                     </td>
                                   </tr>
-                                );
-                              })
-                            )}
-                          </tbody>
-                        </table>
+                                ) : (
+                                  groupTips.map((t) => {
+                                    const pd = partnerDisplay(t.partner_id);
+                                    return (
+                                      <tr
+                                        id={`partner-admin-tip-${t.id}`}
+                                        key={t.id}
+                                        className={`align-top transition-colors hover:bg-[#f8fbfc] ${serviceRowAccentBorderClass(t.service_slug)}`}
+                                      >
+                                        <td className="whitespace-nowrap px-3 py-3 text-neutral-700">
+                                          {new Date(t.created_at).toLocaleString("de-DE", {
+                                            dateStyle: "short",
+                                            timeStyle: "short",
+                                          })}
+                                        </td>
+                                        <td className="px-3 py-3">
+                                          <span className="font-medium text-neutral-900">{pd.name}</span>
+                                          {pd.code ? (
+                                            <span className="ml-1 font-mono text-xs font-bold text-[#0F4F68]">{pd.code}</span>
+                                          ) : null}
+                                          <div className="break-all text-xs text-neutral-500">{pd.email}</div>
+                                        </td>
+                                        <td className="max-w-[240px] px-3 py-3 text-xs text-neutral-700">
+                                          {partnerTipPayloadSummary(t.payload, t.service_slug)}
+                                        </td>
+                                        <td className="px-3 py-3">
+                                          <TipStatusEditor
+                                            tipId={t.id}
+                                            status={t.admin_status}
+                                            adminVisibleNote={t.admin_visible_note}
+                                            serviceSlug={t.service_slug}
+                                            paidAmountEur={t.paid_amount_eur}
+                                          />
+                                        </td>
+                                        <td className="px-3 py-3 align-top">
+                                          <div className="flex flex-col gap-2">
+                                            <ArchiveTipButton tipId={t.id} isArchived={false} />
+                                            <DeleteTipButton tipId={t.id} />
+                                          </div>
+                                        </td>
+                                      </tr>
+                                    );
+                                  })
+                                )}
+                              </tbody>
+                            </table>
+                          </div>
+                        </div>
                       </div>
-                    </div>
-                  ))
+                    );
+                  })
                 )}
               </div>
             </section>
