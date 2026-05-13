@@ -21,6 +21,7 @@ import {
   type HomepageTrafficGranularity,
 } from "@/lib/actions/admin-homepage-analytics";
 import { CHART_AXIS_TICK, CHART_GRID, CHART_TEAL } from "@/components/partner/partner-chart-theme";
+import { PartnerExpandableStatSection } from "@/components/partner/PartnerExpandableStatSection";
 import {
   deviceCategoryLabelDe,
   type SiteTrafficDeviceCategory,
@@ -213,9 +214,7 @@ export function AdminHomepageTrafficPanel({ chartYear }: Props) {
   const totalSum = totalSeries.reduce((s, p) => s + p.views, 0);
 
   return (
-    <div className="space-y-8">
-      <h3 className="text-lg font-bold text-[#0F4F68]">Statistik Homepage</h3>
-
+    <div className="space-y-5">
       <div className="flex flex-wrap items-end gap-4">
         <div>
           <label htmlFor="hp-traffic-month" className="block text-xs font-bold uppercase text-[#0F4F68]/75">
@@ -278,199 +277,221 @@ export function AdminHomepageTrafficPanel({ chartYear }: Props) {
         <p className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-950">{resetErr}</p>
       ) : null}
 
-      <section className="space-y-4" aria-labelledby="hp-total-heading">
-        <h3 id="hp-total-heading" className="text-base font-bold text-[#0F4F68]">
-          Aufrufe gesamt (alle Seiten)
-        </h3>
-        <p className="text-sm text-neutral-600">
-          Jahr: <strong>{chartYear}</strong> (oben einstellbar). Diagramm: Linienverlauf nach gewähltem Raster.
-          Summe sichtbarer Periode:{" "}
-          <strong className="tabular-nums text-[#0F4F68]">{totalSum.toLocaleString("de-DE")}</strong>
-        </p>
-        <GranularityToggle idPrefix="hp-total" value={totalGran} onChange={setTotalGran} />
-        {totalLoading ? <p className="text-sm text-neutral-500">Lade Gesamtverlauf…</p> : null}
-        {totalErr ? (
-          <p className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-950">{totalErr}</p>
-        ) : null}
-        {!totalLoading && !totalErr ? (
-          <TrafficLineChart
-            data={totalSeries}
-            title={
-              totalGran === "tag"
-                ? `Täglich im ${new Date(chartYear, month - 1, 1).toLocaleString("de-DE", { month: "long", year: "numeric" })}`
-                : totalGran === "monat"
-                  ? `Pro Monat im Jahr ${chartYear}`
-                  : `Pro Jahr (2020–${chartYear})`
-            }
-          />
-        ) : null}
-      </section>
+      <p className="text-sm text-neutral-600">
+        Wählen Sie einen Bereich – die Detailstatistik wird eingeblendet. Monat und Aktualisieren gelten für alle
+        folgenden Blöcke gemeinsam.
+      </p>
 
-      <section className="space-y-4 border-t border-neutral-200/90 pt-8" aria-labelledby="hp-device-heading">
-        <h3 id="hp-device-heading" className="text-base font-bold text-[#0F4F68]">
-          Aufrufe nach Gerät (Mobil / Tablet / PC)
-        </h3>
-        <p className="text-sm text-neutral-600">
-          Einordnung per <strong className="font-semibold text-neutral-800">User-Agent</strong> und optional{" "}
-          <code className="rounded bg-neutral-100 px-1">Sec-CH-UA-Mobile</code> — grobe Kategorien, keine
-          Gerätefingerprints. „Unbekannt“ enthält ältere Zähler vor der Geräte-Migration.
-        </p>
-        <div className="flex flex-wrap gap-2" role="group" aria-label="Zeitraum Geräte">
-          <button
-            type="button"
-            onClick={() => setDeviceScope("monat")}
-            className={`min-h-10 rounded-xl px-4 text-sm font-semibold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68]/30 ${
-              deviceScope === "monat"
-                ? "bg-[#0F4F68] text-white shadow-sm"
-                : "border border-[#0F4F68]/25 bg-white text-[#0F4F68] hover:bg-[#F2F9FA]"
-            }`}
-          >
-            Monat ({new Date(chartYear, month - 1, 1).toLocaleString("de-DE", { month: "long", year: "numeric" })})
-          </button>
-          <button
-            type="button"
-            onClick={() => setDeviceScope("jahr")}
-            className={`min-h-10 rounded-xl px-4 text-sm font-semibold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68]/30 ${
-              deviceScope === "jahr"
-                ? "bg-[#0F4F68] text-white shadow-sm"
-                : "border border-[#0F4F68]/25 bg-white text-[#0F4F68] hover:bg-[#F2F9FA]"
-            }`}
-          >
-            Ganzes Jahr {chartYear}
-          </button>
-        </div>
-        {deviceLoading ? <p className="text-sm text-neutral-500">Lade Geräteverteilung…</p> : null}
-        {deviceErr ? (
-          <p className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-950">{deviceErr}</p>
-        ) : null}
-        {!deviceLoading && !deviceErr ? (
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {deviceRows.map((r) => (
-              <div
-                key={r.device_category}
-                className="rounded-2xl border border-[#0F4F68]/12 bg-gradient-to-br from-white to-[#F2F9FA]/70 p-5"
+      <div className="space-y-4">
+        <PartnerExpandableStatSection
+          title="Aufrufe gesamt (alle Seiten)"
+          subtitle="Liniendiagramm nach Tag, Monat oder Jahr – Summe der erfassten Seitenaufrufe."
+          defaultOpen
+        >
+          <section className="space-y-4" aria-labelledby="hp-total-heading">
+            <h3 id="hp-total-heading" className="sr-only">
+              Aufrufe gesamt (alle Seiten)
+            </h3>
+            <p className="text-sm text-neutral-600">
+              Jahr: <strong>{chartYear}</strong> (oben im Bereich „Statistik“ einstellbar). Summe sichtbarer Periode:{" "}
+              <strong className="tabular-nums text-[#0F4F68]">{totalSum.toLocaleString("de-DE")}</strong>
+            </p>
+            <GranularityToggle idPrefix="hp-total" value={totalGran} onChange={setTotalGran} />
+            {totalLoading ? <p className="text-sm text-neutral-500">Lade Gesamtverlauf…</p> : null}
+            {totalErr ? (
+              <p className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-950">{totalErr}</p>
+            ) : null}
+            {!totalLoading && !totalErr ? (
+              <TrafficLineChart
+                data={totalSeries}
+                title={
+                  totalGran === "tag"
+                    ? `Täglich im ${new Date(chartYear, month - 1, 1).toLocaleString("de-DE", { month: "long", year: "numeric" })}`
+                    : totalGran === "monat"
+                      ? `Pro Monat im Jahr ${chartYear}`
+                      : `Pro Jahr (2020–${chartYear})`
+                }
+              />
+            ) : null}
+          </section>
+        </PartnerExpandableStatSection>
+
+        <PartnerExpandableStatSection
+          title="Aufrufe nach Gerät"
+          subtitle="Mobil, Tablet, Desktop – grobe Einordnung per User-Agent (keine Fingerprints)."
+        >
+          <section className="space-y-4" aria-labelledby="hp-device-heading">
+            <h3 id="hp-device-heading" className="sr-only">
+              Aufrufe nach Gerät (Mobil / Tablet / PC)
+            </h3>
+            <p className="text-sm text-neutral-600">
+              Einordnung per <strong className="font-semibold text-neutral-800">User-Agent</strong> und optional{" "}
+              <code className="rounded bg-neutral-100 px-1">Sec-CH-UA-Mobile</code>. „Unbekannt“ enthält ältere Zähler vor
+              der Geräte-Migration.
+            </p>
+            <div className="flex flex-wrap gap-2" role="group" aria-label="Zeitraum Geräte">
+              <button
+                type="button"
+                onClick={() => setDeviceScope("monat")}
+                className={`min-h-10 rounded-xl px-4 text-sm font-semibold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68]/30 ${
+                  deviceScope === "monat"
+                    ? "bg-[#0F4F68] text-white shadow-sm"
+                    : "border border-[#0F4F68]/25 bg-white text-[#0F4F68] hover:bg-[#F2F9FA]"
+                }`}
               >
-                <p className="text-xs font-bold uppercase tracking-wide text-[#0F4F68]/65">{deviceLabel(r.device_category)}</p>
-                <p className="mt-2 text-2xl font-bold tabular-nums text-[#0F4F68]">
-                  {r.view_count.toLocaleString("de-DE")}
-                </p>
-                <p className="mt-1 text-xs text-neutral-600">Seitenaufrufe (Summe)</p>
+                Monat ({new Date(chartYear, month - 1, 1).toLocaleString("de-DE", { month: "long", year: "numeric" })})
+              </button>
+              <button
+                type="button"
+                onClick={() => setDeviceScope("jahr")}
+                className={`min-h-10 rounded-xl px-4 text-sm font-semibold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68]/30 ${
+                  deviceScope === "jahr"
+                    ? "bg-[#0F4F68] text-white shadow-sm"
+                    : "border border-[#0F4F68]/25 bg-white text-[#0F4F68] hover:bg-[#F2F9FA]"
+                }`}
+              >
+                Ganzes Jahr {chartYear}
+              </button>
+            </div>
+            {deviceLoading ? <p className="text-sm text-neutral-500">Lade Geräteverteilung…</p> : null}
+            {deviceErr ? (
+              <p className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-950">{deviceErr}</p>
+            ) : null}
+            {!deviceLoading && !deviceErr ? (
+              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                {deviceRows.map((r) => (
+                  <div
+                    key={r.device_category}
+                    className="rounded-2xl border border-[#0F4F68]/12 bg-gradient-to-br from-white to-[#F2F9FA]/70 p-5"
+                  >
+                    <p className="text-xs font-bold uppercase tracking-wide text-[#0F4F68]/65">{deviceLabel(r.device_category)}</p>
+                    <p className="mt-2 text-2xl font-bold tabular-nums text-[#0F4F68]">
+                      {r.view_count.toLocaleString("de-DE")}
+                    </p>
+                    <p className="mt-1 text-xs text-neutral-600">Seitenaufrufe (Summe)</p>
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
-        ) : null}
-      </section>
+            ) : null}
+          </section>
+        </PartnerExpandableStatSection>
 
-      <section className="space-y-4" aria-labelledby="hp-paths-heading">
-        <h3 id="hp-paths-heading" className="text-base font-bold text-[#0F4F68]">
-          Aufrufe je Seite (Pfad)
-        </h3>
-        <p className="text-sm text-neutral-600">
-          Sortiert nach Aufrufen im Jahr <strong>{chartYear}</strong>. Zeile aufklappen für Verlauf nur dieser URL.
-        </p>
-        {pathsLoading ? <p className="text-sm text-neutral-500">Lade Seitenliste…</p> : null}
-        {pathsErr ? (
-          <p className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-950">{pathsErr}</p>
-        ) : null}
-        {!pathsLoading && !pathsErr ? (
-          <div className="overflow-x-auto rounded-2xl border border-neutral-200/80">
-            <table className="w-full min-w-[320px] text-left text-sm">
-              <thead className="border-b border-[#0F4F68]/10 bg-[#F2F9FA]/60 text-xs">
-                <tr>
-                  <th className="px-3 py-2">Pfad</th>
-                  <th className="px-3 py-2 text-right">Aufrufe {chartYear}</th>
-                  <th className="px-3 py-2 w-32">Detail</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-neutral-100">
-                {paths.length === 0 ? (
-                  <tr>
-                    <td colSpan={3} className="px-3 py-8 text-center text-neutral-500">
-                      Noch keine Daten für dieses Jahr.
-                    </td>
-                  </tr>
-                ) : (
-                  paths.map((row, idx) => {
-                    const open = expandedPath === row.path;
-                    return (
-                      <Fragment key={row.path}>
-                        <tr className="hover:bg-neutral-50/80">
-                          <td className="max-w-[18rem] break-all px-3 py-2 font-mono text-xs text-neutral-800">
-                            {row.path}
-                          </td>
-                          <td className="whitespace-nowrap px-3 py-2 text-right tabular-nums font-semibold text-[#0F4F68]">
-                            {row.view_count.toLocaleString("de-DE")}
-                          </td>
-                          <td className="px-3 py-2">
-                            <button
-                              type="button"
-                              onClick={() => setExpandedPath(open ? null : row.path)}
-                              className="rounded-lg border border-[#0F4F68]/30 px-3 py-1.5 text-xs font-semibold text-[#0F4F68] hover:bg-[#F2F9FA]"
-                              aria-expanded={open}
-                            >
-                              {open ? "Schließen" : "Verlauf"}
-                            </button>
-                          </td>
-                        </tr>
-                        {open ? (
-                          <tr className="bg-[#fafcfd]">
-                            <td colSpan={3} className="px-3 py-4">
-                              <p className="text-xs font-semibold text-[#0F4F68]">Verlauf: {row.path}</p>
-                              <div className="mt-3">
-                                <GranularityToggle idPrefix={`hp-path-${idx}`} value={pathGran} onChange={setPathGran} />
-                              </div>
-                              <p className="mt-2 text-xs text-neutral-500">
-                                Monat oben steuert die Tages-Ansicht; Jahr oben steuert Monats- und Jahresansicht.
-                              </p>
-                              {pathLoading ? <p className="mt-3 text-sm text-neutral-500">Lade Verlauf…</p> : null}
-                              {pathErr ? (
-                                <p className="mt-3 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-950">
-                                  {pathErr}
-                                </p>
-                              ) : null}
-                              {!pathLoading && !pathErr ? (
-                                <div className="mt-4">
-                                  <div className="h-[min(260px,45vh)] w-full min-h-[200px]">
-                                    <ResponsiveContainer width="100%" height="100%">
-                                      <LineChart
-                                        data={pathSeries.map((d) => ({ ...d, name: d.label }))}
-                                        margin={{ top: 8, right: 12, left: 4, bottom: 0 }}
-                                      >
-                                        <CartesianGrid stroke={CHART_GRID} strokeDasharray="4 4" />
-                                        <XAxis
-                                          dataKey="name"
-                                          tick={{ fill: CHART_AXIS_TICK, fontSize: 10 }}
-                                          interval="preserveStartEnd"
-                                        />
-                                        <YAxis allowDecimals={false} tick={{ fill: CHART_AXIS_TICK, fontSize: 11 }} width={40} />
-                                        <Tooltip
-                                          formatter={(v: number) => [v.toLocaleString("de-DE"), "Aufrufe"]}
-                                          contentStyle={{ borderRadius: 12, border: `1px solid ${CHART_GRID}` }}
-                                        />
-                                        <Line
-                                          type="monotone"
-                                          dataKey="views"
-                                          stroke={CHART_TEAL}
-                                          strokeWidth={2}
-                                          dot={{ r: 2.5 }}
-                                        />
-                                      </LineChart>
-                                    </ResponsiveContainer>
+        <PartnerExpandableStatSection
+          title="Aufrufe je Seite (Pfad)"
+          subtitle="Top-URLs im gewählten Jahr – Zeile aufklappen für den Verlauf nur dieser Adresse."
+        >
+          <section className="space-y-4" aria-labelledby="hp-paths-heading">
+            <h3 id="hp-paths-heading" className="sr-only">
+              Aufrufe je Seite (Pfad)
+            </h3>
+            <p className="text-sm text-neutral-600">
+              Sortiert nach Aufrufen im Jahr <strong>{chartYear}</strong>.
+            </p>
+            {pathsLoading ? <p className="text-sm text-neutral-500">Lade Seitenliste…</p> : null}
+            {pathsErr ? (
+              <p className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-950">{pathsErr}</p>
+            ) : null}
+            {!pathsLoading && !pathsErr ? (
+              <div className="overflow-x-auto rounded-2xl border border-neutral-200/80">
+                <table className="w-full min-w-[320px] text-left text-sm">
+                  <thead className="border-b border-[#0F4F68]/10 bg-[#F2F9FA]/60 text-xs">
+                    <tr>
+                      <th className="px-3 py-2">Pfad</th>
+                      <th className="px-3 py-2 text-right">Aufrufe {chartYear}</th>
+                      <th className="w-32 px-3 py-2">Detail</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-neutral-100">
+                    {paths.length === 0 ? (
+                      <tr>
+                        <td colSpan={3} className="px-3 py-8 text-center text-neutral-500">
+                          Noch keine Daten für dieses Jahr.
+                        </td>
+                      </tr>
+                    ) : (
+                      paths.map((row, idx) => {
+                        const open = expandedPath === row.path;
+                        return (
+                          <Fragment key={row.path}>
+                            <tr className="hover:bg-neutral-50/80">
+                              <td className="max-w-[18rem] break-all px-3 py-2 font-mono text-xs text-neutral-800">
+                                {row.path}
+                              </td>
+                              <td className="whitespace-nowrap px-3 py-2 text-right font-semibold tabular-nums text-[#0F4F68]">
+                                {row.view_count.toLocaleString("de-DE")}
+                              </td>
+                              <td className="px-3 py-2">
+                                <button
+                                  type="button"
+                                  onClick={() => setExpandedPath(open ? null : row.path)}
+                                  className="rounded-lg border border-[#0F4F68]/30 px-3 py-1.5 text-xs font-semibold text-[#0F4F68] hover:bg-[#F2F9FA]"
+                                  aria-expanded={open}
+                                >
+                                  {open ? "Schließen" : "Verlauf"}
+                                </button>
+                              </td>
+                            </tr>
+                            {open ? (
+                              <tr className="bg-[#fafcfd]">
+                                <td colSpan={3} className="px-3 py-4">
+                                  <p className="text-xs font-semibold text-[#0F4F68]">Verlauf: {row.path}</p>
+                                  <div className="mt-3">
+                                    <GranularityToggle idPrefix={`hp-path-${idx}`} value={pathGran} onChange={setPathGran} />
                                   </div>
-                                </div>
-                              ) : null}
-                            </td>
-                          </tr>
-                        ) : null}
-                      </Fragment>
-                    );
-                  })
-                )}
-              </tbody>
-            </table>
-          </div>
-        ) : null}
-      </section>
+                                  <p className="mt-2 text-xs text-neutral-500">
+                                    Monat oben steuert die Tages-Ansicht; Jahr oben steuert Monats- und Jahresansicht.
+                                  </p>
+                                  {pathLoading ? <p className="mt-3 text-sm text-neutral-500">Lade Verlauf…</p> : null}
+                                  {pathErr ? (
+                                    <p className="mt-3 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-950">
+                                      {pathErr}
+                                    </p>
+                                  ) : null}
+                                  {!pathLoading && !pathErr ? (
+                                    <div className="mt-4">
+                                      <div className="h-[min(260px,45vh)] w-full min-h-[200px]">
+                                        <ResponsiveContainer width="100%" height="100%">
+                                          <LineChart
+                                            data={pathSeries.map((d) => ({ ...d, name: d.label }))}
+                                            margin={{ top: 8, right: 12, left: 4, bottom: 0 }}
+                                          >
+                                            <CartesianGrid stroke={CHART_GRID} strokeDasharray="4 4" />
+                                            <XAxis
+                                              dataKey="name"
+                                              tick={{ fill: CHART_AXIS_TICK, fontSize: 10 }}
+                                              interval="preserveStartEnd"
+                                            />
+                                            <YAxis allowDecimals={false} tick={{ fill: CHART_AXIS_TICK, fontSize: 11 }} width={40} />
+                                            <Tooltip
+                                              formatter={(v: number) => [v.toLocaleString("de-DE"), "Aufrufe"]}
+                                              contentStyle={{ borderRadius: 12, border: `1px solid ${CHART_GRID}` }}
+                                            />
+                                            <Line
+                                              type="monotone"
+                                              dataKey="views"
+                                              stroke={CHART_TEAL}
+                                              strokeWidth={2}
+                                              dot={{ r: 2.5 }}
+                                            />
+                                          </LineChart>
+                                        </ResponsiveContainer>
+                                      </div>
+                                    </div>
+                                  ) : null}
+                                </td>
+                              </tr>
+                            ) : null}
+                          </Fragment>
+                        );
+                      })
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            ) : null}
+          </section>
+        </PartnerExpandableStatSection>
+      </div>
     </div>
   );
 }

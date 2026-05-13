@@ -60,14 +60,7 @@ function statusPill(admin: PartnerTipAdminStatus): { label: string; className: s
   switch (admin) {
     case "in_bearbeitung":
       return { label, className: "bg-amber-400 text-amber-950" };
-    case "termin_vereinbart":
-      return { label, className: "bg-indigo-600 text-white" };
-    case "warten_auf_rueckmeldung":
-      return { label, className: "bg-violet-600 text-white" };
-    case "bezahlt":
-      /* Wie „Vertragsabschluss erfolgreich“: grüner Hintergrund, weiße Schrift, zentriert. */
-      return { label, className: "bg-emerald-600 px-3 py-1 font-semibold text-white" };
-    case "erledigt":
+    case "vertragsabschluss_erfolgreich":
       return { label, className: "bg-emerald-600 px-3 py-1 font-semibold text-white" };
     case "abgelehnt":
       return { label, className: "bg-red-600 text-white" };
@@ -110,11 +103,11 @@ export function mapTipsToStatuslisteRows(tips: PartnerDashboardTipSerial[]): Par
     const monatlichBucket = provisionBucketForServiceSlug(t.service_slug) === "monatlich";
     const showPaidMonatlich =
       monatlichBucket &&
-      (t.admin_status === "erledigt" || t.admin_status === "bezahlt") &&
+      t.admin_status === "vertragsabschluss_erfolgreich" &&
       paid != null &&
       Number.isFinite(Number(paid));
     const showPaidEinmal =
-      !monatlichBucket && t.admin_status === "bezahlt" && paid != null && Number.isFinite(Number(paid));
+      !monatlichBucket && t.admin_status === "vertragsabschluss_erfolgreich" && paid != null && Number.isFinite(Number(paid));
     const betrag = showPaidMonatlich || showPaidEinmal ? formatProvisionEur(Number(paid)) : "—";
     return {
       id: t.id,

@@ -26,6 +26,7 @@ import { formatProvisionEur } from "@/lib/partner/partner-tip-payout";
 import { AdminHomepageTrafficPanel } from "@/components/partner/admin/AdminHomepageTrafficPanel";
 import { AdminContactSourcesPanel } from "@/components/partner/admin/AdminContactSourcesPanel";
 import { PartnerAdminPayoutSection } from "@/components/partner/admin/PartnerAdminPayoutSection";
+import { PartnerExpandableStatSection } from "@/components/partner/PartnerExpandableStatSection";
 
 const AdminStatisticsCharts = dynamic(
   () => import("./AdminStatisticsCharts").then((m) => ({ default: m.AdminStatisticsCharts })),
@@ -76,10 +77,7 @@ type StatSortKey =
   | "profile"
   | "tipsTotal"
   | "tipsBearbeitung"
-  | "tipsTermin"
-  | "tipsWarten"
-  | "tipsBezahlt"
-  | "tipsErledigt"
+  | "tipsVertragsabschluss"
   | "tipsAbgelehnt"
   | "boxOrders";
 
@@ -142,10 +140,7 @@ type PartnerStatRow = {
   email: string;
   tipsTotal: number;
   tipsBearbeitung: number;
-  tipsTermin: number;
-  tipsWarten: number;
-  tipsBezahlt: number;
-  tipsErledigt: number;
+  tipsVertragsabschluss: number;
   tipsAbgelehnt: number;
   boxOrders: number;
   lastSignIn: string | null;
@@ -300,10 +295,7 @@ export function PartnerAdminDashboard({
     return profiles.map((p) => {
       const ts = tipsByPartner.get(p.id) ?? [];
       const inB = ts.filter((x) => x.admin_status === "in_bearbeitung").length;
-      const term = ts.filter((x) => x.admin_status === "termin_vereinbart").length;
-      const wart = ts.filter((x) => x.admin_status === "warten_auf_rueckmeldung").length;
-      const bez = ts.filter((x) => x.admin_status === "bezahlt").length;
-      const erl = ts.filter((x) => x.admin_status === "erledigt").length;
+      const vertrag = ts.filter((x) => x.admin_status === "vertragsabschluss_erfolgreich").length;
       const abg = ts.filter((x) => x.admin_status === "abgelehnt").length;
       const last = authById[p.id]?.last_sign_in_at ?? null;
       return {
@@ -311,10 +303,7 @@ export function PartnerAdminDashboard({
         email: authById[p.id]?.email ?? "—",
         tipsTotal: ts.length,
         tipsBearbeitung: inB,
-        tipsTermin: term,
-        tipsWarten: wart,
-        tipsBezahlt: bez,
-        tipsErledigt: erl,
+        tipsVertragsabschluss: vertrag,
         tipsAbgelehnt: abg,
         boxOrders: ordersByPartner.get(p.id) ?? 0,
         lastSignIn: last,
@@ -1035,8 +1024,8 @@ export function PartnerAdminDashboard({
                 </h2>
                 <p className="mt-2 text-sm text-neutral-600">
                   {statistikTeil === "partner"
-                    ? "Partner-Programm: Profile, Tipps, Pflegebox und Kennzahlen je Partner."
-                    : "Homepage: aggregierte Seitenaufrufe der öffentlichen Website (ohne personenbezogene Daten)."}
+                    ? "Überblick: Kennzahlen, Verläufe und Partnerliste. Tippen Sie auf einen Bereich zum Aufklappen."
+                    : "Seitenaufrufe und Kontakt-Kanäle in Bausteinen – Datum und Jahr weiter oben."}
                 </p>
               </div>
 
@@ -1091,7 +1080,12 @@ export function PartnerAdminDashboard({
               </div>
 
               {statistikTeil === "partner" ? (
-                <>
+                <div className="space-y-4">
+                  <PartnerExpandableStatSection
+                    title="Kennzahlen im Überblick"
+                    subtitle="Profile, Tippeingänge, Statusverteilung, Pflegebox-Abschlüsse."
+                    defaultOpen
+                  >
               <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                 <div className="rounded-2xl border border-[#0F4F68]/12 bg-gradient-to-br from-[#F2F9FA] to-white p-5">
                   <p className="text-xs font-bold uppercase tracking-wide text-[#0F4F68]/65">Profile gesamt</p>
@@ -1119,7 +1113,12 @@ export function PartnerAdminDashboard({
                   </p>
                 </div>
               </div>
+                  </PartnerExpandableStatSection>
 
+                  <PartnerExpandableStatSection
+                    title="Verlauf und Diagramme"
+                    subtitle="Jahresentwicklung Tipps/Pflegebox, Status und Service."
+                  >
               <AdminStatisticsCharts
                 tips={tips}
                 orders={orders}
@@ -1127,12 +1126,17 @@ export function PartnerAdminDashboard({
                 profiles={profiles}
                 authById={authById}
               />
+                  </PartnerExpandableStatSection>
 
+                  <PartnerExpandableStatSection
+                    title="Je Partner – Detailtabelle"
+                    subtitle="Alle Profile mit Tippzahl je Status und Konfigurator-Bestellungen."
+                  >
               <div>
                 <h3 className="text-lg font-bold text-[#0F4F68]">Je Partner</h3>
                 <p className="mt-1 text-sm text-neutral-600">Tipps nach Status und Anzahl Konfigurator-Aufträge mit Partner-ID.</p>
                 <div className="mt-4 overflow-x-auto rounded-2xl border border-neutral-200/80">
-                  <table className="min-w-[1100px] w-full text-left text-sm">
+                  <table className="min-w-[960px] w-full text-left text-sm">
                     <thead className="border-b border-[#0F4F68]/10 bg-[#F2F9FA]/60 text-xs">
                       <tr>
                         <th className="px-3 py-3">
@@ -1171,34 +1175,10 @@ export function PartnerAdminDashboard({
                         </th>
                         <th className="px-3 py-3">
                           <SortButton
-                            label="Termin"
-                            active={statSort.key === "tipsTermin"}
+                            label="Vertragsabr."
+                            active={statSort.key === "tipsVertragsabschluss"}
                             dir={statSort.dir}
-                            onClick={() => toggleStatSort("tipsTermin")}
-                          />
-                        </th>
-                        <th className="px-3 py-3">
-                          <SortButton
-                            label="Warten"
-                            active={statSort.key === "tipsWarten"}
-                            dir={statSort.dir}
-                            onClick={() => toggleStatSort("tipsWarten")}
-                          />
-                        </th>
-                        <th className="px-3 py-3">
-                          <SortButton
-                            label="Bezahlt"
-                            active={statSort.key === "tipsBezahlt"}
-                            dir={statSort.dir}
-                            onClick={() => toggleStatSort("tipsBezahlt")}
-                          />
-                        </th>
-                        <th className="px-3 py-3">
-                          <SortButton
-                            label="Vertrag"
-                            active={statSort.key === "tipsErledigt"}
-                            dir={statSort.dir}
-                            onClick={() => toggleStatSort("tipsErledigt")}
+                            onClick={() => toggleStatSort("tipsVertragsabschluss")}
                           />
                         </th>
                         <th className="px-3 py-3">
@@ -1245,10 +1225,7 @@ export function PartnerAdminDashboard({
                             <td className="px-3 py-3 text-neutral-700">{p.role}</td>
                             <td className="px-3 py-3 tabular-nums font-semibold text-neutral-900">{row.tipsTotal}</td>
                             <td className="px-3 py-3 tabular-nums text-neutral-700">{row.tipsBearbeitung}</td>
-                            <td className="px-3 py-3 tabular-nums text-indigo-800">{row.tipsTermin}</td>
-                            <td className="px-3 py-3 tabular-nums text-violet-800">{row.tipsWarten}</td>
-                            <td className="px-3 py-3 tabular-nums text-teal-800">{row.tipsBezahlt}</td>
-                            <td className="px-3 py-3 tabular-nums text-emerald-800">{row.tipsErledigt}</td>
+                            <td className="px-3 py-3 tabular-nums text-emerald-800">{row.tipsVertragsabschluss}</td>
                             <td className="px-3 py-3 tabular-nums text-rose-800">{row.tipsAbgelehnt}</td>
                             <td className="px-3 py-3 tabular-nums text-neutral-800">{row.boxOrders}</td>
                             <td className="whitespace-nowrap px-3 py-3 text-xs text-neutral-600">
@@ -1274,14 +1251,16 @@ export function PartnerAdminDashboard({
                   </table>
                 </div>
               </div>
-                </>
+                  </PartnerExpandableStatSection>
+                </div>
               ) : (
-                <>
+                <div className="space-y-4">
+                  <p className="text-sm text-neutral-600">
+                    Öffentliche Website: Zugriffe und Kontakt-Kanäle. Baustein antippen, um die Auswertung zu öffnen.
+                  </p>
                   <AdminHomepageTrafficPanel chartYear={chartYear} />
-                  <div className="mt-10 border-t border-[#0F4F68]/15 pt-8">
-                    <AdminContactSourcesPanel chartYear={chartYear} />
-                  </div>
-                </>
+                  <AdminContactSourcesPanel chartYear={chartYear} />
+                </div>
               )}
             </section>
           ) : null}

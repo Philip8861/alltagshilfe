@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { PartnerExpandableStatSection } from "@/components/partner/PartnerExpandableStatSection";
 import { PartnerPortalStatisticsCharts } from "@/components/partner/PartnerPortalStatisticsCharts";
 import {
   countOrdersInLocalMonth,
@@ -139,9 +140,8 @@ export function PartnerStatistikView({ tips, orders, partnerCreatedAt }: Props) 
   }, [periodMode, monthInput, yearInput, orders, partnerYear, partnerMonth0]);
 
   const tipsInPeriodCount = tipsInPeriod.length;
-  const abgeschlossen = statusInPeriod.erledigt + statusInPeriod.bezahlt;
-  const inPipeline =
-    statusInPeriod.in_bearbeitung + statusInPeriod.termin_vereinbart + statusInPeriod.warten_auf_rueckmeldung;
+  const abgeschlossen = statusInPeriod.vertragsabschluss_erfolgreich;
+  const inBearbeitung = statusInPeriod.in_bearbeitung;
 
   return (
     <section className="partner-dash-animate rounded-2xl border border-[#0F4F68]/12 bg-white p-5 shadow-[0_12px_40px_-20px_rgba(15,79,104,0.2)] sm:p-8">
@@ -152,6 +152,9 @@ export function PartnerStatistikView({ tips, orders, partnerCreatedAt }: Props) 
             Nur Ihre Tippgeber und Ihre Pflegebox-Bestellungen — keine fremden Partnerdaten. Provisionswerte wie auf dem
             Dashboard (ohne Admin-Archiv). Ausgewertet wird ab dem Monat Ihrer Partner-Anlage; frühere Monate erscheinen
             nicht.
+          </p>
+          <p className="mt-2 max-w-xl text-sm text-[#0F4F68]/85">
+            Tippen Sie auf einen Bereich darunter – der Inhalt klappt auf.
           </p>
         </div>
         <div className="partner-dash-animate partner-dash-delay-1 flex flex-wrap items-center gap-2">
@@ -196,7 +199,19 @@ export function PartnerStatistikView({ tips, orders, partnerCreatedAt }: Props) 
         </div>
       </div>
 
-      <div className="partner-dash-animate partner-dash-delay-2 mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="partner-dash-animate partner-dash-delay-2 mt-8 space-y-4">
+        <PartnerExpandableStatSection
+          title="Karten zum gewählten Zeitraum"
+          subtitle="Meldungen, Status, Provisionsschätzung, Pflegebox-Bestellungen."
+          badge={
+            <>
+              Tipps{" "}
+              <span className="tabular-nums">{tipsInPeriodCount}</span>
+            </>
+          }
+          defaultOpen
+        >
+      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
         <div className="rounded-2xl border border-[#0F4F68]/10 bg-gradient-to-br from-[#F2F9FA] to-white p-4">
           <p className="text-[0.65rem] font-bold uppercase tracking-wide text-[#0F4F68]/65">Tippgeber im Zeitraum</p>
           <p className="mt-1 text-2xl font-bold tabular-nums text-[#0F4F68]">{tipsInPeriodCount}</p>
@@ -206,8 +221,7 @@ export function PartnerStatistikView({ tips, orders, partnerCreatedAt }: Props) 
           <p className="text-[0.65rem] font-bold uppercase tracking-wide text-emerald-900/70">Abgeschlossen</p>
           <p className="mt-1 text-2xl font-bold tabular-nums text-emerald-900">{abgeschlossen}</p>
           <p className="mt-1 text-xs text-neutral-600">
-            {PARTNER_TIP_STATUS_LABELS.erledigt}: {statusInPeriod.erledigt} · {PARTNER_TIP_STATUS_LABELS.bezahlt}:{" "}
-            {statusInPeriod.bezahlt}
+            {PARTNER_TIP_STATUS_LABELS.vertragsabschluss_erfolgreich}
           </p>
         </div>
         <div className="rounded-2xl border border-rose-200/70 bg-gradient-to-br from-rose-50/70 to-white p-4">
@@ -215,13 +229,9 @@ export function PartnerStatistikView({ tips, orders, partnerCreatedAt }: Props) 
           <p className="mt-1 text-2xl font-bold tabular-nums text-rose-900">{statusInPeriod.abgelehnt}</p>
         </div>
         <div className="rounded-2xl border border-amber-200/70 bg-gradient-to-br from-amber-50/70 to-white p-4">
-          <p className="text-[0.65rem] font-bold uppercase tracking-wide text-amber-950/75">In Bearbeitung (gesamt)</p>
-          <p className="mt-1 text-2xl font-bold tabular-nums text-amber-950">{inPipeline}</p>
-          <p className="mt-1 text-xs text-neutral-600">
-            {PARTNER_TIP_STATUS_LABELS.in_bearbeitung}: {statusInPeriod.in_bearbeitung} ·{" "}
-            {PARTNER_TIP_STATUS_LABELS.termin_vereinbart}: {statusInPeriod.termin_vereinbart} ·{" "}
-            {PARTNER_TIP_STATUS_LABELS.warten_auf_rueckmeldung}: {statusInPeriod.warten_auf_rueckmeldung}
-          </p>
+          <p className="text-[0.65rem] font-bold uppercase tracking-wide text-amber-950/75">In Bearbeitung</p>
+          <p className="mt-1 text-2xl font-bold tabular-nums text-amber-950">{inBearbeitung}</p>
+          <p className="mt-1 text-xs text-neutral-600">{PARTNER_TIP_STATUS_LABELS.in_bearbeitung}</p>
         </div>
         <div className="rounded-2xl border border-amber-200/70 bg-gradient-to-br from-amber-50/50 to-white p-4">
           <p className="text-[0.65rem] font-bold uppercase tracking-wide text-amber-950/75">Provision (geschätzt)</p>
@@ -236,15 +246,22 @@ export function PartnerStatistikView({ tips, orders, partnerCreatedAt }: Props) 
           <p className="mt-1 text-xs text-neutral-500">Bestellungen im Zeitraum</p>
         </div>
       </div>
+        </PartnerExpandableStatSection>
 
-      <PartnerPortalStatisticsCharts
-        tips={tipsForStats}
-        orders={orders}
-        periodMode={periodMode}
-        monthInput={monthInput}
-        yearInput={yearInput}
-        partnerCreatedAt={partnerCreatedAt}
-      />
+        <PartnerExpandableStatSection
+          title="Diagramme und Zeitverläufe"
+          subtitle="Eingänge und Bestellungen im Jahres‑ bzw. Monatsraster wie oben eingestellt."
+        >
+          <PartnerPortalStatisticsCharts
+            tips={tipsForStats}
+            orders={orders}
+            periodMode={periodMode}
+            monthInput={monthInput}
+            yearInput={yearInput}
+            partnerCreatedAt={partnerCreatedAt}
+          />
+        </PartnerExpandableStatSection>
+      </div>
     </section>
   );
 }

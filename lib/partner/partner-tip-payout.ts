@@ -1,6 +1,6 @@
 import type { PartnerResponsibilitySlug } from "@/lib/partner/responsibility-areas";
 
-/** Feste Einmalprovisionen (EUR) bei Status „bezahlt“ */
+/** Feste Einmalprovisionen (EUR) bei Status „Vertragsabschluss erfolgreich“ (nicht betriebliche Slugs). */
 export const EINMAL_PROVISION_EUR: Partial<Record<PartnerResponsibilitySlug, number>> = {
   pflegehilfsmittel: 15,
   hauswirtschaft_betreuung: 30,

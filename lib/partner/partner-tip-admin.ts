@@ -1,48 +1,54 @@
 import type { PartnerTipAdminStatus } from "@/lib/partner/types";
 
-const STATUS_SET = new Set<string>([
+const CANONICAL: readonly PartnerTipAdminStatus[] = [
   "in_bearbeitung",
-  "termin_vereinbart",
-  "warten_auf_rueckmeldung",
-  "bezahlt",
-  "erledigt",
+  "vertragsabschluss_erfolgreich",
   "abgelehnt",
-]);
+];
+
+const CANONICAL_SET = new Set<string>(CANONICAL);
+
+/** Historische DB-/Client-Werte → ein Kanonischer Status (Migration 020). */
+function mapLegacyToCanonical(v: string): PartnerTipAdminStatus {
+  switch (v) {
+    case "erledigt":
+    case "bezahlt":
+      return "vertragsabschluss_erfolgreich";
+    case "neu":
+    case "termin_vereinbart":
+    case "warten_auf_rueckmeldung":
+      return "in_bearbeitung";
+    case "abgelehnt":
+      return "abgelehnt";
+    default:
+      return "in_bearbeitung";
+  }
+}
 
 /** Admin-Dropdown / interne Bezeichnungen */
 export const PARTNER_TIP_STATUS_LABELS: Record<PartnerTipAdminStatus, string> = {
   in_bearbeitung: "In Bearbeitung",
-  termin_vereinbart: "Termin vereinbart",
-  warten_auf_rueckmeldung: "Warten auf Rückmeldung",
-  bezahlt: "Bezahlt",
-  erledigt: "Vertragsabschluss erfolgreich",
+  vertragsabschluss_erfolgreich: "Vertragsabschluss erfolgreich",
   abgelehnt: "Abgelehnt",
 };
 
 /** Partnerportal Statusliste: was der Partner sieht */
 export const PARTNER_TIP_STATUS_PARTNER_LABELS: Record<PartnerTipAdminStatus, string> = {
-  in_bearbeitung: "In Bearbeitung",
-  termin_vereinbart: "Termin vereinbart",
-  warten_auf_rueckmeldung: "Warten auf Rückmeldung",
-  bezahlt: "Bezahlt",
-  erledigt: "Vertragsabschluss erfolgreich",
-  abgelehnt: "Abgelehnt",
+  ...PARTNER_TIP_STATUS_LABELS,
 };
 
 export const PARTNER_TIP_ADMIN_STATUSES: PartnerTipAdminStatus[] = [
   "in_bearbeitung",
-  "termin_vereinbart",
-  "warten_auf_rueckmeldung",
-  "bezahlt",
-  "erledigt",
+  "vertragsabschluss_erfolgreich",
   "abgelehnt",
 ];
 
-/** Legacy „neu“ und unbekannte Werte → In Bearbeitung (neue Tipps starten dort). */
+/** Legacy „neu“ und unbekannte Werte werden auf eine der drei Stufen gemappt. */
 export function normalizePartnerTipAdminStatus(v: unknown): PartnerTipAdminStatus {
   if (typeof v === "string") {
-    if (v === "neu") return "in_bearbeitung";
-    if (STATUS_SET.has(v)) return v as PartnerTipAdminStatus;
+    const t = v.trim();
+    if (CANONICAL_SET.has(t)) return t as PartnerTipAdminStatus;
+    return mapLegacyToCanonical(t);
   }
   return "in_bearbeitung";
 }

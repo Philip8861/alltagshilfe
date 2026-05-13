@@ -114,8 +114,16 @@ function AdminNavIcon({ kind }: { kind: (typeof BEREICHE)[number]["id"] }) {
       );
     case "anlegen":
       return (
-        <svg {...common}>
-          <path d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2M12 7a4 4 0 100-8 4 4 0 000 8zM20 8v6M23 11h-6" strokeLinecap="round" strokeLinejoin="round" />
+        <svg {...common} strokeLinejoin="round">
+          {/* Einzelpartner / Profilkontur */}
+          <circle cx="8.75" cy="7.75" r="3.15" strokeLinecap="round" />
+          <path
+            d="M3.5 20.5v-.35c0-2.9 2.35-5.25 5.28-5.25h1.94c2.93 0 5.28 2.35 5.28 5.25v.35"
+            strokeLinecap="round"
+          />
+          {/* Badge: neu hinzufügen */}
+          <circle cx="17.25" cy="15.6" r="4.95" strokeLinecap="round" />
+          <path d="M17.25 12.95v5.3M14.55 15.6h5.4" strokeLinecap="round" />
         </svg>
       );
     case "liste":

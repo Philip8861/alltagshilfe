@@ -68,14 +68,6 @@ export async function updatePartnerTipStatusAction(
   const prevPaid = normalizePaidAmountEur(cur.paid_amount_eur);
   const isBetrieblich = slug === BETRIEBLICHE_PFLEGEBERATUNG_SLUG;
 
-  if (isBetrieblich && newStatus === "bezahlt") {
-    return {
-      ok: false,
-      message:
-        "Bei betrieblicher Pflegeberatung ist „Bezahlt“ nicht vorgesehen. Bitte „Vertragsabschluss erfolgreich“ wählen und die monatliche Provision eintragen.",
-    };
-  }
-
   if (isBetrieblich && newStatus === "abgelehnt") {
     const grund = (parsed.data.admin_visible_note ?? "").trim();
     if (grund.length < 3) {
@@ -88,7 +80,7 @@ export async function updatePartnerTipStatusAction(
 
   let paidUpdate: number | null | undefined = undefined;
 
-  if (!isBetrieblich && newStatus === "bezahlt") {
+  if (!isBetrieblich && newStatus === "vertragsabschluss_erfolgreich") {
     const fixed = einmalProvisionForSlug(slug);
     if (fixed == null) {
       return { ok: false, message: "Für diese Leistung ist keine Einmalprovision hinterlegt." };
@@ -96,12 +88,12 @@ export async function updatePartnerTipStatusAction(
     paidUpdate = fixed;
   }
 
-  if (isBetrieblich && newStatus === "erledigt") {
+  if (isBetrieblich && newStatus === "vertragsabschluss_erfolgreich") {
     const entered = parsePayoutAmountGerman(parsed.data.payout_amount_eur ?? "");
     const hadProvision =
       prevPaid != null &&
       prevPaid > 0 &&
-      (prevStatus === "erledigt" || prevStatus === "bezahlt");
+      prevStatus === "vertragsabschluss_erfolgreich";
     if (!hadProvision && entered == null) {
       return {
         ok: false,
@@ -115,7 +107,11 @@ export async function updatePartnerTipStatusAction(
     paidUpdate = amount;
   }
 
-  if (isBetrieblich && newStatus !== "erledigt" && newStatus !== "bezahlt") {
+  if (isBetrieblich && newStatus !== "vertragsabschluss_erfolgreich") {
+    paidUpdate = null;
+  }
+
+  if (newStatus === "abgelehnt") {
     paidUpdate = null;
   }
 
@@ -126,8 +122,14 @@ export async function updatePartnerTipStatusAction(
   if (paidUpdate !== undefined) {
     payloadFull.paid_amount_eur = paidUpdate;
   }
-  if (isBetrieblich && newStatus !== "erledigt" && newStatus !== "bezahlt") {
+  if (isBetrieblich && newStatus !== "vertragsabschluss_erfolgreich") {
     payloadFull.former_active_company_at = null;
+  }
+
+  if (newStatus === "abgelehnt") {
+    payloadFull.archived_at = new Date().toISOString();
+  } else if (prevStatus === "abgelehnt") {
+    payloadFull.archived_at = null;
   }
 
   let { error } = await svc.from("partner_tip_submissions").update(payloadFull).eq("id", tipId);
@@ -153,14 +155,14 @@ export async function updatePartnerTipStatusAction(
       return {
         ok: false,
         message:
-          "Dieser Status ist in der Datenbank noch nicht erlaubt. Bitte Migration 009 (erweiterte Status inkl. Bezahlt) in Supabase ausführen.",
+          "Dieser Status wird von der Datenbank abgelehnt. Bitte Migration 020 (drei Status-Werte) in Supabase ausführen.",
       };
     }
     return {
       ok: false,
       message:
         error.message?.includes("check constraint") || error.message?.toLowerCase().includes("violates check")
-          ? "Status von der Datenbank abgelehnt – Migration 009 prüfen."
+          ? "Status von der Datenbank abgelehnt – Migration 020 (Status-Check) prüfen."
           : "Speichern fehlgeschlagen. Spalten admin_visible_note / admin_status / paid_amount_eur und Migrationen prüfen.",
     };
   }

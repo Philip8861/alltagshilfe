@@ -30,12 +30,10 @@ export type PartnerProfile = {
   portal_preferences?: Record<string, unknown> | null;
 };
 
+/** Nur drei Verwaltungs-Statusse (nach Migration 020). Legacy-Werte werden im Code noch normalisiert. */
 export type PartnerTipAdminStatus =
   | "in_bearbeitung"
-  | "termin_vereinbart"
-  | "warten_auf_rueckmeldung"
-  | "bezahlt"
-  | "erledigt"
+  | "vertragsabschluss_erfolgreich"
   | "abgelehnt";
 
 export type PartnerTipSubmissionRow = {
@@ -52,7 +50,7 @@ export type PartnerTipSubmissionRow = {
   partner_archived_at: string | null;
   /** Admin: Betriebskunde als ehemalig markiert (Migration 012). */
   former_active_company_at: string | null;
-  /** Auszahlungsbetrag EUR bei Status bezahlt (Migration 010). */
+  /** Provision EUR bei vertragsabschluss_erfolgreich / früher „bezahlt“ (Migration 010). */
   paid_amount_eur: number | null;
   /** Abgerechneter Kalendermonat YYYY-MM nach Monatslauf (Migration 011). */
   payout_settled_period_key: string | null;

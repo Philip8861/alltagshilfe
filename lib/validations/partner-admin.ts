@@ -9,10 +9,7 @@ const responsibilitySlug = z.enum([
 
 const partnerTipAdminStatusEnum = z.enum([
   "in_bearbeitung",
-  "termin_vereinbart",
-  "warten_auf_rueckmeldung",
-  "bezahlt",
-  "erledigt",
+  "vertragsabschluss_erfolgreich",
   "abgelehnt",
 ]);
 

@@ -12,7 +12,7 @@ export function isBetrieblichMitMonatsprovisionRow(t: {
   if (t.service_slug !== BETRIEBLICHE_PFLEGEBERATUNG_SLUG) return false;
   const paid = normalizePaidAmountEur(t.paid_amount_eur);
   if (paid == null || paid <= 0) return false;
-  return t.admin_status === "erledigt" || t.admin_status === "bezahlt";
+  return t.admin_status === "vertragsabschluss_erfolgreich";
 }
 
 /** Admin „Aktuelle Aufträge“: nicht archiviert und kein abgeschlossener Betriebsfall mit Provision. */

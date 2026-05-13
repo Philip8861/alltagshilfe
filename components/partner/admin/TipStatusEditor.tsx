@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useEffect, useMemo, useRef, useState } from "react";
+import { useActionState, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { updatePartnerTipStatusAction, type AdminWorkflowState } from "@/lib/actions/partner-admin-workflow";
 import { PARTNER_TIP_ADMIN_STATUSES, PARTNER_TIP_STATUS_LABELS } from "@/lib/partner/partner-tip-admin";
@@ -33,13 +33,8 @@ export function TipStatusEditor({ tipId, status, adminVisibleNote, serviceSlug, 
   const [state, formAction, pending] = useActionState(updatePartnerTipStatusAction, initial);
 
   const isBetrieblich = serviceSlug === "betriebliche_pflegeberatung";
-  const showPayoutField = selectedStatus === "erledigt" && isBetrieblich;
+  const showPayoutField = selectedStatus === "vertragsabschluss_erfolgreich" && isBetrieblich;
   const showRejectionGrund = selectedStatus === "abgelehnt" && isBetrieblich;
-
-  const statusOptions = useMemo(() => {
-    if (!isBetrieblich) return PARTNER_TIP_ADMIN_STATUSES;
-    return PARTNER_TIP_ADMIN_STATUSES.filter((s) => s !== "bezahlt" || status === "bezahlt");
-  }, [isBetrieblich, status]);
 
   useEffect(() => {
     setSelectedStatus(status);
@@ -93,7 +88,7 @@ export function TipStatusEditor({ tipId, status, adminVisibleNote, serviceSlug, 
         className={`w-full rounded-xl border px-2.5 py-2 text-xs font-semibold text-neutral-900 shadow-sm outline-none ring-0 transition focus:ring-2 disabled:opacity-60 ${selectStyle}`}
         aria-label="Status Tippgeber-Eingang"
       >
-        {statusOptions.map((s) => (
+        {PARTNER_TIP_ADMIN_STATUSES.map((s) => (
           <option key={s} value={s}>
             {PARTNER_TIP_STATUS_LABELS[s]}
           </option>
@@ -106,7 +101,8 @@ export function TipStatusEditor({ tipId, status, adminVisibleNote, serviceSlug, 
             Monatliche Provision (EUR)
           </label>
           <p className="mt-0.5 text-[0.6rem] leading-snug text-amber-900/85">
-            Erforderlich bei „Vertragsabschluss erfolgreich“. Der Auftrag erscheint unter „Aktive Unternehmen“.
+            Erforderlich bei „Vertragsabschluss erfolgreich“ (betriebliche Pflegeberatung). Der Auftrag erscheint unter „Aktive
+            Unternehmen“; die Provision fließt in die Abrechnung.
           </p>
           <input
             id={`tip-payout-${tipId}`}
@@ -131,8 +127,7 @@ export function TipStatusEditor({ tipId, status, adminVisibleNote, serviceSlug, 
             Ablehnungsgrund <span className="text-rose-700">*</span>
           </label>
           <p className="mt-0.5 text-[0.6rem] leading-snug text-rose-900/85">
-            Wird dem Partner als Notiz angezeigt. Die Listen des Partners bleiben unverändert (kein automatisches
-            Archiv).
+            Wird dem Partner als Notiz angezeigt. Der Eintrag wird ins Admin-Archiv verschoben.
           </p>
           <textarea
             id={`tip-grund-${tipId}`}

@@ -32,7 +32,7 @@ export function filterTipsCreatedInYear<T extends { created_at: string }>(tips: 
   return tips.filter((t) => inLocalRange(t.created_at, start, end));
 }
 
-/** Wie Dashboard-Provision: ohne Admin-Archiv; Monatlich bei erledigt/bezahlt, Einmal bei bezahlt. */
+/** Wie Dashboard-Provision: ohne Admin-Archiv; erfolgreicher Vertrag mit hinterlegtem Betrag zählt. */
 export function provisionEuroTotalsForTips(tips: readonly TipLike[]): {
   monatlich: number;
   einmal: number;
@@ -44,12 +44,10 @@ export function provisionEuroTotalsForTips(tips: readonly TipLike[]): {
     if (t.archived_at) continue;
     const n = normalizePaidAmountEur(t.paid_amount_eur);
     if (n == null || n <= 0) continue;
+    if (t.admin_status !== "vertragsabschluss_erfolgreich") continue;
     const bucket = provisionBucketForServiceSlug(t.service_slug);
-    if (bucket === "monatlich") {
-      if (t.admin_status === "erledigt" || t.admin_status === "bezahlt") monatlich += n;
-    } else if (t.admin_status === "bezahlt") {
-      einmal += n;
-    }
+    if (bucket === "monatlich") monatlich += n;
+    else einmal += n;
   }
   return {
     monatlich: Math.round(monatlich * 100) / 100,

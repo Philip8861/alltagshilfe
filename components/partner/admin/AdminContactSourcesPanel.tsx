@@ -32,6 +32,7 @@ import {
   CHART_TEAL,
   CHART_VIOLET,
 } from "@/components/partner/partner-chart-theme";
+import { PartnerExpandableStatSection } from "@/components/partner/PartnerExpandableStatSection";
 
 type Scope = "monat" | "jahr";
 
@@ -218,6 +219,9 @@ export function AdminContactSourcesPanel({ chartYear }: Props) {
           Kanal (Kontaktseite, Ratgeber, Hilfe-Finder, Pflegebox-Konfigurator, Karriere, …). Es werden nur
           Aggregate gespeichert (kein Personenbezug).
         </p>
+        <p className="mt-2 text-sm text-[#0F4F68]/85">
+          Tippen Sie auf einen der Bausteine unten – die Detailansicht klappt auf.
+        </p>
       </div>
 
       <div className="flex flex-wrap items-end gap-4">
@@ -316,206 +320,129 @@ export function AdminContactSourcesPanel({ chartYear }: Props) {
         </p>
       ) : null}
 
-      {dailyErr ? (
-        <p className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-950">
-          Diagramm Kanal/Zeit: {dailyErr}
-        </p>
-      ) : !loading &&
-        dailyKinds.length > 0 &&
-        dailySeries.length > 0 ? (
-        <div className="rounded-2xl border border-[#0F4F68]/12 bg-white p-4 shadow-sm">
-          <h4 className="text-base font-bold text-[#0F4F68]">Anfragen nach Kalendertag und Kanal</h4>
-          <p className="mt-1 text-sm text-neutral-600">
-            Jede Linie ist ein Eingangsweg (erfolgreiche Formular-/Bestell-Endpunkte mit Quellenfrage). Tage ohne
-            Anfragen sind mit Null eingetragen – so erkennen Sie ruhige und aktive Tage.
-          </p>
-          <div
-            className="mt-4 h-[min(380px,55vh)] w-full min-h-[260px]"
-            role="img"
-            aria-label="Liniendiagramm Anfragen pro Tag nach Kanal"
-          >
-            <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={dailySeries} margin={{ top: 8, right: 8, left: 4, bottom: 4 }}>
-                <CartesianGrid stroke={CHART_GRID} strokeDasharray="4 4" />
-                <XAxis dataKey="label" tick={{ fill: CHART_AXIS_TICK, fontSize: 10 }} interval="preserveStartEnd" />
-                <YAxis allowDecimals={false} tick={{ fill: CHART_AXIS_TICK, fontSize: 11 }} width={36} />
-                <Tooltip
-                  formatter={(value: number | string, name: string) => [
-                    typeof value === "number"
-                      ? value.toLocaleString("de-DE")
-                      : Number(value || 0).toLocaleString("de-DE"),
-                    kindLabel(name),
-                  ]}
-                  labelFormatter={(_, items) => {
-                    const datum = items?.[0]?.payload as { day?: string } | undefined;
-                    const iso = datum?.day;
-                    if (iso && /^\d{4}-\d{2}-\d{2}$/.test(iso))
-                      return new Date(`${iso}T12:00:00`).toLocaleDateString("de-DE", {
-                        weekday: "long",
-                        day: "numeric",
-                        month: "long",
-                        year: "numeric",
-                      });
-                    return "";
-                  }}
-                  contentStyle={{ borderRadius: 12, border: `1px solid ${CHART_GRID}` }}
-                />
-                <Legend
-                  formatter={(value) => <span className="text-xs text-neutral-700">{kindLabel(value)}</span>}
-                  wrapperStyle={{ paddingTop: 12 }}
-                  className="max-h-[4.5rem] overflow-y-auto text-xs"
-                />
-                {dailyKinds.map((k) => (
-                  <Line
-                    key={k}
-                    type="monotone"
-                    dataKey={k}
-                    name={k}
-                    stroke={strokeForKind(k)}
-                    strokeWidth={2}
-                    dot={false}
-                    activeDot={{ r: 4 }}
-                  />
-                ))}
-              </LineChart>
-            </ResponsiveContainer>
-          </div>
-        </div>
-      ) : null}
-
-      {loading ? (
-        <p className="text-sm text-neutral-500">Lade Quellen-Statistik…</p>
-      ) : err ? (
-        <p className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-950">
-          {err}
-        </p>
-      ) : totals.gesamt === 0 ? (
-        <p className="rounded-xl border border-neutral-200 bg-neutral-50 px-4 py-3 text-sm text-neutral-700">
-          Im gewählten Zeitraum sind noch keine Anfragen mit Quellenangabe eingegangen.
-        </p>
-      ) : (
-        <>
-          <p className="text-sm text-neutral-700">
-            Anfragen gesamt:{" "}
-            <strong className="tabular-nums text-[#0F4F68]">
-              {totals.gesamt.toLocaleString("de-DE")}
-            </strong>
-          </p>
-
-          {/* Hauptliste mit Anteilsbalken (alle Optionen, auch 0). */}
-          <ul className="space-y-2">
-            {totals.ordered.map((row) => {
-              const pct = totals.gesamt > 0 ? Math.round((row.count / totals.gesamt) * 100) : 0;
-              return (
-                <li
-                  key={row.source}
-                  className="rounded-xl border border-[#0F4F68]/12 bg-white p-3 shadow-sm"
-                >
-                  <div className="flex items-center justify-between gap-3 text-sm">
-                    <span className="font-semibold text-[#0F4F68]">{row.label}</span>
-                    <span className="tabular-nums text-neutral-700">
-                      {row.count.toLocaleString("de-DE")}
-                      {row.count > 0 ? <span className="ml-2 text-[#0F4F68]/70">({pct}%)</span> : null}
-                    </span>
-                  </div>
-                  <div className="mt-2 h-2 w-full overflow-hidden rounded-full bg-neutral-100">
-                    <div
-                      className="h-full rounded-full bg-[#0F4F68]/85"
-                      style={{ width: `${row.count > 0 ? Math.max(2, pct) : 0}%` }}
-                      aria-hidden
-                    />
-                  </div>
-                </li>
-              );
-            })}
-          </ul>
-
-          {pflegeboxPage.gesamt > 0 ? (
-            <div className="space-y-4 rounded-2xl border border-[#0F4F68]/18 bg-[#F2F9FA]/40 p-5">
-              <div>
-                <h4 className="text-base font-bold text-[#0F4F68]">
-                  Pflegebox-Konfigurator – Aufmerksamkeit (Quellen)
-                </h4>
-                <p className="mt-1 text-sm text-neutral-600">
-                  Auswahl im Schritt „Adresse &amp; Geburtsdatum“; Zähler nur für abgeschlossene Bestellungen
-                  (Kind „pflegebox“), getrennt von Kontaktformular und Hilfe-Finder.
-                </p>
-              </div>
-              <p className="text-sm text-neutral-700">
-                Pflegebox-Bestellungen mit Quelle:{" "}
-                <strong className="tabular-nums text-[#0F4F68]">
-                  {pflegeboxPage.gesamt.toLocaleString("de-DE")}
-                </strong>
+      <div className="space-y-4">
+        <PartnerExpandableStatSection
+          title="Diagramm: Anfragen pro Kalendertag und Kanal"
+          subtitle="Linien nach Eingangsweg (Formular erfolgreich, mit Herkunftsfrage). Muster über Wochentage erkennen."
+          badge={
+            !loading && dailyKinds.length > 0 ? `${dailyKinds.length} Linien` : undefined
+          }
+        >
+          {loading ? <p className="text-sm text-neutral-500">Lade Tagesauswertung…</p> : null}
+          {dailyErr ? (
+            <p className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-950">
+              {dailyErr}
+            </p>
+          ) : null}
+          {!dailyErr && !loading && dailyKinds.length > 0 && dailySeries.length > 0 ? (
+            <div>
+              <p className="text-sm text-neutral-600">
+                Tage ohne Einträge stehen bei null – Vergleich ruhiger und aktiver Kalendertage.
               </p>
-              <ul className="space-y-2">
-                {pflegeboxPage.ordered.map((row) => {
-                  const pct =
-                    pflegeboxPage.gesamt > 0 ? Math.round((row.count / pflegeboxPage.gesamt) * 100) : 0;
-                  return (
-                    <li
-                      key={`pb-${row.source}`}
-                      className="rounded-xl border border-[#0F4F68]/12 bg-white p-3 shadow-sm"
-                    >
-                      <div className="flex items-center justify-between gap-3 text-sm">
-                        <span className="font-semibold text-[#0F4F68]">{row.label}</span>
-                        <span className="tabular-nums text-neutral-700">
-                          {row.count.toLocaleString("de-DE")}
-                          {row.count > 0 ? (
-                            <span className="ml-2 text-[#0F4F68]/70">({pct}%)</span>
-                          ) : null}
-                        </span>
-                      </div>
-                      <div className="mt-2 h-2 w-full overflow-hidden rounded-full bg-neutral-100">
-                        <div
-                          className="h-full rounded-full bg-[#25D366]/90"
-                          style={{ width: `${row.count > 0 ? Math.max(2, pct) : 0}%` }}
-                          aria-hidden
-                        />
-                      </div>
-                    </li>
-                  );
-                })}
-              </ul>
+              <div
+                className="mt-4 h-[min(380px,55vh)] w-full min-h-[260px]"
+                role="img"
+                aria-label="Liniendiagramm Anfragen pro Tag nach Kanal"
+              >
+                <ResponsiveContainer width="100%" height="100%">
+                  <LineChart data={dailySeries} margin={{ top: 8, right: 8, left: 4, bottom: 4 }}>
+                    <CartesianGrid stroke={CHART_GRID} strokeDasharray="4 4" />
+                    <XAxis dataKey="label" tick={{ fill: CHART_AXIS_TICK, fontSize: 10 }} interval="preserveStartEnd" />
+                    <YAxis allowDecimals={false} tick={{ fill: CHART_AXIS_TICK, fontSize: 11 }} width={36} />
+                    <Tooltip
+                      formatter={(value: number | string, name: string) => [
+                        typeof value === "number"
+                          ? value.toLocaleString("de-DE")
+                          : Number(value || 0).toLocaleString("de-DE"),
+                        kindLabel(name),
+                      ]}
+                      labelFormatter={(_, items) => {
+                        const datum = items?.[0]?.payload as { day?: string } | undefined;
+                        const iso = datum?.day;
+                        if (iso && /^\d{4}-\d{2}-\d{2}$/.test(iso))
+                          return new Date(`${iso}T12:00:00`).toLocaleDateString("de-DE", {
+                            weekday: "long",
+                            day: "numeric",
+                            month: "long",
+                            year: "numeric",
+                          });
+                        return "";
+                      }}
+                      contentStyle={{ borderRadius: 12, border: `1px solid ${CHART_GRID}` }}
+                    />
+                    <Legend
+                      formatter={(value) => <span className="text-xs text-neutral-700">{kindLabel(value)}</span>}
+                      wrapperStyle={{ paddingTop: 12 }}
+                      className="max-h-[4.5rem] overflow-y-auto text-xs"
+                    />
+                    {dailyKinds.map((k) => (
+                      <Line
+                        key={k}
+                        type="monotone"
+                        dataKey={k}
+                        name={k}
+                        stroke={strokeForKind(k)}
+                        strokeWidth={2}
+                        dot={false}
+                        activeDot={{ r: 4 }}
+                      />
+                    ))}
+                  </LineChart>
+                </ResponsiveContainer>
+              </div>
             </div>
           ) : null}
+          {!dailyErr && !loading && (dailyKinds.length === 0 || dailySeries.length === 0) ? (
+            <p className="text-sm text-neutral-600">
+              Im gewählten Zeitraum liegen keine Tages-/Kanaldaten vor (oder die Auswertung ist noch leer).
+            </p>
+          ) : null}
+        </PartnerExpandableStatSection>
 
-          {/* Nur Einreichungen von der Karriereseite (Bewerbung), ohne allgemeines Kontaktformular. */}
-          {karrierePage.gesamt > 0 ? (
-            <div className="space-y-4 rounded-2xl border border-[#0F4F68]/18 bg-[#F2F9FA]/40 p-5">
-              <div>
-                <h4 className="text-base font-bold text-[#0F4F68]">Karriereseite – Bewerbungen (Quellen)</h4>
-                <p className="mt-1 text-sm text-neutral-600">
-                  Nur Bewerbungen über das Karriere-Formular oder den Kurzcheck („Jetzt bewerben“). Allgemeine
-                  Kontaktanfragen zum Thema Karriere über /kontakt sind hier nicht enthalten.
-                </p>
-              </div>
+        <PartnerExpandableStatSection
+          title="Listen & Kreuztabellen (Herkunft und Formular)"
+          subtitle="Quellenverteilung, Pflegebox, Karriere und Aufschlüsselung nach Kanal."
+          badge={!loading && totals.gesamt > 0 ? `${totals.gesamt.toLocaleString("de-DE")}` : undefined}
+          defaultOpen
+        >
+          {loading ? (
+            <p className="text-sm text-neutral-500">Lade Quellen-Statistik…</p>
+          ) : err ? (
+            <p className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-950">
+              {err}
+            </p>
+          ) : totals.gesamt === 0 ? (
+            <p className="rounded-xl border border-neutral-200 bg-neutral-50 px-4 py-3 text-sm text-neutral-700">
+              Im gewählten Zeitraum sind noch keine Anfragen mit Quellenangabe eingegangen.
+            </p>
+          ) : (
+            <>
               <p className="text-sm text-neutral-700">
-                Bewerbungen gesamt:{" "}
+                Anfragen gesamt:{" "}
                 <strong className="tabular-nums text-[#0F4F68]">
-                  {karrierePage.gesamt.toLocaleString("de-DE")}
+                  {totals.gesamt.toLocaleString("de-DE")}
                 </strong>
               </p>
+
+              {/* Hauptliste mit Anteilsbalken (alle Optionen, auch 0). */}
               <ul className="space-y-2">
-                {karrierePage.ordered.map((row) => {
-                  const pct =
-                    karrierePage.gesamt > 0 ? Math.round((row.count / karrierePage.gesamt) * 100) : 0;
+                {totals.ordered.map((row) => {
+                  const pct = totals.gesamt > 0 ? Math.round((row.count / totals.gesamt) * 100) : 0;
                   return (
                     <li
-                      key={`k-${row.source}`}
+                      key={row.source}
                       className="rounded-xl border border-[#0F4F68]/12 bg-white p-3 shadow-sm"
                     >
                       <div className="flex items-center justify-between gap-3 text-sm">
                         <span className="font-semibold text-[#0F4F68]">{row.label}</span>
                         <span className="tabular-nums text-neutral-700">
                           {row.count.toLocaleString("de-DE")}
-                          {row.count > 0 ? (
-                            <span className="ml-2 text-[#0F4F68]/70">({pct}%)</span>
-                          ) : null}
+                          {row.count > 0 ? <span className="ml-2 text-[#0F4F68]/70">({pct}%)</span> : null}
                         </span>
                       </div>
                       <div className="mt-2 h-2 w-full overflow-hidden rounded-full bg-neutral-100">
                         <div
-                          className="h-full rounded-full bg-[#F78F2E]/90"
+                          className="h-full rounded-full bg-[#0F4F68]/85"
                           style={{ width: `${row.count > 0 ? Math.max(2, pct) : 0}%` }}
                           aria-hidden
                         />
@@ -524,33 +451,169 @@ export function AdminContactSourcesPanel({ chartYear }: Props) {
                   );
                 })}
               </ul>
-              {karrierePage.kindsPresent.length > 1 ? (
+
+              {pflegeboxPage.gesamt > 0 ? (
+                <div className="space-y-4 rounded-2xl border border-[#0F4F68]/18 bg-[#F2F9FA]/40 p-5">
+                  <div>
+                    <h4 className="text-base font-bold text-[#0F4F68]">
+                      Pflegebox-Konfigurator – Aufmerksamkeit (Quellen)
+                    </h4>
+                    <p className="mt-1 text-sm text-neutral-600">
+                      Auswahl im Schritt „Adresse &amp; Geburtsdatum“; Zähler nur für abgeschlossene Bestellungen
+                      (Kind „pflegebox“), getrennt von Kontaktformular und Hilfe-Finder.
+                    </p>
+                  </div>
+                  <p className="text-sm text-neutral-700">
+                    Pflegebox-Bestellungen mit Quelle:{" "}
+                    <strong className="tabular-nums text-[#0F4F68]">
+                      {pflegeboxPage.gesamt.toLocaleString("de-DE")}
+                    </strong>
+                  </p>
+                  <ul className="space-y-2">
+                    {pflegeboxPage.ordered.map((row) => {
+                      const pct =
+                        pflegeboxPage.gesamt > 0 ? Math.round((row.count / pflegeboxPage.gesamt) * 100) : 0;
+                      return (
+                        <li
+                          key={`pb-${row.source}`}
+                          className="rounded-xl border border-[#0F4F68]/12 bg-white p-3 shadow-sm"
+                        >
+                          <div className="flex items-center justify-between gap-3 text-sm">
+                            <span className="font-semibold text-[#0F4F68]">{row.label}</span>
+                            <span className="tabular-nums text-neutral-700">
+                              {row.count.toLocaleString("de-DE")}
+                              {row.count > 0 ? (
+                                <span className="ml-2 text-[#0F4F68]/70">({pct}%)</span>
+                              ) : null}
+                            </span>
+                          </div>
+                          <div className="mt-2 h-2 w-full overflow-hidden rounded-full bg-neutral-100">
+                            <div
+                              className="h-full rounded-full bg-[#25D366]/90"
+                              style={{ width: `${row.count > 0 ? Math.max(2, pct) : 0}%` }}
+                              aria-hidden
+                            />
+                          </div>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </div>
+              ) : null}
+
+              {/* Nur Einreichungen von der Karriereseite (Bewerbung), ohne allgemeines Kontaktformular. */}
+              {karrierePage.gesamt > 0 ? (
+                <div className="space-y-4 rounded-2xl border border-[#0F4F68]/18 bg-[#F2F9FA]/40 p-5">
+                  <div>
+                    <h4 className="text-base font-bold text-[#0F4F68]">Karriereseite – Bewerbungen (Quellen)</h4>
+                    <p className="mt-1 text-sm text-neutral-600">
+                      Nur Bewerbungen über das Karriere-Formular oder den Kurzcheck („Jetzt bewerben“). Allgemeine
+                      Kontaktanfragen zum Thema Karriere über /kontakt sind hier nicht enthalten.
+                    </p>
+                  </div>
+                  <p className="text-sm text-neutral-700">
+                    Bewerbungen gesamt:{" "}
+                    <strong className="tabular-nums text-[#0F4F68]">
+                      {karrierePage.gesamt.toLocaleString("de-DE")}
+                    </strong>
+                  </p>
+                  <ul className="space-y-2">
+                    {karrierePage.ordered.map((row) => {
+                      const pct =
+                        karrierePage.gesamt > 0 ? Math.round((row.count / karrierePage.gesamt) * 100) : 0;
+                      return (
+                        <li
+                          key={`k-${row.source}`}
+                          className="rounded-xl border border-[#0F4F68]/12 bg-white p-3 shadow-sm"
+                        >
+                          <div className="flex items-center justify-between gap-3 text-sm">
+                            <span className="font-semibold text-[#0F4F68]">{row.label}</span>
+                            <span className="tabular-nums text-neutral-700">
+                              {row.count.toLocaleString("de-DE")}
+                              {row.count > 0 ? (
+                                <span className="ml-2 text-[#0F4F68]/70">({pct}%)</span>
+                              ) : null}
+                            </span>
+                          </div>
+                          <div className="mt-2 h-2 w-full overflow-hidden rounded-full bg-neutral-100">
+                            <div
+                              className="h-full rounded-full bg-[#F78F2E]/90"
+                              style={{ width: `${row.count > 0 ? Math.max(2, pct) : 0}%` }}
+                              aria-hidden
+                            />
+                          </div>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                  {karrierePage.kindsPresent.length > 1 ? (
+                    <div className="overflow-x-auto rounded-2xl border border-[#0F4F68]/10 bg-white shadow-sm">
+                      <table className="min-w-full text-sm">
+                        <thead className="bg-[#F2F9FA] text-left text-xs font-bold uppercase tracking-wide text-[#0F4F68]/80">
+                          <tr>
+                            <th scope="col" className="px-4 py-3">
+                              Quelle
+                            </th>
+                            {karrierePage.kindsPresent.map((k) => (
+                              <th key={k} scope="col" className="px-4 py-3 text-right">
+                                {kindLabel(k)}
+                              </th>
+                            ))}
+                            <th scope="col" className="px-4 py-3 text-right">
+                              Gesamt
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-[#0F4F68]/10">
+                          {karrierePage.ordered.map((row) => {
+                            const inner = karrierePage.bySourceKind.get(row.source);
+                            return (
+                              <tr key={`kt-${row.source}`} className="hover:bg-[#F2F9FA]/50">
+                                <th scope="row" className="px-4 py-3 font-medium text-neutral-900">
+                                  {row.label}
+                                </th>
+                                {karrierePage.kindsPresent.map((k) => (
+                                  <td key={k} className="px-4 py-3 text-right tabular-nums text-neutral-700">
+                                    {(inner?.get(k) ?? 0).toLocaleString("de-DE")}
+                                  </td>
+                                ))}
+                                <td className="px-4 py-3 text-right font-semibold tabular-nums text-[#0F4F68]">
+                                  {row.count.toLocaleString("de-DE")}
+                                </td>
+                              </tr>
+                            );
+                          })}
+                        </tbody>
+                      </table>
+                    </div>
+                  ) : null}
+                </div>
+              ) : null}
+
+              {/* Aufschlüsselung nach Formular-Typ (nur wenn mehrere Typen vorhanden). */}
+              {allKinds.length > 0 ? (
                 <div className="overflow-x-auto rounded-2xl border border-[#0F4F68]/10 bg-white shadow-sm">
                   <table className="min-w-full text-sm">
                     <thead className="bg-[#F2F9FA] text-left text-xs font-bold uppercase tracking-wide text-[#0F4F68]/80">
                       <tr>
-                        <th scope="col" className="px-4 py-3">
-                          Quelle
-                        </th>
-                        {karrierePage.kindsPresent.map((k) => (
+                        <th scope="col" className="px-4 py-3">Quelle</th>
+                        {allKinds.map((k) => (
                           <th key={k} scope="col" className="px-4 py-3 text-right">
                             {kindLabel(k)}
                           </th>
                         ))}
-                        <th scope="col" className="px-4 py-3 text-right">
-                          Gesamt
-                        </th>
+                        <th scope="col" className="px-4 py-3 text-right">Gesamt</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-[#0F4F68]/10">
-                      {karrierePage.ordered.map((row) => {
-                        const inner = karrierePage.bySourceKind.get(row.source);
+                      {totals.ordered.map((row) => {
+                        const inner = byKind.get(row.source);
                         return (
-                          <tr key={`kt-${row.source}`} className="hover:bg-[#F2F9FA]/50">
+                          <tr key={row.source} className="hover:bg-[#F2F9FA]/50">
                             <th scope="row" className="px-4 py-3 font-medium text-neutral-900">
                               {row.label}
                             </th>
-                            {karrierePage.kindsPresent.map((k) => (
+                            {allKinds.map((k) => (
                               <td key={k} className="px-4 py-3 text-right tabular-nums text-neutral-700">
                                 {(inner?.get(k) ?? 0).toLocaleString("de-DE")}
                               </td>
@@ -565,49 +628,10 @@ export function AdminContactSourcesPanel({ chartYear }: Props) {
                   </table>
                 </div>
               ) : null}
-            </div>
-          ) : null}
-
-          {/* Aufschlüsselung nach Formular-Typ (nur wenn mehrere Typen vorhanden). */}
-          {allKinds.length > 0 ? (
-            <div className="overflow-x-auto rounded-2xl border border-[#0F4F68]/10 bg-white shadow-sm">
-              <table className="min-w-full text-sm">
-                <thead className="bg-[#F2F9FA] text-left text-xs font-bold uppercase tracking-wide text-[#0F4F68]/80">
-                  <tr>
-                    <th scope="col" className="px-4 py-3">Quelle</th>
-                    {allKinds.map((k) => (
-                      <th key={k} scope="col" className="px-4 py-3 text-right">
-                        {kindLabel(k)}
-                      </th>
-                    ))}
-                    <th scope="col" className="px-4 py-3 text-right">Gesamt</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-[#0F4F68]/10">
-                  {totals.ordered.map((row) => {
-                    const inner = byKind.get(row.source);
-                    return (
-                      <tr key={row.source} className="hover:bg-[#F2F9FA]/50">
-                        <th scope="row" className="px-4 py-3 font-medium text-neutral-900">
-                          {row.label}
-                        </th>
-                        {allKinds.map((k) => (
-                          <td key={k} className="px-4 py-3 text-right tabular-nums text-neutral-700">
-                            {(inner?.get(k) ?? 0).toLocaleString("de-DE")}
-                          </td>
-                        ))}
-                        <td className="px-4 py-3 text-right font-semibold tabular-nums text-[#0F4F68]">
-                          {row.count.toLocaleString("de-DE")}
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            </div>
-          ) : null}
-        </>
-      )}
+            </>
+          )}
+        </PartnerExpandableStatSection>
+      </div>
     </div>
   );
 }
