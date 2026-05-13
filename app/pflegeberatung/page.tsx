@@ -50,8 +50,8 @@ const IMG_SCALE = 0.8;
 const IMG_W = Math.round(BETRIEBLICH_IMG.w * IMG_SCALE);
 
 const imgBlockStyle = {
-  width: `min(100vw, ${IMG_W}px)` as const,
-  maxWidth: `min(100vw, ${IMG_W}px)` as const,
+  width: `min(100%, ${IMG_W}px)` as const,
+  maxWidth: `min(100%, ${IMG_W}px)` as const,
 };
 
 export const metadata: Metadata = {
@@ -62,14 +62,14 @@ export const metadata: Metadata = {
 export default function PflegeberatungPage() {
   return (
     <BetrieblichAngebotDialogProvider>
-      <article className="pb-12 sm:pb-16" style={{ backgroundColor: BETRIEBLICH_FOLGEN_SURFACE }}>
+      <article className="min-w-0 overflow-x-clip pb-12 sm:pb-16" style={{ backgroundColor: BETRIEBLICH_FOLGEN_SURFACE }}>
         <section
           id="betriebliche-pflegeberatung"
           aria-labelledby="betrieblich-heading"
           className="scroll-mt-[var(--ahs-header-scroll-padding)]"
         >
           {/* Weißer Streifen: Hero → Vorteile + „Was versteht man …“ (mint) → Statistik (weiß) → Folgen-Band */}
-          <div className="relative left-1/2 w-screen max-w-[100vw] -translate-x-1/2 overflow-x-visible overflow-y-visible bg-white">
+          <div className="relative left-1/2 w-screen max-w-[100vw] -translate-x-1/2 overflow-x-clip overflow-y-visible bg-white">
             <div className="relative flex w-full flex-col overflow-visible bg-white pt-0 lg:block lg:min-h-[min(100vw,480px)] lg:pt-0">
             <Container className="relative z-10 order-2 mt-8 lg:order-none lg:mt-0 lg:pt-10">
               <header className="max-w-xl text-left lg:max-w-[min(100%,28rem)] lg:pr-4 xl:max-w-[32rem]">
