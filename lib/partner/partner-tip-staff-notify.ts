@@ -99,27 +99,28 @@ export async function notifyStaffOfNewPartnerTip(input: {
     html,
   });
   if (!mailed.ok) {
-    console.warn("[partner-tip-notify] E-Mail konnte nicht versendet werden (SMTP / Empfänger).");
+    console.warn(`[partner-tip-notify] E-Mail konnte nicht versendet werden: ${mailed.code}`);
   }
 }
 
-/** Nicht blockierend; Fehler nur in der Konsole. */
-export function schedulePartnerTipStaffNotify(input: {
+/**
+ * Wie {@link notifyStaffOfNewPartnerTip}, mit Payload-Zusammenfassung aus Rohdaten.
+ * Immer awaited aufrufen (Route Handler / Server Action), nicht fire-and-forget — sonst bricht Serverless oft vor dem SMTP ab.
+ */
+export async function notifyStaffOfNewPartnerTipFromPayload(input: {
   serviceSlug: PartnerTipSubmissionInput["service_slug"];
   tipId: string;
   payload: Record<string, unknown>;
   partnerHint?: string;
-}): void {
-  void (async () => {
-    try {
-      await notifyStaffOfNewPartnerTip({
-        serviceSlug: input.serviceSlug,
-        tipId: input.tipId,
-        payloadSummary: partnerTipPayloadSummary(input.payload, input.serviceSlug),
-        partnerHint: input.partnerHint,
-      });
-    } catch (e) {
-      console.warn("[partner-tip-notify] Unerwarteter Fehler:", e);
-    }
-  })();
+}): Promise<void> {
+  try {
+    await notifyStaffOfNewPartnerTip({
+      serviceSlug: input.serviceSlug,
+      tipId: input.tipId,
+      payloadSummary: partnerTipPayloadSummary(input.payload, input.serviceSlug),
+      partnerHint: input.partnerHint,
+    });
+  } catch (e) {
+    console.error("[partner-tip-notify] Unerwarteter Fehler:", e);
+  }
 }

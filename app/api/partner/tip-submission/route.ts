@@ -1,7 +1,7 @@
 import { revalidatePath } from "next/cache";
 import { NextResponse } from "next/server";
 import { insertPartnerTipSubmission } from "@/lib/partner/insert-partner-tip-submission";
-import { schedulePartnerTipStaffNotify } from "@/lib/partner/partner-tip-staff-notify";
+import { notifyStaffOfNewPartnerTipFromPayload } from "@/lib/partner/partner-tip-staff-notify";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { partnerTipSubmissionSchema } from "@/lib/validations/partner-tips";
@@ -66,7 +66,7 @@ export async function POST(request: Request) {
       .map((s) => (typeof s === "string" ? s.trim() : ""))
       .filter(Boolean)
       .join(" · ");
-    schedulePartnerTipStaffNotify({
+    await notifyStaffOfNewPartnerTipFromPayload({
       serviceSlug: parsed.data.service_slug,
       tipId: result.tipId,
       payload: parsed.data.payload as Record<string, unknown>,

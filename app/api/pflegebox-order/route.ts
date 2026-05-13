@@ -15,7 +15,7 @@ import { recordContactSource } from "@/lib/contact-source-tracking";
 import { getContactSourceLabel } from "@/lib/contact-source";
 import { rateLimitPflegeboxOrder } from "@/lib/rate-limit";
 import { pflegeboxOrderBodySchema, type PflegeboxOrderBody } from "@/lib/validations/pflegebox-order";
-import { schedulePartnerTipStaffNotify } from "@/lib/partner/partner-tip-staff-notify";
+import { notifyStaffOfNewPartnerTipFromPayload } from "@/lib/partner/partner-tip-staff-notify";
 import { createSupabaseServiceRoleClient, resolvePartnerProfileId } from "@/lib/supabase/service";
 
 /** Immer Empfänger für den ausgefüllten PDF-Anhang (zusätzlich zu NOTIFICATION_TO_PFLEGEBOX / NOTIFICATION_TO). */
@@ -221,7 +221,7 @@ export async function POST(request: Request) {
           .filter(Boolean)
           .join(" · ");
         if (hint) partnerHint = hint;
-        schedulePartnerTipStaffNotify({
+        await notifyStaffOfNewPartnerTipFromPayload({
           serviceSlug: "pflegehilfsmittel",
           tipId: tipRowId,
           payload: tipPayload,
