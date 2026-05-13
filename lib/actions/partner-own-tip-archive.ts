@@ -1,7 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { requirePartnerLogin } from "@/lib/partner/auth";
+import { isPartnerAccountDisabled, PARTNER_ACCOUNT_DISABLED_MESSAGE, requirePartnerLogin } from "@/lib/partner/auth";
 import { createSupabaseServiceRoleClient } from "@/lib/supabase/service";
 import { archivePartnerTipSchema } from "@/lib/validations/partner-admin";
 
@@ -14,7 +14,11 @@ export async function archiveOwnPartnerTipAction(
   _prev: PartnerOwnArchiveState | null,
   formData: FormData,
 ): Promise<PartnerOwnArchiveState> {
-  const { userId } = await requirePartnerLogin();
+  const { userId, profile } = await requirePartnerLogin();
+
+  if (isPartnerAccountDisabled(profile)) {
+    return { ok: false, message: PARTNER_ACCOUNT_DISABLED_MESSAGE };
+  }
 
   const parsed = archivePartnerTipSchema.safeParse({
     tip_id: formData.get("tip_id"),

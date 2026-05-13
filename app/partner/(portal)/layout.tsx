@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
+import { PartnerAccountDisabledScreen } from "@/components/partner/PartnerAccountDisabledScreen";
 import { PartnerPortalShell } from "@/components/partner/PartnerPortalShell";
-import { requirePartnerLogin } from "@/lib/partner/auth";
+import { isPartnerAccountDisabled, requirePartnerLogin } from "@/lib/partner/auth";
 import { partnerHasBetrieblichPflegeberatung } from "@/lib/partner/betrieblich-team-types";
 import { normalizePortalPreferences, parsePortalPreferences } from "@/lib/partner/portal-preferences";
 
@@ -11,6 +12,11 @@ export const metadata: Metadata = {
 
 export default async function PartnerPortalLayout({ children }: { children: React.ReactNode }) {
   const { profile } = await requirePartnerLogin();
+
+  if (isPartnerAccountDisabled(profile)) {
+    return <PartnerAccountDisabledScreen />;
+  }
+
   const hasChangedPassword = Boolean(profile.password_changed_at?.trim());
   const portalPrefs = normalizePortalPreferences(parsePortalPreferences(profile.portal_preferences));
   const suppressPrompt =

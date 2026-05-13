@@ -3,7 +3,11 @@
 import { createHash, randomBytes } from "node:crypto";
 import { revalidatePath } from "next/cache";
 import { rateLimitWithConfig } from "@/lib/rate-limit";
-import { requirePartnerLogin } from "@/lib/partner/auth";
+import {
+  isPartnerAccountDisabled,
+  PARTNER_ACCOUNT_DISABLED_MESSAGE,
+  requirePartnerLogin,
+} from "@/lib/partner/auth";
 import {
   BETRIEBLICHE_PFLEGEBERATUNG_SLUG,
   PARTNER_TEAM_MAX_MEMBERSHIPS,
@@ -42,10 +46,17 @@ function assertBetrieblich(profile: PartnerProfile): BetrieblichTeamActionResult
   return null;
 }
 
+function partnerTeamDisabledGate(profile: PartnerProfile): { ok: false; message: string } | null {
+  if (isPartnerAccountDisabled(profile)) return { ok: false, message: PARTNER_ACCOUNT_DISABLED_MESSAGE };
+  return null;
+}
+
 export async function fetchBetrieblichTeamPageDataAction(): Promise<
   { ok: true; teams: Awaited<ReturnType<typeof fetchBetrieblichTeamsOverview>> } | { ok: false; message: string }
 > {
   const { profile } = await requirePartnerLogin();
+  const dg = partnerTeamDisabledGate(profile);
+  if (dg) return dg;
   if (!profile.responsibility_areas?.includes(BETRIEBLICHE_PFLEGEBERATUNG_SLUG)) {
     return { ok: false, message: "Diese Funktion steht nur Partnern mit betrieblicher Pflegeberatung zur Verfügung." };
   }
@@ -57,6 +68,8 @@ export async function fetchBetrieblichTeamPageDataAction(): Promise<
 
 export async function createBetrieblichTeamAction(rawName: unknown): Promise<BetrieblichTeamActionResult> {
   const { profile } = await requirePartnerLogin();
+  const dg = partnerTeamDisabledGate(profile);
+  if (dg) return dg;
   const gate = assertBetrieblich(profile);
   if (gate) return gate;
   const parsed = teamNameSchema.safeParse(rawName);
@@ -104,6 +117,8 @@ export async function createBetrieblichTeamAction(rawName: unknown): Promise<Bet
 
 export async function renameBetrieblichTeamAction(teamId: unknown, rawName: unknown): Promise<BetrieblichTeamActionResult> {
   const { profile } = await requirePartnerLogin();
+  const dg = partnerTeamDisabledGate(profile);
+  if (dg) return dg;
   const gate = assertBetrieblich(profile);
   if (gate) return gate;
   const id = typeof teamId === "string" ? teamId.trim() : "";
@@ -132,6 +147,8 @@ export async function updateBetrieblichTeamProvisionVisibilityAction(
   rawVisibility: unknown,
 ): Promise<BetrieblichTeamActionResult> {
   const { profile } = await requirePartnerLogin();
+  const dg = partnerTeamDisabledGate(profile);
+  if (dg) return dg;
   const gate = assertBetrieblich(profile);
   if (gate) return gate;
   const id = typeof teamId === "string" ? teamId.trim() : "";
@@ -162,6 +179,8 @@ export async function updateBetrieblichTeamProvisionVisibilityAction(
 
 export async function inviteBetrieblichTeamByCodeAction(teamId: unknown, rawCode: unknown): Promise<BetrieblichTeamActionResult> {
   const { profile } = await requirePartnerLogin();
+  const dg = partnerTeamDisabledGate(profile);
+  if (dg) return dg;
   const gate = assertBetrieblich(profile);
   if (gate) return gate;
   const id = typeof teamId === "string" ? teamId.trim() : "";
@@ -310,6 +329,8 @@ export async function getBetrieblichTeamInvitePreviewAction(rawToken: unknown): 
 
 export async function acceptBetrieblichTeamInviteAction(rawToken: unknown): Promise<BetrieblichTeamActionResult> {
   const { userId, profile } = await requirePartnerLogin();
+  const dg = partnerTeamDisabledGate(profile);
+  if (dg) return dg;
   const gate = assertBetrieblich(profile);
   if (gate) return gate;
   const parsed = teamTokenSchema.safeParse(typeof rawToken === "string" ? rawToken : "");
@@ -380,6 +401,8 @@ export async function acceptBetrieblichTeamInviteAction(rawToken: unknown): Prom
 
 export async function leaveBetrieblichTeamAction(teamId: unknown): Promise<BetrieblichTeamActionResult> {
   const { profile } = await requirePartnerLogin();
+  const dg = partnerTeamDisabledGate(profile);
+  if (dg) return dg;
   const gate = assertBetrieblich(profile);
   if (gate) return gate;
   const id = typeof teamId === "string" ? teamId.trim() : "";
@@ -419,6 +442,8 @@ export async function leaveBetrieblichTeamAction(teamId: unknown): Promise<Betri
 
 export async function dissolveBetrieblichTeamAction(teamId: unknown): Promise<BetrieblichTeamActionResult> {
   const { profile } = await requirePartnerLogin();
+  const dg = partnerTeamDisabledGate(profile);
+  if (dg) return dg;
   const gate = assertBetrieblich(profile);
   if (gate) return gate;
   const id = typeof teamId === "string" ? teamId.trim() : "";

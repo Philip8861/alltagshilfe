@@ -28,6 +28,8 @@ export type PartnerProfile = {
   account_holder?: string | null;
   /** Anzeige-Einstellungen Partnerportal (Migration 013). */
   portal_preferences?: Record<string, unknown> | null;
+  /** Gesetzt von Admin: Portalnutzung gesperrt (Migration 025); kein Löschen des Nutzers. */
+  account_disabled_at?: string | null;
 };
 
 /** Nur drei Verwaltungs-Statusse (nach Migration 020). Legacy-Werte werden im Code noch normalisiert. */

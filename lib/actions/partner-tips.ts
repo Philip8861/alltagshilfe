@@ -1,7 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { getPartnerSession } from "@/lib/partner/auth";
+import { getPartnerSession, isPartnerAccountDisabled, PARTNER_ACCOUNT_DISABLED_MESSAGE } from "@/lib/partner/auth";
 import { insertPartnerTipSubmission } from "@/lib/partner/insert-partner-tip-submission";
 import { notifyStaffOfNewPartnerTipFromPayload } from "@/lib/partner/partner-tip-staff-notify";
 import { partnerMaySubmitTipForServiceSlug } from "@/lib/partner/responsibility-areas";
@@ -13,6 +13,10 @@ export async function submitPartnerTipAction(raw: unknown): Promise<SubmitPartne
   const session = await getPartnerSession();
   if (!session?.profile?.id) {
     return { ok: false, message: "Nicht angemeldet." };
+  }
+
+  if (isPartnerAccountDisabled(session.profile)) {
+    return { ok: false, message: PARTNER_ACCOUNT_DISABLED_MESSAGE };
   }
 
   const parsed = partnerTipSubmissionSchema.safeParse(raw);

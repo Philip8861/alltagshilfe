@@ -2,7 +2,7 @@
 
 import { headers } from "next/headers";
 import { z } from "zod";
-import { getPartnerSession } from "@/lib/partner/auth";
+import { getPartnerSession, isPartnerAccountDisabled, PARTNER_ACCOUNT_DISABLED_MESSAGE } from "@/lib/partner/auth";
 import { rateLimitPartnerEmailChange } from "@/lib/rate-limit";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
@@ -36,6 +36,10 @@ export async function partnerRequestEmailChangeAction(
   const session = await getPartnerSession();
   if (!session?.userId || !session.email) {
     return { ok: false, message: "Nicht angemeldet." };
+  }
+
+  if (session.profile && isPartnerAccountDisabled(session.profile)) {
+    return { ok: false, message: PARTNER_ACCOUNT_DISABLED_MESSAGE };
   }
 
   const ip = await clientIp();

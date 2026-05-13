@@ -1,8 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useId, useLayoutEffect, useState, useTransition } from "react";
-import { useRouter } from "next/navigation";
-import { setPartnerPasswordPromptSuppressAction } from "@/lib/actions/partner-password-prompt";
+import { useCallback, useEffect, useId, useLayoutEffect, useState } from "react";
 import { PartnerPasswordChangeForm } from "@/components/partner/PartnerPasswordChangeForm";
 import { PARTNER_PASSWORD_PROMPT_SESSION_KEY } from "@/lib/partner/password-prompt-session";
 
@@ -18,14 +16,9 @@ type Props = {
  * der Anmeldung vorausgefüllt). Kein Zwischen-Schritt „Jetzt ändern?“.
  */
 export function PartnerInitialPasswordPrompt({ shouldPrompt, onGateChange }: Props) {
-  const router = useRouter();
   const headingId = useId();
   const descId = useId();
-  const checkboxId = useId();
   const [open, setOpen] = useState(false);
-  const [dontAskAgain, setDontAskAgain] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [pending, startTransition] = useTransition();
 
   useLayoutEffect(() => {
     if (!shouldPrompt) {
@@ -47,7 +40,6 @@ export function PartnerInitialPasswordPrompt({ shouldPrompt, onGateChange }: Pro
 
   const unlockTutorial = useCallback(() => {
     setOpen(false);
-    setError(null);
     onGateChange?.(false);
   }, [onGateChange]);
 
@@ -73,19 +65,6 @@ export function PartnerInitialPasswordPrompt({ shouldPrompt, onGateChange }: Pro
   }, [open, dismissSessionOnly]);
 
   function handleSkip() {
-    setError(null);
-    if (dontAskAgain) {
-      startTransition(async () => {
-        const res = await setPartnerPasswordPromptSuppressAction(true);
-        if (!res.ok) {
-          setError(res.message);
-          return;
-        }
-        dismissSessionOnly();
-        router.refresh();
-      });
-      return;
-    }
     dismissSessionOnly();
   }
 
@@ -124,33 +103,12 @@ export function PartnerInitialPasswordPrompt({ shouldPrompt, onGateChange }: Pro
         </div>
 
         <div className="mt-5 border-t border-neutral-200 pt-4">
-          <div className="flex items-start gap-3 rounded-xl border border-neutral-200 bg-[#F2F9FA]/60 px-3 py-3">
-            <input
-              id={checkboxId}
-              type="checkbox"
-              checked={dontAskAgain}
-              onChange={(e) => setDontAskAgain(e.target.checked)}
-              disabled={pending}
-              className="mt-0.5 h-4 w-4 shrink-0 rounded border-neutral-300 text-[#0F4F68] focus:ring-[#0F4F68]"
-            />
-            <label htmlFor={checkboxId} className="text-sm text-neutral-700">
-              Nicht mehr nachfragen (nur unter Einstellungen wieder möglich)
-            </label>
-          </div>
-
-          {error ? (
-            <p className="mt-3 text-sm font-medium text-red-700" role="alert">
-              {error}
-            </p>
-          ) : null}
-
           <button
             type="button"
-            disabled={pending}
             onClick={handleSkip}
-            className="mt-4 inline-flex min-h-11 w-full items-center justify-center rounded-xl border border-[#0F4F68]/25 bg-white px-4 py-2.5 text-sm font-semibold text-[#0F4F68] hover:bg-[#0F4F68]/5 disabled:opacity-60"
+            className="inline-flex min-h-11 w-full items-center justify-center rounded-xl border border-[#0F4F68]/25 bg-white px-4 py-2.5 text-sm font-semibold text-[#0F4F68] hover:bg-[#0F4F68]/5"
           >
-            {pending && dontAskAgain ? "Speichern…" : "Später erinnern"}
+            Später erinnern
           </button>
         </div>
       </div>

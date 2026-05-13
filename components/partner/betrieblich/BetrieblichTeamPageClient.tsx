@@ -45,11 +45,15 @@ export function BetrieblichTeamPageClient({ initialTeams, viewerPartnerId }: Pro
     return initialTeams.filter((t) => t.members.some((m) => m.partner_id === viewerPartnerId)).length;
   }, [initialTeams, viewerPartnerId]);
 
-  const run = (fn: () => Promise<{ ok: true } | { ok: false; message: string }>) => {
+  const run = (
+    fn: () => Promise<{ ok: true } | { ok: false; message: string }>,
+    options?: { onSuccess?: () => void },
+  ) => {
     setFeedback(null);
     startTransition(async () => {
       const r = await fn();
       if (r.ok) {
+        options?.onSuccess?.();
         router.refresh();
         return;
       }
@@ -177,11 +181,15 @@ function TeamCard({
   team: BetrieblichTeamSummary;
   viewerPartnerId: string;
   pending: boolean;
-  run: (fn: () => Promise<{ ok: true } | { ok: false; message: string }>) => void;
+  run: (
+    fn: () => Promise<{ ok: true } | { ok: false; message: string }>,
+    options?: { onSuccess?: () => void },
+  ) => void;
   defaultOpen: boolean;
 }) {
   const [rename, setRename] = useState(team.name);
   const [inviteCode, setInviteCode] = useState("");
+  const [inviteSentModalOpen, setInviteSentModalOpen] = useState(false);
   const isOwner = team.my_role === "owner";
 
   const subtitle = isOwner
@@ -280,11 +288,14 @@ function TeamCard({
               type="button"
               disabled={pending || !inviteCode.trim()}
               onClick={() =>
-                run(async () => {
-                  const r = await inviteBetrieblichTeamByCodeAction(team.id, inviteCode);
-                  if (r.ok) setInviteCode("");
-                  return r;
-                })
+                run(
+                  async () => {
+                    const r = await inviteBetrieblichTeamByCodeAction(team.id, inviteCode);
+                    if (r.ok) setInviteCode("");
+                    return r;
+                  },
+                  { onSuccess: () => setInviteSentModalOpen(true) },
+                )
               }
               className="rounded-xl bg-gradient-to-b from-[#F78F2E] to-[#e07820] px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:from-[#e07f25] hover:to-[#c96a1a] disabled:opacity-50"
             >
@@ -292,6 +303,8 @@ function TeamCard({
             </button>
           </div>
         </div>
+
+        <InviteEmailSentModal open={inviteSentModalOpen} onClose={() => setInviteSentModalOpen(false)} />
 
         <div>
           <h4 className="text-sm font-semibold text-neutral-900">Mitglieder und Kennzahlen</h4>
@@ -372,5 +385,46 @@ function TeamCard({
         </div>
       </div>
     </PartnerExpandableStatSection>
+  );
+}
+
+function InviteEmailSentModal({ open, onClose }: { open: boolean; onClose: () => void }) {
+  if (!open) return null;
+  return (
+    <div className="fixed inset-0 z-[220] flex items-end justify-center sm:items-center sm:p-6">
+      <button
+        type="button"
+        className="absolute inset-0 z-0 bg-neutral-900/45 backdrop-blur-[3px]"
+        aria-label="Dialog schließen"
+        onClick={onClose}
+      />
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="invite-sent-title"
+        className="relative z-10 w-full max-w-md overflow-hidden rounded-t-2xl border border-neutral-200/90 bg-white shadow-[0_-12px_48px_rgba(15,79,104,0.14),0_25px_50px_-12px_rgba(0,0,0,0.2)] sm:rounded-2xl sm:shadow-2xl"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div
+          className="h-1 w-full shrink-0 bg-gradient-to-r from-[#0F4F68] via-[#3DB8C9] to-[#0F4F68]/40"
+          aria-hidden
+        />
+        <div className="px-5 pb-5 pt-5 sm:px-6 sm:pb-6">
+          <h2 id="invite-sent-title" className="text-xl font-semibold tracking-tight text-[#0F4F68]">
+            Vielen Dank!
+          </h2>
+          <p className="mt-3 text-sm leading-relaxed text-neutral-700">
+            Die Einladung wurde per E-Mail versendet.
+          </p>
+          <button
+            type="button"
+            onClick={onClose}
+            className="mt-6 flex w-full min-h-12 items-center justify-center rounded-xl bg-[#0F4F68] px-4 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-[#0c3d52] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68] focus-visible:ring-offset-2"
+          >
+            Schließen
+          </button>
+        </div>
+      </div>
+    </div>
   );
 }

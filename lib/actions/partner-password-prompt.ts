@@ -2,7 +2,7 @@
 
 import { headers } from "next/headers";
 import { revalidatePath } from "next/cache";
-import { getPartnerSession } from "@/lib/partner/auth";
+import { getPartnerSession, isPartnerAccountDisabled, PARTNER_ACCOUNT_DISABLED_MESSAGE } from "@/lib/partner/auth";
 import { rateLimitPartnerPasswordPrompt } from "@/lib/rate-limit";
 import { mergePortalPrefsPasswordPromptSuppress } from "@/lib/partner/portal-preferences";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
@@ -29,6 +29,10 @@ export async function setPartnerPasswordPromptSuppressAction(
   const session = await getPartnerSession();
   if (!session?.profile?.id) {
     return { ok: false, message: "Nicht angemeldet." };
+  }
+
+  if (isPartnerAccountDisabled(session.profile)) {
+    return { ok: false, message: PARTNER_ACCOUNT_DISABLED_MESSAGE };
   }
 
   try {

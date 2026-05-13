@@ -6,6 +6,16 @@ import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { createSupabaseServiceRoleClient } from "@/lib/supabase/service";
 import type { PartnerProfile } from "@/lib/partner/types";
 
+/** Migration 025: Admin kann Partnerkonto sperren ohne Löschen. */
+export function isPartnerAccountDisabled(profile: PartnerProfile | null | undefined): boolean {
+  const t = profile?.account_disabled_at;
+  return typeof t === "string" && t.trim().length > 0;
+}
+
+/** Einheitliche Meldung für gesperrte Konten (Server Actions / API). */
+export const PARTNER_ACCOUNT_DISABLED_MESSAGE =
+  "Ihr Konto wurde deaktiviert. Bitte wenden Sie sich an den Support.";
+
 export async function getPartnerSession(): Promise<{
   userId: string;
   email: string | undefined;

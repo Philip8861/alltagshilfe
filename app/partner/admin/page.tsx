@@ -15,6 +15,7 @@ import type {
   PartnerProfile,
   PartnerTipSubmissionRow,
 } from "@/lib/partner/types";
+import { fetchAllTeamsForAdmin } from "@/lib/partner/admin-teams-overview";
 import { fetchPartnerTipSubmissionRows } from "@/lib/partner/partner-tip-submissions-select";
 import { createSupabaseServiceRoleClient } from "@/lib/supabase/service";
 
@@ -81,6 +82,7 @@ export default async function PartnerAdminPage({
     created_at: string;
     summary_json: Record<string, unknown> | null;
   }[] = [];
+  let adminTeams: Awaited<ReturnType<typeof fetchAllTeamsForAdmin>> = [];
 
   if (svc) {
     try {
@@ -88,7 +90,7 @@ export default async function PartnerAdminPage({
         svc
           .from("partner_profiles")
           .select(
-            "id, display_name, organization_name, role, created_at, updated_at, salutation, partner_referral_code, first_name, last_name, recruited_by, phone, responsibility_areas, password_changed_at, iban, bic, account_holder",
+            "id, display_name, organization_name, role, created_at, updated_at, salutation, partner_referral_code, first_name, last_name, recruited_by, phone, responsibility_areas, password_changed_at, account_disabled_at, iban, bic, account_holder",
           )
           .order("created_at", { ascending: false }),
         svc
@@ -132,6 +134,8 @@ export default async function PartnerAdminPage({
           };
         }
       }
+      const profileMapForTeams = new Map(profiles.map((p) => [p.id, p]));
+      adminTeams = await fetchAllTeamsForAdmin(svc, authById, profileMapForTeams);
       if (repRes.error) {
         console.error("[PartnerAdminPage] partner_payout_reports:", repRes.error.message);
       } else if (repRes.data?.length !== undefined) {
@@ -168,6 +172,7 @@ export default async function PartnerAdminPage({
       tips = [];
       orders = [];
       payoutPeriods = [];
+      adminTeams = [];
     }
   }
 
@@ -181,6 +186,7 @@ export default async function PartnerAdminPage({
       payoutPeriods={payoutPeriods}
       initialBereich={initialBereich}
       initialFocusTipId={initialFocusTipId}
+      adminTeams={adminTeams}
     />
   );
 }

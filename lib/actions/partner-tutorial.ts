@@ -2,7 +2,7 @@
 
 import { headers } from "next/headers";
 import { revalidatePath } from "next/cache";
-import { getPartnerSession } from "@/lib/partner/auth";
+import { getPartnerSession, isPartnerAccountDisabled, PARTNER_ACCOUNT_DISABLED_MESSAGE } from "@/lib/partner/auth";
 import { normalizePortalPreferences, parsePortalPreferences } from "@/lib/partner/portal-preferences";
 import { rateLimitPartnerPortalPrefs } from "@/lib/rate-limit";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
@@ -13,6 +13,10 @@ export async function setPartnerTutorialHiddenAction(
   const session = await getPartnerSession();
   if (!session?.profile?.id) {
     return { ok: false, message: "Nicht angemeldet." };
+  }
+
+  if (isPartnerAccountDisabled(session.profile)) {
+    return { ok: false, message: PARTNER_ACCOUNT_DISABLED_MESSAGE };
   }
 
   try {

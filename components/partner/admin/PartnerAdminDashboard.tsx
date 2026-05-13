@@ -25,7 +25,9 @@ import {
 import { formatProvisionEur } from "@/lib/partner/partner-tip-payout";
 import { AdminHomepageStatistikHub } from "@/components/partner/admin/AdminHomepageStatistikHub";
 import { AdminPartnerProgrammStatistikHub } from "@/components/partner/admin/AdminPartnerProgrammStatistikHub";
+import { AdminTeamsPanel } from "@/components/partner/admin/AdminTeamsPanel";
 import { PartnerAdminPayoutSection } from "@/components/partner/admin/PartnerAdminPayoutSection";
+import { PartnerAccountDeactivateButton } from "@/components/partner/admin/PartnerAccountDeactivateButton";
 
 const AdminStatisticsCharts = dynamic(
   () => import("./AdminStatisticsCharts").then((m) => ({ default: m.AdminStatisticsCharts })),
@@ -39,6 +41,7 @@ import {
   inAdminAuftraegeQueue,
   inAdminEhemaligeUnternehmen,
 } from "@/lib/partner/partner-tip-betrieblich-queue";
+import type { AdminTeamOverview } from "@/lib/partner/admin-teams-overview";
 import type {
   PartnerAdminPayoutPeriod,
   PartnerProfile,
@@ -90,6 +93,8 @@ type Props = {
   initialBereich: AdminSection;
   /** Server-validierte Tipp-UUID aus `?tipp=` (E-Mail Deep-Link). */
   initialFocusTipId?: string | null;
+  /** Betriebliche Teamgruppen (Admin). */
+  adminTeams: AdminTeamOverview[];
 };
 
 function adminSectionForFocusedTip(t: PartnerTipSubmissionRow): AdminSection {
@@ -162,8 +167,10 @@ export function PartnerAdminDashboard({
   payoutPeriods,
   initialBereich,
   initialFocusTipId = null,
+  adminTeams,
 }: Props) {
   const [section, setSection] = useState<AdminSection>(initialBereich);
+  const [listeTeil, setListeTeil] = useState<"partner" | "teams">("partner");
   const [auftraegeLeistungOpen, setAuftraegeLeistungOpen] = useState<Record<PartnerResponsibilitySlug, boolean>>(
     () => Object.fromEntries(SERVICE_SLUG_ORDER.map((s) => [s, true])) as Record<PartnerResponsibilitySlug, boolean>,
   );
@@ -310,6 +317,11 @@ export function PartnerAdminDashboard({
       }
       if (key === "code") {
         return compareStr(a.partner_referral_code ?? "", b.partner_referral_code ?? "", dir);
+      }
+      if (key === "status") {
+        const sa = a.account_disabled_at ? 1 : 0;
+        const sb = b.account_disabled_at ? 1 : 0;
+        return compareNum(sa, sb, dir);
       }
       return 0;
     });
@@ -1001,125 +1013,198 @@ export function PartnerAdminDashboard({
               className="partner-dash-animate rounded-3xl border border-[#0F4F68]/10 bg-white p-5 shadow-[0_20px_50px_-24px_rgba(15,79,104,0.25)] sm:p-8"
               aria-labelledby="partner-liste-heading"
             >
-              <h2 id="partner-liste-heading" className="text-xl font-bold text-[#0F4F68] sm:text-2xl">
-                Partnerliste
-              </h2>
-              <p className="mt-2 text-sm text-neutral-600">Alle Details, bearbeiten oder löschen. Sortierung über die Spaltenköpfe.</p>
-              <div className="mt-6 overflow-x-auto rounded-2xl border border-neutral-200/80">
-                <table className="min-w-[1180px] w-full text-left text-sm">
-                  <thead className="border-b border-[#0F4F68]/10 bg-[#F2F9FA]/60 text-xs">
-                    <tr>
-                      <th className="px-3 py-3">
-                        <SortButton
-                          label="E-Mail"
-                          active={partnerSort.key === "email"}
-                          dir={partnerSort.dir}
-                          onClick={() => togglePartnerSort("email")}
-                        />
-                      </th>
-                      <th className="px-3 py-3">
-                        <SortButton
-                          label="Name"
-                          active={partnerSort.key === "name"}
-                          dir={partnerSort.dir}
-                          onClick={() => togglePartnerSort("name")}
-                        />
-                      </th>
-                      <th className="whitespace-nowrap px-3 py-3">Anrede</th>
-                      <th className="px-3 py-3">
-                        <SortButton
-                          label="Code"
-                          active={partnerSort.key === "code"}
-                          dir={partnerSort.dir}
-                          onClick={() => togglePartnerSort("code")}
-                        />
-                      </th>
-                      <th className="px-3 py-3">Firma</th>
-                      <th className="px-3 py-3">Telefon</th>
-                      <th className="px-3 py-3">Zuständigkeit</th>
-                      <th className="px-3 py-3">Passwort</th>
-                      <th className="px-3 py-3">Rolle</th>
-                      <th className="px-3 py-3">
-                        <SortButton
-                          label="Profil seit"
-                          active={partnerSort.key === "created_at"}
-                          dir={partnerSort.dir}
-                          onClick={() => togglePartnerSort("created_at")}
-                        />
-                      </th>
-                      <th className="whitespace-nowrap px-3 py-3">Aktionen</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-neutral-100">
-                    {sortedProfiles.length === 0 ? (
-                      <tr>
-                        <td colSpan={11} className="px-4 py-12 text-center text-neutral-600">
-                          Keine Partner-Profile.
-                        </td>
-                      </tr>
-                    ) : (
-                      sortedProfiles.map((p) => {
-                        const auth = authById[p.id];
-                        const email = auth?.email ?? "—";
-                        const name =
-                          [p.first_name?.trim(), p.last_name?.trim()].filter(Boolean).join(" ") ||
-                          p.display_name?.trim() ||
-                          "—";
-                        const label = p.organization_name ?? name ?? p.id.slice(0, 8);
-                        return (
-                          <tr key={p.id} className="align-top transition-colors hover:bg-[#f8fbfc]">
-                            <td className="max-w-[12rem] px-3 py-3">
-                              <span className="break-all font-medium text-neutral-900">{email}</span>
-                            </td>
-                            <td className="px-3 py-3 text-neutral-800">{name}</td>
-                            <td className="whitespace-nowrap px-3 py-3 text-neutral-700">
-                              {p.salutation === "herr" ? "Herr" : p.salutation === "frau" ? "Frau" : "—"}
-                            </td>
-                            <td className="whitespace-nowrap px-3 py-3 font-mono text-xs font-bold text-[#0F4F68]">
-                              {p.partner_referral_code?.trim() || "—"}
-                            </td>
-                            <td className="max-w-[8rem] px-3 py-3 text-neutral-700">{p.organization_name ?? "—"}</td>
-                            <td className="whitespace-nowrap px-3 py-3 text-neutral-700">{p.phone ?? "—"}</td>
-                            <td className="max-w-[10rem] px-3 py-3 text-xs text-neutral-700">
-                              {(p.responsibility_areas ?? []).map((slug) => (
-                                <span
-                                  key={slug}
-                                  className={`mb-1 mr-1 inline-block rounded-full border px-1.5 py-0.5 text-[0.65rem] font-medium ${serviceBadgeClass(slug)}`}
-                                >
-                                  {PARTNER_RESPONSIBILITY_LABELS[slug as PartnerResponsibilitySlug] ?? slug}
-                                </span>
-                              ))}
-                              {!p.responsibility_areas?.length ? "—" : null}
-                            </td>
-                            <td className="px-3 py-3 text-xs text-neutral-700">{partnerPasswordNote(p)}</td>
-                            <td className="px-3 py-3 text-neutral-700">{p.role}</td>
-                            <td className="whitespace-nowrap px-3 py-3 text-xs text-neutral-600">
-                              {p.created_at
-                                ? new Date(p.created_at).toLocaleString("de-DE", {
-                                    dateStyle: "short",
-                                    timeStyle: "short",
-                                  })
-                                : "—"}
-                            </td>
-                            <td className="px-3 py-3">
-                              <div className="flex flex-col gap-2">
-                                <button
-                                  type="button"
-                                  onClick={() => setEditProfile(p)}
-                                  className="min-h-9 rounded-xl border border-[#0F4F68]/25 bg-white px-2 py-1 text-xs font-semibold text-[#0F4F68] hover:bg-[#F2F9FA]"
-                                >
-                                  Bearbeiten
-                                </button>
-                                <DeletePartnerUserButton userId={p.id} displayLabel={label} />
-                              </div>
+              <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+                <div className="min-w-0">
+                  <h2 id="partner-liste-heading" className="text-xl font-bold text-[#0F4F68] sm:text-2xl">
+                    Partner & Teams
+                  </h2>
+                  <p className="mt-2 text-sm text-neutral-600">
+                    Partnerkonten verwalten oder alle Teamgruppen der betrieblichen Pflegeberatung einsehen.
+                  </p>
+                </div>
+              </div>
+
+              <div
+                className="mt-6 flex flex-wrap gap-2 border-b border-[#0F4F68]/12 pb-3"
+                role="tablist"
+                aria-label="Listen-Ansicht"
+              >
+                <button
+                  type="button"
+                  role="tab"
+                  aria-selected={listeTeil === "partner"}
+                  onClick={() => setListeTeil("partner")}
+                  className={`min-h-11 rounded-xl px-4 text-sm font-bold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68]/30 sm:px-5 sm:text-base ${
+                    listeTeil === "partner"
+                      ? "bg-[#0F4F68] text-white shadow-sm"
+                      : "border border-[#0F4F68]/25 bg-white text-[#0F4F68] hover:bg-[#F2F9FA]"
+                  }`}
+                >
+                  Partnerliste
+                </button>
+                <button
+                  type="button"
+                  role="tab"
+                  aria-selected={listeTeil === "teams"}
+                  onClick={() => setListeTeil("teams")}
+                  className={`min-h-11 rounded-xl px-4 text-sm font-bold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68]/30 sm:px-5 sm:text-base ${
+                    listeTeil === "teams"
+                      ? "bg-[#0F4F68] text-white shadow-sm"
+                      : "border border-[#0F4F68]/25 bg-white text-[#0F4F68] hover:bg-[#F2F9FA]"
+                  }`}
+                >
+                  Teams ({adminTeams.length})
+                </button>
+              </div>
+
+              {listeTeil === "teams" ? (
+                <div className="mt-6">
+                  <AdminTeamsPanel teams={adminTeams} />
+                </div>
+              ) : (
+                <>
+                  <p className="mt-5 text-sm text-neutral-600">
+                    Alle Details, bearbeiten oder löschen. Partner können deaktiviert werden (kein Löschen nötig).
+                    Sortierung über die Spaltenköpfe.
+                  </p>
+                  <div className="mt-6 overflow-x-auto rounded-2xl border border-neutral-200/80">
+                    <table className="min-w-[1240px] w-full text-left text-sm">
+                      <thead className="border-b border-[#0F4F68]/10 bg-[#F2F9FA]/60 text-xs">
+                        <tr>
+                          <th className="px-3 py-3">
+                            <SortButton
+                              label="E-Mail"
+                              active={partnerSort.key === "email"}
+                              dir={partnerSort.dir}
+                              onClick={() => togglePartnerSort("email")}
+                            />
+                          </th>
+                          <th className="px-3 py-3">
+                            <SortButton
+                              label="Name"
+                              active={partnerSort.key === "name"}
+                              dir={partnerSort.dir}
+                              onClick={() => togglePartnerSort("name")}
+                            />
+                          </th>
+                          <th className="whitespace-nowrap px-3 py-3">Anrede</th>
+                          <th className="px-3 py-3">
+                            <SortButton
+                              label="Code"
+                              active={partnerSort.key === "code"}
+                              dir={partnerSort.dir}
+                              onClick={() => togglePartnerSort("code")}
+                            />
+                          </th>
+                          <th className="px-3 py-3">Firma</th>
+                          <th className="px-3 py-3">Telefon</th>
+                          <th className="px-3 py-3">Zuständigkeit</th>
+                          <th className="px-3 py-3">Passwort</th>
+                          <th className="px-3 py-3">Rolle</th>
+                          <th className="px-3 py-3">
+                            <SortButton
+                              label="Status"
+                              active={partnerSort.key === "status"}
+                              dir={partnerSort.dir}
+                              onClick={() => togglePartnerSort("status")}
+                            />
+                          </th>
+                          <th className="px-3 py-3">
+                            <SortButton
+                              label="Profil seit"
+                              active={partnerSort.key === "created_at"}
+                              dir={partnerSort.dir}
+                              onClick={() => togglePartnerSort("created_at")}
+                            />
+                          </th>
+                          <th className="whitespace-nowrap px-3 py-3">Aktionen</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-neutral-100">
+                        {sortedProfiles.length === 0 ? (
+                          <tr>
+                            <td colSpan={12} className="px-4 py-12 text-center text-neutral-600">
+                              Keine Partner-Profile.
                             </td>
                           </tr>
-                        );
-                      })
-                    )}
-                  </tbody>
-                </table>
-              </div>
+                        ) : (
+                          sortedProfiles.map((p) => {
+                            const auth = authById[p.id];
+                            const email = auth?.email ?? "—";
+                            const name =
+                              [p.first_name?.trim(), p.last_name?.trim()].filter(Boolean).join(" ") ||
+                              p.display_name?.trim() ||
+                              "—";
+                            const label = p.organization_name ?? name ?? p.id.slice(0, 8);
+                            const deactivated = Boolean(p.account_disabled_at?.trim());
+                            return (
+                              <tr key={p.id} className="align-top transition-colors hover:bg-[#f8fbfc]">
+                                <td className="max-w-[12rem] px-3 py-3">
+                                  <span className="break-all font-medium text-neutral-900">{email}</span>
+                                </td>
+                                <td className="px-3 py-3 text-neutral-800">{name}</td>
+                                <td className="whitespace-nowrap px-3 py-3 text-neutral-700">
+                                  {p.salutation === "herr" ? "Herr" : p.salutation === "frau" ? "Frau" : "—"}
+                                </td>
+                                <td className="whitespace-nowrap px-3 py-3 font-mono text-xs font-bold text-[#0F4F68]">
+                                  {p.partner_referral_code?.trim() || "—"}
+                                </td>
+                                <td className="max-w-[8rem] px-3 py-3 text-neutral-700">{p.organization_name ?? "—"}</td>
+                                <td className="whitespace-nowrap px-3 py-3 text-neutral-700">{p.phone ?? "—"}</td>
+                                <td className="max-w-[10rem] px-3 py-3 text-xs text-neutral-700">
+                                  {(p.responsibility_areas ?? []).map((slug) => (
+                                    <span
+                                      key={slug}
+                                      className={`mb-1 mr-1 inline-block rounded-full border px-1.5 py-0.5 text-[0.65rem] font-medium ${serviceBadgeClass(slug)}`}
+                                    >
+                                      {PARTNER_RESPONSIBILITY_LABELS[slug as PartnerResponsibilitySlug] ?? slug}
+                                    </span>
+                                  ))}
+                                  {!p.responsibility_areas?.length ? "—" : null}
+                                </td>
+                                <td className="px-3 py-3 text-xs text-neutral-700">{partnerPasswordNote(p)}</td>
+                                <td className="px-3 py-3 text-neutral-700">{p.role}</td>
+                                <td className="whitespace-nowrap px-3 py-3">
+                                  {deactivated ? (
+                                    <span className="rounded-full bg-neutral-200 px-2 py-0.5 text-xs font-semibold text-neutral-800">
+                                      Deaktiviert
+                                    </span>
+                                  ) : (
+                                    <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-xs font-semibold text-emerald-900">
+                                      Aktiv
+                                    </span>
+                                  )}
+                                </td>
+                                <td className="whitespace-nowrap px-3 py-3 text-xs text-neutral-600">
+                                  {p.created_at
+                                    ? new Date(p.created_at).toLocaleString("de-DE", {
+                                        dateStyle: "short",
+                                        timeStyle: "short",
+                                      })
+                                    : "—"}
+                                </td>
+                                <td className="px-3 py-3">
+                                  <div className="flex flex-col gap-2">
+                                    <button
+                                      type="button"
+                                      onClick={() => setEditProfile(p)}
+                                      className="min-h-9 rounded-xl border border-[#0F4F68]/25 bg-white px-2 py-1 text-xs font-semibold text-[#0F4F68] hover:bg-[#F2F9FA]"
+                                    >
+                                      Bearbeiten
+                                    </button>
+                                    <PartnerAccountDeactivateButton partnerId={p.id} disabled={deactivated} />
+                                    <DeletePartnerUserButton userId={p.id} displayLabel={label} />
+                                  </div>
+                                </td>
+                              </tr>
+                            );
+                          })
+                        )}
+                      </tbody>
+                    </table>
+                  </div>
+                </>
+              )}
             </section>
           ) : null}
 

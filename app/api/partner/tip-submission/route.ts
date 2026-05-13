@@ -2,9 +2,11 @@ import { revalidatePath } from "next/cache";
 import { NextResponse } from "next/server";
 import { insertPartnerTipSubmission } from "@/lib/partner/insert-partner-tip-submission";
 import { notifyStaffOfNewPartnerTipFromPayload } from "@/lib/partner/partner-tip-staff-notify";
+import { isPartnerAccountDisabled, PARTNER_ACCOUNT_DISABLED_MESSAGE } from "@/lib/partner/auth";
 import { partnerMaySubmitTipForServiceSlug } from "@/lib/partner/responsibility-areas";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import type { PartnerProfile } from "@/lib/partner/types";
 import { partnerTipSubmissionSchema } from "@/lib/validations/partner-tips";
 
 /**
@@ -45,12 +47,16 @@ export async function POST(request: Request) {
 
     const { data: profile, error: profErr } = await supabase
       .from("partner_profiles")
-      .select("id, responsibility_areas")
+      .select("id, responsibility_areas, account_disabled_at")
       .eq("id", user.id)
       .maybeSingle();
 
     if (profErr || !profile?.id) {
       return NextResponse.json({ ok: false, message: "Kein Partnerprofil." }, { status: 403 });
+    }
+
+    if (isPartnerAccountDisabled(profile as PartnerProfile)) {
+      return NextResponse.json({ ok: false, message: PARTNER_ACCOUNT_DISABLED_MESSAGE }, { status: 403 });
     }
 
     if (!partnerMaySubmitTipForServiceSlug(profile.responsibility_areas, parsed.data.service_slug)) {
