@@ -213,6 +213,9 @@ export function buildBrandedNotificationHtml(options: {
   /** Optional: längerer Fließtext / mehrzeilig (Nachricht, Konfigurator-Zusammenfassung). */
   detailTitle?: string;
   detailText?: string;
+  /** Optionaler Call-to-Action-Button unter dem Detailblock. */
+  ctaHref?: string;
+  ctaLabel?: string;
 }): string {
   const { kindBadge, headline, rows, detailTitle, detailText } = options;
 
@@ -249,10 +252,36 @@ export function buildBrandedNotificationHtml(options: {
         </tr>`
       : "";
 
+  const ctaHrefRaw = options.ctaHref?.trim();
+  const ctaLabelRaw = options.ctaLabel?.trim();
+  let ctaSection = "";
+  if (ctaHrefRaw && ctaLabelRaw) {
+    const hrefAttr = escapeEmailHrefAttr(ctaHrefRaw);
+    const escLabel = escapeHtml(ctaLabelRaw);
+    ctaSection = `
+        <tr>
+          <td style="padding:8px 20px 26px 20px;">
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0">
+              <tr>
+                <td style="border-radius:14px;background:${C.primary};">
+                  <a href="${hrefAttr}" style="display:inline-block;font-family:${FONT};font-size:16px;font-weight:700;line-height:1.2;color:#ffffff;text-decoration:none;padding:16px 28px;border-radius:14px;background:${C.primary};border:1px solid ${C.primaryDark};">
+                    ${escLabel}
+                  </a>
+                </td>
+              </tr>
+            </table>
+            <p style="margin:16px 0 0 0;font-family:${FONT};font-size:13px;line-height:1.5;color:${C.muted};">
+              Direktlink (falls der Button nicht funktioniert):<br/>
+              <span style="word-break:break-all;color:#1a1a1a;">${escapeHtml(ctaHrefRaw)}</span>
+            </p>
+          </td>
+        </tr>`;
+  }
+
   return brandedEmailShell({
     kindBadge,
     headline,
-    bodyRowsHtml: `${rowHtml}${detailSection}`,
+    bodyRowsHtml: `${rowHtml}${detailSection}${ctaSection}`,
   });
 }
 

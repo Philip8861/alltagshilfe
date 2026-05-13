@@ -15,6 +15,7 @@ import { recordContactSource } from "@/lib/contact-source-tracking";
 import { getContactSourceLabel } from "@/lib/contact-source";
 import { rateLimitPflegeboxOrder } from "@/lib/rate-limit";
 import { pflegeboxOrderBodySchema, type PflegeboxOrderBody } from "@/lib/validations/pflegebox-order";
+import { schedulePartnerTipStaffNotify } from "@/lib/partner/partner-tip-staff-notify";
 import { createSupabaseServiceRoleClient, resolvePartnerProfileId } from "@/lib/supabase/service";
 
 /** Immer Empfänger für den ausgefüllten PDF-Anhang (zusätzlich zu NOTIFICATION_TO_PFLEGEBOX / NOTIFICATION_TO). */
@@ -194,14 +195,39 @@ export async function POST(request: Request) {
       external_reference: externalRef,
       partner_referral_raw: partnerRefRaw || null,
     };
-    const { error: tipErr } = await service.from("partner_tip_submissions").insert({
-      partner_id: partnerId,
-      service_slug: "pflegehilfsmittel",
-      payload: tipPayload,
-      admin_status: "in_bearbeitung",
-    });
+    const { data: tipIns, error: tipErr } = await service
+      .from("partner_tip_submissions")
+      .insert({
+        partner_id: partnerId,
+        service_slug: "pflegehilfsmittel",
+        payload: tipPayload,
+        admin_status: "in_bearbeitung",
+      })
+      .select("id")
+      .single();
     if (tipErr) {
       console.error("[pflegebox-order] partner_tip_submissions insert failed", tipErr.message);
+    } else {
+      const tipRowId = typeof tipIns?.id === "string" ? tipIns.id : "";
+      if (tipRowId) {
+        let partnerHint: string | undefined = partnerRefRaw || undefined;
+        const { data: pr } = await service
+          .from("partner_profiles")
+          .select("organization_name, display_name, partner_referral_code")
+          .eq("id", partnerId)
+          .maybeSingle();
+        const hint = [pr?.organization_name, pr?.display_name, pr?.partner_referral_code, partnerRefRaw || null]
+          .map((s) => (typeof s === "string" ? s.trim() : ""))
+          .filter(Boolean)
+          .join(" · ");
+        if (hint) partnerHint = hint;
+        schedulePartnerTipStaffNotify({
+          serviceSlug: "pflegehilfsmittel",
+          tipId: tipRowId,
+          payload: tipPayload,
+          partnerHint,
+        });
+      }
     }
   }
 

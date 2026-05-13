@@ -1,6 +1,7 @@
 import { revalidatePath } from "next/cache";
 import { NextResponse } from "next/server";
 import { insertPartnerTipSubmission } from "@/lib/partner/insert-partner-tip-submission";
+import { schedulePartnerTipStaffNotify } from "@/lib/partner/partner-tip-staff-notify";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { partnerTipSubmissionSchema } from "@/lib/validations/partner-tips";
@@ -55,6 +56,22 @@ export async function POST(request: Request) {
     if (!result.ok) {
       return NextResponse.json({ ok: false, message: result.message }, { status: 500 });
     }
+
+    const { data: hintRow } = await supabase
+      .from("partner_profiles")
+      .select("display_name, organization_name, partner_referral_code")
+      .eq("id", profile.id)
+      .maybeSingle();
+    const partnerHint = [hintRow?.organization_name, hintRow?.display_name, hintRow?.partner_referral_code]
+      .map((s) => (typeof s === "string" ? s.trim() : ""))
+      .filter(Boolean)
+      .join(" · ");
+    schedulePartnerTipStaffNotify({
+      serviceSlug: parsed.data.service_slug,
+      tipId: result.tipId,
+      payload: parsed.data.payload as Record<string, unknown>,
+      partnerHint: partnerHint || undefined,
+    });
 
     revalidatePath("/partner/dashboard");
     revalidatePath("/partner/statistik");

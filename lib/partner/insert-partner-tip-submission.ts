@@ -4,7 +4,9 @@ import { createSupabaseServiceRoleClient } from "@/lib/supabase/service";
 import type { PartnerTipSubmissionInput } from "@/lib/validations/partner-tips";
 import type { SupabaseClient } from "@supabase/supabase-js";
 
-export type InsertPartnerTipSubmissionResult = { ok: true } | { ok: false; message: string };
+export type InsertPartnerTipSubmissionResult =
+  | { ok: true; tipId: string }
+  | { ok: false; message: string };
 
 function buildRows(partnerId: string, data: PartnerTipSubmissionInput) {
   const base = {
@@ -18,15 +20,23 @@ function buildRows(partnerId: string, data: PartnerTipSubmissionInput) {
   };
 }
 
+function readInsertedId(data: unknown): string | null {
+  if (data && typeof data === "object" && "id" in data) {
+    const id = (data as { id: unknown }).id;
+    if (typeof id === "string" && id.length > 0) return id;
+  }
+  return null;
+}
+
 async function insertWithColumnFallback(
   client: SupabaseClient,
   partnerId: string,
   data: PartnerTipSubmissionInput,
 ) {
   const { full, minimal } = buildRows(partnerId, data);
-  let res = await client.from("partner_tip_submissions").insert(full);
+  let res = await client.from("partner_tip_submissions").insert(full).select("id").single();
   if (res.error && isSupabaseMissingColumnError(res.error)) {
-    res = await client.from("partner_tip_submissions").insert(minimal);
+    res = await client.from("partner_tip_submissions").insert(minimal).select("id").single();
   }
   return res;
 }
@@ -42,7 +52,12 @@ export async function insertPartnerTipSubmission(
   const svc = createSupabaseServiceRoleClient();
   if (svc) {
     const svcRes = await insertWithColumnFallback(svc, partnerId, data);
-    if (!svcRes.error) return { ok: true };
+    if (!svcRes.error) {
+      const tipId = readInsertedId(svcRes.data);
+      if (tipId) return { ok: true, tipId };
+      console.error("[insertPartnerTipSubmission] service_role: Insert OK, aber keine id in der Antwort.");
+      return { ok: false, message: "Speichern fehlgeschlagen. Bitte Seite neu laden oder Support informieren." };
+    }
     if (!isSupabaseMissingColumnError(svcRes.error)) {
       console.error(
         "[insertPartnerTipSubmission] service_role:",
@@ -64,5 +79,10 @@ export async function insertPartnerTipSubmission(
     );
     return { ok: false, message: "Speichern fehlgeschlagen. Bitte Seite neu laden oder Support informieren." };
   }
-  return { ok: true };
+  const tipId = readInsertedId(userRes.data);
+  if (!tipId) {
+    console.error("[insertPartnerTipSubmission] user client: Insert OK, aber keine id in der Antwort.");
+    return { ok: false, message: "Speichern fehlgeschlagen. Bitte Seite neu laden oder Support informieren." };
+  }
+  return { ok: true, tipId };
 }

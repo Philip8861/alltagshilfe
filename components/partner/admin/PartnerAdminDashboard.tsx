@@ -88,7 +88,15 @@ type Props = {
   authById: Record<string, AuthInfo>;
   payoutPeriods: PartnerAdminPayoutPeriod[];
   initialBereich: AdminSection;
+  /** Server-validierte Tipp-UUID aus `?tipp=` (E-Mail Deep-Link). */
+  initialFocusTipId?: string | null;
 };
+
+function adminSectionForFocusedTip(t: PartnerTipSubmissionRow): AdminSection {
+  if (t.archived_at) return "archiv";
+  if (inAdminAktiveUnternehmen(t) || inAdminEhemaligeUnternehmen(t)) return "aktive_unternehmen";
+  return "auftraege";
+}
 
 function SortButton({
   label,
@@ -153,11 +161,35 @@ export function PartnerAdminDashboard({
   authById,
   payoutPeriods,
   initialBereich,
+  initialFocusTipId = null,
 }: Props) {
   const [section, setSection] = useState<AdminSection>(initialBereich);
   useEffect(() => {
     setSection(initialBereich);
   }, [initialBereich]);
+
+  useEffect(() => {
+    const id = initialFocusTipId?.trim();
+    if (!id) return;
+    const tip = tips.find((t) => t.id === id);
+    setSection(tip ? adminSectionForFocusedTip(tip) : "auftraege");
+  }, [initialFocusTipId, tips]);
+
+  useEffect(() => {
+    const id = initialFocusTipId?.trim();
+    if (!id) return;
+    const highlight = ["ring-2", "ring-[#0F4F68]", "ring-offset-2", "rounded-lg"];
+    const timer = window.setTimeout(() => {
+      const el = document.getElementById(`partner-admin-tip-${id}`);
+      if (!el) return;
+      el.scrollIntoView({ behavior: "smooth", block: "center" });
+      el.classList.add(...highlight);
+      window.setTimeout(() => {
+        el.classList.remove(...highlight);
+      }, 4500);
+    }, 200);
+    return () => clearTimeout(timer);
+  }, [initialFocusTipId, section, tips]);
 
   const [editProfile, setEditProfile] = useState<PartnerProfile | null>(null);
   const [chartYear, setChartYear] = useState(() => new Date().getFullYear());
@@ -437,6 +469,7 @@ export function PartnerAdminDashboard({
                           t.service_slug;
                         return (
                           <tr
+                            id={`partner-admin-tip-${t.id}`}
                             key={t.id}
                             className={`align-top transition-colors hover:bg-[#f8fbfc] ${serviceRowAccentBorderClass(t.service_slug)}`}
                           >
@@ -563,6 +596,7 @@ export function PartnerAdminDashboard({
                               : "—";
                           return (
                             <tr
+                              id={`partner-admin-tip-${t.id}`}
                               key={t.id}
                               className={`align-top transition-colors hover:bg-[#f8fbfc] ${serviceRowAccentBorderClass(t.service_slug)}`}
                             >
@@ -691,6 +725,7 @@ export function PartnerAdminDashboard({
                               : "—";
                           return (
                             <tr
+                              id={`partner-admin-tip-${t.id}`}
                               key={t.id}
                               className={`align-top transition-colors hover:bg-[#f8fbfc] ${serviceRowAccentBorderClass(t.service_slug)}`}
                             >
@@ -816,6 +851,7 @@ export function PartnerAdminDashboard({
                           t.service_slug;
                         return (
                           <tr
+                            id={`partner-admin-tip-${t.id}`}
                             key={t.id}
                             className={`align-top transition-colors hover:bg-[#f8fbfc] ${serviceRowAccentBorderClass(t.service_slug)}`}
                           >

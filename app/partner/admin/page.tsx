@@ -46,15 +46,26 @@ function parseBereich(v: string | undefined): PartnerAdminInitialBereich {
   return "auftraege";
 }
 
+const TIP_DEEP_LINK_ID_RE =
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+/** Query `tipp` für E-Mail-Deep-Link (UUID). Ungültige Werte ignorieren. */
+function parseFocusTipId(v: string | undefined): string | null {
+  const s = v?.trim();
+  if (!s || !TIP_DEEP_LINK_ID_RE.test(s)) return null;
+  return s;
+}
+
 export default async function PartnerAdminPage({
   searchParams,
 }: {
-  searchParams: Promise<{ bereich?: string }>;
+  searchParams: Promise<{ bereich?: string; tipp?: string }>;
 }) {
   noStore();
   await requireSystemAdmin();
-  const { bereich } = await searchParams;
+  const { bereich, tipp } = await searchParams;
   const initialBereich = parseBereich(bereich);
+  const initialFocusTipId = parseFocusTipId(tipp);
 
   const svc = createSupabaseServiceRoleClient();
 
@@ -169,6 +180,7 @@ export default async function PartnerAdminPage({
       authById={authById}
       payoutPeriods={payoutPeriods}
       initialBereich={initialBereich}
+      initialFocusTipId={initialFocusTipId}
     />
   );
 }

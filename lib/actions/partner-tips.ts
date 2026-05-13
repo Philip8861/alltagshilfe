@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { getPartnerSession } from "@/lib/partner/auth";
 import { insertPartnerTipSubmission } from "@/lib/partner/insert-partner-tip-submission";
+import { schedulePartnerTipStaffNotify } from "@/lib/partner/partner-tip-staff-notify";
 import { partnerTipSubmissionSchema } from "@/lib/validations/partner-tips";
 
 export type SubmitPartnerTipResult = { ok: true } | { ok: false; message: string };
@@ -22,6 +23,17 @@ export async function submitPartnerTipAction(raw: unknown): Promise<SubmitPartne
   try {
     const result = await insertPartnerTipSubmission(session.profile.id, parsed.data);
     if (!result.ok) return result;
+    const p = session.profile;
+    const partnerHint = [p.organization_name, p.display_name, p.partner_referral_code]
+      .map((s) => (typeof s === "string" ? s.trim() : ""))
+      .filter(Boolean)
+      .join(" · ");
+    schedulePartnerTipStaffNotify({
+      serviceSlug: parsed.data.service_slug,
+      tipId: result.tipId,
+      payload: parsed.data.payload as Record<string, unknown>,
+      partnerHint: partnerHint || undefined,
+    });
     revalidatePath("/partner/dashboard");
     revalidatePath("/partner/statistik");
     revalidatePath("/partner/admin");
