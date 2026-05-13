@@ -1,7 +1,11 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { calendarMonthBounds, calendarYearBounds } from "@/lib/site-analytics/month-bounds";
+import {
+  calendarDayBounds,
+  calendarMonthBounds,
+  calendarYearBounds,
+} from "@/lib/site-analytics/month-bounds";
 import { getSystemAdminSession } from "@/lib/partner/system-admin-session";
 import { createSupabaseServiceRoleClient } from "@/lib/supabase/service";
 
@@ -268,6 +272,23 @@ export async function resetHomepageSiteAnalyticsAction(): Promise<
 
 /* ───────────── Kontaktquellen-Statistik (anonyme Aggregate) ───────────── */
 
+/** Zeitraum der Kontakt-Auswertung: ein Tag, ein Monat oder ganzes Jahr (Kalenderjahr von `year`). */
+export type ContactStatsScope = "tag" | "monat" | "jahr";
+
+function contactStatsRange(
+  year: number,
+  month: number,
+  scope: ContactStatsScope,
+  /** Nur bei scope „tag“ relevant (1 … Tage im Monat). */
+  day: number,
+): { from: string; to: string } {
+  const y = Math.min(2100, Math.max(YEAR_RANGE_START, Math.floor(year)));
+  const m = Math.min(12, Math.max(1, Math.floor(month)));
+  if (scope === "tag") return calendarDayBounds(y, m, day);
+  if (scope === "monat") return calendarMonthBounds(y, m);
+  return calendarYearBounds(y);
+}
+
 export type ContactSourceStatsRow = {
   source: string;
   kind: string;
@@ -348,7 +369,9 @@ function orderKindsForDailyChart(kindSet: Set<string>): string[] {
 export async function fetchContactKindDailyStatsAction(
   year: number,
   month: number,
-  scope: "monat" | "jahr",
+  scope: ContactStatsScope,
+  /** Bei scope „tag“: Kalendertag (1–31, wird gekappt); sonst ignoriert. */
+  day: number = 1,
 ): Promise<
   | {
       ok: true;
@@ -364,7 +387,7 @@ export async function fetchContactKindDailyStatsAction(
 
   const y = Math.min(2100, Math.max(YEAR_RANGE_START, Math.floor(year)));
   const m = Math.min(12, Math.max(1, Math.floor(month)));
-  const { from, to } = scope === "monat" ? calendarMonthBounds(y, m) : calendarYearBounds(y);
+  const { from, to } = contactStatsRange(y, m, scope, day);
 
   const res = await svcRpc(svc, "admin_contact_kind_totals_by_day", {
     p_from: from,
@@ -440,7 +463,8 @@ function fillContactWeekdayGroups(raw: Map<number, { k: number; n: number; o: nu
 export async function fetchContactWeekdayGroupTotalsAction(
   year: number,
   month: number,
-  scope: "monat" | "jahr",
+  scope: ContactStatsScope,
+  day: number = 1,
 ): Promise<{ ok: true; weekdays: ContactWeekdayGroupRow[] } | { ok: false; message: string }> {
   if (!(await getSystemAdminSession())) return { ok: false, message: "Nicht angemeldet." };
   const svc = createSupabaseServiceRoleClient();
@@ -448,7 +472,7 @@ export async function fetchContactWeekdayGroupTotalsAction(
 
   const y = Math.min(2100, Math.max(YEAR_RANGE_START, Math.floor(year)));
   const m = Math.min(12, Math.max(1, Math.floor(month)));
-  const { from, to } = scope === "monat" ? calendarMonthBounds(y, m) : calendarYearBounds(y);
+  const { from, to } = contactStatsRange(y, m, scope, day);
 
   try {
     const res = await svcRpc(svc, "admin_contact_weekday_group_totals", {
@@ -476,7 +500,8 @@ export async function fetchContactWeekdayGroupTotalsAction(
 export async function fetchContactSourceStatsAction(
   year: number,
   month: number,
-  scope: "monat" | "jahr",
+  scope: ContactStatsScope,
+  day: number = 1,
 ): Promise<{ ok: true; data: ContactSourceStatsRow[] } | { ok: false; message: string }> {
   if (!(await getSystemAdminSession())) return { ok: false, message: "Nicht angemeldet." };
   const svc = createSupabaseServiceRoleClient();
@@ -484,7 +509,7 @@ export async function fetchContactSourceStatsAction(
 
   const y = Math.min(2100, Math.max(YEAR_RANGE_START, Math.floor(year)));
   const m = Math.min(12, Math.max(1, Math.floor(month)));
-  const { from, to } = scope === "monat" ? calendarMonthBounds(y, m) : calendarYearBounds(y);
+  const { from, to } = contactStatsRange(y, m, scope, day);
 
   const res = await svcRpc(svc, "admin_contact_sources_by_range", {
     p_from: from,

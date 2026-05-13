@@ -1,8 +1,11 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import {
+  Bar,
+  BarChart,
   CartesianGrid,
+  Cell,
   Legend,
   Line,
   LineChart,
@@ -11,11 +14,11 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import { fetchContactKindDailyStatsAction } from "@/lib/actions/admin-homepage-analytics";
+import { fetchContactKindDailyStatsAction, type ContactStatsScope } from "@/lib/actions/admin-homepage-analytics";
 import { CHART_AXIS_TICK, CHART_GRID } from "@/components/partner/partner-chart-theme";
 import { kindLabel, strokeForKind } from "@/components/partner/admin/contact-sources-admin-kind-labels";
 
-type Scope = "monat" | "jahr";
+type Scope = ContactStatsScope;
 
 type Props = {
   chartYear: number;
@@ -23,16 +26,24 @@ type Props = {
 
 export function AdminContactKanalTagesverlaufPanel({ chartYear }: Props) {
   const [month, setMonth] = useState(() => new Date().getMonth() + 1);
+  const [dayOfMonth, setDayOfMonth] = useState(() => new Date().getDate());
   const [scope, setScope] = useState<Scope>("jahr");
   const [dailyKinds, setDailyKinds] = useState<string[]>([]);
   const [dailySeries, setDailySeries] = useState<Record<string, string | number>[]>([]);
   const [dailyErr, setDailyErr] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
+  const daysInMonth = useMemo(() => new Date(chartYear, month, 0).getDate(), [chartYear, month]);
+  const dayClamped = Math.min(daysInMonth, Math.max(1, dayOfMonth));
+
+  useEffect(() => {
+    setDayOfMonth((d) => Math.min(daysInMonth, Math.max(1, d)));
+  }, [daysInMonth]);
+
   const load = useCallback(async () => {
     setLoading(true);
     setDailyErr(null);
-    const dailyRes = await fetchContactKindDailyStatsAction(chartYear, month, scope);
+    const dailyRes = await fetchContactKindDailyStatsAction(chartYear, month, scope, dayClamped);
     if (!dailyRes.ok) {
       setDailyErr(dailyRes.message);
       setDailyKinds([]);
@@ -43,19 +54,32 @@ export function AdminContactKanalTagesverlaufPanel({ chartYear }: Props) {
       setDailySeries(dailyRes.chartSeries);
     }
     setLoading(false);
-  }, [chartYear, month, scope]);
+  }, [chartYear, month, scope, dayClamped]);
 
   useEffect(() => {
     void load();
   }, [load]);
+
+  const tagChannelBars = useMemo(() => {
+    if (scope !== "tag" || dailySeries.length !== 1 || dailyKinds.length === 0) return [];
+    const row = dailySeries[0];
+    return dailyKinds.map((k) => ({
+      key: k,
+      label: kindLabel(k),
+      value: Number(row[k] ?? 0),
+    }));
+  }, [scope, dailySeries, dailyKinds]);
+
+  const showLineChart = !dailyErr && !loading && scope !== "tag" && dailyKinds.length > 0 && dailySeries.length > 0;
+  const showTagBarChart = !dailyErr && !loading && scope === "tag" && tagChannelBars.length > 0;
 
   return (
     <div className="space-y-6">
       <div>
         <h3 className="text-lg font-bold text-[#0F4F68]">Anfragen pro Kalendertag nach Kanal</h3>
         <p className="mt-1 text-sm text-neutral-600">
-          Liniendiagramm zu anonymen Eingangswegen (alle Formular-Typen im gewählten Monat oder Jahr).
-          Für Herkunftslisten und Wochentagsauswertung das andere Kontaktfeld öffnen.
+          Zeitraum wählbar als ein Tag, ein ganzer Monat oder Kalenderjahr {chartYear}. Für Herkunft und Wochentage das
+          andere Kontaktfeld öffnen.
         </p>
       </div>
 
@@ -63,6 +87,17 @@ export function AdminContactKanalTagesverlaufPanel({ chartYear }: Props) {
         <div>
           <span className="block text-xs font-bold uppercase text-[#0F4F68]/75">Zeitraum</span>
           <div className="mt-2 flex flex-wrap gap-2" role="group" aria-label="Zeitraum">
+            <button
+              type="button"
+              onClick={() => setScope("tag")}
+              className={`min-h-10 rounded-xl px-4 text-sm font-semibold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68]/30 ${
+                scope === "tag"
+                  ? "bg-[#0F4F68] text-white shadow-sm"
+                  : "border border-[#0F4F68]/25 bg-white text-[#0F4F68] hover:bg-[#F2F9FA]"
+              }`}
+            >
+              Ein Tag
+            </button>
             <button
               type="button"
               onClick={() => setScope("monat")}
@@ -83,12 +118,12 @@ export function AdminContactKanalTagesverlaufPanel({ chartYear }: Props) {
                   : "border border-[#0F4F68]/25 bg-white text-[#0F4F68] hover:bg-[#F2F9FA]"
               }`}
             >
-              Ganzes Jahr
+              Jahr
             </button>
           </div>
         </div>
 
-        {scope === "monat" ? (
+        {(scope === "tag" || scope === "monat") ? (
           <div>
             <label htmlFor="cs-kanal-month" className="block text-xs font-bold uppercase text-[#0F4F68]/75">
               Monat
@@ -108,6 +143,30 @@ export function AdminContactKanalTagesverlaufPanel({ chartYear }: Props) {
           </div>
         ) : null}
 
+        {scope === "tag" ? (
+          <div>
+            <label htmlFor="cs-kanal-day" className="block text-xs font-bold uppercase text-[#0F4F68]/75">
+              Kalendertag
+            </label>
+            <select
+              id="cs-kanal-day"
+              value={dayClamped}
+              onChange={(e) => setDayOfMonth(Number(e.target.value))}
+              className="mt-2 rounded-xl border border-neutral-200 bg-white px-3 py-2 text-sm font-semibold text-neutral-900 focus:border-[#0F4F68] focus:outline-none focus:ring-2 focus:ring-[#0F4F68]/20"
+            >
+              {Array.from({ length: daysInMonth }, (_, i) => i + 1).map((d) => (
+                <option key={d} value={d}>
+                  {new Date(chartYear, month - 1, d).toLocaleDateString("de-DE", {
+                    weekday: "short",
+                    day: "numeric",
+                    month: "short",
+                  })}
+                </option>
+              ))}
+            </select>
+          </div>
+        ) : null}
+
         <button
           type="button"
           onClick={() => void load()}
@@ -120,10 +179,14 @@ export function AdminContactKanalTagesverlaufPanel({ chartYear }: Props) {
       <section className="space-y-4" aria-labelledby="cs-daily-heading">
         <div>
           <h4 id="cs-daily-heading" className="text-base font-bold text-[#0F4F68]">
-            Diagramm: Anfragen pro Kalendertag und Kanal
+            {scope === "tag"
+              ? "Kanäle am gewählten Kalendertag"
+              : "Diagramm: Anfragen pro Kalendertag und Kanal"}
           </h4>
           <p className="mt-1 text-sm text-neutral-600">
-            Linien nach Eingangsweg (Formular erfolgreich, mit Herkunftsfrage). Muster über Wochentage erkennen.
+            {scope === "tag"
+              ? "Balken nach Eingangsweg an genau diesem Tag."
+              : "Linien nach Eingangsweg (Formular erfolgreich, mit Herkunftsfrage). Muster über Wochentage erkennen."}
           </p>
         </div>
         {loading ? <p className="text-sm text-neutral-500">Lade Tagesauswertung…</p> : null}
@@ -132,7 +195,7 @@ export function AdminContactKanalTagesverlaufPanel({ chartYear }: Props) {
             {dailyErr}
           </p>
         ) : null}
-        {!dailyErr && !loading && dailyKinds.length > 0 && dailySeries.length > 0 ? (
+        {!dailyErr && !loading && showLineChart ? (
           <div>
             <p className="text-sm text-neutral-600">
               Tage ohne Einträge stehen bei null – Vergleich ruhiger und aktiver Kalendertage.
@@ -190,7 +253,46 @@ export function AdminContactKanalTagesverlaufPanel({ chartYear }: Props) {
             </div>
           </div>
         ) : null}
-        {!dailyErr && !loading && (dailyKinds.length === 0 || dailySeries.length === 0) ? (
+        {!dailyErr && !loading && showTagBarChart ? (
+          <div
+            className="mt-4 h-[min(380px,55vh)] w-full min-h-[260px]"
+            role="img"
+            aria-label="Balkendiagramm Anfragen je Kanal an einem Kalendertag"
+          >
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={tagChannelBars} margin={{ top: 8, right: 12, left: 4, bottom: 60 }}>
+                <CartesianGrid stroke={CHART_GRID} strokeDasharray="4 4" vertical={false} />
+                <XAxis
+                  dataKey="label"
+                  tick={{ fill: CHART_AXIS_TICK, fontSize: 10 }}
+                  interval={0}
+                  angle={-30}
+                  textAnchor="end"
+                  height={72}
+                />
+                <YAxis allowDecimals={false} tick={{ fill: CHART_AXIS_TICK, fontSize: 11 }} width={40} />
+                <Tooltip
+                  formatter={(value: number | string, _name: unknown, item) => {
+                    const payload = item?.payload as { label?: string } | undefined;
+                    return [
+                      typeof value === "number"
+                        ? value.toLocaleString("de-DE")
+                        : Number(value || 0).toLocaleString("de-DE"),
+                      payload?.label ?? "Kanal",
+                    ];
+                  }}
+                  contentStyle={{ borderRadius: 12, border: `1px solid ${CHART_GRID}` }}
+                />
+                <Bar dataKey="value" name="Anfragen" radius={[6, 6, 0, 0]} maxBarSize={56}>
+                  {tagChannelBars.map((row) => (
+                    <Cell key={row.key} fill={strokeForKind(row.key)} />
+                  ))}
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        ) : null}
+        {!dailyErr && !loading && !showLineChart && !showTagBarChart ? (
           <p className="text-sm text-neutral-600">
             Im gewählten Zeitraum liegen keine Tages-/Kanaldaten vor (oder die Auswertung ist noch leer).
           </p>

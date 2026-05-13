@@ -11,3 +11,14 @@ export function calendarYearBounds(year: number): { from: string; to: string } {
   const y = Math.floor(year);
   return { from: `${y}-01-01`, to: `${y}-12-31` };
 }
+
+/** Ein Kalendertag als YYYY-MM-DD (from = to). `day` wird auf den Monatsumfang begrenzt. */
+export function calendarDayBounds(year: number, month1To12: number, day: number): { from: string; to: string } {
+  const y = Math.floor(year);
+  const m = Math.min(12, Math.max(1, Math.floor(month1To12)));
+  const pad = (n: number) => String(n).padStart(2, "0");
+  const lastDay = new Date(y, m, 0).getDate();
+  const d = Math.min(lastDay, Math.max(1, Math.floor(day)));
+  const iso = `${y}-${pad(m)}-${pad(d)}`;
+  return { from: iso, to: iso };
+}
