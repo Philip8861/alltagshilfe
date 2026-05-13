@@ -13,17 +13,27 @@ type Props = {
     error?: string;
     ensure_failed?: string;
     sync_reason?: string;
+    /** Interner Zielpfad nach Login (nur /partner/...). */
+    next?: string;
   }>;
 };
+
+function safePartnerInternalNext(raw: string | undefined): string | null {
+  if (!raw?.trim()) return null;
+  const u = raw.trim();
+  if (!u.startsWith("/partner/") || u.includes("//")) return null;
+  return u;
+}
 
 export default async function PartnerLoginPage({ searchParams }: Props) {
   const configured = isSupabaseConfigured();
   const session = configured ? await getPartnerSession() : null;
-  const { reason, error, ensure_failed, sync_reason } = await searchParams;
+  const { reason, error, ensure_failed, sync_reason, next: nextRaw } = await searchParams;
+  const next = safePartnerInternalNext(typeof nextRaw === "string" ? nextRaw : undefined);
   const ensureFailed = ensure_failed === "1";
 
   if (session?.profile) {
-    redirect("/partner/dashboard");
+    redirect(next ?? "/partner/dashboard");
   }
 
   return (
@@ -149,7 +159,7 @@ export default async function PartnerLoginPage({ searchParams }: Props) {
               </div>
             ) : null}
             <div className="partner-dash-animate partner-dash-delay-1 mt-6 text-left">
-              <PartnerLoginForm />
+              <PartnerLoginForm afterLoginHref={next ?? undefined} />
             </div>
           </>
         )}

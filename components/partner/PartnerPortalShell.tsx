@@ -9,6 +9,8 @@ import { PartnerTutorialOverlay } from "@/components/partner/PartnerTutorialOver
 
 type Props = {
   children: React.ReactNode;
+  /** Server: Teams nur bei Freischaltung „Betriebliche Pflegeberatung“. */
+  showBetrieblichTeamNav?: boolean;
   /** Server: Hinweis zum ersten Passwortwechsel anzeigen (ohne Session-Dismiss / ohne DB-Unterdrückung). */
   initialPasswordChangePrompt?: boolean;
   /** Server: Partner-Rundgang nach Login automatisch anbieten (solange nicht „Tutorial ausblenden“). */
@@ -16,6 +18,18 @@ type Props = {
 };
 
 const shell = "bg-[#F2F9FA]";
+
+function TeamNavIcon() {
+  return (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
+      <path
+        d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2M9 11a4 4 0 100-8 4 4 0 000 8zM23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
 
 function iconButtonClass(active: boolean) {
   return [
@@ -47,6 +61,7 @@ function SettingsGearIcon() {
 
 export function PartnerPortalShell({
   children,
+  showBetrieblichTeamNav = false,
   initialPasswordChangePrompt = false,
   tutorialAutoShow = true,
 }: Props) {
@@ -67,6 +82,7 @@ export function PartnerPortalShell({
   const dashActive = pathname === "/partner/dashboard" || pathname === "/partner";
   const statActive = pathname === "/partner/statistik" || pathname.startsWith("/partner/statistik/");
   const settingsActive = pathname === "/partner/einstellungen" || pathname.startsWith("/partner/einstellungen/");
+  const teamActive = pathname === "/partner/team" || pathname.startsWith("/partner/team/");
 
   return (
     <div className="flex min-h-screen flex-col bg-[#FAFBFC] md:flex-row">
@@ -86,6 +102,17 @@ export function PartnerPortalShell({
               <path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1h-5v-8H9v8H4a1 1 0 01-1-1V9.5z" strokeLinejoin="round" />
             </svg>
           </Link>
+          {showBetrieblichTeamNav ? (
+            <Link
+              href="/partner/team"
+              className={iconButtonClass(teamActive)}
+              aria-current={teamActive ? "page" : undefined}
+              title="Teams (betriebliche Pflegeberatung)"
+            >
+              <span className="sr-only">Teams — betriebliche Pflegeberatung</span>
+              <TeamNavIcon />
+            </Link>
+          ) : null}
           <Link
             href="/partner/statistik"
             data-tutorial="partner-nav-statistik"

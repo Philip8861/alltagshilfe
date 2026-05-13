@@ -16,12 +16,22 @@ type PartnerLoginFormProps = {
   disabled?: boolean;
   loginFieldLabel?: string;
   formClassName?: string;
+  /** Nach erfolgreicher Anmeldung (nur interne Pfade, z. B. Team-Einladung). Sonst Profil-Sync. */
+  afterLoginHref?: string;
 };
+
+function safePartnerPostLoginHref(raw: string | undefined): string | null {
+  if (!raw?.trim()) return null;
+  const u = raw.trim();
+  if (!u.startsWith("/partner/") || u.includes("//")) return null;
+  return u;
+}
 
 export function PartnerLoginForm({
   disabled,
   loginFieldLabel = "Anmeldename oder E-Mail",
   formClassName,
+  afterLoginHref,
 }: PartnerLoginFormProps) {
   const router = useRouter();
   const [pending, startTransition] = useTransition();
@@ -92,15 +102,17 @@ export function PartnerLoginForm({
               setMessage("Anmeldung fehlgeschlagen. Bitte Zugangsdaten prüfen.");
               return;
             }
+            const next = safePartnerPostLoginHref(afterLoginHref);
+            const go = next ?? "/partner/sync-profile";
             if (typeof window !== "undefined") {
               try {
                 window.sessionStorage.setItem(PARTNER_LAST_LOGIN_PASSWORD_FOR_CHANGE_KEY, parsed.data.password);
               } catch {
                 /* ignore */
               }
-              window.location.assign("/partner/sync-profile");
+              window.location.assign(go);
             } else {
-              router.push("/partner/sync-profile");
+              router.push(go);
             }
           } catch {
             setMessage("Anmeldung fehlgeschlagen. Bitte später erneut versuchen.");
