@@ -164,6 +164,13 @@ export function PartnerAdminDashboard({
   initialFocusTipId = null,
 }: Props) {
   const [section, setSection] = useState<AdminSection>(initialBereich);
+  const [auftraegeLeistungOpen, setAuftraegeLeistungOpen] = useState<Record<PartnerResponsibilitySlug, boolean>>(
+    () => Object.fromEntries(SERVICE_SLUG_ORDER.map((s) => [s, true])) as Record<PartnerResponsibilitySlug, boolean>,
+  );
+  const toggleAuftraegeLeistung = useCallback((slug: PartnerResponsibilitySlug) => {
+    setAuftraegeLeistungOpen((prev) => ({ ...prev, [slug]: !prev[slug] }));
+  }, []);
+
   useEffect(() => {
     setSection(initialBereich);
   }, [initialBereich]);
@@ -179,6 +186,13 @@ export function PartnerAdminDashboard({
     const id = initialFocusTipId?.trim();
     if (!id) return;
     const highlight = ["ring-2", "ring-[#0F4F68]", "ring-offset-2", "rounded-lg"];
+    const tip = tips.find((t) => t.id === id);
+    if (tip && inAdminAuftraegeQueue(tip)) {
+      const sl = tip.service_slug as PartnerResponsibilitySlug;
+      if (SERVICE_SLUG_ORDER.includes(sl)) {
+        setAuftraegeLeistungOpen((p) => ({ ...p, [sl]: true }));
+      }
+    }
     const timer = window.setTimeout(() => {
       const el = document.getElementById(`partner-admin-tip-${id}`);
       if (!el) return;
@@ -187,7 +201,7 @@ export function PartnerAdminDashboard({
       window.setTimeout(() => {
         el.classList.remove(...highlight);
       }, 4500);
-    }, 200);
+    }, 320);
     return () => clearTimeout(timer);
   }, [initialFocusTipId, section, tips]);
 
@@ -410,7 +424,9 @@ export function PartnerAdminDashboard({
               </h2>
               <p className="mt-2 text-sm text-neutral-600">
                 Tippgeber-Meldungen aus dem Partnerportal, <strong className="font-semibold text-neutral-800">nach den vier
-                Dienstleistungen getrennt.</strong> Spaltenköpfe sortieren innerhalb der jeweiligen Liste.
+                Dienstleistungen getrennt.</strong> Jede Leistung lässt sich über die Kopfzeile{" "}
+                <strong className="font-semibold text-neutral-800">auf- und zuklappen</strong>. Spaltenköpfe sortieren
+                innerhalb der jeweiligen Liste.
               </p>
               <div className="mt-6 space-y-12">
                 {auftraegeQueueTips.length === 0 ? (
@@ -420,44 +436,70 @@ export function PartnerAdminDashboard({
                 ) : (
                   auftraegeTipsByService.map(({ slug, label, tips: groupTips }) => {
                     const card = serviceAuftraegeAdminCardClasses(slug);
+                    const isOpen = auftraegeLeistungOpen[slug] ?? true;
+                    const panelId = `partner-admin-auftraege-panel-${slug}`;
                     return (
                       <div key={slug} className={`scroll-mt-4 overflow-hidden ${card.wrap}`}>
-                        <div
-                          className={`flex flex-col gap-4 px-4 py-4 sm:flex-row sm:items-stretch sm:justify-between sm:gap-6 sm:px-6 sm:py-5 ${card.header}`}
+                        <button
+                          type="button"
+                          className={`flex w-full flex-col gap-4 px-4 py-4 text-left transition hover:brightness-[0.99] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68]/35 focus-visible:ring-offset-2 sm:flex-row sm:items-stretch sm:justify-between sm:gap-6 sm:px-6 sm:py-5 ${card.header}`}
+                          onClick={() => toggleAuftraegeLeistung(slug)}
+                          aria-expanded={isOpen}
+                          aria-controls={panelId}
                         >
                           <div className="flex min-w-0 flex-1 items-start gap-4">
                             <span
                               className={`mt-1 h-16 w-2.5 shrink-0 rounded-full sm:h-[4.25rem] sm:w-3 ${card.stripe}`}
                               aria-hidden
                             />
-                            <div className="min-w-0 pt-0.5">
+                            <div className="min-w-0 flex-1 pt-0.5">
                               <p
                                 className={`text-[0.7rem] font-bold uppercase tracking-[0.14em] sm:text-xs ${card.kicker}`}
                               >
                                 Dienstleistung
                               </p>
                               <h3
-                                className={`mt-1 text-balance text-xl font-extrabold leading-snug tracking-tight sm:text-2xl ${card.title}`}
+                                className={`mt-1 text-balance text-xl font-bold leading-snug tracking-tight sm:text-2xl ${card.title}`}
                               >
                                 {label}
                               </h3>
                             </div>
                           </div>
-                          <div
-                            className={`flex shrink-0 flex-col items-center justify-center self-stretch sm:self-auto ${card.counter}`}
-                          >
-                            <span className={`text-3xl font-extrabold tabular-nums leading-none sm:text-4xl ${card.title}`}>
-                              {groupTips.length}
-                            </span>
+                          <div className="flex flex-shrink-0 items-center justify-end gap-3 sm:justify-between sm:gap-4">
                             <span
-                              className={`mt-1.5 text-[0.7rem] font-bold uppercase tracking-[0.1em] ${card.counterLabel}`}
+                              className={`inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-[#0F4F68]/15 bg-white/90 text-[#0F4F68] shadow-sm transition-transform duration-200 motion-reduce:transition-none ${
+                                isOpen ? "rotate-180" : ""
+                              }`}
+                              aria-hidden
                             >
-                              {groupTips.length === 1 ? "Eintrag" : "Einträge"}
+                              <svg className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden>
+                                <path
+                                  fillRule="evenodd"
+                                  d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"
+                                  clipRule="evenodd"
+                                />
+                              </svg>
                             </span>
+                            <div
+                              className={`flex min-w-0 flex-col items-center justify-center self-stretch sm:self-auto ${card.counter}`}
+                            >
+                              <span
+                                className={`text-3xl font-bold tabular-nums leading-none sm:text-4xl ${card.title}`}
+                              >
+                                {groupTips.length}
+                              </span>
+                              <span
+                                className={`mt-1.5 text-[0.7rem] font-bold uppercase tracking-[0.1em] ${card.counterLabel}`}
+                              >
+                                {groupTips.length === 1 ? "Eintrag" : "Einträge"}
+                              </span>
+                            </div>
                           </div>
-                        </div>
-                        <div className="p-2 pt-0 sm:p-4 sm:pt-0">
-                          <div className="overflow-x-auto rounded-xl border border-white/60 bg-white/95 shadow-inner ring-1 ring-black/[0.06]">
+                        </button>
+                        {isOpen ? (
+                          <div id={panelId} role="region" aria-label={label}>
+                            <div className="p-2 pt-0 sm:p-4 sm:pt-0">
+                              <div className="overflow-x-auto rounded-xl border border-white/60 bg-white/95 shadow-inner ring-1 ring-black/[0.06]">
                             <table className="min-w-[840px] w-full text-left text-sm">
                               <thead className={`text-xs font-semibold ${card.thead}`}>
                                 <tr>
@@ -542,8 +584,10 @@ export function PartnerAdminDashboard({
                                 )}
                               </tbody>
                             </table>
+                              </div>
+                            </div>
                           </div>
-                        </div>
+                        ) : null}
                       </div>
                     );
                   })
