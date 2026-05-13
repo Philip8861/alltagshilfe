@@ -14,6 +14,19 @@ const TIP_STAFF_RECIPIENTS: Record<PartnerTipSubmissionInput["service_slug"], re
   pflegeberatung: ["valentin.maucher@alltagshilfe-sued.de"],
 };
 
+export type PartnerTipStaffServiceSlug = keyof typeof TIP_STAFF_RECIPIENTS;
+
+export function isPartnerTipStaffMailSlug(s: string): s is PartnerTipStaffServiceSlug {
+  return Object.prototype.hasOwnProperty.call(TIP_STAFF_RECIPIENTS, s);
+}
+
+export type PartnerTipStaffNotifyBase = {
+  serviceSlug: PartnerTipStaffServiceSlug;
+  tipId: string;
+  payloadSummary: string;
+  partnerHint?: string;
+};
+
 export function buildPartnerAdminTipDeepLink(tipId: string): string {
   const base = siteConfig.baseUrl.replace(/\/$/, "");
   const id = tipId.trim();
@@ -22,23 +35,17 @@ export function buildPartnerAdminTipDeepLink(tipId: string): string {
 
 /**
  * Sendet interne Info-Mail an die zuständige Adresse. Best effort (Fehler werden nur geloggt).
+ * @returns ob SMTP-Versand erfolgreich war
  */
-export async function notifyStaffOfNewPartnerTip(input: {
-  serviceSlug: PartnerTipSubmissionInput["service_slug"];
-  tipId: string;
-  /** Eine Zeile Kurzinfo wie in der Adminliste. */
-  payloadSummary: string;
-  /** z. B. Partner-Name oder Empfehlungscode. */
-  partnerHint?: string;
-}): Promise<void> {
+export async function notifyStaffOfNewPartnerTip(input: PartnerTipStaffNotifyBase): Promise<boolean> {
   const recipients = TIP_STAFF_RECIPIENTS[input.serviceSlug];
   if (!recipients?.length) {
     console.warn("[partner-tip-notify] Kein Empfänger für service_slug:", input.serviceSlug);
-    return;
+    return false;
   }
 
   const tipId = input.tipId.trim();
-  if (!tipId) return;
+  if (!tipId) return false;
 
   const leistung =
     PARTNER_RESPONSIBILITY_LABELS[input.serviceSlug as PartnerResponsibilitySlug] ?? input.serviceSlug;
@@ -48,7 +55,6 @@ export async function notifyStaffOfNewPartnerTip(input: {
   const rows: EmailDetailRow[] = [
     { label: "Dienstleistung", value: leistung },
     { label: "Kurzinfo", value: input.payloadSummary.trim() || "—" },
-    { label: "Eintrags-ID", value: tipId },
   ];
   if (input.partnerHint?.trim()) {
     rows.push({ label: "Partner / Vermittlung", value: input.partnerHint.trim() });
@@ -89,6 +95,7 @@ export async function notifyStaffOfNewPartnerTip(input: {
     detailText,
     ctaHref: actionUrl,
     ctaLabel: "Status bearbeiten",
+    ctaButtonVariant: "accent",
   });
 
   const mailed = await sendInternalMail({
@@ -101,6 +108,75 @@ export async function notifyStaffOfNewPartnerTip(input: {
   if (!mailed.ok) {
     console.warn(`[partner-tip-notify] E-Mail konnte nicht versendet werden: ${mailed.code}`);
   }
+  return mailed.ok;
+}
+
+/**
+ * Erinnerung: Tipp ist weiterhin „In Bearbeitung“ (Cron, alle 72 h).
+ */
+export async function notifyStaffOfInBearbeitungPartnerTipReminder(input: PartnerTipStaffNotifyBase): Promise<boolean> {
+  const recipients = TIP_STAFF_RECIPIENTS[input.serviceSlug];
+  if (!recipients?.length) {
+    console.warn("[partner-tip-reminder] Kein Empfänger für service_slug:", input.serviceSlug);
+    return false;
+  }
+
+  const tipId = input.tipId.trim();
+  if (!tipId) return false;
+
+  const leistung =
+    PARTNER_RESPONSIBILITY_LABELS[input.serviceSlug as PartnerResponsibilitySlug] ?? input.serviceSlug;
+  const actionUrl = buildPartnerAdminTipDeepLink(tipId);
+  const statusLabel = PARTNER_TIP_STATUS_LABELS.in_bearbeitung;
+
+  const rows: EmailDetailRow[] = [
+    { label: "Dienstleistung", value: leistung },
+    { label: "Kurzinfo", value: input.payloadSummary.trim() || "—" },
+  ];
+  if (input.partnerHint?.trim()) {
+    rows.push({ label: "Partner / Vermittlung", value: input.partnerHint.trim() });
+  }
+
+  const detailText = [
+    `Dieser Partner-Tipp steht seit mindestens drei Tagen weiterhin auf „${statusLabel}“.`,
+    "Bitte prüfen Sie den Vorgang in der Partner-Administration und aktualisieren Sie den Status, sobald möglich – der Partner sieht ihn im eigenen Dashboard.",
+  ].join("\n");
+
+  const subject = `Erinnerung Partner-Tipp · ${leistung}`;
+
+  const text = [
+    subject,
+    "",
+    ...rows.map((r) => `${r.label}: ${r.value}`),
+    "",
+    detailText,
+    "",
+    "Status bearbeiten:",
+    actionUrl,
+  ].join("\n");
+
+  const html = buildBrandedNotificationHtml({
+    kindBadge: "Partner-Tipp",
+    headline: "Erinnerung: Tipp noch in Bearbeitung",
+    rows,
+    detailTitle: "Handlungsbedarf",
+    detailText,
+    ctaHref: actionUrl,
+    ctaLabel: "Status bearbeiten",
+    ctaButtonVariant: "accent",
+  });
+
+  const mailed = await sendInternalMail({
+    kind: "contact",
+    toOverride: [...recipients],
+    subject,
+    text,
+    html,
+  });
+  if (!mailed.ok) {
+    console.warn(`[partner-tip-reminder] E-Mail konnte nicht versendet werden: ${mailed.code}`);
+  }
+  return mailed.ok;
 }
 
 /**

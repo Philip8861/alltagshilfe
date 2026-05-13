@@ -4,7 +4,9 @@ import { siteConfig } from "@/config/site";
 const C = {
   primary: "#0F4F68",
   primaryDark: "#0c3d52",
+  /** Markenfarbe Orange (Buttons, Akzente) – Border etwas dunkler für E-Mail-Kontrast. */
   accent: "#F78F2E",
+  accentDark: "#c86a1a",
   pageBg: "#E8F2F5",
   cardBg: "#ffffff",
   muted: "#5c6b73",
@@ -216,6 +218,8 @@ export function buildBrandedNotificationHtml(options: {
   /** Optionaler Call-to-Action-Button unter dem Detailblock. */
   ctaHref?: string;
   ctaLabel?: string;
+  /** „accent“ = Orange (Marke), „brand“ = Petrol (Standard). */
+  ctaButtonVariant?: "brand" | "accent";
 }): string {
   const { kindBadge, headline, rows, detailTitle, detailText } = options;
 
@@ -258,13 +262,16 @@ export function buildBrandedNotificationHtml(options: {
   if (ctaHrefRaw && ctaLabelRaw) {
     const hrefAttr = escapeEmailHrefAttr(ctaHrefRaw);
     const escLabel = escapeHtml(ctaLabelRaw);
+    const variant = options.ctaButtonVariant === "accent" ? "accent" : "brand";
+    const ctaBg = variant === "accent" ? C.accent : C.primary;
+    const ctaBorder = variant === "accent" ? C.accentDark : C.primaryDark;
     ctaSection = `
         <tr>
           <td style="padding:8px 20px 26px 20px;">
             <table role="presentation" cellpadding="0" cellspacing="0" border="0">
               <tr>
-                <td style="border-radius:14px;background:${C.primary};">
-                  <a href="${hrefAttr}" style="display:inline-block;font-family:${FONT};font-size:16px;font-weight:700;line-height:1.2;color:#ffffff;text-decoration:none;padding:16px 28px;border-radius:14px;background:${C.primary};border:1px solid ${C.primaryDark};">
+                <td style="border-radius:14px;background:${ctaBg};">
+                  <a href="${hrefAttr}" style="display:inline-block;font-family:${FONT};font-size:16px;font-weight:700;line-height:1.2;color:#ffffff;text-decoration:none;padding:16px 28px;border-radius:14px;background:${ctaBg};border:1px solid ${ctaBorder};">
                     ${escLabel}
                   </a>
                 </td>

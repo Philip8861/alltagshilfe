@@ -3,6 +3,10 @@
     {
       "path": "/api/cron/partner-payout-settle",
       "schedule": "5 0 1 * *"
+    },
+    {
+      "path": "/api/cron/partner-tip-in-bearbeitung-reminders",
+      "schedule": "30 6 * * *"
     }
   ]
 }

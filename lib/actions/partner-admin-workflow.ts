@@ -132,12 +132,17 @@ export async function updatePartnerTipStatusAction(
     payloadFull.archived_at = null;
   }
 
+  if (newStatus !== "in_bearbeitung") {
+    payloadFull.last_in_bearbeitung_staff_reminder_at = null;
+  }
+
   let { error } = await svc.from("partner_tip_submissions").update(payloadFull).eq("id", tipId);
 
   if (error && isSupabaseMissingColumnError(error)) {
     const retryPayload: Record<string, unknown> = { ...payloadFull };
     delete retryPayload.paid_amount_eur;
     delete retryPayload.former_active_company_at;
+    delete retryPayload.last_in_bearbeitung_staff_reminder_at;
     const retry = await svc.from("partner_tip_submissions").update(retryPayload).eq("id", tipId);
     error = retry.error;
     if (!error) {
