@@ -32,9 +32,10 @@ import {
   CHART_TEAL,
   CHART_VIOLET,
 } from "@/components/partner/partner-chart-theme";
-import { PartnerExpandableStatSection } from "@/components/partner/PartnerExpandableStatSection";
+import { HomepageStatTileButton } from "@/components/partner/admin/HomepageStatTileButton";
 
 type Scope = "monat" | "jahr";
+type ContactSourcesTileId = "dailyChart" | "tables";
 
 const KARRIERE_PAGE_SOURCE_KINDS = ["karriere", "karriere-form", "karriere-wizard"] as const;
 
@@ -74,6 +75,7 @@ type Props = {
 };
 
 export function AdminContactSourcesPanel({ chartYear }: Props) {
+  const [openTile, setOpenTile] = useState<ContactSourcesTileId>("tables");
   const [month, setMonth] = useState(() => new Date().getMonth() + 1);
   const [scope, setScope] = useState<Scope>("jahr");
   const [rows, setRows] = useState<ContactSourceStatsRow[]>([]);
@@ -220,7 +222,7 @@ export function AdminContactSourcesPanel({ chartYear }: Props) {
           Aggregate gespeichert (kein Personenbezug).
         </p>
         <p className="mt-2 text-sm text-[#0F4F68]/85">
-          Tippen Sie auf einen der Bausteine unten – die Detailansicht klappt auf.
+          Wählen Sie eine der großen Kacheln – die ausführliche Auswertung erscheint darunter.
         </p>
       </div>
 
@@ -320,103 +322,144 @@ export function AdminContactSourcesPanel({ chartYear }: Props) {
         </p>
       ) : null}
 
-      <div className="space-y-4">
-        <PartnerExpandableStatSection
-          title="Diagramm: Anfragen pro Kalendertag und Kanal"
-          subtitle="Linien nach Eingangsweg (Formular erfolgreich, mit Herkunftsfrage). Muster über Wochentage erkennen."
-          badge={
-            !loading && dailyKinds.length > 0 ? `${dailyKinds.length} Linien` : undefined
-          }
-        >
-          {loading ? <p className="text-sm text-neutral-500">Lade Tagesauswertung…</p> : null}
-          {dailyErr ? (
-            <p className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-950">
-              {dailyErr}
-            </p>
-          ) : null}
-          {!dailyErr && !loading && dailyKinds.length > 0 && dailySeries.length > 0 ? (
-            <div>
-              <p className="text-sm text-neutral-600">
-                Tage ohne Einträge stehen bei null – Vergleich ruhiger und aktiver Kalendertage.
-              </p>
-              <div
-                className="mt-4 h-[min(380px,55vh)] w-full min-h-[260px]"
-                role="img"
-                aria-label="Liniendiagramm Anfragen pro Tag nach Kanal"
-              >
-                <ResponsiveContainer width="100%" height="100%">
-                  <LineChart data={dailySeries} margin={{ top: 8, right: 8, left: 4, bottom: 4 }}>
-                    <CartesianGrid stroke={CHART_GRID} strokeDasharray="4 4" />
-                    <XAxis dataKey="label" tick={{ fill: CHART_AXIS_TICK, fontSize: 10 }} interval="preserveStartEnd" />
-                    <YAxis allowDecimals={false} tick={{ fill: CHART_AXIS_TICK, fontSize: 11 }} width={36} />
-                    <Tooltip
-                      formatter={(value: number | string, name: string) => [
-                        typeof value === "number"
-                          ? value.toLocaleString("de-DE")
-                          : Number(value || 0).toLocaleString("de-DE"),
-                        kindLabel(name),
-                      ]}
-                      labelFormatter={(_, items) => {
-                        const datum = items?.[0]?.payload as { day?: string } | undefined;
-                        const iso = datum?.day;
-                        if (iso && /^\d{4}-\d{2}-\d{2}$/.test(iso))
-                          return new Date(`${iso}T12:00:00`).toLocaleDateString("de-DE", {
-                            weekday: "long",
-                            day: "numeric",
-                            month: "long",
-                            year: "numeric",
-                          });
-                        return "";
-                      }}
-                      contentStyle={{ borderRadius: 12, border: `1px solid ${CHART_GRID}` }}
-                    />
-                    <Legend
-                      formatter={(value) => <span className="text-xs text-neutral-700">{kindLabel(value)}</span>}
-                      wrapperStyle={{ paddingTop: 12 }}
-                      className="max-h-[4.5rem] overflow-y-auto text-xs"
-                    />
-                    {dailyKinds.map((k) => (
-                      <Line
-                        key={k}
-                        type="monotone"
-                        dataKey={k}
-                        name={k}
-                        stroke={strokeForKind(k)}
-                        strokeWidth={2}
-                        dot={false}
-                        activeDot={{ r: 4 }}
-                      />
-                    ))}
-                  </LineChart>
-                </ResponsiveContainer>
-              </div>
-            </div>
-          ) : null}
-          {!dailyErr && !loading && (dailyKinds.length === 0 || dailySeries.length === 0) ? (
-            <p className="text-sm text-neutral-600">
-              Im gewählten Zeitraum liegen keine Tages-/Kanaldaten vor (oder die Auswertung ist noch leer).
-            </p>
-          ) : null}
-        </PartnerExpandableStatSection>
+      <p className="text-sm text-neutral-600">
+        Monat, Jahr und Aktualisieren gelten für <strong>beide</strong> Kacheln gemeinsam.
+      </p>
 
-        <PartnerExpandableStatSection
-          title="Listen & Kreuztabellen (Herkunft und Formular)"
-          subtitle="Quellenverteilung, Pflegebox, Karriere und Aufschlüsselung nach Kanal."
-          badge={!loading && totals.gesamt > 0 ? `${totals.gesamt.toLocaleString("de-DE")}` : undefined}
-          defaultOpen
-        >
-          {loading ? (
-            <p className="text-sm text-neutral-500">Lade Quellen-Statistik…</p>
-          ) : err ? (
-            <p className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-950">
-              {err}
-            </p>
-          ) : totals.gesamt === 0 ? (
-            <p className="rounded-xl border border-neutral-200 bg-neutral-50 px-4 py-3 text-sm text-neutral-700">
-              Im gewählten Zeitraum sind noch keine Anfragen mit Quellenangabe eingegangen.
-            </p>
-          ) : (
-            <>
+      <div className="grid gap-4 sm:grid-cols-2">
+        <HomepageStatTileButton
+          title="Tagesdiagramm"
+          subtitle="Anfragen pro Kalendertag und Kanal (Linien nach Eingangsweg)."
+          metricPrimary={
+            loading ? "…" : dailyErr ? "—" : dailyKinds.length > 0 ? String(dailyKinds.length) : "0"
+          }
+          metricHint="aktive Kanäle im Diagramm"
+          selected={openTile === "dailyChart"}
+          onClick={() => setOpenTile("dailyChart")}
+        />
+        <HomepageStatTileButton
+          title="Listen & Kreuztabellen"
+          subtitle="Quellenverteilung, Pflegebox, Karriere und Kanäle als Tabelle."
+          metricPrimary={
+            loading ? "…" : err ? "—" : totals.gesamt.toLocaleString("de-DE")
+          }
+          metricHint="Anfragen mit Herkunftsangabe · gewählter Zeitraum"
+          selected={openTile === "tables"}
+          onClick={() => setOpenTile("tables")}
+        />
+      </div>
+
+      <div
+        className="rounded-2xl border-2 border-[#0F4F68]/14 bg-white p-4 shadow-[0_8px_30px_-18px_rgba(15,79,104,0.28)] sm:p-6"
+        role="region"
+        aria-label={
+          openTile === "dailyChart"
+            ? "Detail: Tagesdiagramm Kontakt-Kanäle"
+            : "Detail: Listen und Kreuztabellen Herkunft"
+        }
+      >
+        {openTile === "dailyChart" ? (
+          <section className="space-y-4" aria-labelledby="cs-daily-heading">
+            <div>
+              <h4 id="cs-daily-heading" className="text-base font-bold text-[#0F4F68]">
+                Diagramm: Anfragen pro Kalendertag und Kanal
+              </h4>
+              <p className="mt-1 text-sm text-neutral-600">
+                Linien nach Eingangsweg (Formular erfolgreich, mit Herkunftsfrage). Muster über Wochentage erkennen.
+              </p>
+            </div>
+            {loading ? <p className="text-sm text-neutral-500">Lade Tagesauswertung…</p> : null}
+            {dailyErr ? (
+              <p className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-950">
+                {dailyErr}
+              </p>
+            ) : null}
+            {!dailyErr && !loading && dailyKinds.length > 0 && dailySeries.length > 0 ? (
+              <div>
+                <p className="text-sm text-neutral-600">
+                  Tage ohne Einträge stehen bei null – Vergleich ruhiger und aktiver Kalendertage.
+                </p>
+                <div
+                  className="mt-4 h-[min(380px,55vh)] w-full min-h-[260px]"
+                  role="img"
+                  aria-label="Liniendiagramm Anfragen pro Tag nach Kanal"
+                >
+                  <ResponsiveContainer width="100%" height="100%">
+                    <LineChart data={dailySeries} margin={{ top: 8, right: 8, left: 4, bottom: 4 }}>
+                      <CartesianGrid stroke={CHART_GRID} strokeDasharray="4 4" />
+                      <XAxis dataKey="label" tick={{ fill: CHART_AXIS_TICK, fontSize: 10 }} interval="preserveStartEnd" />
+                      <YAxis allowDecimals={false} tick={{ fill: CHART_AXIS_TICK, fontSize: 11 }} width={36} />
+                      <Tooltip
+                        formatter={(value: number | string, name: string) => [
+                          typeof value === "number"
+                            ? value.toLocaleString("de-DE")
+                            : Number(value || 0).toLocaleString("de-DE"),
+                          kindLabel(name),
+                        ]}
+                        labelFormatter={(_, items) => {
+                          const datum = items?.[0]?.payload as { day?: string } | undefined;
+                          const iso = datum?.day;
+                          if (iso && /^\d{4}-\d{2}-\d{2}$/.test(iso))
+                            return new Date(`${iso}T12:00:00`).toLocaleDateString("de-DE", {
+                              weekday: "long",
+                              day: "numeric",
+                              month: "long",
+                              year: "numeric",
+                            });
+                          return "";
+                        }}
+                        contentStyle={{ borderRadius: 12, border: `1px solid ${CHART_GRID}` }}
+                      />
+                      <Legend
+                        formatter={(value) => <span className="text-xs text-neutral-700">{kindLabel(value)}</span>}
+                        wrapperStyle={{ paddingTop: 12 }}
+                        className="max-h-[4.5rem] overflow-y-auto text-xs"
+                      />
+                      {dailyKinds.map((k) => (
+                        <Line
+                          key={k}
+                          type="monotone"
+                          dataKey={k}
+                          name={k}
+                          stroke={strokeForKind(k)}
+                          strokeWidth={2}
+                          dot={false}
+                          activeDot={{ r: 4 }}
+                        />
+                      ))}
+                    </LineChart>
+                  </ResponsiveContainer>
+                </div>
+              </div>
+            ) : null}
+            {!dailyErr && !loading && (dailyKinds.length === 0 || dailySeries.length === 0) ? (
+              <p className="text-sm text-neutral-600">
+                Im gewählten Zeitraum liegen keine Tages-/Kanaldaten vor (oder die Auswertung ist noch leer).
+              </p>
+            ) : null}
+          </section>
+        ) : null}
+
+        {openTile === "tables" ? (
+          <section className="space-y-6" aria-labelledby="cs-tables-heading">
+            <div>
+              <h4 id="cs-tables-heading" className="text-base font-bold text-[#0F4F68]">
+                Listen & Kreuztabellen (Herkunft und Formular)
+              </h4>
+              <p className="mt-1 text-sm text-neutral-600">
+                Quellenverteilung, Pflegebox, Karriere und Aufschlüsselung nach Kanal.
+              </p>
+            </div>
+            {loading ? (
+              <p className="text-sm text-neutral-500">Lade Quellen-Statistik…</p>
+            ) : err ? (
+              <p className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-950">{err}</p>
+            ) : totals.gesamt === 0 ? (
+              <p className="rounded-xl border border-neutral-200 bg-neutral-50 px-4 py-3 text-sm text-neutral-700">
+                Im gewählten Zeitraum sind noch keine Anfragen mit Quellenangabe eingegangen.
+              </p>
+            ) : (
+              <>
               <p className="text-sm text-neutral-700">
                 Anfragen gesamt:{" "}
                 <strong className="tabular-nums text-[#0F4F68]">
@@ -630,7 +673,8 @@ export function AdminContactSourcesPanel({ chartYear }: Props) {
               ) : null}
             </>
           )}
-        </PartnerExpandableStatSection>
+          </section>
+        ) : null}
       </div>
     </div>
   );

@@ -1025,7 +1025,7 @@ export function PartnerAdminDashboard({
                 <p className="mt-2 text-sm text-neutral-600">
                   {statistikTeil === "partner"
                     ? "Überblick: Kennzahlen, Verläufe und Partnerliste. Tippen Sie auf einen Bereich zum Aufklappen."
-                    : "Seitenaufrufe und Kontakt-Kanäle in Bausteinen – Datum und Jahr weiter oben."}
+                    : "Seitenaufrufe und Kontakt-Herkunft: große Kacheln zur Auswahl, Details erscheinen darunter."}
                 </p>
               </div>
 
@@ -1256,7 +1256,8 @@ export function PartnerAdminDashboard({
               ) : (
                 <div className="space-y-4">
                   <p className="text-sm text-neutral-600">
-                    Öffentliche Website: Zugriffe und Kontakt-Kanäle. Baustein antippen, um die Auswertung zu öffnen.
+                    Zuerst Aufrufstatistik, darunter Kontakt-Quellen. Jeweils Kachel anklicken, um die Grafiken und
+                    Tabellen zu sehen (Jahr oben gilt für Homepage-Auswertungen).
                   </p>
                   <AdminHomepageTrafficPanel chartYear={chartYear} />
                   <AdminContactSourcesPanel chartYear={chartYear} />

@@ -114,16 +114,8 @@ function AdminNavIcon({ kind }: { kind: (typeof BEREICHE)[number]["id"] }) {
       );
     case "anlegen":
       return (
-        <svg {...common} strokeLinejoin="round">
-          {/* Einzelpartner / Profilkontur */}
-          <circle cx="8.75" cy="7.75" r="3.15" strokeLinecap="round" />
-          <path
-            d="M3.5 20.5v-.35c0-2.9 2.35-5.25 5.28-5.25h1.94c2.93 0 5.28 2.35 5.28 5.25v.35"
-            strokeLinecap="round"
-          />
-          {/* Badge: neu hinzufügen */}
-          <circle cx="17.25" cy="15.6" r="4.95" strokeLinecap="round" />
-          <path d="M17.25 12.95v5.3M14.55 15.6h5.4" strokeLinecap="round" />
+        <svg {...common}>
+          <path d="M12 5v14M5 12h14" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
       );
     case "liste":
@@ -134,10 +126,9 @@ function AdminNavIcon({ kind }: { kind: (typeof BEREICHE)[number]["id"] }) {
       );
     case "auszahlen":
       return (
-        <svg {...common}>
-          <rect x="2" y="7" width="20" height="10" rx="2" strokeLinejoin="round" />
-          <path d="M12 7v10M8 12h8" strokeLinecap="round" />
-        </svg>
+        <span className="text-[1.2rem] font-bold leading-none text-current" aria-hidden>
+          €
+        </span>
       );
     case "statistik":
       return (
