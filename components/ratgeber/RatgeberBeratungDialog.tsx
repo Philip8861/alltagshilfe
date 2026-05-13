@@ -382,6 +382,7 @@ export function RatgeberBeratungProvider({
                           topicHidden
                           hiddenTopic={contactTopic}
                           initialMessage={initialMessage}
+                          statsChannel="ratgeber"
                           standortContactProof={standortContactProofsBySlug[finalerStandort.pageSlug]}
                           routingPlz={plzNorm.length === 5 ? plzNorm : undefined}
                         />

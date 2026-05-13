@@ -18,9 +18,17 @@ import {
   sendInternalMail,
 } from "@/lib/email/internal-smtp";
 import { getContactSourceLabel } from "@/lib/contact-source";
-import { recordContactSource } from "@/lib/contact-source-tracking";
+import { recordContactSource, type ContactSourceKind } from "@/lib/contact-source-tracking";
 
 export type ContactResult = { success: boolean; error?: string };
+
+/** Nur explizit erlaubtes Marking für Statistik-Kanal; alles andere ignorieren (kein Vertrauen ins Client-Feld). */
+function parseContactStatsKindFromForm(formData: FormData): "ratgeber" | undefined {
+  const raw = formData.get("contactStatsChannel");
+  if (typeof raw !== "string") return undefined;
+  const t = raw.trim();
+  return t === "ratgeber" ? "ratgeber" : undefined;
+}
 
 /** Zentrale Adresse, wenn weder NOTIFICATION_TO_CONTACT noch NOTIFICATION_TO gesetzt sind. */
 const DEFAULT_CONTACT_INBOX = "info@alltagshilfe-sued.de";
@@ -229,7 +237,9 @@ export async function submitContact(formData: FormData): Promise<ContactResult> 
   }
 
   /* Anonyme Aggregat-Statistik (kein Personenbezug). */
-  await recordContactSource(data.contactSource, "contact");
+  const statsKind: ContactSourceKind =
+    parseContactStatsKindFromForm(formData) === "ratgeber" ? "ratgeber" : "contact";
+  await recordContactSource(data.contactSource, statsKind);
 
   redirect("/kontakt/danke");
 }

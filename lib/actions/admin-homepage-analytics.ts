@@ -274,6 +274,120 @@ export type ContactSourceStatsRow = {
   view_count: number;
 };
 
+export type ContactKindDailyRow = { day: string; kind: string; view_count: number };
+
+/** Bekannte Kanäle in sinnvoller Reihenfolge für Diagramm und Legende (weitere alphabetisch dahinter). */
+const CONTACT_KIND_DAILY_ORDER = [
+  "contact",
+  "ratgeber",
+  "hilfefinder",
+  "pflegebox",
+  "betrieblich-angebot",
+  "karriere",
+  "karriere-form",
+  "karriere-wizard",
+] as const;
+
+function parseContactKindDailyRows(data: unknown): ContactKindDailyRow[] {
+  if (!Array.isArray(data)) return [];
+  return data.map((r) => {
+    const row = r as Record<string, unknown>;
+    const d = row.day;
+    let day =
+      typeof d === "string"
+        ? d.slice(0, 10)
+        : d instanceof Date
+          ? d.toISOString().slice(0, 10)
+          : String(d ?? "").slice(0, 10);
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(day)) day = "";
+    return {
+      day,
+      kind: String(row.kind ?? "contact"),
+      view_count: Number(row.view_count ?? 0),
+    };
+  }).filter((r) => r.day.length > 0);
+}
+
+/** Pro Kalendertag eine flache Datenzeile (Chart: dataKey je kind). */
+function buildContactKindDailyChartSeries(
+  from: string,
+  to: string,
+  rows: ContactKindDailyRow[],
+  kindsOrdered: string[],
+): Record<string, string | number>[] {
+  const byDayKind = new Map<string, Map<string, number>>();
+  for (const r of rows) {
+    if (!r.day) continue;
+    const inner = byDayKind.get(r.day) ?? new Map<string, number>();
+    inner.set(r.kind, (inner.get(r.kind) ?? 0) + r.view_count);
+    byDayKind.set(r.day, inner);
+  }
+  const start = new Date(`${from}T12:00:00`);
+  const end = new Date(`${to}T12:00:00`);
+  const out: Record<string, string | number>[] = [];
+  for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
+    const key = d.toISOString().slice(0, 10);
+    const inner = byDayKind.get(key) ?? new Map<string, number>();
+    const label = d.toLocaleDateString("de-DE", { weekday: "short", day: "2-digit", month: "short" });
+    const point: Record<string, string | number> = { label, day: key };
+    for (const k of kindsOrdered) {
+      point[k] = inner.get(k) ?? 0;
+    }
+    out.push(point);
+  }
+  return out;
+}
+
+function orderKindsForDailyChart(kindSet: Set<string>): string[] {
+  const orderPreset = CONTACT_KIND_DAILY_ORDER as readonly string[];
+  const known = orderPreset.filter((k) => kindSet.has(k));
+  const rest = [...kindSet].filter((k) => !orderPreset.includes(k)).sort();
+  return [...known, ...rest];
+}
+
+export async function fetchContactKindDailyStatsAction(
+  year: number,
+  month: number,
+  scope: "monat" | "jahr",
+): Promise<
+  | {
+      ok: true;
+      data: ContactKindDailyRow[];
+      chartSeries: Record<string, string | number>[];
+      kinds: string[];
+    }
+  | { ok: false; message: string }
+> {
+  if (!(await getSystemAdminSession())) return { ok: false, message: "Nicht angemeldet." };
+  const svc = createSupabaseServiceRoleClient();
+  if (!svc) return { ok: false, message: "Service nicht konfiguriert." };
+
+  const y = Math.min(2100, Math.max(YEAR_RANGE_START, Math.floor(year)));
+  const m = Math.min(12, Math.max(1, Math.floor(month)));
+  const { from, to } = scope === "monat" ? calendarMonthBounds(y, m) : calendarYearBounds(y);
+
+  const res = await svcRpc(svc, "admin_contact_kind_totals_by_day", {
+    p_from: from,
+    p_to: to,
+  });
+  if (res.error) {
+    console.error("[fetchContactKindDailyStatsAction]", res.error.message);
+    return {
+      ok: false,
+      message:
+        "Tagesauswertung nach Kanal fehlgeschlagen (Migration 019 ausgeführt? RPC admin_contact_kind_totals_by_day).",
+    };
+  }
+
+  const data = parseContactKindDailyRows(res.data);
+  const kindSet = new Set<string>();
+  for (const r of data) kindSet.add(r.kind);
+  const kinds = orderKindsForDailyChart(kindSet);
+  const chartSeries =
+    kinds.length > 0 ? buildContactKindDailyChartSeries(from, to, data, kinds) : [];
+  return { ok: true, data, chartSeries, kinds };
+}
+
 /**
  * Aggregiert alle Anfragen nach (Quelle, Formular-Typ) im gewählten Zeitraum.
  * Liest aus `contact_sources_daily` (Service Role); Personenbezug ist ausgeschlossen,

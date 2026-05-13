@@ -26,6 +26,11 @@ export type ContactFormProps = {
   initialMessage?: string;
   /** Ausrichtung des Submit-Buttons: `"left"` (Standard) oder `"center"`. */
   submitAlign?: "left" | "center";
+  /**
+   * Nur `ratgeber`: setzt ein Hidden-Feld für die anonyme Statistik (Kanal „Ratgeber“).
+   * Andere Werte sind unsinnig; Standard ist Kontaktseite / eingebettetes Formular ohne Kennzeichnung.
+   */
+  statsChannel?: "ratgeber";
 };
 
 export function ContactForm(props: ContactFormProps = {}) {
@@ -38,6 +43,7 @@ export function ContactForm(props: ContactFormProps = {}) {
     defaultTopic,
     initialMessage,
     submitAlign = "left",
+    statsChannel,
   } = props;
   const pid = (base: string) => (fieldIdPrefix ? `${fieldIdPrefix}${base}` : base);
   const [error, setError] = useState<string | null>(null);
@@ -85,6 +91,9 @@ export function ContactForm(props: ContactFormProps = {}) {
         </>
       ) : null}
       {topicHidden ? <input type="hidden" name="topic" value={hiddenTopic} /> : null}
+      {statsChannel === "ratgeber" ? (
+        <input type="hidden" name="contactStatsChannel" value="ratgeber" />
+      ) : null}
       {error && !isDatenschutzError && (
         <div
           role="alert"

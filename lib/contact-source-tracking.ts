@@ -4,6 +4,8 @@ import { analyticsDayBerlin } from "@/lib/site-analytics/berlin-day";
 
 export type ContactSourceKind =
   | "contact"
+  /** Kontaktformular im Ratgeber-Beratungsdialog (gleiche Pflichtfrage wie /kontakt). */
+  | "ratgeber"
   | "hilfefinder"
   /** @deprecated Früher alle Karriere-Einreichungen; weiterhin in Auswertungen mitzählen. */
   | "karriere"
@@ -16,7 +18,7 @@ function isValidSourceForKind(source: string, kind: ContactSourceKind): boolean 
   if (kind === "karriere" || kind === "karriere-form" || kind === "karriere-wizard") {
     return isValidKarriereContactSource(source);
   }
-  if (kind === "pflegebox") {
+  if (kind === "pflegebox" || kind === "ratgeber") {
     return isValidContactSource(source);
   }
   return isValidContactSource(source);
