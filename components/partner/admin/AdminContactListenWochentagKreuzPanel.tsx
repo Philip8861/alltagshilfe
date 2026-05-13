@@ -30,6 +30,10 @@ import {
   kindLabel,
 } from "@/components/partner/admin/contact-sources-admin-kind-labels";
 
+/** Zweite Wochentagssäule: Anzeigename für alle Kanäle außer Karriere (inkl. u. a. Betrieblich-Angebot in derselben Summe). */
+const CONTACT_WEEKDAY_NON_KARRIERE_LABEL =
+  "(Pflegebox, Kontaktformular, Finder, Ratgeber)";
+
 type Scope = ContactStatsScope;
 
 type Props = {
@@ -317,11 +321,8 @@ export function AdminContactListenWochentagKreuzPanel({ chartYear }: Props) {
           </h4>
           <p className="mt-1 text-sm text-neutral-600">
             Summe über alle gleichnamigen Wochentage im gewählten Zeitraum: z. B. alle Sonntage im Mai addieren –
-            zum Vergleich mit Werktagen. Karriere-Bewerbungen sind eigenständig ausgewiesen; die zweite Säule enthält
-            die Summe aus Kontaktformular, Hilfe-Finder, Ratgeber und allen früher eigenen „Weitere“-Kanälen (z. B.
-            Pflegebox, Betrieblich u. a.) – alles wird mitgezählt, nicht gelöscht. In der Datenbank bleiben die
-            Tages-Aggregate bestehen; nur hier werden sie zu einer Zahl zusammengefasst. Details je Kanal siehst du in
-            den Kreuztabellen darunter.
+            zum Vergleich mit Werktagen.             Karriere-Bewerbungen sind eigenständig ausgewiesen; die zweite Säule {CONTACT_WEEKDAY_NON_KARRIERE_LABEL}{" "}
+            fasst die übrigen eingetragenen Kanäle zu dieser Summe zusammen – ohne Daten zu löschen. Details je Kanal siehst du in den Kreuztabellen darunter.
           </p>
         </div>
 
@@ -336,7 +337,7 @@ export function AdminContactListenWochentagKreuzPanel({ chartYear }: Props) {
             <div
               className="h-[min(320px,50vh)] w-full min-h-[220px]"
               role="img"
-              aria-label="Balkendiagramm Anfragen nach Wochentag: Karriere gegen alle übrigen Kanäle"
+              aria-label={`Balkendiagramm Anfragen nach Wochentag: Karriere und ${CONTACT_WEEKDAY_NON_KARRIERE_LABEL}`}
             >
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={weekdays} margin={{ top: 8, right: 8, left: 4, bottom: 4 }}>
@@ -361,7 +362,7 @@ export function AdminContactListenWochentagKreuzPanel({ chartYear }: Props) {
                   <Bar dataKey="karriere" name="Karriere" fill={CHART_ROSE} radius={[6, 6, 0, 0]} />
                   <Bar
                     dataKey="ohneKarriere"
-                    name="Alle anderen (Kontakt, Finder, Ratgeber, Pflegebox, …)"
+                    name={CONTACT_WEEKDAY_NON_KARRIERE_LABEL}
                     fill={CHART_TEAL}
                     radius={[6, 6, 0, 0]}
                   />
@@ -382,10 +383,10 @@ export function AdminContactListenWochentagKreuzPanel({ chartYear }: Props) {
                     </th>
                     <th
                       scope="col"
-                      className="px-3 py-2 text-right"
-                      title="Summe aller Kanäle außer Karriere: Kontakt, Hilfe-Finder, Ratgeber, Pflegebox, Betrieblich u. a."
+                      className="min-w-[8rem] max-w-[13rem] px-3 py-2 text-right text-[0.65rem] font-bold normal-case leading-tight tracking-tight text-[#0F4F68]/80 sm:text-[0.7rem]"
+                      title="Summe aller Kanäle ohne Karriere, u. a. Pflegebox, Kontaktformular, Finder, Ratgeber; zusätzlich z. B. Betrieblich-Angebot, falls erfasst."
                     >
-                      Ohne Karriere
+                      {CONTACT_WEEKDAY_NON_KARRIERE_LABEL}
                     </th>
                     <th scope="col" className="px-3 py-2 text-right">
                       Gesamt
