@@ -411,13 +411,12 @@ export async function fetchContactKindDailyStatsAction(
   return { ok: true, data, chartSeries, kinds };
 }
 
-/** Aggregiert nach ISO-Wochentag (1 = Montag … 7 = Sonntag); Karriere vs. Kern-Kanäle vs. Übriges. */
+/** Aggregiert nach ISO-Wochentag (1 = Montag … 7 = Sonntag): Karriere vs. alle übrigen Kanäle gemeinsam. */
 export type ContactWeekdayGroupRow = {
   isoWeekday: number;
   weekdayLabel: string;
   karriere: number;
-  kern: number;
-  other: number;
+  ohneKarriere: number;
 };
 
 const ISO_WEEKDAY_LABELS_DE = [
@@ -430,8 +429,8 @@ const ISO_WEEKDAY_LABELS_DE = [
   "Sonntag",
 ] as const;
 
-function parseContactWeekdayGroupRpc(data: unknown): Map<number, { k: number; n: number; o: number }> {
-  const m = new Map<number, { k: number; n: number; o: number }>();
+function parseContactWeekdayGroupRpc(data: unknown): Map<number, { k: number; rest: number }> {
+  const m = new Map<number, { k: number; rest: number }>();
   if (!Array.isArray(data)) return m;
   for (const row of data) {
     const r = row as Record<string, unknown>;
@@ -439,14 +438,13 @@ function parseContactWeekdayGroupRpc(data: unknown): Map<number, { k: number; n:
     if (iso < 1 || iso > 7) continue;
     m.set(iso, {
       k: Number(r.karriere_views ?? 0),
-      n: Number(r.kern_views ?? 0),
-      o: Number(r.other_views ?? 0),
+      rest: Number(r.ohne_karriere_views ?? 0),
     });
   }
   return m;
 }
 
-function fillContactWeekdayGroups(raw: Map<number, { k: number; n: number; o: number }>): ContactWeekdayGroupRow[] {
+function fillContactWeekdayGroups(raw: Map<number, { k: number; rest: number }>): ContactWeekdayGroupRow[] {
   return ISO_WEEKDAY_LABELS_DE.map((weekdayLabel, i) => {
     const isoWeekday = i + 1;
     const cell = raw.get(isoWeekday);
@@ -454,8 +452,7 @@ function fillContactWeekdayGroups(raw: Map<number, { k: number; n: number; o: nu
       isoWeekday,
       weekdayLabel,
       karriere: cell?.k ?? 0,
-      kern: cell?.n ?? 0,
-      other: cell?.o ?? 0,
+      ohneKarriere: cell?.rest ?? 0,
     };
   });
 }
@@ -487,7 +484,7 @@ export async function fetchContactWeekdayGroupTotalsAction(
     return {
       ok: false,
       message:
-        "Wochentags-Auswertung fehlgeschlagen (Migration 021 ausgeführt? RPC admin_contact_weekday_group_totals).",
+        "Wochentags-Auswertung fehlgeschlagen (Migration 022 ausgeführt? RPC admin_contact_weekday_group_totals).",
     };
   }
 }
