@@ -64,8 +64,9 @@ function viewportBottomReservePx(vw: number): number {
 }
 
 /**
- * Platziert die Sprechblase vollständig zwischen oberem Rand und (Viewport unten − Reserve).
- * `panelH` = reale oder geschätzte Dialoghöhe in px.
+ * Platziert die Sprechblase **immer unterhalb** des beleuchteten Elements (kein Umspringen nach oben).
+ * Die Höhe wird über {@link maxPanelHeightPx} begrenzt, damit der Dialog scrollen kann statt den Anker zu überdecken.
+ * `panelH` = reale oder geschätzte Dialoghöhe (nur für Fallback ohne Anker).
  */
 function computeBubbleStyle(
   rect: DOMRect | null,
@@ -73,7 +74,7 @@ function computeBubbleStyle(
   vh: number,
   panelH: number,
   options?: { viewportCenterXFromMd?: boolean; maxBubbleWidthPx?: number },
-): { top: number; left: number; width: number } {
+): { top: number; left: number; width: number; maxPanelHeightPx?: number } {
   const margin = Math.max(10, Math.min(18, Math.round(vw * 0.028)));
   const reserve = viewportBottomReservePx(vw);
   const safeBottom = vh - reserve;
@@ -93,14 +94,11 @@ function computeBubbleStyle(
   }
 
   const gap = 12;
-  let top = rect.bottom + gap;
-  if (top > maxTop) {
-    top = rect.top - gap - ph;
-  }
-  if (top > maxTop) {
-    top = maxTop;
-  }
-  top = clampTop(top);
+  /** Immer unter dem Spotlight – kein Platzieren oberhalb des Ankers. */
+  const top = Math.max(margin, rect.bottom + gap);
+
+  const spaceBelow = safeBottom - top;
+  const maxPanelHeightPx = Math.max(120, Math.floor(spaceBelow - 8));
 
   const useViewportCenter = Boolean(options?.viewportCenterXFromMd && vw >= 768);
   let left: number;
@@ -112,7 +110,7 @@ function computeBubbleStyle(
     left = Math.max(margin, Math.min(left, vw - width - margin));
   }
 
-  return { top, left, width };
+  return { top, left, width, maxPanelHeightPx };
 }
 
 export function PartnerTutorialOverlay({
@@ -231,7 +229,7 @@ export function PartnerTutorialOverlay({
     }
     setMissingAnchor(false);
     /* „auto“: sonst ist getBoundingClientRect nach smooth-Scroll auf Desktop oft noch veraltet. */
-    el.scrollIntoView({ block: "center", behavior: "auto" });
+    el.scrollIntoView({ block: "start", behavior: "auto" });
     const pad = 10;
     const readInflated = () => {
       const target = document.querySelector(anchorSel) as HTMLElement | null;
@@ -390,11 +388,16 @@ export function PartnerTutorialOverlay({
       ) : (
         <div
           id="partner-tutorial-step-panel"
-          className="fixed z-[87] box-border flex max-h-[min(100svh-6rem,36rem)] flex-col p-2 transition-[top,left] duration-300 ease-out motion-reduce:transition-none sm:max-h-[min(88vh,36rem)] sm:p-4"
+          className={`fixed z-[87] box-border flex flex-col p-2 transition-[top,left] duration-300 ease-out motion-reduce:transition-none sm:p-4 ${
+            bubble.maxPanelHeightPx == null ? "max-h-[min(100svh-6rem,36rem)] sm:max-h-[min(88vh,36rem)]" : ""
+          }`}
           style={{
             top: bubble.top,
             left: bubble.left,
             width: bubble.width,
+            ...(bubble.maxPanelHeightPx != null
+              ? { maxHeight: `${Math.min(bubble.maxPanelHeightPx, 36 * 16)}px` }
+              : {}),
           }}
         >
           {dialogShell(
