@@ -21,7 +21,6 @@ import {
   type HomepageTrafficGranularity,
 } from "@/lib/actions/admin-homepage-analytics";
 import { CHART_AXIS_TICK, CHART_GRID, CHART_TEAL } from "@/components/partner/partner-chart-theme";
-import { HomepageStatTileButton } from "@/components/partner/admin/HomepageStatTileButton";
 import {
   deviceCategoryLabelDe,
   type SiteTrafficDeviceCategory,
@@ -47,8 +46,12 @@ function deviceLabel(cat: string): string {
 
 type TrafficTileId = "totals" | "device" | "paths";
 
+export type HomepageTrafficSectionId = TrafficTileId;
+
 type Props = {
   chartYear: number;
+  /** null: nichts anzeigen; sonst nur dieser Abschnitt (keine eigenen Über-Kacheln). */
+  activeSection: HomepageTrafficSectionId | null;
 };
 
 function GranularityToggle({
@@ -116,8 +119,7 @@ function TrafficLineChart({ data, title }: { data: HomepageSeriesPoint[]; title:
   );
 }
 
-export function AdminHomepageTrafficPanel({ chartYear }: Props) {
-  const [openTile, setOpenTile] = useState<TrafficTileId>("totals");
+export function AdminHomepageTrafficPanel({ chartYear, activeSection }: Props) {
   const [month, setMonth] = useState(() => new Date().getMonth() + 1);
   const [totalGran, setTotalGran] = useState<HomepageTrafficGranularity>("monat");
   const [totalSeries, setTotalSeries] = useState<HomepageSeriesPoint[]>([]);
@@ -199,24 +201,30 @@ export function AdminHomepageTrafficPanel({ chartYear }: Props) {
   }, [expandedPath, chartYear, month, pathGran]);
 
   useEffect(() => {
+    if (activeSection !== "totals") return;
     void loadTotals();
-  }, [loadTotals]);
+  }, [activeSection, loadTotals]);
 
   useEffect(() => {
+    if (activeSection !== "paths") return;
     void loadPaths();
-  }, [loadPaths]);
+  }, [activeSection, loadPaths]);
 
   useEffect(() => {
+    if (activeSection !== "device") return;
     void loadDeviceBreakdown();
-  }, [loadDeviceBreakdown]);
+  }, [activeSection, loadDeviceBreakdown]);
 
   useEffect(() => {
+    if (activeSection !== "paths") return;
     void loadPathSeries();
-  }, [loadPathSeries]);
+  }, [activeSection, loadPathSeries]);
 
   const totalSum = totalSeries.reduce((s, p) => s + p.views, 0);
-  const deviceSum = deviceRows.reduce((s, r) => s + r.view_count, 0);
-  const pathCount = paths.length;
+
+  if (activeSection === null) {
+    return null;
+  }
 
   return (
     <div className="space-y-5">
@@ -241,10 +249,12 @@ export function AdminHomepageTrafficPanel({ chartYear }: Props) {
         <button
           type="button"
           onClick={() => {
-            void loadTotals();
-            void loadPaths();
-            void loadDeviceBreakdown();
-            void loadPathSeries();
+            if (activeSection === "totals") void loadTotals();
+            if (activeSection === "device") void loadDeviceBreakdown();
+            if (activeSection === "paths") {
+              void loadPaths();
+              void loadPathSeries();
+            }
           }}
           disabled={resetBusy}
           className="min-h-10 rounded-xl border border-[#0F4F68]/30 bg-white px-4 text-sm font-semibold text-[#0F4F68] hover:bg-[#F2F9FA] disabled:opacity-50"
@@ -282,54 +292,22 @@ export function AdminHomepageTrafficPanel({ chartYear }: Props) {
         <p className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-950">{resetErr}</p>
       ) : null}
 
-      <p className="text-sm text-neutral-600">
-        Wählen Sie unten einen Bereich per Kachel – die Details erscheinen darunter. Monat und Aktualisieren gelten für
-        alle Blöcke.
-      </p>
-
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        <HomepageStatTileButton
-          title="Aufrufe gesamt"
-          subtitle="Alle Seiten der Website, Verlauf nach Tag, Monat oder Jahr."
-          metricPrimary={totalLoading ? "…" : totalErr ? "—" : totalSum.toLocaleString("de-DE")}
-          metricHint="Summe der sichtbaren Periode (Diagramm)"
-          selected={openTile === "totals"}
-          onClick={() => setOpenTile("totals")}
-        />
-        <HomepageStatTileButton
-          title="Aufrufe nach Gerät"
-          subtitle="Mobil, Tablet, Desktop – grobe Einordnung per User-Agent."
-          metricPrimary={deviceLoading ? "…" : deviceErr ? "—" : deviceSum.toLocaleString("de-DE")}
-          metricHint="Summe Aufrufe (gewählter Zeitraum)"
-          selected={openTile === "device"}
-          onClick={() => setOpenTile("device")}
-        />
-        <HomepageStatTileButton
-          title="Aufrufe je Seite"
-          subtitle="Top-URLs im Jahr – Pfad aufklappen für Verlauf."
-          metricPrimary={pathsLoading ? "…" : pathsErr ? "—" : pathCount.toLocaleString("de-DE")}
-          metricHint={`Pfade mit Daten · Jahr ${chartYear}`}
-          selected={openTile === "paths"}
-          onClick={() => setOpenTile("paths")}
-        />
-      </div>
-
       <div
-        className="rounded-2xl border-2 border-[#0F4F68]/14 bg-white p-4 shadow-[0_8px_30px_-18px_rgba(15,79,104,0.28)] sm:p-6"
+        className="space-y-5"
         role="region"
         aria-label={
-          openTile === "totals"
-            ? "Detail: Aufrufe gesamt"
-            : openTile === "device"
-              ? "Detail: Aufrufe nach Gerät"
-              : "Detail: Aufrufe je Seite"
+          activeSection === "totals"
+            ? "Aufrufe insgesamt"
+            : activeSection === "device"
+              ? "Aufrufe nach Gerät"
+              : "Aufrufe je Seite"
         }
       >
-        {openTile === "totals" ? (
+        {activeSection === "totals" ? (
           <section className="space-y-4" aria-labelledby="hp-total-heading">
             <div>
               <h3 id="hp-total-heading" className="text-base font-bold text-[#0F4F68]">
-                Aufrufe gesamt (alle Seiten)
+                Aufrufe insgesamt (alle Seiten)
               </h3>
               <p className="mt-1 text-sm text-neutral-600">
                 Liniendiagramm nach Tag, Monat oder Jahr – Summe der erfassten Seitenaufrufe.
@@ -359,7 +337,7 @@ export function AdminHomepageTrafficPanel({ chartYear }: Props) {
           </section>
         ) : null}
 
-        {openTile === "device" ? (
+        {activeSection === "device" ? (
           <section className="space-y-4" aria-labelledby="hp-device-heading">
             <div>
               <h3 id="hp-device-heading" className="text-base font-bold text-[#0F4F68]">
@@ -421,7 +399,7 @@ export function AdminHomepageTrafficPanel({ chartYear }: Props) {
           </section>
         ) : null}
 
-        {openTile === "paths" ? (
+        {activeSection === "paths" ? (
           <section className="space-y-4" aria-labelledby="hp-paths-heading">
             <div>
               <h3 id="hp-paths-heading" className="text-base font-bold text-[#0F4F68]">

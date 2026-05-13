@@ -32,10 +32,8 @@ import {
   CHART_TEAL,
   CHART_VIOLET,
 } from "@/components/partner/partner-chart-theme";
-import { HomepageStatTileButton } from "@/components/partner/admin/HomepageStatTileButton";
 
-type Scope = "monat" | "jahr";
-type ContactSourcesTileId = "dailyChart" | "tables";
+
 
 const KARRIERE_PAGE_SOURCE_KINDS = ["karriere", "karriere-form", "karriere-wizard"] as const;
 
@@ -69,13 +67,14 @@ function strokeForKind(kind: string): string {
   return KIND_LINE_COLORS[kind] ?? "#64748b";
 }
 
+type Scope = "monat" | "jahr";
+
 type Props = {
   /** Wird vom Eltern-Panel übergeben (gleicher Jahres-Filter wie Traffic-Statistik). */
   chartYear: number;
 };
 
 export function AdminContactSourcesPanel({ chartYear }: Props) {
-  const [openTile, setOpenTile] = useState<ContactSourcesTileId>("tables");
   const [month, setMonth] = useState(() => new Date().getMonth() + 1);
   const [scope, setScope] = useState<Scope>("jahr");
   const [rows, setRows] = useState<ContactSourceStatsRow[]>([]);
@@ -222,7 +221,7 @@ export function AdminContactSourcesPanel({ chartYear }: Props) {
           Aggregate gespeichert (kein Personenbezug).
         </p>
         <p className="mt-2 text-sm text-[#0F4F68]/85">
-          Wählen Sie eine der großen Kacheln – die ausführliche Auswertung erscheint darunter.
+          Zuerst das Tagesdiagramm, darunter Listen und Kreuztabellen zum gleichen Zeitraum.
         </p>
       </div>
 
@@ -322,44 +321,9 @@ export function AdminContactSourcesPanel({ chartYear }: Props) {
         </p>
       ) : null}
 
-      <p className="text-sm text-neutral-600">
-        Monat, Jahr und Aktualisieren gelten für <strong>beide</strong> Kacheln gemeinsam.
-      </p>
+      <div className="space-y-10">
 
-      <div className="grid gap-4 sm:grid-cols-2">
-        <HomepageStatTileButton
-          title="Tagesdiagramm"
-          subtitle="Anfragen pro Kalendertag und Kanal (Linien nach Eingangsweg)."
-          metricPrimary={
-            loading ? "…" : dailyErr ? "—" : dailyKinds.length > 0 ? String(dailyKinds.length) : "0"
-          }
-          metricHint="aktive Kanäle im Diagramm"
-          selected={openTile === "dailyChart"}
-          onClick={() => setOpenTile("dailyChart")}
-        />
-        <HomepageStatTileButton
-          title="Listen & Kreuztabellen"
-          subtitle="Quellenverteilung, Pflegebox, Karriere und Kanäle als Tabelle."
-          metricPrimary={
-            loading ? "…" : err ? "—" : totals.gesamt.toLocaleString("de-DE")
-          }
-          metricHint="Anfragen mit Herkunftsangabe · gewählter Zeitraum"
-          selected={openTile === "tables"}
-          onClick={() => setOpenTile("tables")}
-        />
-      </div>
-
-      <div
-        className="rounded-2xl border-2 border-[#0F4F68]/14 bg-white p-4 shadow-[0_8px_30px_-18px_rgba(15,79,104,0.28)] sm:p-6"
-        role="region"
-        aria-label={
-          openTile === "dailyChart"
-            ? "Detail: Tagesdiagramm Kontakt-Kanäle"
-            : "Detail: Listen und Kreuztabellen Herkunft"
-        }
-      >
-        {openTile === "dailyChart" ? (
-          <section className="space-y-4" aria-labelledby="cs-daily-heading">
+            <section className="space-y-4" aria-labelledby="cs-daily-heading">
             <div>
               <h4 id="cs-daily-heading" className="text-base font-bold text-[#0F4F68]">
                 Diagramm: Anfragen pro Kalendertag und Kanal
@@ -438,10 +402,8 @@ export function AdminContactSourcesPanel({ chartYear }: Props) {
               </p>
             ) : null}
           </section>
-        ) : null}
 
-        {openTile === "tables" ? (
-          <section className="space-y-6" aria-labelledby="cs-tables-heading">
+            <section className="space-y-6 border-t border-[#0F4F68]/12 pt-8" aria-labelledby="cs-tables-heading">
             <div>
               <h4 id="cs-tables-heading" className="text-base font-bold text-[#0F4F68]">
                 Listen & Kreuztabellen (Herkunft und Formular)
@@ -674,7 +636,6 @@ export function AdminContactSourcesPanel({ chartYear }: Props) {
             </>
           )}
           </section>
-        ) : null}
       </div>
     </div>
   );

@@ -23,8 +23,7 @@ import {
   serviceRowAccentBorderClass,
 } from "@/lib/partner/service-slug-styles";
 import { formatProvisionEur } from "@/lib/partner/partner-tip-payout";
-import { AdminHomepageTrafficPanel } from "@/components/partner/admin/AdminHomepageTrafficPanel";
-import { AdminContactSourcesPanel } from "@/components/partner/admin/AdminContactSourcesPanel";
+import { AdminHomepageStatistikHub } from "@/components/partner/admin/AdminHomepageStatistikHub";
 import { PartnerAdminPayoutSection } from "@/components/partner/admin/PartnerAdminPayoutSection";
 import { PartnerExpandableStatSection } from "@/components/partner/PartnerExpandableStatSection";
 
@@ -1025,7 +1024,7 @@ export function PartnerAdminDashboard({
                 <p className="mt-2 text-sm text-neutral-600">
                   {statistikTeil === "partner"
                     ? "Überblick: Kennzahlen, Verläufe und Partnerliste. Tippen Sie auf einen Bereich zum Aufklappen."
-                    : "Seitenaufrufe und Kontakt-Herkunft: große Kacheln zur Auswahl, Details erscheinen darunter."}
+                    : "Vier Quadrate zur Homepage-Auswahl; Details nur nach Klick. Jahr oben."}
                 </p>
               </div>
 
@@ -1255,12 +1254,7 @@ export function PartnerAdminDashboard({
                 </div>
               ) : (
                 <div className="space-y-4">
-                  <p className="text-sm text-neutral-600">
-                    Zuerst Aufrufstatistik, darunter Kontakt-Quellen. Jeweils Kachel anklicken, um die Grafiken und
-                    Tabellen zu sehen (Jahr oben gilt für Homepage-Auswertungen).
-                  </p>
-                  <AdminHomepageTrafficPanel chartYear={chartYear} />
-                  <AdminContactSourcesPanel chartYear={chartYear} />
+                  <AdminHomepageStatistikHub chartYear={chartYear} />
                 </div>
               )}
             </section>

@@ -11,6 +11,10 @@ type Props = {
   metricHint?: string;
   selected: boolean;
   onClick: () => void;
+  /**
+   * Nur Titel (+ optional sehr kurzer Zusatz) zentriert – für übergreifende Statistikwahl ohne Kennzahlen-Vorschau.
+   */
+  presentation?: "default" | "labelOnly";
 };
 
 /**
@@ -24,7 +28,28 @@ export function HomepageStatTileButton({
   metricHint,
   selected,
   onClick,
+  presentation = "default",
 }: Props) {
+  if (presentation === "labelOnly") {
+    return (
+      <button
+        type="button"
+        onClick={onClick}
+        aria-pressed={selected}
+        className={cn(
+          "flex w-full flex-col items-center justify-center gap-3 rounded-2xl border-2 px-4 py-6 text-center shadow-[0_10px_34px_-20px_rgba(15,79,104,0.45)] transition focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68]/35",
+          "max-sm:min-h-[9.5rem] sm:aspect-square sm:min-h-[12rem]",
+          selected
+            ? "border-[#0F4F68] bg-gradient-to-br from-[#dfeef3] to-white ring-2 ring-[#0F4F68]/25"
+            : "border-[#0F4F68]/14 bg-white hover:border-[#0F4F68]/38 hover:bg-[#f8fbfc]",
+        )}
+      >
+        <p className="text-sm font-bold leading-snug text-[#0F4F68] sm:text-[0.95rem]">{title}</p>
+        {subtitle ? <p className="text-xs leading-snug text-neutral-600">{subtitle}</p> : null}
+      </button>
+    );
+  }
+
   return (
     <button
       type="button"
