@@ -18,7 +18,6 @@ import {
 } from "@/lib/partner/responsibility-areas";
 import {
   SERVICE_SLUG_ORDER,
-  SERVICE_SLUG_BADGE_CLASS,
   serviceBadgeClass,
   serviceRowAccentBorderClass,
 } from "@/lib/partner/service-slug-styles";
@@ -258,7 +257,15 @@ export function PartnerAdminDashboard({
     [tipSort, partnerDisplay],
   );
 
-  const sortedAuftraegeTips = useMemo(() => sortTipRows(auftraegeQueueTips), [auftraegeQueueTips, sortTipRows]);
+  const auftraegeTipsByService = useMemo(
+    () =>
+      SERVICE_SLUG_ORDER.map((slug) => ({
+        slug,
+        label: PARTNER_RESPONSIBILITY_LABELS[slug],
+        tips: sortTipRows(auftraegeQueueTips.filter((t) => t.service_slug === slug)),
+      })),
+    [auftraegeQueueTips, sortTipRows],
+  );
   const sortedAktiveUnternehmenTips = useMemo(
     () => sortTipRows(aktiveUnternehmenTips),
     [aktiveUnternehmenTips, sortTipRows],
@@ -401,122 +408,114 @@ export function PartnerAdminDashboard({
                 Aktuelle Aufträge
               </h2>
               <p className="mt-2 text-sm text-neutral-600">
-                Tippgeber-Meldungen aus dem Partnerportal. Spaltenköpfe sortieren.
+                Tippgeber-Meldungen aus dem Partnerportal, <strong className="font-semibold text-neutral-800">nach den vier
+                Dienstleistungen getrennt.</strong> Spaltenköpfe sortieren innerhalb der jeweiligen Liste.
               </p>
-              <p className="mt-3 flex flex-wrap gap-2 text-xs text-neutral-600">
-                <span className="font-semibold text-[#0F4F68]">Leistungen:</span>
-                {SERVICE_SLUG_ORDER.map((slug) => (
-                  <span
-                    key={slug}
-                    className={`inline-block rounded-full border px-2 py-0.5 text-[0.65rem] font-semibold ${SERVICE_SLUG_BADGE_CLASS[slug]}`}
-                  >
-                    {PARTNER_RESPONSIBILITY_LABELS[slug]}
-                  </span>
-                ))}
-              </p>
-              <div className="mt-6 overflow-x-auto rounded-2xl border border-neutral-200/80">
-                <table className="min-w-[900px] w-full text-left text-sm">
-                  <thead className="border-b border-[#0F4F68]/10 bg-[#F2F9FA]/70 text-xs">
-                    <tr>
-                      <th className="px-3 py-3">
-                        <SortButton
-                          label="Datum"
-                          active={tipSort.key === "created_at"}
-                          dir={tipSort.dir}
-                          onClick={() => toggleTipSort("created_at")}
-                        />
-                      </th>
-                      <th className="px-3 py-3">
-                        <SortButton
-                          label="Partner"
-                          active={tipSort.key === "partner"}
-                          dir={tipSort.dir}
-                          onClick={() => toggleTipSort("partner")}
-                        />
-                      </th>
-                      <th className="px-3 py-3">
-                        <SortButton
-                          label="Dienstleistung"
-                          active={tipSort.key === "service"}
-                          dir={tipSort.dir}
-                          onClick={() => toggleTipSort("service")}
-                        />
-                      </th>
-                      <th className="px-3 py-3">Kurzinfo</th>
-                      <th className="px-3 py-3">
-                        <SortButton
-                          label="Status"
-                          active={tipSort.key === "status"}
-                          dir={tipSort.dir}
-                          onClick={() => toggleTipSort("status")}
-                        />
-                      </th>
-                      <th className="whitespace-nowrap px-3 py-3">Archiv</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-neutral-100">
-                    {sortedAuftraegeTips.length === 0 ? (
-                      <tr>
-                        <td colSpan={6} className="px-4 py-12 text-center text-neutral-600">
-                          Keine aktiven Tippgeber-Eingänge.
-                        </td>
-                      </tr>
-                    ) : (
-                      sortedAuftraegeTips.map((t) => {
-                        const pd = partnerDisplay(t.partner_id);
-                        const label =
-                          PARTNER_RESPONSIBILITY_LABELS[t.service_slug as PartnerResponsibilitySlug] ??
-                          t.service_slug;
-                        return (
-                          <tr
-                            id={`partner-admin-tip-${t.id}`}
-                            key={t.id}
-                            className={`align-top transition-colors hover:bg-[#f8fbfc] ${serviceRowAccentBorderClass(t.service_slug)}`}
-                          >
-                            <td className="whitespace-nowrap px-3 py-3 text-neutral-700">
-                              {new Date(t.created_at).toLocaleString("de-DE", {
-                                dateStyle: "short",
-                                timeStyle: "short",
-                              })}
-                            </td>
-                            <td className="px-3 py-3">
-                              <span className="font-medium text-neutral-900">{pd.name}</span>
-                              {pd.code ? (
-                                <span className="ml-1 font-mono text-xs font-bold text-[#0F4F68]">{pd.code}</span>
-                              ) : null}
-                              <div className="break-all text-xs text-neutral-500">{pd.email}</div>
-                            </td>
-                            <td className="px-3 py-3">
-                              <span
-                                className={`inline-block rounded-full border px-2.5 py-1 text-xs font-semibold ${serviceBadgeClass(t.service_slug)}`}
-                              >
-                                {label}
-                              </span>
-                            </td>
-                            <td className="max-w-[240px] px-3 py-3 text-xs text-neutral-700">
-                              {partnerTipPayloadSummary(t.payload, t.service_slug)}
-                            </td>
-                            <td className="px-3 py-3">
-                              <TipStatusEditor
-                                tipId={t.id}
-                                status={t.admin_status}
-                                adminVisibleNote={t.admin_visible_note}
-                                serviceSlug={t.service_slug}
-                                paidAmountEur={t.paid_amount_eur}
-                              />
-                            </td>
-                            <td className="px-3 py-3 align-top">
-                              <div className="flex flex-col gap-2">
-                                <ArchiveTipButton tipId={t.id} isArchived={false} />
-                                <DeleteTipButton tipId={t.id} />
-                              </div>
-                            </td>
-                          </tr>
-                        );
-                      })
-                    )}
-                  </tbody>
-                </table>
+              <div className="mt-6 space-y-10">
+                {auftraegeQueueTips.length === 0 ? (
+                  <div className="overflow-x-auto rounded-2xl border border-neutral-200/80 bg-[#F2F9FA]/30 px-4 py-12 text-center text-neutral-600">
+                    Keine aktiven Tippgeber-Eingänge.
+                  </div>
+                ) : (
+                  auftraegeTipsByService.map(({ slug, label, tips: groupTips }) => (
+                    <div key={slug} className="scroll-mt-4">
+                      <h3 className="flex flex-wrap items-center gap-2 text-base font-bold text-[#0F4F68] sm:text-lg">
+                        <span
+                          className={`inline-block rounded-full border px-2.5 py-1 text-xs font-semibold ${serviceBadgeClass(slug)}`}
+                        >
+                          {label}
+                        </span>
+                        <span className="text-sm font-normal tabular-nums text-neutral-500">{groupTips.length} Einträge</span>
+                      </h3>
+                      <div className="mt-3 overflow-x-auto rounded-2xl border border-neutral-200/80">
+                        <table className="min-w-[840px] w-full text-left text-sm">
+                          <thead className="border-b border-[#0F4F68]/10 bg-[#F2F9FA]/70 text-xs">
+                            <tr>
+                              <th className="px-3 py-3">
+                                <SortButton
+                                  label="Datum"
+                                  active={tipSort.key === "created_at"}
+                                  dir={tipSort.dir}
+                                  onClick={() => toggleTipSort("created_at")}
+                                />
+                              </th>
+                              <th className="px-3 py-3">
+                                <SortButton
+                                  label="Partner"
+                                  active={tipSort.key === "partner"}
+                                  dir={tipSort.dir}
+                                  onClick={() => toggleTipSort("partner")}
+                                />
+                              </th>
+                              <th className="px-3 py-3">Kurzinfo</th>
+                              <th className="px-3 py-3">
+                                <SortButton
+                                  label="Status"
+                                  active={tipSort.key === "status"}
+                                  dir={tipSort.dir}
+                                  onClick={() => toggleTipSort("status")}
+                                />
+                              </th>
+                              <th className="whitespace-nowrap px-3 py-3">Archiv</th>
+                            </tr>
+                          </thead>
+                          <tbody className="divide-y divide-neutral-100">
+                            {groupTips.length === 0 ? (
+                              <tr>
+                                <td colSpan={5} className="px-4 py-8 text-center text-sm text-neutral-500">
+                                  Keine Einträge in dieser Leistung.
+                                </td>
+                              </tr>
+                            ) : (
+                              groupTips.map((t) => {
+                                const pd = partnerDisplay(t.partner_id);
+                                return (
+                                  <tr
+                                    id={`partner-admin-tip-${t.id}`}
+                                    key={t.id}
+                                    className={`align-top transition-colors hover:bg-[#f8fbfc] ${serviceRowAccentBorderClass(t.service_slug)}`}
+                                  >
+                                    <td className="whitespace-nowrap px-3 py-3 text-neutral-700">
+                                      {new Date(t.created_at).toLocaleString("de-DE", {
+                                        dateStyle: "short",
+                                        timeStyle: "short",
+                                      })}
+                                    </td>
+                                    <td className="px-3 py-3">
+                                      <span className="font-medium text-neutral-900">{pd.name}</span>
+                                      {pd.code ? (
+                                        <span className="ml-1 font-mono text-xs font-bold text-[#0F4F68]">{pd.code}</span>
+                                      ) : null}
+                                      <div className="break-all text-xs text-neutral-500">{pd.email}</div>
+                                    </td>
+                                    <td className="max-w-[240px] px-3 py-3 text-xs text-neutral-700">
+                                      {partnerTipPayloadSummary(t.payload, t.service_slug)}
+                                    </td>
+                                    <td className="px-3 py-3">
+                                      <TipStatusEditor
+                                        tipId={t.id}
+                                        status={t.admin_status}
+                                        adminVisibleNote={t.admin_visible_note}
+                                        serviceSlug={t.service_slug}
+                                        paidAmountEur={t.paid_amount_eur}
+                                      />
+                                    </td>
+                                    <td className="px-3 py-3 align-top">
+                                      <div className="flex flex-col gap-2">
+                                        <ArchiveTipButton tipId={t.id} isArchived={false} />
+                                        <DeleteTipButton tipId={t.id} />
+                                      </div>
+                                    </td>
+                                  </tr>
+                                );
+                              })
+                            )}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  ))
+                )}
               </div>
             </section>
           ) : null}
