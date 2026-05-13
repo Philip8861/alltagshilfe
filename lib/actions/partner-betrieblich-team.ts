@@ -19,6 +19,7 @@ import { resolvePartnerProfileId } from "@/lib/supabase/service";
 import { sendTransactionalMail } from "@/lib/email/internal-smtp";
 import { buildPartnerTeamInviteEmailHtml, partnerTeamInviteSubject } from "@/lib/email/partner-team-invite-email";
 import { siteConfig } from "@/config/site";
+import { uuidStringsEqual } from "@/lib/partner/uuid-strings-equal";
 import {
   partnerReferralCodeInputSchema,
   teamNameSchema,
@@ -258,7 +259,7 @@ export async function inviteBetrieblichTeamByCodeAction(teamId: unknown, rawCode
     teamName,
     joinUrl,
   });
-  const text = `${inviterFormal} lädt Sie zum Team „${teamName}“ ein.\n\nJetzt beitreten: ${joinUrl}\n`;
+  const text = `${inviterFormal} lädt Sie in die Teamgruppe ${teamName} ein.\n\nJetzt beitreten: ${joinUrl}\n`;
 
   const sent = await sendTransactionalMail({
     to: authUser.user.email,
@@ -277,7 +278,7 @@ export async function inviteBetrieblichTeamByCodeAction(teamId: unknown, rawCode
 }
 
 export type BetrieblichInvitePreview =
-  | { ok: true; teamName: string; expiresAt: string }
+  | { ok: true; teamName: string; expiresAt: string; invitedPartnerId: string }
   | { ok: false; message: string };
 
 export async function getBetrieblichTeamInvitePreviewAction(rawToken: unknown): Promise<BetrieblichInvitePreview> {
@@ -303,11 +304,12 @@ export async function getBetrieblichTeamInvitePreviewAction(rawToken: unknown): 
     ok: true,
     teamName: String(team?.name ?? "Team"),
     expiresAt: String(inv.expires_at),
+    invitedPartnerId: String(inv.invited_partner_id),
   };
 }
 
 export async function acceptBetrieblichTeamInviteAction(rawToken: unknown): Promise<BetrieblichTeamActionResult> {
-  const { profile } = await requirePartnerLogin();
+  const { userId, profile } = await requirePartnerLogin();
   const gate = assertBetrieblich(profile);
   if (gate) return gate;
   const parsed = teamTokenSchema.safeParse(typeof rawToken === "string" ? rawToken : "");
@@ -325,12 +327,18 @@ export async function acceptBetrieblichTeamInviteAction(rawToken: unknown): Prom
 
   if (iErr || !inv) return { ok: false, message: "Einladung nicht gefunden." };
   if (inv.consumed_at) return { ok: false, message: "Bereits eingelöst." };
-  if (String(inv.invited_partner_id) !== profile.id) return { ok: false, message: "Diese Einladung gilt für ein anderes Konto." };
   if (new Date(String(inv.expires_at)) < new Date()) return { ok: false, message: "Abgelaufen." };
+  if (!uuidStringsEqual(inv.invited_partner_id, userId)) {
+    return {
+      ok: false,
+      message:
+        "Diese Einladung ist für ein anderes Partnerkonto bestimmt. Bitte melden Sie sich ab und mit der E-Mail-Adresse an, an die die Einladung geschickt wurde.",
+    };
+  }
 
   const teamId = String(inv.team_id);
 
-  const n = await countPartnerTeamMemberships(svc, profile.id);
+  const n = await countPartnerTeamMemberships(svc, userId);
   if (n === null) return { ok: false, message: "Konnte nicht beitreten." };
   if (n >= PARTNER_TEAM_MAX_MEMBERSHIPS) {
     return { ok: false, message: `Sie sind bereits in ${PARTNER_TEAM_MAX_MEMBERSHIPS} Teams.` };
@@ -344,7 +352,7 @@ export async function acceptBetrieblichTeamInviteAction(rawToken: unknown): Prom
 
   for (const row of existingMembers ?? []) {
     const mid = String((row as { partner_id: string }).partner_id);
-    const p = await partnersShareATeamExcluding(svc, mid, profile.id, teamId);
+    const p = await partnersShareATeamExcluding(svc, mid, userId, teamId);
     if ("error" in p) return { ok: false, message: "Prüfung fehlgeschlagen." };
     if (p.shares) {
       return {
@@ -356,7 +364,7 @@ export async function acceptBetrieblichTeamInviteAction(rawToken: unknown): Prom
 
   const { error: memErr } = await svc
     .from("partner_team_members")
-    .insert({ team_id: teamId, partner_id: profile.id, role: "member" });
+    .insert({ team_id: teamId, partner_id: userId, role: "member" });
   if (memErr) {
     if (memErr.code === "23505") return { ok: false, message: "Sie sind bereits Mitglied." };
     console.error("[acceptBetrieblichTeamInviteAction]", memErr.message);

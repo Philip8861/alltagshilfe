@@ -2,6 +2,7 @@ import { revalidatePath } from "next/cache";
 import { NextResponse } from "next/server";
 import { insertPartnerTipSubmission } from "@/lib/partner/insert-partner-tip-submission";
 import { notifyStaffOfNewPartnerTipFromPayload } from "@/lib/partner/partner-tip-staff-notify";
+import { partnerMaySubmitTipForServiceSlug } from "@/lib/partner/responsibility-areas";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { partnerTipSubmissionSchema } from "@/lib/validations/partner-tips";
@@ -44,12 +45,19 @@ export async function POST(request: Request) {
 
     const { data: profile, error: profErr } = await supabase
       .from("partner_profiles")
-      .select("id")
+      .select("id, responsibility_areas")
       .eq("id", user.id)
       .maybeSingle();
 
     if (profErr || !profile?.id) {
       return NextResponse.json({ ok: false, message: "Kein Partnerprofil." }, { status: 403 });
+    }
+
+    if (!partnerMaySubmitTipForServiceSlug(profile.responsibility_areas, parsed.data.service_slug)) {
+      return NextResponse.json(
+        { ok: false, message: "Diese Tippabgabe ist für Ihr Konto nicht möglich." },
+        { status: 403 },
+      );
     }
 
     const result = await insertPartnerTipSubmission(profile.id, parsed.data);

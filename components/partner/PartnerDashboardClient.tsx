@@ -133,7 +133,7 @@ export function PartnerDashboardClient({
             </svg>
             Tipp geben (nach Login)
           </Link>
-        ) : (
+        ) : allowedSlugs.length > 0 ? (
           <button
             type="button"
             data-tutorial="partner-tipp-geben"
@@ -153,6 +153,11 @@ export function PartnerDashboardClient({
             </svg>
             Tipp geben
           </button>
+        ) : (
+          <p className="partner-dash-animate partner-dash-delay-2 max-w-md text-sm leading-relaxed text-neutral-600 sm:text-right">
+            Für die Tippabgabe sind aktuell keine Leistungsbereiche freigeschaltet. Bitte wenden Sie sich an die
+            Geschäftsstelle, wenn sich das ändern soll.
+          </p>
         )}
       </header>
 
@@ -344,7 +349,9 @@ export function PartnerDashboardClient({
         ) : null}
       </div>
 
-      {demoMode ? null : <PartnerTipModal open={tipOpen} onClose={closeTipModal} allowedSlugs={allowedSlugs} />}
+      {demoMode ? null : allowedSlugs.length > 0 ? (
+        <PartnerTipModal open={tipOpen} onClose={closeTipModal} allowedSlugs={allowedSlugs} />
+      ) : null}
     </div>
   );
 }

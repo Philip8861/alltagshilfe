@@ -8,6 +8,7 @@ import { partnerPortalWelcomeLine } from "@/lib/partner/partner-portal-greeting"
 import { nextPayoutDateInfo } from "@/lib/partner/partner-payout-date";
 import { normalizePortalPreferences, parsePortalPreferences } from "@/lib/partner/portal-preferences";
 import type { PartnerDashboardTipSerial } from "@/lib/partner/types";
+import { PARTNER_RESPONSIBILITY_SLUGS } from "@/lib/partner/responsibility-areas";
 
 export const metadata: Metadata = {
   title: "Übersicht",
@@ -33,6 +34,8 @@ export default async function PartnerDashboardPage({ searchParams }: { searchPar
   const responsibilityAreaSlugs = profile.responsibility_areas ?? [];
   const { provisionMonatlichEur, provisionEinmalEur } = partnerProvisionSumsFromTips(tips);
   const portalPreferences = normalizePortalPreferences(parsePortalPreferences(profile.portal_preferences));
+  const tipSlugSet = new Set<string>(PARTNER_RESPONSIBILITY_SLUGS);
+  const hasAnyTipArea = responsibilityAreaSlugs.some((s) => tipSlugSet.has(s));
 
   return (
     <PartnerDashboardClient
@@ -41,7 +44,7 @@ export default async function PartnerDashboardPage({ searchParams }: { searchPar
       payoutLabel={payoutLabel}
       responsibilityAreaSlugs={responsibilityAreaSlugs}
       tips={tips}
-      initialTipModalOpen={tip === "1"}
+      initialTipModalOpen={tip === "1" && hasAnyTipArea}
       provisionMonatlichEur={provisionMonatlichEur}
       provisionEinmalEur={provisionEinmalEur}
       portalPreferences={portalPreferences}

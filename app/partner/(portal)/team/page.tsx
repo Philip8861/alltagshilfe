@@ -8,7 +8,7 @@ import { fetchBetrieblichTeamsOverview } from "@/lib/partner/betrieblich-team-qu
 import { createSupabaseServiceRoleClient } from "@/lib/supabase/service";
 
 export const metadata: Metadata = {
-  title: "Teams — betriebliche Pflegeberatung",
+  title: "Partnernetzwerk",
 };
 
 export default async function PartnerBetrieblichTeamPage() {

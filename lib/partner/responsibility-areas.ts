@@ -31,3 +31,11 @@ export function formatResponsibilityAreasList(areas: string[] | null | undefined
     .map((a) => PARTNER_RESPONSIBILITY_LABELS[a as PartnerResponsibilitySlug] ?? a)
     .join(", ");
 }
+
+/** Tipp-Abgabe nur für in der Registrierung freigeschaltete Leistungsbereiche (partner_profiles.responsibility_areas). */
+export function partnerMaySubmitTipForServiceSlug(
+  responsibilityAreas: string[] | null | undefined,
+  serviceSlug: PartnerResponsibilitySlug,
+): boolean {
+  return (responsibilityAreas ?? []).includes(serviceSlug);
+}

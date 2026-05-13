@@ -107,9 +107,9 @@ export function PartnerPortalShell({
               href="/partner/team"
               className={iconButtonClass(teamActive)}
               aria-current={teamActive ? "page" : undefined}
-              title="Teams (betriebliche Pflegeberatung)"
+              title="Partnernetzwerk betriebliche Pflegeberatung"
             >
-              <span className="sr-only">Teams — betriebliche Pflegeberatung</span>
+              <span className="sr-only">Partnernetzwerk, betriebliche Pflegeberatung</span>
               <TeamNavIcon />
             </Link>
           ) : null}

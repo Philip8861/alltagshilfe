@@ -15,6 +15,8 @@ import {
 import { serviceAccentClass, serviceBadgeClass } from "@/lib/partner/service-slug-styles";
 import type { PartnerTipSubmissionInput } from "@/lib/validations/partner-tips";
 
+const validServiceSlugSet = new Set<string>(PARTNER_RESPONSIBILITY_SLUGS);
+
 type Props = {
   open: boolean;
   onClose: () => void;
@@ -159,8 +161,9 @@ function wizardStepState(phase: FlowPhase, slug: PartnerResponsibilitySlug | nul
 export function PartnerTipModal({ open, onClose, allowedSlugs }: Props) {
   const router = useRouter();
   const uid = useId();
-  const choices =
-    allowedSlugs.length > 0 ? allowedSlugs : [...PARTNER_RESPONSIBILITY_SLUGS];
+  const choices = useMemo(() => {
+    return allowedSlugs.filter((s): s is PartnerResponsibilitySlug => validServiceSlugSet.has(s));
+  }, [allowedSlugs]);
   const [phase, setPhase] = useState<FlowPhase>("service");
   const [slug, setSlug] = useState<PartnerResponsibilitySlug | null>(null);
   const [betrieb, setBetrieb] = useState(emptyBetrieb);
@@ -405,39 +408,50 @@ export function PartnerTipModal({ open, onClose, allowedSlugs }: Props) {
               <h3 className="text-lg font-semibold leading-snug text-neutral-900 sm:text-xl">
                 Für welche Leistung möchten Sie uns einen Tipp geben?
               </h3>
-              <p className="-mt-2 text-sm text-neutral-600">
-                Tippen Sie auf eine Karte – anschließend erfassen wir die nötigen Angaben.
-              </p>
-              <ul className="grid gap-3 sm:grid-cols-2">
-                {choices.map((s) => (
-                  <li key={s}>
-                    <button
-                      type="button"
-                      onClick={() => selectService(s)}
-                      className="group flex h-full min-h-[5.5rem] w-full items-center gap-3 rounded-2xl border border-neutral-200/90 bg-white p-4 text-left shadow-sm transition hover:border-[#0F4F68]/35 hover:bg-[#f6fafc] hover:shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68] focus-visible:ring-offset-2"
-                    >
-                      <span
-                        className={`h-12 w-1.5 shrink-0 self-stretch rounded-full ${serviceAccentClass(s)}`}
-                        aria-hidden
-                      />
-                      <span
-                        className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-neutral-50 text-[#0F4F68] ring-1 ring-neutral-100 transition group-hover:bg-white"
-                        aria-hidden
-                      >
-                        <ServiceChoiceIcon slug={s} />
-                      </span>
-                      <span className="min-w-0 flex-1">
-                        <span className="flex items-center justify-between gap-2">
-                          <span className="text-sm font-semibold leading-snug text-neutral-900">
-                            {PARTNER_RESPONSIBILITY_LABELS[s]}
+              {choices.length === 0 ? (
+                <div className="rounded-2xl border border-neutral-200/90 bg-neutral-50/80 px-4 py-5 text-sm leading-relaxed text-neutral-700">
+                  <p>
+                    Für Ihr Partnerkonto sind derzeit keine Leistungsbereiche für die Tippabgabe freigeschaltet. Bitte
+                    wenden Sie sich an die Geschäftsstelle, wenn sich das ändern soll.
+                  </p>
+                </div>
+              ) : (
+                <>
+                  <p className="-mt-2 text-sm text-neutral-600">
+                    Tippen Sie auf eine Karte – anschließend erfassen wir die nötigen Angaben.
+                  </p>
+                  <ul className="grid gap-3 sm:grid-cols-2">
+                    {choices.map((s) => (
+                      <li key={s}>
+                        <button
+                          type="button"
+                          onClick={() => selectService(s)}
+                          className="group flex h-full min-h-[5.5rem] w-full items-center gap-3 rounded-2xl border border-neutral-200/90 bg-white p-4 text-left shadow-sm transition hover:border-[#0F4F68]/35 hover:bg-[#f6fafc] hover:shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68] focus-visible:ring-offset-2"
+                        >
+                          <span
+                            className={`h-12 w-1.5 shrink-0 self-stretch rounded-full ${serviceAccentClass(s)}`}
+                            aria-hidden
+                          />
+                          <span
+                            className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-neutral-50 text-[#0F4F68] ring-1 ring-neutral-100 transition group-hover:bg-white"
+                            aria-hidden
+                          >
+                            <ServiceChoiceIcon slug={s} />
                           </span>
-                          <ChevronRightIcon />
-                        </span>
-                      </span>
-                    </button>
-                  </li>
-                ))}
-              </ul>
+                          <span className="min-w-0 flex-1">
+                            <span className="flex items-center justify-between gap-2">
+                              <span className="text-sm font-semibold leading-snug text-neutral-900">
+                                {PARTNER_RESPONSIBILITY_LABELS[s]}
+                              </span>
+                              <ChevronRightIcon />
+                            </span>
+                          </span>
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                </>
+              )}
             </div>
           ) : null}
 
