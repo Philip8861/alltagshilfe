@@ -24,8 +24,8 @@ import {
 } from "@/lib/partner/service-slug-styles";
 import { formatProvisionEur } from "@/lib/partner/partner-tip-payout";
 import { AdminHomepageStatistikHub } from "@/components/partner/admin/AdminHomepageStatistikHub";
+import { AdminPartnerProgrammStatistikHub } from "@/components/partner/admin/AdminPartnerProgrammStatistikHub";
 import { PartnerAdminPayoutSection } from "@/components/partner/admin/PartnerAdminPayoutSection";
-import { PartnerExpandableStatSection } from "@/components/partner/PartnerExpandableStatSection";
 
 const AdminStatisticsCharts = dynamic(
   () => import("./AdminStatisticsCharts").then((m) => ({ default: m.AdminStatisticsCharts })),
@@ -1023,8 +1023,8 @@ export function PartnerAdminDashboard({
                 </h2>
                 <p className="mt-2 text-sm text-neutral-600">
                   {statistikTeil === "partner"
-                    ? "Überblick: Kennzahlen, Verläufe und Partnerliste. Tippen Sie auf einen Bereich zum Aufklappen."
-                    : "Vier Quadrate zur Homepage-Auswahl; Details nur nach Klick. Jahr oben."}
+                    ? "Drei Quadrate zur Partner-Auswahl; Detailansicht erst nach Klick (Jahr oben für Diagramme)."
+                    : "Fünf Quadrate zur Homepage-Auswahl; Details nur nach Klick. Jahr oben."}
                 </p>
               </div>
 
@@ -1079,179 +1079,180 @@ export function PartnerAdminDashboard({
               </div>
 
               {statistikTeil === "partner" ? (
-                <div className="space-y-4">
-                  <PartnerExpandableStatSection
-                    title="Kennzahlen im Überblick"
-                    subtitle="Profile, Tippeingänge, Statusverteilung, Pflegebox-Abschlüsse."
-                    defaultOpen
-                  >
-              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                <div className="rounded-2xl border border-[#0F4F68]/12 bg-gradient-to-br from-[#F2F9FA] to-white p-5">
-                  <p className="text-xs font-bold uppercase tracking-wide text-[#0F4F68]/65">Profile gesamt</p>
-                  <p className="mt-2 text-3xl font-bold tabular-nums text-[#0F4F68]">{globalStats.totalProfiles}</p>
-                  <p className="mt-1 text-xs text-neutral-600">
-                    Partner: {globalStats.partners} · Admin-Rolle: {globalStats.admins}
-                  </p>
-                </div>
-                <div className="rounded-2xl border border-[#0F4F68]/12 bg-gradient-to-br from-white to-[#F2F9FA]/80 p-5">
-                  <p className="text-xs font-bold uppercase tracking-wide text-[#0F4F68]/65">Tippgeber-Eingänge</p>
-                  <p className="mt-2 text-3xl font-bold tabular-nums text-[#0F4F68]">{globalStats.tipsTotal}</p>
-                  <p className="mt-2 flex flex-wrap gap-x-2 gap-y-1 text-[0.65rem] leading-snug text-neutral-600">
-                    {PARTNER_TIP_ADMIN_STATUSES.map((s) => (
-                      <span key={s}>
-                        {PARTNER_TIP_STATUS_LABELS[s]}: {globalStats.tipsByStatus[s]}
-                      </span>
-                    ))}
-                  </p>
-                </div>
-                <div className="rounded-2xl border border-[#0F4F68]/12 bg-gradient-to-br from-[#F2F9FA]/60 to-white p-5 sm:col-span-2 lg:col-span-1">
-                  <p className="text-xs font-bold uppercase tracking-wide text-[#0F4F68]/65">Pflegebox-Abschlüsse (DB)</p>
-                  <p className="mt-2 text-3xl font-bold tabular-nums text-[#0F4F68]">{globalStats.boxTotal}</p>
-                  <p className="mt-1 text-xs text-neutral-600">
-                    Ohne Partner-Zuordnung: {globalStats.boxUnassigned}
-                  </p>
-                </div>
-              </div>
-                  </PartnerExpandableStatSection>
-
-                  <PartnerExpandableStatSection
-                    title="Verlauf und Diagramme"
-                    subtitle="Jahresentwicklung Tipps/Pflegebox, Status und Service."
-                  >
-              <AdminStatisticsCharts
-                tips={tips}
-                orders={orders}
-                chartYear={chartYear}
-                profiles={profiles}
-                authById={authById}
-              />
-                  </PartnerExpandableStatSection>
-
-                  <PartnerExpandableStatSection
-                    title="Je Partner – Detailtabelle"
-                    subtitle="Alle Profile mit Tippzahl je Status und Konfigurator-Bestellungen."
-                  >
-              <div>
-                <h3 className="text-lg font-bold text-[#0F4F68]">Je Partner</h3>
-                <p className="mt-1 text-sm text-neutral-600">Tipps nach Status und Anzahl Konfigurator-Aufträge mit Partner-ID.</p>
-                <div className="mt-4 overflow-x-auto rounded-2xl border border-neutral-200/80">
-                  <table className="min-w-[960px] w-full text-left text-sm">
-                    <thead className="border-b border-[#0F4F68]/10 bg-[#F2F9FA]/60 text-xs">
-                      <tr>
-                        <th className="px-3 py-3">
-                          <SortButton
-                            label="Name"
-                            active={statSort.key === "name"}
-                            dir={statSort.dir}
-                            onClick={() => toggleStatSort("name")}
-                          />
-                        </th>
-                        <th className="px-3 py-3">
-                          <SortButton
-                            label="E-Mail"
-                            active={statSort.key === "email"}
-                            dir={statSort.dir}
-                            onClick={() => toggleStatSort("email")}
-                          />
-                        </th>
-                        <th className="px-3 py-3">Code</th>
-                        <th className="px-3 py-3">Rolle</th>
-                        <th className="px-3 py-3">
-                          <SortButton
-                            label="Tipps"
-                            active={statSort.key === "tipsTotal"}
-                            dir={statSort.dir}
-                            onClick={() => toggleStatSort("tipsTotal")}
-                          />
-                        </th>
-                        <th className="px-3 py-3">
-                          <SortButton
-                            label="Bearb."
-                            active={statSort.key === "tipsBearbeitung"}
-                            dir={statSort.dir}
-                            onClick={() => toggleStatSort("tipsBearbeitung")}
-                          />
-                        </th>
-                        <th className="px-3 py-3">
-                          <SortButton
-                            label="Vertragsabr."
-                            active={statSort.key === "tipsVertragsabschluss"}
-                            dir={statSort.dir}
-                            onClick={() => toggleStatSort("tipsVertragsabschluss")}
-                          />
-                        </th>
-                        <th className="px-3 py-3">
-                          <SortButton
-                            label="Abgelehnt"
-                            active={statSort.key === "tipsAbgelehnt"}
-                            dir={statSort.dir}
-                            onClick={() => toggleStatSort("tipsAbgelehnt")}
-                          />
-                        </th>
-                        <th className="px-3 py-3">
-                          <SortButton
-                            label="Box"
-                            active={statSort.key === "boxOrders"}
-                            dir={statSort.dir}
-                            onClick={() => toggleStatSort("boxOrders")}
-                          />
-                        </th>
-                        <th className="px-3 py-3">
-                          <SortButton
-                            label="Profil seit"
-                            active={statSort.key === "profile"}
-                            dir={statSort.dir}
-                            onClick={() => toggleStatSort("profile")}
-                          />
-                        </th>
-                        <th className="px-3 py-3">Letzte Anmeldung</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-neutral-100">
-                      {sortedStatRows.map((row) => {
-                        const p = row.profile;
-                        const name =
-                          [p.first_name?.trim(), p.last_name?.trim()].filter(Boolean).join(" ") ||
-                          p.display_name?.trim() ||
-                          "—";
-                        return (
-                          <tr key={p.id} className="transition-colors hover:bg-[#f8fbfc]">
-                            <td className="px-3 py-3 font-medium text-neutral-900">{name}</td>
-                            <td className="max-w-[11rem] break-all px-3 py-3 text-xs text-neutral-700">{row.email}</td>
-                            <td className="whitespace-nowrap px-3 py-3 font-mono text-xs font-bold text-[#0F4F68]">
-                              {p.partner_referral_code?.trim() || "—"}
-                            </td>
-                            <td className="px-3 py-3 text-neutral-700">{p.role}</td>
-                            <td className="px-3 py-3 tabular-nums font-semibold text-neutral-900">{row.tipsTotal}</td>
-                            <td className="px-3 py-3 tabular-nums text-neutral-700">{row.tipsBearbeitung}</td>
-                            <td className="px-3 py-3 tabular-nums text-emerald-800">{row.tipsVertragsabschluss}</td>
-                            <td className="px-3 py-3 tabular-nums text-rose-800">{row.tipsAbgelehnt}</td>
-                            <td className="px-3 py-3 tabular-nums text-neutral-800">{row.boxOrders}</td>
-                            <td className="whitespace-nowrap px-3 py-3 text-xs text-neutral-600">
-                              {p.created_at
-                                ? new Date(p.created_at).toLocaleString("de-DE", {
-                                    dateStyle: "short",
-                                    timeStyle: "short",
-                                  })
-                                : "—"}
-                            </td>
-                            <td className="whitespace-nowrap px-3 py-3 text-xs text-neutral-600">
-                              {row.lastSignIn
-                                ? new Date(row.lastSignIn).toLocaleString("de-DE", {
-                                    dateStyle: "short",
-                                    timeStyle: "short",
-                                  })
-                                : "—"}
-                            </td>
-                          </tr>
-                        );
-                      })}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-                  </PartnerExpandableStatSection>
-                </div>
+                <AdminPartnerProgrammStatistikHub
+                  chartYear={chartYear}
+                  kennzahlen={
+                    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                      <div className="rounded-2xl border border-[#0F4F68]/12 bg-gradient-to-br from-[#F2F9FA] to-white p-5">
+                        <p className="text-xs font-bold uppercase tracking-wide text-[#0F4F68]/65">
+                          Profile gesamt
+                        </p>
+                        <p className="mt-2 text-3xl font-bold tabular-nums text-[#0F4F68]">{globalStats.totalProfiles}</p>
+                        <p className="mt-1 text-xs text-neutral-600">
+                          Partner: {globalStats.partners} · Admin-Rolle: {globalStats.admins}
+                        </p>
+                      </div>
+                      <div className="rounded-2xl border border-[#0F4F68]/12 bg-gradient-to-br from-white to-[#F2F9FA]/80 p-5">
+                        <p className="text-xs font-bold uppercase tracking-wide text-[#0F4F68]/65">
+                          Tippgeber-Eingänge
+                        </p>
+                        <p className="mt-2 text-3xl font-bold tabular-nums text-[#0F4F68]">{globalStats.tipsTotal}</p>
+                        <p className="mt-2 flex flex-wrap gap-x-2 gap-y-1 text-[0.65rem] leading-snug text-neutral-600">
+                          {PARTNER_TIP_ADMIN_STATUSES.map((s) => (
+                            <span key={s}>
+                              {PARTNER_TIP_STATUS_LABELS[s]}: {globalStats.tipsByStatus[s]}
+                            </span>
+                          ))}
+                        </p>
+                      </div>
+                      <div className="rounded-2xl border border-[#0F4F68]/12 bg-gradient-to-br from-[#F2F9FA]/60 to-white p-5 sm:col-span-2 lg:col-span-1">
+                        <p className="text-xs font-bold uppercase tracking-wide text-[#0F4F68]/65">
+                          Pflegebox-Abschlüsse (DB)
+                        </p>
+                        <p className="mt-2 text-3xl font-bold tabular-nums text-[#0F4F68]">{globalStats.boxTotal}</p>
+                        <p className="mt-1 text-xs text-neutral-600">
+                          Ohne Partner-Zuordnung: {globalStats.boxUnassigned}
+                        </p>
+                      </div>
+                    </div>
+                  }
+                  verlauf={
+                    <AdminStatisticsCharts
+                      tips={tips}
+                      orders={orders}
+                      chartYear={chartYear}
+                      profiles={profiles}
+                      authById={authById}
+                    />
+                  }
+                  jePartner={
+                    <div>
+                      <h3 className="text-lg font-bold text-[#0F4F68]">Je Partner</h3>
+                      <p className="mt-1 text-sm text-neutral-600">
+                        Tipps nach Status und Anzahl Konfigurator-Aufträge mit Partner-ID.
+                      </p>
+                      <div className="mt-4 overflow-x-auto rounded-2xl border border-neutral-200/80">
+                        <table className="min-w-[960px] w-full text-left text-sm">
+                          <thead className="border-b border-[#0F4F68]/10 bg-[#F2F9FA]/60 text-xs">
+                            <tr>
+                              <th className="px-3 py-3">
+                                <SortButton
+                                  label="Name"
+                                  active={statSort.key === "name"}
+                                  dir={statSort.dir}
+                                  onClick={() => toggleStatSort("name")}
+                                />
+                              </th>
+                              <th className="px-3 py-3">
+                                <SortButton
+                                  label="E-Mail"
+                                  active={statSort.key === "email"}
+                                  dir={statSort.dir}
+                                  onClick={() => toggleStatSort("email")}
+                                />
+                              </th>
+                              <th className="px-3 py-3">Code</th>
+                              <th className="px-3 py-3">Rolle</th>
+                              <th className="px-3 py-3">
+                                <SortButton
+                                  label="Tipps"
+                                  active={statSort.key === "tipsTotal"}
+                                  dir={statSort.dir}
+                                  onClick={() => toggleStatSort("tipsTotal")}
+                                />
+                              </th>
+                              <th className="px-3 py-3">
+                                <SortButton
+                                  label="Bearb."
+                                  active={statSort.key === "tipsBearbeitung"}
+                                  dir={statSort.dir}
+                                  onClick={() => toggleStatSort("tipsBearbeitung")}
+                                />
+                              </th>
+                              <th className="px-3 py-3">
+                                <SortButton
+                                  label="Vertragsabr."
+                                  active={statSort.key === "tipsVertragsabschluss"}
+                                  dir={statSort.dir}
+                                  onClick={() => toggleStatSort("tipsVertragsabschluss")}
+                                />
+                              </th>
+                              <th className="px-3 py-3">
+                                <SortButton
+                                  label="Abgelehnt"
+                                  active={statSort.key === "tipsAbgelehnt"}
+                                  dir={statSort.dir}
+                                  onClick={() => toggleStatSort("tipsAbgelehnt")}
+                                />
+                              </th>
+                              <th className="px-3 py-3">
+                                <SortButton
+                                  label="Box"
+                                  active={statSort.key === "boxOrders"}
+                                  dir={statSort.dir}
+                                  onClick={() => toggleStatSort("boxOrders")}
+                                />
+                              </th>
+                              <th className="px-3 py-3">
+                                <SortButton
+                                  label="Profil seit"
+                                  active={statSort.key === "profile"}
+                                  dir={statSort.dir}
+                                  onClick={() => toggleStatSort("profile")}
+                                />
+                              </th>
+                              <th className="px-3 py-3">Letzte Anmeldung</th>
+                            </tr>
+                          </thead>
+                          <tbody className="divide-y divide-neutral-100">
+                            {sortedStatRows.map((row) => {
+                              const p = row.profile;
+                              const name =
+                                [p.first_name?.trim(), p.last_name?.trim()].filter(Boolean).join(" ") ||
+                                p.display_name?.trim() ||
+                                "—";
+                              return (
+                                <tr key={p.id} className="transition-colors hover:bg-[#f8fbfc]">
+                                  <td className="px-3 py-3 font-medium text-neutral-900">{name}</td>
+                                  <td className="max-w-[11rem] break-all px-3 py-3 text-xs text-neutral-700">
+                                    {row.email}
+                                  </td>
+                                  <td className="whitespace-nowrap px-3 py-3 font-mono text-xs font-bold text-[#0F4F68]">
+                                    {p.partner_referral_code?.trim() || "—"}
+                                  </td>
+                                  <td className="px-3 py-3 text-neutral-700">{p.role}</td>
+                                  <td className="px-3 py-3 tabular-nums font-semibold text-neutral-900">
+                                    {row.tipsTotal}
+                                  </td>
+                                  <td className="px-3 py-3 tabular-nums text-neutral-700">{row.tipsBearbeitung}</td>
+                                  <td className="px-3 py-3 tabular-nums text-emerald-800">{row.tipsVertragsabschluss}</td>
+                                  <td className="px-3 py-3 tabular-nums text-rose-800">{row.tipsAbgelehnt}</td>
+                                  <td className="px-3 py-3 tabular-nums text-neutral-800">{row.boxOrders}</td>
+                                  <td className="whitespace-nowrap px-3 py-3 text-xs text-neutral-600">
+                                    {p.created_at
+                                      ? new Date(p.created_at).toLocaleString("de-DE", {
+                                          dateStyle: "short",
+                                          timeStyle: "short",
+                                        })
+                                      : "—"}
+                                  </td>
+                                  <td className="whitespace-nowrap px-3 py-3 text-xs text-neutral-600">
+                                    {row.lastSignIn
+                                      ? new Date(row.lastSignIn).toLocaleString("de-DE", {
+                                          dateStyle: "short",
+                                          timeStyle: "short",
+                                        })
+                                      : "—"}
+                                  </td>
+                                </tr>
+                              );
+                            })}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  }
+                />
               ) : (
                 <div className="space-y-4">
                   <AdminHomepageStatistikHub chartYear={chartYear} />

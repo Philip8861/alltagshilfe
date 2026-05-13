@@ -1,14 +1,15 @@
 "use client";
 
 import { useCallback, useState } from "react";
-import { AdminContactSourcesPanel } from "@/components/partner/admin/AdminContactSourcesPanel";
+import { AdminContactKanalTagesverlaufPanel } from "@/components/partner/admin/AdminContactKanalTagesverlaufPanel";
+import { AdminContactListenWochentagKreuzPanel } from "@/components/partner/admin/AdminContactListenWochentagKreuzPanel";
 import {
   AdminHomepageTrafficPanel,
   type HomepageTrafficSectionId,
 } from "@/components/partner/admin/AdminHomepageTrafficPanel";
 import { HomepageStatTileButton } from "@/components/partner/admin/HomepageStatTileButton";
 
-export type HomepageStatistikQuadrant = HomepageTrafficSectionId | "contacts";
+export type HomepageStatistikQuadrant = HomepageTrafficSectionId | "contacts_daily" | "contacts_listen";
 
 type Props = { chartYear: number };
 
@@ -17,9 +18,14 @@ const TILES: { id: HomepageStatistikQuadrant; title: string; hint?: string }[] =
   { id: "device", title: "Aufrufe nach Gerät", hint: "Mobil · Tablet · Desktop" },
   { id: "paths", title: "Aufrufe je Seite", hint: "Top-URLs nach Pfad" },
   {
-    id: "contacts",
-    title: "Wie haben uns Kunden gefunden?",
-    hint: "Herkunft & Kanäle",
+    id: "contacts_daily",
+    title: "Anfragen pro Tag (Kanäle)",
+    hint: "Tagesverlauf · Liniendiagramm",
+  },
+  {
+    id: "contacts_listen",
+    title: "Herkunft & Wochentage",
+    hint: "Listen · Wochentage · Kreuztabellen",
   },
 ];
 
@@ -36,12 +42,12 @@ export function AdminHomepageStatistikHub({ chartYear }: Props) {
   return (
     <div className="space-y-6">
       <p className="text-sm text-neutral-600">
-        Vier Überblicksfelder – standardmäßig nur diese Quadrate sichtbar. Zum Öffnen antippen, erneut antippen
+        Fünf Überblicksfelder – standardmäßig nur diese Kacheln sichtbar. Zum Öffnen antippen, erneut antippen
         schließt; das Jahr gilt wie oben im Bereich „Statistik“. Nach dem Öffnen erscheint die Detailauswertung
         hierunter.
       </p>
 
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-5">
         {TILES.map((t) => (
           <HomepageStatTileButton
             key={t.id}
@@ -61,7 +67,8 @@ export function AdminHomepageStatistikHub({ chartYear }: Props) {
           aria-label="Details zur gewählten Homepage-Statistik"
         >
           <AdminHomepageTrafficPanel chartYear={chartYear} activeSection={trafficSection} />
-          {open === "contacts" ? <AdminContactSourcesPanel chartYear={chartYear} /> : null}
+          {open === "contacts_daily" ? <AdminContactKanalTagesverlaufPanel chartYear={chartYear} /> : null}
+          {open === "contacts_listen" ? <AdminContactListenWochentagKreuzPanel chartYear={chartYear} /> : null}
         </div>
       ) : null}
     </div>

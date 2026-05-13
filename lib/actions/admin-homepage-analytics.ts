@@ -388,6 +388,86 @@ export async function fetchContactKindDailyStatsAction(
   return { ok: true, data, chartSeries, kinds };
 }
 
+/** Aggregiert nach ISO-Wochentag (1 = Montag … 7 = Sonntag); Karriere vs. Kern-Kanäle vs. Übriges. */
+export type ContactWeekdayGroupRow = {
+  isoWeekday: number;
+  weekdayLabel: string;
+  karriere: number;
+  kern: number;
+  other: number;
+};
+
+const ISO_WEEKDAY_LABELS_DE = [
+  "Montag",
+  "Dienstag",
+  "Mittwoch",
+  "Donnerstag",
+  "Freitag",
+  "Samstag",
+  "Sonntag",
+] as const;
+
+function parseContactWeekdayGroupRpc(data: unknown): Map<number, { k: number; n: number; o: number }> {
+  const m = new Map<number, { k: number; n: number; o: number }>();
+  if (!Array.isArray(data)) return m;
+  for (const row of data) {
+    const r = row as Record<string, unknown>;
+    const iso = Number(r.iso_weekday ?? 0);
+    if (iso < 1 || iso > 7) continue;
+    m.set(iso, {
+      k: Number(r.karriere_views ?? 0),
+      n: Number(r.kern_views ?? 0),
+      o: Number(r.other_views ?? 0),
+    });
+  }
+  return m;
+}
+
+function fillContactWeekdayGroups(raw: Map<number, { k: number; n: number; o: number }>): ContactWeekdayGroupRow[] {
+  return ISO_WEEKDAY_LABELS_DE.map((weekdayLabel, i) => {
+    const isoWeekday = i + 1;
+    const cell = raw.get(isoWeekday);
+    return {
+      isoWeekday,
+      weekdayLabel,
+      karriere: cell?.k ?? 0,
+      kern: cell?.n ?? 0,
+      other: cell?.o ?? 0,
+    };
+  });
+}
+
+export async function fetchContactWeekdayGroupTotalsAction(
+  year: number,
+  month: number,
+  scope: "monat" | "jahr",
+): Promise<{ ok: true; weekdays: ContactWeekdayGroupRow[] } | { ok: false; message: string }> {
+  if (!(await getSystemAdminSession())) return { ok: false, message: "Nicht angemeldet." };
+  const svc = createSupabaseServiceRoleClient();
+  if (!svc) return { ok: false, message: "Service nicht konfiguriert." };
+
+  const y = Math.min(2100, Math.max(YEAR_RANGE_START, Math.floor(year)));
+  const m = Math.min(12, Math.max(1, Math.floor(month)));
+  const { from, to } = scope === "monat" ? calendarMonthBounds(y, m) : calendarYearBounds(y);
+
+  try {
+    const res = await svcRpc(svc, "admin_contact_weekday_group_totals", {
+      p_from: from,
+      p_to: to,
+    });
+    if (res.error) throw new Error(res.error.message);
+    const raw = parseContactWeekdayGroupRpc(res.data);
+    return { ok: true, weekdays: fillContactWeekdayGroups(raw) };
+  } catch (e) {
+    console.error("[fetchContactWeekdayGroupTotalsAction]", e);
+    return {
+      ok: false,
+      message:
+        "Wochentags-Auswertung fehlgeschlagen (Migration 021 ausgeführt? RPC admin_contact_weekday_group_totals).",
+    };
+  }
+}
+
 /**
  * Aggregiert alle Anfragen nach (Quelle, Formular-Typ) im gewählten Zeitraum.
  * Liest aus `contact_sources_daily` (Service Role); Personenbezug ist ausgeschlossen,
