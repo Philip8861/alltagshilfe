@@ -50,6 +50,53 @@ function parseBereich(v: string | undefined): PartnerAdminInitialBereich {
 const TIP_DEEP_LINK_ID_RE =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
+const PARTNER_PROFILES_ADMIN_SELECT_WITH_DISABLED_AT =
+  "id, display_name, organization_name, role, created_at, updated_at, salutation, partner_referral_code, first_name, last_name, recruited_by, phone, responsibility_areas, password_changed_at, account_disabled_at, iban, bic, account_holder";
+
+const PARTNER_PROFILES_ADMIN_SELECT_WITHOUT_DISABLED_AT =
+  "id, display_name, organization_name, role, created_at, updated_at, salutation, partner_referral_code, first_name, last_name, recruited_by, phone, responsibility_areas, password_changed_at, iban, bic, account_holder";
+
+function isLikelyMissingAccountDisabledAtColumn(error: {
+  message?: string;
+  code?: string;
+} | null): boolean {
+  if (!error) return false;
+  const m = String(error.message ?? "").toLowerCase();
+  return (
+    m.includes("account_disabled_at") &&
+    (m.includes("does not exist") || m.includes("could not find") || m.includes("schema cache") || error.code === "42703")
+  );
+}
+
+async function fetchPartnerProfilesForAdminPage(
+  svc: NonNullable<ReturnType<typeof createSupabaseServiceRoleClient>>,
+): Promise<{ profiles: PartnerProfile[]; errorMessage?: string }> {
+  const first = await svc
+    .from("partner_profiles")
+    .select(PARTNER_PROFILES_ADMIN_SELECT_WITH_DISABLED_AT)
+    .order("created_at", { ascending: false });
+  if (!first.error && first.data) {
+    return { profiles: (first.data as PartnerProfile[]) ?? [] };
+  }
+  if (first.error && isLikelyMissingAccountDisabledAtColumn(first.error)) {
+    const second = await svc
+      .from("partner_profiles")
+      .select(PARTNER_PROFILES_ADMIN_SELECT_WITHOUT_DISABLED_AT)
+      .order("created_at", { ascending: false });
+    if (!second.error && second.data) {
+      console.warn(
+        "[PartnerAdminPage] partner_profiles ohne account_disabled_at geladen — Migration 025 in Supabase ausführen.",
+      );
+      return { profiles: (second.data as PartnerProfile[]) ?? [] };
+    }
+    return { profiles: [], errorMessage: second.error?.message ?? first.error.message };
+  }
+  return {
+    profiles: [],
+    errorMessage: first.error?.message ?? "partner_profiles konnte nicht geladen werden.",
+  };
+}
+
 /** Query `tipp` für E-Mail-Deep-Link (UUID). Ungültige Werte ignorieren. */
 function parseFocusTipId(v: string | undefined): string | null {
   const s = v?.trim();
@@ -86,13 +133,8 @@ export default async function PartnerAdminPage({
 
   if (svc) {
     try {
-      const [profRes, ordRes, listRes, repRes, tipPack] = await Promise.all([
-        svc
-          .from("partner_profiles")
-          .select(
-            "id, display_name, organization_name, role, created_at, updated_at, salutation, partner_referral_code, first_name, last_name, recruited_by, phone, responsibility_areas, password_changed_at, account_disabled_at, iban, bic, account_holder",
-          )
-          .order("created_at", { ascending: false }),
+      const profilesPromise = fetchPartnerProfilesForAdminPage(svc);
+      const [ordRes, listRes, repRes, tipPack] = await Promise.all([
         svc
           .from("pflegebox_orders")
           .select("id, partner_id, external_reference, status, created_at, summary_json")
@@ -105,7 +147,11 @@ export default async function PartnerAdminPage({
         ),
       ]);
 
-      profiles = (profRes.data as PartnerProfile[] | null) ?? [];
+      const loadedProfilesResult = await profilesPromise;
+      profiles = loadedProfilesResult.profiles;
+      if (loadedProfilesResult.errorMessage) {
+        console.error("[PartnerAdminPage] partner_profiles:", loadedProfilesResult.errorMessage);
+      }
       tips = tipPack.rows.map((row) => ({
         id: String(row.id),
         partner_id: String(row.partner_id),
