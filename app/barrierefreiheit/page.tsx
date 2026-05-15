@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { AccessibilitySettingsButton } from "./AccessibilitySettingsButton";
 
 export const metadata: Metadata = {
   title: "Barrierefreie Homepage",
@@ -24,13 +25,14 @@ export default function BarrierefreiheitPage() {
       <p className="mt-6 text-neutral-700">
         Die Einstellungen erreichen Sie über das Lupen-Symbol unten rechts oder über den Bereich im Footer.
       </p>
-      <div className="mt-8">
+      <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
         <Link
           href="/"
-          className="inline-flex min-h-[44px] items-center justify-center rounded-xl bg-[#0F4F68] px-5 py-2.5 font-semibold text-white hover:bg-[#0c3d52]"
+          className="inline-flex min-h-[44px] items-center justify-center rounded-xl bg-[#0F4F68] px-5 py-2.5 font-semibold text-white shadow-sm transition-colors hover:bg-[#0c3d52] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68] focus-visible:ring-offset-2"
         >
           Zur Startseite
         </Link>
+        <AccessibilitySettingsButton />
       </div>
     </article>
   );
