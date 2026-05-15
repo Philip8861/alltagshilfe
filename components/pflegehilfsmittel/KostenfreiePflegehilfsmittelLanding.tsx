@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import Link from "next/link";
+import { GtmKontaktNavLink } from "@/components/analytics/GtmContactIntentLink";
 import { siteConfig } from "@/config/site";
 import { PFLEGEBOX_KONFIGURATOR_PAGE } from "@/lib/pflegebox-konfigurator-path";
 import { RevealOnScroll } from "@/components/pflegehilfsmittel/RevealOnScroll";
@@ -222,9 +223,15 @@ const KOSTENFREI_FAQ: KostenfreiFaqItem[] = [
     answer: (
       <>
         Das ist problemlos möglich – kontaktieren Sie uns einfach über die{" "}
-        <Link href="/kontakt" className={FAQ_INLINE_LINK}>
+        <GtmKontaktNavLink
+          href="/kontakt"
+          contactPath="pflegehilfsmittel_landing_faq_inline_kontakt_nav"
+          sourceComponent="KostenfreiePflegehilfsmittelLanding"
+          service="pflegehilfsmittel"
+          className={FAQ_INLINE_LINK}
+        >
           Kontaktseite
-        </Link>
+        </GtmKontaktNavLink>
         .
       </>
     ),
@@ -584,9 +591,15 @@ export function KostenfreiePflegehilfsmittelLanding() {
               <p className="text-neutral-600">
                 {siteConfig.name} unterstützt Sie bei der Beantragung und Abrechnung mit Ihrer Pflegekasse. Bei Fragen
                 erreichen Sie uns über unsere{" "}
-                <Link href="/kontakt" className="font-semibold text-[#0F4F68] underline-offset-2 hover:underline">
+                <GtmKontaktNavLink
+                  href="/kontakt"
+                  contactPath="pflegehilfsmittel_landing_footer_inline_kontakt_nav"
+                  sourceComponent="KostenfreiePflegehilfsmittelLanding"
+                  service="pflegehilfsmittel"
+                  className="font-semibold text-[#0F4F68] underline-offset-2 hover:underline"
+                >
                   Kontaktseite
-                </Link>
+                </GtmKontaktNavLink>
                 .
               </p>
               <KonfiguratorLink

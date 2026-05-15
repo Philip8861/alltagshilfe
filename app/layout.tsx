@@ -35,6 +35,7 @@ import { GoogleTranslateBootstrap } from "@/components/layout/GoogleTranslateBoo
 import { LocalSiteTranslator } from "@/components/layout/LocalSiteTranslator";
 import { SiteAnalyticsSpaNavigation } from "@/components/site-analytics/SiteAnalyticsSpaNavigation";
 import { GoogleTagManager } from "@/components/analytics/GoogleTagManager";
+import { GtmSpaRouteTracker } from "@/components/analytics/GtmSpaRouteTracker";
 
 /** Google Search Console – Verifizierung per Meta-Tag (Wert aus Env). */
 const GOOGLE_SITE_VERIFICATION = process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION?.trim() || undefined;
@@ -103,6 +104,7 @@ export default function RootLayout({
         <LocalSiteTranslator />
         <ReadabilityZoomControls />
         <SiteAnalyticsSpaNavigation />
+        <GtmSpaRouteTracker />
         <GoogleTagManager />
       </body>
     </html>

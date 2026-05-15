@@ -3,6 +3,8 @@ import Link from "next/link";
 import { Container } from "@/components/layout/Container";
 import { siteConfig } from "@/config/site";
 
+import { KontaktDankeGtmEvent } from "@/components/analytics/KontaktDankeGtmEvent";
+
 export const metadata: Metadata = {
   title: "Nachricht gesendet",
   description: `Ihre Nachricht wurde gesendet – ${siteConfig.name}.`,
@@ -14,6 +16,7 @@ export default function KontaktDankePage() {
   return (
     <article className="py-16 sm:py-24">
       <Container>
+        <KontaktDankeGtmEvent />
         <div className="mx-auto max-w-2xl text-center">
           <h1 className="text-3xl font-bold tracking-tight text-neutral-900 sm:text-4xl">
             Vielen Dank

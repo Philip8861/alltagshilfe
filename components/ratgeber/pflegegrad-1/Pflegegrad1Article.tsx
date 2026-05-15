@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import { GtmKontaktNavLink } from "@/components/analytics/GtmContactIntentLink";
 import { RatgeberBeratungCtaButton, RatgeberSidebarBeratungTeaser } from "@/components/ratgeber/RatgeberBeratungDialog";
 import { PflegegradFaqAccordion } from "@/components/ratgeber/pflegegrad-beantragen/PflegegradFaqAccordion";
 import { PflegegradQuickAnswerBox } from "@/components/ratgeber/pflegegrad-beantragen/PflegegradQuickAnswerAndFacts";
@@ -618,10 +619,23 @@ export function Pflegegrad1Article() {
             { href: "/ratgeber", label: "Alle Ratgeber-Beiträge" },
           ].map((item) => (
             <li key={item.href}>
-              <Link href={item.href} className={`${LINK} inline-flex items-center gap-2 py-1`}>
-                <span className="h-6 w-1 shrink-0 rounded-full bg-gradient-to-b from-[#0F4F68] to-[#4a93a8]" aria-hidden />
-                {item.label}
-              </Link>
+              {item.href === "/kontakt" ? (
+                <GtmKontaktNavLink
+                  href={item.href}
+                  contactPath="ratgeber_pflegegrad1_weiterfuehrend_kontakt_nav"
+                  sourceComponent="Pflegegrad1Article"
+                  service="ratgeber"
+                  className={`${LINK} inline-flex items-center gap-2 py-1`}
+                >
+                  <span className="h-6 w-1 shrink-0 rounded-full bg-gradient-to-b from-[#0F4F68] to-[#4a93a8]" aria-hidden />
+                  {item.label}
+                </GtmKontaktNavLink>
+              ) : (
+                <Link href={item.href} className={`${LINK} inline-flex items-center gap-2 py-1`}>
+                  <span className="h-6 w-1 shrink-0 rounded-full bg-gradient-to-b from-[#0F4F68] to-[#4a93a8]" aria-hidden />
+                  {item.label}
+                </Link>
+              )}
             </li>
           ))}
         </ul>

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Container } from "@/components/layout/Container";
 import { siteConfig } from "@/config/site";
+import { GtmMailtoLink, GtmPhoneLink } from "@/components/analytics/GtmContactIntentLink";
 
 export const metadata: Metadata = {
   title: "Datenschutz",
@@ -34,14 +35,18 @@ export default function DatenschutzPage() {
             </p>
             <p>
               Telefon:{" "}
-              <a href="tel:+4983349893330" className="text-[#0F4F68] underline">
+              <GtmPhoneLink href="tel:+4983349893330" sourceComponent="datenschutz_tel" className="text-[#0F4F68] underline">
                 08334 / 9893330
-              </a>
+              </GtmPhoneLink>
               <br />
               E-Mail:{" "}
-              <a href="mailto:info@alltagshilfe-sued.de" className="text-[#0F4F68] underline">
+              <GtmMailtoLink
+                href="mailto:info@alltagshilfe-sued.de"
+                sourceComponent="datenschutz_email_header"
+                className="text-[#0F4F68] underline"
+              >
                 info@alltagshilfe-sued.de
-              </a>
+              </GtmMailtoLink>
             </p>
           </section>
 
@@ -529,9 +534,13 @@ export default function DatenschutzPage() {
             <p>Wenn Sie eines dieser Rechte ausüben möchten, können Sie sich jederzeit an uns wenden:</p>
             <p>
               E-Mail:{" "}
-              <a href="mailto:info@alltagshilfe-sued.de" className="text-[#0F4F68] underline">
+              <GtmMailtoLink
+                href="mailto:info@alltagshilfe-sued.de"
+                sourceComponent="datenschutz_email_rights"
+                className="text-[#0F4F68] underline"
+              >
                 info@alltagshilfe-sued.de
-              </a>
+              </GtmMailtoLink>
             </p>
           </section>
 

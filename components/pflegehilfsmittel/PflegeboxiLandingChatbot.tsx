@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { GtmKontaktNavLink } from "@/components/analytics/GtmContactIntentLink";
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
   PFLEGEBOXI_COLLAPSED_HINT,
@@ -161,11 +162,24 @@ export function PflegeboxiLandingChatbot() {
                 <p className="ahs-landing-pfxb__reply-a">{selectedTopic.answer}</p>
                 {selectedTopic.extraLinks?.length ? (
                   <div className="ahs-landing-pfxb__reply-links">
-                    {selectedTopic.extraLinks.map((l) => (
-                      <Link key={l.href + l.label} href={l.href} className="ahs-landing-pfxb__inline-link">
-                        {l.label}
-                      </Link>
-                    ))}
+                    {selectedTopic.extraLinks.map((l) =>
+                      l.href === "/kontakt" ? (
+                        <GtmKontaktNavLink
+                          key={l.href + l.label}
+                          href={l.href}
+                          contactPath="pflegeboxi_chatbot_topic_extra_kontakt_nav"
+                          sourceComponent="PflegeboxiLandingChatbot"
+                          service="pflegehilfsmittel"
+                          className="ahs-landing-pfxb__inline-link"
+                        >
+                          {l.label}
+                        </GtmKontaktNavLink>
+                      ) : (
+                        <Link key={l.href + l.label} href={l.href} className="ahs-landing-pfxb__inline-link">
+                          {l.label}
+                        </Link>
+                      ),
+                    )}
                   </div>
                 ) : null}
               </>
@@ -192,9 +206,15 @@ export function PflegeboxiLandingChatbot() {
           <Link href={PFLEGEBOX_KONFIGURATOR_PAGE} className="ahs-landing-pfxb__panel-link">
             Zum Konfigurator
           </Link>
-          <Link href="/kontakt" className="ahs-landing-pfxb__panel-link">
+          <GtmKontaktNavLink
+            href="/kontakt"
+            contactPath="pflegeboxi_chatbot_panel_kundenservice_nav"
+            sourceComponent="PflegeboxiLandingChatbot"
+            service="pflegehilfsmittel"
+            className="ahs-landing-pfxb__panel-link"
+          >
             Kundenservice
-          </Link>
+          </GtmKontaktNavLink>
         </div>
       </div>
     </div>

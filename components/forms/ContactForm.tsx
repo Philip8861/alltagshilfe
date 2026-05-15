@@ -1,11 +1,18 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
+import { useState, useRef, type FormEvent } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { submitContact } from "@/lib/actions/contact";
 import { CONTACT_TOPICS, type ContactFormData } from "@/lib/validations/contact";
 import { ContactSourceSelect } from "@/components/forms/ContactSourceSelect";
 import { cn } from "@/lib/utils";
+import {
+  clearContactSubmissionContextStash,
+  isNextjsRedirectError,
+  stashContactFormSubmissionContext,
+  trackFormStarted,
+} from "@/lib/analytics/gtm-data-layer";
 
 export type ContactFormProps = {
   /**
@@ -45,6 +52,8 @@ export function ContactForm(props: ContactFormProps = {}) {
     submitAlign = "left",
     statsChannel,
   } = props;
+  const pathname = usePathname();
+  const formInteractionTracked = useRef(false);
   const pid = (base: string) => (fieldIdPrefix ? `${fieldIdPrefix}${base}` : base);
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
@@ -54,6 +63,16 @@ export function ContactForm(props: ContactFormProps = {}) {
    * onSubmit + preventDefault statt action={…}: React 19 setzt Formulare nach erfülltem
    * Action-Promise zurück — auch bei { success: false }, wodurch alle Felder leer wurden.
    */
+  function onFormFirstInteraction() {
+    if (formInteractionTracked.current) return;
+    formInteractionTracked.current = true;
+    trackFormStarted({
+      source_component: fieldIdPrefix ? `website_contact_form_${fieldIdPrefix.replace(/[^a-z0-9_-]/gi, "_")}` : "website_contact_form",
+      contact_path: pathname || "website_contact",
+      service: statsChannel === "ratgeber" ? "channel_ratgeber" : undefined,
+    });
+  }
+
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const form = e.currentTarget;
@@ -61,16 +80,24 @@ export function ContactForm(props: ContactFormProps = {}) {
     setPending(true);
     try {
       const formData = new FormData(form);
+      stashContactFormSubmissionContext(pathname, String(formData.get("topic") ?? ""));
       const result = await submitContact(formData);
       if (!result.success && result.error) {
+        clearContactSubmissionContextStash();
         setError(result.error);
         if (result.error.includes("Datenschutz")) {
           const el = document.getElementById(pid("contact-datenschutz"));
           el?.scrollIntoView({ behavior: "smooth", block: "center" });
           window.requestAnimationFrame(() => el?.focus());
         }
+      } else if (result.success) {
+        clearContactSubmissionContextStash();
       }
-    } catch {
+    } catch (err) {
+      if (isNextjsRedirectError(err)) {
+        return;
+      }
+      clearContactSubmissionContextStash();
       setError("Ein Fehler ist aufgetreten. Bitte versuchen Sie es später erneut.");
     } finally {
       setPending(false);
@@ -80,6 +107,7 @@ export function ContactForm(props: ContactFormProps = {}) {
   return (
     <form
       onSubmit={handleSubmit}
+      onInput={onFormFirstInteraction}
       className="space-y-6"
       noValidate
       aria-label="Kontaktformular"

@@ -17,6 +17,7 @@ import {
   type ConsentState,
 } from "@/lib/consent";
 import { cn } from "@/lib/utils";
+import { GtmMailtoLink, GtmPhoneLink } from "@/components/analytics/GtmContactIntentLink";
 
 type Layer = "main" | "settings";
 
@@ -344,13 +345,21 @@ export function CookieBanner() {
           <p className="mt-3 text-center text-[11px] leading-snug text-neutral-500 sm:text-xs">
             Verantwortlich: V. Maucher und Philip Sonntag GbR, Alltagshilfe Süd · Hinter den Gärten 10, 87730 Bad
             Grönenbach ·{" "}
-            <a href="tel:+4983349893330" className="underline hover:no-underline">
+            <GtmPhoneLink
+              href="tel:+4983349893330"
+              sourceComponent="cookie_banner_footer_tel"
+              className="underline hover:no-underline"
+            >
               08334 / 9893330
-            </a>
+            </GtmPhoneLink>
             ·{" "}
-            <a href="mailto:info@alltagshilfe-sued.de" className="underline hover:no-underline">
+            <GtmMailtoLink
+              href="mailto:info@alltagshilfe-sued.de"
+              sourceComponent="cookie_banner_footer_email"
+              className="underline hover:no-underline"
+            >
               info@alltagshilfe-sued.de
-            </a>
+            </GtmMailtoLink>
           </p>
         </footer>
       </div>

@@ -7,6 +7,7 @@ import { createPortal } from "react-dom";
 import { navLinks, type NavLink } from "@/config/navigation";
 import { isPflegeboxKonfiguratorPagePath } from "@/lib/pflegebox-konfigurator-path";
 import { cn } from "@/lib/utils";
+import { GtmKontaktNavLink } from "@/components/analytics/GtmContactIntentLink";
 
 function navParentOrChildActive(item: NavLink, pathname: string | null) {
   if (!pathname) return false;
@@ -294,14 +295,16 @@ export function HeaderNav() {
               </li>
             ))}
             <li className="mt-3 border-t border-[#0F4F68]/15 pt-3">
-              <Link
+              <GtmKontaktNavLink
                 href="/kontakt"
+                contactPath="site_header_mobile_kontakt_nav"
+                sourceComponent="header_mobile_kontakt_cta"
                 onClick={() => setMobileOpen(false)}
                 className="block rounded-lg px-4 py-3 text-center text-base font-semibold text-white focus:outline-none focus:ring-2 focus:ring-offset-2"
                 style={{ backgroundColor: "#F78F2E" }}
               >
                 Jetzt Kontakt aufnehmen
-              </Link>
+              </GtmKontaktNavLink>
             </li>
           </ul>
         </nav>

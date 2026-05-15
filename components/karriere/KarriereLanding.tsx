@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { GtmKontaktNavLink, GtmMailtoLink, GtmPhoneLink } from "@/components/analytics/GtmContactIntentLink";
 import { ProtectedRasterMedia } from "@/components/home/ProtectedRasterMedia";
 import { Container } from "@/components/layout/Container";
 import { KarriereForm } from "@/components/forms/KarriereForm";
@@ -326,9 +327,14 @@ function KarriereBewerbungUndAnsprechpartner() {
               <h3 className="text-lg font-semibold text-[#0F4F68]">Allgemeine Karrierefrage</h3>
               <p className="mt-2 max-w-prose text-sm text-neutral-600 sm:text-base">
                 Ohne konkrete Bewerbung: dieselbe Bearbeitung wie beim Thema „Karriere“ auf der Seite{" "}
-                <Link href="/kontakt" className="font-medium text-[#0F4F68] underline hover:no-underline">
+                <GtmKontaktNavLink
+                  href="/kontakt"
+                  contactPath="karriere_page_allgemein_kontakt_textlink_nav"
+                  sourceComponent="karriere_allgemein_kontakt_textlink"
+                  className="font-medium text-[#0F4F68] underline hover:no-underline"
+                >
                   Kontakt
-                </Link>{" "}
+                </GtmKontaktNavLink>{" "}
                 (Empfänger und Datenschutz wie dort).
               </p>
               <div className="mt-6">
@@ -378,8 +384,9 @@ function KarriereBewerbungUndAnsprechpartner() {
           </div>
           <div className="mx-auto w-full max-w-md opacity-0 animate-fade-in-up" style={{ animationDelay: "0.25s" }}>
             <p className="text-base font-semibold text-[#0F4F68] sm:text-lg">Ihr Ansprechpartner</p>
-            <a
+            <GtmPhoneLink
               href="tel:+4983349893330"
+              sourceComponent="karriere_daniel_sidebar_tel"
               className="mt-2 flex items-center justify-center gap-2 text-3xl font-bold tabular-nums text-[#0F4F68] hover:underline focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2 rounded sm:text-4xl"
               aria-label="Anrufen: 08334 9893330"
             >
@@ -393,7 +400,7 @@ function KarriereBewerbungUndAnsprechpartner() {
                 <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z" />
               </svg>
               <span>08334 / 9893330</span>
-            </a>
+            </GtmPhoneLink>
             <ul className="mt-5 space-y-2 text-base text-neutral-700 sm:text-lg">
               <li>
                 <span className="font-semibold text-[#0F4F68]">Mo–Do:</span> 08:30 – 12:00 und 13:00 – 16:00
@@ -411,21 +418,24 @@ function KarriereBewerbungUndAnsprechpartner() {
               <h3 id="karriere-daniel-email-heading" className="text-sm font-semibold text-neutral-600">
                 E-Mail
               </h3>
-              <a
+              <GtmMailtoLink
                 href="mailto:daniel.niebauer@alltagshilfe-sued.de"
+                sourceComponent="karriere_daniel_mailto"
                 className="mt-2 block break-all text-base font-medium text-[#0F4F68] hover:underline sm:text-lg"
               >
                 daniel.niebauer@alltagshilfe-sued.de
-              </a>
+              </GtmMailtoLink>
               <p className="mt-5 text-sm text-neutral-700">
                 Allgemeine Karrierefragen ohne Bewerbung können Sie links im Bereich „Allgemeine Karrierefrage“ stellen –
                 oder weiterhin zentral unter{" "}
-                <Link
+                <GtmKontaktNavLink
                   href="/kontakt"
+                  contactPath="karriere_page_daniel_sidebar_kontakt_textlink_nav"
+                  sourceComponent="karriere_daniel_footer_kontakt"
                   className="font-semibold text-[#0F4F68] underline underline-offset-2 hover:no-underline"
                 >
                   Kontakt
-                </Link>
+                </GtmKontaktNavLink>
                 .
               </p>
             </section>

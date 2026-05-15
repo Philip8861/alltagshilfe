@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import { GtmKontaktNavLink } from "@/components/analytics/GtmContactIntentLink";
 import { useKarriereApplyOptional } from "@/components/karriere/karriereApplyContext";
 import { cn } from "@/lib/utils";
 
@@ -14,12 +14,15 @@ export function JetztBewerbenButton({ jobTitle, className }: JetztBewerbenButton
 
   if (!ctx) {
     return (
-      <Link
+      <GtmKontaktNavLink
         href={`/kontakt?betreff=Bewerbung%20${encodeURIComponent(jobTitle)}`}
+        contactPath="karriere_job_listing_bewerben_nav"
+        sourceComponent="karriere_jetzt_bewerben_link"
+        service="karriere"
         className={className}
       >
         Jetzt bewerben
-      </Link>
+      </GtmKontaktNavLink>
     );
   }
 

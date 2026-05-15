@@ -4,6 +4,8 @@ import { useState, useCallback, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { ContactForm } from "@/components/forms/ContactForm";
+import { GtmMailtoLink, GtmPhoneLink } from "@/components/analytics/GtmContactIntentLink";
+import { trackContactIntent } from "@/lib/analytics/gtm-data-layer";
 
 export type StandortKarte = {
   name: string;
@@ -213,22 +215,34 @@ export function StandortKarten(props: StandortKartenProps = {}) {
                     {s.orte.join(", ")}
                   </p>
                   <div className="mt-5 pt-5 border-t border-[#0F4F68]/10 flex flex-wrap gap-x-4 gap-y-1 text-base">
-                    <a
+                    <GtmPhoneLink
                       href={s.phoneHref}
+                      sourceComponent="standort_karte_tel"
+                      service={s.pageSlug}
                       className="font-semibold text-[#0F4F68] hover:underline focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2 rounded"
                     >
                       {s.phone}
-                    </a>
-                    <Link
+                    </GtmPhoneLink>
+                    <GtmMailtoLink
                       href={`mailto:${s.email}`}
+                      sourceComponent="standort_karte_email"
+                      service={s.pageSlug}
                       className="font-semibold text-[#0F4F68] hover:underline focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2 rounded"
                     >
                       {s.email}
-                    </Link>
+                    </GtmMailtoLink>
                   </div>
                   <button
                     type="button"
-                    onClick={() => openContactPopup(s.name)}
+                    onClick={() => {
+                      trackContactIntent({
+                        contact_type: "nav",
+                        contact_path: "standort_karte_contact_popup",
+                        source_component: "standort_karten_kontakt_button",
+                        status: "click",
+                      });
+                      openContactPopup(s.name);
+                    }}
                     className="mt-5 inline-flex items-center justify-center rounded-xl bg-[#F78F2E] px-5 py-3 text-base font-semibold text-white transition-colors hover:bg-[#e07d1f] focus:outline-none focus:ring-2 focus:ring-[#F78F2E] focus:ring-offset-2"
                   >
                     Kontakt aufnehmen

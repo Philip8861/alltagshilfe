@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
+import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 import Link from "next/link";
 import {
@@ -17,6 +17,12 @@ import {
 import { findStandortByPlz, type Standort } from "@/config/standorte";
 import { submitHilfefinder } from "@/lib/actions/hilfefinder";
 import { CONTACT_SOURCE_OPTIONS } from "@/lib/contact-source";
+import {
+  trackFinderStarted,
+  trackFinderStepCompleted,
+  trackFinderSuccess,
+} from "@/lib/analytics/gtm-data-layer";
+import { GtmMailtoLink, GtmPhoneLink } from "@/components/analytics/GtmContactIntentLink";
 import { cn } from "@/lib/utils";
 
 type ServiceKey = HilfefinderServiceKey;
@@ -99,6 +105,7 @@ export function HilfefinderProvider({ children }: { children: ReactNode }) {
 
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const hilfefinderOpenLoggedRef = useRef(false);
 
   useEffect(() => {
     setPortalReady(true);
@@ -120,6 +127,20 @@ export function HilfefinderProvider({ children }: { children: ReactNode }) {
         detail: { open: started },
       }),
     );
+  }, [started]);
+
+  useEffect(() => {
+    if (started) {
+      if (!hilfefinderOpenLoggedRef.current) {
+        hilfefinderOpenLoggedRef.current = true;
+        trackFinderStarted({
+          finder: "hilfefinder_home",
+          source_component: "hilfefinder_home_open",
+        });
+      }
+    } else {
+      hilfefinderOpenLoggedRef.current = false;
+    }
   }, [started]);
 
   const plzNorm = plz.replace(/\D/g, "").slice(0, 5);
@@ -176,6 +197,14 @@ export function HilfefinderProvider({ children }: { children: ReactNode }) {
       setError("Bitte wählen Sie eine Kontaktart aus.");
       return;
     }
+
+    trackFinderStepCompleted({
+      finder: "hilfefinder_home",
+      source_component: `hilfefinder_home_step_${step}_advance`,
+      step_completed: step,
+      service: leistungen.length > 0 ? leistungen.join(",") : undefined,
+      plz: plzNorm.length === 5 ? plzNorm : undefined,
+    });
 
     setStep((s) => Math.min(7, s + 1));
   };
@@ -248,6 +277,12 @@ export function HilfefinderProvider({ children }: { children: ReactNode }) {
         setError(result.error ?? "Die Anfrage konnte nicht gesendet werden. Bitte versuchen Sie es später erneut.");
         return;
       }
+      trackFinderSuccess({
+        finder: "hilfefinder_home",
+        source_component: "hilfefinder_home_submit",
+        service: ausgewaehlteLeistungen.map((l) => l.key).join(","),
+        plz: plzNorm.length === 5 ? plzNorm : undefined,
+      });
       setStep(8);
     } catch (e) {
       console.error("[hilfefinder] submit error", e);
@@ -416,6 +451,12 @@ export function HilfefinderProvider({ children }: { children: ReactNode }) {
                 <button
                   type="button"
                   onClick={() => {
+                    trackFinderStepCompleted({
+                      finder: "hilfefinder_home",
+                      source_component: "hilfefinder_home_plz_skipped",
+                      step_completed: 6,
+                      service: leistungen.length > 0 ? leistungen.join(",") : undefined,
+                    });
                     setPlz("");
                     setStep(7);
                   }}
@@ -478,10 +519,28 @@ export function HilfefinderProvider({ children }: { children: ReactNode }) {
                       <p className="font-medium text-[#0F4F68]">{finalerStandort.name}</p>
                       <p>{finalerStandort.address}</p>
                       <p>
-                        Telefon: <a className="font-bold text-[#0F4F68] underline" href={finalerStandort.phoneHref}>{finalerStandort.phone}</a>
+                        Telefon:{" "}
+                        <GtmPhoneLink
+                          className="font-bold text-[#0F4F68] underline"
+                          href={finalerStandort.phoneHref}
+                          sourceComponent="hilfefinder_home_result_tel"
+                          plz={plzNorm.length === 5 ? plzNorm : undefined}
+                          service={leistungen.length > 0 ? leistungen.join(",") : undefined}
+                        >
+                          {finalerStandort.phone}
+                        </GtmPhoneLink>
                       </p>
                       <p>
-                        E-Mail: <a className="text-[#0F4F68] underline" href={`mailto:${finalerStandort.email}`}>{finalerStandort.email}</a>
+                        E-Mail:{" "}
+                        <GtmMailtoLink
+                          className="text-[#0F4F68] underline"
+                          href={`mailto:${finalerStandort.email}`}
+                          sourceComponent="hilfefinder_home_result_email"
+                          plz={plzNorm.length === 5 ? plzNorm : undefined}
+                          service={leistungen.length > 0 ? leistungen.join(",") : undefined}
+                        >
+                          {finalerStandort.email}
+                        </GtmMailtoLink>
                       </p>
                     </div>
                     <div className="mt-4 grid gap-3 sm:grid-cols-2">

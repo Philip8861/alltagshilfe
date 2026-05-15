@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Container } from "@/components/layout/Container";
 import { siteConfig } from "@/config/site";
+import { GtmMailtoLink, GtmPhoneLink } from "@/components/analytics/GtmContactIntentLink";
 
 export const metadata: Metadata = {
   title: "Impressum",
@@ -38,15 +39,19 @@ export default function ImpressumPage() {
             <h2 className="text-lg font-bold text-[#0F4F68]">Kontakt</h2>
             <p>
               <strong>Telefon:</strong>{" "}
-              <a href="tel:+4983349893330" className="text-[#0F4F68] hover:underline">
+              <GtmPhoneLink href="tel:+4983349893330" sourceComponent="impressum_tel" className="text-[#0F4F68] hover:underline">
                 08334 / 9893330
-              </a>
+              </GtmPhoneLink>
             </p>
             <p>
               <strong>E-Mail:</strong>{" "}
-              <a href="mailto:info@alltagshilfe-sued.de" className="text-[#0F4F68] hover:underline">
+              <GtmMailtoLink
+                href="mailto:info@alltagshilfe-sued.de"
+                sourceComponent="impressum_email"
+                className="text-[#0F4F68] hover:underline"
+              >
                 info@alltagshilfe-sued.de
-              </a>
+              </GtmMailtoLink>
             </p>
           </section>
 

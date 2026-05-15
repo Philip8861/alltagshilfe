@@ -4,6 +4,7 @@ import Link from "next/link";
 import { StandortSuche } from "@/components/standorte/StandortSuche";
 import { StandortAnthrazitRule } from "@/components/standorte/StandortAnthrazitRule";
 import { KartenMitKoordinatenErfassen } from "@/components/standorte/KartenMitKoordinatenErfassen";
+import { GtmMailtoLink } from "@/components/analytics/GtmContactIntentLink";
 import { SERVED_PLZ_TOTAL, standorteByPlz } from "@/config/standorte";
 import { siteConfig } from "@/config/site";
 
@@ -186,12 +187,14 @@ export default function StandortePage() {
                       </div>
                     </Link>
                     <div className="border-t border-[#0F4F68]/10 bg-white/70 px-5 py-4 text-center sm:px-6">
-                      <a
+                      <GtmMailtoLink
                         href={`mailto:${st.email}`}
+                        sourceComponent="standorte_overview_email"
+                        service={st.pageSlug}
                         className="inline-block max-w-full break-all text-sm font-semibold text-[#0F4F68] underline-offset-2 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68] focus-visible:ring-offset-2 rounded"
                       >
                         {st.email}
-                      </a>
+                      </GtmMailtoLink>
                     </div>
                   </div>
                 </li>

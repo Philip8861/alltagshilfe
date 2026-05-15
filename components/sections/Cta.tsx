@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { GtmKontaktNavLink } from "@/components/analytics/GtmContactIntentLink";
 import { Container } from "@/components/layout/Container";
 import { cn } from "@/lib/utils";
 
@@ -24,9 +24,14 @@ export function Cta({ title, subtitle, button }: CtaProps) {
           </h2>
           <p className="mt-3 text-lg text-neutral-300">{subtitle}</p>
           <div className="mt-8">
-            <Link href="/kontakt" className={cn(ctaButton)}>
+            <GtmKontaktNavLink
+              href="/kontakt"
+              contactPath="homepage_cta_section_kontakt_nav"
+              sourceComponent="cta_section_kontakt"
+              className={cn(ctaButton)}
+            >
               {button}
-            </Link>
+            </GtmKontaktNavLink>
           </div>
         </div>
       </Container>

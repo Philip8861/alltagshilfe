@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { GtmKontaktNavLink } from "@/components/analytics/GtmContactIntentLink";
 import { type ReactNode, useId, useRef } from "react";
 import { useKarriereApplyOptional } from "@/components/karriere/karriereApplyContext";
 import { siteConfig } from "@/config/site";
@@ -442,13 +443,16 @@ export function StellenbeschreibungDialogTrigger({ jobTitle, className }: Stelle
                 Jetzt bewerben
               </button>
             ) : (
-              <Link
+              <GtmKontaktNavLink
                 href={bewerbenHref}
+                contactPath="karriere_stellenbeschreibung_dialog_bewerben_nav"
+                sourceComponent="karriere_stellenbeschreibung_bewerben_cta"
+                service="karriere"
                 className="inline-flex w-full min-h-[48px] items-center justify-center rounded-xl bg-[#0F4F68] px-5 py-3 text-center text-base font-semibold text-white shadow-md transition hover:bg-[#0c3d52] focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2"
                 onClick={() => dialogRef.current?.close()}
               >
                 Jetzt bewerben
-              </Link>
+              </GtmKontaktNavLink>
             )}
             <Link
               href="/karriere#bewerbung-form"

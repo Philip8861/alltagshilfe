@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 
+import { GtmKontaktNavLink } from "@/components/analytics/GtmContactIntentLink";
 import {
   RATGEBER_BYLINE_AUTHOR_TEXT,
   RATGEBER_BYLINE_REVIEWER_TEXT,
@@ -16,6 +17,9 @@ const DEFAULT_UPDATED_ISO = "2026-05-01" as const;
 const DEFAULT_UPDATED_DISPLAY = "01.05.2026" as const;
 const DEFAULT_CTA_HREF = "/kontakt" as const;
 
+function isKontaktNavHref(href: string): boolean {
+  return href === "/kontakt" || href.startsWith("/kontakt?");
+}
 function RatgeberHeroCheckIcon({ className = "" }: { className?: string }) {
   return (
     <span
@@ -110,17 +114,34 @@ export function RatgeberArticleHero({
               </ul>
 
               <div className="mt-7 w-full sm:mt-8">
-                <Link
-                  href={ctaHref}
-                  className={cn(
-                    "inline-flex min-h-[2.875rem] w-full max-w-[28rem] items-center justify-center rounded-xl bg-[#F78F2E]",
-                    "px-5 py-3 text-center text-[0.95rem] font-bold leading-snug text-white shadow-[0_10px_26px_-10px_rgba(247,143,46,0.55)]",
-                    "transition hover:opacity-[0.97] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68] focus-visible:ring-offset-2",
-                    "sm:min-h-[3rem] sm:px-7 sm:text-base",
-                  )}
-                >
-                  Noch Fragen? Wir beraten Sie gerne! Jetzt Termin vereinbaren
-                </Link>
+                {isKontaktNavHref(ctaHref) ? (
+                  <GtmKontaktNavLink
+                    href={ctaHref}
+                    contactPath="ratgeber_article_hero_termin_cta_nav"
+                    sourceComponent="RatgeberArticleHero"
+                    service="ratgeber"
+                    className={cn(
+                      "inline-flex min-h-[2.875rem] w-full max-w-[28rem] items-center justify-center rounded-xl bg-[#F78F2E]",
+                      "px-5 py-3 text-center text-[0.95rem] font-bold leading-snug text-white shadow-[0_10px_26px_-10px_rgba(247,143,46,0.55)]",
+                      "transition hover:opacity-[0.97] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68] focus-visible:ring-offset-2",
+                      "sm:min-h-[3rem] sm:px-7 sm:text-base",
+                    )}
+                  >
+                    Noch Fragen? Wir beraten Sie gerne! Jetzt Termin vereinbaren
+                  </GtmKontaktNavLink>
+                ) : (
+                  <Link
+                    href={ctaHref}
+                    className={cn(
+                      "inline-flex min-h-[2.875rem] w-full max-w-[28rem] items-center justify-center rounded-xl bg-[#F78F2E]",
+                      "px-5 py-3 text-center text-[0.95rem] font-bold leading-snug text-white shadow-[0_10px_26px_-10px_rgba(247,143,46,0.55)]",
+                      "transition hover:opacity-[0.97] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68] focus-visible:ring-offset-2",
+                      "sm:min-h-[3rem] sm:px-7 sm:text-base",
+                    )}
+                  >
+                    Noch Fragen? Wir beraten Sie gerne! Jetzt Termin vereinbaren
+                  </Link>
+                )}
               </div>
             </div>
           </div>

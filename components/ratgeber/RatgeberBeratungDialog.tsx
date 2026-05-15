@@ -25,6 +25,11 @@ import {
 import { buildStandortPageHref, findStandortByPlz, getOrtByPlz, type Standort } from "@/config/standorte";
 import { buildRatgeberBeratungInitialMessage } from "@/lib/ratgeber/beratung-dialog-message";
 import { contactTopicFromHilfefinderServices } from "@/lib/ratgeber/contact-topic-from-services";
+import {
+  trackFinderStarted,
+  trackFinderStepCompleted,
+} from "@/lib/analytics/gtm-data-layer";
+import { GtmMailtoLink, GtmPhoneLink } from "@/components/analytics/GtmContactIntentLink";
 import { cn } from "@/lib/utils";
 
 export type RatgeberBeratungOpenOptions = {
@@ -67,6 +72,7 @@ export function RatgeberBeratungProvider({
   const [plz, setPlz] = useState("");
   const [contextNote, setContextNote] = useState<string | undefined>();
   const [error, setError] = useState("");
+  const ratgeberFinderOpenLoggedRef = useRef(false);
 
   const resetFlow = useCallback(() => {
     setStep(1);
@@ -109,6 +115,21 @@ export function RatgeberBeratungProvider({
   }, [started]);
 
   useEffect(() => {
+    if (started) {
+      if (!ratgeberFinderOpenLoggedRef.current) {
+        ratgeberFinderOpenLoggedRef.current = true;
+        trackFinderStarted({
+          finder: "ratgeber_beratung",
+          source_component: "ratgeber_beratung_open",
+          service: leistungen.length > 0 ? leistungen.join(",") : undefined,
+        });
+      }
+    } else {
+      ratgeberFinderOpenLoggedRef.current = false;
+    }
+  }, [started, leistungen]);
+
+  useEffect(() => {
     if (!started) return;
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
@@ -146,6 +167,13 @@ export function RatgeberBeratungProvider({
       setError("Bitte geben Sie eine gültige 5-stellige PLZ ein, oder überspringen Sie den Schritt.");
       return;
     }
+    trackFinderStepCompleted({
+      finder: "ratgeber_beratung",
+      source_component: `ratgeber_beratung_step_${step}_advance`,
+      step_completed: step,
+      service: leistungen.length > 0 ? leistungen.join(",") : undefined,
+      plz: plzNorm.length === 5 ? plzNorm : undefined,
+    });
     setStep((s) => Math.min(TOTAL_STEPS, s + 1));
   };
 
@@ -156,6 +184,12 @@ export function RatgeberBeratungProvider({
 
   const plzUeberspringen = () => {
     setError("");
+    trackFinderStepCompleted({
+      finder: "ratgeber_beratung",
+      source_component: "ratgeber_beratung_plz_skipped",
+      step_completed: 2,
+      service: leistungen.length > 0 ? leistungen.join(",") : undefined,
+    });
     setPlz("");
     setStep(3); // Pflegeshop-/Inkontinenz-Hinweis, danach Kontakt
   };
@@ -349,15 +383,27 @@ export function RatgeberBeratungProvider({
                       <p className="mt-1 text-sm text-neutral-600">{finalerStandort.hours}</p>
                       <p className="mt-3">
                         Telefon:{" "}
-                        <a className="font-bold text-[#0F4F68] underline" href={finalerStandort.phoneHref}>
+                        <GtmPhoneLink
+                          className="font-bold text-[#0F4F68] underline"
+                          href={finalerStandort.phoneHref}
+                          sourceComponent="ratgeber_beratung_standort_tel"
+                          plz={plzNorm.length === 5 ? plzNorm : undefined}
+                          service={leistungen.length > 0 ? leistungen.join(",") : undefined}
+                        >
                           {finalerStandort.phone}
-                        </a>
+                        </GtmPhoneLink>
                       </p>
                       <p>
                         E-Mail:{" "}
-                        <a className="text-[#0F4F68] underline" href={`mailto:${finalerStandort.email}`}>
+                        <GtmMailtoLink
+                          className="text-[#0F4F68] underline"
+                          href={`mailto:${finalerStandort.email}`}
+                          sourceComponent="ratgeber_beratung_standort_email"
+                          plz={plzNorm.length === 5 ? plzNorm : undefined}
+                          service={leistungen.length > 0 ? leistungen.join(",") : undefined}
+                        >
                           {finalerStandort.email}
-                        </a>
+                        </GtmMailtoLink>
                       </p>
                       <div className="mt-4">
                         <Link

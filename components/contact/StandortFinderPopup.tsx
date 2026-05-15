@@ -1,8 +1,13 @@
 "use client";
 
 import { useState, useCallback, useEffect, useRef } from "react";
-import Link from "next/link";
 import { buildStandortPageHref, findStandortByPlz, getOrtByPlz, type Standort } from "@/config/standorte";
+import Link from "next/link";
+import {
+  trackFinderStarted,
+  trackFinderStepCompleted,
+} from "@/lib/analytics/gtm-data-layer";
+import { GtmPhoneLink } from "@/components/analytics/GtmContactIntentLink";
 
 export function StandortFinderPopup() {
   const [widgetVisible, setWidgetVisible] = useState(true);
@@ -18,6 +23,10 @@ export function StandortFinderPopup() {
     setResult("idle");
     setError(null);
     setPlz("");
+    trackFinderStarted({
+      finder: "standort_finder",
+      source_component: "standort_finder_fab_open",
+    });
   }, []);
 
   const handleClose = useCallback(() => {
@@ -35,6 +44,14 @@ export function StandortFinderPopup() {
     }
     const standort = findStandortByPlz(trimmed);
     setResult(standort ?? null);
+    const plz5 = trimmed.replace(/\D/g, "").slice(0, 5);
+    trackFinderStepCompleted({
+      finder: "standort_finder",
+      source_component: standort ? "standort_finder_plz_hit" : "standort_finder_plz_miss",
+      step_completed: 1,
+      plz: plz5.length === 5 ? plz5 : undefined,
+      service: standort?.pageSlug,
+    });
   }, [plz]);
 
   const handleKeyDown = useCallback(
@@ -209,15 +226,18 @@ export function StandortFinderPopup() {
                       {result.name.startsWith("Standort") ? result.name : `Standort ${result.name}`}
                     </p>
                     <p className="mt-2 text-sm text-neutral-700">{result.address}</p>
-                    <a
+                    <GtmPhoneLink
                       href={result.phoneHref}
+                      sourceComponent="standort_finder_result_tel"
+                      plz={plz.trim().replace(/\D/g, "").slice(0, 5).length === 5 ? plz.trim().replace(/\D/g, "").slice(0, 5) : undefined}
+                      service={result.pageSlug}
                       className="mt-3 inline-flex items-center gap-2 text-2xl font-extrabold text-[#0F4F68] hover:underline focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2 rounded"
                     >
                       <svg className="h-6 w-6" viewBox="0 0 24 24" fill="currentColor" style={{ color: "#F78F2E" }}>
                         <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z" />
                       </svg>
                       {result.phone}
-                    </a>
+                    </GtmPhoneLink>
                     <p className="mt-2 text-xs text-neutral-600">{result.hours}</p>
                     <div className="mt-4 flex justify-center">
                       <Link
@@ -238,9 +258,13 @@ export function StandortFinderPopup() {
                 ) : (
                   <p className="text-neutral-700" role="status">
                     Kein passender Ansprechpartner gefunden? Versuchen Sie es mit der nächstgrößeren Stadt. Gerne helfen wir Ihnen auch direkt weiter. Rufen Sie uns unter{" "}
-                    <a href="tel:+4983349893330" className="font-semibold text-[#0F4F68] hover:underline">
+                    <GtmPhoneLink
+                      href="tel:+4983349893330"
+                      sourceComponent="standort_finder_fallback_zentral_tel"
+                      className="font-semibold text-[#0F4F68] hover:underline"
+                    >
                       08334 / 9893330
-                    </a>{" "}
+                    </GtmPhoneLink>{" "}
                     an.
                   </p>
                 )}

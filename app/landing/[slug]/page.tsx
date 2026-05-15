@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import Link from "next/link";
 import { Container } from "@/components/layout/Container";
+import { GtmKontaktNavLink } from "@/components/analytics/GtmContactIntentLink";
 
 type LandingPageProps = {
   title: string;
@@ -51,12 +51,14 @@ export default async function LandingPage({ params }: Props) {
           </h1>
           <p className="mt-4 text-lg text-neutral-600">{data.heroSubtitle}</p>
           <div className="mt-10">
-            <Link
+            <GtmKontaktNavLink
               href="/kontakt"
+              contactPath={`landing_${slug}_kontakt_nav`}
+              sourceComponent={`landing_${slug}_kontakt_cta`}
               className="inline-flex items-center justify-center rounded-lg bg-neutral-900 px-6 py-3 font-medium text-white hover:bg-neutral-800 focus:outline-none focus:ring-2 focus:ring-neutral-900 focus:ring-offset-2"
             >
               {data.ctaText}
-            </Link>
+            </GtmKontaktNavLink>
           </div>
         </div>
       </Container>

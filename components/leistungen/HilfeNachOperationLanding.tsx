@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { GtmKontaktNavLink } from "@/components/analytics/GtmContactIntentLink";
 import { KundenstimmenCarousel } from "@/components/home/KundenstimmenCarousel";
 import { siteConfig } from "@/config/site";
 import { RevealOnScroll } from "@/components/pflegehilfsmittel/RevealOnScroll";
@@ -137,12 +137,15 @@ export function HilfeNachOperationLanding() {
                 className="pt-2 opacity-0 motion-reduce:opacity-100 animate-fade-in-up"
                 style={{ animationDelay: "1.12s" }}
               >
-                <Link
+                <GtmKontaktNavLink
                   href="/kontakt"
+                  contactPath="hilfe_nach_operation_landing_hero_kontakt_nav"
+                  sourceComponent="HilfeNachOperationLanding"
+                  service="hilfe_nach_operation"
                   className="flex w-full transform items-center justify-center gap-2 rounded-xl bg-[#F78F2E] px-6 py-3 text-lg font-bold text-white shadow-lg transition hover:scale-[1.02] hover:opacity-95 focus:outline-none focus:ring-2 focus:ring-[#F78F2E] focus:ring-offset-2 motion-reduce:transform-none sm:w-auto lg:w-auto lg:px-[clamp(1.15rem,0.85rem+1.1vw,1.65rem)] lg:py-[clamp(0.6rem,0.45rem+0.45vw,0.9rem)] lg:text-[clamp(1rem,0.82rem+0.55vw,1.15rem)]"
                 >
                   Jetzt Kontakt aufnehmen
-                </Link>
+                </GtmKontaktNavLink>
                 <p className="mt-3 min-w-0 max-w-full text-pretty text-center text-sm leading-snug text-neutral-600 sm:text-left lg:text-[clamp(0.8rem,0.7rem+0.35vw,0.95rem)]">
                   Unverbindliche Erstberatung – wir melden uns zeitnah bei Ihnen.
                 </p>
@@ -265,12 +268,15 @@ export function HilfeNachOperationLanding() {
 
             <RevealOnScroll delayMs={200}>
               <div className="mt-10 flex flex-col items-center gap-2 sm:mt-12">
-                <Link
+                <GtmKontaktNavLink
                   href="/kontakt"
+                  contactPath="hilfe_nach_operation_landing_steps_anfrage_nav"
+                  sourceComponent="HilfeNachOperationLanding"
+                  service="hilfe_nach_operation"
                   className="inline-flex min-h-[48px] items-center justify-center rounded-xl bg-[#F78F2E] px-8 py-3.5 text-base font-bold text-white shadow-md transition hover:opacity-95 focus:outline-none focus:ring-2 focus:ring-[#F78F2E] focus:ring-offset-2 sm:text-lg"
                 >
                   Anfrage stellen
-                </Link>
+                </GtmKontaktNavLink>
                 <p className="text-center text-sm text-neutral-500">Unverbindlich · Wir melden uns bei Ihnen</p>
               </div>
             </RevealOnScroll>
@@ -334,17 +340,26 @@ export function HilfeNachOperationLanding() {
               <p className="text-neutral-600">
                 {siteConfig.name} unterstützt Sie nach Operation, Unfall oder in der Schwangerschaft bzw. Wochenbett in Ihrer
                 Region. Fragen? Wir sind für Sie da – über{" "}
-                <Link href="/kontakt" className="font-semibold text-[#0F4F68] underline-offset-2 hover:underline">
+                <GtmKontaktNavLink
+                  href="/kontakt"
+                  contactPath="hilfe_nach_operation_landing_footer_inline_kontakt_nav"
+                  sourceComponent="HilfeNachOperationLanding"
+                  service="hilfe_nach_operation"
+                  className="font-semibold text-[#0F4F68] underline-offset-2 hover:underline"
+                >
                   Kontaktseite
-                </Link>
+                </GtmKontaktNavLink>
                 .
               </p>
-              <Link
+              <GtmKontaktNavLink
                 href="/kontakt"
+                contactPath="hilfe_nach_operation_landing_footer_cta_nav"
+                sourceComponent="HilfeNachOperationLanding"
+                service="hilfe_nach_operation"
                 className="mt-6 inline-flex rounded-lg bg-[#F78F2E] px-8 py-3 text-base font-bold text-white shadow-md transition hover:opacity-95 focus:outline-none focus:ring-2 focus:ring-[#F78F2E] focus:ring-offset-2"
               >
                 Jetzt Kontakt aufnehmen
-              </Link>
+              </GtmKontaktNavLink>
             </div>
           </RevealOnScroll>
         </section>

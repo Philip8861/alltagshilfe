@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import { GtmMailtoLink, GtmPhoneLink } from "@/components/analytics/GtmContactIntentLink";
 
 export type StandortTeaserMitBildProps = {
   plz: string;
@@ -98,18 +99,24 @@ export function StandortTeaserMitBild({
           <div
             className={`st-teaser-anim st-teaser-delay-2 flex flex-col items-center gap-2 sm:flex-row sm:flex-wrap sm:justify-center sm:gap-x-6 text-sm ${anim}`}
           >
-            <a
+            <GtmPhoneLink
               href={phoneHref}
+              sourceComponent="standort_teaser_tel"
+              plz={plz}
+              service={slug}
               className="font-semibold text-[#0F4F68] hover:underline focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2 focus:ring-offset-[#F2F9FA] rounded"
             >
               {phone}
-            </a>
-            <a
+            </GtmPhoneLink>
+            <GtmMailtoLink
               href={`mailto:${email}`}
+              sourceComponent="standort_teaser_email"
+              plz={plz}
+              service={slug}
               className="break-all font-semibold text-[#0F4F68] hover:underline focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2 focus:ring-offset-[#F2F9FA] rounded"
             >
               {email}
-            </a>
+            </GtmMailtoLink>
           </div>
 
           <div className={`st-teaser-anim st-teaser-delay-3 flex justify-center ${anim}`}>

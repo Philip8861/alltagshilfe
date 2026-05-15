@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Image from "next/image";
-import Link from "next/link";
+import { GtmKontaktNavLink } from "@/components/analytics/GtmContactIntentLink";
 import { KundenstimmenCarousel } from "@/components/home/KundenstimmenCarousel";
 import { PflegegradBeratungTable } from "@/components/pflegeberatung/PflegegradBeratungTable";
 import { PflegeberatungNaehePlzDialog } from "@/components/pflegeberatung/PflegeberatungNaehePlzDialog";
@@ -162,12 +162,15 @@ export default function PrivatePflegeberatungPage() {
                 ))}
               </ul>
               <div className={`${ANIM_IN} mt-8 flex w-full justify-center lg:justify-start`} style={{ animationDelay: "400ms" }}>
-                <Link
+                <GtmKontaktNavLink
                   href="/kontakt"
+                  contactPath="private_pflegeberatung_hero_termin_cta_nav"
+                  sourceComponent="private_pflegeberatung_page"
+                  service="pflegeberatung"
                   className="inline-flex min-h-[3.625rem] min-w-[11.5rem] items-center justify-center rounded-xl bg-[#F78F2E] px-8 py-4 text-[1.2rem] font-semibold text-white hover:opacity-95 focus:outline-none focus:ring-2 focus:ring-[#F78F2E] focus:ring-offset-2 sm:min-h-[3.75rem] sm:px-9 sm:py-[1.15rem] sm:text-[1.21875rem]"
                 >
                   Termin vereinbaren
-                </Link>
+                </GtmKontaktNavLink>
               </div>
             </div>
           </div>
@@ -325,9 +328,15 @@ export default function PrivatePflegeberatungPage() {
             style={{ animationDelay: `${200 + PRIVATE_PFLEGEBERATUNG_FAQ.length * 45}ms` }}
           >
             Weitere Fragen? Wir sind für Sie da:{" "}
-            <Link href="/kontakt" className="font-semibold text-[#0F4F68] underline underline-offset-2 hover:text-[#F78F2E]">
+            <GtmKontaktNavLink
+              href="/kontakt"
+              contactPath="private_pflegeberatung_faq_footer_kontakt_nav"
+              sourceComponent="private_pflegeberatung_page"
+              service="pflegeberatung"
+              className="font-semibold text-[#0F4F68] underline underline-offset-2 hover:text-[#F78F2E]"
+            >
               Kontakt zu {siteConfig.name}
-            </Link>
+            </GtmKontaktNavLink>
             .
           </p>
         </div>

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { GtmKontaktNavLink } from "@/components/analytics/GtmContactIntentLink";
 import { Container } from "@/components/layout/Container";
 import { cn } from "@/lib/utils";
 
@@ -30,15 +31,17 @@ export function Hero({ title, subtitle, ctaPrimary, ctaSecondary }: HeroProps) {
             {subtitle}
           </p>
           <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
-            <Link
+            <GtmKontaktNavLink
               href="/kontakt"
+              contactPath="homepage_hero_primary_kontakt_nav"
+              sourceComponent="hero_primary_kontakt"
               className={cn(
                 ctaBase,
                 "bg-neutral-900 text-white hover:bg-neutral-800 focus:ring-neutral-900"
               )}
             >
               {ctaPrimary}
-            </Link>
+            </GtmKontaktNavLink>
             <Link
               href="/#unsere-leistungen"
               className={cn(

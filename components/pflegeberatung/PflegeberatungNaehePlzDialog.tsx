@@ -1,8 +1,8 @@
 "use client";
 
-import Link from "next/link";
 import { useCallback, useEffect, useId, useRef, useState } from "react";
 import { createPortal } from "react-dom";
+import { GtmKontaktNavLink } from "@/components/analytics/GtmContactIntentLink";
 import { findStandortByPlz, getOrtByPlz } from "@/config/standorte";
 
 type Ergebnis =
@@ -196,13 +196,17 @@ export function PflegeberatungNaehePlzDialog() {
                       <GruenerHaken>An Ihrem Wohnort bieten wir Pflegeberatung per Videocall an.</GruenerHaken>
                     )}
                   </ul>
-                  <Link
+                  <GtmKontaktNavLink
                     href="/kontakt"
+                    contactPath="pflegeberatung_plz_dialog_termin_cta_nav"
+                    sourceComponent="PflegeberatungNaehePlzDialog"
+                    service="pflegeberatung"
+                    plz={plz.replace(/\D/g, "").length === 5 ? plz.replace(/\D/g, "").slice(0, 5) : undefined}
                     className="mt-8 flex w-full min-h-[52px] items-center justify-center rounded-xl bg-[#F78F2E] px-6 py-3.5 text-center text-base font-semibold text-white transition-opacity hover:opacity-95 focus:outline-none focus:ring-2 focus:ring-[#F78F2E] focus:ring-offset-2"
                     onClick={() => schliessen()}
                   >
                     {ergebnis.art === "vorOrtUndVideo" ? "Jetzt Termin vereinbaren" : "Gleich Termin vereinbaren"}
-                  </Link>
+                  </GtmKontaktNavLink>
                   <button
                     type="button"
                     onClick={() => {
