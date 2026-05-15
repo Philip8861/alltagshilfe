@@ -108,10 +108,31 @@ export function ContactForm(props: ContactFormProps = {}) {
     <form
       onSubmit={handleSubmit}
       onInput={onFormFirstInteraction}
-      className="space-y-6"
+      className={cn("relative isolate space-y-6")}
       noValidate
       aria-label="Kontaktformular"
+      aria-busy={pending}
     >
+      {pending ? (
+        <div
+          className="absolute inset-0 z-[1] flex flex-col items-center justify-center gap-3 rounded-xl bg-white/85 px-4 py-8 backdrop-blur-[2px] sm:py-10 pointer-events-auto"
+          role="status"
+          aria-live="polite"
+        >
+          <span className="sr-only">Ihre Nachricht wird gesendet, bitte einen Moment warten.</span>
+          <span
+            className={cn(
+              "inline-block h-11 w-11 shrink-0 rounded-full border-[3px] border-[#F78F2E]/25 border-t-[#F78F2E]",
+              "motion-reduce:animate-none motion-reduce:border-[#F78F2E]",
+              "animate-spin",
+            )}
+            aria-hidden
+          />
+          <span className="text-center text-sm font-semibold text-[#0F4F68]">
+            Nachricht wird gesendet …
+          </span>
+        </div>
+      ) : null}
       {standortContactProof ? (
         <>
           <input type="hidden" name="standortContactProof" value={standortContactProof} />
