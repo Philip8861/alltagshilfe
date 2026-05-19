@@ -1,4 +1,5 @@
 import type { RatgeberFaqAccordionItem } from "@/components/ratgeber/ratgeber-faq-types";
+import { PFLEGEBERATUNG_RHYTHMUS_FAQ_ANSWER } from "@/lib/pflegeberatung-sgb-xi-rhythm";
 
 export type PflegegradFaqItem = RatgeberFaqAccordionItem;
 
@@ -45,6 +46,11 @@ export const PFLEGEGRAD_ARTICLE_FAQ: RatgeberFaqAccordionItem[] = [
     question: "Was kann ich tun, wenn der Pflegegrad abgelehnt wird?",
     answer:
       "Sie können Widerspruch einlegen. Die Frist beträgt grundsätzlich einen Monat ab Zugang des Bescheids. Fordern Sie das Gutachten an, prüfen Sie die Bewertung und begründen Sie den Widerspruch möglichst konkret. Alltagshilfe-Süd kann Sie dabei unterstützen.",
+  },
+  {
+    id: "faq-pflegeberatung-turnus",
+    question: "Wie oft ist die Pflegeberatung nach § 37 Abs. 3 SGB XI Pflicht?",
+    answer: PFLEGEBERATUNG_RHYTHMUS_FAQ_ANSWER,
   },
   {
     id: "faq-alltagshilfe-hilft",

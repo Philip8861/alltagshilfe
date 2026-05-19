@@ -4,6 +4,8 @@ import { RatgeberSidebarBeratungTeaser } from "@/components/ratgeber/RatgeberBer
 import { PflegegradChecklistSection } from "@/components/ratgeber/pflegegrad-beantragen/PflegegradChecklistSection";
 import { PflegegradFaqAccordion } from "@/components/ratgeber/pflegegrad-beantragen/PflegegradFaqAccordion";
 import { PflegegradLeistungenMatrix } from "@/components/ratgeber/pflegegrad-beantragen/PflegegradLeistungenMatrix";
+import { PflegegradBeratungTable } from "@/components/pflegeberatung/PflegegradBeratungTable";
+import { PFLEGEBERATUNG_RHYTHMUS_RATGEBER_ABSATZ } from "@/lib/pflegeberatung-sgb-xi-rhythm";
 import {
   PflegegradFactsOverviewTable,
   PflegegradQuickAnswerBox,
@@ -259,6 +261,10 @@ export function PflegegradBeantragenArticle() {
           Pflege sind besonders Pflegegeld, Pflegesachleistungen, der Entlastungsbetrag, Pflegehilfsmittel, Verhinderungspflege,
           Wohnraumanpassung und Beratungsleistungen wichtig.
         </p>
+        <p className="mt-4">{PFLEGEBERATUNG_RHYTHMUS_RATGEBER_ABSATZ}</p>
+        <div className="mt-6">
+          <PflegegradBeratungTable />
+        </div>
         <p className="mt-4">2026 gelten nach aktueller Übersicht unter anderem folgende monatliche Beträge:</p>
         <PflegegradLeistungenMatrix />
         <ul className="mt-8 list-none space-y-3">

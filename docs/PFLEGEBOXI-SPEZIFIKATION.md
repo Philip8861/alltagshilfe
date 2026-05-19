@@ -91,8 +91,8 @@ Kooperation **LuckyLunch**: frisch, regional, ohne künstliche Zusatzstoffe; Sch
 
 - **Nur Pflegegeld + rein privat:** Beratungsnachweis relevant.
 - **PG 1:** nicht verpflichtend, bis **2×/Jahr freiwillig kostenlos**.
-- **PG 2–3:** **halbjährlich** verpflichtend.
-- **PG 4–5:** **vierteljährlich** verpflichtend.
+- **PG 2–5:** **halbjährlich** verpflichtend (bei Pflegegeld + häuslicher Angehörigenpflege).
+- **PG 4–5:** zusätzlich **vierteljährlich freiwillig** möglich (Kostenübernahme durch die Pflegekasse).
 - Angebot **Private Pflegeberatung** Alltagshilfe: vor Ort, Ansprüche prüfen, Tipps, ggf. Wohnraum/Hausnotruf; **Erinnerungssystem** für Fristen; Kosten **von Pflegekasse**.
 
 ### Temporär ohne Pflegegrad – § 38 SGB V

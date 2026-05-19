@@ -1,3 +1,5 @@
+import { PFLEGEBERATUNG_RHYTHMUS_FAQ_ANSWER } from "@/lib/pflegeberatung-sgb-xi-rhythm";
+
 /** FAQ-Inhalt für /pflegeberatung/private-pflegeberatung (Accordion + JSON-LD) */
 
 export type PrivatePflegeberatungFaqItem = { question: string; answer: string };
@@ -15,8 +17,7 @@ export const PRIVATE_PFLEGEBERATUNG_FAQ: PrivatePflegeberatungFaqItem[] = [
   },
   {
     question: "Wie oft muss die Beratung stattfinden?",
-    answer:
-      "Bei den Pflegegraden zwei und drei ist die Beratung einmal im Halbjahr Pflicht. Bei den Pflegegraden vier und fünf muss sie zwingend vierteljährlich erfolgen.",
+    answer: PFLEGEBERATUNG_RHYTHMUS_FAQ_ANSWER,
   },
   {
     question: "Was passiert, wenn ich den Termin vergesse?",

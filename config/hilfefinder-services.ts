@@ -27,7 +27,11 @@ const HILFEFINDER_SERVICE_OPTIONEN_ALL: {
     verfuegbarkeit: "direkt",
   },
   { key: "haushalt", label: "Alltagsbegleitung & Haushaltsreinigung", verfuegbarkeit: "direkt" },
-  { key: "pflegeberatung", label: "Halb-, vierteljährliche Pflegeberatung nach §37.3", verfuegbarkeit: "direkt" },
+  {
+    key: "pflegeberatung",
+    label: "Pflegeberatung nach §37.3 SGB XI (halbjährlich verpflichtend, PG 4–5 optional vierteljährlich)",
+    verfuegbarkeit: "direkt",
+  },
   { key: "pflegebox", label: "Kostenlose Pflegebox (Einmalhandschuhe, Händedesinfektionsmittel usw.)", verfuegbarkeit: "direkt" },
   { key: "koerperpflege", label: "Körperliche Pflege", verfuegbarkeit: "partner" },
   { key: "medizinisch", label: "Medizinische Versorgung (Verbandswechsel, Medikamentengabe)", verfuegbarkeit: "partner" },

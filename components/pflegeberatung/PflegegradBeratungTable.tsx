@@ -1,3 +1,8 @@
+import {
+  PFLEGEBERATUNG_RHYTHMUS_HALBJAERLICH_VERPFLICHTEND,
+  PFLEGEBERATUNG_RHYTHMUS_PG4_5,
+} from "@/lib/pflegeberatung-sgb-xi-rhythm";
+
 /**
  * Übersicht Beratungspflicht je Pflegegrad (Paragraf 37 Abs. 3 SGB XI, bei Pflegegeld + häuslicher Angehörigenpflege).
  */
@@ -12,25 +17,25 @@ const ROWS = [
     grad: "Pflegegrad 2",
     status: "Verpflichtend",
     statusTone: "pflicht" as const,
-    rhythmus: "Halbjährlich",
+    rhythmus: PFLEGEBERATUNG_RHYTHMUS_HALBJAERLICH_VERPFLICHTEND,
   },
   {
     grad: "Pflegegrad 3",
     status: "Verpflichtend",
     statusTone: "pflicht" as const,
-    rhythmus: "Halbjährlich",
+    rhythmus: PFLEGEBERATUNG_RHYTHMUS_HALBJAERLICH_VERPFLICHTEND,
   },
   {
     grad: "Pflegegrad 4",
     status: "Verpflichtend",
     statusTone: "pflicht" as const,
-    rhythmus: "Vierteljährlich",
+    rhythmus: PFLEGEBERATUNG_RHYTHMUS_PG4_5,
   },
   {
     grad: "Pflegegrad 5",
     status: "Verpflichtend",
     statusTone: "pflicht" as const,
-    rhythmus: "Vierteljährlich",
+    rhythmus: PFLEGEBERATUNG_RHYTHMUS_PG4_5,
   },
 ] as const;
 
