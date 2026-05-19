@@ -13,7 +13,7 @@ import {
 } from "react";
 import { getOrtByPlz } from "@/config/standorte";
 import { submitKarriere } from "@/lib/actions/karriere";
-import { jobTitleToStellenangebot } from "@/lib/karriere-job-map";
+import { isAlltagshelferJobTitle, jobTitleToStellenangebot } from "@/lib/karriere-job-map";
 import {
   KARRIERE_FILE_INPUT_ACCEPT,
   KARRIERE_MAX_ANHAENGE,
@@ -71,6 +71,14 @@ const PENSUM_OPTIONS = [
   { id: "h10-15", label: "10–15 Std./Woche" },
   { id: "minijob", label: "Minijob (unter 9 Stunden)" },
 ] as const;
+
+/** Alltagshelfer*in: nur Teilzeit/Minijob-Modelle (kein Vollzeit / 35–40 / 30–35). */
+const ALLTAGSHELFER_EXCLUDED_PENSUM_IDS = new Set(["vollzeit", "h35-40", "h30-35"]);
+
+function pensumOptionsForJobTitle(jobTitle: string) {
+  if (!isAlltagshelferJobTitle(jobTitle)) return PENSUM_OPTIONS;
+  return PENSUM_OPTIONS.filter((o) => !ALLTAGSHELFER_EXCLUDED_PENSUM_IDS.has(o.id));
+}
 
 const ERFAHRUNG_OPTIONS = [
   { id: "lang", label: "Ja, mehrjährige Erfahrung" },
@@ -275,6 +283,15 @@ export function BewerbungsWizardDialog({ jobTitle, initialPlz, onDismiss }: Bewe
   );
 
   const isInitiativWizard = useMemo(() => jobTitle.toLowerCase().includes("initiativ"), [jobTitle]);
+
+  const pensumOptions = useMemo(() => pensumOptionsForJobTitle(jobTitle), [jobTitle]);
+
+  useEffect(() => {
+    setAnswers((prev) => {
+      if (!prev.pensum || pensumOptions.some((o) => o.id === prev.pensum)) return prev;
+      return { ...prev, pensum: "" };
+    });
+  }, [pensumOptions]);
 
   const toggleAdditionalJob = useCallback((title: string) => {
     setAdditionalJobTitles((prev) =>
@@ -608,7 +625,7 @@ export function BewerbungsWizardDialog({ jobTitle, initialPlz, onDismiss }: Bewe
               <p className="text-sm font-semibold text-[#0F4F68]">Gewünschtes Pensum</p>
               <ChipGroup
                 name="pensum"
-                options={PENSUM_OPTIONS}
+                options={pensumOptions}
                 value={answers.pensum}
                 onChange={(id) => setAnswers((p) => ({ ...p, pensum: id }))}
               />

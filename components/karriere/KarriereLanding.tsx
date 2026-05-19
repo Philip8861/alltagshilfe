@@ -4,7 +4,6 @@ import { GtmKontaktNavLink, GtmMailtoLink, GtmPhoneLink } from "@/components/ana
 import { ProtectedRasterMedia } from "@/components/home/ProtectedRasterMedia";
 import { Container } from "@/components/layout/Container";
 import { KarriereForm } from "@/components/forms/KarriereForm";
-import { ContactForm } from "@/components/forms/ContactForm";
 import { InitiativBewerbenLandingButton } from "@/components/karriere/InitiativBewerbenLandingButton";
 import { JetztBewerbenButton } from "@/components/karriere/JetztBewerbenButton";
 import { StellenbeschreibungDialogTrigger } from "@/components/karriere/StellenbeschreibungDialog";
@@ -304,7 +303,7 @@ function KarriereArbeitgeberVorteile() {
   );
 }
 
-/** Bewerbung links; rechts Ansprechpartner. Zusätzlich: gleiches Karriere-Kontakt wie /kontakt?thema Karriere. */
+/** Bewerbung links; rechts Ansprechpartner. */
 function KarriereBewerbungUndAnsprechpartner() {
   return (
     <div className="mx-auto w-full max-w-6xl">
@@ -318,33 +317,6 @@ function KarriereBewerbungUndAnsprechpartner() {
             <div className="mt-8 sm:mt-10">
               <h3 className="text-lg font-semibold text-[#0F4F68]">Bewerbung / Stellenanfrage</h3>
               <KarriereForm hideFileAttachments />
-            </div>
-
-            <div
-              id="karriere-allgemein-kontakt"
-              className="mt-10 scroll-mt-[var(--ahs-header-scroll-padding)] border-t border-[#0F4F68]/15 pt-10"
-            >
-              <h3 className="text-lg font-semibold text-[#0F4F68]">Allgemeine Karrierefrage</h3>
-              <p className="mt-2 max-w-prose text-sm text-neutral-600 sm:text-base">
-                Ohne konkrete Bewerbung: dieselbe Bearbeitung wie beim Thema „Karriere“ auf der Seite{" "}
-                <GtmKontaktNavLink
-                  href="/kontakt"
-                  contactPath="karriere_page_allgemein_kontakt_textlink_nav"
-                  sourceComponent="karriere_allgemein_kontakt_textlink"
-                  className="font-medium text-[#0F4F68] underline hover:no-underline"
-                >
-                  Kontakt
-                </GtmKontaktNavLink>{" "}
-                (Empfänger und Datenschutz wie dort).
-              </p>
-              <div className="mt-6">
-                <ContactForm
-                  topicHidden
-                  hiddenTopic="Karriere"
-                  fieldIdPrefix="karriere-seite-kontakt-"
-                  submitAlign="left"
-                />
-              </div>
             </div>
 
             <p className="mt-8 text-sm text-neutral-500">
@@ -426,8 +398,7 @@ function KarriereBewerbungUndAnsprechpartner() {
                 daniel.niebauer@alltagshilfe-sued.de
               </GtmMailtoLink>
               <p className="mt-5 text-sm text-neutral-700">
-                Allgemeine Karrierefragen ohne Bewerbung können Sie links im Bereich „Allgemeine Karrierefrage“ stellen –
-                oder weiterhin zentral unter{" "}
+                Allgemeine Karrierefragen ohne Bewerbung stellen Sie bitte über unsere Seite{" "}
                 <GtmKontaktNavLink
                   href="/kontakt"
                   contactPath="karriere_page_daniel_sidebar_kontakt_textlink_nav"
@@ -435,8 +406,8 @@ function KarriereBewerbungUndAnsprechpartner() {
                   className="font-semibold text-[#0F4F68] underline underline-offset-2 hover:no-underline"
                 >
                   Kontakt
-                </GtmKontaktNavLink>
-                .
+                </GtmKontaktNavLink>{" "}
+                (Thema Karriere).
               </p>
             </section>
           </div>
