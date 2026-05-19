@@ -8,6 +8,7 @@ import {
 } from "@/lib/consent-server";
 import { fireSitePageViewIfEligible } from "@/lib/site-analytics/middleware-fire";
 import { applyPartnerSupabaseSession } from "@/lib/supabase/partner-middleware";
+import { buildContentSecurityPolicy } from "@/lib/security/content-security-policy";
 
 function applySecurityAndSeoHeaders(
   response: NextResponse,
@@ -27,21 +28,7 @@ function applySecurityAndSeoHeaders(
     response.headers.set("Strict-Transport-Security", "max-age=31536000; includeSubDomains; preload");
   }
 
-  const csp = [
-    "default-src 'self'",
-    "object-src 'none'",
-    "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://translate.google.com https://translate.googleapis.com https://www.google.com https://www.gstatic.com https://meet.jit.si https://www.googletagmanager.com https://*.googletagmanager.com",
-    "style-src 'self' 'unsafe-inline' https://translate.googleapis.com https://translate.google.com https://www.google.com",
-    "img-src 'self' data: https:",
-    "font-src 'self' https://fonts.gstatic.com https://www.gstatic.com",
-    "connect-src 'self' https://translate.google.com https://translate.googleapis.com https://www.google.com https://www.gstatic.com https://meet.jit.si wss://meet.jit.si https://*.supabase.co wss://*.supabase.co https://www.googletagmanager.com https://*.googletagmanager.com https://*.google-analytics.com https://*.analytics.google.com https://*.g.doubleclick.net https://pagead2.googlesyndication.com https://*.google.com",
-    "worker-src 'self' blob:",
-    "frame-src 'self' https://translate.google.com https://translate.googleapis.com https://*.google.com https://meet.jit.si https://www.googletagmanager.com",
-    "frame-ancestors 'self'",
-    "base-uri 'self'",
-    "form-action 'self'",
-  ].join("; ");
-  response.headers.set("Content-Security-Policy", csp);
+  response.headers.set("Content-Security-Policy", buildContentSecurityPolicy());
 
   const deUrl = `${request.nextUrl.origin}${normalizedPath}${search}`;
   const enPath = normalizedPath === "/" ? "/en" : `/en${normalizedPath}`;
