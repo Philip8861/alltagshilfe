@@ -253,7 +253,7 @@ export default function DatenschutzPage() {
             <p>
               Zusätzlich werten wir aggregiert aus, über welche Quelle Anfragende auf uns aufmerksam geworden sind
               (Pflichtfrage in unseren Kontaktformularen, z. B. Google, Freunde &amp; Bekannte, Social Media, Plakat- oder
-              Flyerwerbung, Pflegeberatung/Vermittlung, Per E-Mail, Sonstiges). Gespeichert werden ausschließlich
+              Flyerwerbung, Medien, Pflegeberatung/Vermittlung, Per E-Mail, Sonstiges). Gespeichert werden ausschließlich
               <strong className="text-neutral-900"> aggregierte Zählwerte je Tag, Quelle und Formular-Typ</strong> in der
               Datenbank bei Supabase. Es werden weder Name, E-Mail-Adresse noch IP-Adresse zu diesen Zählwerten
               gespeichert; Rückschlüsse auf einzelne Personen sind ausgeschlossen. Rechtsgrundlage für diese

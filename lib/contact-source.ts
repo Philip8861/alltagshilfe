@@ -12,6 +12,7 @@ export const CONTACT_SOURCE_OPTIONS = [
   { value: "freunde_bekannte", label: "Freunde & Bekannte" },
   { value: "social_media", label: "Social Media (Facebook, Instagram)" },
   { value: "plakat", label: "Plakatwerbung" },
+  { value: "medien", label: "Medien (z. B. Zeitung, Radio, TV)" },
   {
     value: "pflegeberatung_vermittlung",
     label: "Durch eine Pflegeberatung oder professionelle Vermittlung",
@@ -28,6 +29,7 @@ export const KARRIERE_CONTACT_SOURCE_OPTIONS = [
   { value: "google", label: "Google" },
   { value: "freunde_bekannte", label: "Freunde & Bekannte" },
   { value: "social_media", label: "Social Media (Facebook, Instagram)" },
+  { value: "medien", label: "Medien (z. B. Zeitung, Radio, TV)" },
   { value: "indeed", label: "Indeed" },
   { value: "ebay_kleinanzeigen", label: "eBay Kleinanzeigen" },
   { value: "email", label: "Per E-Mail" },
