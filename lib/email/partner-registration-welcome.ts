@@ -23,7 +23,7 @@ function footerStrings(): {
     kontaktinformationen:
       process.env.PARTNER_REGISTRATION_MAIL_KONTAKT?.trim() ||
       [
-        "V. Maucher und Philip Sonntag GbR · Alltagshilfe Süd",
+        "Valentin Maucher und Philip Sonntag GbR · Alltagshilfe Süd",
         "Hinter den Gärten 10 · 87730 Bad Grönenbach",
       ].join("\n"),
     telefon: process.env.PARTNER_REGISTRATION_MAIL_TELEFON?.trim() || "08334 / 9893330",

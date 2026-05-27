@@ -22,7 +22,7 @@ export default function ImpressumPage() {
           </p>
 
           <section className="space-y-1">
-            <p className="font-semibold text-neutral-900">V. Maucher und Philip Sonntag GbR</p>
+            <p className="font-semibold text-neutral-900">Valentin Maucher und Philip Sonntag GbR</p>
             <p className="font-semibold text-neutral-900">Alltagshilfe Süd</p>
             <p>Hinter den Gärten 10</p>
             <p>87730 Bad Grönenbach</p>
@@ -57,6 +57,21 @@ export default function ImpressumPage() {
 
           <section>
             <p><strong>IK-Nummer:</strong> 460956028</p>
+          </section>
+
+          <section className="space-y-2">
+            <h2 className="text-lg font-bold text-[#0F4F68]">Zuständige Aufsichtsbehörde</h2>
+            <p>
+              Für die Anerkennung als Angebot zur Unterstützung im Alltag (§ 45a SGB XI) ist folgende Aufsichtsbehörde
+              zuständig:
+            </p>
+            <p className="font-medium text-neutral-900">
+              Bayerisches Landesamt für Pflege
+              <br />
+              Mildred-Scheel-Str. 4
+              <br />
+              92224 Amberg
+            </p>
           </section>
 
           <section className="space-y-2">

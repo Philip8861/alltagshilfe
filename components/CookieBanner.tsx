@@ -270,7 +270,7 @@ export function CookieBanner() {
                   summary="Diese Technologien sind erforderlich, damit die Website funktioniert, Ihre Datenschutzauswahl gespeichert wird und grundlegende Sicherheits- und Komfortfunktionen bereitstehen."
                   details={{
                     services: "Speicherung der Consent-Auswahl (localStorage, technisch notwendiges Cookie), Sitzungs- und Sicherheitsfunktionen der Next.js-Anwendung.",
-                    legal: "§ 25 Abs. 2 TTDSG / berechtigtes Interesse Art. 6 Abs. 1 lit. f DSGVO, soweit erforderlich.",
+                    legal: "§ 25 Abs. 2 TDDDG / berechtigtes Interesse Art. 6 Abs. 1 lit. f DSGVO, soweit erforderlich.",
                   }}
                 />
                 <CategoryCard
@@ -281,7 +281,7 @@ export function CookieBanner() {
                   details={{
                     services: "Google Analytics 4 (page_view, anonymisierte IP); serverseitige aggregierte Seitenstatistik (Supabase, keine personenbezogenen Profile).",
                     provider: "Google Ireland Ltd. / eigene Systeme (Supabase EU).",
-                    legal: "Einwilligung Art. 6 Abs. 1 lit. a DSGVO, § 25 Abs. 1 TTDSG.",
+                    legal: "Einwilligung Art. 6 Abs. 1 lit. a DSGVO, § 25 Abs. 1 TDDDG.",
                     thirdCountry: "Bei Google: Datenübermittlung in die USA möglich (Angemessenheitsbeschluss EU-US Data Privacy Framework).",
                     moreInfo: "https://policies.google.com/privacy",
                   }}
@@ -294,7 +294,7 @@ export function CookieBanner() {
                   details={{
                     services: "Google Website Translator (Skript translate.google.com), ggf. Cookie „googtrans“; englische Inhalte und lokale Übersetzungs-Hilfen.",
                     provider: "Google Ireland Ltd.",
-                    legal: "Einwilligung Art. 6 Abs. 1 lit. a DSGVO, § 25 Abs. 1 TTDSG.",
+                    legal: "Einwilligung Art. 6 Abs. 1 lit. a DSGVO, § 25 Abs. 1 TDDDG.",
                     thirdCountry: "Übermittlung in die USA möglich.",
                     moreInfo: "https://policies.google.com/privacy",
                   }}
@@ -308,7 +308,7 @@ export function CookieBanner() {
                     services:
                       "Consent Mode (ad_storage) für künftige Marketing-Tools; derzeit sind im Code keine Werbe-Kampagnen-Pixel (z. B. Meta) eingebunden. Ihre Einwilligung wählt die Kategorie vor, ohne zusätzliche Dienste zu laden.",
                     provider: "— (derzeit keine aktiven Marketing-Drittanbieter)",
-                    legal: "Einwilligung Art. 6 Abs. 1 lit. a DSGVO, § 25 Abs. 1 TTDSG.",
+                    legal: "Einwilligung Art. 6 Abs. 1 lit. a DSGVO, § 25 Abs. 1 TDDDG.",
                   }}
                 />
               </div>
@@ -343,7 +343,7 @@ export function CookieBanner() {
             </div>
           )}
           <p className="mt-3 text-center text-[11px] leading-snug text-neutral-500 sm:text-xs">
-            Verantwortlich: V. Maucher und Philip Sonntag GbR, Alltagshilfe Süd · Hinter den Gärten 10, 87730 Bad
+            Verantwortlich: Valentin Maucher und Philip Sonntag GbR, Alltagshilfe Süd · Hinter den Gärten 10, 87730 Bad
             Grönenbach ·{" "}
             <GtmPhoneLink
               href="tel:+4983349893330"

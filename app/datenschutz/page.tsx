@@ -28,7 +28,7 @@ export default function DatenschutzPage() {
             <h2 className="text-xl font-bold text-[#0F4F68]">1. Verantwortlicher</h2>
             <p>Verantwortlich für die Datenverarbeitung auf dieser Website ist:</p>
             <p className="font-medium text-neutral-900">
-              V. Maucher und Philip Sonntag GbR<br />
+              Valentin Maucher und Philip Sonntag GbR<br />
               Alltagshilfe Süd<br />
               Hinter den Gärten 10<br />
               87730 Bad Grönenbach
@@ -160,6 +160,24 @@ export default function DatenschutzPage() {
           </section>
 
           <section className="space-y-2">
+            <h2 className="text-xl font-bold text-[#0F4F68]">4a. Kontaktaufnahme per WhatsApp</h2>
+            <p>
+              Wenn Sie uns über den auf unserer Website angebotenen WhatsApp-Button oder QR-Code kontaktieren, nutzen wir
+              den Messenger-Dienst WhatsApp zur schnellen Kommunikation. Anbieter ist die WhatsApp Ireland Limited, 4 Grand
+              Canal Square, Grand Canal Harbour, Dublin 2, Irland (ein Tochterunternehmen der Meta Platforms Inc., USA).
+            </p>
+            <p>
+              Bei der Nutzung von WhatsApp werden Ihre Telefonnummer sowie ggf. Ihr Name und Metadaten der Kommunikation an
+              Server von Meta (teilweise auch in die USA) übertragen. Wir nutzen WhatsApp ausschließlich zur Beantwortung
+              Ihrer konkreten Anfragen (Rechtsgrundlage: Art. 6 Abs. 1 lit. b DSGVO für vorvertragliche Maßnahmen oder Art.
+              6 Abs. 1 lit. f DSGVO bei allgemeinen Anfragen). Bitte beachten Sie, dass WhatsApp auf das Adressbuch unseres
+              Mobilgeräts zugreifen kann. Wir bitten Sie, uns über diesen Kanal keine sensiblen Gesundheits- oder
+              Pflegedaten (besondere Kategorien personenbezogener Daten gem. Art. 9 DSGVO) zu übermitteln. Weitere
+              Informationen zur Datenverarbeitung finden Sie in der Datenschutzerklärung von WhatsApp.
+            </p>
+          </section>
+
+          <section className="space-y-2">
             <h2 className="text-xl font-bold text-[#0F4F68]">5. Pflegebox-Konfigurator</h2>
             <p>
               Beim Abschluss des Pflegebox-Konfigurators werden Ihr Vor- und Nachname, gegebenenfalls ein freiwillig
@@ -237,7 +255,7 @@ export default function DatenschutzPage() {
               zugestimmt haben.
             </p>
             <p>
-              Rechtsgrundlage ist Ihre Einwilligung nach Art. 6 Abs. 1 lit. a DSGVO sowie § 25 Abs. 1 TTDSG, soweit
+              Rechtsgrundlage ist Ihre Einwilligung nach Art. 6 Abs. 1 lit. a DSGVO sowie § 25 Abs. 1 TDDDG, soweit
               Informationen in Ihrem Endgerät gespeichert oder ausgelesen werden. Ohne diese Einwilligung findet diese
               Auswertung nicht statt.
             </p>
@@ -281,7 +299,7 @@ export default function DatenschutzPage() {
             </p>
             <p>
               Rechtsgrundlage für das Setzen oder Auslesen von Informationen in Ihrem Endgerät und die anschließende
-              Verarbeitung ist Ihre Einwilligung gemäß Art. 6 Abs. 1 lit. a DSGVO sowie § 25 Abs. 1 TTDSG. Sie können Ihre
+              Verarbeitung ist Ihre Einwilligung gemäß Art. 6 Abs. 1 lit. a DSGVO sowie § 25 Abs. 1 TDDDG. Sie können Ihre
               Einwilligung jederzeit mit Wirkung für die Zukunft über die Cookie-Einstellungen widerrufen.
             </p>
             <p>
@@ -332,7 +350,7 @@ export default function DatenschutzPage() {
             <p>
               Für nicht notwendige Cookies, vergleichbare Speichertechniken und den Zugriff auf Informationen in Ihrem
               Endgerät ist Ihre Einwilligung erforderlich. Rechtsgrundlage ist Art. 6 Abs. 1 lit. a DSGVO in Verbindung mit §
-              25 Abs. 1 TTDSG.
+              25 Abs. 1 TDDDG.
             </p>
             <p>
               Wenn Sie der Kategorie „Übersetzung“ zustimmen, kann zusätzlich ein Cookie namens „googtrans“ gesetzt
@@ -376,7 +394,7 @@ export default function DatenschutzPage() {
             </p>
             <p>
               Rechtsgrundlage für die Einbindung und die damit verbundenen Speicher- oder Zugriffsvorgänge ist Ihre
-              Einwilligung nach Art. 6 Abs. 1 lit. a DSGVO in Verbindung mit § 25 Abs. 1 TTDSG.
+              Einwilligung nach Art. 6 Abs. 1 lit. a DSGVO in Verbindung mit § 25 Abs. 1 TDDDG.
             </p>
           </section>
 
@@ -405,7 +423,7 @@ export default function DatenschutzPage() {
             <p>
               Rechtsgrundlage ist Art. 6 Abs. 1 lit. f DSGVO, soweit die Einbindung zur einheitlichen und ansprechenden
               Darstellung der Website erfolgt. Soweit hierfür eine Einwilligung erforderlich ist, erfolgt die Verarbeitung
-              auf Grundlage von Art. 6 Abs. 1 lit. a DSGVO in Verbindung mit § 25 Abs. 1 TTDSG.
+              auf Grundlage von Art. 6 Abs. 1 lit. a DSGVO in Verbindung mit § 25 Abs. 1 TDDDG.
             </p>
           </section>
 
