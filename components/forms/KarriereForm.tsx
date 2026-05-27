@@ -10,6 +10,7 @@ import {
   type KarriereBewerbungPrefill,
 } from "@/lib/karriere-job-map";
 import {
+  KARRIERE_ANHANG_FORMAT_LABEL,
   KARRIERE_FILE_INPUT_ACCEPT,
   KARRIERE_MAX_ANHAENGE,
   validateKarriereAttachmentsList,
@@ -316,7 +317,7 @@ export function KarriereForm({ hideFileAttachments = false }: KarriereFormProps)
             className="mt-1 block w-full max-w-full text-sm text-neutral-700 file:mr-3 file:rounded-lg file:border-0 file:bg-[#0F4F68] file:px-4 file:py-2 file:text-sm file:font-semibold file:text-white hover:file:bg-[#0c3d52] disabled:opacity-50"
           />
           <p className="mt-1 text-xs text-neutral-500">
-            PDF, Word, gängige Bilder u. a.; bis zu {KARRIERE_MAX_ANHAENGE} Dateien, je max. 8 MB, gesamt max. 24 MB.
+            {KARRIERE_ANHANG_FORMAT_LABEL}; bis zu {KARRIERE_MAX_ANHAENGE} Dateien, je max. 8 MB, gesamt max. 24 MB.
           </p>
         </div>
       ) : null}

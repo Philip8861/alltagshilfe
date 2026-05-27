@@ -15,6 +15,7 @@ import { getOrtByPlz } from "@/config/standorte";
 import { submitKarriere } from "@/lib/actions/karriere";
 import { isAlltagshelferJobTitle, jobTitleToStellenangebot } from "@/lib/karriere-job-map";
 import {
+  KARRIERE_ANHANG_FORMAT_LABEL,
   KARRIERE_FILE_INPUT_ACCEPT,
   KARRIERE_MAX_ANHAENGE,
   validateKarriereAttachmentsList,
@@ -692,7 +693,7 @@ export function BewerbungsWizardDialog({ jobTitle, initialPlz, onDismiss }: Bewe
                   Lebenslauf und Zeugnisse (optional)
                 </p>
                 <p className="mt-1 text-center text-[11px] leading-snug text-neutral-600 sm:text-xs">
-                  PDF, Word, Bilder · max. {KARRIERE_MAX_ANHAENGE} Dateien, je 8 MB, gesamt 24 MB.
+                  {KARRIERE_ANHANG_FORMAT_LABEL} · max. {KARRIERE_MAX_ANHAENGE} Dateien, je 8 MB, gesamt 24 MB.
                 </p>
                 <input
                   ref={uploadInputRef}

@@ -1,26 +1,9 @@
 import type { SendInternalMailAttachment } from "@/lib/email/internal-smtp";
 
 /** Erlaubte Endungen (Kleinbuchstaben, ohne Punkt). */
-export const KARRIERE_ANHANG_EXT = new Set([
-  "pdf",
-  "doc",
-  "docx",
-  "png",
-  "jpg",
-  "jpeg",
-  "webp",
-  "heic",
-  "gif",
-  "tif",
-  "tiff",
-  "txt",
-  "rtf",
-  "odt",
-  "ppt",
-  "pptx",
-  "xls",
-  "xlsx",
-]);
+export const KARRIERE_ANHANG_EXT = new Set(["pdf", "docx", "jpg", "jpeg", "png"]);
+
+export const KARRIERE_ANHANG_FORMAT_LABEL = "PDF, DOCX, JPG, JPEG, PNG";
 
 export const KARRIERE_MAX_ANHAENGE = 10;
 export const KARRIERE_MAX_BYTES_PRO_DATEI = 8 * 1024 * 1024;
@@ -28,7 +11,7 @@ export const KARRIERE_MAX_BYTES_GESAMT = 24 * 1024 * 1024;
 
 /** Für `<input type="file" accept="…" />` (Kurzcheck + Formular). */
 export const KARRIERE_FILE_INPUT_ACCEPT =
-  ".pdf,.doc,.docx,.png,.jpg,.jpeg,.webp,.heic,.gif,.tif,.tiff,.txt,.rtf,.odt,.ppt,.pptx,.xls,.xlsx,image/*,application/pdf";
+  ".pdf,.docx,.jpg,.jpeg,.png,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,image/jpeg,image/png";
 
 export function karriereAnhangDateiendung(name: string): string | null {
   const base = name.replace(/^.*[/\\]/, "").trim();
@@ -57,7 +40,7 @@ export function validateKarriereAttachmentsList(files: readonly File[]): string 
       return `Die Datei „${file.name}“ ist leer und kann nicht versendet werden. Bitte wählen Sie eine gültige Datei.`;
     }
     if (!istKarriereAnhangErlaubt(file.name)) {
-      return `Dateityp nicht erlaubt: „${file.name}“. Erlaubt sind u. a. PDF, Word und gängige Bildformate.`;
+      return `Dateityp nicht erlaubt: „${file.name}“. Erlaubt sind nur ${KARRIERE_ANHANG_FORMAT_LABEL}.`;
     }
     if (file.size > KARRIERE_MAX_BYTES_PRO_DATEI) {
       return `Die Datei „${file.name}“ ist zu groß (max. 8 MB pro Datei) und kann nicht versendet werden.`;
@@ -94,7 +77,7 @@ export async function karriereAnhaengeAusFormData(
     if (!istKarriereAnhangErlaubt(file.name)) {
       return {
         ok: false,
-        error: `Dateityp nicht erlaubt: „${file.name}“. Erlaubt sind u. a. PDF, Word, gängige Bildformate.`,
+        error: `Dateityp nicht erlaubt: „${file.name}“. Erlaubt sind nur ${KARRIERE_ANHANG_FORMAT_LABEL}.`,
       };
     }
     if (file.size > KARRIERE_MAX_BYTES_PRO_DATEI) {
