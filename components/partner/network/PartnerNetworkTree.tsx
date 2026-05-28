@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { formatCentsDe } from "@/lib/partner/referral-money";
 import type { PartnerNetworkNode, PartnerNetworkTreeResult } from "@/lib/partner/network-tree";
 import { PartnerNetworkTreeViewport } from "@/components/partner/network/PartnerNetworkTreeViewport";
@@ -60,7 +60,20 @@ function buildPyramid(data: PartnerNetworkTreeResult): PyramidNode {
   return selfNode;
 }
 
+function useIsMobileSm() {
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 639px)");
+    const update = () => setIsMobile(mq.matches);
+    update();
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
+  }, []);
+  return isMobile;
+}
+
 export function PartnerNetworkTree({ data, availablePeriods, onChangePeriod, pendingPeriod }: Props) {
+  const isMobile = useIsMobileSm();
   const totalDirect = data.directChildren.length;
   const totalAll = data.totalNodes;
   const root = buildPyramid(data);
@@ -138,11 +151,14 @@ export function PartnerNetworkTree({ data, availablePeriods, onChangePeriod, pen
       <div className="px-3 py-4 sm:px-6 sm:py-6">
         {hasNetwork ? (
           <div className="-mx-3 w-[calc(100%+1.5rem)] sm:-mx-6 sm:w-[calc(100%+3rem)]">
-            <PartnerNetworkTreeViewport layoutKey={`${data.periodKey}-${totalAll}-${data.rootPartnerCode ?? ""}`}>
+            <PartnerNetworkTreeViewport
+              isMobile={isMobile}
+              layoutKey={`${data.periodKey}-${totalAll}-${data.rootPartnerCode ?? ""}-${isMobile ? "m" : "d"}`}
+            >
               <div className="px-1 py-2 sm:px-2 sm:py-3">
                 <div className="ahs-tree">
                   <ul className="ahs-tree__root">
-                    <PyramidLi node={root} />
+                    <PyramidLi node={root} isMobile={isMobile} />
                   </ul>
                 </div>
               </div>
@@ -210,9 +226,21 @@ function LegendPill({ tone, label }: { tone: "sponsor" | "self" | "direct" | "in
   );
 }
 
-function PyramidLi({ node }: { node: PyramidNode }) {
-  const [collapsed, setCollapsed] = useState(false);
+function shouldCollapseOnMobile(node: PyramidNode): boolean {
+  return (node.kind === "self" || node.kind === "direct") && node.children.length > 0;
+}
+
+function PyramidLi({ node, isMobile }: { node: PyramidNode; isMobile: boolean }) {
+  const [collapsed, setCollapsed] = useState(() => isMobile && shouldCollapseOnMobile(node));
   const hasChildren = node.children.length > 0;
+
+  useEffect(() => {
+    if (isMobile && shouldCollapseOnMobile(node)) {
+      setCollapsed(true);
+    } else if (!isMobile) {
+      setCollapsed(false);
+    }
+  }, [isMobile, node.key, node.kind, node.children.length]);
 
   return (
     <li className="ahs-tree__branch">
@@ -222,7 +250,7 @@ function PyramidLi({ node }: { node: PyramidNode }) {
           <div className="ahs-tree__stem" aria-hidden />
           <ul className="ahs-tree__children">
             {node.children.map((c) => (
-              <PyramidLi key={c.key} node={c} />
+              <PyramidLi key={c.key} node={c} isMobile={isMobile} />
             ))}
           </ul>
         </>
@@ -254,6 +282,7 @@ function NodeBox({
     <div
       className="ahs-tree__node"
       data-network-focus={node.kind === "sponsor" || node.kind === "self" || node.kind === "direct" ? "true" : undefined}
+      data-network-focus-top={node.kind === "sponsor" || node.kind === "self" ? "true" : undefined}
     >
       <article
         className={`group relative overflow-hidden rounded-xl border transition-shadow duration-200 hover:shadow-lg sm:rounded-2xl ${cardWidth} ${meta.card}`}

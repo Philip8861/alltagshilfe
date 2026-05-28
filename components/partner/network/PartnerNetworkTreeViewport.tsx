@@ -38,9 +38,11 @@ type Props = {
   children: ReactNode;
   /** Wenn sich der Baum ändert (Monat/Reload), neu zentrieren. */
   layoutKey: string;
+  /** Mobile: nur Sponsor + eigene Position in der Startansicht. */
+  isMobile?: boolean;
 };
 
-export function PartnerNetworkTreeViewport({ children, layoutKey }: Props) {
+export function PartnerNetworkTreeViewport({ children, layoutKey, isMobile = false }: Props) {
   const viewportRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   const [transform, setTransform] = useState<Transform>({ x: 0, y: 0, scale: 1 });
@@ -53,7 +55,7 @@ export function PartnerNetworkTreeViewport({ children, layoutKey }: Props) {
     null,
   );
 
-  /** Startansicht: Sponsor + eigene Position + direkte Partner groß, oben verankert. */
+  /** Startansicht: Desktop bis direkte Partner; Mobile nur Sponsor + eigene Position. */
   const resetView = useCallback(() => {
     const viewport = viewportRef.current;
     const content = contentRef.current;
@@ -61,11 +63,12 @@ export function PartnerNetworkTreeViewport({ children, layoutKey }: Props) {
 
     const vw = viewport.clientWidth;
     const vh = viewport.clientHeight;
-    const paddingX = 20;
+    const paddingX = isMobile ? 12 : 20;
     const paddingTop = 12;
-    const paddingBottom = 32;
+    const paddingBottom = isMobile ? 20 : 32;
 
-    const focusEls = [...content.querySelectorAll<HTMLElement>('[data-network-focus="true"]')];
+    const focusSelector = isMobile ? '[data-network-focus-top="true"]' : '[data-network-focus="true"]';
+    const focusEls = [...content.querySelectorAll<HTMLElement>(focusSelector)];
     const contentRect = content.getBoundingClientRect();
     const currentScale = transformRef.current.scale || 1;
 
@@ -111,13 +114,13 @@ export function PartnerNetworkTreeViewport({ children, layoutKey }: Props) {
       y: paddingTop,
       scale,
     });
-  }, []);
+  }, [isMobile]);
 
   useLayoutEffect(() => {
     resetView();
     const t = window.setTimeout(resetView, 80);
     return () => window.clearTimeout(t);
-  }, [layoutKey, resetView]);
+  }, [layoutKey, isMobile, resetView]);
 
   const zoomAtPoint = useCallback((clientX: number, clientY: number, nextScale: number) => {
     const viewport = viewportRef.current;
@@ -259,7 +262,7 @@ export function PartnerNetworkTreeViewport({ children, layoutKey }: Props) {
     <div className="relative w-full">
       <div
         ref={viewportRef}
-        className="ahs-tree__viewport relative min-h-[clamp(22rem,68vh,44rem)] w-full cursor-grab touch-none overflow-hidden active:cursor-grabbing"
+        className="ahs-tree__viewport relative min-h-[clamp(16rem,42vh,22rem)] w-full cursor-grab touch-none overflow-hidden active:cursor-grabbing sm:min-h-[clamp(22rem,68vh,44rem)]"
         onPointerDown={onPointerDown}
         onPointerMove={onPointerMove}
         onPointerUp={onPointerUp}
@@ -283,7 +286,7 @@ export function PartnerNetworkTreeViewport({ children, layoutKey }: Props) {
         <p className="text-[0.65rem] leading-snug text-neutral-600 sm:text-xs">
           <span className="hidden sm:inline">Mausrad zum Zoomen · </span>
           Ziehen zum Verschieben
-          <span className="sm:hidden"> · Zwei Finger zum Zoomen</span>
+          <span className="sm:hidden"> · Zwei Finger zum Zoomen · + für weitere Ebenen</span>
         </p>
         <div className="flex items-center gap-1.5">
           <span className="min-w-[2.75rem] text-center text-[0.65rem] font-semibold tabular-nums text-[#0F4F68]">
