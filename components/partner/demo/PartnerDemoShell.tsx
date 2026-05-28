@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { PARTNER_DEMO_MAX_MUSTERMANN_CODE } from "@/lib/partner/partner-demo-muster-mann-data";
 
 function iconButtonClass(active: boolean) {
   return [
@@ -59,20 +58,6 @@ export function PartnerDemoShell({ children }: { children: React.ReactNode }) {
       </aside>
 
       <main className="order-1 min-w-0 flex-1 pb-[4.5rem] md:pb-0">
-        <div className="border-b border-[#0F4F68]/10 bg-white px-4 py-3 sm:px-6">
-          <div className="mx-auto flex max-w-[min(100%,96rem)] flex-wrap items-center justify-between gap-2">
-            <div className="min-w-0">
-              <p className="text-sm font-semibold text-[#0F4F68]">Max Mustermann</p>
-              <p className="font-mono text-xs uppercase text-neutral-600">{PARTNER_DEMO_MAX_MUSTERMANN_CODE}</p>
-            </div>
-            <Link
-              href="/kooperation"
-              className="text-xs font-semibold text-[#0F4F68] underline underline-offset-2 hover:text-[#0c3d52]"
-            >
-              Demo beenden
-            </Link>
-          </div>
-        </div>
         <div className="mx-auto w-full max-w-[min(100%,96rem)] px-4 py-6 sm:px-6 lg:px-10 lg:py-8">{children}</div>
       </main>
     </div>

@@ -19,11 +19,7 @@ export default async function PartnerDemoLayout({ children }: { children: React.
         role="status"
         className="sticky top-0 z-50 border-b border-amber-200/90 bg-amber-50 px-4 py-2.5 text-center text-sm leading-snug text-amber-950 sm:py-3"
       >
-        <strong className="font-semibold">Schulungs-Demo (Admin)</strong>
-        {" — "}
-        Max Mustermann ({""}
-        <span className="font-mono text-xs uppercase">MM2847</span>
-        {") · Beamer-tauglich, keine echten Daten. "}
+        <strong className="font-semibold">Schulungs-Demo (Admin)</strong>{" "}
         <Link href="/partner/admin" className="font-semibold text-[#0F4F68] underline underline-offset-2">
           Zurück zum Admin
         </Link>

@@ -101,13 +101,13 @@ export function PartnerDemoNetworkPremium({ data }: Props) {
       <NetworkProfileHeader code={rootCode} />
 
       <ul className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4 lg:gap-4">
-        <DemoKpiCard label="Ihr Code" value={rootCode} accent="teal" icon={<IconQr className="h-5 w-5" />} mono />
+        <DemoKpiCard label="Ihr Code" value={rootCode} accent="teal" icon={<IconQr />} mono />
         {sponsorCode ? (
           <DemoKpiCard
             label="Geworben von"
             value={sponsorCode}
             accent="blue"
-            icon={<IconUsers className="h-5 w-5" />}
+            icon={<IconUsers />}
             mono
           />
         ) : null}
@@ -115,13 +115,13 @@ export function PartnerDemoNetworkPremium({ data }: Props) {
           label="Direkt geworben"
           value={String(totalDirect)}
           accent="green"
-          icon={<IconUserPlus className="h-5 w-5" />}
+          icon={<IconUserPlus />}
         />
         <DemoKpiCard
           label="Gesamtes Netzwerk"
           value={String(totalAll)}
           accent="violet"
-          icon={<IconNetwork className="h-5 w-5" />}
+          icon={<IconNetwork />}
         />
       </ul>
 
@@ -204,13 +204,8 @@ function DemoKpiCard({
 
   return (
     <li className="group flex items-center gap-3.5 rounded-2xl border border-slate-200/60 bg-white p-4 shadow-[0_2px_12px_-6px_rgba(15,79,104,0.18)] transition-shadow duration-200 hover:shadow-[0_10px_28px_-12px_rgba(15,79,104,0.25)] sm:gap-4 sm:p-5">
-      <div
-        className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl ${s.icon} transition-transform duration-200 group-hover:scale-105`}
-        aria-hidden
-      >
-        {icon}
-      </div>
-      <div className="min-w-0">
+      <KpiIconSlot className={s.icon}>{icon}</KpiIconSlot>
+      <div className="min-w-0 flex-1">
         <p className="text-[0.62rem] font-bold uppercase tracking-[0.12em] text-slate-400">{label}</p>
         <p
           className={`mt-0.5 truncate text-2xl font-bold tabular-nums sm:text-[1.65rem] ${mono ? "font-mono uppercase tracking-wide" : ""} ${s.value}`}
@@ -468,44 +463,84 @@ function DemoTreeNodeCard({ node }: { node: PyramidNode }) {
   );
 }
 
-function IconQr({ className }: { className?: string }) {
+function KpiIconSlot({ children, className }: { children: ReactNode; className: string }) {
   return (
-    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
-      <rect x="3" y="3" width="7" height="7" rx="1" />
-      <rect x="14" y="3" width="7" height="7" rx="1" />
-      <rect x="3" y="14" width="7" height="7" rx="1" />
-      <path d="M14 14h3v3M17 17h4v4M14 17h3" strokeLinecap="round" />
+    <div
+      className={`grid h-11 w-11 shrink-0 place-items-center rounded-xl transition-transform duration-200 group-hover:scale-[1.04] ${className}`}
+      aria-hidden
+    >
+      <span className="grid h-[22px] w-[22px] place-items-center [&_svg]:block [&_svg]:h-full [&_svg]:w-full">
+        {children}
+      </span>
+    </div>
+  );
+}
+
+function kpiIconProps() {
+  return {
+    viewBox: "0 0 24 24",
+    fill: "none" as const,
+    stroke: "currentColor",
+    strokeWidth: 1.75,
+    strokeLinecap: "round" as const,
+    strokeLinejoin: "round" as const,
+    "aria-hidden": true as const,
+  };
+}
+
+function IconQr() {
+  const p = kpiIconProps();
+  return (
+    <svg {...p}>
+      <rect x="3" y="3" width="5" height="5" rx="1" />
+      <rect x="16" y="3" width="5" height="5" rx="1" />
+      <rect x="3" y="16" width="5" height="5" rx="1" />
+      <path d="M21 16h-3a2 2 0 0 0-2 2v3" />
+      <path d="M21 21v.01" />
+      <path d="M12 7v3a2 2 0 0 1-2 2H7" />
+      <path d="M3 12h.01" />
+      <path d="M12 3h.01" />
+      <path d="M12 16v.01" />
+      <path d="M16 12h1" />
+      <path d="M21 12v.01" />
+      <path d="M12 21v-1" />
     </svg>
   );
 }
 
-function IconUsers({ className }: { className?: string }) {
+function IconUsers() {
+  const p = kpiIconProps();
   return (
-    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
-      <circle cx="9" cy="8" r="3" />
-      <path d="M3 19v-1a5 5 0 0110 0v1" strokeLinecap="round" />
-      <circle cx="17" cy="9" r="2.5" />
-      <path d="M14 19v-1a3.5 3.5 0 013-3.2" strokeLinecap="round" />
+    <svg {...p}>
+      <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+      <circle cx="9" cy="7" r="4" />
+      <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
+      <path d="M16 3.13a4 4 0 0 1 0 7.75" />
     </svg>
   );
 }
 
-function IconUserPlus({ className }: { className?: string }) {
+function IconUserPlus() {
+  const p = kpiIconProps();
   return (
-    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
-      <circle cx="9" cy="8" r="3" />
-      <path d="M3 19v-1a5 5 0 018.9-2.5M16 11v6M13 14h6" strokeLinecap="round" />
+    <svg {...p}>
+      <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+      <circle cx="9" cy="7" r="4" />
+      <line x1="19" x2="19" y1="8" y2="14" />
+      <line x1="22" x2="16" y1="11" y2="11" />
     </svg>
   );
 }
 
-function IconNetwork({ className }: { className?: string }) {
+function IconNetwork() {
+  const p = kpiIconProps();
   return (
-    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
-      <circle cx="12" cy="5" r="2" />
-      <circle cx="5" cy="19" r="2" />
-      <circle cx="19" cy="19" r="2" />
-      <path d="M12 7v4M12 11l-5 6M12 11l5 6" strokeLinecap="round" />
+    <svg {...p}>
+      <circle cx="18" cy="5" r="3" />
+      <circle cx="6" cy="12" r="3" />
+      <circle cx="18" cy="19" r="3" />
+      <line x1="8.59" x2="15.42" y1="13.51" y2="17.49" />
+      <line x1="15.41" x2="8.59" y1="6.51" y2="10.49" />
     </svg>
   );
 }
