@@ -47,7 +47,8 @@ export default async function StandortePage({
   searchParams?: Promise<{ karte?: string }>;
 }) {
   const sp = await searchParams;
-  const karteBearbeiten = sp?.karte === "bearbeiten";
+  const karteBearbeiten =
+    process.env.NODE_ENV === "development" && sp?.karte === "bearbeiten";
   const plzAnzahl = SERVED_PLZ_TOTAL;
 
   return (

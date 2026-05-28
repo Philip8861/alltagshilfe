@@ -2,36 +2,36 @@
   "hauptmarker": [
     {
       "left": 48.9,
-      "top": 67,
+      "top": 71.5,
       "label": "Allgäu",
       "href": "/standorte/allgaeu",
       "labelAbove": false
     },
     {
       "left": 55.3,
-      "top": 49,
+      "top": 52.3,
       "label": "Augsburg",
       "href": "/standorte/augsburg",
       "labelAbove": true
     },
     {
       "left": 26,
-      "top": 62.3,
+      "top": 66.5,
       "label": "Engen/Konstanz",
       "href": "/standorte/engen",
       "labelAbove": false
     },
     {
       "left": 39.8,
-      "top": 61.1,
+      "top": 65.2,
       "label": "Wangen",
       "sublabel": "(Bodenseeregion)",
       "href": "/standorte/wangen",
       "labelAbove": true
     },
     {
-      "left": 51.5,
-      "top": 51,
+      "left": 44.3,
+      "top": 30,
       "label": "Ulm",
       "href": "/standorte/ulm",
       "labelAbove": true
@@ -40,199 +40,235 @@
   "punkte": [
     {
       "left": 51.3,
-      "top": 47.5
+      "top": 50.7
     },
     {
       "left": 53.9,
-      "top": 43.6
+      "top": 46.5
     },
     {
       "left": 57.3,
-      "top": 42.5
+      "top": 45.3
     },
     {
       "left": 59.7,
-      "top": 47.4
+      "top": 50.6
     },
     {
       "left": 58.3,
-      "top": 49.3
+      "top": 52.6
     },
     {
       "left": 52.5,
-      "top": 49.5
+      "top": 52.8
     },
     {
       "left": 47.3,
-      "top": 76.6
+      "top": 81.7
     },
     {
       "left": 48.4,
-      "top": 73.6
+      "top": 78.5
     },
     {
       "left": 46,
-      "top": 72.6
+      "top": 77.4
     },
     {
       "left": 43.8,
-      "top": 70.4
+      "top": 75.1
     },
     {
       "left": 48.9,
-      "top": 69.5
+      "top": 74.1
     },
     {
       "left": 46.8,
-      "top": 67.7
+      "top": 72.2
     },
     {
       "left": 51,
-      "top": 67.7
+      "top": 72.2
     },
     {
       "left": 52.7,
-      "top": 65.4
+      "top": 69.8
     },
     {
       "left": 52.6,
-      "top": 61.3
+      "top": 65.4
     },
     {
       "left": 47.2,
-      "top": 60.9
+      "top": 65
     },
     {
       "left": 51,
-      "top": 58.4
+      "top": 62.3
     },
     {
       "left": 55.1,
-      "top": 59.5
+      "top": 63.5
     },
     {
       "left": 56,
-      "top": 56.1
+      "top": 59.8
     },
     {
       "left": 53.4,
-      "top": 54
-    },
-    {
-      "left": 50.1,
-      "top": 51.8
-    },
-    {
-      "left": 59.3,
-      "top": 51.6
-    },
-    {
-      "left": 39.8,
-      "top": 66.8
-    },
-    {
-      "left": 38.3,
-      "top": 64.4
-    },
-    {
-      "left": 38.3,
-      "top": 60.5
-    },
-    {
-      "left": 40.5,
-      "top": 58.3
-    },
-    {
-      "left": 44.5,
-      "top": 58.6
-    },
-    {
-      "left": 44.6,
-      "top": 62.7
-    },
-    {
-      "left": 44.2,
-      "top": 66.8
-    },
-    {
-      "left": 35.9,
-      "top": 61.6
-    },
-    {
-      "left": 36.3,
-      "top": 58.9
-    },
-    {
-      "left": 33.3,
-      "top": 57.8
-    },
-    {
-      "left": 30.1,
       "top": 57.6
     },
     {
-      "left": 22.9,
-      "top": 64.4
+      "left": 50.1,
+      "top": 55.3
     },
     {
-      "left": 20.9,
-      "top": 63
+      "left": 59.3,
+      "top": 55
     },
     {
-      "left": 23.1,
-      "top": 60.9
+      "left": 39.8,
+      "top": 71.3
     },
     {
-      "left": 20,
-      "top": 59.1
+      "left": 38.3,
+      "top": 68.7
     },
     {
-      "left": 22.2,
-      "top": 57.5
+      "left": 38.3,
+      "top": 64.5
     },
     {
-      "left": 24.5,
-      "top": 55.1
+      "left": 40.5,
+      "top": 62.2
     },
     {
-      "left": 26.2,
-      "top": 53.5
+      "left": 44.5,
+      "top": 62.5
     },
     {
-      "left": 28.8,
-      "top": 54.3
+      "left": 44.6,
+      "top": 66.9
     },
     {
-      "left": 55.5,
+      "left": 44.2,
+      "top": 71.3
+    },
+    {
+      "left": 35.9,
+      "top": 65.7
+    },
+    {
+      "left": 36.3,
       "top": 62.8
     },
     {
+      "left": 33.3,
+      "top": 61.7
+    },
+    {
+      "left": 30.1,
+      "top": 61.4
+    },
+    {
+      "left": 22.9,
+      "top": 68.7
+    },
+    {
+      "left": 20.9,
+      "top": 67.2
+    },
+    {
+      "left": 23.1,
+      "top": 65
+    },
+    {
+      "left": 20,
+      "top": 63
+    },
+    {
+      "left": 22.2,
+      "top": 61.3
+    },
+    {
+      "left": 24.5,
+      "top": 58.8
+    },
+    {
+      "left": 26.2,
+      "top": 57.1
+    },
+    {
+      "left": 28.8,
+      "top": 57.9
+    },
+    {
+      "left": 55.5,
+      "top": 67
+    },
+    {
       "left": 54.3,
-      "top": 69.2
+      "top": 73.8
     },
     {
       "left": 31.8,
-      "top": 60.9
+      "top": 65
     },
     {
       "left": 37.9,
-      "top": 69.1
+      "top": 73.7
     },
     {
       "left": 47.7,
-      "top": 57.4
+      "top": 61.2
     },
     {
       "left": 57.8,
-      "top": 58
+      "top": 61.9
     },
     {
       "left": 60,
-      "top": 55.8
+      "top": 59.5
     },
     {
       "left": 53.5,
-      "top": 51.5
+      "top": 54.9
+    },
+    {
+      "left": 40.4,
+      "top": 54.5
+    },
+    {
+      "left": 40.4,
+      "top": 49.2
+    },
+    {
+      "left": 41.3,
+      "top": 45.3
+    },
+    {
+      "left": 46.5,
+      "top": 49.8
+    },
+    {
+      "left": 46.9,
+      "top": 44.3
+    },
+    {
+      "left": 42.8,
+      "top": 55.7
+    },
+    {
+      "left": 47,
+      "top": 54.5
+    },
+    {
+      "left": 44.3,
+      "top": 59
+    },
+    {
+      "left": 45.7,
+      "top": 57.7
     }
   ],
   "ortsLabels": []

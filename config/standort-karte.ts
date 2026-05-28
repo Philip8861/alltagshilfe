@@ -21,8 +21,9 @@ export type StandortKarteData = {
 };
 
 /**
- * Standort-Karte: Koordinaten sind Container-%-Werte (0–100) im sichtbaren Kartenbereich –
- * identisch für GPS-Marker und orangene Punkte.
+ * Standort-Karte: Koordinaten sind Kartenbild-%-Werte (0–100) im sichtbaren Bereich
+ * von `object-fit: contain` + `object-position` – identisch für Marker und Punkte.
+ * Berechnung: `lib/standort-karte-coords.ts`
  */
 export function getStandortKarteData(): StandortKarteData {
   return standortKarteData as StandortKarteData;
