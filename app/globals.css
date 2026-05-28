@@ -525,6 +525,99 @@ html:has(#pflegebox-root)::-webkit-scrollbar {
   display: none;
 }
 
+/* Werbe-Netzwerk Pyramide (klassischer CSS-Tree mit Pseudo-Elementen) */
+.ahs-tree,
+.ahs-tree ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  position: relative;
+}
+
+.ahs-tree {
+  display: flex;
+  justify-content: center;
+}
+
+.ahs-tree ul {
+  display: flex;
+  justify-content: center;
+  padding-top: 28px;
+  position: relative;
+}
+
+.ahs-tree li {
+  position: relative;
+  padding: 0 14px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.ahs-tree li::before,
+.ahs-tree li::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  height: 14px;
+  width: 50%;
+  border-top: 2px solid rgba(15, 79, 104, 0.28);
+}
+
+.ahs-tree li::before {
+  right: 50%;
+}
+
+.ahs-tree li::after {
+  left: 50%;
+}
+
+.ahs-tree li:first-child::before,
+.ahs-tree li:last-child::after {
+  border-color: transparent;
+}
+
+.ahs-tree li:only-child::before,
+.ahs-tree li:only-child::after {
+  display: none;
+}
+
+.ahs-tree li:only-child {
+  padding-top: 14px;
+}
+
+.ahs-tree ul::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: calc(50% - 1px);
+  width: 0;
+  height: 14px;
+  border-left: 2px solid rgba(15, 79, 104, 0.28);
+}
+
+/* Wenn Wurzel-UL (oberste Ebene) keinen Stamm braucht. */
+.ahs-tree > ul.ahs-tree__root::before,
+.ahs-tree > ul.ahs-tree__root {
+  padding-top: 0;
+}
+.ahs-tree > ul.ahs-tree__root::before {
+  display: none;
+}
+.ahs-tree > ul.ahs-tree__root > li::before,
+.ahs-tree > ul.ahs-tree__root > li::after {
+  display: none;
+}
+
+.ahs-tree__node {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 4px;
+  align-items: center;
+  text-align: left;
+}
+
 /* Admin Auszahlen: fokussierter Druck (Klasse kurz vor window.print() auf <html>) */
 @media print {
   html {

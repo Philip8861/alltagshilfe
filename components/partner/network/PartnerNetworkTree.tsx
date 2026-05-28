@@ -12,9 +12,59 @@ type Props = {
   pendingPeriod?: string | null;
 };
 
+type PyramidNode = {
+  key: string;
+  partnerCode: string | null;
+  /** "sponsor" = Knoten ÜBER dem Viewer, "self" = Viewer, "direct" = direkte Kinder, "indirect" = Enkel etc. */
+  kind: "sponsor" | "self" | "direct" | "indirect";
+  ownCents: number | null;
+  referralCents: number | null;
+  depth: number;
+  children: PyramidNode[];
+};
+
+function transformDescendant(node: PartnerNetworkNode, isDirect: boolean, parentKey: string, idx: number): PyramidNode {
+  const key = `${parentKey}/${node.partnerCode ?? "x"}-${idx}`;
+  return {
+    key,
+    partnerCode: node.partnerCode,
+    kind: isDirect ? "direct" : "indirect",
+    ownCents: isDirect ? node.ownApprovedClosingCommissionCents : null,
+    referralCents: isDirect ? node.referralCommissionForCurrentPartnerCents : null,
+    depth: node.depth,
+    children: node.children.map((c, i) => transformDescendant(c, false, key, i)),
+  };
+}
+
+function buildPyramid(data: PartnerNetworkTreeResult): PyramidNode {
+  const selfKey = `self-${data.rootPartnerCode ?? "me"}`;
+  const selfNode: PyramidNode = {
+    key: selfKey,
+    partnerCode: data.rootPartnerCode,
+    kind: "self",
+    ownCents: null,
+    referralCents: null,
+    depth: 0,
+    children: data.directChildren.map((c, i) => transformDescendant(c, true, selfKey, i)),
+  };
+  if (data.sponsor) {
+    return {
+      key: `sponsor-${data.sponsor.partnerCode ?? "s"}`,
+      partnerCode: data.sponsor.partnerCode,
+      kind: "sponsor",
+      ownCents: null,
+      referralCents: null,
+      depth: -1,
+      children: [selfNode],
+    };
+  }
+  return selfNode;
+}
+
 export function PartnerNetworkTree({ data, availablePeriods, onChangePeriod, pendingPeriod }: Props) {
   const totalDirect = data.directChildren.length;
   const totalAll = data.totalNodes;
+  const root = buildPyramid(data);
 
   return (
     <section
@@ -68,22 +118,24 @@ export function PartnerNetworkTree({ data, availablePeriods, onChangePeriod, pen
         <Stat label="Gesamtes Netzwerk" value={totalAll.toString()} />
       </div>
 
-      <div className="mt-5">
-        {data.directChildren.length === 0 ? (
-          <p className="rounded-xl border border-dashed border-[#0F4F68]/30 bg-[#FAFBFC] px-4 py-6 text-center text-sm text-neutral-700">
-            Sie haben aktuell keine geworbenen Partner. Sobald jemand mit Ihrem Partner-Code angelegt wird,
-            erscheint die Person hier.
-          </p>
-        ) : (
-          <ul className="space-y-3" aria-label="Werbe-Netzwerk">
-            {data.directChildren.map((node, idx) => (
-              <NetworkNodeRow key={`${node.partnerCode ?? "x"}-${idx}`} node={node} />
-            ))}
-          </ul>
-        )}
+      <div className="mt-6 overflow-x-auto pb-2">
+        <div className="min-w-full">
+          <div className="ahs-tree">
+            <ul className="ahs-tree__root">
+              <PyramidLi node={root} />
+            </ul>
+          </div>
+        </div>
       </div>
 
-      <p className="mt-5 rounded-xl border border-amber-200 bg-amber-50/80 px-4 py-3 text-xs leading-relaxed text-amber-950">
+      <div className="mt-4 flex flex-wrap items-center gap-3 text-[0.7rem] text-neutral-700">
+        <LegendDot tone="ahs" label="Sponsor" />
+        <LegendDot tone="self" label="Sie" />
+        <LegendDot tone="direct" label="Direkt geworben (5 % Werbeprovision)" />
+        <LegendDot tone="indirect" label="Indirekt (kein Werbeanspruch)" />
+      </div>
+
+      <p className="mt-4 rounded-xl border border-amber-200 bg-amber-50/80 px-4 py-3 text-xs leading-relaxed text-amber-950">
         Direkte Werbung: 5 % Werbeprovision auf eigene freigegebene Abschlussprovision der direkt geworbenen
         Partner. Indirekte Partner werden zur Übersicht angezeigt – aus diesen entsteht für Sie keine direkte
         Werbeprovision.
@@ -101,73 +153,34 @@ function Stat({ label, value }: { label: string; value: string }) {
   );
 }
 
-function NetworkNodeRow({ node }: { node: PartnerNetworkNode }) {
-  const [open, setOpen] = useState(true);
+function LegendDot({ tone, label }: { tone: "ahs" | "self" | "direct" | "indirect"; label: string }) {
+  const cls =
+    tone === "ahs"
+      ? "bg-[#0F4F68]"
+      : tone === "self"
+        ? "bg-[#3DB8C9]"
+        : tone === "direct"
+          ? "bg-sky-500"
+          : "bg-neutral-400";
+  return (
+    <span className="inline-flex items-center gap-1.5">
+      <span className={`inline-block h-2.5 w-2.5 rounded-full ${cls}`} aria-hidden />
+      {label}
+    </span>
+  );
+}
+
+function PyramidLi({ node }: { node: PyramidNode }) {
+  const [collapsed, setCollapsed] = useState(false);
   const hasChildren = node.children.length > 0;
 
   return (
     <li>
-      <div
-        className={`flex flex-col gap-2 rounded-xl border px-4 py-3 sm:flex-row sm:items-center sm:justify-between ${
-          node.isDirectReferral
-            ? "border-sky-200/80 bg-sky-50/60"
-            : "border-neutral-200 bg-neutral-50"
-        }`}
-      >
-        <div className="flex min-w-0 items-center gap-3">
-          {hasChildren ? (
-            <button
-              type="button"
-              aria-label={open ? "Untergeordnete Partner ausblenden" : "Untergeordnete Partner anzeigen"}
-              aria-expanded={open}
-              onClick={() => setOpen((o) => !o)}
-              className="grid h-7 w-7 place-items-center rounded-md border border-neutral-300 bg-white text-[#0F4F68] hover:bg-[#0F4F68]/5"
-            >
-              <span aria-hidden className="text-lg leading-none">
-                {open ? "−" : "+"}
-              </span>
-            </button>
-          ) : (
-            <span className="grid h-7 w-7 place-items-center" aria-hidden>
-              <span className="block h-2 w-2 rounded-full bg-neutral-400" />
-            </span>
-          )}
-          <div className="min-w-0">
-            <p className="font-mono text-sm font-semibold uppercase text-[#0F4F68]">
-              {node.partnerCode ?? "—"}
-            </p>
-            <p className="text-xs text-neutral-600">
-              {node.isDirectReferral
-                ? "Direkt geworben"
-                : `Indirekt · Ebene ${node.depth}`}
-            </p>
-          </div>
-        </div>
-
-        {node.isDirectReferral ? (
-          <div className="grid w-full max-w-md grid-cols-2 gap-2 sm:gap-3">
-            <Money
-              label="Eigene Abschlussprovision"
-              cents={node.ownApprovedClosingCommissionCents ?? 0}
-              tone="emerald"
-            />
-            <Money
-              label="Ihre 5 % Werbeprovision"
-              cents={node.referralCommissionForCurrentPartnerCents ?? 0}
-              tone="sky"
-            />
-          </div>
-        ) : (
-          <p className="rounded-md bg-white px-3 py-2 text-xs text-neutral-700 ring-1 ring-neutral-200">
-            Kein direkter Werbeanspruch.
-          </p>
-        )}
-      </div>
-
-      {hasChildren && open ? (
-        <ul className="ml-6 mt-2 space-y-2 border-l-2 border-dashed border-[#0F4F68]/20 pl-3 sm:ml-9 sm:pl-4">
-          {node.children.map((child, idx) => (
-            <NetworkNodeRow key={`${child.partnerCode ?? "x"}-${idx}`} node={child} />
+      <NodeBox node={node} hasChildren={hasChildren} collapsed={collapsed} onToggle={() => setCollapsed((v) => !v)} />
+      {hasChildren && !collapsed ? (
+        <ul>
+          {node.children.map((c) => (
+            <PyramidLi key={c.key} node={c} />
           ))}
         </ul>
       ) : null}
@@ -175,7 +188,103 @@ function NetworkNodeRow({ node }: { node: PartnerNetworkNode }) {
   );
 }
 
-function Money({
+function NodeBox({
+  node,
+  hasChildren,
+  collapsed,
+  onToggle,
+}: {
+  node: PyramidNode;
+  hasChildren: boolean;
+  collapsed: boolean;
+  onToggle: () => void;
+}) {
+  const palette = paletteFor(node.kind);
+  const labelKind =
+    node.kind === "sponsor"
+      ? "Geworben durch"
+      : node.kind === "self"
+        ? "Sie"
+        : node.kind === "direct"
+          ? "Direkt geworben"
+          : `Indirekt · Ebene ${Math.max(1, node.depth)}`;
+
+  return (
+    <div className="ahs-tree__node">
+      <div
+        className={`min-w-[8.75rem] max-w-[12rem] rounded-xl border px-3 py-2.5 shadow-[0_4px_12px_rgba(15,79,104,0.10)] sm:px-4 sm:py-3 ${palette.box}`}
+      >
+        <p className={`text-[0.6rem] font-bold uppercase tracking-wide ${palette.label}`}>{labelKind}</p>
+        <p className={`mt-1 font-mono text-sm font-semibold uppercase tabular-nums sm:text-base ${palette.code}`}>
+          {node.partnerCode ?? "—"}
+        </p>
+        {node.kind === "direct" ? (
+          <div className="mt-2 grid grid-cols-1 gap-1.5">
+            <MoneyChip
+              label="Eigene Abschlussprov."
+              cents={node.ownCents ?? 0}
+              tone="emerald"
+            />
+            <MoneyChip
+              label="Ihre 5 %"
+              cents={node.referralCents ?? 0}
+              tone="sky"
+            />
+          </div>
+        ) : null}
+      </div>
+
+      {hasChildren ? (
+        <button
+          type="button"
+          onClick={onToggle}
+          aria-label={collapsed ? "Untergeordnete Partner anzeigen" : "Untergeordnete Partner ausblenden"}
+          className="mt-1 grid h-6 w-6 place-items-center rounded-full border border-[#0F4F68]/30 bg-white text-[#0F4F68] shadow-sm hover:bg-[#0F4F68]/5"
+        >
+          <span aria-hidden className="text-base leading-none">
+            {collapsed ? "+" : "−"}
+          </span>
+        </button>
+      ) : null}
+    </div>
+  );
+}
+
+function paletteFor(kind: PyramidNode["kind"]): {
+  box: string;
+  label: string;
+  code: string;
+} {
+  switch (kind) {
+    case "sponsor":
+      return {
+        box: "border-[#0F4F68]/35 bg-[#F2F9FA] ring-1 ring-[#0F4F68]/20",
+        label: "text-[#0F4F68]/80",
+        code: "text-[#0F4F68]",
+      };
+    case "self":
+      return {
+        box: "border-[#3DB8C9]/55 bg-gradient-to-b from-[#E6F5F7] to-white ring-1 ring-[#3DB8C9]/30",
+        label: "text-[#0F4F68]/85",
+        code: "text-[#0F4F68]",
+      };
+    case "direct":
+      return {
+        box: "border-sky-300 bg-sky-50",
+        label: "text-sky-900/80",
+        code: "text-sky-900",
+      };
+    case "indirect":
+    default:
+      return {
+        box: "border-neutral-200 bg-neutral-50",
+        label: "text-neutral-700",
+        code: "text-neutral-800",
+      };
+  }
+}
+
+function MoneyChip({
   label,
   cents,
   tone,
@@ -187,11 +296,11 @@ function Money({
   const palette =
     tone === "emerald"
       ? "border-emerald-200 bg-emerald-50 text-emerald-900"
-      : "border-sky-200 bg-sky-50 text-sky-900";
+      : "border-sky-200 bg-white text-sky-900";
   return (
-    <div className={`rounded-md border ${palette} px-3 py-2`}>
-      <p className="text-[0.6rem] font-bold uppercase tracking-wide opacity-80">{label}</p>
-      <p className="mt-0.5 text-sm font-semibold tabular-nums sm:text-base">{formatCentsDe(cents)}</p>
+    <div className={`rounded-md border ${palette} px-2 py-1`}>
+      <p className="text-[0.55rem] font-bold uppercase tracking-wide opacity-80">{label}</p>
+      <p className="text-[0.78rem] font-semibold tabular-nums">{formatCentsDe(cents)}</p>
     </div>
   );
 }
