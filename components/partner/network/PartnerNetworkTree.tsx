@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { formatCentsDe } from "@/lib/partner/referral-money";
 import type { PartnerNetworkNode, PartnerNetworkTreeResult } from "@/lib/partner/network-tree";
+import { PartnerNetworkTreeViewport } from "@/components/partner/network/PartnerNetworkTreeViewport";
 
 type Props = {
   data: PartnerNetworkTreeResult;
@@ -72,7 +73,7 @@ export function PartnerNetworkTree({ data, availablePeriods, onChangePeriod, pen
     >
       <div className="h-1 w-full shrink-0 bg-gradient-to-r from-[#0F4F68] via-[#3DB8C9] to-[#0F4F68]/35" aria-hidden />
 
-      <div className="border-b border-[#0F4F68]/10 bg-gradient-to-br from-[#F2F9FA] via-white to-white px-5 py-5 sm:px-6 sm:py-6">
+      <div className="border-b border-[#0F4F68]/10 bg-gradient-to-br from-[#F2F9FA] via-white to-white px-4 py-4 sm:px-6 sm:py-6">
         <header className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <div className="min-w-0">
             <p className="text-[0.65rem] font-semibold uppercase tracking-[0.14em] text-[#0F4F68]/75">
@@ -105,7 +106,7 @@ export function PartnerNetworkTree({ data, availablePeriods, onChangePeriod, pen
               )}
             </p>
           </div>
-          <div className="flex flex-col items-stretch gap-1 sm:items-end">
+          <div className="flex w-full flex-col items-stretch gap-1 sm:w-auto sm:items-end">
             <label
               htmlFor="network-period-select"
               className="text-[0.65rem] font-bold uppercase tracking-wide text-[#0F4F68]/80"
@@ -117,7 +118,7 @@ export function PartnerNetworkTree({ data, availablePeriods, onChangePeriod, pen
               value={data.periodKey}
               disabled={Boolean(pendingPeriod)}
               onChange={(e) => onChangePeriod(e.target.value)}
-              className="min-w-[12rem] rounded-xl border border-[#0F4F68]/15 bg-white px-3 py-2.5 text-sm font-medium text-[#0F4F68] shadow-sm outline-none ring-[#0F4F68] focus:ring-2 disabled:opacity-60"
+              className="w-full min-h-11 rounded-xl border border-[#0F4F68]/15 bg-white px-3 py-2.5 text-sm font-medium text-[#0F4F68] shadow-sm outline-none ring-[#0F4F68] focus:ring-2 disabled:opacity-60 sm:min-w-[12rem] sm:w-auto"
             >
               {availablePeriods.map((p) => (
                 <option key={p.periodKey} value={p.periodKey}>
@@ -128,23 +129,23 @@ export function PartnerNetworkTree({ data, availablePeriods, onChangePeriod, pen
           </div>
         </header>
 
-        <div className="mt-5 grid grid-cols-2 gap-3 sm:max-w-lg">
+        <div className="mt-5 grid grid-cols-2 gap-2 sm:max-w-lg sm:gap-3">
           <StatCard label="Direkt geworben" value={totalDirect.toString()} accent="teal" />
           <StatCard label="Gesamtes Netzwerk" value={totalAll.toString()} accent="sky" />
         </div>
       </div>
 
-      <div className="px-4 py-5 sm:px-6 sm:py-6">
+      <div className="px-3 py-4 sm:px-6 sm:py-6">
         {hasNetwork ? (
-          <div className="overflow-x-auto pb-1">
-            <div className="ahs-tree__canvas min-w-min px-2 sm:px-4">
+          <PartnerNetworkTreeViewport layoutKey={`${data.periodKey}-${totalAll}-${data.rootPartnerCode ?? ""}`}>
+            <div className="ahs-tree__canvas px-2 py-3 sm:px-4 sm:py-4">
               <div className="ahs-tree">
                 <ul className="ahs-tree__root">
                   <PyramidLi node={root} />
                 </ul>
               </div>
             </div>
-          </div>
+          </PartnerNetworkTreeViewport>
         ) : (
           <div className="rounded-xl border border-dashed border-[#0F4F68]/25 bg-[#F2F9FA]/60 px-6 py-12 text-center">
             <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-[#0F4F68]/10 text-[#0F4F68]">
@@ -184,9 +185,9 @@ function StatCard({
 }) {
   const ring = accent === "teal" ? "border-[#0F4F68]/15 bg-white" : "border-sky-200/70 bg-sky-50/40";
   return (
-    <div className={`rounded-xl border px-4 py-3 shadow-sm ${ring}`}>
-      <p className="text-[0.65rem] font-bold uppercase tracking-wide text-[#0F4F68]/75">{label}</p>
-      <p className="mt-1 text-2xl font-semibold tabular-nums text-[#0F4F68]">{value}</p>
+    <div className={`rounded-xl border px-3 py-2.5 shadow-sm sm:px-4 sm:py-3 ${ring}`}>
+      <p className="text-[0.6rem] font-bold uppercase tracking-wide text-[#0F4F68]/75 sm:text-[0.65rem]">{label}</p>
+      <p className="mt-0.5 text-xl font-semibold tabular-nums text-[#0F4F68] sm:text-2xl">{value}</p>
     </div>
   );
 }
@@ -212,14 +213,17 @@ function PyramidLi({ node }: { node: PyramidNode }) {
   const hasChildren = node.children.length > 0;
 
   return (
-    <li>
+    <li className="ahs-tree__branch">
       <NodeBox node={node} hasChildren={hasChildren} collapsed={collapsed} onToggle={() => setCollapsed((v) => !v)} />
       {hasChildren && !collapsed ? (
-        <ul>
-          {node.children.map((c) => (
-            <PyramidLi key={c.key} node={c} />
-          ))}
-        </ul>
+        <>
+          <div className="ahs-tree__stem" aria-hidden />
+          <ul className="ahs-tree__children">
+            {node.children.map((c) => (
+              <PyramidLi key={c.key} node={c} />
+            ))}
+          </ul>
+        </>
       ) : null}
     </li>
   );
@@ -237,38 +241,44 @@ function NodeBox({
   onToggle: () => void;
 }) {
   const meta = nodeMeta(node);
+  const compact = node.kind === "indirect";
+  const cardWidth = compact
+    ? "min-w-[6.75rem] max-w-[9rem] sm:min-w-[7.5rem] sm:max-w-[10rem]"
+    : node.kind === "direct"
+      ? "min-w-[10rem] max-w-[13.5rem] sm:min-w-[10.5rem]"
+      : "min-w-[8rem] max-w-[12rem] sm:min-w-[8.5rem]";
 
   return (
     <div className="ahs-tree__node">
       <article
-        className={`group relative min-w-[9.5rem] max-w-[13.5rem] overflow-hidden rounded-2xl border transition-shadow duration-200 hover:shadow-lg ${meta.card}`}
+        className={`group relative overflow-hidden rounded-xl border transition-shadow duration-200 hover:shadow-lg sm:rounded-2xl ${cardWidth} ${meta.card}`}
       >
         <div className={`h-1 w-full ${meta.stripe}`} aria-hidden />
-        <div className="px-3.5 py-3 sm:px-4 sm:py-3.5">
-          <div className="flex items-start gap-2.5">
+        <div className={compact ? "px-2.5 py-2 sm:px-3 sm:py-2.5" : "px-3 py-2.5 sm:px-4 sm:py-3.5"}>
+          <div className={`flex items-start ${compact ? "gap-2" : "gap-2.5"}`}>
             <div
-              className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg ${meta.iconWrap}`}
+              className={`flex shrink-0 items-center justify-center rounded-lg ${compact ? "h-7 w-7" : "h-9 w-9"} ${meta.iconWrap}`}
               aria-hidden
             >
-              <NodeIcon kind={node.kind} />
+              <NodeIcon kind={node.kind} compact={compact} />
             </div>
             <div className="min-w-0 flex-1">
-              <p className={`text-[0.6rem] font-bold uppercase tracking-[0.08em] ${meta.label}`}>{meta.title}</p>
-              <p className={`mt-0.5 truncate font-mono text-sm font-semibold uppercase tracking-wide sm:text-base ${meta.code}`}>
+              <p className={`font-bold uppercase tracking-[0.08em] ${compact ? "text-[0.55rem]" : "text-[0.6rem]"} ${meta.label}`}>
+                {meta.title}
+              </p>
+              <p
+                className={`mt-0.5 break-all font-mono font-semibold uppercase leading-tight tracking-wide ${compact ? "text-xs" : "text-sm sm:text-base"} ${meta.code}`}
+              >
                 {node.partnerCode ?? "—"}
               </p>
             </div>
           </div>
 
           {node.kind === "direct" ? (
-            <div className="mt-3 space-y-1.5 border-t border-sky-200/60 pt-2.5">
-              <MoneyRow label="Eigene Abschlussprov." cents={node.ownCents ?? 0} tone="emerald" />
-              <MoneyRow label="Ihre 5 % Werbeprov." cents={node.referralCents ?? 0} tone="sky" />
+            <div className="mt-2.5 space-y-1.5 border-t border-sky-200/60 pt-2 sm:mt-3 sm:pt-2.5">
+              <MoneyRow label="Eigene Abschlussprov." shortLabel="Eigene Prov." cents={node.ownCents ?? 0} tone="emerald" />
+              <MoneyRow label="Ihre 5 % Werbeprov." shortLabel="Ihre 5 %" cents={node.referralCents ?? 0} tone="sky" />
             </div>
-          ) : node.kind === "indirect" ? (
-            <p className="mt-2 rounded-md bg-white/70 px-2 py-1 text-[0.65rem] leading-snug text-neutral-600 ring-1 ring-neutral-200/80">
-              Kein direkter Werbeanspruch
-            </p>
           ) : null}
         </div>
       </article>
@@ -276,6 +286,7 @@ function NodeBox({
       {hasChildren ? (
         <button
           type="button"
+          data-no-pan
           onClick={onToggle}
           aria-expanded={!collapsed}
           aria-label={collapsed ? "Untergeordnete Partner anzeigen" : "Untergeordnete Partner ausblenden"}
@@ -332,10 +343,12 @@ function nodeMeta(node: PyramidNode) {
 
 function MoneyRow({
   label,
+  shortLabel,
   cents,
   tone,
 }: {
   label: string;
+  shortLabel: string;
   cents: number;
   tone: "emerald" | "sky";
 }) {
@@ -344,17 +357,23 @@ function MoneyRow({
       ? "bg-emerald-50/90 text-emerald-900 ring-emerald-200/70"
       : "bg-sky-50/90 text-sky-900 ring-sky-200/70";
   return (
-    <div className={`flex items-center justify-between gap-2 rounded-lg px-2 py-1.5 ring-1 ${cls}`}>
-      <span className="text-[0.58rem] font-bold uppercase leading-tight tracking-wide opacity-85">{label}</span>
-      <span className="shrink-0 text-xs font-semibold tabular-nums">{formatCentsDe(cents)}</span>
+    <div className={`flex items-center justify-between gap-1.5 rounded-lg px-2 py-1.5 ring-1 sm:gap-2 ${cls}`}>
+      <span className="text-[0.58rem] font-bold uppercase leading-tight tracking-wide opacity-85 sm:hidden">
+        {shortLabel}
+      </span>
+      <span className="hidden text-[0.58rem] font-bold uppercase leading-tight tracking-wide opacity-85 sm:inline">
+        {label}
+      </span>
+      <span className="shrink-0 text-[0.7rem] font-semibold tabular-nums sm:text-xs">{formatCentsDe(cents)}</span>
     </div>
   );
 }
 
-function NodeIcon({ kind }: { kind: PyramidNode["kind"] }) {
+function NodeIcon({ kind, compact = false }: { kind: PyramidNode["kind"]; compact?: boolean }) {
+  const size = compact ? 14 : 18;
   if (kind === "self") {
     return (
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
         <circle cx="12" cy="8" r="4" />
         <path d="M6 20v-1a6 6 0 0112 0v1" strokeLinecap="round" />
       </svg>
@@ -362,20 +381,20 @@ function NodeIcon({ kind }: { kind: PyramidNode["kind"] }) {
   }
   if (kind === "sponsor") {
     return (
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
         <path d="M12 3l2.5 7.5H22l-6 4.5 2.5 7.5L12 18l-6.5 4.5 2.5-7.5-6-4.5h7.5L12 3z" strokeLinejoin="round" />
       </svg>
     );
   }
   if (kind === "direct") {
     return (
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
         <path d="M16 11V7a4 4 0 00-8 0v4M5 11h14v10H5V11z" strokeLinecap="round" strokeLinejoin="round" />
       </svg>
     );
   }
   return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
       <circle cx="12" cy="12" r="3" />
       <path d="M12 2v3M12 19v3M2 12h3M19 12h3" strokeLinecap="round" />
     </svg>

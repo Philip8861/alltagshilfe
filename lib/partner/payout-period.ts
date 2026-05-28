@@ -28,6 +28,12 @@ export function previousMonthPeriodKeyBerlin(now = new Date()): string {
   return `${year}-${String(month - 1).padStart(2, "0")}`;
 }
 
+/** Aktueller Kalendermonat als YYYY-MM (Europe/Berlin). */
+export function currentBerlinPeriodKey(now = new Date()): string {
+  const { year, month } = getBerlinCalendarParts(now);
+  return `${year}-${String(month).padStart(2, "0")}`;
+}
+
 /** Nächster Monatserster für Hinweis „Auszahlung am …“. */
 export function nextPayoutDateInfo(now = new Date()): { labelDe: string; isoDate: string } {
   const { year, month } = getBerlinCalendarParts(now);

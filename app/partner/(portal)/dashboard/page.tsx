@@ -10,10 +10,8 @@ import { normalizePortalPreferences, parsePortalPreferences } from "@/lib/partne
 import type { PartnerDashboardTipSerial } from "@/lib/partner/types";
 import { PARTNER_RESPONSIBILITY_SLUGS } from "@/lib/partner/responsibility-areas";
 import { createSupabaseServiceRoleClient } from "@/lib/supabase/service";
-import {
-  currentBerlinPeriodKey,
-  getPartnerMonthlyPayoutSummary,
-} from "@/lib/partner/referral-commission";
+import { getPartnerMonthlyPayoutSummary } from "@/lib/partner/referral-commission";
+import { currentBerlinPeriodKey } from "@/lib/partner/payout-period";
 
 export const metadata: Metadata = {
   title: "Übersicht",

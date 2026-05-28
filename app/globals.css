@@ -535,85 +535,107 @@ html:has(#pflegebox-root)::-webkit-scrollbar {
 }
 
 .ahs-tree {
-  display: flex;
+  display: inline-flex;
   justify-content: center;
-  min-width: min-content;
+  width: max-content;
 }
 
-.ahs-tree ul {
-  display: flex;
+.ahs-tree ul.ahs-tree__children,
+.ahs-tree > ul.ahs-tree__root {
+  display: inline-flex;
   justify-content: center;
   align-items: flex-start;
-  padding-top: 2.25rem;
+  width: max-content;
+  margin-left: auto;
+  margin-right: auto;
   position: relative;
 }
 
-.ahs-tree li {
+.ahs-tree ul.ahs-tree__children {
+  padding-top: 0.875rem;
+}
+
+.ahs-tree > ul.ahs-tree__root {
+  padding-top: 0;
+}
+
+.ahs-tree li.ahs-tree__branch {
   position: relative;
-  padding: 0 0.65rem;
+  flex: 0 0 auto;
+  padding: 0 0.5rem;
   text-align: center;
-  display: flex;
+  display: inline-flex;
   flex-direction: column;
   align-items: center;
+  width: max-content;
 }
 
-.ahs-tree li::before,
-.ahs-tree li::after {
+/* Horizontale Verbindung zwischen Geschwister-Knoten */
+.ahs-tree li.ahs-tree__branch::before,
+.ahs-tree li.ahs-tree__branch::after {
   content: "";
   position: absolute;
   top: 0;
-  height: 1.125rem;
+  height: 0.875rem;
   width: 50%;
-  border-top: 2px solid rgba(61, 184, 201, 0.45);
+  border-top: 2px solid rgba(61, 184, 201, 0.5);
 }
 
-.ahs-tree li::before {
+.ahs-tree li.ahs-tree__branch::before {
   right: 50%;
-  border-right: 2px solid rgba(61, 184, 201, 0.45);
-  border-top-right-radius: 0.5rem;
+  border-right: 2px solid rgba(61, 184, 201, 0.5);
+  border-top-right-radius: 0.375rem;
 }
 
-.ahs-tree li::after {
+.ahs-tree li.ahs-tree__branch::after {
   left: 50%;
-  border-left: 2px solid rgba(61, 184, 201, 0.45);
-  border-top-left-radius: 0.5rem;
+  border-left: 2px solid rgba(61, 184, 201, 0.5);
+  border-top-left-radius: 0.375rem;
 }
 
-.ahs-tree li:first-child::before,
-.ahs-tree li:last-child::after {
+.ahs-tree li.ahs-tree__branch:first-child::before,
+.ahs-tree li.ahs-tree__branch:last-child::after {
   border-color: transparent;
 }
 
-.ahs-tree li:only-child::before,
-.ahs-tree li:only-child::after {
+/* Einziges Kind: senkrechte Linie statt horizontaler Gabel */
+.ahs-tree li.ahs-tree__branch:only-child::before,
+.ahs-tree li.ahs-tree__branch:only-child::after {
   display: none;
 }
 
-.ahs-tree li:only-child {
-  padding-top: 1.125rem;
+.ahs-tree li.ahs-tree__branch:only-child {
+  padding-top: 0;
 }
 
-.ahs-tree ul::before {
+/* Senkrechter Stamm von Eltern-Knoten zur Kind-Ebene */
+.ahs-tree__stem {
+  flex-shrink: 0;
+  width: 2px;
+  height: 0.875rem;
+  margin: 0 auto;
+  background: linear-gradient(180deg, rgba(15, 79, 104, 0.4), rgba(61, 184, 201, 0.55));
+  border-radius: 1px;
+}
+
+/* Senkrechter Stamm von horizontaler Leiste zum Eltern-Knoten (Mitte der Gruppe) */
+.ahs-tree ul.ahs-tree__children::before {
   content: "";
   position: absolute;
   top: 0;
-  left: calc(50% - 1px);
+  left: 50%;
+  transform: translateX(-50%);
   width: 0;
-  height: 1.125rem;
-  border-left: 2px solid rgba(15, 79, 104, 0.35);
-}
-
-.ahs-tree > ul.ahs-tree__root::before,
-.ahs-tree > ul.ahs-tree__root {
-  padding-top: 0;
+  height: 0.875rem;
+  border-left: 2px solid rgba(15, 79, 104, 0.38);
 }
 
 .ahs-tree > ul.ahs-tree__root::before {
   display: none;
 }
 
-.ahs-tree > ul.ahs-tree__root > li::before,
-.ahs-tree > ul.ahs-tree__root > li::after {
+.ahs-tree > ul.ahs-tree__root > li.ahs-tree__branch::before,
+.ahs-tree > ul.ahs-tree__root > li.ahs-tree__branch::after {
   display: none;
 }
 
@@ -633,17 +655,29 @@ html:has(#pflegebox-root)::-webkit-scrollbar {
     linear-gradient(180deg, #f2f9fa 0%, #ffffff 55%, #fafbfc 100%);
   border: 1px solid rgba(15, 79, 104, 0.1);
   border-radius: 1rem;
-  padding: 1.75rem 1rem 1.25rem;
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9);
 }
 
-@media (min-width: 640px) {
-  .ahs-tree ul {
-    padding-top: 2.5rem;
+.ahs-tree__viewport {
+  -webkit-overflow-scrolling: touch;
+}
+
+@media (max-width: 639px) {
+  .ahs-tree li.ahs-tree__branch {
+    padding: 0 0.35rem;
   }
 
-  .ahs-tree li {
-    padding: 0 0.85rem;
+  .ahs-tree__stem,
+  .ahs-tree ul.ahs-tree__children::before,
+  .ahs-tree li.ahs-tree__branch::before,
+  .ahs-tree li.ahs-tree__branch::after {
+    height: 0.75rem;
+  }
+}
+
+@media (min-width: 640px) {
+  .ahs-tree li.ahs-tree__branch {
+    padding: 0 0.65rem;
   }
 }
 

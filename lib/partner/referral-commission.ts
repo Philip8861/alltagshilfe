@@ -267,16 +267,3 @@ export async function getPartnerMonthlyPayoutSummary(
   };
 }
 
-/** Aktueller Monat (Europe/Berlin) als YYYY-MM. */
-export function currentBerlinPeriodKey(now = new Date()): string {
-  const fmt = new Intl.DateTimeFormat("en-CA", {
-    timeZone: "Europe/Berlin",
-    year: "numeric",
-    month: "2-digit",
-  });
-  const parts = fmt.formatToParts(now);
-  const y = parts.find((p) => p.type === "year")?.value;
-  const m = parts.find((p) => p.type === "month")?.value;
-  if (!y || !m) return periodKeyFromDate(now);
-  return `${y}-${m}`;
-}

@@ -6,7 +6,7 @@ import { requirePartnerLogin } from "@/lib/partner/auth";
 import { partnerHasBetrieblichPflegeberatung } from "@/lib/partner/betrieblich-team-types";
 import { fetchBetrieblichTeamsOverview } from "@/lib/partner/betrieblich-team-queries";
 import { getPartnerNetworkTree } from "@/lib/partner/network-tree";
-import { currentBerlinPeriodKey } from "@/lib/partner/referral-commission";
+import { currentBerlinPeriodKey } from "@/lib/partner/payout-period";
 import { formatPayoutPeriodLabelDe } from "@/lib/partner/payout-period";
 import { createSupabaseServiceRoleClient } from "@/lib/supabase/service";
 
