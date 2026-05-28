@@ -68,6 +68,19 @@ const config: Config = {
           "0%": { transform: "translateX(0)" },
           "100%": { transform: "translateX(-50%)" },
         },
+        "partner-network-tree-in": {
+          "0%": { opacity: "0", transform: "scale(0.97) translateY(8px)" },
+          "100%": { opacity: "1", transform: "scale(1) translateY(0)" },
+        },
+        "partner-network-stat-pop": {
+          "0%": { opacity: "0", transform: "scale(0.82) translateY(6px)" },
+          "70%": { transform: "scale(1.04) translateY(0)" },
+          "100%": { opacity: "1", transform: "scale(1) translateY(0)" },
+        },
+        "partner-network-chip-in": {
+          "0%": { opacity: "0", transform: "translateX(-10px)" },
+          "100%": { opacity: "1", transform: "translateX(0)" },
+        },
       },
       animation: {
         "fade-in-up": "fade-in-up 0.6s ease-out forwards",
@@ -81,6 +94,12 @@ const config: Config = {
         "partner-icon-nudge": "partner-icon-nudge 2.8s ease-in-out infinite",
         "star-pop-in": "star-pop-in 0.48s cubic-bezier(0.34, 1.45, 0.64, 1) both",
         "ratgeber-marquee": "ratgeber-marquee 70s linear infinite",
+        "partner-network-tree-in":
+          "partner-network-tree-in 0.75s cubic-bezier(0.22, 1, 0.36, 1) both",
+        "partner-network-stat-pop":
+          "partner-network-stat-pop 0.65s cubic-bezier(0.22, 1, 0.36, 1) both",
+        "partner-network-chip-in":
+          "partner-network-chip-in 0.55s cubic-bezier(0.22, 1, 0.36, 1) both",
       },
     },
   },

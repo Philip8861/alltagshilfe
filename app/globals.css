@@ -346,6 +346,14 @@ body:has(#pflegebox-root) #main-content {
     opacity: 1 !important;
     transform: none !important;
   }
+  .motion-safe\:animate-partner-network-tree-in,
+  .motion-safe\:animate-partner-network-stat-pop,
+  .motion-safe\:animate-partner-network-chip-in,
+  .motion-safe\:animate-partner-soft-float {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
   .animate-fade-in-up {
     animation: none !important;
     opacity: 1 !important;

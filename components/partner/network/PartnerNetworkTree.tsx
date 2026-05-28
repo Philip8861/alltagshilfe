@@ -1,15 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { formatCentsDe } from "@/lib/partner/referral-money";
 import type { PartnerNetworkNode, PartnerNetworkTreeResult } from "@/lib/partner/network-tree";
 import { PartnerNetworkTreeViewport } from "@/components/partner/network/PartnerNetworkTreeViewport";
 
 type Props = {
   data: PartnerNetworkTreeResult;
-  availablePeriods: { periodKey: string; label: string }[];
-  onChangePeriod: (periodKey: string) => void;
-  pendingPeriod?: string | null;
 };
 
 type PyramidNode = {
@@ -72,7 +69,7 @@ function useIsMobileSm() {
   return isMobile;
 }
 
-export function PartnerNetworkTree({ data, availablePeriods, onChangePeriod, pendingPeriod }: Props) {
+export function PartnerNetworkTree({ data }: Props) {
   const isMobile = useIsMobileSm();
   const totalDirect = data.directChildren.length;
   const totalAll = data.totalNodes;
@@ -86,126 +83,315 @@ export function PartnerNetworkTree({ data, availablePeriods, onChangePeriod, pen
     >
       <div className="h-1 w-full shrink-0 bg-gradient-to-r from-[#0F4F68] via-[#3DB8C9] to-[#0F4F68]/35" aria-hidden />
 
-      <div className="border-b border-[#0F4F68]/10 bg-gradient-to-br from-[#F2F9FA] via-white to-white px-4 py-4 sm:px-6 sm:py-6">
-        <header className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-          <div className="min-w-0">
-            <p className="text-[0.65rem] font-semibold uppercase tracking-[0.14em] text-[#0F4F68]/75">
-              Strukturübersicht
-            </p>
-            <h2 id="partner-network-tree-heading" className="mt-1 text-xl font-semibold text-[#0F4F68] sm:text-2xl">
-              Werbe-Netzwerk
-            </h2>
-            <div className="mt-2 h-1 w-full max-w-[8rem] overflow-hidden rounded-full bg-[#0F4F68]/15">
-              <div
-                className="h-full w-full origin-left scale-x-0 animate-partner-bar-fill rounded-full bg-gradient-to-r from-[#0F4F68] to-[#3DB8C9]"
-                style={{ animationDelay: "0.12s" }}
-                aria-hidden
-              />
-            </div>
-            <p className="mt-3 max-w-2xl text-sm leading-relaxed text-neutral-700">
-              {data.rootPartnerCode ? (
-                <>
-                  Ihr Code{" "}
-                  <span className="font-mono font-semibold text-[#0F4F68]">{data.rootPartnerCode}</span>
-                  {data.sponsor?.partnerCode ? (
-                    <>
-                      {" · "}geworben durch{" "}
-                      <span className="font-mono font-semibold text-[#0F4F68]">{data.sponsor.partnerCode}</span>
-                    </>
-                  ) : null}
-                </>
-              ) : (
-                "Es werden ausschließlich Partner-Codes angezeigt — keine personenbezogenen Daten."
-              )}
-            </p>
-          </div>
-          <div className="flex w-full flex-col items-stretch gap-1 sm:w-auto sm:items-end">
-            <label
-              htmlFor="network-period-select"
-              className="text-[0.65rem] font-bold uppercase tracking-wide text-[#0F4F68]/80"
-            >
-              Monat
-            </label>
-            <select
-              id="network-period-select"
-              value={data.periodKey}
-              disabled={Boolean(pendingPeriod)}
-              onChange={(e) => onChangePeriod(e.target.value)}
-              className="w-full min-h-11 rounded-xl border border-[#0F4F68]/15 bg-white px-3 py-2.5 text-sm font-medium text-[#0F4F68] shadow-sm outline-none ring-[#0F4F68] focus:ring-2 disabled:opacity-60 sm:min-w-[12rem] sm:w-auto"
-            >
-              {availablePeriods.map((p) => (
-                <option key={p.periodKey} value={p.periodKey}>
-                  {p.label}
-                </option>
-              ))}
-            </select>
-          </div>
-        </header>
-
-        <div className="mt-5 grid grid-cols-2 gap-2 sm:max-w-lg sm:gap-3">
-          <StatCard label="Direkt geworben" value={totalDirect.toString()} accent="teal" />
-          <StatCard label="Gesamtes Netzwerk" value={totalAll.toString()} accent="sky" />
-        </div>
-      </div>
-
-      <div className="px-3 py-4 sm:px-6 sm:py-6">
-        {hasNetwork ? (
-          <div className="-mx-3 w-[calc(100%+1.5rem)] sm:-mx-6 sm:w-[calc(100%+3rem)]">
-            <PartnerNetworkTreeViewport
-              isMobile={isMobile}
-              layoutKey={`${data.periodKey}-${totalAll}-${data.rootPartnerCode ?? ""}-${isMobile ? "m" : "d"}`}
-            >
-              <div className="px-1 py-2 sm:px-2 sm:py-3">
-                <div className="ahs-tree">
-                  <ul className="ahs-tree__root">
-                    <PyramidLi node={root} isMobile={isMobile} />
-                  </ul>
+      {/* Baum zuerst — ohne Header darüber */}
+      <div className="relative overflow-hidden px-3 pb-2 pt-2 sm:px-6 sm:pb-3 sm:pt-3">
+        <div
+          className="pointer-events-none absolute inset-x-0 top-0 h-28 bg-gradient-to-b from-[#E8F6F8]/70 via-[#F2F9FA]/30 to-transparent"
+          aria-hidden
+        />
+        <div className="relative motion-safe:animate-partner-network-tree-in">
+          {hasNetwork ? (
+            <div className="-mx-3 w-[calc(100%+1.5rem)] sm:-mx-6 sm:w-[calc(100%+3rem)]">
+              <PartnerNetworkTreeViewport
+                isMobile={isMobile}
+                layoutKey={`${totalAll}-${data.rootPartnerCode ?? ""}-${isMobile ? "m" : "d"}`}
+              >
+                <div className="px-1 py-2 sm:px-2 sm:py-3">
+                  <div className="ahs-tree">
+                    <ul className="ahs-tree__root">
+                      <PyramidLi node={root} isMobile={isMobile} />
+                    </ul>
+                  </div>
                 </div>
-              </div>
-            </PartnerNetworkTreeViewport>
-          </div>
-        ) : (
-          <div className="rounded-xl border border-dashed border-[#0F4F68]/25 bg-[#F2F9FA]/60 px-6 py-12 text-center">
-            <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-[#0F4F68]/10 text-[#0F4F68]">
-              <NetworkIcon className="h-6 w-6" />
+              </PartnerNetworkTreeViewport>
             </div>
-            <p className="mt-4 text-sm font-semibold text-[#0F4F68]">Noch kein Werbe-Netzwerk</p>
-            <p className="mx-auto mt-2 max-w-sm text-sm text-neutral-600">
-              Sobald Partner mit Ihrem Code angelegt werden, erscheinen sie hier in der Pyramiden-Struktur.
-            </p>
-          </div>
-        )}
-
-        <div className="mt-5 flex flex-wrap gap-2">
-          <LegendPill tone="sponsor" label="Geworben durch" />
-          <LegendPill tone="self" label="Sie" />
-          <LegendPill tone="direct" label="Direkt · 5 %" />
-          <LegendPill tone="indirect" label="Indirekt" />
+          ) : (
+            <div className="rounded-xl border border-dashed border-[#0F4F68]/25 bg-[#F2F9FA]/60 px-6 py-12 text-center">
+              <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-[#0F4F68]/10 text-[#0F4F68] motion-safe:animate-partner-soft-float">
+                <NetworkIcon className="h-6 w-6" />
+              </div>
+              <p className="mt-4 text-sm font-semibold text-[#0F4F68]">Noch kein Werbe-Netzwerk</p>
+              <p className="mx-auto mt-2 max-w-sm text-sm text-neutral-600">
+                Sobald Partner mit Ihrem Code angelegt werden, erscheinen sie hier in der Pyramiden-Struktur.
+              </p>
+            </div>
+          )}
         </div>
-
-        <p className="mt-4 rounded-xl border border-amber-200/90 bg-gradient-to-r from-amber-50 via-[#fff8dc] to-amber-50/80 px-4 py-3 text-xs leading-relaxed text-amber-950">
-          Direkte Werbung: 5&nbsp;% Werbeprovision auf die eigene freigegebene Abschlussprovision direkt geworbener
-          Partner. Indirekte Partner sind nur zur Übersicht sichtbar — ohne direkten Werbeanspruch.
-        </p>
       </div>
+
+      {/* Verbindung Baum → Infobereich */}
+      <div className="relative flex justify-center py-1" aria-hidden>
+        <div className="h-10 w-px bg-gradient-to-b from-[#3DB8C9]/55 via-[#0F4F68]/25 to-transparent" />
+        <div
+          className="absolute bottom-0 h-3 w-3 rounded-full bg-gradient-to-br from-[#3DB8C9] to-[#0F4F68] shadow-[0_0_0_4px_rgba(61,184,201,0.18)] motion-safe:animate-partner-network-stat-pop"
+          style={{ animationDelay: "0.45s" }}
+        />
+      </div>
+
+      {/* Infobereich unterhalb des Baums */}
+      <NetworkSummaryPanel
+        rootPartnerCode={data.rootPartnerCode}
+        sponsorCode={data.sponsor?.partnerCode ?? null}
+        totalDirect={totalDirect}
+        totalAll={totalAll}
+      />
     </section>
   );
 }
 
-function StatCard({
+function NetworkSummaryPanel({
+  rootPartnerCode,
+  sponsorCode,
+  totalDirect,
+  totalAll,
+}: {
+  rootPartnerCode: string | null;
+  sponsorCode: string | null;
+  totalDirect: number;
+  totalAll: number;
+}) {
+  const directShare = totalAll > 0 ? Math.round((totalDirect / totalAll) * 100) : 0;
+
+  return (
+    <div className="border-t border-[#0F4F68]/10 bg-gradient-to-br from-[#F2F9FA]/90 via-white to-[#FAFBFC] px-4 py-5 sm:px-6 sm:py-7">
+      <header className="partner-dash-animate partner-dash-delay-1 min-w-0">
+        <p className="text-[0.65rem] font-semibold uppercase tracking-[0.14em] text-[#0F4F68]/75">
+          Strukturübersicht
+        </p>
+        <h2 id="partner-network-tree-heading" className="mt-1 text-xl font-semibold text-[#0F4F68] sm:text-2xl">
+          Werbe-Netzwerk
+        </h2>
+        <div className="mt-2 h-1 w-full max-w-[8rem] overflow-hidden rounded-full bg-[#0F4F68]/15">
+          <div
+            className="h-full w-full origin-left scale-x-0 animate-partner-bar-fill rounded-full bg-gradient-to-r from-[#0F4F68] to-[#3DB8C9]"
+            style={{ animationDelay: "0.55s" }}
+            aria-hidden
+          />
+        </div>
+      </header>
+
+      <div className="mt-5 grid gap-4 lg:grid-cols-[1fr_auto] lg:items-stretch lg:gap-6">
+        <div className="partner-dash-animate partner-dash-delay-2 space-y-3">
+          {rootPartnerCode ? (
+            <div className="flex flex-wrap gap-2.5">
+              <CodeChip
+                label="Ihr Code"
+                code={rootPartnerCode}
+                tone="self"
+                delayMs={620}
+                icon={
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
+                    <circle cx="12" cy="8" r="4" />
+                    <path d="M6 20v-1a6 6 0 0112 0v1" strokeLinecap="round" />
+                  </svg>
+                }
+              />
+              {sponsorCode ? (
+                <CodeChip
+                  label="Geworben durch"
+                  code={sponsorCode}
+                  tone="sponsor"
+                  delayMs={720}
+                  icon={
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
+                      <path d="M12 3l2.5 7.5H22l-6 4.5 2.5 7.5L12 18l-6.5 4.5 2.5-7.5-6-4.5h7.5L12 3z" strokeLinejoin="round" />
+                    </svg>
+                  }
+                />
+              ) : null}
+            </div>
+          ) : (
+            <p className="text-sm leading-relaxed text-neutral-700">
+              Es werden ausschließlich Partner-Codes angezeigt — keine personenbezogenen Daten.
+            </p>
+          )}
+
+          <div className="partner-dash-animate partner-dash-delay-3 flex flex-wrap gap-2 pt-1">
+            <LegendPill tone="sponsor" label="Geworben durch" />
+            <LegendPill tone="self" label="Sie" />
+            <LegendPill tone="direct" label="Direkt · 5 %" />
+            <LegendPill tone="indirect" label="Indirekt" />
+          </div>
+        </div>
+
+        <div className="partner-dash-animate partner-dash-delay-3 grid grid-cols-2 gap-2.5 sm:gap-3 lg:min-w-[18rem]">
+          <NetworkStatTile label="Direkt geworben" value={totalDirect} tone="teal" delayMs={680} />
+          <NetworkStatTile label="Gesamtes Netzwerk" value={totalAll} tone="sky" delayMs={780} share={directShare} />
+        </div>
+      </div>
+
+      <p className="partner-dash-animate partner-dash-delay-4 mt-5 rounded-xl border border-amber-200/90 bg-gradient-to-r from-amber-50 via-[#fff8dc] to-amber-50/80 px-4 py-3 text-xs leading-relaxed text-amber-950">
+        Direkte Werbung: 5&nbsp;% Werbeprovision auf die eigene freigegebene Abschlussprovision direkt geworbener
+        Partner. Indirekte Partner sind nur zur Übersicht sichtbar — ohne direkten Werbeanspruch.
+      </p>
+    </div>
+  );
+}
+
+function AnimatedCount({ value, className = "" }: { value: number; className?: string }) {
+  const [display, setDisplay] = useState(0);
+  const [highlight, setHighlight] = useState(false);
+
+  useEffect(() => {
+    setDisplay(0);
+    setHighlight(false);
+
+    const reduced =
+      typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduced) {
+      setDisplay(value);
+      return;
+    }
+
+    let raf = 0;
+    let cancelled = false;
+    let timeout: ReturnType<typeof setTimeout> | null = null;
+    const start = performance.now();
+    const durationMs = 900;
+
+    const tick = (now: number) => {
+      if (cancelled) return;
+      const t = Math.min(1, (now - start) / durationMs);
+      const eased = 1 - (1 - t) ** 3;
+      setDisplay(Math.round(value * eased));
+      if (t < 1) {
+        raf = requestAnimationFrame(tick);
+      } else {
+        setDisplay(value);
+        setHighlight(true);
+        timeout = setTimeout(() => setHighlight(false), 850);
+      }
+    };
+
+    raf = requestAnimationFrame(tick);
+
+    return () => {
+      cancelled = true;
+      cancelAnimationFrame(raf);
+      if (timeout) clearTimeout(timeout);
+    };
+  }, [value]);
+
+  return (
+    <span
+      className={[
+        "tabular-nums transition-[text-shadow,color] duration-300",
+        highlight ? "partner-euro-highlight" : "",
+        className,
+      ]
+        .filter(Boolean)
+        .join(" ")}
+    >
+      {display}
+    </span>
+  );
+}
+
+function CodeChip({
   label,
-  value,
-  accent,
+  code,
+  tone,
+  icon,
+  delayMs,
 }: {
   label: string;
-  value: string;
-  accent: "teal" | "sky";
+  code: string;
+  tone: "self" | "sponsor";
+  icon: ReactNode;
+  delayMs: number;
 }) {
-  const ring = accent === "teal" ? "border-[#0F4F68]/15 bg-white" : "border-sky-200/70 bg-sky-50/40";
+  const styles =
+    tone === "self"
+      ? "border-[#3DB8C9]/45 bg-gradient-to-r from-[#E8F6F8] via-white to-white ring-1 ring-[#3DB8C9]/20"
+      : "border-[#0F4F68]/20 bg-gradient-to-r from-[#F2F9FA] to-white ring-1 ring-[#0F4F68]/10";
+
   return (
-    <div className={`rounded-xl border px-3 py-2.5 shadow-sm sm:px-4 sm:py-3 ${ring}`}>
-      <p className="text-[0.6rem] font-bold uppercase tracking-wide text-[#0F4F68]/75 sm:text-[0.65rem]">{label}</p>
-      <p className="mt-0.5 text-xl font-semibold tabular-nums text-[#0F4F68] sm:text-2xl">{value}</p>
+    <div
+      className={`motion-safe:animate-partner-network-chip-in inline-flex min-w-0 items-center gap-2.5 rounded-xl border px-3 py-2.5 shadow-sm sm:px-4 sm:py-3 ${styles}`}
+      style={{ animationDelay: `${delayMs}ms` }}
+    >
+      <div
+        className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg ${
+          tone === "self"
+            ? "bg-gradient-to-br from-[#0F4F68] to-[#3DB8C9] text-white shadow-sm"
+            : "bg-[#0F4F68]/10 text-[#0F4F68]"
+        }`}
+        aria-hidden
+      >
+        {icon}
+      </div>
+      <div className="min-w-0">
+        <p className="text-[0.58rem] font-bold uppercase tracking-[0.1em] text-[#0F4F68]/70 sm:text-[0.6rem]">{label}</p>
+        <p className="partner-code-settle mt-0.5 font-mono text-sm font-semibold uppercase tracking-wide text-[#0F4F68] sm:text-base">
+          {code}
+        </p>
+      </div>
+    </div>
+  );
+}
+
+function NetworkStatTile({
+  label,
+  value,
+  tone,
+  delayMs,
+  share,
+}: {
+  label: string;
+  value: number;
+  tone: "teal" | "sky";
+  delayMs: number;
+  share?: number;
+}) {
+  const accent =
+    tone === "teal"
+      ? {
+          bar: "from-[#0F4F68] to-[#3DB8C9]",
+          bg: "border-[#0F4F68]/15 bg-white",
+          ring: "stroke-[#0F4F68]/15",
+          arc: "stroke-[#0F4F68]",
+        }
+      : {
+          bar: "from-sky-400 to-sky-600",
+          bg: "border-sky-200/70 bg-gradient-to-br from-sky-50/80 to-white",
+          ring: "stroke-sky-200/80",
+          arc: "stroke-sky-500",
+        };
+
+  return (
+    <div
+      className={`partner-metric-card relative overflow-hidden rounded-xl border px-3 py-3 shadow-sm motion-safe:animate-partner-network-stat-pop sm:px-4 sm:py-3.5 ${accent.bg}`}
+      style={{ animationDelay: `${delayMs}ms` }}
+    >
+      <div className={`absolute inset-y-2 left-0 w-1 rounded-r-full bg-gradient-to-b ${accent.bar}`} aria-hidden />
+      <div className="flex items-start justify-between gap-2 pl-2">
+        <div className="min-w-0">
+          <p className="text-[0.58rem] font-bold uppercase tracking-wide text-[#0F4F68]/75 sm:text-[0.6rem]">{label}</p>
+          <p className="mt-1 text-2xl font-semibold text-[#0F4F68] sm:text-3xl">
+            <AnimatedCount value={value} />
+          </p>
+        </div>
+        {share !== undefined && value > 0 ? (
+          <div className="relative h-11 w-11 shrink-0 sm:h-12 sm:w-12" aria-hidden>
+            <svg className="h-full w-full -rotate-90" viewBox="0 0 36 36">
+              <circle cx="18" cy="18" r="14" fill="none" className={accent.ring} strokeWidth="3" />
+              <circle
+                cx="18"
+                cy="18"
+                r="14"
+                fill="none"
+                className={accent.arc}
+                strokeWidth="3"
+                strokeLinecap="round"
+                strokeDasharray={`${Math.max(4, (share / 100) * 88)} 88`}
+              />
+            </svg>
+            <span className="absolute inset-0 flex items-center justify-center text-[0.55rem] font-bold tabular-nums text-[#0F4F68]/80">
+              {share}%
+            </span>
+          </div>
+        ) : null}
+      </div>
     </div>
   );
 }
