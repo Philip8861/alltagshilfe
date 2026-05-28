@@ -106,7 +106,8 @@ function demoNode(
     partnerCode: code,
     isDirectReferral: direct,
     noDirectReferral: !direct,
-    ownApprovedClosingCommissionCents: direct ? (opts?.ownCents ?? 0) : null,
+    ownApprovedClosingCommissionCents:
+      opts?.ownCents !== undefined ? opts.ownCents : direct ? 0 : null,
     referralCommissionForCurrentPartnerCents: direct ? (opts?.referralCents ?? 0) : null,
     children: opts?.children ?? [],
     depth,
@@ -131,13 +132,15 @@ function buildDemoDirectChildren(scale: number): PartnerNetworkNode[] {
       referralCents: s(1200),
       children: [
         demoNode("JK1190", 2, {
+          ownCents: s(320000),
           children: [
             demoNode("PF3301", 3, {
+              ownCents: s(145000),
               children: [demoNode("AW7720", 4)],
             }),
           ],
         }),
-        demoNode("RS9021", 2),
+        demoNode("RS9021", 2, { ownCents: s(185000) }),
       ],
     }),
     demoNode("NK8834", 1, {
@@ -146,9 +149,10 @@ function buildDemoDirectChildren(scale: number): PartnerNetworkNode[] {
       referralCents: s(928),
       children: [
         demoNode("CL8812", 2, {
-          children: [demoNode("DM2299", 3)],
+          ownCents: s(410000),
+          children: [demoNode("DM2299", 3, { ownCents: s(89000) })],
         }),
-        demoNode("RS5540", 2),
+        demoNode("RS5540", 2, { ownCents: s(275000) }),
       ],
     }),
     demoNode("TB4471", 1, {
@@ -157,8 +161,10 @@ function buildDemoDirectChildren(scale: number): PartnerNetworkNode[] {
       referralCents: s(1600),
       children: [
         demoNode("HF6618", 2, {
+          ownCents: s(450000),
           children: [
             demoNode("KT9044", 3, {
+              ownCents: s(178000),
               children: [
                 demoNode("BL1155", 4, {
                   children: [demoNode("VN4488", 5)],
@@ -173,7 +179,7 @@ function buildDemoDirectChildren(scale: number): PartnerNetworkNode[] {
       direct: true,
       ownCents: s(9600),
       referralCents: s(480),
-      children: [demoNode("GS3321", 2)],
+      children: [demoNode("GS3321", 2, { ownCents: s(120000) })],
     }),
   ];
 }

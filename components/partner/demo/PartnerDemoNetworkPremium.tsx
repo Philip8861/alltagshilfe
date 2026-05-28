@@ -40,7 +40,7 @@ function transformDescendant(node: PartnerNetworkNode, isDirect: boolean, parent
     key,
     partnerCode: node.partnerCode,
     kind: isDirect ? "direct" : "indirect",
-    ownCents: isDirect ? node.ownApprovedClosingCommissionCents : null,
+    ownCents: node.ownApprovedClosingCommissionCents,
     referralCents: isDirect ? node.referralCommissionForCurrentPartnerCents : null,
     depth: node.depth,
     children: node.children.map((c, i) => transformDescendant(c, false, key, i)),
@@ -362,7 +362,8 @@ function DemoTreeBranch({ node, isMobile }: { node: PyramidNode; isMobile: boole
 }
 
 function DemoTreeNodeCard({ node }: { node: PyramidNode }) {
-  const compact = node.kind === "indirect";
+  const hasProvision = node.ownCents != null && node.ownCents > 0;
+  const compact = node.kind === "indirect" && !hasProvision;
   const isSelf = node.kind === "self";
   const isSponsor = node.kind === "sponsor";
   const isDirect = node.kind === "direct";
@@ -373,7 +374,7 @@ function DemoTreeNodeCard({ node }: { node: PyramidNode }) {
     ? "w-[13.5rem] sm:w-[15.5rem]"
     : compact
       ? "w-[8.5rem] sm:w-[9.5rem]"
-      : isDirect
+      : isDirect || hasProvision
         ? "w-[11.5rem] sm:w-[13rem]"
         : "w-[10.5rem] sm:w-[11.5rem]";
 
@@ -453,10 +454,12 @@ function DemoTreeNodeCard({ node }: { node: PyramidNode }) {
             </div>
           </div>
 
-          {isDirect ? (
+          {(isDirect || (node.ownCents != null && node.ownCents > 0)) ? (
             <div className="mt-3 space-y-1.5 border-t border-slate-100 pt-3">
               <CommissionPill label="Eigene Abschlussprov." cents={node.ownCents ?? 0} tone="green" />
-              <CommissionPill label="Ihre Werbeprov." cents={node.referralCents ?? 0} tone="blue" />
+              {isDirect ? (
+                <CommissionPill label="Ihre Werbeprov." cents={node.referralCents ?? 0} tone="blue" />
+              ) : null}
             </div>
           ) : null}
         </div>
