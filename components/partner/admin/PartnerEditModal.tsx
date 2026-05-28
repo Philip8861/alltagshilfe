@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useEffect, useId } from "react";
+import { useActionState, useEffect, useId, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import type { PartnerProfile } from "@/lib/partner/types";
 import {
@@ -11,6 +11,11 @@ import {
   updatePartnerProfileAdminAction,
   type AdminWorkflowState,
 } from "@/lib/actions/partner-admin-workflow";
+import {
+  addAdminDirectReferralAction,
+  listAdminDirectReferralsAction,
+  type AdminReferralChild,
+} from "@/lib/actions/partner-admin-referral";
 
 const initial: AdminWorkflowState = { ok: false, message: "" };
 
@@ -191,6 +196,11 @@ export function PartnerEditModal({ open, onClose, profile, email, sponsorPartner
               Werbe-Beziehung ist fest gespeichert und kann hier nicht geändert werden.
             </p>
           </div>
+
+          <AdminReferralChildrenBlock
+            sponsorPartnerId={profile.id}
+            sponsorPartnerCode={profile.partner_referral_code ?? null}
+          />
           <div className="border-t border-neutral-100 pt-4">
             <p className="text-xs font-bold uppercase text-[#0F4F68]/80">Bankverbindung (Auszahlung)</p>
             <div className="mt-3 grid gap-3">
@@ -298,4 +308,166 @@ export function PartnerEditModal({ open, onClose, profile, email, sponsorPartner
       </div>
     </div>
   );
+}
+
+function AdminReferralChildrenBlock({
+  sponsorPartnerId,
+  sponsorPartnerCode,
+}: {
+  sponsorPartnerId: string;
+  sponsorPartnerCode: string | null;
+}) {
+  const [items, setItems] = useState<AdminReferralChild[] | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const [code, setCode] = useState("");
+  const [feedback, setFeedback] = useState<{ tone: "ok" | "err"; msg: string } | null>(null);
+  const [pending, startTransition] = useTransition();
+
+  const reload = () => {
+    setLoading(true);
+    setLoadError(null);
+    listAdminDirectReferralsAction(sponsorPartnerId)
+      .then((r) => {
+        if (r.ok) setItems(r.items);
+        else {
+          setItems([]);
+          setLoadError(r.message);
+        }
+      })
+      .catch((e) => {
+        setItems([]);
+        setLoadError(e instanceof Error ? e.message : "Unbekannter Fehler.");
+      })
+      .finally(() => setLoading(false));
+  };
+
+  useEffect(() => {
+    reload();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sponsorPartnerId]);
+
+  const onAdd = () => {
+    const trimmed = code.trim().toUpperCase();
+    if (!trimmed) {
+      setFeedback({ tone: "err", msg: "Bitte einen Partner-Code eingeben." });
+      return;
+    }
+    setFeedback(null);
+    startTransition(async () => {
+      const res = await addAdminDirectReferralAction(sponsorPartnerId, trimmed);
+      if (res.ok) {
+        setFeedback({ tone: "ok", msg: `Werbling ${res.partnerCode} hinzugefügt.` });
+        setCode("");
+        reload();
+      } else {
+        setFeedback({ tone: "err", msg: res.message });
+      }
+    });
+  };
+
+  return (
+    <fieldset className="rounded-lg border border-[#0F4F68]/15 bg-[#F8FAFB] p-3">
+      <legend className="px-1 text-xs font-bold uppercase text-[#0F4F68]/80">
+        Geworbene Partner
+      </legend>
+
+      <p className="text-xs text-neutral-700">
+        Tragen Sie hier Partner ein, die durch{" "}
+        <span className="font-mono font-semibold text-[#0F4F68]">
+          {sponsorPartnerCode ?? "—"}
+        </span>{" "}
+        geworben wurden. Die Beziehung ist anschließend nicht mehr änderbar.
+        {sponsorPartnerCode ? null : (
+          <>
+            {" "}
+            <span className="font-semibold text-amber-900">
+              Hinweis: Dieser Partner hat noch keinen Partner-Code — bitte zuerst speichern.
+            </span>
+          </>
+        )}
+      </p>
+
+      <div className="mt-3 flex flex-col gap-2 sm:flex-row">
+        <input
+          type="text"
+          value={code}
+          onChange={(e) => setCode(e.target.value)}
+          placeholder="Partner-Code des Werblings (z. B. AA1234)"
+          spellCheck={false}
+          autoComplete="off"
+          disabled={pending || !sponsorPartnerCode}
+          className="w-full rounded-lg border border-neutral-200 px-3 py-2 font-mono text-sm uppercase outline-none ring-[#0F4F68] focus:ring-2 disabled:opacity-60"
+        />
+        <button
+          type="button"
+          onClick={onAdd}
+          disabled={pending || !sponsorPartnerCode || !code.trim()}
+          className="min-h-10 shrink-0 rounded-lg bg-[#0F4F68] px-4 py-2 text-sm font-semibold text-white hover:bg-[#0c3d52] disabled:opacity-60"
+        >
+          {pending ? "Hinzufügen…" : "Werbling hinzufügen"}
+        </button>
+      </div>
+
+      {feedback ? (
+        <p
+          className={`mt-2 rounded-md px-3 py-2 text-xs ${
+            feedback.tone === "ok"
+              ? "border border-emerald-200 bg-emerald-50 text-emerald-900"
+              : "border border-amber-200 bg-amber-50 text-amber-950"
+          }`}
+        >
+          {feedback.msg}
+        </p>
+      ) : null}
+
+      <div className="mt-3">
+        <p className="text-[0.65rem] font-bold uppercase tracking-wide text-[#0F4F68]/80">
+          Bisher direkt geworben
+        </p>
+        {loading ? (
+          <p className="mt-1 text-xs text-neutral-500">Lade…</p>
+        ) : loadError ? (
+          <p className="mt-1 rounded-md border border-amber-200 bg-amber-50 px-2 py-1.5 text-xs text-amber-950">
+            {loadError}
+          </p>
+        ) : items && items.length > 0 ? (
+          <ul className="mt-1 divide-y divide-neutral-200 rounded-md border border-neutral-200 bg-white">
+            {items.map((it) => (
+              <li
+                key={it.partnerId}
+                className="flex items-center justify-between gap-3 px-3 py-2 text-sm"
+              >
+                <span className="font-mono font-semibold uppercase text-[#0F4F68]">
+                  {it.partnerCode ?? "—"}
+                </span>
+                <span className="min-w-0 truncate text-xs text-neutral-700">
+                  {it.displayName ?? "—"}
+                </span>
+                <span className="shrink-0 text-[0.7rem] text-neutral-500">
+                  {it.referredAt ? formatDateDe(it.referredAt) : ""}
+                </span>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p className="mt-1 rounded-md border border-dashed border-neutral-300 bg-white px-3 py-2 text-xs text-neutral-600">
+            Noch keine geworbenen Partner.
+          </p>
+        )}
+      </div>
+    </fieldset>
+  );
+}
+
+function formatDateDe(iso: string): string {
+  try {
+    return new Date(iso).toLocaleDateString("de-DE", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+    });
+  } catch {
+    return "";
+  }
 }
