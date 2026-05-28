@@ -67,6 +67,10 @@ export function PartnerNetworkTreeViewport({
     null,
   );
 
+  /** Weiche Bewegung, wenn programmatisch auf einen Knoten zentriert wird (+/-). */
+  const [animating, setAnimating] = useState(false);
+  const animTimerRef = useRef<number | null>(null);
+
   /** Startansicht: Desktop bis direkte Partner; Mobile nur Sponsor + eigene Position. */
   const resetView = useCallback(() => {
     const viewport = viewportRef.current;
@@ -131,14 +135,14 @@ export function PartnerNetworkTreeViewport({
     });
   }, [isMobile, initialViewScale]);
 
-  /** +/- Klick: Anker (z. B. Toggle-Button) in die Viewport-Mitte, Zoom unverändert. */
+  /** +/- Klick: Anker (z. B. Toggle-Button) weich in die Viewport-Mitte, Zoom unverändert. */
   const centerOnElement = useCallback((el: HTMLElement | null) => {
     if (!el) return;
 
-    const apply = () => {
+    const compute = (): Transform | null => {
       const viewport = viewportRef.current;
       const content = contentRef.current;
-      if (!viewport || !content) return;
+      if (!viewport || !content) return null;
 
       const scale = transformRef.current.scale || 1;
       const vw = viewport.clientWidth;
@@ -146,21 +150,46 @@ export function PartnerNetworkTreeViewport({
       const contentRect = content.getBoundingClientRect();
       const r = el.getBoundingClientRect();
 
+      // Position des Ankers im untransformierten Content-Koordinatensystem.
       const cx = (r.left + r.width / 2 - contentRect.left) / scale;
       const cy = (r.top + r.height / 2 - contentRect.top) / scale;
 
-      setTransform({
+      return {
         scale,
         x: vw / 2 - cx * scale,
         y: vh / 2 - cy * scale,
-      });
+      };
     };
 
-    apply();
+    const reduceMotion =
+      typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    // Erst nach dem Layout-Update (rAF) messen, damit neu geöffnete/geschlossene
+    // Ebenen bereits berücksichtigt sind – sonst springt die Ansicht.
+    if (!reduceMotion) setAnimating(true);
     requestAnimationFrame(() => {
-      apply();
-      requestAnimationFrame(apply);
+      const next = compute();
+      if (next) setTransform(next);
+      if (animTimerRef.current) window.clearTimeout(animTimerRef.current);
+      if (!reduceMotion) {
+        animTimerRef.current = window.setTimeout(() => setAnimating(false), 380);
+      }
     });
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      if (animTimerRef.current) window.clearTimeout(animTimerRef.current);
+    };
+  }, []);
+
+  /** Während einer programmatischen Zentrierung Bewegungen sofort stoppen (kein Nachzittern). */
+  const stopCenterAnimation = useCallback(() => {
+    if (animTimerRef.current) {
+      window.clearTimeout(animTimerRef.current);
+      animTimerRef.current = null;
+    }
+    setAnimating(false);
   }, []);
 
   const viewportApi = useMemo<PartnerNetworkViewportApi>(() => ({ centerOnElement }), [centerOnElement]);
@@ -205,6 +234,7 @@ export function PartnerNetworkTreeViewport({
 
     const onWheel = (e: WheelEvent) => {
       e.preventDefault();
+      stopCenterAnimation();
       const delta = e.deltaY;
       const factor = delta > 0 ? 0.92 : 1.08;
       zoomAtPoint(e.clientX, e.clientY, transformRef.current.scale * factor);
@@ -212,10 +242,11 @@ export function PartnerNetworkTreeViewport({
 
     el.addEventListener("wheel", onWheel, { passive: false });
     return () => el.removeEventListener("wheel", onWheel);
-  }, [zoomAtPoint]);
+  }, [zoomAtPoint, stopCenterAnimation]);
 
   const onPointerDown = (e: ReactPointerEvent<HTMLDivElement>) => {
     if (isInteractiveTarget(e.target)) return;
+    stopCenterAnimation();
     pointersRef.current.set(e.pointerId, { x: e.clientX, y: e.clientY });
     e.currentTarget.setPointerCapture(e.pointerId);
 
@@ -325,6 +356,7 @@ export function PartnerNetworkTreeViewport({
           style={{
             transform: `translate(${transform.x}px, ${transform.y}px) scale(${transform.scale})`,
             transformOrigin: "0 0",
+            transition: animating ? "transform 360ms cubic-bezier(0.22, 0.61, 0.36, 1)" : "none",
           }}
         >
           <PartnerNetworkTreeViewportContext.Provider value={viewportApi}>

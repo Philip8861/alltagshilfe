@@ -93,10 +93,7 @@ export function PartnerDemoNetworkPremium({ data }: Props) {
   const sponsorCode = data.sponsor?.partnerCode ?? null;
 
   return (
-    <section
-      aria-labelledby="demo-network-heading"
-      className="partner-dash-animate w-full rounded-3xl bg-gradient-to-b from-slate-50/90 via-white to-white p-4 sm:p-6 lg:p-8"
-    >
+    <section aria-labelledby="demo-network-heading" className="partner-dash-animate w-full">
       <h2 id="demo-network-heading" className="sr-only">
         Werbe-Netzwerk Demo
       </h2>
