@@ -6,7 +6,7 @@ import { StandortAnthrazitRule } from "@/components/standorte/StandortAnthrazitR
 import { KartenMitKoordinatenErfassen } from "@/components/standorte/KartenMitKoordinatenErfassen";
 import { GtmMailtoLink } from "@/components/analytics/GtmContactIntentLink";
 import { SERVED_PLZ_TOTAL, getStandortPageImage, standorteByPlz } from "@/config/standorte";
-import { getStandortKarteData } from "@/config/standort-karte";
+import { getStandortKarteData, isStandortKarteEditorEnabled } from "@/config/standort-karte";
 import { siteConfig } from "@/config/site";
 
 const STANDORTE_META_DESCRIPTION = `Fünf regionale Standorte – ${siteConfig.name}: Allgäu, Bodenseeregion, Augsburg, Engen/Konstanz und Ulm/Neu-Ulm. PLZ-Suche für Haushaltshilfe, Pflegeberatung und Betreuung in Ihrer Nähe.`;
@@ -48,7 +48,7 @@ export default async function StandortePage({
 }) {
   const sp = await searchParams;
   const karteBearbeiten =
-    process.env.NODE_ENV === "development" && sp?.karte === "bearbeiten";
+    isStandortKarteEditorEnabled() && sp?.karte === "bearbeiten";
   const plzAnzahl = SERVED_PLZ_TOTAL;
 
   return (

@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import fs from "fs/promises";
 import path from "path";
 import { z } from "zod";
+import { isStandortKarteEditorEnabled } from "@/config/standort-karte";
 
 const punktSchema = z.object({
   left: z.number().min(0).max(100),
@@ -28,12 +29,12 @@ const payloadSchema = z.object({
 
 const CONFIG_PATH = path.join(process.cwd(), "config", "standort-karte.json");
 
-function devOnly() {
-  return process.env.NODE_ENV === "development";
+function editorAllowed() {
+  return isStandortKarteEditorEnabled();
 }
 
 export async function GET() {
-  if (!devOnly()) {
+  if (!editorAllowed()) {
     return NextResponse.json({ error: "Nur in der Entwicklung verfügbar." }, { status: 403 });
   }
   try {
@@ -45,7 +46,7 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
-  if (!devOnly()) {
+  if (!editorAllowed()) {
     return NextResponse.json({ error: "Nur in der Entwicklung verfügbar." }, { status: 403 });
   }
   try {

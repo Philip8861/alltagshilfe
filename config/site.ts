@@ -1,18 +1,12 @@
+import { canonicalizePublicSiteUrl } from "@/lib/canonical-host";
+
 const DEFAULT_BASE_URL = "http://localhost:3000";
 
 /**
  * Prüft, ob der String eine parsebare http(s)-URL ist (verhindert Crash in metadataBase: new URL(...)).
  */
 function normalizeAbsoluteHttpUrl(raw: string): string | null {
-  const trimmed = raw.trim().replace(/\/$/, "");
-  if (!trimmed) return null;
-  try {
-    const u = new URL(trimmed);
-    if (u.protocol !== "http:" && u.protocol !== "https:") return null;
-    return trimmed;
-  } catch {
-    return null;
-  }
+  return canonicalizePublicSiteUrl(raw);
 }
 
 /**

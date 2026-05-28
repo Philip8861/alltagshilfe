@@ -20,7 +20,7 @@ type Props = {
   hauptmarker: StandortKarteHauptmarker[];
   punkte: StandortKartePunkt[];
   ortsLabels?: StandortKarteOrtsLabel[];
-  /** `/standorte?karte=bearbeiten` – nur lokal, Speichern nur in NODE_ENV=development */
+  /** Nur wenn `STANDORT_KARTE_EDITOR=true` + `/standorte?karte=bearbeiten` (lokal) */
   editMode?: boolean;
 };
 

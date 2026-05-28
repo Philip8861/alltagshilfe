@@ -9,6 +9,7 @@ import {
 import { fireSitePageViewIfEligible } from "@/lib/site-analytics/middleware-fire";
 import { applyPartnerSupabaseSession } from "@/lib/supabase/partner-middleware";
 import { buildContentSecurityPolicy } from "@/lib/security/content-security-policy";
+import { resolveWwwToApexHostname } from "@/lib/canonical-host";
 
 function applySecurityAndSeoHeaders(
   response: NextResponse,
@@ -41,6 +42,15 @@ function applySecurityAndSeoHeaders(
 
 export async function middleware(request: NextRequest) {
   try {
+    const requestHost = request.headers.get("host") ?? "";
+    const apexHost = resolveWwwToApexHostname(requestHost);
+    if (apexHost) {
+      const redirectUrl = request.nextUrl.clone();
+      redirectUrl.hostname = apexHost;
+      redirectUrl.protocol = "https:";
+      return NextResponse.redirect(redirectUrl, 301);
+    }
+
     const { pathname, search } = request.nextUrl;
     const isEnPath = pathname === "/en" || pathname.startsWith("/en/");
     const normalizedPath = isEnPath ? pathname.replace(/^\/en(?=\/|$)/, "") || "/" : pathname;
