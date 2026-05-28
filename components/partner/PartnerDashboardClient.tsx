@@ -16,6 +16,8 @@ import {
   PARTNER_RESPONSIBILITY_SLUGS,
   type PartnerResponsibilitySlug,
 } from "@/lib/partner/responsibility-areas";
+import { formatCentsDe } from "@/lib/partner/referral-money";
+import { formatPayoutPeriodLabelDe } from "@/lib/partner/payout-period";
 
 type Props = {
   welcomeLine: string;
@@ -29,6 +31,13 @@ type Props = {
   portalPreferences: PartnerPortalPreferences;
   /** Öffentliche Vorschau: kein Tipp-Modal, Archiv-Buttons deaktiviert. */
   demoMode?: boolean;
+  /** Cent-basierte Monatsabrechnung (eigene + Werbeprovision) für die 3 Karten oben. */
+  payoutSummary?: {
+    periodKey: string;
+    ownCents: number;
+    referralCents: number;
+    totalCents: number;
+  };
 };
 
 const slugSet = new Set<string>(PARTNER_RESPONSIBILITY_SLUGS);
@@ -47,6 +56,7 @@ export function PartnerDashboardClient({
   provisionEinmalEur,
   portalPreferences: prefs,
   demoMode = false,
+  payoutSummary,
 }: Props) {
   const router = useRouter();
   const pathname = usePathname();
@@ -160,6 +170,66 @@ export function PartnerDashboardClient({
           </p>
         )}
       </header>
+
+      {payoutSummary ? (
+        <section
+          aria-label="Monatliche Auszahlung"
+          className="rounded-xl border border-[#0F4F68]/12 bg-white p-4 shadow-[0_8px_22px_rgba(15,79,104,0.10)] sm:p-5"
+        >
+          <header className="mb-3 flex flex-wrap items-baseline justify-between gap-2">
+            <h2 className="text-base font-semibold text-[#0F4F68] sm:text-lg">
+              Monatliche Auszahlung
+            </h2>
+            <span className="text-xs font-medium text-neutral-600">
+              Monat {formatPayoutPeriodLabelDe(payoutSummary.periodKey)}
+            </span>
+          </header>
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+            <article
+              className="rounded-lg border border-emerald-300/80 bg-gradient-to-b from-emerald-50 to-white p-4"
+              aria-label="Eigene Abschlussprovision"
+            >
+              <p className="text-[0.65rem] font-bold uppercase tracking-wide text-emerald-900">
+                Eigene Abschlussprovision
+              </p>
+              <p className="mt-2 text-2xl font-semibold tabular-nums text-emerald-900 sm:text-3xl">
+                {formatCentsDe(payoutSummary.ownCents)}
+              </p>
+              <p className="mt-1 text-xs text-emerald-900/80">
+                Eigene freigegebene Closing-Provisionen
+              </p>
+            </article>
+            <article
+              className="rounded-lg border border-sky-300/80 bg-gradient-to-b from-sky-50 to-white p-4"
+              aria-label="Referral-Provision"
+            >
+              <p className="text-[0.65rem] font-bold uppercase tracking-wide text-sky-900">
+                Referral-Provision
+              </p>
+              <p className="mt-2 text-2xl font-semibold tabular-nums text-sky-900 sm:text-3xl">
+                {formatCentsDe(payoutSummary.referralCents)}
+              </p>
+              <p className="mt-1 text-xs text-sky-900/80">
+                5 % auf Eigenprovisionen direkt geworbener Partner
+              </p>
+            </article>
+            <article
+              className="rounded-lg border border-[#0F4F68]/30 bg-gradient-to-b from-[#F2F9FA] to-white p-4 ring-1 ring-[#0F4F68]/15"
+              aria-label="Gesamtauszahlung"
+            >
+              <p className="text-[0.65rem] font-bold uppercase tracking-wide text-[#0F4F68]">
+                Gesamtauszahlung
+              </p>
+              <p className="mt-2 text-2xl font-semibold tabular-nums text-[#0F4F68] sm:text-3xl">
+                {formatCentsDe(payoutSummary.totalCents)}
+              </p>
+              <p className="mt-1 text-xs text-[#0F4F68]/80">
+                Eigene + Referral
+              </p>
+            </article>
+          </div>
+        </section>
+      ) : null}
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <div className={`${cardBase} partner-dash-delay-1 relative z-[1]`} data-tutorial="partner-code">

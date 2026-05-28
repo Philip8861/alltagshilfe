@@ -9,6 +9,11 @@ import { nextPayoutDateInfo } from "@/lib/partner/partner-payout-date";
 import { normalizePortalPreferences, parsePortalPreferences } from "@/lib/partner/portal-preferences";
 import type { PartnerDashboardTipSerial } from "@/lib/partner/types";
 import { PARTNER_RESPONSIBILITY_SLUGS } from "@/lib/partner/responsibility-areas";
+import { createSupabaseServiceRoleClient } from "@/lib/supabase/service";
+import {
+  currentBerlinPeriodKey,
+  getPartnerMonthlyPayoutSummary,
+} from "@/lib/partner/referral-commission";
 
 export const metadata: Metadata = {
   title: "Übersicht",
@@ -37,6 +42,22 @@ export default async function PartnerDashboardPage({ searchParams }: { searchPar
   const tipSlugSet = new Set<string>(PARTNER_RESPONSIBILITY_SLUGS);
   const hasAnyTipArea = responsibilityAreaSlugs.some((s) => tipSlugSet.has(s));
 
+  let ownCents = 0;
+  let referralCents = 0;
+  let totalCents = 0;
+  const periodKey = currentBerlinPeriodKey();
+  try {
+    const svc = createSupabaseServiceRoleClient();
+    if (svc) {
+      const summary = await getPartnerMonthlyPayoutSummary(svc, profile.id, periodKey);
+      ownCents = summary.ownCents;
+      referralCents = summary.referralCents;
+      totalCents = summary.totalCents;
+    }
+  } catch {
+    /* still render dashboard without summary */
+  }
+
   return (
     <PartnerDashboardClient
       welcomeLine={welcomeLine}
@@ -48,6 +69,12 @@ export default async function PartnerDashboardPage({ searchParams }: { searchPar
       provisionMonatlichEur={provisionMonatlichEur}
       provisionEinmalEur={provisionEinmalEur}
       portalPreferences={portalPreferences}
+      payoutSummary={{
+        periodKey,
+        ownCents,
+        referralCents,
+        totalCents,
+      }}
     />
   );
 }

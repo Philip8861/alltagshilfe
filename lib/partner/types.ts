@@ -30,6 +30,10 @@ export type PartnerProfile = {
   portal_preferences?: Record<string, unknown> | null;
   /** Gesetzt von Admin: Portalnutzung gesperrt (Migration 025); kein Löschen des Nutzers. */
   account_disabled_at?: string | null;
+  /** Direkter Werber (Migration 026); max. einmalig setzbar (DB-Trigger). */
+  referred_by_partner_id?: string | null;
+  /** Zeitpunkt der Werber-Zuweisung (Migration 026); Provisionen vor diesem Zeitpunkt zählen NICHT. */
+  referred_at?: string | null;
 };
 
 /** Nur drei Verwaltungs-Statusse (nach Migration 020). Legacy-Werte werden im Code noch normalisiert. */
@@ -81,6 +85,10 @@ export type PartnerPayoutReportRow = {
   einmal_eur: number;
   monatlich_eur: number;
   total_eur: number;
+  /** Werbeprovision in EUR (Migration 026). */
+  referral_eur?: number | null;
+  /** Auszahlungssumme inkl. Werbeprovision (Migration 026). */
+  total_with_referral_eur?: number | null;
   created_at?: string;
 };
 

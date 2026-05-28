@@ -15,6 +15,7 @@ import {
 import { createPartnerUserSchema, deletePartnerUserIdSchema } from "@/lib/validations/system-admin";
 import { generatePartnerInitialPassword } from "@/lib/partner/generate-partner-password";
 import { assignUniquePartnerReferralCode } from "@/lib/partner/generate-partner-referral-code";
+import { setPartnerReferralByCode } from "@/lib/partner/referral";
 import {
   sendPartnerRegistrationWelcomeMail,
   sendPartnerRegistrationWelcomePreviewMail,
@@ -111,6 +112,7 @@ export async function createPartnerUserAction(
     phone: formData.get("phone"),
     organization_name: org || undefined,
     recruited_by: recruited || undefined,
+    referral_partner_code: formData.get("referral_partner_code"),
     iban: formData.get("iban"),
     bic: formData.get("bic"),
     account_holder: formData.get("account_holder"),
@@ -221,6 +223,21 @@ export async function createPartnerUserAction(
       ok: false,
       message: formatPartnerProfileWriteError(profileUpsertErr),
     };
+  }
+
+  const referralCodeRaw = parsed.data.referral_partner_code;
+  if (referralCodeRaw) {
+    const refRes = await setPartnerReferralByCode(svc, uid, referralCodeRaw);
+    if (!refRes.ok) {
+      const { error: rollbackErr } = await svc.auth.admin.deleteUser(uid);
+      if (rollbackErr) {
+        console.error(
+          "[createPartnerUser] Auth-Rollback nach Referral-Fehler fehlgeschlagen:",
+          rollbackErr.message,
+        );
+      }
+      return { ok: false, message: refRes.message };
+    }
   }
 
   revalidatePath("/partner/admin");

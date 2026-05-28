@@ -19,9 +19,11 @@ type Props = {
   onClose: () => void;
   profile: PartnerProfile;
   email: string;
+  /** Optional: PartnerCode des werbenden Partners (read-only Anzeige). */
+  sponsorPartnerCode?: string | null;
 };
 
-export function PartnerEditModal({ open, onClose, profile, email }: Props) {
+export function PartnerEditModal({ open, onClose, profile, email, sponsorPartnerCode }: Props) {
   const formId = useId();
   const router = useRouter();
   const [state, formAction, pending] = useActionState(updatePartnerProfileAdminAction, initial);
@@ -163,13 +165,31 @@ export function PartnerEditModal({ open, onClose, profile, email }: Props) {
             />
           </div>
           <div>
-            <label className="text-xs font-bold uppercase text-[#0F4F68]/80">Angeworben von</label>
+            <label className="text-xs font-bold uppercase text-[#0F4F68]/80">
+              Angeworben von (Notiz)
+            </label>
             <input
               name="recruited_by"
               defaultValue={rec}
               disabled={pending}
               className="mt-1 w-full rounded-lg border border-neutral-200 px-3 py-2 text-sm"
             />
+          </div>
+          <div>
+            <label className="text-xs font-bold uppercase text-[#0F4F68]/80">
+              Geworben durch Partner-Code
+            </label>
+            <input
+              type="text"
+              readOnly
+              disabled
+              value={sponsorPartnerCode ? sponsorPartnerCode : "—"}
+              className="mt-1 w-full cursor-not-allowed rounded-lg border border-neutral-200 bg-neutral-50 px-3 py-2 font-mono text-sm uppercase text-neutral-700"
+              aria-readonly
+            />
+            <p className="mt-1 text-xs text-neutral-500">
+              Werbe-Beziehung ist fest gespeichert und kann hier nicht geändert werden.
+            </p>
           </div>
           <div className="border-t border-neutral-100 pt-4">
             <p className="text-xs font-bold uppercase text-[#0F4F68]/80">Bankverbindung (Auszahlung)</p>

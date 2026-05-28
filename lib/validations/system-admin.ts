@@ -35,6 +35,20 @@ const optionalAccountHolder = z
   })
   .refine((t) => t === undefined || t.length <= 120, "Kontoinhaber maximal 120 Zeichen.");
 
+/**
+ * Optionaler werbender Partner-Code (z. B. "AA1234").
+ * Leer → undefined, sonst trim+upper, nur A-Z0-9 (1–32). Existenz wird serverseitig in
+ * `setPartnerReferralByCode` validiert (mit klaren Fehlermeldungen).
+ */
+const optionalReferralPartnerCode = z
+  .string()
+  .max(32)
+  .transform((s) => {
+    const t = s.trim().toUpperCase();
+    return t.length === 0 ? undefined : t;
+  })
+  .refine((t) => t === undefined || /^[A-Z0-9]{1,32}$/.test(t), "Partner-Code: nur Buchstaben und Ziffern.");
+
 export const createPartnerUserSchema = z.object({
   email: z.string().trim().email("Gültige E-Mail-Adresse erforderlich.").max(320),
   salutation: z.enum(["herr", "frau"], { message: "Anrede wählen (Herr oder Frau)." }),
@@ -42,7 +56,13 @@ export const createPartnerUserSchema = z.object({
   last_name: z.string().trim().min(1, "Nachname erforderlich.").max(80),
   phone: z.string().trim().min(5, "Telefonnummer erforderlich.").max(40),
   organization_name: z.string().trim().max(200).optional(),
+  /** Legacy-Notizfeld (Freitext) – bleibt erhalten, neu wird `referral_partner_code` bevorzugt. */
   recruited_by: z.string().trim().max(200).optional(),
+  /** Werbender Partner-Code (optional). Strukturierte Werbe-Beziehung (Migration 026). */
+  referral_partner_code: z.preprocess(
+    (v) => (v == null ? "" : String(v)),
+    optionalReferralPartnerCode,
+  ),
   iban: z.preprocess((v) => (v == null ? "" : String(v)), optionalIban),
   bic: z.preprocess((v) => (v == null ? "" : String(v)), optionalBic),
   account_holder: z.preprocess((v) => (v == null ? "" : String(v)), optionalAccountHolder),

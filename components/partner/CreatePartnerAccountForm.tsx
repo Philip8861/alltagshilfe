@@ -238,16 +238,24 @@ export function CreatePartnerAccountForm() {
           />
         </div>
         <div className="sm:col-span-2">
-          <label htmlFor="new-partner-recruited" className="block text-sm font-semibold text-[#0F4F68]">
-            Partner wurde angeworben von <span className="font-normal text-neutral-500">(optional)</span>
+          <label htmlFor="new-partner-referral-code" className="block text-sm font-semibold text-[#0F4F68]">
+            Geworben durch Partner-Code <span className="font-normal text-neutral-500">(optional)</span>
           </label>
           <input
-            id="new-partner-recruited"
-            name="recruited_by"
+            id="new-partner-referral-code"
+            name="referral_partner_code"
             type="text"
             disabled={pending}
-            className="mt-2 w-full rounded-xl border border-neutral-200 px-4 py-3 text-neutral-900 outline-none ring-[#0F4F68] focus:ring-2 disabled:opacity-60"
+            spellCheck={false}
+            autoComplete="off"
+            inputMode="text"
+            placeholder="z. B. AA1234"
+            className="mt-2 w-full rounded-xl border border-neutral-200 px-4 py-3 font-mono uppercase text-neutral-900 outline-none ring-[#0F4F68] focus:ring-2 disabled:opacity-60"
           />
+          <p className="mt-1 text-xs text-neutral-600">
+            Wenn dieser Partner durch eine Kollegin oder einen Kollegen geworben wurde, hier den Partner-Code eintragen.
+            Die Beziehung wird einmalig fest gespeichert und kann später nicht mehr geändert werden.
+          </p>
         </div>
         <fieldset className="sm:col-span-2">
           <legend className="text-sm font-semibold text-[#0F4F68]">Zuständigkeitsbereich</legend>
