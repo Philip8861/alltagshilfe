@@ -31,9 +31,14 @@ function roundCoord(n: number) {
   return Math.round(n * 10) / 10;
 }
 
-type DragTarget =
-  | { kind: "marker"; index: number; startLeft: number; startTop: number; startX: number; startY: number }
-  | { kind: "punkt"; index: number; startLeft: number; startTop: number; startX: number; startY: number };
+type DragTarget = {
+  kind: "punkt";
+  index: number;
+  startLeft: number;
+  startTop: number;
+  startX: number;
+  startY: number;
+};
 
 export function KartenMitKoordinatenErfassen({
   hauptmarker,
@@ -53,7 +58,6 @@ export function KartenMitKoordinatenErfassen({
   /** Nur in dieser Session neu gesetzte Punkte – bestehende aus `punkte` bleiben unverändert. */
   const [neuePunkte, setNeuePunkte] = useState<StandortKartePunkt[]>([]);
 
-  const [selectedMarkerIndex, setSelectedMarkerIndex] = useState<number | null>(null);
   const [selectedNeuerPunktIndex, setSelectedNeuerPunktIndex] = useState<number | null>(null);
 
   const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "ok" | "error">("idle");
@@ -61,7 +65,7 @@ export function KartenMitKoordinatenErfassen({
 
   const dragRef = useRef<DragTarget | null>(null);
   const didDragRef = useRef(false);
-  const pendingSelectRef = useRef<{ kind: "marker" | "punkt"; index: number } | null>(null);
+  const pendingSelectRef = useRef<{ kind: "punkt"; index: number } | null>(null);
 
   useEffect(() => {
     setMarkerPositions(hauptmarker.map((m) => ({ left: m.left, top: m.top })));
@@ -80,7 +84,7 @@ export function KartenMitKoordinatenErfassen({
       queueMicrotask(() => setSelectedNeuerPunktIndex(nextIndex));
       return [...prev, { ...mouseProzent }];
     });
-    setSelectedMarkerIndex(null);
+    setSelectedNeuerPunktIndex(null);
   }, [mouseProzent]);
 
   const updateMouse = useCallback((e: MouseEvent) => {
@@ -96,14 +100,12 @@ export function KartenMitKoordinatenErfassen({
     setSaveStatus("saving");
     setSaveMessage(null);
     const payload = {
-      hauptmarker: hauptmarker.map((m, i) => {
-        const pos = markerPositions[i] ?? { left: m.left, top: m.top };
-        return {
-          ...m,
-          left: roundCoord(pos.left),
-          top: roundCoord(pos.top),
-        };
-      }),
+      /** GPS-Marker nur aus Config – im Editor nicht versehentlich verschieben. */
+      hauptmarker: hauptmarker.map((m) => ({
+        ...m,
+        left: roundCoord(m.left),
+        top: roundCoord(m.top),
+      })),
       punkte: [
         ...punkte.map((p) => ({
           left: roundCoord(p.left),
@@ -137,7 +139,7 @@ export function KartenMitKoordinatenErfassen({
       setSaveStatus("error");
       setSaveMessage("Netzwerkfehler beim Speichern.");
     }
-  }, [hauptmarker, markerPositions, punkte, neuePunkte, ortsLabels, router]);
+  }, [hauptmarker, punkte, neuePunkte, ortsLabels, router]);
 
   const handleKeyDown = useCallback(
     (e: KeyboardEvent) => {
@@ -161,27 +163,6 @@ export function KartenMitKoordinatenErfassen({
     [editMode, punktHinzufuegen, mouseProzent, selectedNeuerPunktIndex, removeSelectedNeuerPunkt, addPunktAtCursor],
   );
 
-  const handleMarkerMouseDown = useCallback(
-    (e: React.MouseEvent, index: number) => {
-      if (!editMode) return;
-      e.preventDefault();
-      didDragRef.current = false;
-      pendingSelectRef.current = { kind: "marker", index };
-      const pos = markerPositions[index];
-      dragRef.current = {
-        kind: "marker",
-        index,
-        startLeft: pos.left,
-        startTop: pos.top,
-        startX: e.clientX,
-        startY: e.clientY,
-      };
-      setSelectedMarkerIndex(index);
-      setSelectedNeuerPunktIndex(null);
-    },
-    [editMode, markerPositions],
-  );
-
   const handleNeuerPunktMouseDown = useCallback(
     (e: React.MouseEvent, index: number) => {
       if (!editMode) return;
@@ -199,7 +180,6 @@ export function KartenMitKoordinatenErfassen({
         startY: e.clientY,
       };
       setSelectedNeuerPunktIndex(index);
-      setSelectedMarkerIndex(null);
     },
     [editMode, neuePunkte],
   );
@@ -209,26 +189,9 @@ export function KartenMitKoordinatenErfassen({
     const rect = mapRef.current?.getBoundingClientRect();
     if (!rect) return;
     didDragRef.current = true;
-    const { kind, index, startLeft, startTop, startX, startY } = dragRef.current;
+    const { index, startLeft, startTop, startX, startY } = dragRef.current;
     const deltaX = ((e.clientX - startX) / rect.width) * 100;
     const deltaY = ((e.clientY - startY) / rect.height) * 100;
-
-    if (kind === "marker") {
-      const newLeftContainer = imageToContainer(startLeft) + deltaX;
-      const newTop = startTop + deltaY;
-      setMarkerPositions((prev) => {
-        const next = [...prev];
-        next[index] = {
-          left: Math.max(
-            IMAGE_CROP_LEFT,
-            Math.min(100, containerToImage(Math.max(0, Math.min(100, newLeftContainer)))),
-          ),
-          top: Math.max(0, Math.min(100, newTop)),
-        };
-        return next;
-      });
-      return;
-    }
 
     setNeuePunkte((prev) => {
       const next = [...prev];
@@ -241,10 +204,8 @@ export function KartenMitKoordinatenErfassen({
   }, []);
 
   const handleGlobalMouseUp = useCallback(() => {
-    if (!didDragRef.current && pendingSelectRef.current) {
-      const { kind, index } = pendingSelectRef.current;
-      if (kind === "marker") setSelectedMarkerIndex(index);
-      else setSelectedNeuerPunktIndex(index);
+    if (!didDragRef.current && pendingSelectRef.current?.kind === "punkt") {
+      setSelectedNeuerPunktIndex(pendingSelectRef.current.index);
     }
     pendingSelectRef.current = null;
     dragRef.current = null;
@@ -302,8 +263,8 @@ export function KartenMitKoordinatenErfassen({
           <p className="font-semibold text-[#0F4F68]">Karten-Bearbeitungsmodus</p>
           <p className="mt-1 text-neutral-700">
             Bestehende orangene Punkte bleiben fix wie auf der normalen Karte. Nur <strong>neu gesetzte</strong>{" "}
-            Punkte (größer, blauer Ring) lassen sich verschieben oder entfernen. GPS-Marker optional per Drag
-            anpassen. Speichern hängt neue Punkte an die bestehende Liste in{" "}
+            Punkte (größer, blauer Ring) lassen sich verschieben oder entfernen. GPS-Marker sind fix. Speichern hängt
+            neue Punkte an die bestehende Liste in{" "}
             <code className="text-xs">config/standort-karte.json</code>.
           </p>
           <p className="mt-1 text-xs text-neutral-600">
@@ -340,11 +301,6 @@ export function KartenMitKoordinatenErfassen({
             >
               {saveStatus === "saving" ? "Speichern…" : "Koordinaten speichern"}
             </button>
-            {selectedMarkerIndex !== null && (
-              <span className="text-[#0F4F68]">
-                GPS: <strong>{hauptmarker[selectedMarkerIndex]?.label}</strong>
-              </span>
-            )}
             {selectedNeuerPunktIndex !== null && (
               <span className="text-[#0F4F68]">
                 Neuer Punkt #{selectedNeuerPunktIndex + 1} (
@@ -422,7 +378,6 @@ export function KartenMitKoordinatenErfassen({
                   e.preventDefault();
                   if (!didDragRef.current) {
                     setSelectedNeuerPunktIndex(i);
-                    setSelectedMarkerIndex(null);
                   }
                 }}
                 className={`absolute rounded-full bg-[#F78F2E] ring-2 ring-white overflow-visible pointer-events-auto cursor-grab active:cursor-grabbing ${
@@ -465,7 +420,6 @@ export function KartenMitKoordinatenErfassen({
 
           {hauptmarker.map((m, i) => {
             const pos = markerPositions[i] ?? { left: m.left, top: m.top };
-            const isSelected = editMode && selectedMarkerIndex === i;
             const textShadow = [
               "1px 0 0 white",
               "-1px 0 0 white",
@@ -541,29 +495,10 @@ export function KartenMitKoordinatenErfassen({
             };
             const animClass = playMarkerAnimation && !editMode ? "animate-marker-slide-in" : "";
             const markerClassName = editMode
-              ? `absolute flex flex-col items-center pointer-events-auto rounded-lg transition-opacity hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2 focus:ring-offset-transparent ${animClass} cursor-grab active:cursor-grabbing ${isSelected ? "ring-2 ring-[#F78F2E] ring-offset-0 z-[5]" : "z-10"}`
+              ? `absolute flex flex-col items-center pointer-events-auto rounded-lg transition-opacity hover:opacity-90 focus:outline-none focus:ring-0 focus:ring-offset-0 focus-visible:ring-2 focus-visible:ring-[#0F4F68] focus-visible:ring-offset-0 ${animClass} cursor-pointer z-10`
               : `absolute flex flex-col items-center pointer-events-auto rounded-lg transition-opacity hover:opacity-90 focus:outline-none focus:ring-0 focus:ring-offset-0 focus-visible:ring-2 focus-visible:ring-[#0F4F68] focus-visible:ring-offset-0 ${animClass} cursor-pointer z-10`;
 
             if (m.href) {
-              if (editMode) {
-                return (
-                  <Link
-                    key={m.label}
-                    href={m.href}
-                    className={markerClassName}
-                    style={commonStyle}
-                    aria-label={`${m.label} – ziehen zum Verschieben, Doppelklick öffnet Standort`}
-                    onMouseDown={(e) => handleMarkerMouseDown(e, i)}
-                    onClick={(e) => e.preventDefault()}
-                    onDoubleClick={(e) => {
-                      e.preventDefault();
-                      router.push(m.href!);
-                    }}
-                  >
-                    {content}
-                  </Link>
-                );
-              }
               const standortSeiteName = m.sublabel ? `${m.label} ${m.sublabel}` : m.label;
               return (
                 <Link
@@ -583,9 +518,6 @@ export function KartenMitKoordinatenErfassen({
                 key={m.label}
                 className={markerClassName}
                 style={commonStyle}
-                role={editMode ? "button" : undefined}
-                tabIndex={editMode ? 0 : undefined}
-                onMouseDown={editMode ? (e) => handleMarkerMouseDown(e, i) : undefined}
               >
                 {content}
               </div>
