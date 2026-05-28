@@ -58,6 +58,17 @@ export function PartnerAdminShell({ children }: Props) {
             );
           })}
           <Link
+            href="/partner-demo/dashboard"
+            className={iconButtonClass(pathname.startsWith("/partner-demo"))}
+            title="Schulungsdemo (Beamer)"
+          >
+            <span className="sr-only">Schulungsdemo (Beamer)</span>
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
+              <rect x="2" y="3" width="20" height="14" rx="2" strokeLinecap="round" strokeLinejoin="round" />
+              <path d="M8 21h8M12 17v4" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </Link>
+          <Link
             href="/partner/admin/pdf-coords"
             className={iconButtonClass(
               pathname === "/partner/admin/pdf-coords" || pathname === "/partner/admin/pdf-layout-lab",

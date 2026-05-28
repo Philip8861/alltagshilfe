@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { HomePartnerLoginBlock } from "@/components/home/HomePartnerLoginBlock";
 import { KooperationspartnerBereiche } from "@/components/kooperation/KooperationspartnerBereiche";
 import { KooperationHeroCTAButton } from "@/components/kooperation/KooperationHeroCTAButton";
@@ -108,7 +107,7 @@ export default function KooperationPage() {
                 ))}
               </ul>
               <div
-                className={`${ANIM_IN} mt-8 flex w-full flex-col items-stretch justify-center gap-3 sm:flex-row sm:flex-wrap sm:items-center lg:justify-start`}
+                className={`${ANIM_IN} mt-8 flex w-full justify-center lg:justify-start`}
                 style={{ animationDelay: "400ms" }}
               >
                 <KooperationHeroCTAButton
@@ -116,12 +115,6 @@ export default function KooperationPage() {
                 >
                   Jetzt Kooperationspartner werden
                 </KooperationHeroCTAButton>
-                <Link
-                  href="/partner-demo/dashboard"
-                  className="inline-flex min-h-[3.625rem] min-w-[11.5rem] items-center justify-center whitespace-nowrap rounded-xl border-2 border-[#0F4F68] bg-white px-4 py-4 text-[clamp(0.95rem,3.4vw+0.2rem,1.2rem)] font-semibold text-[#0F4F68] hover:bg-[#F2F9FA] focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2 sm:min-h-[3.75rem] sm:px-9 sm:py-[1.15rem] sm:text-[1.218875rem]"
-                >
-                  Demo ansehen (Beamer)
-                </Link>
               </div>
             </div>
           </div>
