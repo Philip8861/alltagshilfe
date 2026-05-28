@@ -525,7 +525,7 @@ html:has(#pflegebox-root)::-webkit-scrollbar {
   display: none;
 }
 
-/* Werbe-Netzwerk Pyramide (klassischer CSS-Tree mit Pseudo-Elementen) */
+/* Werbe-Netzwerk Pyramide — Partner-Portal Design (#0F4F68 / #3DB8C9) */
 .ahs-tree,
 .ahs-tree ul {
   list-style: none;
@@ -537,18 +537,20 @@ html:has(#pflegebox-root)::-webkit-scrollbar {
 .ahs-tree {
   display: flex;
   justify-content: center;
+  min-width: min-content;
 }
 
 .ahs-tree ul {
   display: flex;
   justify-content: center;
-  padding-top: 28px;
+  align-items: flex-start;
+  padding-top: 2.25rem;
   position: relative;
 }
 
 .ahs-tree li {
   position: relative;
-  padding: 0 14px;
+  padding: 0 0.65rem;
   text-align: center;
   display: flex;
   flex-direction: column;
@@ -560,17 +562,21 @@ html:has(#pflegebox-root)::-webkit-scrollbar {
   content: "";
   position: absolute;
   top: 0;
-  height: 14px;
+  height: 1.125rem;
   width: 50%;
-  border-top: 2px solid rgba(15, 79, 104, 0.28);
+  border-top: 2px solid rgba(61, 184, 201, 0.45);
 }
 
 .ahs-tree li::before {
   right: 50%;
+  border-right: 2px solid rgba(61, 184, 201, 0.45);
+  border-top-right-radius: 0.5rem;
 }
 
 .ahs-tree li::after {
   left: 50%;
+  border-left: 2px solid rgba(61, 184, 201, 0.45);
+  border-top-left-radius: 0.5rem;
 }
 
 .ahs-tree li:first-child::before,
@@ -584,7 +590,7 @@ html:has(#pflegebox-root)::-webkit-scrollbar {
 }
 
 .ahs-tree li:only-child {
-  padding-top: 14px;
+  padding-top: 1.125rem;
 }
 
 .ahs-tree ul::before {
@@ -593,18 +599,19 @@ html:has(#pflegebox-root)::-webkit-scrollbar {
   top: 0;
   left: calc(50% - 1px);
   width: 0;
-  height: 14px;
-  border-left: 2px solid rgba(15, 79, 104, 0.28);
+  height: 1.125rem;
+  border-left: 2px solid rgba(15, 79, 104, 0.35);
 }
 
-/* Wenn Wurzel-UL (oberste Ebene) keinen Stamm braucht. */
 .ahs-tree > ul.ahs-tree__root::before,
 .ahs-tree > ul.ahs-tree__root {
   padding-top: 0;
 }
+
 .ahs-tree > ul.ahs-tree__root::before {
   display: none;
 }
+
 .ahs-tree > ul.ahs-tree__root > li::before,
 .ahs-tree > ul.ahs-tree__root > li::after {
   display: none;
@@ -613,9 +620,31 @@ html:has(#pflegebox-root)::-webkit-scrollbar {
 .ahs-tree__node {
   display: inline-flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 0.35rem;
   align-items: center;
   text-align: left;
+  position: relative;
+  z-index: 1;
+}
+
+.ahs-tree__canvas {
+  background:
+    radial-gradient(ellipse 80% 60% at 50% 0%, rgba(61, 184, 201, 0.12), transparent 70%),
+    linear-gradient(180deg, #f2f9fa 0%, #ffffff 55%, #fafbfc 100%);
+  border: 1px solid rgba(15, 79, 104, 0.1);
+  border-radius: 1rem;
+  padding: 1.75rem 1rem 1.25rem;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+
+@media (min-width: 640px) {
+  .ahs-tree ul {
+    padding-top: 2.5rem;
+  }
+
+  .ahs-tree li {
+    padding: 0 0.85rem;
+  }
 }
 
 /* Admin Auszahlen: fokussierter Druck (Klasse kurz vor window.print() auf <html>) */
