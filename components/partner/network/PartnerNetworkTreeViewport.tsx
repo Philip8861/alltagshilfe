@@ -40,9 +40,16 @@ type Props = {
   layoutKey: string;
   /** Mobile: nur Sponsor + eigene Position in der Startansicht. */
   isMobile?: boolean;
+  /** Start-Zoom-Faktor (z. B. 0.9 = 10 % kleiner). */
+  initialViewScale?: number;
 };
 
-export function PartnerNetworkTreeViewport({ children, layoutKey, isMobile = false }: Props) {
+export function PartnerNetworkTreeViewport({
+  children,
+  layoutKey,
+  isMobile = false,
+  initialViewScale = 1,
+}: Props) {
   const viewportRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   const [transform, setTransform] = useState<Transform>({ x: 0, y: 0, scale: 1 });
@@ -63,9 +70,9 @@ export function PartnerNetworkTreeViewport({ children, layoutKey, isMobile = fal
 
     const vw = viewport.clientWidth;
     const vh = viewport.clientHeight;
-    const paddingX = isMobile ? 12 : 20;
-    const paddingTop = 12;
-    const paddingBottom = isMobile ? 20 : 32;
+    const paddingX = isMobile ? 16 : 36;
+    const paddingTop = 16;
+    const paddingBottom = isMobile ? 24 : 40;
 
     const focusSelector = isMobile ? '[data-network-focus-top="true"]' : '[data-network-focus="true"]';
     const focusEls = [...content.querySelectorAll<HTMLElement>(focusSelector)];
@@ -94,7 +101,8 @@ export function PartnerNetworkTreeViewport({ children, layoutKey, isMobile = fal
       const focusHeight = Math.max(maxY - minY, 1);
 
       const scale = clampScale(
-        Math.min((vw - paddingX * 2) / focusWidth, (vh - paddingTop - paddingBottom) / focusHeight),
+        Math.min((vw - paddingX * 2) / focusWidth, (vh - paddingTop - paddingBottom) / focusHeight) *
+          initialViewScale,
       );
 
       const x = (vw - focusWidth * scale) / 2 - minX * scale;
@@ -107,14 +115,16 @@ export function PartnerNetworkTreeViewport({ children, layoutKey, isMobile = fal
     const ch = content.offsetHeight;
     let scale = 1;
     if (cw > vw * 0.96 || ch > vh * 0.85) {
-      scale = clampScale(Math.min((vw * 0.96) / cw, (vh * 0.85) / ch));
+      scale = clampScale(Math.min((vw * 0.96) / cw, (vh * 0.85) / ch) * initialViewScale);
+    } else {
+      scale = clampScale(initialViewScale);
     }
     setTransform({
       x: (vw - cw * scale) / 2,
       y: paddingTop,
       scale,
     });
-  }, [isMobile]);
+  }, [isMobile, initialViewScale]);
 
   useLayoutEffect(() => {
     resetView();

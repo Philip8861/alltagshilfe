@@ -33,7 +33,7 @@ export default async function PartnerBetrieblichTeamPage() {
       };
 
   return (
-    <div className="mx-auto w-full max-w-[min(100%,90rem)] space-y-8">
+    <div className="mx-auto w-full max-w-[min(100%,96rem)] space-y-8">
       <PartnerNetworkSection initialData={networkData} />
       {showsBetrieblich ? (
         <BetrieblichTeamPageClient initialTeams={teams} viewerPartnerId={profile.id} />
