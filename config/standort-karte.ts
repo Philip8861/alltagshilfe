@@ -28,14 +28,3 @@ export type StandortKarteData = {
 export function getStandortKarteData(): StandortKarteData {
   return standortKarteData as StandortKarteData;
 }
-
-/**
- * Karten-Konfigurator (nur lokal): standardmäßig aus.
- * Aktivieren: `.env.local` → `STANDORT_KARTE_EDITOR=true`, dann `/standorte?karte=bearbeiten`
- */
-export function isStandortKarteEditorEnabled(): boolean {
-  return (
-    process.env.NODE_ENV === "development" &&
-    process.env.STANDORT_KARTE_EDITOR === "true"
-  );
-}

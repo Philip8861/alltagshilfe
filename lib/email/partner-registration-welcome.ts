@@ -16,7 +16,7 @@ function footerStrings(): {
 } {
   const websiteDisplay =
     process.env.PARTNER_REGISTRATION_MAIL_WEBSITE?.trim() ||
-    (getPublicSiteBaseUrl()?.startsWith("http") ? getPublicSiteBaseUrl()! : "https://alltagshilfe-sued.de");
+    (getPublicSiteBaseUrl()?.startsWith("http") ? getPublicSiteBaseUrl()! : "https://www.alltagshilfe-sued.de");
   const websiteHref = websiteDisplay.startsWith("http") ? websiteDisplay : `https://${websiteDisplay.replace(/^\/+/, "")}`;
 
   return {
