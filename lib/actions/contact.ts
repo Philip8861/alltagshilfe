@@ -210,7 +210,7 @@ export async function submitContact(formData: FormData): Promise<ContactResult> 
   } else if (regionalEmail) {
     /**
      * Standort-Kontakt (signiertes Formular): immer auch die zentrale Inbox — zusätzlich zur
-     * regionalen Adresse aus `standorte` (z. B. augsburg@, engen@, wangen@, info@ für Allgäu/Bad Grönenbach).
+     * regionalen Adresse aus `standorte` (z. B. augsburg@, engen@, ulm@, wangen@, info@ für Allgäu/Bad Grönenbach).
      * Dubletten entfallen (z. B. Allgäu und Zentralpostfach sind identisch).
      */
     finalTo = dedupeEmails([...getDefaultContactRecipients(), regionalEmail]);

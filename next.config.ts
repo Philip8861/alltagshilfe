@@ -27,6 +27,13 @@ const LEGACY_STADT_REDIRECTS: {
   { path: "tettnang", standortSlug: "wangen", plz: "88069", ort: "Tettnang" },
   { path: "ueberlingen", standortSlug: "engen", plz: "88662", ort: "Überlingen" },
   { path: "wangen-3", standortSlug: "wangen", plz: "88239", ort: "Wangen im Allgäu" },
+  { path: "ulm", standortSlug: "ulm", plz: "89073", ort: "Ulm" },
+  { path: "neu-ulm", standortSlug: "ulm", plz: "89231", ort: "Neu-Ulm" },
+  { path: "blaustein", standortSlug: "ulm", plz: "89134", ort: "Blaustein" },
+  { path: "senden", standortSlug: "ulm", plz: "89250", ort: "Senden" },
+  { path: "dornstadt", standortSlug: "ulm", plz: "89160", ort: "Dornstadt" },
+  { path: "elchingen", standortSlug: "ulm", plz: "89275", ort: "Elchingen" },
+  { path: "nersingen", standortSlug: "ulm", plz: "89278", ort: "Nersingen" },
 ];
 
 function legacyStadtRedirects(): {

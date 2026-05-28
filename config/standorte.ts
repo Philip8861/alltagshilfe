@@ -276,6 +276,19 @@ export const STANDORT_LEISTUNGEN = [
 /** Beispiel-Standortseite für Teaser/Verweise (feste URL). */
 export const STANDORT_TEASER_PAGE_SLUG = "allgaeu" as const;
 
+/** Teaser-/OG-Bilder der festen Standortseiten (unter `public/`). */
+export const STANDORT_PAGE_IMAGES: Record<string, string> = {
+  allgaeu: "/images/Bild_Allgaue.webp",
+  augsburg: "/images/Bild_Augsburg.webp",
+  engen: "/images/Bild_Konstanz.webp",
+  wangen: "/images/Bild_Wangen.webp",
+  ulm: "/images/ulm.webp",
+};
+
+export function getStandortPageImage(pageSlug: string): string {
+  return STANDORT_PAGE_IMAGES[pageSlug] ?? "/images/Bild_Allgaue.webp";
+}
+
 export const standorteByPlz: Standort[] = [
   {
     name: "Standort Allgäu",
@@ -511,7 +524,7 @@ export function buildStandortLocalBusinessJsonLd(input: {
     url: input.pageUrl,
     telephone: TEL_E164(input.standort.phoneHref),
     email: input.standort.email,
-    image: `${base}/images/standort_hintergrund.webp`,
+    image: `${base}${getStandortPageImage(input.standort.pageSlug)}`,
     address: {
       "@type": "PostalAddress",
       streetAddress: input.standort.schemaAddress.streetAddress,

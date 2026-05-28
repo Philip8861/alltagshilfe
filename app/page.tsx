@@ -19,7 +19,7 @@ import { STARTSEITE_VORTEILE, STARTSEITE_VORTEILE_INTRO } from "@/lib/startseite
 const HOME_META_TITLE = "Haushaltshilfe, Pflegeberatung & Betreuung in Süddeutschland";
 
 const HOME_META_DESCRIPTION =
-  "Pflegeberatung nach §37.3 SGB XI, Haushaltshilfe, Alltagsbegleitung und Pflegehilfsmittel – regional im Allgäu, Bodensee, Augsburg und Umgebung. Anerkannte Pflegeberatungsstelle, zugelassen bei allen Krankenkassen.";
+  "Pflegeberatung nach §37.3 SGB XI, Haushaltshilfe, Alltagsbegleitung und Pflegehilfsmittel – regional im Allgäu, Bodensee, Augsburg, Ulm/Neu-Ulm und Umgebung. Anerkannte Pflegeberatungsstelle, zugelassen bei allen Krankenkassen.";
 
 export const metadata: Metadata = {
   title: HOME_META_TITLE,

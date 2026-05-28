@@ -5,99 +5,29 @@ import { StandortSuche } from "@/components/standorte/StandortSuche";
 import { StandortAnthrazitRule } from "@/components/standorte/StandortAnthrazitRule";
 import { KartenMitKoordinatenErfassen } from "@/components/standorte/KartenMitKoordinatenErfassen";
 import { GtmMailtoLink } from "@/components/analytics/GtmContactIntentLink";
-import { SERVED_PLZ_TOTAL, standorteByPlz } from "@/config/standorte";
+import { SERVED_PLZ_TOTAL, getStandortPageImage, standorteByPlz } from "@/config/standorte";
+import { getStandortKarteData } from "@/config/standort-karte";
 import { siteConfig } from "@/config/site";
+
+const STANDORTE_META_DESCRIPTION = `Fünf regionale Standorte – ${siteConfig.name}: Allgäu, Bodenseeregion, Augsburg, Engen/Konstanz und Ulm/Neu-Ulm. PLZ-Suche für Haushaltshilfe, Pflegeberatung und Betreuung in Ihrer Nähe.`;
 
 export const metadata: Metadata = {
   title: "Standorte",
-  description: `Unsere Standorte – ${siteConfig.name}. Augsburg und Umgebung.`,
+  description: STANDORTE_META_DESCRIPTION,
+  alternates: { canonical: "/standorte" },
+  robots: { index: true, follow: true, googleBot: { index: true, follow: true } },
+  openGraph: {
+    title: `Standorte | ${siteConfig.name}`,
+    description: STANDORTE_META_DESCRIPTION,
+    url: "/standorte",
+    type: "website",
+    locale: "de_DE",
+    siteName: siteConfig.name,
+  },
 };
 
 /** Ortsbezeichnungen mit X (München, Nürnberg) – aktuell ausgeblendet. */
-const ORTSLABELS: { left: number; top: number; label: string; withX?: boolean }[] = [];
-
-/** GPS-Marker – Spitze des Pins auf der Koordinate. labelAbove: Name über Symbol. */
-const HAUPTMARKER = [
-  { left: 68.3, top: 67, label: "Allgäu", href: "/standorte/allgaeu", labelAbove: false },
-  { left: 72.3, top: 49, label: "Augsburg", href: "/standorte/augsburg", labelAbove: true },
-  { left: 54.1, top: 62.3, label: "Engen/Konstanz", href: "/standorte/engen", labelAbove: false },
-  { left: 62.7, top: 61.1, label: "Wangen", sublabel: "(Bodenseeregion)", href: "/standorte/wangen", labelAbove: true },
-  { left: 75.8, top: 53.2, label: "Ulm", href: "/standorte/ulm", labelAbove: true },
-];
-
-const STANDORT_CARD_IMAGE: Record<string, string> = {
-  allgaeu: "/images/Bild_Allgaue.webp",
-  augsburg: "/images/Bild_Augsburg.webp",
-  engen: "/images/Bild_Konstanz.webp",
-  wangen: "/images/Bild_Wangen.webp",
-  ulm: "/images/ulm.webp",
-};
-
-/** Orangene Punkte auf der Karte (alte Positionen + 5 ergänzte). */
-const PUNKTE = [
-  { left: 47.3, top: 76.6 },
-  { left: 48.4, top: 73.6 },
-  { left: 46, top: 72.6 },
-  { left: 43.8, top: 70.4 },
-  { left: 48.9, top: 69.5 },
-  { left: 46.8, top: 67.7 },
-  { left: 51, top: 67.7 },
-  { left: 52.7, top: 65.4 },
-  { left: 52.6, top: 61.3 },
-  { left: 50.6, top: 61.3 },
-  { left: 47.2, top: 60.9 },
-  { left: 51, top: 58.4 },
-  { left: 55.1, top: 59.5 },
-  { left: 56, top: 56.1 },
-  { left: 53.4, top: 54 },
-  { left: 50.1, top: 51.8 },
-  { left: 51.7, top: 51.2 },
-  { left: 51.3, top: 47.5 },
-  { left: 53.9, top: 43.6 },
-  { left: 57.3, top: 42.5 },
-  { left: 59.7, top: 47.4 },
-  { left: 58.3, top: 49.3 },
-  { left: 59.3, top: 51.6 },
-  { left: 57.7, top: 55 },
-  { left: 39.8, top: 66.8 },
-  { left: 38.3, top: 64.4 },
-  { left: 38.3, top: 60.5 },
-  { left: 40.5, top: 58.3 },
-  { left: 41.6, top: 56.5 },
-  { left: 44.5, top: 58.6 },
-  { left: 44.6, top: 62.7 },
-  { left: 44.2, top: 66.8 },
-  { left: 37.3, top: 63.6 },
-  { left: 35.9, top: 61.6 },
-  { left: 36.3, top: 58.9 },
-  { left: 33.3, top: 57.8 },
-  { left: 30.1, top: 57.6 },
-  { left: 22.9, top: 64.4 },
-  { left: 20.9, top: 63 },
-  { left: 23.1, top: 60.9 },
-  { left: 20, top: 59.1 },
-  { left: 22.2, top: 57.5 },
-  { left: 20.9, top: 56.2 },
-  { left: 24.5, top: 55.1 },
-  { left: 26.2, top: 53.5 },
-  { left: 28.8, top: 54.3 },
-  { left: 55.5, top: 62.8 },
-  { left: 54.3, top: 69.2 },
-  { left: 31.8, top: 60.9 },
-  { left: 37.9, top: 69.1 },
-  { left: 47.7, top: 57.4 },
-  /* Zollernalb / Sigmaringen / Oberschwaben (Engen/Konstanz-Einzugsgebiet, grob zur statischen Karte) */
-  { left: 55.2, top: 60.8 },
-  { left: 56.1, top: 59.6 },
-  { left: 57.0, top: 58.8 },
-  { left: 57.8, top: 58.0 },
-  { left: 58.6, top: 57.2 },
-  { left: 56.5, top: 58.2 },
-  { left: 59.2, top: 56.5 },
-  { left: 60.0, top: 55.8 },
-  { left: 58.0, top: 59.2 },
-  { left: 55.8, top: 59.0 },
-];
+const { hauptmarker: HAUPTMARKER, punkte: PUNKTE, ortsLabels: ORTSLABELS } = getStandortKarteData();
 
 const STANDORTE_INTRO = {
   heading: "Wir sind ganz in Ihrer Nähe!",
@@ -111,7 +41,13 @@ const STANDORTE_INTRO_HEADING_CLASS =
 const STANDORTE_INTRO_BODY_CLASS =
   "mx-auto w-full max-w-2xl text-balance text-center text-lg text-neutral-700 leading-relaxed sm:text-xl";
 
-export default function StandortePage() {
+export default async function StandortePage({
+  searchParams,
+}: {
+  searchParams?: Promise<{ karte?: string }>;
+}) {
+  const sp = await searchParams;
+  const karteBearbeiten = sp?.karte === "bearbeiten";
   const plzAnzahl = SERVED_PLZ_TOTAL;
 
   return (
@@ -124,7 +60,12 @@ export default function StandortePage() {
         <div className="flex w-full flex-col gap-8 lg:flex-row lg:flex-nowrap lg:items-start lg:justify-start lg:gap-10">
           {/* Desktop: Karte links (order-1). Mobil: Karte unten (order-2). */}
           <div className="relative z-10 w-full flex-none shrink-0 bg-transparent lg:w-[50%] lg:max-w-3xl lg:min-w-0 order-2 lg:order-1 -translate-y-2 sm:-translate-y-4 drop-shadow-[0_14px_28px_rgba(15,79,104,0.2)]">
-            <KartenMitKoordinatenErfassen hauptmarker={HAUPTMARKER} punkte={PUNKTE} ortsLabels={ORTSLABELS} />
+            <KartenMitKoordinatenErfassen
+              hauptmarker={HAUPTMARKER}
+              punkte={PUNKTE}
+              ortsLabels={ORTSLABELS}
+              editMode={karteBearbeiten}
+            />
           </div>
           {/* Desktop: Text + Standortsuche rechts (order-2). Mobil: oben (order-1) – zuerst Text, dann Standortsuche. */}
           <div className="order-1 flex w-full min-w-0 flex-col px-4 pt-6 sm:px-6 sm:pt-8 lg:order-2 lg:flex-1 lg:max-w-none lg:px-[var(--ahs-page-gutter)]">
@@ -160,7 +101,7 @@ export default function StandortePage() {
           </h2>
           <ul className="mt-8 grid grid-cols-1 gap-6 sm:mt-10 sm:grid-cols-2 lg:grid-cols-3 sm:gap-8">
             {standorteByPlz.map((st) => {
-              const imgSrc = STANDORT_CARD_IMAGE[st.pageSlug] ?? "/images/Bild_Allgaue.webp";
+              const imgSrc = getStandortPageImage(st.pageSlug);
               return (
                 <li key={st.pageSlug} className="flex min-h-0">
                   <div className="flex h-full w-full min-w-0 flex-col overflow-hidden rounded-2xl border border-[#0F4F68]/12 bg-[#F2F9FA]/90 shadow-[0_4px_20px_rgba(15,79,104,0.07)] transition hover:border-[#F78F2E]/35 hover:bg-white hover:shadow-[0_12px_32px_rgba(15,79,104,0.12)]">

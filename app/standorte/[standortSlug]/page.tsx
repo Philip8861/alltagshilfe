@@ -5,6 +5,7 @@ import {
   buildStandortLocalBusinessJsonLd,
   findStandortByPageSlug,
   getAllStandortPageSlugs,
+  getStandortPageImage,
   resolvePlzContextForStandortPage,
 } from "@/config/standorte";
 import { siteConfig } from "@/config/site";
@@ -30,6 +31,7 @@ export async function generateMetadata({ params, searchParams }: Props): Promise
   const description =
     metaDescRaw.length > 160 ? `${metaDescRaw.slice(0, 157).trim()}…` : metaDescRaw;
   const path = `/standorte/${standort.pageSlug}`;
+  const ogImage = getStandortPageImage(standort.pageSlug);
   return {
     title,
     description,
@@ -38,6 +40,22 @@ export async function generateMetadata({ params, searchParams }: Props): Promise
     openGraph: {
       title,
       description,
+      url: path,
+      type: "website",
+      locale: "de_DE",
+      siteName: siteConfig.name,
+      images: [
+        {
+          url: ogImage,
+          alt: `${standort.name} – Haushaltshilfe, Pflegeberatung und Betreuung`,
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: [ogImage],
     },
   };
 }
