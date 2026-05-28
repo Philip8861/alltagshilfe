@@ -137,15 +137,17 @@ export function PartnerNetworkTree({ data, availablePeriods, onChangePeriod, pen
 
       <div className="px-3 py-4 sm:px-6 sm:py-6">
         {hasNetwork ? (
-          <PartnerNetworkTreeViewport layoutKey={`${data.periodKey}-${totalAll}-${data.rootPartnerCode ?? ""}`}>
-            <div className="ahs-tree__canvas px-2 py-3 sm:px-4 sm:py-4">
-              <div className="ahs-tree">
-                <ul className="ahs-tree__root">
-                  <PyramidLi node={root} />
-                </ul>
+          <div className="-mx-3 w-[calc(100%+1.5rem)] sm:-mx-6 sm:w-[calc(100%+3rem)]">
+            <PartnerNetworkTreeViewport layoutKey={`${data.periodKey}-${totalAll}-${data.rootPartnerCode ?? ""}`}>
+              <div className="px-1 py-2 sm:px-2 sm:py-3">
+                <div className="ahs-tree">
+                  <ul className="ahs-tree__root">
+                    <PyramidLi node={root} />
+                  </ul>
+                </div>
               </div>
-            </div>
-          </PartnerNetworkTreeViewport>
+            </PartnerNetworkTreeViewport>
+          </div>
         ) : (
           <div className="rounded-xl border border-dashed border-[#0F4F68]/25 bg-[#F2F9FA]/60 px-6 py-12 text-center">
             <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-[#0F4F68]/10 text-[#0F4F68]">
@@ -249,7 +251,10 @@ function NodeBox({
       : "min-w-[8rem] max-w-[12rem] sm:min-w-[8.5rem]";
 
   return (
-    <div className="ahs-tree__node">
+    <div
+      className="ahs-tree__node"
+      data-network-focus={node.kind === "sponsor" || node.kind === "self" || node.kind === "direct" ? "true" : undefined}
+    >
       <article
         className={`group relative overflow-hidden rounded-xl border transition-shadow duration-200 hover:shadow-lg sm:rounded-2xl ${cardWidth} ${meta.card}`}
       >

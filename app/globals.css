@@ -649,15 +649,6 @@ html:has(#pflegebox-root)::-webkit-scrollbar {
   z-index: 1;
 }
 
-.ahs-tree__canvas {
-  background:
-    radial-gradient(ellipse 80% 60% at 50% 0%, rgba(61, 184, 201, 0.12), transparent 70%),
-    linear-gradient(180deg, #f2f9fa 0%, #ffffff 55%, #fafbfc 100%);
-  border: 1px solid rgba(15, 79, 104, 0.1);
-  border-radius: 1rem;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9);
-}
-
 .ahs-tree__viewport {
   -webkit-overflow-scrolling: touch;
 }

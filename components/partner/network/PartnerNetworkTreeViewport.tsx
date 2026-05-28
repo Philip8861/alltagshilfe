@@ -53,31 +53,71 @@ export function PartnerNetworkTreeViewport({ children, layoutKey }: Props) {
     null,
   );
 
-  const centerContent = useCallback(() => {
+  /** Startansicht: Sponsor + eigene Position + direkte Partner groß, oben verankert. */
+  const resetView = useCallback(() => {
     const viewport = viewportRef.current;
     const content = contentRef.current;
     if (!viewport || !content) return;
 
     const vw = viewport.clientWidth;
     const vh = viewport.clientHeight;
-    const cw = content.offsetWidth;
-    const ch = content.offsetHeight;
+    const paddingX = 20;
+    const paddingTop = 12;
+    const paddingBottom = 32;
 
-    let scale = 1;
-    if (cw > vw * 0.92 || ch > vh * 0.92) {
-      scale = clampScale(Math.min((vw * 0.92) / cw, (vh * 0.92) / ch));
+    const focusEls = [...content.querySelectorAll<HTMLElement>('[data-network-focus="true"]')];
+    const contentRect = content.getBoundingClientRect();
+    const currentScale = transformRef.current.scale || 1;
+
+    if (focusEls.length > 0) {
+      let minX = Infinity;
+      let minY = Infinity;
+      let maxX = -Infinity;
+      let maxY = -Infinity;
+
+      for (const el of focusEls) {
+        const r = el.getBoundingClientRect();
+        const left = (r.left - contentRect.left) / currentScale;
+        const top = (r.top - contentRect.top) / currentScale;
+        const right = left + r.width / currentScale;
+        const bottom = top + r.height / currentScale;
+        minX = Math.min(minX, left);
+        minY = Math.min(minY, top);
+        maxX = Math.max(maxX, right);
+        maxY = Math.max(maxY, bottom);
+      }
+
+      const focusWidth = Math.max(maxX - minX, 1);
+      const focusHeight = Math.max(maxY - minY, 1);
+
+      const scale = clampScale(
+        Math.min((vw - paddingX * 2) / focusWidth, (vh - paddingTop - paddingBottom) / focusHeight),
+      );
+
+      const x = (vw - focusWidth * scale) / 2 - minX * scale;
+      const y = paddingTop - minY * scale;
+      setTransform({ x, y, scale });
+      return;
     }
 
-    const x = (vw - cw * scale) / 2;
-    const y = Math.max(12, (vh - ch * scale) / 2);
-    setTransform({ x, y, scale });
+    const cw = content.offsetWidth;
+    const ch = content.offsetHeight;
+    let scale = 1;
+    if (cw > vw * 0.96 || ch > vh * 0.85) {
+      scale = clampScale(Math.min((vw * 0.96) / cw, (vh * 0.85) / ch));
+    }
+    setTransform({
+      x: (vw - cw * scale) / 2,
+      y: paddingTop,
+      scale,
+    });
   }, []);
 
   useLayoutEffect(() => {
-    centerContent();
-    const t = window.setTimeout(centerContent, 80);
+    resetView();
+    const t = window.setTimeout(resetView, 80);
     return () => window.clearTimeout(t);
-  }, [layoutKey, centerContent]);
+  }, [layoutKey, resetView]);
 
   const zoomAtPoint = useCallback((clientX: number, clientY: number, nextScale: number) => {
     const viewport = viewportRef.current;
@@ -216,10 +256,10 @@ export function PartnerNetworkTreeViewport({ children, layoutKey }: Props) {
   const pct = Math.round(transform.scale * 100);
 
   return (
-    <div className="relative">
+    <div className="relative w-full">
       <div
         ref={viewportRef}
-        className="ahs-tree__viewport relative min-h-[min(52vh,22rem)] max-h-[min(72vh,32rem)] w-full cursor-grab touch-none overflow-hidden rounded-xl border border-[#0F4F68]/12 bg-[#F2F9FA]/50 active:cursor-grabbing sm:min-h-[min(58vh,26rem)]"
+        className="ahs-tree__viewport relative min-h-[clamp(22rem,68vh,44rem)] w-full cursor-grab touch-none overflow-hidden active:cursor-grabbing"
         onPointerDown={onPointerDown}
         onPointerMove={onPointerMove}
         onPointerUp={onPointerUp}
@@ -257,10 +297,10 @@ export function PartnerNetworkTreeViewport({ children, layoutKey }: Props) {
           </ZoomBtn>
           <button
             type="button"
-            onClick={centerContent}
+            onClick={resetView}
             className="min-h-9 rounded-lg border border-[#0F4F68]/20 bg-white px-2.5 text-[0.65rem] font-semibold uppercase tracking-wide text-[#0F4F68] shadow-sm transition hover:bg-[#F2F9FA] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68]"
           >
-            Zentrieren
+            Startansicht
           </button>
         </div>
       </div>
