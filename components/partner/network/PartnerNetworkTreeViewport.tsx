@@ -4,11 +4,16 @@ import {
   useCallback,
   useEffect,
   useLayoutEffect,
+  useMemo,
   useRef,
   useState,
   type ReactNode,
   type PointerEvent as ReactPointerEvent,
 } from "react";
+import {
+  PartnerNetworkTreeViewportContext,
+  type PartnerNetworkViewportApi,
+} from "@/components/partner/network/PartnerNetworkTreeViewportContext";
 
 const MIN_SCALE = 0.35;
 const MAX_SCALE = 2.75;
@@ -125,6 +130,40 @@ export function PartnerNetworkTreeViewport({
       scale,
     });
   }, [isMobile, initialViewScale]);
+
+  /** +/- Klick: Anker (z. B. Toggle-Button) in die Viewport-Mitte, Zoom unverändert. */
+  const centerOnElement = useCallback((el: HTMLElement | null) => {
+    if (!el) return;
+
+    const apply = () => {
+      const viewport = viewportRef.current;
+      const content = contentRef.current;
+      if (!viewport || !content) return;
+
+      const scale = transformRef.current.scale || 1;
+      const vw = viewport.clientWidth;
+      const vh = viewport.clientHeight;
+      const contentRect = content.getBoundingClientRect();
+      const r = el.getBoundingClientRect();
+
+      const cx = (r.left + r.width / 2 - contentRect.left) / scale;
+      const cy = (r.top + r.height / 2 - contentRect.top) / scale;
+
+      setTransform({
+        scale,
+        x: vw / 2 - cx * scale,
+        y: vh / 2 - cy * scale,
+      });
+    };
+
+    apply();
+    requestAnimationFrame(() => {
+      apply();
+      requestAnimationFrame(apply);
+    });
+  }, []);
+
+  const viewportApi = useMemo<PartnerNetworkViewportApi>(() => ({ centerOnElement }), [centerOnElement]);
 
   useLayoutEffect(() => {
     resetView();
@@ -288,7 +327,9 @@ export function PartnerNetworkTreeViewport({
             transformOrigin: "0 0",
           }}
         >
-          {children}
+          <PartnerNetworkTreeViewportContext.Provider value={viewportApi}>
+            {children}
+          </PartnerNetworkTreeViewportContext.Provider>
         </div>
       </div>
 

@@ -5,6 +5,8 @@ import { currentBerlinPeriodKey, formatPayoutPeriodLabelDe } from "@/lib/partner
 /** Öffentliche Demo — fiktiver Partner-Code (kein Produktionskonto). */
 export const PARTNER_DEMO_MAX_MUSTERMANN_CODE = "MM2847";
 
+export const PARTNER_DEMO_MAX_MUSTERMANN_NAME = "Max Mustermann";
+
 /** Geworben durch (nur Code in der UI). */
 export const PARTNER_DEMO_MAX_MUSTERMANN_SPONSOR_CODE = "SW1903";
 

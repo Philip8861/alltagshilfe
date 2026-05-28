@@ -1,9 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { formatCentsDe } from "@/lib/partner/referral-money";
 import type { PartnerNetworkNode, PartnerNetworkTreeResult } from "@/lib/partner/network-tree";
 import { PartnerNetworkTreeViewport } from "@/components/partner/network/PartnerNetworkTreeViewport";
+import { usePartnerNetworkViewport } from "@/components/partner/network/PartnerNetworkTreeViewportContext";
 
 type Props = {
   data: PartnerNetworkTreeResult;
@@ -307,6 +308,9 @@ function NodeBox({
   collapsed: boolean;
   onToggle: () => void;
 }) {
+  const toggleRef = useRef<HTMLButtonElement>(null);
+  const viewport = usePartnerNetworkViewport();
+  const userToggledRef = useRef(false);
   const meta = nodeMeta(node);
   const compact = node.kind === "indirect";
   const cardWidth = compact
@@ -314,6 +318,17 @@ function NodeBox({
     : node.kind === "direct"
       ? "min-w-[10rem] max-w-[13.5rem] sm:min-w-[10.5rem]"
       : "min-w-[8rem] max-w-[12rem] sm:min-w-[8.5rem]";
+
+  const handleToggle = () => {
+    userToggledRef.current = true;
+    onToggle();
+  };
+
+  useLayoutEffect(() => {
+    if (!userToggledRef.current) return;
+    userToggledRef.current = false;
+    viewport?.centerOnElement(toggleRef.current);
+  }, [collapsed, viewport]);
 
   return (
     <div
@@ -356,9 +371,10 @@ function NodeBox({
 
       {hasChildren ? (
         <button
+          ref={toggleRef}
           type="button"
           data-no-pan
-          onClick={onToggle}
+          onClick={handleToggle}
           aria-expanded={!collapsed}
           aria-label={collapsed ? "Untergeordnete Partner anzeigen" : "Untergeordnete Partner ausblenden"}
           className="mt-1.5 inline-flex h-7 min-w-[1.75rem] items-center justify-center rounded-full border border-[#0F4F68]/20 bg-white px-2 text-xs font-bold text-[#0F4F68] shadow-sm transition hover:border-[#0F4F68]/35 hover:bg-[#F2F9FA] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68] focus-visible:ring-offset-1"

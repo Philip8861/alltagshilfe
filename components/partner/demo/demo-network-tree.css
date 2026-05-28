@@ -1,0 +1,149 @@
+/* Nur Demo-Netzwerkbaum — scoped unter .demo-network-tree */
+.demo-network-tree,
+.demo-network-tree ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  position: relative;
+}
+
+.demo-network-tree {
+  display: inline-flex;
+  justify-content: center;
+  width: max-content;
+}
+
+.demo-network-tree ul.demo-network-tree__children,
+.demo-network-tree > ul.demo-network-tree__root {
+  display: inline-flex;
+  justify-content: center;
+  align-items: flex-start;
+  width: max-content;
+  margin-left: auto;
+  margin-right: auto;
+  position: relative;
+}
+
+.demo-network-tree ul.demo-network-tree__children {
+  padding-top: 1.25rem;
+}
+
+.demo-network-tree > ul.demo-network-tree__root {
+  padding-top: 0;
+}
+
+.demo-network-tree li.demo-network-tree__branch {
+  position: relative;
+  flex: 0 0 auto;
+  padding: 0 0.75rem;
+  text-align: center;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  width: max-content;
+}
+
+.demo-network-tree li.demo-network-tree__branch::before,
+.demo-network-tree li.demo-network-tree__branch::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  height: 1.25rem;
+  width: 50%;
+  border-top: 2px solid rgba(61, 184, 201, 0.38);
+}
+
+.demo-network-tree li.demo-network-tree__branch::before {
+  right: 50%;
+  border-right: 2px solid rgba(61, 184, 201, 0.38);
+  border-top-right-radius: 0.5rem;
+}
+
+.demo-network-tree li.demo-network-tree__branch::after {
+  left: 50%;
+  border-left: 2px solid rgba(61, 184, 201, 0.38);
+  border-top-left-radius: 0.5rem;
+}
+
+.demo-network-tree li.demo-network-tree__branch:first-child::before,
+.demo-network-tree li.demo-network-tree__branch:last-child::after {
+  border-color: transparent;
+}
+
+.demo-network-tree li.demo-network-tree__branch:only-child::before,
+.demo-network-tree li.demo-network-tree__branch:only-child::after {
+  display: none;
+}
+
+.demo-network-tree li.demo-network-tree__branch:only-child {
+  padding-top: 0;
+}
+
+.demo-network-tree__stem {
+  flex-shrink: 0;
+  width: 2px;
+  height: 1.25rem;
+  margin: 0 auto;
+  background: linear-gradient(180deg, rgba(15, 79, 104, 0.28), rgba(61, 184, 201, 0.45));
+  border-radius: 1px;
+}
+
+.demo-network-tree ul.demo-network-tree__children::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 1.25rem;
+  border-left: 2px solid rgba(15, 79, 104, 0.28);
+}
+
+.demo-network-tree > ul.demo-network-tree__root::before {
+  display: none;
+}
+
+.demo-network-tree > ul.demo-network-tree__root > li.demo-network-tree__branch::before,
+.demo-network-tree > ul.demo-network-tree__root > li.demo-network-tree__branch::after {
+  display: none;
+}
+
+.demo-network-tree__node {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  align-items: center;
+  text-align: left;
+  position: relative;
+  z-index: 1;
+}
+
+@media (max-width: 639px) {
+  .demo-network-tree li.demo-network-tree__branch {
+    padding: 0 0.4rem;
+  }
+
+  .demo-network-tree__stem,
+  .demo-network-tree ul.demo-network-tree__children::before,
+  .demo-network-tree li.demo-network-tree__branch::before,
+  .demo-network-tree li.demo-network-tree__branch::after {
+    height: 1rem;
+  }
+
+  .demo-network-tree ul.demo-network-tree__children {
+    flex-direction: column;
+    align-items: center;
+    padding-top: 0.75rem;
+  }
+
+  .demo-network-tree li.demo-network-tree__branch::before,
+  .demo-network-tree li.demo-network-tree__branch::after {
+    display: none;
+  }
+}
+
+@media (min-width: 640px) {
+  .demo-network-tree li.demo-network-tree__branch {
+    padding: 0 0.85rem;
+  }
+}
