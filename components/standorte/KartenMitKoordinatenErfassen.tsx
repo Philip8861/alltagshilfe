@@ -18,13 +18,7 @@ type Props = {
   editMode?: boolean;
 };
 
-/** Sichtbarer Bildausschnitt: Bild hat links ~38% Rand, Karte beginnt danach – object-position -38% 0 */
-const IMAGE_CROP_LEFT = 38;
-const IMAGE_VISIBLE_PCT = 100 - IMAGE_CROP_LEFT;
-const imageToContainer = (left: number) => ((left - IMAGE_CROP_LEFT) / IMAGE_VISIBLE_PCT) * 100;
-const containerToImage = (left: number) => (left * IMAGE_VISIBLE_PCT) / 100 + IMAGE_CROP_LEFT;
-const visibleContainerLeft = (left: number) => Math.max(0, imageToContainer(left));
-
+/** Alle Koordinaten in `standort-karte.json`: sichtbarer Kartenbereich, Container-0–100 % (wie orangene Punkte). */
 const MOBILE_MAX_WIDTH = 768;
 
 function roundCoord(n: number) {
@@ -484,7 +478,7 @@ export function KartenMitKoordinatenErfassen({
               </>
             );
             const style = {
-              left: `${visibleContainerLeft(pos.left)}%`,
+              left: `${pos.left}%`,
               top: `${pos.top}%`,
               transform: "translate(-50%, 100%)",
             };

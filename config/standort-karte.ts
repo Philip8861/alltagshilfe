@@ -20,6 +20,10 @@ export type StandortKarteData = {
   ortsLabels: StandortKarteOrtsLabel[];
 };
 
+/**
+ * Standort-Karte: Koordinaten sind Container-%-Werte (0–100) im sichtbaren Kartenbereich –
+ * identisch für GPS-Marker und orangene Punkte.
+ */
 export function getStandortKarteData(): StandortKarteData {
   return standortKarteData as StandortKarteData;
 }

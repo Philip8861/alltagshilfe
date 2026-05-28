@@ -1,28 +1,28 @@
 {
   "hauptmarker": [
     {
-      "left": 68.3,
+      "left": 48.9,
       "top": 67,
       "label": "Allgäu",
       "href": "/standorte/allgaeu",
       "labelAbove": false
     },
     {
-      "left": 72.3,
+      "left": 55.3,
       "top": 49,
       "label": "Augsburg",
       "href": "/standorte/augsburg",
       "labelAbove": true
     },
     {
-      "left": 54.1,
+      "left": 26,
       "top": 62.3,
       "label": "Engen/Konstanz",
       "href": "/standorte/engen",
       "labelAbove": false
     },
     {
-      "left": 62.7,
+      "left": 39.8,
       "top": 61.1,
       "label": "Wangen",
       "sublabel": "(Bodenseeregion)",
@@ -30,8 +30,8 @@
       "labelAbove": true
     },
     {
-      "left": 75.8,
-      "top": 53.2,
+      "left": 51.5,
+      "top": 51,
       "label": "Ulm",
       "href": "/standorte/ulm",
       "labelAbove": true
@@ -59,32 +59,8 @@
       "top": 49.3
     },
     {
-      "left": 74.2,
-      "top": 54.8
-    },
-    {
-      "left": 75.1,
-      "top": 52.4
-    },
-    {
-      "left": 76.4,
-      "top": 53.6
-    },
-    {
-      "left": 77.2,
-      "top": 51.8
-    },
-    {
-      "left": 73.6,
-      "top": 51.2
-    },
-    {
-      "left": 76.8,
-      "top": 55.4
-    },
-    {
-      "left": 78.1,
-      "top": 52.9
+      "left": 52.5,
+      "top": 49.5
     },
     {
       "left": 47.3,
@@ -253,6 +229,10 @@
     {
       "left": 60,
       "top": 55.8
+    },
+    {
+      "left": 53.5,
+      "top": 51.5
     }
   ],
   "ortsLabels": []
