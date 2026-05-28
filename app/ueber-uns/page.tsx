@@ -5,7 +5,7 @@ import { Timeline } from "@/components/ueber-uns/Timeline";
 
 export const metadata: Metadata = {
   title: "Über uns",
-  description: `Alltagshilfe-Süd: Hauswirtschaftsdienst, Betreuungsdienst und Pflegeberatung mit regionaler Stärke im Allgäu, Bodenseeraum, Augsburg und Engen/Konstanz.`,
+  description: `Alltagshilfe-Süd: Hauswirtschaftsdienst, Betreuungsdienst und Pflegeberatung mit regionaler Stärke im Allgäu, Bodenseeraum, Augsburg, Engen/Konstanz und Ulm.`,
 };
 
 export default function UeberUnsPage() {
@@ -96,7 +96,8 @@ export default function UeberUnsPage() {
           <p>
             Zu Beginn des Jahres 2026 wurde die regionale Präsenz gezielt ausgebaut: Am 01.01.2026 eröffnete Frau
             Riegel den neuen Standort Augsburg. Ebenfalls am 01.01.2026 wurde der Standort Konstanz/Engen unter der
-            Leitung von Frau Maucher eröffnet. Anfang 2026 folgte darüber hinaus der Umzug in größere Räumlichkeiten
+            Leitung von Frau Maucher eröffnet. Im Laufe des Jahres 2026 folgte die Eröffnung des Standorts Ulm für
+            die Region Ulm und Neu-Ulm. Anfang 2026 folgte darüber hinaus der Umzug in größere Räumlichkeiten
             nach Bad Grönenbach, nachdem zuvor bereits 2023 der Umzug nach Sulzberg erfolgt war. Diese Entwicklung
             spiegelt das kontinuierliche Wachstum des Unternehmens und die steigende Bedeutung professioneller
             Unterstützungs- und Beratungsangebote für pflegebedürftige Menschen in Süddeutschland wider.

@@ -22,6 +22,7 @@ const HAUPTMARKER = [
   { left: 72.3, top: 49, label: "Augsburg", href: "/standorte/augsburg", labelAbove: true },
   { left: 54.1, top: 62.3, label: "Engen/Konstanz", href: "/standorte/engen", labelAbove: false },
   { left: 62.7, top: 61.1, label: "Wangen", sublabel: "(Bodenseeregion)", href: "/standorte/wangen", labelAbove: true },
+  { left: 75.8, top: 53.2, label: "Ulm", href: "/standorte/ulm", labelAbove: true },
 ];
 
 const STANDORT_CARD_IMAGE: Record<string, string> = {
@@ -29,6 +30,7 @@ const STANDORT_CARD_IMAGE: Record<string, string> = {
   augsburg: "/images/Bild_Augsburg.webp",
   engen: "/images/Bild_Konstanz.webp",
   wangen: "/images/Bild_Wangen.webp",
+  ulm: "/images/ulm.webp",
 };
 
 /** Orangene Punkte auf der Karte (alte Positionen + 5 ergänzte). */
@@ -156,7 +158,7 @@ export default function StandortePage() {
           >
             Unsere Hauptstandorte sind an rund {plzAnzahl} Regionen für Sie im Einsatz. Wir helfen gerne weiter!
           </h2>
-          <ul className="mt-8 grid grid-cols-1 gap-6 sm:mt-10 sm:grid-cols-2 sm:gap-8">
+          <ul className="mt-8 grid grid-cols-1 gap-6 sm:mt-10 sm:grid-cols-2 lg:grid-cols-3 sm:gap-8">
             {standorteByPlz.map((st) => {
               const imgSrc = STANDORT_CARD_IMAGE[st.pageSlug] ?? "/images/Bild_Allgaue.webp";
               return (

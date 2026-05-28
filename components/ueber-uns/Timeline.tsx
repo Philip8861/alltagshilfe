@@ -19,6 +19,7 @@ const MILESTONES: Milestone[] = [
   { date: "01.12.2025", title: "Neue Dienstleistung: Betriebliche Pflegeberatung", description: "Als neuer Benefit für Unternehmen." },
   { date: "01.01.2026", title: "Eröffnung neuer Standorte", description: "Eröffnung in Engen/Konstanz durch Frau Maucher und Augsburg durch Frau Riegel." },
   { date: "01.01.2026", title: "Umzug", description: "Umzug von Sulzberg nach Bad Grönenbach." },
+  { date: "2026", title: "Eröffnung Standort Ulm", description: "Neuer Standort für Ulm, Neu-Ulm und die umliegende Region." },
   { date: "01.06.2026", title: "Eröffnung Pflegeshop", description: "Eröffnung des Pflegeshops." },
 ];
 

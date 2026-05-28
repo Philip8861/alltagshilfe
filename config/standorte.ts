@@ -9,6 +9,7 @@ type StandortePlzJson = {
   Wangen: string[];
   Augsburg: string[];
   "Engen/Konstanz": string[];
+  Ulm: string[];
   plzToOrt?: Record<string, string>;
 };
 
@@ -360,9 +361,30 @@ export const standorteByPlz: Standort[] = [
       addressCountry: "DE",
     },
   },
+  {
+    name: "Standort Ulm",
+    pageSlug: "ulm",
+    heroLocationGeneral: "in Ulm, Neu-Ulm und der Region",
+    address: "Hinter den Gärten 10, 87730 Bad Grönenbach",
+    phone: "08334 / 9893330",
+    phoneHref: "tel:+4983349893330",
+    email: "ulm@alltagshilfe-sued.de",
+    hours: HOURS,
+    plzList: data["Ulm"] ?? [],
+    localIntro: [
+      "Anfragen aus dem Raum Ulm und Neu-Ulm bearbeitet unser Team am Standort Bad Grönenbach. Dort koordinieren wir Haushaltshilfe, Alltagsbegleitung und Anmeldungen – persönlich und mit festen Ansprechpartnerinnen und Ansprechpartnern.",
+      "Von Ulm über Neu-Ulm bis in die umliegenden Gemeinden: Unter der angezeigten Rufnummer und E-Adresse erreichen Sie genau dieses Büro für Ihre Region.",
+    ],
+    schemaAddress: {
+      streetAddress: "Hinter den Gärten 10",
+      postalCode: "87730",
+      addressLocality: "Bad Grönenbach",
+      addressCountry: "DE",
+    },
+  },
 ];
 
-/** Anzahl eindeutig bedienter PLZ über alle vier Standortgebiete. */
+/** Anzahl eindeutig bedienter PLZ über alle Standortgebiete. */
 export const SERVED_PLZ_TOTAL = new Set(standorteByPlz.flatMap((s) => s.plzList)).size;
 
 export function findStandortByPageSlug(slug: string): Standort | undefined {

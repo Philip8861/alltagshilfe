@@ -121,6 +121,28 @@ const STANDORTE: StandortKarte[] = [
     imageSrc: STANDORT_CARD_BILD,
     imageAlt: "Standort Engen/Konstanz",
   },
+  {
+    name: "Standort Ulm",
+    pageSlug: "ulm",
+    address: "Hinter den Gärten 10",
+    plzOrt: "87730 Bad Grönenbach",
+    phone: "08334 / 9893330",
+    phoneHref: "tel:+4983349893330",
+    email: "ulm@alltagshilfe-sued.de",
+    orte: [
+      "Ulm",
+      "Neu-Ulm",
+      "Senden",
+      "Blaustein",
+      "Elchingen",
+      "Nersingen",
+      "Dornstadt",
+      "Illerkirchberg",
+      "u. a.",
+    ],
+    imageSrc: "/images/ulm.webp",
+    imageAlt: "Standort Ulm",
+  },
 ];
 
 /** Custom-Event von Karte: GPS-Symbol geklickt → gleiches Pop-up öffnen */
@@ -172,9 +194,9 @@ export function StandortKarten(props: StandortKartenProps = {}) {
     <>
       <section className="mt-10 lg:mt-12" aria-labelledby="standorte-heading">
         <h2 id="standorte-heading" className="text-2xl font-bold text-[#0F4F68] sm:text-3xl mb-6">
-          Unsere 4 Standorte
+          Unsere 5 Standorte
         </h2>
-        <ul className="grid w-full grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4 lg:gap-8">
+        <ul className="grid w-full grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 lg:gap-8">
           {STANDORTE.map((s) => (
             <li key={s.name}>
               <article
