@@ -357,7 +357,7 @@ function AdminReferralChildrenBlock({
     startTransition(async () => {
       const res = await addAdminDirectReferralAction(sponsorPartnerId, trimmed);
       if (res.ok) {
-        setFeedback({ tone: "ok", msg: `Werbling ${res.partnerCode} hinzugefügt.` });
+        setFeedback({ tone: "ok", msg: `Geworbener Partner ${res.partnerCode} hinzugefügt.` });
         setCode("");
         reload();
       } else {
@@ -393,7 +393,7 @@ function AdminReferralChildrenBlock({
           type="text"
           value={code}
           onChange={(e) => setCode(e.target.value)}
-          placeholder="Partner-Code des Werblings (z. B. AA1234)"
+          placeholder="Partner-Code des geworbenen Partners (z. B. AA1234)"
           spellCheck={false}
           autoComplete="off"
           disabled={pending || !sponsorPartnerCode}
@@ -405,7 +405,7 @@ function AdminReferralChildrenBlock({
           disabled={pending || !sponsorPartnerCode || !code.trim()}
           className="min-h-10 shrink-0 rounded-lg bg-[#0F4F68] px-4 py-2 text-sm font-semibold text-white hover:bg-[#0c3d52] disabled:opacity-60"
         >
-          {pending ? "Hinzufügen…" : "Werbling hinzufügen"}
+          {pending ? "Hinzufügen…" : "Geworbenen Partner hinzufügen"}
         </button>
       </div>
 

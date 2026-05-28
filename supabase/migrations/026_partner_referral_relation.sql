@@ -129,7 +129,7 @@ create trigger partner_profiles_referral_guard_trg
 -- 3) partner_payout_reports: Referral-Spalten (rein additiv).
 --    Bestehendes total_eur bleibt unverändert (= einmal+monatlich; Eigenprovision).
 --    Neu:
---      - referral_eur            = 5 % auf eigene freigegebene Closing-Commission der direkten Werblinge
+--      - referral_eur            = 5 % auf eigene freigegebene Closing-Commission der direkten geworbenen Partner
 --      - total_with_referral_eur = einmal + monatlich + referral_eur (= Auszahlungssumme inkl. Werbeprovision)
 ------------------------------------------------------------
 

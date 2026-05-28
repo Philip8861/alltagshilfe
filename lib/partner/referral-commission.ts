@@ -20,7 +20,7 @@ import {
  *      paid_amount_eur > 0,
  *      und (für Einmalprovision) noch nicht im Settlement abgerechnet.
  *
- * Referral-Bemessung ist IMMER ownApprovedClosingCommissionCents (eigenständig pro Werbling).
+ * Referral-Bemessung ist IMMER ownApprovedClosingCommissionCents (eigenständig pro geworbenem Partner).
  * Niemals totalPayoutCents, niemals Referral-Provisionen, niemals storniert/offen.
  */
 
@@ -222,7 +222,7 @@ function periodMonthEndUtc(periodKey: string): Date | null {
 }
 
 /**
- * Strikter Filter: für einen direkten Werbling im periodKey nur die Tipps,
+ * Strikter Filter: für einen direkten geworbenen Partner im periodKey nur die Tipps,
  * deren `created_at >= referredAt` (= Provisionen, die NACH der Werbung erfasst wurden).
  * Wird verwendet, wenn referred_at innerhalb des periodKey-Monats liegt.
  */
@@ -250,7 +250,7 @@ async function getOwnApprovedClosingCommissionCentsSinceReferredAt(
 /**
  * Komplett-Übersicht für einen Partner im Monat:
  *  - ownCents             = eigene freigegebene Abschlussprovision
- *  - referralCents        = 5 % auf own der direkten Werblinge (nur ab referred_at)
+ *  - referralCents        = 5 % auf own der direkten geworbenen Partner (nur ab referred_at)
  *  - totalCents           = ownCents + referralCents (= Auszahlungssumme)
  */
 export async function getPartnerMonthlyPayoutSummary(

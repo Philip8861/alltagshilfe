@@ -138,7 +138,7 @@ export async function runPartnerMonthlyPayoutSettlement(options?: {
   /**
    * Referral-Pass:
    * Für jeden Partner mit Eigenprovision in diesem periodKey:
-   *   - finde direkte Werblinge
+   *   - finde direkte geworbene Partner
    *   - ihre Eigenprovision in diesem periodKey (aus partner_payout_reports)
    *   - 5 % als referral_eur addieren
    *   - nur ab referred_at (Provisionen vor referred_at zählen NICHT — beim Settlement
@@ -160,7 +160,7 @@ export async function runPartnerMonthlyPayoutSettlement(options?: {
       ownCentsByPartner.set(r.partner_id, eurToCents(r.einmal_eur) + eurToCents(r.monatlich_eur));
     }
 
-    /** Direkte Werblinge nur derjenigen Partner laden, die in diesem Lauf own commission haben. */
+    /** Direkte geworbene Partner nur derjenigen Partner laden, die in diesem Lauf own commission haben. */
     const earnersIds = Array.from(ownCentsByPartner.keys());
     if (earnersIds.length > 0) {
       const { data: directs, error: directsErr } = await svc
@@ -210,7 +210,7 @@ export async function runPartnerMonthlyPayoutSettlement(options?: {
       if (!reportRow || refCents <= 0) {
         /** Sponsor hat in diesem periodKey selbst keine Eigenprovision → Reportzeile fehlt
          *  → keine Auszahlung dieses Monats. (User-Anforderung: Referral wird in genau dem
-         *  Monat gezahlt, in dem Eigenprovision der Werblinge freigegeben wird; ein Sponsor
+         *  Monat gezahlt, in dem Eigenprovision der geworbenen Partner freigegeben wird; ein Sponsor
          *  ohne eigene Reportzeile bekommt im selben Monat trotzdem Geld → wir legen leere
          *  Reportzeile mit referral_eur an.) */
         const referralEur = centsToEur(refCents);

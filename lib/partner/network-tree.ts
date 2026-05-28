@@ -192,7 +192,7 @@ async function computeViewerReferralForDirect(
    * - referredAt ungültig → 0
    * - referredAt im selben Monat → strikt: nur Tipps ab referredAt zählen.
    * Die strikte Berechnung passiert in getPartnerMonthlyReferralCommissionCents
-   * via Pro-Werbling-Aggregation. Hier reicht: 5 % auf den effektiven ownCents
+   * via Aggregation pro geworbenem Partner. Hier reicht: 5 % auf den effektiven ownCents
    * (der ist bereits monatsfilter-korrekt). Für die UI ist das exakt genug,
    * weil im Cron-Lauf am 1. des nächsten Monats final gerechnet wird.
    */

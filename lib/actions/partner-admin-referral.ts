@@ -31,7 +31,7 @@ export type AddAdminDirectReferralResult =
 const PARTNER_ID_RE = /^[0-9a-fA-F-]{36}$/;
 
 /**
- * Liefert direkte Werblinge eines Sponsors (für Admin-Modal).
+ * Liefert direkte geworbene Partner eines Sponsors (für Admin-Modal).
  * Antwort enthält PartnerCode + Anzeigename + ID — Admin darf das sehen.
  */
 export async function listAdminDirectReferralsAction(
@@ -86,11 +86,11 @@ export async function listAdminDirectReferralsAction(
 }
 
 /**
- * Trägt einen bestehenden Partner als Werbling von `sponsorPartnerId` ein
- * (Lookup über PartnerCode des Werblings).
+ * Trägt einen bestehenden Partner als geworbenen Partner von `sponsorPartnerId` ein
+ * (Lookup über PartnerCode des geworbenen Partners).
  *
  * Server-Logik:
- *   - PartnerCode → partnerId für den Werbling
+ *   - PartnerCode → partnerId für den geworbenen Partner
  *   - sponsor's eigener PartnerCode laden
  *   - setPartnerReferralByCode(svc, referralPartnerId, sponsorCode)
  *   - DB-Trigger blockt Wechsel/Self/direkten Zyklus zusätzlich
@@ -144,7 +144,7 @@ export async function addAdminDirectReferralAction(
     };
   }
 
-  /** Lookup Werbling: muss existieren, darf nicht der Sponsor selbst sein. */
+  /** Lookup geworbener Partner: muss existieren, darf nicht der Sponsor selbst sein. */
   const { data: refRow, error: refErr } = await svc
     .from("partner_profiles")
     .select("id, partner_referral_code, referred_by_partner_id")
