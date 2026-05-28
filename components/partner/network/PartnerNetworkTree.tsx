@@ -79,12 +79,7 @@ export function PartnerNetworkTree({ data }: Props) {
   const hasNetwork = totalDirect > 0 || data.sponsor?.partnerCode;
 
   return (
-    <section
-      aria-labelledby="partner-network-tree-heading"
-      className="partner-dash-animate overflow-hidden rounded-2xl border border-[#0F4F68]/12 bg-white shadow-[0_10px_28px_-14px_rgba(15,79,104,0.28)] ring-1 ring-[#0F4F68]/8"
-    >
-      <div className="h-1 w-full shrink-0 bg-gradient-to-r from-[#0F4F68] via-[#3DB8C9] to-[#0F4F68]/35" aria-hidden />
-
+    <section aria-labelledby="partner-network-tree-heading" className="partner-dash-animate w-full">
       <NetworkTopBar
         rootPartnerCode={data.rootPartnerCode}
         sponsorCode={data.sponsor?.partnerCode ?? null}
@@ -92,14 +87,10 @@ export function PartnerNetworkTree({ data }: Props) {
         totalAll={totalAll}
       />
 
-      <div className="relative overflow-hidden px-2 pb-3 pt-1 sm:px-4 sm:pb-4 sm:pt-2">
-        <div
-          className="pointer-events-none absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-[#E8F6F8]/50 via-[#F2F9FA]/20 to-transparent"
-          aria-hidden
-        />
+      <div className="relative px-0 pb-2 pt-1 sm:pb-3 sm:pt-2">
         <div className="relative motion-safe:animate-partner-network-tree-in">
           {hasNetwork ? (
-            <div className="-mx-2 w-[calc(100%+1rem)] sm:-mx-8 sm:w-[calc(100%+4rem)] lg:-mx-12 lg:w-[calc(100%+6rem)]">
+            <div className="-mx-2 w-[calc(100%+1rem)] sm:-mx-4 sm:w-[calc(100%+2rem)] lg:-mx-8 lg:w-[calc(100%+4rem)]">
               <PartnerNetworkTreeViewport
                 isMobile={isMobile}
                 initialViewScale={INITIAL_VIEW_SCALE}
@@ -115,7 +106,7 @@ export function PartnerNetworkTree({ data }: Props) {
               </PartnerNetworkTreeViewport>
             </div>
           ) : (
-            <div className="rounded-xl border border-dashed border-[#0F4F68]/25 bg-[#F2F9FA]/60 px-6 py-12 text-center">
+            <div className="rounded-xl border border-dashed border-[#0F4F68]/20 bg-white/50 px-6 py-12 text-center backdrop-blur-[2px]">
               <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-[#0F4F68]/10 text-[#0F4F68] motion-safe:animate-partner-soft-float">
                 <NetworkIcon className="h-6 w-6" />
               </div>
@@ -143,11 +134,11 @@ function NetworkTopBar({
   totalAll: number;
 }) {
   return (
-    <div className="border-b border-[#0F4F68]/10 bg-gradient-to-b from-[#F2F9FA]/70 via-white to-white px-3 py-3.5 sm:px-6 sm:py-4">
+    <div className="px-0 py-3.5 sm:py-4">
       <h2 id="partner-network-tree-heading" className="sr-only">
         Werbe-Netzwerk
       </h2>
-      <ul className="mx-auto flex max-w-3xl flex-wrap items-stretch justify-center gap-2 sm:gap-3">
+      <ul className="mx-auto flex max-w-4xl flex-wrap items-stretch justify-center gap-2 sm:gap-3">
         <TopBarStat
           label="Ihr Code"
           value={rootPartnerCode ?? "—"}
@@ -181,10 +172,10 @@ function TopBarStat({
   delayMs: number;
 }) {
   const toneStyles = {
-    self: "border-[#3DB8C9]/35 bg-gradient-to-b from-[#E8F6F8]/80 to-white ring-1 ring-[#3DB8C9]/15",
-    sponsor: "border-[#0F4F68]/18 bg-gradient-to-b from-[#F2F9FA] to-white",
-    direct: "border-sky-200/80 bg-gradient-to-b from-sky-50/70 to-white",
-    network: "border-[#0F4F68]/15 bg-gradient-to-b from-white to-[#FAFBFC]",
+    self: "border-[#3DB8C9]/35 bg-white/90 bg-gradient-to-b from-[#E8F6F8]/90 to-white ring-1 ring-[#3DB8C9]/15",
+    sponsor: "border-[#0F4F68]/18 bg-white/90 bg-gradient-to-b from-[#F2F9FA]/90 to-white",
+    direct: "border-sky-200/80 bg-white/90 bg-gradient-to-b from-sky-50/80 to-white",
+    network: "border-[#0F4F68]/15 bg-white/90 bg-gradient-to-b from-white to-[#F2F9FA]/80",
   } as const;
 
   const accentBar = {
