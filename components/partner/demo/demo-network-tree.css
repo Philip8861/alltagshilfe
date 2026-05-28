@@ -50,19 +50,19 @@
   top: 0;
   height: 1.25rem;
   width: 50%;
-  border-top: 2px solid rgba(61, 184, 201, 0.38);
+  border-top: 2px solid rgba(83, 156, 178, 0.42);
 }
 
 .demo-network-tree li.demo-network-tree__branch::before {
   right: 50%;
-  border-right: 2px solid rgba(61, 184, 201, 0.38);
-  border-top-right-radius: 0.5rem;
+  border-right: 2px solid rgba(83, 156, 178, 0.42);
+  border-top-right-radius: 0.6rem;
 }
 
 .demo-network-tree li.demo-network-tree__branch::after {
   left: 50%;
-  border-left: 2px solid rgba(61, 184, 201, 0.38);
-  border-top-left-radius: 0.5rem;
+  border-left: 2px solid rgba(83, 156, 178, 0.42);
+  border-top-left-radius: 0.6rem;
 }
 
 .demo-network-tree li.demo-network-tree__branch:first-child::before,
@@ -84,8 +84,8 @@
   width: 2px;
   height: 1.25rem;
   margin: 0 auto;
-  background: linear-gradient(180deg, rgba(15, 79, 104, 0.28), rgba(61, 184, 201, 0.45));
-  border-radius: 1px;
+  background: linear-gradient(180deg, rgba(15, 79, 104, 0.35), rgba(83, 156, 178, 0.45));
+  border-radius: 2px;
 }
 
 .demo-network-tree ul.demo-network-tree__children::before {
@@ -96,7 +96,7 @@
   transform: translateX(-50%);
   width: 0;
   height: 1.25rem;
-  border-left: 2px solid rgba(15, 79, 104, 0.28);
+  border-left: 2px solid rgba(83, 156, 178, 0.42);
 }
 
 .demo-network-tree > ul.demo-network-tree__root::before {

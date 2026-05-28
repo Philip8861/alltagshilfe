@@ -101,42 +101,41 @@ export function PartnerDemoNetworkPremium({ data }: Props) {
         Werbe-Netzwerk Demo
       </h2>
 
-      <div className="grid gap-6 xl:grid-cols-[minmax(0,15.5rem)_1fr] xl:items-start">
-        <NetworkProfileHeader code={rootCode} />
-        <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4 lg:gap-4">
-          <DemoKpiCard label="Ihr Code" value={rootCode} accent="teal" icon={<IconQr className="h-5 w-5" />} mono />
-          {sponsorCode ? (
-            <DemoKpiCard
-              label="Geworben von"
-              value={sponsorCode}
-              accent="blue"
-              icon={<IconUsers className="h-5 w-5" />}
-              mono
-            />
-          ) : null}
-          <DemoKpiCard
-            label="Direkt geworben"
-            value={String(totalDirect)}
-            accent="green"
-            icon={<IconUserPlus className="h-5 w-5" />}
-          />
-          <DemoKpiCard
-            label="Gesamtes Netzwerk"
-            value={String(totalAll)}
-            accent="violet"
-            icon={<IconNetwork className="h-5 w-5" />}
-          />
-        </ul>
-      </div>
+      <NetworkProfileHeader code={rootCode} />
 
-      <div className="relative mt-8 sm:mt-10">
+      <ul className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4 lg:gap-4">
+        <DemoKpiCard label="Ihr Code" value={rootCode} accent="teal" icon={<IconQr className="h-5 w-5" />} mono />
+        {sponsorCode ? (
+          <DemoKpiCard
+            label="Geworben von"
+            value={sponsorCode}
+            accent="blue"
+            icon={<IconUsers className="h-5 w-5" />}
+            mono
+          />
+        ) : null}
+        <DemoKpiCard
+          label="Direkt geworben"
+          value={String(totalDirect)}
+          accent="green"
+          icon={<IconUserPlus className="h-5 w-5" />}
+        />
+        <DemoKpiCard
+          label="Gesamtes Netzwerk"
+          value={String(totalAll)}
+          accent="violet"
+          icon={<IconNetwork className="h-5 w-5" />}
+        />
+      </ul>
+
+      <div className="relative mt-5 sm:mt-6">
         <div className="-mx-2 w-[calc(100%+1rem)] sm:-mx-4 sm:w-[calc(100%+2rem)]">
           <PartnerNetworkTreeViewport
             isMobile={isMobile}
             initialViewScale={INITIAL_VIEW_SCALE}
             layoutKey={`demo-${totalAll}-${rootCode}-${isMobile ? "m" : "d"}`}
           >
-            <div className="px-2 py-4 sm:px-4 sm:py-6">
+            <div className="px-2 py-2 sm:px-4 sm:py-3">
               <div className="demo-network-tree">
                 <ul className="demo-network-tree__root">
                   <DemoTreeBranch node={root} isMobile={isMobile} />
@@ -152,8 +151,8 @@ export function PartnerDemoNetworkPremium({ data }: Props) {
 
 function NetworkProfileHeader({ code }: { code: string }) {
   return (
-    <div className="flex items-center gap-4 rounded-2xl border border-slate-200/70 bg-white p-4 shadow-sm sm:p-5 xl:flex-col xl:items-start xl:gap-3">
-      <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-full ring-2 ring-[#3DB8C9]/30 ring-offset-2 ring-offset-white">
+    <header className="flex items-center gap-4 rounded-2xl border border-slate-200/60 bg-white px-4 py-3.5 shadow-[0_2px_12px_-6px_rgba(15,79,104,0.18)] sm:gap-5 sm:px-5">
+      <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-full ring-2 ring-[#3DB8C9]/35 ring-offset-2 ring-offset-white sm:h-16 sm:w-16">
         <Image
           src={PARTNER_DEMO_MAX_MUSTERMANN_AVATAR}
           alt=""
@@ -161,16 +160,26 @@ function NetworkProfileHeader({ code }: { code: string }) {
           height={64}
           className="h-full w-full object-cover"
         />
+        <span
+          className="absolute bottom-0 right-0 h-3.5 w-3.5 rounded-full border-2 border-white bg-emerald-500"
+          aria-hidden
+        />
       </div>
       <div className="min-w-0">
-        <p className="text-lg font-bold text-slate-900 sm:text-xl">{PARTNER_DEMO_MAX_MUSTERMANN_NAME}</p>
-        <p className="mt-0.5 font-mono text-sm font-semibold tracking-wide text-[#0F4F68]">{code}</p>
-        <span className="mt-2 inline-flex items-center gap-1.5 rounded-full border border-emerald-200/80 bg-emerald-50 px-2.5 py-1 text-[0.65rem] font-semibold uppercase tracking-wide text-emerald-800">
+        <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1">
+          <p className="text-lg font-bold leading-tight text-slate-900 sm:text-xl">
+            {PARTNER_DEMO_MAX_MUSTERMANN_NAME}
+          </p>
+          <span className="rounded-md bg-[#E8F6F8] px-2 py-0.5 font-mono text-xs font-semibold tracking-wide text-[#0F4F68]">
+            {code}
+          </span>
+        </div>
+        <span className="mt-1.5 inline-flex items-center gap-1.5 rounded-full border border-emerald-200/80 bg-emerald-50 px-2.5 py-0.5 text-[0.62rem] font-semibold uppercase tracking-wide text-emerald-800">
           <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" aria-hidden />
           Aktiv
         </span>
       </div>
-    </div>
+    </header>
   );
 }
 
@@ -197,14 +206,17 @@ function DemoKpiCard({
   const s = styles[accent];
 
   return (
-    <li className="group flex items-center gap-3 rounded-2xl border border-slate-200/70 bg-white p-4 shadow-sm transition-shadow hover:shadow-md">
-      <div className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-full ${s.icon}`} aria-hidden>
+    <li className="group flex items-center gap-3.5 rounded-2xl border border-slate-200/60 bg-white p-4 shadow-[0_2px_12px_-6px_rgba(15,79,104,0.18)] transition-shadow duration-200 hover:shadow-[0_10px_28px_-12px_rgba(15,79,104,0.25)] sm:gap-4 sm:p-5">
+      <div
+        className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl ${s.icon} transition-transform duration-200 group-hover:scale-105`}
+        aria-hidden
+      >
         {icon}
       </div>
       <div className="min-w-0">
-        <p className="text-[0.62rem] font-bold uppercase tracking-[0.1em] text-slate-500">{label}</p>
+        <p className="text-[0.62rem] font-bold uppercase tracking-[0.12em] text-slate-400">{label}</p>
         <p
-          className={`mt-0.5 truncate text-xl font-semibold tabular-nums sm:text-2xl ${mono ? "font-mono uppercase tracking-wide" : ""} ${s.value}`}
+          className={`mt-0.5 truncate text-2xl font-bold tabular-nums sm:text-[1.65rem] ${mono ? "font-mono uppercase tracking-wide" : ""} ${s.value}`}
         >
           {value}
         </p>
@@ -218,27 +230,37 @@ function DemoAvatar({
   displayName,
   size = "md",
   imageSrc,
+  ring = false,
 }: {
   partnerCode: string | null;
   displayName?: string | null;
-  size?: "sm" | "md" | "lg";
+  size?: "sm" | "md" | "lg" | "xl";
   imageSrc?: string;
+  ring?: boolean;
 }) {
-  const dim = size === "lg" ? "h-12 w-12 text-sm" : size === "md" ? "h-10 w-10 text-xs" : "h-8 w-8 text-[0.65rem]";
+  const dim =
+    size === "xl"
+      ? "h-14 w-14 text-base"
+      : size === "lg"
+        ? "h-12 w-12 text-sm"
+        : size === "md"
+          ? "h-10 w-10 text-xs"
+          : "h-9 w-9 text-[0.7rem]";
+  const ringCls = ring ? "ring-2 ring-[#3DB8C9]/35 ring-offset-2 ring-offset-white" : "";
   const initials = getDemoAvatarInitials(partnerCode, displayName);
   const gradient = getDemoAvatarGradient(partnerCode);
 
   if (imageSrc) {
     return (
-      <div className={`relative shrink-0 overflow-hidden rounded-full ${dim}`}>
-        <Image src={imageSrc} alt="" fill className="object-cover" sizes="48px" />
+      <div className={`relative shrink-0 overflow-hidden rounded-full ${dim} ${ringCls}`}>
+        <Image src={imageSrc} alt="" fill className="object-cover" sizes="56px" />
       </div>
     );
   }
 
   return (
     <div
-      className={`flex shrink-0 items-center justify-center rounded-full bg-gradient-to-br font-bold text-white shadow-inner ${gradient} ${dim}`}
+      className={`flex shrink-0 items-center justify-center rounded-full bg-gradient-to-br font-bold uppercase tracking-tight text-white shadow-[inset_0_-2px_6px_rgba(0,0,0,0.12)] ${gradient} ${dim} ${ringCls}`}
       aria-hidden
     >
       {initials}
@@ -252,9 +274,9 @@ function CommissionPill({ label, cents, tone }: { label: string; cents: number; 
       ? "border-emerald-100 bg-emerald-50/90 text-emerald-900"
       : "border-sky-100 bg-sky-50/90 text-sky-900";
   return (
-    <div className={`flex items-center justify-between gap-2 rounded-xl border px-2.5 py-1.5 ${cls}`}>
-      <span className="text-[0.58rem] font-semibold uppercase leading-tight tracking-wide opacity-80">{label}</span>
-      <span className="shrink-0 text-xs font-semibold tabular-nums">{formatCentsDe(cents)}</span>
+    <div className={`flex items-center justify-between gap-2 rounded-xl border px-3 py-2 ${cls}`}>
+      <span className="text-[0.58rem] font-semibold uppercase leading-tight tracking-wide opacity-75">{label}</span>
+      <span className="shrink-0 text-[0.8rem] font-bold tabular-nums">{formatCentsDe(cents)}</span>
     </div>
   );
 }
@@ -349,18 +371,20 @@ function DemoTreeNodeCard({ node }: { node: PyramidNode }) {
   const isDirect = node.kind === "direct";
 
   const cardBase =
-    "relative overflow-hidden rounded-2xl border bg-white shadow-sm transition-shadow hover:shadow-md";
-  const width = compact
-    ? "w-[8.5rem] sm:w-[9.5rem]"
-    : isDirect
-      ? "w-[11rem] sm:w-[12.5rem]"
-      : "w-[10.5rem] sm:w-[11.5rem]";
+    "relative overflow-hidden rounded-2xl border bg-white transition-shadow duration-200 hover:shadow-lg";
+  const width = isSelf
+    ? "w-[13.5rem] sm:w-[15.5rem]"
+    : compact
+      ? "w-[8.5rem] sm:w-[9.5rem]"
+      : isDirect
+        ? "w-[11.5rem] sm:w-[13rem]"
+        : "w-[10.5rem] sm:w-[11.5rem]";
 
-  let cardCls = `${cardBase} ${width} border-slate-200/70`;
+  let cardCls = `${cardBase} ${width} border-slate-200/60 shadow-[0_3px_14px_-6px_rgba(15,79,104,0.16)]`;
   if (isSelf) {
-    cardCls = `${cardBase} ${width} border-2 border-[#3DB8C9]/55 shadow-[0_0_0_4px_rgba(61,184,201,0.12),0_16px_40px_-14px_rgba(15,79,104,0.22)]`;
+    cardCls = `${cardBase} ${width} border-2 border-[#3DB8C9]/55 shadow-[0_0_0_4px_rgba(61,184,201,0.12),0_20px_46px_-16px_rgba(15,79,104,0.32)]`;
   } else if (isSponsor) {
-    cardCls = `${cardBase} ${width} border-sky-100/90 shadow-[0_8px_24px_-12px_rgba(15,79,104,0.15)]`;
+    cardCls = `${cardBase} ${width} border-sky-100 shadow-[0_8px_26px_-12px_rgba(15,79,104,0.18)]`;
   }
 
   const label = isSponsor
@@ -371,6 +395,14 @@ function DemoTreeNodeCard({ node }: { node: PyramidNode }) {
         ? "Direkt geworben"
         : `Indirekt · Ebene ${Math.max(1, node.depth)}`;
 
+  const accentBar = isSelf
+    ? "bg-gradient-to-r from-[#0F4F68] via-[#3DB8C9] to-[#0F4F68]"
+    : isSponsor
+      ? "bg-gradient-to-r from-[#0F4F68] to-[#3DB8C9]"
+      : isDirect
+        ? "bg-gradient-to-r from-sky-400 to-cyan-400"
+        : "bg-slate-200";
+
   return (
     <div
       className="demo-network-tree__node"
@@ -378,39 +410,41 @@ function DemoTreeNodeCard({ node }: { node: PyramidNode }) {
       data-network-focus-top={node.kind === "sponsor" || node.kind === "self" ? "true" : undefined}
     >
       {isSelf ? (
-        <span className="absolute -top-3 left-1/2 z-10 -translate-x-1/2 rounded-full border border-[#3DB8C9]/40 bg-gradient-to-r from-[#0F4F68] to-[#3DB8C9] px-2.5 py-0.5 text-[0.58rem] font-bold uppercase tracking-wider text-white shadow-sm">
+        <span className="absolute -top-3 left-1/2 z-10 -translate-x-1/2 rounded-full border border-white/60 bg-gradient-to-r from-[#0F4F68] to-[#3DB8C9] px-3 py-0.5 text-[0.6rem] font-bold uppercase tracking-[0.12em] text-white shadow-[0_6px_16px_-6px_rgba(15,79,104,0.5)]">
           Sie
         </span>
       ) : null}
 
       <article className={cardCls}>
-        <div className="p-3.5 sm:p-4">
+        <div className={`h-1 w-full ${accentBar}`} aria-hidden />
+        <div className={isSelf ? "p-4 sm:p-5" : compact ? "p-3" : "p-3.5 sm:p-4"}>
           <div className="flex items-start gap-3">
             {isSelf ? (
               <DemoAvatar
                 partnerCode={node.partnerCode}
                 displayName={PARTNER_DEMO_MAX_MUSTERMANN_NAME}
-                size="lg"
+                size="xl"
+                ring
                 imageSrc={PARTNER_DEMO_MAX_MUSTERMANN_AVATAR}
               />
-            ) : isSponsor || isDirect ? (
+            ) : isSponsor ? (
               <div
-                className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full ${
-                  isSponsor ? "bg-sky-50 text-sky-700" : "bg-slate-100 text-slate-600"
-                }`}
+                className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[#0F4F68] to-[#3DB8C9] text-white shadow-sm"
                 aria-hidden
               >
-                {isSponsor ? <IconStar className="h-4 w-4" /> : <IconLock className="h-4 w-4" />}
+                <IconStar className="h-5 w-5" />
               </div>
             ) : (
-              <DemoAvatar partnerCode={node.partnerCode} size="sm" />
+              <DemoAvatar partnerCode={node.partnerCode} size={compact ? "sm" : "md"} />
             )}
             <div className="min-w-0 flex-1">
-              <p className="text-[0.58rem] font-bold uppercase tracking-[0.1em] text-slate-500">{label}</p>
+              <p className="text-[0.55rem] font-bold uppercase tracking-[0.12em] text-slate-400">{label}</p>
               {isSelf ? (
                 <>
-                  <p className="mt-0.5 truncate text-sm font-bold text-slate-900">{PARTNER_DEMO_MAX_MUSTERMANN_NAME}</p>
-                  <p className="mt-0.5 font-mono text-xs font-semibold uppercase tracking-wide text-[#0F4F68]">
+                  <p className="mt-0.5 text-base font-bold leading-tight text-slate-900 sm:text-lg">
+                    {PARTNER_DEMO_MAX_MUSTERMANN_NAME}
+                  </p>
+                  <p className="mt-0.5 font-mono text-sm font-semibold uppercase tracking-wide text-[#0F4F68]">
                     {node.partnerCode ?? "—"}
                   </p>
                 </>
@@ -480,14 +514,6 @@ function IconStar({ className }: { className?: string }) {
   return (
     <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
       <path d="M12 3l2.5 7.5H22l-6 4.5 2.5 7.5L12 18l-6.5 4.5 2.5-7.5-6-4.5h7.5L12 3z" strokeLinejoin="round" />
-    </svg>
-  );
-}
-
-function IconLock({ className }: { className?: string }) {
-  return (
-    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
-      <path d="M16 11V7a4 4 0 00-8 0v4M5 11h14v10H5V11z" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );
 }
