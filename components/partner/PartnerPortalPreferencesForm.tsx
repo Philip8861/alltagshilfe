@@ -11,6 +11,8 @@ import {
 
 type Props = {
   initial: PartnerPortalPreferences;
+  hasBetriebliche?: boolean;
+  hasEinmal?: boolean;
 };
 
 const COL_DEFS: { key: keyof PartnerPortalTableColumns; label: string }[] = [
@@ -25,7 +27,11 @@ const COL_DEFS: { key: keyof PartnerPortalTableColumns; label: string }[] = [
   { key: "typ", label: "Typ (Leistung)" },
 ];
 
-export function PartnerPortalPreferencesForm({ initial }: Props) {
+export function PartnerPortalPreferencesForm({
+  initial,
+  hasBetriebliche = true,
+  hasEinmal = true,
+}: Props) {
   const router = useRouter();
   const [prefs, setPrefs] = useState<PartnerPortalPreferences>(initial);
   const [msg, setMsg] = useState<PortalPrefsState | null>(null);
@@ -75,34 +81,48 @@ export function PartnerPortalPreferencesForm({ initial }: Props) {
 
       <fieldset className="space-y-3" disabled={pending}>
         <legend className="text-sm font-bold text-[#0F4F68]">Statuslisten auf der Übersicht</legend>
-        <label className="flex cursor-pointer items-start gap-3 rounded-xl border border-neutral-200/80 bg-[#F2F9FA]/40 px-4 py-3">
-          <input
-            type="checkbox"
-            className="mt-1 h-4 w-4 rounded border-neutral-300 text-[#0F4F68] focus:ring-[#0F4F68]"
-            checked={prefs.showListMonatlich}
-            onChange={(e) => setPrefs((p) => ({ ...p, showListMonatlich: e.target.checked }))}
-          />
-          <span>
-            <span className="font-semibold text-neutral-900">Monatliche Tippgeberprovision</span>
-            <span className="mt-0.5 block text-xs text-neutral-600">Betriebliche Pflegeberatung (monatliche Liste).</span>
-          </span>
-        </label>
-        <label className="flex cursor-pointer items-start gap-3 rounded-xl border border-neutral-200/80 bg-[#F2F9FA]/40 px-4 py-3">
-          <input
-            type="checkbox"
-            className="mt-1 h-4 w-4 rounded border-neutral-300 text-[#0F4F68] focus:ring-[#0F4F68]"
-            checked={prefs.showListEinmal}
-            onChange={(e) => setPrefs((p) => ({ ...p, showListEinmal: e.target.checked }))}
-          />
-          <span>
-            <span className="font-semibold text-neutral-900">Einmalprovision</span>
-            <span className="mt-0.5 block text-xs text-neutral-600">Übrige Leistungen mit Einmalprovision.</span>
-          </span>
-        </label>
-        <p className="text-xs text-neutral-500">
-          Sie können beide Listen ausblenden; die Übersicht zeigt dann nur noch die Kacheln. Ihr Archiv bleibt unter
-          Einstellungen → Statuslisten einstellen erreichbar.
-        </p>
+        {hasBetriebliche ? (
+          <label className="flex cursor-pointer items-start gap-3 rounded-xl border border-neutral-200/80 bg-[#F2F9FA]/40 px-4 py-3">
+            <input
+              type="checkbox"
+              className="mt-1 h-4 w-4 rounded border-neutral-300 text-[#0F4F68] focus:ring-[#0F4F68]"
+              checked={prefs.showListMonatlich}
+              onChange={(e) => setPrefs((p) => ({ ...p, showListMonatlich: e.target.checked }))}
+            />
+            <span>
+              <span className="font-semibold text-neutral-900">Eigene Abschlussprovision</span>
+              <span className="mt-0.5 block text-xs text-neutral-600">
+                Betriebliche Pflegeberatung — Statusliste Ihrer Abschlüsse.
+              </span>
+            </span>
+          </label>
+        ) : null}
+        {hasEinmal ? (
+          <label className="flex cursor-pointer items-start gap-3 rounded-xl border border-neutral-200/80 bg-[#F2F9FA]/40 px-4 py-3">
+            <input
+              type="checkbox"
+              className="mt-1 h-4 w-4 rounded border-neutral-300 text-[#0F4F68] focus:ring-[#0F4F68]"
+              checked={prefs.showListEinmal}
+              onChange={(e) => setPrefs((p) => ({ ...p, showListEinmal: e.target.checked }))}
+            />
+            <span>
+              <span className="font-semibold text-neutral-900">Einmalprovision</span>
+              <span className="mt-0.5 block text-xs text-neutral-600">
+                Pflegehilfsmittel, Hauswirtschaft & Betreuung, Pflegeberatung.
+              </span>
+            </span>
+          </label>
+        ) : null}
+        {!hasBetriebliche && !hasEinmal ? (
+          <p className="text-sm text-neutral-600">
+            Für Ihr Konto sind derzeit keine Provisions-Statuslisten freigeschaltet.
+          </p>
+        ) : (
+          <p className="text-xs text-neutral-500">
+            Sie können die Listen ausblenden; die Übersicht zeigt dann nur noch die Kacheln. Ihr Archiv bleibt unter
+            Einstellungen → Statuslisten einstellen erreichbar.
+          </p>
+        )}
       </fieldset>
 
       <fieldset className="space-y-3" disabled={pending}>

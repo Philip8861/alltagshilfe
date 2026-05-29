@@ -507,7 +507,7 @@ function NetworkTreeNodeCard({ node, viewer }: { node: PyramidNode; viewer: Part
             <div className="mt-3 space-y-1.5 border-t border-slate-100 pt-3">
               <CommissionPill label="Eigene Abschlussprov." cents={node.ownCents ?? 0} tone="green" />
               {isDirect ? (
-                <CommissionPill label="Ihre Werbeprov." cents={node.referralCents ?? 0} tone="blue" />
+                <CommissionPill label="Prov. geworbene Partner" cents={node.referralCents ?? 0} tone="blue" />
               ) : null}
             </div>
           ) : null}

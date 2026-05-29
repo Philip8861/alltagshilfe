@@ -12,9 +12,8 @@ import {
  * Geld-Aggregationen für Partner (in Cent, niemals Float).
  *
  * Quellen:
- *  - Bereits abgerechnete Monate: `partner_payout_reports.einmal_eur + monatlich_eur`
- *      → das ist die *eigene freigegebene Abschlussprovision* (inkl. monatlich Betrieb),
- *        bestätigt durch den Settlement-Lauf am 1. des Folgemonats.
+ *  - Bereits abgerechnete Monate: `partner_payout_reports.monatlich_eur`
+ *      → eigene Abschlussprovision (nur betriebliche Pflegeberatung).
  *  - Aktueller laufender Monat: aus `partner_tip_submissions` mit
  *      admin_status = "vertragsabschluss_erfolgreich",
  *      paid_amount_eur > 0,
@@ -75,10 +74,9 @@ const TIP_SELECT =
 /**
  * Eigene freigegebene Abschlussprovision in Cent für den Partner im gewählten Monat.
  *
- *  - Aus `partner_payout_reports`: einmal_eur + monatlich_eur (= ownApprovedClosing).
+ *  - Aus `partner_payout_reports`: monatlich_eur (= eigene Abschlussprovision, nur Betrieb).
  *  - Falls der Monat noch nicht abgerechnet ist, aus `partner_tip_submissions`:
- *      vertragsabschluss_erfolgreich + paid_amount_eur > 0
- *      (Monatlich: ohne archived_at; Einmal: ohne payout_settled_period_key).
+ *      vertragsabschluss_erfolgreich + paid_amount_eur > 0, nur betriebliche Pflegeberatung.
  *
  * Storno = nicht-mehr-vertragsabschluss_erfolgreich oder paid_amount_eur=null oder archiviert.
  * Diese Tipps fließen nicht ein → Referral folgt automatisch.
@@ -99,7 +97,8 @@ export async function getPartnerMonthlyOwnApprovedClosingCommissionCents(
 
   if (!reportErr && report) {
     const r = report as { einmal_eur: number | string | null; monatlich_eur: number | string | null };
-    return eurToCents(r.einmal_eur) + eurToCents(r.monatlich_eur);
+    /** Eigene Abschlussprovision = nur betriebliche Pflegeberatung (monatlich_eur). */
+    return eurToCents(r.monatlich_eur);
   }
 
   const { data: tips, error: tipsErr } = await svc
@@ -125,9 +124,9 @@ function ownClosingCentsForTipInPeriod(tip: TipRow, periodKey: string): number {
   if (cents <= 0) return 0;
 
   const bucket = provisionBucketForServiceSlug(String(tip.service_slug));
-  if (bucket === "monatlich") {
-    if (tip.archived_at && String(tip.archived_at).trim() !== "") return 0;
-  }
+  /** Nur betriebliche Pflegeberatung zählt zur eigenen Abschlussprovision. */
+  if (bucket !== "monatlich") return 0;
+  if (tip.archived_at && String(tip.archived_at).trim() !== "") return 0;
 
   const { periodKey: tipPeriod } = periodKeyOfTipForBucket(tip);
   if (tipPeriod !== periodKey) return 0;

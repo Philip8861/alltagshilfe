@@ -16,6 +16,6 @@ export const PROVISION_STATUS_LIST_ANCHOR: Record<PartnerTipProvisionBucket, str
 
 /** Vollständiger Listenname für Dankes-Text nach Tipp-Abgabe */
 export const PROVISION_STATUS_LIST_FULL_NAME: Record<PartnerTipProvisionBucket, string> = {
-  monatlich: "Statusliste Monatliche Tippgeberprovision",
+  monatlich: "Statusliste Eigene Abschlussprovision",
   einmal: "Statusliste Einmalprovision",
 };

@@ -1,3 +1,4 @@
+import { redirect } from "next/navigation";
 import type { Metadata } from "next";
 import { unstable_noStore as noStore } from "next/cache";
 import { PartnerNetworkSection } from "@/components/partner/network/PartnerNetworkSection";
@@ -5,6 +6,7 @@ import { requirePartnerLogin } from "@/lib/partner/auth";
 import { getPartnerNetworkTree } from "@/lib/partner/network-tree";
 import { partnerAvatarPublicUrl } from "@/lib/partner/partner-avatar-shared";
 import { partnerPortalGreetingName } from "@/lib/partner/partner-portal-greeting";
+import { partnerHasBetrieblicheProgram } from "@/lib/partner/partner-program-capabilities";
 import { currentBerlinPeriodKey } from "@/lib/partner/payout-period";
 import { createSupabaseServiceRoleClient } from "@/lib/supabase/service";
 
@@ -15,6 +17,11 @@ export const metadata: Metadata = {
 export default async function PartnerNetworkPage() {
   noStore();
   const { profile, email } = await requirePartnerLogin();
+
+  if (!partnerHasBetrieblicheProgram(profile.responsibility_areas)) {
+    redirect("/partner/dashboard");
+  }
+
   const periodKey = currentBerlinPeriodKey();
   const svc = createSupabaseServiceRoleClient();
 

@@ -3,7 +3,7 @@ import { unstable_noStore as noStore } from "next/cache";
 import { PartnerDashboardClient } from "@/components/partner/PartnerDashboardClient";
 import { requirePartnerLogin } from "@/lib/partner/auth";
 import { fetchPartnerTipsForDashboard } from "@/lib/partner/fetch-partner-tips-for-dashboard";
-import { partnerProvisionSumsFromTips } from "@/lib/partner/partner-provision-sums";
+import { partnerEinmalProvisionSumFromTips } from "@/lib/partner/partner-provision-sums";
 import { partnerPortalWelcomeLine } from "@/lib/partner/partner-portal-greeting";
 import { nextPayoutDateInfo } from "@/lib/partner/partner-payout-date";
 import { normalizePortalPreferences, parsePortalPreferences } from "@/lib/partner/portal-preferences";
@@ -36,7 +36,7 @@ export default async function PartnerDashboardPage({ searchParams }: { searchPar
   const welcomeLine = partnerPortalWelcomeLine(profile, email);
   const partnerCode = profile.partner_referral_code?.trim() || null;
   const responsibilityAreaSlugs = profile.responsibility_areas ?? [];
-  const { provisionMonatlichEur, provisionEinmalEur } = partnerProvisionSumsFromTips(tips);
+  const provisionEinmalEur = partnerEinmalProvisionSumFromTips(tips);
   const portalPreferences = normalizePortalPreferences(parsePortalPreferences(profile.portal_preferences));
   const avatarUrl = partnerAvatarPublicUrl(profile.avatar_path, profile.updated_at);
   const tipSlugSet = new Set<string>(PARTNER_RESPONSIBILITY_SLUGS);
@@ -67,7 +67,6 @@ export default async function PartnerDashboardPage({ searchParams }: { searchPar
       responsibilityAreaSlugs={responsibilityAreaSlugs}
       tips={tips}
       initialTipModalOpen={tip === "1" && hasAnyTipArea}
-      provisionMonatlichEur={provisionMonatlichEur}
       provisionEinmalEur={provisionEinmalEur}
       portalPreferences={portalPreferences}
       payoutSummary={{

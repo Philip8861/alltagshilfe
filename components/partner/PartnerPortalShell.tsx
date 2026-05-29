@@ -13,6 +13,8 @@ type Props = {
   initialPasswordChangePrompt?: boolean;
   /** Server: Partner-Rundgang nach Login automatisch anbieten (solange nicht „Tutorial ausblenden“). */
   tutorialAutoShow?: boolean;
+  /** Werbe-Netzwerk nur bei betrieblicher Pflegeberatung. */
+  showNetworkNav?: boolean;
 };
 
 const shell = "bg-[#F2F9FA]";
@@ -61,6 +63,7 @@ export function PartnerPortalShell({
   children,
   initialPasswordChangePrompt = false,
   tutorialAutoShow = true,
+  showNetworkNav = false,
 }: Props) {
   const pathname = usePathname();
   const [passwordPromptGateBlocked, setPasswordPromptGateBlocked] = useState(
@@ -99,15 +102,17 @@ export function PartnerPortalShell({
               <path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1h-5v-8H9v8H4a1 1 0 01-1-1V9.5z" strokeLinejoin="round" />
             </svg>
           </Link>
-          <Link
-            href="/partner/team"
-            className={iconButtonClass(networkActive)}
-            aria-current={networkActive ? "page" : undefined}
-            title="Werbe-Netzwerk"
-          >
-            <span className="sr-only">Werbe-Netzwerk</span>
-            <NetworkNavIcon />
-          </Link>
+          {showNetworkNav ? (
+            <Link
+              href="/partner/team"
+              className={iconButtonClass(networkActive)}
+              aria-current={networkActive ? "page" : undefined}
+              title="Werbe-Netzwerk"
+            >
+              <span className="sr-only">Werbe-Netzwerk</span>
+              <NetworkNavIcon />
+            </Link>
+          ) : null}
           <Link
             href="/partner/statistik"
             data-tutorial="partner-nav-statistik"

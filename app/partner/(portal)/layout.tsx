@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { PartnerAccountDisabledScreen } from "@/components/partner/PartnerAccountDisabledScreen";
 import { PartnerPortalShell } from "@/components/partner/PartnerPortalShell";
 import { isPartnerAccountDisabled, requirePartnerLogin } from "@/lib/partner/auth";
+import { partnerHasWerbenetzwerkProgram } from "@/lib/partner/partner-program-capabilities";
 import { normalizePortalPreferences, parsePortalPreferences } from "@/lib/partner/portal-preferences";
 
 export const metadata: Metadata = {
@@ -23,10 +24,13 @@ export default async function PartnerPortalLayout({ children }: { children: Reac
   const initialPasswordChangePrompt = !hasChangedPassword && !suppressPrompt;
   const tutorialAutoShow = portalPrefs.tutorial_hidden !== true;
 
+  const showNetworkNav = partnerHasWerbenetzwerkProgram(profile.responsibility_areas);
+
   return (
     <PartnerPortalShell
       initialPasswordChangePrompt={initialPasswordChangePrompt}
       tutorialAutoShow={tutorialAutoShow}
+      showNetworkNav={showNetworkNav}
     >
       {children}
     </PartnerPortalShell>

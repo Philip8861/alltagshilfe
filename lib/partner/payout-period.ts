@@ -34,17 +34,20 @@ export function currentBerlinPeriodKey(now = new Date()): string {
   return `${year}-${String(month).padStart(2, "0")}`;
 }
 
-/** Nächster Monatserster für Hinweis „Auszahlung am …“. */
+/** Nächster Auszahlungstermin: immer am 3. eines Monats (Europe/Berlin). */
 export function nextPayoutDateInfo(now = new Date()): { labelDe: string; isoDate: string } {
-  const { year, month } = getBerlinCalendarParts(now);
+  const { year, month, day } = getBerlinCalendarParts(now);
   let ny = year;
-  let nm = month + 1;
-  if (nm > 12) {
-    nm = 1;
-    ny += 1;
+  let nm = month;
+  if (day >= 3) {
+    nm = month + 1;
+    if (nm > 12) {
+      nm = 1;
+      ny += 1;
+    }
   }
-  const isoDate = `${ny}-${String(nm).padStart(2, "0")}-01`;
-  const noonUtc = new Date(Date.UTC(ny, nm - 1, 1, 12, 0, 0));
+  const isoDate = `${ny}-${String(nm).padStart(2, "0")}-03`;
+  const noonUtc = new Date(Date.UTC(ny, nm - 1, 3, 12, 0, 0));
   const labelDe = noonUtc.toLocaleDateString("de-DE", {
     timeZone: BERLIN_TZ,
     day: "2-digit",

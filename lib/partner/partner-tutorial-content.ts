@@ -22,36 +22,37 @@ export const PARTNER_TUTORIAL_STEPS: PartnerTutorialStep[] = [
     bubbleAlignViewportCenterMd: true,
   },
   {
-    anchor: '[data-tutorial="partner-provision-monatlich"]',
-    title: "Monatliche Tippgeberprovision",
+    anchor: '[data-tutorial="partner-provision-betrieblich"]',
+    title: "Eigene Abschlussprovision & geworbene Partner",
     body:
-      "Diese Provision wird zu Beginn jedes neuen Monats ausgezahlt. Aktuell betrifft das nur die betriebliche Pflegeberatung. Der angezeigte Betrag wird zu Monatsbeginn nicht auf 0 zurückgesetzt, sondern bildet Ihre laufenden Monatsprovisionen ab.",
+      "In diesem Kasten sehen Sie Ihre Abschlussprovision aus der betrieblichen Pflegeberatung sowie die Provision durch direkt geworbene Partner (5 %). Die Auszahlung erfolgt am 3. jedes Monats.",
     missingAnchorHint:
-      "Wechseln Sie zur Übersicht, um die Kachel „Monatliche Tippgeberprovision“ zu sehen.",
+      "Dieser Bereich erscheint, wenn bei Ihnen die betriebliche Pflegeberatung freigeschaltet ist.",
     bubbleAlignViewportCenterMd: true,
   },
   {
     anchor: '[data-tutorial="partner-provision-einmal"]',
     title: "Einmalprovision",
     body:
-      "Die Einmalprovision wird zu Beginn des neuen Monats ausbezahlt und danach für die nächste Periode wieder auf 0 € gesetzt.",
-    missingAnchorHint: "Wechseln Sie zur Übersicht, um die Kachel „Einmalprovision“ zu sehen.",
+      "Die Einmalprovision gilt für Pflegehilfsmittel, Hauswirtschaft & Betreuung sowie Pflegeberatung. Auszahlung am 3. des Folgemonats, danach beginnt die nächste Periode.",
+    missingAnchorHint:
+      "Dieser Kasten erscheint, wenn mindestens eine dieser Leistungen bei Ihnen freigeschaltet ist.",
   },
   {
     anchor: '[data-tutorial="partner-statusliste-monatlich"]',
-    title: "Statusliste Monatliche Tippgeberprovision",
+    title: "Statusliste Eigene Abschlussprovision",
     body:
-      "Hier stehen eingereichte oder vermittelte Vorgänge mit dem aktuellen Status. Sobald ein Vertrag den Status „Vertragsabschluss erfolgreich“ hat, fließt die entsprechende monatliche Auszahlung in Ihre Provision ein.",
+      "Hier stehen eingereichte Vorgänge zur betrieblichen Pflegeberatung mit dem aktuellen Status. Bei „Vertragsabschluss erfolgreich“ fließt die Provision in Ihre Abschlussprovision ein.",
     missingAnchorHint:
-      "Diese Liste kann unter Einstellungen → Statuslisten ausgeblendet sein. Dort oder auf der Übersicht können Sie sie wieder aktivieren.",
+      "Diese Liste kann unter Einstellungen → Statuslisten ausgeblendet sein. Sie erscheint nur bei freigeschalteter betrieblicher Pflegeberatung.",
   },
   {
     anchor: '[data-tutorial="partner-statusliste-einmal"]',
     title: "Statusliste Einmalprovision",
     body:
-      "Hier erscheinen u. a. Vorgänge zu Pflegehilfsmitteln, Pflegeberatungen sowie Hauswirtschaft & Betreuung. Wichtig: Eine Auszahlung erfolgt nur, wenn die Krankenkasse den Vorgang bewilligt hat bzw. ein Ersteinsatz beim neuen Klienten tatsächlich stattgefunden hat.",
+      "Hier erscheinen Vorgänge zu Pflegehilfsmitteln, Pflegeberatungen sowie Hauswirtschaft & Betreuung. Eine Auszahlung erfolgt nur, wenn die Krankenkasse den Vorgang bewilligt hat bzw. ein Ersteinsatz beim neuen Klienten tatsächlich stattgefunden hat.",
     missingAnchorHint:
-      "Diese Liste kann unter Einstellungen → Statuslisten ausgeblendet sein. Dort oder auf der Übersicht können Sie sie wieder aktivieren.",
+      "Diese Liste kann unter Einstellungen → Statuslisten ausgeblendet sein. Sie erscheint nur bei freigeschalteten Einmal-Leistungen.",
   },
   {
     anchor: '[data-tutorial="partner-statusliste-archiv"]',

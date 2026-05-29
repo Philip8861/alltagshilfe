@@ -6,6 +6,10 @@ import { PartnerStatuslisteTable } from "@/components/partner/PartnerStatusliste
 import { requirePartnerLogin } from "@/lib/partner/auth";
 import { fetchPartnerTipsForDashboard } from "@/lib/partner/fetch-partner-tips-for-dashboard";
 import { mapTipsToStatuslisteRows, normalizePortalPreferences, parsePortalPreferences } from "@/lib/partner/portal-preferences";
+import {
+  partnerHasBetrieblicheProgram,
+  partnerHasEinmalProvisionProgram,
+} from "@/lib/partner/partner-program-capabilities";
 import type { PartnerDashboardTipSerial } from "@/lib/partner/types";
 
 export const metadata: Metadata = {
@@ -26,6 +30,8 @@ export default async function PartnerEinstellungenStatuslistenPage() {
   const archivedTips = tips.filter((t) => Boolean(t.partner_archived_at));
   const archivRows = mapTipsToStatuslisteRows(archivedTips);
   const portalPreferences = normalizePortalPreferences(parsePortalPreferences(profile.portal_preferences));
+  const hasBetriebliche = partnerHasBetrieblicheProgram(profile.responsibility_areas);
+  const hasEinmal = partnerHasEinmalProvisionProgram(profile.responsibility_areas);
 
   return (
     <div className="space-y-10">
@@ -47,7 +53,11 @@ export default async function PartnerEinstellungenStatuslistenPage() {
           Tabellen sichtbar sind.
         </p>
         <div className="mt-6 max-w-3xl">
-          <PartnerPortalPreferencesForm initial={portalPreferences} />
+          <PartnerPortalPreferencesForm
+            initial={portalPreferences}
+            hasBetriebliche={hasBetriebliche}
+            hasEinmal={hasEinmal}
+          />
         </div>
       </section>
 

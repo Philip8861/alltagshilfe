@@ -11,7 +11,11 @@ import {
   mapTipsToStatuslisteRows,
   type PartnerPortalPreferences,
 } from "@/lib/partner/portal-preferences";
-import { provisionBucketForServiceSlug } from "@/lib/partner/partner-tip-provision-bucket";
+import {
+  partnerHasBetrieblicheProgram,
+  partnerHasEinmalProvisionProgram,
+} from "@/lib/partner/partner-program-capabilities";
+import { PROVISION_STATUS_LIST_FULL_NAME, provisionBucketForServiceSlug } from "@/lib/partner/partner-tip-provision-bucket";
 import type { PartnerDashboardTipSerial } from "@/lib/partner/types";
 import {
   PARTNER_RESPONSIBILITY_SLUGS,
@@ -28,12 +32,11 @@ type Props = {
   responsibilityAreaSlugs: string[];
   tips: PartnerDashboardTipSerial[];
   initialTipModalOpen: boolean;
-  provisionMonatlichEur: number;
   provisionEinmalEur: number;
   portalPreferences: PartnerPortalPreferences;
   /** Öffentliche Vorschau: kein Tipp-Modal, Archiv-Buttons deaktiviert. */
   demoMode?: boolean;
-  /** Cent-basierte Monatsabrechnung (eigene + Werbeprovision) für die 3 Karten oben. */
+  /** Cent-basierte Monatsabrechnung (eigene + geworbene Partner) für die Betriebs-Provision. */
   payoutSummary?: {
     periodKey: string;
     ownCents: number;
@@ -55,7 +58,6 @@ export function PartnerDashboardClient({
   responsibilityAreaSlugs,
   tips,
   initialTipModalOpen,
-  provisionMonatlichEur,
   provisionEinmalEur,
   portalPreferences: prefs,
   demoMode = false,
@@ -72,6 +74,15 @@ export function PartnerDashboardClient({
   const allowedSlugs = useMemo(() => {
     return responsibilityAreaSlugs.filter((s): s is PartnerResponsibilitySlug => slugSet.has(s));
   }, [responsibilityAreaSlugs]);
+
+  const hasBetriebliche = useMemo(
+    () => partnerHasBetrieblicheProgram(responsibilityAreaSlugs),
+    [responsibilityAreaSlugs],
+  );
+  const hasEinmal = useMemo(
+    () => partnerHasEinmalProvisionProgram(responsibilityAreaSlugs),
+    [responsibilityAreaSlugs],
+  );
 
   const visiblePartnerTips = useMemo(
     () => tips.filter((t) => !t.partner_archived_at),
@@ -107,7 +118,9 @@ export function PartnerDashboardClient({
     "partner-metric-card partner-dash-animate flex min-h-[7.5rem] flex-1 flex-col justify-center gap-2 rounded-lg border border-neutral-300 bg-white p-5 sm:min-w-[12rem]";
 
   const anyListOnDashboard =
-    prefs.showListMonatlich || prefs.showListEinmal || prefs.showArchivOnDashboard;
+    (hasBetriebliche && prefs.showListMonatlich) ||
+    (hasEinmal && prefs.showListEinmal) ||
+    prefs.showArchivOnDashboard;
 
   return (
     <div className="mx-auto w-full max-w-[min(100%,90rem)] space-y-6 sm:space-y-8">
@@ -196,67 +209,7 @@ export function PartnerDashboardClient({
         )}
       </header>
 
-      {payoutSummary ? (
-        <section
-          aria-label="Monatliche Auszahlung"
-          className="rounded-xl border border-[#0F4F68]/12 bg-white p-4 shadow-[0_8px_22px_rgba(15,79,104,0.10)] sm:p-5"
-        >
-          <header className="mb-3 flex flex-wrap items-baseline justify-between gap-2">
-            <h2 className="text-base font-semibold text-[#0F4F68] sm:text-lg">
-              Monatliche Auszahlung
-            </h2>
-            <span className="text-xs font-medium text-neutral-600">
-              Monat {formatPayoutPeriodLabelDe(payoutSummary.periodKey)}
-            </span>
-          </header>
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-            <article
-              className="rounded-lg border border-emerald-300/80 bg-gradient-to-b from-emerald-50 to-white p-4"
-              aria-label="Eigene Abschlussprovision"
-            >
-              <p className="text-[0.65rem] font-bold uppercase tracking-wide text-emerald-900">
-                Eigene Abschlussprovision
-              </p>
-              <p className="mt-2 text-2xl font-semibold tabular-nums text-emerald-900 sm:text-3xl">
-                {formatCentsDe(payoutSummary.ownCents)}
-              </p>
-              <p className="mt-1 text-xs text-emerald-900/80">
-                Eigene freigegebene Closing-Provisionen
-              </p>
-            </article>
-            <article
-              className="rounded-lg border border-sky-300/80 bg-gradient-to-b from-sky-50 to-white p-4"
-              aria-label="Referral-Provision"
-            >
-              <p className="text-[0.65rem] font-bold uppercase tracking-wide text-sky-900">
-                Referral-Provision
-              </p>
-              <p className="mt-2 text-2xl font-semibold tabular-nums text-sky-900 sm:text-3xl">
-                {formatCentsDe(payoutSummary.referralCents)}
-              </p>
-              <p className="mt-1 text-xs text-sky-900/80">
-                5 % auf Eigenprovisionen direkt geworbener Partner
-              </p>
-            </article>
-            <article
-              className="rounded-lg border border-[#0F4F68]/30 bg-gradient-to-b from-[#F2F9FA] to-white p-4 ring-1 ring-[#0F4F68]/15"
-              aria-label="Gesamtauszahlung"
-            >
-              <p className="text-[0.65rem] font-bold uppercase tracking-wide text-[#0F4F68]">
-                Gesamtauszahlung
-              </p>
-              <p className="mt-2 text-2xl font-semibold tabular-nums text-[#0F4F68] sm:text-3xl">
-                {formatCentsDe(payoutSummary.totalCents)}
-              </p>
-              <p className="mt-1 text-xs text-[#0F4F68]/80">
-                Eigene + Referral
-              </p>
-            </article>
-          </div>
-        </section>
-      ) : null}
-
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <div className={`${cardBase} partner-dash-delay-1 relative z-[1]`} data-tutorial="partner-code">
           <div className="flex items-start gap-4">
             <div className={iconWrap} aria-hidden>
@@ -280,54 +233,7 @@ export function PartnerDashboardClient({
           </div>
         </div>
 
-        <div className={`${cardBase} partner-dash-delay-2 relative z-[1]`} data-tutorial="partner-provision-monatlich">
-          <div className="flex items-start gap-4">
-            <div className={`${iconWrap} motion-safe:animate-partner-soft-float`} aria-hidden>
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M6 18V10" strokeLinecap="round" />
-                <path d="M12 18V6" strokeLinecap="round" />
-                <path d="M18 18v-8" strokeLinecap="round" />
-              </svg>
-            </div>
-            <div className="min-w-0">
-              <p className="text-[0.65rem] font-semibold uppercase text-[#0F4F68]">
-                Monatliche Tippgeberprovision
-              </p>
-              <p className="mt-1 text-2xl font-semibold text-[#0F4F68] sm:text-3xl">
-                <PartnerAnimatedEuro value={provisionMonatlichEur} durationMs={1600} />
-              </p>
-              <p className="mt-0.5 text-xs text-neutral-600">
-                {provisionMonatlichEur > 0
-                  ? "Summe Monatsprovisionen (betriebliche Pflegeberatung, vertraglich erfasst)"
-                  : "Noch keine Monatsprovision erfasst"}
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <div className={`${cardBase} partner-dash-delay-3 relative z-[1]`} data-tutorial="partner-provision-einmal">
-          <div className="flex items-start gap-4">
-            <div className={`${iconWrap} motion-safe:animate-partner-soft-float`} aria-hidden>
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <rect x="3" y="6" width="18" height="12" rx="2" />
-                <path d="M7 10h4M7 14h10" strokeLinecap="round" />
-              </svg>
-            </div>
-            <div className="min-w-0">
-              <p className="text-[0.65rem] font-semibold uppercase text-[#0F4F68]">Einmalprovision</p>
-              <p className="mt-1 text-2xl font-semibold text-[#0F4F68] sm:text-3xl">
-                <PartnerAnimatedEuro value={provisionEinmalEur} durationMs={1750} />
-              </p>
-              <p className="mt-0.5 text-xs text-neutral-600">
-                {provisionEinmalEur > 0
-                  ? "Summe bezahlter Einmalprovisionen"
-                  : "Noch keine Einmalprovision ausgezahlt"}
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <div className={`${cardBase} partner-dash-delay-4 relative z-[1]`}>
+        <div className={`${cardBase} partner-dash-delay-2 relative z-[1]`}>
           <div className="flex items-start gap-4">
             <div className={`${iconWrap} motion-safe:animate-partner-icon-nudge`} aria-hidden>
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -340,11 +246,97 @@ export function PartnerDashboardClient({
               <p className="mt-1 text-xl font-semibold tabular-nums text-[#0F4F68] sm:text-2xl">
                 am {payoutLabel}
               </p>
-              <p className="mt-0.5 text-xs text-neutral-600">Zum Monatsende</p>
+              <p className="mt-0.5 text-xs text-neutral-600">Am 3. jedes Monats</p>
             </div>
           </div>
         </div>
       </div>
+
+      {hasBetriebliche || hasEinmal ? (
+        <div
+          className={`grid grid-cols-1 gap-4 ${hasBetriebliche && hasEinmal ? "lg:grid-cols-2" : ""}`}
+        >
+          {hasBetriebliche && payoutSummary ? (
+            <section
+              aria-label="Eigene Abschlussprovision und Provision durch geworbene Partner"
+              data-tutorial="partner-provision-betrieblich"
+              className="rounded-xl border border-[#0F4F68]/12 bg-white p-4 shadow-[0_8px_22px_rgba(15,79,104,0.10)] sm:p-5"
+            >
+              <header className="mb-3 flex flex-wrap items-baseline justify-between gap-2">
+                <h2 className="text-base font-semibold text-[#0F4F68] sm:text-lg">
+                  Betriebliche Pflegeberatung
+                </h2>
+                <span className="text-xs font-medium text-neutral-600">
+                  Monat {formatPayoutPeriodLabelDe(payoutSummary.periodKey)}
+                </span>
+              </header>
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                <article
+                  className="rounded-lg border border-emerald-300/80 bg-gradient-to-b from-emerald-50 to-white p-4"
+                  aria-label="Eigene Abschlussprovision"
+                >
+                  <p className="text-[0.65rem] font-bold uppercase tracking-wide text-emerald-900">
+                    Eigene Abschlussprovision
+                  </p>
+                  <p className="mt-2 text-2xl font-semibold tabular-nums text-emerald-900 sm:text-3xl">
+                    {formatCentsDe(payoutSummary.ownCents)}
+                  </p>
+                  <p className="mt-1 text-xs text-emerald-900/80">
+                    Freigegebene Abschlüsse betrieblicher Pflegeberatung
+                  </p>
+                </article>
+                <article
+                  className="rounded-lg border border-sky-300/80 bg-gradient-to-b from-sky-50 to-white p-4"
+                  aria-label="Provision durch geworbene Partner"
+                >
+                  <p className="text-[0.65rem] font-bold uppercase tracking-wide text-sky-900">
+                    Provision durch geworbene Partner
+                  </p>
+                  <p className="mt-2 text-2xl font-semibold tabular-nums text-sky-900 sm:text-3xl">
+                    {formatCentsDe(payoutSummary.referralCents)}
+                  </p>
+                  <p className="mt-1 text-xs text-sky-900/80">
+                    5&nbsp;% auf Abschlussprovisionen direkt geworbener Partner
+                  </p>
+                </article>
+              </div>
+              <p className="mt-3 border-t border-[#0F4F68]/10 pt-3 text-sm text-neutral-700">
+                Auszahlungssumme (betrieblich):{" "}
+                <span className="font-semibold tabular-nums text-[#0F4F68]">
+                  {formatCentsDe(payoutSummary.totalCents)}
+                </span>
+              </p>
+            </section>
+          ) : null}
+
+          {hasEinmal ? (
+            <div
+              className={`${cardBase} partner-dash-delay-3 relative z-[1] min-h-0`}
+              data-tutorial="partner-provision-einmal"
+            >
+              <div className="flex items-start gap-4">
+                <div className={`${iconWrap} motion-safe:animate-partner-soft-float`} aria-hidden>
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <rect x="3" y="6" width="18" height="12" rx="2" />
+                    <path d="M7 10h4M7 14h10" strokeLinecap="round" />
+                  </svg>
+                </div>
+                <div className="min-w-0">
+                  <p className="text-[0.65rem] font-semibold uppercase text-[#0F4F68]">Einmalprovision</p>
+                  <p className="mt-1 text-2xl font-semibold text-[#0F4F68] sm:text-3xl">
+                    <PartnerAnimatedEuro value={provisionEinmalEur} durationMs={1750} />
+                  </p>
+                  <p className="mt-0.5 text-xs text-neutral-600">
+                    {provisionEinmalEur > 0
+                      ? "Pflegehilfsmittel, Hauswirtschaft & Betreuung, Pflegeberatung"
+                      : "Noch keine Einmalprovision ausgezahlt"}
+                  </p>
+                </div>
+              </div>
+            </div>
+          ) : null}
+        </div>
+      ) : null}
 
       {!anyListOnDashboard ? (
         <p className="rounded-xl border border-amber-200 bg-amber-50/90 px-4 py-3 text-sm text-amber-950">
@@ -360,7 +352,7 @@ export function PartnerDashboardClient({
         id="partner-statuslisten"
         className="partner-dash-animate partner-dash-delay-5 scroll-mt-28 space-y-6 sm:space-y-8"
       >
-        {prefs.showListMonatlich ? (
+        {hasBetriebliche && prefs.showListMonatlich ? (
           <section
             id="partner-statusliste-monatlich"
             data-tutorial="partner-statusliste-monatlich"
@@ -369,7 +361,7 @@ export function PartnerDashboardClient({
           >
             <header className="border-b border-amber-300/70 bg-gradient-to-r from-amber-100 via-[#fff8dc] to-amber-50/80 px-4 py-4 sm:px-6 sm:py-5">
               <h2 id="partner-statusliste-monatlich-heading" className="text-lg font-semibold text-amber-950 sm:text-xl">
-                Statusliste Monatliche Tippgeberprovision
+                {PROVISION_STATUS_LIST_FULL_NAME.monatlich}
               </h2>
             </header>
             <div className="p-4 sm:p-6">
@@ -385,7 +377,7 @@ export function PartnerDashboardClient({
           </section>
         ) : null}
 
-        {prefs.showListEinmal ? (
+        {hasEinmal && prefs.showListEinmal ? (
           <section
             id="partner-statusliste-einmal"
             data-tutorial="partner-statusliste-einmal"
