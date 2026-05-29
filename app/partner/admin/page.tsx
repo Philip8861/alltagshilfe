@@ -9,16 +9,17 @@ import {
   normalizePartnerTipAdminStatus,
 } from "@/lib/partner/partner-tip-admin";
 import { normalizePaidAmountEur } from "@/lib/partner/partner-tip-payout";
-import { formatPayoutPeriodLabelDe } from "@/lib/partner/payout-period";
+import { formatPayoutPeriodLabelDe, currentBerlinPeriodKey } from "@/lib/partner/payout-period";
+import { fetchAllTeamsForAdmin } from "@/lib/partner/admin-teams-overview";
+import { fetchAllPartnerCommissionRates } from "@/lib/partner/partner-commission-rates";
+import { fetchPartnerTipSubmissionRows } from "@/lib/partner/partner-tip-submissions-select";
+import { fetchPartnerPortalAuditLog } from "@/lib/partner/partner-portal-audit-log";
+import { createSupabaseServiceRoleClient } from "@/lib/supabase/service";
 import type {
   PartnerAdminPayoutPeriod,
   PartnerProfile,
   PartnerTipSubmissionRow,
 } from "@/lib/partner/types";
-import { fetchAllTeamsForAdmin } from "@/lib/partner/admin-teams-overview";
-import { fetchAllPartnerCommissionRates } from "@/lib/partner/partner-commission-rates";
-import { fetchPartnerTipSubmissionRows } from "@/lib/partner/partner-tip-submissions-select";
-import { createSupabaseServiceRoleClient } from "@/lib/supabase/service";
 
 type AuthUserInfo = {
   email: string;
@@ -34,6 +35,7 @@ const VALID_BEREICH = [
   "liste",
   "statistik",
   "auszahlen",
+  "verlauf",
 ] as const;
 type PartnerAdminInitialBereich = (typeof VALID_BEREICH)[number];
 
@@ -98,6 +100,19 @@ async function fetchPartnerProfilesForAdminPage(
   };
 }
 
+function partnerDisplayLabel(
+  profile: PartnerProfile,
+  email?: string | null,
+): string {
+  const name =
+    [profile.first_name, profile.last_name].filter(Boolean).join(" ").trim() ||
+    profile.display_name?.trim() ||
+    email?.trim() ||
+    profile.id.slice(0, 8);
+  const code = profile.partner_referral_code?.trim() ?? "";
+  return code ? `${name} (${code})` : name;
+}
+
 /** Query `tipp` für E-Mail-Deep-Link (UUID). Ungültige Werte ignorieren. */
 function parseFocusTipId(v: string | undefined): string | null {
   const s = v?.trim();
@@ -132,6 +147,8 @@ export default async function PartnerAdminPage({
   }[] = [];
   let adminTeams: Awaited<ReturnType<typeof fetchAllTeamsForAdmin>> = [];
   let commissionRatesByPartnerId: Awaited<ReturnType<typeof fetchAllPartnerCommissionRates>> = {};
+  let initialAuditLog: Awaited<ReturnType<typeof fetchPartnerPortalAuditLog>> = [];
+  const defaultAuditPeriodKey = currentBerlinPeriodKey();
 
   if (svc) {
     try {
@@ -185,6 +202,7 @@ export default async function PartnerAdminPage({
       const profileMapForTeams = new Map(profiles.map((p) => [p.id, p]));
       adminTeams = await fetchAllTeamsForAdmin(svc, authById, profileMapForTeams);
       commissionRatesByPartnerId = await fetchAllPartnerCommissionRates(svc);
+      initialAuditLog = await fetchPartnerPortalAuditLog(svc, { limit: 300 });
       if (repRes.error) {
         console.error("[PartnerAdminPage] partner_payout_reports:", repRes.error.message);
       } else if (repRes.data?.length !== undefined) {
@@ -223,7 +241,13 @@ export default async function PartnerAdminPage({
       payoutPeriods = [];
       adminTeams = [];
       commissionRatesByPartnerId = {};
+      initialAuditLog = [];
     }
+  }
+
+  const auditSubjectLabels: Record<string, string> = {};
+  for (const p of profiles) {
+    auditSubjectLabels[p.id] = partnerDisplayLabel(p, authById[p.id]?.email);
   }
 
   return (
@@ -238,6 +262,9 @@ export default async function PartnerAdminPage({
       initialFocusTipId={initialFocusTipId}
       adminTeams={adminTeams}
       commissionRatesByPartnerId={commissionRatesByPartnerId}
+      initialAuditLog={initialAuditLog}
+      auditSubjectLabels={auditSubjectLabels}
+      defaultAuditPeriodKey={defaultAuditPeriodKey}
     />
   );
 }

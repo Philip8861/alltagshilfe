@@ -18,6 +18,10 @@ import { assignUniquePartnerReferralCode } from "@/lib/partner/generate-partner-
 import { setPartnerReferralByCode } from "@/lib/partner/referral";
 import { savePartnerCommissionRates } from "@/lib/partner/partner-commission-rates";
 import {
+  logPartnerPortalAuditEvent,
+  PARTNER_PORTAL_AUDIT_ADMIN_LABEL,
+} from "@/lib/partner/partner-portal-audit-log";
+import {
   sendPartnerRegistrationWelcomeMail,
   sendPartnerRegistrationWelcomePreviewMail,
 } from "@/lib/email/partner-registration-welcome";
@@ -241,7 +245,10 @@ export async function createPartnerUserAction(
     }
   }
 
-  const ratesResult = await savePartnerCommissionRates(svc, uid, formData);
+  const ratesResult = await savePartnerCommissionRates(svc, uid, formData, {
+    actorKind: "admin",
+    actorLabel: PARTNER_PORTAL_AUDIT_ADMIN_LABEL,
+  });
   if (!ratesResult.ok) {
     const { error: rollbackErr } = await svc.auth.admin.deleteUser(uid);
     if (rollbackErr) {
@@ -249,6 +256,18 @@ export async function createPartnerUserAction(
     }
     return { ok: false, message: ratesResult.message };
   }
+
+  await logPartnerPortalAuditEvent(svc, {
+    event_kind: "partner_created",
+    subject_partner_id: uid,
+    actor_kind: "admin",
+    actor_label: PARTNER_PORTAL_AUDIT_ADMIN_LABEL,
+    summary: `Partnerkonto angelegt: ${parsed.data.first_name} ${parsed.data.last_name} (${authEmail}).`,
+    detail_json: {
+      email: authEmail,
+      responsibility_areas: parsed.data.responsibility_areas,
+    },
+  });
 
   revalidatePath("/partner/admin");
 

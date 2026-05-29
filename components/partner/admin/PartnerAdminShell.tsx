@@ -26,6 +26,7 @@ const BEREICHE = [
   { id: "liste", title: "Partnerliste", href: "/partner/admin?bereich=liste" },
   { id: "auszahlen", title: "Auszahlen", href: "/partner/admin?bereich=auszahlen" },
   { id: "statistik", title: "Statistik", href: "/partner/admin?bereich=statistik" },
+  { id: "verlauf", title: "Verlauf", href: "/partner/admin?bereich=verlauf" },
 ] as const;
 
 export function PartnerAdminShell({ children }: Props) {
@@ -145,6 +146,12 @@ function AdminNavIcon({ kind }: { kind: (typeof BEREICHE)[number]["id"] }) {
       return (
         <svg {...common}>
           <path d="M4 19V5M10 19V9M16 19v-6M22 19V11" strokeLinecap="round" />
+        </svg>
+      );
+    case "verlauf":
+      return (
+        <svg {...common}>
+          <path d="M12 8v4l3 3M21 12a9 9 0 11-18 0 9 9 0 0118 0z" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
       );
     default:

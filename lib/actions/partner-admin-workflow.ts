@@ -4,7 +4,12 @@ import { revalidatePath } from "next/cache";
 import { getSystemAdminSession } from "@/lib/partner/system-admin-session";
 import { isSupabaseMissingColumnError } from "@/lib/partner/supabase-schema-errors";
 import { createSupabaseServiceRoleClient } from "@/lib/supabase/service";
-import { normalizePartnerTipAdminStatus, isPartnerTipNegativeStatus } from "@/lib/partner/partner-tip-admin";
+import { normalizePartnerTipAdminStatus, isPartnerTipNegativeStatus, PARTNER_TIP_STATUS_LABELS } from "@/lib/partner/partner-tip-admin";
+import {
+  logPartnerPortalAuditEvent,
+  PARTNER_PORTAL_AUDIT_ADMIN_LABEL,
+  serviceLabelDe,
+} from "@/lib/partner/partner-portal-audit-log";
 import {
   normalizePaidAmountEur,
   parsePayoutAmountGerman,
@@ -183,6 +188,33 @@ export async function updatePartnerTipStatusAction(
     };
   }
 
+  const newPaidFinal = paidUpdate !== undefined ? paidUpdate : prevPaid;
+  let summary = `${serviceLabelDe(slug)}: Status „${PARTNER_TIP_STATUS_LABELS[prevStatus]}“ → „${PARTNER_TIP_STATUS_LABELS[newStatus]}“`;
+  if (prevPaid !== newPaidFinal) {
+    summary += ` · Provision ${prevPaid != null ? `${prevPaid} EUR` : "—"} → ${newPaidFinal != null ? `${newPaidFinal} EUR` : "—"}`;
+  }
+  if (isNegative && !wasNegative) {
+    summary += " · Ins Partner-Archiv verschoben";
+  } else if (!isNegative && wasNegative) {
+    summary += " · Aus Partner-Archiv zurückgeholt";
+  }
+
+  await logPartnerPortalAuditEvent(svc, {
+    event_kind: "tip_status_changed",
+    subject_partner_id: partnerId,
+    actor_kind: "admin",
+    actor_label: PARTNER_PORTAL_AUDIT_ADMIN_LABEL,
+    tip_id: tipId,
+    summary,
+    detail_json: {
+      service_slug: slug,
+      previous_status: prevStatus,
+      new_status: newStatus,
+      previous_paid_eur: prevPaid,
+      new_paid_eur: newPaidFinal,
+    },
+  });
+
   revalidatePath("/partner/admin");
   revalidatePath("/partner/dashboard");
   revalidatePath("/partner/statistik");
@@ -207,10 +239,28 @@ export async function deletePartnerTipAction(
     return { ok: false, message: "SUPABASE_SERVICE_ROLE_KEY fehlt." };
   }
 
+  const { data: tipRow } = await svc
+    .from("partner_tip_submissions")
+    .select("partner_id, service_slug")
+    .eq("id", parsed.data.tip_id)
+    .maybeSingle();
+
   const { error } = await svc.from("partner_tip_submissions").delete().eq("id", parsed.data.tip_id);
 
   if (error) {
     return { ok: false, message: "Löschen fehlgeschlagen." };
+  }
+
+  if (tipRow?.partner_id) {
+    await logPartnerPortalAuditEvent(svc, {
+      event_kind: "tip_deleted",
+      subject_partner_id: String(tipRow.partner_id),
+      actor_kind: "admin",
+      actor_label: PARTNER_PORTAL_AUDIT_ADMIN_LABEL,
+      tip_id: parsed.data.tip_id,
+      summary: `${serviceLabelDe(String(tipRow.service_slug))}: Tipp endgültig gelöscht.`,
+      detail_json: { service_slug: tipRow.service_slug },
+    });
   }
 
   revalidatePath("/partner/admin");
@@ -262,6 +312,26 @@ export async function archivePartnerTipAction(
 
   if (error) {
     return { ok: false, message: error.message || "Archiv-Status konnte nicht gespeichert werden." };
+  }
+
+  const { data: tipRow } = await svc
+    .from("partner_tip_submissions")
+    .select("partner_id, service_slug")
+    .eq("id", parsed.data.tip_id)
+    .maybeSingle();
+
+  if (tipRow?.partner_id) {
+    await logPartnerPortalAuditEvent(svc, {
+      event_kind: archivedAt ? "tip_admin_archived" : "tip_admin_unarchived",
+      subject_partner_id: String(tipRow.partner_id),
+      actor_kind: "admin",
+      actor_label: PARTNER_PORTAL_AUDIT_ADMIN_LABEL,
+      tip_id: parsed.data.tip_id,
+      summary: archivedAt
+        ? `${serviceLabelDe(String(tipRow.service_slug))}: Ins Admin-Archiv verschoben.`
+        : `${serviceLabelDe(String(tipRow.service_slug))}: Aus Admin-Archiv zurückgeholt.`,
+      detail_json: { service_slug: tipRow.service_slug },
+    });
   }
 
   revalidatePath("/partner/admin");
@@ -342,7 +412,10 @@ export async function updatePartnerProfileAdminAction(
     return { ok: false, message: error.message || "Profil konnte nicht gespeichert werden." };
   }
 
-  const ratesResult = await savePartnerCommissionRates(svc, d.user_id, formData);
+  const ratesResult = await savePartnerCommissionRates(svc, d.user_id, formData, {
+    actorKind: "admin",
+    actorLabel: PARTNER_PORTAL_AUDIT_ADMIN_LABEL,
+  });
   if (!ratesResult.ok) {
     return { ok: false, message: ratesResult.message };
   }
@@ -361,7 +434,11 @@ export async function updatePartnerProfileAdminAction(
   });
 
   revalidatePath("/partner/admin");
-  return { ok: true, message: "Partnerdaten gespeichert." };
+  const extra =
+    ratesResult.tipsUpdated > 0
+      ? ` ${ratesResult.tipsUpdated} bestehende Tipps wurden auf die neuen Sätze angepasst.`
+      : "";
+  return { ok: true, message: `Partnerdaten gespeichert.${extra}` };
 }
 
 export async function setFormerActiveCompanyAction(

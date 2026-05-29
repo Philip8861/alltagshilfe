@@ -28,6 +28,8 @@ import { AdminPartnerProgrammStatistikHub } from "@/components/partner/admin/Adm
 import { AdminTeamsPanel } from "@/components/partner/admin/AdminTeamsPanel";
 import { PartnerAdminPayoutSection } from "@/components/partner/admin/PartnerAdminPayoutSection";
 import { PartnerAccountDeactivateButton } from "@/components/partner/admin/PartnerAccountDeactivateButton";
+import { AdminPartnerPortalVerlauf } from "@/components/partner/admin/AdminPartnerPortalVerlauf";
+import type { PartnerPortalAuditLogRow } from "@/lib/partner/partner-portal-audit-log-shared";
 
 const AdminStatisticsCharts = dynamic(
   () => import("./AdminStatisticsCharts").then((m) => ({ default: m.AdminStatisticsCharts })),
@@ -74,7 +76,8 @@ type AdminSection =
   | "anlegen"
   | "liste"
   | "statistik"
-  | "auszahlen";
+  | "auszahlen"
+  | "verlauf";
 type StatSortKey =
   | "name"
   | "email"
@@ -99,6 +102,10 @@ type Props = {
   adminTeams: AdminTeamOverview[];
   /** Individuelle Provisionssätze je Partner-ID. */
   commissionRatesByPartnerId: Record<string, PartnerCommissionRatesMap>;
+  /** Partnerportal-Audit (Verlauf). */
+  initialAuditLog: PartnerPortalAuditLogRow[];
+  auditSubjectLabels: Record<string, string>;
+  defaultAuditPeriodKey: string;
 };
 
 function adminSectionForFocusedTip(t: PartnerTipSubmissionRow): AdminSection {
@@ -181,6 +188,9 @@ export function PartnerAdminDashboard({
   initialFocusTipId = null,
   adminTeams,
   commissionRatesByPartnerId,
+  initialAuditLog,
+  auditSubjectLabels,
+  defaultAuditPeriodKey,
 }: Props) {
   const [section, setSection] = useState<AdminSection>(initialBereich);
   const [listeTeil, setListeTeil] = useState<"partner" | "teams">("partner");
@@ -1488,6 +1498,14 @@ export function PartnerAdminDashboard({
 
           {section === "auszahlen" ? (
             <PartnerAdminPayoutSection payoutPeriods={payoutPeriods} authById={authById} />
+          ) : null}
+
+          {section === "verlauf" ? (
+            <AdminPartnerPortalVerlauf
+              initialEvents={initialAuditLog}
+              subjectLabels={auditSubjectLabels}
+              defaultPeriodKey={defaultAuditPeriodKey}
+            />
           ) : null}
         </>
       ) : null}

@@ -5,12 +5,14 @@
   margin: 0;
   padding: 0;
   position: relative;
+  overflow: visible;
 }
 
 .partner-network-tree {
   display: inline-flex;
   justify-content: center;
   width: max-content;
+  overflow: visible;
 }
 
 .partner-network-tree ul.partner-network-tree__children,
@@ -34,13 +36,31 @@
 
 .partner-network-tree li.partner-network-tree__branch {
   position: relative;
-  flex: 0 0 auto;
-  padding: 0 0.75rem;
+  flex: 0 0 var(--tree-col-w, 13rem);
+  width: var(--tree-col-w, 13rem);
+  padding: 0;
   text-align: center;
   display: inline-flex;
   flex-direction: column;
   align-items: center;
+  vertical-align: top;
+}
+
+.partner-network-tree__node-stack {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+.partner-network-tree__subtree {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  z-index: 0;
   width: max-content;
+  max-width: none;
+  transform: translateX(-50%);
 }
 
 .partner-network-tree li.partner-network-tree__branch::before,
@@ -120,7 +140,8 @@
 
 @media (max-width: 639px) {
   .partner-network-tree li.partner-network-tree__branch {
-    padding: 0 0.4rem;
+    flex-basis: var(--tree-col-w, 11rem);
+    width: var(--tree-col-w, 11rem);
   }
 
   .partner-network-tree__stem,
@@ -134,6 +155,14 @@
     flex-direction: column;
     align-items: center;
     padding-top: 0.75rem;
+  }
+
+  .partner-network-tree__subtree {
+    position: relative;
+    top: auto;
+    left: auto;
+    transform: none;
+    width: 100%;
   }
 
   .partner-network-tree li.partner-network-tree__branch::before,

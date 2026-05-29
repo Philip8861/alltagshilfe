@@ -4,6 +4,12 @@ import { insertPartnerTipSubmission } from "@/lib/partner/insert-partner-tip-sub
 import { notifyStaffOfNewPartnerTipFromPayload } from "@/lib/partner/partner-tip-staff-notify";
 import { isPartnerAccountDisabled, PARTNER_ACCOUNT_DISABLED_MESSAGE } from "@/lib/partner/auth";
 import { partnerMaySubmitTipForServiceSlug } from "@/lib/partner/responsibility-areas";
+import {
+  logPartnerPortalAuditEvent,
+  partnerAuditDisplayLabel,
+  serviceLabelDe,
+} from "@/lib/partner/partner-portal-audit-log";
+import { createSupabaseServiceRoleClient } from "@/lib/supabase/service";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import type { PartnerProfile } from "@/lib/partner/types";
@@ -86,6 +92,21 @@ export async function POST(request: Request) {
       payload: parsed.data.payload as Record<string, unknown>,
       partnerHint: partnerHint || undefined,
     });
+
+    const auditSvc = createSupabaseServiceRoleClient();
+    if (auditSvc) {
+      const actorLabel = await partnerAuditDisplayLabel(auditSvc, profile.id, user.email);
+      await logPartnerPortalAuditEvent(auditSvc, {
+        event_kind: "tip_submitted",
+        subject_partner_id: profile.id,
+        actor_kind: "partner",
+        actor_partner_id: profile.id,
+        actor_label: actorLabel,
+        tip_id: result.tipId,
+        summary: `Neuer Tipp eingegangen: ${serviceLabelDe(parsed.data.service_slug)}.`,
+        detail_json: { service_slug: parsed.data.service_slug },
+      });
+    }
 
     revalidatePath("/partner/dashboard");
     revalidatePath("/partner/statistik");

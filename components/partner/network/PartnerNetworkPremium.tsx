@@ -356,6 +356,15 @@ function shouldCollapseOnMobile(node: PyramidNode): boolean {
   return (node.kind === "self" || node.kind === "direct") && node.children.length > 0;
 }
 
+function treeColumnWidthRem(node: PyramidNode): string {
+  const hasProvision = node.ownCents != null && node.ownCents > 0;
+  const compact = node.kind === "indirect" && !hasProvision;
+  if (node.kind === "self" || node.kind === "sponsor") return "15.5rem";
+  if (node.kind === "direct" || hasProvision) return "13rem";
+  if (compact) return "9.5rem";
+  return "11.5rem";
+}
+
 function NetworkTreeBranch({
   node,
   viewer,
@@ -377,20 +386,25 @@ function NetworkTreeBranch({
   }, [isMobile, node]);
 
   return (
-    <li className="partner-network-tree__branch">
-      <NetworkTreeNodeCard node={node} viewer={viewer} />
-      {hasChildren ? (
-        <TreeConnector collapsed={collapsed} expanded={!collapsed} onToggle={() => setCollapsed((v) => !v)} />
-      ) : null}
+    <li
+      className="partner-network-tree__branch"
+      style={{ ["--tree-col-w" as string]: treeColumnWidthRem(node) }}
+    >
+      <div className="partner-network-tree__node-stack">
+        <NetworkTreeNodeCard node={node} viewer={viewer} />
+        {hasChildren ? (
+          <TreeConnector collapsed={collapsed} expanded={!collapsed} onToggle={() => setCollapsed((v) => !v)} />
+        ) : null}
+        {hasChildren && !collapsed ? <div className="partner-network-tree__stem" aria-hidden /> : null}
+      </div>
       {hasChildren && !collapsed ? (
-        <>
-          <div className="partner-network-tree__stem" aria-hidden />
+        <div className="partner-network-tree__subtree">
           <ul className="partner-network-tree__children">
             {node.children.map((c) => (
               <NetworkTreeBranch key={c.key} node={c} viewer={viewer} isMobile={isMobile} />
             ))}
           </ul>
-        </>
+        </div>
       ) : null}
     </li>
   );
@@ -404,14 +418,14 @@ function NetworkTreeNodeCard({ node, viewer }: { node: PyramidNode; viewer: Part
   const isDirect = node.kind === "direct";
 
   const cardBase =
-    "relative overflow-hidden rounded-2xl border bg-white transition-shadow duration-200 hover:shadow-lg";
+    "relative overflow-hidden rounded-2xl border bg-white transition-shadow duration-200 hover:shadow-lg w-full";
   const width = isSelf
-    ? "w-[13.5rem] sm:w-[15.5rem]"
+    ? "max-w-[15.5rem]"
     : compact
-      ? "w-[8.5rem] sm:w-[9.5rem]"
+      ? "max-w-[9.5rem]"
       : isDirect || hasProvision
-        ? "w-[11.5rem] sm:w-[13rem]"
-        : "w-[10.5rem] sm:w-[11.5rem]";
+        ? "max-w-[13rem]"
+        : "max-w-[11.5rem]";
 
   let cardCls = `${cardBase} ${width} border-slate-200/60 shadow-[0_3px_14px_-6px_rgba(15,79,104,0.16)]`;
   if (isSelf) {
