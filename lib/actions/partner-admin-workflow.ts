@@ -21,7 +21,7 @@ import {
 } from "@/lib/partner/partner-commission-rates";
 import {
   BETRIEBLICHE_PFLEGEBERATUNG_SLUG,
-  isBetrieblichMitMonatsprovisionRow,
+  isBetrieblichServiceSlug,
 } from "@/lib/partner/partner-tip-betrieblich-queue";
 import {
   archivePartnerTipSchema,
@@ -138,8 +138,12 @@ export async function updatePartnerTipStatusAction(
   if (paidUpdate !== undefined) {
     payloadFull.paid_amount_eur = paidUpdate;
   }
-  if (isBetrieblich && newStatus !== "vertragsabschluss_erfolgreich") {
-    payloadFull.former_active_company_at = null;
+  if (isBetrieblichServiceSlug(slug)) {
+    if (newStatus === "vertrag_gekuendigt") {
+      payloadFull.former_active_company_at = new Date().toISOString();
+    } else {
+      payloadFull.former_active_company_at = null;
+    }
   }
 
   if (isNegative) {
@@ -474,21 +478,28 @@ export async function setFormerActiveCompanyAction(
 
   const slug = String(cur.service_slug);
   const st = normalizePartnerTipAdminStatus(cur.admin_status);
-  const paid = normalizePaidAmountEur(cur.paid_amount_eur);
-  if (
-    !isBetrieblichMitMonatsprovisionRow({
-      service_slug: slug,
-      admin_status: st,
-      paid_amount_eur: paid,
-    })
-  ) {
-    return { ok: false, message: "Nur für betriebliche Pflegeberatung mit hinterlegter Monatsprovision." };
+  if (!isBetrieblichServiceSlug(slug)) {
+    return { ok: false, message: "Nur für betriebliche Pflegeberatung." };
+  }
+  if (st !== "vertragsabschluss_erfolgreich" && st !== "vertrag_gekuendigt") {
+    return {
+      ok: false,
+      message: "Status bitte über „Vertragsabschluss erfolgreich“ oder „Vertrag gekündigt“ setzen.",
+    };
   }
 
-  const at = parsed.data.former === "true" ? new Date().toISOString() : null;
+  const newStatus = parsed.data.former === "true" ? "vertrag_gekuendigt" : "vertragsabschluss_erfolgreich";
+  const updatePayload: Record<string, unknown> = {
+    admin_status: newStatus,
+    former_active_company_at: parsed.data.former === "true" ? new Date().toISOString() : null,
+  };
+  if (newStatus === "vertrag_gekuendigt") {
+    updatePayload.paid_amount_eur = null;
+  }
+
   const { error } = await svc
     .from("partner_tip_submissions")
-    .update({ former_active_company_at: at })
+    .update(updatePayload)
     .eq("id", parsed.data.tip_id);
 
   if (error) {
@@ -502,6 +513,9 @@ export async function setFormerActiveCompanyAction(
   revalidatePath("/partner/admin");
   return {
     ok: true,
-    message: at ? "Als ehemaliges Unternehmen geführt." : "Wieder unter aktiven Unternehmen.",
+    message:
+      newStatus === "vertrag_gekuendigt"
+        ? "Unter ehemalige Unternehmen verschoben (Status: Vertrag gekündigt)."
+        : "Wieder unter aktive Unternehmen (Status: Vertragsabschluss erfolgreich).",
   };
 }

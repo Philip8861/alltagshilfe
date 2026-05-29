@@ -2,9 +2,7 @@
 
 import dynamic from "next/dynamic";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { ArchiveTipButton } from "@/components/partner/admin/ArchiveTipButton";
 import { DeleteTipButton } from "@/components/partner/admin/DeleteTipButton";
-import { FormerBetriebCompanyButton } from "@/components/partner/admin/FormerBetriebCompanyButton";
 import { CreatePartnerAccountForm } from "@/components/partner/CreatePartnerAccountForm";
 import { PartnerRegistrationEmailTestBox } from "@/components/partner/PartnerRegistrationEmailTestBox";
 import { DeletePartnerUserButton } from "@/components/partner/DeletePartnerUserButton";
@@ -38,7 +36,9 @@ const AdminStatisticsCharts = dynamic(
   },
 );
 import {
+  adminSectionForTip,
   inAdminAktiveUnternehmen,
+  inAdminArchivQueue,
   inAdminAuftraegeQueue,
   inAdminEhemaligeUnternehmen,
 } from "@/lib/partner/partner-tip-betrieblich-queue";
@@ -105,9 +105,7 @@ type Props = {
 };
 
 function adminSectionForFocusedTip(t: PartnerTipSubmissionRow): AdminSection {
-  if (t.archived_at) return "archiv";
-  if (inAdminAktiveUnternehmen(t) || inAdminEhemaligeUnternehmen(t)) return "aktive_unternehmen";
-  return "auftraege";
+  return adminSectionForTip(t);
 }
 
 function SortButton({
@@ -195,6 +193,13 @@ export function PartnerAdminDashboard({
     setAuftraegeLeistungOpen((prev) => ({ ...prev, [slug]: !prev[slug] }));
   }, []);
 
+  const [archivLeistungOpen, setArchivLeistungOpen] = useState<Record<PartnerResponsibilitySlug, boolean>>(
+    () => Object.fromEntries(SERVICE_SLUG_ORDER.map((s) => [s, true])) as Record<PartnerResponsibilitySlug, boolean>,
+  );
+  const toggleArchivLeistung = useCallback((slug: PartnerResponsibilitySlug) => {
+    setArchivLeistungOpen((prev) => ({ ...prev, [slug]: !prev[slug] }));
+  }, []);
+
   useEffect(() => {
     setSection(initialBereich);
   }, [initialBereich]);
@@ -259,11 +264,10 @@ export function PartnerAdminDashboard({
     [profileById, authById],
   );
 
-  const activeTips = useMemo(() => tips.filter((t) => !t.archived_at), [tips]);
-  const auftraegeQueueTips = useMemo(() => activeTips.filter(inAdminAuftraegeQueue), [activeTips]);
-  const aktiveUnternehmenTips = useMemo(() => activeTips.filter(inAdminAktiveUnternehmen), [activeTips]);
-  const ehemaligeUnternehmenTips = useMemo(() => activeTips.filter(inAdminEhemaligeUnternehmen), [activeTips]);
-  const archivedTips = useMemo(() => tips.filter((t) => t.archived_at), [tips]);
+  const auftraegeQueueTips = useMemo(() => tips.filter(inAdminAuftraegeQueue), [tips]);
+  const aktiveUnternehmenTips = useMemo(() => tips.filter(inAdminAktiveUnternehmen), [tips]);
+  const ehemaligeUnternehmenTips = useMemo(() => tips.filter(inAdminEhemaligeUnternehmen), [tips]);
+  const archivedTips = useMemo(() => tips.filter(inAdminArchivQueue), [tips]);
 
   const sortTipRows = useCallback(
     (rows: PartnerTipSubmissionRow[]) => {
@@ -305,6 +309,15 @@ export function PartnerAdminDashboard({
       })),
     [auftraegeQueueTips, sortTipRows],
   );
+  const archivTipsByService = useMemo(
+    () =>
+      SERVICE_SLUG_ORDER.map((slug) => ({
+        slug,
+        label: PARTNER_RESPONSIBILITY_LABELS[slug],
+        tips: sortTipRows(archivedTips.filter((t) => t.service_slug === slug)),
+      })),
+    [archivedTips, sortTipRows],
+  );
   const sortedAktiveUnternehmenTips = useMemo(
     () => sortTipRows(aktiveUnternehmenTips),
     [aktiveUnternehmenTips, sortTipRows],
@@ -313,7 +326,6 @@ export function PartnerAdminDashboard({
     () => sortTipRows(ehemaligeUnternehmenTips),
     [ehemaligeUnternehmenTips, sortTipRows],
   );
-  const sortedArchivedTips = useMemo(() => sortTipRows(archivedTips), [archivedTips, sortTipRows]);
 
   const sortedProfiles = useMemo(() => {
     const rows = [...profiles];
@@ -452,10 +464,10 @@ export function PartnerAdminDashboard({
                 Aktuelle Aufträge
               </h2>
               <p className="mt-2 text-sm text-neutral-600">
-                Tippgeber-Meldungen aus dem Partnerportal, <strong className="font-semibold text-neutral-800">nach den vier
-                Dienstleistungen getrennt.</strong> Jede Leistung lässt sich über die Kopfzeile{" "}
-                <strong className="font-semibold text-neutral-800">auf- und zuklappen</strong>. Spaltenköpfe sortieren
-                innerhalb der jeweiligen Liste.
+                Tippgeber-Meldungen mit Status „In Bearbeitung“,{" "}
+                <strong className="font-semibold text-neutral-800">nach den vier Dienstleistungen getrennt.</strong>{" "}
+                Sobald der Status wechselt, wandert der Tipp automatisch ins Archiv bzw. bei betrieblicher Pflegeberatung
+                zu Aktive/Ehemalige Unternehmen.
               </p>
               <div className="mt-6 space-y-12">
                 {auftraegeQueueTips.length === 0 ? (
@@ -557,7 +569,7 @@ export function PartnerAdminDashboard({
                                       onClick={() => toggleTipSort("status")}
                                     />
                                   </th>
-                                  <th className="whitespace-nowrap px-3 py-3">Archiv</th>
+                                  <th className="whitespace-nowrap px-3 py-3">Aktionen</th>
                                 </tr>
                               </thead>
                               <tbody className="divide-y divide-neutral-100 bg-white">
@@ -606,10 +618,7 @@ export function PartnerAdminDashboard({
                                           />
                                         </td>
                                         <td className="px-3 py-3 align-top">
-                                          <div className="flex flex-col gap-2">
-                                            <ArchiveTipButton tipId={t.id} isArchived={false} />
-                                            <DeleteTipButton tipId={t.id} />
-                                          </div>
+                                          <DeleteTipButton tipId={t.id} />
                                         </td>
                                       </tr>
                                     );
@@ -639,9 +648,9 @@ export function PartnerAdminDashboard({
                   Aktive Unternehmen
                 </h2>
                 <p className="mt-2 text-sm text-neutral-600">
-                  Betriebliche Pflegeberatung mit Vertragsabschluss und hinterlegter monatlicher Provision. Status und
-                  Betrag sind weiter bearbeitbar. „Ehemalig“ verschiebt den Eintrag nur in die Liste unten (kein
-                  Partner-Archiv).
+                  Betriebliche Pflegeberatung mit Status „Vertragsabschluss erfolgreich“. Status und monatliche
+                  Provision sind weiter bearbeitbar. „Vertrag gekündigt“ verschiebt den Eintrag nach „Ehemalige
+                  Unternehmen“ — ohne Einfluss auf bereits abgerechnete Beträge.
                 </p>
                 <div className="mt-6 overflow-x-auto rounded-2xl border border-neutral-200/80">
                   <table className="min-w-[960px] w-full text-left text-sm">
@@ -681,15 +690,14 @@ export function PartnerAdminDashboard({
                             onClick={() => toggleTipSort("status")}
                           />
                         </th>
-                        <th className="whitespace-nowrap px-3 py-3">Liste</th>
-                        <th className="whitespace-nowrap px-3 py-3">Admin-Archiv</th>
+                        <th className="whitespace-nowrap px-3 py-3">Aktionen</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-neutral-100">
                       {sortedAktiveUnternehmenTips.length === 0 ? (
                         <tr>
-                          <td colSpan={8} className="px-4 py-12 text-center text-neutral-600">
-                            Keine aktiven Unternehmen mit erfasster Monatsprovision.
+                          <td colSpan={7} className="px-4 py-12 text-center text-neutral-600">
+                            Keine aktiven Unternehmen (Status: Vertragsabschluss erfolgreich).
                           </td>
                         </tr>
                       ) : (
@@ -748,13 +756,7 @@ export function PartnerAdminDashboard({
                                 />
                               </td>
                               <td className="px-3 py-3 align-top">
-                                <FormerBetriebCompanyButton tipId={t.id} isFormer={false} />
-                              </td>
-                              <td className="px-3 py-3 align-top">
-                                <div className="flex flex-col gap-2">
-                                  <ArchiveTipButton tipId={t.id} isArchived={false} />
-                                  <DeleteTipButton tipId={t.id} />
-                                </div>
+                                <DeleteTipButton tipId={t.id} />
                               </td>
                             </tr>
                           );
@@ -773,8 +775,8 @@ export function PartnerAdminDashboard({
                   Ehemalige Unternehmen
                 </h2>
                 <p className="mt-2 text-sm text-neutral-600">
-                  Vertrag beendet oder kein aktives Unternehmen mehr – nur für die Admin-Übersicht. Provision und
-                  Auszahlungslogik laufen unverändert weiter.
+                  Betriebliche Pflegeberatung mit Status „Vertrag gekündigt“. Die Anzeige dient nur der Übersicht —
+                  Auszahlungs- und Provisionslogik bleibt unverändert.
                 </p>
                 <div className="mt-6 overflow-x-auto rounded-2xl border border-neutral-200/80 bg-white">
                   <table className="min-w-[960px] w-full text-left text-sm">
@@ -814,15 +816,14 @@ export function PartnerAdminDashboard({
                             onClick={() => toggleTipSort("status")}
                           />
                         </th>
-                        <th className="whitespace-nowrap px-3 py-3">Liste</th>
-                        <th className="whitespace-nowrap px-3 py-3">Admin-Archiv</th>
+                        <th className="whitespace-nowrap px-3 py-3">Aktionen</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-neutral-100">
                       {sortedEhemaligeUnternehmenTips.length === 0 ? (
                         <tr>
-                          <td colSpan={8} className="px-4 py-12 text-center text-neutral-600">
-                            Keine ehemaligen Unternehmen.
+                          <td colSpan={7} className="px-4 py-12 text-center text-neutral-600">
+                            Keine ehemaligen Unternehmen (Status: Vertrag gekündigt).
                           </td>
                         </tr>
                       ) : (
@@ -881,13 +882,7 @@ export function PartnerAdminDashboard({
                                 />
                               </td>
                               <td className="px-3 py-3 align-top">
-                                <FormerBetriebCompanyButton tipId={t.id} isFormer />
-                              </td>
-                              <td className="px-3 py-3 align-top">
-                                <div className="flex flex-col gap-2">
-                                  <ArchiveTipButton tipId={t.id} isArchived={false} />
-                                  <DeleteTipButton tipId={t.id} />
-                                </div>
+                                <DeleteTipButton tipId={t.id} />
                               </td>
                             </tr>
                           );
@@ -909,116 +904,167 @@ export function PartnerAdminDashboard({
                 Aufträge Archiv
               </h2>
               <p className="mt-2 text-sm text-neutral-600">
-                Nur Einträge, die Sie hier ins Admin-Archiv legen („Ins Archiv“). Status und Notiz bleiben bearbeitbar;
-                „Reaktivieren“ holt den Eintrag zurück. Partner-Archiv und Ablehnung betrieblich verschieben hier nichts.
+                Alle Tipps ohne Status „In Bearbeitung“, die nicht unter Aktive/Ehemalige Unternehmen (betriebliche
+                Pflegeberatung) liegen — <strong className="font-semibold text-neutral-800">nach Leistung sortiert</strong>.
+                Der Eintrag erscheint automatisch hier, sobald der Status geändert wird. Die Anzeige hat{" "}
+                <strong className="font-semibold text-neutral-800">keinen Einfluss auf Provisionen</strong>. Status
+                „In Bearbeitung“ verschiebt zurück unter Aufträge.
               </p>
-              <div className="mt-6 overflow-x-auto rounded-2xl border border-neutral-200/80">
-                <table className="min-w-[900px] w-full text-left text-sm">
-                  <thead className="border-b border-[#0F4F68]/10 bg-[#F2F9FA]/70 text-xs">
-                    <tr>
-                      <th className="px-3 py-3">
-                        <SortButton
-                          label="Datum"
-                          active={tipSort.key === "created_at"}
-                          dir={tipSort.dir}
-                          onClick={() => toggleTipSort("created_at")}
-                        />
-                      </th>
-                      <th className="px-3 py-3">
-                        <SortButton
-                          label="Partner"
-                          active={tipSort.key === "partner"}
-                          dir={tipSort.dir}
-                          onClick={() => toggleTipSort("partner")}
-                        />
-                      </th>
-                      <th className="px-3 py-3">
-                        <SortButton
-                          label="Dienstleistung"
-                          active={tipSort.key === "service"}
-                          dir={tipSort.dir}
-                          onClick={() => toggleTipSort("service")}
-                        />
-                      </th>
-                      <th className="px-3 py-3">Kurzinfo</th>
-                      <th className="px-3 py-3">
-                        <SortButton
-                          label="Status"
-                          active={tipSort.key === "status"}
-                          dir={tipSort.dir}
-                          onClick={() => toggleTipSort("status")}
-                        />
-                      </th>
-                      <th className="whitespace-nowrap px-3 py-3">Archiv</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-neutral-100">
-                    {sortedArchivedTips.length === 0 ? (
-                      <tr>
-                        <td colSpan={6} className="px-4 py-12 text-center text-neutral-600">
-                          Keine archivierten Aufträge.
-                        </td>
-                      </tr>
-                    ) : (
-                      sortedArchivedTips.map((t) => {
-                        const pd = partnerDisplay(t.partner_id);
-                        const label =
-                          PARTNER_RESPONSIBILITY_LABELS[t.service_slug as PartnerResponsibilitySlug] ??
-                          t.service_slug;
-                        return (
-                          <tr
-                            id={`partner-admin-tip-${t.id}`}
-                            key={t.id}
-                            className={`align-top transition-colors hover:bg-[#f8fbfc] ${serviceRowAccentBorderClass(t.service_slug)}`}
-                          >
-                            <td className="whitespace-nowrap px-3 py-3 text-neutral-700">
-                              {new Date(t.created_at).toLocaleString("de-DE", {
-                                dateStyle: "short",
-                                timeStyle: "short",
-                              })}
-                            </td>
-                            <td className="px-3 py-3">
-                              <span className="font-medium text-neutral-900">{pd.name}</span>
-                              {pd.code ? (
-                                <span className="ml-1 font-mono text-xs font-bold text-[#0F4F68]">{pd.code}</span>
-                              ) : null}
-                              <div className="break-all text-xs text-neutral-500">{pd.email}</div>
-                            </td>
-                            <td className="px-3 py-3">
-                              <span
-                                className={`inline-block rounded-full border px-2.5 py-1 text-xs font-semibold ${serviceBadgeClass(t.service_slug)}`}
-                              >
+              <div className="mt-6 space-y-12">
+                {archivedTips.length === 0 ? (
+                  <div className="overflow-x-auto rounded-2xl border border-neutral-200/80 bg-[#F2F9FA]/30 px-4 py-12 text-center text-neutral-600">
+                    Keine abgeschlossenen oder negativen Tipps im Archiv.
+                  </div>
+                ) : (
+                  archivTipsByService.map(({ slug, label, tips: groupTips }) => {
+                    const card = serviceAuftraegeAdminCardClasses(slug);
+                    const isOpen = archivLeistungOpen[slug] ?? true;
+                    const panelId = `partner-admin-archiv-panel-${slug}`;
+                    return (
+                      <div key={slug} className={`scroll-mt-4 overflow-hidden ${card.wrap}`}>
+                        <button
+                          type="button"
+                          className={`flex w-full flex-col gap-4 px-4 py-4 text-left transition hover:brightness-[0.99] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68]/35 focus-visible:ring-offset-2 sm:flex-row sm:items-stretch sm:justify-between sm:gap-6 sm:px-6 sm:py-5 ${card.header}`}
+                          onClick={() => toggleArchivLeistung(slug)}
+                          aria-expanded={isOpen}
+                          aria-controls={panelId}
+                        >
+                          <div className="flex min-w-0 flex-1 items-start gap-4">
+                            <span
+                              className={`mt-1 h-16 w-2.5 shrink-0 rounded-full sm:h-[4.25rem] sm:w-3 ${card.stripe}`}
+                              aria-hidden
+                            />
+                            <div className="min-w-0 flex-1 pt-0.5">
+                              <p className={`text-[0.7rem] font-bold uppercase tracking-[0.14em] sm:text-xs ${card.kicker}`}>
+                                Dienstleistung
+                              </p>
+                              <h3 className={`mt-1 text-balance text-xl font-bold leading-snug tracking-tight sm:text-2xl ${card.title}`}>
                                 {label}
+                              </h3>
+                            </div>
+                          </div>
+                          <div className="flex flex-shrink-0 items-center justify-end gap-3 sm:justify-between sm:gap-4">
+                            <span
+                              className={`inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-[#0F4F68]/15 bg-white/90 text-[#0F4F68] shadow-sm transition-transform duration-200 motion-reduce:transition-none ${
+                                isOpen ? "rotate-180" : ""
+                              }`}
+                              aria-hidden
+                            >
+                              <svg className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden>
+                                <path
+                                  fillRule="evenodd"
+                                  d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"
+                                  clipRule="evenodd"
+                                />
+                              </svg>
+                            </span>
+                            <div className={`flex min-w-0 flex-col items-center justify-center self-stretch sm:self-auto ${card.counter}`}>
+                              <span className={`text-3xl font-bold tabular-nums leading-none sm:text-4xl ${card.title}`}>
+                                {groupTips.length}
                               </span>
-                            </td>
-                            <td className="max-w-[240px] px-3 py-3 text-xs text-neutral-700">
-                              {partnerTipPayloadSummary(t.payload, t.service_slug)}
-                            </td>
-                            <td className="px-3 py-3">
-                              <TipStatusEditor
-                                tipId={t.id}
-                                status={t.admin_status}
-                                adminVisibleNote={t.admin_visible_note}
-                                serviceSlug={t.service_slug}
-                                paidAmountEur={t.paid_amount_eur}
-                                defaultMonthlyProvisionEur={defaultMonthlyProvisionForTip(
-                                  t,
-                                  commissionRatesByPartnerId,
-                                )}
-                              />
-                            </td>
-                            <td className="px-3 py-3 align-top">
-                              <div className="flex flex-col gap-2">
-                                <ArchiveTipButton tipId={t.id} isArchived />
-                                <DeleteTipButton tipId={t.id} />
+                              <span className={`mt-1.5 text-[0.7rem] font-bold uppercase tracking-[0.1em] ${card.counterLabel}`}>
+                                {groupTips.length === 1 ? "Eintrag" : "Einträge"}
+                              </span>
+                            </div>
+                          </div>
+                        </button>
+                        {isOpen ? (
+                          <div id={panelId} role="region" aria-label={`Archiv ${label}`}>
+                            <div className="p-2 pt-0 sm:p-4 sm:pt-0">
+                              <div className="overflow-x-auto rounded-xl border border-white/60 bg-white/95 shadow-inner ring-1 ring-black/[0.06]">
+                                <table className="min-w-[840px] w-full text-left text-sm">
+                                  <thead className={`text-xs font-semibold ${card.thead}`}>
+                                    <tr>
+                                      <th className="px-3 py-3">
+                                        <SortButton
+                                          label="Datum"
+                                          active={tipSort.key === "created_at"}
+                                          dir={tipSort.dir}
+                                          onClick={() => toggleTipSort("created_at")}
+                                        />
+                                      </th>
+                                      <th className="px-3 py-3">
+                                        <SortButton
+                                          label="Partner"
+                                          active={tipSort.key === "partner"}
+                                          dir={tipSort.dir}
+                                          onClick={() => toggleTipSort("partner")}
+                                        />
+                                      </th>
+                                      <th className="px-3 py-3">Kurzinfo</th>
+                                      <th className="px-3 py-3">
+                                        <SortButton
+                                          label="Status"
+                                          active={tipSort.key === "status"}
+                                          dir={tipSort.dir}
+                                          onClick={() => toggleTipSort("status")}
+                                        />
+                                      </th>
+                                      <th className="whitespace-nowrap px-3 py-3">Aktionen</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody className="divide-y divide-neutral-100 bg-white">
+                                    {groupTips.length === 0 ? (
+                                      <tr>
+                                        <td colSpan={5} className="px-4 py-10 text-center text-sm text-neutral-500">
+                                          Keine Einträge in dieser Leistung.
+                                        </td>
+                                      </tr>
+                                    ) : (
+                                      groupTips.map((t) => {
+                                        const pd = partnerDisplay(t.partner_id);
+                                        return (
+                                          <tr
+                                            id={`partner-admin-tip-${t.id}`}
+                                            key={t.id}
+                                            className={`align-top transition-colors hover:bg-[#f8fbfc] ${serviceRowAccentBorderClass(t.service_slug)}`}
+                                          >
+                                            <td className="whitespace-nowrap px-3 py-3 text-neutral-700">
+                                              {new Date(t.created_at).toLocaleString("de-DE", {
+                                                dateStyle: "short",
+                                                timeStyle: "short",
+                                              })}
+                                            </td>
+                                            <td className="px-3 py-3">
+                                              <span className="font-medium text-neutral-900">{pd.name}</span>
+                                              {pd.code ? (
+                                                <span className="ml-1 font-mono text-xs font-bold text-[#0F4F68]">{pd.code}</span>
+                                              ) : null}
+                                              <div className="break-all text-xs text-neutral-500">{pd.email}</div>
+                                            </td>
+                                            <td className="max-w-[240px] px-3 py-3 text-xs text-neutral-700">
+                                              {partnerTipPayloadSummary(t.payload, t.service_slug)}
+                                            </td>
+                                            <td className="px-3 py-3">
+                                              <TipStatusEditor
+                                                tipId={t.id}
+                                                status={t.admin_status}
+                                                adminVisibleNote={t.admin_visible_note}
+                                                serviceSlug={t.service_slug}
+                                                paidAmountEur={t.paid_amount_eur}
+                                                defaultMonthlyProvisionEur={defaultMonthlyProvisionForTip(
+                                                  t,
+                                                  commissionRatesByPartnerId,
+                                                )}
+                                              />
+                                            </td>
+                                            <td className="px-3 py-3 align-top">
+                                              <DeleteTipButton tipId={t.id} />
+                                            </td>
+                                          </tr>
+                                        );
+                                      })
+                                    )}
+                                  </tbody>
+                                </table>
                               </div>
-                            </td>
-                          </tr>
-                        );
-                      })
-                    )}
-                  </tbody>
-                </table>
+                            </div>
+                          </div>
+                        ) : null}
+                      </div>
+                    );
+                  })
+                )}
               </div>
             </section>
           ) : null}
