@@ -69,7 +69,7 @@ export function buildContentSecurityPolicy(): string {
     `script-src ${SCRIPT_COMMON}`,
     `script-src-elem ${SCRIPT_ELEM}`,
     `style-src 'self' 'unsafe-inline' https://translate.googleapis.com https://translate.google.com https://www.google.com https://tagmanager.google.com https://googletagmanager.com https://fonts.googleapis.com`,
-    `img-src 'self' data: https: ${GOOGLE_TAG_PLATFORM_IMG}`,
+    `img-src 'self' data: blob: https: ${GOOGLE_TAG_PLATFORM_IMG}`,
     "font-src 'self' https://fonts.gstatic.com https://www.gstatic.com data:",
     `connect-src 'self' ${TRANSLATE_SCRIPT} ${JITSI} ${SUPABASE} ${GOOGLE_TAG_PLATFORM_CONNECT}`,
     "worker-src 'self' blob:",

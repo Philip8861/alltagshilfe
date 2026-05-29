@@ -277,7 +277,7 @@ function NetworkAvatar({
   if (imageSrc) {
     return (
       <div className={`relative shrink-0 overflow-hidden rounded-full ${dim} ${ringCls}`}>
-        <Image src={imageSrc} alt="" fill className="object-cover" sizes="56px" />
+        <Image src={imageSrc} alt="" fill className="object-cover" sizes="56px" unoptimized />
       </div>
     );
   }

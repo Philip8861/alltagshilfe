@@ -67,7 +67,7 @@ export function PartnerAvatar({
           fill
           className="object-cover"
           sizes={IMAGE_SIZES[size]}
-          unoptimized={avatarUrl.startsWith("/")}
+          unoptimized
         />
       </div>
     );

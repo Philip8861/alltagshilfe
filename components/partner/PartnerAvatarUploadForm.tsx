@@ -59,17 +59,25 @@ export function PartnerAvatarUploadForm({ avatarUrl: initialAvatarUrl, partnerCo
 
   const uploadCropped = (file: File) => {
     startTransition(async () => {
-      const fd = new FormData();
-      fd.set("avatar", file);
-      const result = await uploadPartnerAvatarAction(fd);
-      closeCrop();
-      if (result.ok) {
-        setAvatarUrl(result.avatarUrl);
-        setFeedback({ tone: "ok", text: "Profilbild wurde gespeichert." });
-        router.refresh();
-        return;
+      try {
+        const fd = new FormData();
+        fd.set("avatar", file);
+        const result = await uploadPartnerAvatarAction(fd);
+        closeCrop();
+        if (result.ok) {
+          setAvatarUrl(result.avatarUrl);
+          setFeedback({ tone: "ok", text: "Profilbild wurde gespeichert." });
+          router.refresh();
+          return;
+        }
+        setFeedback({ tone: "err", text: result.message });
+      } catch {
+        closeCrop();
+        setFeedback({
+          tone: "err",
+          text: "Upload fehlgeschlagen. Bitte Seite neu laden und erneut versuchen.",
+        });
       }
-      setFeedback({ tone: "err", text: result.message });
     });
   };
 

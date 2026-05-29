@@ -75,22 +75,30 @@ const nextConfig: NextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
   images: {
-    remotePatterns: (() => {
-      const url = process.env.NEXT_PUBLIC_SUPABASE_URL?.trim();
-      if (!url) return [];
-      try {
-        const { hostname } = new URL(url);
-        return [
-          {
-            protocol: "https" as const,
-            hostname,
-            pathname: "/storage/v1/object/public/partner-avatars/**",
-          },
-        ];
-      } catch {
-        return [];
-      }
-    })(),
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "**.supabase.co",
+        pathname: "/storage/v1/object/public/partner-avatars/**",
+      },
+      ...(() => {
+        const url = process.env.NEXT_PUBLIC_SUPABASE_URL?.trim();
+        if (!url) return [];
+        try {
+          const { hostname } = new URL(url);
+          if (hostname.endsWith(".supabase.co")) return [];
+          return [
+            {
+              protocol: "https" as const,
+              hostname,
+              pathname: "/storage/v1/object/public/partner-avatars/**",
+            },
+          ];
+        } catch {
+          return [];
+        }
+      })(),
+    ],
   },
   /**
    * Karriere-Bewerbung (Kurzcheck + ggf. Formular): Anhänge bis 24 MB.
