@@ -109,7 +109,7 @@ export function PartnerAvatarUploadForm({ avatarUrl: initialAvatarUrl, partnerCo
         />
         <div className="min-w-0 flex-1 space-y-3 text-center sm:text-left">
           <p className="text-sm text-neutral-600">
-            Ihr Bild erscheint in der Begrüßung, im Werbenetzwerk und in Team-Listen. Erlaubt sind JPG, JPEG und PNG
+            Ihr Bild erscheint in der Begrüßung und im Werbe-Netzwerk. Erlaubt sind JPG, JPEG und PNG
             (max. 500 KB). Nach dem Upload können Sie das Bild im Kreis zuschneiden.
           </p>
           <div className="flex flex-wrap justify-center gap-3 sm:justify-start">

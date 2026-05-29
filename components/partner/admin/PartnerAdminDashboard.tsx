@@ -25,7 +25,6 @@ import {
 import { formatProvisionEur } from "@/lib/partner/partner-tip-payout";
 import { AdminHomepageStatistikHub } from "@/components/partner/admin/AdminHomepageStatistikHub";
 import { AdminPartnerProgrammStatistikHub } from "@/components/partner/admin/AdminPartnerProgrammStatistikHub";
-import { AdminTeamsPanel } from "@/components/partner/admin/AdminTeamsPanel";
 import { PartnerAdminPayoutSection } from "@/components/partner/admin/PartnerAdminPayoutSection";
 import { PartnerAccountDeactivateButton } from "@/components/partner/admin/PartnerAccountDeactivateButton";
 import { AdminPartnerPortalVerlauf } from "@/components/partner/admin/AdminPartnerPortalVerlauf";
@@ -43,7 +42,6 @@ import {
   inAdminAuftraegeQueue,
   inAdminEhemaligeUnternehmen,
 } from "@/lib/partner/partner-tip-betrieblich-queue";
-import type { AdminTeamOverview } from "@/lib/partner/admin-teams-overview";
 import type { PartnerCommissionRatesMap } from "@/lib/partner/partner-commission-rates-shared";
 import { resolveProvisionEurForPartner } from "@/lib/partner/partner-commission-rates-shared";
 import type {
@@ -98,8 +96,6 @@ type Props = {
   initialBereich: AdminSection;
   /** Server-validierte Tipp-UUID aus `?tipp=` (E-Mail Deep-Link). */
   initialFocusTipId?: string | null;
-  /** Betriebliche Teamgruppen (Admin). */
-  adminTeams: AdminTeamOverview[];
   /** Individuelle Provisionssätze je Partner-ID. */
   commissionRatesByPartnerId: Record<string, PartnerCommissionRatesMap>;
   /** Partnerportal-Audit (Verlauf). */
@@ -186,14 +182,12 @@ export function PartnerAdminDashboard({
   payoutPeriods,
   initialBereich,
   initialFocusTipId = null,
-  adminTeams,
   commissionRatesByPartnerId,
   initialAuditLog,
   auditSubjectLabels,
   defaultAuditPeriodKey,
 }: Props) {
   const [section, setSection] = useState<AdminSection>(initialBereich);
-  const [listeTeil, setListeTeil] = useState<"partner" | "teams">("partner");
   const [auftraegeLeistungOpen, setAuftraegeLeistungOpen] = useState<Record<PartnerResponsibilitySlug, boolean>>(
     () => Object.fromEntries(SERVICE_SLUG_ORDER.map((s) => [s, true])) as Record<PartnerResponsibilitySlug, boolean>,
   );
@@ -1055,58 +1049,19 @@ export function PartnerAdminDashboard({
               <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
                 <div className="min-w-0">
                   <h2 id="partner-liste-heading" className="text-xl font-bold text-[#0F4F68] sm:text-2xl">
-                    Partner & Teams
+                    Partnerliste
                   </h2>
                   <p className="mt-2 text-sm text-neutral-600">
-                    Partnerkonten verwalten oder alle Teamgruppen der betrieblichen Pflegeberatung einsehen.
+                    Partnerkonten verwalten, bearbeiten oder deaktivieren.
                   </p>
                 </div>
               </div>
 
-              <div
-                className="mt-6 flex flex-wrap gap-2 border-b border-[#0F4F68]/12 pb-3"
-                role="tablist"
-                aria-label="Listen-Ansicht"
-              >
-                <button
-                  type="button"
-                  role="tab"
-                  aria-selected={listeTeil === "partner"}
-                  onClick={() => setListeTeil("partner")}
-                  className={`min-h-11 rounded-xl px-4 text-sm font-bold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68]/30 sm:px-5 sm:text-base ${
-                    listeTeil === "partner"
-                      ? "bg-[#0F4F68] text-white shadow-sm"
-                      : "border border-[#0F4F68]/25 bg-white text-[#0F4F68] hover:bg-[#F2F9FA]"
-                  }`}
-                >
-                  Partnerliste
-                </button>
-                <button
-                  type="button"
-                  role="tab"
-                  aria-selected={listeTeil === "teams"}
-                  onClick={() => setListeTeil("teams")}
-                  className={`min-h-11 rounded-xl px-4 text-sm font-bold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68]/30 sm:px-5 sm:text-base ${
-                    listeTeil === "teams"
-                      ? "bg-[#0F4F68] text-white shadow-sm"
-                      : "border border-[#0F4F68]/25 bg-white text-[#0F4F68] hover:bg-[#F2F9FA]"
-                  }`}
-                >
-                  Teams ({adminTeams.length})
-                </button>
-              </div>
-
-              {listeTeil === "teams" ? (
-                <div className="mt-6">
-                  <AdminTeamsPanel teams={adminTeams} />
-                </div>
-              ) : (
-                <>
-                  <p className="mt-5 text-sm text-neutral-600">
-                    Alle Details, bearbeiten oder löschen. Partner können deaktiviert werden (kein Löschen nötig).
-                    Sortierung über die Spaltenköpfe.
-                  </p>
-                  <div className="mt-6 overflow-x-auto rounded-2xl border border-neutral-200/80">
+              <p className="mt-5 text-sm text-neutral-600">
+                Alle Details, bearbeiten oder löschen. Partner können deaktiviert werden (kein Löschen nötig).
+                Sortierung über die Spaltenköpfe.
+              </p>
+              <div className="mt-6 overflow-x-auto rounded-2xl border border-neutral-200/80">
                     <table className="min-w-[1240px] w-full text-left text-sm">
                       <thead className="border-b border-[#0F4F68]/10 bg-[#F2F9FA]/60 text-xs">
                         <tr>
@@ -1242,8 +1197,6 @@ export function PartnerAdminDashboard({
                       </tbody>
                     </table>
                   </div>
-                </>
-              )}
             </section>
           ) : null}
 

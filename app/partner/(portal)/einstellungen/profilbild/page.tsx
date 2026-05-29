@@ -3,7 +3,7 @@ import Link from "next/link";
 import { unstable_noStore as noStore } from "next/cache";
 import { PartnerAvatarUploadForm } from "@/components/partner/PartnerAvatarUploadForm";
 import { requirePartnerLogin } from "@/lib/partner/auth";
-import { partnerTeamMemberLabel } from "@/lib/partner/betrieblich-team-member-label";
+import { partnerPortalGreetingName } from "@/lib/partner/partner-portal-greeting";
 import { partnerAvatarPublicUrl } from "@/lib/partner/partner-avatar-shared";
 
 export const metadata: Metadata = {
@@ -13,7 +13,7 @@ export const metadata: Metadata = {
 export default async function PartnerEinstellungenProfilbildPage() {
   noStore();
   const { profile, email } = await requirePartnerLogin();
-  const displayName = partnerTeamMemberLabel(profile, email);
+  const displayName = partnerPortalGreetingName(profile, email);
   const avatarUrl = partnerAvatarPublicUrl(profile.avatar_path, profile.updated_at);
 
   return (

@@ -1,29 +1,23 @@
 import type { Metadata } from "next";
 import { unstable_noStore as noStore } from "next/cache";
-import { BetrieblichTeamPageClient } from "@/components/partner/betrieblich/BetrieblichTeamPageClient";
 import { PartnerNetworkSection } from "@/components/partner/network/PartnerNetworkSection";
 import { requirePartnerLogin } from "@/lib/partner/auth";
-import { partnerTeamMemberLabel } from "@/lib/partner/betrieblich-team-member-label";
-import { partnerHasBetrieblichPflegeberatung } from "@/lib/partner/betrieblich-team-types";
-import { fetchBetrieblichTeamsOverview } from "@/lib/partner/betrieblich-team-queries";
 import { getPartnerNetworkTree } from "@/lib/partner/network-tree";
-import { currentBerlinPeriodKey } from "@/lib/partner/payout-period";
 import { partnerAvatarPublicUrl } from "@/lib/partner/partner-avatar-shared";
+import { partnerPortalGreetingName } from "@/lib/partner/partner-portal-greeting";
+import { currentBerlinPeriodKey } from "@/lib/partner/payout-period";
 import { createSupabaseServiceRoleClient } from "@/lib/supabase/service";
 
 export const metadata: Metadata = {
-  title: "Partnernetzwerk",
+  title: "Werbe-Netzwerk",
 };
 
-export default async function PartnerBetrieblichTeamPage() {
+export default async function PartnerNetworkPage() {
   noStore();
   const { profile, email } = await requirePartnerLogin();
   const periodKey = currentBerlinPeriodKey();
-
-  const showsBetrieblich = partnerHasBetrieblichPflegeberatung(profile);
   const svc = createSupabaseServiceRoleClient();
 
-  const teams = svc && showsBetrieblich ? await fetchBetrieblichTeamsOverview(svc, profile.id) : [];
   const networkData = svc
     ? await getPartnerNetworkTree(svc, profile.id, periodKey)
     : {
@@ -37,19 +31,16 @@ export default async function PartnerBetrieblichTeamPage() {
   const avatarUrl = partnerAvatarPublicUrl(profile.avatar_path, profile.updated_at);
 
   return (
-    <div className="mx-auto w-full max-w-[min(100%,96rem)] space-y-8">
+    <div className="mx-auto w-full max-w-[min(100%,96rem)]">
       <PartnerNetworkSection
         initialData={networkData}
         viewer={{
-          displayName: partnerTeamMemberLabel(profile, email),
+          displayName: partnerPortalGreetingName(profile, email),
           partnerCode: profile.partner_referral_code ?? networkData.rootPartnerCode,
           isActive: !profile.account_disabled_at,
           avatarUrl,
         }}
       />
-      {showsBetrieblich ? (
-        <BetrieblichTeamPageClient initialTeams={teams} viewerPartnerId={profile.id} />
-      ) : null}
     </div>
   );
 }

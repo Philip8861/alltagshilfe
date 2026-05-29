@@ -10,7 +10,6 @@ import {
 } from "@/lib/partner/partner-tip-admin";
 import { normalizePaidAmountEur } from "@/lib/partner/partner-tip-payout";
 import { formatPayoutPeriodLabelDe, currentBerlinPeriodKey } from "@/lib/partner/payout-period";
-import { fetchAllTeamsForAdmin } from "@/lib/partner/admin-teams-overview";
 import { fetchAllPartnerCommissionRates } from "@/lib/partner/partner-commission-rates";
 import { fetchPartnerTipSubmissionRows } from "@/lib/partner/partner-tip-submissions-select";
 import { fetchPartnerPortalAuditLog } from "@/lib/partner/partner-portal-audit-log";
@@ -145,7 +144,6 @@ export default async function PartnerAdminPage({
     created_at: string;
     summary_json: Record<string, unknown> | null;
   }[] = [];
-  let adminTeams: Awaited<ReturnType<typeof fetchAllTeamsForAdmin>> = [];
   let commissionRatesByPartnerId: Awaited<ReturnType<typeof fetchAllPartnerCommissionRates>> = {};
   let initialAuditLog: Awaited<ReturnType<typeof fetchPartnerPortalAuditLog>> = [];
   const defaultAuditPeriodKey = currentBerlinPeriodKey();
@@ -199,8 +197,6 @@ export default async function PartnerAdminPage({
           };
         }
       }
-      const profileMapForTeams = new Map(profiles.map((p) => [p.id, p]));
-      adminTeams = await fetchAllTeamsForAdmin(svc, authById, profileMapForTeams);
       commissionRatesByPartnerId = await fetchAllPartnerCommissionRates(svc);
       initialAuditLog = await fetchPartnerPortalAuditLog(svc, { limit: 300 });
       if (repRes.error) {
@@ -239,7 +235,6 @@ export default async function PartnerAdminPage({
       tips = [];
       orders = [];
       payoutPeriods = [];
-      adminTeams = [];
       commissionRatesByPartnerId = {};
       initialAuditLog = [];
     }
@@ -260,7 +255,6 @@ export default async function PartnerAdminPage({
       payoutPeriods={payoutPeriods}
       initialBereich={initialBereich}
       initialFocusTipId={initialFocusTipId}
-      adminTeams={adminTeams}
       commissionRatesByPartnerId={commissionRatesByPartnerId}
       initialAuditLog={initialAuditLog}
       auditSubjectLabels={auditSubjectLabels}

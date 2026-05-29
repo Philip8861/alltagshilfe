@@ -9,8 +9,6 @@ import { PartnerTutorialOverlay } from "@/components/partner/PartnerTutorialOver
 
 type Props = {
   children: React.ReactNode;
-  /** Server: Teams nur bei Freischaltung „Betriebliche Pflegeberatung“. */
-  showBetrieblichTeamNav?: boolean;
   /** Server: Hinweis zum ersten Passwortwechsel anzeigen (ohne Session-Dismiss / ohne DB-Unterdrückung). */
   initialPasswordChangePrompt?: boolean;
   /** Server: Partner-Rundgang nach Login automatisch anbieten (solange nicht „Tutorial ausblenden“). */
@@ -19,7 +17,7 @@ type Props = {
 
 const shell = "bg-[#F2F9FA]";
 
-function TeamNavIcon() {
+function NetworkNavIcon() {
   return (
     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
       <path
@@ -61,7 +59,6 @@ function SettingsGearIcon() {
 
 export function PartnerPortalShell({
   children,
-  showBetrieblichTeamNav = false,
   initialPasswordChangePrompt = false,
   tutorialAutoShow = true,
 }: Props) {
@@ -82,7 +79,7 @@ export function PartnerPortalShell({
   const dashActive = pathname === "/partner/dashboard" || pathname === "/partner";
   const statActive = pathname === "/partner/statistik" || pathname.startsWith("/partner/statistik/");
   const settingsActive = pathname === "/partner/einstellungen" || pathname.startsWith("/partner/einstellungen/");
-  const teamActive = pathname === "/partner/team" || pathname.startsWith("/partner/team/");
+  const networkActive = pathname === "/partner/team" || pathname.startsWith("/partner/team/");
 
   return (
     <div className="flex min-h-screen flex-col bg-[#FAFBFC] md:flex-row">
@@ -102,17 +99,15 @@ export function PartnerPortalShell({
               <path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1h-5v-8H9v8H4a1 1 0 01-1-1V9.5z" strokeLinejoin="round" />
             </svg>
           </Link>
-          {showBetrieblichTeamNav ? (
-            <Link
-              href="/partner/team"
-              className={iconButtonClass(teamActive)}
-              aria-current={teamActive ? "page" : undefined}
-              title="Partnernetzwerk betriebliche Pflegeberatung"
-            >
-              <span className="sr-only">Partnernetzwerk, betriebliche Pflegeberatung</span>
-              <TeamNavIcon />
-            </Link>
-          ) : null}
+          <Link
+            href="/partner/team"
+            className={iconButtonClass(networkActive)}
+            aria-current={networkActive ? "page" : undefined}
+            title="Werbe-Netzwerk"
+          >
+            <span className="sr-only">Werbe-Netzwerk</span>
+            <NetworkNavIcon />
+          </Link>
           <Link
             href="/partner/statistik"
             data-tutorial="partner-nav-statistik"
