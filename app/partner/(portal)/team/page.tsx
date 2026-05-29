@@ -3,6 +3,7 @@ import { unstable_noStore as noStore } from "next/cache";
 import { BetrieblichTeamPageClient } from "@/components/partner/betrieblich/BetrieblichTeamPageClient";
 import { PartnerNetworkSection } from "@/components/partner/network/PartnerNetworkSection";
 import { requirePartnerLogin } from "@/lib/partner/auth";
+import { partnerTeamMemberLabel } from "@/lib/partner/betrieblich-team-member-label";
 import { partnerHasBetrieblichPflegeberatung } from "@/lib/partner/betrieblich-team-types";
 import { fetchBetrieblichTeamsOverview } from "@/lib/partner/betrieblich-team-queries";
 import { getPartnerNetworkTree } from "@/lib/partner/network-tree";
@@ -15,7 +16,7 @@ export const metadata: Metadata = {
 
 export default async function PartnerBetrieblichTeamPage() {
   noStore();
-  const { profile } = await requirePartnerLogin();
+  const { profile, email } = await requirePartnerLogin();
   const periodKey = currentBerlinPeriodKey();
 
   const showsBetrieblich = partnerHasBetrieblichPflegeberatung(profile);
@@ -34,7 +35,14 @@ export default async function PartnerBetrieblichTeamPage() {
 
   return (
     <div className="mx-auto w-full max-w-[min(100%,96rem)] space-y-8">
-      <PartnerNetworkSection initialData={networkData} />
+      <PartnerNetworkSection
+        initialData={networkData}
+        viewer={{
+          displayName: partnerTeamMemberLabel(profile, email),
+          partnerCode: profile.partner_referral_code ?? networkData.rootPartnerCode,
+          isActive: !profile.account_disabled_at,
+        }}
+      />
       {showsBetrieblich ? (
         <BetrieblichTeamPageClient initialTeams={teams} viewerPartnerId={profile.id} />
       ) : null}
