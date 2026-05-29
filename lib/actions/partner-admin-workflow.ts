@@ -6,10 +6,14 @@ import { isSupabaseMissingColumnError } from "@/lib/partner/supabase-schema-erro
 import { createSupabaseServiceRoleClient } from "@/lib/supabase/service";
 import { normalizePartnerTipAdminStatus } from "@/lib/partner/partner-tip-admin";
 import {
-  einmalProvisionForSlug,
   normalizePaidAmountEur,
   parsePayoutAmountGerman,
 } from "@/lib/partner/partner-tip-payout";
+import {
+  fetchPartnerCommissionRates,
+  resolveProvisionEurForPartner,
+  savePartnerCommissionRates,
+} from "@/lib/partner/partner-commission-rates";
 import {
   BETRIEBLICHE_PFLEGEBERATUNG_SLUG,
   isBetrieblichMitMonatsprovisionRow,
@@ -55,7 +59,7 @@ export async function updatePartnerTipStatusAction(
 
   const { data: cur, error: fetchErr } = await svc
     .from("partner_tip_submissions")
-    .select("admin_status, paid_amount_eur, service_slug")
+    .select("admin_status, paid_amount_eur, service_slug, partner_id")
     .eq("id", tipId)
     .maybeSingle();
 
@@ -64,9 +68,12 @@ export async function updatePartnerTipStatusAction(
   }
 
   const slug = String(cur.service_slug);
+  const partnerId = String(cur.partner_id);
   const prevStatus = normalizePartnerTipAdminStatus(cur.admin_status);
   const prevPaid = normalizePaidAmountEur(cur.paid_amount_eur);
   const isBetrieblich = slug === BETRIEBLICHE_PFLEGEBERATUNG_SLUG;
+
+  const partnerRates = await fetchPartnerCommissionRates(svc, partnerId);
 
   if (isBetrieblich && newStatus === "abgelehnt") {
     const grund = (parsed.data.admin_visible_note ?? "").trim();
@@ -81,26 +88,32 @@ export async function updatePartnerTipStatusAction(
   let paidUpdate: number | null | undefined = undefined;
 
   if (!isBetrieblich && newStatus === "vertragsabschluss_erfolgreich") {
-    const fixed = einmalProvisionForSlug(slug);
-    if (fixed == null) {
-      return { ok: false, message: "Für diese Leistung ist keine Einmalprovision hinterlegt." };
+    const resolved = resolveProvisionEurForPartner(slug, partnerRates);
+    if (resolved == null) {
+      return {
+        ok: false,
+        message:
+          "Für diese Leistung ist kein Provisionssatz hinterlegt. Bitte beim Partner einen individuellen Satz eintragen oder den globalen Standard prüfen.",
+      };
     }
-    paidUpdate = fixed;
+    paidUpdate = resolved;
   }
 
   if (isBetrieblich && newStatus === "vertragsabschluss_erfolgreich") {
     const entered = parsePayoutAmountGerman(parsed.data.payout_amount_eur ?? "");
+    const partnerDefault = resolveProvisionEurForPartner(slug, partnerRates);
     const hadProvision =
       prevPaid != null &&
       prevPaid > 0 &&
       prevStatus === "vertragsabschluss_erfolgreich";
-    if (!hadProvision && entered == null) {
+    if (!hadProvision && entered == null && partnerDefault == null) {
       return {
         ok: false,
-        message: "Bitte die monatliche Provision in EUR eintragen (z. B. 128,50).",
+        message:
+          "Bitte die monatliche Provision eintragen oder beim Partner einen Standard-Monatssatz hinterlegen.",
       };
     }
-    const amount = entered ?? prevPaid;
+    const amount = entered ?? prevPaid ?? partnerDefault;
     if (amount == null || amount <= 0) {
       return { ok: false, message: "Monatliche Provision muss größer als 0 sein." };
     }
@@ -329,6 +342,11 @@ export async function updatePartnerProfileAdminAction(
 
   if (error) {
     return { ok: false, message: error.message || "Profil konnte nicht gespeichert werden." };
+  }
+
+  const ratesResult = await savePartnerCommissionRates(svc, d.user_id, formData);
+  if (!ratesResult.ok) {
+    return { ok: false, message: ratesResult.message };
   }
 
   await svc.auth.admin.updateUserById(d.user_id, {

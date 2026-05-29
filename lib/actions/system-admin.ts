@@ -16,6 +16,7 @@ import { createPartnerUserSchema, deletePartnerUserIdSchema } from "@/lib/valida
 import { generatePartnerInitialPassword } from "@/lib/partner/generate-partner-password";
 import { assignUniquePartnerReferralCode } from "@/lib/partner/generate-partner-referral-code";
 import { setPartnerReferralByCode } from "@/lib/partner/referral";
+import { savePartnerCommissionRates } from "@/lib/partner/partner-commission-rates";
 import {
   sendPartnerRegistrationWelcomeMail,
   sendPartnerRegistrationWelcomePreviewMail,
@@ -238,6 +239,15 @@ export async function createPartnerUserAction(
       }
       return { ok: false, message: refRes.message };
     }
+  }
+
+  const ratesResult = await savePartnerCommissionRates(svc, uid, formData);
+  if (!ratesResult.ok) {
+    const { error: rollbackErr } = await svc.auth.admin.deleteUser(uid);
+    if (rollbackErr) {
+      console.error("[createPartnerUser] Auth-Rollback nach Provisions-Fehler fehlgeschlagen:", rollbackErr.message);
+    }
+    return { ok: false, message: ratesResult.message };
   }
 
   revalidatePath("/partner/admin");

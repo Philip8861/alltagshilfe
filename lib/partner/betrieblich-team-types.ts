@@ -29,6 +29,7 @@ export type BetrieblichTeamMemberStat = {
   partner_id: string;
   code: string | null;
   label: string;
+  avatarUrl?: string | null;
   /** Sichtbarkeit: `null` = ausgeblendet laut Team-Einstellungen (nicht null für eigene Zeile). */
   monatlich_eur: number | null;
   /** Siehe `monatlich_eur`. */
@@ -39,7 +40,10 @@ export type BetrieblichTeamMemberRow = {
   partner_id: string;
   role: "owner" | "member";
   joined_at: string;
-  profile: Pick<PartnerProfile, "first_name" | "last_name" | "display_name" | "organization_name" | "partner_referral_code" | "salutation">;
+  profile: Pick<
+    PartnerProfile,
+    "first_name" | "last_name" | "display_name" | "organization_name" | "partner_referral_code" | "salutation" | "avatar_path" | "updated_at"
+  >;
 };
 
 export type BetrieblichTeamSummary = {

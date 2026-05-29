@@ -8,6 +8,7 @@ import { partnerHasBetrieblichPflegeberatung } from "@/lib/partner/betrieblich-t
 import { fetchBetrieblichTeamsOverview } from "@/lib/partner/betrieblich-team-queries";
 import { getPartnerNetworkTree } from "@/lib/partner/network-tree";
 import { currentBerlinPeriodKey } from "@/lib/partner/payout-period";
+import { partnerAvatarPublicUrl } from "@/lib/partner/partner-avatar-shared";
 import { createSupabaseServiceRoleClient } from "@/lib/supabase/service";
 
 export const metadata: Metadata = {
@@ -33,6 +34,8 @@ export default async function PartnerBetrieblichTeamPage() {
         periodKey,
       };
 
+  const avatarUrl = partnerAvatarPublicUrl(profile.avatar_path, profile.updated_at);
+
   return (
     <div className="mx-auto w-full max-w-[min(100%,96rem)] space-y-8">
       <PartnerNetworkSection
@@ -41,6 +44,7 @@ export default async function PartnerBetrieblichTeamPage() {
           displayName: partnerTeamMemberLabel(profile, email),
           partnerCode: profile.partner_referral_code ?? networkData.rootPartnerCode,
           isActive: !profile.account_disabled_at,
+          avatarUrl,
         }}
       />
       {showsBetrieblich ? (

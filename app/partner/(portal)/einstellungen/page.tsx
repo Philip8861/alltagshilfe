@@ -15,28 +15,34 @@ const tileBase =
 
 const tiles: { href: string; title: string; description: string; delayClass: string }[] = [
   {
+    href: "/partner/einstellungen/profilbild",
+    title: "Profilbild",
+    description: "Foto hochladen und im Kreis zuschneiden.",
+    delayClass: "partner-dash-delay-1",
+  },
+  {
     href: "/partner/einstellungen/passwort",
     title: "Passwort ändern",
     description: "Neues Passwort für die Anmeldung festlegen.",
-    delayClass: "partner-dash-delay-1",
+    delayClass: "partner-dash-delay-2",
   },
   {
     href: "/partner/einstellungen/email",
     title: "E-Mail ändern",
     description: "Anmelde-Adresse aktualisieren.",
-    delayClass: "partner-dash-delay-2",
+    delayClass: "partner-dash-delay-3",
   },
   {
     href: "/partner/einstellungen/statuslisten",
     title: "Statuslisten einstellen",
     description: "Listen, Spalten und Ihr Archiv verwalten.",
-    delayClass: "partner-dash-delay-3",
+    delayClass: "partner-dash-delay-4",
   },
   {
     href: "/partner/einstellungen/vertraege",
     title: "Verträge",
     description: "Rahmenverträge und Dokumente (Ausbau geplant).",
-    delayClass: "partner-dash-delay-4",
+    delayClass: "partner-dash-delay-5",
   },
 ];
 

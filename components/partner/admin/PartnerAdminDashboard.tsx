@@ -42,6 +42,8 @@ import {
   inAdminEhemaligeUnternehmen,
 } from "@/lib/partner/partner-tip-betrieblich-queue";
 import type { AdminTeamOverview } from "@/lib/partner/admin-teams-overview";
+import type { PartnerCommissionRatesMap } from "@/lib/partner/partner-commission-rates-shared";
+import { resolveProvisionEurForPartner } from "@/lib/partner/partner-commission-rates-shared";
 import type {
   PartnerAdminPayoutPeriod,
   PartnerProfile,
@@ -95,6 +97,8 @@ type Props = {
   initialFocusTipId?: string | null;
   /** Betriebliche Teamgruppen (Admin). */
   adminTeams: AdminTeamOverview[];
+  /** Individuelle Provisionssätze je Partner-ID. */
+  commissionRatesByPartnerId: Record<string, PartnerCommissionRatesMap>;
 };
 
 function adminSectionForFocusedTip(t: PartnerTipSubmissionRow): AdminSection {
@@ -158,6 +162,14 @@ type PartnerStatRow = {
   lastSignIn: string | null;
 };
 
+function defaultMonthlyProvisionForTip(
+  t: PartnerTipSubmissionRow,
+  commissionRatesByPartnerId: Record<string, PartnerCommissionRatesMap>,
+): number | null {
+  if (t.service_slug !== "betriebliche_pflegeberatung") return null;
+  return resolveProvisionEurForPartner(t.service_slug, commissionRatesByPartnerId[t.partner_id] ?? null);
+}
+
 export function PartnerAdminDashboard({
   hasServiceRole,
   tips,
@@ -168,6 +180,7 @@ export function PartnerAdminDashboard({
   initialBereich,
   initialFocusTipId = null,
   adminTeams,
+  commissionRatesByPartnerId,
 }: Props) {
   const [section, setSection] = useState<AdminSection>(initialBereich);
   const [listeTeil, setListeTeil] = useState<"partner" | "teams">("partner");
@@ -582,6 +595,10 @@ export function PartnerAdminDashboard({
                                             adminVisibleNote={t.admin_visible_note}
                                             serviceSlug={t.service_slug}
                                             paidAmountEur={t.paid_amount_eur}
+                                            defaultMonthlyProvisionEur={defaultMonthlyProvisionForTip(
+                                              t,
+                                              commissionRatesByPartnerId,
+                                            )}
                                           />
                                         </td>
                                         <td className="px-3 py-3 align-top">
@@ -720,6 +737,10 @@ export function PartnerAdminDashboard({
                                   adminVisibleNote={t.admin_visible_note}
                                   serviceSlug={t.service_slug}
                                   paidAmountEur={t.paid_amount_eur}
+                                  defaultMonthlyProvisionEur={defaultMonthlyProvisionForTip(
+                                    t,
+                                    commissionRatesByPartnerId,
+                                  )}
                                 />
                               </td>
                               <td className="px-3 py-3 align-top">
@@ -849,6 +870,10 @@ export function PartnerAdminDashboard({
                                   adminVisibleNote={t.admin_visible_note}
                                   serviceSlug={t.service_slug}
                                   paidAmountEur={t.paid_amount_eur}
+                                  defaultMonthlyProvisionEur={defaultMonthlyProvisionForTip(
+                                    t,
+                                    commissionRatesByPartnerId,
+                                  )}
                                 />
                               </td>
                               <td className="px-3 py-3 align-top">
@@ -972,6 +997,10 @@ export function PartnerAdminDashboard({
                                 adminVisibleNote={t.admin_visible_note}
                                 serviceSlug={t.service_slug}
                                 paidAmountEur={t.paid_amount_eur}
+                                defaultMonthlyProvisionEur={defaultMonthlyProvisionForTip(
+                                  t,
+                                  commissionRatesByPartnerId,
+                                )}
                               />
                             </td>
                             <td className="px-3 py-3 align-top">

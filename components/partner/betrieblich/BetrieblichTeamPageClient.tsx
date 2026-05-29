@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useMemo, useState, useTransition } from "react";
 import { PartnerExpandableStatSection } from "@/components/partner/PartnerExpandableStatSection";
+import { PartnerAvatar } from "@/components/partner/PartnerAvatar";
 import type { BetrieblichTeamSummary, TeamProvisionVisibility } from "@/lib/partner/betrieblich-team-types";
 import { PARTNER_TEAM_MAX_MEMBERSHIPS } from "@/lib/partner/betrieblich-team-types";
 import {
@@ -323,7 +324,14 @@ function TeamCard({
                 {team.member_stats.map((row) => (
                   <tr key={row.partner_id} className="bg-white">
                     <td className="px-3 py-3 font-medium text-neutral-900">
-                      <span className="inline-flex flex-wrap items-center gap-2">
+                      <span className="inline-flex flex-wrap items-center gap-2.5">
+                        <PartnerAvatar
+                          avatarUrl={row.avatarUrl}
+                          partnerCode={row.code}
+                          displayName={row.label}
+                          size="md"
+                          alt=""
+                        />
                         {row.label}
                         {row.partner_id === viewerPartnerId ? (
                           <span className="rounded-md bg-[#0F4F68]/8 px-2 py-0.5 text-[0.65rem] font-semibold uppercase tracking-wide text-[#0F4F68]">

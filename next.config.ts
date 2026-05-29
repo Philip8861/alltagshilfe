@@ -74,6 +74,24 @@ function legacyHauptnavigationRedirects(): {
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
+  images: {
+    remotePatterns: (() => {
+      const url = process.env.NEXT_PUBLIC_SUPABASE_URL?.trim();
+      if (!url) return [];
+      try {
+        const { hostname } = new URL(url);
+        return [
+          {
+            protocol: "https" as const,
+            hostname,
+            pathname: "/storage/v1/object/public/partner-avatars/**",
+          },
+        ];
+      } catch {
+        return [];
+      }
+    })(),
+  },
   /**
    * Karriere-Bewerbung (Kurzcheck + ggf. Formular): Anhänge bis 24 MB.
    * Ohne Erhöhung bricht Next.js Server Actions bei ~1 MB ab – Upload wirkt dann „kaputt“.

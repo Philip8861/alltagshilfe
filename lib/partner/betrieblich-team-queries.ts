@@ -9,6 +9,7 @@ import {
 import { partnerTeamMemberLabel } from "@/lib/partner/betrieblich-team-member-label";
 import { aggregateBetrieblichTipStatsByPartner } from "@/lib/partner/betrieblich-team-stats";
 import { fetchPartnerTipSubmissionRows } from "@/lib/partner/partner-tip-submissions-select";
+import { partnerAvatarPublicUrl } from "@/lib/partner/partner-avatar-shared";
 import type { PartnerProfile } from "@/lib/partner/types";
 
 function applyStatVisibility(
@@ -81,7 +82,7 @@ export async function fetchBetrieblichTeamsOverview(
 
   const { data: profiles, error: pErr } = await svc
     .from("partner_profiles")
-    .select("id, first_name, last_name, display_name, organization_name, partner_referral_code, salutation")
+    .select("id, first_name, last_name, display_name, organization_name, partner_referral_code, salutation, avatar_path, updated_at")
     .in("id", partnerIdsAll);
 
   if (pErr || !profiles) return [];
@@ -96,6 +97,8 @@ export async function fetchBetrieblichTeamsOverview(
         organization_name: p.organization_name as string | null,
         partner_referral_code: p.partner_referral_code as string | null,
         salutation: p.salutation as PartnerProfile["salutation"],
+        avatar_path: p.avatar_path as string | null | undefined,
+        updated_at: p.updated_at as string | undefined,
       },
     ]),
   );
@@ -135,6 +138,8 @@ export async function fetchBetrieblichTeamsOverview(
           organization_name: null,
           partner_referral_code: null,
           salutation: null,
+          avatar_path: null,
+          updated_at: undefined,
         } as BetrieblichTeamMemberRow["profile"]);
       return {
         partner_id: pid,
@@ -155,6 +160,7 @@ export async function fetchBetrieblichTeamsOverview(
         partner_id: mr.partner_id,
         code: mr.profile.partner_referral_code?.trim() || null,
         label: partnerTeamMemberLabel(mr.profile),
+        avatarUrl: partnerAvatarPublicUrl(mr.profile.avatar_path, mr.profile.updated_at),
         monatlich_eur: st.monatlich_eur,
         abschluesse: st.abschluesse,
       };

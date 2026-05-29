@@ -16,6 +16,9 @@ import {
   listAdminDirectReferralsAction,
   type AdminReferralChild,
 } from "@/lib/actions/partner-admin-referral";
+import { getPartnerCommissionRatesAction } from "@/lib/actions/partner-admin-commission-rates";
+import { PartnerCommissionRatesFields } from "@/components/partner/admin/PartnerCommissionRatesFields";
+import type { PartnerCommissionRatesMap } from "@/lib/partner/partner-commission-rates-shared";
 
 const initial: AdminWorkflowState = { ok: false, message: "" };
 
@@ -32,6 +35,22 @@ export function PartnerEditModal({ open, onClose, profile, email, sponsorPartner
   const formId = useId();
   const router = useRouter();
   const [state, formAction, pending] = useActionState(updatePartnerProfileAdminAction, initial);
+  const [commissionRates, setCommissionRates] = useState<PartnerCommissionRatesMap>({});
+  const [ratesLoading, setRatesLoading] = useState(false);
+
+  useEffect(() => {
+    if (!open) return;
+    let cancelled = false;
+    setRatesLoading(true);
+    void getPartnerCommissionRatesAction(profile.id).then((res) => {
+      if (cancelled) return;
+      if (res.ok) setCommissionRates(res.rates);
+      setRatesLoading(false);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [open, profile.id]);
 
   useEffect(() => {
     if (state.ok) {
@@ -288,6 +307,13 @@ export function PartnerEditModal({ open, onClose, profile, email, sponsorPartner
               </label>
             </div>
           </fieldset>
+          <div className="border-t border-neutral-100 pt-4">
+            {ratesLoading ? (
+              <p className="text-xs text-neutral-500">Provisionssätze werden geladen…</p>
+            ) : (
+              <PartnerCommissionRatesFields initialRates={commissionRates} disabled={pending} compact />
+            )}
+          </div>
           <div className="flex flex-wrap gap-3 pt-2">
             <button
               type="submit"

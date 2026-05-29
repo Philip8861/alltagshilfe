@@ -16,6 +16,7 @@ import type {
   PartnerTipSubmissionRow,
 } from "@/lib/partner/types";
 import { fetchAllTeamsForAdmin } from "@/lib/partner/admin-teams-overview";
+import { fetchAllPartnerCommissionRates } from "@/lib/partner/partner-commission-rates";
 import { fetchPartnerTipSubmissionRows } from "@/lib/partner/partner-tip-submissions-select";
 import { createSupabaseServiceRoleClient } from "@/lib/supabase/service";
 
@@ -130,6 +131,7 @@ export default async function PartnerAdminPage({
     summary_json: Record<string, unknown> | null;
   }[] = [];
   let adminTeams: Awaited<ReturnType<typeof fetchAllTeamsForAdmin>> = [];
+  let commissionRatesByPartnerId: Awaited<ReturnType<typeof fetchAllPartnerCommissionRates>> = {};
 
   if (svc) {
     try {
@@ -182,6 +184,7 @@ export default async function PartnerAdminPage({
       }
       const profileMapForTeams = new Map(profiles.map((p) => [p.id, p]));
       adminTeams = await fetchAllTeamsForAdmin(svc, authById, profileMapForTeams);
+      commissionRatesByPartnerId = await fetchAllPartnerCommissionRates(svc);
       if (repRes.error) {
         console.error("[PartnerAdminPage] partner_payout_reports:", repRes.error.message);
       } else if (repRes.data?.length !== undefined) {
@@ -219,6 +222,7 @@ export default async function PartnerAdminPage({
       orders = [];
       payoutPeriods = [];
       adminTeams = [];
+      commissionRatesByPartnerId = {};
     }
   }
 
@@ -233,6 +237,7 @@ export default async function PartnerAdminPage({
       initialBereich={initialBereich}
       initialFocusTipId={initialFocusTipId}
       adminTeams={adminTeams}
+      commissionRatesByPartnerId={commissionRatesByPartnerId}
     />
   );
 }

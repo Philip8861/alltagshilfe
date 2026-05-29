@@ -2,11 +2,15 @@
 
 import { useActionState, useEffect, useRef, useState } from "react";
 import { PartnerAuthStatusBox } from "@/components/partner/PartnerAuthStatusBox";
+import { PartnerCommissionRatesFields } from "@/components/partner/admin/PartnerCommissionRatesFields";
 import {
   createPartnerUserAction,
   type CreatePartnerUserState,
 } from "@/lib/actions/system-admin";
-import { PARTNER_RESPONSIBILITY_SLUGS, PARTNER_RESPONSIBILITY_LABELS } from "@/lib/partner/responsibility-areas";
+import {
+  PARTNER_RESPONSIBILITY_SLUGS,
+  PARTNER_RESPONSIBILITY_LABELS,
+} from "@/lib/partner/responsibility-areas";
 
 const initial: CreatePartnerUserState = { ok: false, message: "" };
 
@@ -291,6 +295,7 @@ export function CreatePartnerAccountForm() {
           </label>
         </div>
       </fieldset>
+      <PartnerCommissionRatesFields disabled={pending} />
       <button
         type="submit"
         disabled={pending}

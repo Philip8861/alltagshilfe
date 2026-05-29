@@ -34,6 +34,8 @@ export type PartnerProfile = {
   referred_by_partner_id?: string | null;
   /** Zeitpunkt der Werber-Zuweisung (Migration 026); Provisionen vor diesem Zeitpunkt zählen NICHT. */
   referred_at?: string | null;
+  /** Storage-Pfad im Bucket partner-avatars (Migration 028). */
+  avatar_path?: string | null;
 };
 
 /** Nur drei Verwaltungs-Statusse (nach Migration 020). Legacy-Werte werden im Code noch normalisiert. */

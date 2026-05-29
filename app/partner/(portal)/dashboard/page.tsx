@@ -11,6 +11,7 @@ import type { PartnerDashboardTipSerial } from "@/lib/partner/types";
 import { PARTNER_RESPONSIBILITY_SLUGS } from "@/lib/partner/responsibility-areas";
 import { createSupabaseServiceRoleClient } from "@/lib/supabase/service";
 import { getPartnerMonthlyPayoutSummary } from "@/lib/partner/referral-commission";
+import { partnerAvatarPublicUrl } from "@/lib/partner/partner-avatar-shared";
 import { currentBerlinPeriodKey } from "@/lib/partner/payout-period";
 
 export const metadata: Metadata = {
@@ -37,6 +38,7 @@ export default async function PartnerDashboardPage({ searchParams }: { searchPar
   const responsibilityAreaSlugs = profile.responsibility_areas ?? [];
   const { provisionMonatlichEur, provisionEinmalEur } = partnerProvisionSumsFromTips(tips);
   const portalPreferences = normalizePortalPreferences(parsePortalPreferences(profile.portal_preferences));
+  const avatarUrl = partnerAvatarPublicUrl(profile.avatar_path, profile.updated_at);
   const tipSlugSet = new Set<string>(PARTNER_RESPONSIBILITY_SLUGS);
   const hasAnyTipArea = responsibilityAreaSlugs.some((s) => tipSlugSet.has(s));
 
@@ -60,6 +62,7 @@ export default async function PartnerDashboardPage({ searchParams }: { searchPar
     <PartnerDashboardClient
       welcomeLine={welcomeLine}
       partnerCode={partnerCode}
+      avatarUrl={avatarUrl}
       payoutLabel={payoutLabel}
       responsibilityAreaSlugs={responsibilityAreaSlugs}
       tips={tips}

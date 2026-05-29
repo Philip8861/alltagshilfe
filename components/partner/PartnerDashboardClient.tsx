@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { PartnerAnimatedEuro } from "@/components/partner/PartnerAnimatedEuro";
+import { PartnerAvatar } from "@/components/partner/PartnerAvatar";
 import { PartnerStatuslisteTable } from "@/components/partner/PartnerStatuslisteTable";
 import { PartnerTipModal } from "@/components/partner/PartnerTipModal";
 import {
@@ -22,6 +23,7 @@ import { formatPayoutPeriodLabelDe } from "@/lib/partner/payout-period";
 type Props = {
   welcomeLine: string;
   partnerCode: string | null;
+  avatarUrl?: string | null;
   payoutLabel: string;
   responsibilityAreaSlugs: string[];
   tips: PartnerDashboardTipSerial[];
@@ -48,6 +50,7 @@ const iconWrap =
 export function PartnerDashboardClient({
   welcomeLine,
   partnerCode,
+  avatarUrl,
   payoutLabel,
   responsibilityAreaSlugs,
   tips,
@@ -109,10 +112,31 @@ export function PartnerDashboardClient({
   return (
     <div className="mx-auto w-full max-w-[min(100%,90rem)] space-y-6 sm:space-y-8">
       <header className="flex flex-col gap-4 rounded-xl border border-[#0F4F68]/12 bg-[#F2F9FA] px-6 py-6 shadow-[0_10px_22px_rgba(15,79,104,0.2),0_4px_12px_rgba(15,79,104,0.12)] sm:flex-row sm:items-center sm:justify-between sm:px-8 sm:py-7">
-        <div className="partner-dash-animate min-w-0">
-          <h1 className="text-2xl font-semibold leading-snug text-[#0F4F68] sm:text-3xl">
-            {welcomeLine},
-          </h1>
+        <div className="partner-dash-animate flex min-w-0 items-start gap-4 sm:items-center">
+          <PartnerAvatar
+            avatarUrl={avatarUrl}
+            partnerCode={partnerCode}
+            displayName={welcomeLine}
+            size="profile"
+            ring
+            alt=""
+            className="hidden sm:flex"
+          />
+          <div className="min-w-0">
+            <div className="flex items-center gap-3 sm:block">
+              <PartnerAvatar
+                avatarUrl={avatarUrl}
+                partnerCode={partnerCode}
+                displayName={welcomeLine}
+                size="lg"
+                ring
+                alt=""
+                className="sm:hidden"
+              />
+              <h1 className="text-2xl font-semibold leading-snug text-[#0F4F68] sm:text-3xl">
+                {welcomeLine},
+              </h1>
+            </div>
           <div className="mt-2 h-1 w-full max-w-[10rem] overflow-hidden rounded-full bg-[#0F4F68]/15">
             <div
               className="h-full w-full origin-left scale-x-0 animate-partner-bar-fill rounded-full bg-gradient-to-r from-[#0F4F68] to-[#3DB8C9]"
@@ -123,6 +147,7 @@ export function PartnerDashboardClient({
           <p className="mt-3 text-sm text-neutral-700 sm:text-base">
             {demoMode ? "Demoansicht mit Beispieldaten — so sieht Max Mustermann die Übersicht." : "Dein persönliches Partnerportal-Dashboard."}
           </p>
+          </div>
         </div>
         {demoMode ? (
           <Link

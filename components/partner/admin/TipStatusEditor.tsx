@@ -15,6 +15,8 @@ type Props = {
   adminVisibleNote: string | null;
   serviceSlug: string;
   paidAmountEur: number | null;
+  /** Partner-Standard für monatliche Provision (Betrieb), falls noch kein Betrag gesetzt. */
+  defaultMonthlyProvisionEur?: number | null;
 };
 
 function formatPayoutInputHint(eur: number | null): string {
@@ -22,12 +24,21 @@ function formatPayoutInputHint(eur: number | null): string {
   return String(eur).includes(".") ? String(eur).replace(".", ",") : String(eur);
 }
 
-export function TipStatusEditor({ tipId, status, adminVisibleNote, serviceSlug, paidAmountEur }: Props) {
+export function TipStatusEditor({
+  tipId,
+  status,
+  adminVisibleNote,
+  serviceSlug,
+  paidAmountEur,
+  defaultMonthlyProvisionEur = null,
+}: Props) {
   const router = useRouter();
   const [selectedStatus, setSelectedStatus] = useState<PartnerTipAdminStatus>(status);
   const [note, setNote] = useState(adminVisibleNote ?? "");
   const [noteOpen, setNoteOpen] = useState(Boolean((adminVisibleNote ?? "").trim()));
-  const [payoutInput, setPayoutInput] = useState(() => formatPayoutInputHint(paidAmountEur));
+  const [payoutInput, setPayoutInput] = useState(() =>
+    formatPayoutInputHint(paidAmountEur ?? defaultMonthlyProvisionEur),
+  );
   const wasPending = useRef(false);
 
   const [state, formAction, pending] = useActionState(updatePartnerTipStatusAction, initial);
@@ -47,8 +58,8 @@ export function TipStatusEditor({ tipId, status, adminVisibleNote, serviceSlug, 
   }, [adminVisibleNote]);
 
   useEffect(() => {
-    setPayoutInput(formatPayoutInputHint(paidAmountEur));
-  }, [paidAmountEur]);
+    setPayoutInput(formatPayoutInputHint(paidAmountEur ?? defaultMonthlyProvisionEur));
+  }, [paidAmountEur, defaultMonthlyProvisionEur]);
 
   useEffect(() => {
     if (showRejectionGrund) setNoteOpen(true);
@@ -59,11 +70,11 @@ export function TipStatusEditor({ tipId, status, adminVisibleNote, serviceSlug, 
       if (!state.ok && state.message) {
         setSelectedStatus(status);
         setNote(adminVisibleNote ?? "");
-        setPayoutInput(formatPayoutInputHint(paidAmountEur));
+        setPayoutInput(formatPayoutInputHint(paidAmountEur ?? defaultMonthlyProvisionEur));
       }
     }
     wasPending.current = pending;
-  }, [pending, state.ok, state.message, status, adminVisibleNote, paidAmountEur]);
+  }, [pending, state.ok, state.message, status, adminVisibleNote, paidAmountEur, defaultMonthlyProvisionEur]);
 
   useEffect(() => {
     if (state.ok) router.refresh();
@@ -101,8 +112,8 @@ export function TipStatusEditor({ tipId, status, adminVisibleNote, serviceSlug, 
             Monatliche Provision (EUR)
           </label>
           <p className="mt-0.5 text-[0.6rem] leading-snug text-amber-900/85">
-            Erforderlich bei „Vertragsabschluss erfolgreich“ (betriebliche Pflegeberatung). Der Auftrag erscheint unter „Aktive
-            Unternehmen“; die Provision fließt in die Abrechnung.
+            Erforderlich bei „Vertragsabschluss erfolgreich“ (betriebliche Pflegeberatung). Leer lassen übernimmt den
+            Partner-Standard, falls hinterlegt.
           </p>
           <input
             id={`tip-payout-${tipId}`}
