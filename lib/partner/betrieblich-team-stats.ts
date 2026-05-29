@@ -1,7 +1,6 @@
 import { BETRIEBLICHE_PFLEGEBERATUNG_SLUG } from "@/lib/partner/betrieblich-team-types";
 import {
   normalizeArchivedAt,
-  normalizePartnerArchivedAt,
   normalizePartnerTipAdminStatus,
 } from "@/lib/partner/partner-tip-admin";
 import { normalizePaidAmountEur } from "@/lib/partner/partner-tip-payout";
@@ -19,8 +18,6 @@ type TipLike = {
 function tipRowActiveForPartnerDashboard(t: TipLike): boolean {
   const a = normalizeArchivedAt(t.archived_at);
   if (a) return false;
-  const pa = normalizePartnerArchivedAt(t.partner_archived_at ?? null);
-  if (pa) return false;
   return true;
 }
 

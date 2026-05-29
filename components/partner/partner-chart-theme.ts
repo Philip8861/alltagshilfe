@@ -11,7 +11,8 @@ export const CHART_SLATE = "#64748b";
 export const ADMIN_STATUS_CHART_COLOR: Record<PartnerTipAdminStatus, string> = {
   in_bearbeitung: CHART_AMBER,
   vertragsabschluss_erfolgreich: CHART_EMERALD,
-  abgelehnt: CHART_ROSE,
+  nicht_erfolgreich: CHART_ROSE,
+  vertrag_gekuendigt: CHART_ROSE,
 };
 
 export const CHART_AXIS_TICK = "#475569";

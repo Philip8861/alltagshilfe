@@ -42,7 +42,8 @@ export type PartnerProfile = {
 export type PartnerTipAdminStatus =
   | "in_bearbeitung"
   | "vertragsabschluss_erfolgreich"
-  | "abgelehnt";
+  | "nicht_erfolgreich"
+  | "vertrag_gekuendigt";
 
 export type PartnerTipSubmissionRow = {
   id: string;

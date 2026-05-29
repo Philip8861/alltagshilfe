@@ -45,7 +45,7 @@ export function TipStatusEditor({
 
   const isBetrieblich = serviceSlug === "betriebliche_pflegeberatung";
   const showPayoutField = selectedStatus === "vertragsabschluss_erfolgreich" && isBetrieblich;
-  const showRejectionGrund = selectedStatus === "abgelehnt" && isBetrieblich;
+  const showRejectionGrund = selectedStatus === "nicht_erfolgreich" && isBetrieblich;
 
   useEffect(() => {
     setSelectedStatus(status);
@@ -138,7 +138,7 @@ export function TipStatusEditor({
             Ablehnungsgrund <span className="text-rose-700">*</span>
           </label>
           <p className="mt-0.5 text-[0.6rem] leading-snug text-rose-900/85">
-            Wird dem Partner als Notiz angezeigt. Der Eintrag wird ins Admin-Archiv verschoben.
+            Wird dem Partner als Notiz angezeigt. Der Eintrag wird ins Partner-Archiv verschoben; die Provision entfällt.
           </p>
           <textarea
             id={`tip-grund-${tipId}`}

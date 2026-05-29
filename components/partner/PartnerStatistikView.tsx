@@ -142,6 +142,8 @@ export function PartnerStatistikView({ tips, orders, partnerCreatedAt }: Props) 
   const tipsInPeriodCount = tipsInPeriod.length;
   const abgeschlossen = statusInPeriod.vertragsabschluss_erfolgreich;
   const inBearbeitung = statusInPeriod.in_bearbeitung;
+  const negativ =
+    statusInPeriod.nicht_erfolgreich + statusInPeriod.vertrag_gekuendigt;
 
   return (
     <section className="partner-dash-animate rounded-2xl border border-[#0F4F68]/12 bg-white p-5 shadow-[0_12px_40px_-20px_rgba(15,79,104,0.2)] sm:p-8">
@@ -225,8 +227,8 @@ export function PartnerStatistikView({ tips, orders, partnerCreatedAt }: Props) 
           </p>
         </div>
         <div className="rounded-2xl border border-rose-200/70 bg-gradient-to-br from-rose-50/70 to-white p-4">
-          <p className="text-[0.65rem] font-bold uppercase tracking-wide text-rose-900/70">Abgelehnt</p>
-          <p className="mt-1 text-2xl font-bold tabular-nums text-rose-900">{statusInPeriod.abgelehnt}</p>
+          <p className="text-[0.65rem] font-bold uppercase tracking-wide text-rose-900/70">Nicht erfolgreich / Gekündigt</p>
+          <p className="mt-1 text-2xl font-bold tabular-nums text-rose-900">{negativ}</p>
         </div>
         <div className="rounded-2xl border border-amber-200/70 bg-gradient-to-br from-amber-50/70 to-white p-4">
           <p className="text-[0.65rem] font-bold uppercase tracking-wide text-amber-950/75">In Bearbeitung</p>

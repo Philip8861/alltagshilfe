@@ -62,7 +62,8 @@ function statusPill(admin: PartnerTipAdminStatus): { label: string; className: s
       return { label, className: "bg-amber-400 text-amber-950" };
     case "vertragsabschluss_erfolgreich":
       return { label, className: "bg-emerald-600 px-3 py-1 font-semibold text-white" };
-    case "abgelehnt":
+    case "nicht_erfolgreich":
+    case "vertrag_gekuendigt":
       return { label, className: "bg-red-600 text-white" };
     default:
       return { label, className: "bg-neutral-500 text-white" };

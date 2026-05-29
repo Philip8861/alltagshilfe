@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache";
 import { getSystemAdminSession } from "@/lib/partner/system-admin-session";
 import { isSupabaseMissingColumnError } from "@/lib/partner/supabase-schema-errors";
 import { createSupabaseServiceRoleClient } from "@/lib/supabase/service";
-import { normalizePartnerTipAdminStatus } from "@/lib/partner/partner-tip-admin";
+import { normalizePartnerTipAdminStatus, isPartnerTipNegativeStatus } from "@/lib/partner/partner-tip-admin";
 import {
   normalizePaidAmountEur,
   parsePayoutAmountGerman,
@@ -75,56 +75,54 @@ export async function updatePartnerTipStatusAction(
 
   const partnerRates = await fetchPartnerCommissionRates(svc, partnerId);
 
-  if (isBetrieblich && newStatus === "abgelehnt") {
+  const isNegative = isPartnerTipNegativeStatus(newStatus);
+  const wasNegative = isPartnerTipNegativeStatus(prevStatus);
+
+  if (isBetrieblich && newStatus === "nicht_erfolgreich") {
     const grund = (parsed.data.admin_visible_note ?? "").trim();
     if (grund.length < 3) {
       return {
         ok: false,
-        message: "Bitte einen Ablehnungsgrund angeben (mind. 3 Zeichen, wird dem Partner als Notiz angezeigt).",
+        message: "Bitte einen Grund angeben (mind. 3 Zeichen, wird dem Partner als Notiz angezeigt).",
       };
     }
   }
 
   let paidUpdate: number | null | undefined = undefined;
 
-  if (!isBetrieblich && newStatus === "vertragsabschluss_erfolgreich") {
-    const resolved = resolveProvisionEurForPartner(slug, partnerRates);
-    if (resolved == null) {
-      return {
-        ok: false,
-        message:
-          "Für diese Leistung ist kein Provisionssatz hinterlegt. Bitte beim Partner einen individuellen Satz eintragen oder den globalen Standard prüfen.",
-      };
+  if (newStatus === "vertragsabschluss_erfolgreich") {
+    if (!isBetrieblich) {
+      const resolved = resolveProvisionEurForPartner(slug, partnerRates);
+      if (resolved == null) {
+        return {
+          ok: false,
+          message:
+            "Für diese Leistung ist kein Provisionssatz hinterlegt. Bitte beim Partner einen individuellen Satz eintragen oder den globalen Standard prüfen.",
+        };
+      }
+      paidUpdate = resolved;
+    } else {
+      const entered = parsePayoutAmountGerman(parsed.data.payout_amount_eur ?? "");
+      const partnerDefault = resolveProvisionEurForPartner(slug, partnerRates);
+      const hadProvision =
+        prevPaid != null &&
+        prevPaid > 0 &&
+        prevStatus === "vertragsabschluss_erfolgreich";
+      if (!hadProvision && entered == null && partnerDefault == null) {
+        return {
+          ok: false,
+          message:
+            "Bitte die monatliche Provision eintragen oder beim Partner einen Standard-Monatssatz hinterlegen.",
+        };
+      }
+      const amount = entered ?? prevPaid ?? partnerDefault;
+      if (amount == null || amount <= 0) {
+        return { ok: false, message: "Monatliche Provision muss größer als 0 sein." };
+      }
+      paidUpdate = amount;
     }
-    paidUpdate = resolved;
-  }
-
-  if (isBetrieblich && newStatus === "vertragsabschluss_erfolgreich") {
-    const entered = parsePayoutAmountGerman(parsed.data.payout_amount_eur ?? "");
-    const partnerDefault = resolveProvisionEurForPartner(slug, partnerRates);
-    const hadProvision =
-      prevPaid != null &&
-      prevPaid > 0 &&
-      prevStatus === "vertragsabschluss_erfolgreich";
-    if (!hadProvision && entered == null && partnerDefault == null) {
-      return {
-        ok: false,
-        message:
-          "Bitte die monatliche Provision eintragen oder beim Partner einen Standard-Monatssatz hinterlegen.",
-      };
-    }
-    const amount = entered ?? prevPaid ?? partnerDefault;
-    if (amount == null || amount <= 0) {
-      return { ok: false, message: "Monatliche Provision muss größer als 0 sein." };
-    }
-    paidUpdate = amount;
-  }
-
-  if (isBetrieblich && newStatus !== "vertragsabschluss_erfolgreich") {
-    paidUpdate = null;
-  }
-
-  if (newStatus === "abgelehnt") {
+  } else {
+    /** Nur „Vertragsabschluss erfolgreich“ löst Provision aus — alle anderen Status löschen den Betrag. */
     paidUpdate = null;
   }
 
@@ -139,10 +137,10 @@ export async function updatePartnerTipStatusAction(
     payloadFull.former_active_company_at = null;
   }
 
-  if (newStatus === "abgelehnt") {
-    payloadFull.archived_at = new Date().toISOString();
-  } else if (prevStatus === "abgelehnt") {
-    payloadFull.archived_at = null;
+  if (isNegative) {
+    payloadFull.partner_archived_at = new Date().toISOString();
+  } else if (wasNegative) {
+    payloadFull.partner_archived_at = null;
   }
 
   if (newStatus !== "in_bearbeitung") {
@@ -173,14 +171,14 @@ export async function updatePartnerTipStatusAction(
       return {
         ok: false,
         message:
-          "Dieser Status wird von der Datenbank abgelehnt. Bitte Migration 020 (drei Status-Werte) in Supabase ausführen.",
+          "Dieser Status wird von der Datenbank abgelehnt. Bitte Migration 029 (vier Status-Werte) in Supabase ausführen.",
       };
     }
     return {
       ok: false,
       message:
         error.message?.includes("check constraint") || error.message?.toLowerCase().includes("violates check")
-          ? "Status von der Datenbank abgelehnt – Migration 020 (Status-Check) prüfen."
+          ? "Status von der Datenbank abgelehnt – Migration 029 (Status-Check) prüfen."
           : "Speichern fehlgeschlagen. Spalten admin_visible_note / admin_status / paid_amount_eur und Migrationen prüfen.",
     };
   }

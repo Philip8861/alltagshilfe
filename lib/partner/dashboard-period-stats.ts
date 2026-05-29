@@ -1,9 +1,9 @@
-import { PARTNER_TIP_ADMIN_STATUSES } from "@/lib/partner/partner-tip-admin";
+import { isPartnerTipNegativeStatus, PARTNER_TIP_ADMIN_STATUSES } from "@/lib/partner/partner-tip-admin";
 import type { PartnerTipAdminStatus } from "@/lib/partner/types";
 
 export type DashboardAuftragStats = {
   abgeschlossen: number;
-  abgelehnt: number;
+  negativ: number;
   inBearbeitung: number;
 };
 
@@ -45,12 +45,12 @@ export function statsForPeriod(
   const a = start.getTime();
   const b = end.getTime();
   let abgeschlossen = 0;
-  let abgelehnt = 0;
+  let negativ = 0;
   let inBearbeitung = 0;
   for (const t of tips) {
     if (!inRange(t.created_at, a, b)) continue;
     if (t.admin_status === "vertragsabschluss_erfolgreich") abgeschlossen += 1;
-    else if (t.admin_status === "abgelehnt") abgelehnt += 1;
+    else if (isPartnerTipNegativeStatus(t.admin_status)) negativ += 1;
     else inBearbeitung += 1;
   }
   for (const o of orders) {
@@ -58,7 +58,7 @@ export function statsForPeriod(
     const s = (o.status || "").toLowerCase();
     if (s === "completed" || s === "erledigt" || s === "abgeschlossen") abgeschlossen += 1;
   }
-  return { abgeschlossen, abgelehnt, inBearbeitung };
+  return { abgeschlossen, negativ, inBearbeitung };
 }
 
 export function statsForMonth(tips: TipLike[], orders: OrderLike[], year: number, monthIndex0: number) {

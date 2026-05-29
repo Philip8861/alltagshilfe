@@ -63,7 +63,8 @@ export async function notifyStaffOfNewPartnerTip(input: PartnerTipStaffNotifyBas
   const statusChoice = [
     PARTNER_TIP_STATUS_LABELS.vertragsabschluss_erfolgreich,
     PARTNER_TIP_STATUS_LABELS.in_bearbeitung,
-    PARTNER_TIP_STATUS_LABELS.abgelehnt,
+    PARTNER_TIP_STATUS_LABELS.nicht_erfolgreich,
+    PARTNER_TIP_STATUS_LABELS.vertrag_gekuendigt,
   ].join(", ");
 
   const detailText = [

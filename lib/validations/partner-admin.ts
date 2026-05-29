@@ -10,7 +10,8 @@ const responsibilitySlug = z.enum([
 const partnerTipAdminStatusEnum = z.enum([
   "in_bearbeitung",
   "vertragsabschluss_erfolgreich",
-  "abgelehnt",
+  "nicht_erfolgreich",
+  "vertrag_gekuendigt",
 ]);
 
 export const updatePartnerTipStatusSchema = z.object({

@@ -10,7 +10,7 @@ import { PartnerRegistrationEmailTestBox } from "@/components/partner/PartnerReg
 import { DeletePartnerUserButton } from "@/components/partner/DeletePartnerUserButton";
 import { PartnerEditModal } from "@/components/partner/admin/PartnerEditModal";
 import { TipStatusEditor } from "@/components/partner/admin/TipStatusEditor";
-import { PARTNER_TIP_ADMIN_STATUSES, PARTNER_TIP_STATUS_LABELS } from "@/lib/partner/partner-tip-admin";
+import { isPartnerTipNegativeStatus, PARTNER_TIP_ADMIN_STATUSES, PARTNER_TIP_STATUS_LABELS } from "@/lib/partner/partner-tip-admin";
 import { partnerTipPayloadSummary } from "@/lib/partner/partner-tip-summary";
 import {
   PARTNER_RESPONSIBILITY_LABELS,
@@ -82,7 +82,7 @@ type StatSortKey =
   | "tipsTotal"
   | "tipsBearbeitung"
   | "tipsVertragsabschluss"
-  | "tipsAbgelehnt"
+  | "tipsNegativ"
   | "boxOrders";
 
 type Props = {
@@ -157,7 +157,7 @@ type PartnerStatRow = {
   tipsTotal: number;
   tipsBearbeitung: number;
   tipsVertragsabschluss: number;
-  tipsAbgelehnt: number;
+  tipsNegativ: number;
   boxOrders: number;
   lastSignIn: string | null;
 };
@@ -374,7 +374,7 @@ export function PartnerAdminDashboard({
       const ts = tipsByPartner.get(p.id) ?? [];
       const inB = ts.filter((x) => x.admin_status === "in_bearbeitung").length;
       const vertrag = ts.filter((x) => x.admin_status === "vertragsabschluss_erfolgreich").length;
-      const abg = ts.filter((x) => x.admin_status === "abgelehnt").length;
+      const neg = ts.filter((x) => isPartnerTipNegativeStatus(x.admin_status)).length;
       const last = authById[p.id]?.last_sign_in_at ?? null;
       return {
         profile: p,
@@ -382,7 +382,7 @@ export function PartnerAdminDashboard({
         tipsTotal: ts.length,
         tipsBearbeitung: inB,
         tipsVertragsabschluss: vertrag,
-        tipsAbgelehnt: abg,
+        tipsNegativ: neg,
         boxOrders: ordersByPartner.get(p.id) ?? 0,
         lastSignIn: last,
       };
@@ -1404,10 +1404,10 @@ export function PartnerAdminDashboard({
                               </th>
                               <th className="px-3 py-3">
                                 <SortButton
-                                  label="Abgelehnt"
-                                  active={statSort.key === "tipsAbgelehnt"}
+                                  label="Nicht erfolgr./Gekünd."
+                                  active={statSort.key === "tipsNegativ"}
                                   dir={statSort.dir}
-                                  onClick={() => toggleStatSort("tipsAbgelehnt")}
+                                  onClick={() => toggleStatSort("tipsNegativ")}
                                 />
                               </th>
                               <th className="px-3 py-3">
@@ -1451,7 +1451,7 @@ export function PartnerAdminDashboard({
                                   </td>
                                   <td className="px-3 py-3 tabular-nums text-neutral-700">{row.tipsBearbeitung}</td>
                                   <td className="px-3 py-3 tabular-nums text-emerald-800">{row.tipsVertragsabschluss}</td>
-                                  <td className="px-3 py-3 tabular-nums text-rose-800">{row.tipsAbgelehnt}</td>
+                                  <td className="px-3 py-3 tabular-nums text-rose-800">{row.tipsNegativ}</td>
                                   <td className="px-3 py-3 tabular-nums text-neutral-800">{row.boxOrders}</td>
                                   <td className="whitespace-nowrap px-3 py-3 text-xs text-neutral-600">
                                     {p.created_at
