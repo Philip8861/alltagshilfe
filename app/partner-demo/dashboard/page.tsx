@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { PartnerDashboardClient } from "@/components/partner/PartnerDashboardClient";
+import { PARTNER_DEMO_MAX_MUSTERMANN_AVATAR } from "@/lib/partner/partner-demo-avatars";
 import {
   getPartnerDemoPayoutSummary,
   PARTNER_DEMO_MAX_MUSTERMANN_CODE,
@@ -25,6 +26,7 @@ export default function PartnerDemoDashboardPage() {
     <PartnerDashboardClient
       welcomeLine="Willkommen, Max Mustermann"
       partnerCode={PARTNER_DEMO_MAX_MUSTERMANN_CODE}
+      avatarUrl={PARTNER_DEMO_MAX_MUSTERMANN_AVATAR}
       payoutLabel={payoutLabel}
       responsibilityAreaSlugs={[...PARTNER_RESPONSIBILITY_SLUGS]}
       tips={tips}

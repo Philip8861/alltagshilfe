@@ -34,4 +34,4 @@ export function getDemoAvatarInitials(partnerCode: string | null | undefined, di
 }
 
 /** Feste Demo-Avatar-URL für Max Mustermann (lokal, keine Upload-Logik). */
-export const PARTNER_DEMO_MAX_MUSTERMANN_AVATAR = "/partner-demo/avatar-max-mustermann.svg";
+export const PARTNER_DEMO_MAX_MUSTERMANN_AVATAR = "/images/Max_mustermann.jpg";
