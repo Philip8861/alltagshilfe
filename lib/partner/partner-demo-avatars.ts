@@ -35,3 +35,27 @@ export function getDemoAvatarInitials(partnerCode: string | null | undefined, di
 
 /** Feste Demo-Avatar-URL für Max Mustermann (lokal, keine Upload-Logik). */
 export const PARTNER_DEMO_MAX_MUSTERMANN_AVATAR = "/images/Max_mustermann.jpg";
+
+const DEMO_AVATAR_COLOR_PAIRS: ReadonlyArray<readonly [string, string]> = [
+  ["#0F4F68", "#3DB8C9"],
+  ["#0284c7", "#22d3ee"],
+  ["#059669", "#2dd4bf"],
+  ["#7c3aed", "#818cf8"],
+  ["#d97706", "#fb923c"],
+  ["#e11d48", "#fb7185"],
+] as const;
+
+/** Deterministische Farben für Demo-Profilbilder (SVG-Silhouette). */
+export function getDemoAvatarColorPair(partnerCode: string | null | undefined): [string, string] {
+  const key = (partnerCode ?? "XX").toUpperCase();
+  const pair = DEMO_AVATAR_COLOR_PAIRS[hashCode(key) % DEMO_AVATAR_COLOR_PAIRS.length];
+  return [pair[0], pair[1]];
+}
+
+/** Demo-Profilbild-URL für Netzwerk-Knoten (lokal generiertes SVG). */
+export function getDemoPartnerAvatarUrl(partnerCode: string | null | undefined): string | null {
+  if (!partnerCode?.trim()) return null;
+  const code = partnerCode.trim().toUpperCase();
+  if (code === "MM2847") return PARTNER_DEMO_MAX_MUSTERMANN_AVATAR;
+  return `/partner-demo/avatar/${encodeURIComponent(code)}`;
+}

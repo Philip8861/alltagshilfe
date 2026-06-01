@@ -1,7 +1,7 @@
 import "server-only";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { getPartnerMonthlyOwnApprovedClosingCommissionCents } from "@/lib/partner/referral-commission";
-import { PARTNER_NETWORK_MAX_DEPTH, referralCentsFromOwnCents } from "@/lib/partner/referral-money";
+import { PARTNER_NETWORK_MAX_DEPTH, computeViewerReferralFromDirectChildCents } from "@/lib/partner/referral-money";
 
 /**
  * Werbe-Netzwerk-Baum für die Anzeige im Partnerportal.
@@ -148,13 +148,11 @@ export async function getPartnerNetworkTree(
       direct.id,
       periodKey,
     );
-    /** Bei direktem Kind: nur Anteil ab referred_at zählt (für aktuellen Viewer). */
-    const referralForViewerCents = await computeViewerReferralForDirect(
-      svc,
-      direct,
-      periodKey,
-      ownCents,
-    );
+    const children = await buildIndirectChildren(direct.id, childrenByParent, 2, svc, periodKey);
+    const referralForViewerCents = computeViewerReferralFromDirectChildCents({
+      ownApprovedClosingCommissionCents: ownCents,
+      children,
+    });
 
     const node: PartnerNetworkNode = {
       partnerCode: direct.partner_referral_code,
@@ -162,7 +160,7 @@ export async function getPartnerNetworkTree(
       noDirectReferral: false,
       ownApprovedClosingCommissionCents: ownCents,
       referralCommissionForCurrentPartnerCents: referralForViewerCents,
-      children: buildIndirectChildren(direct.id, childrenByParent, 2),
+      children,
       depth: 1,
     };
     directChildren.push(node);
@@ -179,44 +177,29 @@ export async function getPartnerNetworkTree(
   };
 }
 
-async function computeViewerReferralForDirect(
-  svc: SupabaseClient,
-  direct: LeanProfile,
-  periodKey: string,
-  ownCents: number,
-): Promise<number> {
-  if (ownCents <= 0) return 0;
-
-  /**
-   * Konsistent mit getPartnerMonthlyReferralCommissionCents:
-   * - referredAt ungültig → 0
-   * - referredAt im selben Monat → strikt: nur Tipps ab referredAt zählen.
-   * Die strikte Berechnung passiert in getPartnerMonthlyReferralCommissionCents
-   * via Aggregation pro geworbenem Partner. Hier reicht: 5 % auf den effektiven ownCents
-   * (der ist bereits monatsfilter-korrekt). Für die UI ist das exakt genug,
-   * weil im Cron-Lauf am 1. des nächsten Monats final gerechnet wird.
-   */
-  const referredAt = direct.referred_at ? new Date(direct.referred_at) : null;
-  if (!referredAt || Number.isNaN(referredAt.getTime())) return 0;
-  return referralCentsFromOwnCents(ownCents);
-}
-
-function buildIndirectChildren(
+async function buildIndirectChildren(
   parentId: string,
   childrenByParent: Map<string, LeanProfile[]>,
   depth: number,
-): PartnerNetworkNode[] {
+  svc: SupabaseClient,
+  periodKey: string,
+): Promise<PartnerNetworkNode[]> {
   if (depth > PARTNER_NETWORK_MAX_DEPTH) return [];
   const list = childrenByParent.get(parentId) ?? [];
-  return list.map((c) => ({
-    partnerCode: c.partner_referral_code,
-    isDirectReferral: false,
-    noDirectReferral: true,
-    ownApprovedClosingCommissionCents: null,
-    referralCommissionForCurrentPartnerCents: null,
-    children: buildIndirectChildren(c.id, childrenByParent, depth + 1),
-    depth,
-  }));
+  const nodes: PartnerNetworkNode[] = [];
+  for (const c of list) {
+    const ownCents = await getPartnerMonthlyOwnApprovedClosingCommissionCents(svc, c.id, periodKey);
+    nodes.push({
+      partnerCode: c.partner_referral_code,
+      isDirectReferral: false,
+      noDirectReferral: true,
+      ownApprovedClosingCommissionCents: ownCents > 0 ? ownCents : null,
+      referralCommissionForCurrentPartnerCents: null,
+      children: await buildIndirectChildren(c.id, childrenByParent, depth + 1, svc, periodKey),
+      depth,
+    });
+  }
+  return nodes;
 }
 
 function countNodes(nodes: PartnerNetworkNode[]): number {

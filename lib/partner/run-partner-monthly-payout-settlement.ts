@@ -137,82 +137,89 @@ export async function runPartnerMonthlyPayoutSettlement(options?: {
 
   /**
    * Referral-Pass:
-   * Für jeden Partner mit Eigenprovision in diesem periodKey:
-   *   - finde direkte geworbene Partner
-   *   - ihre Eigenprovision in diesem periodKey (aus partner_payout_reports)
-   *   - 5 % als referral_eur addieren
-   *   - nur ab referred_at (Provisionen vor referred_at zählen NICHT — beim Settlement
-   *     ist referred_at ohnehin <= Periodenende, da die Reports erst am 1. des Folgemonats
-   *     entstehen; wir filtern trotzdem strikt: referred_at <= Periodenende)
+   * Für jeden Partner mit Sponsor:
+   *   - Gesamtumsatz rekursiv (eigene Provision + 5 % vom Gesamtumsatz der direkten Kinder)
+   *   - Sponsor erhält 5 % auf den Gesamtumsatz des direkt geworbenen Partners
+   *   - nur ab referred_at (Provisionen vor referred_at zählen NICHT)
    */
   const allReports = reports.map((r) => ({
     ...r,
     referralCents: 0,
   }));
 
-  if (allReports.length > 0) {
-    const periodEnd = monthEndUtcFromKey(periodKey);
-    const referralByBeneficiary = new Map<string, number>();
+  const periodEnd = monthEndUtcFromKey(periodKey);
+  const referralByBeneficiary = new Map<string, number>();
 
-    /** Erzeuge Map: partnerId -> ownCents (aus diesem Lauf) */
-    const ownCentsByPartner = new Map<string, number>();
-    for (const r of allReports) {
-      ownCentsByPartner.set(r.partner_id, eurToCents(r.einmal_eur) + eurToCents(r.monatlich_eur));
+  const ownCentsByPartner = new Map<string, number>();
+  for (const r of allReports) {
+    ownCentsByPartner.set(r.partner_id, eurToCents(r.monatlich_eur));
+  }
+
+  const { data: allProfiles, error: profilesErr } = await svc
+    .from("partner_profiles")
+    .select("id, referred_by_partner_id, referred_at");
+
+  if (profilesErr) {
+    const m = (profilesErr.message ?? "").toLowerCase();
+    if (m.includes("referred_by_partner_id") || m.includes("referred_at")) {
+      return {
+        ok: true,
+        message: `Abrechnung ${periodKey}: ${reports.length} Partner (Referral übersprungen — Migration 026 nicht ausgeführt).`,
+        periodKey,
+        partnersCount: reports.length,
+      };
+    }
+  } else if (allProfiles) {
+    const childrenBySponsor = new Map<string, string[]>();
+    for (const row of allProfiles as Array<{
+      id: string;
+      referred_by_partner_id: string | null;
+      referred_at: string | null;
+    }>) {
+      const sponsorId = row.referred_by_partner_id;
+      if (!sponsorId) continue;
+      const arr = childrenBySponsor.get(sponsorId) ?? [];
+      arr.push(row.id);
+      childrenBySponsor.set(sponsorId, arr);
     }
 
-    /** Direkte geworbene Partner nur derjenigen Partner laden, die in diesem Lauf own commission haben. */
-    const earnersIds = Array.from(ownCentsByPartner.keys());
-    if (earnersIds.length > 0) {
-      const { data: directs, error: directsErr } = await svc
-        .from("partner_profiles")
-        .select("id, referred_by_partner_id, referred_at")
-        .in("id", earnersIds);
-
-      if (directsErr) {
-        const m = (directsErr.message ?? "").toLowerCase();
-        if (m.includes("referred_by_partner_id") || m.includes("referred_at")) {
-          /** Migration 026 fehlt → Lauf nicht abbrechen, Referral-Pass überspringen. */
-          return {
-            ok: true,
-            message: `Abrechnung ${periodKey}: ${reports.length} Partner (Referral übersprungen — Migration 026 nicht ausgeführt).`,
-            periodKey,
-            partnersCount: reports.length,
-          };
-        }
-      } else if (directs) {
-        for (const row of directs as Array<{
-          id: string;
-          referred_by_partner_id: string | null;
-          referred_at: string | null;
-        }>) {
-          const sponsorId = row.referred_by_partner_id;
-          const referredAt = row.referred_at ? new Date(row.referred_at) : null;
-          if (!sponsorId || !referredAt || Number.isNaN(referredAt.getTime())) continue;
-          if (periodEnd && referredAt > periodEnd) continue;
-
-          const ownCentsOfBeneficiary = ownCentsByPartner.get(row.id) ?? 0;
-          if (ownCentsOfBeneficiary <= 0) continue;
-
-          const ref = referralCentsFromOwnCents(ownCentsOfBeneficiary);
-          if (ref <= 0) continue;
-
-          referralByBeneficiary.set(
-            sponsorId,
-            (referralByBeneficiary.get(sponsorId) ?? 0) + ref,
-          );
-        }
-      }
+    const totalRevenueMemo = new Map<string, number>();
+    function totalRevenueForPartner(partnerId: string): number {
+      const cached = totalRevenueMemo.get(partnerId);
+      if (cached != null) return cached;
+      const own = ownCentsByPartner.get(partnerId) ?? 0;
+      const children = childrenBySponsor.get(partnerId) ?? [];
+      const childBonus = children.reduce(
+        (sum, childId) => sum + referralCentsFromOwnCents(totalRevenueForPartner(childId)),
+        0,
+      );
+      const total = own + childBonus;
+      totalRevenueMemo.set(partnerId, total);
+      return total;
     }
 
-    /** Updates für Reports schreiben (nur wenn referral > 0). */
+    for (const row of allProfiles as Array<{
+      id: string;
+      referred_by_partner_id: string | null;
+      referred_at: string | null;
+    }>) {
+      const sponsorId = row.referred_by_partner_id;
+      const referredAt = row.referred_at ? new Date(row.referred_at) : null;
+      if (!sponsorId || !referredAt || Number.isNaN(referredAt.getTime())) continue;
+      if (periodEnd && referredAt > periodEnd) continue;
+
+      const totalRevenue = totalRevenueForPartner(row.id);
+      if (totalRevenue <= 0) continue;
+
+      const ref = referralCentsFromOwnCents(totalRevenue);
+      if (ref <= 0) continue;
+
+      referralByBeneficiary.set(sponsorId, (referralByBeneficiary.get(sponsorId) ?? 0) + ref);
+    }
+
     for (const [sponsorId, refCents] of referralByBeneficiary.entries()) {
       const reportRow = allReports.find((r) => r.partner_id === sponsorId);
       if (!reportRow || refCents <= 0) {
-        /** Sponsor hat in diesem periodKey selbst keine Eigenprovision → Reportzeile fehlt
-         *  → keine Auszahlung dieses Monats. (User-Anforderung: Referral wird in genau dem
-         *  Monat gezahlt, in dem Eigenprovision der geworbenen Partner freigegeben wird; ein Sponsor
-         *  ohne eigene Reportzeile bekommt im selben Monat trotzdem Geld → wir legen leere
-         *  Reportzeile mit referral_eur an.) */
         const referralEur = centsToEur(refCents);
         const total = referralEur;
         const insertRow = {

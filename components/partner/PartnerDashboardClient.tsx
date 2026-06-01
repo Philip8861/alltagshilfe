@@ -296,7 +296,7 @@ export function PartnerDashboardClient({
                     {formatCentsDe(payoutSummary.referralCents)}
                   </p>
                   <p className="mt-1 text-xs text-sky-900/80">
-                    5&nbsp;% auf Abschlussprovisionen direkt geworbener Partner
+                    5&nbsp;% auf Gesamtumsatz direkt geworbener Partner
                   </p>
                 </article>
               </div>

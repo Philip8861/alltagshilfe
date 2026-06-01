@@ -9,6 +9,7 @@ import { usePartnerNetworkViewport } from "@/components/partner/network/PartnerN
 import {
   getDemoAvatarGradient,
   getDemoAvatarInitials,
+  getDemoPartnerAvatarUrl,
 } from "@/lib/partner/partner-demo-avatars";
 import { formatCentsDe } from "@/lib/partner/referral-money";
 import type { PartnerNetworkNode, PartnerNetworkTreeResult } from "@/lib/partner/network-tree";
@@ -105,6 +106,7 @@ export function PartnerNetworkPremium({
   const sponsorCode = data.sponsor?.partnerCode ?? null;
   const hasNetwork = totalDirect > 0 || Boolean(sponsorCode);
   const layoutPrefix = layoutKeyPrefix ? `${layoutKeyPrefix}-` : "";
+  const useDemoAvatars = layoutKeyPrefix === "demo";
 
   return (
     <section aria-labelledby={headingId} className="partner-dash-animate w-full">
@@ -150,7 +152,7 @@ export function PartnerNetworkPremium({
               <div className="px-2 py-2 sm:px-4 sm:py-3">
                 <div className="partner-network-tree">
                   <ul className="partner-network-tree__root">
-                    <NetworkTreeBranch node={root} viewer={viewer} isMobile={isMobile} />
+                    <NetworkTreeBranch node={root} viewer={viewer} isMobile={isMobile} useDemoAvatars={useDemoAvatars} />
                   </ul>
                 </div>
               </div>
@@ -359,20 +361,22 @@ function shouldCollapseOnMobile(node: PyramidNode): boolean {
 function treeColumnWidthRem(node: PyramidNode): string {
   const hasProvision = node.ownCents != null && node.ownCents > 0;
   const compact = node.kind === "indirect" && !hasProvision;
-  if (node.kind === "self" || node.kind === "sponsor") return "15.5rem";
-  if (node.kind === "direct" || hasProvision) return "13rem";
-  if (compact) return "9.5rem";
-  return "11.5rem";
+  if (node.kind === "self" || node.kind === "sponsor") return "16.5rem";
+  if (node.kind === "direct" || hasProvision) return "14rem";
+  if (compact) return "10.5rem";
+  return "12.5rem";
 }
 
 function NetworkTreeBranch({
   node,
   viewer,
   isMobile,
+  useDemoAvatars,
 }: {
   node: PyramidNode;
   viewer: PartnerNetworkViewer;
   isMobile: boolean;
+  useDemoAvatars: boolean;
 }) {
   const [collapsed, setCollapsed] = useState(() => isMobile && shouldCollapseOnMobile(node));
   const hasChildren = node.children.length > 0;
@@ -391,7 +395,7 @@ function NetworkTreeBranch({
       style={{ ["--tree-col-w" as string]: treeColumnWidthRem(node) }}
     >
       <div className="partner-network-tree__node-stack">
-        <NetworkTreeNodeCard node={node} viewer={viewer} />
+        <NetworkTreeNodeCard node={node} viewer={viewer} useDemoAvatars={useDemoAvatars} />
         {hasChildren ? (
           <TreeConnector collapsed={collapsed} expanded={!collapsed} onToggle={() => setCollapsed((v) => !v)} />
         ) : null}
@@ -401,7 +405,7 @@ function NetworkTreeBranch({
         <div className="partner-network-tree__subtree">
           <ul className="partner-network-tree__children">
             {node.children.map((c) => (
-              <NetworkTreeBranch key={c.key} node={c} viewer={viewer} isMobile={isMobile} />
+              <NetworkTreeBranch key={c.key} node={c} viewer={viewer} isMobile={isMobile} useDemoAvatars={useDemoAvatars} />
             ))}
           </ul>
         </div>
@@ -410,7 +414,15 @@ function NetworkTreeBranch({
   );
 }
 
-function NetworkTreeNodeCard({ node, viewer }: { node: PyramidNode; viewer: PartnerNetworkViewer }) {
+function NetworkTreeNodeCard({
+  node,
+  viewer,
+  useDemoAvatars,
+}: {
+  node: PyramidNode;
+  viewer: PartnerNetworkViewer;
+  useDemoAvatars: boolean;
+}) {
   const hasProvision = node.ownCents != null && node.ownCents > 0;
   const compact = node.kind === "indirect" && !hasProvision;
   const isSelf = node.kind === "self";
@@ -420,12 +432,13 @@ function NetworkTreeNodeCard({ node, viewer }: { node: PyramidNode; viewer: Part
   const cardBase =
     "relative overflow-hidden rounded-2xl border bg-white transition-shadow duration-200 hover:shadow-lg w-full";
   const width = isSelf
-    ? "max-w-[15.5rem]"
+    ? "max-w-[16.5rem]"
     : compact
-      ? "max-w-[9.5rem]"
+      ? "max-w-[10.5rem]"
       : isDirect || hasProvision
-        ? "max-w-[13rem]"
-        : "max-w-[11.5rem]";
+        ? "max-w-[14rem]"
+        : "max-w-[12.5rem]";
+  const nodeAvatarUrl = useDemoAvatars ? getDemoPartnerAvatarUrl(node.partnerCode) : null;
 
   let cardCls = `${cardBase} ${width} border-slate-200/60 shadow-[0_3px_14px_-6px_rgba(15,79,104,0.16)]`;
   if (isSelf) {
@@ -475,14 +488,26 @@ function NetworkTreeNodeCard({ node, viewer }: { node: PyramidNode; viewer: Part
                 imageSrc={viewer.avatarUrl ?? undefined}
               />
             ) : isSponsor ? (
-              <div
-                className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[#0F4F68] to-[#3DB8C9] text-white shadow-sm"
-                aria-hidden
-              >
-                <IconStar className="h-5 w-5" />
-              </div>
+              useDemoAvatars ? (
+                <NetworkAvatar
+                  partnerCode={node.partnerCode}
+                  size="md"
+                  imageSrc={nodeAvatarUrl ?? undefined}
+                />
+              ) : (
+                <div
+                  className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[#0F4F68] to-[#3DB8C9] text-white shadow-sm"
+                  aria-hidden
+                >
+                  <IconStar className="h-5 w-5" />
+                </div>
+              )
             ) : (
-              <NetworkAvatar partnerCode={node.partnerCode} size={compact ? "sm" : "md"} />
+              <NetworkAvatar
+                partnerCode={node.partnerCode}
+                size={compact ? "sm" : "md"}
+                imageSrc={nodeAvatarUrl ?? undefined}
+              />
             )}
             <div className="min-w-0 flex-1">
               <p className="text-[0.55rem] font-bold uppercase tracking-[0.12em] text-slate-400">{label}</p>

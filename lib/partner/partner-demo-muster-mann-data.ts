@@ -1,6 +1,7 @@
 import type { PartnerNetworkNode, PartnerNetworkTreeResult } from "@/lib/partner/network-tree";
 import type { PartnerDashboardTipSerial } from "@/lib/partner/types";
 import { currentBerlinPeriodKey, formatPayoutPeriodLabelDe } from "@/lib/partner/payout-period";
+import { computeViewerReferralFromDirectChildCents } from "@/lib/partner/referral-money";
 
 /** Öffentliche Demo — fiktiver Partner-Code (kein Produktionskonto). */
 export const PARTNER_DEMO_MAX_MUSTERMANN_CODE = "MM2847";
@@ -97,7 +98,6 @@ function demoNode(
   opts?: {
     direct?: boolean;
     ownCents?: number;
-    referralCents?: number;
     children?: PartnerNetworkNode[];
   },
 ): PartnerNetworkNode {
@@ -108,10 +108,22 @@ function demoNode(
     noDirectReferral: !direct,
     ownApprovedClosingCommissionCents:
       opts?.ownCents !== undefined ? opts.ownCents : direct ? 0 : null,
-    referralCommissionForCurrentPartnerCents: direct ? (opts?.referralCents ?? 0) : null,
+    referralCommissionForCurrentPartnerCents: null,
     children: opts?.children ?? [],
     depth,
   };
+}
+
+function applyDemoReferrals(nodes: PartnerNetworkNode[]): PartnerNetworkNode[] {
+  return nodes.map((node) => {
+    const children = applyDemoReferrals(node.children);
+    const withChildren = { ...node, children };
+    if (!node.isDirectReferral) return withChildren;
+    return {
+      ...withChildren,
+      referralCommissionForCurrentPartnerCents: computeViewerReferralFromDirectChildCents(withChildren),
+    };
+  });
 }
 
 function countNodes(nodes: PartnerNetworkNode[]): number {
@@ -125,49 +137,46 @@ function countNodes(nodes: PartnerNetworkNode[]): number {
 /** Mehrstufiger Werbe-Baum (4 Ebenen unter Max, 17 Knoten gesamt). */
 function buildDemoDirectChildren(scale: number): PartnerNetworkNode[] {
   const s = (cents: number) => Math.round(cents * scale);
-  return [
+  const raw = [
     demoNode("LH5210", 1, {
       direct: true,
-      ownCents: s(24000),
-      referralCents: s(1200),
+      ownCents: s(185000),
       children: [
         demoNode("JK1190", 2, {
-          ownCents: s(320000),
+          ownCents: s(98000),
           children: [
             demoNode("PF3301", 3, {
-              ownCents: s(145000),
-              children: [demoNode("AW7720", 4)],
+              ownCents: s(52000),
+              children: [demoNode("AW7720", 4, { ownCents: s(35000) })],
             }),
           ],
         }),
-        demoNode("RS9021", 2, { ownCents: s(185000) }),
+        demoNode("RS9021", 2, { ownCents: s(72000) }),
       ],
     }),
     demoNode("NK8834", 1, {
       direct: true,
-      ownCents: s(18550),
-      referralCents: s(928),
+      ownCents: s(142000),
       children: [
         demoNode("CL8812", 2, {
-          ownCents: s(410000),
-          children: [demoNode("DM2299", 3, { ownCents: s(89000) })],
+          ownCents: s(115000),
+          children: [demoNode("DM2299", 3, { ownCents: s(48000) })],
         }),
-        demoNode("RS5540", 2, { ownCents: s(275000) }),
+        demoNode("RS5540", 2, { ownCents: s(86000) }),
       ],
     }),
     demoNode("TB4471", 1, {
       direct: true,
-      ownCents: s(32000),
-      referralCents: s(1600),
+      ownCents: s(218000),
       children: [
         demoNode("HF6618", 2, {
-          ownCents: s(450000),
+          ownCents: s(134000),
           children: [
             demoNode("KT9044", 3, {
-              ownCents: s(178000),
+              ownCents: s(71000),
               children: [
                 demoNode("BL1155", 4, {
-                  children: [demoNode("VN4488", 5)],
+                  children: [demoNode("VN4488", 5, { ownCents: s(28000) })],
                 }),
               ],
             }),
@@ -177,11 +186,11 @@ function buildDemoDirectChildren(scale: number): PartnerNetworkNode[] {
     }),
     demoNode("MR6602", 1, {
       direct: true,
-      ownCents: s(9600),
-      referralCents: s(480),
-      children: [demoNode("GS3321", 2, { ownCents: s(120000) })],
+      ownCents: s(127500),
+      children: [demoNode("GS3321", 2, { ownCents: s(64000) })],
     }),
   ];
+  return applyDemoReferrals(raw);
 }
 
 /** Werbe-Netzwerk für die Demo (keine DB). */

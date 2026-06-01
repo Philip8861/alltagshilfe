@@ -27,7 +27,8 @@
 }
 
 .partner-network-tree ul.partner-network-tree__children {
-  padding-top: 1.25rem;
+  padding-top: 1.5rem;
+  gap: 2rem;
 }
 
 .partner-network-tree > ul.partner-network-tree__root {
@@ -54,13 +55,13 @@
 }
 
 .partner-network-tree__subtree {
-  position: absolute;
-  top: 100%;
-  left: 50%;
+  position: relative;
+  top: auto;
+  left: auto;
   z-index: 0;
   width: max-content;
   max-width: none;
-  transform: translateX(-50%);
+  transform: none;
 }
 
 .partner-network-tree li.partner-network-tree__branch::before,
@@ -173,6 +174,10 @@
 
 @media (min-width: 640px) {
   .partner-network-tree li.partner-network-tree__branch {
-    padding: 0 0.85rem;
+    padding: 0 1.35rem;
+  }
+
+  .partner-network-tree ul.partner-network-tree__children {
+    gap: 2.75rem;
   }
 }

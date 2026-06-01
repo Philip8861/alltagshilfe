@@ -4,8 +4,8 @@
  * Regel: Geldberechnung IMMER in Cent (Integer), niemals Float.
  * EUR-Werte (numeric 12,2) aus DB werden direkt als String/number gelesen und in Cent gewandelt.
  *
- * Bemessungsgrundlage Referral = ownApprovedClosingCommissionCents (NIE totalPayoutCents,
- * NIE Referral-Provisionen, NIE Umsatz, NIE storniert/offen).
+ * Referral-Bemessung = 5 % auf den Gesamtumsatz direkt geworbener Partner:
+ *   Gesamtumsatz = eigene Abschlussprovision + 5 % vom Gesamtumsatz jedes direkten Kindes (rekursiv).
  */
 
 /** 5 % in Basispunkten. */
@@ -64,6 +64,30 @@ export function formatCentsDe(cents: number): string {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
   }).format(eur);
+}
+
+/** Minimale Baum-Struktur für Gesamtumsatz-Berechnung (Cent, rekursiv). */
+export type PartnerRevenueNode = {
+  ownApprovedClosingCommissionCents: number | null;
+  children: PartnerRevenueNode[];
+};
+
+/**
+ * Gesamtumsatz eines Partners in Cent:
+ * eigene Abschlussprovision + 5 % vom Gesamtumsatz jedes direkten Kindes.
+ */
+export function computePartnerTotalRevenueCents(node: PartnerRevenueNode): number {
+  const own = node.ownApprovedClosingCommissionCents ?? 0;
+  const childBonus = node.children.reduce(
+    (sum, child) => sum + referralCentsFromOwnCents(computePartnerTotalRevenueCents(child)),
+    0,
+  );
+  return own + childBonus;
+}
+
+/** Referral-Anteil des Viewers auf ein direktes Kind: 5 % vom Gesamtumsatz des Kindes. */
+export function computeViewerReferralFromDirectChildCents(node: PartnerRevenueNode): number {
+  return referralCentsFromOwnCents(computePartnerTotalRevenueCents(node));
 }
 
 /**

@@ -19,8 +19,7 @@ import {
  *      paid_amount_eur > 0,
  *      und (für Einmalprovision) noch nicht im Settlement abgerechnet.
  *
- * Referral-Bemessung ist IMMER ownApprovedClosingCommissionCents (eigenständig pro geworbenem Partner).
- * Niemals totalPayoutCents, niemals Referral-Provisionen, niemals storniert/offen.
+ * Referral-Bemessung = 5 % auf den Gesamtumsatz direkt geworbener Partner (rekursiv über deren Netzwerk).
  */
 
 const PERIOD_KEY_RE = /^\d{4}-\d{2}$/;
@@ -152,8 +151,8 @@ export async function getDirectReferralPartners(
 }
 
 /**
- * Referral-Provision in Cent: 5 % auf eigene freigegebene Abschlussprovisionen
- * der direkt geworbenen Partner im periodKey – nur ab `referred_at` (rückwirkend = 0).
+ * Referral-Provision in Cent: 5 % auf den Gesamtumsatz direkt geworbener Partner
+ * (eigene Abschlussprovision + 5 % vom Gesamtumsatz ihrer direkten Kinder, rekursiv).
  */
 export async function getPartnerMonthlyReferralCommissionCents(
   svc: SupabaseClient,
@@ -165,43 +164,41 @@ export async function getPartnerMonthlyReferralCommissionCents(
   const directs = await getDirectReferralPartners(svc, partnerId);
   if (directs.length === 0) return 0;
 
+  const periodMonthStart = periodMonthStartUtc(periodKey);
+  const periodMonthEnd = periodMonthEndUtc(periodKey);
+  if (!periodMonthStart || !periodMonthEnd) return 0;
+
   let total = 0;
   for (const d of directs) {
     const referredAt = d.referred_at ? new Date(d.referred_at) : null;
     if (!referredAt || Number.isNaN(referredAt.getTime())) continue;
-
-    const periodMonthStart = periodMonthStartUtc(periodKey);
-    if (!periodMonthStart) continue;
-
-    /** Wenn referred_at NACH dem Ende des periodKey-Monats liegt → keine Referral. */
-    const periodMonthEnd = periodMonthEndUtc(periodKey);
-    if (!periodMonthEnd) continue;
     if (referredAt > periodMonthEnd) continue;
 
-    const ownCents = await getPartnerMonthlyOwnApprovedClosingCommissionCents(svc, d.id, periodKey);
-    if (ownCents <= 0) continue;
+    const totalRevenue = await computePartnerTotalRevenueForPeriod(svc, d.id, periodKey);
+    if (totalRevenue <= 0) continue;
 
-    /**
-     * Wenn referred_at INNERHALB des Monats liegt: konservativ trotzdem voll werten,
-     * weil der Settlement-Monatsfilter die Provisionen schon dem Periodenmonat zuordnet
-     * und Provisionen, die VOR `referred_at` erfasst wurden, in der Realität meist
-     * nicht denselben period_key bekommen (settlement passiert erst am 1. des Folgemonats).
-     * Strenger Filter: zähle pro Tipp und prüfe `created_at >= referred_at`.
-     */
-    if (referredAt > periodMonthStart) {
-      const strict = await getOwnApprovedClosingCommissionCentsSinceReferredAt(
-        svc,
-        d.id,
-        periodKey,
-        referredAt,
-      );
-      total += referralCentsFromOwnCents(strict, PARTNER_DIRECT_REFERRAL_RATE_BPS);
-      continue;
-    }
-
-    total += referralCentsFromOwnCents(ownCents, PARTNER_DIRECT_REFERRAL_RATE_BPS);
+    total += referralCentsFromOwnCents(totalRevenue, PARTNER_DIRECT_REFERRAL_RATE_BPS);
   }
   return total;
+}
+
+async function computePartnerTotalRevenueForPeriod(
+  svc: SupabaseClient,
+  partnerId: string,
+  periodKey: string,
+): Promise<number> {
+  if (!partnerId) return 0;
+
+  const ownCents = await getPartnerMonthlyOwnApprovedClosingCommissionCents(svc, partnerId, periodKey);
+  const directs = await getDirectReferralPartners(svc, partnerId);
+
+  let childBonus = 0;
+  for (const d of directs) {
+    const childTotal = await computePartnerTotalRevenueForPeriod(svc, d.id, periodKey);
+    childBonus += referralCentsFromOwnCents(childTotal, PARTNER_DIRECT_REFERRAL_RATE_BPS);
+  }
+
+  return ownCents + childBonus;
 }
 
 function periodMonthStartUtc(periodKey: string): Date | null {
@@ -221,35 +218,9 @@ function periodMonthEndUtc(periodKey: string): Date | null {
 }
 
 /**
- * Strikter Filter: für einen direkten geworbenen Partner im periodKey nur die Tipps,
- * deren `created_at >= referredAt` (= Provisionen, die NACH der Werbung erfasst wurden).
- * Wird verwendet, wenn referred_at innerhalb des periodKey-Monats liegt.
- */
-async function getOwnApprovedClosingCommissionCentsSinceReferredAt(
-  svc: SupabaseClient,
-  partnerId: string,
-  periodKey: string,
-  referredAt: Date,
-): Promise<number> {
-  const { data: tips, error } = await svc
-    .from("partner_tip_submissions")
-    .select(TIP_SELECT)
-    .eq("partner_id", partnerId)
-    .gte("created_at", referredAt.toISOString());
-
-  if (error || !tips) return 0;
-
-  let cents = 0;
-  for (const raw of tips as TipRow[]) {
-    cents += ownClosingCentsForTipInPeriod(raw, periodKey);
-  }
-  return cents;
-}
-
-/**
  * Komplett-Übersicht für einen Partner im Monat:
  *  - ownCents             = eigene freigegebene Abschlussprovision
- *  - referralCents        = 5 % auf own der direkten geworbenen Partner (nur ab referred_at)
+ *  - referralCents        = 5 % auf Gesamtumsatz der direkten geworbenen Partner (nur ab referred_at)
  *  - totalCents           = ownCents + referralCents (= Auszahlungssumme)
  */
 export async function getPartnerMonthlyPayoutSummary(

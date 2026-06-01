@@ -25,7 +25,7 @@ export const PARTNER_TUTORIAL_STEPS: PartnerTutorialStep[] = [
     anchor: '[data-tutorial="partner-provision-betrieblich"]',
     title: "Eigene Abschlussprovision & geworbene Partner",
     body:
-      "In diesem Kasten sehen Sie Ihre Abschlussprovision aus der betrieblichen Pflegeberatung sowie die Provision durch direkt geworbene Partner (5 %). Die Auszahlung erfolgt am 3. jedes Monats.",
+      "In diesem Kasten sehen Sie Ihre Abschlussprovision aus der betrieblichen Pflegeberatung sowie die Provision durch direkt geworbene Partner (5 % auf deren Gesamtumsatz inkl. deren Netzwerk). Die Auszahlung erfolgt am 3. jedes Monats.",
     missingAnchorHint:
       "Dieser Bereich erscheint, wenn bei Ihnen die betriebliche Pflegeberatung freigeschaltet ist.",
     bubbleAlignViewportCenterMd: true,
