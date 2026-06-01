@@ -49,6 +49,8 @@ export type PartnerNetworkTreeResult = {
   totalNodes: number;
   /** Period-Key, auf den sich Geld-Beträge beziehen. */
   periodKey: string;
+  /** Eigene Abschlussprovision des Root-Partners (Viewer) in Cent. */
+  rootOwnApprovedClosingCommissionCents?: number | null;
 };
 
 type LeanProfile = {
@@ -167,6 +169,11 @@ export async function getPartnerNetworkTree(
   }
 
   const totalNodes = countNodes(directChildren);
+  const rootOwnApprovedClosingCommissionCents = await getPartnerMonthlyOwnApprovedClosingCommissionCents(
+    svc,
+    viewerPartnerId,
+    periodKey,
+  );
 
   return {
     rootPartnerCode,
@@ -174,6 +181,9 @@ export async function getPartnerNetworkTree(
     directChildren,
     totalNodes,
     periodKey,
+    rootOwnApprovedClosingCommissionCents: rootOwnApprovedClosingCommissionCents > 0
+      ? rootOwnApprovedClosingCommissionCents
+      : null,
   };
 }
 

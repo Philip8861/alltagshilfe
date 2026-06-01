@@ -12,6 +12,7 @@ import {
   getDemoPartnerAvatarUrl,
 } from "@/lib/partner/partner-demo-avatars";
 import { formatCentsDe } from "@/lib/partner/referral-money";
+import { computeBranchMinWidthPx } from "@/lib/partner/partner-network-tree-layout";
 import type { PartnerNetworkNode, PartnerNetworkTreeResult } from "@/lib/partner/network-tree";
 
 export type PartnerNetworkViewer = {
@@ -60,7 +61,7 @@ function buildPyramid(data: PartnerNetworkTreeResult): PyramidNode {
     key: selfKey,
     partnerCode: data.rootPartnerCode,
     kind: "self",
-    ownCents: null,
+    ownCents: data.rootOwnApprovedClosingCommissionCents ?? null,
     referralCents: null,
     depth: 0,
     children: data.directChildren.map((c, i) => transformDescendant(c, true, selfKey, i)),
@@ -358,15 +359,6 @@ function shouldCollapseOnMobile(node: PyramidNode): boolean {
   return (node.kind === "self" || node.kind === "direct") && node.children.length > 0;
 }
 
-function treeColumnWidthRem(node: PyramidNode): string {
-  const hasProvision = node.ownCents != null && node.ownCents > 0;
-  const compact = node.kind === "indirect" && !hasProvision;
-  if (node.kind === "self" || node.kind === "sponsor") return "16.5rem";
-  if (node.kind === "direct" || hasProvision) return "14rem";
-  if (compact) return "10.5rem";
-  return "12.5rem";
-}
-
 function NetworkTreeBranch({
   node,
   viewer,
@@ -392,7 +384,11 @@ function NetworkTreeBranch({
   return (
     <li
       className="partner-network-tree__branch"
-      style={{ ["--tree-col-w" as string]: treeColumnWidthRem(node) }}
+      style={
+        isMobile
+          ? undefined
+          : { minWidth: `${computeBranchMinWidthPx(node, collapsed)}px` }
+      }
     >
       <div className="partner-network-tree__node-stack">
         <NetworkTreeNodeCard node={node} viewer={viewer} useDemoAvatars={useDemoAvatars} />
@@ -402,13 +398,11 @@ function NetworkTreeBranch({
         {hasChildren && !collapsed ? <div className="partner-network-tree__stem" aria-hidden /> : null}
       </div>
       {hasChildren && !collapsed ? (
-        <div className="partner-network-tree__subtree">
-          <ul className="partner-network-tree__children">
-            {node.children.map((c) => (
-              <NetworkTreeBranch key={c.key} node={c} viewer={viewer} isMobile={isMobile} useDemoAvatars={useDemoAvatars} />
-            ))}
-          </ul>
-        </div>
+        <ul className="partner-network-tree__children">
+          {node.children.map((c) => (
+            <NetworkTreeBranch key={c.key} node={c} viewer={viewer} isMobile={isMobile} useDemoAvatars={useDemoAvatars} />
+          ))}
+        </ul>
       ) : null}
     </li>
   );
@@ -430,14 +424,14 @@ function NetworkTreeNodeCard({
   const isDirect = node.kind === "direct";
 
   const cardBase =
-    "relative overflow-hidden rounded-2xl border bg-white transition-shadow duration-200 hover:shadow-lg w-full";
+    "relative shrink-0 overflow-hidden rounded-2xl border bg-white transition-shadow duration-200 hover:shadow-lg";
   const width = isSelf
-    ? "max-w-[16.5rem]"
+    ? "w-[16.5rem]"
     : compact
-      ? "max-w-[10.5rem]"
+      ? "w-[10.5rem]"
       : isDirect || hasProvision
-        ? "max-w-[14rem]"
-        : "max-w-[12.5rem]";
+        ? "w-[14rem]"
+        : "w-[12.5rem]";
   const nodeAvatarUrl = useDemoAvatars ? getDemoPartnerAvatarUrl(node.partnerCode) : null;
 
   let cardCls = `${cardBase} ${width} border-slate-200/60 shadow-[0_3px_14px_-6px_rgba(15,79,104,0.16)]`;
@@ -528,7 +522,7 @@ function NetworkTreeNodeCard({
             </div>
           </div>
 
-          {(isDirect || (node.ownCents != null && node.ownCents > 0)) ? (
+          {(isSelf || isDirect || (node.ownCents != null && node.ownCents > 0)) ? (
             <div className="mt-3 space-y-1.5 border-t border-slate-100 pt-3">
               <CommissionPill label="Eigene Abschlussprov." cents={node.ownCents ?? 0} tone="green" />
               {isDirect ? (

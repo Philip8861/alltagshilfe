@@ -1,4 +1,4 @@
-/* Nur Demo-Netzwerkbaum — scoped unter .partner-network-tree */
+/* Werbe-Netzwerk-Baum — jeder Ast ist so breit wie sein Unterbaum (keine Überlappung). */
 .partner-network-tree,
 .partner-network-tree ul {
   list-style: none;
@@ -28,40 +28,43 @@
 
 .partner-network-tree ul.partner-network-tree__children {
   padding-top: 1.5rem;
-  gap: 2rem;
+  gap: 1.25rem;
 }
 
 .partner-network-tree > ul.partner-network-tree__root {
   padding-top: 0;
 }
 
+/**
+ * Kernregel: Breite = max(Karte, Summe der Kinder) — nie eine feste Spaltenbreite.
+ * Entspricht dem bewährten .ahs-tree-Muster in globals.css.
+ */
 .partner-network-tree li.partner-network-tree__branch {
   position: relative;
-  flex: 0 0 var(--tree-col-w, 13rem);
-  width: var(--tree-col-w, 13rem);
+  flex: 0 0 auto;
+  width: auto;
+  min-width: 0;
+  max-width: none;
   padding: 0;
   text-align: center;
   display: inline-flex;
   flex-direction: column;
   align-items: center;
   vertical-align: top;
+  box-sizing: border-box;
+}
+
+.partner-network-tree ul.partner-network-tree__children {
+  flex-shrink: 0;
+  align-self: center;
 }
 
 .partner-network-tree__node-stack {
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 100%;
-}
-
-.partner-network-tree__subtree {
-  position: relative;
-  top: auto;
-  left: auto;
-  z-index: 0;
   width: max-content;
-  max-width: none;
-  transform: none;
+  max-width: 100%;
 }
 
 .partner-network-tree li.partner-network-tree__branch::before,
@@ -140,11 +143,6 @@
 }
 
 @media (max-width: 639px) {
-  .partner-network-tree li.partner-network-tree__branch {
-    flex-basis: var(--tree-col-w, 11rem);
-    width: var(--tree-col-w, 11rem);
-  }
-
   .partner-network-tree__stem,
   .partner-network-tree ul.partner-network-tree__children::before,
   .partner-network-tree li.partner-network-tree__branch::before,
@@ -156,14 +154,7 @@
     flex-direction: column;
     align-items: center;
     padding-top: 0.75rem;
-  }
-
-  .partner-network-tree__subtree {
-    position: relative;
-    top: auto;
-    left: auto;
-    transform: none;
-    width: 100%;
+    gap: 0.75rem;
   }
 
   .partner-network-tree li.partner-network-tree__branch::before,
@@ -174,10 +165,10 @@
 
 @media (min-width: 640px) {
   .partner-network-tree li.partner-network-tree__branch {
-    padding: 0 1.35rem;
+    padding: 0 0.75rem;
   }
 
   .partner-network-tree ul.partner-network-tree__children {
-    gap: 2.75rem;
+    gap: 1.75rem;
   }
 }

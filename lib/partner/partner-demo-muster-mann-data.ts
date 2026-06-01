@@ -206,6 +206,7 @@ export function getPartnerDemoNetworkTree(periodKey?: string): PartnerNetworkTre
     directChildren,
     totalNodes: countNodes(directChildren),
     periodKey: key,
+    rootOwnApprovedClosingCommissionCents: Math.round(190000 * scale),
   };
 }
 
@@ -217,7 +218,7 @@ export function getPartnerDemoPayoutSummary(periodKey?: string): PartnerDemoPayo
     (sum, c) => sum + (c.referralCommissionForCurrentPartnerCents ?? 0),
     0,
   );
-  const ownCents = key === currentBerlinPeriodKey() ? 14750 : 12100;
+  const ownCents = Math.round(190000 * (key === currentBerlinPeriodKey() ? 1 : 0.82));
   return {
     periodKey: key,
     ownCents,
