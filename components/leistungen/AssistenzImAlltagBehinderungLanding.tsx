@@ -13,7 +13,7 @@ import { standortFaqJsonLd } from "@/lib/standort-faq";
 
 const ASSISTENZ_LANDING_FAQ_JSON_LD = standortFaqJsonLd(ASSISTENZ_IM_ALLTAG_FAQ);
 
-const HERO_IMG = "/images/haushaltshilfe.webp";
+const HERO_IMG = "/images/assistenz_menschen_mit_behinderung.webp";
 
 const HERO_GLOW_CLASS =
   "[filter:drop-shadow(0_10px_22px_rgba(15,79,104,0.2))_drop-shadow(0_4px_12px_rgba(15,79,104,0.12))] [will-change:filter]";
