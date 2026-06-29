@@ -128,9 +128,6 @@ export function LeistungenKachelGrid({
               </span>
               <div className="min-w-0 text-left">
                 <p className="text-lg font-semibold leading-snug text-[#0F4F68]">{leistung.title}</p>
-                {"description" in leistung && leistung.description ? (
-                  <p className="mt-1 text-sm leading-relaxed text-neutral-600">{leistung.description}</p>
-                ) : null}
               </div>
             </article>
           </Link>
