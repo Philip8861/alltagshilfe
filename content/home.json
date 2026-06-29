@@ -11,11 +11,11 @@
     "items": [
       { "slug": "haushaltshilfe", "title": "Haushaltshilfe", "description": "Unterstützung im Haushalt – Reinigung, kleine Reparaturen, Gartenarbeiten." },
       { "slug": "alltagsbegleitung-betreuung", "title": "Alltagsbegleitung und Betreuung", "description": "Gemeinsam im Alltag: Einkauf, Kochen, Spaziergänge und Begleitung zu Arzt und Behörden." },
-      { "slug": "assistenz-im-alltag-behinderung", "title": "Assistenz im Alltag", "description": "Alltagsassistenz für Menschen mit Behinderung – mit möglicher Kostenübernahme durch den Bezirk Schwaben nach Antrag und Bewilligung." },
       { "slug": "pflegeberatung-einsaetze", "title": "Pflegeberatungseinsätze §37.3 SGB XI", "description": "Professionelle Pflegeberatung – Kosten übernimmt die Pflegekasse." },
       { "slug": "pflegehilfsmittelbox", "title": "Kostenfreie Pflegehilfsmittelbox", "description": "Monatlich 42€ kostenfrei ab Pflegegrad 1 – Pflegekasse übernimmt." },
       { "slug": "essen-auf-raeder", "title": "Essen auf Räder", "description": "Mit Herz gekocht, liebevoll gebracht – frisch und regional mit LuckyLunch." },
-      { "slug": "hilfe-nach-operation", "title": "Hilfe nach Operation, Unfall oder Schwangerschaft", "description": "Entlastung in besonderen Zeiten – Haushaltshilfe, Kinderbetreuung, Begleitung." }
+      { "slug": "hilfe-nach-operation", "title": "Hilfe nach Operation, Unfall oder Schwangerschaft", "description": "Entlastung in besonderen Zeiten – Haushaltshilfe, Kinderbetreuung, Begleitung." },
+      { "slug": "assistenz-im-alltag-behinderung", "title": "Assistenz für Menschen mit Behinderung" }
     ]
   },
   "trust": {
