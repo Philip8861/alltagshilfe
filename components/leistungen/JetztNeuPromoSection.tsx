@@ -1,5 +1,6 @@
 "use client";
 
+import type { ReactNode } from "react";
 import { useEffect, useRef, useState } from "react";
 
 /** Cache-Buster bei aktualisiertem Asset; Wert bei neuer Grafik erhöhen. */
@@ -33,14 +34,60 @@ function PromoStar({ variant, className = "" }: { variant: "head" | "sm"; classN
   );
 }
 
+type PromoCard = {
+  title: string;
+  body: ReactNode;
+};
+
+const DEFAULT_PROMO_CARDS: PromoCard[] = [
+  {
+    title: "Alles auf einen Blick",
+    body: "Alle wichtigen Informationen zu Terminen und Rechnungen sind jederzeit für Sie verfügbar.",
+  },
+  {
+    title: "Volle Kontrolle über Ihr Budget",
+    body: "Sehen Sie jederzeit, wie Ihr aktuelles Budget aussieht – klar und verständlich dargestellt.",
+  },
+  {
+    title: "Transparenz, die überzeugt",
+    body: (
+      <>
+        Transparenz ist uns besonders wichtig:
+        <br />
+        Sie haben jederzeit Zugriff auf alle relevanten Daten.
+      </>
+    ),
+  },
+  {
+    title: "Jederzeit & überall",
+    body: "Ob Laptop oder Smartphone – Ihr Zugang ist jederzeit und von überall aus möglich.",
+  },
+  {
+    title: "Kostenloser Service",
+    body: "Diese neue Leistung ist für alle Kunden selbstverständlich kostenlos.",
+  },
+];
+
 type JetztNeuPromoSectionProps = {
   /** Eindeutige ID für Überschrift und `aria-labelledby` der Sektion (z. B. pro Seite). */
   headingId: string;
+  heading?: string;
+  intro?: string;
+  imageAlt?: string;
+  cards?: PromoCard[];
+  showHeadingStar?: boolean;
 };
 
 const FADE_STAGGER = "motion-safe:animate-fade-in-up motion-reduce:opacity-100";
 
-export function JetztNeuPromoSection({ headingId }: JetztNeuPromoSectionProps) {
+export function JetztNeuPromoSection({
+  headingId,
+  heading = "Jetzt neu: Ihr persönlicher Überblick",
+  intro = "Behalten Sie Ihre Termine, Rechnungen und Ihr Budget jederzeit im Blick – einfach, transparent und übersichtlich.",
+  imageAlt = "Übersicht über Termine und Rechnungen in der App",
+  cards = DEFAULT_PROMO_CARDS,
+  showHeadingStar = true,
+}: JetztNeuPromoSectionProps) {
   const sectionRef = useRef<HTMLElement>(null);
   const [animCycle, setAnimCycle] = useState(1);
   const wasOutside = useRef(false);
@@ -96,7 +143,7 @@ export function JetztNeuPromoSection({ headingId }: JetztNeuPromoSectionProps) {
             {/* eslint-disable-next-line @next/next/no-img-element -- statisches Promo-Asset; ohne Karten-Rahmen, Transparenz bis zum Seitenhintergrund */}
             <img
               src={JETZT_NEU_IMG}
-              alt="Übersicht über Termine und Rechnungen in der App"
+              alt={imageAlt}
               width={915}
               height={704}
               decoding="async"
@@ -111,46 +158,18 @@ export function JetztNeuPromoSection({ headingId }: JetztNeuPromoSectionProps) {
                 className={`flex flex-wrap items-center justify-center gap-2 text-balance text-2xl font-extrabold leading-tight tracking-tight text-[#0F4F68] sm:text-3xl lg:justify-start ${FADE_STAGGER}`}
                 style={reducedMotion ? undefined : { animationDelay: "140ms" }}
               >
-                <PromoStar variant="head" />
-                <span>Jetzt neu: Ihr persönlicher Überblick</span>
+                {showHeadingStar ? <PromoStar variant="head" /> : null}
+                <span>{heading}</span>
               </h2>
               <p
                 className={`text-pretty text-base font-medium leading-relaxed text-neutral-700 sm:text-lg ${FADE_STAGGER}`}
                 style={reducedMotion ? undefined : { animationDelay: "260ms" }}
               >
-                Behalten Sie Ihre Termine, Rechnungen und Ihr Budget jederzeit im Blick – einfach, transparent und
-                übersichtlich.
+                {intro}
               </p>
             </div>
             <ul className="list-none space-y-5 text-pretty sm:space-y-6">
-              {[
-                {
-                  title: "Alles auf einen Blick",
-                  body: "Alle wichtigen Informationen zu Terminen und Rechnungen sind jederzeit für Sie verfügbar.",
-                },
-                {
-                  title: "Volle Kontrolle über Ihr Budget",
-                  body: "Sehen Sie jederzeit, wie Ihr aktuelles Budget aussieht – klar und verständlich dargestellt.",
-                },
-                {
-                  title: "Transparenz, die überzeugt",
-                  body: (
-                    <>
-                      Transparenz ist uns besonders wichtig:
-                      <br />
-                      Sie haben jederzeit Zugriff auf alle relevanten Daten.
-                    </>
-                  ),
-                },
-                {
-                  title: "Jederzeit & überall",
-                  body: "Ob Laptop oder Smartphone – Ihr Zugang ist jederzeit und von überall aus möglich.",
-                },
-                {
-                  title: "Kostenloser Service",
-                  body: "Diese neue Leistung ist für alle Kunden selbstverständlich kostenlos.",
-                },
-              ].map((item, i) => (
+              {cards.map((item, i) => (
                 <li key={item.title} className="space-y-2">
                   <h3
                     className={`flex flex-wrap items-center justify-center gap-2.5 text-lg font-bold text-[#0F4F68] sm:text-xl lg:justify-start ${FADE_STAGGER}`}

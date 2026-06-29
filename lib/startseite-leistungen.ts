@@ -4,6 +4,12 @@ import { features } from "@/config/features";
 const STARTSEITE_LEISTUNGEN_KACHELN_ALL = [
   { title: "Haushaltshilfe", icon: "home" as const },
   { title: "Alltagsbegleitung und Betreuung", icon: "people" as const },
+  {
+    title: "Assistenz im Alltag",
+    description:
+      "Alltagsassistenz für Menschen mit Behinderung – mit möglicher Kostenübernahme durch den Bezirk Schwaben nach Antrag und Bewilligung.",
+    icon: "assistenz" as const,
+  },
   { title: "Pflegeberatung nach §37.3 SGB XI", icon: "chat" as const },
   { title: "Kostenfreie Pflegehilfsmittel", icon: "box" as const },
   { title: "Pflegeshop & Inkontinenzversorgung", icon: "cart" as const },
@@ -22,6 +28,7 @@ export type LeistungKachelIcon = (typeof STARTSEITE_LEISTUNGEN_KACHELN_ALL)[numb
 export const LEISTUNGS_LINKS_BY_ICON: Record<LeistungKachelIcon, string> = {
   home: "/leistungen/haushaltshilfe",
   people: "/leistungen/alltagsbegleitung-betreuung",
+  assistenz: "/leistungen/assistenz-im-alltag-behinderung",
   chat: "/pflegeberatung/private-pflegeberatung",
   box: "/pflegehilfsmittel/kostenfreie-pflegehilfsmittel",
   cart: "/pflegeshop",

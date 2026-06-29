@@ -3,16 +3,17 @@
 import "./partner-network-tree.css";
 
 import Image from "next/image";
-import { useEffect, useLayoutEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { PartnerNetworkTreeViewport } from "@/components/partner/network/PartnerNetworkTreeViewport";
+import { PartnerNetworkTreeLayoutContext, usePartnerNetworkTreeLayout } from "@/components/partner/network/PartnerNetworkTreeLayoutContext";
 import { usePartnerNetworkViewport } from "@/components/partner/network/PartnerNetworkTreeViewportContext";
 import {
   getDemoAvatarGradient,
   getDemoAvatarInitials,
   getDemoPartnerAvatarUrl,
 } from "@/lib/partner/partner-demo-avatars";
+import { resolveNetworkTreeCollisions } from "@/lib/partner/partner-network-tree-layout";
 import { formatCentsDe } from "@/lib/partner/referral-money";
-import { computeBranchMinWidthPx } from "@/lib/partner/partner-network-tree-layout";
 import type { PartnerNetworkNode, PartnerNetworkTreeResult } from "@/lib/partner/network-tree";
 
 export type PartnerNetworkViewer = {
@@ -150,13 +151,12 @@ export function PartnerNetworkPremium({
               initialViewScale={INITIAL_VIEW_SCALE}
               layoutKey={`${layoutPrefix}${totalAll}-${rootCode}-${isMobile ? "m" : "d"}`}
             >
-              <div className="px-2 py-2 sm:px-4 sm:py-3">
-                <div className="partner-network-tree">
-                  <ul className="partner-network-tree__root">
-                    <NetworkTreeBranch node={root} viewer={viewer} isMobile={isMobile} useDemoAvatars={useDemoAvatars} />
-                  </ul>
-                </div>
-              </div>
+              <PartnerNetworkTreeRoot
+                root={root}
+                viewer={viewer}
+                isMobile={isMobile}
+                useDemoAvatars={useDemoAvatars}
+              />
             </PartnerNetworkTreeViewport>
           </div>
         ) : (
@@ -172,6 +172,43 @@ export function PartnerNetworkPremium({
         )}
       </div>
     </section>
+  );
+}
+
+function PartnerNetworkTreeRoot({
+  root,
+  viewer,
+  isMobile,
+  useDemoAvatars,
+}: {
+  root: PyramidNode;
+  viewer: PartnerNetworkViewer;
+  isMobile: boolean;
+  useDemoAvatars: boolean;
+}) {
+  const treeRef = useRef<HTMLDivElement>(null);
+  const [layoutTick, setLayoutTick] = useState(0);
+  const requestLayout = useCallback(() => setLayoutTick((t) => t + 1), []);
+
+  useLayoutEffect(() => {
+    if (isMobile || !treeRef.current) return;
+    const el = treeRef.current;
+    const run = () => resolveNetworkTreeCollisions(el);
+    run();
+    const frame = requestAnimationFrame(run);
+    return () => cancelAnimationFrame(frame);
+  }, [isMobile, root, layoutTick]);
+
+  return (
+    <PartnerNetworkTreeLayoutContext.Provider value={requestLayout}>
+      <div className="px-2 py-2 sm:px-4 sm:py-3">
+        <div ref={treeRef} className="partner-network-tree">
+          <ul className="partner-network-tree__root">
+            <NetworkTreeBranch node={root} viewer={viewer} isMobile={isMobile} useDemoAvatars={useDemoAvatars} />
+          </ul>
+        </div>
+      </div>
+    </PartnerNetworkTreeLayoutContext.Provider>
   );
 }
 
@@ -319,6 +356,7 @@ function TreeConnector({
 }) {
   const ref = useRef<HTMLButtonElement>(null);
   const viewport = usePartnerNetworkViewport();
+  const requestTreeLayout = usePartnerNetworkTreeLayout();
   const userToggledRef = useRef(false);
 
   const handleClick = () => {
@@ -329,8 +367,9 @@ function TreeConnector({
   useLayoutEffect(() => {
     if (!userToggledRef.current) return;
     userToggledRef.current = false;
+    requestTreeLayout?.();
     viewport?.centerOnElement(ref.current);
-  }, [collapsed, viewport]);
+  }, [collapsed, viewport, requestTreeLayout]);
 
   return (
     <button
@@ -372,6 +411,7 @@ function NetworkTreeBranch({
 }) {
   const [collapsed, setCollapsed] = useState(() => isMobile && shouldCollapseOnMobile(node));
   const hasChildren = node.children.length > 0;
+  const requestTreeLayout = usePartnerNetworkTreeLayout();
 
   useEffect(() => {
     if (isMobile && shouldCollapseOnMobile(node)) {
@@ -381,15 +421,12 @@ function NetworkTreeBranch({
     }
   }, [isMobile, node]);
 
+  useLayoutEffect(() => {
+    if (!isMobile) requestTreeLayout?.();
+  }, [collapsed, isMobile, requestTreeLayout]);
+
   return (
-    <li
-      className="partner-network-tree__branch"
-      style={
-        isMobile
-          ? undefined
-          : { minWidth: `${computeBranchMinWidthPx(node, collapsed)}px` }
-      }
-    >
+    <li className="partner-network-tree__branch">
       <div className="partner-network-tree__node-stack">
         <NetworkTreeNodeCard node={node} viewer={viewer} useDemoAvatars={useDemoAvatars} />
         {hasChildren ? (

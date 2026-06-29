@@ -7,6 +7,7 @@ const MAX_PHONE_LENGTH = 50;
 
 export const CONTACT_TOPICS = [
   "Haushaltshilfe & Betreuung",
+  "Assistenz im Alltag für Menschen mit Behinderung",
   "Private Pflegeberatung",
   "Betriebliche Pflegeberatung",
   "Kostenfreie Pflegehilfsmittel",

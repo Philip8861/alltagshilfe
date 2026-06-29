@@ -16,6 +16,7 @@ export type NavLink = {
 const UNSERE_LEISTUNGEN_CHILDREN_ALL: { href: string; label: string }[] = [
   { href: "/leistungen/haushaltshilfe", label: "Haushaltshilfe" },
   { href: "/leistungen/alltagsbegleitung-betreuung", label: "Alltagsbegleitung und Betreuung" },
+  { href: "/leistungen/assistenz-im-alltag-behinderung", label: "Assistenz im Alltag für Menschen mit Behinderung" },
   { href: "/pflegeberatung/private-pflegeberatung", label: "Pflegeberatungseinsätze nach §37.3 SGB XI" },
   { href: "/pflegehilfsmittel/kostenfreie-pflegehilfsmittel", label: "Kostenfreie Pflegehilfsmittelbox im Wert von 42€" },
   { href: "/pflegeshop", label: "Pflegeshop & Inkontinenzversorgung" },

@@ -17,6 +17,7 @@ function filterEssenOptions<T extends { key: ServiceErgebnisKey }>(optionen: rea
 /** Interne Schlüssel für Ergebnis-CTAs und Links */
 export type ServiceErgebnisKey =
   | "haushalt"
+  | "assistenz_alltag"
   | "pflegeberatung"
   | "pflegehilfsmittel"
   | "inkontinenz"
@@ -31,6 +32,10 @@ export const serviceLinks: Record<
 > = {
   haushalt: {
     mehr: "/leistungen/haushaltshilfe",
+    kontakt: "/kontakt",
+  },
+  assistenz_alltag: {
+    mehr: "/leistungen/assistenz-im-alltag-behinderung",
     kontakt: "/kontakt",
   },
   pflegeberatung: {
@@ -102,6 +107,7 @@ const UNTER_BEREICHE_BASE: Record<
     text: "Wählen Sie einfach aus, was gerade am besten zu Ihrer Situation passt. Wir zeigen Ihnen im nächsten Schritt die passende Unterstützung.",
     optionen: [
       { key: "haushalt", label: "Haushaltshilfe & Alltagsbegleitung" },
+      { key: "assistenz_alltag", label: "Assistenz im Alltag für Menschen mit Behinderung" },
       { key: "pflegehilfsmittel", label: "Kostenfreie Pflegehilfsmittel" },
       { key: "inkontinenz", label: "Inkontinenzversorgung" },
       {
@@ -136,6 +142,7 @@ const UNTER_BEREICHE_BASE: Record<
         hinweis: "Nur im Raum Kempten",
       },
       { key: "haushalt", label: "Haushaltshilfe & Alltagsbegleitung" },
+      { key: "assistenz_alltag", label: "Assistenz im Alltag für Menschen mit Behinderung" },
       { key: "pflegeberatung", label: "Pflegeberatung" },
     ],
   },
@@ -159,6 +166,7 @@ const MINI_ASSISTENT_SCHRITTE_BASE = {
     frage: "Wobei dürfen wir helfen?",
     optionen: [
       { key: "haushalt" as const, label: "Hilfe im Alltag" },
+      { key: "assistenz_alltag" as const, label: "Assistenz bei Behinderung / Eingliederungshilfe" },
       { key: "pflegeberatung" as const, label: "Pflegeberatung" },
       { key: "pflegehilfsmittel" as const, label: "Pflegehilfsmittel" },
       { key: "inkontinenz" as const, label: "Inkontinenzversorgung" },
@@ -207,6 +215,11 @@ export const ergebnisInhalte: Record<
     titel: "Das könnte gut zu Ihrer Situation passen",
     leistung: "Haushaltshilfe & Alltagsbegleitung",
     text: "Wir unterstützen Sie im Alltag – persönlich und zuverlässig.",
+  },
+  assistenz_alltag: {
+    titel: "Passende Unterstützung für Ihren Alltag",
+    leistung: "Assistenz im Alltag für Menschen mit Behinderung",
+    text: "Alltagshilfe-Süd unterstützt Menschen mit Behinderung im Alltag – zum Beispiel bei Terminen, Einkäufen, Behördenwegen, Haushalt, Tagesstruktur und sozialer Teilhabe. Durch unsere Vereinbarung mit dem Bezirk Schwaben kann eine Kostenübernahme nach Antrag und Bewilligung möglich sein.",
   },
   pflegeberatung: {
     titel: "Die passende Unterstützung für Ihr Anliegen",
@@ -264,6 +277,10 @@ export const ergebnisAktionen: Record<ServiceErgebnisKey, { label: string; href:
   haushalt: [
     { label: "Mehr erfahren", href: serviceLinks.haushalt.mehr! },
     { label: "Rückruf anfordern", href: serviceLinks.haushalt.kontakt },
+  ],
+  assistenz_alltag: [
+    { label: "Beratung anfragen", href: serviceLinks.assistenz_alltag.kontakt },
+    { label: "Mehr erfahren", href: serviceLinks.assistenz_alltag.mehr! },
   ],
   pflegeberatung: [
     { label: "Beratung ansehen", href: serviceLinks.pflegeberatung.mehr! },

@@ -83,13 +83,29 @@ type KundenstimmenCarouselProps = {
   embedded?: boolean;
   /** Startseite: erschwert Drag/Rechtsklick auf Stern-Grafiken (nur Abschreckung). */
   protectImages?: boolean;
+  /** Nur Bewertungen mit diesen Namen anzeigen (Reihenfolge wie in der Quellliste). */
+  includeNames?: string[];
 };
 
-export function KundenstimmenCarousel({ embedded = false, protectImages = false }: KundenstimmenCarouselProps) {
+export function KundenstimmenCarousel({
+  embedded = false,
+  protectImages = false,
+  includeNames,
+}: KundenstimmenCarouselProps) {
   const [index, setIndex] = useState(0);
   const [starCount, setStarCount] = useState(0);
 
-  const count = useMemo(() => BEWERTUNGEN.length, []);
+  const bewertungen = useMemo(() => {
+    if (!includeNames?.length) return BEWERTUNGEN;
+    const nameSet = new Set(includeNames);
+    return BEWERTUNGEN.filter((b) => nameSet.has(b.name));
+  }, [includeNames]);
+
+  const count = bewertungen.length;
+
+  useEffect(() => {
+    setIndex(0);
+  }, [includeNames]);
 
   useEffect(() => {
     if (count <= 1) return;
@@ -162,19 +178,19 @@ export function KundenstimmenCarousel({ embedded = false, protectImages = false 
         )}
 
         <div className={embedded ? "mt-4 text-left" : "mt-5 text-left"}>
-          <article key={`${BEWERTUNGEN[index]?.name}-${index}`} className="animate-fade-in-up p-1">
+          <article key={`${bewertungen[index]?.name}-${index}`} className="animate-fade-in-up p-1">
             <p className="text-base leading-relaxed text-neutral-700 sm:text-lg">
               <span aria-hidden>&bdquo;</span>
-              {BEWERTUNGEN[index]?.text}
+              {bewertungen[index]?.text}
               <span aria-hidden>&ldquo;</span>
             </p>
-            <p className="mt-4 text-sm font-semibold text-[#0F4F68]">{BEWERTUNGEN[index]?.name}</p>
-            <p className="mt-0.5 text-xs text-neutral-500">{BEWERTUNGEN[index]?.meta}</p>
+            <p className="mt-4 text-sm font-semibold text-[#0F4F68]">{bewertungen[index]?.name}</p>
+            <p className="mt-0.5 text-xs text-neutral-500">{bewertungen[index]?.meta}</p>
           </article>
         </div>
 
         <div className="mt-4 flex flex-wrap justify-center gap-2" aria-label="Bewertung auswählen">
-          {BEWERTUNGEN.map((_, i) => (
+          {bewertungen.map((_, i) => (
             <button
               key={`dot-${i}`}
               type="button"
@@ -185,7 +201,7 @@ export function KundenstimmenCarousel({ embedded = false, protectImages = false 
                   ? "border-[#F78F2E] bg-[#F78F2E] text-white"
                   : "border-[#0F4F68]/25 bg-white text-[#0F4F68]/45 hover:border-[#0F4F68]/45 hover:text-[#0F4F68]/65"
               )}
-              aria-label={`Bewertung ${i + 1} von ${count}: ${BEWERTUNGEN[i]?.name ?? ""}`}
+              aria-label={`Bewertung ${i + 1} von ${count}: ${bewertungen[i]?.name ?? ""}`}
             >
               <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
                 <path d="M20 6L9 17l-5-5" />
@@ -201,7 +217,7 @@ export function KundenstimmenCarousel({ embedded = false, protectImages = false 
             </span>
           </summary>
           <ul className="mt-5 space-y-8 border-t border-[#0F4F68]/10 pt-5">
-            {BEWERTUNGEN.map((b, i) => (
+            {bewertungen.map((b, i) => (
               <li key={`alle-${i}-${b.name}`}>
                 <blockquote className="text-sm leading-relaxed text-neutral-700 sm:text-base">
                   <span aria-hidden>&bdquo;</span>

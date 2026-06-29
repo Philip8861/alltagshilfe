@@ -31,6 +31,24 @@
     ]
   },
   {
+    "slug": "assistenz-im-alltag-behinderung",
+    "title": "Assistenz im Alltag",
+    "description": "Unterstützung für Menschen mit Behinderung, Mütter und Väter – bei Haushalt, Terminen, Behördenwegen, Tagesstruktur und sozialer Teilhabe.",
+    "intro": "Unsere Assistenz im Alltag richtet sich an Menschen mit Behinderung, die Unterstützung im täglichen Leben benötigen. Gemeinsam stimmen wir ab, welche Hilfe wirklich gebraucht wird – respektvoll, zuverlässig und alltagsnah.",
+    "sections": [
+      {
+        "bullets": [
+          "Unterstützung bei Einkäufen und Erledigungen.",
+          "Begleitung zu Arztterminen und Behörden.",
+          "Hilfe bei Tagesstruktur und Alltagsorganisation.",
+          "Unterstützung im Haushalt und bei praktischen Aufgaben.",
+          "Begleitung bei Freizeit, Mobilität und sozialer Teilhabe.",
+          "Entlastung und Elternassistenz für Mütter und Väter mit Behinderung."
+        ]
+      }
+    ]
+  },
+  {
     "slug": "essen-auf-raeder",
     "title": "Essen auf Räder",
     "description": "Mit Herz gekocht, liebevoll gebracht – frisch und regional mit Partner LuckyLunch.",

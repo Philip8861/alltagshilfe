@@ -7,6 +7,7 @@ import { features } from "@/config/features";
 export type HilfefinderServiceKey =
   | "pflegegrad_beantrag_widerspruch"
   | "haushalt"
+  | "assistenz_alltag_behinderung"
   | "pflegeberatung"
   | "pflegebox"
   | "koerperpflege"
@@ -28,6 +29,11 @@ const HILFEFINDER_SERVICE_OPTIONEN_ALL: {
   },
   { key: "haushalt", label: "Alltagsbegleitung & Haushaltsreinigung", verfuegbarkeit: "direkt" },
   {
+    key: "assistenz_alltag_behinderung",
+    label: "Assistenz im Alltag für Menschen mit Behinderung",
+    verfuegbarkeit: "direkt",
+  },
+  {
     key: "pflegeberatung",
     label: "Pflegeberatung nach §37.3 SGB XI (halbjährlich verpflichtend, PG 4–5 optional vierteljährlich)",
     verfuegbarkeit: "direkt",
@@ -44,6 +50,21 @@ const HILFEFINDER_SERVICE_OPTIONEN_ALL: {
 export const HILFEFINDER_SERVICE_OPTIONEN = features.essenAufRaederVisible
   ? HILFEFINDER_SERVICE_OPTIONEN_ALL
   : HILFEFINDER_SERVICE_OPTIONEN_ALL.filter((o) => o.key !== "essen");
+
+/** Optionale Ergebnis-Texte und CTAs im Hilfe-Finder (Schritt 5). */
+export const HILFEFINDER_SERVICE_ERGEBNIS: Partial<
+  Record<
+    HilfefinderServiceKey,
+    { text: string; ctaLabel: string; ctaHref: string; mehrHref?: string }
+  >
+> = {
+  assistenz_alltag_behinderung: {
+    text: "Alltagshilfe-Süd unterstützt Menschen mit Behinderung im Alltag – zum Beispiel bei Terminen, Einkäufen, Behördenwegen, Haushalt, Tagesstruktur und sozialer Teilhabe. Durch unsere Vereinbarung mit dem Bezirk Schwaben kann eine Kostenübernahme nach Antrag und Bewilligung möglich sein.",
+    ctaLabel: "Beratung anfragen",
+    ctaHref: "/kontakt",
+    mehrHref: "/leistungen/assistenz-im-alltag-behinderung",
+  },
+};
 
 /** Fallback, wenn keine PLZ zugeordnet werden kann – Zentrale Bad Grönenbach. */
 export const HILFEFINDER_FALLBACK_BAD_GROENENBACH: Standort = {

@@ -1,14 +1,17 @@
-import Link from "next/link";
+import type { ReactNode } from "react";
 import { GtmKontaktNavLink } from "@/components/analytics/GtmContactIntentLink";
 import { KundenstimmenCarousel } from "@/components/home/KundenstimmenCarousel";
 import { siteConfig } from "@/config/site";
 import { RevealOnScroll } from "@/components/pflegehilfsmittel/RevealOnScroll";
 import { JetztNeuPromoSection } from "@/components/leistungen/JetztNeuPromoSection";
-import { buildStandortStyleFaq, standortFaqJsonLd } from "@/lib/standort-faq";
-import { STARTSEITE_VORTEILE, STARTSEITE_VORTEILE_INTRO } from "@/lib/startseite-vorteile";
+import { ASSISTENZ_IM_ALLTAG_FAQ } from "@/lib/assistenz-im-alltag-faq";
+import {
+  ASSISTENZ_IM_ALLTAG_VORTEILE,
+  ASSISTENZ_IM_ALLTAG_VORTEILE_INTRO,
+} from "@/lib/assistenz-im-alltag-vorteile";
+import { standortFaqJsonLd } from "@/lib/standort-faq";
 
-const HAUSHALT_LANDING_FAQ = buildStandortStyleFaq(null);
-const HAUSHALT_LANDING_FAQ_JSON_LD = standortFaqJsonLd(HAUSHALT_LANDING_FAQ);
+const ASSISTENZ_LANDING_FAQ_JSON_LD = standortFaqJsonLd(ASSISTENZ_IM_ALLTAG_FAQ);
 
 const HERO_IMG = "/images/haushaltshilfe.webp";
 
@@ -16,9 +19,9 @@ const HERO_GLOW_CLASS =
   "[filter:drop-shadow(0_10px_22px_rgba(15,79,104,0.2))_drop-shadow(0_4px_12px_rgba(15,79,104,0.12))] [will-change:filter]";
 
 const HERO_VORTEILE = [
-  "Freie Kapazitäten & kurze Wartezeiten",
-  "Zugelassen bei allen Krankenkassen",
-  "Feste Bezugsperson statt ständiger Wechsel",
+  "Vereinbarung mit dem Bezirk Schwaben",
+  "Für Menschen mit Behinderung, Mütter und Väter",
+  "Unterstützung im Alltag, zu Hause und unterwegs",
 ] as const;
 
 const WELLEN_D =
@@ -26,6 +29,21 @@ const WELLEN_D =
 
 const WELLEN_SVG_CLASS =
   "pointer-events-none absolute left-0 top-0 z-0 h-16 w-full -translate-y-7 sm:h-[clamp(2.85rem,1.5rem+3.8vw,5rem)] sm:-translate-y-[clamp(0.9rem,0.35rem+2.1vw,3.2rem)]";
+
+const ASSISTENZ_BEWERTUNGEN = [
+  "Günter Bautz",
+  "TMy",
+  "Tati",
+  "Elmas Sert",
+  "Elena Zimmermann",
+  "Patricia Schmidt",
+  "Alf Laumann",
+  "Kathi Bühler",
+  "Iris Huber",
+  "E. A.",
+  "Petra Kupzok",
+  "Ta K.",
+] as const;
 
 function HeroCheckIcon({ className = "" }: { className?: string }) {
   return (
@@ -53,35 +71,58 @@ const SCHRITTE = [
     step: "Schritt 1",
     title: "Unverbindlich anfragen",
     description:
-      "Kontaktieren Sie uns telefonisch oder über das Kontaktformular. Wir klären kurz Ihren Bedarf und die nächsten Schritte – ohne Verpflichtung.",
+      "Kontaktieren Sie uns telefonisch oder über das Kontaktformular. Wir klären kurz, wobei Unterstützung benötigt wird und welche nächsten Schritte sinnvoll sind.",
   },
   {
     step: "Schritt 2",
-    title: "Persönliche Abstimmung",
+    title: "Persönliche Beratung",
     description:
-      "Wir stimmen Umfang, Termine und Details mit Ihnen ab. So passt die Haushaltshilfe zu Ihrem Alltag und Ihrer Lebenssituation.",
+      "Wir besprechen Ihre Situation, den Unterstützungsbedarf und die Möglichkeiten einer Assistenz im Alltag. Dabei erklären wir auch, wie die Kostenübernahme über den Bezirk Schwaben ablaufen kann.",
   },
   {
     step: "Schritt 3",
-    title: "Zuverlässige Unterstützung",
+    title: "Zuverlässige Assistenz starten",
     description:
-      "Ihre festen Ansprechpartnerinnen und Ansprechpartner unterstützen Sie regelmäßig und verlässlich – damit Sie entlastet sind.",
+      "Nach Bewilligung und Abstimmung unterstützen unsere Mitarbeiterinnen und Mitarbeiter regelmäßig und verlässlich im Alltag.",
   },
 ] as const;
 
 const LEISTUNGS_TILES = [
-  "Saugen und Wischen der Böden",
-  "Fenster putzen",
-  "Reinigung von Bad und Küche",
-  "Mahlzeiten zubereiten",
-  "Aufräumen und Ordnung halten",
-  "Wäsche waschen und bügeln",
+  "Unterstützung bei Einkäufen und Erledigungen",
+  "Begleitung zu Arztterminen und Behörden",
+  "Hilfe bei Tagesstruktur und Alltagsorganisation",
+  "Unterstützung im Haushalt und bei praktischen Aufgaben",
+  "Begleitung bei Freizeit, Mobilität und sozialer Teilhabe",
+  "Entlastung und Elternassistenz für Mütter und Väter mit Behinderung",
 ] as const;
 
-export function HaushaltshilfeLanding() {
+const PROMO_CARDS: { title: string; body: ReactNode }[] = [
+  {
+    title: "Alles auf einen Blick",
+    body: "Termine, Absprachen und wichtige Informationen bleiben für Sie übersichtlich und nachvollziehbar.",
+  },
+  {
+    title: "Individuelle Unterstützung",
+    body: "Wir richten die Assistenz nach Ihrem persönlichen Bedarf aus – zu Hause, unterwegs und im sozialen Umfeld.",
+  },
+  {
+    title: "Transparente Abstimmung",
+    body: "Wir besprechen gemeinsam, welche Aufgaben übernommen werden und welche Unterstützung im Alltag sinnvoll ist.",
+  },
+  {
+    title: "Verlässliche Begleitung",
+    body: "Nach Möglichkeit arbeiten wir mit festen Bezugspersonen, damit Vertrauen und Kontinuität entstehen.",
+  },
+  {
+    title: "Beratung zur Kostenübernahme",
+    body: "Durch unsere Vereinbarung mit dem Bezirk Schwaben kann eine Kostenübernahme nach Antrag und Bewilligung möglich sein.",
+  },
+];
+
+export function AssistenzImAlltagBehinderungLanding() {
   return (
     <div className="min-w-0 overflow-x-clip overflow-y-visible bg-[#fafbfc] text-neutral-700 antialiased">
-      <article id="haushaltshilfe-hero" className="min-w-0 scroll-mt-24 overflow-x-clip overflow-y-visible">
+      <article id="assistenz-alltag-hero" className="min-w-0 scroll-mt-24 overflow-x-clip overflow-y-visible">
         <section className="relative z-0 box-border mx-auto w-full min-w-0 max-w-7xl px-4 pb-10 pt-0 sm:px-6 sm:pb-16 lg:px-[var(--ahs-page-gutter)] lg:pb-[clamp(4rem,9vh+1.5rem,7rem)] lg:pt-[clamp(2rem,5vh+1.25rem,4.75rem)] xl:pb-[clamp(5rem,10vh+1.5rem,8rem)]">
           <div className="flex flex-col-reverse items-center gap-10 lg:grid lg:grid-cols-[minmax(0,0.34fr)_minmax(0,0.66fr)] lg:items-center lg:justify-items-stretch lg:gap-x-[clamp(1.5rem,3vw,3.25rem)] lg:gap-y-0">
             <div className="box-border w-full min-w-0 max-w-full space-y-[clamp(1.25rem,2vh+0.75rem,1.75rem)] lg:min-w-0 lg:justify-self-start lg:space-y-[clamp(1.15rem,1.6vh+0.7rem,1.75rem)] lg:-translate-x-[clamp(0.75rem,4.5vw,3rem)] lg:pr-0 motion-reduce:lg:translate-x-0">
@@ -89,7 +130,7 @@ export function HaushaltshilfeLanding() {
                 className="text-3xl font-extrabold leading-tight tracking-tight text-[#0F4F68] opacity-0 motion-reduce:opacity-100 animate-fade-in-up sm:text-4xl lg:text-[clamp(1.75rem,1.05rem+2.5vw,3rem)]"
                 style={{ animationDelay: "0s" }}
               >
-                <span className="block">Haushaltshilfe ganz in Ihrer Nähe</span>
+                <span className="block">Assistenz im Alltag für Menschen mit Behinderung</span>
               </h1>
               <ul
                 className="mt-5 min-w-0 space-y-3 sm:mt-6 sm:space-y-3.5 lg:mt-0 lg:space-y-[clamp(0.65rem,0.35rem+0.9vw,1rem)]"
@@ -113,15 +154,15 @@ export function HaushaltshilfeLanding() {
               >
                 <GtmKontaktNavLink
                   href="/kontakt"
-                  contactPath="haushaltshilfe_landing_hero_kontakt_nav"
-                  sourceComponent="HaushaltshilfeLanding"
-                  service="haushaltshilfe"
+                  contactPath="assistenz_alltag_landing_hero_kontakt_nav"
+                  sourceComponent="AssistenzImAlltagBehinderungLanding"
+                  service="assistenz_im_alltag_behinderung"
                   className="flex w-full transform items-center justify-center gap-2 rounded-xl bg-[#F78F2E] px-6 py-3 text-lg font-bold text-white shadow-lg transition hover:scale-[1.02] hover:opacity-95 focus:outline-none focus:ring-2 focus:ring-[#F78F2E] focus:ring-offset-2 motion-reduce:transform-none sm:w-auto lg:w-auto lg:px-[clamp(1.15rem,0.85rem+1.1vw,1.65rem)] lg:py-[clamp(0.6rem,0.45rem+0.45vw,0.9rem)] lg:text-[clamp(1rem,0.82rem+0.55vw,1.15rem)]"
                 >
-                  Jetzt Kontakt aufnehmen
+                  Jetzt unverbindlich beraten lassen
                 </GtmKontaktNavLink>
                 <p className="mt-3 min-w-0 max-w-full text-pretty text-center text-sm leading-snug text-neutral-600 sm:text-left lg:text-[clamp(0.8rem,0.7rem+0.35vw,0.95rem)]">
-                  Unverbindliche Erstberatung – wir melden uns zeitnah bei Ihnen.
+                  Unverbindliche Erstberatung – wir erklären Ihnen die nächsten Schritte.
                 </p>
               </div>
             </div>
@@ -135,7 +176,7 @@ export function HaushaltshilfeLanding() {
                   {/* eslint-disable-next-line @next/next/no-img-element -- statisches Hero-Asset */}
                   <img
                     src={HERO_IMG}
-                    alt="Haushaltshilfe – Unterstützung im Alltag bei Ihnen zu Hause"
+                    alt="Assistenz im Alltag für Menschen mit Behinderung durch Alltagshilfe-Süd"
                     width={1200}
                     height={800}
                     decoding="async"
@@ -151,7 +192,7 @@ export function HaushaltshilfeLanding() {
 
         <section
           className="relative z-10 overflow-x-clip bg-[#F2F9FA] px-4 pb-16 pt-[clamp(2.5rem,4.5vw,4.25rem)] sm:px-6 sm:pb-20 lg:px-[var(--ahs-page-gutter)] lg:pb-24"
-          aria-labelledby="haushalt-leistungen-heading"
+          aria-labelledby="assistenz-leistungen-heading"
         >
           <svg
             className={WELLEN_SVG_CLASS}
@@ -165,16 +206,13 @@ export function HaushaltshilfeLanding() {
           <div className="relative z-[1] mx-auto max-w-7xl">
             <RevealOnScroll>
               <div className="mb-10 text-center sm:mb-12">
-                <h2 id="haushalt-leistungen-heading" className="text-3xl font-bold text-[#0F4F68] sm:text-4xl">
-                  Das übernehmen wir im Haushalt
+                <h2 id="assistenz-leistungen-heading" className="text-3xl font-bold text-[#0F4F68] sm:text-4xl">
+                  Das übernehmen wir in der Alltagsassistenz
                 </h2>
                 <p className="mt-3 text-pretty text-neutral-600 sm:max-w-3xl sm:mx-auto">
-                  Typische haushaltsnahe Leistungen – im Detail stimmen wir alles mit Ihnen ab. Für Menschen mit
-                  Behinderung bieten wir zudem{" "}
-                  <Link href="/leistungen/assistenz-im-alltag-behinderung" className="font-semibold text-[#0F4F68] underline-offset-2 hover:underline">
-                    Assistenz im Alltag im Rahmen der Eingliederungshilfe
-                  </Link>
-                  .
+                  Unsere Assistenz im Alltag richtet sich an Menschen mit Behinderung, die Unterstützung im täglichen Leben
+                  benötigen. Gemeinsam stimmen wir ab, welche Hilfe wirklich gebraucht wird – respektvoll, zuverlässig und
+                  alltagsnah.
                 </p>
               </div>
             </RevealOnScroll>
@@ -193,11 +231,18 @@ export function HaushaltshilfeLanding() {
           </div>
         </section>
 
-        <JetztNeuPromoSection headingId="haushalt-jetzt-neu-promo" />
+        <JetztNeuPromoSection
+          headingId="assistenz-jetzt-neu-promo"
+          heading="Assistenz mit klarer Struktur und Transparenz"
+          intro="Wir möchten, dass Sie jederzeit wissen, welche Unterstützung geplant ist, welche Termine anstehen und wie die Assistenz organisiert wird."
+          imageAlt="Unterstützung im Alltag durch Alltagshilfe-Süd – Termine und Absprachen im Überblick"
+          showHeadingStar={false}
+          cards={PROMO_CARDS}
+        />
 
         <section
           className="relative z-[11] overflow-x-clip bg-[#fafbfc] px-4 pb-16 pt-[clamp(2.5rem,4.5vw,4.25rem)] sm:px-6 sm:pb-20 lg:px-[var(--ahs-page-gutter)] lg:pb-24"
-          aria-labelledby="haushalt-schritte-heading"
+          aria-labelledby="assistenz-schritte-heading"
         >
           <svg
             className={WELLEN_SVG_CLASS}
@@ -212,13 +257,13 @@ export function HaushaltshilfeLanding() {
             <RevealOnScroll>
               <div className="mx-auto mb-10 max-w-3xl text-center lg:mb-12">
                 <h2
-                  id="haushalt-schritte-heading"
+                  id="assistenz-schritte-heading"
                   className="text-balance text-3xl font-bold tracking-tight text-[#0F4F68] sm:text-4xl"
                 >
-                  So einfach zur passenden Haushaltshilfe
+                  So einfach zur passenden Assistenz im Alltag
                 </h2>
                 <p className="mt-3 text-pretty text-sm text-[#8a6a55] sm:text-base">
-                  Drei Schritte zur verlässlichen Haushaltshilfe, schnell & unkompliziert
+                  Drei Schritte zur individuellen Unterstützung – verständlich, persönlich und unkompliziert.
                 </p>
               </div>
             </RevealOnScroll>
@@ -245,12 +290,12 @@ export function HaushaltshilfeLanding() {
               <div className="mt-10 flex flex-col items-center gap-2 sm:mt-12">
                 <GtmKontaktNavLink
                   href="/kontakt"
-                  contactPath="haushaltshilfe_landing_steps_anfrage_nav"
-                  sourceComponent="HaushaltshilfeLanding"
-                  service="haushaltshilfe"
+                  contactPath="assistenz_alltag_landing_steps_anfrage_nav"
+                  sourceComponent="AssistenzImAlltagBehinderungLanding"
+                  service="assistenz_im_alltag_behinderung"
                   className="inline-flex min-h-[48px] items-center justify-center rounded-xl bg-[#F78F2E] px-8 py-3.5 text-base font-bold text-white shadow-md transition hover:opacity-95 focus:outline-none focus:ring-2 focus:ring-[#F78F2E] focus:ring-offset-2 sm:text-lg"
                 >
-                  Anfrage stellen
+                  Beratung anfragen
                 </GtmKontaktNavLink>
                 <p className="text-center text-sm text-neutral-500">Unverbindlich · Wir melden uns bei Ihnen</p>
               </div>
@@ -260,7 +305,7 @@ export function HaushaltshilfeLanding() {
 
         <section
           className="relative z-20 w-full overflow-x-clip bg-white px-4 pb-14 pt-[clamp(4.25rem,9vw,6.25rem)] sm:px-6 sm:pb-16 sm:pt-[clamp(4.75rem,10vw,6.75rem)] lg:px-[var(--ahs-page-gutter)] lg:pb-20"
-          aria-labelledby="haushalt-vorteile-heading"
+          aria-labelledby="assistenz-vorteile-heading"
         >
           <svg
             className={WELLEN_SVG_CLASS}
@@ -275,15 +320,15 @@ export function HaushaltshilfeLanding() {
             <div className="relative z-[1] mx-auto w-full max-w-6xl">
               <div className="mx-auto flex w-full max-w-3xl flex-col items-center text-center">
                 <h2
-                  id="haushalt-vorteile-heading"
+                  id="assistenz-vorteile-heading"
                   className="text-balance text-3xl font-bold tracking-tight text-[#0F4F68] sm:text-4xl"
                 >
                   Ihre Vorteile bei uns
                 </h2>
-                <p className="mt-2 text-pretty text-sm text-neutral-600 sm:text-base">{STARTSEITE_VORTEILE_INTRO}</p>
+                <p className="mt-2 text-pretty text-sm text-neutral-600 sm:text-base">{ASSISTENZ_IM_ALLTAG_VORTEILE_INTRO}</p>
               </div>
               <ul className="mt-6 grid gap-4 sm:grid-cols-2">
-                {STARTSEITE_VORTEILE.map((item) => (
+                {ASSISTENZ_IM_ALLTAG_VORTEILE.map((item) => (
                   <li
                     key={item}
                     className="flex items-start gap-3 rounded-xl px-2 py-1.5 transition-all duration-300 hover:bg-white/75 hover:shadow-[0_0_20px_rgba(15,79,104,0.12)]"
@@ -307,24 +352,24 @@ export function HaushaltshilfeLanding() {
           </RevealOnScroll>
         </section>
 
-        <KundenstimmenCarousel />
+        <KundenstimmenCarousel includeNames={[...ASSISTENZ_BEWERTUNGEN]} />
 
-        <section className="relative bg-[#fafbfc] py-14 sm:py-20" aria-labelledby="haushalt-faq-heading">
+        <section className="relative bg-[#fafbfc] py-14 sm:py-20" aria-labelledby="assistenz-faq-heading">
           <div className="relative mx-auto max-w-3xl px-4 sm:px-6 lg:max-w-4xl">
             <RevealOnScroll>
               <h2
-                id="haushalt-faq-heading"
+                id="assistenz-faq-heading"
                 className="text-center text-2xl font-extrabold tracking-tight text-[#0F4F68] sm:text-3xl"
               >
                 Häufige Fragen
               </h2>
               <p className="mx-auto mt-2 max-w-2xl text-center text-sm font-medium text-[#0F4F68]/85 sm:text-base">
-                Antworten zu Region, Leistungen, Kosten, Kasse, Entlastungsbetrag und Ablauf
+                Antworten zu Assistenz im Alltag, Eingliederungshilfe, Bezirk Schwaben, Kostenübernahme und Ablauf
               </p>
             </RevealOnScroll>
             <RevealOnScroll delayMs={100}>
               <div className="mt-8 space-y-3 sm:mt-10">
-                {HAUSHALT_LANDING_FAQ.map((item) => (
+                {ASSISTENZ_IM_ALLTAG_FAQ.map((item) => (
                   <details
                     key={item.q}
                     className="group rounded-2xl border border-[#0F4F68]/12 bg-white shadow-[0_2px_16px_rgba(15,79,104,0.06)] transition hover:border-[#F78F2E]/35 hover:shadow-[0_8px_28px_rgba(15,79,104,0.1)] open:border-[#0F4F68]/18 open:shadow-[0_10px_32px_rgba(15,79,104,0.12)]"
@@ -348,30 +393,21 @@ export function HaushaltshilfeLanding() {
               </div>
             </RevealOnScroll>
           </div>
-          <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(HAUSHALT_LANDING_FAQ_JSON_LD) }} />
+          <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(ASSISTENZ_LANDING_FAQ_JSON_LD) }} />
         </section>
 
         <section className="border-t border-[#0F4F68]/10 bg-white py-12" aria-label="Abschluss">
           <RevealOnScroll>
             <div className="mx-auto max-w-3xl px-4 text-center sm:px-6">
               <p className="text-neutral-600">
-                {siteConfig.name} unterstützt Sie mit Haushaltshilfe in Ihrer Region. Fragen? Wir sind für Sie da – über{" "}
-                <GtmKontaktNavLink
-                  href="/kontakt"
-                  contactPath="haushaltshilfe_landing_footer_inline_kontakt_nav"
-                  sourceComponent="HaushaltshilfeLanding"
-                  service="haushaltshilfe"
-                  className="font-semibold text-[#0F4F68] underline-offset-2 hover:underline"
-                >
-                  Kontaktseite
-                </GtmKontaktNavLink>
-                .
+                {siteConfig.name} unterstützt Sie mit Assistenz im Alltag für Menschen mit Behinderung. Fragen? Wir sind für
+                Sie da.
               </p>
               <GtmKontaktNavLink
                 href="/kontakt"
-                contactPath="haushaltshilfe_landing_footer_cta_nav"
-                sourceComponent="HaushaltshilfeLanding"
-                service="haushaltshilfe"
+                contactPath="assistenz_alltag_landing_footer_cta_nav"
+                sourceComponent="AssistenzImAlltagBehinderungLanding"
+                service="assistenz_im_alltag_behinderung"
                 className="mt-6 inline-flex rounded-lg bg-[#F78F2E] px-8 py-3 text-base font-bold text-white shadow-md transition hover:opacity-95 focus:outline-none focus:ring-2 focus:ring-[#F78F2E] focus:ring-offset-2"
               >
                 Jetzt Kontakt aufnehmen

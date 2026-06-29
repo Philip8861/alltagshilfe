@@ -20,6 +20,7 @@ type Props = { params: Promise<{ slug: string }> };
 const SLUGS_WITH_DEDICATED_PAGE = new Set([
   "haushaltshilfe",
   "alltagsbegleitung-betreuung",
+  "assistenz-im-alltag-behinderung",
   "hilfe-nach-operation",
 ]);
 

@@ -5,6 +5,7 @@ import { createPortal } from "react-dom";
 import Link from "next/link";
 import {
   HILFEFINDER_FALLBACK_BAD_GROENENBACH,
+  HILFEFINDER_SERVICE_ERGEBNIS,
   HILFEFINDER_SERVICE_OPTIONEN,
   type HilfefinderServiceKey,
 } from "@/config/hilfefinder-services";
@@ -431,6 +432,33 @@ export function HilfefinderProvider({ children }: { children: ReactNode }) {
                     </li>
                   ))}
                 </ul>
+                {leistungen
+                  .map((key) => HILFEFINDER_SERVICE_ERGEBNIS[key])
+                  .filter(Boolean)
+                  .map((ergebnis, i) => (
+                    <div
+                      key={`ergebnis-${i}`}
+                      className="rounded-2xl border border-[#0F4F68]/12 bg-white px-4 py-4 text-left sm:px-5"
+                    >
+                      <p className="text-sm leading-relaxed text-neutral-700 sm:text-base">{ergebnis!.text}</p>
+                      <div className="mt-4 flex flex-wrap gap-3">
+                        <Link
+                          href={ergebnis!.ctaHref}
+                          className="inline-flex min-h-[44px] items-center justify-center rounded-xl bg-[#F78F2E] px-5 py-2.5 text-sm font-semibold text-white hover:bg-[#e67e22]"
+                        >
+                          {ergebnis!.ctaLabel}
+                        </Link>
+                        {ergebnis!.mehrHref ? (
+                          <Link
+                            href={ergebnis!.mehrHref}
+                            className="inline-flex min-h-[44px] items-center justify-center rounded-xl border border-[#0F4F68]/30 px-5 py-2.5 text-sm font-semibold text-[#0F4F68] hover:bg-[#F2F9FA]"
+                          >
+                            Mehr erfahren
+                          </Link>
+                        ) : null}
+                      </div>
+                    </div>
+                  ))}
               </div>
             ) : null}
 

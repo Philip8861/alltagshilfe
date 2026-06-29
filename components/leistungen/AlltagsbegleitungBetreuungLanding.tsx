@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { GtmKontaktNavLink } from "@/components/analytics/GtmContactIntentLink";
 import { KundenstimmenCarousel } from "@/components/home/KundenstimmenCarousel";
 import { siteConfig } from "@/config/site";
@@ -169,7 +170,11 @@ export function AlltagsbegleitungBetreuungLanding() {
                 </h2>
                 <p className="mt-3 text-pretty text-neutral-600 sm:max-w-3xl sm:mx-auto">
                   Typische Leistungen rund um Begleitung und Beschäftigung im Alltag. Im Detail stimmen wir alles mit Ihnen
-                  ab.
+                  ab. Für Menschen mit Behinderung bieten wir zudem{" "}
+                  <Link href="/leistungen/assistenz-im-alltag-behinderung" className="font-semibold text-[#0F4F68] underline-offset-2 hover:underline">
+                    Assistenz im Alltag im Rahmen der Eingliederungshilfe
+                  </Link>
+                  .
                 </p>
               </div>
             </RevealOnScroll>
