@@ -54,7 +54,7 @@ export function HilfefinderServiceIcon({ service }: { service: HilfefinderServic
   if (service === "haushalt") {
     return (
       <svg className="h-6 w-6 text-[#0F4F68]/75" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
-        <path d="M12 21s-7-4.35-7-10a4 4 0 0 1 7-2.65A4 4 0 0 1 19 11c0 5.65-7 10-7 10z" />
+        <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0L12 2.69z" />
       </svg>
     );
   }
