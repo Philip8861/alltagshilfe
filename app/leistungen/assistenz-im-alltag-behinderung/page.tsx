@@ -1,7 +1,5 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { AssistenzImAlltagBehinderungLanding } from "@/components/leistungen/AssistenzImAlltagBehinderungLanding";
-import { Container } from "@/components/layout/Container";
 import { siteConfig } from "@/config/site";
 import { buildLeistungBreadcrumbJsonLd, buildLeistungServiceJsonLd } from "@/lib/leistung-service-jsonld";
 
@@ -55,31 +53,6 @@ export default function AssistenzImAlltagBehinderungPage() {
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceJsonLd) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }} />
-      <Container className="py-4 sm:py-5">
-        <nav aria-label="Brotkrumen" className="text-sm text-neutral-600">
-          <ol className="flex flex-wrap items-center gap-1.5">
-            <li>
-              <Link href="/" className="font-medium text-[#0F4F68] hover:underline">
-                Startseite
-              </Link>
-            </li>
-            <li aria-hidden className="text-neutral-400">
-              /
-            </li>
-            <li>
-              <Link href="/#unsere-leistungen" className="font-medium text-[#0F4F68] hover:underline">
-                Leistungen
-              </Link>
-            </li>
-            <li aria-hidden className="text-neutral-400">
-              /
-            </li>
-            <li aria-current="page" className="text-neutral-700">
-              {PAGE_TITLE}
-            </li>
-          </ol>
-        </nav>
-      </Container>
       <AssistenzImAlltagBehinderungLanding />
     </>
   );
