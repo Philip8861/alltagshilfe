@@ -213,8 +213,12 @@ export function AssistenzImAlltagBehinderungLanding() {
                 </h2>
                 <p className="mt-3 text-pretty text-neutral-600 sm:max-w-3xl sm:mx-auto">
                   Unsere Assistenz im Alltag richtet sich an Menschen mit Behinderung, die Unterstützung im täglichen Leben
-                  benötigen. Gemeinsam stimmen wir ab, welche Hilfe wirklich gebraucht wird – respektvoll, zuverlässig und
+                  benötigen. Gemeinsam stimmen wir ab, welche Hilfe wirklich gebraucht wird: respektvoll, zuverlässig und
                   alltagsnah.
+                </p>
+                <p className="mt-3 text-pretty text-neutral-600 sm:max-w-3xl sm:mx-auto">
+                  Wir erbringen einfache Assistenzleistungen im Rahmen der Sozialen Teilhabe nach § 78 Abs. 2 Satz 2 Nr. 1
+                  SGB IX.
                 </p>
               </div>
             </RevealOnScroll>
