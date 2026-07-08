@@ -35,7 +35,9 @@ export function InkoTrustCheckList({
           key={item}
           className={cn(
             "flex items-start gap-2.5 leading-snug",
-            onBanner ? "text-[0.98rem] font-semibold text-[#0f2d38]" : "text-[0.98rem] text-neutral-700",
+            onBanner
+              ? "text-[1.05rem] font-bold text-[#062a38] [text-shadow:0_1px_2px_rgba(255,255,255,0.92)] sm:text-[1.1rem]"
+              : "text-[0.98rem] text-neutral-700",
           )}
         >
           <span
@@ -65,7 +67,7 @@ export function InkoCtaGradientStripe() {
   );
 }
 
-/** Aquarell-Banner als Hintergrund – Motiv dezent rechts, Text auf heller Fläche */
+/** Banner-Bild als Hintergrund – Text liegt direkt auf dem Motiv */
 export function InkoArticleCtaBackground() {
   return (
     <>
@@ -74,34 +76,31 @@ export function InkoArticleCtaBackground() {
         alt=""
         fill
         aria-hidden
-        className="pointer-events-none object-cover object-[92%_bottom] opacity-75 sm:object-[right_bottom] sm:opacity-85"
+        className="pointer-events-none object-cover object-center"
         sizes="(max-width: 640px) 100vw, 760px"
       />
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-0 bg-gradient-to-br from-white from-45% via-white/97 to-[#e8f4f8]/75 sm:from-40% sm:via-white/92 sm:to-white/35"
-      />
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(255,255,255,0.55)_0%,rgba(255,255,255,0.88)_55%,rgba(255,255,255,0.96)_100%)] sm:bg-[linear-gradient(180deg,transparent_0%,rgba(255,255,255,0.4)_40%,rgba(255,255,255,0.85)_100%)]"
+        className="pointer-events-none absolute inset-0 bg-gradient-to-r from-white/78 via-white/42 to-transparent sm:from-white/72 sm:via-white/28"
       />
     </>
   );
 }
 
-/** Lesefläche über dem Banner – undurchsichtig, damit Text nie mit Produkten kollidiert */
+/** Text-Layout direkt auf dem Banner – ohne weiße Box */
 export function InkoArticleCtaContentPane({ children, className }: { children: ReactNode; className?: string }) {
-  return (
-    <div
-      className={cn(
-        "rounded-xl border border-[#0F4F68]/12 bg-white px-4 py-5 shadow-[0_8px_32px_-12px_rgba(15,79,104,0.2)] sm:px-6 sm:py-6",
-        className,
-      )}
-    >
-      {children}
-    </div>
-  );
+  return <div className={cn("relative z-[1] px-5 py-7 sm:px-8 sm:py-9", className)}>{children}</div>;
 }
+
+/** Typografie für Texte auf dem Banner */
+export const INKO_ARTICLE_CTA_LABEL_CLASS =
+  "text-[0.78rem] font-extrabold uppercase tracking-[0.16em] text-[#0a4a5c] [text-shadow:0_1px_2px_rgba(255,255,255,0.95)] sm:text-[0.82rem]";
+export const INKO_ARTICLE_CTA_HEADING_CLASS =
+  "font-extrabold tracking-tight text-[#062a38] [text-shadow:0_1px_3px_rgba(255,255,255,0.95)]";
+export const INKO_ARTICLE_CTA_BODY_CLASS =
+  "font-semibold leading-relaxed text-[#0f3340] [text-shadow:0_1px_2px_rgba(255,255,255,0.92)]";
+export const INKO_ARTICLE_CTA_SUBTEXT_CLASS =
+  "font-semibold leading-relaxed text-[#1a4552] [text-shadow:0_1px_2px_rgba(255,255,255,0.9)]";
 
 /** Basis-Stil für feste CTAs im Artikel: leichter Schatten + sanftes Aufleuchten */
 export const INKO_ARTICLE_CTA_SURFACE_CLASS = "inko-article-cta-glow";
