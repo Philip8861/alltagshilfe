@@ -1,0 +1,25 @@
+import type { RatgeberArticleTocEntry } from "@/components/ratgeber/RatgeberArticleDesktopSidebar";
+
+export const EINLAGEN_VORLAGEN_PANTS_WINDELN_TOC: readonly RatgeberArticleTocEntry[] = [
+  { id: "blick", label: "Das Wichtigste in Kürze" },
+  { id: "bedeutung", label: "Warum das richtige Produkt wichtig ist" },
+  { id: "produkte", label: "Welche Inkontinenzprodukte gibt es?" },
+  { id: "vergleich", label: "Vergleich: Einlagen, Vorlagen, Pants oder Windeln?" },
+  { id: "leicht", label: "Bei leichter Inkontinenz" },
+  { id: "mittel", label: "Bei mittlerer Inkontinenz" },
+  { id: "schwer", label: "Bei schwerer Inkontinenz" },
+  { id: "nacht", label: "Welche Produkte eignen sich nachts?" },
+  { id: "demenz", label: "Produkte bei Demenz" },
+  { id: "angehoerige", label: "Produkte für Angehörige" },
+  { id: "stuhl", label: "Bei Stuhlinkontinenz" },
+  { id: "geschlecht", label: "Frauen und Männer" },
+  { id: "rezept-kaufen", label: "Rezept oder selbst kaufen?" },
+  { id: "krankenkasse", label: "Zahlt die Krankenkasse?" },
+  { id: "testpaket", label: "Warum ein Testpaket sinnvoll ist" },
+  { id: "fehler", label: "Häufige Fehler" },
+  { id: "entscheidung", label: "Entscheidungshilfe" },
+  { id: "checkliste", label: "Checkliste für die Produktauswahl" },
+  { id: "beratung", label: "Wann professionelle Beratung?" },
+  { id: "faq-inko-produkte", label: "FAQ" },
+  { id: "fazit", label: "Fazit" },
+] as const;

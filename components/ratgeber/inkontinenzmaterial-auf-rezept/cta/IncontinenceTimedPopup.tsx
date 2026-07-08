@@ -79,12 +79,10 @@ export function IncontinenceTimedPopup({ enabled, ctaClicked, onCtaClick }: Prop
         <InkoPrimaryBeratungButton
           dataCta={CTA_ID}
           clickEvent="inko_cta_popup_30s_click"
-          className={`${INKO_PRIMARY_BUTTON_CLASS} text-base font-extrabold sm:text-[1.0625rem]`}
+          className={`${INKO_PRIMARY_BUTTON_CLASS} text-base font-extrabold sm:text-[0.9375rem]`}
           onAfterClick={() => setVisible(false)}
           onAfterChoice={onCtaClick}
-        >
-          Kostenlos beraten lassen
-        </InkoPrimaryBeratungButton>
+        />
         <InkoDismissLink
           dataCta={`${CTA_ID}-later`}
           onDismiss={handleClose}

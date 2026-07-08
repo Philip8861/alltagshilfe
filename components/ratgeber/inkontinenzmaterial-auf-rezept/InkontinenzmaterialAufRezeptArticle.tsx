@@ -601,6 +601,11 @@ export function InkontinenzmaterialAufRezeptArticle() {
         <h2 className="text-lg font-semibold tracking-tight text-[#0F4F68]">Passende Themen</h2>
         <ul className="mt-5 list-none space-y-2.5 text-[1rem] text-neutral-800">
           <li>
+            <Link href="/ratgeber/einlagen-vorlagen-pants-windeln-inkontinenzmaterial" className={LINK}>
+              Einlagen, Vorlagen, Pants oder Windeln: Welches Produkt passt?
+            </Link>
+          </li>
+          <li>
             <Link href="/ratgeber/kostenfreie-pflegehilfsmittel-42-euro" className={LINK}>
               Kostenfreie Pflegehilfsmittel (42 €)
             </Link>

@@ -60,6 +60,7 @@ const PFLEGEGRAD1_WORDS = 3000;
 const PFLEGEGELDRECHNER_WORDS = 1000;
 const KOSTENFREIE_PFLEGEHILFSMITTEL_42_WORDS = 2000;
 const INKONTINENZMATERIAL_AUF_REZEPT_WORDS = 1600;
+const EINLAGEN_VORLAGEN_PANTS_WINDELN_WORDS = 4200;
 
 export const RATGEBER_BEITRAEGE: RatgeberBeitragMeta[] = [
   {
@@ -175,6 +176,30 @@ export const RATGEBER_BEITRAEGE: RatgeberBeitragMeta[] = [
     readMinutes: 8,
     publishedAt: "2026-07-08",
   },
+  {
+    slug: "einlagen-vorlagen-pants-windeln-inkontinenzmaterial",
+    title: "Einlagen, Vorlagen, Pants oder Windeln: Welches Inkontinenzmaterial passt zu mir?",
+    excerpt:
+      "Einlagen, Vorlagen, Pants oder Windeln? Erfahren Sie, welches Inkontinenzmaterial zu Ihrer Situation passt und wann Beratung sinnvoll ist.",
+    image: "/images/Ratgeber/Landing_page.webp",
+    imageAlt:
+      "Einlagen, Vorlagen, Pants und Windeln: Vergleich passender Inkontinenzprodukte für den Alltag",
+    views: 40,
+    tags: [
+      "welches Inkontinenzmaterial passt zu mir",
+      "Inkontinenz Einlagen",
+      "Inkontinenz Vorlagen",
+      "Inkontinenz Pants",
+      "Windeln für Erwachsene",
+      "Inkontinenzprodukte Vergleich",
+      "Inkontinenzmaterial Testpaket",
+      "Inkontinenzversorgung Beratung",
+    ],
+    categories: ["inkontinenz", "pflegehilfsmittel_42eur"],
+    approxWordCount: EINLAGEN_VORLAGEN_PANTS_WINDELN_WORDS,
+    readMinutes: readMinutesFromWordCount(EINLAGEN_VORLAGEN_PANTS_WINDELN_WORDS),
+    publishedAt: "2026-07-08",
+  },
 ];
 
 /** Aquarell-Teaserbilde für Ratgeber-Hub-Karten (optional pro Slug). */
@@ -184,6 +209,7 @@ const RATGEBER_HUB_CARD_IMAGES: Record<string, string> = {
   pflegegeldrechner: "/images/Ratgeber/pflegegrad_rechner.webp",
   "kostenfreie-pflegehilfsmittel-42-euro": "/images/Ratgeber/ratgeber_pflegehilfsmittel.webp",
   "inkontinenzmaterial-auf-rezept-anspruch-kosten-ablauf": "/images/Ratgeber/inkontinenz_auf_rezept.webp",
+  "einlagen-vorlagen-pants-windeln-inkontinenzmaterial": "/images/Ratgeber/Landing_page.webp",
 };
 
 export function ratgeberHubCardImage(slug: string): string {

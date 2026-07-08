@@ -8,23 +8,26 @@ import {
   useMemo,
   useRef,
   useState,
+  type FormEvent,
   type ReactNode,
 } from "react";
+import Link from "next/link";
 
-import { GtmKontaktNavLink, GtmPhoneLink, GtmWhatsappLink } from "@/components/analytics/GtmContactIntentLink";
+import { GtmPhoneLink, GtmWhatsappLink } from "@/components/analytics/GtmContactIntentLink";
 import { InkoFloatingPromoShell } from "@/components/ratgeber/inkontinenzmaterial-auf-rezept/cta/inko-floating-promo-shell";
+import { submitInkoCallback } from "@/lib/actions/inko-callback";
 import {
   INKO_REZEPT_CTA_PHONE_DISPLAY,
   INKO_REZEPT_CTA_PHONE_HREF,
   INKO_REZEPT_CTA_WHATSAPP_HREF,
-  INKO_REZEPT_KONTAKT_BAD_GROENENBACH_HREF,
 } from "@/lib/ratgeber/inko-rezept-cta-config";
 import { markInkoCtaClickedThisSession } from "@/lib/ratgeber/inko-rezept-cta-storage";
 import type { InkoRezeptCtaEventName } from "@/lib/ratgeber/inko-rezept-cta-tracking";
 import { trackInkoRezeptCtaEvent } from "@/lib/ratgeber/inko-rezept-cta-tracking";
+import { INKO_CALLBACK_TIME_SLOTS } from "@/lib/validations/inko-callback";
 import { cn } from "@/lib/utils";
 
-const CHOICE_CTA_ID = "inko-rezept-beratung-choice";
+const CALLBACK_CTA_ID = "inko-ratgeber-callback-form";
 
 type OpenChoiceOptions = {
   dataCta: string;
@@ -52,19 +55,6 @@ function PhoneIcon({ className }: { className?: string }) {
   );
 }
 
-function FormIcon({ className }: { className?: string }) {
-  return (
-    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" aria-hidden>
-      <path
-        d="M4 6.5A2.5 2.5 0 016.5 4h11A2.5 2.5 0 0120 6.5v11a2.5 2.5 0 01-2.5 2.5h-11A2.5 2.5 0 014 17.5v-11z"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      <path d="M8 9h8M8 12.5h5.5M8 16h3" strokeLinecap="round" />
-    </svg>
-  );
-}
-
 function WhatsappIcon({ className }: { className?: string }) {
   return (
     <svg className={className} viewBox="0 0 24 24" fill="currentColor" aria-hidden>
@@ -73,118 +63,82 @@ function WhatsappIcon({ className }: { className?: string }) {
   );
 }
 
-function ChevronIcon() {
-  return (
-    <svg className="h-5 w-5 shrink-0 text-neutral-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
-      <path d="M9 6l6 6-6 6" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  );
-}
+const FIELD_CLASS =
+  "w-full rounded-lg border border-neutral-200 bg-white px-3.5 py-2.5 text-[0.9375rem] text-neutral-900 shadow-sm transition placeholder:text-neutral-400 focus:border-[#0F4F68]/45 focus:outline-none focus:ring-2 focus:ring-[#0F4F68]/20";
 
-type ChoiceCardProps = {
-  title: string;
-  subtitle: string;
-  icon: ReactNode;
-  iconWrapClassName: string;
-  href?: string;
-  external?: boolean;
-  dataCta: string;
-  sourceComponent: string;
-  onChoose: () => void;
-  className?: string;
-  children?: ReactNode;
-};
+const LABEL_CLASS = "mb-1.5 block text-sm font-semibold text-neutral-800";
 
-function ChoiceCard({
+function DirectContactButton({
+  href,
   title,
   subtitle,
   icon,
   iconWrapClassName,
-  href,
-  external,
   dataCta,
   sourceComponent,
+  external,
   onChoose,
-  className,
-  children,
-}: ChoiceCardProps) {
+}: {
+  href: string;
+  title: string;
+  subtitle: string;
+  icon: ReactNode;
+  iconWrapClassName: string;
+  dataCta: string;
+  sourceComponent: string;
+  external?: boolean;
+  onChoose: () => void;
+}) {
+  const className = cn(
+    "group flex w-full items-center gap-3 rounded-xl border px-3 py-3 transition sm:gap-4 sm:px-4",
+    "focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68] focus-visible:ring-offset-2",
+    "border-[#0F4F68]/12 bg-white hover:border-[#0F4F68]/28 hover:bg-[#F2F9FA]",
+  );
+
   const inner = (
     <>
-      <span
-        className={cn(
-          "flex h-10 w-10 shrink-0 items-center justify-center rounded-xl sm:h-12 sm:w-12",
-          iconWrapClassName,
-        )}
-      >
+      <span className={cn("flex h-10 w-10 shrink-0 items-center justify-center rounded-xl sm:h-11 sm:w-11", iconWrapClassName)}>
         {icon}
       </span>
       <span className="min-w-0 flex-1 text-left">
-        <span className="block text-[0.9375rem] font-semibold leading-snug text-[#0F4F68] sm:text-[1.0625rem]">
-          {title}
-        </span>
-        <span className="mt-0.5 block text-[0.8125rem] leading-snug text-neutral-600 sm:text-sm">{subtitle}</span>
+        <span className="block text-[0.9375rem] font-semibold text-[#0F4F68]">{title}</span>
+        <span className="mt-0.5 block text-[0.8125rem] text-neutral-600">{subtitle}</span>
       </span>
-      <ChevronIcon />
     </>
   );
 
-  const cardClass = cn(
-    "group flex w-full items-center gap-3 rounded-xl border px-3 py-3.5 transition sm:gap-4 sm:rounded-2xl sm:px-4 sm:py-4",
-    "focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68] focus-visible:ring-offset-2",
-    className,
-  );
-
-  if (href && !children) {
-    const linkProps = {
-      "data-cta": dataCta,
-      className: cardClass,
-      onClick: onChoose,
-    };
-
-    if (external) {
-      return (
-        <GtmWhatsappLink
-          href={href}
-          target="_blank"
-          rel="noopener noreferrer"
-          sourceComponent={sourceComponent}
-          service="inkontinenzversorgung"
-          {...linkProps}
-        >
-          {inner}
-        </GtmWhatsappLink>
-      );
-    }
-
-    if (href.startsWith("tel:")) {
-      return (
-        <GtmPhoneLink href={href} sourceComponent={sourceComponent} service="inkontinenzversorgung" {...linkProps}>
-          {inner}
-        </GtmPhoneLink>
-      );
-    }
-
+  if (external) {
     return (
-      <GtmKontaktNavLink
+      <GtmWhatsappLink
         href={href}
+        target="_blank"
+        rel="noopener noreferrer"
+        data-cta={dataCta}
         sourceComponent={sourceComponent}
-        contactPath="inko_rezept_ratgeber_kontakt"
         service="inkontinenzversorgung"
-        {...linkProps}
+        className={className}
+        onClick={onChoose}
       >
         {inner}
-      </GtmKontaktNavLink>
+      </GtmWhatsappLink>
     );
   }
 
   return (
-    <button type="button" data-cta={dataCta} className={cardClass} onClick={onChoose}>
+    <GtmPhoneLink
+      href={href}
+      data-cta={dataCta}
+      sourceComponent={sourceComponent}
+      service="inkontinenzversorgung"
+      className={className}
+      onClick={onChoose}
+    >
       {inner}
-    </button>
+    </GtmPhoneLink>
   );
 }
 
-function InkoBeratungChoiceDialog({
+function InkoBeratungCallbackDialog({
   visible,
   sourceCta,
   clickEvent,
@@ -198,97 +152,202 @@ function InkoBeratungChoiceDialog({
   onAfterChoice?: () => void;
 }) {
   const viewLogged = useRef(false);
+  const [pending, setPending] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [submitted, setSubmitted] = useState(false);
 
   useEffect(() => {
     if (!visible) {
       viewLogged.current = false;
+      setPending(false);
+      setError(null);
+      setSubmitted(false);
       return;
     }
     if (viewLogged.current) return;
     viewLogged.current = true;
-    trackInkoRezeptCtaEvent("inko_cta_choice_view", CHOICE_CTA_ID, { source_cta: sourceCta });
+    trackInkoRezeptCtaEvent("inko_cta_choice_view", CALLBACK_CTA_ID, { source_cta: sourceCta });
   }, [visible, sourceCta]);
 
-  const handleChoice = useCallback(
-    (choice: "phone" | "kontakt" | "whatsapp") => {
+  const handleDirectContact = useCallback(
+    (channel: "phone" | "whatsapp") => {
       markInkoCtaClickedThisSession();
-      trackInkoRezeptCtaEvent(clickEvent, `${sourceCta}-choice-${choice}`, { choice_type: choice });
+      trackInkoRezeptCtaEvent(clickEvent, `${sourceCta}-direct-${channel}`, { choice_type: channel });
       onAfterChoice?.();
       onClose();
     },
     [clickEvent, onAfterChoice, onClose, sourceCta],
   );
 
+  async function handleSubmit(e: FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    setError(null);
+    setPending(true);
+    try {
+      const formData = new FormData(e.currentTarget);
+      formData.set("sourceCta", sourceCta);
+      const result = await submitInkoCallback(formData);
+      if (!result.success) {
+        setError(result.error ?? "Die Anfrage konnte nicht gesendet werden.");
+        return;
+      }
+      markInkoCtaClickedThisSession();
+      trackInkoRezeptCtaEvent(clickEvent, `${sourceCta}-callback-submit`, { choice_type: "callback_form" });
+      onAfterChoice?.();
+      setSubmitted(true);
+    } finally {
+      setPending(false);
+    }
+  }
+
   return (
     <InkoFloatingPromoShell
-      id="inko-beratung-choice"
-      dataCta={CHOICE_CTA_ID}
-      ariaLabel="Wie möchten Sie uns erreichen?"
+      id="inko-beratung-callback"
+      dataCta={CALLBACK_CTA_ID}
+      ariaLabel="Kostenlose Beratung und Testpaket anfragen"
       visible={visible}
       onClose={onClose}
       size="large"
       className="z-[50]"
     >
-      <p className="pr-9 text-center text-[0.68rem] font-semibold uppercase tracking-[0.12em] text-[#5a959e] sm:pr-10 sm:text-xs md:text-sm">
-        Kostenlos & unverbindlich
-      </p>
-      <h2
-        id="inko-choice-heading"
-        className="mt-2.5 text-center text-lg font-semibold leading-snug text-[#0F4F68] sm:mt-4 sm:text-2xl md:text-[1.65rem] md:leading-tight"
-      >
-        Wie möchten Sie uns am liebsten erreichen?
-      </h2>
-      <p className="mt-2.5 text-center text-[0.875rem] leading-relaxed text-neutral-700 sm:mt-3 sm:text-base md:mt-4 md:text-lg">
-        Unsere Experten beraten Sie persönlich zur Inkontinenzversorgung auf Rezept – wählen Sie den Weg, der für Sie
-        passt.
-      </p>
+      {submitted ? (
+        <div className="py-2 text-center sm:py-4">
+          <p className="text-[0.68rem] font-semibold uppercase tracking-[0.12em] text-[#5a959e] sm:text-xs">
+            Vielen Dank
+          </p>
+          <h2 className="mt-3 text-xl font-bold text-[#0F4F68] sm:text-2xl">Ihre Anfrage ist bei uns eingegangen</h2>
+          <p className="mt-4 text-[0.9375rem] leading-relaxed text-neutral-700 sm:text-base">
+            Wir melden uns innerhalb von <strong>24 Stunden</strong> bei Ihnen – per E-Mail oder Telefon, wie Sie es
+            angegeben haben. Auf Wunsch besprechen wir auch ein kostenloses Testpaket.
+          </p>
+          <button
+            type="button"
+            className="mt-6 min-h-[2.75rem] rounded-lg border border-[#0F4F68]/20 px-5 text-sm font-semibold text-[#0F4F68] hover:bg-[#F2F9FA]"
+            onClick={onClose}
+          >
+            Schließen
+          </button>
+        </div>
+      ) : (
+        <>
+          <p className="pr-9 text-center text-[0.68rem] font-semibold uppercase tracking-[0.12em] text-[#5a959e] sm:pr-10 sm:text-xs">
+            Kostenlos & unverbindlich
+          </p>
+          <h2
+            id="inko-callback-heading"
+            className="mt-2.5 text-center text-lg font-bold leading-snug text-[#0F4F68] sm:mt-3 sm:text-xl md:text-2xl"
+          >
+            Kostenlos beraten lassen – Testpaket inklusive
+          </h2>
+          <p className="mt-2.5 text-center text-[0.875rem] leading-relaxed text-neutral-700 sm:mt-3 sm:text-base">
+            Füllen Sie das kurze Formular aus. <strong>Wir melden uns innerhalb von 24 Stunden</strong> bei Ihnen und
+            helfen Ihnen bei der passenden Inkontinenzversorgung.
+          </p>
 
-      <div className="mt-4 flex flex-col gap-2.5 sm:mt-7 sm:gap-3.5" role="list">
-        <div role="listitem">
-          <ChoiceCard
-            title="Direkt anrufen"
-            subtitle={INKO_REZEPT_CTA_PHONE_DISPLAY}
-            icon={<PhoneIcon className="h-6 w-6 text-[#F78F2E]" />}
-            iconWrapClassName="bg-[#FFF4E8]"
-            href={INKO_REZEPT_CTA_PHONE_HREF}
-            dataCta={`${sourceCta}-choice-phone`}
-            sourceComponent="inko_rezept_choice_phone"
-            onChoose={() => handleChoice("phone")}
-            className="border-[#0F4F68]/12 bg-[#fafcfc] hover:border-[#0F4F68]/28 hover:bg-[#F2F9FA] hover:shadow-[0_8px_24px_-12px_rgba(15,79,104,0.22)]"
-          />
-        </div>
-        <div role="listitem">
-          <ChoiceCard
-            title="Per Kontaktformular"
-            subtitle="Zum Kontaktformular Bad Grönenbach"
-            icon={<FormIcon className="h-6 w-6 text-[#0F4F68]" />}
-            iconWrapClassName="bg-[#E8F4F7]"
-            href={INKO_REZEPT_KONTAKT_BAD_GROENENBACH_HREF}
-            dataCta={`${sourceCta}-choice-kontakt`}
-            sourceComponent="inko_rezept_choice_kontakt"
-            onChoose={() => handleChoice("kontakt")}
-            className="border-[#0F4F68]/12 bg-white hover:border-[#0F4F68]/28 hover:bg-[#F2F9FA] hover:shadow-[0_8px_24px_-12px_rgba(15,79,104,0.22)]"
-          />
-        </div>
-        <div role="listitem">
-          <ChoiceCard
-            title="Per WhatsApp"
-            subtitle="Schnell schreiben – wir antworten zeitnah"
-            icon={<WhatsappIcon className="h-6 w-6 text-white" />}
-            iconWrapClassName="bg-[#25D366]"
-            href={INKO_REZEPT_CTA_WHATSAPP_HREF}
-            external
-            dataCta={`${sourceCta}-choice-whatsapp`}
-            sourceComponent="inko_rezept_choice_whatsapp"
-            onChoose={() => handleChoice("whatsapp")}
-            className="border-[#25D366]/25 bg-[#f6fdf8] hover:border-[#25D366]/45 hover:bg-[#eefbf2] hover:shadow-[0_8px_24px_-12px_rgba(37,211,102,0.28)]"
-          />
-        </div>
-      </div>
+          <form className="mt-4 space-y-3.5 sm:mt-5" onSubmit={handleSubmit} noValidate>
+            <input type="text" name="website" tabIndex={-1} autoComplete="off" className="hidden" aria-hidden />
+            <div className="grid grid-cols-1 gap-3.5 sm:grid-cols-2">
+              <div>
+                <label htmlFor="inko-cb-vorname" className={LABEL_CLASS}>
+                  Vorname <span className="text-[#c45a20]">*</span>
+                </label>
+                <input id="inko-cb-vorname" name="vorname" type="text" required autoComplete="given-name" className={FIELD_CLASS} />
+              </div>
+              <div>
+                <label htmlFor="inko-cb-nachname" className={LABEL_CLASS}>
+                  Nachname <span className="text-[#c45a20]">*</span>
+                </label>
+                <input id="inko-cb-nachname" name="nachname" type="text" required autoComplete="family-name" className={FIELD_CLASS} />
+              </div>
+            </div>
+            <div>
+              <label htmlFor="inko-cb-email" className={LABEL_CLASS}>
+                E-Mail
+              </label>
+              <input id="inko-cb-email" name="email" type="email" autoComplete="email" className={FIELD_CLASS} placeholder="name@beispiel.de" />
+            </div>
+            <div>
+              <label htmlFor="inko-cb-phone" className={LABEL_CLASS}>
+                Telefonnummer
+              </label>
+              <input id="inko-cb-phone" name="phone" type="tel" autoComplete="tel" className={FIELD_CLASS} placeholder="z. B. 08334 / 123456" />
+              <p className="mt-1 text-xs text-neutral-500">Bitte E-Mail oder Telefonnummer angeben.</p>
+            </div>
+            <div>
+              <label htmlFor="inko-cb-time" className={LABEL_CLASS}>
+                Wann dürfen wir Sie am besten erreichen? <span className="text-[#c45a20]">*</span>
+              </label>
+              <select id="inko-cb-time" name="preferredTime" required defaultValue="" className={FIELD_CLASS}>
+                <option value="" disabled>
+                  Bitte wählen …
+                </option>
+                {INKO_CALLBACK_TIME_SLOTS.map((slot) => (
+                  <option key={slot.value} value={slot.value}>
+                    {slot.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <label className="flex items-start gap-2.5 text-sm leading-snug text-neutral-700">
+              <input
+                type="checkbox"
+                name="datenschutz"
+                required
+                className="mt-0.5 h-4 w-4 shrink-0 rounded border-neutral-300 text-[#0F4F68] focus:ring-[#0F4F68]"
+              />
+              <span>
+                Ich habe die{" "}
+                <Link href="/datenschutz" className="font-medium text-[#0F4F68] underline-offset-2 hover:underline" target="_blank">
+                  Datenschutzerklärung
+                </Link>{" "}
+                gelesen und stimme der Verarbeitung meiner Daten zur Bearbeitung der Anfrage zu.{" "}
+                <span className="text-[#c45a20]">*</span>
+              </span>
+            </label>
+            {error ? (
+              <p className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-800" role="alert">
+                {error}
+              </p>
+            ) : null}
+            <button
+              type="submit"
+              disabled={pending}
+              className="w-full min-h-[3rem] rounded-lg bg-[#F78F2E] px-4 py-3 text-[0.9375rem] font-extrabold text-white shadow-[0_3px_12px_-4px_rgba(180,90,10,0.32)] transition hover:bg-[#e8862a] disabled:opacity-70 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68] focus-visible:ring-offset-2 sm:text-base"
+            >
+              {pending ? "Wird gesendet …" : "Rückruf anfordern"}
+            </button>
+          </form>
 
-      <p className="mt-4 text-center text-[0.75rem] leading-relaxed text-neutral-500 sm:mt-6 sm:text-sm">
-        Rezeptabrechnung möglich · Diskrete Lieferung · Testpaket auf Wunsch
-      </p>
+          <div className="mt-5 border-t border-neutral-200 pt-5">
+            <p className="text-center text-xs font-semibold uppercase tracking-[0.1em] text-neutral-500">
+              Oder direkt kontaktieren
+            </p>
+            <div className="mt-3 flex flex-col gap-2.5">
+              <DirectContactButton
+                href={INKO_REZEPT_CTA_PHONE_HREF}
+                title="Jetzt anrufen"
+                subtitle={INKO_REZEPT_CTA_PHONE_DISPLAY}
+                icon={<PhoneIcon className="h-5 w-5 text-[#F78F2E]" />}
+                iconWrapClassName="bg-[#FFF4E8]"
+                dataCta={`${sourceCta}-direct-phone`}
+                sourceComponent="inko_ratgeber_callback_phone"
+                onChoose={() => handleDirectContact("phone")}
+              />
+              <DirectContactButton
+                href={INKO_REZEPT_CTA_WHATSAPP_HREF}
+                title="Per WhatsApp schreiben"
+                subtitle="Schnell & diskret – wir antworten zeitnah"
+                icon={<WhatsappIcon className="h-5 w-5 text-white" />}
+                iconWrapClassName="bg-[#25D366]"
+                dataCta={`${sourceCta}-direct-whatsapp`}
+                sourceComponent="inko_ratgeber_callback_whatsapp"
+                external
+                onChoose={() => handleDirectContact("whatsapp")}
+              />
+            </div>
+          </div>
+        </>
+      )}
     </InkoFloatingPromoShell>
   );
 }
@@ -309,7 +368,7 @@ export function InkoBeratungChoiceProvider({ children }: { children: ReactNode }
     <InkoBeratungChoiceContext.Provider value={value}>
       {children}
       {openState && (
-        <InkoBeratungChoiceDialog
+        <InkoBeratungCallbackDialog
           visible
           sourceCta={openState.dataCta}
           clickEvent={openState.clickEvent}

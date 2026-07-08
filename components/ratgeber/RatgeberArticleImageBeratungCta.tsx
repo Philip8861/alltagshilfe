@@ -14,9 +14,9 @@ function PhoneIcon({ className }: { className?: string }) {
   );
 }
 
-const IMAGE_CTA_BUTTON_CLASS = `${INKO_PRIMARY_BUTTON_CLASS} max-w-full px-3 sm:max-w-[21rem] sm:px-6`;
+const IMAGE_CTA_BUTTON_CLASS = `${INKO_PRIMARY_BUTTON_CLASS} max-w-full px-3 sm:max-w-[24rem] sm:px-5`;
 
-const IMAGE_CTA_LABEL = (
+const DEFAULT_RATGEBER_CTA_LABEL = (
   <span className="inline-flex max-w-full items-center justify-center gap-2 sm:gap-2.5">
     <PhoneIcon className="h-4 w-4 shrink-0 opacity-95 sm:h-5 sm:w-5" />
     <span className="min-w-0 text-left text-[0.875rem] leading-snug sm:text-base">Jetzt kostenlos beraten lassen</span>
@@ -33,7 +33,7 @@ export function RatgeberArticleImageBeratungCta({
   contextNote?: string;
   preselectedServices?: HilfefinderServiceKey[];
   className?: string;
-  /** Inkontinenz-Ratgeber: öffnet 3-Wege-Auswahl statt Beratungsdialog */
+  /** Inkontinenz-Ratgeber: öffnet Rückruf-Formular mit Testpaket */
   inkoChoice?: {
     dataCta: string;
     clickEvent: InkoRezeptCtaEventName;
@@ -46,16 +46,14 @@ export function RatgeberArticleImageBeratungCta({
           dataCta={inkoChoice.dataCta}
           clickEvent={inkoChoice.clickEvent}
           className={IMAGE_CTA_BUTTON_CLASS}
-        >
-          {IMAGE_CTA_LABEL}
-        </InkoPrimaryBeratungButton>
+        />
       ) : (
         <RatgeberBeratungCtaButton
           className={IMAGE_CTA_BUTTON_CLASS}
           contextNote={contextNote}
           preselectedServices={preselectedServices ?? ["pflegegrad_beantrag_widerspruch"]}
         >
-          {IMAGE_CTA_LABEL}
+          {DEFAULT_RATGEBER_CTA_LABEL}
         </RatgeberBeratungCtaButton>
       )}
     </div>

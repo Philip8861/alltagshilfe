@@ -50,13 +50,11 @@ export function IncontinenceRecipeEndCta() {
           <InkoPrimaryBeratungButton
             dataCta={CTA_ID}
             clickEvent="inko_cta_end_click"
-            className="min-h-[3.25rem] text-base sm:max-w-[21rem] sm:text-[1.0625rem]"
-          >
-            Jetzt kostenlos beraten lassen
-          </InkoPrimaryBeratungButton>
+            className="min-h-[3.25rem] text-base sm:max-w-[24rem] sm:text-[0.9375rem]"
+          />
         </div>
         <p className={`${INKO_ARTICLE_CTA_SUBTEXT_CLASS} mt-5 text-[0.9375rem] sm:text-base`}>
-          Unverbindlich. Persönlich. Mit viel Herz im Alltag.
+          Rückruf innerhalb von 24 Stunden – unverbindlich und persönlich.
         </p>
       </InkoArticleCtaContentPane>
     </section>

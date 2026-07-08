@@ -34,12 +34,16 @@ export const INKO_REZEPT_CTA_STORAGE_KEYS = {
 
 export const INKO_REZEPT_RATGEBER_SLUG = "inkontinenzmaterial-auf-rezept-anspruch-kosten-ablauf" as const;
 
+export const INKO_PRODUKT_RATGEBER_SLUG = "einlagen-vorlagen-pants-windeln-inkontinenzmaterial" as const;
+
+/** Ratgeber mit Inkontinenz-CTAs und 30s-Popup */
+export const INKO_RATGEBER_SLUGS = [INKO_REZEPT_RATGEBER_SLUG, INKO_PRODUKT_RATGEBER_SLUG] as const;
+
 /** Hintergrundbild für feste Werbe-CTAs im Artikel (nicht in Popups) */
 export const INKO_REZEPT_ARTICLE_CTA_BG = "/images/Ratgeber/Landing_page.webp";
 
 export function isInkoRezeptRatgeberSlug(slug: string): boolean {
-  const s = slug.toLowerCase();
-  return s.includes("inkontinenzmaterial") && s.includes("rezept");
+  return (INKO_RATGEBER_SLUGS as readonly string[]).includes(slug);
 }
 
 export function isInkoRezeptRatgeberPath(pathname: string): boolean {
