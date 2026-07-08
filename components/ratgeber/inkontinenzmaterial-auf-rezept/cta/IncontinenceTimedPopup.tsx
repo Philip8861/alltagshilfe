@@ -64,18 +64,22 @@ export function IncontinenceTimedPopup({ enabled, ctaClicked, dismissed, onDismi
       ariaLabel="Hinweis zur kostenlosen Inkontinenz-Beratung"
       visible={visible}
       onClose={handleClose}
+      placement="center"
     >
-      <h3 className="pr-8 text-base font-semibold leading-snug text-[#0F4F68] sm:text-[1.05rem]">
+      <p className="pr-8 text-center text-[0.7rem] font-semibold uppercase tracking-[0.12em] text-[#5a959e] sm:text-xs">
+        Kurze Werbung muss sein :-)
+      </p>
+      <h3 className="mt-3 text-center text-base font-semibold leading-snug text-[#0F4F68] sm:text-lg">
         Keine Lust, alles selbst herauszufinden?
       </h3>
-      <p className="mt-2.5 text-sm leading-relaxed text-neutral-700">
-        Unsere Inkontinenz-Experten beraten Sie kostenlos zum Thema Inkontinenzmaterial auf Rezept und prüfen gemeinsam mit
-        Ihnen, welche Versorgung zu Ihrer Situation passt.
+      <p className="mt-3 text-center text-sm leading-relaxed text-neutral-700 sm:text-[0.9375rem]">
+        Unsere Experten beraten Sie kostenlos zum Thema Inkontinenzmaterial auf Rezept und prüfen gemeinsam mit Ihnen,
+        welche Versorgung zu Ihrer Situation passt.
       </p>
-      <p className="mt-3 text-xs leading-relaxed text-neutral-600">
+      <p className="mt-3 text-center text-xs leading-relaxed text-neutral-600">
         Rezeptabrechnung möglich · Diskrete Lieferung · Kostenloses Testpaket auf Wunsch
       </p>
-      <div className="mt-4 flex flex-col gap-2.5">
+      <div className="mt-5 flex flex-col gap-2.5">
         <InkoPrimaryBeratungButton
           dataCta={CTA_ID}
           clickEvent="inko_cta_popup_30s_click"

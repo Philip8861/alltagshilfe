@@ -57,7 +57,7 @@ export default function InkontinenzmaterialAufRezeptRatgeberPage() {
     articlePath: ARTICLE_PATH,
     datePublishedISO: "2026-07-08T10:00:00+02:00",
     dateModifiedISO: "2026-07-08T10:00:00+02:00",
-    imageUrl: "/images/pflegeshop_image.webp",
+    imageUrl: "/images/Ratgeber/inkontinenz_auf_rezept.webp",
     breadcrumbs: [
       { name: "Startseite", path: "/" },
       { name: "Ratgeber", path: "/ratgeber" },

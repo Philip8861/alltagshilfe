@@ -157,7 +157,7 @@ export const RATGEBER_BEITRAEGE: RatgeberBeitragMeta[] = [
     title: "Inkontinenzmaterial auf Rezept 2026: Anspruch, Kosten & Ablauf einfach erklärt",
     excerpt:
       "Inkontinenzmaterial auf Rezept? Erfahren Sie, wann die Krankenkasse zahlt, wie hoch die Zuzahlung 2026 ist und wie der Ablauf reibungslos funktioniert.",
-    image: "/images/pflegeshop_image.webp",
+    image: "/images/Ratgeber/inkontinenz_auf_rezept.webp",
     imageAlt:
       "Inkontinenzmaterial auf Rezept: Anspruch, Kosten und Ablauf über die Krankenkasse verständlich erklärt",
     views: 60,
@@ -183,7 +183,7 @@ const RATGEBER_HUB_CARD_IMAGES: Record<string, string> = {
   "pflegegrad-beantragen": "/images/Ratgeber/Pflegegrad_beantragen.webp",
   pflegegeldrechner: "/images/Ratgeber/pflegegrad_rechner.webp",
   "kostenfreie-pflegehilfsmittel-42-euro": "/images/Ratgeber/ratgeber_pflegehilfsmittel.webp",
-  "inkontinenzmaterial-auf-rezept-anspruch-kosten-ablauf": "/images/pflegeshop_image.webp",
+  "inkontinenzmaterial-auf-rezept-anspruch-kosten-ablauf": "/images/Ratgeber/inkontinenz_auf_rezept.webp",
 };
 
 export function ratgeberHubCardImage(slug: string): string {

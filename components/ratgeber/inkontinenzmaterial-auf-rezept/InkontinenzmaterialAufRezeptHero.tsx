@@ -11,6 +11,7 @@ import {
 import { getRatgeberBeitragReadMinutes } from "@/config/ratgeber-betraege";
 
 const SLUG = "inkontinenzmaterial-auf-rezept-anspruch-kosten-ablauf" as const;
+const INKO_REZEPT_ARTICLE_IMAGE = "/images/Ratgeber/inkontinenz_auf_rezept.webp" as const;
 const PROSE = "text-[1.125rem] leading-[1.7] text-neutral-800";
 
 function IconClock() {
@@ -94,7 +95,7 @@ export function InkontinenzmaterialAufRezeptHero() {
             <div className="w-full">
               <div className="overflow-hidden rounded-2xl border border-neutral-100 shadow-[0_12px_40px_-28px_rgba(15,79,104,0.35)] ring-1 ring-[#0F4F68]/10">
                 <Image
-                  src="/images/pflegeshop_image.webp"
+                  src={INKO_REZEPT_ARTICLE_IMAGE}
                   alt="Inkontinenzmaterial auf Rezept: diskrete Versorgung mit Vorlagen, Pants und Windeln über die Krankenkasse"
                   width={1200}
                   height={780}
