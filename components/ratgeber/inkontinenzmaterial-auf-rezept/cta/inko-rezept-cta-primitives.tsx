@@ -72,7 +72,7 @@ export function InkoPrimaryBeratungButton({
       type="button"
       data-cta={dataCta}
       className={cn(
-        "inko-primary-cta-pulse inline-flex min-h-[3rem] items-center justify-center rounded-lg bg-[#F78F2E] px-6 text-base font-bold tracking-tight text-white shadow-[0_3px_12px_-4px_rgba(180,90,10,0.35)] [text-shadow:0_1px_1px_rgba(0,0,0,0.14)] transition-[background-color] hover:bg-[#e8862a] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68] focus-visible:ring-offset-2",
+        "ratgeber-cta-pulse inko-primary-cta-pulse inline-flex min-h-[3rem] items-center justify-center gap-2.5 rounded-lg bg-[#F78F2E] px-6 text-base font-bold tracking-tight text-white shadow-[0_3px_12px_-4px_rgba(180,90,10,0.32)] [text-shadow:0_1px_1px_rgba(0,0,0,0.14)] transition-[background-color] hover:bg-[#e8862a] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68] focus-visible:ring-offset-2",
         className,
       )}
       onClick={() => {

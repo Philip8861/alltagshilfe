@@ -106,8 +106,10 @@ export function InkontinenzmaterialAufRezeptHero() {
               </div>
             </div>
             <RatgeberArticleImageBeratungCta
-              contextNote="Ratgeber: Inkontinenzmaterial auf Rezept (Artikelbild)"
-              preselectedServices={["hilfsmittel", "pflegegrad_beantrag_widerspruch"]}
+              inkoChoice={{
+                dataCta: "inko-rezept-hero-image",
+                clickEvent: "inko_cta_inline_click",
+              }}
             />
           </div>
         </div>
