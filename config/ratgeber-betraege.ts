@@ -59,6 +59,7 @@ const PFLEGEGRAD1_WORDS = 3000;
 /** Inhalt + Rechner/FAQ; Lesezeit redaktionell 5 Min. (Hub/Meta/JSON konsistent über `readMinutes`). */
 const PFLEGEGELDRECHNER_WORDS = 1000;
 const KOSTENFREIE_PFLEGEHILFSMITTEL_42_WORDS = 2000;
+const INKONTINENZMATERIAL_AUF_REZEPT_WORDS = 1600;
 
 export const RATGEBER_BEITRAEGE: RatgeberBeitragMeta[] = [
   {
@@ -151,6 +152,29 @@ export const RATGEBER_BEITRAEGE: RatgeberBeitragMeta[] = [
     readMinutes: readMinutesFromWordCount(KOSTENFREIE_PFLEGEHILFSMITTEL_42_WORDS),
     publishedAt: "2026-04-30",
   },
+  {
+    slug: "inkontinenzmaterial-auf-rezept-anspruch-kosten-ablauf",
+    title: "Inkontinenzmaterial auf Rezept 2026: Anspruch, Kosten & Ablauf einfach erklärt",
+    excerpt:
+      "Inkontinenzmaterial auf Rezept? Erfahren Sie, wann die Krankenkasse zahlt, wie hoch die Zuzahlung 2026 ist und wie der Ablauf reibungslos funktioniert.",
+    image: "/images/pflegeshop_image.webp",
+    imageAlt:
+      "Inkontinenzmaterial auf Rezept: Anspruch, Kosten und Ablauf über die Krankenkasse verständlich erklärt",
+    views: 60,
+    tags: [
+      "Inkontinenzmaterial auf Rezept",
+      "Inkontinenzhilfen auf Rezept",
+      "Windeln auf Rezept",
+      "Inkontinenzmaterial Krankenkasse",
+      "Inkontinenzmaterial Kosten",
+      "Zuzahlung Inkontinenzmaterial",
+      "Inkontinenzversorgung Krankenkasse",
+    ],
+    categories: ["inkontinenz", "pflegehilfsmittel_42eur"],
+    approxWordCount: INKONTINENZMATERIAL_AUF_REZEPT_WORDS,
+    readMinutes: 8,
+    publishedAt: "2026-07-08",
+  },
 ];
 
 /** Aquarell-Teaserbilde für Ratgeber-Hub-Karten (optional pro Slug). */
@@ -159,6 +183,7 @@ const RATGEBER_HUB_CARD_IMAGES: Record<string, string> = {
   "pflegegrad-beantragen": "/images/Ratgeber/Pflegegrad_beantragen.webp",
   pflegegeldrechner: "/images/Ratgeber/pflegegrad_rechner.webp",
   "kostenfreie-pflegehilfsmittel-42-euro": "/images/Ratgeber/ratgeber_pflegehilfsmittel.webp",
+  "inkontinenzmaterial-auf-rezept-anspruch-kosten-ablauf": "/images/pflegeshop_image.webp",
 };
 
 export function ratgeberHubCardImage(slug: string): string {

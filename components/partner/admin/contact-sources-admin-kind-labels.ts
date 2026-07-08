@@ -10,6 +10,22 @@ import {
 
 export const KARRIERE_PAGE_SOURCE_KINDS = ["karriere", "karriere-form", "karriere-wizard"] as const;
 
+/** Kanal-Gruppen für Tages-/Monats-/Jahresauswertung (je Gruppe ein eigener Abschnitt). */
+export const CONTACT_CHANNEL_GROUPS = [
+  { id: "contact", kinds: ["contact"], label: "Kontaktformular" },
+  { id: "hilfefinder", kinds: ["hilfefinder"], label: "Hilfe-Finder" },
+  { id: "ratgeber", kinds: ["ratgeber"], label: "Ratgeber" },
+  { id: "pflegebox", kinds: ["pflegebox"], label: "Pflegebox" },
+  { id: "betrieblich-angebot", kinds: ["betrieblich-angebot"], label: "Betriebliches Angebot" },
+  {
+    id: "karriere",
+    kinds: [...KARRIERE_PAGE_SOURCE_KINDS],
+    label: "Karriere",
+  },
+] as const;
+
+export type ContactChannelGroupId = (typeof CONTACT_CHANNEL_GROUPS)[number]["id"];
+
 export const KIND_LABELS: Record<string, string> = {
   contact: "Kontaktformular (/kontakt & eingebunden)",
   ratgeber: "Ratgeber (Beratungsdialog)",
@@ -38,4 +54,17 @@ const KIND_LINE_COLORS: Record<string, string> = {
 
 export function strokeForKind(kind: string): string {
   return KIND_LINE_COLORS[kind] ?? CHART_GRID;
+}
+
+const GROUP_LINE_COLORS: Record<ContactChannelGroupId, string> = {
+  contact: CHART_TEAL,
+  hilfefinder: CHART_SKY,
+  ratgeber: CHART_VIOLET,
+  pflegebox: CHART_EMERALD,
+  "betrieblich-angebot": CHART_AMBER,
+  karriere: CHART_ROSE,
+};
+
+export function strokeForChannelGroup(id: ContactChannelGroupId): string {
+  return GROUP_LINE_COLORS[id] ?? CHART_GRID;
 }

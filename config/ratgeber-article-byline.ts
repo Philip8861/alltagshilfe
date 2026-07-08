@@ -21,3 +21,23 @@ export const RATGEBER_ARTICLE_JSONLD_REVIEWER = {
   name: "Luisa Gölder",
   jobTitle: "zertifizierte Pflegeberaterin nach § 7a SGB XI",
 } as const;
+
+/** Inkontinenzmaterial auf Rezept — abweichende Autorenzeile */
+export const INKONTINENZMATERIAL_BYLINE_AUTHOR_TEXT =
+  "Autor: Luisa Gölder (zertifizierte Pflegeberaterin nach § 7a SGB XI)";
+
+export const INKONTINENZMATERIAL_BYLINE_REVIEWER_TEXT =
+  "Fachlich geprüft von Valentin Maucher (examinierter Gesundheits- und Krankenpfleger, Wundexperte)";
+
+export const INKONTINENZMATERIAL_JSONLD_AUTHOR = {
+  "@type": "Person",
+  name: "Luisa Gölder",
+  jobTitle: "zertifizierte Pflegeberaterin nach § 7a SGB XI",
+  worksFor: { "@type": "Organization", name: "Alltagshilfe-Süd" },
+} as const;
+
+export const INKONTINENZMATERIAL_JSONLD_REVIEWER = {
+  "@type": "Person",
+  name: "Valentin Maucher",
+  jobTitle: "examinierter Gesundheits- und Krankenpfleger, Wundexperte",
+} as const;

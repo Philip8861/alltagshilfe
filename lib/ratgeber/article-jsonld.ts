@@ -16,6 +16,13 @@ function absolutize(path: string): string {
 
 export type RatgeberFaqForJsonLd = { question: string; answer: string };
 
+type JsonLdPerson = {
+  "@type": "Person";
+  name: string;
+  jobTitle?: string;
+  worksFor?: { "@type": "Organization"; name: string };
+};
+
 export function serializeRatgeberArticleJsonSchemas(params: {
   headline: string;
   description: string;
@@ -25,6 +32,8 @@ export function serializeRatgeberArticleJsonSchemas(params: {
   imageUrl?: string;
   breadcrumbs: { name: string; path: string }[];
   faq: RatgeberFaqForJsonLd[];
+  author?: JsonLdPerson;
+  reviewer?: JsonLdPerson;
 }): { articleLd: Record<string, unknown>; faqLd: Record<string, unknown>; breadcrumbLd: Record<string, unknown> } {
   const pageUrl = absolutize(params.articlePath);
   const image = params.imageUrl ? absolutize(params.imageUrl) : undefined;
@@ -37,8 +46,8 @@ export function serializeRatgeberArticleJsonSchemas(params: {
     inLanguage: "de-DE",
     datePublished: params.datePublishedISO,
     dateModified: params.dateModifiedISO,
-    author: { ...RATGEBER_ARTICLE_JSONLD_AUTHOR },
-    contributor: { ...RATGEBER_ARTICLE_JSONLD_REVIEWER },
+    author: { ...(params.author ?? RATGEBER_ARTICLE_JSONLD_AUTHOR) },
+    contributor: { ...(params.reviewer ?? RATGEBER_ARTICLE_JSONLD_REVIEWER) },
     publisher: { "@type": "Organization", name: siteConfig.name },
     mainEntityOfPage: { "@type": "WebPage", "@id": pageUrl },
   };

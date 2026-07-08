@@ -19,8 +19,8 @@ const TILES: { id: HomepageStatistikQuadrant; title: string; hint?: string }[] =
   { id: "paths", title: "Aufrufe je Seite", hint: "Top-URLs nach Pfad" },
   {
     id: "contacts_daily",
-    title: "Anfragen pro Tag (Kanäle)",
-    hint: "Tagesverlauf · Liniendiagramm",
+    title: "Anfragen nach Kanal",
+    hint: "Kontakt · Finder · Karriere …",
   },
   {
     id: "contacts_listen",

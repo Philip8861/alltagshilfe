@@ -3,6 +3,11 @@ import {
   RATGEBER_BYLINE_REVIEWER_TEXT,
 } from "@/config/ratgeber-article-byline";
 
+export type RatgeberArticleQualityLinesProps = {
+  reviewerText?: string;
+  authorText?: string;
+};
+
 function IconShield({ className }: { className?: string }) {
   return (
     <svg
@@ -42,16 +47,19 @@ function IconPen({ className }: { className?: string }) {
 }
 
 /** Fachprüfung + Autorenzeile unter dem Ratgeber-Hero (Pflegegrad-Artikel & Co.) */
-export function RatgeberArticleQualityLines() {
+export function RatgeberArticleQualityLines({
+  reviewerText = RATGEBER_BYLINE_REVIEWER_TEXT,
+  authorText = RATGEBER_BYLINE_AUTHOR_TEXT,
+}: RatgeberArticleQualityLinesProps = {}) {
   return (
     <div className="flex min-w-0 flex-col gap-3 sm:gap-2.5">
       <p className="flex min-w-0 items-start gap-2 text-sm leading-snug text-neutral-600">
         <IconShield className="mt-0.5 shrink-0 text-neutral-500" />
-        <span>{RATGEBER_BYLINE_REVIEWER_TEXT}</span>
+        <span>{reviewerText}</span>
       </p>
       <p className="flex min-w-0 items-start gap-2 text-sm leading-snug text-neutral-600">
         <IconPen className="mt-0.5 shrink-0 text-neutral-500" />
-        <span>{RATGEBER_BYLINE_AUTHOR_TEXT}</span>
+        <span>{authorText}</span>
       </p>
     </div>
   );
