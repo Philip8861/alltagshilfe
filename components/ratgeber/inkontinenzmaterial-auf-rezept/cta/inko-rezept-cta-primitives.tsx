@@ -107,9 +107,11 @@ export const INKO_ARTICLE_CTA_SURFACE_CLASS = "inko-article-cta-glow";
 
 /** Einheitlicher Button-Text für alle Inkontinenz-Ratgeber-CTAs */
 export const INKO_BERATUNG_BUTTON_LABEL = (
-  <span className="inline-flex max-w-full items-center justify-center gap-2.5 text-left sm:gap-3">
-    <GiftIcon className="h-5 w-5 shrink-0 opacity-95 sm:h-[1.35rem] sm:w-[1.35rem]" />
-    <span className="min-w-0 leading-snug">Kostenlos beraten lassen und kostenloses Testpaket erhalten</span>
+  <span className="inline-flex max-w-full items-center justify-center gap-3 text-left sm:gap-3.5">
+    <GiftIcon className="h-7 w-7 shrink-0 opacity-95 sm:h-8 sm:w-8" />
+    <span className="min-w-0 text-[0.9375rem] font-extrabold leading-snug sm:text-base sm:leading-snug md:text-[1.0625rem]">
+      Kostenlos beraten lassen und kostenloses Testpaket erhalten
+    </span>
   </span>
 );
 
@@ -123,7 +125,7 @@ function GiftIcon({ className }: { className?: string }) {
 
 /** Orangener Beratungs-Button – mobil volle Breite, gut lesbar */
 export const INKO_PRIMARY_BUTTON_CLASS =
-  "ratgeber-cta-pulse inko-primary-cta-pulse inline-flex w-full min-h-[3rem] items-center justify-center gap-2 rounded-lg bg-[#F78F2E] px-4 py-3 text-center text-[0.875rem] font-extrabold leading-snug tracking-tight text-white shadow-[0_3px_12px_-4px_rgba(180,90,10,0.32)] [text-shadow:0_1px_2px_rgba(0,0,0,0.18)] transition-[background-color] hover:bg-[#e8862a] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68] focus-visible:ring-offset-2 sm:px-5 sm:text-[0.9375rem]";
+  "ratgeber-cta-pulse inko-primary-cta-pulse inline-flex w-full min-h-[3.5rem] items-center justify-center gap-2 rounded-xl bg-[#F78F2E] px-5 py-3.5 text-center font-extrabold leading-snug tracking-tight text-white shadow-[0_3px_12px_-4px_rgba(180,90,10,0.32)] [text-shadow:0_1px_2px_rgba(0,0,0,0.18)] transition-[background-color] hover:bg-[#e8862a] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68] focus-visible:ring-offset-2 sm:min-h-[3.75rem] sm:px-6 sm:py-4";
 
 type InkoPrimaryBeratungButtonProps = {
   children?: ReactNode;

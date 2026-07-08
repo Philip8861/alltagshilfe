@@ -22,7 +22,7 @@ type InkoFloatingPromoShellProps = {
   children: ReactNode;
   className?: string;
   /** Größere Karte für zentrierte Popups (30s, Beratungsauswahl) */
-  size?: "default" | "large";
+  size?: "default" | "large" | "form";
 };
 
 /** Zentriertes Promo-Modal – mobil scrollbar, Desktop großzügig */
@@ -38,6 +38,7 @@ export function InkoFloatingPromoShell({
 }: InkoFloatingPromoShellProps) {
   const [reducedMotion, setReducedMotion] = useState(false);
   const isLarge = size === "large";
+  const isForm = size === "form";
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -70,7 +71,9 @@ export function InkoFloatingPromoShell({
         "pointer-events-auto relative w-full overflow-hidden rounded-2xl border bg-white ring-1 ring-[#0F4F68]/8",
         isLarge
           ? "max-w-[min(100%,32rem)] border-[#0F4F68]/14 shadow-[0_20px_48px_-16px_rgba(15,79,104,0.35)] sm:max-w-[36rem] sm:rounded-3xl md:max-w-[44rem] lg:max-w-[46rem]"
-          : "max-w-[min(100%,26rem)] border-neutral-200/95 shadow-[0_12px_40px_-16px_rgba(15,79,104,0.28)] sm:max-w-[28rem]",
+          : isForm
+            ? "max-w-[min(100%,28rem)] border-[#0F4F68]/14 shadow-[0_18px_44px_-14px_rgba(15,79,104,0.32)] sm:max-w-[30rem] sm:rounded-2xl"
+            : "max-w-[min(100%,26rem)] border-neutral-200/95 shadow-[0_12px_40px_-16px_rgba(15,79,104,0.28)] sm:max-w-[28rem]",
       )}
     >
       <div
@@ -89,7 +92,9 @@ export function InkoFloatingPromoShell({
         className={cn(
           isLarge
             ? "max-h-[min(78dvh,100%)] overflow-y-auto overscroll-contain px-4 pb-5 pt-5 sm:px-8 sm:pb-8 sm:pt-8 md:px-10 md:pb-10 md:pt-10"
-            : "px-4 pb-4 pt-5 sm:px-6 sm:pb-6 sm:pt-7",
+            : isForm
+              ? "max-h-[min(88dvh,100%)] overflow-y-auto overscroll-contain px-4 pb-5 pt-4 sm:px-6 sm:pb-6 sm:pt-5"
+              : "px-4 pb-4 pt-5 sm:px-6 sm:pb-6 sm:pt-7",
         )}
       >
         {children}
@@ -124,7 +129,9 @@ export function InkoFloatingPromoShell({
           "fixed inset-0",
           isLarge
             ? "bg-[#041a22]/55 backdrop-blur-[6px] sm:bg-[#041a22]/65 sm:backdrop-blur-[10px] md:backdrop-blur-[14px]"
-            : "bg-[#0F4F68]/25 backdrop-blur-[4px]",
+            : isForm
+              ? "bg-[#041a22]/50 backdrop-blur-[5px] sm:bg-[#041a22]/60 sm:backdrop-blur-[8px]"
+              : "bg-[#0F4F68]/25 backdrop-blur-[4px]",
         )}
         aria-label="Hinweis schließen"
         onClick={onClose}
@@ -132,7 +139,7 @@ export function InkoFloatingPromoShell({
       <div
         className={cn(
           "relative z-[1] my-auto w-full shrink-0",
-          isLarge ? "max-w-[min(100%,46rem)]" : "max-w-[28rem]",
+          isLarge ? "max-w-[min(100%,46rem)]" : isForm ? "max-w-[min(100%,30rem)]" : "max-w-[28rem]",
         )}
       >
         {card}

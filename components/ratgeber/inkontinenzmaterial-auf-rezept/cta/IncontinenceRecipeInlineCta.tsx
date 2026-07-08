@@ -50,7 +50,7 @@ export function IncontinenceRecipeInlineCta() {
             <InkoTrustCheckList items={INKO_REZEPT_TRUST_INLINE} onBanner className="sm:grid sm:grid-cols-2 sm:gap-x-4" />
           </div>
           <div className="flex w-full shrink-0 flex-col items-stretch gap-3 lg:max-w-[18.5rem]">
-            <InkoPrimaryBeratungButton dataCta={CTA_ID} clickEvent="inko_cta_inline_click" className="min-h-[3.25rem] text-base sm:text-[0.9375rem]" />
+            <InkoPrimaryBeratungButton dataCta={CTA_ID} clickEvent="inko_cta_inline_click" className="lg:max-w-[26rem]" />
             <p className={`${INKO_ARTICLE_CTA_SUBTEXT_CLASS} text-center text-[0.9375rem] sm:text-base`}>
               Rückruf innerhalb von 24 Stunden – oder direkt anrufen &amp; per WhatsApp.
             </p>

@@ -43,7 +43,7 @@ export function InkontinenzProductCtaBox({ dataCta, clickEvent, heading, childre
           <InkoPrimaryBeratungButton
             dataCta={dataCta}
             clickEvent={clickEvent}
-            className="min-h-[3.25rem] text-base sm:max-w-[24rem] sm:text-[0.9375rem]"
+            className="sm:max-w-[26rem]"
           />
         </div>
       </InkoArticleCtaContentPane>
@@ -78,7 +78,7 @@ export function InkontinenzProductEndCta() {
           <InkoPrimaryBeratungButton
             dataCta={dataCta}
             clickEvent="inko_cta_end_click"
-            className="min-h-[3.25rem] text-base sm:max-w-[24rem] sm:text-[0.9375rem]"
+            className="sm:max-w-[26rem]"
           />
         </div>
         <p className={`${INKO_ARTICLE_CTA_BODY_CLASS} mt-5 text-[0.9375rem] sm:text-base`}>

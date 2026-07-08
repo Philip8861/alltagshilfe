@@ -47,11 +47,7 @@ export function IncontinenceRecipeEndCta() {
         </p>
         <InkoTrustCheckList items={INKO_REZEPT_TRUST_END} onBanner className="sm:grid sm:grid-cols-2 sm:gap-x-6" />
         <div className="mt-8 flex w-full flex-col items-stretch gap-3 sm:items-start">
-          <InkoPrimaryBeratungButton
-            dataCta={CTA_ID}
-            clickEvent="inko_cta_end_click"
-            className="min-h-[3.25rem] text-base sm:max-w-[24rem] sm:text-[0.9375rem]"
-          />
+          <InkoPrimaryBeratungButton dataCta={CTA_ID} clickEvent="inko_cta_end_click" className="sm:max-w-[26rem]" />
         </div>
         <p className={`${INKO_ARTICLE_CTA_SUBTEXT_CLASS} mt-5 text-[0.9375rem] sm:text-base`}>
           Rückruf innerhalb von 24 Stunden – unverbindlich und persönlich.

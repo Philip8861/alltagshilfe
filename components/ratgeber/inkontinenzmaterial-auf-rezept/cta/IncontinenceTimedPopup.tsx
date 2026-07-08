@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 
 import { InkoFloatingPromoShell } from "@/components/ratgeber/inkontinenzmaterial-auf-rezept/cta/inko-floating-promo-shell";
 import {
-  INKO_PRIMARY_BUTTON_CLASS,
   InkoDismissLink,
   InkoPrimaryBeratungButton,
 } from "@/components/ratgeber/inkontinenzmaterial-auf-rezept/cta/inko-rezept-cta-primitives";
@@ -79,7 +78,6 @@ export function IncontinenceTimedPopup({ enabled, ctaClicked, onCtaClick }: Prop
         <InkoPrimaryBeratungButton
           dataCta={CTA_ID}
           clickEvent="inko_cta_popup_30s_click"
-          className={`${INKO_PRIMARY_BUTTON_CLASS} text-base font-extrabold sm:text-[0.9375rem]`}
           onAfterClick={() => setVisible(false)}
           onAfterChoice={onCtaClick}
         />

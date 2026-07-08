@@ -14,7 +14,7 @@ function PhoneIcon({ className }: { className?: string }) {
   );
 }
 
-const IMAGE_CTA_BUTTON_CLASS = `${INKO_PRIMARY_BUTTON_CLASS} max-w-full px-3 sm:max-w-[24rem] sm:px-5`;
+const IMAGE_CTA_BUTTON_CLASS = `${INKO_PRIMARY_BUTTON_CLASS} max-w-full sm:max-w-[26rem]`;
 
 const DEFAULT_RATGEBER_CTA_LABEL = (
   <span className="inline-flex max-w-full items-center justify-center gap-2 sm:gap-2.5">
