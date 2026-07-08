@@ -107,10 +107,14 @@ export const INKO_ARTICLE_CTA_SURFACE_CLASS = "inko-article-cta-glow";
 
 /** Einheitlicher Button-Text für alle Inkontinenz-Ratgeber-CTAs */
 export const INKO_BERATUNG_BUTTON_LABEL = (
-  <span className="inline-flex w-full max-w-full items-center justify-center gap-3 text-center sm:gap-3.5">
-    <GiftIcon className="h-8 w-8 shrink-0 opacity-95 sm:h-9 sm:w-9" />
-    <span className="min-w-0 text-center text-[0.9375rem] font-extrabold leading-snug sm:text-base sm:leading-snug md:text-[1.0625rem]">
-      Kostenlos beraten lassen und kostenloses Testpaket erhalten
+  <span className="flex w-full items-center justify-center">
+    <span className="inline-flex items-center justify-center gap-3 sm:gap-3.5">
+      <GiftIcon className="h-9 w-9 shrink-0 opacity-95 sm:h-10 sm:w-10" />
+      <span className="text-center text-[0.9375rem] font-extrabold leading-snug sm:text-base sm:leading-snug md:text-[1.0625rem]">
+        Kostenlos beraten lassen und
+        <br />
+        gratis Testpaket erhalten
+      </span>
     </span>
   </span>
 );
@@ -125,7 +129,7 @@ function GiftIcon({ className }: { className?: string }) {
 
 /** Orangener Beratungs-Button – mobil volle Breite, gut lesbar */
 export const INKO_PRIMARY_BUTTON_CLASS =
-  "ratgeber-cta-pulse inko-primary-cta-pulse inline-flex w-full min-h-[3.5rem] items-center justify-center gap-2 rounded-xl bg-[#F78F2E] px-5 py-3.5 text-center font-extrabold leading-snug tracking-tight text-white shadow-[0_3px_12px_-4px_rgba(180,90,10,0.32)] [text-shadow:0_1px_2px_rgba(0,0,0,0.18)] transition-[background-color] hover:bg-[#e8862a] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68] focus-visible:ring-offset-2 sm:min-h-[3.75rem] sm:px-6 sm:py-4";
+  "ratgeber-cta-pulse inko-primary-cta-pulse flex w-full min-h-[3.5rem] items-center justify-center gap-2 rounded-xl bg-[#F78F2E] px-5 py-3.5 text-center font-extrabold leading-snug tracking-tight text-white shadow-[0_3px_12px_-4px_rgba(180,90,10,0.32)] [text-shadow:0_1px_2px_rgba(0,0,0,0.18)] transition-[background-color] hover:bg-[#e8862a] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68] focus-visible:ring-offset-2 sm:min-h-[3.75rem] sm:px-6 sm:py-4";
 
 type InkoPrimaryBeratungButtonProps = {
   children?: ReactNode;
@@ -309,10 +313,13 @@ export function useInkoCtaViewTracking(
   ref: RefObject<HTMLElement | null>,
   viewEvent: InkoRezeptCtaEventName,
   ctaId: string,
+  options?: { enabled?: boolean },
 ) {
   const logged = useRef(false);
+  const enabled = options?.enabled ?? true;
 
   useEffect(() => {
+    if (!enabled) return;
     const el = ref.current;
     if (!el || logged.current) return;
 
@@ -330,5 +337,5 @@ export function useInkoCtaViewTracking(
 
     observer.observe(el);
     return () => observer.disconnect();
-  }, [ref, viewEvent, ctaId]);
+  }, [ref, viewEvent, ctaId, enabled]);
 }

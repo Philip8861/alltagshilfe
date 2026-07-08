@@ -3,8 +3,14 @@ import Link from "next/link";
 
 import { INKONTINENZMATERIAL_AUF_REZEPT_FAQ } from "@/components/ratgeber/inkontinenzmaterial-auf-rezept/inkontinenzmaterial-auf-rezept-faq";
 import { INKONTINENZMATERIAL_AUF_REZEPT_TOC } from "@/components/ratgeber/inkontinenzmaterial-auf-rezept/inkontinenzmaterial-auf-rezept-toc";
-import { IncontinenceRecipeEndCta } from "@/components/ratgeber/inkontinenzmaterial-auf-rezept/cta/IncontinenceRecipeEndCta";
-import { IncontinenceRecipeInlineCta } from "@/components/ratgeber/inkontinenzmaterial-auf-rezept/cta/IncontinenceRecipeInlineCta";
+import {
+  IncontinenceRecipeAblaufCta,
+  IncontinenceRecipeAufzahlungCta,
+  IncontinenceRecipeBeratungCta,
+  IncontinenceRecipeCostCta,
+  IncontinenceRecipeEndCta,
+  IncontinenceRecipeRezeptCta,
+} from "@/components/ratgeber/inkontinenzmaterial-auf-rezept/cta/IncontinenceRecipeCta";
 import { PflegegradFaqAccordion } from "@/components/ratgeber/pflegegrad-beantragen/PflegegradFaqAccordion";
 import {
   ArticleSectionHeading,
@@ -328,7 +334,7 @@ export function InkontinenzmaterialAufRezeptArticle() {
         </p>
       </ArticleSectionHeading>
 
-      <IncontinenceRecipeInlineCta />
+      <IncontinenceRecipeCostCta />
 
       <ArticleSectionHeading sectionNum="07" id="aufzahlung" heading="Muss man eine Aufzahlung akzeptieren?">
         <p>
@@ -351,6 +357,8 @@ export function InkontinenzmaterialAufRezeptArticle() {
           Solche Aussagen sind oft unvollständig. Entscheidend ist immer die dokumentierte medizinische Notwendigkeit.
         </p>
       </ArticleSectionHeading>
+
+      <IncontinenceRecipeAufzahlungCta />
 
       <ArticleSectionHeading sectionNum="08" id="ablauf" heading="Wie läuft der Antrag für Inkontinenzmaterial auf Rezept ab?">
         <ArticleStepHeading>Schritt 1: Ärztliche Diagnose einholen</ArticleStepHeading>
@@ -382,6 +390,8 @@ export function InkontinenzmaterialAufRezeptArticle() {
         </p>
       </ArticleSectionHeading>
 
+      <IncontinenceRecipeAblaufCta />
+
       <ArticleSectionHeading sectionNum="09" id="rezept" heading="Was muss auf dem Rezept stehen?">
         <p>
           Je genauer das Rezept formuliert ist, desto weniger Spielraum haben Versorger, Sie mit unpassenden Produkten
@@ -410,6 +420,8 @@ export function InkontinenzmaterialAufRezeptArticle() {
           Inkontinenzpants medizinisch erforderlich.“
         </PflegegradCallout>
       </ArticleSectionHeading>
+
+      <IncontinenceRecipeRezeptCta />
 
       <ArticleSectionHeading sectionNum="10" id="menge" heading="Wie viel Inkontinenzmaterial steht mir zu?">
         <p>
@@ -512,6 +524,8 @@ export function InkontinenzmaterialAufRezeptArticle() {
           </ChecklistItem>
         </ul>
       </ArticleSectionHeading>
+
+      <IncontinenceRecipeBeratungCta />
 
       <ArticleSectionHeading sectionNum="16" id="faq-inkontinenz" heading="FAQ: Häufige Fragen zu Inkontinenzmaterial auf Rezept 2026">
         <PflegegradFaqAccordion items={INKONTINENZMATERIAL_AUF_REZEPT_FAQ} />
