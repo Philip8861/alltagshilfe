@@ -2,36 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 
-import {
-  INKO_REZEPT_CTA_DISMISS_DAYS,
-  INKO_REZEPT_CTA_STORAGE_KEYS,
-} from "@/lib/ratgeber/inko-rezept-cta-config";
-
-function addDaysToNow(days: number): number {
-  return Date.now() + days * 24 * 60 * 60 * 1000;
-}
-
-export function isStorageDismissed(key: string): boolean {
-  if (typeof window === "undefined") return true;
-  try {
-    const raw = localStorage.getItem(key);
-    if (!raw) return false;
-    const until = Number(raw);
-    if (Number.isNaN(until)) return false;
-    return Date.now() < until;
-  } catch {
-    return false;
-  }
-}
-
-export function setStorageDismissed(key: string, days: number = INKO_REZEPT_CTA_DISMISS_DAYS): void {
-  if (typeof window === "undefined") return;
-  try {
-    localStorage.setItem(key, String(addDaysToNow(days)));
-  } catch {
-    /* quota / private mode */
-  }
-}
+import { INKO_REZEPT_CTA_STORAGE_KEYS } from "@/lib/ratgeber/inko-rezept-cta-config";
 
 export function hasSessionFlag(key: string): boolean {
   if (typeof window === "undefined") return false;
@@ -59,15 +30,13 @@ export function markInkoCtaClickedThisSession(): void {
   setSessionFlag(INKO_REZEPT_CTA_STORAGE_KEYS.ctaClickedSession);
 }
 
-/** Gate für Popups: Dismiss-Status, Session-Klicks, Hydration-sicher. */
+/** Gate für 30s-Popup: Session-Klicks, Hydration-sicher. */
 export function useInkoRezeptCtaGate() {
   const [hydrated, setHydrated] = useState(false);
   const [ctaClicked, setCtaClicked] = useState(false);
-  const [exitDismissed, setExitDismissed] = useState(true);
 
   useEffect(() => {
     setCtaClicked(hasInkoCtaClickedThisSession());
-    setExitDismissed(isStorageDismissed(INKO_REZEPT_CTA_STORAGE_KEYS.exitDismissedUntil));
     setHydrated(true);
   }, []);
 
@@ -76,16 +45,9 @@ export function useInkoRezeptCtaGate() {
     setCtaClicked(true);
   }, []);
 
-  const dismissExit = useCallback(() => {
-    setStorageDismissed(INKO_REZEPT_CTA_STORAGE_KEYS.exitDismissedUntil);
-    setExitDismissed(true);
-  }, []);
-
   return {
     hydrated,
     ctaClicked,
-    exitDismissed,
     markClicked,
-    dismissExit,
   };
 }

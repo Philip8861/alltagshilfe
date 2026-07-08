@@ -4,12 +4,11 @@ import { useEffect, useState } from "react";
 
 import { InkoFloatingPromoShell } from "@/components/ratgeber/inkontinenzmaterial-auf-rezept/cta/inko-floating-promo-shell";
 import {
+  INKO_PRIMARY_BUTTON_CLASS,
   InkoDismissLink,
   InkoPrimaryBeratungButton,
-  InkoPhoneLink,
 } from "@/components/ratgeber/inkontinenzmaterial-auf-rezept/cta/inko-rezept-cta-primitives";
 import {
-  INKO_REZEPT_CTA_PHONE_DISPLAY,
   INKO_REZEPT_CTA_STORAGE_KEYS,
   INKO_REZEPT_TIMED_POPUP_MS,
 } from "@/lib/ratgeber/inko-rezept-cta-config";
@@ -24,7 +23,7 @@ type Props = {
   onCtaClick: () => void;
 };
 
-/** Popup nach 30 Sekunden Lesedauer – Desktop groß & gut lesbar */
+/** Popup nach 30 Sekunden Lesedauer */
 export function IncontinenceTimedPopup({ enabled, ctaClicked, onCtaClick }: Props) {
   const [visible, setVisible] = useState(false);
   const [viewLogged, setViewLogged] = useState(false);
@@ -61,51 +60,39 @@ export function IncontinenceTimedPopup({ enabled, ctaClicked, onCtaClick }: Prop
       ariaLabel="Hinweis zur kostenlosen Inkontinenz-Beratung"
       visible={visible}
       onClose={handleClose}
-      placement="center"
       size="large"
     >
-      <p className="pr-8 text-center text-[0.72rem] font-semibold uppercase tracking-[0.14em] text-[#5a959e] sm:text-xs md:text-sm">
+      <p className="pr-9 text-center text-[0.7rem] font-bold uppercase tracking-[0.12em] text-[#4a858e] sm:pr-10 sm:text-xs md:text-sm">
         Kurze Werbung muss sein :-)
       </p>
-      <h3 className="mt-3 text-center text-lg font-semibold leading-snug text-[#0F4F68] sm:mt-4 sm:text-xl md:mt-5 md:text-2xl md:leading-tight lg:text-[1.75rem]">
+      <h3 className="mt-2.5 text-center text-lg font-bold leading-snug text-[#0F4F68] sm:mt-4 sm:text-xl md:mt-5 md:text-2xl md:leading-tight lg:text-[1.75rem]">
         Keine Lust, alles selbst herauszufinden?
       </h3>
-      <p className="mt-3 text-center text-[0.9375rem] leading-relaxed text-neutral-700 sm:mt-4 sm:text-base md:mt-5 md:text-lg md:leading-relaxed">
+      <p className="mt-2.5 text-center text-[0.9rem] font-medium leading-relaxed text-neutral-800 sm:mt-4 sm:text-base md:mt-5 md:text-lg">
         Unsere Experten beraten Sie kostenlos zum Thema Inkontinenzmaterial auf Rezept und prüfen gemeinsam mit Ihnen,
         welche Versorgung zu Ihrer Situation passt.
       </p>
-      <p className="mt-3 text-center text-xs leading-relaxed text-neutral-600 sm:text-[0.8125rem] md:mt-4 md:text-sm md:leading-relaxed">
-        Rezeptabrechnung möglich · Diskrete Lieferung · Kostenloses Testpaket auf Wunsch
+      <p className="mt-2.5 text-center text-[0.8rem] font-medium leading-relaxed text-neutral-700 sm:mt-3 sm:text-[0.875rem] md:mt-4 md:text-sm">
+        Rezeptabrechnung · Diskrete Lieferung · Testpaket auf Wunsch
       </p>
-      <div className="mt-5 flex flex-col gap-2.5 md:mt-7 md:gap-3">
+      <div className="mt-4 flex flex-col gap-2 sm:mt-5 md:mt-7 md:gap-3">
         <InkoPrimaryBeratungButton
           dataCta={CTA_ID}
           clickEvent="inko_cta_popup_30s_click"
-          className="w-full md:min-h-[3.25rem] md:text-lg md:font-bold"
+          className={`${INKO_PRIMARY_BUTTON_CLASS} text-base font-extrabold sm:text-[1.0625rem]`}
           onAfterClick={() => setVisible(false)}
           onAfterChoice={onCtaClick}
         >
           Kostenlos beraten lassen
         </InkoPrimaryBeratungButton>
-        <InkoDismissLink dataCta={`${CTA_ID}-later`} onDismiss={handleClose} className="text-center md:text-[0.9375rem]">
-          Später lesen
+        <InkoDismissLink
+          dataCta={`${CTA_ID}-later`}
+          onDismiss={handleClose}
+          className="min-h-[2.75rem] text-center text-sm font-semibold text-neutral-700 sm:text-[0.9375rem]"
+        >
+          Weiter lesen
         </InkoDismissLink>
       </div>
-      <p className="mt-3 text-center text-xs text-neutral-500 md:mt-4 md:text-sm">
-        Oder telefonisch:{" "}
-        <InkoPhoneLink
-          dataCta={`${CTA_ID}-phone`}
-          clickEvent="inko_cta_popup_30s_click"
-          sourceComponent="inko_rezept_popup_30s_phone"
-          className="inline text-xs font-medium md:text-sm"
-          onAfterClick={() => {
-            onCtaClick();
-            setVisible(false);
-          }}
-        >
-          {INKO_REZEPT_CTA_PHONE_DISPLAY}
-        </InkoPhoneLink>
-      </p>
     </InkoFloatingPromoShell>
   );
 }

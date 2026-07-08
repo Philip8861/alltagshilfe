@@ -1,6 +1,6 @@
 "use client";
 
-import { InkoPrimaryBeratungButton } from "@/components/ratgeber/inkontinenzmaterial-auf-rezept/cta/inko-rezept-cta-primitives";
+import { INKO_PRIMARY_BUTTON_CLASS, InkoPrimaryBeratungButton } from "@/components/ratgeber/inkontinenzmaterial-auf-rezept/cta/inko-rezept-cta-primitives";
 import { RatgeberBeratungCtaButton } from "@/components/ratgeber/RatgeberBeratungDialog";
 import type { HilfefinderServiceKey } from "@/config/hilfefinder-services";
 import type { InkoRezeptCtaEventName } from "@/lib/ratgeber/inko-rezept-cta-tracking";
@@ -14,14 +14,13 @@ function PhoneIcon({ className }: { className?: string }) {
   );
 }
 
-const IMAGE_CTA_BUTTON_CLASS =
-  "ratgeber-cta-pulse inline-flex min-h-[3rem] w-full max-w-[18rem] items-center justify-center gap-2.5 rounded-lg bg-[#F78F2E] px-5 text-base font-bold tracking-tight text-white shadow-[0_3px_12px_-4px_rgba(180,90,10,0.32)] [text-shadow:0_1px_1px_rgba(0,0,0,0.14)] transition-[background-color] hover:bg-[#e8862a] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68] focus-visible:ring-offset-2 sm:max-w-[21rem]";
+const IMAGE_CTA_BUTTON_CLASS = `${INKO_PRIMARY_BUTTON_CLASS} max-w-full px-3 sm:max-w-[21rem] sm:px-6`;
 
 const IMAGE_CTA_LABEL = (
-  <>
-    <PhoneIcon className="h-5 w-5 shrink-0 opacity-95" />
-    <span>Jetzt kostenlos beraten lassen</span>
-  </>
+  <span className="inline-flex max-w-full items-center justify-center gap-2 sm:gap-2.5">
+    <PhoneIcon className="h-4 w-4 shrink-0 opacity-95 sm:h-5 sm:w-5" />
+    <span className="min-w-0 text-left text-[0.875rem] leading-snug sm:text-base">Jetzt kostenlos beraten lassen</span>
+  </span>
 );
 
 /** CTA unter Ratgeber-Artikelbildern */
@@ -41,7 +40,7 @@ export function RatgeberArticleImageBeratungCta({
   };
 }) {
   return (
-    <div className={cn("mt-4 flex w-full flex-col items-center sm:mt-3", className)}>
+    <div className={cn("mt-4 flex w-full flex-col items-stretch px-0 sm:mt-3 sm:items-center", className)}>
       {inkoChoice ? (
         <InkoPrimaryBeratungButton
           dataCta={inkoChoice.dataCta}

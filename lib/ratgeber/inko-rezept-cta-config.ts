@@ -34,6 +34,9 @@ export const INKO_REZEPT_CTA_STORAGE_KEYS = {
 
 export const INKO_REZEPT_RATGEBER_SLUG = "inkontinenzmaterial-auf-rezept-anspruch-kosten-ablauf" as const;
 
+/** Hintergrundbild für feste Werbe-CTAs im Artikel (nicht in Popups) */
+export const INKO_REZEPT_ARTICLE_CTA_BG = "/images/Ratgeber/Landing_page.webp";
+
 export function isInkoRezeptRatgeberSlug(slug: string): boolean {
   const s = slug.toLowerCase();
   return s.includes("inkontinenzmaterial") && s.includes("rezept");

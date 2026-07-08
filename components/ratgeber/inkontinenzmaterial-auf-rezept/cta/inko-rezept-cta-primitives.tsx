@@ -2,10 +2,12 @@
 
 import type { ReactNode, RefObject } from "react";
 import { useEffect, useRef } from "react";
+import Image from "next/image";
 
 import { GtmKontaktNavLink, GtmPhoneLink, GtmWhatsappLink } from "@/components/analytics/GtmContactIntentLink";
 import { useInkoBeratungChoice } from "@/components/ratgeber/inkontinenzmaterial-auf-rezept/cta/InkoBeratungChoicePopup";
 import {
+  INKO_REZEPT_ARTICLE_CTA_BG,
   INKO_REZEPT_CTA_PHONE_DISPLAY,
   INKO_REZEPT_CTA_PHONE_HREF,
   INKO_REZEPT_CTA_WHATSAPP_HREF,
@@ -40,13 +42,37 @@ export function InkoCtaGradientStripe() {
   return (
     <div
       aria-hidden
-      className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-[#0F4F68]/55 via-[#3d9aaa]/70 to-[#F78F2E]/70"
+      className="absolute inset-x-0 top-0 z-[2] h-1 bg-gradient-to-r from-[#0F4F68]/55 via-[#3d9aaa]/70 to-[#F78F2E]/70"
     />
+  );
+}
+
+/** Aquarell-Banner als Hintergrund – Text links lesbar, Motiv rechts sichtbar */
+export function InkoArticleCtaBackground() {
+  return (
+    <>
+      <Image
+        src={INKO_REZEPT_ARTICLE_CTA_BG}
+        alt=""
+        fill
+        aria-hidden
+        className="pointer-events-none object-cover object-[72%_center] sm:object-right"
+        sizes="(max-width: 640px) 100vw, 760px"
+      />
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 bg-gradient-to-r from-white/96 via-white/88 to-white/42 sm:from-white/94 sm:via-white/80 sm:to-white/28"
+      />
+    </>
   );
 }
 
 /** Basis-Stil für feste CTAs im Artikel: leichter Schatten + sanftes Aufleuchten */
 export const INKO_ARTICLE_CTA_SURFACE_CLASS = "inko-article-cta-glow";
+
+/** Orangener Beratungs-Button – mobil volle Breite, gut lesbar */
+export const INKO_PRIMARY_BUTTON_CLASS =
+  "ratgeber-cta-pulse inko-primary-cta-pulse inline-flex w-full min-h-[3rem] items-center justify-center gap-2 rounded-lg bg-[#F78F2E] px-4 py-3 text-center text-[0.9375rem] font-extrabold leading-snug tracking-tight text-white shadow-[0_3px_12px_-4px_rgba(180,90,10,0.32)] [text-shadow:0_1px_2px_rgba(0,0,0,0.18)] transition-[background-color] hover:bg-[#e8862a] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68] focus-visible:ring-offset-2 sm:px-6 sm:text-base";
 
 type InkoPrimaryBeratungButtonProps = {
   children: ReactNode;
@@ -71,10 +97,7 @@ export function InkoPrimaryBeratungButton({
     <button
       type="button"
       data-cta={dataCta}
-      className={cn(
-        "ratgeber-cta-pulse inko-primary-cta-pulse inline-flex min-h-[3rem] items-center justify-center gap-2.5 rounded-lg bg-[#F78F2E] px-6 text-base font-bold tracking-tight text-white shadow-[0_3px_12px_-4px_rgba(180,90,10,0.32)] [text-shadow:0_1px_1px_rgba(0,0,0,0.14)] transition-[background-color] hover:bg-[#e8862a] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68] focus-visible:ring-offset-2",
-        className,
-      )}
+      className={cn(INKO_PRIMARY_BUTTON_CLASS, className)}
       onClick={() => {
         choice?.open({
           dataCta,

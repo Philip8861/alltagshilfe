@@ -110,17 +110,26 @@ function ChoiceCard({
 }: ChoiceCardProps) {
   const inner = (
     <>
-      <span className={cn("flex h-12 w-12 shrink-0 items-center justify-center rounded-xl", iconWrapClassName)}>{icon}</span>
+      <span
+        className={cn(
+          "flex h-10 w-10 shrink-0 items-center justify-center rounded-xl sm:h-12 sm:w-12",
+          iconWrapClassName,
+        )}
+      >
+        {icon}
+      </span>
       <span className="min-w-0 flex-1 text-left">
-        <span className="block text-[1.02rem] font-semibold leading-snug text-[#0F4F68] sm:text-[1.0625rem]">{title}</span>
-        <span className="mt-0.5 block text-sm leading-snug text-neutral-600">{subtitle}</span>
+        <span className="block text-[0.9375rem] font-semibold leading-snug text-[#0F4F68] sm:text-[1.0625rem]">
+          {title}
+        </span>
+        <span className="mt-0.5 block text-[0.8125rem] leading-snug text-neutral-600 sm:text-sm">{subtitle}</span>
       </span>
       <ChevronIcon />
     </>
   );
 
   const cardClass = cn(
-    "group flex w-full items-center gap-4 rounded-2xl border px-4 py-4 transition",
+    "group flex w-full items-center gap-3 rounded-xl border px-3 py-3.5 transition sm:gap-4 sm:rounded-2xl sm:px-4 sm:py-4",
     "focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68] focus-visible:ring-offset-2",
     className,
   );
@@ -217,25 +226,24 @@ function InkoBeratungChoiceDialog({
       ariaLabel="Wie möchten Sie uns erreichen?"
       visible={visible}
       onClose={onClose}
-      placement="center"
       size="large"
       className="z-[50]"
     >
-      <p className="pr-10 text-center text-[0.72rem] font-semibold uppercase tracking-[0.14em] text-[#5a959e] sm:text-xs md:text-sm">
+      <p className="pr-9 text-center text-[0.68rem] font-semibold uppercase tracking-[0.12em] text-[#5a959e] sm:pr-10 sm:text-xs md:text-sm">
         Kostenlos & unverbindlich
       </p>
       <h2
         id="inko-choice-heading"
-        className="mt-3 text-center text-xl font-semibold leading-snug text-[#0F4F68] sm:mt-4 sm:text-2xl md:text-[1.65rem] md:leading-tight"
+        className="mt-2.5 text-center text-lg font-semibold leading-snug text-[#0F4F68] sm:mt-4 sm:text-2xl md:text-[1.65rem] md:leading-tight"
       >
         Wie möchten Sie uns am liebsten erreichen?
       </h2>
-      <p className="mt-3 text-center text-[0.9375rem] leading-relaxed text-neutral-700 sm:text-base md:mt-4 md:text-lg">
-        Unsere Experten beraten Sie persönlich zur Inkontinenzversorgung auf Rezept – wählen Sie einfach den Weg, der
-        für Sie am angenehmsten ist.
+      <p className="mt-2.5 text-center text-[0.875rem] leading-relaxed text-neutral-700 sm:mt-3 sm:text-base md:mt-4 md:text-lg">
+        Unsere Experten beraten Sie persönlich zur Inkontinenzversorgung auf Rezept – wählen Sie den Weg, der für Sie
+        passt.
       </p>
 
-      <div className="mt-6 flex flex-col gap-3 sm:mt-7 sm:gap-3.5" role="list">
+      <div className="mt-4 flex flex-col gap-2.5 sm:mt-7 sm:gap-3.5" role="list">
         <div role="listitem">
           <ChoiceCard
             title="Direkt anrufen"
@@ -252,7 +260,7 @@ function InkoBeratungChoiceDialog({
         <div role="listitem">
           <ChoiceCard
             title="Per Kontaktformular"
-            subtitle="Weiterleitung zum Kontaktformular Bad Grönenbach"
+            subtitle="Zum Kontaktformular Bad Grönenbach"
             icon={<FormIcon className="h-6 w-6 text-[#0F4F68]" />}
             iconWrapClassName="bg-[#E8F4F7]"
             href={INKO_REZEPT_KONTAKT_BAD_GROENENBACH_HREF}
@@ -278,8 +286,8 @@ function InkoBeratungChoiceDialog({
         </div>
       </div>
 
-      <p className="mt-5 text-center text-xs leading-relaxed text-neutral-500 sm:mt-6 sm:text-sm">
-        Rezeptabrechnung möglich · Diskrete Lieferung · Kostenloses Testpaket auf Wunsch
+      <p className="mt-4 text-center text-[0.75rem] leading-relaxed text-neutral-500 sm:mt-6 sm:text-sm">
+        Rezeptabrechnung möglich · Diskrete Lieferung · Testpaket auf Wunsch
       </p>
     </InkoFloatingPromoShell>
   );
