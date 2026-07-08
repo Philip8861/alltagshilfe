@@ -30,6 +30,8 @@ const CATEGORY_ORDER: RatgeberCategoryId[] = [
   "antraege_checklisten_downloads",
 ];
 
+type RatgeberHubFilter = RatgeberCategoryId | "alle";
+
 function ClockIcon({ className }: { className?: string }) {
   return (
     <svg className={className} width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
@@ -69,7 +71,8 @@ function haystackForBeitrag(beitrag: RatgeberBeitragMeta): string {
   return [beitrag.title, beitrag.excerpt, beitrag.tags.join(" ")].join(" ").toLocaleLowerCase("de");
 }
 
-function matchesCategory(beitrag: RatgeberBeitragMeta, cat: RatgeberCategoryId): boolean {
+function matchesCategory(beitrag: RatgeberBeitragMeta, cat: RatgeberHubFilter): boolean {
+  if (cat === "alle") return true;
   return beitrag.categories.includes(cat);
 }
 
@@ -154,12 +157,12 @@ export function RatgeberHub(props?: RatgeberHubProps) {
   const { initialArticleViewTotals, articleViewsLive = false } = props ?? {};
   const totals = useMemo(() => initialArticleViewTotals ?? {}, [initialArticleViewTotals]);
   const [query, setQuery] = useState("");
-  const [activeCategory, setActiveCategory] = useState<RatgeberCategoryId>("pflegegrad_leistungen");
+  const [activeCategory, setActiveCategory] = useState<RatgeberHubFilter>("alle");
   const [searchFocused, setSearchFocused] = useState(false);
   const [highlightIndex, setHighlightIndex] = useState(-1);
   const [mobileTopicsOpen, setMobileTopicsOpen] = useState(false);
   /** views = Beliebtheit (Aufrufe), date = neueste zuerst */
-  const [sortMode, setSortMode] = useState<"views" | "date">("views");
+  const [sortMode, setSortMode] = useState<"views" | "date">("date");
   const searchComboRef = useRef<HTMLDivElement>(null);
   const mobileTopicsRef = useRef<HTMLDivElement>(null);
 
@@ -207,7 +210,7 @@ export function RatgeberHub(props?: RatgeberHubProps) {
     return () => document.removeEventListener("mousedown", onDown);
   }, []);
 
-  const categoryLabel = RATGEBER_CATEGORY_LABELS[activeCategory];
+  const categoryLabel = activeCategory === "alle" ? "Alle Ratgeber" : RATGEBER_CATEGORY_LABELS[activeCategory];
 
   const beliebtListe = useMemo(() => {
     const inCat = RATGEBER_BEITRAEGE.filter((b) => matchesCategory(b, activeCategory));
@@ -396,7 +399,7 @@ export function RatgeberHub(props?: RatgeberHubProps) {
               aria-label="Themenbereich Ratgeber wählen"
               className="mt-3 w-full max-w-md rounded-2xl border border-neutral-200 bg-white p-2 shadow-xl"
             >
-              {CATEGORY_ORDER.map((id) => (
+              {(["alle", ...CATEGORY_ORDER] as const).map((id) => (
                 <button
                   key={id}
                   type="button"
@@ -410,7 +413,7 @@ export function RatgeberHub(props?: RatgeberHubProps) {
                   }}
                   style={activeCategory !== id ? { color: NAVY } : undefined}
                 >
-                  {RATGEBER_CATEGORY_LABELS[id]}
+                  {id === "alle" ? "Alle Themen" : RATGEBER_CATEGORY_LABELS[id]}
                 </button>
               ))}
             </div>
@@ -424,7 +427,7 @@ export function RatgeberHub(props?: RatgeberHubProps) {
             className="flex flex-wrap justify-center gap-x-2 gap-y-2.5 px-2"
             aria-label="Themenbereiche filtern"
           >
-            {CATEGORY_ORDER.map((id) => (
+            {(["alle", ...CATEGORY_ORDER] as const).map((id) => (
               <button
                 key={id}
                 type="button"
@@ -439,7 +442,7 @@ export function RatgeberHub(props?: RatgeberHubProps) {
                 }`}
                 style={activeCategory === id ? { backgroundColor: NAVY } : undefined}
               >
-                {RATGEBER_CATEGORY_LABELS[id]}
+                {id === "alle" ? "Alle Themen" : RATGEBER_CATEGORY_LABELS[id]}
               </button>
             ))}
           </div>
