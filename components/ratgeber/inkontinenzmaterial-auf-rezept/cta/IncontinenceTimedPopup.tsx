@@ -22,7 +22,7 @@ type Props = {
   onCtaClick: () => void;
 };
 
-/** Popup nach 30 Sekunden Lesedauer */
+/** Popup nach kurzer Lesedauer (ca. 10 Sekunden) */
 export function IncontinenceTimedPopup({ enabled, ctaClicked, onCtaClick }: Props) {
   const [visible, setVisible] = useState(false);
   const [viewLogged, setViewLogged] = useState(false);

@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import Link from "next/link";
 
-import { VerwandteRatgeberBeitraege } from "@/components/ratgeber/VerwandteRatgeberBeitraege";
+import { InkoRatgeberArticleFooter } from "@/components/ratgeber/inkontinenzmaterial-auf-rezept/InkoRatgeberArticleFooter";
 import { EINLAGEN_VORLAGEN_PANTS_WINDELN_FAQ } from "@/components/ratgeber/einlagen-vorlagen-pants-windeln/einlagen-vorlagen-pants-windeln-faq";
 import { EINLAGEN_VORLAGEN_PANTS_WINDELN_TOC } from "@/components/ratgeber/einlagen-vorlagen-pants-windeln/einlagen-vorlagen-pants-windeln-toc";
 import {
@@ -15,6 +15,7 @@ import {
   ArticleStepHeading,
   PflegegradCallout,
 } from "@/components/ratgeber/pflegegrad-beantragen/pflegegrad-visual-primitives";
+import { INKO_PRODUKT_RATGEBER_SLUG } from "@/lib/ratgeber/inko-rezept-cta-config";
 import { cn } from "@/lib/utils";
 
 const PROSE = "text-[1.125rem] leading-[1.7] text-neutral-800";
@@ -953,33 +954,7 @@ export function EinlagenVorlagenPantsWindelnArticle() {
         </p>
       </section>
 
-      <section className="mt-12 rounded-2xl border border-dashed border-neutral-200/95 bg-neutral-50/40 px-5 py-7 sm:px-7">
-        <h2 className="text-lg font-semibold tracking-tight text-[#0F4F68]">Passende Themen</h2>
-        <ul className="mt-5 list-none space-y-2.5 text-[1rem] text-neutral-800">
-          <li>
-            <Link href="/ratgeber/inkontinenzmaterial-auf-rezept-anspruch-kosten-ablauf" className={LINK}>
-              Inkontinenzmaterial auf Rezept: Anspruch, Kosten und Ablauf
-            </Link>
-          </li>
-          <li>
-            <Link href="/pflegeshop#qualitaetsversprechen-pflegeshop" className={LINK}>
-              Inkontinenzversorgung auf Rezept
-            </Link>
-          </li>
-          <li>
-            <Link href="/pflegeshop" className={LINK}>
-              Kostenloses Testpaket erhalten
-            </Link>
-          </li>
-          <li>
-            <Link href="/kontakt?thema=inkontinenzversorgung" className={LINK}>
-              Kostenlose Beratung anfragen
-            </Link>
-          </li>
-        </ul>
-      </section>
-
-      <VerwandteRatgeberBeitraege currentSlug="einlagen-vorlagen-pants-windeln-inkontinenzmaterial" />
+      <InkoRatgeberArticleFooter currentSlug={INKO_PRODUKT_RATGEBER_SLUG} />
     </div>
   );
 }

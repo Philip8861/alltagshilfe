@@ -22,7 +22,7 @@ export const INKO_REZEPT_KONTAKT_BAD_GROENENBACH_HREF =
 export const INKO_REZEPT_BERATUNG_SERVICES: HilfefinderServiceKey[] = ["hilfsmittel"];
 
 export const INKO_REZEPT_CTA_DISMISS_DAYS = 7;
-export const INKO_REZEPT_TIMED_POPUP_MS = 30_000;
+export const INKO_REZEPT_TIMED_POPUP_MS = 10_000;
 
 export const INKO_REZEPT_CTA_STORAGE_KEYS = {
   popupDismissedUntil: "ahs_inko_rezept_popup_dismissed_until",

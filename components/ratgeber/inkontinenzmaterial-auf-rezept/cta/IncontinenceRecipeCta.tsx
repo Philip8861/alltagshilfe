@@ -34,22 +34,6 @@ export function IncontinenceRecipeCostCta() {
   );
 }
 
-/** Nach Aufzahlung – Mehrkosten vermeiden */
-export function IncontinenceRecipeAufzahlungCta() {
-  return (
-    <InkoArticleCtaBox
-      dataCta="inko-rezept-aufzahlung"
-      clickEvent="inko_cta_inline_click"
-      heading="Aufzahlung verlangt? Das müssen Sie nicht hinnehmen."
-    >
-      <p>
-        Wenn ein Produkt medizinisch notwendig ist, haben Sie Anspruch auf mehrkostenfreie Versorgung. Wir prüfen mit
-        Ihnen, ob Pants oder andere Produkte ohne Mehrkosten über die Krankenkasse möglich sind.
-      </p>
-    </InkoArticleCtaBox>
-  );
-}
-
 /** Nach Ablauf – Begleitung durch den Prozess */
 export function IncontinenceRecipeAblaufCta() {
   return (
@@ -61,22 +45,6 @@ export function IncontinenceRecipeAblaufCta() {
       <p>
         Von der ärztlichen Verordnung über die Krankenkasse bis zur diskreten Lieferung nach Hause: Lassen Sie sich
         kostenlos beraten und starten Sie Ihre Versorgung auf Rezept ohne Umwege.
-      </p>
-    </InkoArticleCtaBox>
-  );
-}
-
-/** Nach Rezept-Abschnitt – Pants-Begründung */
-export function IncontinenceRecipeRezeptCta() {
-  return (
-    <InkoArticleCtaBox
-      dataCta="inko-rezept-rezept-pants"
-      clickEvent="inko_cta_inline_click"
-      heading="Pants auf Rezept? Die ärztliche Begründung ist entscheidend."
-    >
-      <p>
-        Wir helfen Ihnen, Rezept und Produktauswahl so zu formulieren, dass medizinisch notwendige Pants ohne
-        unnötige Aufzahlung übernommen werden können.
       </p>
     </InkoArticleCtaBox>
   );

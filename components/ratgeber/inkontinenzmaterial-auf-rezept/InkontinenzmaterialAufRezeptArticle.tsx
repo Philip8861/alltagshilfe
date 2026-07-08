@@ -5,12 +5,12 @@ import { INKONTINENZMATERIAL_AUF_REZEPT_FAQ } from "@/components/ratgeber/inkont
 import { INKONTINENZMATERIAL_AUF_REZEPT_TOC } from "@/components/ratgeber/inkontinenzmaterial-auf-rezept/inkontinenzmaterial-auf-rezept-toc";
 import {
   IncontinenceRecipeAblaufCta,
-  IncontinenceRecipeAufzahlungCta,
   IncontinenceRecipeBeratungCta,
   IncontinenceRecipeCostCta,
   IncontinenceRecipeEndCta,
-  IncontinenceRecipeRezeptCta,
 } from "@/components/ratgeber/inkontinenzmaterial-auf-rezept/cta/IncontinenceRecipeCta";
+import { InkoRatgeberArticleFooter } from "@/components/ratgeber/inkontinenzmaterial-auf-rezept/InkoRatgeberArticleFooter";
+import { INKO_REZEPT_RATGEBER_SLUG } from "@/lib/ratgeber/inko-rezept-cta-config";
 import { PflegegradFaqAccordion } from "@/components/ratgeber/pflegegrad-beantragen/PflegegradFaqAccordion";
 import {
   ArticleSectionHeading,
@@ -358,8 +358,6 @@ export function InkontinenzmaterialAufRezeptArticle() {
         </p>
       </ArticleSectionHeading>
 
-      <IncontinenceRecipeAufzahlungCta />
-
       <ArticleSectionHeading sectionNum="08" id="ablauf" heading="Wie läuft der Antrag für Inkontinenzmaterial auf Rezept ab?">
         <ArticleStepHeading>Schritt 1: Ärztliche Diagnose einholen</ArticleStepHeading>
         <p className="mt-3">
@@ -420,8 +418,6 @@ export function InkontinenzmaterialAufRezeptArticle() {
           Inkontinenzpants medizinisch erforderlich.“
         </PflegegradCallout>
       </ArticleSectionHeading>
-
-      <IncontinenceRecipeRezeptCta />
 
       <ArticleSectionHeading sectionNum="10" id="menge" heading="Wie viel Inkontinenzmaterial steht mir zu?">
         <p>
@@ -611,36 +607,7 @@ export function InkontinenzmaterialAufRezeptArticle() {
         </p>
       </section>
 
-      <section className="mt-12 rounded-2xl border border-dashed border-neutral-200/95 bg-neutral-50/40 px-5 py-7 sm:px-7">
-        <h2 className="text-lg font-semibold tracking-tight text-[#0F4F68]">Passende Themen</h2>
-        <ul className="mt-5 list-none space-y-2.5 text-[1rem] text-neutral-800">
-          <li>
-            <Link href="/ratgeber/einlagen-vorlagen-pants-windeln-inkontinenzmaterial" className={LINK}>
-              Einlagen, Vorlagen, Pants oder Windeln: Welches Produkt passt?
-            </Link>
-          </li>
-          <li>
-            <Link href="/ratgeber/kostenfreie-pflegehilfsmittel-42-euro" className={LINK}>
-              Kostenfreie Pflegehilfsmittel (42 €)
-            </Link>
-          </li>
-          <li>
-            <Link href="/ratgeber/pflegegrad-beantragen" className={LINK}>
-              Pflegegrad beantragen
-            </Link>
-          </li>
-          <li>
-            <Link href="/pflegeshop" className={LINK}>
-              Pflegeshop &amp; Inkontinenzversorgung
-            </Link>
-          </li>
-          <li>
-            <Link href="/pflegeberatung/private-pflegeberatung" className={LINK}>
-              Private Pflegeberatung
-            </Link>
-          </li>
-        </ul>
-      </section>
+      <InkoRatgeberArticleFooter currentSlug={INKO_REZEPT_RATGEBER_SLUG} />
     </div>
   );
 }
