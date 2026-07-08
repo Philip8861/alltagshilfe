@@ -325,7 +325,7 @@ function InkoBeratungCallbackDialog({
               disabled={pending}
               className="flex w-full min-h-[3.5rem] items-center justify-center gap-2.5 rounded-xl bg-[#F78F2E] px-5 py-3.5 text-base font-extrabold text-white shadow-[0_3px_12px_-4px_rgba(180,90,10,0.32)] transition hover:bg-[#e8862a] disabled:opacity-70 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68] focus-visible:ring-offset-2 sm:min-h-[3.75rem] sm:px-6 sm:py-4"
             >
-              <GiftIcon className="h-6 w-6 shrink-0 opacity-95 sm:h-7 sm:w-7" />
+              <GiftIcon className="h-7 w-7 shrink-0 opacity-95 sm:h-8 sm:w-8" />
               {pending ? "Wird gesendet …" : "Kostenlos beraten lassen"}
             </button>
           </form>

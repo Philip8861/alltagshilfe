@@ -107,9 +107,9 @@ export const INKO_ARTICLE_CTA_SURFACE_CLASS = "inko-article-cta-glow";
 
 /** Einheitlicher Button-Text für alle Inkontinenz-Ratgeber-CTAs */
 export const INKO_BERATUNG_BUTTON_LABEL = (
-  <span className="inline-flex max-w-full items-center justify-center gap-3 text-left sm:gap-3.5">
-    <GiftIcon className="h-7 w-7 shrink-0 opacity-95 sm:h-8 sm:w-8" />
-    <span className="min-w-0 text-[0.9375rem] font-extrabold leading-snug sm:text-base sm:leading-snug md:text-[1.0625rem]">
+  <span className="inline-flex w-full max-w-full items-center justify-center gap-3 text-center sm:gap-3.5">
+    <GiftIcon className="h-8 w-8 shrink-0 opacity-95 sm:h-9 sm:w-9" />
+    <span className="min-w-0 text-center text-[0.9375rem] font-extrabold leading-snug sm:text-base sm:leading-snug md:text-[1.0625rem]">
       Kostenlos beraten lassen und kostenloses Testpaket erhalten
     </span>
   </span>
