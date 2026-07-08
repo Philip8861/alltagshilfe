@@ -90,9 +90,6 @@ export default function KostenfreiePflegehilfsmittel42RatgeberPage() {
             <RatgeberArticleDesktopSidebar
               tocEntries={KOSTENFREIE_PFLEGEHILFSMITTEL_42_TOC}
               tocLinkClassName={TOC_LINK}
-              supportLine="Hilfe bei Pflegehilfsmitteln, Pflegegrad oder Antrag?"
-              preselectedServices={["pflegebox", "pflegegrad_beantrag_widerspruch", "hilfsmittel"]}
-              contextNote="Ratgeber: 42 € Pflegehilfsmittel"
             />
 
             <div className="min-w-0 w-full flex-1">

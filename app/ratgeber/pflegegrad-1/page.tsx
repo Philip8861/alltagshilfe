@@ -93,9 +93,6 @@ export default function Pflegegrad1RatgeberPage() {
             <RatgeberArticleDesktopSidebar
               tocEntries={PFLEGEGRAD1_ARTICLE_TOC_ENTRIES}
               tocLinkClassName={TOC_LINK}
-              supportLine="Fragen zu Pflegegrad 1, Entlastungsbetrag oder Antrag?"
-              preselectedServices={["pflegegrad_beantrag_widerspruch"]}
-              contextNote="Ratgeber: Pflegegrad 1"
             />
 
             <div className="min-w-0 w-full flex-1">

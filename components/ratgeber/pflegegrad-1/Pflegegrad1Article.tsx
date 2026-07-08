@@ -1,7 +1,7 @@
 import Link from "next/link";
 
 import { GtmKontaktNavLink } from "@/components/analytics/GtmContactIntentLink";
-import { RatgeberBeratungCtaButton, RatgeberSidebarBeratungTeaser } from "@/components/ratgeber/RatgeberBeratungDialog";
+import { RatgeberBeratungCtaButton } from "@/components/ratgeber/RatgeberBeratungDialog";
 import { PflegegradFaqAccordion } from "@/components/ratgeber/pflegegrad-beantragen/PflegegradFaqAccordion";
 import { PflegegradQuickAnswerBox } from "@/components/ratgeber/pflegegrad-beantragen/PflegegradQuickAnswerAndFacts";
 import { PFLEGEGRAD1_ARTICLE_FAQ } from "@/components/ratgeber/pflegegrad-1/pflegegrad1-faq-data";
@@ -640,14 +640,6 @@ export function Pflegegrad1Article() {
           ))}
         </ul>
       </section>
-
-      <div className="mt-14 lg:hidden">
-        <RatgeberSidebarBeratungTeaser
-          supportLine="Fragen zu Pflegegrad 1, Entlastungsbetrag oder Antrag?"
-          preselectedServices={["pflegegrad_beantrag_widerspruch"]}
-          contextNote="Ratgeber: Pflegegrad 1 (mobil)"
-        />
-      </div>
     </div>
   );
 }

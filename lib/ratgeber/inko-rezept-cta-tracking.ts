@@ -11,6 +11,7 @@ export type InkoRezeptCtaEventName =
   | "inko_cta_end_click"
   | "inko_cta_exit_view"
   | "inko_cta_exit_click"
+  | "inko_cta_choice_view"
   | "inko_cta_dismiss";
 
 export function trackInkoRezeptCtaEvent(

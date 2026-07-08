@@ -95,9 +95,6 @@ export default function PflegegradBeantragenRatgeberPage() {
             <RatgeberArticleDesktopSidebar
               tocEntries={PFLEGEGRAD_ARTICLE_TOC_ENTRIES}
               tocLinkClassName={TOC_LINK}
-              supportLine="Sie möchten Unterstützung beim Pflegegrad-Antrag?"
-              preselectedServices={["pflegegrad_beantrag_widerspruch"]}
-              contextNote="Ratgeber: Pflegegrad beantragen"
             />
 
             <div className="min-w-0 w-full flex-1">

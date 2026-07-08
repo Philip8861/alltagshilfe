@@ -4,9 +4,8 @@ import type { ReactNode, RefObject } from "react";
 import { useEffect, useRef } from "react";
 
 import { GtmKontaktNavLink, GtmPhoneLink, GtmWhatsappLink } from "@/components/analytics/GtmContactIntentLink";
-import { useRatgeberBeratung } from "@/components/ratgeber/RatgeberBeratungDialog";
+import { useInkoBeratungChoice } from "@/components/ratgeber/inkontinenzmaterial-auf-rezept/cta/InkoBeratungChoicePopup";
 import {
-  INKO_REZEPT_BERATUNG_SERVICES,
   INKO_REZEPT_CTA_PHONE_DISPLAY,
   INKO_REZEPT_CTA_PHONE_HREF,
   INKO_REZEPT_CTA_WHATSAPP_HREF,
@@ -46,40 +45,42 @@ export function InkoCtaGradientStripe() {
   );
 }
 
+/** Basis-Stil für feste CTAs im Artikel: leichter Schatten + sanftes Aufleuchten */
+export const INKO_ARTICLE_CTA_SURFACE_CLASS = "inko-article-cta-glow";
+
 type InkoPrimaryBeratungButtonProps = {
   children: ReactNode;
   dataCta: string;
   clickEvent: InkoRezeptCtaEventName;
-  contextNote: string;
   className?: string;
   onAfterClick?: () => void;
+  onAfterChoice?: () => void;
 };
 
 export function InkoPrimaryBeratungButton({
   children,
   dataCta,
   clickEvent,
-  contextNote,
   className,
   onAfterClick,
+  onAfterChoice,
 }: InkoPrimaryBeratungButtonProps) {
-  const ctx = useRatgeberBeratung();
+  const choice = useInkoBeratungChoice();
 
   return (
     <button
       type="button"
       data-cta={dataCta}
       className={cn(
-        "inline-flex min-h-[2.875rem] items-center justify-center rounded-lg bg-[#F78F2E] px-6 text-[0.95rem] font-semibold text-white transition hover:bg-[#e8862a] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68] focus-visible:ring-offset-2",
+        "inko-primary-cta-pulse inline-flex min-h-[3rem] items-center justify-center rounded-lg bg-[#F78F2E] px-6 text-base font-bold tracking-tight text-white shadow-[0_3px_12px_-4px_rgba(180,90,10,0.35)] [text-shadow:0_1px_1px_rgba(0,0,0,0.14)] transition-[background-color] hover:bg-[#e8862a] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68] focus-visible:ring-offset-2",
         className,
       )}
       onClick={() => {
-        markInkoCtaClickedThisSession();
-        trackInkoRezeptCtaEvent(clickEvent, dataCta);
-        onAfterClick?.();
-        ctx?.open({
-          preselectedServices: [...INKO_REZEPT_BERATUNG_SERVICES],
-          contextNote,
+        choice?.open({
+          dataCta,
+          clickEvent,
+          onAfterOpen: onAfterClick,
+          onAfterChoice,
         });
       }}
     >
@@ -94,6 +95,7 @@ type InkoKontaktLinkButtonProps = {
   clickEvent: InkoRezeptCtaEventName;
   sourceComponent: string;
   className?: string;
+  href?: string;
   onAfterClick?: () => void;
 };
 
@@ -103,11 +105,12 @@ export function InkoKontaktLinkButton({
   clickEvent,
   sourceComponent,
   className,
+  href = INKO_REZEPT_KONTAKT_HREF,
   onAfterClick,
 }: InkoKontaktLinkButtonProps) {
   return (
     <GtmKontaktNavLink
-      href={INKO_REZEPT_KONTAKT_HREF}
+      href={href}
       data-cta={dataCta}
       sourceComponent={sourceComponent}
       contactPath="inko_rezept_ratgeber_kontakt"

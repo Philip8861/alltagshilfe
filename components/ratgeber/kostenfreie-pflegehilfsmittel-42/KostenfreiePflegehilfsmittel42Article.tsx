@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import Link from "next/link";
 
-import { RatgeberBeratungCtaButton, RatgeberSidebarBeratungTeaser } from "@/components/ratgeber/RatgeberBeratungDialog";
+import { RatgeberBeratungCtaButton } from "@/components/ratgeber/RatgeberBeratungDialog";
 import { PflegegradFaqAccordion } from "@/components/ratgeber/pflegegrad-beantragen/PflegegradFaqAccordion";
 import {
   ArticleSectionHeading,
@@ -598,14 +598,6 @@ export function KostenfreiePflegehilfsmittel42Article() {
           </li>
         </ul>
       </section>
-
-      <div className="mt-14 lg:hidden">
-        <RatgeberSidebarBeratungTeaser
-          supportLine="Fragen zu Pflegehilfsmitteln, Pflegegrad oder Antrag?"
-          preselectedServices={["pflegebox", "pflegegrad_beantrag_widerspruch"]}
-          contextNote="Ratgeber: 42 € Pflegehilfsmittel (mobil)"
-        />
-      </div>
     </div>
   );
 }

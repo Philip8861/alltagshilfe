@@ -84,12 +84,9 @@ export function IncontinenceExitIntentPopup({ enabled, ctaClicked, dismissed, on
         <InkoPrimaryBeratungButton
           dataCta={CTA_ID}
           clickEvent="inko_cta_exit_click"
-          contextNote="Ratgeber Inko-Rezept: Exit-Intent"
           className="w-full"
-          onAfterClick={() => {
-            onCtaClick();
-            setVisible(false);
-          }}
+          onAfterClick={() => setVisible(false)}
+          onAfterChoice={onCtaClick}
         >
           Anspruch kostenlos prüfen lassen
         </InkoPrimaryBeratungButton>

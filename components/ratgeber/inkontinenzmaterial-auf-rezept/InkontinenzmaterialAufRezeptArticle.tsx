@@ -5,7 +5,6 @@ import { INKONTINENZMATERIAL_AUF_REZEPT_FAQ } from "@/components/ratgeber/inkont
 import { INKONTINENZMATERIAL_AUF_REZEPT_TOC } from "@/components/ratgeber/inkontinenzmaterial-auf-rezept/inkontinenzmaterial-auf-rezept-toc";
 import { IncontinenceRecipeEndCta } from "@/components/ratgeber/inkontinenzmaterial-auf-rezept/cta/IncontinenceRecipeEndCta";
 import { IncontinenceRecipeInlineCta } from "@/components/ratgeber/inkontinenzmaterial-auf-rezept/cta/IncontinenceRecipeInlineCta";
-import { RatgeberSidebarBeratungTeaser } from "@/components/ratgeber/RatgeberBeratungDialog";
 import { PflegegradFaqAccordion } from "@/components/ratgeber/pflegegrad-beantragen/PflegegradFaqAccordion";
 import {
   ArticleSectionHeading,
@@ -623,14 +622,6 @@ export function InkontinenzmaterialAufRezeptArticle() {
           </li>
         </ul>
       </section>
-
-      <div className="mt-14 lg:hidden">
-        <RatgeberSidebarBeratungTeaser
-          supportLine="Fragen zu Inkontinenzmaterial, Rezept oder Versorgung?"
-          preselectedServices={["hilfsmittel", "pflegegrad_beantrag_widerspruch"]}
-          contextNote="Ratgeber: Inkontinenzmaterial auf Rezept (mobil)"
-        />
-      </div>
     </div>
   );
 }

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 
 import { InkontinenzmaterialAufRezeptArticle } from "@/components/ratgeber/inkontinenzmaterial-auf-rezept/InkontinenzmaterialAufRezeptArticle";
-import { IncontinenceRecipeCtaOrchestrator } from "@/components/ratgeber/inkontinenzmaterial-auf-rezept/cta/IncontinenceRecipeCtaOrchestrator";
+import { IncontinenceRecipeCtaProvider } from "@/components/ratgeber/inkontinenzmaterial-auf-rezept/cta/IncontinenceRecipeCtaProvider";
 import { InkontinenzmaterialAufRezeptHero } from "@/components/ratgeber/inkontinenzmaterial-auf-rezept/InkontinenzmaterialAufRezeptHero";
 import { inkontinenzmaterialAufRezeptFaqForJsonLd } from "@/components/ratgeber/inkontinenzmaterial-auf-rezept/inkontinenzmaterial-auf-rezept-faq";
 import { INKONTINENZMATERIAL_AUF_REZEPT_TOC } from "@/components/ratgeber/inkontinenzmaterial-auf-rezept/inkontinenzmaterial-auf-rezept-toc";
@@ -69,7 +69,7 @@ export default function InkontinenzmaterialAufRezeptRatgeberPage() {
   });
 
   return (
-    <>
+    <IncontinenceRecipeCtaProvider>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
@@ -97,9 +97,6 @@ export default function InkontinenzmaterialAufRezeptRatgeberPage() {
             <RatgeberArticleDesktopSidebar
               tocEntries={INKONTINENZMATERIAL_AUF_REZEPT_TOC}
               tocLinkClassName={TOC_LINK}
-              supportLine="Hilfe bei Inkontinenzmaterial, Rezept oder Versorgung?"
-              preselectedServices={["hilfsmittel", "pflegegrad_beantrag_widerspruch"]}
-              contextNote="Ratgeber: Inkontinenzmaterial auf Rezept"
             />
 
             <div className="min-w-0 w-full flex-1">
@@ -110,7 +107,6 @@ export default function InkontinenzmaterialAufRezeptRatgeberPage() {
           </div>
         </div>
       </article>
-      <IncontinenceRecipeCtaOrchestrator />
-    </>
+    </IncontinenceRecipeCtaProvider>
   );
 }

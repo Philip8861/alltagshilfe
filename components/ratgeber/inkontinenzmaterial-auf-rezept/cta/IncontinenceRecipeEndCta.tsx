@@ -3,8 +3,8 @@
 import { useRef } from "react";
 
 import {
+  INKO_ARTICLE_CTA_SURFACE_CLASS,
   InkoCtaGradientStripe,
-  InkoPhoneLink,
   InkoPrimaryBeratungButton,
   InkoTrustCheckList,
   useInkoCtaViewTracking,
@@ -25,6 +25,7 @@ export function IncontinenceRecipeEndCta() {
       id="inko-abschluss-cta"
       data-cta={CTA_ID}
       className={cn(
+        INKO_ARTICLE_CTA_SURFACE_CLASS,
         "relative mt-14 scroll-mt-28 overflow-hidden rounded-2xl border border-[#0F4F68]/18",
         "bg-[linear-gradient(165deg,#f9fcfc_0%,#ffffff_55%,#fafafa_100%)] px-5 py-8 sm:px-8 sm:py-10",
       )}
@@ -40,22 +41,10 @@ export function IncontinenceRecipeEndCta() {
           diskret und verständlich. Auf Wunsch erhalten Sie ein kostenloses Testpaket mit passenden Produkten.
         </p>
         <InkoTrustCheckList items={INKO_REZEPT_TRUST_END} className="sm:grid sm:grid-cols-2 sm:gap-x-6" />
-        <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
-          <InkoPrimaryBeratungButton
-            dataCta={CTA_ID}
-            clickEvent="inko_cta_end_click"
-            contextNote="Ratgeber Inko-Rezept: Abschluss-CTA"
-          >
-            Kostenlose Beratung anfragen
+        <div className="mt-8 flex flex-col items-center gap-3 sm:items-start">
+          <InkoPrimaryBeratungButton dataCta={CTA_ID} clickEvent="inko_cta_end_click">
+            Jetzt kostenlos beraten lassen
           </InkoPrimaryBeratungButton>
-          <InkoPhoneLink
-            dataCta={`${CTA_ID}-phone`}
-            clickEvent="inko_cta_end_click"
-            sourceComponent="inko_rezept_end_cta_phone"
-            className="min-h-[2.875rem] justify-center rounded-lg border border-[#0F4F68]/20 bg-white px-6 text-[0.95rem] no-underline hover:bg-[#F2F9FA] sm:min-w-[14rem]"
-          >
-            Jetzt anrufen: 08334 / 9893330
-          </InkoPhoneLink>
         </div>
         <p className="mt-5 text-sm text-neutral-600">Unverbindlich. Persönlich. Mit viel Herz im Alltag.</p>
       </div>

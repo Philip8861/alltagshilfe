@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
-import Link from "next/link";
+import { GtmKontaktNavLink } from "@/components/analytics/GtmContactIntentLink";
 import { KundenstimmenCarousel } from "@/components/home/KundenstimmenCarousel";
 import { ProtectedRasterMedia } from "@/components/home/ProtectedRasterMedia";
 import { siteConfig } from "@/config/site";
 
 const PLEGEBEDARF_URL = "https://deinPflegebedarf.de";
-const PFLEGEBOX_KONFIGURATOR_HREF = "/pflegehilfsmittel/pflegebox-konfigurator";
+const PFLEGESHOP_KONTAKT_HREF =
+  "/kontakt?thema=inkontinenzversorgung&utm_source=pflegeshop&utm_medium=cta&utm_campaign=kostenlose_beratung";
 
 /** Nur auf /pflegeshop – Einleitung unter „Ihre Vorteile bei uns“. */
 const PFLEGESHOP_VORTEILE_INTRO =
@@ -186,12 +187,15 @@ export default function PflegeshopPage() {
             Erfahrung empfohlen.
           </p>
           <div className="mt-8 w-full sm:w-auto">
-            <Link
-              href={PFLEGEBOX_KONFIGURATOR_HREF}
+            <GtmKontaktNavLink
+              href={PFLEGESHOP_KONTAKT_HREF}
+              sourceComponent="pflegeshop_qualitaet_cta"
+              contactPath="pflegeshop_kostenlose_beratung"
+              service="inkontinenzversorgung"
               className="inline-flex min-h-[44px] w-full transform items-center justify-center gap-2 rounded-xl bg-[#F78F2E] px-6 py-3 text-lg font-bold text-white shadow-lg transition hover:scale-[1.02] hover:opacity-95 focus:outline-none focus:ring-2 focus:ring-[#F78F2E] focus:ring-offset-2 motion-reduce:transform-none sm:w-auto"
             >
-              Passende Pflegeartikel finden
-            </Link>
+              Jetzt kostenlos beraten lassen
+            </GtmKontaktNavLink>
           </div>
         </div>
       </section>

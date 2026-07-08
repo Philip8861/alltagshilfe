@@ -11,6 +11,14 @@ export const INKO_REZEPT_CTA_WHATSAPP_HREF = ZENTRALE_WHATSAPP_WA_ME_URL;
 export const INKO_REZEPT_KONTAKT_HREF =
   "/kontakt?thema=inkontinenzversorgung&utm_source=ratgeber&utm_medium=cta&utm_campaign=inko_rezept";
 
+export const INKO_REZEPT_POPUP_KONTAKT_HREF =
+  "/kontakt?thema=inkontinenzversorgung&utm_source=ratgeber&utm_medium=popup_30s&utm_campaign=inko_rezept";
+
+/** Kontaktformular mit Standort Bad Grönenbach (Zentrale Allgäu, PLZ 87730) */
+export const INKO_REZEPT_BAD_GROENENBACH_PLZ = "87730";
+export const INKO_REZEPT_KONTAKT_BAD_GROENENBACH_HREF =
+  `/kontakt?plz=${INKO_REZEPT_BAD_GROENENBACH_PLZ}&thema=inkontinenzversorgung&utm_source=ratgeber&utm_medium=choice_kontakt&utm_campaign=inko_rezept`;
+
 export const INKO_REZEPT_BERATUNG_SERVICES: HilfefinderServiceKey[] = ["hilfsmittel"];
 
 export const INKO_REZEPT_CTA_DISMISS_DAYS = 7;

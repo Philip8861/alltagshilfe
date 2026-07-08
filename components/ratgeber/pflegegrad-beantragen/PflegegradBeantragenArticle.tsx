@@ -1,6 +1,5 @@
 import Link from "next/link";
 
-import { RatgeberSidebarBeratungTeaser } from "@/components/ratgeber/RatgeberBeratungDialog";
 import { PflegegradChecklistSection } from "@/components/ratgeber/pflegegrad-beantragen/PflegegradChecklistSection";
 import { PflegegradFaqAccordion } from "@/components/ratgeber/pflegegrad-beantragen/PflegegradFaqAccordion";
 import { PflegegradLeistungenMatrix } from "@/components/ratgeber/pflegegrad-beantragen/PflegegradLeistungenMatrix";
@@ -446,14 +445,6 @@ export function PflegegradBeantragenArticle() {
 
       <PflegegradQuellenSection />
       <PflegegradRelatedSection />
-
-      <div className="mt-14 lg:hidden">
-        <RatgeberSidebarBeratungTeaser
-          supportLine="Sie möchten Unterstützung beim Pflegegrad-Antrag?"
-          preselectedServices={["pflegegrad_beantrag_widerspruch"]}
-          contextNote="Ratgeber: Pflegegrad beantragen (mobil)"
-        />
-      </div>
     </div>
   );
 }

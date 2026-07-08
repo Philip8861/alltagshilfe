@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-import { RatgeberBeratungCtaButton, RatgeberSidebarBeratungTeaser } from "@/components/ratgeber/RatgeberBeratungDialog";
+import { RatgeberBeratungCtaButton } from "@/components/ratgeber/RatgeberBeratungDialog";
 import { PflegegeldrechnerCalculator } from "@/components/ratgeber/pflegegeldrechner/PflegegeldrechnerCalculator";
 import { PFLEGEGELDRECHNER_FAQ_ITEMS } from "@/components/ratgeber/pflegegeldrechner/pflegegeldrechner-faq-data";
 import { PFLEGEGELDRECHNER_TOC_ENTRIES } from "@/components/ratgeber/pflegegeldrechner/pflegegeldrechner-toc-config";
@@ -222,13 +222,6 @@ export function PflegegeldrechnerArticle() {
         </ul>
       </section>
 
-      <div className="mt-12 lg:hidden">
-        <RatgeberSidebarBeratungTeaser
-          supportLine="Fragen zu Pflegegeld, Pflegegrad oder Widerspruch?"
-          preselectedServices={["pflegegrad_beantrag_widerspruch"]}
-          contextNote="Ratgeber: Pflegegeldrechner (mobil)"
-        />
-      </div>
     </div>
   );
 }

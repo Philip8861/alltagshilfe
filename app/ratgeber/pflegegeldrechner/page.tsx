@@ -91,9 +91,6 @@ export default function PflegegeldrechnerRatgeberPage() {
             <RatgeberArticleDesktopSidebar
               tocEntries={[...PFLEGEGELDRECHNER_TOC_ENTRIES]}
               tocLinkClassName={TOC_LINK}
-              supportLine="Fragen zu Pflegegeld, Pflegegrad oder Widerspruch?"
-              preselectedServices={["pflegegrad_beantrag_widerspruch"]}
-              contextNote="Ratgeber: Pflegegeldrechner"
             />
 
             <div className="min-w-0 w-full flex-1">

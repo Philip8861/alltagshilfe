@@ -312,6 +312,61 @@ body:has(#pflegebox-root) #main-content {
   }
 }
 
+@keyframes inkoPromoInLarge {
+  from {
+    opacity: 0;
+    transform: translateY(0.5rem) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/** Dezentes Aufleuchten der Inkontinenz-CTA-Boxen im Ratgeber (Zyklus 5 s) */
+@keyframes inkoCtaSoftGlow {
+  0%,
+  88%,
+  100% {
+    box-shadow:
+      0 2px 10px -6px rgba(15, 79, 104, 0.1),
+      0 0 0 1px rgba(15, 79, 104, 0.06);
+  }
+  4% {
+    box-shadow:
+      0 8px 28px -8px rgba(15, 79, 104, 0.2),
+      0 0 0 1px rgba(247, 143, 46, 0.14),
+      0 0 20px -6px rgba(247, 143, 46, 0.12);
+  }
+}
+
+.inko-article-cta-glow {
+  animation: inkoCtaSoftGlow 5s ease-in-out infinite;
+}
+
+/** Primär-CTA-Button: alle 5 s kurz vergrößern und aufleuchten */
+@keyframes inkoPrimaryCtaPulse {
+  0%,
+  86%,
+  100% {
+    transform: scale(1);
+    box-shadow: 0 3px 12px -4px rgba(180, 90, 10, 0.35);
+  }
+  3%,
+  7% {
+    transform: scale(1.045);
+    box-shadow:
+      0 6px 22px -2px rgba(247, 143, 46, 0.65),
+      0 0 28px 0 rgba(255, 210, 140, 0.45);
+  }
+}
+
+.inko-primary-cta-pulse {
+  animation: inkoPrimaryCtaPulse 5s ease-in-out infinite;
+  transform-origin: center;
+  will-change: transform, box-shadow;
+}
+
 .animate-partner-tutorial-spotlight {
   animation: partner-tutorial-spotlight-flash 0.85s ease-out 1 both;
 }
@@ -351,6 +406,17 @@ body:has(#pflegebox-root) #main-content {
   .animate-partner-bar-fill {
     animation: none !important;
     transform: scaleX(1) !important;
+  }
+  .inko-article-cta-glow {
+    animation: none !important;
+    box-shadow:
+      0 2px 10px -6px rgba(15, 79, 104, 0.1),
+      0 0 0 1px rgba(15, 79, 104, 0.06) !important;
+  }
+  .inko-primary-cta-pulse {
+    animation: none !important;
+    transform: none !important;
+    box-shadow: 0 3px 12px -4px rgba(180, 90, 10, 0.35) !important;
   }
   .animate-partner-col-enter {
     animation: none !important;
