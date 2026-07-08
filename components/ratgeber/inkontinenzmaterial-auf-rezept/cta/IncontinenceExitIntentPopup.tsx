@@ -21,7 +21,13 @@ type Props = {
   onCtaClick: () => void;
 };
 
-/** Exit-Intent nur Desktop (Maus Richtung Browserleiste) */
+function shouldTriggerExitIntent(e: MouseEvent): boolean {
+  if (e.clientY > 20) return false;
+  const related = e.relatedTarget as Node | null;
+  return related === null || !document.documentElement.contains(related);
+}
+
+/** Exit-Intent: Maus verlässt Seite nach oben (Desktop) */
 export function IncontinenceExitIntentPopup({ enabled, ctaClicked, dismissed, onDismiss, onCtaClick }: Props) {
   const [visible, setVisible] = useState(false);
   const [viewLogged, setViewLogged] = useState(false);
@@ -40,15 +46,26 @@ export function IncontinenceExitIntentPopup({ enabled, ctaClicked, dismissed, on
     if (!enabled || !isDesktop || ctaClicked || dismissed) return;
     if (hasSessionFlag(INKO_REZEPT_CTA_STORAGE_KEYS.exitShownSession)) return;
 
-    const onMouseOut = (e: MouseEvent) => {
-      if (e.clientY > 12) return;
+    const showExit = () => {
       if (hasSessionFlag(INKO_REZEPT_CTA_STORAGE_KEYS.exitShownSession)) return;
       setSessionFlag(INKO_REZEPT_CTA_STORAGE_KEYS.exitShownSession);
       setVisible(true);
     };
 
+    const onMouseLeave = (e: MouseEvent) => {
+      if (e.clientY <= 0) showExit();
+    };
+
+    const onMouseOut = (e: MouseEvent) => {
+      if (shouldTriggerExitIntent(e)) showExit();
+    };
+
+    document.documentElement.addEventListener("mouseleave", onMouseLeave);
     document.addEventListener("mouseout", onMouseOut);
-    return () => document.removeEventListener("mouseout", onMouseOut);
+    return () => {
+      document.documentElement.removeEventListener("mouseleave", onMouseLeave);
+      document.removeEventListener("mouseout", onMouseOut);
+    };
   }, [enabled, isDesktop, ctaClicked, dismissed]);
 
   useEffect(() => {
@@ -58,7 +75,12 @@ export function IncontinenceExitIntentPopup({ enabled, ctaClicked, dismissed, on
     }
   }, [visible, viewLogged]);
 
-  const handleClose = () => {
+  const handleSoftClose = () => {
+    setVisible(false);
+    trackInkoRezeptCtaEvent("inko_cta_dismiss", `${CTA_ID}-soft`);
+  };
+
+  const handlePermanentDismiss = () => {
     setVisible(false);
     onDismiss();
     trackInkoRezeptCtaEvent("inko_cta_dismiss", CTA_ID);
@@ -70,7 +92,7 @@ export function IncontinenceExitIntentPopup({ enabled, ctaClicked, dismissed, on
       dataCta={CTA_ID}
       ariaLabel="Hinweis: Anspruch auf Inkontinenzversorgung prüfen"
       visible={visible}
-      onClose={handleClose}
+      onClose={handleSoftClose}
       className="sm:max-w-[24rem]"
     >
       <h3 className="pr-8 text-base font-semibold leading-snug text-[#0F4F68] sm:text-[1.05rem]">
@@ -90,7 +112,7 @@ export function IncontinenceExitIntentPopup({ enabled, ctaClicked, dismissed, on
         >
           Anspruch kostenlos prüfen lassen
         </InkoPrimaryBeratungButton>
-        <InkoDismissLink dataCta={`${CTA_ID}-no`} onDismiss={handleClose} className="text-center">
+        <InkoDismissLink dataCta={`${CTA_ID}-no`} onDismiss={handlePermanentDismiss} className="text-center">
           Nein, danke
         </InkoDismissLink>
       </div>

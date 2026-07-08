@@ -9,20 +9,13 @@ import { usePathname } from "next/navigation";
 /** Popups nur auf dem Inkontinenz-Rezept-Ratgeber – zentral eingebunden in der Page. */
 export function IncontinenceRecipeCtaOrchestrator() {
   const pathname = usePathname();
-  const { hydrated, ctaClicked, popupDismissed, exitDismissed, markClicked, dismissPopup, dismissExit } =
-    useInkoRezeptCtaGate();
+  const { hydrated, ctaClicked, exitDismissed, markClicked, dismissExit } = useInkoRezeptCtaGate();
 
   if (!hydrated || !isInkoRezeptRatgeberPath(pathname)) return null;
 
   return (
     <>
-      <IncontinenceTimedPopup
-        enabled
-        ctaClicked={ctaClicked}
-        dismissed={popupDismissed}
-        onDismiss={dismissPopup}
-        onCtaClick={markClicked}
-      />
+      <IncontinenceTimedPopup enabled ctaClicked={ctaClicked} onCtaClick={markClicked} />
       <IncontinenceExitIntentPopup
         enabled
         ctaClicked={ctaClicked}

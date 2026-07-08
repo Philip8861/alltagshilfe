@@ -21,18 +21,16 @@ const CTA_ID = "inko-rezept-popup-30s";
 type Props = {
   enabled: boolean;
   ctaClicked: boolean;
-  dismissed: boolean;
-  onDismiss: () => void;
   onCtaClick: () => void;
 };
 
 /** Popup nach 30 Sekunden Lesedauer – Desktop groß & gut lesbar */
-export function IncontinenceTimedPopup({ enabled, ctaClicked, dismissed, onDismiss, onCtaClick }: Props) {
+export function IncontinenceTimedPopup({ enabled, ctaClicked, onCtaClick }: Props) {
   const [visible, setVisible] = useState(false);
   const [viewLogged, setViewLogged] = useState(false);
 
   useEffect(() => {
-    if (!enabled || ctaClicked || dismissed) return;
+    if (!enabled || ctaClicked) return;
     if (hasSessionFlag(INKO_REZEPT_CTA_STORAGE_KEYS.popupShownSession)) return;
 
     const timer = window.setTimeout(() => {
@@ -42,7 +40,7 @@ export function IncontinenceTimedPopup({ enabled, ctaClicked, dismissed, onDismi
     }, INKO_REZEPT_TIMED_POPUP_MS);
 
     return () => window.clearTimeout(timer);
-  }, [enabled, ctaClicked, dismissed]);
+  }, [enabled, ctaClicked]);
 
   useEffect(() => {
     if (visible && !viewLogged) {
@@ -53,7 +51,6 @@ export function IncontinenceTimedPopup({ enabled, ctaClicked, dismissed, onDismi
 
   const handleClose = () => {
     setVisible(false);
-    onDismiss();
     trackInkoRezeptCtaEvent("inko_cta_dismiss", CTA_ID);
   };
 

@@ -63,12 +63,10 @@ export function markInkoCtaClickedThisSession(): void {
 export function useInkoRezeptCtaGate() {
   const [hydrated, setHydrated] = useState(false);
   const [ctaClicked, setCtaClicked] = useState(false);
-  const [popupDismissed, setPopupDismissed] = useState(true);
   const [exitDismissed, setExitDismissed] = useState(true);
 
   useEffect(() => {
     setCtaClicked(hasInkoCtaClickedThisSession());
-    setPopupDismissed(isStorageDismissed(INKO_REZEPT_CTA_STORAGE_KEYS.popupDismissedUntil));
     setExitDismissed(isStorageDismissed(INKO_REZEPT_CTA_STORAGE_KEYS.exitDismissedUntil));
     setHydrated(true);
   }, []);
@@ -76,11 +74,6 @@ export function useInkoRezeptCtaGate() {
   const markClicked = useCallback(() => {
     markInkoCtaClickedThisSession();
     setCtaClicked(true);
-  }, []);
-
-  const dismissPopup = useCallback(() => {
-    setStorageDismissed(INKO_REZEPT_CTA_STORAGE_KEYS.popupDismissedUntil);
-    setPopupDismissed(true);
   }, []);
 
   const dismissExit = useCallback(() => {
@@ -91,10 +84,8 @@ export function useInkoRezeptCtaGate() {
   return {
     hydrated,
     ctaClicked,
-    popupDismissed,
     exitDismissed,
     markClicked,
-    dismissPopup,
     dismissExit,
   };
 }
