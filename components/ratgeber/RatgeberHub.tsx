@@ -32,15 +32,6 @@ const CATEGORY_ORDER: RatgeberCategoryId[] = [
 
 type RatgeberHubFilter = RatgeberCategoryId | "alle";
 
-function ClockIcon({ className }: { className?: string }) {
-  return (
-    <svg className={className} width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
-      <circle cx="12" cy="12" r="9" />
-      <path d="M12 7v5l3 2" strokeLinecap="round" />
-    </svg>
-  );
-}
-
 function EyeIcon({ className }: { className?: string }) {
   return (
     <svg className={className} width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
@@ -135,10 +126,6 @@ function RatgeberArticleTeaserCard({
           <span className="inline-flex items-center gap-1">
             <EyeIcon className="h-2.5 w-2.5 shrink-0 text-neutral-400" aria-hidden />
             {getDisplayViews(beitrag).toLocaleString("de-DE")} Aufrufe
-          </span>
-          <span className="inline-flex items-center gap-1">
-            <ClockIcon className="h-2.5 w-2.5 shrink-0 text-neutral-400" aria-hidden />
-            {beitrag.readMinutes} Min.
           </span>
         </div>
       </div>

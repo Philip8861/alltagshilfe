@@ -8,19 +8,9 @@ import {
   INKONTINENZMATERIAL_BYLINE_AUTHOR_TEXT,
   INKONTINENZMATERIAL_BYLINE_REVIEWER_TEXT,
 } from "@/config/ratgeber-article-byline";
-import { getRatgeberBeitragReadMinutes } from "@/config/ratgeber-betraege";
 
-const SLUG = "inkontinenzmaterial-auf-rezept-anspruch-kosten-ablauf" as const;
 const INKO_REZEPT_ARTICLE_IMAGE = "/images/Ratgeber/inkontinenz_auf_rezept.webp" as const;
 const PROSE = "text-[1.125rem] leading-[1.7] text-neutral-800";
-
-function IconClock() {
-  return (
-    <DecorativeIcon className="h-4 w-4 shrink-0 text-neutral-500">
-      <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l2.5 1.5M12 3a9 9 0 100 18 9 9 0 000-18z" />
-    </DecorativeIcon>
-  );
-}
 
 function IconCalendar() {
   return (
@@ -120,10 +110,6 @@ export function InkontinenzmaterialAufRezeptHero() {
           <p className="flex items-center gap-2 text-sm text-neutral-600">
             <IconCalendar />
             Stand: Juli 2026
-          </p>
-          <p className="flex items-center gap-2 text-sm text-neutral-600">
-            <IconClock />
-            Lesezeit: ca. {getRatgeberBeitragReadMinutes(SLUG)} Minuten
           </p>
         </div>
         <RatgeberArticleQualityLines

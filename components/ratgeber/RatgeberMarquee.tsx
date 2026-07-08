@@ -6,15 +6,6 @@ import { useEffect, useState } from "react";
 import type { RatgeberBeitragMeta } from "@/config/ratgeber-betraege";
 import { primaryCategoryLabel } from "@/config/ratgeber-betraege";
 
-function ClockIcon({ className }: { className?: string }) {
-  return (
-    <svg className={className} width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
-      <circle cx="12" cy="12" r="9" />
-      <path d="M12 7v5l3 2" strokeLinecap="round" />
-    </svg>
-  );
-}
-
 function EyeIcon({ className }: { className?: string }) {
   return (
     <svg className={className} width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
@@ -59,10 +50,6 @@ function MiniCard({
             <EyeIcon className="text-neutral-400" aria-hidden />
             <span>{getViews(beitrag).toLocaleString("de-DE")}</span>
             <span className="sr-only">Aufrufe</span>
-          </span>
-          <span className="flex items-center gap-0.5 text-neutral-500">
-            <ClockIcon className="text-neutral-400" aria-hidden />
-            {beitrag.readMinutes} Min.
           </span>
         </div>
         <p className="mt-2 line-clamp-2 text-sm font-bold leading-snug" style={{ color: NAVY }}>

@@ -4,17 +4,8 @@ import Link from "next/link";
 import { RatgeberArticleImageBeratungCta } from "@/components/ratgeber/RatgeberArticleImageBeratungCta";
 import { DecorativeIcon } from "@/components/ratgeber/pflegegrad-beantragen/pflegegrad-visual-primitives";
 import { RatgeberArticleQualityLines } from "@/components/ratgeber/RatgeberArticleQualityLines";
-import { getRatgeberBeitragReadMinutes } from "@/config/ratgeber-betraege";
 
 const PROSE = "text-[1.125rem] leading-[1.7] text-neutral-800";
-
-function IconClock() {
-  return (
-    <DecorativeIcon className="h-4 w-4 shrink-0 text-neutral-500">
-      <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l2.5 1.5M12 3a9 9 0 100 18 9 9 0 000-18z" />
-    </DecorativeIcon>
-  );
-}
 
 function IconCalendar() {
   return (
@@ -113,10 +104,6 @@ export function KostenfreiePflegehilfsmittel42Hero() {
           <p className="flex items-center gap-2 text-sm text-neutral-600">
             <IconCalendar />
             Stand: April 2026
-          </p>
-          <p className="flex items-center gap-2 text-sm text-neutral-600">
-            <IconClock />
-            Lesezeit: ca. {getRatgeberBeitragReadMinutes("kostenfreie-pflegehilfsmittel-42-euro")} Minuten
           </p>
         </div>
         <RatgeberArticleQualityLines />

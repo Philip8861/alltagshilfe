@@ -240,11 +240,7 @@ function InkoBeratungCallbackDialog({
       ) : (
         <>
           <div className="pr-8 text-center sm:pr-10">
-            <span className="inline-flex items-center gap-1.5 rounded-full border border-[#0F4F68]/12 bg-[#F2F9FA] px-2.5 py-1 text-[0.65rem] font-bold uppercase tracking-[0.1em] text-[#3d7278] sm:text-[0.68rem]">
-              <GiftIcon className="h-3.5 w-3.5 text-[#F78F2E]" />
-              Kostenlos & unverbindlich
-            </span>
-            <h2 id="inko-callback-heading" className="mt-3 text-[1.0625rem] font-bold leading-snug text-[#0F4F68] sm:text-lg">
+            <h2 id="inko-callback-heading" className="text-[1.0625rem] font-bold leading-snug text-[#0F4F68] sm:text-lg">
               Kostenlos beraten lassen
             </h2>
             <p className="mt-1 text-[0.8125rem] font-semibold text-[#4a6570] sm:text-sm">inkl. kostenloses Testpaket auf Wunsch</p>
@@ -325,7 +321,7 @@ function InkoBeratungCallbackDialog({
               disabled={pending}
               className="flex w-full min-h-[3.5rem] items-center justify-center gap-2.5 rounded-xl bg-[#F78F2E] px-5 py-3.5 text-base font-extrabold text-white shadow-[0_3px_12px_-4px_rgba(180,90,10,0.32)] transition hover:bg-[#e8862a] disabled:opacity-70 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68] focus-visible:ring-offset-2 sm:min-h-[3.75rem] sm:px-6 sm:py-4"
             >
-              <GiftIcon className="h-7 w-7 shrink-0 opacity-95 sm:h-8 sm:w-8" />
+              <PhoneIcon className="h-7 w-7 shrink-0 opacity-95 sm:h-8 sm:w-8" />
               {pending ? "Wird gesendet …" : "Kostenlos beraten lassen"}
             </button>
           </form>
