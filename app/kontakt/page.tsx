@@ -25,10 +25,16 @@ const KONTAKT_FOOTER_WELLEN_D =
 export default async function KontaktPage({
   searchParams,
 }: {
-  searchParams?: Promise<{ plz?: string }>;
+  searchParams?: Promise<{ plz?: string; thema?: string }>;
 }) {
   const resolvedSearchParams = await searchParams;
   const selectedPlz = (resolvedSearchParams?.plz ?? "").replace(/\D/g, "").slice(0, 5);
+  const thema = (resolvedSearchParams?.thema ?? "").trim().toLowerCase();
+  const isInkoThema = thema === "inkontinenzversorgung";
+  const kontaktInitialMessage = isInkoThema
+    ? "Ich interessiere mich für eine kostenlose Beratung zur Inkontinenzversorgung auf Rezept."
+    : undefined;
+  const kontaktDefaultTopic = isInkoThema ? ("Kostenfreie Pflegehilfsmittel" as const) : undefined;
   const selectedOrt = selectedPlz ? getOrtByPlz(selectedPlz) : undefined;
   const selectedStandort = selectedPlz ? findStandortByPlz(selectedPlz) : undefined;
 
@@ -104,7 +110,7 @@ export default async function KontaktPage({
                 className="mt-10 opacity-0 animate-fade-in-up"
                 style={{ animationDelay: "0.2s" }}
               >
-                <ContactForm />
+                <ContactForm defaultTopic={kontaktDefaultTopic} initialMessage={kontaktInitialMessage} />
               </div>
               <p
                 className="mt-8 text-sm text-neutral-500 opacity-0 animate-fade-in-up"

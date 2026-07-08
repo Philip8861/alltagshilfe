@@ -3,7 +3,9 @@ import Link from "next/link";
 
 import { INKONTINENZMATERIAL_AUF_REZEPT_FAQ } from "@/components/ratgeber/inkontinenzmaterial-auf-rezept/inkontinenzmaterial-auf-rezept-faq";
 import { INKONTINENZMATERIAL_AUF_REZEPT_TOC } from "@/components/ratgeber/inkontinenzmaterial-auf-rezept/inkontinenzmaterial-auf-rezept-toc";
-import { RatgeberBeratungCtaButton, RatgeberSidebarBeratungTeaser } from "@/components/ratgeber/RatgeberBeratungDialog";
+import { IncontinenceRecipeEndCta } from "@/components/ratgeber/inkontinenzmaterial-auf-rezept/cta/IncontinenceRecipeEndCta";
+import { IncontinenceRecipeInlineCta } from "@/components/ratgeber/inkontinenzmaterial-auf-rezept/cta/IncontinenceRecipeInlineCta";
+import { RatgeberSidebarBeratungTeaser } from "@/components/ratgeber/RatgeberBeratungDialog";
 import { PflegegradFaqAccordion } from "@/components/ratgeber/pflegegrad-beantragen/PflegegradFaqAccordion";
 import {
   ArticleSectionHeading,
@@ -327,6 +329,8 @@ export function InkontinenzmaterialAufRezeptArticle() {
         </p>
       </ArticleSectionHeading>
 
+      <IncontinenceRecipeInlineCta />
+
       <ArticleSectionHeading sectionNum="07" id="aufzahlung" heading="Muss man eine Aufzahlung akzeptieren?">
         <p>
           Nein, nicht automatisch. Wenn ein Produkt medizinisch notwendig ist, muss die Versorgung ausreichend, zweckmäßig
@@ -527,26 +531,7 @@ export function InkontinenzmaterialAufRezeptArticle() {
         </p>
       </ArticleSectionHeading>
 
-      <section
-        id="abschluss-cta"
-        className="mt-14 scroll-mt-28 rounded-2xl border border-[#0F4F68]/18 bg-[linear-gradient(165deg,#f9fcfc_0%,#ffffff_55%,#fafafa_100%)] px-5 py-8 sm:px-8"
-        aria-labelledby="abschluss-cta-heading"
-      >
-        <h2 id="abschluss-cta-heading" className="text-xl font-semibold tracking-tight text-[#0F4F68] sm:text-2xl">
-          Inkontinenzversorgung oder Pflegegrad prüfen lassen?
-        </h2>
-        <p className="mt-4 max-w-[40rem] text-[1.0625rem] leading-relaxed text-neutral-700">
-          Alltagshilfe-Süd unterstützt Sie bei der passenden Versorgung mit Inkontinenzmaterial, beim Pflegegrad-Antrag und
-          bei Fragen zu Ihren Ansprüchen. Wir helfen Ihnen, den richtigen Weg über Krankenkasse oder Pflegekasse zu finden.
-        </p>
-        <RatgeberBeratungCtaButton
-          className="mt-8 inline-flex min-h-[2.875rem] w-full items-center justify-center px-6 sm:w-auto"
-          preselectedServices={["hilfsmittel", "pflegegrad_beantrag_widerspruch"]}
-          contextNote="Ratgeber: Inkontinenzmaterial auf Rezept – Abschluss-CTA"
-        >
-          Jetzt unverbindlich Kontakt aufnehmen
-        </RatgeberBeratungCtaButton>
-      </section>
+      <IncontinenceRecipeEndCta />
 
       <section id="quellen" className="mt-14 scroll-mt-28 border-t border-neutral-200 pt-10">
         <h2 className="text-base font-semibold tracking-tight text-neutral-700">Quellen und fachliche Grundlagen</h2>

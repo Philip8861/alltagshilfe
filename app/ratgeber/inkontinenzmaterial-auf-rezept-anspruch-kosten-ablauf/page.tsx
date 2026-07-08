@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 
 import { InkontinenzmaterialAufRezeptArticle } from "@/components/ratgeber/inkontinenzmaterial-auf-rezept/InkontinenzmaterialAufRezeptArticle";
+import { IncontinenceRecipeCtaOrchestrator } from "@/components/ratgeber/inkontinenzmaterial-auf-rezept/cta/IncontinenceRecipeCtaOrchestrator";
 import { InkontinenzmaterialAufRezeptHero } from "@/components/ratgeber/inkontinenzmaterial-auf-rezept/InkontinenzmaterialAufRezeptHero";
 import { inkontinenzmaterialAufRezeptFaqForJsonLd } from "@/components/ratgeber/inkontinenzmaterial-auf-rezept/inkontinenzmaterial-auf-rezept-faq";
 import { INKONTINENZMATERIAL_AUF_REZEPT_TOC } from "@/components/ratgeber/inkontinenzmaterial-auf-rezept/inkontinenzmaterial-auf-rezept-toc";
@@ -109,6 +110,7 @@ export default function InkontinenzmaterialAufRezeptRatgeberPage() {
           </div>
         </div>
       </article>
+      <IncontinenceRecipeCtaOrchestrator />
     </>
   );
 }
