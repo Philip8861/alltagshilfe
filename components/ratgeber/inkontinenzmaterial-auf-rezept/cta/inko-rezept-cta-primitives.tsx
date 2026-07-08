@@ -18,13 +18,31 @@ import type { InkoRezeptCtaEventName } from "@/lib/ratgeber/inko-rezept-cta-trac
 import { trackInkoRezeptCtaEvent } from "@/lib/ratgeber/inko-rezept-cta-tracking";
 import { cn } from "@/lib/utils";
 
-export function InkoTrustCheckList({ items, className }: { items: readonly string[]; className?: string }) {
+export function InkoTrustCheckList({
+  items,
+  className,
+  onBanner = false,
+}: {
+  items: readonly string[];
+  className?: string;
+  /** Auf Banner-Hintergrund: höherer Kontrast */
+  onBanner?: boolean;
+}) {
   return (
     <ul className={cn("mt-4 space-y-2", className)}>
       {items.map((item) => (
-        <li key={item} className="flex items-start gap-2.5 text-[0.98rem] leading-snug text-neutral-700">
+        <li
+          key={item}
+          className={cn(
+            "flex items-start gap-2.5 leading-snug",
+            onBanner ? "text-[0.98rem] font-semibold text-[#0f2d38]" : "text-[0.98rem] text-neutral-700",
+          )}
+        >
           <span
-            className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#F2F9FA] text-[#0F4F68]"
+            className={cn(
+              "mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-[#0F4F68]",
+              onBanner ? "border border-[#0F4F68]/18 bg-white shadow-sm" : "bg-[#F2F9FA]",
+            )}
             aria-hidden
           >
             <svg className="h-3 w-3" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="2">
@@ -47,7 +65,7 @@ export function InkoCtaGradientStripe() {
   );
 }
 
-/** Aquarell-Banner als Hintergrund – Text links lesbar, Motiv rechts sichtbar */
+/** Aquarell-Banner als Hintergrund – Motiv dezent rechts, Text auf heller Fläche */
 export function InkoArticleCtaBackground() {
   return (
     <>
@@ -56,14 +74,32 @@ export function InkoArticleCtaBackground() {
         alt=""
         fill
         aria-hidden
-        className="pointer-events-none object-cover object-[72%_center] sm:object-right"
+        className="pointer-events-none object-cover object-[92%_bottom] opacity-75 sm:object-[right_bottom] sm:opacity-85"
         sizes="(max-width: 640px) 100vw, 760px"
       />
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-0 bg-gradient-to-r from-white/96 via-white/88 to-white/42 sm:from-white/94 sm:via-white/80 sm:to-white/28"
+        className="pointer-events-none absolute inset-0 bg-gradient-to-br from-white from-45% via-white/97 to-[#e8f4f8]/75 sm:from-40% sm:via-white/92 sm:to-white/35"
+      />
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(255,255,255,0.55)_0%,rgba(255,255,255,0.88)_55%,rgba(255,255,255,0.96)_100%)] sm:bg-[linear-gradient(180deg,transparent_0%,rgba(255,255,255,0.4)_40%,rgba(255,255,255,0.85)_100%)]"
       />
     </>
+  );
+}
+
+/** Lesefläche über dem Banner – undurchsichtig, damit Text nie mit Produkten kollidiert */
+export function InkoArticleCtaContentPane({ children, className }: { children: ReactNode; className?: string }) {
+  return (
+    <div
+      className={cn(
+        "rounded-xl border border-[#0F4F68]/12 bg-white px-4 py-5 shadow-[0_8px_32px_-12px_rgba(15,79,104,0.2)] sm:px-6 sm:py-6",
+        className,
+      )}
+    >
+      {children}
+    </div>
   );
 }
 

@@ -5,6 +5,7 @@ import { useRef } from "react";
 import {
   INKO_ARTICLE_CTA_SURFACE_CLASS,
   InkoArticleCtaBackground,
+  InkoArticleCtaContentPane,
   InkoCtaGradientStripe,
   InkoPrimaryBeratungButton,
   InkoTrustCheckList,
@@ -27,28 +28,28 @@ export function IncontinenceRecipeEndCta() {
       data-cta={CTA_ID}
       className={cn(
         INKO_ARTICLE_CTA_SURFACE_CLASS,
-        "relative mt-14 scroll-mt-28 overflow-hidden rounded-2xl border border-[#0F4F68]/12 px-5 py-8 sm:px-8 sm:py-10",
+        "relative mt-14 scroll-mt-28 overflow-hidden rounded-2xl border border-[#0F4F68]/14 px-3 py-3 sm:px-4 sm:py-4",
       )}
       aria-labelledby="inko-end-cta-heading"
     >
       <InkoArticleCtaBackground />
       <InkoCtaGradientStripe />
-      <div className="relative z-[1] mx-auto max-w-[40rem] text-center sm:text-left">
-        <h2 id="inko-end-cta-heading" className="text-xl font-semibold tracking-tight text-[#0F4F68] sm:text-2xl">
+      <InkoArticleCtaContentPane className="relative z-[1] mx-auto max-w-[40rem] text-center sm:text-left">
+        <h2 id="inko-end-cta-heading" className="text-xl font-bold tracking-tight text-[#0a3d52] sm:text-2xl">
           Wir helfen Ihnen zur passenden Inkontinenzversorgung auf Rezept
         </h2>
-        <p className="mt-4 text-[1.0625rem] leading-relaxed text-neutral-700">
+        <p className="mt-4 text-[1.0625rem] font-medium leading-relaxed text-[#1e3a45]">
           Sie müssen Rezept, Krankenkasse und Produktauswahl nicht allein klären. Alltagshilfe-Süd unterstützt Sie persönlich,
           diskret und verständlich. Auf Wunsch erhalten Sie ein kostenloses Testpaket mit passenden Produkten.
         </p>
-        <InkoTrustCheckList items={INKO_REZEPT_TRUST_END} className="sm:grid sm:grid-cols-2 sm:gap-x-6" />
+        <InkoTrustCheckList items={INKO_REZEPT_TRUST_END} onBanner className="sm:grid sm:grid-cols-2 sm:gap-x-6" />
         <div className="mt-8 flex w-full flex-col items-stretch gap-3 sm:items-start">
           <InkoPrimaryBeratungButton dataCta={CTA_ID} clickEvent="inko_cta_end_click" className="sm:max-w-[20rem]">
             Jetzt kostenlos beraten lassen
           </InkoPrimaryBeratungButton>
         </div>
-        <p className="mt-5 text-sm text-neutral-600">Unverbindlich. Persönlich. Mit viel Herz im Alltag.</p>
-      </div>
+        <p className="mt-5 text-sm font-medium text-[#3d5a64]">Unverbindlich. Persönlich. Mit viel Herz im Alltag.</p>
+      </InkoArticleCtaContentPane>
     </section>
   );
 }
