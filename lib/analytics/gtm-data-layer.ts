@@ -148,7 +148,11 @@ export function trackContactNavClick(args: {
   });
 }
 
-export type FinderKind = "hilfefinder_home" | "ratgeber_beratung" | "standort_finder";
+export type FinderKind =
+  | "hilfefinder_home"
+  | "ratgeber_beratung"
+  | "standort_finder"
+  | "fb_landing_haushalt_alltags";
 
 function finderContactType(kind: FinderKind): ContactIntentType {
   if (kind === "standort_finder") return "standort_finder";

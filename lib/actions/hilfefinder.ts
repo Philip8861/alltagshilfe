@@ -1,6 +1,6 @@
 "use server";
 
-import { findStandortByPlz } from "@/config/standorte";
+import { resolveStandortForPlz } from "@/lib/resolve-standort-plz";
 import { rateLimit } from "@/lib/rate-limit";
 import { getClientIp } from "@/lib/security";
 import {
@@ -70,8 +70,8 @@ export type HilfefinderResult = { success: boolean; error?: string };
 /**
  * Anfrage aus dem 60-Sekunden-Hilfefinder versenden.
  * Empfänger:
- *  - Mit gültiger 5-stelliger PLZ und zugeordnetem Standort: zentrale Inbox + Standort-Mail (dedupliziert).
- *  - Ohne (gültige) PLZ: nur `info@alltagshilfe-sued.de` (bzw. NOTIFICATION_TO_CONTACT/NOTIFICATION_TO Override).
+ *  - Mit PLZ: zuständiger Standort (exakt, sonst nächster per Geo-Zuordnung) + zentrale Inbox (dedupliziert).
+ *  - Ohne PLZ: Zentrale Allgäu + zentrale Inbox.
  */
 export async function submitHilfefinder(input: HilfefinderInput): Promise<HilfefinderResult> {
   if (typeof input?.website === "string" && input.website.length > 0) {
@@ -118,8 +118,8 @@ export async function submitHilfefinder(input: HilfefinderInput): Promise<Hilfef
   }
 
   const plzNorm = String(input.plz ?? "").replace(/\D/g, "").slice(0, 5);
-  const standort = plzNorm.length === 5 ? findStandortByPlz(plzNorm) : undefined;
-  const standortEmail = standort?.email?.trim();
+  const { standort, match: standortMatch } = resolveStandortForPlz(plzNorm);
+  const standortEmail = standort.email?.trim();
 
   let finalTo: string[];
   if (standortEmail && standortEmail.includes("@")) {
@@ -154,7 +154,7 @@ export async function submitHilfefinder(input: HilfefinderInput): Promise<Hilfef
     `Pflegegrad: ${input.pflegegrad?.trim() || "-"}`,
     `Für wen: ${fuerWenLabel}`,
     `PLZ: ${plzNorm || "-"}`,
-    standort ? `Standort: ${standort.name}` : null,
+    standort ? `Standort: ${standort.name}${standortMatch === "nearest" ? " (nächster Standort zur PLZ)" : ""}` : null,
     `Wie auf uns aufmerksam geworden: ${sourceLabel}`,
     "",
     "Ausgewählte Leistungen:",
@@ -177,7 +177,13 @@ export async function submitHilfefinder(input: HilfefinderInput): Promise<Hilfef
     { label: "Für wen", value: fuerWenLabel },
     { label: "PLZ", value: plzNorm || "-" },
   ];
-  if (standort) rows.push({ label: "Standort", value: standort.name });
+  if (standort) {
+    rows.push({
+      label: "Standort",
+      value:
+        standortMatch === "nearest" ? `${standort.name} (nächster Standort zur PLZ)` : standort.name,
+    });
+  }
   rows.push({ label: "Aufmerksam geworden über", value: sourceLabel });
   rows.push({ label: "Leistungen", value: leistungenInline });
   rows.push({ label: "Name", value: `${vorname} ${nachname}` });
