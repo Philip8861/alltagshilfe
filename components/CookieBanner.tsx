@@ -306,9 +306,11 @@ export function CookieBanner() {
                   summary="Ermöglicht Marketing-, Kampagnenmessungs- oder externe Medienfunktionen. Diese Dienste werden erst nach Ihrer Zustimmung aktiviert."
                   details={{
                     services:
-                      "Consent Mode (ad_storage) für künftige Marketing-Tools; derzeit sind im Code keine Werbe-Kampagnen-Pixel (z. B. Meta) eingebunden. Ihre Einwilligung wählt die Kategorie vor, ohne zusätzliche Dienste zu laden.",
-                    provider: "— (derzeit keine aktiven Marketing-Drittanbieter)",
+                      "Meta Pixel (Facebook/Instagram, Datensatz-ID für PageView-Kampagnenmessung); Google Consent Mode (ad_storage). Keine Formulardaten oder Advanced Matching.",
+                    provider: "Meta Platforms Ireland Ltd.",
                     legal: "Einwilligung Art. 6 Abs. 1 lit. a DSGVO, § 25 Abs. 1 TDDDG.",
+                    thirdCountry: "Datenübermittlung in die USA möglich (Meta Data Transfer Framework).",
+                    moreInfo: "https://www.facebook.com/privacy/policy/",
                   }}
                 />
               </div>

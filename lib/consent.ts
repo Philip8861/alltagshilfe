@@ -135,7 +135,7 @@ export function revokeOptionalConsent(): void {
     document.cookie.split(";").forEach((c) => {
       const name = c.split("=")[0]?.trim();
       if (!name) return;
-      if (name === "googtrans" || name.startsWith("_ga") || name.startsWith("_gid") || name.startsWith("_gat")) {
+      if (name === "googtrans" || name.startsWith("_ga") || name.startsWith("_gid") || name.startsWith("_gat") || name.startsWith("_fb")) {
         erase(name);
       }
     });

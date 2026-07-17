@@ -52,12 +52,16 @@ const GOOGLE_TAG_PLATFORM_CONNECT = [
   "https://*.google.com",
 ].join(" ");
 
+/** Meta Pixel (Consent: Marketing) – fbevents.js */
+const META_PIXEL_SCRIPT = "https://connect.facebook.net https://www.facebook.com";
+const META_PIXEL_CONNECT = "https://connect.facebook.net https://www.facebook.com https://graph.facebook.com";
+
 const TRANSLATE_SCRIPT =
   "https://translate.google.com https://translate.googleapis.com https://www.google.com https://www.gstatic.com";
 const JITSI = "https://meet.jit.si wss://meet.jit.si";
 const SUPABASE = "https://*.supabase.co wss://*.supabase.co";
 
-const SCRIPT_COMMON = `'self' 'unsafe-inline' 'unsafe-eval' ${TRANSLATE_SCRIPT} ${JITSI} ${GOOGLE_TAG_PLATFORM_SCRIPT}`;
+const SCRIPT_COMMON = `'self' 'unsafe-inline' 'unsafe-eval' ${TRANSLATE_SCRIPT} ${JITSI} ${GOOGLE_TAG_PLATFORM_SCRIPT} ${META_PIXEL_SCRIPT}`;
 
 /** GTM-UI und Tag Assistant prüfen script-src-elem explizit */
 const SCRIPT_ELEM = SCRIPT_COMMON;
@@ -71,7 +75,7 @@ export function buildContentSecurityPolicy(): string {
     `style-src 'self' 'unsafe-inline' https://translate.googleapis.com https://translate.google.com https://www.google.com https://tagmanager.google.com https://googletagmanager.com https://fonts.googleapis.com`,
     `img-src 'self' data: blob: https: ${GOOGLE_TAG_PLATFORM_IMG}`,
     "font-src 'self' https://fonts.gstatic.com https://www.gstatic.com data:",
-    `connect-src 'self' ${TRANSLATE_SCRIPT} ${JITSI} ${SUPABASE} ${GOOGLE_TAG_PLATFORM_CONNECT}`,
+    `connect-src 'self' ${TRANSLATE_SCRIPT} ${JITSI} ${SUPABASE} ${GOOGLE_TAG_PLATFORM_CONNECT} ${META_PIXEL_CONNECT}`,
     "worker-src 'self' blob:",
     `frame-src 'self' https://translate.google.com https://translate.googleapis.com https://*.google.com https://meet.jit.si https://www.googletagmanager.com https://googletagmanager.com https://*.googletagmanager.com https://tagmanager.google.com`,
     "frame-ancestors 'self'",

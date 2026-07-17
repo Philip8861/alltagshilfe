@@ -36,6 +36,7 @@ import { LocalSiteTranslator } from "@/components/layout/LocalSiteTranslator";
 import { SiteAnalyticsSpaNavigation } from "@/components/site-analytics/SiteAnalyticsSpaNavigation";
 import { GoogleTagManager } from "@/components/analytics/GoogleTagManager";
 import { GtmSpaRouteTracker } from "@/components/analytics/GtmSpaRouteTracker";
+import { MetaPixel } from "@/components/analytics/MetaPixel";
 
 /** Google Search Console – Verifizierung per Meta-Tag (Wert aus Env). */
 const GOOGLE_SITE_VERIFICATION = process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION?.trim() || undefined;
@@ -106,6 +107,7 @@ export default function RootLayout({
         <SiteAnalyticsSpaNavigation />
         <GtmSpaRouteTracker />
         <GoogleTagManager />
+        <MetaPixel />
       </body>
     </html>
   );
