@@ -28,14 +28,15 @@ import { resolveStandortForPlz, type StandortPlzMatch } from "@/lib/resolve-stan
 import { submitHilfefinder } from "@/lib/actions/hilfefinder";
 import { CONTACT_SOURCE_OPTIONS } from "@/lib/contact-source";
 import {
+  stashFbLandingHaushaltAlltagsSuccessContext,
   trackFinderStarted,
   trackFinderStepCompleted,
-  trackFinderSuccess,
 } from "@/lib/analytics/gtm-data-layer";
 import { GtmMailtoLink, GtmPhoneLink } from "@/components/analytics/GtmContactIntentLink";
 import { cn } from "@/lib/utils";
 
 const FINDER_ID = "fb_landing_haushalt_alltags" as const;
+const THANK_YOU_PATH = "/vielen-dank-haushalt-alltag" as const;
 const FEATURED_SERVICE_KEY: HilfefinderServiceKey = "haushalt";
 
 type ServiceKey = HilfefinderServiceKey;
@@ -46,7 +47,6 @@ const SCHRITT_MOTIVATION: Record<number, string> = {
   2: "Was für Hilfe benötigen Sie?",
   3: "Gute Nachricht!",
   4: "Wie möchten Sie den Kontakt?",
-  5: "Vielen Dank!",
 };
 
 const FEATURED_SERVICES = HILFEFINDER_SERVICE_OPTIONEN.filter((o) => o.key === FEATURED_SERVICE_KEY);
@@ -232,7 +232,7 @@ export function HaushaltAlltagsFbFlowProvider({ children }: { children: ReactNod
       return;
     }
     trackStep(step);
-    setStep((s) => Math.min(5, s + 1));
+    setStep((s) => Math.min(4, s + 1));
   };
 
   const zurueck = () => {
@@ -281,13 +281,12 @@ export function HaushaltAlltagsFbFlowProvider({ children }: { children: ReactNod
         setError(result.error ?? "Die Anfrage konnte nicht gesendet werden. Bitte versuchen Sie es später erneut.");
         return;
       }
-      trackFinderSuccess({
-        finder: FINDER_ID,
-        source_component: "fb_landing_haushalt_alltags_submit",
+      stashFbLandingHaushaltAlltagsSuccessContext({
         service: ausgewaehlteLeistungen.map((l) => l.key).join(","),
         plz: plzNorm.length === 5 ? plzNorm : undefined,
       });
-      setStep(5);
+      window.location.assign(THANK_YOU_PATH);
+      return;
     } catch (e) {
       console.error("[fb_landing_haushalt_alltags] submit error", e);
       setError("Die Anfrage konnte nicht gesendet werden. Bitte versuchen Sie es später erneut.");
@@ -823,32 +822,13 @@ function HaushaltAlltagsFbWizardBody({
                 </div>
               ) : null}
 
-              {step === 5 ? (
-                <div className="mt-6 animate-fade-in-up space-y-5 text-center">
-                  <div className="rounded-2xl bg-[#F2F9FA] p-6 sm:p-8">
-                    <h3 className="text-2xl font-extrabold text-[#0F4F68] sm:text-3xl">
-                      Vielen Dank! Ihre Anfrage ist bei uns eingegangen.
-                    </h3>
-                    <p className="mt-2 text-base text-neutral-700 sm:text-lg">Wir melden uns in Kürze bei Ihnen zurück.</p>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={onClose}
-                    className="inline-flex min-h-[44px] items-center justify-center rounded-xl border border-[#0F4F68]/30 px-5 py-2.5 font-semibold text-[#0F4F68] hover:bg-[#F2F9FA]"
-                  >
-                    Schließen
-                  </button>
-                </div>
-              ) : null}
-
       {error ? (
         <p className="mt-4 text-sm text-red-600" role="alert">
           {error}
         </p>
       ) : null}
 
-      {step < 5 ? (
-        <div className="mt-6 flex flex-wrap gap-3">
+      <div className="mt-6 flex flex-wrap gap-3">
           {step > 1 ? (
             <button
               type="button"
@@ -880,7 +860,6 @@ function HaushaltAlltagsFbWizardBody({
             </button>
           ) : null}
         </div>
-      ) : null}
     </>
   );
 }
