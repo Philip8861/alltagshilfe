@@ -235,18 +235,6 @@ export function HaushaltAlltagsFbFlowProvider({ children }: { children: ReactNod
     setStep((s) => Math.min(5, s + 1));
   };
 
-  const plzUeberspringen = () => {
-    setError("");
-    trackFinderStepCompleted({
-      finder: FINDER_ID,
-      source_component: "fb_landing_haushalt_alltags_plz_skipped",
-      step_completed: 1,
-      service: leistungen.length > 0 ? leistungen.join(",") : undefined,
-    });
-    setPlz("");
-    setStep(2);
-  };
-
   const zurueck = () => {
     setError("");
     setStep((s) => Math.max(1, s - 1));
@@ -365,7 +353,6 @@ export function HaushaltAlltagsFbFlowProvider({ children }: { children: ReactNod
                   standortMatch={standortMatch}
                   leistungenFuerErgebnis={leistungenFuerErgebnis}
                   weiter={weiter}
-                  plzUeberspringen={plzUeberspringen}
                   zurueck={zurueck}
                   absenden={absenden}
                   onClose={closeFlow}
@@ -416,7 +403,6 @@ type HaushaltAlltagsFbWizardBodyProps = {
   standortMatch: StandortPlzMatch;
   leistungenFuerErgebnis: typeof HILFEFINDER_SERVICE_OPTIONEN;
   weiter: () => void;
-  plzUeberspringen: () => void;
   zurueck: () => void;
   absenden: () => Promise<void>;
   onClose: () => void;
@@ -454,7 +440,6 @@ function HaushaltAlltagsFbWizardBody({
   standortMatch,
   leistungenFuerErgebnis,
   weiter,
-  plzUeberspringen,
   zurueck,
   absenden,
   onClose,
@@ -483,13 +468,6 @@ function HaushaltAlltagsFbWizardBody({
                     className="w-full max-w-xs rounded-xl border border-[#0F4F68]/20 px-4 py-3.5 text-lg outline-none transition focus:border-[#0F4F68]/45 focus:ring-2 focus:ring-[#0F4F68]/15"
                     placeholder="z. B. 87700"
                   />
-                  <button
-                    type="button"
-                    onClick={plzUeberspringen}
-                    className="inline-flex min-h-[44px] items-center rounded-lg border border-[#0F4F68]/30 px-4 py-2 text-sm font-semibold text-[#0F4F68] hover:bg-[#F2F9FA]"
-                  >
-                    Überspringen
-                  </button>
                   {plzNorm.length > 0 && plzNorm.length < 5 ? (
                     <p className="text-sm text-neutral-600">
                       Sie können auch mit unvollständiger PLZ fortfahren – wir leiten Ihre Anfrage trotzdem weiter.
