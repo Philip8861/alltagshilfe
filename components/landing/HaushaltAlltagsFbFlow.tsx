@@ -10,6 +10,7 @@ import {
   useState,
   type ReactNode,
 } from "react";
+import { createPortal } from "react-dom";
 import Link from "next/link";
 import {
   HILFEFINDER_SERVICE_ERGEBNIS,
@@ -36,7 +37,6 @@ import { cn } from "@/lib/utils";
 
 const FINDER_ID = "fb_landing_haushalt_alltags" as const;
 const FEATURED_SERVICE_KEY: HilfefinderServiceKey = "haushalt";
-const WIZARD_SECTION_ID = "fb-haushalt-alltags-wizard";
 
 type ServiceKey = HilfefinderServiceKey;
 type KontaktArt = "rueckruf" | "selbst";
@@ -54,46 +54,6 @@ const OTHER_SERVICES = HILFEFINDER_SERVICE_OPTIONEN.filter((o) => o.key !== FEAT
 
 type FlowCtx = {
   startFlow: () => void;
-  wizardActive: boolean;
-  wizardRef: React.RefObject<HTMLElement | null>;
-  step: number;
-  setStep: React.Dispatch<React.SetStateAction<number>>;
-  wizardActiveState: boolean;
-  setWizardActive: React.Dispatch<React.SetStateAction<boolean>>;
-  leistungen: ServiceKey[];
-  toggleLeistung: (key: ServiceKey) => void;
-  plz: string;
-  setPlz: React.Dispatch<React.SetStateAction<string>>;
-  plzNorm: string;
-  kontaktArt: KontaktArt | "";
-  setKontaktArt: React.Dispatch<React.SetStateAction<KontaktArt | "">>;
-  vorname: string;
-  setVorname: React.Dispatch<React.SetStateAction<string>>;
-  nachname: string;
-  setNachname: React.Dispatch<React.SetStateAction<string>>;
-  telefon: string;
-  setTelefon: React.Dispatch<React.SetStateAction<string>>;
-  besteZeit: string;
-  setBesteZeit: React.Dispatch<React.SetStateAction<string>>;
-  email: string;
-  setEmail: React.Dispatch<React.SetStateAction<string>>;
-  nachricht: string;
-  setNachricht: React.Dispatch<React.SetStateAction<string>>;
-  contactSource: string;
-  setContactSource: React.Dispatch<React.SetStateAction<string>>;
-  datenschutz: boolean;
-  setDatenschutz: React.Dispatch<React.SetStateAction<boolean>>;
-  error: string;
-  setError: React.Dispatch<React.SetStateAction<string>>;
-  submitting: boolean;
-  finalerStandort: Standort;
-  standortMatch: StandortPlzMatch;
-  leistungenFuerErgebnis: typeof HILFEFINDER_SERVICE_OPTIONEN;
-  weiter: () => void;
-  plzUeberspringen: () => void;
-  zurueck: () => void;
-  absenden: () => Promise<void>;
-  resetFlow: () => void;
 };
 
 const HaushaltAlltagsFbFlowCtx = createContext<FlowCtx | null>(null);
@@ -131,6 +91,7 @@ export function HaushaltAlltagsFbStartButton({
 
 export function HaushaltAlltagsFbFlowProvider({ children }: { children: ReactNode }) {
   const [wizardActive, setWizardActive] = useState(false);
+  const [portalReady, setPortalReady] = useState(false);
   const [step, setStep] = useState(1);
   const [leistungen, setLeistungen] = useState<ServiceKey[]>([]);
   const [plz, setPlz] = useState("");
@@ -147,7 +108,6 @@ export function HaushaltAlltagsFbFlowProvider({ children }: { children: ReactNod
   const [submitting, setSubmitting] = useState(false);
   const [showStickyCta, setShowStickyCta] = useState(false);
   const finderStartedRef = useRef(false);
-  const wizardRef = useRef<HTMLElement>(null);
 
   const plzNorm = plz.replace(/\D/g, "").slice(0, 5);
   const { standort: finalerStandort, match: standortMatch } = useMemo(
@@ -176,17 +136,15 @@ export function HaushaltAlltagsFbFlowProvider({ children }: { children: ReactNod
     setSubmitting(false);
   }, []);
 
-  const scrollToWizard = useCallback(() => {
-    requestAnimationFrame(() => {
-      wizardRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
-    });
-  }, []);
+  const closeFlow = useCallback(() => {
+    setWizardActive(false);
+    resetFlow();
+  }, [resetFlow]);
 
   const startFlow = useCallback(() => {
     setWizardActive(true);
     setStep(1);
     setError("");
-    scrollToWizard();
     if (!finderStartedRef.current) {
       finderStartedRef.current = true;
       trackFinderStarted({
@@ -194,20 +152,42 @@ export function HaushaltAlltagsFbFlowProvider({ children }: { children: ReactNod
         source_component: "fb_landing_haushalt_alltags_start",
       });
     }
-  }, [scrollToWizard]);
+  }, []);
+
+  useEffect(() => {
+    setPortalReady(true);
+  }, []);
+
+  useEffect(() => {
+    if (!wizardActive) return;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [wizardActive]);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    window.dispatchEvent(
+      new CustomEvent("ahs-konfigurator-open-state", {
+        detail: { open: wizardActive },
+      }),
+    );
+  }, [wizardActive]);
 
   useEffect(() => {
     const onScroll = () => {
-      const wizardEl = wizardRef.current;
-      if (!wizardEl) return;
-      const rect = wizardEl.getBoundingClientRect();
-      const wizardVisible = rect.top < window.innerHeight && rect.bottom > 0;
-      setShowStickyCta(!wizardVisible && step < 5);
+      if (wizardActive) {
+        setShowStickyCta(false);
+        return;
+      }
+      setShowStickyCta(window.scrollY > 420);
     };
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
-  }, [step]);
+  }, [wizardActive]);
 
   const ausgewaehlteLeistungen = useMemo(
     () => HILFEFINDER_SERVICE_OPTIONEN.filter((s) => leistungen.includes(s.key)),
@@ -328,54 +308,74 @@ export function HaushaltAlltagsFbFlowProvider({ children }: { children: ReactNod
     }
   };
 
-  const ctxValue: FlowCtx = {
-    startFlow,
-    wizardActive,
-    wizardRef,
-    step,
-    setStep,
-    wizardActiveState: wizardActive,
-    setWizardActive,
-    leistungen,
-    toggleLeistung,
-    plz,
-    setPlz,
-    plzNorm,
-    kontaktArt,
-    setKontaktArt,
-    vorname,
-    setVorname,
-    nachname,
-    setNachname,
-    telefon,
-    setTelefon,
-    besteZeit,
-    setBesteZeit,
-    email,
-    setEmail,
-    nachricht,
-    setNachricht,
-    contactSource,
-    setContactSource,
-    datenschutz,
-    setDatenschutz,
-    error,
-    setError,
-    submitting,
-    finalerStandort,
-    standortMatch,
-    leistungenFuerErgebnis,
-    weiter,
-    plzUeberspringen,
-    zurueck,
-    absenden,
-    resetFlow,
-  };
+  const displayStep = Math.min(step, 4);
 
   return (
-    <HaushaltAlltagsFbFlowCtx.Provider value={ctxValue}>
+    <HaushaltAlltagsFbFlowCtx.Provider value={{ startFlow }}>
       {children}
-      {showStickyCta && step < 5 ? (
+      {wizardActive && portalReady
+        ? createPortal(
+            <div className="fixed inset-0 z-[100] flex items-center justify-center overflow-y-auto bg-[#0F4F68]/45 p-3 backdrop-blur-[2px] sm:p-6">
+              <div className="max-h-[92vh] w-full max-w-4xl overflow-y-auto animate-fade-in-up rounded-2xl border border-[#0F4F68]/15 bg-white p-5 shadow-2xl sm:p-7">
+                <div className="mb-4 grid grid-cols-[1fr_auto_1fr] items-center gap-3">
+                  <p className="justify-self-start text-sm font-bold uppercase tracking-wide text-[#0F4F68]/80">
+                    Schritt {displayStep} von 4
+                  </p>
+                  <p className="text-center text-xl font-extrabold text-[#0F4F68] sm:text-2xl">
+                    {SCHRITT_MOTIVATION[step]}
+                  </p>
+                  <button
+                    type="button"
+                    onClick={closeFlow}
+                    className="justify-self-end inline-flex h-10 w-10 items-center justify-center rounded-lg border border-[#0F4F68]/25 text-2xl font-extrabold leading-none text-[#0F4F68] hover:bg-[#F2F9FA]"
+                    aria-label="Hilfe-Finder schließen"
+                  >
+                    ×
+                  </button>
+                </div>
+                <HaushaltAlltagsFbWizardBody
+                  step={step}
+                  setStep={setStep}
+                  leistungen={leistungen}
+                  toggleLeistung={toggleLeistung}
+                  plz={plz}
+                  setPlz={setPlz}
+                  plzNorm={plzNorm}
+                  kontaktArt={kontaktArt}
+                  setKontaktArt={setKontaktArt}
+                  vorname={vorname}
+                  setVorname={setVorname}
+                  nachname={nachname}
+                  setNachname={setNachname}
+                  telefon={telefon}
+                  setTelefon={setTelefon}
+                  besteZeit={besteZeit}
+                  setBesteZeit={setBesteZeit}
+                  email={email}
+                  setEmail={setEmail}
+                  nachricht={nachricht}
+                  setNachricht={setNachricht}
+                  contactSource={contactSource}
+                  setContactSource={setContactSource}
+                  datenschutz={datenschutz}
+                  setDatenschutz={setDatenschutz}
+                  error={error}
+                  submitting={submitting}
+                  finalerStandort={finalerStandort}
+                  standortMatch={standortMatch}
+                  leistungenFuerErgebnis={leistungenFuerErgebnis}
+                  weiter={weiter}
+                  plzUeberspringen={plzUeberspringen}
+                  zurueck={zurueck}
+                  absenden={absenden}
+                  onClose={closeFlow}
+                />
+              </div>
+            </div>,
+            document.body,
+          )
+        : null}
+      {showStickyCta && !wizardActive ? (
         <div className="fixed inset-x-0 bottom-0 z-50 border-t border-[#0F4F68]/10 bg-white/95 p-3 shadow-[0_-4px_24px_rgba(15,79,104,0.12)] backdrop-blur-sm sm:hidden">
           <HaushaltAlltagsFbStartButton className="w-full min-h-[48px] text-base" />
         </div>
@@ -384,93 +384,85 @@ export function HaushaltAlltagsFbFlowProvider({ children }: { children: ReactNod
   );
 }
 
-export function HaushaltAlltagsFbWizardSection() {
-  const {
-    wizardActive,
-    wizardRef,
-    step,
-    setStep,
-    setWizardActive,
-    leistungen,
-    toggleLeistung,
-    plz,
-    setPlz,
-    plzNorm,
-    kontaktArt,
-    setKontaktArt,
-    vorname,
-    setVorname,
-    nachname,
-    setNachname,
-    telefon,
-    setTelefon,
-    besteZeit,
-    setBesteZeit,
-    email,
-    setEmail,
-    nachricht,
-    setNachricht,
-    contactSource,
-    setContactSource,
-    datenschutz,
-    setDatenschutz,
-    error,
-    submitting,
-    finalerStandort,
-    standortMatch,
-    leistungenFuerErgebnis,
-    weiter,
-    plzUeberspringen,
-    zurueck,
-    absenden,
-    resetFlow,
-  } = useHaushaltAlltagsFbFlow();
+type HaushaltAlltagsFbWizardBodyProps = {
+  step: number;
+  setStep: React.Dispatch<React.SetStateAction<number>>;
+  leistungen: ServiceKey[];
+  toggleLeistung: (key: ServiceKey) => void;
+  plz: string;
+  setPlz: React.Dispatch<React.SetStateAction<string>>;
+  plzNorm: string;
+  kontaktArt: KontaktArt | "";
+  setKontaktArt: React.Dispatch<React.SetStateAction<KontaktArt | "">>;
+  vorname: string;
+  setVorname: React.Dispatch<React.SetStateAction<string>>;
+  nachname: string;
+  setNachname: React.Dispatch<React.SetStateAction<string>>;
+  telefon: string;
+  setTelefon: React.Dispatch<React.SetStateAction<string>>;
+  besteZeit: string;
+  setBesteZeit: React.Dispatch<React.SetStateAction<string>>;
+  email: string;
+  setEmail: React.Dispatch<React.SetStateAction<string>>;
+  nachricht: string;
+  setNachricht: React.Dispatch<React.SetStateAction<string>>;
+  contactSource: string;
+  setContactSource: React.Dispatch<React.SetStateAction<string>>;
+  datenschutz: boolean;
+  setDatenschutz: React.Dispatch<React.SetStateAction<boolean>>;
+  error: string;
+  submitting: boolean;
+  finalerStandort: Standort;
+  standortMatch: StandortPlzMatch;
+  leistungenFuerErgebnis: typeof HILFEFINDER_SERVICE_OPTIONEN;
+  weiter: () => void;
+  plzUeberspringen: () => void;
+  zurueck: () => void;
+  absenden: () => Promise<void>;
+  onClose: () => void;
+};
 
-  const displayStep = Math.min(step, 4);
-
+function HaushaltAlltagsFbWizardBody({
+  step,
+  setStep,
+  leistungen,
+  toggleLeistung,
+  plz,
+  setPlz,
+  plzNorm,
+  kontaktArt,
+  setKontaktArt,
+  vorname,
+  setVorname,
+  nachname,
+  setNachname,
+  telefon,
+  setTelefon,
+  besteZeit,
+  setBesteZeit,
+  email,
+  setEmail,
+  nachricht,
+  setNachricht,
+  contactSource,
+  setContactSource,
+  datenschutz,
+  setDatenschutz,
+  error,
+  submitting,
+  finalerStandort,
+  standortMatch,
+  leistungenFuerErgebnis,
+  weiter,
+  plzUeberspringen,
+  zurueck,
+  absenden,
+  onClose,
+}: HaushaltAlltagsFbWizardBodyProps) {
   return (
-    <section
-      id={WIZARD_SECTION_ID}
-      ref={wizardRef}
-      className={cn(
-        "scroll-mt-24",
-        wizardActive
-          ? "border-y border-[#0F4F68]/10 bg-white px-4 py-10 sm:px-6 sm:py-12 lg:px-[var(--ahs-page-gutter)]"
-          : "h-0 overflow-hidden border-0 p-0",
-      )}
-      aria-hidden={!wizardActive}
-    >
-      {wizardActive ? (
-        <div className="mx-auto max-w-3xl">
-            <div className="rounded-2xl border border-[#0F4F68]/15 bg-white p-5 shadow-[0_10px_40px_rgba(15,79,104,0.08)] sm:p-7">
-              <h2 id="fb-wizard-heading" className="sr-only">
-                In 30 Sekunden zur passenden Hilfe
-              </h2>
-              <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
-                <p className="text-sm font-bold uppercase tracking-wide text-[#0F4F68]/80">
-                  Schritt {displayStep} von 4
-                </p>
-                <div
-                  className="h-2 flex-1 min-w-[8rem] max-w-xs overflow-hidden rounded-full bg-[#0F4F68]/10"
-                  role="progressbar"
-                  aria-valuenow={displayStep}
-                  aria-valuemin={1}
-                  aria-valuemax={4}
-                  aria-label="Fortschritt"
-                >
-                  <div
-                    className="h-full rounded-full bg-[#F78F2E] transition-all duration-500"
-                    style={{ width: `${(displayStep / 4) * 100}%` }}
-                  />
-                </div>
-              </div>
-
-              <p className="text-center text-xl font-extrabold text-[#0F4F68] sm:text-2xl">
-                {SCHRITT_MOTIVATION[step]}
-              </p>
-
-              {step === 1 ? (
-                <div className="mt-6 animate-fade-in-up space-y-4">
+    <>
+      {step === 1 ? (
+        <div className="mt-6 animate-fade-in-up space-y-4">
                   <h3 className="text-lg font-bold text-[#0F4F68] sm:text-xl">
                     Erhalten Sie sofort Ihren richtigen Ansprechpartner
                   </h3>
@@ -863,10 +855,7 @@ export function HaushaltAlltagsFbWizardSection() {
                   </div>
                   <button
                     type="button"
-                    onClick={() => {
-                      setWizardActive(false);
-                      resetFlow();
-                    }}
+                    onClick={onClose}
                     className="inline-flex min-h-[44px] items-center justify-center rounded-xl border border-[#0F4F68]/30 px-5 py-2.5 font-semibold text-[#0F4F68] hover:bg-[#F2F9FA]"
                   >
                     Schließen
@@ -874,49 +863,46 @@ export function HaushaltAlltagsFbWizardSection() {
                 </div>
               ) : null}
 
-              {error ? (
-                <p className="mt-4 text-sm text-red-600" role="alert">
-                  {error}
-                </p>
-              ) : null}
+      {error ? (
+        <p className="mt-4 text-sm text-red-600" role="alert">
+          {error}
+        </p>
+      ) : null}
 
-              {step < 5 ? (
-                <div className="mt-6 flex flex-wrap gap-3">
-                  {step > 1 ? (
-                    <button
-                      type="button"
-                      onClick={zurueck}
-                      className="inline-flex min-h-[50px] flex-1 items-center justify-center rounded-xl border border-[#0F4F68]/30 px-6 py-2.5 text-[1.03rem] font-semibold text-[#0F4F68] hover:bg-[#F2F9FA] sm:flex-none"
-                    >
-                      Zurück
-                    </button>
-                  ) : null}
+      {step < 5 ? (
+        <div className="mt-6 flex flex-wrap gap-3">
+          {step > 1 ? (
+            <button
+              type="button"
+              onClick={zurueck}
+              className="inline-flex min-h-[50px] flex-1 items-center justify-center rounded-xl border border-[#0F4F68]/30 px-6 py-2.5 text-[1.03rem] font-semibold text-[#0F4F68] hover:bg-[#F2F9FA] sm:flex-none"
+            >
+              Zurück
+            </button>
+          ) : null}
 
-                  {step < 4 ? (
-                    <button
-                      type="button"
-                      onClick={weiter}
-                      className="inline-flex min-h-[50px] flex-1 items-center justify-center rounded-xl bg-[#F78F2E] px-6 py-2.5 text-[1.03rem] font-semibold text-white hover:bg-[#e67e22] sm:flex-none"
-                    >
-                      Weiter
-                    </button>
-                  ) : null}
+          {step < 4 ? (
+            <button
+              type="button"
+              onClick={weiter}
+              className="inline-flex min-h-[50px] flex-1 items-center justify-center rounded-xl bg-[#F78F2E] px-6 py-2.5 text-[1.03rem] font-semibold text-white hover:bg-[#e67e22] sm:flex-none"
+            >
+              Weiter
+            </button>
+          ) : null}
 
-                  {step === 4 ? (
-                    <button
-                      type="button"
-                      onClick={absenden}
-                      disabled={submitting}
-                      className="inline-flex min-h-[50px] flex-1 items-center justify-center rounded-xl bg-[#F78F2E] px-6 py-2.5 text-[1.03rem] font-semibold text-white hover:bg-[#e67e22] disabled:cursor-not-allowed disabled:opacity-70 sm:flex-none"
-                    >
-                      {submitting ? "Wird gesendet …" : "Anfrage senden"}
-                    </button>
-                  ) : null}
-                </div>
-              ) : null}
-            </div>
+          {step === 4 ? (
+            <button
+              type="button"
+              onClick={absenden}
+              disabled={submitting}
+              className="inline-flex min-h-[50px] flex-1 items-center justify-center rounded-xl bg-[#F78F2E] px-6 py-2.5 text-[1.03rem] font-semibold text-white hover:bg-[#e67e22] disabled:cursor-not-allowed disabled:opacity-70 sm:flex-none"
+            >
+              {submitting ? "Wird gesendet …" : "Anfrage senden"}
+            </button>
+          ) : null}
         </div>
       ) : null}
-    </section>
+    </>
   );
 }

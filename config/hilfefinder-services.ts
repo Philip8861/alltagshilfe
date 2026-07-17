@@ -57,14 +57,7 @@ export const HILFEFINDER_SERVICE_ERGEBNIS: Partial<
     HilfefinderServiceKey,
     { text: string; ctaLabel: string; ctaHref: string; mehrHref?: string }
   >
-> = {
-  assistenz_alltag_behinderung: {
-    text: "Alltagshilfe-Süd unterstützt Menschen mit Behinderung im Alltag – zum Beispiel bei Terminen, Einkäufen, Behördenwegen, Haushalt, Tagesstruktur und sozialer Teilhabe. Durch unsere Vereinbarung mit dem Bezirk Schwaben kann eine Kostenübernahme nach Antrag und Bewilligung möglich sein.",
-    ctaLabel: "Beratung anfragen",
-    ctaHref: "/kontakt",
-    mehrHref: "/leistungen/assistenz-im-alltag-behinderung",
-  },
-};
+> = {};
 
 /** Fallback, wenn keine PLZ zugeordnet werden kann – Zentrale Bad Grönenbach. */
 export const HILFEFINDER_FALLBACK_BAD_GROENENBACH: Standort = {
