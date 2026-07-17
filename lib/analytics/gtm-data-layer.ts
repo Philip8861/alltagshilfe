@@ -9,7 +9,6 @@ import { getConsent } from "@/lib/consent";
 
 export const GTM_SESSION_CONTACT_PATH_KEY = "ahs_gtm_contact_origin_path";
 export const GTM_SESSION_CONTACT_TOPIC_KEY = "ahs_gtm_contact_topic";
-export const GTM_SESSION_FB_LANDING_HAUSHALT_ALLTAGS_KEY = "ahs_gtm_fb_landing_haushalt_alltags_success";
 
 /** Erlaubte Werte für GTM-Variablen (stabile Keys für Tags & Trigger). */
 export type ContactIntentType =
@@ -261,41 +260,6 @@ export function readAndClearContactSubmissionContext(): { pathname: string; topi
     sessionStorage.removeItem(GTM_SESSION_CONTACT_TOPIC_KEY);
     if (!pathname) return null;
     return { pathname, topic };
-  } catch {
-    return null;
-  }
-}
-
-/** FB-Landing Wizard: Kontext für Konversions-Event auf /vielen-dank-haushalt-alltag (ohne PII). */
-export function stashFbLandingHaushaltAlltagsSuccessContext(args: {
-  service?: string;
-  plz?: string;
-}): void {
-  if (typeof window === "undefined") return;
-  try {
-    sessionStorage.setItem(
-      GTM_SESSION_FB_LANDING_HAUSHALT_ALLTAGS_KEY,
-      JSON.stringify({ service: args.service ?? "", plz: args.plz ?? "" }),
-    );
-  } catch {
-    /* quota / private mode */
-  }
-}
-
-export function readAndClearFbLandingHaushaltAlltagsSuccessContext(): {
-  service?: string;
-  plz?: string;
-} | null {
-  if (typeof window === "undefined") return null;
-  try {
-    const raw = sessionStorage.getItem(GTM_SESSION_FB_LANDING_HAUSHALT_ALLTAGS_KEY);
-    sessionStorage.removeItem(GTM_SESSION_FB_LANDING_HAUSHALT_ALLTAGS_KEY);
-    if (!raw) return null;
-    const parsed = JSON.parse(raw) as { service?: string; plz?: string };
-    return {
-      service: parsed.service || undefined,
-      plz: parsed.plz || undefined,
-    };
   } catch {
     return null;
   }

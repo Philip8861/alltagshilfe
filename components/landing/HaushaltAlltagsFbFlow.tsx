@@ -28,7 +28,6 @@ import { resolveStandortForPlz, type StandortPlzMatch } from "@/lib/resolve-stan
 import { submitHilfefinder } from "@/lib/actions/hilfefinder";
 import { CONTACT_SOURCE_OPTIONS } from "@/lib/contact-source";
 import {
-  stashFbLandingHaushaltAlltagsSuccessContext,
   trackFinderStarted,
   trackFinderStepCompleted,
 } from "@/lib/analytics/gtm-data-layer";
@@ -281,10 +280,6 @@ export function HaushaltAlltagsFbFlowProvider({ children }: { children: ReactNod
         setError(result.error ?? "Die Anfrage konnte nicht gesendet werden. Bitte versuchen Sie es später erneut.");
         return;
       }
-      stashFbLandingHaushaltAlltagsSuccessContext({
-        service: ausgewaehlteLeistungen.map((l) => l.key).join(","),
-        plz: plzNorm.length === 5 ? plzNorm : undefined,
-      });
       window.location.assign(THANK_YOU_PATH);
       return;
     } catch (e) {
