@@ -432,25 +432,20 @@ export function HaushaltAlltagsFbWizardSection() {
     <section
       id={WIZARD_SECTION_ID}
       ref={wizardRef}
-      className="scroll-mt-24 border-y border-[#0F4F68]/10 bg-white px-4 py-10 sm:px-6 sm:py-12 lg:px-[var(--ahs-page-gutter)]"
-      aria-labelledby="fb-wizard-heading"
+      className={cn(
+        "scroll-mt-24",
+        wizardActive
+          ? "border-y border-[#0F4F68]/10 bg-white px-4 py-10 sm:px-6 sm:py-12 lg:px-[var(--ahs-page-gutter)]"
+          : "h-0 overflow-hidden border-0 p-0",
+      )}
+      aria-hidden={!wizardActive}
     >
+      {wizardActive ? (
         <div className="mx-auto max-w-3xl">
-          {!wizardActive ? (
-            <div className="rounded-2xl border border-[#0F4F68]/12 bg-[#F2F9FA] p-6 text-center sm:p-8">
-              <h2 id="fb-wizard-heading" className="text-2xl font-extrabold text-[#0F4F68] sm:text-3xl">
-                Schnell zur passenden Hilfe
-              </h2>
-              <p className="mt-3 text-pretty text-neutral-700 sm:text-lg">
-                In nur 30 Sekunden finden wir die passende Haushaltshilfe oder Alltagsbegleitung in Ihrer Nähe – ganz
-                unverbindlich.
-              </p>
-              <div className="mt-6 flex justify-center">
-                <HaushaltAlltagsFbStartButton className="sm:min-w-[20rem]" />
-              </div>
-            </div>
-          ) : (
             <div className="rounded-2xl border border-[#0F4F68]/15 bg-white p-5 shadow-[0_10px_40px_rgba(15,79,104,0.08)] sm:p-7">
+              <h2 id="fb-wizard-heading" className="sr-only">
+                In 30 Sekunden zur passenden Hilfe
+              </h2>
               <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
                 <p className="text-sm font-bold uppercase tracking-wide text-[#0F4F68]/80">
                   Schritt {displayStep} von 4
@@ -920,8 +915,8 @@ export function HaushaltAlltagsFbWizardSection() {
                 </div>
               ) : null}
             </div>
-          )}
         </div>
-      </section>
+      ) : null}
+    </section>
   );
 }

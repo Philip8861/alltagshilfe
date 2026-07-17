@@ -75,13 +75,11 @@ const SCHRITTE = [
 
 const LEISTUNGS_TILES = [
   "Saugen und Wischen der Böden",
-  "Fenster putzen",
   "Reinigung von Bad und Küche",
   "Mahlzeiten zubereiten",
-  "Aufräumen und Ordnung halten",
+  "Einkäufe & Begleitung zum Arzt",
+  "Gemeinsame Aktivitäten und Spaziergänge",
   "Wäsche waschen und bügeln",
-  "Begleitung bei Terminen & Einkäufen",
-  "Gesellschaft & Alltagsstruktur",
 ] as const;
 
 export function HaushaltAlltagsFbLanding() {
@@ -184,7 +182,7 @@ export function HaushaltAlltagsFbLanding() {
                 </div>
               </RevealOnScroll>
               <RevealOnScroll delayMs={120}>
-                <ul className="grid grid-cols-1 gap-4 text-center sm:grid-cols-2 md:grid-cols-4">
+                <ul className="grid grid-cols-1 gap-4 text-center sm:grid-cols-2 md:grid-cols-3">
                   {LEISTUNGS_TILES.map((label) => (
                     <li
                       key={label}
