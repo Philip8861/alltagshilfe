@@ -6,7 +6,7 @@
  * Kein Lead-Event; Conversion über URL der Dankeseite in Meta.
  *
  * PageView erst auslösen, wenn `window.location.pathname` dem App-Router-pathname
- * entspricht – verhindert falsche `dl`-Werte (z. B. Startseite statt Landingpage).
+ * entspricht. Meta-eigener pushState-Listener ist deaktiviert (`disablePushState`).
  */
 
 import { usePathname } from "next/navigation";
@@ -65,7 +65,7 @@ export function MetaPixel() {
       const routeKey = getBrowserRouteKey();
       if (lastPageViewRouteKey.current === routeKey) return;
       lastPageViewRouteKey.current = routeKey;
-      trackMetaPageViewIfConsented();
+      trackMetaPageViewIfConsented(window.location.href);
     };
 
     frameId = requestAnimationFrame(attemptPageView);

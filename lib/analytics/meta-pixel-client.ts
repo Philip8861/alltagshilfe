@@ -10,6 +10,7 @@ type FbqFn = {
   loaded?: boolean;
   push?: FbqFn;
   version?: string;
+  disablePushState?: boolean;
 };
 
 declare global {
@@ -21,10 +22,18 @@ declare global {
 
 let pixelInitialized = false;
 
+/** Verhindert automatische PageViews von fbevents.js bei pushState/replaceState (Next.js SPA). */
+function applyDisablePushState(fbq: FbqFn): void {
+  fbq.disablePushState = true;
+}
+
 /** Stub + fbevents.js – nur bei Marketing-Einwilligung aufrufen. */
 export function bootstrapMetaPixelScript(): void {
   if (typeof window === "undefined" || typeof document === "undefined") return;
-  if (window.fbq) return;
+  if (window.fbq) {
+    applyDisablePushState(window.fbq);
+    return;
+  }
 
   const fbq: FbqFn = (...args: unknown[]) => {
     if (fbq.callMethod) {
@@ -37,8 +46,10 @@ export function bootstrapMetaPixelScript(): void {
   fbq.loaded = true;
   fbq.version = "2.0";
   fbq.push = fbq;
+  applyDisablePushState(fbq);
   window.fbq = fbq;
   if (!window._fbq) window._fbq = fbq;
+  applyDisablePushState(window._fbq);
 
   const script = document.createElement("script");
   script.async = true;
@@ -50,10 +61,9 @@ export function bootstrapMetaPixelScript(): void {
 /**
  * Genau ein PageView – nur mit Marketing-Consent.
  * Init ohne Nutzerdaten; autoConfig aus (keine Auto-Events / kein Advanced Matching im Code).
- * `dl` kommt von Meta aus `document.location` zum Ausführungszeitpunkt – Aufrufer muss
- * sicherstellen, dass die Browser-URL der aktuellen Route entspricht (siehe MetaPixel.tsx).
+ * `eventSourceUrl` muss die vollständige Browser-URL sein (z. B. window.location.href).
  */
-export function trackMetaPageViewIfConsented(): void {
+export function trackMetaPageViewIfConsented(eventSourceUrl?: string): void {
   if (!hasMarketingConsent()) return;
   if (typeof window === "undefined") return;
 
@@ -61,10 +71,13 @@ export function trackMetaPageViewIfConsented(): void {
 
   if (typeof window.fbq !== "function") return;
 
+  const pageUrl = eventSourceUrl?.trim() || window.location.href;
+  if (!pageUrl.startsWith("http")) return;
+
   if (!pixelInitialized) {
     window.fbq("init", META_PIXEL_ID, {}, { autoConfig: false });
     pixelInitialized = true;
   }
 
-  window.fbq("track", "PageView");
+  window.fbq("track", "PageView", {}, { event_source_url: pageUrl });
 }
