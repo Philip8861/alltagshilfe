@@ -5,8 +5,9 @@
  * Pro Seitenaufruf bzw. Client-Navigation genau ein `fbq('track', 'PageView')`.
  * Kein Lead-Event; Conversion über URL der Dankeseite in Meta.
  *
- * PageView erst auslösen, wenn `window.location.pathname` dem App-Router-pathname
- * entspricht. Meta-eigener pushState-Listener ist deaktiviert (`disablePushState`).
+ * Meta setzt `dl` ausschließlich aus `document.location` zum Fire-Zeitpunkt (nicht
+ * über event_source_url). PageView deshalb erst senden, wenn Browser-URL und
+ * App-Router-pathname übereinstimmen. Meta-eigener pushState-Listener ist aus.
  */
 
 import { usePathname } from "next/navigation";
@@ -14,7 +15,7 @@ import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react
 import { hasMarketingConsent } from "@/lib/consent";
 import { trackMetaPageViewIfConsented } from "@/lib/analytics/meta-pixel-client";
 
-const ROUTE_SYNC_MAX_FRAMES = 40;
+const ROUTE_SYNC_MAX_FRAMES = 60;
 
 function getBrowserRouteKey(): string {
   if (typeof window === "undefined") return "";
@@ -47,32 +48,41 @@ export function MetaPixel() {
     }
 
     let cancelled = false;
-    let frameId = 0;
+    let rafId = 0;
+    let timeoutId = 0;
     let attempts = 0;
 
-    const attemptPageView = () => {
+    const fireWhenReady = () => {
       if (cancelled || typeof window === "undefined") return;
-
-      const browserPath = window.location.pathname;
-      const synced = browserPath === pathname;
-
-      if (!synced && attempts < ROUTE_SYNC_MAX_FRAMES) {
-        attempts += 1;
-        frameId = requestAnimationFrame(attemptPageView);
-        return;
-      }
+      if (window.location.pathname !== pathname) return;
 
       const routeKey = getBrowserRouteKey();
       if (lastPageViewRouteKey.current === routeKey) return;
       lastPageViewRouteKey.current = routeKey;
-      trackMetaPageViewIfConsented(window.location.href);
+      trackMetaPageViewIfConsented();
     };
 
-    frameId = requestAnimationFrame(attemptPageView);
+    const attemptPageView = () => {
+      if (cancelled || typeof window === "undefined") return;
+
+      const synced = window.location.pathname === pathname;
+
+      if (!synced && attempts < ROUTE_SYNC_MAX_FRAMES) {
+        attempts += 1;
+        rafId = requestAnimationFrame(attemptPageView);
+        return;
+      }
+
+      // Nach History-Commit: dl kommt aus document.location – ein Tick warten.
+      timeoutId = window.setTimeout(fireWhenReady, 0);
+    };
+
+    rafId = requestAnimationFrame(attemptPageView);
 
     return () => {
       cancelled = true;
-      cancelAnimationFrame(frameId);
+      cancelAnimationFrame(rafId);
+      clearTimeout(timeoutId);
     };
   }, [marketingAllowed, pathname]);
 

@@ -61,9 +61,10 @@ export function bootstrapMetaPixelScript(): void {
 /**
  * Genau ein PageView – nur mit Marketing-Consent.
  * Init ohne Nutzerdaten; autoConfig aus (keine Auto-Events / kein Advanced Matching im Code).
- * `eventSourceUrl` muss die vollständige Browser-URL sein (z. B. window.location.href).
+ * `dl` wird von Meta aus document.location gelesen – Aufrufer muss die Browser-URL
+ * bereits committet haben (siehe MetaPixel.tsx).
  */
-export function trackMetaPageViewIfConsented(eventSourceUrl?: string): void {
+export function trackMetaPageViewIfConsented(): void {
   if (!hasMarketingConsent()) return;
   if (typeof window === "undefined") return;
 
@@ -71,13 +72,10 @@ export function trackMetaPageViewIfConsented(eventSourceUrl?: string): void {
 
   if (typeof window.fbq !== "function") return;
 
-  const pageUrl = eventSourceUrl?.trim() || window.location.href;
-  if (!pageUrl.startsWith("http")) return;
-
   if (!pixelInitialized) {
     window.fbq("init", META_PIXEL_ID, {}, { autoConfig: false });
     pixelInitialized = true;
   }
 
-  window.fbq("track", "PageView", {}, { event_source_url: pageUrl });
+  window.fbq("track", "PageView");
 }
