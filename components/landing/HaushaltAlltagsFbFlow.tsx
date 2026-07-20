@@ -275,6 +275,7 @@ export function HaushaltAlltagsFbFlowProvider({ children }: { children: ReactNod
         kontaktArt,
         contactSource,
         datenschutz,
+        statsKind: "landingpage-social-media",
       });
       if (!result.success) {
         setError(result.error ?? "Die Anfrage konnte nicht gesendet werden. Bitte versuchen Sie es später erneut.");

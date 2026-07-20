@@ -7,6 +7,8 @@ export type ContactSourceKind =
   /** Kontaktformular im Ratgeber-Beratungsdialog (gleiche Pflichtfrage wie /kontakt). */
   | "ratgeber"
   | "hilfefinder"
+  /** FB-/Social-Media-Landingpage (z. B. /landing/haushaltshilfe-alltagsbegleitung). */
+  | "landingpage-social-media"
   /** @deprecated Früher alle Karriere-Einreichungen; weiterhin in Auswertungen mitzählen. */
   | "karriere"
   | "karriere-form"

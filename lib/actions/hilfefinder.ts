@@ -15,7 +15,7 @@ import {
   getContactSourceLabel,
   isValidContactSource,
 } from "@/lib/contact-source";
-import { recordContactSource } from "@/lib/contact-source-tracking";
+import { recordContactSource, type ContactSourceKind } from "@/lib/contact-source-tracking";
 
 /** Zentrale Adresse, wenn weder NOTIFICATION_TO_CONTACT noch NOTIFICATION_TO gesetzt sind. */
 const DEFAULT_CONTACT_INBOX = "info@alltagshilfe-sued.de";
@@ -63,6 +63,8 @@ export type HilfefinderInput = {
   datenschutz: boolean;
   /** Honeypot (sollte stets leer bleiben). */
   website?: string;
+  /** Aggregat-Kanal für Admin-Statistik (Standard: Hilfe-Finder). */
+  statsKind?: ContactSourceKind;
 };
 
 export type HilfefinderResult = { success: boolean; error?: string };
@@ -110,6 +112,8 @@ export async function submitHilfefinder(input: HilfefinderInput): Promise<Hilfef
   }
   const contactSource = input.contactSource;
   const sourceLabel = getContactSourceLabel(contactSource);
+  const statsKind: ContactSourceKind = input.statsKind ?? "hilfefinder";
+  const isSocialLanding = statsKind === "landingpage-social-media";
 
   const ip = await getClientIp();
   const { success: allowed } = rateLimit(`hilfefinder:${ip}`);
@@ -147,8 +151,10 @@ export async function submitHilfefinder(input: HilfefinderInput): Promise<Hilfef
   const nachrichtText = String(input.nachricht ?? "").trim();
   const besteZeitText = String(input.besteZeit ?? "").trim();
 
+  const formLabel = isSocialLanding ? "Social-Media-Landingpage" : "Hilfe-Finder";
+
   const text = [
-    "Neue Anfrage über den Hilfe-Finder",
+    `Neue Anfrage über ${isSocialLanding ? "die Social-Media-Landingpage" : "den Hilfe-Finder"}`,
     "",
     `Kontaktart: ${kontaktLabel}`,
     `Pflegegrad: ${input.pflegegrad?.trim() || "-"}`,
@@ -192,8 +198,8 @@ export async function submitHilfefinder(input: HilfefinderInput): Promise<Hilfef
   if (besteZeitText) rows.push({ label: "Passender Tag/Uhrzeit", value: besteZeitText });
 
   const html = buildBrandedNotificationHtml({
-    kindBadge: "Hilfe-Finder",
-    headline: "Neue Anfrage über den Hilfe-Finder",
+    kindBadge: formLabel,
+    headline: `Neue Anfrage über ${isSocialLanding ? "die Social-Media-Landingpage" : "den Hilfe-Finder"}`,
     rows,
     detailTitle: "Nachricht",
     detailText: nachrichtText || "-",
@@ -202,7 +208,7 @@ export async function submitHilfefinder(input: HilfefinderInput): Promise<Hilfef
   const mailed = await sendInternalMail({
     kind: "contact",
     toOverride: finalTo,
-    subject: `Hilfe-Finder: ${kontaktLabel}${standort ? ` (${standort.name})` : ""}`,
+    subject: `${formLabel}: ${kontaktLabel}${standort ? ` (${standort.name})` : ""}`,
     text,
     html,
     replyTo: email,
@@ -216,7 +222,7 @@ export async function submitHilfefinder(input: HilfefinderInput): Promise<Hilfef
           ")",
       );
       /* Auch ohne SMTP-Konfiguration die Statistik zählen, damit der Admin sieht, dass ein Versuch erfolgte. */
-      await recordContactSource(contactSource, "hilfefinder");
+      await recordContactSource(contactSource, statsKind);
       /* In Entwicklungsumgebungen ohne SMTP nicht hart abbrechen, sonst Erfolgseindruck. */
       return { success: true };
     }
@@ -227,7 +233,7 @@ export async function submitHilfefinder(input: HilfefinderInput): Promise<Hilfef
   }
 
   /* Anonyme Aggregat-Statistik (kein Personenbezug). */
-  await recordContactSource(contactSource, "hilfefinder");
+  await recordContactSource(contactSource, statsKind);
 
   return { success: true };
 }

@@ -14,6 +14,11 @@ export const KARRIERE_PAGE_SOURCE_KINDS = ["karriere", "karriere-form", "karrier
 export const CONTACT_CHANNEL_GROUPS = [
   { id: "contact", kinds: ["contact"], label: "Kontaktformular" },
   { id: "hilfefinder", kinds: ["hilfefinder"], label: "Hilfe-Finder" },
+  {
+    id: "landingpage-social-media",
+    kinds: ["landingpage-social-media"],
+    label: "Landingpage Social Media",
+  },
   { id: "ratgeber", kinds: ["ratgeber"], label: "Ratgeber" },
   { id: "pflegebox", kinds: ["pflegebox"], label: "Pflegebox" },
   { id: "betrieblich-angebot", kinds: ["betrieblich-angebot"], label: "Betriebliches Angebot" },
@@ -30,6 +35,7 @@ export const KIND_LABELS: Record<string, string> = {
   contact: "Kontaktformular (/kontakt & eingebunden)",
   ratgeber: "Ratgeber (Beratungsdialog)",
   hilfefinder: "Hilfe-Finder",
+  "landingpage-social-media": "Landingpage Social Media",
   karriere: "Karriere (Legacy)",
   "karriere-form": "Karriere: Formular (Seite)",
   "karriere-wizard": "Karriere: Kurzcheck",
@@ -45,6 +51,7 @@ const KIND_LINE_COLORS: Record<string, string> = {
   contact: CHART_TEAL,
   ratgeber: CHART_VIOLET,
   hilfefinder: CHART_SKY,
+  "landingpage-social-media": "#1877F2",
   pflegebox: CHART_EMERALD,
   "betrieblich-angebot": CHART_AMBER,
   karriere: CHART_ROSE,
@@ -59,6 +66,7 @@ export function strokeForKind(kind: string): string {
 const GROUP_LINE_COLORS: Record<ContactChannelGroupId, string> = {
   contact: CHART_TEAL,
   hilfefinder: CHART_SKY,
+  "landingpage-social-media": "#1877F2",
   ratgeber: CHART_VIOLET,
   pflegebox: CHART_EMERALD,
   "betrieblich-angebot": CHART_AMBER,

@@ -121,6 +121,7 @@ export function AdminContactListenWochentagKreuzPanel({ chartYear }: Props) {
     const known = [
       "contact",
       "hilfefinder",
+      "landingpage-social-media",
       "ratgeber",
       "pflegebox",
       "karriere",

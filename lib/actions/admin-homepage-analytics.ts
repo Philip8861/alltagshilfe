@@ -302,6 +302,7 @@ const CONTACT_KIND_DAILY_ORDER = [
   "contact",
   "ratgeber",
   "hilfefinder",
+  "landingpage-social-media",
   "pflegebox",
   "betrieblich-angebot",
   "karriere",
