@@ -53,9 +53,11 @@ export function bootstrapMetaPixelScript(): void {
  */
 export function trackMetaPageViewIfConsented(): void {
   if (!hasMarketingConsent()) return;
-  if (typeof window === "undefined" || typeof window.fbq !== "function") return;
+  if (typeof window === "undefined") return;
 
   bootstrapMetaPixelScript();
+
+  if (typeof window.fbq !== "function") return;
 
   if (!pixelInitialized) {
     window.fbq("init", META_PIXEL_ID, {}, { autoConfig: false });
