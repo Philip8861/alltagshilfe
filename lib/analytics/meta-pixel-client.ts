@@ -27,7 +27,53 @@ function applyDisablePushState(fbq: FbqFn): void {
   fbq.disablePushState = true;
 }
 
-/** Stub + fbevents.js – nur bei Marketing-Einwilligung aufrufen. */
+/** Vollständige Seiten-URL für Meta (Router-pathname + Origin; keine PII). */
+export function buildMetaPageUrl(pathname: string): string {
+  if (typeof window === "undefined") return "";
+  const path = pathname.startsWith("/") ? pathname : `/${pathname}`;
+  return `${window.location.origin}${path}${window.location.search}`;
+}
+
+function readCookie(name: string): string | undefined {
+  if (typeof document === "undefined") return undefined;
+  const match = document.cookie.match(new RegExp(`(?:^|;\\s*)${name}=([^;]+)`));
+  return match?.[1];
+}
+
+/**
+ * PageView-Beacon mit explizitem `dl`.
+ *
+ * Wichtig: Die Site nutzt Referrer-Policy `strict-origin-when-cross-origin`.
+ * Meta Events Manager zeigt die Event-URL oft aus dem HTTP-Referer – der wäre
+ * dann nur die Domain (`https://www.alltagshilfe-sued.de/`). Deshalb setzt
+ * dieses Image `referrerPolicy: no-referrer-when-downgrade`, damit der volle
+ * Pfad als Referer und als `dl` bei Meta ankommt.
+ *
+ * fbq('track') wird bewusst nicht genutzt – fbevents.js erbt die Document-Policy
+ * und würde wieder nur die Origin senden.
+ */
+function sendMetaPageViewBeacon(pageUrl: string): void {
+  if (typeof document === "undefined") return;
+
+  const params = new URLSearchParams();
+  params.set("id", META_PIXEL_ID);
+  params.set("ev", "PageView");
+  params.set("dl", pageUrl);
+  const documentReferrer = document.referrer?.trim();
+  if (documentReferrer) params.set("rl", documentReferrer);
+  params.set("if", "false");
+  params.set("ts", String(Date.now()));
+
+  const fbp = readCookie("_fbp");
+  if (fbp) params.set("fbp", fbp);
+
+  const img = new Image(1, 1);
+  img.alt = "";
+  img.referrerPolicy = "no-referrer-when-downgrade";
+  img.src = `https://www.facebook.com/tr/?${params.toString()}`;
+}
+
+/** Stub + fbevents.js – nur bei Marketing-Einwilligung (Init/_fbp, kein Auto-PageView). */
 export function bootstrapMetaPixelScript(): void {
   if (typeof window === "undefined" || typeof document === "undefined") return;
   if (window.fbq) {
@@ -60,14 +106,14 @@ export function bootstrapMetaPixelScript(): void {
 
 /**
  * Genau ein PageView – nur mit Marketing-Consent.
- * Init ohne Nutzerdaten; autoConfig aus (kein Advanced Matching im Code).
- * Offizielles fbq('track','PageView'): fbevents.js liest die URL (`dl`) zum
- * Track-Zeitpunkt aus document.location – manuelle Beacon-Requests mit eigenem
- * `dl` werden von Meta verworfen (Fallback auf Referer = nur Domain).
+ * Init ohne Nutzerdaten; autoConfig aus. PageView per Beacon mit korrektem `dl`/Referer.
  */
-export function trackMetaPageViewIfConsented(): void {
+export function trackMetaPageViewIfConsented(pageUrl: string): void {
   if (!hasMarketingConsent()) return;
   if (typeof window === "undefined") return;
+
+  const dl = pageUrl.trim();
+  if (!dl.startsWith("http")) return;
 
   bootstrapMetaPixelScript();
 
@@ -78,5 +124,5 @@ export function trackMetaPageViewIfConsented(): void {
     pixelInitialized = true;
   }
 
-  window.fbq("track", "PageView");
+  sendMetaPageViewBeacon(dl);
 }
