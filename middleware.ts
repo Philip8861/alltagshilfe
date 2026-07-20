@@ -18,7 +18,13 @@ function applySecurityAndSeoHeaders(
 ) {
   response.headers.set("X-Frame-Options", "SAMEORIGIN");
   response.headers.set("X-Content-Type-Options", "nosniff");
-  response.headers.set("Referrer-Policy", "strict-origin-when-cross-origin");
+  /**
+   * Volle HTTPS-URL als Referer an Drittanbieter (u. a. Meta Pixel).
+   * `strict-origin-when-cross-origin` lieferte nur die Domain – Meta Events Manager
+   * und URL-basierte Conversions zeigten dann immer nur die Startseite.
+   * Keine Formulardaten in URLs; Pfade sind öffentlich.
+   */
+  response.headers.set("Referrer-Policy", "no-referrer-when-downgrade");
   response.headers.set("X-DNS-Prefetch-Control", "off");
   response.headers.set(
     "Permissions-Policy",

@@ -2,22 +2,19 @@
 
 /**
  * Meta Pixel – nur nach Einwilligung „Marketing“.
- * Pro Route genau ein PageView mit korrekter URL in Meta Events Manager.
+ * Pro Route genau ein `fbq('track', 'PageView')`.
  *
- * Ursache falscher Startseiten-URL: Referrer-Policy truncates Referer auf Origin;
- * Meta Test-Events zeigt diese Origin als „URL“. Lösung: Beacon mit
- * referrerPolicy=no-referrer-when-downgrade + explizitem dl (siehe meta-pixel-client).
+ * Meta Events Manager nutzt für die angezeigte URL stark den HTTP-Referer.
+ * Site-Referrer-Policy: no-referrer-when-downgrade (middleware), damit der volle
+ * Pfad (Landingpage / Dankeseite) bei Meta ankommt – nicht nur die Domain.
  */
 
 import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { hasMarketingConsent } from "@/lib/consent";
-import { buildMetaPageUrl, trackMetaPageViewIfConsented } from "@/lib/analytics/meta-pixel-client";
+import { trackMetaPageViewIfConsented } from "@/lib/analytics/meta-pixel-client";
 
-function getRouteKey(pathname: string): string {
-  if (typeof window === "undefined") return pathname;
-  return `${pathname}${window.location.search}`;
-}
+const ROUTE_SYNC_MAX_FRAMES = 60;
 
 export function MetaPixel() {
   const pathname = usePathname();
@@ -44,20 +41,31 @@ export function MetaPixel() {
       return;
     }
 
-    const routeKey = getRouteKey(pathname);
-    if (lastPageViewRouteKey.current === routeKey) return;
-
     let cancelled = false;
-    const timeoutId = window.setTimeout(() => {
-      if (cancelled) return;
+    let rafId = 0;
+    let attempts = 0;
+
+    const attemptPageView = () => {
+      if (cancelled || typeof window === "undefined") return;
+
+      if (window.location.pathname !== pathname && attempts < ROUTE_SYNC_MAX_FRAMES) {
+        attempts += 1;
+        rafId = requestAnimationFrame(attemptPageView);
+        return;
+      }
+      if (window.location.pathname !== pathname) return;
+
+      const routeKey = `${window.location.pathname}${window.location.search}`;
       if (lastPageViewRouteKey.current === routeKey) return;
       lastPageViewRouteKey.current = routeKey;
-      trackMetaPageViewIfConsented(buildMetaPageUrl(pathname));
-    }, 0);
+      trackMetaPageViewIfConsented();
+    };
+
+    rafId = requestAnimationFrame(attemptPageView);
 
     return () => {
       cancelled = true;
-      clearTimeout(timeoutId);
+      cancelAnimationFrame(rafId);
     };
   }, [marketingAllowed, pathname]);
 
