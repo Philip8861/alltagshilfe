@@ -50,6 +50,8 @@ export function bootstrapMetaPixelScript(): void {
 /**
  * Genau ein PageView – nur mit Marketing-Consent.
  * Init ohne Nutzerdaten; autoConfig aus (keine Auto-Events / kein Advanced Matching im Code).
+ * `dl` kommt von Meta aus `document.location` zum Ausführungszeitpunkt – Aufrufer muss
+ * sicherstellen, dass die Browser-URL der aktuellen Route entspricht (siehe MetaPixel.tsx).
  */
 export function trackMetaPageViewIfConsented(): void {
   if (!hasMarketingConsent()) return;
