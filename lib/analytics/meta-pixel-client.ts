@@ -27,43 +27,6 @@ function applyDisablePushState(fbq: FbqFn): void {
   fbq.disablePushState = true;
 }
 
-/** Vollständige Seiten-URL für Meta-`dl` (Router-pathname + Origin; keine PII). */
-export function buildMetaPageUrl(pathname: string): string {
-  if (typeof window === "undefined") return "";
-  const path = pathname.startsWith("/") ? pathname : `/${pathname}`;
-  return `${window.location.origin}${path}${window.location.search}`;
-}
-
-function readCookie(name: string): string | undefined {
-  if (typeof document === "undefined") return undefined;
-  const match = document.cookie.match(new RegExp(`(?:^|;\\s*)${name}=([^;]+)`));
-  return match?.[1];
-}
-
-/**
- * PageView mit explizitem `dl` – fbq('track','PageView') nutzt immer document.location,
- * was bei Next.js SPAs oft noch die Startseite ist. Init läuft über fbq (_fbp); PageView per Beacon.
- */
-function sendMetaPageViewBeacon(pageUrl: string): void {
-  if (typeof document === "undefined") return;
-
-  const params = new URLSearchParams();
-  params.set("id", META_PIXEL_ID);
-  params.set("ev", "PageView");
-  params.set("dl", pageUrl);
-  const referrer = document.referrer?.trim();
-  if (referrer) params.set("rl", referrer);
-  params.set("if", "false");
-  params.set("ts", String(Date.now()));
-
-  const fbp = readCookie("_fbp");
-  if (fbp) params.set("fbp", fbp);
-
-  const img = new Image(1, 1);
-  img.alt = "";
-  img.src = `https://www.facebook.com/tr/?${params.toString()}`;
-}
-
 /** Stub + fbevents.js – nur bei Marketing-Einwilligung aufrufen. */
 export function bootstrapMetaPixelScript(): void {
   if (typeof window === "undefined" || typeof document === "undefined") return;
@@ -97,14 +60,14 @@ export function bootstrapMetaPixelScript(): void {
 
 /**
  * Genau ein PageView – nur mit Marketing-Consent.
- * Init ohne Nutzerdaten; autoConfig aus. PageView mit explizitem `dl` (pageUrl).
+ * Init ohne Nutzerdaten; autoConfig aus (kein Advanced Matching im Code).
+ * Offizielles fbq('track','PageView'): fbevents.js liest die URL (`dl`) zum
+ * Track-Zeitpunkt aus document.location – manuelle Beacon-Requests mit eigenem
+ * `dl` werden von Meta verworfen (Fallback auf Referer = nur Domain).
  */
-export function trackMetaPageViewIfConsented(pageUrl: string): void {
+export function trackMetaPageViewIfConsented(): void {
   if (!hasMarketingConsent()) return;
   if (typeof window === "undefined") return;
-
-  const dl = pageUrl.trim();
-  if (!dl.startsWith("http")) return;
 
   bootstrapMetaPixelScript();
 
@@ -115,5 +78,5 @@ export function trackMetaPageViewIfConsented(pageUrl: string): void {
     pixelInitialized = true;
   }
 
-  sendMetaPageViewBeacon(dl);
+  window.fbq("track", "PageView");
 }

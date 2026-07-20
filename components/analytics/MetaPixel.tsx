@@ -2,19 +2,20 @@
 
 /**
  * Meta Pixel – nur nach Einwilligung „Marketing“.
- * Pro Route genau ein PageView mit explizitem `dl` (Landingpage, Dankeseite, …).
- * fbq('track','PageView') wird nicht verwendet – Meta liest sonst document.location (oft Startseite).
+ * Pro Route genau ein `fbq('track', 'PageView')`; Meta-eigener pushState-Listener
+ * ist deaktiviert (keine Auto-Duplikate). Kein Lead-Event; Conversion über die
+ * URL der Dankeseite in Meta.
+ *
+ * PageView erst senden, wenn `window.location.pathname` dem Router-pathname
+ * entspricht – fbevents.js liest `dl` aus document.location zum Track-Zeitpunkt.
  */
 
 import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { hasMarketingConsent } from "@/lib/consent";
-import { buildMetaPageUrl, trackMetaPageViewIfConsented } from "@/lib/analytics/meta-pixel-client";
+import { trackMetaPageViewIfConsented } from "@/lib/analytics/meta-pixel-client";
 
-function getRouteKey(pathname: string): string {
-  if (typeof window === "undefined") return pathname;
-  return `${pathname}${window.location.search}`;
-}
+const ROUTE_SYNC_MAX_FRAMES = 60;
 
 export function MetaPixel() {
   const pathname = usePathname();
@@ -41,20 +42,31 @@ export function MetaPixel() {
       return;
     }
 
-    const routeKey = getRouteKey(pathname);
-    if (lastPageViewRouteKey.current === routeKey) return;
-
     let cancelled = false;
-    const timeoutId = window.setTimeout(() => {
-      if (cancelled) return;
+    let rafId = 0;
+    let attempts = 0;
+
+    const attemptPageView = () => {
+      if (cancelled || typeof window === "undefined") return;
+
+      if (window.location.pathname !== pathname && attempts < ROUTE_SYNC_MAX_FRAMES) {
+        attempts += 1;
+        rafId = requestAnimationFrame(attemptPageView);
+        return;
+      }
+      if (window.location.pathname !== pathname) return;
+
+      const routeKey = `${window.location.pathname}${window.location.search}`;
       if (lastPageViewRouteKey.current === routeKey) return;
       lastPageViewRouteKey.current = routeKey;
-      trackMetaPageViewIfConsented(buildMetaPageUrl(pathname));
-    }, 0);
+      trackMetaPageViewIfConsented();
+    };
+
+    rafId = requestAnimationFrame(attemptPageView);
 
     return () => {
       cancelled = true;
-      clearTimeout(timeoutId);
+      cancelAnimationFrame(rafId);
     };
   }, [marketingAllowed, pathname]);
 
