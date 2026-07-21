@@ -2,11 +2,8 @@
 
 /**
  * Meta Pixel – nur nach Einwilligung „Marketing“.
- * Pro Route genau ein `fbq('track', 'PageView')`.
- *
- * Meta Events Manager nutzt für die angezeigte URL stark den HTTP-Referer.
- * Site-Referrer-Policy: no-referrer-when-downgrade (middleware), damit der volle
- * Pfad (Landingpage / Dankeseite) bei Meta ankommt – nicht nur die Domain.
+ * Pro Route genau ein PageView mit dl = window.location.href
+ * (Landing / Danke / Startseite jeweils mit ihrer Browser-URL).
  */
 
 import { usePathname } from "next/navigation";
@@ -48,6 +45,7 @@ export function MetaPixel() {
     const attemptPageView = () => {
       if (cancelled || typeof window === "undefined") return;
 
+      // Warten, bis Browser-URL und Next-Route übereinstimmen (volle Seite geladen).
       if (window.location.pathname !== pathname && attempts < ROUTE_SYNC_MAX_FRAMES) {
         attempts += 1;
         rafId = requestAnimationFrame(attemptPageView);

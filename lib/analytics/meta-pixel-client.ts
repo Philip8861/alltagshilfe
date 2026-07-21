@@ -27,7 +27,42 @@ function applyDisablePushState(fbq: FbqFn): void {
   fbq.disablePushState = true;
 }
 
-/** Stub + fbevents.js – nur bei Marketing-Einwilligung aufrufen. */
+function readCookie(name: string): string | undefined {
+  if (typeof document === "undefined") return undefined;
+  const match = document.cookie.match(new RegExp(`(?:^|;\\s*)${name}=([^;]+)`));
+  return match?.[1];
+}
+
+/**
+ * PageView mit explizitem `dl` = aktuelle Browser-URL.
+ *
+ * Offizielles fbq('track','PageView') kürzt bei diesem Pixel unter Meta
+ * ProtectedDataMode / Core Setup die URL auf die Domain (Network: dlc=1,
+ * dl=https://www.alltagshilfe-sued.de). URL-basierte Custom Conversions
+ * brauchen den vollen Pfad – daher Image-Request mit window.location.href.
+ */
+function sendMetaPageViewWithBrowserUrl(pageUrl: string): void {
+  if (typeof document === "undefined") return;
+
+  const params = new URLSearchParams();
+  params.set("id", META_PIXEL_ID);
+  params.set("ev", "PageView");
+  params.set("dl", pageUrl);
+  const documentReferrer = document.referrer?.trim();
+  if (documentReferrer) params.set("rl", documentReferrer);
+  params.set("if", "false");
+  params.set("ts", String(Date.now()));
+
+  const fbp = readCookie("_fbp");
+  if (fbp) params.set("fbp", fbp);
+
+  const img = new Image(1, 1);
+  img.alt = "";
+  img.referrerPolicy = "no-referrer-when-downgrade";
+  img.src = `https://www.facebook.com/tr/?${params.toString()}`;
+}
+
+/** Stub + fbevents.js – nur bei Marketing-Einwilligung (Init/_fbp, kein Auto-PageView). */
 export function bootstrapMetaPixelScript(): void {
   if (typeof window === "undefined" || typeof document === "undefined") return;
   if (window.fbq) {
@@ -60,14 +95,14 @@ export function bootstrapMetaPixelScript(): void {
 
 /**
  * Genau ein PageView – nur mit Marketing-Consent.
- * Init ohne Nutzerdaten; autoConfig aus.
- * Offizielles fbq('track','PageView'): liest URL/`dl` aus document.location.
- * Volle Pfade im HTTP-Referer erfordern Referrer-Policy no-referrer-when-downgrade
- * (siehe middleware) – sonst zeigt Meta Events Manager nur die Domain.
+ * Init über fbq; PageView mit dl = window.location.href (volle aktuelle URL).
  */
 export function trackMetaPageViewIfConsented(): void {
   if (!hasMarketingConsent()) return;
   if (typeof window === "undefined") return;
+
+  const pageUrl = window.location.href.trim();
+  if (!pageUrl.startsWith("http")) return;
 
   bootstrapMetaPixelScript();
 
@@ -78,5 +113,5 @@ export function trackMetaPageViewIfConsented(): void {
     pixelInitialized = true;
   }
 
-  window.fbq("track", "PageView");
+  sendMetaPageViewWithBrowserUrl(pageUrl);
 }
