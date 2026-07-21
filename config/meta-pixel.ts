@@ -9,4 +9,4 @@
  */
 export const META_PIXEL_ID =
   (typeof process !== "undefined" && process.env.NEXT_PUBLIC_META_PIXEL_ID?.trim()) ||
-  "1024375210460935";
+  "1359733255202163";
