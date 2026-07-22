@@ -71,6 +71,7 @@ const STANDORTE: StandortKarte[] = [
       "Memmingen",
       "Biberach",
       "Tettnang",
+      "Kirchberg an der Iller",
       "u. a.",
     ],
     imageSrc: STANDORT_CARD_BILD,
