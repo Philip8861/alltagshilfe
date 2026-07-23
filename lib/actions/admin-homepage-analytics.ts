@@ -20,8 +20,6 @@ import {
 import { getSystemAdminSession } from "@/lib/partner/system-admin-session";
 import { createSupabaseServiceRoleClient } from "@/lib/supabase/service";
 
-export { CONVERSION_STATS_START_DAY } from "@/lib/site-analytics/conversion-stats-start";
-
 export type HomepageTrafficGranularity = "tag" | "monat" | "jahr";
 
 export type HomepageSeriesPoint = { label: string; views: number };
