@@ -2,10 +2,14 @@
 
 import { revalidatePath } from "next/cache";
 import {
+  buildIstPrognoseRow,
   conversionRatePercent,
   linearRegression,
   predictLinear,
+  round1,
+  round2,
   visitorsPerCompletion,
+  type IstPrognoseRow,
 } from "@/lib/site-analytics/conversion-forecast";
 import {
   calendarDayBounds,
@@ -568,6 +572,13 @@ export async function resetContactSourceStatsAction(): Promise<
 
 /* ───────────── Unique Visitors × Formular-Conversion ───────────── */
 
+/**
+ * Ab diesem Berlin-Kalendertag gelten Unique Visitors + Anfragen nur für
+ * „Besucher & Conversion“. Ältere Formular-Aggregate bleiben in den anderen
+ * Statistik-Kacheln sichtbar und dürfen hier die Conversion nicht verzerren.
+ */
+export const CONVERSION_STATS_START_DAY = "2026-07-23";
+
 /** Kanal-Gruppen für Conversion (gleiche Struktur wie Admin-UI). */
 const CONVERSION_CHANNEL_GROUPS: { id: string; label: string; kinds: readonly string[] }[] = [
   { id: "contact", label: "Kontaktformular", kinds: ["contact"] },
@@ -624,6 +635,15 @@ export type ConversionForecast = {
   trendLabel: string;
 };
 
+/** IST (bisher) vs. Voraussichtlich (Prognose) – Anfragen/Tag · Monat · Jahr. */
+export type ConversionIstPrognose = {
+  daysObserved: number;
+  visitorsPerDayIst: number;
+  visitorsPerDayPrognose: number;
+  /** Zeilen je Formular + Gesamt. */
+  rows: IstPrognoseRow[];
+};
+
 export type ConversionStatsResult = {
   visitorsTotal: number;
   completionsTotal: number;
@@ -633,6 +653,9 @@ export type ConversionStatsResult = {
   series: ConversionSeriesPoint[];
   forecastSeries: ConversionSeriesPoint[];
   forecast: ConversionForecast | null;
+  istPrognose: ConversionIstPrognose;
+  /** Erster Tag, ab dem dieser Bereich Daten einbezieht (YYYY-MM-DD). */
+  trackingStartDay: string;
 };
 
 function parseVisitorDayRows(data: unknown): { bucket: string; visitor_count: number }[] {
@@ -667,9 +690,57 @@ function buildConversionTrendLabel(visitorSlope: number, conversionSlope: number
   return "Besucher und Conversion sind im Zeitraum weitgehend stabil.";
 }
 
+function emptyConversionStats(from: string, to: string, scope: ContactStatsScope): ConversionStatsResult {
+  const start = new Date(`${from}T12:00:00`);
+  const end = new Date(`${to}T12:00:00`);
+  const series: ConversionSeriesPoint[] = [];
+  for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
+    const key = d.toISOString().slice(0, 10);
+    const label =
+      scope === "jahr"
+        ? d.toLocaleDateString("de-DE", { day: "2-digit", month: "short" })
+        : d.toLocaleDateString("de-DE", { weekday: "short", day: "2-digit", month: "short" });
+    series.push({
+      label,
+      day: key,
+      visitors: 0,
+      completions: 0,
+      conversionPercent: null,
+    });
+  }
+  const emptyRows = [
+    ...CONVERSION_CHANNEL_GROUPS.map((g) => buildIstPrognoseRow(g.id, g.label, 0, 1, 0, 0)),
+    buildIstPrognoseRow("gesamt", "Gesamt (alle Formulare)", 0, 1, 0, 0),
+  ];
+  return {
+    visitorsTotal: 0,
+    completionsTotal: 0,
+    conversionPercent: null,
+    visitorsPerCompletion: null,
+    channels: CONVERSION_CHANNEL_GROUPS.map((g) => ({
+      id: g.id,
+      label: g.label,
+      completions: 0,
+      conversionPercent: null,
+      visitorsPerCompletion: null,
+    })),
+    series,
+    forecastSeries: [],
+    forecast: null,
+    istPrognose: {
+      daysObserved: series.length,
+      visitorsPerDayIst: 0,
+      visitorsPerDayPrognose: 0,
+      rows: emptyRows,
+    },
+    trackingStartDay: CONVERSION_STATS_START_DAY,
+  };
+}
+
 /**
  * Unique Visitors (Statistik-Consent) × abgeschlossene Formulare im Zeitraum.
  * Tages-Serie inkl. Conversion-Rate; Prognose aus linearem Besuchstrend × Ø-Conversion.
+ * Anfragen vor `CONVERSION_STATS_START_DAY` werden hier bewusst ignoriert.
  */
 export async function fetchConversionStatsAction(
   year: number,
@@ -683,7 +754,15 @@ export async function fetchConversionStatsAction(
 
   const y = Math.min(2100, Math.max(YEAR_RANGE_START, Math.floor(year)));
   const m = Math.min(12, Math.max(1, Math.floor(month)));
-  const { from, to } = contactStatsRange(y, m, scope, day);
+  const range = contactStatsRange(y, m, scope, day);
+  /** Nur ab Tracking-Start – verhindert verzerrte Conversion durch Alt-Anfragen ohne Unique Visitors. */
+  const from =
+    range.from < CONVERSION_STATS_START_DAY ? CONVERSION_STATS_START_DAY : range.from;
+  const to = range.to;
+
+  if (to < CONVERSION_STATS_START_DAY || from > to) {
+    return { ok: true, data: emptyConversionStats(range.from, range.to, scope) };
+  }
 
   try {
     const [visitorsRes, kindsRes] = await Promise.all([
@@ -761,24 +840,50 @@ export async function fetchConversionStatsAction(
       };
     });
 
+    const daysObserved = Math.max(1, series.length);
+    const visitorsPerDayIst = visitorsTotal / daysObserved;
     const visitorYs = series.map((p) => p.visitors);
     const cvrYs = series.map((p) => p.conversionPercent ?? 0);
     const visitorTrend = linearRegression(visitorYs);
     const cvrTrend = linearRegression(cvrYs);
     const avgCvr = conversionRatePercent(completionsTotal, visitorsTotal) ?? 0;
 
+    const lastIdx = Math.max(0, series.length - 1);
+    const visitorsPerDayPrognose = visitorTrend
+      ? predictLinear(visitorTrend, lastIdx)
+      : visitorsPerDayIst;
+
+    const istPrognoseRows: IstPrognoseRow[] = [
+      ...channels.map((ch) =>
+        buildIstPrognoseRow(
+          ch.id,
+          ch.label,
+          ch.completions,
+          daysObserved,
+          visitorsTotal,
+          visitorsPerDayPrognose,
+        ),
+      ),
+      buildIstPrognoseRow(
+        "gesamt",
+        "Gesamt (alle Formulare)",
+        completionsTotal,
+        daysObserved,
+        visitorsTotal,
+        visitorsPerDayPrognose,
+      ),
+    ];
+
     let forecast: ConversionForecast | null = null;
     const forecastSeries: ConversionSeriesPoint[] = [];
 
-    if (visitorTrend && visitorsTotal > 0) {
-      const lastIdx = Math.max(0, series.length - 1);
-      const visitorsPerDay = predictLinear(visitorTrend, lastIdx);
-      const completionsPerDay = visitorsPerDay * (avgCvr / 100);
+    if (visitorsTotal > 0 || completionsTotal > 0) {
+      const completionsPerDay = visitorsPerDayPrognose * (avgCvr / 100);
       const forecastDays = 30;
       let completionsNext30 = 0;
       for (let i = 1; i <= forecastDays; i++) {
         const x = lastIdx + i;
-        const fv = predictLinear(visitorTrend, x);
+        const fv = visitorTrend ? predictLinear(visitorTrend, x) : visitorsPerDayIst;
         const fc = fv * (avgCvr / 100);
         completionsNext30 += fc;
         const fd = new Date(end);
@@ -789,18 +894,18 @@ export async function fetchConversionStatsAction(
           visitors: 0,
           completions: 0,
           conversionPercent: null,
-          forecastVisitors: Math.round(fv * 10) / 10,
-          forecastCompletions: Math.round(fc * 100) / 100,
+          forecastVisitors: round1(fv),
+          forecastCompletions: round2(fc),
         });
       }
       forecast = {
-        visitorsPerDay: Math.round(visitorsPerDay * 10) / 10,
-        avgConversionPercent: Math.round(avgCvr * 100) / 100,
-        completionsPerDay: Math.round(completionsPerDay * 100) / 100,
-        completionsNext30Days: Math.round(completionsNext30 * 10) / 10,
-        visitorSlopePerDay: Math.round(visitorTrend.slope * 100) / 100,
+        visitorsPerDay: round1(visitorsPerDayPrognose),
+        avgConversionPercent: round2(avgCvr),
+        completionsPerDay: round2(completionsPerDay),
+        completionsNext30Days: round1(completionsNext30),
+        visitorSlopePerDay: round2(visitorTrend?.slope ?? 0),
         conversionSlopePerDay: Math.round((cvrTrend?.slope ?? 0) * 1000) / 1000,
-        trendLabel: buildConversionTrendLabel(visitorTrend.slope, cvrTrend?.slope ?? 0),
+        trendLabel: buildConversionTrendLabel(visitorTrend?.slope ?? 0, cvrTrend?.slope ?? 0),
       };
     }
 
@@ -815,6 +920,13 @@ export async function fetchConversionStatsAction(
         series,
         forecastSeries,
         forecast,
+        istPrognose: {
+          daysObserved,
+          visitorsPerDayIst: round1(visitorsPerDayIst),
+          visitorsPerDayPrognose: round1(visitorsPerDayPrognose),
+          rows: istPrognoseRows,
+        },
+        trackingStartDay: CONVERSION_STATS_START_DAY,
       },
     };
   } catch (e) {
