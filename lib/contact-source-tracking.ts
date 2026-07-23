@@ -1,6 +1,7 @@
 import { createSupabaseServiceRoleClient } from "@/lib/supabase/service";
 import { isValidContactSource, isValidKarriereContactSource } from "@/lib/contact-source";
 import { analyticsDayBerlin } from "@/lib/site-analytics/berlin-day";
+import { isConversionTrackingDay } from "@/lib/site-analytics/conversion-stats-start";
 
 export type ContactSourceKind =
   | "contact"
@@ -49,6 +50,16 @@ export async function recordContactSource(
     });
     if (res?.error) {
       console.warn("[contact-source] RPC fehlgeschlagen:", res.error.message);
+    }
+    /** Separater Zähler nur für „Besucher & Conversion“ – startet leer, ohne Altbestand. */
+    if (isConversionTrackingDay(day)) {
+      const conv = await (svc as any).rpc("increment_site_conversion_completion", {
+        p_day: day,
+        p_kind: kind,
+      });
+      if (conv?.error) {
+        console.warn("[contact-source/conversion] RPC fehlgeschlagen:", conv.error.message);
+      }
     }
   } catch (e) {
     console.warn(

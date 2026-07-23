@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import {
+  Area,
   CartesianGrid,
   ComposedChart,
   Legend,
@@ -12,11 +13,12 @@ import {
   YAxis,
 } from "recharts";
 import {
-  CONVERSION_STATS_START_DAY,
   fetchConversionStatsAction,
   type ContactStatsScope,
+  type ConversionChannelSummary,
   type ConversionStatsResult,
 } from "@/lib/actions/admin-homepage-analytics";
+import { CONVERSION_STATS_START_DAY } from "@/lib/site-analytics/conversion-stats-start";
 import { CHART_AMBER, CHART_AXIS_TICK, CHART_EMERALD, CHART_GRID, CHART_TEAL } from "@/components/partner/partner-chart-theme";
 import { strokeForChannelGroup, type ContactChannelGroupId } from "@/components/partner/admin/contact-sources-admin-kind-labels";
 
@@ -121,6 +123,29 @@ export function AdminConversionStatistikPanel({ chartYear }: Props) {
 
   const showCharts = !loading && !err && data && scope !== "tag" && chartData.length > 0;
 
+  function channelChartData(ch: ConversionChannelSummary) {
+    const hist = ch.series.map((p) => ({
+      label: p.label,
+      day: p.day,
+      visitors: p.visitors,
+      completions: p.completions,
+      cvr: p.conversionPercent ?? 0,
+      forecastVisitors: null as number | null,
+      forecastCompletions: null as number | null,
+    }));
+    if (scope === "tag" || ch.forecastSeries.length === 0) return hist;
+    const forecast = ch.forecastSeries.map((p) => ({
+      label: p.label,
+      day: p.day,
+      visitors: null as number | null,
+      completions: null as number | null,
+      cvr: null as number | null,
+      forecastVisitors: p.forecastVisitors ?? null,
+      forecastCompletions: p.forecastCompletions ?? null,
+    }));
+    return [...hist, ...forecast];
+  }
+
   return (
     <div className="space-y-8">
       <div className="space-y-3">
@@ -130,13 +155,14 @@ export function AdminConversionStatistikPanel({ chartYear }: Props) {
           role="note"
         >
           Wichtig: In diesem Bereich werden Besucher und Anfragen erst ab dem {TRACKING_START_LABEL}{" "}
-          gewertet. Daten davor fließen hier nicht ein (sonst wäre die Conversion verfälscht). Ältere
-          Anfragen bleiben unter „Anfragen nach Kanal“ und den übrigen Statistik-Kacheln sichtbar.
+          gewertet – Zähler starten bei&nbsp;0 (eigene Tabelle, ohne Altbestand). Tag / Monat / Jahr
+          zeigen hier also keine historischen Anfragen. Ältere Anfragen bleiben unverändert unter
+          „Anfragen nach Kanal“ und den übrigen Statistik-Kacheln.
         </p>
         <p className="text-sm text-neutral-600">
-          Zählt Unique Visitors mit Statistik-Cookie-Einwilligung (ein Besucher pro Tag, nicht Klicks).
-          Daraus entstehen IST-Werte (bisheriger Schnitt) und Voraussichtlich-Werte (Prognose) für
-          Anfragen pro Tag, Monat und Jahr – je Formular und gesamt.
+          Unique Visitors (Statistik-Cookie) plus abgeschlossene Formulare – getrennt nach Bereich
+          (Kontakt, Karriere, Pflegebox, Landingpage …), jeweils mit eigener Conversion, IST/Voraussichtlich
+          und Trendkurve.
         </p>
       </div>
 
@@ -269,6 +295,47 @@ export function AdminConversionStatistikPanel({ chartYear }: Props) {
             ) : null}
           </section>
 
+          <section aria-labelledby="cv-areas-nav-heading" className="space-y-3">
+            <div>
+              <h4 id="cv-areas-nav-heading" className="text-base font-bold text-[#0F4F68]">
+                Bereiche getrennt · {periodLabel}
+              </h4>
+              <p className="mt-1 text-sm text-neutral-600">
+                Jeder Eingangsweg hat eigene Anfragen, Conversion, IST/Voraussichtlich und Trend. Antippen
+                springt zum Detail.
+              </p>
+            </div>
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
+              {data.channels.map((ch) => (
+                <a
+                  key={ch.id}
+                  href={`#cv-bereich-${ch.id}`}
+                  className={`rounded-xl border-2 p-3 transition hover:border-[#0F4F68]/35 hover:bg-[#F2F9FA] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68]/30 ${
+                    ch.completions > 0
+                      ? "border-[#0F4F68]/18 bg-white"
+                      : "border-neutral-100 bg-neutral-50/80"
+                  }`}
+                >
+                  <p className="flex items-center gap-2 text-[0.65rem] font-bold uppercase tracking-wide text-[#0F4F68]/75">
+                    <span
+                      className="inline-block h-2 w-2 rounded-full"
+                      style={{ backgroundColor: strokeForChannelGroup(ch.id as ContactChannelGroupId) }}
+                      aria-hidden
+                    />
+                    {ch.label}
+                  </p>
+                  <p className="mt-1 text-2xl font-bold tabular-nums leading-none text-[#0F4F68]">
+                    {ch.completions.toLocaleString("de-DE")}
+                  </p>
+                  <p className="mt-1 text-[0.7rem] text-neutral-500">
+                    {formatPct(ch.conversionPercent)} Conv.
+                    {ch.sharePercent != null ? ` · ${formatNum(ch.sharePercent, 0)} % Anteil` : ""}
+                  </p>
+                </a>
+              ))}
+            </div>
+          </section>
+
           <section aria-labelledby="cv-ist-prognose-heading" className="space-y-3">
             <div>
               <h4 id="cv-ist-prognose-heading" className="text-base font-bold text-[#0F4F68]">
@@ -379,46 +446,211 @@ export function AdminConversionStatistikPanel({ chartYear }: Props) {
             </p>
           </section>
 
-          <section aria-labelledby="cv-channels-heading" className="space-y-3">
-            <h4 id="cv-channels-heading" className="text-base font-bold text-[#0F4F68]">
-              Conversion je Formular
-            </h4>
-            <div className="overflow-x-auto rounded-2xl border border-neutral-200">
-              <table className="min-w-full text-left text-sm">
-                <thead className="bg-[#F2F9FA] text-xs font-bold uppercase tracking-wide text-[#0F4F68]/80">
-                  <tr>
-                    <th className="px-4 py-3">Formular</th>
-                    <th className="px-4 py-3 text-right">Anfragen</th>
-                    <th className="px-4 py-3 text-right">Conversion</th>
-                    <th className="px-4 py-3 text-right">Besucher / Anfrage</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {data.channels.map((ch) => (
-                    <tr key={ch.id} className="border-t border-neutral-100">
-                      <td className="px-4 py-2.5 font-medium text-neutral-900">
+          <div className="space-y-6">
+            <h4 className="text-base font-bold text-[#0F4F68]">Detail je Bereich</h4>
+            {data.channels.map((ch) => {
+              const color = strokeForChannelGroup(ch.id as ContactChannelGroupId);
+              const chChart = channelChartData(ch);
+              const showChChart = scope !== "tag" && chChart.length > 0;
+              return (
+                <section
+                  key={ch.id}
+                  id={`cv-bereich-${ch.id}`}
+                  className="scroll-mt-6 space-y-4 rounded-2xl border border-[#0F4F68]/12 bg-[#F8FBFC] p-4 sm:p-5"
+                  aria-labelledby={`cv-bereich-heading-${ch.id}`}
+                >
+                  <div className="flex flex-wrap items-start justify-between gap-3">
+                    <div>
+                      <h5
+                        id={`cv-bereich-heading-${ch.id}`}
+                        className="flex items-center gap-2 text-base font-bold text-[#0F4F68]"
+                      >
                         <span
-                          className="mr-2 inline-block h-2.5 w-2.5 rounded-full"
-                          style={{
-                            backgroundColor: strokeForChannelGroup(ch.id as ContactChannelGroupId),
-                          }}
+                          className="inline-block h-3 w-3 rounded-full"
+                          style={{ backgroundColor: color }}
                           aria-hidden
                         />
                         {ch.label}
-                      </td>
-                      <td className="px-4 py-2.5 text-right tabular-nums font-semibold">
+                      </h5>
+                      <p className="mt-1 text-sm text-neutral-600">{ch.trendLabel}</p>
+                    </div>
+                    <p className="rounded-xl bg-white px-4 py-2 text-right shadow-sm ring-1 ring-[#0F4F68]/10">
+                      <span className="block text-[0.65rem] font-bold uppercase text-[#0F4F68]/70">
+                        Anfragen · {periodLabel}
+                      </span>
+                      <span className="text-2xl font-bold tabular-nums text-[#0F4F68]">
                         {ch.completions.toLocaleString("de-DE")}
-                      </td>
-                      <td className="px-4 py-2.5 text-right tabular-nums">{formatPct(ch.conversionPercent)}</td>
-                      <td className="px-4 py-2.5 text-right tabular-nums">
-                        {formatNum(ch.visitorsPerCompletion, 1)}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </section>
+                      </span>
+                    </p>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+                    <div className="rounded-xl bg-white px-3 py-2 ring-1 ring-neutral-200">
+                      <p className="text-[0.65rem] font-bold uppercase text-neutral-500">Conversion</p>
+                      <p className="text-lg font-bold tabular-nums text-emerald-700">
+                        {formatPct(ch.conversionPercent)}
+                      </p>
+                    </div>
+                    <div className="rounded-xl bg-white px-3 py-2 ring-1 ring-neutral-200">
+                      <p className="text-[0.65rem] font-bold uppercase text-neutral-500">Anteil</p>
+                      <p className="text-lg font-bold tabular-nums text-neutral-900">
+                        {ch.sharePercent != null ? `${formatNum(ch.sharePercent, 0)} %` : "–"}
+                      </p>
+                    </div>
+                    <div className="rounded-xl bg-white px-3 py-2 ring-1 ring-neutral-200">
+                      <p className="text-[0.65rem] font-bold uppercase text-neutral-500">IST / Tag</p>
+                      <p className="text-lg font-bold tabular-nums text-neutral-900">
+                        {formatNum(ch.istPrognose.ist.perDay, 2)}
+                      </p>
+                    </div>
+                    <div className="rounded-xl bg-white px-3 py-2 ring-1 ring-neutral-200">
+                      <p className="text-[0.65rem] font-bold uppercase text-neutral-500">Vorauss. / Tag</p>
+                      <p className="text-lg font-bold tabular-nums text-emerald-800">
+                        {formatNum(ch.istPrognose.prognose.perDay, 2)}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="overflow-x-auto rounded-xl border border-neutral-200 bg-white">
+                    <table className="min-w-full text-left text-sm">
+                      <thead className="bg-[#F2F9FA] text-xs font-bold uppercase text-[#0F4F68]/80">
+                        <tr>
+                          <th className="px-3 py-2" />
+                          <th className="px-3 py-2 text-right">/ Tag</th>
+                          <th className="px-3 py-2 text-right">/ Monat</th>
+                          <th className="px-3 py-2 text-right">/ Jahr</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr className="border-t border-neutral-100">
+                          <td className="px-3 py-2 font-medium">IST</td>
+                          <td className="px-3 py-2 text-right tabular-nums">
+                            {formatNum(ch.istPrognose.ist.perDay, 2)}
+                          </td>
+                          <td className="px-3 py-2 text-right tabular-nums">
+                            {formatNum(ch.istPrognose.ist.perMonth, 1)}
+                          </td>
+                          <td className="px-3 py-2 text-right tabular-nums">
+                            {formatNum(ch.istPrognose.ist.perYear, 1)}
+                          </td>
+                        </tr>
+                        <tr className="border-t border-neutral-100">
+                          <td className="px-3 py-2 font-medium text-emerald-800">Voraussichtlich</td>
+                          <td className="px-3 py-2 text-right tabular-nums text-emerald-800">
+                            {formatNum(ch.istPrognose.prognose.perDay, 2)}
+                          </td>
+                          <td className="px-3 py-2 text-right tabular-nums text-emerald-800">
+                            {formatNum(ch.istPrognose.prognose.perMonth, 1)}
+                          </td>
+                          <td className="px-3 py-2 text-right tabular-nums text-emerald-800">
+                            {formatNum(ch.istPrognose.prognose.perYear, 1)}
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+
+                  {ch.forecast ? (
+                    <p className="text-sm text-neutral-700">
+                      Nächste 30 Tage erwartet:{" "}
+                      <strong className="tabular-nums">
+                        {formatNum(ch.forecast.completionsNext30Days, 1)}
+                      </strong>{" "}
+                      Anfragen ({formatNum(ch.forecast.completionsPerDay, 2)}/Tag) · Besucher/Anfrage:{" "}
+                      <strong className="tabular-nums">{formatNum(ch.visitorsPerCompletion, 1)}</strong>
+                    </p>
+                  ) : null}
+
+                  {showChChart ? (
+                    <div
+                      className="h-[min(240px,42vh)] w-full min-h-[190px]"
+                      role="img"
+                      aria-label={`Verlauf ${ch.label}`}
+                    >
+                      <ResponsiveContainer width="100%" height="100%">
+                        <ComposedChart data={chChart} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
+                          <CartesianGrid stroke={CHART_GRID} strokeDasharray="3 3" />
+                          <XAxis
+                            dataKey="label"
+                            tick={{ fill: CHART_AXIS_TICK, fontSize: 10 }}
+                            minTickGap={20}
+                          />
+                          <YAxis
+                            yAxisId="count"
+                            tick={{ fill: CHART_AXIS_TICK, fontSize: 11 }}
+                            allowDecimals={false}
+                            width={36}
+                          />
+                          <YAxis
+                            yAxisId="pct"
+                            orientation="right"
+                            tick={{ fill: CHART_AXIS_TICK, fontSize: 11 }}
+                            unit="%"
+                            width={40}
+                          />
+                          <Tooltip
+                            contentStyle={{ borderRadius: 12, borderColor: "#d4e4ea" }}
+                            formatter={(value: number | string, name: string) => {
+                              const n = typeof value === "number" ? value : Number(value);
+                              if (name === "Conversion %") {
+                                return [
+                                  `${n.toLocaleString("de-DE", { maximumFractionDigits: 2 })} %`,
+                                  name,
+                                ];
+                              }
+                              return [n.toLocaleString("de-DE", { maximumFractionDigits: 2 }), name];
+                            }}
+                          />
+                          <Legend />
+                          <Area
+                            yAxisId="count"
+                            type="monotone"
+                            dataKey="completions"
+                            name="Anfragen"
+                            stroke={color}
+                            fill={color}
+                            fillOpacity={0.15}
+                            strokeWidth={2}
+                            dot={false}
+                            connectNulls={false}
+                          />
+                          <Line
+                            yAxisId="pct"
+                            type="monotone"
+                            dataKey="cvr"
+                            name="Conversion %"
+                            stroke={CHART_AMBER}
+                            strokeWidth={2}
+                            dot={false}
+                            connectNulls={false}
+                          />
+                          <Line
+                            yAxisId="count"
+                            type="monotone"
+                            dataKey="forecastCompletions"
+                            name="Prognose Anfragen"
+                            stroke={color}
+                            strokeWidth={2}
+                            strokeDasharray="6 4"
+                            dot={false}
+                            connectNulls
+                          />
+                        </ComposedChart>
+                      </ResponsiveContainer>
+                    </div>
+                  ) : null}
+
+                  {scope === "tag" ? (
+                    <p className="text-sm text-neutral-600">
+                      {ch.completions === 0
+                        ? "Keine Anfragen an diesem Tag über diesen Bereich."
+                        : `${ch.completions.toLocaleString("de-DE")} Anfrage${ch.completions === 1 ? "" : "n"} an diesem Tag.`}
+                    </p>
+                  ) : null}
+                </section>
+              );
+            })}
+          </div>
 
           {data.forecast ? (
             <section
