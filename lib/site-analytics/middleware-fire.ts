@@ -3,6 +3,7 @@ import type { NextRequest } from "next/server";
 import { analyticsDayBerlin } from "@/lib/site-analytics/berlin-day";
 import { deviceCategoryFromHeaders } from "@/lib/site-analytics/device-category";
 import { normalizePathForSiteAnalytics, shouldRecordSitePageView } from "@/lib/site-analytics/record-page-view";
+import { shouldCountUniqueVisitorDocument } from "@/lib/site-analytics/unique-visitor";
 
 let supabaseSingleton: ReturnType<typeof createClient> | null = null;
 
@@ -37,4 +38,26 @@ export function fireSitePageViewIfEligible(request: NextRequest, pathnameForAnal
     .then((res: { error: { message: string } | null }) => {
       if (res.error) console.warn("[site-analytics]", res.error.message);
     });
+}
+
+/**
+ * Unique Visitor (+1 / Berlin-Tag) – nur wenn noch kein Tages-Cookie gesetzt.
+ * Rückgabe: Tag für Set-Cookie, sonst null (bereits gezählt / nicht zählbar / kein Supabase).
+ */
+export function fireUniqueVisitorIfEligible(
+  request: NextRequest,
+  pathnameForAnalytics: string,
+): string | null {
+  if (!shouldCountUniqueVisitorDocument(request, pathnameForAnalytics)) return null;
+  const supabase = getServiceSupabaseForAnalytics();
+  if (!supabase) return null;
+
+  const day = analyticsDayBerlin();
+  /* eslint-disable @typescript-eslint/no-explicit-any -- RPC nicht im generierten DB-Typ */
+  void (supabase as any)
+    .rpc("increment_site_unique_visitor", { p_day: day })
+    .then((res: { error: { message: string } | null }) => {
+      if (res.error) console.warn("[site-analytics/unique]", res.error.message);
+    });
+  return day;
 }

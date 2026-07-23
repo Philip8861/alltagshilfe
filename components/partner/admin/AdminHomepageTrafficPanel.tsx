@@ -266,7 +266,7 @@ export function AdminHomepageTrafficPanel({ chartYear, activeSection }: Props) {
           disabled={resetBusy}
           onClick={async () => {
             const ok = window.confirm(
-              "Alle Homepage-Aufrufstatistiken unwiderruflich löschen? (Alle Tage, Pfade und Geräte – Zähler starten bei null. Auch Ratgeber-Live-Zähler basieren auf denselben Daten.)",
+              "Alle Homepage-Aufruf- und Unique-Visitor-Statistiken unwiderruflich löschen? (Alle Tage, Pfade, Geräte und Besucher – Zähler starten bei null. Auch Ratgeber-Live-Zähler basieren auf denselben Daten.)",
             );
             if (!ok) return;
             setResetBusy(true);

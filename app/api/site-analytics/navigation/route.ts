@@ -7,6 +7,10 @@ import {
   normalizePathForSiteAnalytics,
   shouldRecordClientSpaNavigation,
 } from "@/lib/site-analytics/record-page-view";
+import {
+  applyUniqueVisitorDayCookie,
+  shouldCountUniqueVisitorSpa,
+} from "@/lib/site-analytics/unique-visitor";
 import { hasAnalyticsConsentFromCookieValue } from "@/lib/consent-server";
 import { rateLimitSiteAnalyticsNavigation } from "@/lib/rate-limit";
 import { createSupabaseServiceRoleClient } from "@/lib/supabase/service";
@@ -75,6 +79,7 @@ export async function POST(request: NextRequest) {
 
   const day = analyticsDayBerlin();
   const device = deviceCategoryFromHeaders(request.headers);
+  const countUnique = shouldCountUniqueVisitorSpa(request, normalized);
 
   /* eslint-disable @typescript-eslint/no-explicit-any */
   const { error } = await (svc as any).rpc("increment_site_page_view", {
@@ -87,5 +92,14 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ ok: false }, { status: 500 });
   }
 
-  return NextResponse.json({ ok: true });
+  if (countUnique) {
+    const uniqueRes = await (svc as any).rpc("increment_site_unique_visitor", { p_day: day });
+    if (uniqueRes.error) {
+      console.warn("[site-analytics/navigation/unique]", uniqueRes.error.message);
+    }
+  }
+
+  const res = NextResponse.json({ ok: true });
+  if (countUnique) applyUniqueVisitorDayCookie(res, day);
+  return res;
 }

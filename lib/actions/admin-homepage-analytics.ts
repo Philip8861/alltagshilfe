@@ -2,6 +2,12 @@
 
 import { revalidatePath } from "next/cache";
 import {
+  conversionRatePercent,
+  linearRegression,
+  predictLinear,
+  visitorsPerCompletion,
+} from "@/lib/site-analytics/conversion-forecast";
+import {
   calendarDayBounds,
   calendarMonthBounds,
   calendarYearBounds,
@@ -248,7 +254,8 @@ export async function fetchHomepageDeviceBreakdownAction(
 }
 
 /**
- * Löscht alle aggregierten Homepage-Seitenaufrufe (`site_page_views_daily`).
+ * Löscht alle aggregierten Homepage-Seitenaufrufe (`site_page_views_daily`)
+ * und Unique Visitors (`site_unique_visitors_daily`).
  * Nur System-Admin; nicht rückgängig zu machen.
  */
 export async function resetHomepageSiteAnalyticsAction(): Promise<
@@ -259,9 +266,11 @@ export async function resetHomepageSiteAnalyticsAction(): Promise<
   if (!svc) return { ok: false, message: "Service nicht konfiguriert." };
 
   try {
-    /* PostgREST verlangt einen Filter; alle Zeilen haben views >= 0 */
+    /* PostgREST verlangt einen Filter; alle Zeilen haben views/visitors >= 0 */
     const { error } = await svc.from("site_page_views_daily").delete().gte("views", 0);
     if (error) throw new Error(error.message);
+    const { error: uniqueErr } = await svc.from("site_unique_visitors_daily").delete().gte("visitors", 0);
+    if (uniqueErr) throw new Error(uniqueErr.message);
     revalidatePath("/partner/admin");
     return { ok: true };
   } catch (e) {
@@ -554,5 +563,263 @@ export async function resetContactSourceStatsAction(): Promise<
   } catch (e) {
     console.error("[resetContactSourceStatsAction]", e);
     return { ok: false, message: "Zähler konnten nicht zurückgesetzt werden." };
+  }
+}
+
+/* ───────────── Unique Visitors × Formular-Conversion ───────────── */
+
+/** Kanal-Gruppen für Conversion (gleiche Struktur wie Admin-UI). */
+const CONVERSION_CHANNEL_GROUPS: { id: string; label: string; kinds: readonly string[] }[] = [
+  { id: "contact", label: "Kontaktformular", kinds: ["contact"] },
+  { id: "hilfefinder", label: "Hilfe-Finder", kinds: ["hilfefinder"] },
+  {
+    id: "landingpage-social-media",
+    label: "Landingpage Social Media",
+    kinds: ["landingpage-social-media"],
+  },
+  { id: "ratgeber", label: "Ratgeber", kinds: ["ratgeber"] },
+  { id: "pflegebox", label: "Pflegebox", kinds: ["pflegebox"] },
+  { id: "betrieblich-angebot", label: "Betriebliches Angebot", kinds: ["betrieblich-angebot"] },
+  {
+    id: "karriere",
+    label: "Karriere",
+    kinds: ["karriere", "karriere-form", "karriere-wizard"],
+  },
+];
+
+export type ConversionChannelSummary = {
+  id: string;
+  label: string;
+  completions: number;
+  conversionPercent: number | null;
+  visitorsPerCompletion: number | null;
+};
+
+export type ConversionSeriesPoint = {
+  label: string;
+  day: string;
+  visitors: number;
+  completions: number;
+  conversionPercent: number | null;
+  /** Prognose-Besucher (nur Forecast-Punkte). */
+  forecastVisitors?: number | null;
+  /** Prognose-Anfragen (nur Forecast-Punkte). */
+  forecastCompletions?: number | null;
+};
+
+export type ConversionForecast = {
+  /** Erwartete Besucher pro Tag (Trendende der Historie). */
+  visitorsPerDay: number;
+  /** Durchschnittliche Conversion-Rate (0…100) im Zeitraum. */
+  avgConversionPercent: number;
+  /** Erwartete Anfragen pro Tag = visitorsPerDay × Rate. */
+  completionsPerDay: number;
+  /** Erwartete Anfragen in den nächsten 30 Tagen. */
+  completionsNext30Days: number;
+  /** Trendsteigung Besucher/Tag (positiv = steigend). */
+  visitorSlopePerDay: number;
+  /** Trendsteigung Conversion-Punkte/Tag. */
+  conversionSlopePerDay: number;
+  /** Kurze Textbewertung. */
+  trendLabel: string;
+};
+
+export type ConversionStatsResult = {
+  visitorsTotal: number;
+  completionsTotal: number;
+  conversionPercent: number | null;
+  visitorsPerCompletion: number | null;
+  channels: ConversionChannelSummary[];
+  series: ConversionSeriesPoint[];
+  forecastSeries: ConversionSeriesPoint[];
+  forecast: ConversionForecast | null;
+};
+
+function parseVisitorDayRows(data: unknown): { bucket: string; visitor_count: number }[] {
+  if (!Array.isArray(data)) return [];
+  return data.map((r) => {
+    const row = r as Record<string, unknown>;
+    const b = row.bucket ?? row.day;
+    const bucket =
+      typeof b === "string" ? b.slice(0, 10) : b instanceof Date ? b.toISOString().slice(0, 10) : String(b ?? "");
+    return { bucket, visitor_count: Number(row.visitor_count ?? 0) };
+  });
+}
+
+function sumKindsForDay(kindMap: Map<string, number> | undefined, kinds: readonly string[]): number {
+  if (!kindMap) return 0;
+  return kinds.reduce((acc, k) => acc + (kindMap.get(k) ?? 0), 0);
+}
+
+function buildConversionTrendLabel(visitorSlope: number, conversionSlope: number): string {
+  const vUp = visitorSlope > 0.05;
+  const vDown = visitorSlope < -0.05;
+  const cUp = conversionSlope > 0.01;
+  const cDown = conversionSlope < -0.01;
+  if (vUp && cUp) return "Besucher und Conversion steigen – Anfragen wachsen überproportional.";
+  if (vUp && cDown) return "Mehr Besucher, aber sinkende Conversion – Anfragen halten nicht Schritt.";
+  if (vDown && cUp) return "Weniger Besucher, aber bessere Conversion – Qualität der Besucher steigt.";
+  if (vDown && cDown) return "Besucher und Conversion sinken – Anfragen gehen zurück.";
+  if (vUp) return "Besucher steigen, Conversion weitgehend stabil.";
+  if (vDown) return "Besucher sinken, Conversion weitgehend stabil.";
+  if (cUp) return "Conversion steigt bei stabilen Besucherzahlen.";
+  if (cDown) return "Conversion sinkt bei stabilen Besucherzahlen.";
+  return "Besucher und Conversion sind im Zeitraum weitgehend stabil.";
+}
+
+/**
+ * Unique Visitors (Statistik-Consent) × abgeschlossene Formulare im Zeitraum.
+ * Tages-Serie inkl. Conversion-Rate; Prognose aus linearem Besuchstrend × Ø-Conversion.
+ */
+export async function fetchConversionStatsAction(
+  year: number,
+  month: number,
+  scope: ContactStatsScope,
+  day: number = 1,
+): Promise<{ ok: true; data: ConversionStatsResult } | { ok: false; message: string }> {
+  if (!(await getSystemAdminSession())) return { ok: false, message: "Nicht angemeldet." };
+  const svc = createSupabaseServiceRoleClient();
+  if (!svc) return { ok: false, message: "Service nicht konfiguriert." };
+
+  const y = Math.min(2100, Math.max(YEAR_RANGE_START, Math.floor(year)));
+  const m = Math.min(12, Math.max(1, Math.floor(month)));
+  const { from, to } = contactStatsRange(y, m, scope, day);
+
+  try {
+    const [visitorsRes, kindsRes] = await Promise.all([
+      svcRpc(svc, "admin_site_unique_visitors_by_day", { p_from: from, p_to: to }),
+      svcRpc(svc, "admin_contact_kind_totals_by_day", { p_from: from, p_to: to }),
+    ]);
+    if (visitorsRes.error) {
+      throw new Error(
+        visitorsRes.error.message.includes("function") || visitorsRes.error.message.includes("does not exist")
+          ? "Unique-Visitor-Auswertung fehlt (Migration 031 ausgeführt?)."
+          : visitorsRes.error.message,
+      );
+    }
+    if (kindsRes.error) throw new Error(kindsRes.error.message);
+
+    const visitorByDay = new Map<string, number>();
+    for (const r of parseVisitorDayRows(visitorsRes.data)) {
+      if (r.bucket) visitorByDay.set(r.bucket.slice(0, 10), r.visitor_count);
+    }
+
+    const kindsByDay = new Map<string, Map<string, number>>();
+    for (const r of parseContactKindDailyRows(kindsRes.data)) {
+      const inner = kindsByDay.get(r.day) ?? new Map<string, number>();
+      inner.set(r.kind, (inner.get(r.kind) ?? 0) + r.view_count);
+      kindsByDay.set(r.day, inner);
+    }
+
+    const start = new Date(`${from}T12:00:00`);
+    const end = new Date(`${to}T12:00:00`);
+    const series: ConversionSeriesPoint[] = [];
+    let visitorsTotal = 0;
+    let completionsTotal = 0;
+    const channelTotals = new Map<string, number>();
+
+    for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
+      const key = d.toISOString().slice(0, 10);
+      const visitors = visitorByDay.get(key) ?? 0;
+      const kindMap = kindsByDay.get(key);
+      let dayCompletions = 0;
+      for (const g of CONVERSION_CHANNEL_GROUPS) {
+        const n = sumKindsForDay(kindMap, g.kinds);
+        dayCompletions += n;
+        channelTotals.set(g.id, (channelTotals.get(g.id) ?? 0) + n);
+      }
+      // Unbekannte kinds nicht verlieren
+      if (kindMap) {
+        const known = new Set(CONVERSION_CHANNEL_GROUPS.flatMap((g) => [...g.kinds]));
+        for (const [kind, n] of kindMap) {
+          if (!known.has(kind)) dayCompletions += n;
+        }
+      }
+      visitorsTotal += visitors;
+      completionsTotal += dayCompletions;
+      const label =
+        scope === "jahr"
+          ? d.toLocaleDateString("de-DE", { day: "2-digit", month: "short" })
+          : d.toLocaleDateString("de-DE", { weekday: "short", day: "2-digit", month: "short" });
+      series.push({
+        label,
+        day: key,
+        visitors,
+        completions: dayCompletions,
+        conversionPercent: conversionRatePercent(dayCompletions, visitors),
+      });
+    }
+
+    const channels: ConversionChannelSummary[] = CONVERSION_CHANNEL_GROUPS.map((g) => {
+      const completions = channelTotals.get(g.id) ?? 0;
+      return {
+        id: g.id,
+        label: g.label,
+        completions,
+        conversionPercent: conversionRatePercent(completions, visitorsTotal),
+        visitorsPerCompletion: visitorsPerCompletion(visitorsTotal, completions),
+      };
+    });
+
+    const visitorYs = series.map((p) => p.visitors);
+    const cvrYs = series.map((p) => p.conversionPercent ?? 0);
+    const visitorTrend = linearRegression(visitorYs);
+    const cvrTrend = linearRegression(cvrYs);
+    const avgCvr = conversionRatePercent(completionsTotal, visitorsTotal) ?? 0;
+
+    let forecast: ConversionForecast | null = null;
+    const forecastSeries: ConversionSeriesPoint[] = [];
+
+    if (visitorTrend && visitorsTotal > 0) {
+      const lastIdx = Math.max(0, series.length - 1);
+      const visitorsPerDay = predictLinear(visitorTrend, lastIdx);
+      const completionsPerDay = visitorsPerDay * (avgCvr / 100);
+      const forecastDays = 30;
+      let completionsNext30 = 0;
+      for (let i = 1; i <= forecastDays; i++) {
+        const x = lastIdx + i;
+        const fv = predictLinear(visitorTrend, x);
+        const fc = fv * (avgCvr / 100);
+        completionsNext30 += fc;
+        const fd = new Date(end);
+        fd.setDate(fd.getDate() + i);
+        forecastSeries.push({
+          label: fd.toLocaleDateString("de-DE", { day: "2-digit", month: "short" }),
+          day: fd.toISOString().slice(0, 10),
+          visitors: 0,
+          completions: 0,
+          conversionPercent: null,
+          forecastVisitors: Math.round(fv * 10) / 10,
+          forecastCompletions: Math.round(fc * 100) / 100,
+        });
+      }
+      forecast = {
+        visitorsPerDay: Math.round(visitorsPerDay * 10) / 10,
+        avgConversionPercent: Math.round(avgCvr * 100) / 100,
+        completionsPerDay: Math.round(completionsPerDay * 100) / 100,
+        completionsNext30Days: Math.round(completionsNext30 * 10) / 10,
+        visitorSlopePerDay: Math.round(visitorTrend.slope * 100) / 100,
+        conversionSlopePerDay: Math.round((cvrTrend?.slope ?? 0) * 1000) / 1000,
+        trendLabel: buildConversionTrendLabel(visitorTrend.slope, cvrTrend?.slope ?? 0),
+      };
+    }
+
+    return {
+      ok: true,
+      data: {
+        visitorsTotal,
+        completionsTotal,
+        conversionPercent: conversionRatePercent(completionsTotal, visitorsTotal),
+        visitorsPerCompletion: visitorsPerCompletion(visitorsTotal, completionsTotal),
+        channels,
+        series,
+        forecastSeries,
+        forecast,
+      },
+    };
+  } catch (e) {
+    console.error("[fetchConversionStatsAction]", e);
+    const msg = e instanceof Error ? e.message : "Conversion-Statistik konnte nicht geladen werden.";
+    return { ok: false, message: msg };
   }
 }

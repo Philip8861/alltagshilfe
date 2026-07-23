@@ -6,7 +6,8 @@ import {
   hasAnalyticsConsentFromCookieValue,
   hasTranslationConsentFromCookieValue,
 } from "@/lib/consent-server";
-import { fireSitePageViewIfEligible } from "@/lib/site-analytics/middleware-fire";
+import { fireSitePageViewIfEligible, fireUniqueVisitorIfEligible } from "@/lib/site-analytics/middleware-fire";
+import { applyUniqueVisitorDayCookie } from "@/lib/site-analytics/unique-visitor";
 import { applyPartnerSupabaseSession } from "@/lib/supabase/partner-middleware";
 import { buildContentSecurityPolicy } from "@/lib/security/content-security-policy";
 
@@ -113,6 +114,8 @@ export async function middleware(request: NextRequest) {
     applySecurityAndSeoHeaders(response, request, normalizedPath, search);
     if (!isSkippable && !isPartnerRoute && hasAnalyticsConsentFromCookieValue(consentCookie)) {
       fireSitePageViewIfEligible(request, normalizedPath);
+      const uniqueDay = fireUniqueVisitorIfEligible(request, normalizedPath);
+      if (uniqueDay) applyUniqueVisitorDayCookie(response, uniqueDay);
     }
     return response;
   } catch {

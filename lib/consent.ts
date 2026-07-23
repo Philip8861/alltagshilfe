@@ -144,6 +144,8 @@ export function revokeOptionalConsent(): void {
   }
 
   erase("googtrans");
+  /** Tages-Deduplizierung Unique Visitors (Statistik) – bei Widerruf entfernen. */
+  erase("ahs_uv_day");
 }
 
 /** True, wenn noch keine gültige Einwilligung für die aktuelle Policy-Version vorliegt. */
