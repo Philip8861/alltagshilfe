@@ -214,19 +214,19 @@ export function HeaderNav() {
                 {item.children ? (
                   <>
                     <div className="flex w-full items-stretch gap-1">
-                      <Link
-                        href={item.href}
-                        onClick={() => {
-                          setMobileOpen(false);
-                          setOpenMobileDropdown(null);
-                        }}
+                      <button
+                        type="button"
+                        onClick={() => setOpenMobileDropdown((open) => (open === item.href ? null : item.href))}
                         className={cn(
-                          "flex min-w-0 flex-1 items-center rounded-lg px-4 py-3 text-base font-semibold text-neutral-600 hover:bg-neutral-50 hover:text-neutral-900 focus:outline-none focus:ring-2 focus:ring-neutral-500 focus:ring-inset",
+                          "flex min-w-0 flex-1 items-center rounded-lg px-4 py-3 text-left text-base font-semibold text-neutral-600 hover:bg-neutral-50 hover:text-neutral-900 focus:outline-none focus:ring-2 focus:ring-neutral-500 focus:ring-inset",
                           navParentOrChildActive(item, pathname) && "bg-neutral-50 text-neutral-900"
                         )}
+                        aria-expanded={openMobileDropdown === item.href}
+                        aria-controls={`mobile-submenu-${item.href.replace(/\//g, "-")}`}
+                        id={`mobile-trigger-${item.href.replace(/\//g, "-")}`}
                       >
                         {item.label}
-                      </Link>
+                      </button>
                       <button
                         type="button"
                         onClick={() => setOpenMobileDropdown((open) => (open === item.href ? null : item.href))}
@@ -236,7 +236,6 @@ export function HeaderNav() {
                         )}
                         aria-expanded={openMobileDropdown === item.href}
                         aria-controls={`mobile-submenu-${item.href.replace(/\//g, "-")}`}
-                        id={`mobile-trigger-${item.href.replace(/\//g, "-")}`}
                         aria-label={`Untermenü ${item.label} öffnen oder schließen`}
                       >
                         <svg
