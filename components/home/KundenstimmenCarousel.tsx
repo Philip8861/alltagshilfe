@@ -12,6 +12,21 @@ type Bewertung = {
 
 const BEWERTUNGEN: Bewertung[] = [
   {
+    name: "K B",
+    meta: "Rezension aus Google · vor 2 Wochen",
+    text: "Wir haben 2 Jahre lang eng mit der Alltagshilfe zusammen gearbeitet, da wir eine Unterstützung der Pflege unserer Eltern benötigt haben. Die Zusammenarbeit verlief immer sehr positiv und wir wurden sowohl von den Kräften vor Ort als auch den Mitarbeitern der Alltagshilfe in den Büros sehr unterstützt. In den Pflegeberatungsgesprächen und auch während der allgemeinen Telefonate haben wir immer wertvolle Unterstützung bekommen, insbesondere im Bereich der möglichen finanziellen Unterstützung der Pflegekasse. Die Mitarbeiter, die unsere Eltern vor Ort unterstützt haben, waren immer sehr empathisch und haben ein wertvolles Feingefühl im Umgang mit den älteren Herrschaften entwickelt, so dass wir immer das gute Gefühl hatten, dass diese Zeit den Eltern gut tut. Wir sind sehr dankbar, dass wir diese wertvolle Unterstützung für unsere Eltern hatten und möchten die Alltagshilfe aus vollstem Herzen und aus tiefster Überzeugung weiterempfehlen.",
+  },
+  {
+    name: "Sabine Kühling",
+    meta: "Rezension aus Google · 5/5 · vor einem Monat",
+    text: "Sehr nette, freundliche und kompetente Beratung und Unterstützung. Frau Riegel kann alles verständlich machen. Meine Mutter fühlt sich gut mit der Alltagshilfe-Süd.",
+  },
+  {
+    name: "M. Fink (Monika)",
+    meta: "Local Guide · 16 Rezensionen · vor 4 Monaten",
+    text: "Auch wir haben sehr positive Erfahrungen mit der Alltagshilfe-Süd zu berichten. Die Erreichbarkeit ist telefonisch, per WhatsApp und per E-Mail wirklich sehr gut und Antwort erfolgt innerhalb kurzer Zeit. Die Termine werden eng mit den Betroffenen abgestimmt und auf die Bedürfnisse angepasst. Auch die Arbeiten selbst werden zuverlässig ausgeführt. Auf Wünsche oder Änderungen wird intensiv eingegangen und Lösungen erarbeitet und die Mitarbeiter sind engagiert. Auch die Geschäftsführung Hr. Sonntag kümmert sich im Bedarfsfall um eine schnelle Lösung. Soweit wir das beurteilen können, funktioniert das digitale Verwaltungs- und Kommunikationswesen auch sehr gut. Vielen Dank.",
+  },
+  {
     name: "Günter Bautz",
     meta: "Rezension aus Google · 5/5",
     text: "Ich freue mich, dass ich von einer so guten Organisation mit einer überaus freundlichen und kompetenten Mitarbeiterin, Frau Riegel betreut werde.",

@@ -31,6 +31,9 @@ const WELLEN_SVG_CLASS =
   "pointer-events-none absolute left-0 top-0 z-0 h-16 w-full -translate-y-7 sm:h-[clamp(2.85rem,1.5rem+3.8vw,5rem)] sm:-translate-y-[clamp(0.9rem,0.35rem+2.1vw,3.2rem)]";
 
 const ASSISTENZ_BEWERTUNGEN = [
+  "K B",
+  "Sabine Kühling",
+  "M. Fink (Monika)",
   "Günter Bautz",
   "TMy",
   "Tati",
