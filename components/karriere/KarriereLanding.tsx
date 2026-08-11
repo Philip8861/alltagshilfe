@@ -16,11 +16,15 @@ const STELLEN_WEISSER_RAHMEN =
   "rounded-[15px] border-[10px] border-solid border-white bg-white shadow-[0_10px_40px_rgba(15,79,104,0.07)] transition-shadow duration-300 hover:shadow-[0_16px_52px_rgba(15,79,104,0.11)]";
 
 /**
- * Bogen von Hero (#fafbfc) zu „Offene Stellen“ (#FFFFFF): eine nach oben offene Kurve,
- * unten geschlossen; sitzt am unteren Hero-Rand (bündig zur Bildunterkante bei items-end).
+ * Bogen von Hero (#fafbfc) zu weißem Folgebereich (#FFFFFF).
+ * Mobil kompakter Höhenwert; ab sm am Hero-Unterrand wie zuvor.
  */
 const KARRIERE_HERO_BOGEN_D =
   "M0,100 L0,52 Q600,4 1200,52 L1200,100 L0,100 Z";
+const KARRIERE_MOBILE_HERO_BOGEN_CLASS =
+  "pointer-events-none absolute inset-x-0 bottom-0 z-[9] h-10 w-full sm:hidden";
+const KARRIERE_DESKTOP_HERO_BOGEN_CLASS =
+  "pointer-events-none absolute inset-x-0 bottom-0 z-[9] hidden h-[clamp(3.5rem,2rem+4vw,5.25rem)] w-full sm:block";
 
 /** Welle am oberen Rand: Mint-Stellenband (#F2F9FA) bzw. Kontaktbereich (#FFFFFF), von der jeweils darüber liegenden Fläche herunter (vgl. HaushaltshilfeLanding). */
 const KARRIERE_KONTAKT_WELLEN_D =
@@ -428,39 +432,37 @@ export function KarriereLanding() {
           aria-labelledby="karriere-hero-heading"
           className="relative isolate z-0 min-w-0 overflow-x-clip overflow-y-visible bg-[#fafbfc] pb-0 pt-0"
         >
-          {/* Bild wie zuvor oben/rechts; Bogen unten bleibt separat am Hero-Rand. */}
-          <div className="relative min-h-[min(60vh,508px)] w-full sm:min-h-[min(56.8vh,478px)] lg:min-h-[min(54vh,448px)]">
-            <div className="pointer-events-none absolute right-0 top-0 bottom-0 z-0 w-[75%] max-w-[75vw] overflow-x-clip overflow-y-visible">
-              <div className="flex h-full justify-end overflow-visible">
+          {/* Mobil: kompaktes Layout (Bild → Text → Button → Bogen). Ab sm: wie zuvor mit Min-Höhe. */}
+          <div className="relative w-full max-sm:min-h-0 sm:min-h-[min(56.8vh,478px)] lg:min-h-[min(54vh,448px)]">
+            <div className="pointer-events-none absolute right-0 top-0 z-0 max-sm:h-[clamp(10.5rem,42vw,12.75rem)] max-sm:w-full sm:bottom-0 sm:h-auto sm:w-[75%] sm:max-w-[75vw] overflow-x-clip overflow-y-visible">
+              <div className="flex h-full justify-center overflow-visible max-sm:justify-center sm:justify-end">
                 <Image
                   src={HERO_IMG}
                   alt="Karriere bei der Alltagshilfe-Süd – Team und Arbeitgeber"
                   width={970}
                   height={495}
                   priority
-                  sizes="75vw"
-                  className="h-auto max-h-[min(60vh,508px)] w-auto max-w-full object-contain object-right object-top sm:max-h-[min(56.8vh,478px)] lg:max-h-[min(54vh,448px)]"
+                  sizes="(max-width: 639px) 88vw, 75vw"
+                  className="h-auto w-auto max-w-full object-contain object-top max-sm:max-h-[clamp(10.5rem,42vw,12.75rem)] sm:max-h-[min(56.8vh,478px)] sm:object-right lg:max-h-[min(54vh,448px)]"
                 />
               </div>
             </div>
             <div
-              className="pointer-events-none absolute right-0 top-0 bottom-0 z-[8] w-[75%] max-w-[75vw] bg-gradient-to-r from-[#fafbfc] from-0% via-white/55 via-[28%] to-transparent to-[58%] sm:from-[#fafbfc] sm:via-white/90 sm:via-[38%] sm:to-transparent sm:to-[82%] lg:via-white/95 lg:via-[40%] lg:to-[88%]"
+              className="pointer-events-none absolute right-0 top-0 z-[8] max-sm:h-[clamp(10.5rem,42vw,12.75rem)] max-sm:w-full max-sm:bg-gradient-to-b max-sm:from-[#fafbfc]/25 max-sm:via-[#fafbfc]/55 max-sm:to-[#fafbfc] sm:bottom-0 sm:h-auto sm:w-[75%] sm:max-w-[75vw] sm:bg-gradient-to-r sm:from-[#fafbfc] sm:from-0% sm:via-white/90 sm:via-[38%] sm:to-transparent sm:to-[82%] lg:via-white/95 lg:via-[40%] lg:to-[88%]"
               aria-hidden
             />
-            {/* Mobil: flex-1 schiebt Kopfbereich nach unten; Bogen sitzt im <header> im Fluss (sichtbar). Ab sm: zentriert, Bogen nur absolut am Hero-Rand. */}
-            <div className="relative z-10 mx-auto flex min-h-[min(60vh,508px)] w-full max-w-7xl flex-col justify-center px-4 py-5 max-sm:items-center max-sm:pb-0 sm:min-h-[min(56.8vh,478px)] sm:items-stretch sm:justify-center sm:px-6 sm:py-6 lg:min-h-[min(54vh,448px)] lg:px-[var(--ahs-page-gutter)] lg:py-7">
-              <div className="max-sm:flex-1 max-sm:min-h-0 sm:hidden" aria-hidden />
+            <div className="relative z-10 mx-auto flex w-full max-w-7xl flex-col max-sm:min-h-0 max-sm:justify-start max-sm:px-4 max-sm:pb-10 max-sm:pt-[calc(clamp(10.5rem,42vw,12.75rem)+0.375rem)] sm:min-h-[min(56.8vh,478px)] sm:items-stretch sm:justify-center sm:px-6 sm:py-6 lg:min-h-[min(54vh,448px)] lg:px-[var(--ahs-page-gutter)] lg:py-7">
               <div className="box-border w-full max-w-full max-sm:flex max-sm:justify-center">
                 <header className="flex w-full max-w-xl flex-col text-center max-sm:mx-auto max-sm:max-w-[min(100%,22rem)] max-sm:translate-x-0 sm:translate-x-5 lg:max-w-[min(100%,30rem)] lg:translate-x-7 xl:max-w-[34rem]">
                   <h1
                     id="karriere-hero-heading"
-                    className="text-balance text-3xl font-bold leading-snug tracking-tight text-[#0F4F68] opacity-0 motion-reduce:animate-none motion-reduce:opacity-100 animate-karriere-hero-in sm:text-4xl md:text-5xl lg:text-[clamp(2rem,1.05rem+1.85vw,2.85rem)] xl:text-[clamp(2.15rem,1.15rem+1.7vw,3.05rem)]"
+                    className="text-balance text-3xl font-bold leading-snug tracking-tight text-[#0F4F68] opacity-0 motion-reduce:animate-none motion-reduce:opacity-100 animate-karriere-hero-in max-sm:mt-0 sm:text-4xl md:text-5xl lg:text-[clamp(2rem,1.05rem+1.85vw,2.85rem)] xl:text-[clamp(2.15rem,1.15rem+1.7vw,3.05rem)]"
                   >
                     <span className="block">Starte jetzt deine neue Karriere</span>
                     <span className="mt-1 block sm:mt-1.5">bei der Alltagshilfe-Süd</span>
                   </h1>
                   <div
-                    className="mt-5 opacity-0 motion-reduce:animate-none motion-reduce:opacity-100 animate-fade-in-up sm:mt-6"
+                    className="mt-5 opacity-0 motion-reduce:animate-none motion-reduce:opacity-100 animate-fade-in-up max-sm:mt-3.5 sm:mt-6"
                     style={{ animationDelay: "0.2s" }}
                   >
                     <Link
@@ -473,11 +475,18 @@ export function KarriereLanding() {
                 </header>
               </div>
             </div>
-            {/* Bogenübergang am Hero-Unterrand (Tablet/Desktop; Mobil siehe <header>). */}
-            <div
-              className="pointer-events-none absolute inset-x-0 bottom-0 z-[9] hidden h-[3.25rem] w-full sm:block sm:h-[clamp(3.5rem,2rem+4vw,5.25rem)]"
-              aria-hidden
-            >
+            <div className={KARRIERE_MOBILE_HERO_BOGEN_CLASS} aria-hidden>
+              <svg
+                className="h-full w-full"
+                viewBox="0 0 1200 100"
+                preserveAspectRatio="none"
+                fill="none"
+                aria-hidden
+              >
+                <path d={KARRIERE_HERO_BOGEN_D} fill="#FFFFFF" />
+              </svg>
+            </div>
+            <div className={KARRIERE_DESKTOP_HERO_BOGEN_CLASS} aria-hidden>
               <svg
                 className="h-full w-full"
                 viewBox="0 0 1200 100"
@@ -493,7 +502,7 @@ export function KarriereLanding() {
 
         <section
           id="bewerbung"
-          className="relative z-10 overflow-x-visible bg-[#FFFFFF] pb-0 pt-6 max-sm:-mt-px sm:pt-10 lg:pt-12"
+          className="relative z-10 overflow-x-visible bg-[#FFFFFF] pb-0 pt-4 max-sm:-mt-px sm:pt-10 lg:pt-12"
         >
           <Container className="relative w-full pb-8 sm:pb-10 lg:pb-12">
             <KarriereArbeitgeberVorteile />
