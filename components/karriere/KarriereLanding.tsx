@@ -448,7 +448,7 @@ export function KarriereLanding() {
               aria-hidden
             />
             {/* Mobil: flex-1 schiebt Kopfbereich nach unten; Bogen sitzt im <header> im Fluss (sichtbar). Ab sm: zentriert, Bogen nur absolut am Hero-Rand. */}
-            <div className="relative z-10 mx-auto flex min-h-[min(60vh,508px)] w-full max-w-7xl flex-col justify-center px-4 py-5 max-sm:items-center max-sm:pb-5 sm:min-h-[min(56.8vh,478px)] sm:items-stretch sm:justify-center sm:px-6 sm:py-6 lg:min-h-[min(54vh,448px)] lg:px-[var(--ahs-page-gutter)] lg:py-7">
+            <div className="relative z-10 mx-auto flex min-h-[min(60vh,508px)] w-full max-w-7xl flex-col justify-center px-4 py-5 max-sm:items-center max-sm:pb-0 sm:min-h-[min(56.8vh,478px)] sm:items-stretch sm:justify-center sm:px-6 sm:py-6 lg:min-h-[min(54vh,448px)] lg:px-[var(--ahs-page-gutter)] lg:py-7">
               <div className="max-sm:flex-1 max-sm:min-h-0 sm:hidden" aria-hidden />
               <div className="box-border w-full max-w-full max-sm:flex max-sm:justify-center">
                 <header className="flex w-full max-w-xl flex-col text-center max-sm:mx-auto max-sm:max-w-[min(100%,22rem)] max-sm:translate-x-0 sm:translate-x-5 lg:max-w-[min(100%,30rem)] lg:translate-x-7 xl:max-w-[34rem]">
@@ -469,21 +469,6 @@ export function KarriereLanding() {
                     >
                       Bewirb dich jetzt in 1 Minute
                     </Link>
-                  </div>
-                  {/* Mobil: gleicher Bogen wie unten, im Fluss unter dem CTA (nicht hinter z-10 verdeckt). */}
-                  <div
-                    className="pointer-events-none relative left-1/2 mt-6 h-[2.75rem] w-screen max-w-[100vw] shrink-0 -translate-x-1/2 sm:hidden"
-                    aria-hidden
-                  >
-                    <svg
-                      className="h-full w-full"
-                      viewBox="0 0 1200 100"
-                      preserveAspectRatio="none"
-                      fill="none"
-                      aria-hidden
-                    >
-                      <path d={KARRIERE_HERO_BOGEN_D} fill="#FFFFFF" />
-                    </svg>
                   </div>
                 </header>
               </div>
@@ -508,7 +493,7 @@ export function KarriereLanding() {
 
         <section
           id="bewerbung"
-          className="relative z-10 -mt-px overflow-x-visible bg-[#FFFFFF] pb-0 pt-8 sm:pt-10 lg:pt-12"
+          className="relative z-10 overflow-x-visible bg-[#FFFFFF] pb-0 pt-6 max-sm:-mt-px sm:pt-10 lg:pt-12"
         >
           <Container className="relative w-full pb-8 sm:pb-10 lg:pb-12">
             <KarriereArbeitgeberVorteile />
