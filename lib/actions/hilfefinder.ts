@@ -299,12 +299,5 @@ export async function submitHilfefinder(input: HilfefinderInput): Promise<Hilfef
     });
   }
 
-  /* TEMP-DIAGNOSE (nach erfolgreichem Meta-Test entfernen): keine PII, keine Cookies/Token. */
-  if (isSocialLanding) {
-    console.info(
-      `[meta-lead-diag] socialLanding=true serverConsent=${serverMarketingConsent} clientConsent=${input.meta?.marketingConsent === true} eventIdErzeugt=${metaLeadEventId ? metaLeadEventId : "nein"}`,
-    );
-  }
-
   return { success: true, metaLeadEventId };
 }

@@ -52,12 +52,6 @@ export function sanitizeFbCookie(value: string | undefined, kind: "fbp" | "fbc")
  */
 export async function sendMetaLeadCapiEvent(input: MetaLeadCapiInput): Promise<void> {
   const accessToken = process.env.META_CAPI_ACCESS_TOKEN?.trim();
-
-  /* TEMP-DIAGNOSE (nach erfolgreichem Meta-Test entfernen): nur Vorhandensein, nie Werte. */
-  console.info(
-    `[meta-capi-diag] gestartet eventId=${input.eventId} tokenVorhanden=${Boolean(accessToken)} testCodeVorhanden=${Boolean(process.env.META_TEST_EVENT_CODE?.trim())} fbpVorhanden=${Boolean(sanitizeFbCookie(input.fbp, "fbp"))} fbcVorhanden=${Boolean(sanitizeFbCookie(input.fbc, "fbc"))}`,
-  );
-
   if (!accessToken) {
     console.warn("[meta-capi] META_CAPI_ACCESS_TOKEN nicht gesetzt – Lead-Serverevent übersprungen.");
     return;
@@ -113,16 +107,6 @@ export async function sendMetaLeadCapiEvent(input: MetaLeadCapiInput): Promise<v
       }
       console.warn(`[meta-capi] Lead-Event abgelehnt (HTTP ${res.status})${detail} eventId=${input.eventId}`);
       return;
-    }
-
-    /* TEMP-DIAGNOSE (nach erfolgreichem Meta-Test entfernen). */
-    try {
-      const body = (await res.json()) as { events_received?: number; fbtrace_id?: string };
-      console.info(
-        `[meta-capi-diag] erfolgreich eventId=${input.eventId} http=${res.status} events_received=${body?.events_received ?? "?"} fbtrace_id=${body?.fbtrace_id ?? "?"}`,
-      );
-    } catch {
-      console.info(`[meta-capi-diag] erfolgreich eventId=${input.eventId} http=${res.status} (Antwort nicht lesbar)`);
     }
   } catch (e) {
     const reason = e instanceof Error ? e.name : "unbekannt";
