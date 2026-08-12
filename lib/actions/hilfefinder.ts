@@ -1,8 +1,15 @@
 "use server";
 
+import { randomUUID } from "crypto";
+import { headers } from "next/headers";
+import { after } from "next/server";
 import { resolveStandortForPlz } from "@/lib/resolve-standort-plz";
 import { rateLimit } from "@/lib/rate-limit";
 import { getClientIp } from "@/lib/security";
+import { cookies } from "next/headers";
+import { CONSENT_COOKIE_NAME } from "@/lib/consent";
+import { hasMarketingConsentFromCookieValue } from "@/lib/consent-server";
+import { sendMetaLeadCapiEvent } from "@/lib/meta/capi";
 import {
   buildBrandedNotificationHtml,
   type EmailDetailRow,
@@ -44,6 +51,16 @@ function getDefaultContactRecipients(): string[] {
 
 export type HilfefinderKontaktArt = "rueckruf" | "selbst";
 
+/**
+ * Meta-Tracking-Signale der FB-Landingpage (nur technische Browser-Signale,
+ * keine Formulardaten). Nur bei Marketing-Consent befüllt.
+ */
+export type HilfefinderMetaTracking = {
+  marketingConsent: boolean;
+  fbp?: string;
+  fbc?: string;
+};
+
 export type HilfefinderInput = {
   vorname: string;
   nachname: string;
@@ -65,9 +82,20 @@ export type HilfefinderInput = {
   website?: string;
   /** Aggregat-Kanal für Admin-Statistik (Standard: Hilfe-Finder). */
   statsKind?: ContactSourceKind;
+  /** Meta-Lead-Tracking (nur FB-Landingpage, nur Marketing-Consent). */
+  meta?: HilfefinderMetaTracking;
 };
 
-export type HilfefinderResult = { success: boolean; error?: string };
+export type HilfefinderResult = {
+  success: boolean;
+  error?: string;
+  /**
+   * Nur gesetzt, wenn die Anfrage erfolgreich verarbeitet wurde und Meta-Lead-Tracking
+   * greift (FB-Landingpage + Marketing-Consent). Der Client sendet das Browser-`Lead`
+   * mit exakt dieser ID – Meta dedupliziert Browser- und CAPI-Event darüber.
+   */
+  metaLeadEventId?: string;
+};
 
 /**
  * Anfrage aus dem 60-Sekunden-Hilfefinder versenden.
@@ -235,5 +263,41 @@ export async function submitHilfefinder(input: HilfefinderInput): Promise<Hilfef
   /* Anonyme Aggregat-Statistik (kein Personenbezug). */
   await recordContactSource(contactSource, statsKind);
 
-  return { success: true };
+  /*
+   * Meta-Lead: Event-ID entsteht erst hier – gekoppelt an die tatsächlich erfolgreich
+   * verarbeitete Anfrage. CAPI läuft nach der Response weiter (after/waitUntil),
+   * blockiert den Nutzer nicht und kann den Erfolg nie in einen Fehler verwandeln.
+   *
+   * Consent: Autorität ist das serverseitig gelesene Consent-Cookie
+   * (hasServerMarketingConsent). Der Client-Boolean ist nur ein ergänzendes
+   * Signal – beide müssen zustimmen, sonst kein Meta-Event.
+   */
+  let metaLeadEventId: string | undefined;
+  let serverMarketingConsent = false;
+  if (isSocialLanding) {
+    try {
+      const consentCookie = (await cookies()).get(CONSENT_COOKIE_NAME)?.value;
+      serverMarketingConsent = hasMarketingConsentFromCookieValue(consentCookie);
+    } catch {
+      /* cookies() nur im Request-Kontext verfügbar – ohne Cookie kein Consent. */
+    }
+  }
+  if (isSocialLanding && serverMarketingConsent && input.meta?.marketingConsent === true) {
+    metaLeadEventId = randomUUID();
+    const eventId = metaLeadEventId;
+    const fbp = typeof input.meta.fbp === "string" ? input.meta.fbp : undefined;
+    const fbc = typeof input.meta.fbc === "string" ? input.meta.fbc : undefined;
+    const clientIp = ip !== "unknown" ? ip : undefined;
+    let userAgent: string | undefined;
+    try {
+      userAgent = (await headers()).get("user-agent") ?? undefined;
+    } catch {
+      /* headers() nur im Request-Kontext verfügbar */
+    }
+    after(async () => {
+      await sendMetaLeadCapiEvent({ eventId, fbp, fbc, clientIp, userAgent });
+    });
+  }
+
+  return { success: true, metaLeadEventId };
 }

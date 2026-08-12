@@ -63,6 +63,11 @@ export function hasAnalyticsConsentFromCookieValue(raw: string | undefined): boo
   return parseConsentFromCookieValue(raw)?.analytics === true;
 }
 
+/** Marketing-Consent aus dem Consent-Cookie – serverseitige Autorität (z. B. Meta CAPI). */
+export function hasMarketingConsentFromCookieValue(raw: string | undefined): boolean {
+  return parseConsentFromCookieValue(raw)?.marketing === true;
+}
+
 export function hasTranslationConsentFromCookieValue(raw: string | undefined): boolean {
   return parseConsentFromCookieValue(raw)?.translation === true;
 }

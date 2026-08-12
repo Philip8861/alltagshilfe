@@ -93,6 +93,17 @@ export function bootstrapMetaPixelScript(): void {
   firstScript?.parentNode?.insertBefore(script, firstScript);
 }
 
+/** Bootstrap + einmaliges Init des bestehenden Pixels (kein PageView). */
+function ensurePixelReady(): boolean {
+  bootstrapMetaPixelScript();
+  if (typeof window.fbq !== "function") return false;
+  if (!pixelInitialized) {
+    window.fbq("init", META_PIXEL_ID, {}, { autoConfig: false });
+    pixelInitialized = true;
+  }
+  return true;
+}
+
 /**
  * Genau ein PageView – nur mit Marketing-Consent.
  * Init über fbq; PageView mit dl = window.location.href (volle aktuelle URL).
@@ -104,14 +115,36 @@ export function trackMetaPageViewIfConsented(): void {
   const pageUrl = window.location.href.trim();
   if (!pageUrl.startsWith("http")) return;
 
-  bootstrapMetaPixelScript();
-
-  if (typeof window.fbq !== "function") return;
-
-  if (!pixelInitialized) {
-    window.fbq("init", META_PIXEL_ID, {}, { autoConfig: false });
-    pixelInitialized = true;
-  }
+  if (!ensurePixelReady()) return;
 
   sendMetaPageViewWithBrowserUrl(pageUrl);
+}
+
+/**
+ * Offizielles Meta-Standardevent „Lead" über das bestehende Pixel – nur mit
+ * Marketing-Consent. `eventId` kommt vom Server (erfolgreich verarbeitete Anfrage)
+ * und wird identisch für das CAPI-Serverevent verwendet (Meta-Deduplizierung).
+ */
+export function trackMetaLeadIfConsented(eventId: string): void {
+  if (!hasMarketingConsent()) return;
+  if (typeof window === "undefined") return;
+  if (!eventId) return;
+
+  if (!ensurePixelReady()) return;
+
+  window.fbq?.("track", "Lead", {}, { eventID: eventId });
+}
+
+/**
+ * Meta-Browser-Signale `_fbp`/`_fbc` für CAPI-Matching – nur bei Marketing-Consent
+ * (ohne Consent existieren die Cookies ohnehin nicht; zusätzliche Absicherung).
+ */
+export function readMetaMarketingCookies(): { fbp?: string; fbc?: string } {
+  if (!hasMarketingConsent()) return {};
+  const fbp = readCookie("_fbp");
+  const fbc = readCookie("_fbc");
+  return {
+    ...(fbp ? { fbp } : {}),
+    ...(fbc ? { fbc } : {}),
+  };
 }

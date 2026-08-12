@@ -31,6 +31,11 @@ import {
   trackFinderStarted,
   trackFinderStepCompleted,
 } from "@/lib/analytics/gtm-data-layer";
+import {
+  readMetaMarketingCookies,
+  trackMetaLeadIfConsented,
+} from "@/lib/analytics/meta-pixel-client";
+import { hasMarketingConsent } from "@/lib/consent";
 import { GtmMailtoLink, GtmPhoneLink } from "@/components/analytics/GtmContactIntentLink";
 import { cn } from "@/lib/utils";
 
@@ -107,6 +112,8 @@ export function HaushaltAlltagsFbFlowProvider({ children }: { children: ReactNod
   const [submitting, setSubmitting] = useState(false);
   const [showStickyCta, setShowStickyCta] = useState(false);
   const finderStartedRef = useRef(false);
+  /** Guard: pro erfolgreicher Anfrage maximal ein Meta-Lead (auch bei Re-Render). */
+  const metaLeadFiredRef = useRef(false);
 
   const plzNorm = plz.replace(/\D/g, "").slice(0, 5);
   const { standort: finalerStandort, match: standortMatch } = useMemo(
@@ -276,10 +283,24 @@ export function HaushaltAlltagsFbFlowProvider({ children }: { children: ReactNod
         contactSource,
         datenschutz,
         statsKind: "landingpage-social-media",
+        meta: {
+          marketingConsent: hasMarketingConsent(),
+          ...readMetaMarketingCookies(),
+        },
       });
       if (!result.success) {
         setError(result.error ?? "Die Anfrage konnte nicht gesendet werden. Bitte versuchen Sie es später erneut.");
         return;
+      }
+      /*
+       * Meta-Lead nur mit serverseitig bestätigter Event-ID (Anfrage wurde wirklich
+       * verarbeitet). Gleiche ID wie das CAPI-Serverevent → Meta dedupliziert.
+       * Kurze Pause, damit der Pixel-Request vor der Navigation rausgeht.
+       */
+      if (result.metaLeadEventId && !metaLeadFiredRef.current) {
+        metaLeadFiredRef.current = true;
+        trackMetaLeadIfConsented(result.metaLeadEventId);
+        await new Promise((resolve) => setTimeout(resolve, 300));
       }
       window.location.assign(THANK_YOU_PATH);
       return;
