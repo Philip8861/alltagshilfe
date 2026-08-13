@@ -293,21 +293,6 @@ export function HeaderNav() {
                 )}
               </li>
             ))}
-            {/* Nur mobil: Kontakt als letzter Menüpunkt (Desktop-Navigation unverändert) */}
-            <li>
-              <GtmKontaktNavLink
-                href="/kontakt"
-                contactPath="site_header_mobile_kontakt_menuepunkt"
-                sourceComponent="header_mobile_kontakt_nav_item"
-                onClick={() => setMobileOpen(false)}
-                className={cn(
-                  "block rounded-lg px-4 py-3 text-base font-semibold text-neutral-600 hover:bg-neutral-50 hover:text-neutral-900 focus:outline-none focus:ring-2 focus:ring-neutral-500 focus:ring-inset",
-                  pathname === "/kontakt" && "bg-neutral-50 text-neutral-900"
-                )}
-              >
-                Kontakt
-              </GtmKontaktNavLink>
-            </li>
             <li className="mt-3 border-t border-[#0F4F68]/15 pt-3">
               <GtmKontaktNavLink
                 href="/kontakt"
