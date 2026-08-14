@@ -24,6 +24,11 @@ import {
   getContactSourceLabel,
   KARRIERE_CONTACT_SOURCE_OPTIONS,
 } from "@/lib/contact-source";
+import {
+  AdminDateRangeFields,
+  firstOfMonthInputValue,
+  todayInputValue,
+} from "@/components/partner/admin/AdminDateRangeFields";
 import { CHART_AXIS_TICK, CHART_GRID, CHART_ROSE, CHART_TEAL } from "@/components/partner/partner-chart-theme";
 import {
   KARRIERE_PAGE_SOURCE_KINDS,
@@ -43,6 +48,8 @@ type Props = {
 export function AdminContactListenWochentagKreuzPanel({ chartYear }: Props) {
   const [month, setMonth] = useState(() => new Date().getMonth() + 1);
   const [dayOfMonth, setDayOfMonth] = useState(() => new Date().getDate());
+  const [rangeFrom, setRangeFrom] = useState(() => firstOfMonthInputValue());
+  const [rangeTo, setRangeTo] = useState(() => todayInputValue());
   const [scope, setScope] = useState<Scope>("jahr");
   const [rows, setRows] = useState<ContactSourceStatsRow[]>([]);
   const [weekdays, setWeekdays] = useState<ContactWeekdayGroupRow[]>([]);
@@ -64,8 +71,8 @@ export function AdminContactListenWochentagKreuzPanel({ chartYear }: Props) {
     setErr(null);
     setWeekdayErr(null);
     const [res, wk] = await Promise.all([
-      fetchContactSourceStatsAction(chartYear, month, scope, dayClamped),
-      fetchContactWeekdayGroupTotalsAction(chartYear, month, scope, dayClamped),
+      fetchContactSourceStatsAction(chartYear, month, scope, dayClamped, rangeFrom, rangeTo),
+      fetchContactWeekdayGroupTotalsAction(chartYear, month, scope, dayClamped, rangeFrom, rangeTo),
     ]);
     if (!res.ok) {
       setErr(res.message);
@@ -80,7 +87,7 @@ export function AdminContactListenWochentagKreuzPanel({ chartYear }: Props) {
       setWeekdays(wk.weekdays);
     }
     setLoading(false);
-  }, [chartYear, month, scope, dayClamped]);
+  }, [chartYear, month, scope, dayClamped, rangeFrom, rangeTo]);
 
   useEffect(() => {
     void load();
@@ -187,7 +194,7 @@ export function AdminContactListenWochentagKreuzPanel({ chartYear }: Props) {
         <h3 className="text-lg font-bold text-[#0F4F68]">Herkunft, Wochentage und Kreuztabellen</h3>
         <p className="mt-1 text-sm text-neutral-600">
           Anonyme Auswertung der Pflichtfrage „Wie sind Sie auf uns aufmerksam geworden?“ – Zeitraum wahlweise ein
-          Kalendertag, ein ganzer Monat oder das Jahr {chartYear}. Darunter Listen und Kreuzzahlen für denselben
+          Kalendertag, ein ganzer Monat, das Jahr {chartYear} oder frei wählbar (von–bis). Darunter Listen und Kreuzzahlen für denselben
           Zeitraum; die Wochentags-Tabelle summiert alle gleichnamigen Wochentage (bei einem einzelnen Tag steht nur
           der zutreffende Wochentag).
         </p>
@@ -230,8 +237,29 @@ export function AdminContactListenWochentagKreuzPanel({ chartYear }: Props) {
             >
               Jahr
             </button>
+            <button
+              type="button"
+              onClick={() => setScope("zeitraum")}
+              className={`min-h-10 rounded-xl px-4 text-sm font-semibold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68]/30 ${
+                scope === "zeitraum"
+                  ? "bg-[#0F4F68] text-white shadow-sm"
+                  : "border border-[#0F4F68]/25 bg-white text-[#0F4F68] hover:bg-[#F2F9FA]"
+              }`}
+            >
+              Zeitraum
+            </button>
           </div>
         </div>
+
+        {scope === "zeitraum" ? (
+          <AdminDateRangeFields
+            idPrefix="cs-listen"
+            from={rangeFrom}
+            to={rangeTo}
+            onFromChange={setRangeFrom}
+            onToChange={setRangeTo}
+          />
+        ) : null}
 
         {(scope === "tag" || scope === "monat") ? (
           <div>

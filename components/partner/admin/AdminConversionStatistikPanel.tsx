@@ -18,6 +18,12 @@ import {
   type ConversionChannelSummary,
   type ConversionStatsResult,
 } from "@/lib/actions/admin-homepage-analytics";
+import {
+  AdminDateRangeFields,
+  firstOfMonthInputValue,
+  formatDayInputDe,
+  todayInputValue,
+} from "@/components/partner/admin/AdminDateRangeFields";
 import { CONVERSION_STATS_START_DAY } from "@/lib/site-analytics/conversion-stats-start";
 import { CHART_AMBER, CHART_AXIS_TICK, CHART_EMERALD, CHART_GRID, CHART_TEAL } from "@/components/partner/partner-chart-theme";
 import { strokeForChannelGroup, type ContactChannelGroupId } from "@/components/partner/admin/contact-sources-admin-kind-labels";
@@ -65,6 +71,8 @@ function formatNum(v: number | null | undefined, digits = 1): string {
 export function AdminConversionStatistikPanel({ chartYear }: Props) {
   const [month, setMonth] = useState(() => new Date().getMonth() + 1);
   const [dayOfMonth, setDayOfMonth] = useState(() => new Date().getDate());
+  const [rangeFrom, setRangeFrom] = useState(() => firstOfMonthInputValue());
+  const [rangeTo, setRangeTo] = useState(() => todayInputValue());
   const [scope, setScope] = useState<Scope>("monat");
   const [data, setData] = useState<ConversionStatsResult | null>(null);
   const [err, setErr] = useState<string | null>(null);
@@ -80,7 +88,7 @@ export function AdminConversionStatistikPanel({ chartYear }: Props) {
   const load = useCallback(async () => {
     setLoading(true);
     setErr(null);
-    const res = await fetchConversionStatsAction(chartYear, month, scope, dayClamped);
+    const res = await fetchConversionStatsAction(chartYear, month, scope, dayClamped, rangeFrom, rangeTo);
     if (!res.ok) {
       setErr(res.message);
       setData(null);
@@ -88,16 +96,16 @@ export function AdminConversionStatistikPanel({ chartYear }: Props) {
       setData(res.data);
     }
     setLoading(false);
-  }, [chartYear, month, scope, dayClamped]);
+  }, [chartYear, month, scope, dayClamped, rangeFrom, rangeTo]);
 
   useEffect(() => {
     void load();
   }, [load]);
 
-  const periodLabel = useMemo(
-    () => scopeDescription(scope, chartYear, month, dayClamped),
-    [scope, chartYear, month, dayClamped],
-  );
+  const periodLabel = useMemo(() => {
+    if (scope === "zeitraum") return `von ${formatDayInputDe(rangeFrom)} bis ${formatDayInputDe(rangeTo)}`;
+    return scopeDescription(scope, chartYear, month, dayClamped);
+  }, [scope, chartYear, month, dayClamped, rangeFrom, rangeTo]);
 
   const chartData = useMemo(() => {
     if (!data) return [];
@@ -175,6 +183,7 @@ export function AdminConversionStatistikPanel({ chartYear }: Props) {
                 ["tag", "Ein Tag"],
                 ["monat", "Monat"],
                 ["jahr", "Jahr"],
+                ["zeitraum", "Zeitraum"],
               ] as const
             ).map(([id, label]) => (
               <button
@@ -235,6 +244,16 @@ export function AdminConversionStatistikPanel({ chartYear }: Props) {
               ))}
             </select>
           </div>
+        ) : null}
+
+        {scope === "zeitraum" ? (
+          <AdminDateRangeFields
+            idPrefix="cv"
+            from={rangeFrom}
+            to={rangeTo}
+            onFromChange={setRangeFrom}
+            onToChange={setRangeTo}
+          />
         ) : null}
 
         <button

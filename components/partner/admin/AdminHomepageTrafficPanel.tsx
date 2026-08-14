@@ -18,8 +18,14 @@ import {
   resetHomepageSiteAnalyticsAction,
   type HomepageDeviceBreakdownRow,
   type HomepageSeriesPoint,
-  type HomepageTrafficGranularity,
+  type HomepageTrafficViewMode,
 } from "@/lib/actions/admin-homepage-analytics";
+import {
+  AdminDateRangeFields,
+  firstOfMonthInputValue,
+  formatDayInputDe,
+  todayInputValue,
+} from "@/components/partner/admin/AdminDateRangeFields";
 import { CHART_AXIS_TICK, CHART_GRID, CHART_TEAL } from "@/components/partner/partner-chart-theme";
 import {
   deviceCategoryLabelDe,
@@ -59,14 +65,15 @@ function GranularityToggle({
   onChange,
   idPrefix,
 }: {
-  value: HomepageTrafficGranularity;
-  onChange: (g: HomepageTrafficGranularity) => void;
+  value: HomepageTrafficViewMode;
+  onChange: (g: HomepageTrafficViewMode) => void;
   idPrefix: string;
 }) {
-  const opts: { id: HomepageTrafficGranularity; label: string }[] = [
+  const opts: { id: HomepageTrafficViewMode; label: string }[] = [
     { id: "tag", label: "Tag" },
     { id: "monat", label: "Monat" },
     { id: "jahr", label: "Jahr" },
+    { id: "zeitraum", label: "Zeitraum" },
   ];
   return (
     <div className="flex flex-wrap gap-2" role="group" aria-label="Zeitraster">
@@ -121,7 +128,9 @@ function TrafficLineChart({ data, title }: { data: HomepageSeriesPoint[]; title:
 
 export function AdminHomepageTrafficPanel({ chartYear, activeSection }: Props) {
   const [month, setMonth] = useState(() => new Date().getMonth() + 1);
-  const [totalGran, setTotalGran] = useState<HomepageTrafficGranularity>("monat");
+  const [rangeFrom, setRangeFrom] = useState(() => firstOfMonthInputValue());
+  const [rangeTo, setRangeTo] = useState(() => todayInputValue());
+  const [totalGran, setTotalGran] = useState<HomepageTrafficViewMode>("monat");
   const [totalSeries, setTotalSeries] = useState<HomepageSeriesPoint[]>([]);
   const [totalLoading, setTotalLoading] = useState(true);
   const [totalErr, setTotalErr] = useState<string | null>(null);
@@ -131,12 +140,12 @@ export function AdminHomepageTrafficPanel({ chartYear, activeSection }: Props) {
   const [pathsErr, setPathsErr] = useState<string | null>(null);
 
   const [expandedPath, setExpandedPath] = useState<string | null>(null);
-  const [pathGran, setPathGran] = useState<HomepageTrafficGranularity>("monat");
+  const [pathGran, setPathGran] = useState<HomepageTrafficViewMode>("monat");
   const [pathSeries, setPathSeries] = useState<HomepageSeriesPoint[]>([]);
   const [pathLoading, setPathLoading] = useState(false);
   const [pathErr, setPathErr] = useState<string | null>(null);
 
-  const [deviceScope, setDeviceScope] = useState<"monat" | "jahr">("jahr");
+  const [deviceScope, setDeviceScope] = useState<"monat" | "jahr" | "zeitraum">("jahr");
   const [deviceRows, setDeviceRows] = useState<HomepageDeviceBreakdownRow[]>([]);
   const [deviceLoading, setDeviceLoading] = useState(true);
   const [deviceErr, setDeviceErr] = useState<string | null>(null);
@@ -147,7 +156,7 @@ export function AdminHomepageTrafficPanel({ chartYear, activeSection }: Props) {
   const loadTotals = useCallback(async () => {
     setTotalLoading(true);
     setTotalErr(null);
-    const res = await fetchHomepageTotalsSeriesAction(chartYear, month, totalGran);
+    const res = await fetchHomepageTotalsSeriesAction(chartYear, month, totalGran, rangeFrom, rangeTo);
     if (!res.ok) {
       setTotalErr(res.message);
       setTotalSeries([]);
@@ -155,7 +164,7 @@ export function AdminHomepageTrafficPanel({ chartYear, activeSection }: Props) {
       setTotalSeries(res.data);
     }
     setTotalLoading(false);
-  }, [chartYear, month, totalGran]);
+  }, [chartYear, month, totalGran, rangeFrom, rangeTo]);
 
   const loadPaths = useCallback(async () => {
     setPathsLoading(true);
@@ -173,7 +182,7 @@ export function AdminHomepageTrafficPanel({ chartYear, activeSection }: Props) {
   const loadDeviceBreakdown = useCallback(async () => {
     setDeviceLoading(true);
     setDeviceErr(null);
-    const res = await fetchHomepageDeviceBreakdownAction(chartYear, month, deviceScope);
+    const res = await fetchHomepageDeviceBreakdownAction(chartYear, month, deviceScope, rangeFrom, rangeTo);
     if (!res.ok) {
       setDeviceErr(res.message);
       setDeviceRows([]);
@@ -181,7 +190,7 @@ export function AdminHomepageTrafficPanel({ chartYear, activeSection }: Props) {
       setDeviceRows(mergeDeviceBreakdown(res.data));
     }
     setDeviceLoading(false);
-  }, [chartYear, month, deviceScope]);
+  }, [chartYear, month, deviceScope, rangeFrom, rangeTo]);
 
   const loadPathSeries = useCallback(async () => {
     if (!expandedPath) {
@@ -190,7 +199,7 @@ export function AdminHomepageTrafficPanel({ chartYear, activeSection }: Props) {
     }
     setPathLoading(true);
     setPathErr(null);
-    const res = await fetchHomepagePathSeriesAction(expandedPath, chartYear, month, pathGran);
+    const res = await fetchHomepagePathSeriesAction(expandedPath, chartYear, month, pathGran, rangeFrom, rangeTo);
     if (!res.ok) {
       setPathErr(res.message);
       setPathSeries([]);
@@ -198,7 +207,7 @@ export function AdminHomepageTrafficPanel({ chartYear, activeSection }: Props) {
       setPathSeries(res.data);
     }
     setPathLoading(false);
-  }, [expandedPath, chartYear, month, pathGran]);
+  }, [expandedPath, chartYear, month, pathGran, rangeFrom, rangeTo]);
 
   useEffect(() => {
     if (activeSection !== "totals") return;
@@ -221,6 +230,11 @@ export function AdminHomepageTrafficPanel({ chartYear, activeSection }: Props) {
   }, [activeSection, loadPathSeries]);
 
   const totalSum = totalSeries.reduce((s, p) => s + p.views, 0);
+
+  const rangeActive =
+    (activeSection === "totals" && totalGran === "zeitraum") ||
+    (activeSection === "paths" && pathGran === "zeitraum") ||
+    (activeSection === "device" && deviceScope === "zeitraum");
 
   if (activeSection === null) {
     return null;
@@ -246,6 +260,15 @@ export function AdminHomepageTrafficPanel({ chartYear, activeSection }: Props) {
             ))}
           </select>
         </div>
+        {rangeActive ? (
+          <AdminDateRangeFields
+            idPrefix="hp-traffic"
+            from={rangeFrom}
+            to={rangeTo}
+            onFromChange={setRangeFrom}
+            onToChange={setRangeTo}
+          />
+        ) : null}
         <button
           type="button"
           onClick={() => {
@@ -310,7 +333,8 @@ export function AdminHomepageTrafficPanel({ chartYear, activeSection }: Props) {
                 Aufrufe insgesamt (alle Seiten)
               </h3>
               <p className="mt-1 text-sm text-neutral-600">
-                Liniendiagramm nach Tag, Monat oder Jahr – Summe der erfassten Seitenaufrufe.
+                Liniendiagramm nach Tag, Monat, Jahr oder frei wählbarem Zeitraum (von–bis) – Summe der erfassten
+                Seitenaufrufe.
               </p>
             </div>
             <p className="text-sm text-neutral-600">
@@ -330,7 +354,9 @@ export function AdminHomepageTrafficPanel({ chartYear, activeSection }: Props) {
                     ? `Täglich im ${new Date(chartYear, month - 1, 1).toLocaleString("de-DE", { month: "long", year: "numeric" })}`
                     : totalGran === "monat"
                       ? `Pro Monat im Jahr ${chartYear}`
-                      : `Pro Jahr (2020–${chartYear})`
+                      : totalGran === "jahr"
+                        ? `Pro Jahr (2020–${chartYear})`
+                        : `Zeitraum ${formatDayInputDe(rangeFrom)} – ${formatDayInputDe(rangeTo)}`
                 }
               />
             ) : null}
@@ -374,6 +400,17 @@ export function AdminHomepageTrafficPanel({ chartYear, activeSection }: Props) {
                 }`}
               >
                 Ganzes Jahr {chartYear}
+              </button>
+              <button
+                type="button"
+                onClick={() => setDeviceScope("zeitraum")}
+                className={`min-h-10 rounded-xl px-4 text-sm font-semibold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68]/30 ${
+                  deviceScope === "zeitraum"
+                    ? "bg-[#0F4F68] text-white shadow-sm"
+                    : "border border-[#0F4F68]/25 bg-white text-[#0F4F68] hover:bg-[#F2F9FA]"
+                }`}
+              >
+                Zeitraum (Von–Bis oben)
               </button>
             </div>
             {deviceLoading ? <p className="text-sm text-neutral-500">Lade Geräteverteilung…</p> : null}
@@ -464,7 +501,8 @@ export function AdminHomepageTrafficPanel({ chartYear, activeSection }: Props) {
                                     <GranularityToggle idPrefix={`hp-path-${idx}`} value={pathGran} onChange={setPathGran} />
                                   </div>
                                   <p className="mt-2 text-xs text-neutral-500">
-                                    Monat oben steuert die Tages-Ansicht; Jahr oben steuert Monats- und Jahresansicht.
+                                    Monat oben steuert die Tages-Ansicht; Jahr oben steuert Monats- und Jahresansicht;
+                                    „Zeitraum“ nutzt die Von–Bis-Felder oben.
                                   </p>
                                   {pathLoading ? <p className="mt-3 text-sm text-neutral-500">Lade Verlauf…</p> : null}
                                   {pathErr ? (

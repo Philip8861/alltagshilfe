@@ -11,6 +11,12 @@ import {
   YAxis,
 } from "recharts";
 import { fetchContactKindDailyStatsAction, type ContactStatsScope } from "@/lib/actions/admin-homepage-analytics";
+import {
+  AdminDateRangeFields,
+  firstOfMonthInputValue,
+  formatDayInputDe,
+  todayInputValue,
+} from "@/components/partner/admin/AdminDateRangeFields";
 import { CHART_AXIS_TICK, CHART_GRID } from "@/components/partner/partner-chart-theme";
 import {
   CONTACT_CHANNEL_GROUPS,
@@ -68,6 +74,8 @@ function sumKindValues(
 export function AdminContactKanalTagesverlaufPanel({ chartYear }: Props) {
   const [month, setMonth] = useState(() => new Date().getMonth() + 1);
   const [dayOfMonth, setDayOfMonth] = useState(() => new Date().getDate());
+  const [rangeFrom, setRangeFrom] = useState(() => firstOfMonthInputValue());
+  const [rangeTo, setRangeTo] = useState(() => todayInputValue());
   const [scope, setScope] = useState<Scope>("jahr");
   const [dailyKinds, setDailyKinds] = useState<string[]>([]);
   const [dailySeries, setDailySeries] = useState<Record<string, string | number>[]>([]);
@@ -84,7 +92,7 @@ export function AdminContactKanalTagesverlaufPanel({ chartYear }: Props) {
   const load = useCallback(async () => {
     setLoading(true);
     setDailyErr(null);
-    const dailyRes = await fetchContactKindDailyStatsAction(chartYear, month, scope, dayClamped);
+    const dailyRes = await fetchContactKindDailyStatsAction(chartYear, month, scope, dayClamped, rangeFrom, rangeTo);
     if (!dailyRes.ok) {
       setDailyErr(dailyRes.message);
       setDailyKinds([]);
@@ -95,16 +103,16 @@ export function AdminContactKanalTagesverlaufPanel({ chartYear }: Props) {
       setDailySeries(dailyRes.chartSeries);
     }
     setLoading(false);
-  }, [chartYear, month, scope, dayClamped]);
+  }, [chartYear, month, scope, dayClamped, rangeFrom, rangeTo]);
 
   useEffect(() => {
     void load();
   }, [load]);
 
-  const periodLabel = useMemo(
-    () => scopeDescription(scope, chartYear, month, dayClamped),
-    [scope, chartYear, month, dayClamped],
-  );
+  const periodLabel = useMemo(() => {
+    if (scope === "zeitraum") return `von ${formatDayInputDe(rangeFrom)} bis ${formatDayInputDe(rangeTo)}`;
+    return scopeDescription(scope, chartYear, month, dayClamped);
+  }, [scope, chartYear, month, dayClamped, rangeFrom, rangeTo]);
 
   const channelGroups = useMemo((): ChannelGroupStats[] => {
     return CONTACT_CHANNEL_GROUPS.map((group) => {
@@ -149,8 +157,8 @@ export function AdminContactKanalTagesverlaufPanel({ chartYear }: Props) {
       <div>
         <h3 className="text-lg font-bold text-[#0F4F68]">Anfragen nach Kanal</h3>
         <p className="mt-1 text-sm text-neutral-600">
-          Je Eingangsweg getrennt – wie viele Anfragen am gewählten Tag, im Monat oder im Jahr {chartYear} eingegangen
-          sind. Herkunft und Wochentage stehen im anderen Kontaktfeld.
+          Je Eingangsweg getrennt – wie viele Anfragen am gewählten Tag, im Monat, im Jahr {chartYear} oder in einem
+          frei wählbaren Zeitraum (von–bis) eingegangen sind. Herkunft und Wochentage stehen im anderen Kontaktfeld.
         </p>
       </div>
 
@@ -191,8 +199,29 @@ export function AdminContactKanalTagesverlaufPanel({ chartYear }: Props) {
             >
               Jahr
             </button>
+            <button
+              type="button"
+              onClick={() => setScope("zeitraum")}
+              className={`min-h-10 rounded-xl px-4 text-sm font-semibold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68]/30 ${
+                scope === "zeitraum"
+                  ? "bg-[#0F4F68] text-white shadow-sm"
+                  : "border border-[#0F4F68]/25 bg-white text-[#0F4F68] hover:bg-[#F2F9FA]"
+              }`}
+            >
+              Zeitraum
+            </button>
           </div>
         </div>
+
+        {scope === "zeitraum" ? (
+          <AdminDateRangeFields
+            idPrefix="cs-kanal"
+            from={rangeFrom}
+            to={rangeTo}
+            onFromChange={setRangeFrom}
+            onToChange={setRangeTo}
+          />
+        ) : null}
 
         {scope === "tag" || scope === "monat" ? (
           <div>
@@ -321,7 +350,13 @@ export function AdminContactKanalTagesverlaufPanel({ chartYear }: Props) {
                     </div>
                     <p className="rounded-xl bg-white px-4 py-2 text-right shadow-sm ring-1 ring-[#0F4F68]/10">
                       <span className="block text-[0.65rem] font-bold uppercase text-[#0F4F68]/70">
-                        {scope === "tag" ? "An diesem Tag" : scope === "monat" ? "Im Monat" : "Im Jahr"}
+                        {scope === "tag"
+                          ? "An diesem Tag"
+                          : scope === "monat"
+                            ? "Im Monat"
+                            : scope === "jahr"
+                              ? "Im Jahr"
+                              : "Im Zeitraum"}
                       </span>
                       <span className="text-2xl font-bold tabular-nums text-[#0F4F68]">
                         {group.total.toLocaleString("de-DE")}

@@ -22,9 +22,69 @@ import { createSupabaseServiceRoleClient } from "@/lib/supabase/service";
 
 export type HomepageTrafficGranularity = "tag" | "monat" | "jahr";
 
+/** Ansicht der Traffic-Diagramme inkl. frei wählbarem Von–Bis-Zeitraum. */
+export type HomepageTrafficViewMode = HomepageTrafficGranularity | "zeitraum";
+
 export type HomepageSeriesPoint = { label: string; views: number };
 
 const YEAR_RANGE_START = 2020;
+
+/** Von–Bis: bis zu dieser Länge (Tage) Tagespunkte, darüber Monatssummen. */
+const RANGE_DAILY_MAX_DAYS = 92;
+
+/** Normalisiert ein Von–Bis-Paar (YYYY-MM-DD); vertauscht bei Bedarf; null bei ungültiger Eingabe. */
+function sanitizeDayRange(
+  fromDay: string | undefined,
+  toDay: string | undefined,
+): { from: string; to: string } | null {
+  const re = /^\d{4}-\d{2}-\d{2}$/;
+  const f = (fromDay ?? "").trim();
+  const t = (toDay ?? "").trim();
+  if (!re.test(f) || !re.test(t)) return null;
+  return f <= t ? { from: f, to: t } : { from: t, to: f };
+}
+
+/** Serie für frei gewählten Zeitraum: tagesgenau bis RANGE_DAILY_MAX_DAYS, sonst Monatssummen. */
+function fillRangeSeries(
+  from: string,
+  to: string,
+  rawDay: { bucket: string; view_count: number }[],
+): HomepageSeriesPoint[] {
+  const start = new Date(`${from}T12:00:00`);
+  const end = new Date(`${to}T12:00:00`);
+  const byDay = new Map<string, number>();
+  for (const r of rawDay) byDay.set(r.bucket.slice(0, 10), r.view_count);
+  const spanDays = Math.round((end.getTime() - start.getTime()) / 86400000) + 1;
+  if (spanDays <= RANGE_DAILY_MAX_DAYS) {
+    const withYear = start.getFullYear() !== end.getFullYear();
+    const out: HomepageSeriesPoint[] = [];
+    for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
+      const key = d.toISOString().slice(0, 10);
+      const label = d.toLocaleDateString(
+        "de-DE",
+        withYear ? { day: "2-digit", month: "short", year: "2-digit" } : { day: "2-digit", month: "short" },
+      );
+      out.push({ label, views: byDay.get(key) ?? 0 });
+    }
+    return out;
+  }
+  const monthTotals = new Map<string, number>();
+  const monthOrder: string[] = [];
+  for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
+    const key = d.toISOString().slice(0, 10);
+    const mKey = key.slice(0, 7);
+    if (!monthTotals.has(mKey)) monthOrder.push(mKey);
+    monthTotals.set(mKey, (monthTotals.get(mKey) ?? 0) + (byDay.get(key) ?? 0));
+  }
+  return monthOrder.map((mKey) => {
+    const y = Number(mKey.slice(0, 4));
+    const m0 = Number(mKey.slice(5, 7)) - 1;
+    return {
+      label: `${new Date(y, m0, 1).toLocaleString("de-DE", { month: "short" })} ${y}`,
+      views: monthTotals.get(mKey) ?? 0,
+    };
+  });
+}
 
 function svcRpc(svc: ReturnType<typeof createSupabaseServiceRoleClient>, name: string, args: Record<string, unknown>) {
   /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -114,7 +174,9 @@ function fillPathSeries(
 export async function fetchHomepageTotalsSeriesAction(
   year: number,
   month: number,
-  gran: HomepageTrafficGranularity,
+  gran: HomepageTrafficViewMode,
+  fromDay?: string,
+  toDay?: string,
 ): Promise<{ ok: true; data: HomepageSeriesPoint[] } | { ok: false; message: string }> {
   if (!(await getSystemAdminSession())) return { ok: false, message: "Nicht angemeldet." };
   const svc = createSupabaseServiceRoleClient();
@@ -124,6 +186,12 @@ export async function fetchHomepageTotalsSeriesAction(
   const m = Math.min(12, Math.max(1, Math.floor(month)));
 
   try {
+    if (gran === "zeitraum") {
+      const r = sanitizeDayRange(fromDay, toDay) ?? calendarMonthBounds(y, m);
+      const res = await svcRpc(svc, "admin_site_traffic_totals_by_day", { p_from: r.from, p_to: r.to });
+      if (res.error) throw new Error(res.error.message);
+      return { ok: true, data: fillRangeSeries(r.from, r.to, parseDayRows(res.data)) };
+    }
     if (gran === "tag") {
       const { from, to } = calendarMonthBounds(y, m);
       const res = await svcRpc(svc, "admin_site_traffic_totals_by_day", { p_from: from, p_to: to });
@@ -154,7 +222,9 @@ export async function fetchHomepagePathSeriesAction(
   path: string,
   year: number,
   month: number,
-  gran: HomepageTrafficGranularity,
+  gran: HomepageTrafficViewMode,
+  fromDay?: string,
+  toDay?: string,
 ): Promise<{ ok: true; data: HomepageSeriesPoint[] } | { ok: false; message: string }> {
   if (!(await getSystemAdminSession())) return { ok: false, message: "Nicht angemeldet." };
   const svc = createSupabaseServiceRoleClient();
@@ -167,6 +237,16 @@ export async function fetchHomepagePathSeriesAction(
   const m = Math.min(12, Math.max(1, Math.floor(month)));
 
   try {
+    if (gran === "zeitraum") {
+      const r = sanitizeDayRange(fromDay, toDay) ?? calendarMonthBounds(y, m);
+      const res = await svcRpc(svc, "admin_site_traffic_path_by_day", {
+        p_path: p,
+        p_from: r.from,
+        p_to: r.to,
+      });
+      if (res.error) throw new Error(res.error.message);
+      return { ok: true, data: fillRangeSeries(r.from, r.to, parseDayRows(res.data)) };
+    }
     if (gran === "tag") {
       const { from, to } = calendarMonthBounds(y, m);
       const res = await svcRpc(svc, "admin_site_traffic_path_by_day", {
@@ -229,7 +309,9 @@ export type HomepageDeviceBreakdownRow = { device_category: string; view_count: 
 export async function fetchHomepageDeviceBreakdownAction(
   year: number,
   month: number,
-  scope: "monat" | "jahr",
+  scope: "monat" | "jahr" | "zeitraum",
+  fromDay?: string,
+  toDay?: string,
 ): Promise<
   { ok: true; data: HomepageDeviceBreakdownRow[] } | { ok: false; message: string }
 > {
@@ -239,7 +321,12 @@ export async function fetchHomepageDeviceBreakdownAction(
 
   const y = Math.min(2100, Math.max(YEAR_RANGE_START, Math.floor(year)));
   const m = Math.min(12, Math.max(1, Math.floor(month)));
-  const { from, to } = scope === "monat" ? calendarMonthBounds(y, m) : calendarYearBounds(y);
+  const { from, to } =
+    scope === "zeitraum"
+      ? (sanitizeDayRange(fromDay, toDay) ?? calendarMonthBounds(y, m))
+      : scope === "monat"
+        ? calendarMonthBounds(y, m)
+        : calendarYearBounds(y);
 
   const res = await svcRpc(svc, "admin_site_traffic_device_breakdown", { p_from: from, p_to: to });
   if (res.error) {
@@ -291,8 +378,8 @@ export async function resetHomepageSiteAnalyticsAction(): Promise<
 
 /* ───────────── Kontaktquellen-Statistik (anonyme Aggregate) ───────────── */
 
-/** Zeitraum der Kontakt-Auswertung: ein Tag, ein Monat oder ganzes Jahr (Kalenderjahr von `year`). */
-export type ContactStatsScope = "tag" | "monat" | "jahr";
+/** Zeitraum der Kontakt-Auswertung: ein Tag, ein Monat, ganzes Jahr oder frei wählbar (von–bis). */
+export type ContactStatsScope = "tag" | "monat" | "jahr" | "zeitraum";
 
 function contactStatsRange(
   year: number,
@@ -300,9 +387,15 @@ function contactStatsRange(
   scope: ContactStatsScope,
   /** Nur bei scope „tag“ relevant (1 … Tage im Monat). */
   day: number,
+  /** Nur bei scope „zeitraum“ relevant (YYYY-MM-DD). */
+  fromDay?: string,
+  toDay?: string,
 ): { from: string; to: string } {
   const y = Math.min(2100, Math.max(YEAR_RANGE_START, Math.floor(year)));
   const m = Math.min(12, Math.max(1, Math.floor(month)));
+  if (scope === "zeitraum") {
+    return sanitizeDayRange(fromDay, toDay) ?? calendarMonthBounds(y, m);
+  }
   if (scope === "tag") return calendarDayBounds(y, m, day);
   if (scope === "monat") return calendarMonthBounds(y, m);
   return calendarYearBounds(y);
@@ -392,6 +485,9 @@ export async function fetchContactKindDailyStatsAction(
   scope: ContactStatsScope,
   /** Bei scope „tag“: Kalendertag (1–31, wird gekappt); sonst ignoriert. */
   day: number = 1,
+  /** Bei scope „zeitraum“: Von–Bis (YYYY-MM-DD); sonst ignoriert. */
+  fromDay?: string,
+  toDay?: string,
 ): Promise<
   | {
       ok: true;
@@ -407,7 +503,7 @@ export async function fetchContactKindDailyStatsAction(
 
   const y = Math.min(2100, Math.max(YEAR_RANGE_START, Math.floor(year)));
   const m = Math.min(12, Math.max(1, Math.floor(month)));
-  const { from, to } = contactStatsRange(y, m, scope, day);
+  const { from, to } = contactStatsRange(y, m, scope, day, fromDay, toDay);
 
   const res = await svcRpc(svc, "admin_contact_kind_totals_by_day", {
     p_from: from,
@@ -482,6 +578,8 @@ export async function fetchContactWeekdayGroupTotalsAction(
   month: number,
   scope: ContactStatsScope,
   day: number = 1,
+  fromDay?: string,
+  toDay?: string,
 ): Promise<{ ok: true; weekdays: ContactWeekdayGroupRow[] } | { ok: false; message: string }> {
   if (!(await getSystemAdminSession())) return { ok: false, message: "Nicht angemeldet." };
   const svc = createSupabaseServiceRoleClient();
@@ -489,7 +587,7 @@ export async function fetchContactWeekdayGroupTotalsAction(
 
   const y = Math.min(2100, Math.max(YEAR_RANGE_START, Math.floor(year)));
   const m = Math.min(12, Math.max(1, Math.floor(month)));
-  const { from, to } = contactStatsRange(y, m, scope, day);
+  const { from, to } = contactStatsRange(y, m, scope, day, fromDay, toDay);
 
   try {
     const res = await svcRpc(svc, "admin_contact_weekday_group_totals", {
@@ -519,6 +617,8 @@ export async function fetchContactSourceStatsAction(
   month: number,
   scope: ContactStatsScope,
   day: number = 1,
+  fromDay?: string,
+  toDay?: string,
 ): Promise<{ ok: true; data: ContactSourceStatsRow[] } | { ok: false; message: string }> {
   if (!(await getSystemAdminSession())) return { ok: false, message: "Nicht angemeldet." };
   const svc = createSupabaseServiceRoleClient();
@@ -526,7 +626,7 @@ export async function fetchContactSourceStatsAction(
 
   const y = Math.min(2100, Math.max(YEAR_RANGE_START, Math.floor(year)));
   const m = Math.min(12, Math.max(1, Math.floor(month)));
-  const { from, to } = contactStatsRange(y, m, scope, day);
+  const { from, to } = contactStatsRange(y, m, scope, day, fromDay, toDay);
 
   const res = await svcRpc(svc, "admin_contact_sources_by_range", {
     p_from: from,
@@ -704,7 +804,7 @@ function emptyConversionStats(from: string, to: string, scope: ContactStatsScope
   for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
     const key = d.toISOString().slice(0, 10);
     const label =
-      scope === "jahr"
+      scope === "jahr" || scope === "zeitraum"
         ? d.toLocaleDateString("de-DE", { day: "2-digit", month: "short" })
         : d.toLocaleDateString("de-DE", { weekday: "short", day: "2-digit", month: "short" });
     series.push({
@@ -760,6 +860,8 @@ export async function fetchConversionStatsAction(
   month: number,
   scope: ContactStatsScope,
   day: number = 1,
+  fromDay?: string,
+  toDay?: string,
 ): Promise<{ ok: true; data: ConversionStatsResult } | { ok: false; message: string }> {
   if (!(await getSystemAdminSession())) return { ok: false, message: "Nicht angemeldet." };
   const svc = createSupabaseServiceRoleClient();
@@ -767,7 +869,7 @@ export async function fetchConversionStatsAction(
 
   const y = Math.min(2100, Math.max(YEAR_RANGE_START, Math.floor(year)));
   const m = Math.min(12, Math.max(1, Math.floor(month)));
-  const range = contactStatsRange(y, m, scope, day);
+  const range = contactStatsRange(y, m, scope, day, fromDay, toDay);
   /** Nur ab Tracking-Start – verhindert verzerrte Conversion durch Alt-Anfragen ohne Unique Visitors. */
   const from =
     range.from < CONVERSION_STATS_START_DAY ? CONVERSION_STATS_START_DAY : range.from;
@@ -825,7 +927,7 @@ export async function fetchConversionStatsAction(
       const kindMap = kindsByDay.get(key);
       let dayCompletions = 0;
       const label =
-        scope === "jahr"
+        scope === "jahr" || scope === "zeitraum"
           ? d.toLocaleDateString("de-DE", { day: "2-digit", month: "short" })
           : d.toLocaleDateString("de-DE", { weekday: "short", day: "2-digit", month: "short" });
 
