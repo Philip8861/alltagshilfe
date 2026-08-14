@@ -4,8 +4,6 @@ import { useMemo, useState } from "react";
 import { PartnerExpandableStatSection } from "@/components/partner/PartnerExpandableStatSection";
 import { PartnerPortalStatisticsCharts } from "@/components/partner/PartnerPortalStatisticsCharts";
 import {
-  countOrdersInLocalMonth,
-  filterTipsCreatedInMonth,
   partnerStatsEpochMonth,
   partnerStatsMinMonthInputValue,
   provisionEuroTotalsForTips,
@@ -27,11 +25,45 @@ type Props = {
   partnerCreatedAt: string | null | undefined;
 };
 
+type PeriodMode = "day" | "month" | "year" | "range";
+
+const PERIOD_MODE_OPTIONS: readonly { mode: PeriodMode; label: string }[] = [
+  { mode: "day", label: "Tag" },
+  { mode: "month", label: "Monat" },
+  { mode: "year", label: "Jahr" },
+  { mode: "range", label: "Zeitraum" },
+];
+
 function currentMonthValue(): string {
   const d = new Date();
   const y = d.getFullYear();
   const m = String(d.getMonth() + 1).padStart(2, "0");
   return `${y}-${m}`;
+}
+
+function toDateInputValue(d: Date): string {
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+}
+
+function todayDateValue(): string {
+  return toDateInputValue(new Date());
+}
+
+/** Parst `YYYY-MM-DD` als lokales Datum (00:00 Uhr); null bei ungültiger Eingabe. */
+function parseDateValue(v: string): Date | null {
+  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(v.trim());
+  if (!m) return null;
+  const year = Number(m[1]);
+  const month = Number(m[2]);
+  const day = Number(m[3]);
+  if (month < 1 || month > 12 || day < 1 || day > 31) return null;
+  const d = new Date(year, month - 1, day, 0, 0, 0, 0);
+  if (d.getFullYear() !== year || d.getMonth() !== month - 1 || d.getDate() !== day) return null;
+  return d;
+}
+
+function addDays(d: Date, days: number): Date {
+  return new Date(d.getFullYear(), d.getMonth(), d.getDate() + days, 0, 0, 0, 0);
 }
 
 function parseMonthValue(v: string): { year: number; month0: number } | null {
@@ -55,16 +87,38 @@ function initialYearForPartner(partnerCreatedAt: string | null | undefined): str
 }
 
 export function PartnerStatistikView({ tips, orders, partnerCreatedAt }: Props) {
-  const [periodMode, setPeriodMode] = useState<"month" | "year">("month");
+  const [periodMode, setPeriodMode] = useState<PeriodMode>("month");
   const [monthInput, setMonthInput] = useState(() => initialMonthForPartner(partnerCreatedAt));
   const [yearInput, setYearInput] = useState(() => initialYearForPartner(partnerCreatedAt));
+  const [dayInput, setDayInput] = useState(() => todayDateValue());
+  const [rangeFromInput, setRangeFromInput] = useState(() => {
+    const now = new Date();
+    const firstOfMonth = toDateInputValue(new Date(now.getFullYear(), now.getMonth(), 1));
+    const min = `${partnerStatsMinMonthInputValue(partnerCreatedAt)}-01`;
+    return firstOfMonth < min ? min : firstOfMonth;
+  });
+  const [rangeToInput, setRangeToInput] = useState(() => todayDateValue());
 
   const minMonthValue = partnerStatsMinMonthInputValue(partnerCreatedAt);
+  const minDateValue = `${minMonthValue}-01`;
   const { year: partnerYear, month0: partnerMonth0 } = partnerStatsEpochMonth(partnerCreatedAt);
 
   const tipsForStats = useMemo(() => tips, [tips]);
 
   const periodRange = useMemo(() => {
+    if (periodMode === "day") {
+      const now = new Date();
+      const day = parseDateValue(dayInput) ?? new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0, 0);
+      return { start: day, end: addDays(day, 1) };
+    }
+    if (periodMode === "range") {
+      const now = new Date();
+      const fallbackStart = new Date(now.getFullYear(), now.getMonth(), 1, 0, 0, 0, 0);
+      const start = parseDateValue(rangeFromInput) ?? fallbackStart;
+      const toParsed = parseDateValue(rangeToInput) ?? new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0, 0);
+      const endDay = toParsed.getTime() < start.getTime() ? start : toParsed;
+      return { start, end: addDays(endDay, 1) };
+    }
     if (periodMode === "month") {
       const p = parseMonthValue(monthInput);
       const y = p?.year ?? new Date().getFullYear();
@@ -88,7 +142,7 @@ export function PartnerStatistikView({ tips, orders, partnerCreatedAt }: Props) 
       start,
       end: new Date(year + 1, 0, 1, 0, 0, 0, 0),
     };
-  }, [periodMode, monthInput, yearInput, partnerYear, partnerMonth0]);
+  }, [periodMode, monthInput, yearInput, dayInput, rangeFromInput, rangeToInput, partnerYear, partnerMonth0]);
 
   const statusInPeriod = useMemo(
     () => periodTipStatusCounts(tipsForStats, periodRange.start, periodRange.end),
@@ -96,48 +150,26 @@ export function PartnerStatistikView({ tips, orders, partnerCreatedAt }: Props) 
   );
 
   const tipsInPeriod = useMemo(() => {
-    if (periodMode === "month") {
-      const p = parseMonthValue(monthInput);
-      if (!p) return filterTipsCreatedInMonth(tipsForStats, new Date().getFullYear(), new Date().getMonth());
-      return filterTipsCreatedInMonth(tipsForStats, p.year, p.month0);
-    }
-    const y = Number(yearInput);
-    const year = Number.isFinite(y) && y >= 2000 && y <= 2100 ? y : new Date().getFullYear();
-    if (year < partnerYear) return [];
-    const start =
-      year === partnerYear
-        ? new Date(year, partnerMonth0, 1, 0, 0, 0, 0).getTime()
-        : new Date(year, 0, 1, 0, 0, 0, 0).getTime();
-    const end = new Date(year + 1, 0, 1, 0, 0, 0, 0).getTime();
+    const start = periodRange.start.getTime();
+    const end = periodRange.end.getTime();
     return tipsForStats.filter((t) => {
       const ti = new Date(t.created_at).getTime();
       return Number.isFinite(ti) && ti >= start && ti < end;
     });
-  }, [periodMode, monthInput, yearInput, tipsForStats, partnerYear, partnerMonth0]);
+  }, [tipsForStats, periodRange]);
 
   const provisionInPeriod = useMemo(() => provisionEuroTotalsForTips(tipsInPeriod), [tipsInPeriod]);
 
   const ordersInPeriodCount = useMemo(() => {
-    if (periodMode === "month") {
-      const p = parseMonthValue(monthInput);
-      if (!p) return countOrdersInLocalMonth(orders, new Date().getFullYear(), new Date().getMonth());
-      return countOrdersInLocalMonth(orders, p.year, p.month0);
-    }
-    const y = Number(yearInput);
-    const year = Number.isFinite(y) && y >= 2000 && y <= 2100 ? y : new Date().getFullYear();
-    if (year < partnerYear) return 0;
-    const start =
-      year === partnerYear
-        ? new Date(year, partnerMonth0, 1, 0, 0, 0, 0).getTime()
-        : new Date(year, 0, 1, 0, 0, 0, 0).getTime();
-    const end = new Date(year + 1, 0, 1, 0, 0, 0, 0).getTime();
+    const start = periodRange.start.getTime();
+    const end = periodRange.end.getTime();
     let n = 0;
     for (const o of orders) {
       const t = new Date(o.created_at).getTime();
       if (Number.isFinite(t) && t >= start && t < end) n += 1;
     }
     return n;
-  }, [periodMode, monthInput, yearInput, orders, partnerYear, partnerMonth0]);
+  }, [orders, periodRange]);
 
   const tipsInPeriodCount = tipsInPeriod.length;
   const abgeschlossen = statusInPeriod.vertragsabschluss_erfolgreich;
@@ -160,43 +192,74 @@ export function PartnerStatistikView({ tips, orders, partnerCreatedAt }: Props) 
           </p>
         </div>
         <div className="partner-dash-animate partner-dash-delay-1 flex flex-wrap items-center gap-2">
-          <div className="flex rounded-xl border border-[#0F4F68]/20 p-0.5">
-            <button
-              type="button"
-              className={`rounded-lg px-3 py-2 text-sm font-semibold transition ${
-                periodMode === "month" ? "bg-[#0F4F68] text-white shadow-sm" : "text-[#0F4F68] hover:bg-[#F2F9FA]"
-              }`}
-              onClick={() => setPeriodMode("month")}
-            >
-              Monat
-            </button>
-            <button
-              type="button"
-              className={`rounded-lg px-3 py-2 text-sm font-semibold transition ${
-                periodMode === "year" ? "bg-[#0F4F68] text-white shadow-sm" : "text-[#0F4F68] hover:bg-[#F2F9FA]"
-              }`}
-              onClick={() => setPeriodMode("year")}
-            >
-              Jahr
-            </button>
+          <div className="flex flex-wrap rounded-xl border border-[#0F4F68]/20 p-0.5">
+            {PERIOD_MODE_OPTIONS.map(({ mode, label }) => (
+              <button
+                key={mode}
+                type="button"
+                className={`rounded-lg px-3 py-2 text-sm font-semibold transition ${
+                  periodMode === mode ? "bg-[#0F4F68] text-white shadow-sm" : "text-[#0F4F68] hover:bg-[#F2F9FA]"
+                }`}
+                onClick={() => setPeriodMode(mode)}
+              >
+                {label}
+              </button>
+            ))}
           </div>
-          {periodMode === "month" ? (
+          {periodMode === "day" && (
+            <input
+              type="date"
+              value={dayInput}
+              min={minDateValue}
+              onChange={(e) => setDayInput(e.target.value)}
+              aria-label="Tag wählen"
+              className="rounded-xl border border-neutral-200 px-3 py-2 text-sm font-medium text-neutral-900 hover:border-[#0F4F68]/30 focus:border-[#0F4F68] focus:outline-none focus:ring-2 focus:ring-[#0F4F68]/25"
+            />
+          )}
+          {periodMode === "month" && (
             <input
               type="month"
               value={monthInput}
               min={minMonthValue}
               onChange={(e) => setMonthInput(e.target.value)}
+              aria-label="Monat wählen"
               className="rounded-xl border border-neutral-200 px-3 py-2 text-sm font-medium text-neutral-900 hover:border-[#0F4F68]/30 focus:border-[#0F4F68] focus:outline-none focus:ring-2 focus:ring-[#0F4F68]/25"
             />
-          ) : (
+          )}
+          {periodMode === "year" && (
             <input
               type="number"
               min={partnerYear}
               max={2100}
               value={yearInput}
               onChange={(e) => setYearInput(e.target.value)}
+              aria-label="Jahr wählen"
               className="w-28 rounded-xl border border-neutral-200 px-3 py-2 text-sm font-medium text-neutral-900 hover:border-[#0F4F68]/30 focus:border-[#0F4F68] focus:outline-none focus:ring-2 focus:ring-[#0F4F68]/25"
             />
+          )}
+          {periodMode === "range" && (
+            <div className="flex flex-wrap items-center gap-2">
+              <label className="flex items-center gap-1.5 text-sm font-medium text-[#0F4F68]">
+                Von
+                <input
+                  type="date"
+                  value={rangeFromInput}
+                  min={minDateValue}
+                  onChange={(e) => setRangeFromInput(e.target.value)}
+                  className="rounded-xl border border-neutral-200 px-3 py-2 text-sm font-medium text-neutral-900 hover:border-[#0F4F68]/30 focus:border-[#0F4F68] focus:outline-none focus:ring-2 focus:ring-[#0F4F68]/25"
+                />
+              </label>
+              <label className="flex items-center gap-1.5 text-sm font-medium text-[#0F4F68]">
+                Bis
+                <input
+                  type="date"
+                  value={rangeToInput}
+                  min={rangeFromInput || minDateValue}
+                  onChange={(e) => setRangeToInput(e.target.value)}
+                  className="rounded-xl border border-neutral-200 px-3 py-2 text-sm font-medium text-neutral-900 hover:border-[#0F4F68]/30 focus:border-[#0F4F68] focus:outline-none focus:ring-2 focus:ring-[#0F4F68]/25"
+                />
+              </label>
+            </div>
           )}
         </div>
       </div>
@@ -252,7 +315,7 @@ export function PartnerStatistikView({ tips, orders, partnerCreatedAt }: Props) 
 
         <PartnerExpandableStatSection
           title="Diagramme und Zeitverläufe"
-          subtitle="Eingänge und Bestellungen im Jahres‑ bzw. Monatsraster wie oben eingestellt."
+          subtitle="Eingänge und Bestellungen passend zur Auswahl oben (Tag, Monat, Jahr oder Zeitraum von–bis)."
         >
           <PartnerPortalStatisticsCharts
             tips={tipsForStats}
@@ -260,6 +323,8 @@ export function PartnerStatistikView({ tips, orders, partnerCreatedAt }: Props) 
             periodMode={periodMode}
             monthInput={monthInput}
             yearInput={yearInput}
+            periodStartMs={periodRange.start.getTime()}
+            periodEndMs={periodRange.end.getTime()}
             partnerCreatedAt={partnerCreatedAt}
           />
         </PartnerExpandableStatSection>
