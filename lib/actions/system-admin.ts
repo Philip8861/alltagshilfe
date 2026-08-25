@@ -25,6 +25,7 @@ import {
   sendPartnerRegistrationWelcomeMail,
   sendPartnerRegistrationWelcomePreviewMail,
 } from "@/lib/email/partner-registration-welcome";
+import { sendAllContactRouteTestEmails } from "@/lib/email/contact-route-test";
 
 function formatPartnerProfileWriteError(err: { code?: string; message?: string }): string {
   const code = String(err.code ?? "");
@@ -364,5 +365,41 @@ export async function sendPartnerRegistrationTestEmailAction(
   return {
     ok: true,
     message: `Vorschau-E-Mail wurde an ${to} gesendet (Betreff enthält „[Vorschau]“).`,
+  };
+}
+
+export type ContactRouteTestEmailsState =
+  | { ok: true; message: string }
+  | { ok: false; message: string };
+
+/** Test-Mails für alle Kontakt-Routen (keine Statistik). Nur System-Admin-Session. */
+export async function sendContactRouteTestEmailsAction(
+  _prev: ContactRouteTestEmailsState | null,
+  _formData: FormData,
+): Promise<ContactRouteTestEmailsState> {
+  void _prev;
+  void _formData;
+  if (!(await getSystemAdminSession())) {
+    return { ok: false, message: "Nicht autorisiert." };
+  }
+
+  const results = await sendAllContactRouteTestEmails();
+  const okResults = results.filter((r) => r.ok);
+  const failed = results.filter((r) => !r.ok);
+
+  if (failed.length === 0) {
+    const lines = okResults.map((r) => `✓ ${r.label} → ${r.to}`);
+    return {
+      ok: true,
+      message: `${okResults.length} Test-E-Mails gesendet (Betreff: [ROUTING-TEST] …):\n${lines.join("\n")}`,
+    };
+  }
+
+  const lines = results.map(
+    (r) => `${r.ok ? "✓" : "✗"} ${r.label} → ${r.to}${r.error ? ` (${r.error})` : ""}`,
+  );
+  return {
+    ok: false,
+    message: `${okResults.length} OK, ${failed.length} fehlgeschlagen:\n${lines.join("\n")}`,
   };
 }
