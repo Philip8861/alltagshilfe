@@ -52,6 +52,34 @@ export function parseNotificationEmailList(raw: string | undefined): string[] {
     .filter((s) => s.length > 0);
 }
 
+/**
+ * Zentrale Anfragen-Inbox: Alle Formular-Anfragen (Kontakt, Hilfe-Finder,
+ * Social-Media-Landingpage, Ratgeber) laufen hier zusammen – keine Aufteilung
+ * mehr an die Standort-Postfächer.
+ */
+const ANFRAGENMANAGER_INBOX = "anfragenmanager@alltagshilfe-sued.de";
+
+/** Empfänger der Anfragen-Inbox; per NOTIFICATION_TO_ANFRAGENMANAGER übersteuerbar (kommagetrennt). */
+export function resolveAnfragenmanagerRecipients(): string[] {
+  const fromEnv = parseNotificationEmailList(process.env.NOTIFICATION_TO_ANFRAGENMANAGER);
+  if (fromEnv.length > 0) return fromEnv;
+  return [ANFRAGENMANAGER_INBOX];
+}
+
+/**
+ * Ausnahme Karriere: Alles rund um Karriere (Bewerbungsformular, Kurzcheck,
+ * Kontaktformular mit Thema „Karriere“) geht fest an diese Adresse – nicht an
+ * den Anfragenmanager.
+ */
+const KARRIERE_INBOX = "daniel.niebauer@alltagshilfe-sued.de";
+
+/** Empfänger für Karriere; per NOTIFICATION_TO_KARRIERE übersteuerbar (kommagetrennt). */
+export function resolveKarriereRecipients(): string[] {
+  const fromEnv = parseNotificationEmailList(process.env.NOTIFICATION_TO_KARRIERE);
+  if (fromEnv.length > 0) return fromEnv;
+  return [KARRIERE_INBOX];
+}
+
 /** Empfänger für diesen Kanal: zuerst NOTIFICATION_TO_* , sonst NOTIFICATION_TO. */
 export function resolveRecipientsForKind(kind: InternalNotificationKind): string[] {
   const specific = parseNotificationEmailList(process.env[KIND_TO_ENV[kind]]);

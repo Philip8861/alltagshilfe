@@ -15,6 +15,8 @@ import {
 } from "@/lib/email/branded-html";
 import {
   parseNotificationEmailList,
+  resolveAnfragenmanagerRecipients,
+  resolveKarriereRecipients,
   sendInternalMail,
 } from "@/lib/email/internal-smtp";
 import { getContactSourceLabel } from "@/lib/contact-source";
@@ -30,34 +32,8 @@ function parseContactStatsKindFromForm(formData: FormData): "ratgeber" | undefin
   return t === "ratgeber" ? "ratgeber" : undefined;
 }
 
-/** Zentrale Adresse, wenn weder NOTIFICATION_TO_CONTACT noch NOTIFICATION_TO gesetzt sind. */
-const DEFAULT_CONTACT_INBOX = "info@alltagshilfe-sued.de";
-
 /** Kooperationsanfragen (/kooperation, Modal „Jetzt Kooperationspartner werden“): fester Empfänger. */
 const KOOPERATION_PORTAL_INBOX = "philip.sonntag@alltagshilfe-sued.de";
-
-/** Gleiche Adresse kleingeschrieben für Dubletten-Vergleich. */
-function dedupeEmails(emails: string[]): string[] {
-  const seen = new Set<string>();
-  const out: string[] = [];
-  for (const raw of emails) {
-    const e = raw.trim();
-    if (!e.includes("@")) continue;
-    const key = e.toLowerCase();
-    if (seen.has(key)) continue;
-    seen.add(key);
-    out.push(e);
-  }
-  return out;
-}
-
-function getDefaultContactRecipients(): string[] {
-  const contact = parseNotificationEmailList(process.env.NOTIFICATION_TO_CONTACT);
-  if (contact.length > 0) return contact;
-  const general = parseNotificationEmailList(process.env.NOTIFICATION_TO);
-  if (general.length > 0) return general;
-  return [DEFAULT_CONTACT_INBOX];
-}
 
 /**
  * E-Mail des zuständigen Standorts — nur wenn das Formular einen gültigen Standort-Proof hat und
@@ -190,38 +166,45 @@ export async function submitContact(formData: FormData): Promise<ContactResult> 
     detailText: data.message,
   });
 
+  /**
+   * Ausnahme Karriere: Thema „Karriere“ geht nie an den Anfragenmanager, sondern an die
+   * Karriere-Adresse (fest daniel.niebauer@; Env-Übersteuerung möglich).
+   */
   const karriereContactRecipients = isKarriereTopic
     ? (() => {
         const onlyContact = parseNotificationEmailList(
           process.env.NOTIFICATION_TO_CONTACT_TOPIC_KARRIERE,
         );
         if (onlyContact.length > 0) return onlyContact;
-        const sameAsKarrierePage = parseNotificationEmailList(process.env.NOTIFICATION_TO_KARRIERE);
-        if (sameAsKarrierePage.length > 0) return sameAsKarrierePage;
-        return getDefaultContactRecipients();
+        return resolveKarriereRecipients();
       })()
     : undefined;
+
+  /** Aggregat-Kanal (auch für den Betreff): Ratgeber-Kontaktformulare tragen den Ratgeber-Kanal. */
+  const statsKind: ContactSourceKind =
+    parseContactStatsKindFromForm(formData) === "ratgeber" ? "ratgeber" : "contact";
 
   let finalTo: string[];
   if (isKooperationTopic) {
     finalTo = [KOOPERATION_PORTAL_INBOX];
   } else if (isKarriereTopic && karriereContactRecipients) {
     finalTo = karriereContactRecipients;
-  } else if (regionalEmail) {
-    /**
-     * Standort-Kontakt (signiertes Formular): immer auch die zentrale Inbox — zusätzlich zur
-     * regionalen Adresse aus `standorte` (z. B. augsburg@, engen@, ulm@, wangen@, info@ für Allgäu/Bad Grönenbach).
-     * Dubletten entfallen (z. B. Allgäu und Zentralpostfach sind identisch).
-     */
-    finalTo = dedupeEmails([...getDefaultContactRecipients(), regionalEmail]);
   } else {
-    finalTo = getDefaultContactRecipients();
+    /**
+     * Alle übrigen Kontaktanfragen (inkl. Standort-Seiten und Ratgeber): keine Aufteilung mehr
+     * an die Standort-Postfächer – alles zentral an den Anfragenmanager. Der Standort-Kontext
+     * bleibt im E-Mail-Inhalt sichtbar (Zeile „Standort (Seite)“).
+     */
+    finalTo = resolveAnfragenmanagerRecipients();
   }
+
+  const anfragenmanagerSubject = `Anfragenmanager: ${statsKind === "ratgeber" ? "Ratgeber" : "Kontakt"} – ${data.topic}`;
 
   const mailed = await sendInternalMail({
     kind: "contact",
     toOverride: finalTo,
-    subject: `Kontakt: ${data.topic}`,
+    subject:
+      isKooperationTopic || isKarriereTopic ? `Kontakt: ${data.topic}` : anfragenmanagerSubject,
     text,
     html,
     replyTo: data.email,
@@ -229,16 +212,14 @@ export async function submitContact(formData: FormData): Promise<ContactResult> 
   if (!mailed.ok) {
     if (mailed.code === "smtp_not_configured") {
       console.warn(
-        "[contact] SMTP oder Empfänger fehlt (SMTP_* / NOTIFICATION_TO_*; ohne Konfiguration: Ziel wäre " +
-          DEFAULT_CONTACT_INBOX +
-          " für allgemeine Kontakte) – keine E-Mail versendet",
+        "[contact] SMTP oder Empfänger fehlt (SMTP_* / NOTIFICATION_TO_*) – keine E-Mail versendet (Ziel wäre " +
+          finalTo.join(", ") +
+          ")",
       );
     }
   }
 
   /* Anonyme Aggregat-Statistik (kein Personenbezug). */
-  const statsKind: ContactSourceKind =
-    parseContactStatsKindFromForm(formData) === "ratgeber" ? "ratgeber" : "contact";
   await recordContactSource(data.contactSource, statsKind);
 
   redirect("/kontakt/danke");

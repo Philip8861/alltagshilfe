@@ -6,7 +6,7 @@ import { karriereSchema, type KarriereFormData } from "@/lib/validations/karrier
 import { rateLimit } from "@/lib/rate-limit";
 import { getClientIp } from "@/lib/security";
 import { buildBrandedNotificationHtml } from "@/lib/email/branded-html";
-import { sendInternalMail } from "@/lib/email/internal-smtp";
+import { resolveKarriereRecipients, sendInternalMail } from "@/lib/email/internal-smtp";
 import { getContactSourceLabel } from "@/lib/contact-source";
 import { recordContactSource, type ContactSourceKind } from "@/lib/contact-source-tracking";
 
@@ -106,6 +106,8 @@ export async function submitKarriere(formData: FormData): Promise<KarriereResult
 
   const mailed = await sendInternalMail({
     kind: "karriere",
+    /* Ausnahme Karriere: fester Empfänger (daniel.niebauer@), per NOTIFICATION_TO_KARRIERE übersteuerbar. */
+    toOverride: resolveKarriereRecipients(),
     subject: `Karriere: ${data.stellenangebot} – ${data.nachname}, ${data.vorname}`,
     text,
     html,
@@ -114,7 +116,9 @@ export async function submitKarriere(formData: FormData): Promise<KarriereResult
   });
   if (!mailed.ok && mailed.code === "smtp_not_configured") {
     console.warn(
-      "[karriere] SMTP oder NOTIFICATION_TO_KARRIERE / NOTIFICATION_TO fehlt – keine E-Mail versendet",
+      "[karriere] SMTP unvollständig (SMTP_*) – keine E-Mail versendet (Ziel wäre " +
+        resolveKarriereRecipients().join(", ") +
+        ")",
     );
   }
 

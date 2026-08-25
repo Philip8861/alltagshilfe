@@ -5,22 +5,12 @@ import {
   buildBrandedNotificationHtml,
   type EmailDetailRow,
 } from "@/lib/email/branded-html";
-import { parseNotificationEmailList, sendInternalMail } from "@/lib/email/internal-smtp";
+import { resolveAnfragenmanagerRecipients, sendInternalMail } from "@/lib/email/internal-smtp";
 import { rateLimit } from "@/lib/rate-limit";
 import { getClientIp } from "@/lib/security";
 import { INKO_CALLBACK_TIME_SLOTS, inkoCallbackSchema } from "@/lib/validations/inko-callback";
 
 export type InkoCallbackResult = { success: boolean; error?: string };
-
-const DEFAULT_CONTACT_INBOX = "info@alltagshilfe-sued.de";
-
-function getDefaultContactRecipients(): string[] {
-  const contact = parseNotificationEmailList(process.env.NOTIFICATION_TO_CONTACT);
-  if (contact.length > 0) return contact;
-  const general = parseNotificationEmailList(process.env.NOTIFICATION_TO);
-  if (general.length > 0) return general;
-  return [DEFAULT_CONTACT_INBOX];
-}
 
 function preferredTimeLabel(value: string): string {
   return INKO_CALLBACK_TIME_SLOTS.find((s) => s.value === value)?.label ?? value;
@@ -101,8 +91,8 @@ export async function submitInkoCallback(formData: FormData): Promise<InkoCallba
 
   const mailed = await sendInternalMail({
     kind: "contact",
-    toOverride: getDefaultContactRecipients(),
-    subject: `Inkontinenz-Rückruf: ${data.vorname} ${data.nachname}`,
+    toOverride: resolveAnfragenmanagerRecipients(),
+    subject: `Anfragenmanager: Ratgeber – Inkontinenz-Rückruf (${data.vorname} ${data.nachname})`,
     text,
     html,
     replyTo: email || undefined,

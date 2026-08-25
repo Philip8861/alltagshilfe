@@ -15,7 +15,7 @@ import {
   type EmailDetailRow,
 } from "@/lib/email/branded-html";
 import {
-  parseNotificationEmailList,
+  resolveAnfragenmanagerRecipients,
   sendInternalMail,
 } from "@/lib/email/internal-smtp";
 import {
@@ -23,31 +23,6 @@ import {
   isValidContactSource,
 } from "@/lib/contact-source";
 import { recordContactSource, type ContactSourceKind } from "@/lib/contact-source-tracking";
-
-/** Zentrale Adresse, wenn weder NOTIFICATION_TO_CONTACT noch NOTIFICATION_TO gesetzt sind. */
-const DEFAULT_CONTACT_INBOX = "info@alltagshilfe-sued.de";
-
-function dedupeEmails(emails: string[]): string[] {
-  const seen = new Set<string>();
-  const out: string[] = [];
-  for (const raw of emails) {
-    const e = raw.trim();
-    if (!e.includes("@")) continue;
-    const key = e.toLowerCase();
-    if (seen.has(key)) continue;
-    seen.add(key);
-    out.push(e);
-  }
-  return out;
-}
-
-function getDefaultContactRecipients(): string[] {
-  const contact = parseNotificationEmailList(process.env.NOTIFICATION_TO_CONTACT);
-  if (contact.length > 0) return contact;
-  const general = parseNotificationEmailList(process.env.NOTIFICATION_TO);
-  if (general.length > 0) return general;
-  return [DEFAULT_CONTACT_INBOX];
-}
 
 export type HilfefinderKontaktArt = "rueckruf" | "selbst";
 
@@ -99,9 +74,8 @@ export type HilfefinderResult = {
 
 /**
  * Anfrage aus dem 60-Sekunden-Hilfefinder versenden.
- * Empfänger:
- *  - Mit PLZ: zuständiger Standort (exakt, sonst nächster per Geo-Zuordnung) + zentrale Inbox (dedupliziert).
- *  - Ohne PLZ: Zentrale Allgäu + zentrale Inbox.
+ * Empfänger: zentrale Anfragen-Inbox (Anfragenmanager) – keine Aufteilung an Standort-Postfächer.
+ * Der per PLZ ermittelte Standort bleibt in Betreff und Inhalt sichtbar.
  */
 export async function submitHilfefinder(input: HilfefinderInput): Promise<HilfefinderResult> {
   if (typeof input?.website === "string" && input.website.length > 0) {
@@ -151,14 +125,8 @@ export async function submitHilfefinder(input: HilfefinderInput): Promise<Hilfef
 
   const plzNorm = String(input.plz ?? "").replace(/\D/g, "").slice(0, 5);
   const { standort, match: standortMatch } = resolveStandortForPlz(plzNorm);
-  const standortEmail = standort.email?.trim();
 
-  let finalTo: string[];
-  if (standortEmail && standortEmail.includes("@")) {
-    finalTo = dedupeEmails([...getDefaultContactRecipients(), standortEmail]);
-  } else {
-    finalTo = [DEFAULT_CONTACT_INBOX];
-  }
+  const finalTo = resolveAnfragenmanagerRecipients();
 
   const kontaktLabel =
     input.kontaktArt === "rueckruf"
@@ -236,7 +204,7 @@ export async function submitHilfefinder(input: HilfefinderInput): Promise<Hilfef
   const mailed = await sendInternalMail({
     kind: "contact",
     toOverride: finalTo,
-    subject: `${formLabel}: ${kontaktLabel}${standort ? ` (${standort.name})` : ""}`,
+    subject: `Anfragenmanager: ${formLabel} – ${kontaktLabel}${standort ? ` (${standort.name})` : ""}`,
     text,
     html,
     replyTo: email,
