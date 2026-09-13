@@ -85,3 +85,13 @@ export function rateLimitSiteAnalyticsNavigation(identifier: string): { success:
 export function rateLimitPflegeboxPartnerLookup(identifier: string): { success: boolean; remaining: number } {
   return rateLimitWithConfig(`pflegebox-partner-lookup:${identifier}`, 45, 10 * 60 * 1000);
 }
+
+/** Verfügbare Slots für das betriebliche Infogespräch (Kalender-Popup). */
+export function rateLimitBetrieblichInfoSlots(identifier: string): { success: boolean; remaining: number } {
+  return rateLimitWithConfig(`betrieblich-info-slots:${identifier}`, 40, 60 * 1000);
+}
+
+/** Buchung eines 15-Minuten-Infogesprächs (betriebliche Pflegeberatung). */
+export function rateLimitBetrieblichInfoTermin(identifier: string): { success: boolean; remaining: number } {
+  return rateLimitWithConfig(`betrieblich-info-termin:${identifier}`, 8, 60 * 60 * 1000);
+}

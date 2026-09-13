@@ -105,6 +105,13 @@ export function getContactRouteTestCases(): ContactRouteTestCase[] {
       kind: "contact",
     },
     {
+      id: "betrieblich-info",
+      label: "Betriebliche Pflegeberatung (15-Min-Infogespräch)",
+      to: resolveBetrieblichAngebotRecipients(),
+      subject: "Termin gebucht: Infogespräch (Routing-Test)",
+      kind: "contact",
+    },
+    {
       id: "pflegebox",
       label: "Pflegebox-Bestellung",
       to: resolveRecipientsForKind("pflegebox"),

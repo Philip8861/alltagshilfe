@@ -502,6 +502,7 @@ const CONTACT_KIND_DAILY_ORDER = [
   "landingpage-social-media",
   "pflegebox",
   "betrieblich-angebot",
+  "betrieblich-info",
   "karriere",
   "karriere-form",
   "karriere-wizard",
@@ -775,6 +776,7 @@ const CONVERSION_CHANNEL_GROUPS: { id: string; label: string; kinds: readonly st
   { id: "ratgeber", label: "Ratgeber", kinds: ["ratgeber"] },
   { id: "pflegebox", label: "Pflegebox", kinds: ["pflegebox"] },
   { id: "betrieblich-angebot", label: "Betriebliches Angebot", kinds: ["betrieblich-angebot"] },
+  { id: "betrieblich-info", label: "Betriebliches Infogespräch", kinds: ["betrieblich-info"] },
   {
     id: "karriere",
     label: "Karriere",

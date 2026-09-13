@@ -22,6 +22,7 @@ export const CONTACT_CHANNEL_GROUPS = [
   { id: "ratgeber", kinds: ["ratgeber"], label: "Ratgeber" },
   { id: "pflegebox", kinds: ["pflegebox"], label: "Pflegebox" },
   { id: "betrieblich-angebot", kinds: ["betrieblich-angebot"], label: "Betriebliches Angebot" },
+  { id: "betrieblich-info", kinds: ["betrieblich-info"], label: "Betriebliches Infogespräch" },
   {
     id: "karriere",
     kinds: [...KARRIERE_PAGE_SOURCE_KINDS],
@@ -40,6 +41,7 @@ export const KIND_LABELS: Record<string, string> = {
   "karriere-form": "Karriere: Formular (Seite)",
   "karriere-wizard": "Karriere: Kurzcheck",
   "betrieblich-angebot": "Betriebliches Angebot",
+  "betrieblich-info": "Betriebliches Infogespräch",
   pflegebox: "Pflegebox (Konfigurator)",
 };
 
@@ -54,6 +56,7 @@ const KIND_LINE_COLORS: Record<string, string> = {
   "landingpage-social-media": "#1877F2",
   pflegebox: CHART_EMERALD,
   "betrieblich-angebot": CHART_AMBER,
+  "betrieblich-info": "#ea580c",
   karriere: CHART_ROSE,
   "karriere-form": "#f97316",
   "karriere-wizard": "#c2410c",
@@ -70,6 +73,7 @@ const GROUP_LINE_COLORS: Record<ContactChannelGroupId, string> = {
   ratgeber: CHART_VIOLET,
   pflegebox: CHART_EMERALD,
   "betrieblich-angebot": CHART_AMBER,
+  "betrieblich-info": "#ea580c",
   karriere: CHART_ROSE,
 };
 

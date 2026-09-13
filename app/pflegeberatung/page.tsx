@@ -8,9 +8,9 @@ import {
   BETRIEBLICH_FOLGEN_SURFACE,
 } from "@/components/pflegeberatung/BetrieblichePflegeberatungSection";
 import {
-  BetrieblichAngebotDialogProvider,
-  BetrieblichAngebotOpenButton,
-} from "@/components/pflegeberatung/BetrieblicheAngebotAnfrage";
+  BetrieblichInfoTerminDialogProvider,
+  BetrieblichInfoTerminOpenButton,
+} from "@/components/pflegeberatung/BetrieblichInfoTerminDialog";
 import { siteConfig } from "@/config/site";
 
 const BETRIEBLICH_HERO_BULLETS = [
@@ -62,7 +62,7 @@ export const metadata: Metadata = {
 
 export default function PflegeberatungPage() {
   return (
-    <BetrieblichAngebotDialogProvider>
+    <BetrieblichInfoTerminDialogProvider>
       <article className="min-w-0 overflow-x-clip pb-12 sm:pb-16" style={{ backgroundColor: BETRIEBLICH_FOLGEN_SURFACE }}>
         <section
           id="betriebliche-pflegeberatung"
@@ -103,7 +103,7 @@ export default function PflegeberatungPage() {
                   ))}
                 </ul>
                 <div className="mt-5 max-w-md sm:mt-6">
-                  <BetrieblichAngebotOpenButton className="w-full sm:w-auto" />
+                  <BetrieblichInfoTerminOpenButton className="w-full sm:w-auto" />
                 </div>
               </header>
             </Container>
@@ -148,6 +148,6 @@ export default function PflegeberatungPage() {
           </div>
         </section>
       </article>
-    </BetrieblichAngebotDialogProvider>
+    </BetrieblichInfoTerminDialogProvider>
   );
 }
