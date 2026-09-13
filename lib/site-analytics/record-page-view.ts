@@ -1,13 +1,38 @@
 import type { NextRequest } from "next/server";
 
-/** Gleiche Normalisierung wie beim Zählen (EN-Pfad → deutsch-logischer Pfad). */
-export function normalizePathForSiteAnalytics(pathname: string): string {
+/** Kanonischer Pfad für die betriebliche Landing (gleiche Seite wie `/pflegeberatung`). */
+export const BETRIEBLICH_ANALYTICS_PATH = "/pflegeberatung/betriebliche-pflegeberatung";
+
+const BETRIEBLICH_PATH_ALIASES = new Set([
+  "/pflegeberatung",
+  "/pflegeberatung/betriebliche-pflegeberatung",
+  "/betriebliche-pflegeberatung",
+  "/leistungen/betriebliche-pflegeberatung",
+]);
+
+function stripEnPrefix(pathname: string): string {
   const raw = pathname.trim() || "/";
   if (raw === "/en" || raw.startsWith("/en/")) {
     const rest = raw.replace(/^\/en(?=\/|$)/, "") || "/";
     return rest.startsWith("/") ? rest : `/${rest}`;
   }
   return raw.startsWith("/") ? raw : `/${raw}`;
+}
+
+/**
+ * Gleiche Normalisierung wie beim Zählen:
+ * EN-Pfad → deutsch-logischer Pfad, bekannte Aliase (Hash/Redirects) → ein Zähl-Pfad.
+ */
+export function normalizePathForSiteAnalytics(pathname: string): string {
+  const [pathOnly, hash = ""] = pathname.split("#");
+  const raw = stripEnPrefix(pathOnly ?? "/");
+  const section = hash.replace(/^#/, "").trim();
+
+  if (section === "betriebliche-pflegeberatung" || BETRIEBLICH_PATH_ALIASES.has(raw)) {
+    return BETRIEBLICH_ANALYTICS_PATH;
+  }
+
+  return raw;
 }
 
 export function shouldRecordSitePageView(request: NextRequest, normalizedPath: string): boolean {

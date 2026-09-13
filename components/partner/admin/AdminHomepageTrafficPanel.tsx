@@ -31,6 +31,7 @@ import {
   deviceCategoryLabelDe,
   type SiteTrafficDeviceCategory,
 } from "@/lib/site-analytics/device-category";
+import { siteAnalyticsPathLabel } from "@/lib/site-analytics/path-labels";
 
 const DEVICE_ORDER: readonly SiteTrafficDeviceCategory[] = ["mobile", "tablet", "desktop", "unknown"];
 
@@ -476,8 +477,13 @@ export function AdminHomepageTrafficPanel({ chartYear, activeSection }: Props) {
                         return (
                           <Fragment key={row.path}>
                             <tr className="hover:bg-neutral-50/80">
-                              <td className="max-w-[18rem] break-all px-3 py-2 font-mono text-xs text-neutral-800">
-                                {row.path}
+                              <td className="max-w-[18rem] px-3 py-2 text-neutral-800">
+                                {siteAnalyticsPathLabel(row.path) ? (
+                                  <span className="block text-sm font-semibold text-[#0F4F68]">
+                                    {siteAnalyticsPathLabel(row.path)}
+                                  </span>
+                                ) : null}
+                                <span className="block break-all font-mono text-xs text-neutral-600">{row.path}</span>
                               </td>
                               <td className="whitespace-nowrap px-3 py-2 text-right font-semibold tabular-nums text-[#0F4F68]">
                                 {row.view_count.toLocaleString("de-DE")}
@@ -496,7 +502,9 @@ export function AdminHomepageTrafficPanel({ chartYear, activeSection }: Props) {
                             {open ? (
                               <tr className="bg-[#fafcfd]">
                                 <td colSpan={3} className="px-3 py-4">
-                                  <p className="text-xs font-semibold text-[#0F4F68]">Verlauf: {row.path}</p>
+                                  <p className="text-xs font-semibold text-[#0F4F68]">
+                                    Verlauf: {siteAnalyticsPathLabel(row.path) ?? row.path}
+                                  </p>
                                   <div className="mt-3">
                                     <GranularityToggle idPrefix={`hp-path-${idx}`} value={pathGran} onChange={setPathGran} />
                                   </div>

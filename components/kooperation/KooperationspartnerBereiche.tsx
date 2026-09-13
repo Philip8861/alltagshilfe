@@ -155,7 +155,7 @@ const BEREICHE: BereichDef[] = [
         text: "Über unser Dashboard sehen Sie jeden Status und die monatliche Tippgeberprovision.",
       },
     ],
-    mehrHref: "/pflegeberatung#betriebliche-pflegeberatung",
+    mehrHref: "/pflegeberatung/betriebliche-pflegeberatung",
     mehrLabel: "Betriebliche Pflegeberatung ansehen",
   },
   {

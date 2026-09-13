@@ -57,6 +57,7 @@ const imgBlockStyle = {
 export const metadata: Metadata = {
   title: "Betriebliche Pflegeberatung",
   description: `Betriebliche Pflegeberatung für Unternehmen: Team entlasten, Fehlzeiten reduzieren, Mitarbeitende stärken – ${siteConfig.name}.`,
+  alternates: { canonical: "/pflegeberatung/betriebliche-pflegeberatung" },
 };
 
 export default function PflegeberatungPage() {

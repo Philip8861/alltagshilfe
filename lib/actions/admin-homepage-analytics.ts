@@ -19,6 +19,10 @@ import {
 } from "@/lib/site-analytics/month-bounds";
 import { getSystemAdminSession } from "@/lib/partner/system-admin-session";
 import { createSupabaseServiceRoleClient } from "@/lib/supabase/service";
+import {
+  BETRIEBLICH_ANALYTICS_PATH,
+  normalizePathForSiteAnalytics,
+} from "@/lib/site-analytics/record-page-view";
 
 export type HomepageTrafficGranularity = "tag" | "monat" | "jahr";
 
@@ -84,6 +88,56 @@ function fillRangeSeries(
       views: monthTotals.get(mKey) ?? 0,
     };
   });
+}
+
+const BETRIEBLICH_PATH_QUERY_ALIASES = [
+  BETRIEBLICH_ANALYTICS_PATH,
+  "/pflegeberatung",
+  "/betriebliche-pflegeberatung",
+  "/leistungen/betriebliche-pflegeberatung",
+] as const;
+
+function pathsForAnalyticsSeriesQuery(path: string): string[] {
+  const canonical = normalizePathForSiteAnalytics(path);
+  if (canonical === BETRIEBLICH_ANALYTICS_PATH) return [...BETRIEBLICH_PATH_QUERY_ALIASES];
+  return [path];
+}
+
+function foldPathTotals(
+  rows: { path: string; view_count: number }[],
+): { path: string; view_count: number }[] {
+  const map = new Map<string, number>();
+  for (const row of rows) {
+    const path = normalizePathForSiteAnalytics(row.path);
+    map.set(path, (map.get(path) ?? 0) + row.view_count);
+  }
+  return [...map.entries()]
+    .map(([path, view_count]) => ({ path, view_count }))
+    .sort((a, b) => b.view_count - a.view_count);
+}
+
+function mergeDayRows(groups: { bucket: string; view_count: number }[][]): { bucket: string; view_count: number }[] {
+  const map = new Map<string, number>();
+  for (const rows of groups) {
+    for (const r of rows) map.set(r.bucket, (map.get(r.bucket) ?? 0) + r.view_count);
+  }
+  return [...map.entries()].map(([bucket, view_count]) => ({ bucket, view_count }));
+}
+
+function mergeMonthRows(groups: { month: number; view_count: number }[][]): { month: number; view_count: number }[] {
+  const map = new Map<number, number>();
+  for (const rows of groups) {
+    for (const r of rows) map.set(r.month, (map.get(r.month) ?? 0) + r.view_count);
+  }
+  return [...map.entries()].map(([month, view_count]) => ({ month, view_count }));
+}
+
+function mergeYearRows(groups: { year: number; view_count: number }[][]): { year: number; view_count: number }[] {
+  const map = new Map<number, number>();
+  for (const rows of groups) {
+    for (const r of rows) map.set(r.year, (map.get(r.year) ?? 0) + r.view_count);
+  }
+  return [...map.entries()].map(([year, view_count]) => ({ year, view_count }));
 }
 
 function svcRpc(svc: ReturnType<typeof createSupabaseServiceRoleClient>, name: string, args: Record<string, unknown>) {
@@ -232,6 +286,7 @@ export async function fetchHomepagePathSeriesAction(
 
   const p = path.trim().slice(0, 2048);
   if (!p) return { ok: false, message: "Pfad fehlt." };
+  const queryPaths = pathsForAnalyticsSeriesQuery(p);
 
   const y = Math.min(2100, Math.max(YEAR_RANGE_START, Math.floor(year)));
   const m = Math.min(12, Math.max(1, Math.floor(month)));
@@ -239,38 +294,68 @@ export async function fetchHomepagePathSeriesAction(
   try {
     if (gran === "zeitraum") {
       const r = sanitizeDayRange(fromDay, toDay) ?? calendarMonthBounds(y, m);
-      const res = await svcRpc(svc, "admin_site_traffic_path_by_day", {
-        p_path: p,
-        p_from: r.from,
-        p_to: r.to,
-      });
-      if (res.error) throw new Error(res.error.message);
-      return { ok: true, data: fillRangeSeries(r.from, r.to, parseDayRows(res.data)) };
+      const results = await Promise.all(
+        queryPaths.map((alias) =>
+          svcRpc(svc, "admin_site_traffic_path_by_day", {
+            p_path: alias,
+            p_from: r.from,
+            p_to: r.to,
+          }),
+        ),
+      );
+      const failed = results.find((res) => res.error);
+      if (failed?.error) throw new Error(failed.error.message);
+      return {
+        ok: true,
+        data: fillRangeSeries(r.from, r.to, mergeDayRows(results.map((res) => parseDayRows(res.data)))),
+      };
     }
     if (gran === "tag") {
       const { from, to } = calendarMonthBounds(y, m);
-      const res = await svcRpc(svc, "admin_site_traffic_path_by_day", {
-        p_path: p,
-        p_from: from,
-        p_to: to,
-      });
-      if (res.error) throw new Error(res.error.message);
-      const series = fillPathSeries("tag", y, m, parseDayRows(res.data), [], []);
+      const results = await Promise.all(
+        queryPaths.map((alias) =>
+          svcRpc(svc, "admin_site_traffic_path_by_day", {
+            p_path: alias,
+            p_from: from,
+            p_to: to,
+          }),
+        ),
+      );
+      const failed = results.find((res) => res.error);
+      if (failed?.error) throw new Error(failed.error.message);
+      const series = fillPathSeries("tag", y, m, mergeDayRows(results.map((res) => parseDayRows(res.data))), [], []);
       return { ok: true, data: series };
     }
     if (gran === "monat") {
-      const res = await svcRpc(svc, "admin_site_traffic_path_by_month_for_year", { p_path: p, p_year: y });
-      if (res.error) throw new Error(res.error.message);
-      const series = fillPathSeries("monat", y, m, [], parseMonthRows(res.data), []);
+      const results = await Promise.all(
+        queryPaths.map((alias) =>
+          svcRpc(svc, "admin_site_traffic_path_by_month_for_year", { p_path: alias, p_year: y }),
+        ),
+      );
+      const failed = results.find((res) => res.error);
+      if (failed?.error) throw new Error(failed.error.message);
+      const series = fillPathSeries(
+        "monat",
+        y,
+        m,
+        [],
+        mergeMonthRows(results.map((res) => parseMonthRows(res.data))),
+        [],
+      );
       return { ok: true, data: series };
     }
-    const res = await svcRpc(svc, "admin_site_traffic_path_by_year", {
-      p_path: p,
-      p_year_from: YEAR_RANGE_START,
-      p_year_to: y,
-    });
-    if (res.error) throw new Error(res.error.message);
-    const series = fillPathSeries("jahr", y, m, [], [], parseYearRows(res.data));
+    const results = await Promise.all(
+      queryPaths.map((alias) =>
+        svcRpc(svc, "admin_site_traffic_path_by_year", {
+          p_path: alias,
+          p_year_from: YEAR_RANGE_START,
+          p_year_to: y,
+        }),
+      ),
+    );
+    const failed = results.find((res) => res.error);
+    if (failed?.error) throw new Error(failed.error.message);
+    const series = fillPathSeries("jahr", y, m, [], [], mergeYearRows(results.map((res) => parseYearRows(res.data))));
     return { ok: true, data: series };
   } catch (e) {
     console.error("[fetchHomepagePathSeriesAction]", e);
@@ -301,7 +386,7 @@ export async function fetchHomepageYearPathTotalsAction(
         return { path: String(row.path ?? ""), view_count: Number(row.view_count ?? 0) };
       })
     : [];
-  return { ok: true, data: rows };
+  return { ok: true, data: foldPathTotals(rows) };
 }
 
 export type HomepageDeviceBreakdownRow = { device_category: string; view_count: number };

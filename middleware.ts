@@ -1,12 +1,12 @@
 import { NextResponse } from "next/server";
-import type { NextRequest } from "next/server";
+import type { NextFetchEvent, NextRequest } from "next/server";
 import { buildStandortPageHref, findStandortByPlz, getOrtByPlz } from "@/config/standorte";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import {
   hasAnalyticsConsentFromCookieValue,
   hasTranslationConsentFromCookieValue,
 } from "@/lib/consent-server";
-import { fireSitePageViewIfEligible, fireUniqueVisitorIfEligible } from "@/lib/site-analytics/middleware-fire";
+import { scheduleSiteAnalyticsIfEligible } from "@/lib/site-analytics/middleware-fire";
 import { applyUniqueVisitorDayCookie } from "@/lib/site-analytics/unique-visitor";
 import { applyPartnerSupabaseSession } from "@/lib/supabase/partner-middleware";
 import { buildContentSecurityPolicy } from "@/lib/security/content-security-policy";
@@ -46,7 +46,7 @@ function applySecurityAndSeoHeaders(
   );
 }
 
-export async function middleware(request: NextRequest) {
+export async function middleware(request: NextRequest, event: NextFetchEvent) {
   try {
     const { pathname, search } = request.nextUrl;
     const isEnPath = pathname === "/en" || pathname.startsWith("/en/");
@@ -113,9 +113,9 @@ export async function middleware(request: NextRequest) {
 
     applySecurityAndSeoHeaders(response, request, normalizedPath, search);
     if (!isSkippable && !isPartnerRoute && hasAnalyticsConsentFromCookieValue(consentCookie)) {
-      fireSitePageViewIfEligible(request, normalizedPath);
-      const uniqueDay = fireUniqueVisitorIfEligible(request, normalizedPath);
+      const { uniqueDay, pending } = scheduleSiteAnalyticsIfEligible(request, normalizedPath);
       if (uniqueDay) applyUniqueVisitorDayCookie(response, uniqueDay);
+      event.waitUntil(pending);
     }
     return response;
   } catch {

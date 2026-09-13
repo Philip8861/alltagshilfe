@@ -27,6 +27,6 @@ export const LEISTUNGS_LINKS_BY_ICON: Record<LeistungKachelIcon, string> = {
   chat: "/pflegeberatung/private-pflegeberatung",
   box: "/pflegehilfsmittel/kostenfreie-pflegehilfsmittel",
   cart: "/pflegeshop",
-  briefcase: "/pflegeberatung#betriebliche-pflegeberatung",
+  briefcase: "/pflegeberatung/betriebliche-pflegeberatung",
   meal: "/leistungen/essen-auf-raeder",
 };

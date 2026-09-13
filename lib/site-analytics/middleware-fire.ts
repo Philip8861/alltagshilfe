@@ -19,45 +19,60 @@ function getServiceSupabaseForAnalytics() {
   return supabaseSingleton;
 }
 
+type RpcClient = {
+  rpc: (
+    name: string,
+    args: Record<string, unknown>,
+  ) => Promise<{ error: { message: string } | null }>;
+};
+
+async function incrementPageView(
+  supabase: RpcClient,
+  day: string,
+  path: string,
+  device: string,
+): Promise<void> {
+  const res = await supabase.rpc("increment_site_page_view", {
+    p_day: day,
+    p_path: path,
+    p_device: device,
+  });
+  if (res.error) console.warn("[site-analytics]", res.error.message);
+}
+
+async function incrementUniqueVisitor(supabase: RpcClient, day: string): Promise<void> {
+  const res = await supabase.rpc("increment_site_unique_visitor", { p_day: day });
+  if (res.error) console.warn("[site-analytics/unique]", res.error.message);
+}
+
 /**
- * Asynchroner Zählimpuls (kein await im Middleware-Hauptpfad).
- * Zählt nur aggregierte Seitenaufrufe; keine personenbezogenen Daten.
+ * Zählt Page-View und optional Unique Visitor.
+ * Rückgabe: Berlin-Tag wenn Unique neu gezählt (Cookie setzen), sonst null.
+ * `pending` muss per `waitUntil` am Leben gehalten werden (Edge friert sonst den RPC ab).
  */
-export function fireSitePageViewIfEligible(request: NextRequest, pathnameForAnalytics: string): void {
-  if (!shouldRecordSitePageView(request, pathnameForAnalytics)) return;
+export function scheduleSiteAnalyticsIfEligible(
+  request: NextRequest,
+  pathnameForAnalytics: string,
+): { uniqueDay: string | null; pending: Promise<unknown> } {
+  const tasks: Promise<unknown>[] = [];
+  let uniqueDay: string | null = null;
+
   const supabase = getServiceSupabaseForAnalytics();
-  if (!supabase) return;
+  if (!supabase) return { uniqueDay: null, pending: Promise.resolve() };
 
   const path = normalizePathForSiteAnalytics(pathnameForAnalytics);
   const day = analyticsDayBerlin();
   const device = deviceCategoryFromHeaders(request.headers);
+  const rpc = supabase as unknown as RpcClient;
 
-  /* eslint-disable @typescript-eslint/no-explicit-any -- RPC nicht im generierten DB-Typ */
-  void (supabase as any)
-    .rpc("increment_site_page_view", { p_day: day, p_path: path, p_device: device })
-    .then((res: { error: { message: string } | null }) => {
-      if (res.error) console.warn("[site-analytics]", res.error.message);
-    });
-}
+  if (shouldRecordSitePageView(request, path)) {
+    tasks.push(incrementPageView(rpc, day, path, device));
+  }
 
-/**
- * Unique Visitor (+1 / Berlin-Tag) – nur wenn noch kein Tages-Cookie gesetzt.
- * Rückgabe: Tag für Set-Cookie, sonst null (bereits gezählt / nicht zählbar / kein Supabase).
- */
-export function fireUniqueVisitorIfEligible(
-  request: NextRequest,
-  pathnameForAnalytics: string,
-): string | null {
-  if (!shouldCountUniqueVisitorDocument(request, pathnameForAnalytics)) return null;
-  const supabase = getServiceSupabaseForAnalytics();
-  if (!supabase) return null;
+  if (shouldCountUniqueVisitorDocument(request, pathnameForAnalytics)) {
+    uniqueDay = day;
+    tasks.push(incrementUniqueVisitor(rpc, day));
+  }
 
-  const day = analyticsDayBerlin();
-  /* eslint-disable @typescript-eslint/no-explicit-any -- RPC nicht im generierten DB-Typ */
-  void (supabase as any)
-    .rpc("increment_site_unique_visitor", { p_day: day })
-    .then((res: { error: { message: string } | null }) => {
-      if (res.error) console.warn("[site-analytics/unique]", res.error.message);
-    });
-  return day;
+  return { uniqueDay, pending: Promise.all(tasks) };
 }

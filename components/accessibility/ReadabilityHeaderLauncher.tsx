@@ -31,6 +31,7 @@ function shouldHideLauncher(pathname: string | null): boolean {
     pathname.startsWith("/en/partner") ||
     isPflegeboxKonfiguratorPagePath(pathname) ||
     pathname === "/pflegeberatung" ||
+    pathname === "/pflegeberatung/betriebliche-pflegeberatung" ||
     pathname === "/karriere" ||
     pathname.startsWith("/karriere/") ||
     pathname === "/kooperation"

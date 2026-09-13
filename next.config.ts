@@ -130,17 +130,17 @@ const nextConfig: NextConfig = {
       },
       {
         source: "/betriebliche-pflegeberatung",
-        destination: "/pflegeberatung#betriebliche-pflegeberatung",
+        destination: "/pflegeberatung/betriebliche-pflegeberatung",
         permanent: true,
       },
       {
         source: "/betriebliche-pflegeberatung/",
-        destination: "/pflegeberatung#betriebliche-pflegeberatung",
+        destination: "/pflegeberatung/betriebliche-pflegeberatung",
         permanent: true,
       },
       {
         source: "/betriebliche-pflegeberatung/:path+",
-        destination: "/pflegeberatung#betriebliche-pflegeberatung",
+        destination: "/pflegeberatung/betriebliche-pflegeberatung",
         permanent: true,
       },
       { source: "/blog", destination: "/ratgeber", permanent: true },
@@ -158,7 +158,7 @@ const nextConfig: NextConfig = {
       },
       {
         source: "/leistungen/betriebliche-pflegeberatung",
-        destination: "/pflegeberatung#betriebliche-pflegeberatung",
+        destination: "/pflegeberatung/betriebliche-pflegeberatung",
         permanent: true,
       },
       {

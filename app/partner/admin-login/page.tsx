@@ -22,8 +22,7 @@ export default async function PartnerAdminLoginPage() {
           Partner-Verwaltung
         </h1>
         <p className="mt-3 text-sm text-neutral-600 sm:text-base">
-          Anmeldung mit den in <code className="rounded bg-neutral-100 px-1 text-xs">.env</code> / Vercel hinterlegten
-          Zugangsdaten – nicht mit Partner-E-Mail/Passwort.
+          Bitte melden Sie sich mit Ihren Zugangsdaten für die Partner-Verwaltung an.
         </p>
 
         {!configured ? (

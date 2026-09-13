@@ -82,7 +82,7 @@ export function ReadabilityZoomControls() {
 
   useEffect(() => {
     const onOpenFromFooter = () => {
-      if (pathname === "/pflegeberatung") return;
+      if (pathname === "/pflegeberatung" || pathname === "/pflegeberatung/betriebliche-pflegeberatung") return;
       setOpen(true);
     };
     window.addEventListener(AHS_READABILITY_OPEN_EVENT, onOpenFromFooter);
@@ -577,6 +577,7 @@ export function ReadabilityZoomControls() {
     pathname.startsWith("/en/partner") ||
     isPflegeboxKonfiguratorPagePath(pathname) ||
     pathname === "/pflegeberatung" ||
+    pathname === "/pflegeberatung/betriebliche-pflegeberatung" ||
     pathname === "/karriere" ||
     pathname.startsWith("/karriere/") ||
     pathname === "/kooperation"

@@ -22,7 +22,7 @@ const UNSERE_LEISTUNGEN_CHILDREN_ALL: { href: string; label: string }[] = [
   { href: "/pflegeshop", label: "Pflegeshop & Inkontinenzversorgung" },
   { href: "/leistungen/essen-auf-raeder", label: "Essen auf Räder" },
   { href: "/leistungen/hilfe-nach-operation", label: "Hilfe nach Operation, Unfall oder Schwangerschaft" },
-  { href: "/pflegeberatung#betriebliche-pflegeberatung", label: "Betriebliche Pflegeberatung" },
+  { href: "/pflegeberatung/betriebliche-pflegeberatung", label: "Betriebliche Pflegeberatung" },
 ];
 
 const UNSERE_LEISTUNGEN_CHILDREN = features.essenAufRaederVisible
@@ -47,7 +47,7 @@ export const navLinks: NavLink[] = [
     label: "Pflegeberatung",
     children: [
       { href: "/pflegeberatung/private-pflegeberatung", label: "Private Pflegeberatung" },
-      { href: "/pflegeberatung#betriebliche-pflegeberatung", label: "Betriebliche Pflegeberatung" },
+      { href: "/pflegeberatung/betriebliche-pflegeberatung", label: "Betriebliche Pflegeberatung" },
     ],
   },
   { href: "/ratgeber", label: "Ratgeber", activeWhenPathStartsWith: "/ratgeber" },
