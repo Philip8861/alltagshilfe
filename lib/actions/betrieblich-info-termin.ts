@@ -71,6 +71,7 @@ export async function submitBetrieblichInfoTermin(formData: FormData): Promise<B
     fullName: formData.get("fullName") ?? "",
     email: formData.get("email") ?? "",
     companyName: formData.get("companyName") ?? "",
+    companyPosition: formData.get("companyPosition") ?? "",
     companySize: formData.get("companySize") ?? "",
     datenschutz: formData.get("datenschutz") === "on",
     website: "",
@@ -85,6 +86,7 @@ export async function submitBetrieblichInfoTermin(formData: FormData): Promise<B
       first.fullName?.[0] ??
       first.email?.[0] ??
       first.companyName?.[0] ??
+      first.companyPosition?.[0] ??
       first.companySize?.[0] ??
       first.datenschutz?.[0] ??
       "Bitte prüfen Sie Ihre Eingaben.";
@@ -111,6 +113,7 @@ export async function submitBetrieblichInfoTermin(formData: FormData): Promise<B
     fullName: data.fullName,
     email: data.email,
     companyName: data.companyName,
+    companyPosition: data.companyPosition,
     companySize: data.companySize,
     meetUrl,
   });
@@ -136,6 +139,7 @@ export async function submitBetrieblichInfoTermin(formData: FormData): Promise<B
     `Name: ${data.fullName}`,
     `E-Mail: ${data.email}`,
     `Firma: ${data.companyName}`,
+    `Position: ${data.companyPosition}`,
     `Firmengröße: ${sizeLabel}`,
     `Einwahllink: ${meetUrl}`,
   ].join("\n");
@@ -145,6 +149,7 @@ export async function submitBetrieblichInfoTermin(formData: FormData): Promise<B
     { label: "Name", value: data.fullName },
     { label: "E-Mail", value: data.email },
     { label: "Firma", value: data.companyName },
+    { label: "Position", value: data.companyPosition },
     { label: "Firmengröße", value: sizeLabel },
     { label: "Einwahllink", value: meetUrl },
   ];
@@ -191,6 +196,7 @@ export async function submitBetrieblichInfoTermin(formData: FormData): Promise<B
       { label: "Termin", value: whenLong },
       { label: "Name", value: data.fullName },
       { label: "Unternehmen", value: data.companyName },
+      { label: "Position", value: data.companyPosition },
       { label: "Telefon", value: BETRIEBLICH_INFO_CONTACT.phone },
       { label: "E-Mail", value: BETRIEBLICH_INFO_CONTACT.email },
     ],

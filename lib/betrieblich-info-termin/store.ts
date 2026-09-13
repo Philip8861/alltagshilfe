@@ -59,6 +59,7 @@ export type InsertAppointmentInput = {
   fullName: string;
   email: string;
   companyName: string;
+  companyPosition: string;
   companySize: string;
   meetUrl: string;
 };
@@ -76,6 +77,7 @@ export async function insertAppointment(
       full_name: input.fullName,
       email: input.email,
       company_name: input.companyName,
+      company_position: input.companyPosition,
       company_size: input.companySize,
       meet_url: input.meetUrl,
     });

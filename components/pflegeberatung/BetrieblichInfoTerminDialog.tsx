@@ -499,6 +499,20 @@ export function BetrieblichInfoTerminDialogProvider({ children }: { children: Re
                         />
                       </div>
                       <div>
+                        <label htmlFor="betrieblich-info-position" className="block text-sm font-medium text-neutral-700">
+                          Position im Unternehmen *
+                        </label>
+                        <input
+                          id="betrieblich-info-position"
+                          name="companyPosition"
+                          type="text"
+                          autoComplete="organization-title"
+                          disabled={pending}
+                          className={FIELD}
+                          placeholder="z. B. Geschäftsführung, HR"
+                        />
+                      </div>
+                      <div>
                         <label htmlFor="betrieblich-info-size" className="block text-sm font-medium text-neutral-700">
                           Firmengröße *
                         </label>

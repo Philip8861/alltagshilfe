@@ -23,6 +23,11 @@ export const betrieblichInfoTerminSchema = z
       .trim()
       .min(2, "Bitte geben Sie den Firmennamen an.")
       .max(200, "Der Firmenname darf maximal 200 Zeichen haben."),
+    companyPosition: z
+      .string()
+      .trim()
+      .min(2, "Bitte geben Sie Ihre Position im Unternehmen an.")
+      .max(120, "Die Position darf maximal 120 Zeichen haben."),
     companySize: z.enum(SIZE_VALUES, {
       errorMap: () => ({ message: "Bitte wählen Sie die Firmengröße." }),
     }),
