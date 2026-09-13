@@ -14,9 +14,9 @@ import {
 import { siteConfig } from "@/config/site";
 
 const BETRIEBLICH_HERO_BULLETS = [
-  "Attraktiver Benefit zum Ausschreiben",
-  "Mitarbeiterbindung stärken durch echte Fürsorge",
-  "Wenn Pflege zum Thema wird, sind wir da.",
+  "Zukunftsrelevanter Benefit für Ihre Mitarbeitergewinnung",
+  "Krankheitstage reduzieren & Mitarbeiterbindung stärken",
+  "Persönliche Soforthilfe im Akutfall – Kopf frei für den Job",
 ] as const;
 
 function HeroCheckIcon({ className = "" }: { className?: string }) {
