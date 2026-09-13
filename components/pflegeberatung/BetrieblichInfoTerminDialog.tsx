@@ -20,8 +20,8 @@ import {
 import {
   BETRIEBLICH_INFO_COMPANY_SIZES,
   BETRIEBLICH_INFO_CONTACT,
-  SLOT_TIMES,
   WEEKDAY_HEADERS_DE,
+  selectableSlotTimes,
   addMonths,
   calendarCellsForMonth,
   earliestBookableYmd,
@@ -205,7 +205,17 @@ export function BetrieblichInfoTerminDialogProvider({ children }: { children: Re
   const canNextMonth = viewYear < maxMonth.year || (viewYear === maxMonth.year && viewMonth < maxMonth.month);
 
   const bookedForDay = booked[selectedDate] ?? [];
+  const availableTimes = useMemo(() => {
+    if (!selectedDate || isVisuallyFullyBookedDate(selectedDate)) return [];
+    return selectableSlotTimes(bookedForDay);
+  }, [selectedDate, bookedForDay]);
   const cells = calendarCellsForMonth(viewYear, viewMonth);
+
+  useEffect(() => {
+    if (selectedTime && !availableTimes.includes(selectedTime)) {
+      setSelectedTime("");
+    }
+  }, [availableTimes, selectedTime]);
 
   function goMonth(delta: number) {
     const next = addMonths(viewYear, viewMonth, delta);
@@ -422,29 +432,29 @@ export function BetrieblichInfoTerminDialogProvider({ children }: { children: Re
                         </p>
                         {slotsLoading ? (
                           <p className="mt-1.5 text-sm text-neutral-600">Verfügbare Zeiten werden geladen…</p>
+                        ) : availableTimes.length === 0 ? (
+                          <p className="mt-1.5 text-sm text-neutral-600">
+                            Für diesen Tag sind keine Termine mehr verfügbar.
+                          </p>
                         ) : (
                           <div className="mt-1.5 grid grid-cols-4 gap-1.5 sm:grid-cols-5">
-                            {SLOT_TIMES.map((time) => {
-                              const taken = bookedForDay.includes(time) || isVisuallyFullyBookedDate(selectedDate);
+                            {availableTimes.map((time) => {
                               const selected = selectedTime === time;
                               return (
                                 <button
                                   key={time}
                                   type="button"
-                                  disabled={taken || pending || !selectedDate}
+                                  disabled={pending || !selectedDate}
                                   onClick={() => setSelectedTime(time)}
                                   aria-pressed={selected}
                                   className={cn(
                                     "min-h-8 rounded-md border px-1 py-1 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-[#0F4F68]",
                                     selected && "border-[#F78F2E] bg-[#F78F2E] text-white",
                                     !selected &&
-                                      !taken &&
                                       "border-[#0F4F68]/20 text-[#0F4F68] hover:border-[#0F4F68] hover:bg-[#0F4F68]/5",
-                                    taken && "cursor-not-allowed border-neutral-200 bg-neutral-100 text-neutral-400 line-through",
                                   )}
                                 >
                                   {time}
-                                  <span className="sr-only">{taken ? ", bereits belegt" : ""}</span>
                                 </button>
                               );
                             })}

@@ -8,6 +8,7 @@ import {
   earliestBookableYmd,
   formatDateLongDe,
   isBookableSlot,
+  isSlotAvailableForBooking,
   latestBookableYmd,
 } from "@/lib/betrieblich-info-termin/slots";
 import {
@@ -103,6 +104,15 @@ export async function submitBetrieblichInfoTermin(formData: FormData): Promise<B
     return {
       success: false,
       error: "Dieser Termin ist nicht buchbar. Bitte wählen Sie einen Werktag ab dem nächsten Arbeitstag, 09:00–16:30.",
+    };
+  }
+
+  const bookedForDay = (await listBookedSlots(data.slotDate, data.slotDate))[data.slotDate] ?? [];
+  if (!isSlotAvailableForBooking(data.slotDate, data.slotTime, bookedForDay)) {
+    return {
+      success: false,
+      taken: true,
+      error: "Dieser Termin ist bereits vergeben. Bitte wählen Sie eine andere Uhrzeit.",
     };
   }
 
