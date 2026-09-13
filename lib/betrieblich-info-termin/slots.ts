@@ -24,9 +24,12 @@ export const BETRIEBLICH_INFO_COMPANY_SIZES = buildCompanySizes();
 
 export const SLOT_START_MINUTES = 9 * 60;
 export const SLOT_END_MINUTES = 16 * 60 + 30;
-export const SLOT_STEP_MINUTES = 15;
-/** Pause nach jedem 15-Min-Termin – der folgende Slot wird nicht angeboten. */
+/** Dauer eines Infogesprächs. */
+export const SLOT_MEETING_MINUTES = 15;
+/** Pause nach jedem Termin – zusammen 30 Min bis zum nächsten buchbaren Slot. */
 export const SLOT_BUFFER_MINUTES = 15;
+/** Nur diese Abstände werden angeboten (09:00, 09:30, 10:00 …). */
+export const SLOT_OFFER_STEP_MINUTES = SLOT_MEETING_MINUTES + SLOT_BUFFER_MINUTES;
 export const BOOKING_HORIZON_DAYS = 56;
 
 const WEEKDAY_SHORT = ["Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"] as const;
@@ -123,17 +126,9 @@ export function hhmmToMinutes(hhmm: string): number {
   return h * 60 + m;
 }
 
-/** Verschiebt eine Slot-Uhrzeit um delta Minuten; null wenn außerhalb des Rasterfensters. */
-export function slotTimeOffset(hhmm: string, deltaMinutes: number): string | null {
-  const next = hhmmToMinutes(hhmm) + deltaMinutes;
-  if (next < SLOT_START_MINUTES || next > SLOT_END_MINUTES) return null;
-  if ((next - SLOT_START_MINUTES) % SLOT_STEP_MINUTES !== 0) return null;
-  return minutesToHhmm(next);
-}
-
 export function allSlotTimes(): string[] {
   const out: string[] = [];
-  for (let m = SLOT_START_MINUTES; m <= SLOT_END_MINUTES; m += SLOT_STEP_MINUTES) {
+  for (let m = SLOT_START_MINUTES; m <= SLOT_END_MINUTES; m += SLOT_OFFER_STEP_MINUTES) {
     out.push(minutesToHhmm(m));
   }
   return out;
@@ -159,27 +154,31 @@ export function isBookableSlot(ymd: string, hhmm: string, now = new Date()): boo
   return isBookableDate(ymd, now) && isAllowedSlotTime(hhmm);
 }
 
-/** Gebuchte Slots plus 15-Min-Pause danach – diese Zeiten werden nicht angeboten. */
-export function blockedTimesForBookings(booked: string[]): Set<string> {
-  const blocked = new Set<string>();
-  for (const time of booked) {
-    if (!isAllowedSlotTime(time)) continue;
-    blocked.add(time);
-    const after = slotTimeOffset(time, SLOT_BUFFER_MINUTES);
-    if (after) blocked.add(after);
-  }
-  return blocked;
+/** Belegter Block inkl. Pause: [Start, Start + 30 Min). */
+function slotOccupiedWindowMinutes(hhmm: string): { from: number; until: number } {
+  const from = hhmmToMinutes(hhmm);
+  return { from, until: from + SLOT_OFFER_STEP_MINUTES };
+}
+
+function slotWindowsOverlap(aFrom: number, aUntil: number, bFrom: number, bUntil: number): boolean {
+  return aFrom < bUntil && aUntil > bFrom;
 }
 
 export function isSlotSelectable(hhmm: string, booked: string[]): boolean {
   if (!isAllowedSlotTime(hhmm)) return false;
-  return !blockedTimesForBookings(booked).has(hhmm);
+  const candidate = slotOccupiedWindowMinutes(hhmm);
+  for (const existing of booked) {
+    const occupied = slotOccupiedWindowMinutes(existing);
+    if (slotWindowsOverlap(candidate.from, candidate.until, occupied.from, occupied.until)) {
+      return false;
+    }
+  }
+  return true;
 }
 
-/** Zeiten, die im Kalender angezeigt werden dürfen (ohne belegte und Puffer-Slots). */
+/** Buchbare Zeiten im 30-Min-Takt ohne Überschneidung mit bestehenden Terminen. */
 export function selectableSlotTimes(booked: string[]): string[] {
-  const blocked = blockedTimesForBookings(booked);
-  return SLOT_TIMES.filter((time) => !blocked.has(time));
+  return SLOT_TIMES.filter((time) => isSlotSelectable(time, booked));
 }
 
 export function isSlotAvailableForBooking(
