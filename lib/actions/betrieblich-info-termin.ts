@@ -1,6 +1,5 @@
 "use server";
 
-import { randomBytes } from "crypto";
 import { betrieblichInfoTerminSchema } from "@/lib/validations/betrieblich-info-termin";
 import {
   BETRIEBLICH_INFO_CONTACT,
@@ -43,10 +42,8 @@ function resolveBetrieblichInfoRecipients(): string[] {
   return [DEFAULT_BETRIEBLICH_INFO_TO];
 }
 
-function createMeetUrl(): string {
-  const token = randomBytes(12).toString("hex");
-  return `https://meet.jit.si/AHS-Pflegeberatung-${token}`;
-}
+const VIDEO_INVITE_SEPARATE_NOTE =
+  "Die Einladung zum Videoanruf erhalten Sie in einer separaten E-Mail.";
 
 export async function getBetrieblichInfoAvailability(): Promise<BetrieblichInfoAvailabilityResult> {
   const ip = await getClientIp();
@@ -116,7 +113,6 @@ export async function submitBetrieblichInfoTermin(formData: FormData): Promise<B
     };
   }
 
-  const meetUrl = createMeetUrl();
   const stored = await insertAppointment({
     slotDate: data.slotDate,
     slotTime: data.slotTime,
@@ -125,7 +121,6 @@ export async function submitBetrieblichInfoTermin(formData: FormData): Promise<B
     companyName: data.companyName,
     companyPosition: data.companyPosition,
     companySize: data.companySize,
-    meetUrl,
   });
 
   if (!stored.ok) {
@@ -151,7 +146,8 @@ export async function submitBetrieblichInfoTermin(formData: FormData): Promise<B
     `Firma: ${data.companyName}`,
     `Position: ${data.companyPosition}`,
     `Firmengröße: ${sizeLabel}`,
-    `Einwahllink: ${meetUrl}`,
+    "",
+    "Hinweis: Video-Einladung bitte separat versenden.",
   ].join("\n");
 
   const internalRows: EmailDetailRow[] = [
@@ -161,15 +157,14 @@ export async function submitBetrieblichInfoTermin(formData: FormData): Promise<B
     { label: "Firma", value: data.companyName },
     { label: "Position", value: data.companyPosition },
     { label: "Firmengröße", value: sizeLabel },
-    { label: "Einwahllink", value: meetUrl },
   ];
 
   const internalHtml = buildBrandedNotificationHtml({
     kindBadge: "Infogespräch",
     headline: "Betriebliche Pflegeberatung – Termin gebucht",
     rows: internalRows,
-    ctaHref: meetUrl,
-    ctaLabel: "Zum Videogespräch",
+    detailTitle: "Hinweis",
+    detailText: "Video-Einladung bitte separat an die Kundin bzw. den Kunden versenden.",
   });
 
   const mailed = await sendInternalMail({
@@ -187,10 +182,9 @@ export async function submitBetrieblichInfoTermin(formData: FormData): Promise<B
   const customerText = [
     "Vielen Dank! Ihr Termin ist gebucht.",
     "",
-    "Wir freuen uns sehr auf den gemeinsamen Austausch mit Ihnen! Eine Bestätigung mit dem Einwahllink finden Sie hier:",
-    "",
     `Termin: ${whenLong}`,
-    `Einwahllink: ${meetUrl}`,
+    "",
+    VIDEO_INVITE_SEPARATE_NOTE,
     "",
     "Betriebliche Pflegeberatung",
     `Telefon: ${BETRIEBLICH_INFO_CONTACT.phone}`,
@@ -211,11 +205,7 @@ export async function submitBetrieblichInfoTermin(formData: FormData): Promise<B
       { label: "E-Mail", value: BETRIEBLICH_INFO_CONTACT.email },
     ],
     detailTitle: "Hinweis",
-    detailText:
-      "Wir freuen uns sehr auf den gemeinsamen Austausch mit Ihnen. Falls vorab Fragen entstehen oder Sie den Termin verschieben müssen, erreichen Sie uns jederzeit unter den angegebenen Kontaktdaten.",
-    ctaHref: meetUrl,
-    ctaLabel: "Zum Videogespräch (Einwahllink)",
-    ctaButtonVariant: "accent",
+    detailText: `Wir freuen uns sehr auf den gemeinsamen Austausch mit Ihnen. ${VIDEO_INVITE_SEPARATE_NOTE} Falls vorab Fragen entstehen oder Sie den Termin verschieben müssen, erreichen Sie uns jederzeit unter den angegebenen Kontaktdaten.`,
   });
 
   const customerMail = await sendTransactionalMail({

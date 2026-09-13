@@ -61,7 +61,6 @@ export type InsertAppointmentInput = {
   companyName: string;
   companyPosition: string;
   companySize: string;
-  meetUrl: string;
 };
 
 export async function insertAppointment(
@@ -79,7 +78,6 @@ export async function insertAppointment(
       company_name: input.companyName,
       company_position: input.companyPosition,
       company_size: input.companySize,
-      meet_url: input.meetUrl,
     });
 
     if (!error) {

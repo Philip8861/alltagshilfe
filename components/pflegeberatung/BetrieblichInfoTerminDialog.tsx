@@ -303,8 +303,8 @@ export function BetrieblichInfoTerminDialogProvider({ children }: { children: Re
                 <div className="overflow-y-auto px-4 pb-5 sm:px-5">
                 <div className="space-y-4">
                   <p className="text-pretty leading-relaxed text-neutral-700">
-                    Wir freuen uns sehr auf den gemeinsamen Austausch mit Ihnen! Eine Bestätigung mit dem Einwahllink
-                    wurde soeben an Ihre E-Mail-Adresse gesendet.
+                    Wir freuen uns sehr auf den gemeinsamen Austausch mit Ihnen! Eine Terminbestätigung wurde soeben an
+                    Ihre E-Mail-Adresse gesendet. Die Einladung zum Videoanruf erhalten Sie in einer separaten E-Mail.
                   </p>
                   <div className="rounded-xl border border-[#0F4F68]/15 bg-[#F8FBFC] px-4 py-4 text-sm leading-relaxed text-[#0F4F68]">
                     <p className="font-extrabold">Betriebliche Pflegeberatung</p>
