@@ -2,6 +2,7 @@
 
 import { betrieblichInfoTerminSchema } from "@/lib/validations/betrieblich-info-termin";
 import {
+  BETRIEBLICH_INFO_ADVISOR,
   BETRIEBLICH_INFO_CONTACT,
   companySizeLabel,
   earliestBookableYmd,
@@ -180,13 +181,17 @@ export async function submitBetrieblichInfoTermin(formData: FormData): Promise<B
   }
 
   const customerText = [
-    "Vielen Dank! Ihr Termin ist gebucht.",
+    "Vielen Dank für Ihre Buchung!",
     "",
+    "Wir freuen uns sehr auf das Infogespräch mit Ihnen.",
+    "",
+    "Terminbestätigung",
     `Termin: ${whenLong}`,
+    `Gesprächspartner: ${BETRIEBLICH_INFO_ADVISOR}`,
     "",
     VIDEO_INVITE_SEPARATE_NOTE,
     "",
-    "Betriebliche Pflegeberatung",
+    "Kontakt – Betriebliche Pflegeberatung",
     `Telefon: ${BETRIEBLICH_INFO_CONTACT.phone}`,
     `E-Mail: ${BETRIEBLICH_INFO_CONTACT.email}`,
     "",
@@ -194,18 +199,16 @@ export async function submitBetrieblichInfoTermin(formData: FormData): Promise<B
   ].join("\n");
 
   const customerHtml = buildBrandedNotificationHtml({
-    kindBadge: "Infogespräch",
-    headline: "Vielen Dank! Ihr Termin ist gebucht.",
+    kindBadge: "Terminbestätigung",
+    headline: "Vielen Dank für Ihre Buchung!",
     rows: [
       { label: "Termin", value: whenLong },
-      { label: "Name", value: data.fullName },
-      { label: "Unternehmen", value: data.companyName },
-      { label: "Position", value: data.companyPosition },
+      { label: "Gesprächspartner", value: BETRIEBLICH_INFO_ADVISOR },
       { label: "Telefon", value: BETRIEBLICH_INFO_CONTACT.phone },
       { label: "E-Mail", value: BETRIEBLICH_INFO_CONTACT.email },
     ],
     detailTitle: "Hinweis",
-    detailText: `Wir freuen uns sehr auf den gemeinsamen Austausch mit Ihnen. ${VIDEO_INVITE_SEPARATE_NOTE} Falls vorab Fragen entstehen oder Sie den Termin verschieben müssen, erreichen Sie uns jederzeit unter den angegebenen Kontaktdaten.`,
+    detailText: `Wir freuen uns sehr auf das Infogespräch mit Ihnen. ${VIDEO_INVITE_SEPARATE_NOTE} Falls vorab Fragen entstehen oder Sie den Termin verschieben müssen, erreichen Sie uns jederzeit unter den angegebenen Kontaktdaten.`,
   });
 
   const customerMail = await sendTransactionalMail({

@@ -1,10 +1,13 @@
 /** Europa/Berlin – Buchung nur Werktage, frühestens Folgetag, 09:00–16:30. */
 
 export const BETRIEBLICH_INFO_CONTACT = {
-  phone: "08334 / 9893330",
-  phoneHref: "tel:+4983349893330",
-  email: "info@alltagshilfe-sued.de",
+  phone: "08334 / 98933393",
+  phoneHref: "tel:+49833498933393",
+  email: "pflegeberatung@alltagshilfe-sued.de",
 } as const;
+
+/** Ansprechpartner für das 15-Minuten-Infogespräch. */
+export const BETRIEBLICH_INFO_ADVISOR = "Philip Sonntag";
 
 function buildCompanySizes(): { value: string; label: string }[] {
   const out: { value: string; label: string }[] = [];
