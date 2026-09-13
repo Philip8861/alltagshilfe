@@ -56,7 +56,7 @@ const imgBlockStyle = {
 
 export const metadata: Metadata = {
   title: "Betriebliche Pflegeberatung",
-  description: `Betriebliche Pflegeberatung für Unternehmen: Team entlasten, Fehlzeiten reduzieren, Mitarbeitende stärken – ${siteConfig.name}.`,
+  description: `Wenn Pflege zum zweiten Job wird, leidet irgendwann auch der erste. Betriebliche Pflegeberatung als Benefit: Pflegende Beschäftigte entlasten, Fehlzeiten und Fachkräfteverlust reduzieren – ${siteConfig.name}.`,
   alternates: { canonical: "/pflegeberatung/betriebliche-pflegeberatung" },
 };
 
@@ -73,16 +73,19 @@ export default function PflegeberatungPage() {
           <div className="relative left-1/2 w-screen max-w-[100vw] -translate-x-1/2 overflow-x-clip overflow-y-visible bg-white">
             <div className="relative flex w-full flex-col overflow-visible bg-white pt-0 lg:block lg:min-h-[min(100vw,480px)] lg:pt-0">
             <Container className="relative z-10 order-2 mt-8 lg:order-none lg:mt-0 lg:pt-10">
-              <header className="max-w-xl text-left lg:max-w-[min(100%,28rem)] lg:pr-4 xl:max-w-[32rem]">
+              <header className="max-w-xl text-left lg:max-w-[min(100%,34rem)] lg:pr-4 xl:max-w-[38rem]">
+                <p className="text-pretty text-sm font-semibold leading-snug text-[#F78F2E] sm:text-[0.95rem]">
+                  Betriebliche Pflegeberatung ein Benefit mit Mehrwert
+                </p>
                 <h1
                   id="betrieblich-heading"
-                  className="max-w-[24rem] text-balance text-3xl font-extrabold leading-tight tracking-tight text-[#0F4F68] sm:max-w-2xl sm:text-4xl lg:max-w-none lg:text-[clamp(1.5rem,0.6rem+1.4vw,2.75rem)] lg:leading-[1.12]"
+                  className="mt-2 text-pretty text-3xl font-extrabold leading-snug tracking-tight text-[#0F4F68] sm:mt-2.5 sm:text-4xl lg:text-[clamp(1.55rem,0.7rem+1.45vw,2.55rem)] lg:leading-[1.28]"
                 >
-                  <span className="block">Betriebliche</span>
-                  <span className="block">Pflegeberatung</span>
+                  Wenn Pflege zum zweiten Job wird, leidet irgendwann auch der erste.
                 </h1>
-                <p className="mt-4 text-pretty text-lg font-semibold leading-snug text-[#0F4F68] sm:text-xl">
-                  Entlasten Sie Ihr Team, reduzieren Sie Fehlzeiten und stärken Sie Ihre Mitarbeitenden.
+                <p className="mt-3 text-pretty text-sm font-medium leading-relaxed text-[#0F4F68]/85 sm:mt-3.5 sm:text-base">
+                  Wir entlasten Pflegende Beschäftigte spürbar und helfen Unternehmen, Fehlzeiten, Überlastung und den
+                  Verlust wertvoller Fachkräfte zu reduzieren.
                 </p>
                 <ul
                   className="mt-4 max-w-xl space-y-3 sm:mt-5 sm:space-y-3.5"
