@@ -363,7 +363,7 @@ export function BetrieblichePflegeberatungVorteileVorStatistik() {
             </details>
           </div>
           <div className={`${POP_IN} mt-8 flex justify-center sm:mt-10`} style={{ animationDelay: "800ms" }}>
-            <BetrieblichInfoTerminOpenButton className="min-h-[3.25rem] px-8 py-3 text-base sm:text-lg" />
+            <BetrieblichInfoTerminOpenButton />
           </div>
         </section>
       </div>
@@ -442,7 +442,7 @@ export function BetrieblichePflegeberatungFolgenBand() {
               Sichern Sie Ihre Mitarbeitenden mit diesem neuen Corporate Benefit ab und stellen Sie Ihr Unternehmen
               frühzeitig auf den demografischen Wandel ein.
             </p>
-            <BetrieblichInfoTerminOpenButton className="w-full max-w-md min-h-[3.25rem] px-8 py-3 text-base sm:w-auto sm:max-w-none sm:text-lg" />
+            <BetrieblichInfoTerminOpenButton className="w-full max-w-md sm:w-auto sm:max-w-none" />
           </div>
         </section>
       </div>

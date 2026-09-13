@@ -6,12 +6,21 @@ export const BETRIEBLICH_INFO_CONTACT = {
   email: "info@alltagshilfe-sued.de",
 } as const;
 
-export const BETRIEBLICH_INFO_COMPANY_SIZES = [
-  { value: "1-10", label: "1–10 Mitarbeitende" },
-  { value: "11-50", label: "11–50 Mitarbeitende" },
-  { value: "51-250", label: "51–250 Mitarbeitende" },
-  { value: "250+", label: "250+ Mitarbeitende" },
-] as const;
+function buildCompanySizes(): { value: string; label: string }[] {
+  const out: { value: string; label: string }[] = [];
+  for (let end = 50; end <= 500; end += 50) {
+    const start = end === 50 ? 1 : end - 49;
+    out.push({
+      value: `${start}-${end}`,
+      label: `${start}–${end} Mitarbeitende`,
+    });
+  }
+  out.push({ value: "500+", label: "500+ Mitarbeitende" });
+  return out;
+}
+
+/** 50er-Schritte bis 500, Plus erst bei 500+. */
+export const BETRIEBLICH_INFO_COMPANY_SIZES = buildCompanySizes();
 
 export const SLOT_START_MINUTES = 9 * 60;
 export const SLOT_END_MINUTES = 16 * 60 + 30;
@@ -66,9 +75,35 @@ export function nextBusinessDayAfter(ymd: string): string {
   return next;
 }
 
-/** Frühester buchbarer Tag: nächster Werktag (Mo→Di, Fr→Mo). */
+/**
+ * Freitag → Montag.
+ * Samstag/Sonntag → Dienstag (Montag am Wochenende nicht buchbar).
+ * Mo–Do → nächster Werktag.
+ */
 export function earliestBookableYmd(now = new Date()): string {
-  return nextBusinessDayAfter(berlinTodayYmd(now));
+  const today = berlinTodayYmd(now);
+  const wd = weekdayUtc(today);
+  if (wd === 6) return addDaysYmd(today, 3);
+  if (wd === 0) return addDaysYmd(today, 2);
+  return nextBusinessDayAfter(today);
+}
+
+/** Kommender Montag, der am Wochenende nur optisch „voll“ wirkt. */
+export function weekendBlockedMondayYmd(now = new Date()): string | null {
+  const today = berlinTodayYmd(now);
+  const wd = weekdayUtc(today);
+  if (wd === 6) return addDaysYmd(today, 2);
+  if (wd === 0) return addDaysYmd(today, 1);
+  return null;
+}
+
+export function isVisuallyFullyBookedDate(ymd: string, now = new Date()): boolean {
+  const blocked = weekendBlockedMondayYmd(now);
+  return blocked !== null && ymd === blocked;
+}
+
+export function isSelectableCalendarDate(ymd: string, now = new Date()): boolean {
+  return isBookableDate(ymd, now) || isVisuallyFullyBookedDate(ymd, now);
 }
 
 export function latestBookableYmd(now = new Date()): string {
