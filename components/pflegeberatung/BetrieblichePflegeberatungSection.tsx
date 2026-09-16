@@ -476,12 +476,11 @@ function Calculator() {
               </span>
               <p className="leading-relaxed text-[#0F4F68]">
                 <strong className="block text-lg font-extrabold">
-                  Rund jeder 9. Beschäftigte ist betroffen.
+                  Rund 11 % aller Beschäftigten sind in der Pflege gefordert.
                 </strong>
                 <span className="mt-1 block text-sm font-semibold">
-                  Im Rechenmodell ist diese Person in eine private
-                  Pflegesituation involviert. Das entspricht 11 % der
-                  Belegschaft.
+                  Das entspricht ungefähr jedem 9. Beschäftigten und wird im
+                  Rechner für die gesamte Belegschaft berücksichtigt.
                 </span>
               </p>
             </div>
