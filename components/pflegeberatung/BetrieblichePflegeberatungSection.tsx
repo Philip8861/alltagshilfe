@@ -225,6 +225,39 @@ const number = (value: number, decimals = 1) =>
     maximumFractionDigits: decimals,
   }).format(value);
 
+function SectionArc({
+  from,
+  to,
+  reverse = false,
+}: {
+  from: string;
+  to: string;
+  reverse?: boolean;
+}) {
+  return (
+    <div
+      className="pointer-events-none relative h-14 w-full overflow-hidden sm:h-20 lg:h-24"
+      style={{ backgroundColor: from }}
+      aria-hidden
+    >
+      <svg
+        className="absolute inset-0 h-full w-full"
+        viewBox="0 0 1440 120"
+        preserveAspectRatio="none"
+      >
+        <path
+          fill={to}
+          d={
+            reverse
+              ? "M0 42 C230 108 480 105 720 58 C955 12 1190 8 1440 72 L1440 120 L0 120 Z"
+              : "M0 76 C240 12 490 10 720 58 C950 106 1195 104 1440 38 L1440 120 L0 120 Z"
+          }
+        />
+      </svg>
+    </div>
+  );
+}
+
 const CALCULATOR_SHADOW_COSTS = [
   {
     icon: "clock" as const,
@@ -257,7 +290,7 @@ const EMPLOYEE_BENEFITS = [
   {
     icon: "calendar" as const,
     title: "Schnelle Terminvergabe",
-    text: "Persönliche Termine finden im Betrieb oder zu Hause statt.",
+    text: "Persönliche Termine finden zu Hause oder auf Wunsch im Betrieb statt.",
   },
   {
     icon: "file" as const,
@@ -317,7 +350,7 @@ function Calculator() {
           </p>
           <h2
             id="betrieblich-rechner-heading"
-            className="mt-3 text-balance text-3xl font-black leading-[1.12] tracking-tight text-[#0F4F68] sm:text-4xl lg:text-5xl"
+            className="mt-3 text-balance text-3xl font-extrabold leading-[1.12] tracking-tight text-[#0F4F68] sm:text-4xl lg:text-[clamp(1.55rem,0.7rem+1.45vw,2.55rem)] lg:leading-[1.28]"
           >
             Schon{" "}
             <span className="text-[#F78F2E]">
@@ -336,7 +369,7 @@ function Calculator() {
               <span className="grid h-11 w-11 place-items-center rounded-xl bg-[#0F4F68]/8 text-[#0F4F68]">
                 <Icon name="briefcase" />
               </span>
-              <h3 className="text-xl font-black text-[#0F4F68]">
+              <h3 className="text-xl font-extrabold text-[#0F4F68]">
                 Ihre Berechnung
               </h3>
             </div>
@@ -371,7 +404,7 @@ function Calculator() {
                         ? "betrieblich-employees-help"
                         : "betrieblich-employees-help betrieblich-employees-error"
                     }
-                    className="min-w-0 flex-1 bg-transparent text-2xl font-black tabular-nums text-[#0F4F68] outline-none"
+                    className="min-w-0 flex-1 bg-transparent text-2xl font-extrabold tabular-nums text-[#0F4F68] outline-none"
                   />
                   <Icon
                     name="people"
@@ -382,7 +415,7 @@ function Calculator() {
                   id="betrieblich-employees-help"
                   className="mt-2 text-sm leading-relaxed text-neutral-600"
                 >
-                  Gesamte Belegschaft, maximal 1.000.000 Beschäftigte.
+                  Gesamte Belegschaft. Maximal 1.000.000 Beschäftigte.
                 </p>
                 {!calculation && (
                   <p
@@ -417,11 +450,27 @@ function Calculator() {
               </div>
             </div>
 
+            <div className="mt-6 flex gap-4 rounded-2xl border border-[#F78F2E]/40 border-l-4 border-l-[#F78F2E] bg-[#F78F2E]/10 p-4">
+              <span className="grid h-12 w-12 shrink-0 place-items-center rounded-xl bg-[#F78F2E] text-white shadow-sm">
+                <Icon name="people" className="h-7 w-7" />
+              </span>
+              <p className="leading-relaxed text-[#0F4F68]">
+                <strong className="block text-lg font-extrabold">
+                  Rund jeder 9. Beschäftigte ist betroffen.
+                </strong>
+                <span className="mt-1 block text-sm font-semibold">
+                  Im Rechenmodell ist diese Person in eine private
+                  Pflegesituation involviert. Das entspricht 11 % der
+                  Belegschaft.
+                </span>
+              </p>
+            </div>
+
             <div className="mt-8 border-t border-[#0F4F68]/15 pt-6">
               <p className="text-sm font-semibold text-neutral-600">
                 Ein Krankheitstag kostet im Modell
               </p>
-              <p className="mt-1 text-3xl font-black tabular-nums text-[#0F4F68]">
+              <p className="mt-1 text-3xl font-extrabold tabular-nums text-[#0F4F68]">
                 {euro(dailyCalculation.dailyCost, 2)}
               </p>
               <a
@@ -449,8 +498,8 @@ function Calculator() {
                     Modellrechnung
                   </span>
                 </div>
-                <p className="mt-4 font-black leading-none tracking-tight">
-                  <span className="block break-words text-[clamp(2rem,9vw,4.5rem)] tabular-nums">
+                <p className="mt-4 font-extrabold leading-none tracking-tight">
+                  <span className="block break-words text-3xl tabular-nums sm:text-4xl lg:text-[clamp(1.55rem,0.7rem+1.45vw,2.55rem)]">
                     {euro(calculation.annualCost)}
                   </span>
                   <span className="mt-2 block text-base font-bold tracking-normal text-white/70">
@@ -461,10 +510,10 @@ function Calculator() {
                 <div className="mt-7 flex gap-3 rounded-xl border border-[#F78F2E]/55 border-l-4 border-l-[#F78F2E] bg-white/[0.06] p-4">
                   <Icon
                     name="briefcase"
-                    className="mt-0.5 h-5 w-5 shrink-0 text-[#F9B674]"
+                    className="mt-0.5 h-5 w-5 shrink-0 text-[#F78F2E]"
                   />
                   <p className="text-sm leading-relaxed text-white/85">
-                    <strong className="block font-black tracking-wider text-[#F9B674]">
+                    <strong className="block font-extrabold tracking-wider text-[#F78F2E]">
                       NUR LOHNKOSTEN
                     </strong>
                     inklusive Arbeitgeberbeiträgen. Weitere Ausfallkosten
@@ -474,7 +523,7 @@ function Calculator() {
 
                 <div className="mt-7 grid grid-cols-[1fr_auto_1fr_auto_1fr] items-start gap-2 border-t border-white/20 pt-6 sm:gap-4">
                   <div>
-                    <strong className="block text-xl font-black tabular-nums sm:text-2xl">
+                    <strong className="block text-xl font-extrabold tabular-nums sm:text-2xl">
                       {number(calculation.affectedEmployees, 2)}
                     </strong>
                     <span className="mt-2 block text-xs leading-relaxed text-white/65">
@@ -485,7 +534,7 @@ function Calculator() {
                     ×
                   </span>
                   <div>
-                    <strong className="block text-xl font-black tabular-nums sm:text-2xl">
+                    <strong className="block text-xl font-extrabold tabular-nums sm:text-2xl">
                       4,5
                     </strong>
                     <span className="mt-2 block text-xs leading-relaxed text-white/65">
@@ -496,7 +545,7 @@ function Calculator() {
                     ×
                   </span>
                   <div>
-                    <strong className="block text-xl font-black tabular-nums sm:text-2xl">
+                    <strong className="block text-xl font-extrabold tabular-nums sm:text-2xl">
                       {euro(calculation.dailyCost)}
                     </strong>
                     <span className="mt-2 block text-xs leading-relaxed text-white/65">
@@ -511,7 +560,7 @@ function Calculator() {
                   name="briefcase"
                   className="mx-auto h-10 w-10 text-white/55"
                 />
-                <h3 className="mt-5 text-2xl font-black">
+                <h3 className="mt-5 text-2xl font-extrabold">
                   Ihre Berechnung erscheint hier.
                 </h3>
                 <p className="mt-3 text-white/70">
@@ -530,8 +579,8 @@ function Calculator() {
 
         <div className="mt-10 border-t border-[#0F4F68]/15 pt-8">
           <div className="flex items-center gap-4">
-            <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full border border-[#0F4F68]/20 bg-white text-[#0F4F68]">
-              <span className="text-2xl font-light" aria-hidden>
+            <span className="grid h-14 w-14 shrink-0 place-items-center rounded-2xl bg-[#F78F2E] text-white shadow-[0_10px_24px_-10px_rgba(247,143,46,0.8)]">
+              <span className="text-3xl font-light" aria-hidden>
                 +
               </span>
             </span>
@@ -539,8 +588,8 @@ function Calculator() {
               <p className="text-xs font-extrabold uppercase tracking-[0.14em] text-[#0F4F68]/65">
                 In dieser Zahl noch nicht enthalten
               </p>
-              <h3 className="mt-1 text-2xl font-black text-[#0F4F68] sm:text-3xl">
-                Ein Ausfall kostet mehr als Gehalt.
+              <h3 className="mt-1 text-2xl font-extrabold text-[#0F4F68] sm:text-3xl">
+                Ein Ausfall kostet mehr als Geld.
               </h3>
             </div>
           </div>
@@ -550,10 +599,10 @@ function Calculator() {
                 key={title}
                 className="rounded-2xl border border-[#0F4F68]/15 bg-white p-5 shadow-sm"
               >
-                <span className="grid h-11 w-11 place-items-center rounded-xl bg-[#0F4F68]/8 text-[#0F4F68]">
-                  <Icon name={icon} className="h-5 w-5" />
+                <span className="grid h-16 w-16 place-items-center rounded-2xl border-2 border-[#F78F2E] bg-gradient-to-br from-[#0F4F68] to-[#176A84] text-white shadow-[0_14px_28px_-14px_rgba(15,79,104,0.9)]">
+                  <Icon name={icon} className="h-8 w-8" />
                 </span>
-                <h4 className="mt-4 font-black leading-snug text-[#0F4F68]">
+                <h4 className="mt-5 text-lg font-extrabold leading-snug text-[#0F4F68]">
                   {title}
                 </h4>
                 <p className="mt-2 text-sm leading-relaxed text-neutral-600">
@@ -636,7 +685,7 @@ function Facts() {
           </p>
           <h2
             id="betrieblich-fakten-heading"
-            className="mt-2 text-balance text-3xl font-black tracking-tight text-[#0F4F68] sm:text-4xl"
+            className="mt-2 text-balance text-3xl font-extrabold tracking-tight text-[#0F4F68] sm:text-4xl lg:text-[clamp(1.55rem,0.7rem+1.45vw,2.55rem)]"
           >
             Die Belastung bleibt selten zu Hause.
           </h2>
@@ -652,16 +701,16 @@ function Facts() {
                   : "border-[#0F4F68]/15 bg-white"
               } [@media(hover:hover)]:hover:-translate-y-1 [@media(hover:hover)]:hover:shadow-xl`}
             >
-              <div className="flex items-center gap-3 text-xs font-black uppercase tracking-[0.14em] text-[#0F4F68]/65">
+              <div className="flex items-center gap-3 text-xs font-extrabold uppercase tracking-[0.14em] text-[#0F4F68]/65">
                 <span className="grid h-11 w-11 place-items-center rounded-xl bg-[#0F4F68]/8 text-[#0F4F68]">
                   <Icon name={fact.icon} className="h-5 w-5" />
                 </span>
                 {fact.eyebrow}
               </div>
-              <strong className="mt-6 block text-[clamp(2.7rem,6vw,4rem)] font-black leading-none tracking-tight tabular-nums text-[#0F4F68]">
+              <strong className="mt-6 block text-3xl font-extrabold leading-none tracking-tight tabular-nums text-[#0F4F68] sm:text-4xl lg:text-[clamp(1.55rem,0.7rem+1.45vw,2.55rem)]">
                 {fact.value}
               </strong>
-              <h3 className="mt-5 text-xl font-black leading-tight text-[#0F4F68]">
+              <h3 className="mt-5 text-xl font-extrabold leading-tight text-[#0F4F68]">
                 {fact.title}
               </h3>
               <p className="mt-3 leading-relaxed text-neutral-600">
@@ -682,7 +731,7 @@ function Solution() {
   return (
     <section
       aria-labelledby="betrieblich-loesung-heading"
-      className="border-y border-[#0F4F68]/10 bg-[#F2F9FA] py-14 sm:py-16 lg:py-20"
+      className="bg-[#F2F9FA] py-14 sm:py-16 lg:py-20"
     >
       <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-[var(--ahs-page-gutter)]">
         <div className="grid gap-8 lg:grid-cols-[1.1fr_0.9fr] lg:items-end">
@@ -692,13 +741,13 @@ function Solution() {
             </p>
             <h2
               id="betrieblich-loesung-heading"
-              className="mt-2 text-balance text-3xl font-black tracking-tight text-[#0F4F68] sm:text-4xl"
+              className="mt-2 text-balance text-3xl font-extrabold tracking-tight text-[#0F4F68] sm:text-4xl lg:text-[clamp(1.55rem,0.7rem+1.45vw,2.55rem)]"
             >
               Wir wissen, wie Entlastung aussieht.
             </h2>
           </header>
           <div className="border-l-4 border-[#F78F2E] pl-5">
-            <p className="text-xl font-black text-[#0F4F68]">
+            <p className="text-xl font-extrabold text-[#0F4F68]">
               Wir machen aus Pflegeberatung eine Pflegebegleitung.
             </p>
             <p className="mt-2 leading-relaxed text-neutral-600">
@@ -710,7 +759,7 @@ function Solution() {
 
         <div className="mt-10 grid overflow-hidden rounded-2xl border border-[#0F4F68]/15 bg-[#0F4F68]/15 sm:grid-cols-3 lg:grid-cols-[0.75fr_0.75fr_0.75fr_1.45fr]">
           <div className="bg-white p-6">
-            <strong className="block text-3xl font-black tabular-nums text-[#0F4F68]">
+            <strong className="block text-3xl font-extrabold tabular-nums text-[#0F4F68]">
               <span className="sr-only">2.000</span>
               <span aria-hidden>
                 <CountUp value={2_000} />
@@ -721,7 +770,7 @@ function Solution() {
             </span>
           </div>
           <div className="border-t border-[#0F4F68]/15 bg-white p-6 sm:border-l sm:border-t-0">
-            <strong className="block text-3xl font-black tabular-nums text-[#0F4F68]">
+            <strong className="block text-3xl font-extrabold tabular-nums text-[#0F4F68]">
               <span className="sr-only">über 8.000</span>
               <span aria-hidden>
                 <CountUp value={8_000} />+
@@ -732,7 +781,7 @@ function Solution() {
             </span>
           </div>
           <div className="border-t border-[#0F4F68]/15 bg-white p-6 sm:border-l sm:border-t-0">
-            <strong className="block text-3xl font-black tabular-nums text-[#0F4F68]">
+            <strong className="block text-3xl font-extrabold tabular-nums text-[#0F4F68]">
               <span className="sr-only">über 12 Jahre</span>
               <span aria-hidden>
                 <CountUp value={12} />+ Jahre
@@ -751,11 +800,11 @@ function Solution() {
         <div className="mt-12 flex flex-wrap items-center justify-between gap-4">
           <div className="flex items-center gap-3 text-[#0F4F68]">
             <Icon name="people" className="h-6 w-6" />
-            <h3 className="text-2xl font-black">
+            <h3 className="text-2xl font-extrabold">
               Vorteile für Arbeitnehmer
             </h3>
           </div>
-          <span className="rounded-full bg-[#0F4F68]/10 px-4 py-2 text-xs font-black uppercase tracking-[0.12em] text-[#0F4F68]">
+          <span className="rounded-full bg-[#0F4F68]/10 px-4 py-2 text-xs font-extrabold uppercase tracking-[0.12em] text-[#0F4F68]">
             Persönliche Begleitung
           </span>
         </div>
@@ -770,7 +819,7 @@ function Solution() {
                 <Icon name={icon} className="h-6 w-6" />
               </span>
               <div>
-                <h4 className="font-black text-[#0F4F68]">{title}</h4>
+                <h4 className="font-extrabold text-[#0F4F68]">{title}</h4>
                 <p className="mt-1 text-sm leading-relaxed text-neutral-600 sm:text-base">
                   {text}
                 </p>
@@ -783,12 +832,12 @@ function Solution() {
           aria-labelledby="betrieblich-arbeitgeber-heading"
           className="mt-12 rounded-3xl border border-[#0F4F68]/20 border-l-[6px] border-l-[#F78F2E] bg-white p-6 shadow-[0_24px_55px_-35px_rgba(15,79,104,0.4)] sm:p-9"
         >
-          <p className="text-xs font-black uppercase tracking-[0.17em] text-[#B75E17] sm:text-sm">
+          <p className="text-xs font-extrabold uppercase tracking-[0.17em] text-[#F78F2E] sm:text-sm">
             Ihre Vorteile
           </p>
           <h3
             id="betrieblich-arbeitgeber-heading"
-            className="mt-2 text-balance text-3xl font-black tracking-tight text-[#0F4F68] sm:text-4xl"
+            className="mt-2 text-balance text-3xl font-extrabold tracking-tight text-[#0F4F68] sm:text-4xl lg:text-[clamp(1.55rem,0.7rem+1.45vw,2.55rem)]"
           >
             Als Arbeitgeber profitieren Sie gleich mehrfach.
           </h3>
@@ -810,11 +859,11 @@ function Solution() {
         <div className="mt-10 rounded-3xl border border-[#0F4F68]/15 bg-white p-6 shadow-[0_24px_55px_-35px_rgba(15,79,104,0.35)] sm:p-8">
           <div className="grid gap-7 lg:grid-cols-[1fr_auto] lg:items-center">
             <div className="flex items-start gap-4">
-              <span className="grid h-12 w-12 shrink-0 place-items-center rounded-xl bg-[#F78F2E]/15 text-[#B75E17]">
+              <span className="grid h-12 w-12 shrink-0 place-items-center rounded-xl bg-[#F78F2E]/15 text-[#F78F2E]">
                 <Icon name="heart" className="h-6 w-6" />
               </span>
               <div>
-                <h3 className="text-xl font-black text-[#0F4F68] sm:text-2xl">
+                <h3 className="text-xl font-extrabold text-[#0F4F68] sm:text-2xl">
                   Ein Benefit mit echtem Mehrwert.
                 </h3>
                 <p className="mt-2 leading-relaxed text-neutral-600">
@@ -824,7 +873,7 @@ function Solution() {
             </div>
             <p className="flex flex-wrap items-baseline gap-x-2 text-[#0F4F68]">
               <span className="font-bold text-neutral-600">ab</span>
-              <strong className="text-5xl font-black tracking-tight tabular-nums text-[#F78F2E] sm:text-6xl">
+              <strong className="text-3xl font-extrabold tracking-tight tabular-nums text-[#F78F2E] sm:text-4xl lg:text-[clamp(1.55rem,0.7rem+1.45vw,2.55rem)]">
                 <span className="sr-only">3,90 €</span>
                 <span aria-hidden>
                   <CountUp value={3.9} decimals={2} /> €
@@ -836,7 +885,7 @@ function Solution() {
             </p>
           </div>
           <p className="mt-7 border-t border-[#0F4F68]/15 pt-5 leading-relaxed text-[#0F4F68]">
-            <strong className="text-[#B75E17]">Zum Vergleich:</strong> Obstkorb
+            <strong className="text-[#F78F2E]">Zum Vergleich:</strong> Obstkorb
             oder Kaffee kosten häufig 5 bis 9 € pro Mitarbeiter und Monat.
           </p>
         </div>
@@ -858,15 +907,15 @@ function ClosingCallToAction() {
       <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-[var(--ahs-page-gutter)]">
         <div className="grid grid-cols-[minmax(0,1fr)] gap-8 rounded-3xl bg-[#0F4F68] p-7 text-white shadow-[0_25px_60px_-25px_rgba(15,79,104,0.5)] sm:p-10 lg:grid-cols-[1.2fr_0.8fr] lg:items-center lg:p-12">
           <div className="min-w-0">
-            <p className="text-xs font-black uppercase tracking-[0.16em] text-white/65 sm:text-sm">
+            <p className="text-xs font-extrabold uppercase tracking-[0.16em] text-white/65 sm:text-sm">
               Der nächste Schritt dauert 15 Minuten
             </p>
             <h2
               id="betrieblich-abschluss-heading"
-              className="mt-3 text-balance text-3xl font-black leading-tight tracking-tight sm:text-4xl"
+              className="mt-3 text-balance text-3xl font-extrabold leading-tight tracking-tight sm:text-4xl lg:text-[clamp(1.55rem,0.7rem+1.45vw,2.55rem)] lg:leading-[1.28]"
             >
-              Wir zeigen Ihnen, wie die betriebliche Pflegeberatung zu Ihrem
-              Unternehmen passt.
+              Wenn Pflege zum zweiten Job wird, braucht es Rückhalt vom
+              ersten.
             </h2>
             <div className="mt-6 flex flex-wrap gap-x-5 gap-y-3 text-sm font-bold text-white/75">
               {["Leistungen kennenlernen", "Fragen klären", "Start besprechen"].map(
@@ -910,9 +959,9 @@ function Methodology() {
         <div className="flex flex-wrap items-end justify-between gap-3 border-b border-[#0F4F68]/15 pb-5">
           <h2
             id="betrieblich-methodik-heading"
-            className="text-2xl font-black text-[#0F4F68]"
+            className="text-2xl font-extrabold text-[#0F4F68]"
           >
-            Transparent gerechnet. Belegt eingeordnet.
+            Häufige Fragen
           </h2>
           <span className="text-sm text-neutral-500">
             Geprüft am {BETRIEBLICH_CARE_MODEL.checked}
@@ -932,10 +981,10 @@ function Methodology() {
           <div className="max-w-5xl space-y-4 pb-7 leading-relaxed text-neutral-600">
             <div className="grid gap-4 rounded-2xl bg-[#F2F9FA] p-5 sm:grid-cols-2">
               <div>
-                <p className="text-xs font-black uppercase tracking-wider text-[#0F4F68]">
+                <p className="text-xs font-extrabold uppercase tracking-wider text-[#0F4F68]">
                   Amtliche Daten
                 </p>
-                <h3 className="mt-2 font-black text-[#0F4F68]">
+                <h3 className="mt-2 font-extrabold text-[#0F4F68]">
                   Verdienste 2025, Beiträge 2026
                 </h3>
                 <p className="mt-2 text-sm">
@@ -945,10 +994,10 @@ function Methodology() {
                 </p>
               </div>
               <div>
-                <p className="text-xs font-black uppercase tracking-wider text-[#B75E17]">
+                <p className="text-xs font-extrabold uppercase tracking-wider text-[#F78F2E]">
                   Modellannahmen
                 </p>
-                <h3 className="mt-2 font-black text-[#0F4F68]">
+                <h3 className="mt-2 font-extrabold text-[#0F4F68]">
                   11 % und 4,5 zusätzliche Krankheitstage
                 </h3>
                 <p className="mt-2 text-sm">
@@ -973,13 +1022,13 @@ function Methodology() {
               </SourceLink>
             </p>
             <div className="rounded-2xl bg-[#F2F9FA] p-5">
-              <h3 className="font-black text-[#0F4F68]">
+              <h3 className="font-extrabold text-[#0F4F68]">
                 Beispiel mit 100 Beschäftigten
               </h3>
               <p className="mt-2">
                 11 modellierte pflegende Beschäftigte × 4,5 Krankheitstage ×{" "}
                 {euro(sample.dailyCost, 2)} Lohnkosten je Tag ={" "}
-                <strong className="font-black text-[#0F4F68]">
+                <strong className="font-extrabold text-[#0F4F68]">
                   {euro(sample.annualCost)} pro Jahr
                 </strong>
                 .
@@ -1027,7 +1076,7 @@ function Methodology() {
             </p>
             <div className="overflow-x-auto rounded-2xl border border-[#0F4F68]/15">
               <table className="w-full min-w-[34rem] border-collapse text-left text-sm">
-                <caption className="bg-[#F2F9FA] px-4 py-3 text-left font-black text-[#0F4F68]">
+                <caption className="bg-[#F2F9FA] px-4 py-3 text-left font-extrabold text-[#0F4F68]">
                   Hinterlegte Bruttojahresverdienste 2025
                 </caption>
                 <thead className="bg-[#0F4F68] text-white">
@@ -1096,11 +1145,72 @@ function Methodology() {
 }
 
 export function BetrieblichePflegeberatungB2BSection() {
+  useEffect(() => {
+    const hash = window.location.hash;
+    const targetId =
+      hash === "#pflege-kosten-rechner"
+        ? "pflege-kosten-rechner"
+        : hash === "#kostenrechner"
+          ? "kostenrechner"
+          : null;
+
+    if (!targetId) return;
+
+    let firstFrame = 0;
+    let secondFrame = 0;
+    let cancelled = false;
+
+    const scrollToCalculator = () => {
+      if (cancelled) return;
+      const target = document.getElementById(targetId);
+      if (!target) return;
+
+      const stickyHeaderHeight = Array.from(
+        document.querySelectorAll<HTMLElement>("header"),
+      ).reduce((height, header) => {
+        const styles = window.getComputedStyle(header);
+        if (styles.position !== "sticky" && styles.position !== "fixed") {
+          return height;
+        }
+        const rect = header.getBoundingClientRect();
+        return rect.top <= 1 ? Math.max(height, rect.height) : height;
+      }, 0);
+
+      window.scrollTo({
+        behavior: "auto",
+        top: Math.max(
+          0,
+          window.scrollY +
+            target.getBoundingClientRect().top -
+            stickyHeaderHeight,
+        ),
+      });
+    };
+
+    firstFrame = window.requestAnimationFrame(() => {
+      scrollToCalculator();
+      secondFrame = window.requestAnimationFrame(scrollToCalculator);
+    });
+
+    void document.fonts?.ready.then(scrollToCalculator);
+    window.addEventListener("load", scrollToCalculator, { once: true });
+
+    return () => {
+      cancelled = true;
+      window.cancelAnimationFrame(firstFrame);
+      window.cancelAnimationFrame(secondFrame);
+      window.removeEventListener("load", scrollToCalculator);
+    };
+  }, []);
+
   return (
     <div className="betrieblich-b2b relative bg-white text-neutral-800">
       <Calculator />
+      <SectionArc from="#F2F9FA" to="#ffffff" />
       <Facts />
+      <SectionArc from="#ffffff" to="#F2F9FA" reverse />
       <Solution />
+      <SectionArc from="#F2F9FA" to="#ffffff" />
       <ClosingCallToAction />
       <Methodology />
     </div>
