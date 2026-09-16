@@ -63,7 +63,11 @@ export function BetrieblichInfoTerminOpenButton({
   const { open } = useBetrieblichInfoTerminDialog();
   return (
     <div className={cn("inline-flex flex-col items-center", className)}>
-      <button type="button" onClick={open} className={cn(BTN_ORANGE, "w-full sm:w-auto")}>
+      <button
+        type="button"
+        onClick={open}
+        className={cn(BTN_ORANGE, "betrieblich-cta-pulse w-full sm:w-auto")}
+      >
         15-Min. Infogespräch buchen
       </button>
       <p className="mt-1.5 text-center text-sm font-medium text-[#0F4F68]/80">

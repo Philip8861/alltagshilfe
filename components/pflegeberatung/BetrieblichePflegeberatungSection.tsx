@@ -320,7 +320,7 @@ const EMPLOYEE_BENEFITS = [
   {
     icon: "home" as const,
     title: "Versorgung planen",
-    text: "Wir koordinieren Hauswirtschaft, Betreuung, Pflege, Umbau, Hausnotruf und Wundversorgung.",
+    text: "Wir koordinieren Hauswirtschaft, Betreuung, Pflege, Umbau, Hausnotruf, Wundversorgung und vieles mehr.",
   },
   {
     icon: "people" as const,
@@ -517,19 +517,14 @@ function Calculator() {
             />
             {calculation ? (
               <div className="relative z-10 flex h-full flex-col">
-                <div className="flex flex-wrap items-center justify-between gap-3">
-                  <p className="font-bold text-white/85">
-                    Lohnkosten zusätzlicher Fehlzeiten
-                  </p>
-                  <span className="rounded-full border border-white/25 px-3 py-1 text-xs font-bold uppercase tracking-wider text-white/75">
-                    Modellrechnung
-                  </span>
-                </div>
+                <p className="font-bold text-white/85">
+                  Lohnkosten zusätzlicher Fehlzeiten
+                </p>
                 <p className="mt-5 font-extrabold leading-none tracking-tight">
-                  <span className="block break-words text-4xl tabular-nums sm:text-5xl lg:text-[clamp(2.75rem,2rem+1.25vw,3.75rem)]">
+                  <span className="block break-words text-5xl tabular-nums sm:text-6xl lg:text-[clamp(3.25rem,2.35rem+1.5vw,4.5rem)]">
                     {euro(calculation.annualCost)}
                   </span>
-                  <span className="mt-2 block text-base font-bold tracking-normal text-white/70">
+                  <span className="mt-3 block text-lg font-bold tracking-normal text-white/70">
                     pro Jahr
                   </span>
                 </p>
@@ -554,7 +549,7 @@ function Calculator() {
                   </p>
                   <div className="mt-3 grid grid-cols-3 gap-2 sm:gap-3">
                     <div className="rounded-xl bg-white/[0.07] p-3 sm:p-4">
-                      <strong className="block text-xl font-extrabold tabular-nums sm:text-2xl">
+                      <strong className="block text-2xl font-extrabold tabular-nums sm:text-3xl">
                         {number(calculation.affectedEmployees, 2)}
                       </strong>
                       <span className="mt-2 block text-[11px] leading-snug text-white/65 sm:text-xs sm:leading-relaxed">
@@ -562,7 +557,7 @@ function Calculator() {
                       </span>
                     </div>
                     <div className="rounded-xl bg-white/[0.07] p-3 sm:p-4">
-                      <strong className="block text-xl font-extrabold tabular-nums sm:text-2xl">
+                      <strong className="block text-2xl font-extrabold tabular-nums sm:text-3xl">
                         4,5
                       </strong>
                       <span className="mt-2 block text-[11px] leading-snug text-white/65 sm:text-xs sm:leading-relaxed">
@@ -570,7 +565,7 @@ function Calculator() {
                       </span>
                     </div>
                     <div className="rounded-xl bg-white/[0.07] p-3 sm:p-4">
-                      <strong className="block text-xl font-extrabold tabular-nums sm:text-2xl">
+                      <strong className="block text-2xl font-extrabold tabular-nums sm:text-3xl">
                         {euro(calculation.dailyCost)}
                       </strong>
                       <span className="mt-2 block text-[11px] leading-snug text-white/65 sm:text-xs sm:leading-relaxed">
@@ -599,25 +594,17 @@ function Calculator() {
 
         <p className="mt-4 max-w-4xl text-sm leading-relaxed text-neutral-600">
           Annahmen: 11 % pflegende Beschäftigte und 4,5 zusätzliche
-          Krankheitstage je Person und Jahr. Intern wird mit ungerundeten
-          Werten gerechnet.
+          Krankheitstage je Person und Jahr.
         </p>
 
         <div className="mt-10 border-t border-[#0F4F68]/15 pt-8">
-          <div className="flex items-center gap-4">
-            <span className="grid h-14 w-14 shrink-0 place-items-center rounded-2xl bg-[#F78F2E] text-white shadow-[0_10px_24px_-10px_rgba(247,143,46,0.8)]">
-              <span className="text-3xl font-light" aria-hidden>
-                +
-              </span>
-            </span>
-            <div>
-              <p className="text-xs font-extrabold uppercase tracking-[0.14em] text-[#0F4F68]/65">
-                In dieser Zahl noch nicht enthalten
-              </p>
-              <h3 className="mt-1 text-2xl font-extrabold text-[#0F4F68] sm:text-3xl">
-                Ein Ausfall kostet mehr als Geld.
-              </h3>
-            </div>
+          <div>
+            <p className="text-xs font-extrabold uppercase tracking-[0.14em] text-[#0F4F68]/65">
+              In dieser Zahl noch nicht enthalten
+            </p>
+            <h3 className="mt-1 text-2xl font-extrabold text-[#0F4F68] sm:text-3xl">
+              Ein Ausfall kostet mehr als Geld.
+            </h3>
           </div>
           <div className="mt-7 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
             {CALCULATOR_SHADOW_COSTS.map(({ icon, title, text }) => (
@@ -912,14 +899,13 @@ function Solution() {
               </span>
             </p>
           </div>
-          <p className="mt-5 border-t border-[#0F4F68]/15 pt-4 text-sm leading-relaxed text-[#0F4F68] sm:text-base">
+          <p className="mt-5 rounded-xl border border-[#F78F2E]/20 bg-[#F78F2E]/[0.06] px-4 py-3 text-sm font-semibold leading-relaxed text-[#0F4F68] sm:text-base">
             <strong className="text-[#F78F2E]">Zum Vergleich:</strong> Obstkorb
             oder Kaffee kosten häufig 5 bis 9 € pro Mitarbeiter und Monat.
           </p>
         </div>
         <p className="mt-3 text-sm leading-relaxed text-neutral-600">
-          Preisbasis ist die gesamte Belegschaft. Leistungsumfang und
-          Konditionen werden im persönlichen Gespräch geklärt.
+          Preisbasis ist die gesamte Belegschaft.
         </p>
       </div>
     </section>
@@ -945,17 +931,17 @@ function ClosingCallToAction() {
               <span className="font-extrabold">
                 Wenn Pflege zum zweiten Job wird,
               </span>{" "}
-              <span className="font-medium">
+              <span className="font-semibold">
                 braucht es Rückhalt vom ersten.
               </span>
             </h2>
-            <div className="mt-6 flex flex-wrap gap-x-5 gap-y-3 text-sm font-bold text-white/75">
+            <div className="mt-6 flex flex-wrap gap-x-6 gap-y-3 text-base font-bold text-white/85">
               {["Leistungen kennenlernen", "Fragen klären", "Start besprechen"].map(
                 (item) => (
                   <span key={item} className="flex items-center gap-2">
                     <Icon
                       name="check"
-                      className="h-4 w-4 text-[#9AD7C7]"
+                      className="h-5 w-5 text-[#F78F2E]"
                     />
                     {item}
                   </span>

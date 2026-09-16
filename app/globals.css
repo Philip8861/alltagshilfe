@@ -382,6 +382,23 @@ body:has(#pflegebox-root) #main-content {
   will-change: transform, box-shadow, filter;
 }
 
+/** Betriebliche Pflegeberatung: kurzer, ruhiger CTA-Puls alle 8 Sekunden */
+@keyframes betrieblichCtaPulse {
+  0%,
+  89%,
+  100% {
+    transform: scale(1);
+  }
+  94% {
+    transform: scale(1.025);
+  }
+}
+
+.betrieblich-cta-pulse {
+  animation: betrieblichCtaPulse 8s ease-in-out infinite;
+  transform-origin: center;
+}
+
 .animate-partner-tutorial-spotlight {
   animation: partner-tutorial-spotlight-flash 0.85s ease-out 1 both;
 }
@@ -429,7 +446,8 @@ body:has(#pflegebox-root) #main-content {
       0 0 0 1px rgba(15, 79, 104, 0.06) !important;
   }
   .inko-primary-cta-pulse,
-  .ratgeber-cta-pulse {
+  .ratgeber-cta-pulse,
+  .betrieblich-cta-pulse {
     animation: none !important;
     transform: none !important;
     filter: none !important;
