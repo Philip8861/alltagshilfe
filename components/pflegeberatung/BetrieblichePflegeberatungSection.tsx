@@ -236,7 +236,7 @@ function SectionArc({
 }) {
   return (
     <div
-      className="pointer-events-none relative h-14 w-full overflow-hidden sm:h-20 lg:h-24"
+      className="pointer-events-none relative h-10 w-full overflow-hidden sm:h-14 lg:h-16"
       style={{ backgroundColor: from }}
       aria-hidden
     >
@@ -249,8 +249,8 @@ function SectionArc({
           fill={to}
           d={
             reverse
-              ? "M0 42 C230 108 480 105 720 58 C955 12 1190 8 1440 72 L1440 120 L0 120 Z"
-              : "M0 76 C240 12 490 10 720 58 C950 106 1195 104 1440 38 L1440 120 L0 120 Z"
+              ? "M0 48 C260 72 500 71 720 58 C940 45 1180 44 1440 66 L1440 120 L0 120 Z"
+              : "M0 68 C260 44 500 43 720 56 C940 69 1180 71 1440 46 L1440 120 L0 120 Z"
           }
         />
       </svg>
@@ -261,7 +261,7 @@ function SectionArc({
 function HeroToCalculatorArc() {
   return (
     <div
-      className="pointer-events-none relative h-16 w-full overflow-hidden bg-white sm:h-20 lg:h-24"
+      className="pointer-events-none relative h-12 w-full overflow-hidden bg-white sm:h-16 lg:h-20"
       aria-hidden
     >
       <svg
@@ -271,7 +271,7 @@ function HeroToCalculatorArc() {
       >
         <path
           fill="#F2F9FA"
-          d="M0 24 Q720 118 1440 24 L1440 120 L0 120 Z"
+          d="M0 34 Q720 82 1440 34 L1440 120 L0 120 Z"
         />
       </svg>
     </div>
