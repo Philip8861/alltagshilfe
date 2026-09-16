@@ -810,103 +810,112 @@ function Solution() {
           </p>
         </div>
 
-        <div className="mt-12 flex flex-wrap items-center justify-between gap-4">
-          <div className="flex items-center gap-3 text-[#0F4F68]">
-            <Icon name="people" className="h-6 w-6" />
-            <h3 className="text-2xl font-extrabold">
-              Vorteile für Arbeitnehmer
-            </h3>
-          </div>
-          <span className="rounded-full bg-[#0F4F68]/10 px-4 py-2 text-xs font-extrabold uppercase tracking-[0.12em] text-[#0F4F68]">
-            Persönliche Begleitung
-          </span>
-        </div>
-
-        <div className="mt-7 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-          {EMPLOYEE_BENEFITS.map(({ icon, title, text }) => (
-            <article
-              key={title}
-              className="flex gap-4 rounded-2xl p-3 transition motion-reduce:transition-none [@media(hover:hover)]:hover:bg-white [@media(hover:hover)]:hover:shadow-md"
-            >
-              <span className="grid h-12 w-12 shrink-0 place-items-center rounded-xl border border-[#0F4F68]/15 bg-white text-[#0F4F68] shadow-sm">
-                <Icon name={icon} className="h-6 w-6" />
+        <div className="mt-12 rounded-3xl border border-[#0F4F68]/12 bg-white/90 p-5 shadow-[0_20px_45px_-38px_rgba(15,79,104,0.45)] sm:p-7 lg:p-8">
+          <div className="flex flex-wrap items-center justify-between gap-4">
+            <div className="flex items-center gap-3 text-[#0F4F68]">
+              <span className="grid h-10 w-10 place-items-center rounded-xl bg-[#F2F9FA]">
+                <Icon name="people" className="h-5 w-5" />
               </span>
-              <div>
-                <h4 className="font-extrabold text-[#0F4F68]">{title}</h4>
-                <p className="mt-1 text-sm leading-relaxed text-neutral-600 sm:text-base">
-                  {text}
-                </p>
-              </div>
-            </article>
-          ))}
+              <h3 className="text-2xl font-extrabold">
+                Vorteile für Arbeitnehmer
+              </h3>
+            </div>
+            <span className="rounded-full bg-[#0F4F68]/10 px-4 py-2 text-xs font-extrabold uppercase tracking-[0.12em] text-[#0F4F68]">
+              Persönliche Begleitung
+            </span>
+          </div>
+
+          <div className="mt-6 grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+            {EMPLOYEE_BENEFITS.map(({ icon, title, text }) => (
+              <article
+                key={title}
+                className="flex gap-4 rounded-2xl p-3 transition motion-reduce:transition-none [@media(hover:hover)]:hover:bg-[#F2F9FA]"
+              >
+                <span className="grid h-12 w-12 shrink-0 place-items-center rounded-xl border border-[#0F4F68]/12 bg-[#F2F9FA] text-[#0F4F68]">
+                  <Icon name={icon} className="h-6 w-6" />
+                </span>
+                <div>
+                  <h4 className="font-extrabold text-[#0F4F68]">{title}</h4>
+                  <p className="mt-1 text-sm leading-relaxed text-neutral-600 sm:text-base">
+                    {text}
+                  </p>
+                </div>
+              </article>
+            ))}
+          </div>
         </div>
 
-        <section
-          aria-labelledby="betrieblich-arbeitgeber-heading"
-          className="mt-12 border-t border-[#0F4F68]/15 pt-9"
-        >
-          <div className="max-w-3xl">
-            <p className="text-xs font-extrabold uppercase tracking-[0.16em] text-[#F78F2E]">
-              Vorteile für Arbeitgeber
-            </p>
-            <h3
-              id="betrieblich-arbeitgeber-heading"
-              className="mt-2 text-balance text-2xl font-extrabold tracking-tight text-[#0F4F68] sm:text-3xl"
-            >
-              Auch Ihr Unternehmen wird spürbar entlastet.
-            </h3>
-          </div>
-          <ul className="mt-6 grid gap-x-8 gap-y-4 sm:grid-cols-2 lg:grid-cols-3">
-            {EMPLOYER_BENEFITS.map((benefit) => (
-              <li
-                key={benefit}
-                className="flex items-start gap-3 border-b border-[#0F4F68]/10 pb-4 text-sm font-bold leading-snug text-[#0F4F68] sm:text-base"
+        <div className="mt-6 grid gap-5 lg:grid-cols-[1.15fr_0.85fr]">
+          <section
+            aria-labelledby="betrieblich-arbeitgeber-heading"
+            className="rounded-3xl border border-[#0F4F68]/12 bg-white p-6 sm:p-8"
+          >
+            <div className="max-w-3xl">
+              <p className="text-xs font-extrabold uppercase tracking-[0.16em] text-[#F78F2E]">
+                Vorteile für Arbeitgeber
+              </p>
+              <h3
+                id="betrieblich-arbeitgeber-heading"
+                className="mt-2 text-balance text-2xl font-extrabold tracking-tight text-[#0F4F68] sm:text-3xl"
               >
-                <span className="mt-0.5 grid h-6 w-6 shrink-0 place-items-center rounded-full bg-[#0F4F68] text-white">
-                  <Icon name="check" className="h-4 w-4" />
-                </span>
-                {benefit}
-              </li>
-            ))}
-          </ul>
-        </section>
+                Auch Ihr Unternehmen wird spürbar entlastet.
+              </h3>
+            </div>
+            <ul className="mt-6 grid gap-x-7 gap-y-4 sm:grid-cols-2">
+              {EMPLOYER_BENEFITS.map((benefit) => (
+                <li
+                  key={benefit}
+                  className="flex items-start gap-3 border-b border-[#0F4F68]/10 pb-4 text-sm font-bold leading-snug text-[#0F4F68] sm:text-base"
+                >
+                  <span className="mt-0.5 grid h-6 w-6 shrink-0 place-items-center rounded-full bg-[#0F4F68] text-white">
+                    <Icon name="check" className="h-4 w-4" />
+                  </span>
+                  {benefit}
+                </li>
+              ))}
+            </ul>
+          </section>
 
-        <div className="mt-9 rounded-2xl border border-[#0F4F68]/15 bg-white p-5 sm:p-6">
-          <div className="grid gap-6 lg:grid-cols-[1fr_auto] lg:items-center">
-            <div className="flex items-start gap-4">
-              <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-[#F78F2E]/12 text-[#F78F2E]">
+          <div className="relative overflow-hidden rounded-3xl bg-[#0F4F68] p-6 text-white sm:p-8">
+            <span
+              className="pointer-events-none absolute -right-16 -top-16 h-44 w-44 rounded-full border border-white/10"
+              aria-hidden
+            />
+            <div className="relative z-10">
+              <span className="grid h-11 w-11 place-items-center rounded-xl bg-white/10 text-[#F78F2E]">
                 <Icon name="heart" className="h-6 w-6" />
               </span>
-              <div>
-                <h3 className="text-lg font-extrabold text-[#0F4F68] sm:text-xl">
-                  Ein Benefit mit echtem Mehrwert.
-                </h3>
-                <p className="mt-1 text-sm leading-relaxed text-neutral-600 sm:text-base">
-                  Persönliche Pflegebegleitung für Ihre Beschäftigten.
-                </p>
-              </div>
-            </div>
-            <p className="flex flex-wrap items-baseline gap-x-2 text-[#0F4F68]">
-              <span className="font-bold text-neutral-600">ab</span>
-              <strong className="text-3xl font-extrabold tracking-tight tabular-nums text-[#F78F2E] sm:text-4xl lg:text-[clamp(1.55rem,0.7rem+1.45vw,2.55rem)]">
-                <span className="sr-only">3,90 €</span>
-                <span aria-hidden>
-                  <CountUp value={3.9} decimals={2} /> €
+              <h3 className="mt-5 text-xl font-extrabold sm:text-2xl">
+                Ein Benefit mit echtem Mehrwert.
+              </h3>
+              <p className="mt-2 text-sm leading-relaxed text-white/70 sm:text-base">
+                Persönliche Pflegebegleitung für Ihre Beschäftigten.
+              </p>
+
+              <p className="mt-7 flex flex-wrap items-baseline gap-x-2">
+                <span className="font-bold text-white/65">ab</span>
+                <strong className="text-5xl font-extrabold tracking-tight tabular-nums text-[#F78F2E]">
+                  <span className="sr-only">3,90 €</span>
+                  <span aria-hidden>
+                    <CountUp value={3.9} decimals={2} /> €
+                  </span>
+                </strong>
+                <span className="max-w-36 text-sm font-bold leading-snug text-white/65">
+                  je Beschäftigten und Monat
                 </span>
-              </strong>
-              <span className="max-w-36 text-sm font-bold leading-snug text-neutral-600">
-                je Beschäftigten und Monat
-              </span>
-            </p>
+              </p>
+
+              <p className="mt-7 rounded-xl border border-white/10 bg-white/[0.06] px-4 py-3 text-sm font-semibold leading-relaxed text-white/85">
+                <strong className="text-[#F78F2E]">Zum Vergleich:</strong>{" "}
+                Obstkorb oder Kaffee kosten häufig 5 bis 9 € pro Mitarbeiter
+                und Monat.
+              </p>
+              <p className="mt-4 text-sm text-white/55">
+                Preisbasis ist die gesamte Belegschaft.
+              </p>
+            </div>
           </div>
-          <p className="mt-5 rounded-xl border border-[#F78F2E]/20 bg-[#F78F2E]/[0.06] px-4 py-3 text-sm font-semibold leading-relaxed text-[#0F4F68] sm:text-base">
-            <strong className="text-[#F78F2E]">Zum Vergleich:</strong> Obstkorb
-            oder Kaffee kosten häufig 5 bis 9 € pro Mitarbeiter und Monat.
-          </p>
         </div>
-        <p className="mt-3 text-sm leading-relaxed text-neutral-600">
-          Preisbasis ist die gesamte Belegschaft.
-        </p>
       </div>
     </section>
   );

@@ -382,20 +382,20 @@ body:has(#pflegebox-root) #main-content {
   will-change: transform, box-shadow, filter;
 }
 
-/** Betriebliche Pflegeberatung: kurzer, ruhiger CTA-Puls alle 8 Sekunden */
+/** Betriebliche Pflegeberatung: kurzer, ruhiger CTA-Puls alle 3 Sekunden */
 @keyframes betrieblichCtaPulse {
   0%,
-  89%,
+  82%,
   100% {
     transform: scale(1);
   }
-  94% {
+  91% {
     transform: scale(1.025);
   }
 }
 
 .betrieblich-cta-pulse {
-  animation: betrieblichCtaPulse 8s ease-in-out infinite;
+  animation: betrieblichCtaPulse 3s ease-in-out infinite;
   transform-origin: center;
 }
 
