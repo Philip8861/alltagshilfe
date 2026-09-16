@@ -2,9 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import { Container } from "@/components/layout/Container";
 import {
-  BetrieblichePflegeberatungFolgenBand,
-  BetrieblichePflegeberatungVorteileVorStatistik,
-  BetrieblichePflegeberatungWhiteIntro,
+  BetrieblichePflegeberatungB2BSection,
   BETRIEBLICH_FOLGEN_SURFACE,
 } from "@/components/pflegeberatung/BetrieblichePflegeberatungSection";
 import {
@@ -135,16 +133,7 @@ export default function PflegeberatungPage() {
             </div>
             </div>
 
-            <BetrieblichePflegeberatungVorteileVorStatistik />
-
-            <div className="relative isolate overflow-visible">
-              <Container className="relative z-30 bg-transparent pb-[calc(1rem+2.75cm)] pointer-events-none sm:pb-[calc(1.25rem+2.75cm)]">
-                <div className="pointer-events-auto">
-                  <BetrieblichePflegeberatungWhiteIntro />
-                </div>
-              </Container>
-              <BetrieblichePflegeberatungFolgenBand />
-            </div>
+            <BetrieblichePflegeberatungB2BSection />
           </div>
         </section>
       </article>
