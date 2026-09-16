@@ -40,6 +40,9 @@ coverage
 .DS_Store
 *.pem
 
+# Supabase CLI cache (local only)
+supabase/.temp/
+
 # Lokale PDF-Text-Extrakte (UTF-16 von Windows-Redirect; nicht committen)
 scripts/standortlisten-extract.txt
 
