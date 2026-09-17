@@ -652,8 +652,8 @@ function Facts() {
           <CountUp value={4} />
         </span>
       ),
-      title: "schränkt die Erwerbstätigkeit ein",
-      text: "Eine von vier Hauptpflegepersonen hat wegen häuslicher Pflege die Erwerbstätigkeit eingeschränkt.",
+      title: "reduziert die Arbeitszeit wegen Pflege",
+      text: "Eine von vier Hauptpflegepersonen reduziert ihre Arbeitszeit aufgrund einer privaten Pflegeverantwortung.",
       source: "WIdO 2024, Befragung 2023",
       href: evidence.work,
     },
@@ -694,6 +694,10 @@ function Facts() {
           >
             Die Belastung bleibt selten zu Hause.
           </h2>
+          <p className="mt-3 max-w-3xl text-base font-medium leading-relaxed text-[#0F4F68]/75 sm:text-lg">
+            Das Thema ist bereits jetzt hoch relevant und wird in den
+            kommenden Jahren zu einem der größten Probleme.
+          </p>
         </header>
 
         <div className="mt-8 grid gap-5 lg:grid-cols-3">
