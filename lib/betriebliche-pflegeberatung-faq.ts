@@ -11,29 +11,29 @@ export const BETRIEBLICHE_PFLEGEBERATUNG_FAQ: BetrieblichePflegeberatungFaqItem[
       question:
         "Pflege ist zunächst Privatsache. Warum sollte ich mich als Arbeitgeber damit beschäftigen?",
       answer:
-        "Pflege bleibt familiär – die Folgen landen trotzdem im Betrieb: Fehlzeiten, weniger Konzentration und das Risiko, erfahrene Fachkräfte zu verlieren. Fast die Hälfte der berufstätigen pflegenden Angehörigen ist körperlich und psychisch hochbelastet, eine von vier reduziert die Arbeitszeit. Betriebliche Pflegeberatung entlastet Ihre Beschäftigten konkret und schützt damit auch Ihren Betrieb.",
+        "Pflege bleibt familiär. Die Folgen landen trotzdem im Betrieb: Fehlzeiten, weniger Konzentration und das Risiko, erfahrene Fachkräfte zu verlieren. Fast die Hälfte der berufstätigen pflegenden Angehörigen ist körperlich und psychisch hochbelastet, eine von vier reduziert die Arbeitszeit. Betriebliche Pflegeberatung entlastet Ihre Beschäftigten konkret und schützt damit auch Ihren Betrieb.",
     },
     {
       question:
         "Lohnt sich betriebliche Pflegeberatung auch für kleinere Unternehmen oder wenn bei uns bisher kaum Pflegefälle bekannt sind?",
       answer:
-        "Ja. Viele Pflegesituationen bleiben unsichtbar, weil Beschäftigte sie nicht von sich aus ansprechen. Gerade in kleineren Teams fällt jeder Ausfall stärker ins Gewicht. Das Angebot wirkt deshalb auch vorbeugend: Wenn der erste Fall eintritt, steht die Hilfe bereits. Der Preis richtet sich nach der gesamten Belegschaft – unabhängig davon, wie viele Beratungen aktuell laufen.",
+        "Ja. Viele Pflegesituationen bleiben unsichtbar, weil Beschäftigte sie nicht von sich aus ansprechen. Gerade in kleineren Teams fällt jeder Ausfall stärker ins Gewicht. Das Angebot wirkt deshalb auch vorbeugend: Wenn der erste Fall eintritt, steht die Hilfe bereits. Der Preis richtet sich nach der gesamten Belegschaft, unabhängig davon, wie viele Beratungen aktuell laufen.",
     },
     {
       question:
         "Was nehmen Sie unseren Mitarbeitenden konkret ab, wenn ein Angehöriger pflegebedürftig wird?",
       answer:
-        "Wir übernehmen die Orientierung im Pflegesystem: Anträge, Höherstufung, Leistungen und Widersprüche. Gleichzeitig planen wir die Versorgung – von Hauswirtschaft und Betreuung über Pflege und Umbau bis zu Hausnotruf oder Wundversorgung. Eine feste Ansprechperson bleibt so lange an der Seite, bis eine tragfähige Lösung steht.",
+        "Wir übernehmen die Orientierung im Pflegesystem: Anträge, Höherstufung, Leistungen und Widersprüche. Gleichzeitig planen wir die Versorgung, von Hauswirtschaft und Betreuung über Pflege und Umbau bis zu Hausnotruf oder Wundversorgung. Eine feste Ansprechperson bleibt so lange an der Seite, bis eine tragfähige Lösung steht.",
     },
     {
       question:
-        "Wie sieht eine Partnerschaft mit Ihnen aus – vom ersten Gespräch bis zur laufenden Betreuung?",
+        "Wie sieht eine Partnerschaft mit Ihnen vom ersten Gespräch bis zur laufenden Betreuung aus?",
       answer:
-        "Der Einstieg ist ein 15-minütiges Infogespräch, kostenlos und unverbindlich. Danach klären wir Bedarf, Umfang und Start. Nach Vertragsbeginn wenden sich Beschäftigte direkt an uns. Wir begleiten nicht nur einmal, sondern laufend – und bleiben für Ihre Personalabteilung der Ansprechpartner für das Firmenangebot.",
+        "Der Einstieg ist ein 15-minütiges Infogespräch, kostenlos und unverbindlich. Danach klären wir Bedarf, Umfang und Start. Nach Vertragsbeginn wenden sich Beschäftigte direkt an uns. Wir begleiten nicht nur einmal, sondern laufend und bleiben für Ihre Personalabteilung der Ansprechpartner für das Firmenangebot.",
     },
     {
       question:
-        "Was kostet uns die betriebliche Pflegeberatung – und welche Leistungen sind im Preis enthalten?",
+        "Was kostet uns die betriebliche Pflegeberatung und welche Leistungen sind im Preis enthalten?",
       answer:
         "Die betriebliche Pflegeberatung beginnt ab 3,90 € je Beschäftigten und Monat. Preisbasis ist die gesamte Belegschaft. Enthalten sind die persönliche Pflegebegleitung, eine feste Ansprechperson, Hilfe bei Anträgen, die Planung der Versorgung, Angehörigenschulungen und die vertrauliche Nutzung durch Ihre Mitarbeitenden. Das konkrete Angebot stimmen wir im Gespräch auf Ihr Unternehmen ab.",
     },
@@ -45,21 +45,21 @@ export const BETRIEBLICHE_PFLEGEBERATUNG_FAQ: BetrieblichePflegeberatungFaqItem[
     },
     {
       question:
-        "Wir bieten bereits eine betriebliche Krankenversicherung an. Was ergänzt Ihre Pflegeberatung – und wo gibt es möglicherweise Überschneidungen?",
+        "Wir bieten bereits eine betriebliche Krankenversicherung an. Was ergänzt Ihre Pflegeberatung und wo gibt es möglicherweise Überschneidungen?",
       answer:
-        "Eine betriebliche Krankenversicherung sichert typischerweise medizinische Zusatzleistungen ab. Unsere Pflegeberatung organisiert den Alltag, wenn ein Angehöriger Hilfe braucht: Anträge, Versorgung und Entlastung der Familie. Die Überschneidungen sind gering. Beides ergänzt sich – die bKV beim Gesundheitsschutz, wir bei der Vereinbarkeit von Beruf und Pflege.",
+        "Eine betriebliche Krankenversicherung sichert typischerweise medizinische Zusatzleistungen ab. Unsere Pflegeberatung organisiert den Alltag, wenn ein Angehöriger Hilfe braucht: Anträge, Versorgung und Entlastung der Familie. Die Überschneidungen sind gering. Beides ergänzt sich: die bKV beim Gesundheitsschutz, wir bei der Vereinbarkeit von Beruf und Pflege.",
     },
     {
       question:
         "Können Mitarbeitende die Beratung schon nutzen, bevor ein Pflegegrad vorliegt oder eine akute Pflegesituation entsteht?",
       answer:
-        "Ja. Die Beratung ist sinnvoll, sobald sich eine Pflegesituation abzeichnet – etwa nach einem Klinikaufenthalt, bei ersten Unsicherheiten der Eltern oder bei Demenzverdacht. Frühe Orientierung nimmt Druck und verhindert, dass im Akutfall alles gleichzeitig entschieden werden muss.",
+        "Ja. Die Beratung ist sinnvoll, sobald sich eine Pflegesituation abzeichnet, etwa nach einem Klinikaufenthalt, bei ersten Unsicherheiten der Eltern oder bei Demenzverdacht. Frühe Orientierung nimmt Druck und verhindert, dass im Akutfall alles gleichzeitig entschieden werden muss.",
     },
     {
       question:
         "Ein Angehöriger muss plötzlich versorgt werden: Wie schnell erhalten unsere Mitarbeitenden Unterstützung, und was passiert dann konkret?",
       answer:
-        "Beschäftigte erreichen uns direkt. Wir vergeben schnell einen persönlichen Termin – zu Hause oder auf Wunsch im Betrieb. Im Gespräch klären wir die Lage, die nächsten Schritte, Anträge und Entlastungsangebote. Danach bleiben wir dran, bis die Versorgung steht.",
+        "Beschäftigte erreichen uns direkt. Wir vergeben schnell einen persönlichen Termin, zu Hause oder auf Wunsch im Betrieb. Im Gespräch klären wir die Lage, die nächsten Schritte, Anträge und Entlastungsangebote. Danach bleiben wir dran, bis die Versorgung steht.",
     },
     {
       question:
@@ -69,7 +69,7 @@ export const BETRIEBLICHE_PFLEGEBERATUNG_FAQ: BetrieblichePflegeberatungFaqItem[
     },
     {
       question:
-        "Wie viel Aufwand entsteht für unsere Personalabteilung – bei der Einführung und im laufenden Betrieb?",
+        "Wie viel Aufwand entsteht für unsere Personalabteilung bei der Einführung und im laufenden Betrieb?",
       answer:
         "Bei der Einführung braucht es ein kurzes Kick-off sowie Infos für Belegschaft und Führungskräfte. Im laufenden Betrieb wenden sich Mitarbeitende direkt an uns. Ihre Personalabteilung muss keine Einzelfälle steuern und keine pflegerische Beratung leisten.",
     },
@@ -77,13 +77,13 @@ export const BETRIEBLICHE_PFLEGEBERATUNG_FAQ: BetrieblichePflegeberatungFaqItem[
       question:
         "Können Mitarbeitende die Beratung vertraulich nutzen, ohne ihre familiäre Situation gegenüber dem Arbeitgeber offenzulegen?",
       answer:
-        "Ja. Die Gespräche sind vertraulich. Der Arbeitgeber erfährt keine persönlichen oder familiären Details. Auf Wunsch können wir aggregierte, anonyme Nutzungskennzahlen liefern – ohne Personenbezug.",
+        "Ja. Die Gespräche sind vertraulich. Der Arbeitgeber erfährt keine persönlichen oder familiären Details. Auf Wunsch können wir aggregierte, anonyme Nutzungskennzahlen liefern, ohne Personenbezug.",
     },
     {
       question:
         "Wie unterstützen Sie uns dabei, das Angebot in der Belegschaft bekannt zu machen, damit es tatsächlich genutzt wird?",
       answer:
-        "Wir stellen verständliche Informationen für Intranet, Aushang, Onboarding und Führungskräfte bereit. Ziel ist, dass das Angebot bekannt ist, bevor der Ernstfall eintritt – und Beschäftigte uns dann ohne Umwege erreichen.",
+        "Wir stellen verständliche Informationen für Intranet, Aushang, Onboarding und Führungskräfte bereit. Ziel ist, dass das Angebot bekannt ist, bevor der Ernstfall eintritt, und Beschäftigte uns dann ohne Umwege erreichen.",
     },
     {
       question:
@@ -93,9 +93,9 @@ export const BETRIEBLICHE_PFLEGEBERATUNG_FAQ: BetrieblichePflegeberatungFaqItem[
     },
     {
       question:
-        "Wie verbindlich ist der Einstieg – welche Laufzeiten und Kündigungsbedingungen gelten, und ist ein Pilot möglich?",
+        "Wie verbindlich ist der Einstieg, welche Laufzeiten und Kündigungsbedingungen gelten, und ist ein Pilot möglich?",
       answer:
-        "Das 15-minütige Infogespräch ist kostenlos und unverbindlich. Ein Pilot ist möglich, damit Sie das Angebot zuerst in einem Bereich oder für einen begrenzten Zeitraum testen. Laufzeit und Kündigung stimmen wir transparent im Angebot ab – im Erstgespräch legen Sie sich nicht fest.",
+        "Das 15-minütige Infogespräch ist kostenlos und unverbindlich. Ein Pilot ist möglich, damit Sie das Angebot zuerst in einem Bereich oder für einen begrenzten Zeitraum testen. Laufzeit und Kündigung stimmen wir transparent im Angebot ab. Im Erstgespräch legen Sie sich nicht fest.",
     },
   ];
 
