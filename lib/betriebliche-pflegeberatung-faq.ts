@@ -29,19 +29,19 @@ export const BETRIEBLICHE_PFLEGEBERATUNG_FAQ: BetrieblichePflegeberatungFaqItem[
       question:
         "Wie sieht eine Partnerschaft mit Ihnen vom ersten Gespräch bis zur laufenden Betreuung aus?",
       answer:
-        "Der Einstieg ist ein 15-minütiges Infogespräch, kostenlos und unverbindlich. Danach klären wir Bedarf, Umfang und Start. Nach Vertragsbeginn wenden sich Beschäftigte direkt an uns. Wir begleiten nicht nur einmal, sondern laufend und bleiben für Ihre Personalabteilung der Ansprechpartner für das Firmenangebot.",
+        "Der Einstieg ist ein 15-minütiges Infogespräch, kostenlos und unverbindlich. Danach entsteht eine feste Partnerschaft: Das Angebot läuft dauerhaft neben dem Betriebsalltag mit. Ihre Beschäftigten können uns jederzeit erreichen, nicht nur im einzelnen Ernstfall. Wir begleiten laufend und bleiben für Ihre Personalabteilung der Ansprechpartner für das Firmenangebot.",
     },
     {
       question:
         "Was kostet uns die betriebliche Pflegeberatung und welche Leistungen sind im Preis enthalten?",
       answer:
-        "Die betriebliche Pflegeberatung beginnt ab 3,90 € je Beschäftigten und Monat. Preisbasis ist die gesamte Belegschaft. Enthalten sind die persönliche Pflegebegleitung, eine feste Ansprechperson, Hilfe bei Anträgen, die Planung der Versorgung, Angehörigenschulungen und die vertrauliche Nutzung durch Ihre Mitarbeitenden. Das konkrete Angebot stimmen wir im Gespräch auf Ihr Unternehmen ab.",
+        "Die betriebliche Pflegeberatung kostet monatlich ab 3,90 € je Beschäftigten. Preisbasis ist die gesamte Belegschaft. Sie zahlen also nicht erst, wenn eine Leistung genutzt wird, sondern für eine dauerhafte Partnerschaft, die im Hintergrund bereitsteht. Enthalten sind die persönliche Pflegebegleitung, eine feste Ansprechperson, Hilfe bei Anträgen, die Planung der Versorgung, Angehörigenschulungen und die vertrauliche Nutzung durch Ihre Mitarbeitenden. Das konkrete Angebot stimmen wir im Gespräch auf Ihr Unternehmen ab.",
     },
     {
       question:
-        "Es gibt bereits kostenlose Pflegeberatung, etwa nach § 7a SGB XI. Welchen zusätzlichen Nutzen bietet Ihr Angebot?",
+        "Es gibt bereits Pflegeberatung, etwa nach § 7a SGB XI. Welchen zusätzlichen Nutzen bietet Ihr Angebot?",
       answer:
-        "Die gesetzliche Beratung nach § 7a SGB XI ist wichtig, oft aber punktuell, an die Pflegekasse gebunden und setzt häufig schon eine laufende Pflegesituation voraus. Unser betriebliches Angebot ergänzt das: feste Ansprechperson, Begleitung über das Erstgespräch hinaus, Termine zu Hause oder im Betrieb und Hilfe schon bevor ein Pflegegrad vorliegt. Ihre Beschäftigten müssen das System nicht allein durchdringen.",
+        "Die Pflegeberatung nach § 7a SGB XI gibt wichtige Orientierung. Unser betriebliches Angebot setzt früher, schneller und intensiver an. Termine sind in der Regel zügiger verfügbar, unsere Beraterinnen und Berater betreuen typischerweise weniger Fälle gleichzeitig und sind dadurch näher an der konkreten Situation. Die gesetzliche Beratung zeigt, was möglich ist. Wir übernehmen zusätzlich viele organisatorische Tätigkeiten und machen Entlastung im Alltag umsetzbar. Denn jeder Tag zählt.",
     },
     {
       question:
@@ -65,7 +65,7 @@ export const BETRIEBLICHE_PFLEGEBERATUNG_FAQ: BetrieblichePflegeberatungFaqItem[
       question:
         "Wer berät unsere Mitarbeitenden, welche Qualifikation bringen die Beratenden mit und begleiten sie auch über das erste Gespräch hinaus?",
       answer:
-        "Die Alltagshilfe-Süd ist anerkannte Pflegeberatungsstelle mit eigenen Pflegeberaterinnen und Pflegeberatern, unter anderem qualifiziert nach § 7a SGB XI. Ihre Beschäftigten bekommen eine feste Ansprechperson, die die Situation kennt und über das erste Gespräch hinaus begleitet. Dahinter stehen mehr als 12 Jahre Erfahrung und über 8.000 durchgeführte Pflegeberatungen.",
+        "Unsere Pflegeberaterinnen und Pflegeberater sind geschulte Pflegekräfte mit Zusatzausbildung, unter anderem qualifiziert nach § 7a SGB XI. Die Alltagshilfe-Süd ist anerkannte Pflegeberatungsstelle. Ihre Beschäftigten bekommen eine feste Ansprechperson, die die Situation kennt und über das erste Gespräch hinaus begleitet. Dahinter stehen mehr als 12 Jahre Erfahrung und über 8.000 durchgeführte Pflegeberatungen.",
     },
     {
       question:
@@ -89,13 +89,7 @@ export const BETRIEBLICHE_PFLEGEBERATUNG_FAQ: BetrieblichePflegeberatungFaqItem[
       question:
         "Woran können wir erkennen, ob die Pflegeberatung unsere Mitarbeitenden entlastet und sich für unser Unternehmen lohnt?",
       answer:
-        "Sie sehen den Nutzen an der tatsächlichen Nutzung, an Rückmeldungen aus der Belegschaft und intern oft an weniger Ausfällen sowie stärkerer Bindung. Personenbezogene Inhalte bleiben geschützt. Im Infogespräch legen wir fest, welche anonymisierten Rückmeldungen für Sie sinnvoll sind.",
-    },
-    {
-      question:
-        "Wie verbindlich ist der Einstieg, welche Laufzeiten und Kündigungsbedingungen gelten, und ist ein Pilot möglich?",
-      answer:
-        "Das 15-minütige Infogespräch ist kostenlos und unverbindlich. Ein Pilot ist möglich, damit Sie das Angebot zuerst in einem Bereich oder für einen begrenzten Zeitraum testen. Laufzeit und Kündigung stimmen wir transparent im Angebot ab. Im Erstgespräch legen Sie sich nicht fest.",
+        "Sie sehen den Nutzen an der tatsächlichen Nutzung, an Rückmeldungen aus der Belegschaft und intern oft an weniger Ausfällen sowie stärkerer Bindung. Alle Fakten und Zahlen dokumentieren wir. Konkrete Fälle bleiben anonymisiert, Sie erhalten von uns eine Auswertung. Personenbezogene Inhalte bleiben geschützt. Im Infogespräch legen wir fest, welche anonymisierten Rückmeldungen für Sie sinnvoll sind.",
     },
   ];
 
