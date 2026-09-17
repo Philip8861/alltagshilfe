@@ -10,6 +10,7 @@ import {
   BetrieblichInfoTerminOpenButton,
 } from "@/components/pflegeberatung/BetrieblichInfoTerminDialog";
 import { siteConfig } from "@/config/site";
+import { betrieblichePflegeberatungFaqJsonLd } from "@/lib/betriebliche-pflegeberatung-faq";
 
 const BETRIEBLICH_HERO_BULLETS = [
   "Zukunftsrelevanter Benefit für Ihre Mitarbeitergewinnung",
@@ -61,6 +62,12 @@ export const metadata: Metadata = {
 export default function PflegeberatungPage() {
   return (
     <BetrieblichInfoTerminDialogProvider>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(betrieblichePflegeberatungFaqJsonLd()),
+        }}
+      />
       <article className="min-w-0 overflow-x-clip pb-12 sm:pb-16" style={{ backgroundColor: BETRIEBLICH_FOLGEN_SURFACE }}>
         <section
           id="betriebliche-pflegeberatung"

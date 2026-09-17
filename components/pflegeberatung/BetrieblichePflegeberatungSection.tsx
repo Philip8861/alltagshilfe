@@ -12,6 +12,7 @@ import {
   BETRIEBLICH_CARE_MODEL,
   calculateBetrieblichCareCost,
 } from "@/components/pflegeberatung/betriebliche-pflegekosten-model";
+import { BETRIEBLICHE_PFLEGEBERATUNG_FAQ } from "@/lib/betriebliche-pflegeberatung-faq";
 
 export const BETRIEBLICH_FOLGEN_SURFACE = "#ffffff" as const;
 
@@ -969,23 +970,63 @@ function ClosingCallToAction() {
   );
 }
 
+function FaqAccordionItem({
+  question,
+  children,
+}: {
+  question: string;
+  children: ReactNode;
+}) {
+  return (
+    <details className="group border-b border-[#0F4F68]/15">
+      <summary className="flex min-h-14 cursor-pointer list-none items-center justify-between gap-4 py-4 font-extrabold text-[#0F4F68] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#F78F2E] [&::-webkit-details-marker]:hidden">
+        <span className="min-w-0 text-left">{question}</span>
+        <span
+          className="shrink-0 text-2xl font-light transition-transform group-open:rotate-45 motion-reduce:transition-none"
+          aria-hidden
+        >
+          +
+        </span>
+      </summary>
+      <div className="max-w-5xl space-y-4 pb-7 leading-relaxed text-neutral-600">
+        {children}
+      </div>
+    </details>
+  );
+}
+
 function Methodology() {
   const sample = calculateBetrieblichCareCost(100, "average")!;
 
   return (
     <section
-      id="betrieblich-methodik"
-      aria-labelledby="betrieblich-methodik-heading"
+      id="betrieblich-faq"
+      aria-labelledby="betrieblich-faq-heading"
       className="scroll-mt-[var(--ahs-header-scroll-padding)] bg-white pb-14 sm:pb-16"
     >
       <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-[var(--ahs-page-gutter)]">
         <div className="flex flex-wrap items-end justify-between gap-3 border-b border-[#0F4F68]/15 pb-5">
           <h2
-            id="betrieblich-methodik-heading"
+            id="betrieblich-faq-heading"
             className="text-2xl font-extrabold text-[#0F4F68]"
           >
             Häufige Fragen
           </h2>
+        </div>
+
+        {BETRIEBLICHE_PFLEGEBERATUNG_FAQ.map((item) => (
+          <FaqAccordionItem key={item.question} question={item.question}>
+            <p>{item.answer}</p>
+          </FaqAccordionItem>
+        ))}
+
+        <div className="mt-10 flex flex-wrap items-end justify-between gap-3 border-b border-[#0F4F68]/15 pb-5">
+          <h3
+            id="betrieblich-methodik"
+            className="scroll-mt-[var(--ahs-header-scroll-padding)] text-xl font-extrabold text-[#0F4F68] sm:text-2xl"
+          >
+            Fragen zum Pflegekostenrechner
+          </h3>
           <span className="text-sm text-neutral-500">
             Geprüft am {BETRIEBLICH_CARE_MODEL.checked}
           </span>
