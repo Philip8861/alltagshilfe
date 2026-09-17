@@ -420,9 +420,7 @@ function Calculator() {
                     onChange={(event) => setEmployees(event.target.value)}
                     aria-invalid={!calculation}
                     aria-describedby={
-                      calculation
-                        ? "betrieblich-employees-help"
-                        : "betrieblich-employees-help betrieblich-employees-error"
+                      calculation ? undefined : "betrieblich-employees-error"
                     }
                     className="min-w-0 flex-1 bg-transparent text-2xl font-extrabold tabular-nums text-[#0F4F68] outline-none"
                   />
@@ -431,12 +429,6 @@ function Calculator() {
                     className="h-6 w-6 shrink-0 text-[#0F4F68]/55"
                   />
                 </div>
-                <p
-                  id="betrieblich-employees-help"
-                  className="mt-2 text-sm leading-relaxed text-neutral-600"
-                >
-                  Gesamte Belegschaft. Maximal 1.000.000 Beschäftigte.
-                </p>
                 {!calculation && (
                   <p
                     id="betrieblich-employees-error"
