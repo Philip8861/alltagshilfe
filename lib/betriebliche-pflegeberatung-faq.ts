@@ -41,7 +41,7 @@ export const BETRIEBLICHE_PFLEGEBERATUNG_FAQ: BetrieblichePflegeberatungFaqItem[
       question:
         "Es gibt bereits Pflegeberatung, etwa nach § 7a SGB XI. Welchen zusätzlichen Nutzen bietet Ihr Angebot?",
       answer:
-        "Die Pflegeberatung nach § 7a SGB XI gibt wichtige Orientierung. Unser betriebliches Angebot setzt früher, schneller und intensiver an. Termine sind in der Regel zügiger verfügbar, unsere Beraterinnen und Berater betreuen typischerweise weniger Fälle gleichzeitig und sind dadurch näher an der konkreten Situation. Die gesetzliche Beratung zeigt, was möglich ist. Wir übernehmen zusätzlich viele organisatorische Tätigkeiten und machen Entlastung im Alltag umsetzbar. Denn jeder Tag zählt.",
+        "Die Pflegeberatung nach § 7a SGB XI gibt wichtige Orientierung. Unser betriebliches Angebot setzt früher, schneller und intensiver an. Termine sind zügiger verfügbar, unsere Pflegeberaterinnen und Pflegeberater betreuen weniger Fälle gleichzeitig und sind dadurch näher an der konkreten Situation. Die gesetzliche Beratung zeigt, was möglich ist. Wir übernehmen zusätzlich viele organisatorische Tätigkeiten und machen Entlastung im Alltag umsetzbar. Denn jeder Tag zählt.",
     },
     {
       question:
@@ -84,12 +84,6 @@ export const BETRIEBLICHE_PFLEGEBERATUNG_FAQ: BetrieblichePflegeberatungFaqItem[
         "Wie unterstützen Sie uns dabei, das Angebot in der Belegschaft bekannt zu machen, damit es tatsächlich genutzt wird?",
       answer:
         "Wir stellen verständliche Informationen für Intranet, Aushang, Onboarding und Führungskräfte bereit. Ziel ist, dass das Angebot bekannt ist, bevor der Ernstfall eintritt, und Beschäftigte uns dann ohne Umwege erreichen.",
-    },
-    {
-      question:
-        "Woran können wir erkennen, ob die Pflegeberatung unsere Mitarbeitenden entlastet und sich für unser Unternehmen lohnt?",
-      answer:
-        "Sie sehen den Nutzen an der tatsächlichen Nutzung, an Rückmeldungen aus der Belegschaft und intern oft an weniger Ausfällen sowie stärkerer Bindung. Alle Fakten und Zahlen dokumentieren wir. Konkrete Fälle bleiben anonymisiert, Sie erhalten von uns eine Auswertung. Personenbezogene Inhalte bleiben geschützt. Im Infogespräch legen wir fest, welche anonymisierten Rückmeldungen für Sie sinnvoll sind.",
     },
   ];
 

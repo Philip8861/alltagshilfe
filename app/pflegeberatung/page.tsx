@@ -55,7 +55,7 @@ const imgBlockStyle = {
 
 export const metadata: Metadata = {
   title: "Betriebliche Pflegeberatung",
-  description: `Wenn Pflege zum zweiten Job wird, leidet irgendwann auch der erste. Betriebliche Pflegeberatung als Benefit: Pflegende Beschäftigte entlasten, Fehlzeiten und Fachkräfteverlust reduzieren – ${siteConfig.name}.`,
+  description: `Wenn Pflege zum zweiten Job wird, leidet der erste. Betriebliche Pflegeberatung als Benefit: Pflegende Beschäftigte entlasten, Fehlzeiten und Fachkräfteverlust reduzieren – ${siteConfig.name}.`,
   alternates: { canonical: "/pflegeberatung/betriebliche-pflegeberatung" },
 };
 
@@ -86,7 +86,7 @@ export default function PflegeberatungPage() {
                   id="betrieblich-heading"
                   className="mt-2 text-pretty text-3xl font-extrabold leading-snug tracking-tight text-[#0F4F68] sm:mt-2.5 sm:text-4xl lg:text-[clamp(1.55rem,0.7rem+1.45vw,2.55rem)] lg:leading-[1.28]"
                 >
-                  Wenn Pflege zum zweiten Job wird, leidet irgendwann auch der erste.
+                  Wenn Pflege zum zweiten Job wird, leidet der erste.
                 </h1>
                 <p className="mt-3 text-pretty text-sm font-medium leading-relaxed text-[#0F4F68]/85 sm:mt-3.5 sm:text-base">
                   Wir entlasten Pflegende Beschäftigte spürbar und helfen Unternehmen, Fehlzeiten, Überlastung und den
