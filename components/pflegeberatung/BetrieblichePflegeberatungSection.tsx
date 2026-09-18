@@ -935,11 +935,10 @@ function ClosingCallToAction() {
               className="mt-3 text-balance text-3xl leading-tight tracking-tight sm:text-4xl lg:text-[clamp(1.55rem,0.7rem+1.45vw,2.55rem)] lg:leading-[1.28]"
             >
               <span className="font-extrabold">
-                Wenn Pflege zum zweiten Job wird,
+                Wenn Pflege zum zweiten Job wird, braucht Ihr Unternehmen eine
+                Lösung.
               </span>{" "}
-              <span className="font-semibold">
-                braucht es Rückhalt vom ersten.
-              </span>
+              <span className="font-semibold">Wir zeigen Ihnen, wie</span>
             </h2>
             <div className="mt-6 flex flex-wrap gap-x-6 gap-y-3 text-base font-bold text-white/85">
               {["Leistungen kennenlernen", "Fragen klären", "Start besprechen"].map(
