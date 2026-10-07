@@ -415,14 +415,8 @@ export function Pflegereform2027Article() {
         heading="Wie Ihr Unternehmen Sie jetzt unterstützen kann"
       >
         <p>
-          Viele der Menschen, die diese sieben Punkte abarbeiten müssen, sind berufstätig. Sie telefonieren in der
-          Mittagspause mit der Pflegekasse, füllen abends Anträge aus und nehmen sich für die Begutachtung frei. Wenn
-          ab 2027 die Schwellenwerte steigen, der Entlastungsbetrag bei Pflegegrad 1 entfällt und Leistungen in neue
-          Budgets wandern, wird dieser Spagat nicht kleiner.
-        </p>
-        <p className="mt-4">
-          Die gute Nachricht: Angehörige müssen das nicht allein tragen. Arbeitgeber können genau hier ansetzen – mit
-          einer Pflegeberatung, die über das Unternehmen zu den Beschäftigten kommt.
+          Viele Angehörige organisieren Pflegekasse, Anträge und Begutachtungen neben ihrem Beruf. Mit den Änderungen
+          2027 wächst der Orientierungsbedarf. Genau hier können Arbeitgeber konkret entlasten.
         </p>
         <Pflegereform2027BetrieblichBenefitSection />
       </ArticleSectionHeading>
@@ -492,14 +486,12 @@ export function Pflegereform2027Article() {
         <p className="mt-4">Denn am Ende zählt nicht, wie gut eine Reform auf dem Papier klingt.</p>
         <PullQuote tone="orange">Es zählt, ob Pflege für die Menschen im echten Leben ein Stück leichter wird.</PullQuote>
         <Pflegereform2027BetrieblichCompactCta
-          eyebrow="Nächster Schritt"
-          title="Mit uns vorbereitet auf die Pflegereform 2027."
-          primaryLabel="Benefit für Unternehmen entdecken"
+          eyebrow="Pflege und Beruf"
+          title="Unterstützung, bevor alles zu viel wird."
+          primaryLabel="Betriebliche Pflegeberatung"
         >
           <p>
-            Für pflegende Angehörige: Sie müssen das nicht allein stemmen – fragen Sie Ihren Arbeitgeber nach der
-            betrieblichen Pflegeberatung. Für Unternehmen: Jetzt ist der Moment, pflegende Beschäftigte zu entlasten
-            – ein Benefit, der jetzt zählt.
+            Eine feste, vertrauliche Ansprechperson entlastet pflegende Beschäftigte und ihre Arbeitgeber.
           </p>
         </Pflegereform2027BetrieblichCompactCta>
       </ArticleSectionHeading>

@@ -33,7 +33,8 @@ export const SLOT_MEETING_MINUTES = 15;
 export const SLOT_BUFFER_MINUTES = 15;
 /** Nur diese Abstände werden angeboten (09:00, 09:30, 10:00 …). */
 export const SLOT_OFFER_STEP_MINUTES = SLOT_MEETING_MINUTES + SLOT_BUFFER_MINUTES;
-export const BOOKING_HORIZON_DAYS = 56;
+/** Rollendes Buchungsfenster: alle kommenden zwölf Monate sind im Kalender erreichbar. */
+export const BOOKING_HORIZON_DAYS = 365;
 
 const WEEKDAY_SHORT = ["Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"] as const;
 const MONTH_LONG = [
