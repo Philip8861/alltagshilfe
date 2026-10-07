@@ -74,9 +74,9 @@ export const RATGEBER_BEITRAEGE: RatgeberBeitragMeta[] = [
     title: "Pflegereform 2027: Diese 7 Dinge sollten Pflegebedürftige und Angehörige noch 2026 prüfen",
     excerpt:
       "Das Bundeskabinett hat den Entwurf des Pflegeneuordnungsgesetzes beschlossen. Was sich bei Pflegegraden, Entlastungsbetrag und Budgets ändern könnte – und welche 7 Punkte Familien noch 2026 prüfen sollten.",
-    image: "/images/Ratgeber/pflegereform_2027_news.webp",
+    image: "/images/Ratgeber/pflegereform_2027_angehoerige.webp",
     imageAlt:
-      "Pflegereform 2027: Angehörige und Pflegebedürftige prüfen gemeinsam Unterlagen der Pflegekasse",
+      "Pflegereform 2027: Tochter und Vater lesen gemeinsam am Küchentisch Informationen zur Pflegereform auf einem Tablet",
     views: 310,
     tags: [
       "Pflegereform 2027",
@@ -237,7 +237,7 @@ export const RATGEBER_BEITRAEGE: RatgeberBeitragMeta[] = [
 
 /** Aquarell-Teaserbilde für Ratgeber-Hub-Karten (optional pro Slug). */
 const RATGEBER_HUB_CARD_IMAGES: Record<string, string> = {
-  [PFLEGEREFORM_2027_SLUG]: "/images/Ratgeber/pflegereform_2027_news.webp",
+  [PFLEGEREFORM_2027_SLUG]: "/images/Ratgeber/pflegereform_2027_angehoerige.webp",
   "pflegegrad-1": "/images/Ratgeber/pflegegrad_1.webp",
   "pflegegrad-beantragen": "/images/Ratgeber/Pflegegrad_beantragen.webp",
   pflegegeldrechner: "/images/Ratgeber/pflegegrad_rechner.webp",

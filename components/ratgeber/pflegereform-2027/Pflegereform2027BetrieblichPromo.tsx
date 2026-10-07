@@ -1,8 +1,6 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 
-import { PFLEGEREFORM_2027_SLUG } from "@/config/ratgeber-betraege";
-import { siteConfig } from "@/config/site";
 import { cn } from "@/lib/utils";
 
 export const BETRIEBLICHE_PFLEGEBERATUNG_PATH = "/pflegeberatung/betriebliche-pflegeberatung" as const;
@@ -51,47 +49,6 @@ function PeopleIcon({ className = "h-5 w-5" }: { className?: string }) {
   );
 }
 
-function MailIcon({ className = "h-4 w-4" }: { className?: string }) {
-  return (
-    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-      <rect x="3" y="5" width="18" height="14" rx="2" />
-      <path d="m3 7 9 6 9-6" />
-    </svg>
-  );
-}
-
-/* ---------- Teilen-Link: Beitrag an die Personalabteilung weiterleiten ---------- */
-
-function buildShareMailto(): string {
-  const base = siteConfig.baseUrl.replace(/\/?$/, "");
-  const articleUrl = `${base}/ratgeber/${PFLEGEREFORM_2027_SLUG}`;
-  const subject = encodeURIComponent("Vorschlag: Betriebliche Pflegeberatung als Benefit (Pflegereform 2027)");
-  const body = encodeURIComponent(
-    [
-      "Hallo,",
-      "",
-      "ich bin auf diesen Beitrag zur Pflegereform 2027 gestoßen. Darin wird beschrieben, wie Unternehmen pflegende Beschäftigte mit einer betrieblichen Pflegeberatung entlasten können.",
-      "",
-      `Beitrag: ${articleUrl}`,
-      `Infos für Unternehmen: ${base}${BETRIEBLICHE_PFLEGEBERATUNG_PATH}`,
-      "",
-      "Vielleicht ist das auch für uns ein passender Benefit?",
-      "",
-      "Viele Grüße",
-    ].join("\n"),
-  );
-  return `mailto:?subject=${subject}&body=${body}`;
-}
-
-function ShareToHrLink({ className, children = "Beitrag weiterleiten" }: { className?: string; children?: ReactNode }) {
-  return (
-    <a href={buildShareMailto()} className={cn(NAVY_OUTLINE_LINK, className)}>
-      <MailIcon />
-      {children}
-    </a>
-  );
-}
-
 function BetrieblichLink({ className, children, anchor }: { className?: string; children: ReactNode; anchor?: string }) {
   return (
     <Link href={anchor ? `${BETRIEBLICHE_PFLEGEBERATUNG_PATH}#${anchor}` : BETRIEBLICHE_PFLEGEBERATUNG_PATH} className={cn(ORANGE_LINK, className)}>
@@ -101,9 +58,8 @@ function BetrieblichLink({ className, children, anchor }: { className?: string; 
   );
 }
 
-/* ---------- 1) Unter dem Artikelbild im Hero ---------- */
+/* ---------- 1) Anfang: unter dem Artikelbild im Hero ---------- */
 
-/** Ersetzt die übliche Beratungs-CTA unter dem Hero-Bild: führt zur betrieblichen Pflegeberatung. */
 export function Pflegereform2027BetrieblichImageCta() {
   return (
     <div className="mt-4 w-full rounded-xl border border-[#F78F2E]/35 bg-[linear-gradient(160deg,#fffdfb_0%,#fff7f0_60%,#ffffff_100%)] px-4 py-3.5 text-center sm:mt-3 lg:text-left">
@@ -116,94 +72,8 @@ export function Pflegereform2027BetrieblichImageCta() {
   );
 }
 
-/* ---------- 2) Banner nach „Was sich 2027 ändern könnte“ ---------- */
+/* ---------- 3) Ende: kompakte Hinweisbox im Fazit ---------- */
 
-/**
- * Heller Banner nach „Was sich 2027 ändern könnte“:
- * spricht Beschäftigte und Arbeitgeber gleichzeitig an.
- */
-export function Pflegereform2027BetrieblichInlineBanner() {
-  return (
-    <aside
-      aria-labelledby="pr27-inline-banner-heading"
-      className="relative mt-10 overflow-hidden rounded-2xl border border-[#0F4F68]/14 bg-[linear-gradient(160deg,#f8fcfd_0%,#ffffff_55%,#fff8f2_100%)] px-5 py-6 shadow-[0_14px_40px_-30px_rgba(15,79,104,0.3)] sm:px-7 sm:py-7"
-    >
-      <span aria-hidden className="pointer-events-none absolute inset-x-0 top-0 h-[3px] bg-gradient-to-r from-[#0F4F68]/60 via-[#4a93a8]/60 to-[#F78F2E]/70" />
-      <p className="inline-flex items-center gap-2 text-[0.7rem] font-extrabold uppercase tracking-[0.16em] text-[#0F4F68]/75">
-        <BriefcaseIcon className="h-4 w-4 text-[#F78F2E]" />
-        Für Angehörige, die pflegen und arbeiten
-      </p>
-      <h3 id="pr27-inline-banner-heading" className="mt-2 text-balance text-xl font-extrabold leading-snug text-[#0F4F68] sm:text-2xl">
-        Wie Ihr Unternehmen Sie jetzt unterstützen kann
-      </h3>
-      <p className="mt-3 max-w-2xl text-[1rem] leading-relaxed text-neutral-700">
-        Höhere Schwellenwerte, der Wegfall des Entlastungsbetrags bei Pflegegrad 1, neue Budgets: Was in Berlin
-        beschlossen wird, landet am Ende auf dem Küchentisch pflegender Angehöriger – meist abends, nach der Arbeit.
-        Genau hier setzt die betriebliche Pflegeberatung an: Ihr Arbeitgeber stellt Ihnen eine persönliche
-        Pflegebegleitung zur Seite, die Pflegegrad, Anträge und Leistungen mit Ihnen durchgeht – vertraulich, ohne
-        dass im Unternehmen Details bekannt werden.
-      </p>
-      <div className="mt-5 grid gap-3 sm:grid-cols-2">
-        <div className="flex flex-col rounded-xl border border-[#0F4F68]/10 bg-white/80 p-4">
-          <p className="inline-flex items-center gap-2 text-[0.7rem] font-extrabold uppercase tracking-[0.14em] text-[#F78F2E]">
-            <PeopleIcon className="h-4 w-4 text-[#0F4F68]" />
-            Sie pflegen einen Angehörigen?
-          </p>
-          <p className="mt-1.5 text-sm leading-relaxed text-neutral-700">
-            Fragen Sie in Ihrer Personalabteilung, ob es die betriebliche Pflegeberatung bereits gibt – oder leiten
-            Sie diesen Beitrag einfach weiter. Sie müssen das nicht allein stemmen.
-          </p>
-          <ShareToHrLink className="mt-3 w-full sm:mt-auto sm:pt-0">Beitrag weiterleiten</ShareToHrLink>
-        </div>
-        <div className="flex flex-col rounded-xl border border-[#0F4F68]/10 bg-white/80 p-4">
-          <p className="inline-flex items-center gap-2 text-[0.7rem] font-extrabold uppercase tracking-[0.14em] text-[#F78F2E]">
-            <BriefcaseIcon className="h-4 w-4 text-[#0F4F68]" />
-            Sie führen ein Unternehmen?
-          </p>
-          <p className="mt-1.5 text-sm leading-relaxed text-neutral-700">
-            Pflegende Beschäftigte gibt es in jeder Belegschaft – oft unbemerkt. Mit uns vorbereitet auf die
-            Pflegereform 2027: ein Benefit, der jetzt zählt.
-          </p>
-          <BetrieblichLink className="mt-3 w-full sm:mt-auto">Benefit für Unternehmen</BetrieblichLink>
-        </div>
-      </div>
-    </aside>
-  );
-}
-
-/* ---------- 3) Kurzer Teaser nach Punkt 4 (Verhinderungspflege) ---------- */
-
-export function Pflegereform2027BetrieblichQuoteTeaser() {
-  return (
-    <aside
-      aria-label="Hinweis: Pflege und Beruf"
-      className="relative mt-8 overflow-hidden rounded-xl border border-[#F78F2E]/35 bg-[linear-gradient(160deg,#fffdfb_0%,#fff8f2_55%,#ffffff_100%)] px-5 py-5 sm:px-6"
-    >
-      <div className="absolute inset-y-2 left-0 w-[3px] rounded-full bg-gradient-to-b from-[#F78F2E] to-transparent" aria-hidden />
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div className="min-w-0">
-          <p className="text-[0.6875rem] font-semibold uppercase tracking-[0.12em] text-[#5a959e]">Pflege und Beruf</p>
-          <p className="mt-1.5 text-[1.0625rem] font-semibold leading-snug text-[#0F4F68]">
-            Wer pflegt, braucht Pausen – und einen Arbeitgeber, der mitdenkt.
-          </p>
-          <p className="mt-1.5 text-[0.95rem] leading-relaxed text-neutral-700">
-            Verhinderungs- und Kurzzeitpflege rechtzeitig planen, statt erst im Notfall zu reagieren: Über die
-            betriebliche Pflegeberatung bekommen pflegende Angehörige dafür eine feste Ansprechperson – über ihren
-            Arbeitgeber. Für Unternehmen: weniger Ausfälle, mehr Bindung.
-          </p>
-        </div>
-        <Link href={BETRIEBLICHE_PFLEGEBERATUNG_PATH} className={`${NAVY_OUTLINE_LINK} shrink-0`}>
-          Mehr erfahren
-          <ArrowIcon />
-        </Link>
-      </div>
-    </aside>
-  );
-}
-
-/* ---------- 4) Kompakte Hinweisbox (Punkt 7 und Fazit) ---------- */
-
-/** Helle, kompakte Box mit Text + zwei Aktionen (Unternehmen / Beitrag weiterleiten). */
 export function Pflegereform2027BetrieblichCompactCta({
   eyebrow,
   title,
@@ -221,15 +91,14 @@ export function Pflegereform2027BetrieblichCompactCta({
       <p className="text-[0.7rem] font-semibold uppercase tracking-[0.14em] text-[#5a959e]">{eyebrow}</p>
       {title ? <p className="mt-2 text-[1.15rem] font-bold leading-snug text-[#0F4F68]">{title}</p> : null}
       <div className="mt-2.5 text-[1.0625rem] leading-relaxed text-neutral-800">{children}</div>
-      <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+      <div className="mt-5">
         <BetrieblichLink className="w-full sm:w-auto">{primaryLabel}</BetrieblichLink>
-        <ShareToHrLink className="w-full sm:w-auto" />
       </div>
     </div>
   );
 }
 
-/* ---------- 5) Großer Benefit-Abschnitt ---------- */
+/* ---------- 2) Mitte: großer Benefit-Abschnitt ---------- */
 
 function BenefitColumn({
   icon,
@@ -283,7 +152,7 @@ const EMPLOYER_POINTS = [
 ] as const;
 
 /**
- * Großer Werbeabschnitt „Ein Benefit, der jetzt zählt“ – für Arbeitnehmer und Arbeitgeber gleichermaßen.
+ * Werbeabschnitt in der Artikelmitte – für pflegende Angehörige und Arbeitgeber gleichermaßen.
  * Inhalte entsprechen der Seite /pflegeberatung/betriebliche-pflegeberatung.
  */
 export function Pflegereform2027BetrieblichBenefitSection() {
@@ -327,7 +196,6 @@ export function Pflegereform2027BetrieblichBenefitSection() {
           title="Entlastung, die im Alltag ankommt"
           items={EMPLOYEE_POINTS}
         >
-          <ShareToHrLink className="w-full">An Personalabteilung senden</ShareToHrLink>
           <Link href={BETRIEBLICHE_PFLEGEBERATUNG_PATH} className={`${NAVY_OUTLINE_LINK} w-full`}>
             So funktioniert der Benefit
             <ArrowIcon />

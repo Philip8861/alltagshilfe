@@ -13,8 +13,6 @@ import {
   BETRIEBLICHE_PFLEGEBERATUNG_PATH,
   Pflegereform2027BetrieblichBenefitSection,
   Pflegereform2027BetrieblichCompactCta,
-  Pflegereform2027BetrieblichInlineBanner,
-  Pflegereform2027BetrieblichQuoteTeaser,
 } from "@/components/ratgeber/pflegereform-2027/Pflegereform2027BetrieblichPromo";
 import { PFLEGEREFORM_2027_STAND_LABEL } from "@/components/ratgeber/pflegereform-2027/Pflegereform2027Hero";
 import { PFLEGEREFORM2027_ARTICLE_FAQ } from "@/components/ratgeber/pflegereform-2027/pflegereform2027-faq-data";
@@ -216,8 +214,6 @@ export function Pflegereform2027Article() {
           ))}
         </ol>
         <PullQuote>Deshalb unser Rat: Keine Panik. Aber bitte auch nicht einfach bis 2027 abwarten.</PullQuote>
-
-        <Pflegereform2027BetrieblichInlineBanner />
       </ArticleSectionHeading>
 
       <ArticleSectionHeading sectionNum="04" id="die-7-punkte" heading="Die 7 Dinge, die Sie noch 2026 prüfen sollten">
@@ -261,11 +257,7 @@ export function Pflegereform2027Article() {
                 <Link href="/ratgeber/pflegegrad-beantragen" className={LINK}>
                   So funktioniert der Pflegegrad-Antrag Schritt für Schritt
                 </Link>
-                . Berufstätige können sich bei Antrag und Begutachtung über die{" "}
-                <Link href={BETRIEBLICHE_PFLEGEBERATUNG_PATH} className={LINK}>
-                  betriebliche Pflegeberatung
-                </Link>{" "}
-                ihres Arbeitgebers begleiten lassen.
+                .
               </p>
             </PflegegradCallout>
           </CheckPoint>
@@ -342,7 +334,6 @@ export function Pflegereform2027Article() {
             </p>
             <p className="mt-4">Und nein:</p>
             <PullQuote>Man muss nicht erst völlig erschöpft zusammenbrechen, bevor Entlastung erlaubt ist.</PullQuote>
-            <Pflegereform2027BetrieblichQuoteTeaser />
           </CheckPoint>
 
           <CheckPoint num={5} id="punkt-5-begutachtung" title="Bereiten Sie eine Pflegebegutachtung richtig vor">
@@ -414,17 +405,6 @@ export function Pflegereform2027Article() {
               einfach einmal nicht verantwortlich sein muss.
             </p>
             <PullQuote tone="orange">Und genau das kann im Pflegealltag unglaublich viel sein.</PullQuote>
-            <Pflegereform2027BetrieblichCompactCta
-              eyebrow="Abhilfe für pflegende Angehörige"
-              title="Beratung, die über Ihren Arbeitgeber zu Ihnen kommt."
-            >
-              <p>
-                Wer neben dem Beruf pflegt, bekommt mit der betrieblichen Pflegeberatung von Alltagshilfe-Süd eine
-                feste Ansprechperson, die Pflegegrad, offene Leistungen und Entlastung mit Ihnen durchgeht –
-                vertraulich, ohne dass der Arbeitgeber Details erfährt. Fragen Sie in Ihrer Personalabteilung nach,
-                ob es das Angebot schon gibt – oder leiten Sie diesen Beitrag einfach weiter.
-              </p>
-            </Pflegereform2027BetrieblichCompactCta>
           </CheckPoint>
         </div>
       </ArticleSectionHeading>
@@ -518,8 +498,8 @@ export function Pflegereform2027Article() {
         >
           <p>
             Für pflegende Angehörige: Sie müssen das nicht allein stemmen – fragen Sie Ihren Arbeitgeber nach der
-            betrieblichen Pflegeberatung oder leiten Sie diesen Beitrag an Ihre Personalabteilung weiter. Für
-            Unternehmen: Jetzt ist der Moment, pflegende Beschäftigte zu entlasten – ein Benefit, der jetzt zählt.
+            betrieblichen Pflegeberatung. Für Unternehmen: Jetzt ist der Moment, pflegende Beschäftigte zu entlasten
+            – ein Benefit, der jetzt zählt.
           </p>
         </Pflegereform2027BetrieblichCompactCta>
       </ArticleSectionHeading>

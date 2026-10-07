@@ -103,8 +103,8 @@ export function Pflegereform2027Hero() {
             <div className="w-full">
               <div className="overflow-hidden rounded-2xl border border-neutral-100 shadow-[0_12px_40px_-28px_rgba(15,79,104,0.35)] ring-1 ring-[#0F4F68]/10">
                 <Image
-                  src="/images/Ratgeber/pflegereform_2027_news.webp"
-                  alt="Pflegereform 2027: Angehörige und Pflegebedürftige prüfen gemeinsam Unterlagen der Pflegekasse"
+                  src="/images/Ratgeber/pflegereform_2027_angehoerige.webp"
+                  alt="Pflegereform 2027: Tochter und Vater lesen gemeinsam am Küchentisch Informationen zur Pflegereform auf einem Tablet"
                   width={1080}
                   height={720}
                   className="h-auto w-full object-cover"
