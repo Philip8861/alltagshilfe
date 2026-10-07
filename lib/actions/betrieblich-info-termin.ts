@@ -1,5 +1,6 @@
 "use server";
 
+import { randomUUID } from "crypto";
 import { betrieblichInfoTerminSchema } from "@/lib/validations/betrieblich-info-termin";
 import {
   BETRIEBLICH_INFO_ADVISOR,
@@ -34,7 +35,7 @@ export type BetrieblichInfoAvailabilityResult =
   | { success: false; error: string };
 
 export type BetrieblichInfoTerminResult =
-  | { success: true }
+  | { success: true; metaScheduleEventId?: string }
   | { success: false; error: string; taken?: boolean };
 
 function resolveBetrieblichInfoRecipients(): string[] {
@@ -135,6 +136,7 @@ export async function submitBetrieblichInfoTermin(formData: FormData): Promise<B
     return { success: false, error: "Die Buchung ist gerade nicht möglich. Bitte versuchen Sie es später erneut." };
   }
 
+  const metaScheduleEventId = randomUUID();
   const whenLong = `${formatDateLongDe(data.slotDate)}, ${data.slotTime} Uhr`;
   const sizeLabel = companySizeLabel(data.companySize);
 
@@ -222,5 +224,5 @@ export async function submitBetrieblichInfoTermin(formData: FormData): Promise<B
   }
 
   await recordInfoTerminConversion();
-  return { success: true };
+  return { success: true, metaScheduleEventId };
 }

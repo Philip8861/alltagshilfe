@@ -17,6 +17,7 @@ import {
   getBetrieblichInfoAvailability,
   submitBetrieblichInfoTermin,
 } from "@/lib/actions/betrieblich-info-termin";
+import { trackMetaScheduleIfConsented } from "@/lib/analytics/meta-pixel-client";
 import {
   BETRIEBLICH_INFO_COMPANY_SIZES,
   BETRIEBLICH_INFO_CONTACT,
@@ -96,6 +97,7 @@ export function BetrieblichInfoTerminDialogProvider({ children }: { children: Re
   const dialogRef = useRef<HTMLDivElement>(null);
   const closeBtnRef = useRef<HTMLButtonElement>(null);
   const nameRef = useRef<HTMLInputElement>(null);
+  const trackedMetaScheduleEventIdsRef = useRef(new Set<string>());
 
   useEffect(() => setMounted(true), []);
 
@@ -244,6 +246,17 @@ export function BetrieblichInfoTerminDialogProvider({ children }: { children: Re
       if (result.success) {
         setSent(true);
         form.reset();
+        if (
+          result.metaScheduleEventId &&
+          !trackedMetaScheduleEventIdsRef.current.has(result.metaScheduleEventId)
+        ) {
+          trackedMetaScheduleEventIdsRef.current.add(result.metaScheduleEventId);
+          try {
+            trackMetaScheduleIfConsented(result.metaScheduleEventId);
+          } catch {
+            console.warn("[betrieblich-info] Meta-Schedule-Browsertracking fehlgeschlagen.");
+          }
+        }
       } else {
         setError(result.error);
         if (result.taken) {

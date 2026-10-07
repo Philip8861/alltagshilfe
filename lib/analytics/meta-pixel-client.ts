@@ -136,6 +136,20 @@ export function trackMetaLeadIfConsented(eventId: string): void {
 }
 
 /**
+ * Offizielles Meta-Standardevent „Schedule" über das bestehende Pixel – nur mit
+ * Marketing-Consent. Es werden keine Buchungs- oder Kontaktdaten übermittelt.
+ */
+export function trackMetaScheduleIfConsented(eventId: string): void {
+  if (!hasMarketingConsent()) return;
+  if (typeof window === "undefined") return;
+  if (!eventId) return;
+
+  if (!ensurePixelReady()) return;
+
+  window.fbq?.("track", "Schedule", {}, { eventID: eventId });
+}
+
+/**
  * Meta-Browser-Signale `_fbp`/`_fbc` für CAPI-Matching – nur bei Marketing-Consent
  * (ohne Consent existieren die Cookies ohnehin nicht; zusätzliche Absicherung).
  */
