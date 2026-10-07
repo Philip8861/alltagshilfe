@@ -399,6 +399,27 @@ body:has(#pflegebox-root) #main-content {
   transform-origin: center;
 }
 
+/** Buchungsdialog: kurzer Lichtimpuls am primären Abschluss-Button alle 3 Sekunden */
+@keyframes betrieblichBookingSubmitPulse {
+  0%,
+  82%,
+  100% {
+    box-shadow: 0 3px 12px -4px rgba(180, 90, 10, 0.32);
+    filter: brightness(1);
+  }
+  91% {
+    box-shadow:
+      0 6px 20px -4px rgba(247, 143, 46, 0.7),
+      0 0 0 4px rgba(247, 143, 46, 0.16);
+    filter: brightness(1.1);
+  }
+}
+
+.betrieblich-booking-submit-pulse {
+  animation: betrieblichBookingSubmitPulse 3s ease-in-out infinite;
+  will-change: box-shadow, filter;
+}
+
 .animate-partner-tutorial-spotlight {
   animation: partner-tutorial-spotlight-flash 0.85s ease-out 1 both;
 }
@@ -447,7 +468,8 @@ body:has(#pflegebox-root) #main-content {
   }
   .inko-primary-cta-pulse,
   .ratgeber-cta-pulse,
-  .betrieblich-cta-pulse {
+  .betrieblich-cta-pulse,
+  .betrieblich-booking-submit-pulse {
     animation: none !important;
     transform: none !important;
     filter: none !important;

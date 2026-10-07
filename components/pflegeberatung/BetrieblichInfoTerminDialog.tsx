@@ -284,7 +284,7 @@ export function BetrieblichInfoTerminDialogProvider({ children }: { children: Re
               role="dialog"
               aria-modal="true"
               aria-labelledby={titelId}
-              className="relative z-[1] flex max-h-[min(84dvh,36rem)] w-full max-w-3xl flex-col overflow-hidden rounded-2xl border border-[#0F4F68]/15 bg-white shadow-2xl"
+              className="relative z-[1] flex max-h-[min(94dvh,44rem)] w-full max-w-4xl flex-col overflow-hidden rounded-2xl border border-[#0F4F68]/15 bg-white shadow-2xl"
             >
               <div className="flex shrink-0 items-start justify-between gap-3 px-4 pb-2 pt-4 sm:px-5 sm:pt-5">
                 <h2 id={titelId} className="text-base font-extrabold text-[#0F4F68] sm:text-lg">
@@ -579,14 +579,16 @@ export function BetrieblichInfoTerminDialogProvider({ children }: { children: Re
                         )}
                       </div>
 
-                      <button
-                        type="submit"
-                        disabled={pending || slotsLoading}
-                        className="flex w-full min-h-11 items-center justify-center rounded-xl bg-[#0F4F68] px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[#0c3d52] focus:outline-none focus:ring-2 focus:ring-[#0F4F68] focus:ring-offset-2 disabled:opacity-60"
-                      >
-                        {pending ? "Wird gebucht…" : "Wunschtermin jetzt buchen"}
-                      </button>
                     </div>
+                  </div>
+                  <div className="sticky bottom-0 z-10 mt-4 border-t border-neutral-200 bg-white/95 pb-1 pt-3 backdrop-blur-sm">
+                    <button
+                      type="submit"
+                      disabled={pending || slotsLoading}
+                      className="betrieblich-booking-submit-pulse flex min-h-12 w-full items-center justify-center rounded-xl bg-[#F78F2E] px-5 py-3 text-base font-bold text-white shadow-[0_3px_12px_-4px_rgba(180,90,10,0.32)] transition-colors hover:bg-[#e8862a] focus:outline-none focus:ring-2 focus:ring-[#F78F2E] focus:ring-offset-2 disabled:opacity-60"
+                    >
+                      {pending ? "Wird gebucht…" : "Wunschtermin jetzt buchen"}
+                    </button>
                   </div>
                 </form>
               )}
