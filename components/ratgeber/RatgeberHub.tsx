@@ -102,38 +102,45 @@ function PflegereformNewsBand({ onShowAll }: { onShowAll: () => void }) {
       className="relative z-0 mt-6 px-3 sm:px-6 md:mt-8"
     >
       <div className="mx-auto w-full max-w-7xl">
-        <div className="overflow-hidden rounded-[1.1rem] border border-[#0F4F68]/12 bg-[linear-gradient(135deg,#0F4F68_0%,#15607c_58%,#1d6f8c_100%)] text-white shadow-[0_18px_48px_-28px_rgba(15,79,104,0.55)]">
-          <div className="grid gap-0 lg:grid-cols-[minmax(0,1.25fr)_minmax(0,0.95fr)]">
-            <div className="relative flex min-w-0 flex-col justify-center px-5 py-6 sm:px-8 sm:py-8 lg:px-10">
-              <span
-                className="pointer-events-none absolute -left-16 -top-16 h-48 w-48 rounded-full border border-white/10"
-                aria-hidden
-              />
+        <div
+          className="relative overflow-hidden rounded-[1.1rem] border border-[#0F4F68]/10 shadow-[0_14px_40px_-28px_rgba(15,79,104,0.28)]"
+          style={{ backgroundColor: CARD_CANVAS }}
+        >
+          <span
+            aria-hidden
+            className="pointer-events-none absolute inset-x-0 top-0 h-[3px] bg-gradient-to-r from-[#0F4F68]/60 via-[#4a93a8]/60 to-[#F78F2E]/70"
+          />
+          <div className="grid gap-0 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)]">
+            <div className="relative flex min-w-0 flex-col justify-center px-5 py-6 sm:px-8 sm:py-8 lg:px-10 lg:py-9">
               <p
                 id="ratgeber-pflegereform-news-heading"
-                className="relative inline-flex flex-wrap items-center gap-x-2 gap-y-1 text-[0.7rem] font-extrabold uppercase tracking-[0.16em] text-white/85 sm:text-xs"
+                className="inline-flex flex-wrap items-center gap-x-2 gap-y-1 text-[0.7rem] font-extrabold uppercase tracking-[0.16em] sm:text-xs"
+                style={{ color: NAVY }}
               >
                 <span className="inline-flex h-2 w-2 rounded-full" style={{ backgroundColor: ORANGE }} aria-hidden />
                 News zur Pflegereform
-                <span className="font-semibold normal-case tracking-normal text-white/65">
-                  · Stand {formatNewsDate(latest.publishedAt)}
+                <span className="font-semibold normal-case tracking-normal text-neutral-500">
+                  Stand {formatNewsDate(latest.publishedAt)}
                 </span>
               </p>
-              <h2 className="relative mt-3 text-balance text-xl font-extrabold leading-snug tracking-tight sm:text-2xl lg:text-[1.65rem]">
+              <h2
+                className="mt-3 text-balance text-xl font-extrabold leading-snug tracking-tight sm:text-2xl lg:text-[1.6rem]"
+                style={{ color: NAVY }}
+              >
                 <Link
                   href={`/ratgeber/${latest.slug}`}
-                  className="rounded-sm outline-none hover:underline focus-visible:ring-2 focus-visible:ring-white/70 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0F4F68]"
+                  className="rounded-sm outline-none hover:underline focus-visible:ring-2 focus-visible:ring-[#0F4F68]/50 focus-visible:ring-offset-2"
                 >
                   {latest.title}
                 </Link>
               </h2>
-              <p className="relative mt-3 line-clamp-3 max-w-2xl text-sm leading-relaxed text-white/80 sm:text-[0.95rem]">
+              <p className="mt-3 line-clamp-3 max-w-2xl text-sm leading-relaxed text-neutral-600 sm:text-[0.95rem]">
                 {latest.excerpt}
               </p>
-              <div className="relative mt-5 flex flex-col gap-2.5 sm:flex-row sm:flex-wrap sm:items-center">
+              <div className="mt-5 flex flex-col gap-2.5 sm:flex-row sm:flex-wrap sm:items-center">
                 <Link
                   href={`/ratgeber/${latest.slug}`}
-                  className="inline-flex min-h-[44px] items-center justify-center rounded-xl px-5 text-sm font-bold text-white shadow-sm transition hover:opacity-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/80 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0F4F68]"
+                  className="inline-flex min-h-[44px] items-center justify-center rounded-xl px-5 text-sm font-bold text-white shadow-sm transition hover:opacity-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#F78F2E]/70 focus-visible:ring-offset-2"
                   style={{ backgroundColor: ORANGE }}
                 >
                   Beitrag lesen
@@ -141,20 +148,21 @@ function PflegereformNewsBand({ onShowAll }: { onShowAll: () => void }) {
                 <button
                   type="button"
                   onClick={onShowAll}
-                  className="inline-flex min-h-[44px] items-center justify-center rounded-xl border border-white/30 bg-white/5 px-5 text-sm font-semibold text-white transition hover:bg-white/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/80 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0F4F68]"
+                  className="inline-flex min-h-[44px] items-center justify-center rounded-xl border border-neutral-300 bg-white px-5 text-sm font-semibold transition hover:border-neutral-400 hover:bg-neutral-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68]/50 focus-visible:ring-offset-2"
+                  style={{ color: NAVY }}
                 >
                   Alle News zur Pflegereform
                 </button>
               </div>
               {rest.length > 0 ? (
-                <ul className="relative mt-5 space-y-1.5 border-t border-white/15 pt-4 text-sm">
+                <ul className="mt-5 space-y-1.5 border-t border-neutral-200/80 pt-4 text-sm">
                   {rest.slice(0, 3).map((b) => (
                     <li key={b.slug}>
                       <Link
                         href={`/ratgeber/${b.slug}`}
-                        className="inline-flex items-start gap-2 text-white/85 hover:text-white hover:underline"
+                        className="inline-flex items-start gap-2 text-neutral-700 hover:text-[#0F4F68] hover:underline"
                       >
-                        <span className="mt-[0.45rem] h-1.5 w-1.5 shrink-0 rounded-full bg-white/60" aria-hidden />
+                        <span className="mt-[0.45rem] h-1.5 w-1.5 shrink-0 rounded-full" style={{ backgroundColor: ORANGE }} aria-hidden />
                         <span className="line-clamp-2">{b.title}</span>
                       </Link>
                     </li>
@@ -164,16 +172,18 @@ function PflegereformNewsBand({ onShowAll }: { onShowAll: () => void }) {
             </div>
             <Link
               href={`/ratgeber/${latest.slug}`}
-              className="relative block min-h-[11rem] w-full overflow-hidden bg-white/95 outline-none focus-visible:ring-2 focus-visible:ring-white/80 sm:min-h-[13rem] lg:min-h-0"
+              className="relative block w-full self-center px-4 pb-4 outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68]/50 sm:px-6 sm:pb-6 lg:py-6 lg:pl-0 lg:pr-6"
               aria-label={`${latest.title} – Beitrag öffnen`}
             >
-              <Image
-                src={ratgeberHubCardImage(latest.slug)}
-                alt=""
-                fill
-                className="object-cover object-center"
-                sizes="(min-width: 1024px) 40vw, 100vw"
-              />
+              <span className="relative block aspect-[3/2] w-full overflow-hidden rounded-xl">
+                <Image
+                  src={ratgeberHubCardImage(latest.slug)}
+                  alt=""
+                  fill
+                  className="object-cover object-center"
+                  sizes="(min-width: 1024px) 40vw, 100vw"
+                />
+              </span>
             </Link>
           </div>
         </div>
@@ -208,11 +218,11 @@ function RatgeberArticleTeaserCard({
       >
         {isNews ? (
           <span
-            className="absolute left-2 top-2 z-20 inline-flex items-center gap-1 rounded px-1.5 py-0.5 text-[0.55rem] font-bold uppercase tracking-wide text-white shadow-sm sm:left-2.5 sm:top-2.5 sm:text-[0.6rem]"
-            style={{ backgroundColor: NAVY }}
+            className="absolute left-2 top-2 z-20 inline-flex items-center gap-1 rounded bg-white/95 px-1.5 py-0.5 text-[0.55rem] font-bold uppercase tracking-wide shadow-sm sm:left-2.5 sm:top-2.5 sm:text-[0.6rem]"
+            style={{ color: NAVY }}
           >
             <span className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: ORANGE }} aria-hidden />
-            NEWS · PFLEGEREFORM
+            News zur Pflegereform
           </span>
         ) : showTopBadge ? (
           <span

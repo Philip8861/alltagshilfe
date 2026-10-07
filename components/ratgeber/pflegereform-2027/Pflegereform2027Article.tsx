@@ -2,7 +2,6 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 
 import { GtmKontaktNavLink } from "@/components/analytics/GtmContactIntentLink";
-import { RatgeberBeratungCtaButton } from "@/components/ratgeber/RatgeberBeratungDialog";
 import { PflegegradFaqAccordion } from "@/components/ratgeber/pflegegrad-beantragen/PflegegradFaqAccordion";
 import { PflegegradQuickAnswerBox } from "@/components/ratgeber/pflegegrad-beantragen/PflegegradQuickAnswerAndFacts";
 import {
@@ -13,6 +12,7 @@ import {
 import {
   BETRIEBLICHE_PFLEGEBERATUNG_PATH,
   Pflegereform2027BetrieblichBenefitSection,
+  Pflegereform2027BetrieblichCompactCta,
   Pflegereform2027BetrieblichInlineBanner,
   Pflegereform2027BetrieblichQuoteTeaser,
 } from "@/components/ratgeber/pflegereform-2027/Pflegereform2027BetrieblichPromo";
@@ -257,12 +257,15 @@ export function Pflegereform2027Article() {
             <p>Entscheidend ist, ob sich der Pflegebedarf wirklich verändert hat.</p>
             <PflegegradCallout variant="blue" title="Alltagshilfe-Süd Tipp">
               <p>
-                Unsicher, ob eine Höherstufung sinnvoll ist? Wir schauen gemeinsam auf den tatsächlichen Hilfebedarf und
-                begleiten Antrag und Begutachtung.{" "}
+                Unsicher, ob eine Höherstufung sinnvoll ist? Entscheidend ist der tatsächliche Hilfebedarf im Alltag.{" "}
                 <Link href="/ratgeber/pflegegrad-beantragen" className={LINK}>
                   So funktioniert der Pflegegrad-Antrag Schritt für Schritt
                 </Link>
-                .
+                . Berufstätige können sich bei Antrag und Begutachtung über die{" "}
+                <Link href={BETRIEBLICHE_PFLEGEBERATUNG_PATH} className={LINK}>
+                  betriebliche Pflegeberatung
+                </Link>{" "}
+                ihres Arbeitgebers begleiten lassen.
               </p>
             </PflegegradCallout>
           </CheckPoint>
@@ -411,27 +414,17 @@ export function Pflegereform2027Article() {
               einfach einmal nicht verantwortlich sein muss.
             </p>
             <PullQuote tone="orange">Und genau das kann im Pflegealltag unglaublich viel sein.</PullQuote>
-            <div className="mt-6 rounded-2xl border border-neutral-200/95 bg-[#fafcfc] px-5 py-6 sm:px-7">
-              <p className="text-[1.0625rem] font-medium leading-relaxed text-neutral-800">
-                Sie möchten wissen, welche Leistungen in Ihrer Situation noch offen sind oder ob der Pflegegrad noch
-                passt? Alltagshilfe-Süd berät Sie persönlich und verständlich – kostenlos.
+            <Pflegereform2027BetrieblichCompactCta
+              eyebrow="Abhilfe für pflegende Angehörige"
+              title="Beratung, die über Ihren Arbeitgeber zu Ihnen kommt."
+            >
+              <p>
+                Wer neben dem Beruf pflegt, bekommt mit der betrieblichen Pflegeberatung von Alltagshilfe-Süd eine
+                feste Ansprechperson, die Pflegegrad, offene Leistungen und Entlastung mit Ihnen durchgeht –
+                vertraulich, ohne dass der Arbeitgeber Details erfährt. Fragen Sie in Ihrer Personalabteilung nach,
+                ob es das Angebot schon gibt – oder leiten Sie diesen Beitrag einfach weiter.
               </p>
-              <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-                <RatgeberBeratungCtaButton
-                  className="w-full sm:w-auto"
-                  preselectedServices={["pflegeberatung"]}
-                  contextNote="Ratgeber: Pflegereform 2027 – Punkt 7 Beratung"
-                >
-                  Jetzt kostenlos beraten lassen
-                </RatgeberBeratungCtaButton>
-                <Link
-                  href="/pflegeberatung/private-pflegeberatung"
-                  className="inline-flex min-h-[2.875rem] items-center justify-center rounded-lg border border-[#0F4F68]/35 bg-white px-6 text-[0.95rem] font-semibold text-[#0F4F68] transition hover:bg-[#f6fafc] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68] focus-visible:ring-offset-2"
-                >
-                  Mehr zur privaten Pflegeberatung
-                </Link>
-              </div>
-            </div>
+            </Pflegereform2027BetrieblichCompactCta>
           </CheckPoint>
         </div>
       </ArticleSectionHeading>
@@ -439,12 +432,17 @@ export function Pflegereform2027Article() {
       <ArticleSectionHeading
         sectionNum="05"
         id="betriebliche-pflegeberatung"
-        heading="Vorbereitet auf die Pflegereform – mit betrieblicher Pflegeberatung"
+        heading="Wie Ihr Unternehmen Sie jetzt unterstützen kann"
       >
         <p>
           Viele der Menschen, die diese sieben Punkte abarbeiten müssen, sind berufstätig. Sie telefonieren in der
-          Mittagspause mit der Pflegekasse, füllen abends Anträge aus und nehmen sich für die Begutachtung frei. Genau
-          deshalb ist die Pflegereform auch ein Thema für Arbeitgeber – und für alle, die neben dem Beruf pflegen.
+          Mittagspause mit der Pflegekasse, füllen abends Anträge aus und nehmen sich für die Begutachtung frei. Wenn
+          ab 2027 die Schwellenwerte steigen, der Entlastungsbetrag bei Pflegegrad 1 entfällt und Leistungen in neue
+          Budgets wandern, wird dieser Spagat nicht kleiner.
+        </p>
+        <p className="mt-4">
+          Die gute Nachricht: Angehörige müssen das nicht allein tragen. Arbeitgeber können genau hier ansetzen – mit
+          einer Pflegeberatung, die über das Unternehmen zu den Beschäftigten kommt.
         </p>
         <Pflegereform2027BetrieblichBenefitSection />
       </ArticleSectionHeading>
@@ -513,28 +511,17 @@ export function Pflegereform2027Article() {
         </p>
         <p className="mt-4">Denn am Ende zählt nicht, wie gut eine Reform auf dem Papier klingt.</p>
         <PullQuote tone="orange">Es zählt, ob Pflege für die Menschen im echten Leben ein Stück leichter wird.</PullQuote>
-        <div className="mt-8 rounded-2xl border border-[#0F4F68]/14 bg-[linear-gradient(165deg,#fafcfc_0%,#ffffff_55%,#f9fafb_100%)] px-5 py-7 sm:px-8">
-          <p className="text-[0.7rem] font-semibold uppercase tracking-[0.14em] text-[#5a959e]">Nächster Schritt</p>
-          <p className="mt-3 text-[1.0625rem] font-medium text-neutral-800">
-            Für Familien: Wir prüfen gemeinsam Pflegegrad, offene Leistungen und Entlastung. Für Unternehmen: Machen Sie
-            betriebliche Pflegeberatung zum Benefit, der jetzt zählt.
+        <Pflegereform2027BetrieblichCompactCta
+          eyebrow="Nächster Schritt"
+          title="Mit uns vorbereitet auf die Pflegereform 2027."
+          primaryLabel="Benefit für Unternehmen entdecken"
+        >
+          <p>
+            Für pflegende Angehörige: Sie müssen das nicht allein stemmen – fragen Sie Ihren Arbeitgeber nach der
+            betrieblichen Pflegeberatung oder leiten Sie diesen Beitrag an Ihre Personalabteilung weiter. Für
+            Unternehmen: Jetzt ist der Moment, pflegende Beschäftigte zu entlasten – ein Benefit, der jetzt zählt.
           </p>
-          <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-            <RatgeberBeratungCtaButton
-              className="w-full sm:w-auto"
-              preselectedServices={["pflegeberatung"]}
-              contextNote="Ratgeber: Pflegereform 2027 – Fazit"
-            >
-              Jetzt kostenlos beraten lassen
-            </RatgeberBeratungCtaButton>
-            <Link
-              href={BETRIEBLICHE_PFLEGEBERATUNG_PATH}
-              className="inline-flex min-h-[2.875rem] items-center justify-center rounded-lg bg-[#0F4F68] px-6 text-[0.95rem] font-semibold text-white transition hover:bg-[#0c3d52] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68] focus-visible:ring-offset-2"
-            >
-              Betriebliche Pflegeberatung für Unternehmen
-            </Link>
-          </div>
-        </div>
+        </Pflegereform2027BetrieblichCompactCta>
       </ArticleSectionHeading>
 
       <ArticleSectionHeading sectionNum="08" id="faq-pflegereform-2027" heading="Häufige Fragen zur Pflegereform 2027">
@@ -578,7 +565,6 @@ export function Pflegereform2027Article() {
         <ul className="mt-6 list-none space-y-2 text-[1rem] text-neutral-800">
           {[
             { href: BETRIEBLICHE_PFLEGEBERATUNG_PATH, label: "Betriebliche Pflegeberatung – der Benefit für Unternehmen" },
-            { href: "/pflegeberatung/private-pflegeberatung", label: "Private Pflegeberatung" },
             { href: "/ratgeber/pflegegrad-beantragen", label: "Pflegegrad beantragen – Schritt für Schritt" },
             { href: "/ratgeber/pflegegrad-1", label: "Pflegegrad 1: Leistungen und Entlastungsbetrag" },
             { href: "/ratgeber/pflegegeldrechner", label: "Pflegegeldrechner 2026" },

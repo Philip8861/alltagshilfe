@@ -50,13 +50,13 @@ export const metadata: Metadata = {
     locale: "de_DE",
     publishedTime: PUBLISHED_ISO,
     modifiedTime: PUBLISHED_ISO,
-    images: [{ url: "/images/Ratgeber/pflegereform_2027.webp", width: 1080, height: 720, alt: HEADLINE }],
+    images: [{ url: "/images/Ratgeber/pflegereform_2027_news.webp", width: 1080, height: 720, alt: HEADLINE }],
   },
   twitter: {
     card: "summary_large_image",
     title: META_TITLE,
     description: META_DESC,
-    images: ["/images/Ratgeber/pflegereform_2027.webp"],
+    images: ["/images/Ratgeber/pflegereform_2027_news.webp"],
   },
 };
 
@@ -67,7 +67,7 @@ export default function Pflegereform2027RatgeberPage() {
     articlePath: ARTICLE_PATH,
     datePublishedISO: PUBLISHED_ISO,
     dateModifiedISO: PUBLISHED_ISO,
-    imageUrl: "/images/Ratgeber/pflegereform_2027.webp",
+    imageUrl: "/images/Ratgeber/pflegereform_2027_news.webp",
     breadcrumbs: [
       { name: "Startseite", path: "/" },
       { name: "Ratgeber", path: "/ratgeber" },

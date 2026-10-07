@@ -1,9 +1,8 @@
 import Image from "next/image";
 import Link from "next/link";
 
-import { RatgeberArticleImageBeratungCta } from "@/components/ratgeber/RatgeberArticleImageBeratungCta";
-import { RatgeberArticleQualityLines } from "@/components/ratgeber/RatgeberArticleQualityLines";
 import { DecorativeIcon } from "@/components/ratgeber/pflegegrad-beantragen/pflegegrad-visual-primitives";
+import { Pflegereform2027BetrieblichImageCta } from "@/components/ratgeber/pflegereform-2027/Pflegereform2027BetrieblichPromo";
 import { PFLEGEREFORM_2027_SLUG, getRatgeberBeitragReadMinutes } from "@/config/ratgeber-betraege";
 
 const PROSE = "text-[1.125rem] leading-[1.7] text-neutral-800";
@@ -31,18 +30,15 @@ function IconClock() {
 function Pflegereform2027MetaRow() {
   const minutes = getRatgeberBeitragReadMinutes(PFLEGEREFORM_2027_SLUG);
   return (
-    <div className="mt-8 flex flex-col gap-4 border-t border-neutral-200 pt-6">
-      <div className="flex flex-wrap gap-x-8 gap-y-3">
-        <p className="flex items-center gap-2 text-sm text-neutral-600">
-          <IconCalendar />
-          Stand: {PFLEGEREFORM_2027_STAND_LABEL}
-        </p>
-        <p className="flex items-center gap-2 text-sm text-neutral-600">
-          <IconClock />
-          Lesezeit: ca. {minutes} Minuten
-        </p>
-      </div>
-      <RatgeberArticleQualityLines />
+    <div className="mt-8 flex flex-wrap gap-x-8 gap-y-3 border-t border-neutral-200 pt-6">
+      <p className="flex items-center gap-2 text-sm text-neutral-600">
+        <IconCalendar />
+        Stand: {PFLEGEREFORM_2027_STAND_LABEL}
+      </p>
+      <p className="flex items-center gap-2 text-sm text-neutral-600">
+        <IconClock />
+        Lesezeit: ca. {minutes} Minuten
+      </p>
     </div>
   );
 }
@@ -82,9 +78,9 @@ export function Pflegereform2027Hero() {
         <div className="flex w-full flex-col items-center gap-5 text-center sm:gap-6 lg:flex-row lg:items-start lg:justify-between lg:gap-10 lg:text-left">
           <div className="order-2 flex min-w-0 w-full max-w-none flex-1 flex-col items-center lg:order-1 lg:max-w-[min(100%,42rem)] lg:items-start lg:pr-2">
             <div className="flex flex-wrap items-center justify-center gap-2 lg:justify-start">
-              <p className="inline-flex items-center gap-1.5 rounded-full bg-[#0F4F68] px-3 py-1 text-xs font-semibold uppercase tracking-[0.12em] text-white">
+              <p className="inline-flex items-center gap-1.5 rounded-full border border-[#0F4F68]/25 bg-[#F2F9FA] px-3 py-1 text-xs font-semibold uppercase tracking-[0.12em] text-[#0F4F68]">
                 <span className="h-1.5 w-1.5 rounded-full bg-[#F78F2E]" aria-hidden />
-                News · Pflegereform
+                News zur Pflegereform
               </p>
               <p className="inline-flex rounded-full border border-neutral-200 bg-white px-3 py-1 text-xs font-semibold text-[#0F4F68]">
                 Stand: {PFLEGEREFORM_2027_STAND_LABEL}
@@ -107,7 +103,7 @@ export function Pflegereform2027Hero() {
             <div className="w-full">
               <div className="overflow-hidden rounded-2xl border border-neutral-100 shadow-[0_12px_40px_-28px_rgba(15,79,104,0.35)] ring-1 ring-[#0F4F68]/10">
                 <Image
-                  src="/images/Ratgeber/pflegereform_2027.webp"
+                  src="/images/Ratgeber/pflegereform_2027_news.webp"
                   alt="Pflegereform 2027: Angehörige und Pflegebedürftige prüfen gemeinsam Unterlagen der Pflegekasse"
                   width={1080}
                   height={720}
@@ -117,10 +113,7 @@ export function Pflegereform2027Hero() {
                 />
               </div>
             </div>
-            <RatgeberArticleImageBeratungCta
-              contextNote="Ratgeber: Pflegereform 2027 (Artikelbild)"
-              preselectedServices={["pflegeberatung"]}
-            />
+            <Pflegereform2027BetrieblichImageCta />
           </div>
         </div>
       </div>
