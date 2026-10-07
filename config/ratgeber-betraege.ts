@@ -2,6 +2,7 @@
  * Zentrale Ratgeber-Metadaten für Verzeichnis, Verwandte Beiträge und Aufrufzahlen.
  */
 export type RatgeberCategoryId =
+  | "pflegereform_news"
   | "pflegegrad_leistungen"
   | "haushalt_betreuung"
   | "pflegehilfsmittel_42eur"
@@ -44,6 +45,7 @@ export function getRatgeberBeitragReadMinutes(slug: string): number {
 }
 
 export const RATGEBER_CATEGORY_LABELS: Record<RatgeberCategoryId, string> = {
+  pflegereform_news: "News zur Pflegereform",
   pflegegrad_leistungen: "Pflegegrad & Pflegeleistungen",
   haushalt_betreuung: "Haushaltshilfe & Betreuung",
   pflegehilfsmittel_42eur: "Pflegehilfsmittel & 42€ Pauschale",
@@ -61,8 +63,39 @@ const PFLEGEGELDRECHNER_WORDS = 1000;
 const KOSTENFREIE_PFLEGEHILFSMITTEL_42_WORDS = 2000;
 const INKONTINENZMATERIAL_AUF_REZEPT_WORDS = 1600;
 const EINLAGEN_VORLAGEN_PANTS_WINDELN_WORDS = 4200;
+const PFLEGEREFORM_2027_WORDS = 1900;
+
+/** Slug des ersten Beitrags im Bereich „News zur Pflegereform“ (Route + Verlinkungen). */
+export const PFLEGEREFORM_2027_SLUG = "pflegereform-2027-7-dinge-noch-2026-pruefen" as const;
 
 export const RATGEBER_BEITRAEGE: RatgeberBeitragMeta[] = [
+  {
+    slug: PFLEGEREFORM_2027_SLUG,
+    title: "Pflegereform 2027: Diese 7 Dinge sollten Pflegebedürftige und Angehörige noch 2026 prüfen",
+    excerpt:
+      "Das Bundeskabinett hat den Entwurf des Pflegeneuordnungsgesetzes beschlossen. Was sich bei Pflegegraden, Entlastungsbetrag und Budgets ändern könnte – und welche 7 Punkte Familien noch 2026 prüfen sollten.",
+    image: "/images/Ratgeber/pflegereform_2027.webp",
+    imageAlt:
+      "Pflegereform 2027: Angehörige und Pflegebedürftige prüfen gemeinsam Unterlagen der Pflegekasse",
+    views: 310,
+    tags: [
+      "Pflegereform 2027",
+      "Pflegeneuordnungsgesetz",
+      "Pflegereform News",
+      "Pflegegrad Schwellenwerte 2027",
+      "Entlastungsbetrag Pflegegrad 1 entfällt",
+      "Sozialraumbudget 175 Euro",
+      "Höherstufung Pflegegrad 2026",
+      "Verhinderungspflege Kurzzeitpflege 3.539 Euro",
+      "Pflegereform Arbeitgeber",
+      "betriebliche Pflegeberatung",
+    ],
+    categories: ["pflegereform_news", "pflegegrad_leistungen", "pflegende_angehoerige"],
+    approxWordCount: PFLEGEREFORM_2027_WORDS,
+    readMinutes: readMinutesFromWordCount(PFLEGEREFORM_2027_WORDS),
+    publishedAt: "2026-10-07",
+    featured: true,
+  },
   {
     slug: "pflegegrad-1",
     title: "Pflegegrad 1: Voraussetzungen, Leistungen und Tipps für Angehörige",
@@ -204,6 +237,7 @@ export const RATGEBER_BEITRAEGE: RatgeberBeitragMeta[] = [
 
 /** Aquarell-Teaserbilde für Ratgeber-Hub-Karten (optional pro Slug). */
 const RATGEBER_HUB_CARD_IMAGES: Record<string, string> = {
+  [PFLEGEREFORM_2027_SLUG]: "/images/Ratgeber/pflegereform_2027.webp",
   "pflegegrad-1": "/images/Ratgeber/pflegegrad_1.webp",
   "pflegegrad-beantragen": "/images/Ratgeber/Pflegegrad_beantragen.webp",
   pflegegeldrechner: "/images/Ratgeber/pflegegrad_rechner.webp",
@@ -232,7 +266,19 @@ export function getVerwandteRatgeberBeitraege(currentSlug: string, limit = 4): R
 /**
  * Reihenfolge auf der Ratgeber-Übersicht: Platz 1 → Platz 2 (nur eingetragene Slugs mit `featured: true`).
  */
-const RATGEBER_FEATURED_HOME_ORDER: readonly string[] = ["pflegegrad-beantragen"];
+const RATGEBER_FEATURED_HOME_ORDER: readonly string[] = [PFLEGEREFORM_2027_SLUG, "pflegegrad-beantragen"];
+
+/** Beiträge aus dem Bereich „News zur Pflegereform“ (aktuellste zuerst). */
+export function getPflegereformNewsBeitraege(): RatgeberBeitragMeta[] {
+  return RATGEBER_BEITRAEGE.filter((b) => b.categories.includes("pflegereform_news")).sort((a, b) =>
+    b.publishedAt.localeCompare(a.publishedAt),
+  );
+}
+
+/** Beitrag gehört zum News-Bereich Pflegereform (für „Aktuell“-Badges). */
+export function isPflegereformNewsBeitrag(beitrag: RatgeberBeitragMeta): boolean {
+  return beitrag.categories.includes("pflegereform_news");
+}
 
 /**
  * Alle mit `featured: true`; Reihenfolge nach `RATGEBER_FEATURED_HOME_ORDER`, dann fehlende Plätze per Aufrufen.

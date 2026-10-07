@@ -7,6 +7,8 @@ import { Container } from "@/components/layout/Container";
 import {
   RATGEBER_BEITRAEGE,
   RATGEBER_CATEGORY_LABELS,
+  getPflegereformNewsBeitraege,
+  isPflegereformNewsBeitrag,
   ratgeberHubCardImage,
   type RatgeberBeitragMeta,
   type RatgeberCategoryId,
@@ -20,6 +22,7 @@ const NAVY = "#0F4F68";
 const CARD_CANVAS = "#FEFEFE";
 
 const CATEGORY_ORDER: RatgeberCategoryId[] = [
+  "pflegereform_news",
   "pflegegrad_leistungen",
   "haushalt_betreuung",
   "pflegehilfsmittel_42eur",
@@ -71,6 +74,114 @@ function matchesCategory(beitrag: RatgeberBeitragMeta, cat: RatgeberHubFilter): 
 
 const SEARCH_SUGGESTIONS_MAX = 8;
 
+/** Frisch veröffentlichte Beiträge ohne Live-Aufrufe zeigen „Neu“ statt „0 Aufrufe“. */
+function formatViewsLabel(views: number): string {
+  return views > 0 ? `${views.toLocaleString("de-DE")} Aufrufe` : "Neu";
+}
+
+function formatNewsDate(iso: string): string {
+  const [y, m, d] = iso.split("-").map(Number);
+  if (!y || !m || !d) return iso;
+  return new Date(Date.UTC(y, m - 1, d)).toLocaleDateString("de-DE", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+    timeZone: "UTC",
+  });
+}
+
+/** Bereich „News zur Pflegereform“: aktuellster Beitrag groß, weitere kompakt darunter. */
+function PflegereformNewsBand({ onShowAll }: { onShowAll: () => void }) {
+  const news = getPflegereformNewsBeitraege();
+  const [latest, ...rest] = news;
+  if (!latest) return null;
+
+  return (
+    <section
+      aria-labelledby="ratgeber-pflegereform-news-heading"
+      className="relative z-0 mt-6 px-3 sm:px-6 md:mt-8"
+    >
+      <div className="mx-auto w-full max-w-7xl">
+        <div className="overflow-hidden rounded-[1.1rem] border border-[#0F4F68]/12 bg-[linear-gradient(135deg,#0F4F68_0%,#15607c_58%,#1d6f8c_100%)] text-white shadow-[0_18px_48px_-28px_rgba(15,79,104,0.55)]">
+          <div className="grid gap-0 lg:grid-cols-[minmax(0,1.25fr)_minmax(0,0.95fr)]">
+            <div className="relative flex min-w-0 flex-col justify-center px-5 py-6 sm:px-8 sm:py-8 lg:px-10">
+              <span
+                className="pointer-events-none absolute -left-16 -top-16 h-48 w-48 rounded-full border border-white/10"
+                aria-hidden
+              />
+              <p
+                id="ratgeber-pflegereform-news-heading"
+                className="relative inline-flex flex-wrap items-center gap-x-2 gap-y-1 text-[0.7rem] font-extrabold uppercase tracking-[0.16em] text-white/85 sm:text-xs"
+              >
+                <span className="inline-flex h-2 w-2 rounded-full" style={{ backgroundColor: ORANGE }} aria-hidden />
+                News zur Pflegereform
+                <span className="font-semibold normal-case tracking-normal text-white/65">
+                  · Stand {formatNewsDate(latest.publishedAt)}
+                </span>
+              </p>
+              <h2 className="relative mt-3 text-balance text-xl font-extrabold leading-snug tracking-tight sm:text-2xl lg:text-[1.65rem]">
+                <Link
+                  href={`/ratgeber/${latest.slug}`}
+                  className="rounded-sm outline-none hover:underline focus-visible:ring-2 focus-visible:ring-white/70 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0F4F68]"
+                >
+                  {latest.title}
+                </Link>
+              </h2>
+              <p className="relative mt-3 line-clamp-3 max-w-2xl text-sm leading-relaxed text-white/80 sm:text-[0.95rem]">
+                {latest.excerpt}
+              </p>
+              <div className="relative mt-5 flex flex-col gap-2.5 sm:flex-row sm:flex-wrap sm:items-center">
+                <Link
+                  href={`/ratgeber/${latest.slug}`}
+                  className="inline-flex min-h-[44px] items-center justify-center rounded-xl px-5 text-sm font-bold text-white shadow-sm transition hover:opacity-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/80 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0F4F68]"
+                  style={{ backgroundColor: ORANGE }}
+                >
+                  Beitrag lesen
+                </Link>
+                <button
+                  type="button"
+                  onClick={onShowAll}
+                  className="inline-flex min-h-[44px] items-center justify-center rounded-xl border border-white/30 bg-white/5 px-5 text-sm font-semibold text-white transition hover:bg-white/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/80 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0F4F68]"
+                >
+                  Alle News zur Pflegereform
+                </button>
+              </div>
+              {rest.length > 0 ? (
+                <ul className="relative mt-5 space-y-1.5 border-t border-white/15 pt-4 text-sm">
+                  {rest.slice(0, 3).map((b) => (
+                    <li key={b.slug}>
+                      <Link
+                        href={`/ratgeber/${b.slug}`}
+                        className="inline-flex items-start gap-2 text-white/85 hover:text-white hover:underline"
+                      >
+                        <span className="mt-[0.45rem] h-1.5 w-1.5 shrink-0 rounded-full bg-white/60" aria-hidden />
+                        <span className="line-clamp-2">{b.title}</span>
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              ) : null}
+            </div>
+            <Link
+              href={`/ratgeber/${latest.slug}`}
+              className="relative block min-h-[11rem] w-full overflow-hidden bg-white/95 outline-none focus-visible:ring-2 focus-visible:ring-white/80 sm:min-h-[13rem] lg:min-h-0"
+              aria-label={`${latest.title} – Beitrag öffnen`}
+            >
+              <Image
+                src={ratgeberHubCardImage(latest.slug)}
+                alt=""
+                fill
+                className="object-cover object-center"
+                sizes="(min-width: 1024px) 40vw, 100vw"
+              />
+            </Link>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 function RatgeberArticleTeaserCard({
   beitrag,
   showTopBadge,
@@ -82,6 +193,7 @@ function RatgeberArticleTeaserCard({
 }) {
   const hubSrc = ratgeberHubCardImage(beitrag.slug);
   const titleId = `ratgeber-teaser-${beitrag.slug}-title`;
+  const isNews = isPflegereformNewsBeitrag(beitrag);
 
   return (
     <Link
@@ -94,7 +206,15 @@ function RatgeberArticleTeaserCard({
         className="relative aspect-[3/2] w-full shrink-0 overflow-hidden rounded-t-[0.85rem]"
         style={{ backgroundColor: CARD_CANVAS }}
       >
-        {showTopBadge ? (
+        {isNews ? (
+          <span
+            className="absolute left-2 top-2 z-20 inline-flex items-center gap-1 rounded px-1.5 py-0.5 text-[0.55rem] font-bold uppercase tracking-wide text-white shadow-sm sm:left-2.5 sm:top-2.5 sm:text-[0.6rem]"
+            style={{ backgroundColor: NAVY }}
+          >
+            <span className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: ORANGE }} aria-hidden />
+            NEWS · PFLEGEREFORM
+          </span>
+        ) : showTopBadge ? (
           <span
             className="absolute left-2 top-2 z-20 rounded px-1.5 py-0.5 text-[0.55rem] font-bold uppercase tracking-wide text-white shadow-sm sm:left-2.5 sm:top-2.5 sm:text-[0.6rem]"
             style={{ backgroundColor: ORANGE }}
@@ -125,7 +245,7 @@ function RatgeberArticleTeaserCard({
         <div className="mt-2 flex flex-wrap items-center justify-center gap-x-3 gap-y-0.5 text-[0.75rem] leading-relaxed text-neutral-500 sm:mt-2.5 sm:text-[0.8125rem] sm:leading-relaxed">
           <span className="inline-flex items-center gap-1">
             <EyeIcon className="h-2.5 w-2.5 shrink-0 text-neutral-400" aria-hidden />
-            {getDisplayViews(beitrag).toLocaleString("de-DE")} Aufrufe
+            {formatViewsLabel(getDisplayViews(beitrag))}
           </span>
         </div>
       </div>
@@ -436,6 +556,15 @@ export function RatgeberHub(props?: RatgeberHubProps) {
         </Container>
       </div>
 
+      {activeCategory === "alle" && !query.trim() ? (
+        <PflegereformNewsBand
+          onShowAll={() => {
+            setActiveCategory("pflegereform_news");
+            scrollToAlle();
+          }}
+        />
+      ) : null}
+
       <Container className="mx-auto max-w-[min(96rem,calc(100vw-1.5rem))] overflow-x-clip px-3 pt-5 sm:px-6 sm:pt-6 lg:pb-2 lg:pl-3 lg:pr-10 xl:pl-4 xl:pr-14 2xl:pl-6 2xl:pr-16">
         <section id="alle-ratgeber" className="scroll-mt-24">
           <div className="mx-auto mt-8 flex w-full max-w-full flex-col gap-8 lg:mt-10 lg:flex-row lg:flex-nowrap lg:items-start lg:justify-end lg:gap-10 lg:translate-x-[min(1.75rem,3.5vw)] xl:gap-14 xl:translate-x-[min(2.5rem,5vw)] 2xl:gap-16 2xl:translate-x-[min(3rem,5.5vw)]">
@@ -519,7 +648,7 @@ export function RatgeberHub(props?: RatgeberHubProps) {
                             {b.title}
                           </span>
                           <span className="mt-0.5 block text-[0.6rem] text-neutral-500">
-                            {getDisplayViews(b).toLocaleString("de-DE")} Aufrufe
+                            {formatViewsLabel(getDisplayViews(b))}
                           </span>
                         </div>
                       </Link>

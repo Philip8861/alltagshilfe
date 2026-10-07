@@ -1,0 +1,20 @@
+/** Inhaltsverzeichnis — News zur Pflegereform: „Pflegereform 2027: Diese 7 Dinge …“ */
+export const PFLEGEREFORM2027_ARTICLE_TOC_ENTRIES = [
+  { id: "kurz-zusammengefasst", label: "Kurz zusammengefasst" },
+  { id: "was-passiert", label: "Was bei der Pflegereform gerade passiert" },
+  { id: "was-aendert-sich-2027", label: "Was sich 2027 ändern könnte" },
+  { id: "die-7-punkte", label: "Die 7 Dinge, die Sie 2026 prüfen sollten" },
+  { id: "punkt-1-pflegegrad", label: "1 · Passt der Pflegegrad noch?" },
+  { id: "punkt-2-pflegekasse", label: "2 · Offene Leistungen bei der Pflegekasse" },
+  { id: "punkt-3-entlastungsbetrag", label: "3 · Entlastungsbetrag prüfen" },
+  { id: "punkt-4-verhinderungspflege", label: "4 · Verhinderungs- und Kurzzeitpflege" },
+  { id: "punkt-5-begutachtung", label: "5 · Begutachtung richtig vorbereiten" },
+  { id: "punkt-6-papiercheck", label: "6 · Kleiner Pflege-Papiercheck" },
+  { id: "punkt-7-beratung", label: "7 · Beratung holen" },
+  { id: "betriebliche-pflegeberatung", label: "Vorbereitet mit betrieblicher Pflegeberatung" },
+  { id: "kritisch-beobachten", label: "Warum die Reform kritisch beobachtet werden muss" },
+  { id: "fazit", label: "Unser Fazit zur Pflegereform 2027" },
+  { id: "faq-pflegereform-2027", label: "Häufige Fragen" },
+  { id: "stand-hinweis", label: "Stand und Hinweis" },
+  { id: "interne-links", label: "Weiterführend im Überblick" },
+] as const;
