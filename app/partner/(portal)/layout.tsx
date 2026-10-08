@@ -31,6 +31,7 @@ export default async function PartnerPortalLayout({ children }: { children: Reac
       initialPasswordChangePrompt={initialPasswordChangePrompt}
       tutorialAutoShow={tutorialAutoShow}
       showNetworkNav={showNetworkNav}
+      responsibilityAreaSlugs={profile.responsibility_areas ?? []}
     >
       {children}
     </PartnerPortalShell>

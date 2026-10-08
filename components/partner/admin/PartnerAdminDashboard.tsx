@@ -64,7 +64,6 @@ type OrderRow = {
   external_reference: string | null;
   status: string;
   created_at: string;
-  summary_json: Record<string, unknown> | null;
 };
 
 type SortDir = "asc" | "desc";
@@ -253,6 +252,29 @@ export function PartnerAdminDashboard({
   });
 
   const profileById = useMemo(() => new Map(profiles.map((p) => [p.id, p])), [profiles]);
+
+  /** Werber (Migration 026): Code + Name des Partners, der diesen Partner geworben hat. */
+  const sponsorOf = useCallback(
+    (p: PartnerProfile): { code: string | null; name: string | null } | null => {
+      const sid = p.referred_by_partner_id?.trim();
+      if (!sid) return null;
+      const s = profileById.get(sid);
+      if (!s) return { code: null, name: null };
+      const name = [s.first_name?.trim(), s.last_name?.trim()].filter(Boolean).join(" ") || s.display_name?.trim() || null;
+      return { code: s.partner_referral_code?.trim() || null, name };
+    },
+    [profileById],
+  );
+
+  /** Anzahl direkt geworbener Partner je Sponsor. */
+  const directReferralCount = useMemo(() => {
+    const m = new Map<string, number>();
+    for (const p of profiles) {
+      const sid = p.referred_by_partner_id?.trim();
+      if (sid) m.set(sid, (m.get(sid) ?? 0) + 1);
+    }
+    return m;
+  }, [profiles]);
 
   const partnerDisplay = useCallback(
     (pid: string) => {
@@ -1143,6 +1165,7 @@ export function PartnerAdminDashboard({
                           <th className="px-3 py-3">Firma</th>
                           <th className="px-3 py-3">Telefon</th>
                           <th className="px-3 py-3">Zuständigkeit</th>
+                          <th className="whitespace-nowrap px-3 py-3">Werbe-Netzwerk</th>
                           <th className="px-3 py-3">Passwort</th>
                           <th className="px-3 py-3">Rolle</th>
                           <th className="px-3 py-3">
@@ -1167,7 +1190,7 @@ export function PartnerAdminDashboard({
                       <tbody className="divide-y divide-neutral-100">
                         {sortedProfiles.length === 0 ? (
                           <tr>
-                            <td colSpan={12} className="px-4 py-12 text-center text-neutral-600">
+                            <td colSpan={13} className="px-4 py-12 text-center text-neutral-600">
                               Keine Partner-Profile.
                             </td>
                           </tr>
@@ -1181,6 +1204,8 @@ export function PartnerAdminDashboard({
                               "—";
                             const label = p.organization_name ?? name ?? p.id.slice(0, 8);
                             const deactivated = Boolean(p.account_disabled_at?.trim());
+                            const sponsor = sponsorOf(p);
+                            const referrals = directReferralCount.get(p.id) ?? 0;
                             return (
                               <tr key={p.id} className="align-top transition-colors hover:bg-[#f8fbfc]">
                                 <td className="max-w-[12rem] px-3 py-3">
@@ -1205,6 +1230,23 @@ export function PartnerAdminDashboard({
                                     </span>
                                   ))}
                                   {!p.responsibility_areas?.length ? "—" : null}
+                                </td>
+                                <td className="max-w-[11rem] px-3 py-3 text-xs text-neutral-700">
+                                  <div>
+                                    <span className="text-neutral-500">Geworben durch:</span>{" "}
+                                    {sponsor ? (
+                                      <>
+                                        <span className="font-mono font-bold text-[#0F4F68]">{sponsor.code ?? "?"}</span>
+                                        {sponsor.name ? <span className="text-neutral-700"> · {sponsor.name}</span> : null}
+                                      </>
+                                    ) : (
+                                      <span className="text-neutral-500">—</span>
+                                    )}
+                                  </div>
+                                  <div className="mt-1">
+                                    <span className="text-neutral-500">Direkt geworben:</span>{" "}
+                                    <span className="font-semibold tabular-nums text-neutral-800">{referrals}</span>
+                                  </div>
                                 </td>
                                 <td className="px-3 py-3 text-xs text-neutral-700">{partnerPasswordNote(p)}</td>
                                 <td className="px-3 py-3 text-neutral-700">{p.role}</td>
@@ -1518,6 +1560,7 @@ export function PartnerAdminDashboard({
           open
           profile={editProfile}
           email={authById[editProfile.id]?.email ?? "—"}
+          sponsorPartnerCode={sponsorOf(editProfile)?.code ?? null}
           onClose={() => setEditProfile(null)}
         />
       ) : null}

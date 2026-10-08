@@ -82,27 +82,33 @@ export async function getPartnerNetworkTree(
     };
   }
 
-  const { data: rootData } = await svc
-    .from("partner_profiles")
-    .select("partner_referral_code, referred_by_partner_id")
-    .eq("id", viewerPartnerId)
-    .maybeSingle();
+  /** Root-Profil und eigene Provision sind unabhängig → parallel. */
+  const [{ data: rootData }, rootOwnApprovedClosingCommissionCents] = await Promise.all([
+    svc
+      .from("partner_profiles")
+      .select("partner_referral_code, referred_by_partner_id")
+      .eq("id", viewerPartnerId)
+      .maybeSingle(),
+    getPartnerMonthlyOwnApprovedClosingCommissionCents(svc, viewerPartnerId, periodKey),
+  ]);
 
   const rootPartnerCode =
     (rootData as { partner_referral_code: string | null } | null)?.partner_referral_code ?? null;
   const sponsorId =
     (rootData as { referred_by_partner_id: string | null } | null)?.referred_by_partner_id ?? null;
 
-  let sponsor: PartnerNetworkSponsor | null = null;
-  if (sponsorId) {
+  const loadSponsor = async (): Promise<PartnerNetworkSponsor | null> => {
+    if (!sponsorId) return null;
     const { data: spRow } = await svc
       .from("partner_profiles")
       .select("partner_referral_code")
       .eq("id", sponsorId)
       .maybeSingle();
-    const code = (spRow as { partner_referral_code: string | null } | null)?.partner_referral_code ?? null;
-    sponsor = { partnerCode: code };
-  }
+    return {
+      partnerCode: (spRow as { partner_referral_code: string | null } | null)?.partner_referral_code ?? null,
+    };
+  };
+  const sponsorPromise = loadSponsor();
 
   /**
    * BFS bis Tiefe PARTNER_NETWORK_MAX_DEPTH.
@@ -143,37 +149,33 @@ export async function getPartnerNetworkTree(
 
   const directChildrenRows = childrenByParent.get(viewerPartnerId) ?? [];
 
-  const directChildren: PartnerNetworkNode[] = [];
-  for (const direct of directChildrenRows) {
-    const ownCents = await getPartnerMonthlyOwnApprovedClosingCommissionCents(
-      svc,
-      direct.id,
-      periodKey,
-    );
-    const children = await buildIndirectChildren(direct.id, childrenByParent, 2, svc, periodKey);
-    const referralForViewerCents = computeViewerReferralFromDirectChildCents({
-      ownApprovedClosingCommissionCents: ownCents,
-      children,
-    });
-
-    const node: PartnerNetworkNode = {
-      partnerCode: direct.partner_referral_code,
-      isDirectReferral: true,
-      noDirectReferral: false,
-      ownApprovedClosingCommissionCents: ownCents,
-      referralCommissionForCurrentPartnerCents: referralForViewerCents,
-      children,
-      depth: 1,
-    };
-    directChildren.push(node);
-  }
+  /** Alle direkten Kinder (und rekursiv deren Teilbäume) parallel aufbauen — vorher strikt sequentiell. */
+  const [directChildren, sponsor] = await Promise.all([
+    Promise.all(
+      directChildrenRows.map(async (direct): Promise<PartnerNetworkNode> => {
+        const [ownCents, children] = await Promise.all([
+          getPartnerMonthlyOwnApprovedClosingCommissionCents(svc, direct.id, periodKey),
+          buildIndirectChildren(direct.id, childrenByParent, 2, svc, periodKey),
+        ]);
+        const referralForViewerCents = computeViewerReferralFromDirectChildCents({
+          ownApprovedClosingCommissionCents: ownCents,
+          children,
+        });
+        return {
+          partnerCode: direct.partner_referral_code,
+          isDirectReferral: true,
+          noDirectReferral: false,
+          ownApprovedClosingCommissionCents: ownCents,
+          referralCommissionForCurrentPartnerCents: referralForViewerCents,
+          children,
+          depth: 1,
+        };
+      }),
+    ),
+    sponsorPromise,
+  ]);
 
   const totalNodes = countNodes(directChildren);
-  const rootOwnApprovedClosingCommissionCents = await getPartnerMonthlyOwnApprovedClosingCommissionCents(
-    svc,
-    viewerPartnerId,
-    periodKey,
-  );
 
   return {
     rootPartnerCode,
@@ -196,20 +198,23 @@ async function buildIndirectChildren(
 ): Promise<PartnerNetworkNode[]> {
   if (depth > PARTNER_NETWORK_MAX_DEPTH) return [];
   const list = childrenByParent.get(parentId) ?? [];
-  const nodes: PartnerNetworkNode[] = [];
-  for (const c of list) {
-    const ownCents = await getPartnerMonthlyOwnApprovedClosingCommissionCents(svc, c.id, periodKey);
-    nodes.push({
-      partnerCode: c.partner_referral_code,
-      isDirectReferral: false,
-      noDirectReferral: true,
-      ownApprovedClosingCommissionCents: ownCents > 0 ? ownCents : null,
-      referralCommissionForCurrentPartnerCents: null,
-      children: await buildIndirectChildren(c.id, childrenByParent, depth + 1, svc, periodKey),
-      depth,
-    });
-  }
-  return nodes;
+  return Promise.all(
+    list.map(async (c): Promise<PartnerNetworkNode> => {
+      const [ownCents, children] = await Promise.all([
+        getPartnerMonthlyOwnApprovedClosingCommissionCents(svc, c.id, periodKey),
+        buildIndirectChildren(c.id, childrenByParent, depth + 1, svc, periodKey),
+      ]);
+      return {
+        partnerCode: c.partner_referral_code,
+        isDirectReferral: false,
+        noDirectReferral: true,
+        ownApprovedClosingCommissionCents: ownCents > 0 ? ownCents : null,
+        referralCommissionForCurrentPartnerCents: null,
+        children,
+        depth,
+      };
+    }),
+  );
 }
 
 function countNodes(nodes: PartnerNetworkNode[]): number {

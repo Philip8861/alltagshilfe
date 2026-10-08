@@ -52,50 +52,74 @@ function parseBereich(v: string | undefined): PartnerAdminInitialBereich {
 const TIP_DEEP_LINK_ID_RE =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
-const PARTNER_PROFILES_ADMIN_SELECT_WITH_DISABLED_AT =
-  "id, display_name, organization_name, role, created_at, updated_at, salutation, partner_referral_code, first_name, last_name, recruited_by, phone, responsibility_areas, password_changed_at, account_disabled_at, iban, bic, account_holder";
+const PARTNER_PROFILES_ADMIN_BASE_COLUMNS = [
+  "id",
+  "display_name",
+  "organization_name",
+  "role",
+  "created_at",
+  "updated_at",
+  "salutation",
+  "partner_referral_code",
+  "first_name",
+  "last_name",
+  "recruited_by",
+  "phone",
+  "responsibility_areas",
+  "password_changed_at",
+  "iban",
+  "bic",
+  "account_holder",
+] as const;
 
-const PARTNER_PROFILES_ADMIN_SELECT_WITHOUT_DISABLED_AT =
-  "id, display_name, organization_name, role, created_at, updated_at, salutation, partner_referral_code, first_name, last_name, recruited_by, phone, responsibility_areas, password_changed_at, iban, bic, account_holder";
+/** Spalten aus späteren Migrationen — werden bei fehlender Spalte einzeln weggelassen (Migration 025 / 026). */
+const PARTNER_PROFILES_ADMIN_OPTIONAL_COLUMNS: { column: string; migration: string }[] = [
+  { column: "account_disabled_at", migration: "025" },
+  { column: "referred_by_partner_id", migration: "026" },
+  { column: "referred_at", migration: "026" },
+];
 
-function isLikelyMissingAccountDisabledAtColumn(error: {
-  message?: string;
-  code?: string;
-} | null): boolean {
-  if (!error) return false;
+function missingColumnFromError(
+  error: { message?: string; code?: string } | null,
+  candidates: readonly string[],
+): string | null {
+  if (!error) return null;
   const m = String(error.message ?? "").toLowerCase();
-  return (
-    m.includes("account_disabled_at") &&
-    (m.includes("does not exist") || m.includes("could not find") || m.includes("schema cache") || error.code === "42703")
-  );
+  const schemaIssue =
+    m.includes("does not exist") || m.includes("could not find") || m.includes("schema cache") || error.code === "42703";
+  if (!schemaIssue) return null;
+  return candidates.find((c) => m.includes(c.toLowerCase())) ?? null;
 }
 
 async function fetchPartnerProfilesForAdminPage(
   svc: NonNullable<ReturnType<typeof createSupabaseServiceRoleClient>>,
 ): Promise<{ profiles: PartnerProfile[]; errorMessage?: string }> {
-  const first = await svc
-    .from("partner_profiles")
-    .select(PARTNER_PROFILES_ADMIN_SELECT_WITH_DISABLED_AT)
-    .order("created_at", { ascending: false });
-  if (!first.error && first.data) {
-    return { profiles: (first.data as PartnerProfile[]) ?? [] };
-  }
-  if (first.error && isLikelyMissingAccountDisabledAtColumn(first.error)) {
-    const second = await svc
-      .from("partner_profiles")
-      .select(PARTNER_PROFILES_ADMIN_SELECT_WITHOUT_DISABLED_AT)
-      .order("created_at", { ascending: false });
-    if (!second.error && second.data) {
-      console.warn(
-        "[PartnerAdminPage] partner_profiles ohne account_disabled_at geladen — Migration 025 in Supabase ausführen.",
-      );
-      return { profiles: (second.data as PartnerProfile[]) ?? [] };
+  let optional = [...PARTNER_PROFILES_ADMIN_OPTIONAL_COLUMNS];
+  let lastError: { message?: string; code?: string } | null = null;
+
+  /* Höchstens einmal pro optionaler Spalte neu versuchen. */
+  for (let attempt = 0; attempt <= PARTNER_PROFILES_ADMIN_OPTIONAL_COLUMNS.length; attempt++) {
+    const select = [...PARTNER_PROFILES_ADMIN_BASE_COLUMNS, ...optional.map((o) => o.column)].join(", ");
+    const res = await svc.from("partner_profiles").select(select).order("created_at", { ascending: false });
+    if (!res.error && res.data) {
+      return { profiles: (res.data as unknown as PartnerProfile[]) ?? [] };
     }
-    return { profiles: [], errorMessage: second.error?.message ?? first.error.message };
+    lastError = res.error;
+    const missing = missingColumnFromError(
+      res.error,
+      optional.map((o) => o.column),
+    );
+    if (!missing) break;
+    const dropped = optional.find((o) => o.column === missing);
+    console.warn(
+      `[PartnerAdminPage] partner_profiles ohne ${missing} geladen — Migration ${dropped?.migration ?? "?"} in Supabase ausführen.`,
+    );
+    optional = optional.filter((o) => o.column !== missing);
   }
+
   return {
     profiles: [],
-    errorMessage: first.error?.message ?? "partner_profiles konnte nicht geladen werden.",
+    errorMessage: lastError?.message ?? "partner_profiles konnte nicht geladen werden.",
   };
 }
 
@@ -142,7 +166,6 @@ export default async function PartnerAdminPage({
     external_reference: string | null;
     status: string;
     created_at: string;
-    summary_json: Record<string, unknown> | null;
   }[] = [];
   let commissionRatesByPartnerId: Awaited<ReturnType<typeof fetchAllPartnerCommissionRates>> = {};
   let initialAuditLog: Awaited<ReturnType<typeof fetchPartnerPortalAuditLog>> = [];
@@ -150,11 +173,16 @@ export default async function PartnerAdminPage({
 
   if (svc) {
     try {
-      const profilesPromise = fetchPartnerProfilesForAdminPage(svc);
-      const [ordRes, listRes, repRes, tipPack] = await Promise.all([
+      /**
+       * Alle Admin-Daten in einer Runde parallel laden (eine Netzwerk-Latenz statt vier).
+       * `summary_json` der Bestellungen bewusst NICHT laden: ~35 KB pro Bestellung (7 MB bei 200 Zeilen),
+       * im Admin wird davon nichts angezeigt — nur partner_id/created_at für Zähler und Statistik.
+       */
+      const [loadedProfilesResult, ordRes, listRes, repRes, tipPack, ratesLoaded, auditLoaded] = await Promise.all([
+        fetchPartnerProfilesForAdminPage(svc),
         svc
           .from("pflegebox_orders")
-          .select("id, partner_id, external_reference, status, created_at, summary_json")
+          .select("id, partner_id, external_reference, status, created_at")
           .order("created_at", { ascending: false })
           .limit(200),
         svc.auth.admin.listUsers({ page: 1, perPage: 1000 }),
@@ -162,9 +190,10 @@ export default async function PartnerAdminPage({
         fetchPartnerTipSubmissionRows((sel) =>
           svc.from("partner_tip_submissions").select(sel).order("created_at", { ascending: false }).limit(500),
         ),
+        fetchAllPartnerCommissionRates(svc),
+        fetchPartnerPortalAuditLog(svc, { limit: 300 }),
       ]);
 
-      const loadedProfilesResult = await profilesPromise;
       profiles = loadedProfilesResult.profiles;
       if (loadedProfilesResult.errorMessage) {
         console.error("[PartnerAdminPage] partner_profiles:", loadedProfilesResult.errorMessage);
@@ -197,8 +226,8 @@ export default async function PartnerAdminPage({
           };
         }
       }
-      commissionRatesByPartnerId = await fetchAllPartnerCommissionRates(svc);
-      initialAuditLog = await fetchPartnerPortalAuditLog(svc, { limit: 300 });
+      commissionRatesByPartnerId = ratesLoaded;
+      initialAuditLog = auditLoaded;
       if (repRes.error) {
         console.error("[PartnerAdminPage] partner_payout_reports:", repRes.error.message);
       } else if (repRes.data?.length !== undefined) {

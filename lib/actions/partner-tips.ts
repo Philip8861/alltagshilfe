@@ -33,15 +33,24 @@ export async function submitPartnerTipAction(raw: unknown): Promise<SubmitPartne
     const result = await insertPartnerTipSubmission(session.profile.id, parsed.data);
     if (!result.ok) return result;
     const p = session.profile;
-    const partnerHint = [p.organization_name, p.display_name, p.partner_referral_code]
-      .map((s) => (typeof s === "string" ? s.trim() : ""))
-      .filter(Boolean)
-      .join(" · ");
+    const partnerName =
+      [p.first_name, p.last_name]
+        .map((s) => (typeof s === "string" ? s.trim() : ""))
+        .filter(Boolean)
+        .join(" ") ||
+      p.display_name?.trim() ||
+      session.email ||
+      "";
     await notifyStaffOfNewPartnerTipFromPayload({
       serviceSlug: parsed.data.service_slug,
       tipId: result.tipId,
       payload: parsed.data.payload as Record<string, unknown>,
-      partnerHint: partnerHint || undefined,
+      partner: {
+        name: partnerName,
+        code: p.partner_referral_code ?? null,
+        organization: p.organization_name ?? null,
+        email: session.email ?? null,
+      },
     });
     revalidatePath("/partner/dashboard");
     revalidatePath("/partner/statistik");

@@ -85,6 +85,40 @@ export async function listAdminDirectReferralsAction(
   return { ok: true, items };
 }
 
+export type SetAdminPartnerSponsorResult =
+  | { ok: true; sponsorCode: string }
+  | { ok: false; message: string };
+
+/**
+ * Setzt für `partnerId` den werbenden Partner (per dessen Partner-Code) — nur einmalig möglich.
+ * Gegenstück zu {@link addAdminDirectReferralAction} aus Sicht des geworbenen Partners.
+ */
+export async function setAdminPartnerSponsorAction(
+  partnerId: string,
+  sponsorCodeRaw: unknown,
+): Promise<SetAdminPartnerSponsorResult> {
+  if (!(await getSystemAdminSession())) {
+    return { ok: false, message: "Nicht autorisiert." };
+  }
+  if (!partnerId || !PARTNER_ID_RE.test(partnerId)) {
+    return { ok: false, message: "Ungültige Partner-ID." };
+  }
+  const code = normalizePartnerCodeInput(sponsorCodeRaw);
+  if (!code) {
+    return { ok: false, message: "Bitte einen gültigen Partner-Code angeben." };
+  }
+
+  const svc = createSupabaseServiceRoleClient();
+  if (!svc) return { ok: false, message: "SUPABASE_SERVICE_ROLE_KEY fehlt." };
+
+  const res = await setPartnerReferralByCode(svc, partnerId, code);
+  if (!res.ok) return { ok: false, message: res.message };
+
+  revalidatePath("/partner/admin");
+  revalidatePath("/partner/team");
+  return { ok: true, sponsorCode: res.sponsorCode };
+}
+
 /**
  * Trägt einen bestehenden Partner als geworbenen Partner von `sponsorPartnerId` ein
  * (Lookup über PartnerCode des geworbenen Partners).
@@ -176,6 +210,7 @@ export async function addAdminDirectReferralAction(
   }
 
   revalidatePath("/partner/admin");
+  revalidatePath("/partner/team");
   return {
     ok: true,
     partnerId: referral.id,

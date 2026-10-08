@@ -15,6 +15,8 @@ type Props = {
   tutorialAutoShow?: boolean;
   /** Werbe-Netzwerk nur bei betrieblicher Pflegeberatung. */
   showNetworkNav?: boolean;
+  /** Freigeschaltete Leistungsbereiche (für den programmabhängigen Rundgang). */
+  responsibilityAreaSlugs?: string[];
 };
 
 const shell = "bg-[#F2F9FA]";
@@ -64,6 +66,7 @@ export function PartnerPortalShell({
   initialPasswordChangePrompt = false,
   tutorialAutoShow = true,
   showNetworkNav = false,
+  responsibilityAreaSlugs,
 }: Props) {
   const pathname = usePathname();
   const [passwordPromptGateBlocked, setPasswordPromptGateBlocked] = useState(
@@ -105,6 +108,7 @@ export function PartnerPortalShell({
           {showNetworkNav ? (
             <Link
               href="/partner/team"
+              data-tutorial="partner-nav-netzwerk"
               className={iconButtonClass(networkActive)}
               aria-current={networkActive ? "page" : undefined}
               title="Werbe-Netzwerk"
@@ -153,6 +157,7 @@ export function PartnerPortalShell({
       <PartnerTutorialOverlay
         tutorialAutoShow={tutorialAutoShow}
         passwordPromptGateBlocked={passwordPromptGateBlocked}
+        responsibilityAreaSlugs={responsibilityAreaSlugs}
       />
     </div>
   );

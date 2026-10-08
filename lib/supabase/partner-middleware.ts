@@ -35,6 +35,16 @@ export async function applyPartnerSupabaseSession(
     },
   });
 
-  await supabase.auth.getUser();
+  /**
+   * Session-Refresh ohne Netzwerk-Rundreise pro Request: `getClaims()` prüft das JWT lokal gegen den
+   * global gecachten JWKS (ES256) und erneuert abgelaufene Tokens per Refresh-Token (setzt Cookies).
+   * `getUser()` würde bei jedem Partner-Seitenaufruf den Auth-Server anfragen (~100–800 ms).
+   * Autorisierung passiert ohnehin erst in Layout/Seite (`requirePartnerLogin`).
+   */
+  try {
+    await supabase.auth.getClaims();
+  } catch {
+    /* Cookie-Refresh ist Best-Effort — Seite entscheidet selbst über Auth. */
+  }
   return response;
 }

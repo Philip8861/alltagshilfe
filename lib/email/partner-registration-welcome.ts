@@ -43,6 +43,7 @@ function buildPartnerRegistrationMailPayload(params: {
   vorname: string;
   nachname: string;
   einmalpasswort: string;
+  leistungen?: string[];
 }): PartnerRegistrationWelcomeInputs {
   const f = footerStrings();
   return {
@@ -56,10 +57,12 @@ function buildPartnerRegistrationMailPayload(params: {
     teamEmail: f.teamEmail,
     websiteLabel: f.websiteLabel,
     websiteHref: f.websiteHref,
+    leistungen: params.leistungen,
   };
 }
 
 function buildPlainTextBody(inp: PartnerRegistrationWelcomeInputs): string {
+  const leistungen = (inp.leistungen ?? []).map((s) => s.trim()).filter(Boolean);
   return [
     `Guten Tag ${inp.vorname} ${inp.nachname},`,
     "",
@@ -70,6 +73,9 @@ function buildPlainTextBody(inp: PartnerRegistrationWelcomeInputs): string {
     "Zu Beginn erwartet Sie ein kurzes Tutorial zu den wichtigsten Funktionen.",
     "",
     "Zugang:",
+    ...(leistungen.length > 0
+      ? [`${leistungen.length === 1 ? "Ihr Partnerbereich" : "Ihre Partnerbereiche"}: ${leistungen.join(", ")}`]
+      : []),
     `Login: ${inp.loginUrl}`,
     `Benutzername / E-Mail: ${inp.partnerEmail}`,
     `Einmalpasswort: ${inp.einmalpasswort}`,
@@ -92,6 +98,8 @@ export async function sendPartnerRegistrationWelcomeMail(params: {
   vorname: string;
   nachname: string;
   einmalpasswort: string;
+  /** Anzeige-Labels der freigeschalteten Leistungen. */
+  leistungen?: string[];
 }): Promise<{ ok: true } | { ok: false }> {
   const inp = buildPartnerRegistrationMailPayload(params);
 
@@ -113,6 +121,7 @@ function buildDemoPreviewPayload(): PartnerRegistrationWelcomeInputs {
     nachname: "Mustermann",
     partnerEmail: "beispiel.partner@alltagshilfe-sued.de",
     einmalpasswort: "Aa!7xQy9",
+    leistungen: ["Betriebliche Pflegeberatung"],
     loginUrl: `${base}/partner/login`,
     kontaktinformationen: f.kontaktinformationen,
     tel: f.telefon,

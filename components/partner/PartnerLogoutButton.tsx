@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { invalidatePartnerSessionCache } from "@/lib/partner/partner-session-client";
 import { PARTNER_LAST_LOGIN_PASSWORD_FOR_CHANGE_KEY } from "@/lib/partner/password-prompt-session";
 import { createSupabaseBrowserClient } from "@/lib/supabase/client";
 
@@ -36,6 +37,7 @@ export function PartnerLogoutButton({ variant = "default" }: Props) {
           } catch {
             /* Session ggf. schon ungültig */
           }
+          invalidatePartnerSessionCache();
           router.refresh();
           router.push("/partner/login");
           setPending(false);

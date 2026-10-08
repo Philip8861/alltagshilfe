@@ -26,6 +26,7 @@ import {
   sendPartnerRegistrationWelcomePreviewMail,
 } from "@/lib/email/partner-registration-welcome";
 import { sendAllContactRouteTestEmails } from "@/lib/email/contact-route-test";
+import { PARTNER_RESPONSIBILITY_LABELS, type PartnerResponsibilitySlug } from "@/lib/partner/responsibility-areas";
 
 function formatPartnerProfileWriteError(err: { code?: string; message?: string }): string {
   const code = String(err.code ?? "");
@@ -277,6 +278,9 @@ export async function createPartnerUserAction(
     vorname: parsed.data.first_name,
     nachname: parsed.data.last_name,
     einmalpasswort: initialPassword,
+    leistungen: parsed.data.responsibility_areas.map(
+      (slug) => PARTNER_RESPONSIBILITY_LABELS[slug as PartnerResponsibilitySlug] ?? slug,
+    ),
   });
 
   if (!mailSent.ok) {

@@ -2,13 +2,13 @@ import { revalidatePath } from "next/cache";
 import { NextResponse } from "next/server";
 import { insertPartnerTipSubmission } from "@/lib/partner/insert-partner-tip-submission";
 import { notifyStaffOfNewPartnerTipFromPayload } from "@/lib/partner/partner-tip-staff-notify";
-import { isPartnerAccountDisabled, PARTNER_ACCOUNT_DISABLED_MESSAGE } from "@/lib/partner/auth";
-import { partnerMaySubmitTipForServiceSlug } from "@/lib/partner/responsibility-areas";
 import {
-  logPartnerPortalAuditEvent,
-  partnerAuditDisplayLabel,
-  serviceLabelDe,
-} from "@/lib/partner/partner-portal-audit-log";
+  getVerifiedAuthUser,
+  isPartnerAccountDisabled,
+  PARTNER_ACCOUNT_DISABLED_MESSAGE,
+} from "@/lib/partner/auth";
+import { partnerMaySubmitTipForServiceSlug } from "@/lib/partner/responsibility-areas";
+import { logPartnerPortalAuditEvent, serviceLabelDe } from "@/lib/partner/partner-portal-audit-log";
 import { createSupabaseServiceRoleClient } from "@/lib/supabase/service";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
@@ -42,18 +42,18 @@ export async function POST(request: Request) {
 
   try {
     const supabase = await createSupabaseServerClient();
-    const {
-      data: { user },
-      error: userErr,
-    } = await supabase.auth.getUser();
+    const user = await getVerifiedAuthUser(supabase);
 
-    if (userErr || !user) {
+    if (!user) {
       return NextResponse.json({ ok: false, message: "Nicht angemeldet." }, { status: 401 });
     }
 
+    /** Eine Profil-Abfrage für Berechtigung UND Benachrichtigungs-Daten (vorher zwei Rundreisen). */
     const { data: profile, error: profErr } = await supabase
       .from("partner_profiles")
-      .select("id, responsibility_areas, account_disabled_at")
+      .select(
+        "id, responsibility_areas, account_disabled_at, display_name, first_name, last_name, organization_name, partner_referral_code",
+      )
       .eq("id", user.id)
       .maybeSingle();
 
@@ -77,36 +77,45 @@ export async function POST(request: Request) {
       return NextResponse.json({ ok: false, message: result.message }, { status: 500 });
     }
 
-    const { data: hintRow } = await supabase
-      .from("partner_profiles")
-      .select("display_name, organization_name, partner_referral_code")
-      .eq("id", profile.id)
-      .maybeSingle();
-    const partnerHint = [hintRow?.organization_name, hintRow?.display_name, hintRow?.partner_referral_code]
-      .map((s) => (typeof s === "string" ? s.trim() : ""))
-      .filter(Boolean)
-      .join(" · ");
-    await notifyStaffOfNewPartnerTipFromPayload({
-      serviceSlug: parsed.data.service_slug,
-      tipId: result.tipId,
-      payload: parsed.data.payload as Record<string, unknown>,
-      partnerHint: partnerHint || undefined,
-    });
+    const partnerName =
+      [profile.first_name, profile.last_name]
+        .map((s) => (typeof s === "string" ? s.trim() : ""))
+        .filter(Boolean)
+        .join(" ") ||
+      (typeof profile.display_name === "string" ? profile.display_name.trim() : "") ||
+      user.email ||
+      String(profile.id).slice(0, 8);
+    const partnerCode =
+      typeof profile.partner_referral_code === "string" ? profile.partner_referral_code.trim() : "";
+    const actorLabel = partnerCode ? `${partnerName} (${partnerCode})` : partnerName;
 
+    /** Mail an Mitarbeitende und Audit-Eintrag sind unabhängig — parallel statt nacheinander. */
     const auditSvc = createSupabaseServiceRoleClient();
-    if (auditSvc) {
-      const actorLabel = await partnerAuditDisplayLabel(auditSvc, profile.id, user.email);
-      await logPartnerPortalAuditEvent(auditSvc, {
-        event_kind: "tip_submitted",
-        subject_partner_id: profile.id,
-        actor_kind: "partner",
-        actor_partner_id: profile.id,
-        actor_label: actorLabel,
-        tip_id: result.tipId,
-        summary: `Neuer Tipp eingegangen: ${serviceLabelDe(parsed.data.service_slug)}.`,
-        detail_json: { service_slug: parsed.data.service_slug },
-      });
-    }
+    await Promise.all([
+      notifyStaffOfNewPartnerTipFromPayload({
+        serviceSlug: parsed.data.service_slug,
+        tipId: result.tipId,
+        payload: parsed.data.payload as Record<string, unknown>,
+        partner: {
+          name: partnerName,
+          code: profile.partner_referral_code ?? null,
+          organization: profile.organization_name ?? null,
+          email: user.email ?? null,
+        },
+      }),
+      auditSvc
+        ? logPartnerPortalAuditEvent(auditSvc, {
+            event_kind: "tip_submitted",
+            subject_partner_id: profile.id,
+            actor_kind: "partner",
+            actor_partner_id: profile.id,
+            actor_label: actorLabel,
+            tip_id: result.tipId,
+            summary: `Neuer Tipp eingegangen: ${serviceLabelDe(parsed.data.service_slug)}.`,
+            detail_json: { service_slug: parsed.data.service_slug },
+          })
+        : Promise.resolve(),
+    ]);
 
     revalidatePath("/partner/dashboard");
     revalidatePath("/partner/statistik");

@@ -131,31 +131,42 @@ function ServiceChoiceIcon({ slug }: { slug: PartnerResponsibilitySlug }) {
 
 type WizardStep = { id: string; label: string };
 
-function wizardStepState(phase: FlowPhase, slug: PartnerResponsibilitySlug | null): {
+/**
+ * Schrittleiste. Bei nur einer freigeschalteten Leistung (`singleChoice`) entfällt der Schritt „Leistung“ —
+ * der Partner landet direkt im passenden Formular (z. B. nur betriebliche Pflegeberatung).
+ */
+function wizardStepState(
+  phase: FlowPhase,
+  slug: PartnerResponsibilitySlug | null,
+  singleChoice: boolean,
+): {
   steps: WizardStep[];
   activeIndex: number;
 } {
   const isPflege = slug === "pflegehilfsmittel";
-  const steps: WizardStep[] = isPflege
-    ? [
-        { id: "leistung", label: "Leistung" },
-        { id: "rueckfrage", label: "Rückfrage" },
-        { id: "angaben", label: "Angaben" },
-        { id: "fertig", label: "Fertig" },
-      ]
-    : [
-        { id: "leistung", label: "Leistung" },
-        { id: "angaben", label: "Angaben" },
-        { id: "fertig", label: "Fertig" },
-      ];
+  const steps: WizardStep[] = [];
+  if (!singleChoice) steps.push({ id: "leistung", label: "Leistung" });
+  if (isPflege) steps.push({ id: "rueckfrage", label: "Rückfrage" });
+  steps.push({ id: "angaben", label: "Angaben" }, { id: "fertig", label: "Fertig" });
+
+  const indexOf = (id: string) => Math.max(0, steps.findIndex((s) => s.id === id));
 
   let activeIndex = 0;
   if (phase === "service") activeIndex = 0;
-  else if (phase === "pflegeProximity" || phase === "pflegeNearHint") activeIndex = 1;
-  else if (phase === "form") activeIndex = isPflege ? 2 : 1;
+  else if (phase === "pflegeProximity" || phase === "pflegeNearHint") activeIndex = indexOf("rueckfrage");
+  else if (phase === "form") activeIndex = indexOf("angaben");
   else if (phase === "thanks") activeIndex = steps.length - 1;
 
   return { steps, activeIndex };
+}
+
+/** Startzustand: mit genau einer Leistung direkt in deren ersten Schritt springen. */
+function initialFlowFor(single: PartnerResponsibilitySlug | null): {
+  phase: FlowPhase;
+  slug: PartnerResponsibilitySlug | null;
+} {
+  if (!single) return { phase: "service", slug: null };
+  return { phase: single === "pflegehilfsmittel" ? "pflegeProximity" : "form", slug: single };
 }
 
 export function PartnerTipModal({ open, onClose, allowedSlugs }: Props) {
@@ -164,8 +175,10 @@ export function PartnerTipModal({ open, onClose, allowedSlugs }: Props) {
   const choices = useMemo(() => {
     return allowedSlugs.filter((s): s is PartnerResponsibilitySlug => validServiceSlugSet.has(s));
   }, [allowedSlugs]);
-  const [phase, setPhase] = useState<FlowPhase>("service");
-  const [slug, setSlug] = useState<PartnerResponsibilitySlug | null>(null);
+  const singleChoice: PartnerResponsibilitySlug | null = choices.length === 1 ? choices[0] : null;
+  const initialFlow = initialFlowFor(singleChoice);
+  const [phase, setPhase] = useState<FlowPhase>(initialFlow.phase);
+  const [slug, setSlug] = useState<PartnerResponsibilitySlug | null>(initialFlow.slug);
   const [betrieb, setBetrieb] = useState(emptyBetrieb);
   const [standard, setStandard] = useState(emptyStandard);
   const [pending, setPending] = useState(false);
@@ -173,25 +186,32 @@ export function PartnerTipModal({ open, onClose, allowedSlugs }: Props) {
   const [thanksSlug, setThanksSlug] = useState<PartnerResponsibilitySlug | null>(null);
 
   const reset = useCallback(() => {
-    setPhase("service");
-    setSlug(null);
+    const start = initialFlowFor(singleChoice);
+    setPhase(start.phase);
+    setSlug(start.slug);
     setBetrieb(emptyBetrieb);
     setStandard(emptyStandard);
     setMessage(null);
     setPending(false);
     setThanksSlug(null);
-  }, []);
+  }, [singleChoice]);
 
   const handleClose = useCallback(() => {
     reset();
     onClose();
   }, [onClose, reset]);
 
+  /** Erster Schritt des Ablaufs (kein „Zurück“ möglich). */
+  const isFirstPhase =
+    phase === "service" ||
+    (singleChoice != null &&
+      ((phase === "form" && singleChoice !== "pflegehilfsmittel") || phase === "pflegeProximity"));
+
   const goBack = useCallback(() => {
     setMessage(null);
     if (phase === "form") {
       if (slug === "pflegehilfsmittel") setPhase("pflegeProximity");
-      else {
+      else if (!singleChoice) {
         setPhase("service");
         setSlug(null);
       }
@@ -201,25 +221,28 @@ export function PartnerTipModal({ open, onClose, allowedSlugs }: Props) {
       setPhase("pflegeProximity");
       return;
     }
-    if (phase === "pflegeProximity") {
+    if (phase === "pflegeProximity" && !singleChoice) {
       setPhase("service");
       setSlug(null);
     }
-  }, [phase, slug]);
+  }, [phase, slug, singleChoice]);
 
-  const canGoBack = phase !== "service" && phase !== "thanks";
+  const canGoBack = !isFirstPhase && phase !== "thanks";
 
   const headerSubtitle = useMemo(() => {
     if (phase === "thanks") return "Ihr Tipp wurde übermittelt.";
     if (phase === "service") return "Wählen Sie zuerst die passende Leistung.";
     if (phase === "pflegeProximity") return "Damit wir Sie richtig beraten können.";
     if (phase === "pflegeNearHint") return "So geht es am schnellsten.";
+    if (slug === "betriebliche_pflegeberatung") {
+      return "Erfassen Sie die Kontaktdaten zum Betrieb – wir übernehmen die Ansprache.";
+    }
     return "Bitte füllen Sie die Felder aus – wir kümmern uns um die Zuordnung.";
-  }, [phase]);
+  }, [phase, slug]);
 
   const { steps: wizardSteps, activeIndex: wizardActiveIndex } = useMemo(
-    () => wizardStepState(phase, slug),
-    [phase, slug],
+    () => wizardStepState(phase, slug, singleChoice != null),
+    [phase, slug, singleChoice],
   );
 
   const thanksListFullName = useMemo(() => {

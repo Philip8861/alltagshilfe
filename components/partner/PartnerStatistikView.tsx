@@ -11,6 +11,10 @@ import {
 import { periodTipStatusCounts } from "@/lib/partner/dashboard-period-stats";
 import { formatProvisionEur } from "@/lib/partner/partner-tip-payout";
 import { PARTNER_TIP_STATUS_LABELS } from "@/lib/partner/partner-tip-admin";
+import {
+  partnerHasBetrieblicheProgram,
+  partnerHasEinmalProvisionProgram,
+} from "@/lib/partner/partner-program-capabilities";
 import type { PartnerDashboardTipSerial } from "@/lib/partner/types";
 
 export type PartnerStatistikOrderSerial = {
@@ -23,6 +27,8 @@ type Props = {
   orders: PartnerStatistikOrderSerial[];
   /** Profil `created_at`: Statistik beginnt erst ab diesem Kalendermonat. */
   partnerCreatedAt: string | null | undefined;
+  /** Freigeschaltete Leistungsbereiche — steuert, welche Kacheln/Linien sichtbar sind. */
+  responsibilityAreaSlugs?: string[];
 };
 
 type PeriodMode = "day" | "month" | "year" | "range";
@@ -86,7 +92,13 @@ function initialYearForPartner(partnerCreatedAt: string | null | undefined): str
   return String(Math.max(new Date().getFullYear(), py));
 }
 
-export function PartnerStatistikView({ tips, orders, partnerCreatedAt }: Props) {
+export function PartnerStatistikView({ tips, orders, partnerCreatedAt, responsibilityAreaSlugs }: Props) {
+  const areas = responsibilityAreaSlugs ?? [];
+  const hasBetriebliche = partnerHasBetrieblicheProgram(areas);
+  const hasEinmal = partnerHasEinmalProvisionProgram(areas);
+  /** Pflegebox-Bestellungen nur relevant, wenn Pflegehilfsmittel freigeschaltet sind (oder Altdaten existieren). */
+  const showPflegebox = areas.includes("pflegehilfsmittel") || orders.length > 0;
+  const showProvisionSplit = hasBetriebliche && hasEinmal;
   const [periodMode, setPeriodMode] = useState<PeriodMode>("month");
   const [monthInput, setMonthInput] = useState(() => initialMonthForPartner(partnerCreatedAt));
   const [yearInput, setYearInput] = useState(() => initialYearForPartner(partnerCreatedAt));
@@ -183,9 +195,11 @@ export function PartnerStatistikView({ tips, orders, partnerCreatedAt }: Props) 
         <div>
           <h1 className="text-xl font-semibold text-[#0F4F68] sm:text-2xl">Ihre Statistik</h1>
           <p className="mt-2 max-w-xl text-sm text-neutral-600">
-            Nur Ihre Tippgeber und Ihre Pflegebox-Bestellungen — keine fremden Partnerdaten. Provisionswerte wie auf dem
-            Dashboard (ohne Admin-Archiv). Ausgewertet wird ab dem Monat Ihrer Partner-Anlage; frühere Monate erscheinen
-            nicht.
+            {showPflegebox
+              ? "Nur Ihre Tipps und Ihre Pflegebox-Bestellungen — keine fremden Partnerdaten."
+              : "Nur Ihre eigenen Tipps — keine fremden Partnerdaten."}{" "}
+            Provisionswerte wie auf dem Dashboard (ohne Admin-Archiv). Ausgewertet wird ab dem Monat Ihrer
+            Partner-Anlage; frühere Monate erscheinen nicht.
           </p>
           <p className="mt-2 max-w-xl text-sm text-[#0F4F68]/85">
             Tippen Sie auf einen Bereich darunter – der Inhalt klappt auf.
@@ -267,7 +281,11 @@ export function PartnerStatistikView({ tips, orders, partnerCreatedAt }: Props) 
       <div className="partner-dash-animate partner-dash-delay-2 mt-8 space-y-4">
         <PartnerExpandableStatSection
           title="Karten zum gewählten Zeitraum"
-          subtitle="Meldungen, Status, Provisionsschätzung, Pflegebox-Bestellungen."
+          subtitle={
+            showPflegebox
+              ? "Meldungen, Status, Provisionsschätzung, Pflegebox-Bestellungen."
+              : "Meldungen, Status und Provisionsschätzung."
+          }
           badge={
             <>
               Tipps{" "}
@@ -302,20 +320,30 @@ export function PartnerStatistikView({ tips, orders, partnerCreatedAt }: Props) 
           <p className="text-[0.65rem] font-bold uppercase tracking-wide text-amber-950/75">Provision (geschätzt)</p>
           <p className="mt-1 text-lg font-bold tabular-nums text-amber-950">{formatProvisionEur(provisionInPeriod.total)}</p>
           <p className="mt-1 text-xs text-neutral-600">
-            Monatlich {formatProvisionEur(provisionInPeriod.monatlich)} · Einmal {formatProvisionEur(provisionInPeriod.einmal)}
+            {showProvisionSplit
+              ? `Monatlich ${formatProvisionEur(provisionInPeriod.monatlich)} · Einmal ${formatProvisionEur(provisionInPeriod.einmal)}`
+              : hasBetriebliche
+                ? "Monatliche Abschlussprovision (betriebliche Pflegeberatung)"
+                : "Einmalprovision nach Eingangsdatum"}
           </p>
         </div>
-        <div className="rounded-2xl border border-sky-200/70 bg-gradient-to-br from-sky-50/60 to-white p-4">
-          <p className="text-[0.65rem] font-bold uppercase tracking-wide text-sky-900/70">Ihre Pflegebox</p>
-          <p className="mt-1 text-2xl font-bold tabular-nums text-sky-900">{ordersInPeriodCount}</p>
-          <p className="mt-1 text-xs text-neutral-500">Bestellungen im Zeitraum</p>
-        </div>
+        {showPflegebox ? (
+          <div className="rounded-2xl border border-sky-200/70 bg-gradient-to-br from-sky-50/60 to-white p-4">
+            <p className="text-[0.65rem] font-bold uppercase tracking-wide text-sky-900/70">Ihre Pflegebox</p>
+            <p className="mt-1 text-2xl font-bold tabular-nums text-sky-900">{ordersInPeriodCount}</p>
+            <p className="mt-1 text-xs text-neutral-500">Bestellungen im Zeitraum</p>
+          </div>
+        ) : null}
       </div>
         </PartnerExpandableStatSection>
 
         <PartnerExpandableStatSection
           title="Diagramme und Zeitverläufe"
-          subtitle="Eingänge und Bestellungen passend zur Auswahl oben (Tag, Monat, Jahr oder Zeitraum von–bis)."
+          subtitle={
+            showPflegebox
+              ? "Eingänge und Bestellungen passend zur Auswahl oben (Tag, Monat, Jahr oder Zeitraum von–bis)."
+              : "Eingänge passend zur Auswahl oben (Tag, Monat, Jahr oder Zeitraum von–bis)."
+          }
         >
           <PartnerPortalStatisticsCharts
             tips={tipsForStats}
@@ -326,6 +354,9 @@ export function PartnerStatistikView({ tips, orders, partnerCreatedAt }: Props) 
             periodStartMs={periodRange.start.getTime()}
             periodEndMs={periodRange.end.getTime()}
             partnerCreatedAt={partnerCreatedAt}
+            showPflegebox={showPflegebox}
+            showMonatlich={hasBetriebliche}
+            showEinmal={hasEinmal}
           />
         </PartnerExpandableStatSection>
       </div>

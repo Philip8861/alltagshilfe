@@ -24,13 +24,45 @@ export type PartnerTipStaffNotifyBase = {
   serviceSlug: PartnerTipStaffServiceSlug;
   tipId: string;
   payloadSummary: string;
+  /** Freitext-Hinweis (Fallback, z. B. Rohcode aus dem Konfigurator). */
   partnerHint?: string;
+  /** Strukturierte Partnerangaben — erscheinen in Betreff und Überschrift („Partner Max Mustermann …“). */
+  partner?: PartnerTipStaffPartnerInfo;
+};
+
+export type PartnerTipStaffPartnerInfo = {
+  name?: string | null;
+  code?: string | null;
+  organization?: string | null;
+  email?: string | null;
 };
 
 export function buildPartnerAdminTipDeepLink(tipId: string): string {
   const base = siteConfig.baseUrl.replace(/\/$/, "");
   const id = tipId.trim();
   return `${base}/partner/admin?tipp=${encodeURIComponent(id)}`;
+}
+
+function cleanStr(v: unknown): string {
+  return typeof v === "string" ? v.trim() : "";
+}
+
+/** Zeilen „Partner“, „Firma“ … aus strukturierten Angaben; sonst Fallback auf `partnerHint`. */
+function partnerRows(input: Pick<PartnerTipStaffNotifyBase, "partner" | "partnerHint">): EmailDetailRow[] {
+  const rows: EmailDetailRow[] = [];
+  const name = cleanStr(input.partner?.name);
+  const code = cleanStr(input.partner?.code);
+  const org = cleanStr(input.partner?.organization);
+  const email = cleanStr(input.partner?.email);
+  if (name || code) {
+    rows.push({ label: "Partner", value: [name, code ? `Partner-Code ${code}` : ""].filter(Boolean).join(" · ") });
+  }
+  if (org) rows.push({ label: "Firma des Partners", value: org });
+  if (email) rows.push({ label: "E-Mail des Partners", value: email });
+  if (rows.length === 0 && cleanStr(input.partnerHint)) {
+    rows.push({ label: "Partner / Vermittlung", value: cleanStr(input.partnerHint) });
+  }
+  return rows;
 }
 
 /**
@@ -51,14 +83,13 @@ export async function notifyStaffOfNewPartnerTip(input: PartnerTipStaffNotifyBas
     PARTNER_RESPONSIBILITY_LABELS[input.serviceSlug as PartnerResponsibilitySlug] ?? input.serviceSlug;
   const actionUrl = buildPartnerAdminTipDeepLink(tipId);
   const defaultStatus = PARTNER_TIP_STATUS_LABELS.in_bearbeitung;
+  const partnerName = cleanStr(input.partner?.name);
 
   const rows: EmailDetailRow[] = [
+    ...partnerRows(input),
     { label: "Dienstleistung", value: leistung },
-    { label: "Kurzinfo", value: input.payloadSummary.trim() || "—" },
+    { label: "Kurzinfo zum Tipp", value: input.payloadSummary.trim() || "—" },
   ];
-  if (input.partnerHint?.trim()) {
-    rows.push({ label: "Partner / Vermittlung", value: input.partnerHint.trim() });
-  }
 
   const statusChoice = [
     PARTNER_TIP_STATUS_LABELS.vertragsabschluss_erfolgreich,
@@ -68,17 +99,22 @@ export async function notifyStaffOfNewPartnerTip(input: PartnerTipStaffNotifyBas
   ].join(", ");
 
   const detailText = [
-    "Es wurde ein neuer Tipp über das Partnerportal bzw. einen verknüpften Kanal (z. B. Pflegebox-Konfigurator) eingereicht.",
+    partnerName
+      ? `Partner ${partnerName} hat über das Partnerportal einen neuen Tipp zur Leistung „${leistung}“ abgegeben.`
+      : "Es wurde ein neuer Tipp über das Partnerportal bzw. einen verknüpften Kanal (z. B. Pflegebox-Konfigurator) eingereicht.",
     `Aktueller Bearbeitungsstatus in der Verwaltung: ${defaultStatus}.`,
     "Bitte prüfen Sie den Vorgang und setzen Sie den Status für den Kooperationspartner entsprechend:",
     `Mögliche Stufen: ${statusChoice}.`,
     "Der Partner sieht den Status im eigenen Dashboard und wartet auf diese Aktualisierung.",
   ].join("\n");
 
-  const subject = `Neuer Partner-Tipp · ${leistung}`;
+  const subject = partnerName
+    ? `Neuer Partner-Tipp von ${partnerName} · ${leistung}`
+    : `Neuer Partner-Tipp · ${leistung}`;
+  const headline = partnerName ? `Partner ${partnerName} hat einen Tipp abgegeben` : "Neuer Partner-Tipp";
 
   const text = [
-    subject,
+    headline,
     "",
     ...rows.map((r) => `${r.label}: ${r.value}`),
     "",
@@ -90,7 +126,7 @@ export async function notifyStaffOfNewPartnerTip(input: PartnerTipStaffNotifyBas
 
   const html = buildBrandedNotificationHtml({
     kindBadge: "Partner-Tipp",
-    headline: "Neuer Partner-Tipp",
+    headline,
     rows,
     detailTitle: "Was ist zu tun?",
     detailText,
@@ -131,19 +167,20 @@ export async function notifyStaffOfInBearbeitungPartnerTipReminder(input: Partne
   const statusLabel = PARTNER_TIP_STATUS_LABELS.in_bearbeitung;
 
   const rows: EmailDetailRow[] = [
+    ...partnerRows(input),
     { label: "Dienstleistung", value: leistung },
-    { label: "Kurzinfo", value: input.payloadSummary.trim() || "—" },
+    { label: "Kurzinfo zum Tipp", value: input.payloadSummary.trim() || "—" },
   ];
-  if (input.partnerHint?.trim()) {
-    rows.push({ label: "Partner / Vermittlung", value: input.partnerHint.trim() });
-  }
 
   const detailText = [
     `Dieser Partner-Tipp steht seit mindestens drei Tagen weiterhin auf „${statusLabel}“.`,
     "Bitte prüfen Sie den Vorgang in der Partner-Administration und aktualisieren Sie den Status, sobald möglich – der Partner sieht ihn im eigenen Dashboard.",
   ].join("\n");
 
-  const subject = `Erinnerung Partner-Tipp · ${leistung}`;
+  const reminderPartnerName = cleanStr(input.partner?.name);
+  const subject = reminderPartnerName
+    ? `Erinnerung Partner-Tipp von ${reminderPartnerName} · ${leistung}`
+    : `Erinnerung Partner-Tipp · ${leistung}`;
 
   const text = [
     subject,
@@ -189,6 +226,7 @@ export async function notifyStaffOfNewPartnerTipFromPayload(input: {
   tipId: string;
   payload: Record<string, unknown>;
   partnerHint?: string;
+  partner?: PartnerTipStaffPartnerInfo;
 }): Promise<void> {
   try {
     await notifyStaffOfNewPartnerTip({
@@ -196,6 +234,7 @@ export async function notifyStaffOfNewPartnerTipFromPayload(input: {
       tipId: input.tipId,
       payloadSummary: partnerTipPayloadSummary(input.payload, input.serviceSlug),
       partnerHint: input.partnerHint,
+      partner: input.partner,
     });
   } catch (e) {
     console.error("[partner-tip-notify] Unerwarteter Fehler:", e);

@@ -2,6 +2,7 @@
 
 import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { fetchPartnerSessionShared } from "@/lib/partner/partner-session-client";
 
 type PartnerSessionPayload = {
   configured: boolean;
@@ -44,44 +45,15 @@ function buildChangeRequestBlock(params: {
   ].join("\n");
 }
 
-function normalizeRole(role: unknown): "partner" | "admin" | null {
-  if (typeof role !== "string") return null;
-  const r = role.trim().toLowerCase();
-  if (r === "admin") return "admin";
-  if (r === "partner") return "partner";
-  return null;
-}
-
-function parseSessionPayload(raw: string): PartnerSessionPayload | null {
-  try {
-    const json = JSON.parse(raw) as Partial<PartnerSessionPayload>;
-    return {
-      configured: Boolean(json.configured),
-      authenticated: Boolean(json.authenticated),
-      hasProfile: Boolean(json.hasProfile),
-      role: normalizeRole(json.role),
-      systemAdminSession: json.systemAdminSession === true,
-    };
-  } catch {
-    return null;
-  }
-}
-
+/** Geteilt mit Header-Leiste (ein Request pro Navigation statt mehrerer). */
 async function fetchPartnerSessionPayload(): Promise<PartnerSessionPayload> {
-  const res = await fetch("/api/partner/session", {
-    credentials: "include",
-    cache: "no-store",
-    headers: { Accept: "application/json" },
-  });
-  const raw = await res.text();
-  const parsed = parseSessionPayload(raw);
-  if (parsed) return parsed;
+  const s = await fetchPartnerSessionShared();
   return {
-    configured: false,
-    authenticated: false,
-    hasProfile: false,
-    role: null,
-    systemAdminSession: false,
+    configured: s.configured,
+    authenticated: s.authenticated,
+    hasProfile: s.hasProfile,
+    role: s.role,
+    systemAdminSession: s.systemAdminSession,
   };
 }
 

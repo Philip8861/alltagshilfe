@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import { isPflegeboxKonfiguratorPagePath } from "@/lib/pflegebox-konfigurator-path";
+import { fetchPartnerSessionShared } from "@/lib/partner/partner-session-client";
 import { ReadabilityHeaderLauncher } from "@/components/accessibility/ReadabilityHeaderLauncher";
 import { cn } from "@/lib/utils";
 
@@ -51,49 +52,35 @@ export function HeaderStrip() {
 
   const [session, setSession] = useState<PartnerStripSession | null>(null);
 
-  const loadSession = useCallback(() => {
-    void (async () => {
-      try {
-        const res = await fetch("/api/partner/session", {
-          credentials: "include",
-          cache: "no-store",
-          headers: { Accept: "application/json" },
-        });
-        const raw = await res.text();
-        let json: Partial<PartnerStripSession> = {};
-        try {
-          json = raw ? (JSON.parse(raw) as Partial<PartnerStripSession>) : {};
-        } catch {
-          setSession(emptySession);
-          return;
-        }
-        setSession({
-          configured: Boolean(json.configured),
-          authenticated: Boolean(json.authenticated),
-          hasProfile: Boolean(json.hasProfile),
-          displayName: typeof json.displayName === "string" ? json.displayName : null,
-          firstName: typeof json.firstName === "string" ? json.firstName : null,
-          systemAdminSession: json.systemAdminSession === true,
-        });
-      } catch {
-        setSession(emptySession);
-      }
-    })();
+  const loadSession = useCallback((opts?: { force?: boolean }) => {
+    void fetchPartnerSessionShared(opts).then((json) => {
+      setSession({
+        configured: json.configured,
+        authenticated: json.authenticated,
+        hasProfile: json.hasProfile,
+        displayName: json.displayName,
+        firstName: json.firstName,
+        systemAdminSession: json.systemAdminSession,
+      });
+    }, () => setSession(emptySession));
   }, []);
 
   useEffect(() => {
-    loadSession();
+    /** Navigation: frisch laden (Login/Logout können den Status geändert haben) — geteilt mit anderen Konsumenten. */
+    loadSession({ force: true });
   }, [pathname, loadSession]);
 
   useEffect(() => {
+    /** Tab-Rückkehr/Fokus: TTL-Cache reicht (vermeidet Request-Salven bei schnellem Hin- und Herwechseln). */
     const onResume = () => {
       if (document.visibilityState === "visible") loadSession();
     };
+    const onFocus = () => loadSession();
     document.addEventListener("visibilitychange", onResume);
-    window.addEventListener("focus", loadSession);
+    window.addEventListener("focus", onFocus);
     return () => {
       document.removeEventListener("visibilitychange", onResume);
-      window.removeEventListener("focus", loadSession);
+      window.removeEventListener("focus", onFocus);
     };
   }, [loadSession]);
 

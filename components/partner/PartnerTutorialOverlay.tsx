@@ -1,10 +1,10 @@
 "use client";
 
 import type { ReactNode } from "react";
-import { useCallback, useEffect, useId, useLayoutEffect, useState, useTransition } from "react";
+import { useCallback, useEffect, useId, useLayoutEffect, useMemo, useState, useTransition } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { setPartnerTutorialHiddenAction } from "@/lib/actions/partner-tutorial";
-import { PARTNER_TUTORIAL_STEPS } from "@/lib/partner/partner-tutorial-content";
+import { buildPartnerTutorialSteps } from "@/lib/partner/partner-tutorial-content";
 import {
   PARTNER_TUTORIAL_DEFER_AFTER_PW_PROMPT_YES,
   PARTNER_TUTORIAL_OPEN_EVENT,
@@ -19,6 +19,8 @@ type Props = {
   tutorialAutoShow: boolean;
   /** true, solange der Erst-Login-Passwortdialog offen ist — kein Rundgang darunter. */
   passwordPromptGateBlocked?: boolean;
+  /** Freigeschaltete Leistungsbereiche — bestimmt, welche Schritte gezeigt werden. */
+  responsibilityAreaSlugs?: string[];
 };
 
 function readSessionDone(): boolean {
@@ -116,9 +118,15 @@ function computeBubbleStyle(
 export function PartnerTutorialOverlay({
   tutorialAutoShow,
   passwordPromptGateBlocked = false,
+  responsibilityAreaSlugs,
 }: Props) {
   const router = useRouter();
   const pathname = usePathname() ?? "";
+  const areasKey = (responsibilityAreaSlugs ?? []).join("|");
+  const steps = useMemo(
+    () => buildPartnerTutorialSteps(areasKey ? areasKey.split("|") : []),
+    [areasKey],
+  );
   const introTitleId = useId();
   const stepTitleId = useId();
   const [mode, setMode] = useState<Mode>("off");
@@ -206,7 +214,7 @@ export function PartnerTutorialOverlay({
     setStepIndex(0);
   }, [pathname]);
 
-  const step = PARTNER_TUTORIAL_STEPS[stepIndex] ?? PARTNER_TUTORIAL_STEPS[0];
+  const step = steps[stepIndex] ?? steps[0];
   const anchorSel = step?.anchor ?? "";
 
   const updateLayout = useCallback(() => {
@@ -292,7 +300,7 @@ export function PartnerTutorialOverlay({
   };
 
   const nextStep = () => {
-    if (stepIndex >= PARTNER_TUTORIAL_STEPS.length - 1) {
+    if (stepIndex >= steps.length - 1) {
       writeSessionDone();
       closeAll();
       return;
@@ -307,7 +315,7 @@ export function PartnerTutorialOverlay({
   if (mode === "off") return null;
 
   const isIntro = mode === "intro";
-  const lastStep = stepIndex >= PARTNER_TUTORIAL_STEPS.length - 1;
+  const lastStep = stepIndex >= steps.length - 1;
 
   const dialogShell = (children: ReactNode, labelledBy: string, variant: "intro" | "step") => (
     <div
@@ -403,7 +411,7 @@ export function PartnerTutorialOverlay({
           {dialogShell(
             <>
               <p className="text-xs font-semibold uppercase tracking-wide text-[#0F4F68]/80">
-                Schritt {stepIndex + 1} von {PARTNER_TUTORIAL_STEPS.length}
+                Schritt {stepIndex + 1} von {steps.length}
               </p>
               <h2 id={stepTitleId} className="mt-1 text-lg font-bold text-[#0F4F68] sm:text-xl">
                 {step.title}

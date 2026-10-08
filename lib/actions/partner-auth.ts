@@ -272,8 +272,6 @@ export async function checkPartnerPasswordChangeRateLimitAction(): Promise<
   return { ok: true };
 }
 
-export type { EnsurePartnerProfileResult };
-
 /** @deprecated Nutze GET /partner/sync-profile für zuverlässigere Cookies; diese Action ruft dieselbe Logik auf. */
 export async function ensurePartnerProfileForSessionAction(): Promise<EnsurePartnerProfileResult> {
   return ensurePartnerProfileForCurrentSession();

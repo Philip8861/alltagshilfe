@@ -24,13 +24,19 @@ export default async function PartnerDashboardPage({ searchParams }: { searchPar
   noStore();
   const { tip } = await searchParams;
   const { profile, email } = await requirePartnerLogin();
+  const periodKey = currentBerlinPeriodKey();
 
-  let tips: PartnerDashboardTipSerial[] = [];
-  try {
-    tips = await fetchPartnerTipsForDashboard(profile.id);
-  } catch {
-    tips = [];
-  }
+  /** Tipps und Monats-Summe unabhängig voneinander → parallel laden. */
+  const svc = createSupabaseServiceRoleClient();
+  const [tips, summary] = await Promise.all([
+    fetchPartnerTipsForDashboard(profile.id).catch((): PartnerDashboardTipSerial[] => []),
+    svc
+      ? getPartnerMonthlyPayoutSummary(svc, profile.id, periodKey).catch(() => null)
+      : Promise.resolve(null),
+  ]);
+  const ownCents = summary?.ownCents ?? 0;
+  const referralCents = summary?.referralCents ?? 0;
+  const totalCents = summary?.totalCents ?? 0;
 
   const { labelDe: payoutLabel } = nextPayoutDateInfo();
   const welcomeLine = partnerPortalWelcomeLine(profile, email);
@@ -41,22 +47,6 @@ export default async function PartnerDashboardPage({ searchParams }: { searchPar
   const avatarUrl = partnerAvatarPublicUrl(profile.avatar_path, profile.updated_at);
   const tipSlugSet = new Set<string>(PARTNER_RESPONSIBILITY_SLUGS);
   const hasAnyTipArea = responsibilityAreaSlugs.some((s) => tipSlugSet.has(s));
-
-  let ownCents = 0;
-  let referralCents = 0;
-  let totalCents = 0;
-  const periodKey = currentBerlinPeriodKey();
-  try {
-    const svc = createSupabaseServiceRoleClient();
-    if (svc) {
-      const summary = await getPartnerMonthlyPayoutSummary(svc, profile.id, periodKey);
-      ownCents = summary.ownCents;
-      referralCents = summary.referralCents;
-      totalCents = summary.totalCents;
-    }
-  } catch {
-    /* still render dashboard without summary */
-  }
 
   return (
     <PartnerDashboardClient

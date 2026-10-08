@@ -37,6 +37,11 @@ export default async function PartnerStatistikPage() {
   }));
 
   return (
-    <PartnerStatistikView tips={tips} orders={ordersSerial} partnerCreatedAt={profile.created_at ?? null} />
+    <PartnerStatistikView
+      tips={tips}
+      orders={ordersSerial}
+      partnerCreatedAt={profile.created_at ?? null}
+      responsibilityAreaSlugs={profile.responsibility_areas ?? []}
+    />
   );
 }

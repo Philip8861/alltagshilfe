@@ -312,6 +312,8 @@ export type PartnerRegistrationWelcomeInputs = {
   teamEmail: string;
   websiteLabel: string;
   websiteHref: string;
+  /** Freigeschaltete Leistungsbereiche (Anzeige-Labels), z. B. „Betriebliche Pflegeberatung“. */
+  leistungen?: string[];
 };
 
 export function partnerRegistrationWelcomeSubject(): string {
@@ -335,11 +337,21 @@ export function buildBrandedPartnerRegistrationWelcomeHtml(inp: PartnerRegistrat
       )
       .join("");
 
+  const leistungen = (inp.leistungen ?? []).map((s) => s.trim()).filter(Boolean);
   const intro = paragraphs([
     `Guten Tag ${inp.vorname} ${inp.nachname},`,
     "vielen Dank für Ihre Registrierung als Kooperationspartner bei uns. Wir freuen uns über Ihr Interesse an einer gemeinsamen Zusammenarbeit.",
     "Über Ihr Partner-Dashboard sehen Sie künftig vermittelte Vorgänge übersichtlich, verfolgen den Bearbeitungsstand und können Informationen zu Ihren Provisionen einsehen. Zu Beginn führt Sie ein kurzes Tutorial durch die wichtigsten Funktionen.",
   ]);
+
+  const leistungenRow =
+    leistungen.length > 0
+      ? `
+                  <tr>
+                    <td style="padding:6px 0 8px 0;color:${C.muted};font-size:13px;font-weight:700;width:170px;vertical-align:top;">${leistungen.length === 1 ? "Ihr Partnerbereich" : "Ihre Partnerbereiche"}</td>
+                    <td style="padding:6px 0 8px 0;"><strong>${escapeHtml(leistungen.join(", "))}</strong></td>
+                  </tr>`
+      : "";
 
   const loginTrim = inp.loginUrl.trim();
   const loginHref = escapeEmailHrefAttr(loginTrim);
@@ -375,7 +387,7 @@ export function buildBrandedPartnerRegistrationWelcomeHtml(inp: PartnerRegistrat
             </tr>
             <tr>
               <td style="padding:14px 16px 16px 16px;">
-                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="font-family:${FONT};font-size:15px;line-height:1.5;color:#1a1a1a;">
+                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="font-family:${FONT};font-size:15px;line-height:1.5;color:#1a1a1a;">${leistungenRow}
                   <tr>
                     <td style="padding:6px 0 8px 0;color:${C.muted};font-size:13px;font-weight:700;width:170px;vertical-align:top;">Benutzername / E-Mail</td>
                     <td style="padding:6px 0 8px 0;"><strong>${escapeHtml(inp.partnerEmail)}</strong></td>

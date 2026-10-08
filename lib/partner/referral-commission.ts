@@ -168,15 +168,20 @@ export async function getPartnerMonthlyReferralCommissionCents(
   const periodMonthEnd = periodMonthEndUtc(periodKey);
   if (!periodMonthStart || !periodMonthEnd) return 0;
 
-  let total = 0;
-  for (const d of directs) {
+  const eligible = directs.filter((d) => {
     const referredAt = d.referred_at ? new Date(d.referred_at) : null;
-    if (!referredAt || Number.isNaN(referredAt.getTime())) continue;
-    if (referredAt > periodMonthEnd) continue;
+    if (!referredAt || Number.isNaN(referredAt.getTime())) return false;
+    return referredAt <= periodMonthEnd;
+  });
 
-    const totalRevenue = await computePartnerTotalRevenueForPeriod(svc, d.id, periodKey);
+  /** Geworbene Partner sind unabhängig voneinander → Umsätze parallel berechnen. */
+  const revenues = await Promise.all(
+    eligible.map((d) => computePartnerTotalRevenueForPeriod(svc, d.id, periodKey)),
+  );
+
+  let total = 0;
+  for (const totalRevenue of revenues) {
     if (totalRevenue <= 0) continue;
-
     total += referralCentsFromOwnCents(totalRevenue, PARTNER_DIRECT_REFERRAL_RATE_BPS);
   }
   return total;
@@ -189,12 +194,17 @@ async function computePartnerTotalRevenueForPeriod(
 ): Promise<number> {
   if (!partnerId) return 0;
 
-  const ownCents = await getPartnerMonthlyOwnApprovedClosingCommissionCents(svc, partnerId, periodKey);
-  const directs = await getDirectReferralPartners(svc, partnerId);
+  const [ownCents, directs] = await Promise.all([
+    getPartnerMonthlyOwnApprovedClosingCommissionCents(svc, partnerId, periodKey),
+    getDirectReferralPartners(svc, partnerId),
+  ]);
+
+  const childTotals = await Promise.all(
+    directs.map((d) => computePartnerTotalRevenueForPeriod(svc, d.id, periodKey)),
+  );
 
   let childBonus = 0;
-  for (const d of directs) {
-    const childTotal = await computePartnerTotalRevenueForPeriod(svc, d.id, periodKey);
+  for (const childTotal of childTotals) {
     childBonus += referralCentsFromOwnCents(childTotal, PARTNER_DIRECT_REFERRAL_RATE_BPS);
   }
 
@@ -228,8 +238,10 @@ export async function getPartnerMonthlyPayoutSummary(
   partnerId: string,
   periodKey: string,
 ): Promise<{ ownCents: number; referralCents: number; totalCents: number }> {
-  const ownCents = await getPartnerMonthlyOwnApprovedClosingCommissionCents(svc, partnerId, periodKey);
-  const referralCents = await getPartnerMonthlyReferralCommissionCents(svc, partnerId, periodKey);
+  const [ownCents, referralCents] = await Promise.all([
+    getPartnerMonthlyOwnApprovedClosingCommissionCents(svc, partnerId, periodKey),
+    getPartnerMonthlyReferralCommissionCents(svc, partnerId, periodKey),
+  ]);
   return {
     ownCents,
     referralCents,

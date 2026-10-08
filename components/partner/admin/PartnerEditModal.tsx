@@ -14,6 +14,7 @@ import {
 import {
   addAdminDirectReferralAction,
   listAdminDirectReferralsAction,
+  setAdminPartnerSponsorAction,
   type AdminReferralChild,
 } from "@/lib/actions/partner-admin-referral";
 import { getPartnerCommissionRatesAction } from "@/lib/actions/partner-admin-commission-rates";
@@ -199,22 +200,12 @@ export function PartnerEditModal({ open, onClose, profile, email, sponsorPartner
               className="mt-1 w-full rounded-lg border border-neutral-200 px-3 py-2 text-sm"
             />
           </div>
-          <div>
-            <label className="text-xs font-bold uppercase text-[#0F4F68]/80">
-              Geworben durch Partner-Code
-            </label>
-            <input
-              type="text"
-              readOnly
-              disabled
-              value={sponsorPartnerCode ? sponsorPartnerCode : "—"}
-              className="mt-1 w-full cursor-not-allowed rounded-lg border border-neutral-200 bg-neutral-50 px-3 py-2 font-mono text-sm uppercase text-neutral-700"
-              aria-readonly
-            />
-            <p className="mt-1 text-xs text-neutral-500">
-              Werbe-Beziehung ist fest gespeichert und kann hier nicht geändert werden.
-            </p>
-          </div>
+          <AdminSponsorBlock
+            partnerId={profile.id}
+            hasSponsor={Boolean(profile.referred_by_partner_id)}
+            sponsorPartnerCode={sponsorPartnerCode ?? null}
+            ownPartnerCode={profile.partner_referral_code ?? null}
+          />
 
           <AdminReferralChildrenBlock
             sponsorPartnerId={profile.id}
@@ -332,6 +323,119 @@ export function PartnerEditModal({ open, onClose, profile, email, sponsorPartner
           </div>
         </form>
       </div>
+    </div>
+  );
+}
+
+/**
+ * Werber dieses Partners („Geworben durch“). Einmalig setzbar; danach nur Anzeige
+ * (DB-Trigger 026 verhindert jede Änderung — Geldlogik).
+ */
+function AdminSponsorBlock({
+  partnerId,
+  hasSponsor,
+  sponsorPartnerCode,
+  ownPartnerCode,
+}: {
+  partnerId: string;
+  hasSponsor: boolean;
+  sponsorPartnerCode: string | null;
+  ownPartnerCode: string | null;
+}) {
+  const router = useRouter();
+  const [code, setCode] = useState("");
+  const [savedCode, setSavedCode] = useState<string | null>(null);
+  const [feedback, setFeedback] = useState<{ tone: "ok" | "err"; msg: string } | null>(null);
+  const [pending, startTransition] = useTransition();
+
+  const locked = hasSponsor || savedCode != null;
+  const shownCode = savedCode ?? sponsorPartnerCode;
+
+  const onSave = () => {
+    const trimmed = code.trim().toUpperCase();
+    if (!trimmed) {
+      setFeedback({ tone: "err", msg: "Bitte den Partner-Code des Werbers eingeben." });
+      return;
+    }
+    if (ownPartnerCode && trimmed === ownPartnerCode.toUpperCase()) {
+      setFeedback({ tone: "err", msg: "Eigener Partner-Code ist nicht zulässig." });
+      return;
+    }
+    setFeedback(null);
+    startTransition(async () => {
+      const res = await setAdminPartnerSponsorAction(partnerId, trimmed);
+      if (res.ok) {
+        setSavedCode(res.sponsorCode);
+        setCode("");
+        setFeedback({ tone: "ok", msg: `Werber ${res.sponsorCode} gespeichert — erscheint jetzt im Werbe-Netzwerk.` });
+        router.refresh();
+      } else {
+        setFeedback({ tone: "err", msg: res.message });
+      }
+    });
+  };
+
+  return (
+    <div>
+      <label htmlFor={`sponsor-code-${partnerId}`} className="text-xs font-bold uppercase text-[#0F4F68]/80">
+        Geworben durch Partner-Code
+      </label>
+      {locked ? (
+        <>
+          <input
+            id={`sponsor-code-${partnerId}`}
+            type="text"
+            readOnly
+            disabled
+            value={shownCode ?? "—"}
+            className="mt-1 w-full cursor-not-allowed rounded-lg border border-neutral-200 bg-neutral-50 px-3 py-2 font-mono text-sm uppercase text-neutral-700"
+            aria-readonly
+          />
+          <p className="mt-1 text-xs text-neutral-500">
+            Werbe-Beziehung ist fest gespeichert und kann nicht mehr geändert werden.
+          </p>
+        </>
+      ) : (
+        <>
+          <div className="mt-1 flex flex-col gap-2 sm:flex-row">
+            <input
+              id={`sponsor-code-${partnerId}`}
+              type="text"
+              value={code}
+              onChange={(e) => setCode(e.target.value)}
+              placeholder="z. B. AA1234"
+              spellCheck={false}
+              autoComplete="off"
+              disabled={pending}
+              className="w-full rounded-lg border border-neutral-200 px-3 py-2 font-mono text-sm uppercase outline-none ring-[#0F4F68] focus:ring-2 disabled:opacity-60"
+            />
+            <button
+              type="button"
+              onClick={onSave}
+              disabled={pending || !code.trim()}
+              className="min-h-10 shrink-0 rounded-lg border border-[#0F4F68]/30 bg-white px-4 py-2 text-sm font-semibold text-[#0F4F68] hover:bg-[#F2F9FA] disabled:opacity-60"
+            >
+              {pending ? "Speichern…" : "Werber festlegen"}
+            </button>
+          </div>
+          <p className="mt-1 text-xs text-neutral-500">
+            Noch kein Werber hinterlegt. Der Werber erhält 5 % Werbeprovision auf Abschlüsse dieses Partners ab dem
+            Zeitpunkt der Zuweisung. Die Beziehung ist danach nicht mehr änderbar.
+          </p>
+        </>
+      )}
+      {feedback ? (
+        <p
+          className={`mt-2 rounded-md px-3 py-2 text-xs ${
+            feedback.tone === "ok"
+              ? "border border-emerald-200 bg-emerald-50 text-emerald-900"
+              : "border border-amber-200 bg-amber-50 text-amber-950"
+          }`}
+          role={feedback.tone === "ok" ? "status" : "alert"}
+        >
+          {feedback.msg}
+        </p>
+      ) : null}
     </div>
   );
 }

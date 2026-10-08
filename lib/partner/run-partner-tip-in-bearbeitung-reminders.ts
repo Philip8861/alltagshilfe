@@ -104,13 +104,19 @@ export async function runPartnerTipInBearbeitungReminders(): Promise<PartnerTipI
   const partnerIds = [...new Set(dueItems.map((d) => d.partnerId).filter((x): x is string => Boolean(x)))];
   const profileById = new Map<
     string,
-    { organization_name?: string | null; display_name?: string | null; partner_referral_code?: string | null }
+    {
+      organization_name?: string | null;
+      display_name?: string | null;
+      first_name?: string | null;
+      last_name?: string | null;
+      partner_referral_code?: string | null;
+    }
   >();
 
   if (partnerIds.length > 0) {
     const { data: profs, error: profErr } = await svc
       .from("partner_profiles")
-      .select("id, organization_name, display_name, partner_referral_code")
+      .select("id, organization_name, display_name, first_name, last_name, partner_referral_code")
       .in("id", partnerIds.slice(0, 500));
 
     if (profErr) {
@@ -120,6 +126,8 @@ export async function runPartnerTipInBearbeitungReminders(): Promise<PartnerTipI
         profileById.set(String(p.id), {
           organization_name: p.organization_name as string | null,
           display_name: p.display_name as string | null,
+          first_name: p.first_name as string | null,
+          last_name: p.last_name as string | null,
           partner_referral_code: p.partner_referral_code as string | null,
         });
       }
@@ -132,14 +140,20 @@ export async function runPartnerTipInBearbeitungReminders(): Promise<PartnerTipI
 
   for (const d of capped) {
     const summary = partnerTipPayloadSummary(d.payload, d.serviceSlug);
-    let partnerHint: string | undefined;
+    let partner: PartnerTipStaffNotifyBase["partner"];
     if (d.partnerId) {
       const pr = profileById.get(d.partnerId);
       if (pr) {
-        partnerHint = [pr.organization_name, pr.display_name, pr.partner_referral_code]
-          .map((s) => (typeof s === "string" ? s.trim() : ""))
-          .filter(Boolean)
-          .join(" · ");
+        const name =
+          [pr.first_name, pr.last_name]
+            .map((s) => (typeof s === "string" ? s.trim() : ""))
+            .filter(Boolean)
+            .join(" ") || pr.display_name?.trim() || null;
+        partner = {
+          name,
+          code: pr.partner_referral_code ?? null,
+          organization: pr.organization_name ?? null,
+        };
       }
     }
 
@@ -147,7 +161,7 @@ export async function runPartnerTipInBearbeitungReminders(): Promise<PartnerTipI
       serviceSlug: d.serviceSlug,
       tipId: d.id,
       payloadSummary: summary,
-      partnerHint: partnerHint || undefined,
+      partner,
     });
 
     if (!okMail) {

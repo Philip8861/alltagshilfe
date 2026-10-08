@@ -35,6 +35,11 @@ type Props = {
   periodStartMs: number;
   periodEndMs: number;
   partnerCreatedAt: string | null | undefined;
+  /** Pflegebox-Linie nur bei Pflegehilfsmittel-Programm (oder vorhandenen Bestellungen). */
+  showPflegebox?: boolean;
+  /** Provisionslinien je nach freigeschaltetem Programm. */
+  showMonatlich?: boolean;
+  showEinmal?: boolean;
 };
 
 /** Ein Datenpunkt der Diagramme: Zeitfenster (Ende exklusiv) plus Achsenbeschriftung. */
@@ -86,7 +91,12 @@ export function PartnerPortalStatisticsCharts({
   periodStartMs,
   periodEndMs,
   partnerCreatedAt,
+  showPflegebox = true,
+  showMonatlich = true,
+  showEinmal = true,
 }: Props) {
+  /** Nur eine Provisionsart → „Gesamt“-Linie wäre identisch; dann einfache Einzel-Linie. */
+  const singleProvisionKind = showMonatlich !== showEinmal;
   const buckets = useMemo<ChartBucket[]>(() => {
     const { year: py, month0: pm0 } = partnerStatsEpochMonth(partnerCreatedAt);
     const epochStartMs = new Date(py, pm0, 1, 0, 0, 0, 0).getTime();
@@ -201,7 +211,8 @@ export function PartnerPortalStatisticsCharts({
       <div>
         <h2 className="text-base font-semibold text-[#0F4F68]">Ihre Verläufe (Liniendiagramme)</h2>
         <p className="mt-1 text-sm text-neutral-600">
-          Nur Ihre eigenen Tippgeber und Pflegebox-Bestellungen. Zeiten vor Ihrer Partner-Anlage werden nicht angezeigt.
+          {showPflegebox ? "Nur Ihre eigenen Tipps und Pflegebox-Bestellungen." : "Nur Ihre eigenen Tipps."} Zeiten vor
+          Ihrer Partner-Anlage werden nicht angezeigt.
           Tagesansicht: die letzten {DAY_MODE_DAYS} Tage bis zum gewählten Tag. Monatsansicht: bis zu 12 Monate bis zum
           gewählten Monat. Jahresansicht: ab dem Anlagemonat im jeweiligen Jahr. Zeitraum von–bis: bis {RANGE_DAILY_MAX_DAYS}{" "}
           Tage tagesgenau, längere Zeiträume als Monatspunkte.
@@ -209,7 +220,9 @@ export function PartnerPortalStatisticsCharts({
       </div>
 
       <div className="rounded-2xl border border-[#0F4F68]/10 bg-white p-5 shadow-sm">
-        <h3 className="text-sm font-bold text-[#0F4F68]">Neue Tippgeber &amp; Ihre Pflegebox-Bestellungen</h3>
+        <h3 className="text-sm font-bold text-[#0F4F68]">
+          {showPflegebox ? "Neue Tipps & Ihre Pflegebox-Bestellungen" : "Neue Tipps im Zeitverlauf"}
+        </h3>
         <div className="mt-4 h-[280px] w-full min-h-[240px]">
           <ResponsiveContainer width="100%" height="100%">
             <LineChart data={lineEingaengeOrders} margin={{ top: 8, right: 12, left: 4, bottom: 0 }}>
@@ -225,8 +238,10 @@ export function PartnerPortalStatisticsCharts({
               <YAxis allowDecimals={false} tick={{ fill: CHART_AXIS_TICK, fontSize: 11 }} width={32} />
               <Tooltip contentStyle={{ borderRadius: 12, border: `1px solid ${CHART_GRID}` }} />
               <Legend />
-              <Line type="monotone" dataKey="tipps" name="Tippgeber" stroke={CHART_TEAL} strokeWidth={2.5} dot={{ r: 3 }} />
-              <Line type="monotone" dataKey="pflegebox" name="Pflegebox" stroke="#14b8a6" strokeWidth={2} dot={{ r: 3 }} />
+              <Line type="monotone" dataKey="tipps" name="Tipps" stroke={CHART_TEAL} strokeWidth={2.5} dot={{ r: 3 }} />
+              {showPflegebox ? (
+                <Line type="monotone" dataKey="pflegebox" name="Pflegebox" stroke="#14b8a6" strokeWidth={2} dot={{ r: 3 }} />
+              ) : null}
             </LineChart>
           </ResponsiveContainer>
         </div>
@@ -287,9 +302,37 @@ export function PartnerPortalStatisticsCharts({
                 formatter={(value: number) => euroFmt(Number(value))}
               />
               <Legend />
-              <Line type="monotone" dataKey="monatlich" name="Monatlich" stroke="#059669" strokeWidth={2.5} dot={{ r: 3 }} />
-              <Line type="monotone" dataKey="einmal" name="Einmal" stroke="#d97706" strokeWidth={2.5} dot={{ r: 3 }} />
-              <Line type="monotone" dataKey="gesamt" name="Gesamt" stroke={CHART_TEAL} strokeWidth={2} dot={{ r: 2 }} strokeDasharray="4 3" />
+              {showMonatlich ? (
+                <Line
+                  type="monotone"
+                  dataKey="monatlich"
+                  name={singleProvisionKind ? "Monatliche Provision" : "Monatlich"}
+                  stroke="#059669"
+                  strokeWidth={2.5}
+                  dot={{ r: 3 }}
+                />
+              ) : null}
+              {showEinmal ? (
+                <Line
+                  type="monotone"
+                  dataKey="einmal"
+                  name={singleProvisionKind ? "Einmalprovision" : "Einmal"}
+                  stroke="#d97706"
+                  strokeWidth={2.5}
+                  dot={{ r: 3 }}
+                />
+              ) : null}
+              {!singleProvisionKind ? (
+                <Line
+                  type="monotone"
+                  dataKey="gesamt"
+                  name="Gesamt"
+                  stroke={CHART_TEAL}
+                  strokeWidth={2}
+                  dot={{ r: 2 }}
+                  strokeDasharray="4 3"
+                />
+              ) : null}
             </LineChart>
           </ResponsiveContainer>
         </div>

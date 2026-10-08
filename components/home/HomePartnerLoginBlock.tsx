@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { PartnerLoginForm } from "@/components/partner/PartnerLoginForm";
 import { PartnerLogoutButton } from "@/components/partner/PartnerLogoutButton";
+import { fetchPartnerSessionShared } from "@/lib/partner/partner-session-client";
 
 type SessionPayload = {
   configured: boolean;
@@ -26,25 +27,22 @@ export function HomePartnerLoginBlock() {
 
   useEffect(() => {
     let cancelled = false;
-    void (async () => {
-      try {
-        const res = await fetch("/api/partner/session", {
-          credentials: "same-origin",
-          cache: "no-store",
-        });
-        const json = (await res.json()) as Partial<SessionPayload>;
+    /** Geteilt mit der Header-Leiste: ein Request pro Seitenaufruf statt zwei. */
+    void fetchPartnerSessionShared().then(
+      (json) => {
         if (cancelled) return;
         setData({
-          configured: Boolean(json.configured),
-          authenticated: Boolean(json.authenticated),
-          hasProfile: Boolean(json.hasProfile),
-          displayName: typeof json.displayName === "string" ? json.displayName : null,
-          email: typeof json.email === "string" ? json.email : null,
+          configured: json.configured,
+          authenticated: json.authenticated,
+          hasProfile: json.hasProfile,
+          displayName: json.displayName,
+          email: json.email,
         });
-      } catch {
+      },
+      () => {
         if (!cancelled) setData(emptyPayload);
-      }
-    })();
+      },
+    );
     return () => {
       cancelled = true;
     };

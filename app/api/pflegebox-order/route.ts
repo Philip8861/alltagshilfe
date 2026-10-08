@@ -210,22 +210,26 @@ export async function POST(request: Request) {
     } else {
       const tipRowId = typeof tipIns?.id === "string" ? tipIns.id : "";
       if (tipRowId) {
-        let partnerHint: string | undefined = partnerRefRaw || undefined;
         const { data: pr } = await service
           .from("partner_profiles")
-          .select("organization_name, display_name, partner_referral_code")
+          .select("organization_name, display_name, first_name, last_name, partner_referral_code")
           .eq("id", partnerId)
           .maybeSingle();
-        const hint = [pr?.organization_name, pr?.display_name, pr?.partner_referral_code, partnerRefRaw || null]
-          .map((s) => (typeof s === "string" ? s.trim() : ""))
-          .filter(Boolean)
-          .join(" · ");
-        if (hint) partnerHint = hint;
+        const partnerName =
+          [pr?.first_name, pr?.last_name]
+            .map((s) => (typeof s === "string" ? s.trim() : ""))
+            .filter(Boolean)
+            .join(" ") || (typeof pr?.display_name === "string" ? pr.display_name.trim() : "");
         await notifyStaffOfNewPartnerTipFromPayload({
           serviceSlug: "pflegehilfsmittel",
           tipId: tipRowId,
           payload: tipPayload,
-          partnerHint,
+          partnerHint: partnerRefRaw || undefined,
+          partner: {
+            name: partnerName || null,
+            code: pr?.partner_referral_code ?? partnerRefRaw ?? null,
+            organization: pr?.organization_name ?? null,
+          },
         });
       }
     }
