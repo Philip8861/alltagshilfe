@@ -345,6 +345,10 @@ export function buildBrandedPartnerRegistrationWelcomeHtml(inp: PartnerRegistrat
   const logo = assetBase && /^https:\/\//.test(assetBase)
     ? `<img src="${escapeEmailHrefAttr(`${assetBase}/images/site/logo.png`)}" width="168" alt="${brand}" style="display:block;width:168px;max-width:100%;height:auto;border:0;">`
     : `<span style="font-size:19px;font-weight:700;color:#0F4F68;">${brand}</span>`;
+  /* Kopier-Symbol neben dem Passwort (eigene Tabellenzelle, damit es beim Markieren nicht mitkopiert wird). */
+  const copyIcon = assetBase && /^https:\/\//.test(assetBase)
+    ? `<td width="34" valign="middle" style="padding:0 0 0 12px;"><img src="${escapeEmailHrefAttr(`${assetBase}/images/email/kopieren.png`)}" width="22" height="22" alt="Kopieren" title="Passwort markieren und kopieren" style="display:block;width:22px;height:22px;border:0;"></td>`
+    : "";
   const loginHref = escapeEmailHrefAttr(inp.loginUrl);
   const loginVisible = escapeHtml(inp.loginUrl.trim().replace(/^https?:\/\//, ""));
   const services = (inp.leistungen ?? []).map((s) => s.trim()).filter(Boolean);
@@ -375,7 +379,11 @@ export function buildBrandedPartnerRegistrationWelcomeHtml(inp: PartnerRegistrat
             <tr><td style="padding:16px 20px 5px;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#637b87;">E-Mail / Anmeldename</td></tr>
             <tr><td style="padding:0 20px;font-size:15px;line-height:1.5;font-weight:600;overflow-wrap:anywhere;word-break:break-all;">${escapeHtml(inp.partnerEmail.trim())}</td></tr>
             <tr><td style="padding:18px 20px 6px;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#637b87;">Startpasswort</td></tr>
-            <tr><td style="padding:0 20px 20px;"><span style="display:inline-block;max-width:100%;font-family:Consolas,'Courier New',monospace;font-size:20px;line-height:1.5;font-weight:700;color:#0F4F68;overflow-wrap:anywhere;word-break:break-all;">${escapeHtml(inp.einmalpasswort.trim())}</span></td></tr>
+            <tr><td style="padding:0 20px 20px;">
+              <table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr>
+                <td style="padding:0;font-family:Consolas,'Courier New',monospace;font-size:20px;line-height:1.5;font-weight:700;color:#0F4F68;overflow-wrap:anywhere;word-break:break-all;">${escapeHtml(inp.einmalpasswort.trim())}</td>${copyIcon}
+              </tr></table>
+            </td></tr>
           </table>
           ${services.length ? `<p style="margin:14px 0 0;font-size:12px;line-height:1.65;color:#637b87;"><strong style="color:#315363;">Freigeschaltet:</strong> ${escapeHtml(services.join(" · "))}</p>` : ""}
           <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:24px 0 12px;"><tr><td align="center" bgcolor="#0F4F68" style="border-radius:8px;background:#0F4F68;mso-padding-alt:16px 24px;">

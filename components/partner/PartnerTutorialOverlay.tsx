@@ -65,10 +65,15 @@ function viewportBottomReservePx(vw: number): number {
   return vw < 768 ? 112 : 40;
 }
 
+/** Mindesthöhe, die der Dialog braucht, damit Titel, Text und Buttons sichtbar bleiben. */
+const MIN_PANEL_HEIGHT_PX = 260;
+
 /**
- * Platziert die Sprechblase **immer unterhalb** des beleuchteten Elements (kein Umspringen nach oben).
- * Die Höhe wird über {@link maxPanelHeightPx} begrenzt, damit der Dialog scrollen kann statt den Anker zu überdecken.
- * `panelH` = reale oder geschätzte Dialoghöhe (nur für Fallback ohne Anker).
+ * Platziert die Sprechblase bevorzugt unterhalb des beleuchteten Elements. Reicht der Platz dort nicht,
+ * wandert sie oberhalb des Ankers; passt sie auch dort nicht (sehr hoher Anker), wird sie am unteren
+ * Bildschirmrand verankert. Der Dialog bleibt dadurch immer vollständig im sichtbaren Bereich,
+ * die Höhe wird über {@link maxPanelHeightPx} begrenzt (Inhalt scrollt, Buttons bleiben fixiert).
+ * `panelH` = reale oder geschätzte Dialoghöhe.
  */
 function computeBubbleStyle(
   rect: DOMRect | null,
@@ -82,7 +87,8 @@ function computeBubbleStyle(
   const safeBottom = vh - reserve;
   const maxBubble = options?.maxBubbleWidthPx ?? 22.5 * 16;
   const width = Math.min(maxBubble, vw - 2 * margin);
-  const ph = Math.max(160, Math.min(panelH, vh - margin - reserve));
+  const availableH = Math.max(120, safeBottom - margin);
+  const ph = Math.max(Math.min(160, availableH), Math.min(panelH, availableH));
 
   const maxTop = Math.max(margin, safeBottom - ph);
   const clampTop = (t: number) => Math.max(margin, Math.min(t, maxTop));
@@ -92,15 +98,29 @@ function computeBubbleStyle(
 
   if (!rect || rect.width <= 0 || rect.height <= 0) {
     const top = clampTop((vh - ph) / 2);
-    return { top, left: centerXInViewport(), width };
+    return { top, left: centerXInViewport(), width, maxPanelHeightPx: Math.floor(safeBottom - top) };
   }
 
   const gap = 12;
-  /** Immer unter dem Spotlight – kein Platzieren oberhalb des Ankers. */
-  const top = Math.max(margin, rect.bottom + gap);
+  const minNeeded = Math.min(MIN_PANEL_HEIGHT_PX, availableH);
+  const spaceBelow = safeBottom - (rect.bottom + gap);
+  const spaceAbove = rect.top - gap - margin;
 
-  const spaceBelow = safeBottom - top;
-  const maxPanelHeightPx = Math.max(120, Math.floor(spaceBelow - 8));
+  let top: number;
+  let maxPanelHeightPx: number;
+  if (spaceBelow >= minNeeded) {
+    top = Math.max(margin, rect.bottom + gap);
+    maxPanelHeightPx = Math.floor(safeBottom - top - 4);
+  } else if (spaceAbove >= minNeeded) {
+    const h = Math.min(ph, spaceAbove);
+    top = Math.max(margin, rect.top - gap - h);
+    maxPanelHeightPx = Math.floor(rect.top - gap - top);
+  } else {
+    /* Anker höher als der verfügbare Platz: Dialog am unteren Rand festmachen (überlappt den Anker). */
+    top = maxTop;
+    maxPanelHeightPx = Math.floor(safeBottom - top);
+  }
+  maxPanelHeightPx = Math.max(120, maxPanelHeightPx);
 
   const useViewportCenter = Boolean(options?.viewportCenterXFromMd && vw >= 768);
   let left: number;
@@ -151,6 +171,24 @@ export function PartnerTutorialOverlay({
     setMissingAnchor(false);
     setActionError(null);
   }, []);
+
+  /** Rundgang für diese Sitzung beenden (ESC oder Schließen-Kreuz), ohne die Einstellung dauerhaft zu ändern. */
+  const dismissForSession = useCallback(() => {
+    writeSessionDone();
+    writePendingDashboard(false);
+    closeAll();
+  }, [closeAll]);
+
+  useEffect(() => {
+    if (mode === "off") return;
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key !== "Escape" || e.defaultPrevented) return;
+      e.preventDefault();
+      dismissForSession();
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [mode, dismissForSession]);
 
   const hideForever = useCallback(() => {
     setActionError(null);
@@ -317,6 +355,20 @@ export function PartnerTutorialOverlay({
   const isIntro = mode === "intro";
   const lastStep = stepIndex >= steps.length - 1;
 
+  const closeButton = (
+    <button
+      type="button"
+      onClick={dismissForSession}
+      aria-label="Rundgang schließen (Esc)"
+      title="Schließen (Esc)"
+      className="pointer-events-auto absolute right-2 top-2 inline-flex h-10 w-10 items-center justify-center rounded-full text-neutral-500 transition hover:bg-neutral-100 hover:text-[#0F4F68] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68]"
+    >
+      <svg viewBox="0 0 20 20" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden>
+        <path d="M5 5l10 10M15 5L5 15" />
+      </svg>
+    </button>
+  );
+
   const dialogShell = (children: ReactNode, labelledBy: string, variant: "intro" | "step") => (
     <div
       role="dialog"
@@ -325,9 +377,10 @@ export function PartnerTutorialOverlay({
       className={
         variant === "intro"
           ? "relative max-h-[min(88vh,34rem)] w-full overflow-y-auto overflow-x-hidden rounded-2xl border border-[#0F4F68]/25 bg-white p-5 shadow-2xl sm:p-6"
-          : "relative min-h-0 w-full flex-1 overflow-y-auto overflow-x-hidden rounded-2xl border border-[#0F4F68]/25 bg-white p-5 shadow-2xl sm:p-6"
+          : "relative flex min-h-0 w-full flex-1 flex-col overflow-hidden rounded-2xl border border-[#0F4F68]/25 bg-white shadow-2xl"
       }
     >
+      {closeButton}
       {children}
     </div>
   );
@@ -410,25 +463,27 @@ export function PartnerTutorialOverlay({
         >
           {dialogShell(
             <>
-              <p className="text-xs font-semibold uppercase tracking-wide text-[#0F4F68]/80">
-                Schritt {stepIndex + 1} von {steps.length}
-              </p>
-              <h2 id={stepTitleId} className="mt-1 text-lg font-bold text-[#0F4F68] sm:text-xl">
-                {step.title}
-              </h2>
-              <p className="mt-3 text-sm leading-relaxed text-neutral-700">{step.body}</p>
-              {missingAnchor ? (
-                <p className="mt-2 rounded-lg border border-amber-200 bg-amber-50/90 px-3 py-2 text-xs text-amber-950">
-                  {step.missingAnchorHint}
+              <div className="min-h-0 flex-1 overflow-y-auto overflow-x-hidden px-5 pt-5 sm:px-6 sm:pt-6">
+                <p className="pr-10 text-xs font-semibold uppercase tracking-wide text-[#0F4F68]/80">
+                  Schritt {stepIndex + 1} von {steps.length}
                 </p>
-              ) : null}
-              {actionError ? (
-                <p className="mt-3 text-sm font-medium text-red-700" role="alert">
-                  {actionError}
-                </p>
-              ) : null}
-              <div className="mt-5 flex flex-col gap-3 border-t border-neutral-200/80 pt-4">
-                <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-between">
+                <h2 id={stepTitleId} className="mt-1 pr-10 text-lg font-bold text-[#0F4F68] sm:text-xl">
+                  {step.title}
+                </h2>
+                <p className="mt-3 text-sm leading-relaxed text-neutral-700">{step.body}</p>
+                {missingAnchor ? (
+                  <p className="mt-2 rounded-lg border border-amber-200 bg-amber-50/90 px-3 py-2 text-xs text-amber-950">
+                    {step.missingAnchorHint}
+                  </p>
+                ) : null}
+                {actionError ? (
+                  <p className="mt-3 text-sm font-medium text-red-700" role="alert">
+                    {actionError}
+                  </p>
+                ) : null}
+              </div>
+              <div className="shrink-0 border-t border-neutral-200/80 bg-white px-5 pb-4 pt-3 sm:px-6">
+                <div className="flex items-center justify-between gap-2">
                   <button
                     type="button"
                     disabled={stepIndex === 0}
@@ -440,7 +495,7 @@ export function PartnerTutorialOverlay({
                   <button
                     type="button"
                     onClick={nextStep}
-                    className="pointer-events-auto inline-flex min-h-11 items-center justify-center rounded-xl bg-[#0F4F68] px-4 py-2 text-sm font-semibold text-white hover:bg-[#0c3d52]"
+                    className="pointer-events-auto inline-flex min-h-11 items-center justify-center rounded-xl bg-[#0F4F68] px-5 py-2 text-sm font-semibold text-white hover:bg-[#0c3d52]"
                   >
                     {lastStep ? "Fertig" : "Weiter"}
                   </button>
@@ -449,9 +504,9 @@ export function PartnerTutorialOverlay({
                   type="button"
                   disabled={pending}
                   onClick={hideForever}
-                  className="pointer-events-auto text-sm font-semibold text-neutral-600 underline decoration-neutral-400 underline-offset-2 hover:text-[#0F4F68] disabled:opacity-50"
+                  className="pointer-events-auto mt-2 inline-flex min-h-9 items-center text-xs font-semibold text-neutral-600 underline decoration-neutral-400 underline-offset-2 hover:text-[#0F4F68] disabled:opacity-50"
                 >
-                  Tutorial ausblenden
+                  Tutorial dauerhaft ausblenden
                 </button>
               </div>
             </>,
