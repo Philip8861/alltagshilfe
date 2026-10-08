@@ -55,7 +55,7 @@ export function CreatePartnerAccountForm() {
           className="rounded-xl border border-amber-400/90 bg-amber-50 px-4 py-3 text-sm text-amber-950"
           role="status"
         >
-          Hinweis: Die Bestätigungs-E-Mail wurde nicht gesendet — SMTP-Umgebung prüfen. Zugangsdaten unten kopieren und
+          Hinweis: Die Bestätigungs-E-Mail wurde nicht gesendet (SMTP prüfen). Zugangsdaten unten kopieren und
           dem Partner sicher mitteilen.
         </div>
       ) : null}

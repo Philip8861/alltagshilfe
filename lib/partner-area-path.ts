@@ -7,6 +7,8 @@ export function isPartnerAreaPath(pathname: string | null): boolean {
   return (
     pathname === "/partner" ||
     pathname.startsWith("/partner/") ||
+    pathname === "/partner-demo" ||
+    pathname.startsWith("/partner-demo/") ||
     pathname === "/en/partner" ||
     pathname.startsWith("/en/partner/")
   );

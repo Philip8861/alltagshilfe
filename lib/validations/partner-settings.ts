@@ -2,6 +2,7 @@ import { z } from "zod";
 
 const newPasswordField = z
   .string()
+  .trim()
   .min(6, "Neues Passwort: mindestens 6 Zeichen.")
   .max(256, "Passwort zu lang.")
   .regex(/[A-Za-zÄÖÜäöüß]/, "Mind. einen Buchstaben verwenden.")
@@ -10,9 +11,9 @@ const newPasswordField = z
 
 export const partnerPasswordChangeSchema = z
   .object({
-    currentPassword: z.string().min(1, "Aktuelles Passwort erforderlich.").max(256),
+    currentPassword: z.string().trim().min(1, "Aktuelles Passwort erforderlich.").max(256),
     newPassword: newPasswordField,
-    confirmPassword: z.string().min(1, "Bestätigung erforderlich.").max(256),
+    confirmPassword: z.string().trim().min(1, "Bestätigung erforderlich.").max(256),
   })
   .refine((d) => d.newPassword === d.confirmPassword, {
     message: "Die neuen Passwörter stimmen nicht überein.",
@@ -25,7 +26,7 @@ export type PartnerPasswordChangeInput = z.infer<typeof partnerPasswordChangeSch
 export const partnerPasswordRecoverySchema = z
   .object({
     newPassword: newPasswordField,
-    confirmPassword: z.string().min(1, "Bestätigung erforderlich.").max(256),
+    confirmPassword: z.string().trim().min(1, "Bestätigung erforderlich.").max(256),
   })
   .refine((d) => d.newPassword === d.confirmPassword, {
     message: "Die Passwörter stimmen nicht überein.",

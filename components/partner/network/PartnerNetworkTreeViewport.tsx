@@ -19,6 +19,8 @@ const MIN_SCALE = 0.35;
 const MAX_SCALE = 2.75;
 /** Startansicht: kleine Netzwerke nicht beliebig hochskalieren (Karten bleiben lesbar, nicht „aufgeblasen“). */
 const MAX_INITIAL_SCALE = 1.15;
+/** Startansicht: nicht kleiner als das – lieber seitlich verschieben als unlesbare Karten. */
+const MIN_INITIAL_SCALE = 0.6;
 
 type Transform = { x: number; y: number; scale: number };
 
@@ -115,18 +117,29 @@ export function PartnerNetworkTreeViewport({
       const focusWidth = Math.max(maxX - minX, 1);
       const focusHeight = Math.max(maxY - minY, 1);
 
+      /* Zoom so wählen, dass der Fokusbereich hineinpasst – aber nie so klein, dass Karten unlesbar werden. */
       const scale = Math.min(
         MAX_INITIAL_SCALE,
-        clampScale(
-          Math.min((vw - paddingX * 2) / focusWidth, (vh - paddingTop - paddingBottom) / focusHeight) *
-            initialViewScale,
+        Math.max(
+          MIN_INITIAL_SCALE,
+          clampScale(
+            Math.min((vw - paddingX * 2) / focusWidth, (vh - paddingTop - paddingBottom) / focusHeight) *
+              initialViewScale,
+          ),
         ),
       );
 
-      const x = (vw - focusWidth * scale) / 2 - minX * scale;
-      /* Passt der Fokusbereich komplett hinein, vertikal zentrieren – sonst oben andocken. */
-      const fitsVertically = focusHeight * scale <= vh - paddingTop - paddingBottom;
-      const y = fitsVertically ? (vh - focusHeight * scale) / 2 - minY * scale : paddingTop - minY * scale;
+      /* Horizontal immer auf die eigene Karte zentrieren (bei breiten Netzwerken sonst irgendwo am Rand). */
+      const selfEl = content.querySelector<HTMLElement>('[data-network-focus-self="true"]');
+      let centerX = minX + focusWidth / 2;
+      if (selfEl) {
+        const r = selfEl.getBoundingClientRect();
+        centerX = (r.left - contentRect.left) / currentScale + r.width / currentScale / 2;
+      }
+
+      /* Vertikal immer oben andocken: Werber/eigene Karte stehen sofort sichtbar am oberen Rand. */
+      const x = vw / 2 - centerX * scale;
+      const y = paddingTop - minY * scale;
       setTransform({ x, y, scale });
       return;
     }
@@ -227,8 +240,13 @@ export function PartnerNetworkTreeViewport({
 
   useLayoutEffect(() => {
     resetView();
-    const t = window.setTimeout(resetView, 80);
-    return () => window.clearTimeout(t);
+    /* Zweiter/dritter Durchlauf, nachdem die Kollisionsauflösung große Bäume umsortiert hat. */
+    const t1 = window.setTimeout(resetView, 80);
+    const t2 = window.setTimeout(resetView, 320);
+    return () => {
+      window.clearTimeout(t1);
+      window.clearTimeout(t2);
+    };
   }, [layoutKey, isMobile, resetView]);
 
   const zoomAtPoint = useCallback((clientX: number, clientY: number, nextScale: number) => {
@@ -408,7 +426,7 @@ export function PartnerNetworkTreeViewport({
 
       <div
         ref={viewportRef}
-        className="ahs-tree__viewport partner-network-tree__canvas relative min-h-[clamp(18rem,48vh,24rem)] w-full cursor-grab touch-none overflow-hidden active:cursor-grabbing sm:min-h-[clamp(24rem,64vh,42rem)]"
+        className="ahs-tree__viewport partner-network-tree__canvas relative h-[clamp(18rem,52vh,26rem)] w-full cursor-grab touch-none overflow-hidden active:cursor-grabbing sm:h-[clamp(24rem,64vh,42rem)]"
         onPointerDown={onPointerDown}
         onPointerMove={onPointerMove}
         onPointerUp={onPointerUp}
@@ -418,7 +436,7 @@ export function PartnerNetworkTreeViewport({
       >
         <div
           ref={contentRef}
-          className="ahs-tree__transform inline-block will-change-transform"
+          className="ahs-tree__transform absolute left-0 top-0 inline-block w-max will-change-transform"
           style={{
             transform: `translate(${transform.x}px, ${transform.y}px) scale(${transform.scale})`,
             transformOrigin: "0 0",

@@ -1,8 +1,4 @@
 import Image from "next/image";
-import {
-  getDemoAvatarGradient,
-  getDemoAvatarInitials,
-} from "@/lib/partner/partner-demo-avatars";
 
 export type PartnerAvatarSize = "sm" | "md" | "lg" | "xl" | "profile";
 
@@ -22,14 +18,35 @@ const IMAGE_SIZES: Record<PartnerAvatarSize, string> = {
   profile: "80px",
 };
 
-function DefaultUserIcon({ className }: { className: string }) {
+/**
+ * Platzhalter ohne Profilbild: Person-Silhouette im Markenstil (helle Fläche, Teal-Figur).
+ * Bewusst kein Initialen-/Farbverlauf-Fallback mehr: Tailwind-Klassen aus `lib/` wurden nicht
+ * generiert und ergaben einen leeren weißen Kreis.
+ */
+function DefaultUserIcon({
+  className,
+  label,
+}: {
+  className: string;
+  label?: string;
+}) {
   return (
     <div
-      className={`flex shrink-0 items-center justify-center rounded-full bg-[#0F4F68]/10 text-[#0F4F68] ${className}`}
-      aria-hidden
+      className={`flex shrink-0 items-center justify-center overflow-hidden rounded-full bg-[#E3F1F5] text-[#0F4F68] ${className}`}
+      role={label ? "img" : undefined}
+      aria-label={label || undefined}
+      aria-hidden={label ? undefined : true}
+      title={label || undefined}
     >
-      <svg width="55%" height="55%" viewBox="0 0 24 24" fill="currentColor">
-        <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
+      <svg width="100%" height="100%" viewBox="0 0 64 64" fill="none" aria-hidden>
+        {/* Kopf */}
+        <circle cx="32" cy="25" r="11" fill="currentColor" fillOpacity="0.9" />
+        {/* Schultern – unten vom Kreis beschnitten */}
+        <path
+          d="M12 60c0-11.6 9-20 20-20s20 8.4 20 20v6H12v-6z"
+          fill="currentColor"
+          fillOpacity="0.9"
+        />
       </svg>
     </div>
   );
@@ -37,6 +54,7 @@ function DefaultUserIcon({ className }: { className: string }) {
 
 type Props = {
   avatarUrl?: string | null;
+  /** Nur noch für Aufrufer-Kompatibilität; Darstellung ohne Bild ist immer das Personen-Icon. */
   partnerCode?: string | null;
   displayName?: string | null;
   size?: PartnerAvatarSize;
@@ -47,7 +65,6 @@ type Props = {
 
 export function PartnerAvatar({
   avatarUrl,
-  partnerCode,
   displayName,
   size = "md",
   ring = false,
@@ -73,21 +90,6 @@ export function PartnerAvatar({
     );
   }
 
-  const initials = getDemoAvatarInitials(partnerCode, displayName);
-  const hasLabel = Boolean(displayName?.trim() || partnerCode?.trim());
-
-  if (!hasLabel) {
-    return <DefaultUserIcon className={`${dim} ${ringCls} ${className}`.trim()} />;
-  }
-
-  const gradient = getDemoAvatarGradient(partnerCode);
-  return (
-    <div
-      className={`flex shrink-0 items-center justify-center rounded-full bg-gradient-to-br font-bold uppercase tracking-tight text-white shadow-[inset_0_-2px_6px_rgba(0,0,0,0.12)] ${gradient} ${dim} ${ringCls} ${className}`}
-      aria-hidden={!alt}
-      title={alt || undefined}
-    >
-      {initials}
-    </div>
-  );
+  void displayName;
+  return <DefaultUserIcon className={`${dim} ${ringCls} ${className}`.trim()} label={alt || undefined} />;
 }

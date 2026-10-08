@@ -23,8 +23,8 @@ function footerStrings(): {
     kontaktinformationen:
       process.env.PARTNER_REGISTRATION_MAIL_KONTAKT?.trim() ||
       [
-        "Valentin Maucher und Philip Sonntag GbR · Alltagshilfe Süd",
-        "Hinter den Gärten 10 · 87730 Bad Grönenbach",
+        "Alltagshilfe Süd, Valentin Maucher und Philip Sonntag GbR",
+        "Hinter den Gärten 10, 87730 Bad Grönenbach",
       ].join("\n"),
     telefon: process.env.PARTNER_REGISTRATION_MAIL_TELEFON?.trim() || "08334 / 9893330",
     teamEmail: process.env.PARTNER_REGISTRATION_MAIL_TEAM_EMAIL?.trim() || "info@alltagshilfe-sued.de",
@@ -50,7 +50,7 @@ function buildPartnerRegistrationMailPayload(params: {
     vorname: params.vorname,
     nachname: params.nachname,
     partnerEmail: params.partnerEmail,
-    einmalpasswort: params.einmalpasswort,
+    einmalpasswort: params.einmalpasswort.trim(),
     loginUrl: partnerPortalLoginUrl(),
     kontaktinformationen: f.kontaktinformationen,
     tel: f.telefon,
@@ -58,35 +58,42 @@ function buildPartnerRegistrationMailPayload(params: {
     websiteLabel: f.websiteLabel,
     websiteHref: f.websiteHref,
     leistungen: params.leistungen,
+    assetBaseUrl: assetBaseUrl(),
   };
 }
 
+/** Absolute Basis-URL für Bilder in der Mail (Logo, Icons); nur https-Quellen. */
+function assetBaseUrl(): string | undefined {
+  const base = (getPublicSiteBaseUrl() || siteConfig.baseUrl).replace(/\/$/, "");
+  return /^https:\/\//.test(base) ? base : undefined;
+}
+
+/**
+ * Klartext-Variante (kurz). Das Passwort steht allein in einer Zeile,
+ * damit es ohne Leerzeichen kopiert werden kann.
+ */
 function buildPlainTextBody(inp: PartnerRegistrationWelcomeInputs): string {
   const leistungen = (inp.leistungen ?? []).map((s) => s.trim()).filter(Boolean);
   return [
-    `Guten Tag ${inp.vorname} ${inp.nachname},`,
+    `Guten Tag ${inp.vorname.trim()} ${inp.nachname.trim()},`,
     "",
-    `vielen Dank für Ihre Registrierung als Kooperationspartner bei ${siteConfig.name}.`,
+    "Ihr Zugang zum Partnerportal ist eingerichtet. Dort sehen Sie Ihre Vorgänge, den Bearbeitungsstand und Ihre Provisionen.",
     "",
-    "Über unser Partner-Dashboard können Sie künftig Ihre vermittelten Vorgänge übersichtlich einsehen, den Bearbeitungsstatus verfolgen und Informationen zu Ihren Provisionen abrufen.",
+    ...(leistungen.length > 0 ? [`${leistungen.length === 1 ? "Bereich" : "Bereiche"}: ${leistungen.join(", ")}`] : []),
+    `E-Mail: ${inp.partnerEmail.trim()}`,
+    "Einmalpasswort (nächste Zeile):",
+    inp.einmalpasswort.trim(),
     "",
-    "Zu Beginn erwartet Sie ein kurzes Tutorial zu den wichtigsten Funktionen.",
+    `Anmelden: ${inp.loginUrl.trim()}`,
+    "Beim ersten Login legen Sie ein eigenes Passwort fest.",
     "",
-    "Zugang:",
-    ...(leistungen.length > 0
-      ? [`${leistungen.length === 1 ? "Ihr Partnerbereich" : "Ihre Partnerbereiche"}: ${leistungen.join(", ")}`]
-      : []),
-    `Login: ${inp.loginUrl}`,
-    `Benutzername / E-Mail: ${inp.partnerEmail}`,
-    `Einmalpasswort: ${inp.einmalpasswort}`,
+    `Fragen? Tel. ${inp.tel.trim()} oder ${inp.teamEmail.trim()}`,
     "",
     "Mit freundlichen Grüßen",
     `Ihr Team von ${siteConfig.name}`,
     "",
     inp.kontaktinformationen,
-    `Tel.: ${inp.tel}`,
-    `E-Mail: ${inp.teamEmail}`,
-    `Website: ${inp.websiteLabel}`,
+    inp.websiteLabel.trim(),
   ].join("\n");
 }
 
@@ -128,6 +135,7 @@ function buildDemoPreviewPayload(): PartnerRegistrationWelcomeInputs {
     teamEmail: f.teamEmail,
     websiteLabel: f.websiteLabel,
     websiteHref: f.websiteHref,
+    assetBaseUrl: assetBaseUrl(),
   };
 }
 
@@ -147,7 +155,7 @@ export async function sendPartnerRegistrationWelcomePreviewMail(
   return sendTransactionalMail({
     to: trimmed,
     subject: `[Vorschau] ${partnerRegistrationWelcomeSubject()}`,
-    text: [`[Vorschau / Test – keine echten Zugangsdaten]`, "", buildPlainTextBody(demo)].join("\n"),
+    text: [`[Vorschau, keine echten Zugangsdaten]`, "", buildPlainTextBody(demo)].join("\n"),
     html: buildBrandedPartnerRegistrationWelcomeHtml(demo),
   });
 }

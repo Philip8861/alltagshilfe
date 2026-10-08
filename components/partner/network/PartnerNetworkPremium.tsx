@@ -2,16 +2,12 @@
 
 import "./partner-network-tree.css";
 
-import Image from "next/image";
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import { PartnerAvatar, type PartnerAvatarSize } from "@/components/partner/PartnerAvatar";
 import { PartnerNetworkTreeViewport } from "@/components/partner/network/PartnerNetworkTreeViewport";
 import { PartnerNetworkTreeLayoutContext, usePartnerNetworkTreeLayout } from "@/components/partner/network/PartnerNetworkTreeLayoutContext";
 import { usePartnerNetworkViewport } from "@/components/partner/network/PartnerNetworkTreeViewportContext";
-import {
-  getDemoAvatarGradient,
-  getDemoAvatarInitials,
-  getDemoPartnerAvatarUrl,
-} from "@/lib/partner/partner-demo-avatars";
+import { getDemoPartnerAvatarUrl } from "@/lib/partner/partner-demo-avatars";
 import { resolveNetworkTreeCollisions } from "@/lib/partner/partner-network-tree-layout";
 import { formatPayoutPeriodLabelDe } from "@/lib/partner/payout-period";
 import {
@@ -216,7 +212,7 @@ export function PartnerNetworkPremium({
           )}
         </div>
 
-        <NetworkSidePanel periodLabel={periodLabel} hasSponsor={Boolean(sponsorCode)} />
+        <NetworkSidePanel periodLabel={periodLabel} />
       </div>
     </section>
   );
@@ -250,11 +246,11 @@ function NetworkPageHeader({
   return (
     <header className="partner-dash-animate rounded-2xl border border-[#0F4F68]/12 bg-white p-4 shadow-[0_12px_40px_-20px_rgba(15,79,104,0.2)] sm:p-5">
       <div className="flex flex-wrap items-center gap-4 sm:gap-5">
-        <div className="relative h-14 w-14 shrink-0 sm:h-16 sm:w-16">
+        <div className="relative h-14 w-14 shrink-0">
           <NetworkAvatar
             partnerCode={viewer.partnerCode}
             displayName={viewer.displayName}
-            size="profile"
+            size="xl"
             ring
             imageSrc={viewer.avatarUrl ?? undefined}
           />
@@ -437,7 +433,7 @@ function KpiIconSlot({ children, className }: { children: ReactNode; className: 
 /* Seitenleiste: Erklärung, Legende, Datenschutz                       */
 /* ------------------------------------------------------------------ */
 
-function NetworkSidePanel({ periodLabel, hasSponsor }: { periodLabel: string; hasSponsor: boolean }) {
+function NetworkSidePanel({ periodLabel }: { periodLabel: string }) {
   return (
     <aside className="flex min-w-0 flex-col gap-4" aria-label="Erläuterungen zum Werbe-Netzwerk">
       <div className="rounded-2xl border border-[#0F4F68]/12 bg-white p-4 shadow-[0_12px_40px_-20px_rgba(15,79,104,0.2)] sm:p-5">
@@ -449,36 +445,16 @@ function NetworkSidePanel({ periodLabel, hasSponsor }: { periodLabel: string; ha
           <HowStep n={2} title="Partner wird Ihnen zugeordnet">
             Der neue Partner erscheint hier als <strong className="font-semibold">direkt geworben</strong>.
           </HowStep>
-          <HowStep n={3} title={`${RATE_LABEL_NBSP} zusätzlich – von uns`}>
+          <HowStep n={3} title={`${RATE_LABEL_NBSP} zusätzlich von uns`}>
             Schließt Ihr Partner Verträge ab, erhalten Sie monatlich {RATE_LABEL_NBSP} auf seinen Gesamtumsatz
             zusätzlich. Sein Anteil bleibt ungekürzt.
           </HowStep>
         </ol>
         <p className="mt-4 rounded-lg border border-[#0F4F68]/10 bg-[#F8FBFC] px-3 py-2 text-[0.72rem] leading-snug text-neutral-700">
           <span className="font-semibold text-[#0F4F68]">Beispiel:</span> Ihr Partner erhält{" "}
-          {formatCentsDe(EXAMPLE_PARTNER_CENTS)} Abschlussprovision im Monat – Sie erhalten zusätzlich{" "}
+          {formatCentsDe(EXAMPLE_PARTNER_CENTS)} Abschlussprovision im Monat, Sie erhalten zusätzlich{" "}
           {formatCentsDe(EXAMPLE_REFERRAL_CENTS)}.
         </p>
-      </div>
-
-      <div className="rounded-2xl border border-[#0F4F68]/12 bg-white p-4 shadow-[0_12px_40px_-20px_rgba(15,79,104,0.2)] sm:p-5">
-        <h2 className="text-sm font-semibold text-[#0F4F68]">Legende</h2>
-        <ul className="mt-3 space-y-2.5 text-xs text-neutral-700">
-          {hasSponsor ? (
-            <LegendRow swatch="bg-gradient-to-r from-[#0F4F68] to-[#3DB8C9]" title="Ihr Werber">
-              Der Partner, der Sie geworben hat.
-            </LegendRow>
-          ) : null}
-          <LegendRow swatch="bg-gradient-to-r from-[#0F4F68] via-[#3DB8C9] to-[#0F4F68]" title="Ihre Position">
-            Eigene Abschlussprovision und Ihre gesamte Werbeprovision.
-          </LegendRow>
-          <LegendRow swatch="bg-gradient-to-r from-sky-400 to-cyan-400" title="Direkt geworben">
-            Zählt für Ihre Provision: {RATE_LABEL_NBSP} auf den Gesamtumsatz dieses Partners.
-          </LegendRow>
-          <LegendRow swatch="bg-slate-300" title="Indirekt">
-            Von Ihren Partnern geworben – fließt über deren Gesamtumsatz anteilig in Ihre Provision ein.
-          </LegendRow>
-        </ul>
         <p className="mt-4 flex items-start gap-2 border-t border-[#0F4F68]/10 pt-3 text-[0.7rem] leading-snug text-neutral-500">
           <IconShield className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#0F4F68]/70" />
           <span>
@@ -508,18 +484,6 @@ function HowStep({ n, title, children }: { n: number; title: string; children: R
   );
 }
 
-function LegendRow({ swatch, title, children }: { swatch: string; title: string; children: ReactNode }) {
-  return (
-    <li className="flex gap-2.5">
-      <span className={`mt-1 h-2 w-6 shrink-0 rounded-full ${swatch}`} aria-hidden />
-      <div className="min-w-0">
-        <p className="font-semibold text-slate-900">{title}</p>
-        <p className="mt-0.5 leading-snug text-neutral-600">{children}</p>
-      </div>
-    </li>
-  );
-}
-
 function EmptyNetworkState({ code }: { code: string }) {
   return (
     <div className="px-6 py-12 text-center sm:py-16">
@@ -528,7 +492,7 @@ function EmptyNetworkState({ code }: { code: string }) {
       </div>
       <p className="mt-4 text-base font-semibold text-[#0F4F68]">Noch kein Werbe-Netzwerk</p>
       <p className="mx-auto mt-2 max-w-md text-sm text-neutral-600">
-        Geben Sie Ihren Partner-Code weiter. Sobald ein Partner mit Ihrem Code angelegt wird, erscheint er hier – und
+        Geben Sie Ihren Partner-Code weiter. Sobald ein Partner mit Ihrem Code angelegt wird, erscheint er hier und
         Sie erhalten {RATE_LABEL_NBSP} auf seinen Gesamtumsatz zusätzlich.
       </p>
       <div className="mt-5 flex justify-center">
@@ -588,39 +552,19 @@ function NetworkAvatar({
 }: {
   partnerCode: string | null;
   displayName?: string | null;
-  size?: "sm" | "md" | "lg" | "xl" | "profile";
+  size?: PartnerAvatarSize;
   imageSrc?: string;
   ring?: boolean;
 }) {
-  const dim =
-    size === "profile"
-      ? "h-14 w-14 text-base sm:h-16 sm:w-16"
-      : size === "xl"
-      ? "h-14 w-14 text-base"
-      : size === "lg"
-        ? "h-12 w-12 text-sm"
-        : size === "md"
-          ? "h-10 w-10 text-xs"
-          : "h-9 w-9 text-[0.7rem]";
-  const ringCls = ring ? "ring-2 ring-[#3DB8C9]/35 ring-offset-2 ring-offset-white" : "";
-  const initials = getDemoAvatarInitials(partnerCode, displayName);
-  const gradient = getDemoAvatarGradient(partnerCode);
-
-  if (imageSrc) {
-    return (
-      <div className={`relative shrink-0 overflow-hidden rounded-full ${dim} ${ringCls}`}>
-        <Image src={imageSrc} alt="" fill className="object-cover" sizes="56px" unoptimized />
-      </div>
-    );
-  }
-
   return (
-    <div
-      className={`flex shrink-0 items-center justify-center rounded-full bg-gradient-to-br font-bold uppercase tracking-tight text-white shadow-[inset_0_-2px_6px_rgba(0,0,0,0.12)] ${gradient} ${dim} ${ringCls}`}
-      aria-hidden
-    >
-      {initials}
-    </div>
+    <PartnerAvatar
+      avatarUrl={imageSrc ?? null}
+      partnerCode={partnerCode}
+      displayName={displayName}
+      size={size}
+      ring={ring}
+      alt=""
+    />
   );
 }
 
@@ -822,6 +766,7 @@ function NetworkTreeNodeCard({
       className="partner-network-tree__node"
       data-network-focus={node.kind === "sponsor" || node.kind === "self" || node.kind === "direct" ? "true" : undefined}
       data-network-focus-top={node.kind === "sponsor" || node.kind === "self" ? "true" : undefined}
+      data-network-focus-self={isSelf ? "true" : undefined}
     >
       {isSelf ? (
         <span className="absolute -top-3 left-1/2 z-10 -translate-x-1/2 rounded-full border border-white/60 bg-gradient-to-r from-[#0F4F68] to-[#3DB8C9] px-3 py-0.5 text-[0.6rem] font-bold uppercase tracking-[0.12em] text-white shadow-[0_6px_16px_-6px_rgba(15,79,104,0.5)]">

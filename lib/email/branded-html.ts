@@ -41,10 +41,24 @@ function brandedEmailShell(options: {
    * Kompakterer Header + weniger Abstand zur ersten Textzeile (z. B. Partner-Willkommensmail).
    */
   tighterHeaderSpacing?: boolean;
+  /** Absolute URL zum Logo: weiße Leiste über dem farbigen Kopf. */
+  logoUrl?: string;
+  /** Vorschautext (Posteingang) – Standard: Headline. */
+  preheader?: string;
+  /** Eigener Fußzeilentext (HTML erlaubt, bereits escaped); Standard: automatischer Hinweis. */
+  footerHtml?: string;
 }): string {
-  const { kindBadge, headline, bodyRowsHtml, tighterHeaderSpacing } = options;
+  const { kindBadge, headline, bodyRowsHtml, tighterHeaderSpacing, logoUrl, preheader, footerHtml } = options;
   const brand = escapeHtml(siteConfig.name);
   const year = new Date().getFullYear();
+  const logoRow = logoUrl
+    ? `
+          <tr>
+            <td align="center" style="padding:18px 24px 14px 24px;background:#ffffff;">
+              <img src="${escapeEmailHrefAttr(logoUrl)}" width="160" height="37" alt="${brand}" style="display:block;width:160px;height:auto;border:0;outline:none;text-decoration:none;">
+            </td>
+          </tr>`
+    : "";
   const tight = Boolean(tighterHeaderSpacing);
   const badgeMb = tight ? "4px" : "12px";
   const headerPad = tight ? "16px 24px 8px 24px" : "24px 24px 22px 24px";
@@ -104,12 +118,12 @@ function brandedEmailShell(options: {
 </head>
 <body style="margin:0;padding:0;background:${C.pageBg};-webkit-text-size-adjust:100%;">
   <div style="display:none;max-height:0;overflow:hidden;font-size:1px;line-height:1px;color:transparent;">
-    ${escapeHtml(headline)} – ${brand}
+    ${escapeHtml(preheader ?? headline)}
   </div>
   <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background:${C.pageBg};">
     <tr>
       <td align="center" style="padding:28px 16px 40px 16px;">
-        <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="max-width:600px;background:${C.cardBg};border-radius:20px;overflow:hidden;box-shadow:0 12px 40px rgba(15,79,104,0.12);border:1px solid ${C.border};">
+        <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="max-width:600px;background:${C.cardBg};border-radius:20px;overflow:hidden;box-shadow:0 12px 40px rgba(15,79,104,0.12);border:1px solid ${C.border};">${logoRow}
           <tr>
             <td style="background:linear-gradient(135deg, ${C.primary} 0%, ${C.primaryDark} 100%);padding:${headerPad};border-bottom:4px solid ${C.accent};">
 ${headerInnerTd}
@@ -118,8 +132,8 @@ ${headerInnerTd}
           ${bodyRowsHtml}
           <tr>
             <td style="padding:18px 20px 22px 20px;background:#F2F9FA;border-top:1px solid ${C.border};">
-              <p style="margin:0;font-family:${FONT};font-size:12px;line-height:1.5;color:${C.muted};text-align:center;">
-                Automatische Benachrichtigung von der Website · ${brand} · © ${year}
+              <p style="margin:0;font-family:${FONT};font-size:12px;line-height:1.6;color:${C.muted};text-align:center;">
+                ${footerHtml ?? `Automatische Nachricht der Website ${brand}, © ${year}`}
               </p>
             </td>
           </tr>
@@ -135,7 +149,7 @@ function buildPartnerPasswordResetEmailBodyRows(ctaHrefAttr: string, ctaHrefPlai
   const intro = [
     "Sie haben angefordert, Ihr Passwort für den Partnerbereich neu zu setzen.",
     "Klicken Sie auf den Button unten. Anschließend können Sie auf unserer Website ein neues Passwort festlegen.",
-    "Wenn Sie diese Anfrage nicht gestellt haben, ignorieren Sie diese E-Mail — Ihr Zugang bleibt unverändert.",
+    "Wenn Sie diese Anfrage nicht gestellt haben, ignorieren Sie diese E-Mail. Ihr Zugang bleibt unverändert.",
   ];
 
   const introHtml = intro
@@ -199,7 +213,7 @@ export function buildSupabaseDashboardPasswordRecoveryHtml(): string {
 }
 
 export function partnerPasswordResetOutboundSubject(): string {
-  return `Passwort zurücksetzen – ${siteConfig.name}`;
+  return `Passwort zurücksetzen bei ${siteConfig.name}`;
 }
 
 /**
@@ -314,134 +328,125 @@ export type PartnerRegistrationWelcomeInputs = {
   websiteHref: string;
   /** Freigeschaltete Leistungsbereiche (Anzeige-Labels), z. B. „Betriebliche Pflegeberatung“. */
   leistungen?: string[];
+  /** Absolute Basis-URL der Website für Bilder (Logo, Icons). Ohne Angabe: keine Bilder. */
+  assetBaseUrl?: string;
 };
 
 export function partnerRegistrationWelcomeSubject(): string {
-  return `Ihre Registrierung als Kooperationspartner bei ${siteConfig.name}`;
+  return `Ihr Zugang zum Partnerportal von ${siteConfig.name}`;
 }
 
 /**
- * Partner-Registrierungsbestätigung (Admin-Anlage) — gleicher Rahmen wie Passwort-Reset.
+ * Willkommens-Mail nach Partner-Anlage (Verwaltung): kurz, Zugangsdaten im Fokus.
+ *
+ * Passwort steht allein in einer eigenen Tabellenzelle ohne umgebende Leerzeichen,
+ * damit Markieren/Kopieren keine Leerzeichen mitnimmt.
  */
 export function buildBrandedPartnerRegistrationWelcomeHtml(inp: PartnerRegistrationWelcomeInputs): string {
-  const kindBadge = "Partner";
-  const headline = "Willkommen im Partnerbereich";
+  const vorname = inp.vorname.trim();
+  const nachname = inp.nachname.trim();
+  const headline = vorname ? `Willkommen, ${vorname}!` : "Willkommen im Partnerportal";
+  const assetBase = inp.assetBaseUrl?.trim().replace(/\/$/, "");
+  const logoUrl = assetBase ? `${assetBase}/images/site/logo.png` : undefined;
+  const saveIconUrl = assetBase ? `${assetBase}/images/email/speichern.png` : undefined;
 
-  const paragraphs = (
-    blocks: string[],
-  ) =>
-    blocks
-      .map(
-        (t) =>
-          `<p style="margin:0 0 14px 0;font-family:${FONT};font-size:16px;line-height:1.55;color:#1a1a1a;">${nl2EmailLines(t)}</p>`,
-      )
-      .join("");
+  const text = (t: string, extra = "") =>
+    `<p style="margin:0 0 12px 0;font-family:${FONT};font-size:15px;line-height:1.55;color:#1a1a1a;${extra}">${nl2EmailLines(t)}</p>`;
 
   const leistungen = (inp.leistungen ?? []).map((s) => s.trim()).filter(Boolean);
-  const intro = paragraphs([
-    `Guten Tag ${inp.vorname} ${inp.nachname},`,
-    "vielen Dank für Ihre Registrierung als Kooperationspartner bei uns. Wir freuen uns über Ihr Interesse an einer gemeinsamen Zusammenarbeit.",
-    "Über Ihr Partner-Dashboard sehen Sie künftig vermittelte Vorgänge übersichtlich, verfolgen den Bearbeitungsstand und können Informationen zu Ihren Provisionen einsehen. Zu Beginn führt Sie ein kurzes Tutorial durch die wichtigsten Funktionen.",
-  ]);
+  const loginTrim = inp.loginUrl.trim();
+  const loginHref = escapeEmailHrefAttr(loginTrim);
+  const loginVisible = escapeHtml(loginTrim.replace(/^https?:\/\//, ""));
+  const websiteHref = escapeEmailHrefAttr(inp.websiteHref.trim());
+  const websiteLabel = escapeHtml(inp.websiteLabel.trim().replace(/^https?:\/\//, ""));
+  const teamEmail = inp.teamEmail.trim();
+  const mailtoHref = escapeEmailHrefAttr(`mailto:${teamEmail}`);
+
+  const labelTd = (label: string) =>
+    `<td style="padding:9px 0;color:${C.muted};font-family:${FONT};font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;width:124px;vertical-align:middle;">${label}</td>`;
+  const valueTd = (valueHtml: string) =>
+    `<td style="padding:9px 0;font-family:${FONT};font-size:15px;color:#1a1a1a;vertical-align:middle;">${valueHtml}</td>`;
 
   const leistungenRow =
     leistungen.length > 0
-      ? `
-                  <tr>
-                    <td style="padding:6px 0 8px 0;color:${C.muted};font-size:13px;font-weight:700;width:170px;vertical-align:top;">${leistungen.length === 1 ? "Ihr Partnerbereich" : "Ihre Partnerbereiche"}</td>
-                    <td style="padding:6px 0 8px 0;"><strong>${escapeHtml(leistungen.join(", "))}</strong></td>
-                  </tr>`
+      ? `<tr>${labelTd(leistungen.length === 1 ? "Bereich" : "Bereiche")}${valueTd(`<strong>${escapeHtml(leistungen.join(", "))}</strong>`)}</tr>`
       : "";
 
-  const loginTrim = inp.loginUrl.trim();
-  const loginHref = escapeEmailHrefAttr(loginTrim);
-  const loginVisible = escapeHtml(loginTrim);
-
-  const websiteHref = escapeEmailHrefAttr(inp.websiteHref.trim());
-  const websiteLabel = escapeHtml(inp.websiteLabel.trim());
-  const mailtoHref = escapeEmailHrefAttr(`mailto:${inp.teamEmail.trim()}`);
-
-  const ctaBlock = `
-          <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:8px 0 20px 0;">
-            <tr>
-              <td style="border-radius:14px;background:${C.primary};">
-                <a href="${loginHref}" style="display:inline-block;font-family:${FONT};font-size:16px;font-weight:700;line-height:1.2;color:#ffffff;text-decoration:none;padding:16px 28px;border-radius:14px;background:${C.primary};border:1px solid ${C.primaryDark};">
-                  Zum Partner-Login
-                </a>
-              </td>
-            </tr>
-          </table>
-          <p style="margin:0 0 18px 0;font-family:${FONT};font-size:13px;line-height:1.5;color:${C.muted};">
-            Direkt-Link (falls der Button nicht klickbar ist):<br/>
-            <span style="word-break:break-all;color:#1a1a1a;">${loginVisible}</span>
-          </p>`;
+  /* Passwort: Zelle ohne Whitespace um den Wert, nowrap, Icon daneben in eigener Zelle. */
+  const passwordCell =
+    `<table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr>` +
+    `<td style="padding:0;white-space:nowrap;vertical-align:middle;"><span style="display:inline-block;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:17px;font-weight:700;letter-spacing:0.06em;color:${C.primary};background:#ffffff;border:1px solid ${C.border};border-radius:10px;padding:9px 14px;white-space:nowrap;">${escapeHtml(inp.einmalpasswort.trim())}</span></td>` +
+    (saveIconUrl
+      ? `<td style="padding:0 0 0 10px;vertical-align:middle;"><img src="${escapeEmailHrefAttr(saveIconUrl)}" width="20" height="20" alt="Speichern" title="Passwort markieren und speichern" style="display:block;width:20px;height:20px;border:0;"></td>`
+      : "") +
+    `</tr></table>`;
 
   const credentialsCard = `
-          <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="margin:12px 0 18px 0;background:#FFF9F6;border-radius:14px;border:1px solid ${C.border};overflow:hidden;">
+          <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="margin:4px 0 18px 0;background:#F7FBFC;border-radius:14px;border:1px solid ${C.border};">
             <tr>
-              <td style="padding:14px 16px;background:linear-gradient(135deg,rgba(247,143,46,0.12) 0%,rgba(15,79,104,0.06) 100%);border-bottom:1px solid ${C.border};">
-                <p style="margin:0;font-family:${FONT};font-size:13px;font-weight:800;color:${C.primary};letter-spacing:0.04em;text-transform:uppercase;">
-                  Ihre Zugangsdaten
-                </p>
-              </td>
-            </tr>
-            <tr>
-              <td style="padding:14px 16px 16px 16px;">
-                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="font-family:${FONT};font-size:15px;line-height:1.5;color:#1a1a1a;">${leistungenRow}
-                  <tr>
-                    <td style="padding:6px 0 8px 0;color:${C.muted};font-size:13px;font-weight:700;width:170px;vertical-align:top;">Benutzername / E-Mail</td>
-                    <td style="padding:6px 0 8px 0;"><strong>${escapeHtml(inp.partnerEmail)}</strong></td>
-                  </tr>
-                  <tr>
-                    <td style="padding:6px 0 0 0;color:${C.muted};font-size:13px;font-weight:700;width:170px;vertical-align:top;">Einmalpasswort</td>
-                    <td style="padding:6px 0 0 0;">
-                      <code style="display:inline-block;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:14px;font-weight:700;color:${C.primary};background:#ffffff;border-radius:8px;padding:10px 12px;border:1px solid ${C.border};">${escapeHtml(inp.einmalpasswort)}</code>
-                    </td>
-                  </tr>
+              <td style="padding:14px 18px 10px 18px;">
+                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;">${leistungenRow}
+                  <tr>${labelTd("E-Mail")}${valueTd(`<strong>${escapeHtml(inp.partnerEmail.trim())}</strong>`)}</tr>
+                  <tr>${labelTd("Passwort")}${valueTd(passwordCell)}</tr>
                 </table>
+                <p style="margin:10px 0 4px 0;font-family:${FONT};font-size:12px;line-height:1.5;color:${C.muted};">
+                  Einmalpasswort. Beim ersten Login legen Sie ein eigenes Passwort fest.
+                </p>
               </td>
             </tr>
           </table>`;
 
-  const followUp = paragraphs([
-    "Bitte melden Sie sich zuerst mit dem Einmalpasswort an — beim ersten Login können Sie es in ein persönliches Passwort ändern.",
-    "Bei Fragen zur Anmeldung oder zum Dashboard erreichen Sie uns unter den angegebenen Kontaktdaten.",
-    "Wir freuen uns auf eine erfolgreiche Zusammenarbeit.",
-  ]);
+  const ctaBlock = `
+          <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 10px 0;">
+            <tr>
+              <td style="border-radius:12px;background:${C.accent};">
+                <a href="${loginHref}" style="display:inline-block;font-family:${FONT};font-size:16px;font-weight:700;line-height:1.2;color:#ffffff;text-decoration:none;padding:14px 26px;border-radius:12px;background:${C.accent};border:1px solid ${C.accentDark};">
+                  Jetzt anmelden
+                </a>
+              </td>
+            </tr>
+          </table>
+          <p style="margin:0 0 20px 0;font-family:${FONT};font-size:12px;line-height:1.5;color:${C.muted};">
+            Oder im Browser öffnen: <a href="${loginHref}" style="color:${C.primary};word-break:break-all;">${loginVisible}</a>
+          </p>`;
 
-  const kontaktBlock = `
-          <hr style="border:none;border-top:1px solid ${C.border};margin:22px 0 14px 0;">
-          <p style="margin:0 0 8px 0;font-family:${FONT};font-size:13px;line-height:1.45;color:${C.muted};text-transform:uppercase;letter-spacing:0.08em;font-weight:700;">
-            Kontakt
+  const closing = `
+          <p style="margin:0 0 4px 0;font-family:${FONT};font-size:14px;line-height:1.55;color:#1a1a1a;">
+            Fragen? Tel. ${escapeHtml(inp.tel.trim())} oder <a href="${mailtoHref}" style="color:${C.primary};font-weight:600;">${escapeHtml(teamEmail)}</a>
           </p>
-          <div style="font-family:${FONT};font-size:14px;line-height:1.55;color:#455055;">
-            ${nl2EmailLines(inp.kontaktinformationen)}<br/><br/>
-            Tel.: ${escapeHtml(inp.tel)}<br/>
-            E-Mail: <a href="${mailtoHref}" style="color:${C.primary};font-weight:600;">${escapeHtml(inp.teamEmail)}</a><br/>
-            Website: <a href="${websiteHref}" style="color:${C.primary};font-weight:600;">${websiteLabel}</a>
-          </div>`;
-
-  const signature = `
-          <p style="margin:20px 0 0 0;font-family:${FONT};font-size:16px;line-height:1.5;color:#1a1a1a;">
+          <p style="margin:14px 0 0 0;font-family:${FONT};font-size:15px;line-height:1.5;color:#1a1a1a;">
             Mit freundlichen Grüßen<br/><strong style="color:${C.primary};">Ihr Team von ${escapeHtml(siteConfig.name)}</strong>
           </p>`;
 
   const bodyRowsHtml = `
           <tr>
-            <td style="padding:8px 20px 8px 20px;">
-              ${intro}
-              ${ctaBlock}
+            <td style="padding:22px 24px 24px 24px;">
+              ${text(`Guten Tag ${[vorname, nachname].filter(Boolean).join(" ")},`)}
+              ${text("Ihr Zugang zum Partnerportal ist eingerichtet. Dort sehen Sie Ihre Vorgänge, den Bearbeitungsstand und Ihre Provisionen.", "margin-bottom:16px;")}
               ${credentialsCard}
-              ${followUp}
-              ${signature}
-              ${kontaktBlock}
+              ${ctaBlock}
+              ${closing}
             </td>
           </tr>`;
 
+  const footerLines = inp.kontaktinformationen
+    .split(/\r?\n/)
+    .map((l) => l.trim())
+    .filter(Boolean)
+    .map((l) => l.replace(/\s*[·•|]\s*/g, ", "));
+  const footerHtml = [
+    ...footerLines.map((l) => escapeHtml(l)),
+    `<a href="${websiteHref}" style="color:${C.primary};text-decoration:none;">${websiteLabel}</a>`,
+  ].join("<br/>");
+
   return brandedEmailShell({
-    kindBadge,
+    kindBadge: "Partnerportal",
     headline,
     bodyRowsHtml,
     tighterHeaderSpacing: true,
+    logoUrl,
+    preheader: "Ihre Zugangsdaten für das Partnerportal",
+    footerHtml,
   });
 }
+
