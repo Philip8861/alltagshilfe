@@ -6,6 +6,7 @@ import { useCallback, useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { PartnerInitialPasswordPrompt } from "@/components/partner/PartnerInitialPasswordPrompt";
 import { PartnerLogoutButton } from "@/components/partner/PartnerLogoutButton";
+import { PartnerSupportHeaderButton, PartnerSupportModal } from "@/components/partner/PartnerSupportModal";
 import { PartnerTutorialOverlay } from "@/components/partner/PartnerTutorialOverlay";
 
 type Props = {
@@ -150,7 +151,7 @@ export function PartnerPortalShell({
       <div className="order-1 min-w-0 flex-1 pb-[calc(5rem+env(safe-area-inset-bottom))] md:pb-0">
         <header className="flex min-h-16 items-center justify-between gap-4 border-b border-[#d6e8ed] bg-gradient-to-r from-white to-[#f0f8fa] px-5 sm:px-8 lg:px-10">
           <p className="text-sm font-semibold text-[#315363]">Partnerportal <span className="mx-2 text-[#a4b5be]" aria-hidden>/</span> <span className="text-[#6b7f89]">{pathname === "/partner/kontakt" ? "Kontakt" : settingsActive ? "Einstellungen" : networkActive ? "Werbe-Netzwerk" : statActive ? "Statistik" : "Übersicht"}</span></p>
-          <Link href="/partner/kontakt" className="inline-flex min-h-11 shrink-0 items-center gap-2 text-xs font-semibold text-[#476877] hover:text-[#0F4F68]">Hilfe & Kontakt <span aria-hidden>↗</span></Link>
+          <PartnerSupportHeaderButton />
         </header>
         <div className="mx-auto w-full max-w-[96rem] px-4 py-6 sm:px-8 lg:px-10 lg:py-9">{children}</div>
         <footer className="flex flex-wrap justify-end gap-x-5 gap-y-2 px-5 pb-6 text-xs text-[#637782] sm:px-8 lg:px-10">
@@ -172,6 +173,7 @@ export function PartnerPortalShell({
         passwordPromptGateBlocked={passwordPromptGateBlocked}
         responsibilityAreaSlugs={responsibilityAreaSlugs}
       />
+      <PartnerSupportModal />
     </div>
   );
 }
