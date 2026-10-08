@@ -32,7 +32,7 @@ export default async function PartnerEinstellungenProfilbildPage() {
           Profilbild
         </h1>
         <p className="mt-2 text-sm text-neutral-600">
-          Laden Sie ein Foto hoch und passen Sie den Ausschnitt an — so erscheint es überall im Partnerportal.
+          Laden Sie ein Foto hoch und passen Sie den Ausschnitt an. So erscheint es überall im Partnerportal.
         </p>
         <div className="mt-6 max-w-xl">
           <PartnerAvatarUploadForm

@@ -92,7 +92,7 @@ export function PartnerPortalShell({
         className="fixed inset-x-0 bottom-0 z-40 order-2 flex items-center gap-1 border-t border-[#cce2e8] bg-[#edf7f9] px-2 shadow-[3px_0_18px_-8px_rgba(15,79,104,0.25)] pb-[max(0.5rem,env(safe-area-inset-bottom))] pt-2 md:sticky md:top-0 md:order-1 md:h-dvh md:w-56 md:shrink-0 md:flex-col md:items-stretch md:border-r md:border-t-0 md:p-4"
         aria-label="Partnerportal-Navigation"
       >
-        <Link href="/partner/dashboard" aria-label="Partnerportal – zur Übersicht" className="mb-8 mt-4 hidden rounded-lg px-3 md:block">
+        <Link href="/partner/dashboard" aria-label="Partnerportal: zur Übersicht" className="mb-8 mt-4 hidden rounded-lg px-3 md:block">
           <span className="block text-lg font-semibold tracking-tight text-[#0F4F68]">Partnerportal</span>
         </Link>
         <nav className="flex min-w-0 flex-1 items-center gap-1 md:flex-none md:flex-col md:items-stretch md:gap-2">

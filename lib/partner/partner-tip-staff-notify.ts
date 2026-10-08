@@ -174,7 +174,7 @@ export async function notifyStaffOfInBearbeitungPartnerTipReminder(input: Partne
 
   const detailText = [
     `Dieser Partner-Tipp steht seit mindestens drei Tagen weiterhin auf „${statusLabel}“.`,
-    "Bitte prüfen Sie den Vorgang in der Partner-Administration und aktualisieren Sie den Status, sobald möglich – der Partner sieht ihn im eigenen Dashboard.",
+    "Bitte prüfen Sie den Vorgang in der Partner-Administration und aktualisieren Sie den Status, sobald möglich. Der Partner sieht ihn im eigenen Dashboard.",
   ].join("\n");
 
   const reminderPartnerName = cleanStr(input.partner?.name);

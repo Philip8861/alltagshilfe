@@ -151,7 +151,7 @@ export async function createPartnerUserAction(
 
   const svc = createSupabaseServiceRoleClient();
   if (!svc) {
-    return { ok: false, message: "SUPABASE_SERVICE_ROLE_KEY fehlt – Nutzer können nur in Supabase angelegt werden." };
+    return { ok: false, message: "SUPABASE_SERVICE_ROLE_KEY fehlt. Nutzer können nur in Supabase angelegt werden." };
   }
 
   const initialPassword = generatePartnerInitialPassword();

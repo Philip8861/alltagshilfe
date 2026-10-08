@@ -214,7 +214,7 @@ export function PartnerPasswordChangeForm({
         defaultValue={prefillCurrentPassword}
         hint={
           prefillCurrentPassword
-            ? "Ihr zuletzt bei der Anmeldung genutztes Passwort ist vorausgefüllt — Sie können es bei Bedarf anpassen."
+            ? "Ihr zuletzt bei der Anmeldung genutztes Passwort ist vorausgefüllt. Sie können es bei Bedarf anpassen."
             : undefined
         }
       />

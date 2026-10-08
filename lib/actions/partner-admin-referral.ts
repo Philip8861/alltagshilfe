@@ -58,7 +58,7 @@ export async function listAdminDirectReferralsAction(
     if (m.includes("referred_by_partner_id") || m.includes("referred_at")) {
       return {
         ok: false,
-        message: "Datenbank-Spalten fehlen — Migration 026 in Supabase ausführen.",
+        message: "Datenbank-Spalten fehlen. Migration 026 in Supabase ausführen.",
       };
     }
     return { ok: false, message: error.message || "Fehler beim Laden." };
@@ -167,7 +167,7 @@ export async function addAdminDirectReferralAction(
   if (!sponsor.partner_referral_code) {
     return {
       ok: false,
-      message: "Sponsor hat keinen Partner-Code — bitte vorher generieren lassen.",
+      message: "Sponsor hat keinen Partner-Code. Bitte vorher generieren lassen.",
     };
   }
 
@@ -200,7 +200,7 @@ export async function addAdminDirectReferralAction(
   if (referral.referred_by_partner_id) {
     return {
       ok: false,
-      message: "Dieser Partner hat bereits einen werbenden Partner — eine Änderung ist nicht möglich.",
+      message: "Dieser Partner hat bereits einen werbenden Partner, eine Änderung ist nicht möglich.",
     };
   }
 

@@ -69,7 +69,7 @@ export default async function PartnerEinstellungenPage() {
       <div className="partner-dash-animate">
         <h1 className="text-2xl font-bold text-[#0F4F68] sm:text-3xl">Einstellungen</h1>
         <p className="mt-2 max-w-2xl text-sm text-neutral-600">
-          Wählen Sie einen Bereich — die Details öffnen sich auf der nächsten Seite.
+          Wählen Sie einen Bereich. Die Details öffnen sich auf der nächsten Seite.
         </p>
       </div>
 

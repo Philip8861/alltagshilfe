@@ -414,7 +414,7 @@ export function PartnerTutorialOverlay({
                   Kurzer Rundgang
                 </h2>
                 <p className="mt-3 text-center text-sm leading-relaxed text-neutral-700">
-                  In wenigen Schritten zeigen wir Ihnen die wichtigsten Bereiche des Partnerportals — Partner-Code,
+                  In wenigen Schritten zeigen wir Ihnen die wichtigsten Bereiche des Partnerportals: Partner-Code,
                   Provisionen, Statuslisten und mehr. Es geht nur kurz; Sie können direkt{" "}
                   <strong className="font-semibold text-neutral-900">starten</strong>, ohne etwas ablehnen zu müssen.
                 </p>

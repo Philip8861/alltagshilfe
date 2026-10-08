@@ -368,7 +368,7 @@ function AdminSponsorBlock({
       if (res.ok) {
         setSavedCode(res.sponsorCode);
         setCode("");
-        setFeedback({ tone: "ok", msg: `Werber ${res.sponsorCode} gespeichert — erscheint jetzt im Werbe-Netzwerk.` });
+        setFeedback({ tone: "ok", msg: `Werber ${res.sponsorCode} gespeichert. Erscheint jetzt im Werbe-Netzwerk.` });
         router.refresh();
       } else {
         setFeedback({ tone: "err", msg: res.message });
@@ -514,7 +514,7 @@ function AdminReferralChildrenBlock({
           <>
             {" "}
             <span className="font-semibold text-amber-900">
-              Hinweis: Dieser Partner hat noch keinen Partner-Code — bitte zuerst speichern.
+              Hinweis: Dieser Partner hat noch keinen Partner-Code. Bitte zuerst speichern.
             </span>
           </>
         )}

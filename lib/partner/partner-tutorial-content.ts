@@ -52,9 +52,9 @@ export function buildPartnerTutorialSteps(responsibilityAreas: string[] | null |
     body: hasPflegehilfsmittel
       ? "Das ist Ihr eindeutiger Code. Kundinnen und Kunden geben ihn z. B. bei der Bestellung von Pflegehilfsmitteln an. Sie finden ihn auch auf Infomaterial zum Ausdrucken wieder."
       : showNetwork
-        ? "Das ist Ihr eindeutiger Code. Über ihn werden Ihre Vorgänge zugeordnet – und wenn Sie neue Partner empfehlen, hinterlegen wir diese über Ihren Code in Ihrem Werbe-Netzwerk."
+        ? "Das ist Ihr eindeutiger Code. Über ihn werden Ihre Vorgänge zugeordnet, und wenn Sie neue Partner empfehlen, hinterlegen wir diese über Ihren Code in Ihrem Werbe-Netzwerk."
         : "Das ist Ihr eindeutiger Code. Über ihn werden Ihre Vorgänge und Provisionen eindeutig Ihrem Konto zugeordnet.",
-    missingAnchorHint: "Öffnen Sie die Übersicht — dort sehen Sie Ihren Partner-Code in der ersten Kachel.",
+    missingAnchorHint: "Öffnen Sie die Übersicht, dort sehen Sie Ihren Partner-Code in der ersten Kachel.",
     bubbleAlignViewportCenterMd: true,
   });
 
@@ -102,7 +102,7 @@ export function buildPartnerTutorialSteps(responsibilityAreas: string[] | null |
   steps.push({
     anchor: '[data-tutorial="partner-statusliste-archiv"]',
     title: "Statusliste Archiv",
-    body: "Hier sehen Sie frühere Vorgänge und Einträge, die Sie in „Mein Archiv“ abgelegt haben — getrennt von den aktiven Provisionslisten.",
+    body: "Hier sehen Sie frühere Vorgänge und Einträge, die Sie in „Mein Archiv“ abgelegt haben, getrennt von den aktiven Provisionslisten.",
     missingAnchorHint:
       "Das Archiv kann auf der Übersicht ausgeblendet sein; unter Einstellungen → Statuslisten bleibt es dennoch erreichbar.",
   });
@@ -111,7 +111,7 @@ export function buildPartnerTutorialSteps(responsibilityAreas: string[] | null |
     anchor: '[data-tutorial="partner-tipp-geben"]',
     title: "Tipp geben",
     body: onlyBetrieblich
-      ? "Hier melden Sie uns einen Betrieb für die betriebliche Pflegeberatung. Sie landen direkt im Formular – Ansprechpartner, Firmenname und eine Erreichbarkeit genügen, den Rest übernehmen wir."
+      ? "Hier melden Sie uns einen Betrieb für die betriebliche Pflegeberatung. Sie landen direkt im Formular. Ansprechpartner, Firmenname und eine Erreichbarkeit genügen, den Rest übernehmen wir."
       : allLabels.length === 1
         ? `Hier melden Sie uns einen neuen Tipp zu „${allLabels[0]}“. Sie landen direkt im passenden Formular.`
         : `Hier senden Sie einen Tipp zu Ihren freigeschalteten Leistungen (${joinDe(allLabels)}). Wählen Sie die Leistung und füllen Sie das Formular aus.`,
@@ -123,7 +123,7 @@ export function buildPartnerTutorialSteps(responsibilityAreas: string[] | null |
       anchor: '[data-tutorial="partner-nav-netzwerk"]',
       title: "Werbe-Netzwerk",
       body:
-        `Hier sehen Sie die von Ihnen geworbenen Partner als Baum. Von deren Abschlussprovision erhalten Sie zusätzlich ${PARTNER_DIRECT_REFERRAL_RATE_LABEL} Werbeprovision – ebenfalls monatlich ausgezahlt. Neue Partner werden über Ihren Partner-Code zugeordnet.`,
+        `Hier sehen Sie die von Ihnen geworbenen Partner als Baum. Von deren Abschlussprovision erhalten Sie zusätzlich ${PARTNER_DIRECT_REFERRAL_RATE_LABEL} Werbeprovision, ebenfalls monatlich ausgezahlt. Neue Partner werden über Ihren Partner-Code zugeordnet.`,
       missingAnchorHint: "Nutzen Sie das Personen-Symbol in der linken bzw. unteren Leiste.",
     });
   }

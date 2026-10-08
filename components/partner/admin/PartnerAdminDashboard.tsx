@@ -673,7 +673,7 @@ export function PartnerAdminDashboard({
                 <p className="mt-2 text-sm text-neutral-600">
                   Betriebliche Pflegeberatung mit Status „Vertragsabschluss erfolgreich“. Status und monatliche
                   Provision sind weiter bearbeitbar. „Vertrag gekündigt“ verschiebt den Eintrag nach „Ehemalige
-                  Unternehmen“ — ohne Einfluss auf bereits abgerechnete Beträge.
+                  Unternehmen“, ohne Einfluss auf bereits abgerechnete Beträge.
                 </p>
                 <div className="mt-6 overflow-x-auto rounded-2xl border border-neutral-200/80">
                   <table className="min-w-[960px] w-full text-left text-sm">
@@ -798,7 +798,7 @@ export function PartnerAdminDashboard({
                   Ehemalige Unternehmen
                 </h2>
                 <p className="mt-2 text-sm text-neutral-600">
-                  Betriebliche Pflegeberatung mit Status „Vertrag gekündigt“. Die Anzeige dient nur der Übersicht —
+                  Betriebliche Pflegeberatung mit Status „Vertrag gekündigt“. Die Anzeige dient nur der Übersicht.
                   Auszahlungs- und Provisionslogik bleibt unverändert.
                 </p>
                 <div className="mt-6 overflow-x-auto rounded-2xl border border-neutral-200/80 bg-white">
@@ -928,7 +928,7 @@ export function PartnerAdminDashboard({
               </h2>
               <p className="mt-2 text-sm text-neutral-600">
                 Alle Tipps ohne Status „In Bearbeitung“, die nicht unter Aktive/Ehemalige Unternehmen (betriebliche
-                Pflegeberatung) liegen — <strong className="font-semibold text-neutral-800">nach Leistung sortiert</strong>.
+                Pflegeberatung) liegen, <strong className="font-semibold text-neutral-800">nach Leistung sortiert</strong>.
                 Der Eintrag erscheint automatisch hier, sobald der Status geändert wird. Die Anzeige hat{" "}
                 <strong className="font-semibold text-neutral-800">keinen Einfluss auf Provisionen</strong>. Status
                 „In Bearbeitung“ verschiebt zurück unter Aufträge.

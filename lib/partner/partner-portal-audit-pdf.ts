@@ -71,7 +71,7 @@ export async function buildPartnerPortalAuditPdf(
     y -= LINE;
   };
 
-  draw("Partnerportal — Aktivitätsverlauf", true, 14);
+  draw("Partnerportal: Aktivitätsverlauf", true, 14);
   draw(`Zeitraum: ${periodKey}`, false, 11);
   draw(`Erstellt: ${fmtDe(new Date().toISOString())}`, false, 9);
   draw(`Einträge: ${events.length}`, false, 9);

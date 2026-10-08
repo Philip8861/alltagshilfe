@@ -150,7 +150,7 @@ function messageForPasswordResetSupabaseError(message: string): string {
     return "Supabase lehnt die Ziel-URL ab. Im Dashboard unter Authentication → URL configuration die Redirect-URLs prüfen (z. B. https://ihre-domain.de/auth/callback**).";
   }
   if (isLikelySupabaseSmtpOrMailerFailure(message)) {
-    return "Supabase konnte die E-Mail nicht versenden (Custom SMTP). Bitte im Dashboard unter Project Settings → Auth → SMTP die Daten prüfen oder „Custom SMTP“ deaktivieren. Auf dem Server sind SMTP_HOST/SMTP_USER gesetzt: die Website versucht den Versand alternativ selbst — wenn beides fehlschlägt, Logs prüfen.";
+    return "Supabase konnte die E-Mail nicht versenden (Custom SMTP). Bitte im Dashboard unter Project Settings → Auth → SMTP die Daten prüfen oder „Custom SMTP“ deaktivieren. Auf dem Server sind SMTP_HOST/SMTP_USER gesetzt: die Website versucht den Versand alternativ selbst. Wenn beides fehlschlägt, Logs prüfen.";
   }
   if (m.includes("rate") || m.includes("too many")) {
     return "Zu viele Anfragen beim E-Mail-Dienst. Bitte in einigen Minuten erneut versuchen.";

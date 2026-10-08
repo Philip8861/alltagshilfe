@@ -45,7 +45,7 @@ export async function setPartnerAccountDisabledByAdminAction(
     if (m.includes("account_disabled_at") && (m.includes("does not exist") || m.includes("could not find"))) {
       return {
         ok: false,
-        message: "Spalte account_disabled_at fehlt — Migration 025 in Supabase ausführen.",
+        message: "Spalte account_disabled_at fehlt. Migration 025 in Supabase ausführen.",
       };
     }
     console.error("[setPartnerAccountDisabledByAdminAction]", error.message);

@@ -40,7 +40,7 @@ export default async function PartnerAdminLoginPage() {
                 <code className="rounded bg-white/80 px-1">PARTNER_SYSTEM_ADMIN_USER</code> (z. B. admin)
               </li>
               <li>
-                <code className="rounded bg-white/80 px-1">PARTNER_SYSTEM_ADMIN_PASSWORD</code> (starkes Passwort –
+                <code className="rounded bg-white/80 px-1">PARTNER_SYSTEM_ADMIN_PASSWORD</code> (starkes Passwort,
                 niemals committen)
               </li>
               <li>

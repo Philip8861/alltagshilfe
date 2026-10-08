@@ -157,8 +157,8 @@ export function AdminContactKanalTagesverlaufPanel({ chartYear }: Props) {
       <div>
         <h3 className="text-lg font-bold text-[#0F4F68]">Anfragen nach Kanal</h3>
         <p className="mt-1 text-sm text-neutral-600">
-          Je Eingangsweg getrennt – wie viele Anfragen am gewählten Tag, im Monat, im Jahr {chartYear} oder in einem
-          frei wählbaren Zeitraum (von–bis) eingegangen sind. Herkunft und Wochentage stehen im anderen Kontaktfeld.
+          Je Eingangsweg getrennt: wie viele Anfragen am gewählten Tag, im Monat, im Jahr {chartYear} oder in einem
+          frei wählbaren Zeitraum (von/bis) eingegangen sind. Herkunft und Wochentage stehen im anderen Kontaktfeld.
         </p>
       </div>
 
@@ -295,7 +295,7 @@ export function AdminContactKanalTagesverlaufPanel({ chartYear }: Props) {
                 <span className="font-semibold tabular-nums text-neutral-900">
                   {grandTotal.toLocaleString("de-DE")}
                 </span>
-                {grandTotal === 0 ? " – im gewählten Zeitraum liegen noch keine Daten vor." : null}
+                {grandTotal === 0 ? ". Im gewählten Zeitraum liegen noch keine Daten vor." : null}
               </p>
             </div>
 

@@ -4,7 +4,7 @@ import { PartnerDemoShell } from "@/components/partner/demo/PartnerDemoShell";
 import { requireSystemAdmin } from "@/lib/partner/system-admin-guard";
 
 export const metadata: Metadata = {
-  title: "Partnerportal – Schulungsdemo",
+  title: "Partnerportal: Schulungsdemo",
   description:
     "Interne Schulungs-Demo für Admins: Partner-Dashboard und Werbe-Netzwerk mit Beispieldaten (Max Mustermann). Keine echten personenbezogenen Daten.",
   robots: { index: false, follow: false, googleBot: { index: false, follow: false } },

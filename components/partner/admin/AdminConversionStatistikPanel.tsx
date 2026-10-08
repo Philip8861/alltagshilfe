@@ -163,12 +163,12 @@ export function AdminConversionStatistikPanel({ chartYear }: Props) {
           role="note"
         >
           Wichtig: In diesem Bereich werden Besucher und Anfragen erst ab dem {TRACKING_START_LABEL}{" "}
-          gewertet – Zähler starten bei&nbsp;0 (eigene Tabelle, ohne Altbestand). Tag / Monat / Jahr
+          gewertet. Zähler starten bei&nbsp;0 (eigene Tabelle, ohne Altbestand). Tag / Monat / Jahr
           zeigen hier also keine historischen Anfragen. Ältere Anfragen bleiben unverändert unter
           „Anfragen nach Kanal“ und den übrigen Statistik-Kacheln.
         </p>
         <p className="text-sm text-neutral-600">
-          Unique Visitors (Statistik-Cookie) plus abgeschlossene Formulare – getrennt nach Bereich
+          Unique Visitors (Statistik-Cookie) plus abgeschlossene Formulare, getrennt nach Bereich
           (Kontakt, Karriere, Pflegebox, Landingpage …), jeweils mit eigener Conversion, IST/Voraussichtlich
           und Trendkurve.
         </p>

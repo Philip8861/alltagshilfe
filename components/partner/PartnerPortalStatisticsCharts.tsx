@@ -214,7 +214,7 @@ export function PartnerPortalStatisticsCharts({
           {showPflegebox ? "Nur Ihre eigenen Tipps und Pflegebox-Bestellungen." : "Nur Ihre eigenen Tipps."} Zeiten vor
           Ihrer Partner-Anlage werden nicht angezeigt.
           Tagesansicht: die letzten {DAY_MODE_DAYS} Tage bis zum gewählten Tag. Monatsansicht: bis zu 12 Monate bis zum
-          gewählten Monat. Jahresansicht: ab dem Anlagemonat im jeweiligen Jahr. Zeitraum von–bis: bis {RANGE_DAILY_MAX_DAYS}{" "}
+          gewählten Monat. Jahresansicht: ab dem Anlagemonat im jeweiligen Jahr. Zeitraum von/bis: bis {RANGE_DAILY_MAX_DAYS}{" "}
           Tage tagesgenau, längere Zeiträume als Monatspunkte.
         </p>
       </div>
@@ -249,7 +249,7 @@ export function PartnerPortalStatisticsCharts({
 
       <div className="rounded-2xl border border-[#0F4F68]/10 bg-gradient-to-b from-[#F2F9FA]/50 to-white p-5 shadow-sm">
         <h3 className="text-sm font-bold text-[#0F4F68]">Verwaltungsstatus im Zeitverlauf (Ihre Tipps)</h3>
-        <p className="mt-1 text-xs text-neutral-500">Eine Linie pro Status — nur Eingänge im jeweiligen Abschnitt.</p>
+        <p className="mt-1 text-xs text-neutral-500">Eine Linie pro Status, nur Eingänge im jeweiligen Abschnitt.</p>
         <div className="mt-4 h-[320px] w-full min-h-[280px]">
           <ResponsiveContainer width="100%" height="100%">
             <LineChart data={lineStatus} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>

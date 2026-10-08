@@ -152,7 +152,7 @@ export function PartnerDashboardClient({
               </h1>
             </div>
           <p className="mt-2 text-sm leading-6 text-[#637782]">
-            {demoMode ? "Demoansicht mit Beispieldaten — so sieht Max Mustermann die Übersicht." : "Ihre Vermittlungen und Provisionen auf einen Blick."}
+            {demoMode ? "Demoansicht mit Beispieldaten: So sieht Max Mustermann die Übersicht." : "Ihre Vermittlungen und Provisionen auf einen Blick."}
           </p>
           </div>
         </div>
@@ -417,7 +417,7 @@ export function PartnerDashboardClient({
                 Ihr Archiv
               </h2>
               <p className="mt-1 text-sm leading-6 text-[#637782]">
-                Von Ihnen abgelegte Fälle aus beiden Provisionslisten — ohne Einfluss auf Provision oder Auszahlung. Vollständige
+                Von Ihnen abgelegte Fälle aus beiden Provisionslisten, ohne Einfluss auf Provision oder Auszahlung. Vollständige
                 Übersicht auch unter{" "}
                 <Link href="/partner/einstellungen/statuslisten#partner-archiv-section" className="font-semibold underline">
                   Einstellungen

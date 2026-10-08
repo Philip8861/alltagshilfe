@@ -177,7 +177,7 @@ export function AdminStatisticsCharts({ tips, orders, chartYear, profiles, authB
         <div className="rounded-2xl border border-amber-200/70 bg-amber-50/30 p-5 shadow-sm">
           <h4 className="text-sm font-bold text-[#0F4F68]">Einzelpartner (nur dessen Tippgeber)</h4>
           <p className="mt-1 text-xs text-neutral-600">
-            Auswahl für die folgenden drei Diagramme — ohne Daten anderer Partner.
+            Auswahl für die folgenden drei Diagramme, ohne Daten anderer Partner.
           </p>
           <label className="mt-3 block text-xs font-bold uppercase text-amber-950/80" htmlFor="admin-stat-partner">
             Partner

@@ -176,7 +176,7 @@ export async function runPartnerTipInBearbeitungReminders(): Promise<PartnerTipI
 
     if (updErr) {
       if (isSupabaseMissingColumnError(updErr)) {
-        errors.push("Spalte last_in_bearbeitung_staff_reminder_at fehlt – Migration 023 ausführen.");
+        errors.push("Spalte last_in_bearbeitung_staff_reminder_at fehlt. Migration 023 ausführen.");
         break;
       }
       errors.push(`Update Reminder-Zeitstempel fehlgeschlagen (${d.id}): ${updErr.message}`);

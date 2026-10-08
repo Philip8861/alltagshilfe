@@ -75,7 +75,7 @@ export function PartnerPortalPreferencesForm({
 
       <p className="rounded-xl border border-[#0F4F68]/12 bg-[#F2F9FA]/70 px-4 py-3 text-sm text-neutral-700">
         Ausblenden gilt nur für die <strong className="font-semibold text-neutral-800">Anzeige</strong> auf der Übersicht.
-        Ihre Tipps und Daten werden nicht gelöscht — sobald Sie eine Liste wieder aktivieren, erscheinen die Einträge wie
+        Ihre Tipps und Daten werden nicht gelöscht. Sobald Sie eine Liste wieder aktivieren, erscheinen die Einträge wie
         zuvor.
       </p>
 
@@ -92,7 +92,7 @@ export function PartnerPortalPreferencesForm({
             <span>
               <span className="font-semibold text-neutral-900">Eigene Abschlussprovision</span>
               <span className="mt-0.5 block text-xs text-neutral-600">
-                Betriebliche Pflegeberatung — Statusliste Ihrer Abschlüsse.
+                Betriebliche Pflegeberatung: Statusliste Ihrer Abschlüsse.
               </span>
             </span>
           </label>

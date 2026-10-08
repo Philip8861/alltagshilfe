@@ -112,7 +112,7 @@ async function fetchPartnerProfilesForAdminPage(
     if (!missing) break;
     const dropped = optional.find((o) => o.column === missing);
     console.warn(
-      `[PartnerAdminPage] partner_profiles ohne ${missing} geladen — Migration ${dropped?.migration ?? "?"} in Supabase ausführen.`,
+      `[PartnerAdminPage] partner_profiles ohne ${missing} geladen. Migration ${dropped?.migration ?? "?"} in Supabase ausführen.`,
     );
     optional = optional.filter((o) => o.column !== missing);
   }

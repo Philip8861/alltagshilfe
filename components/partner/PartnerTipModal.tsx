@@ -235,9 +235,9 @@ export function PartnerTipModal({ open, onClose, allowedSlugs }: Props) {
     if (phase === "pflegeProximity") return "Damit wir Sie richtig beraten können.";
     if (phase === "pflegeNearHint") return "So geht es am schnellsten.";
     if (slug === "betriebliche_pflegeberatung") {
-      return "Erfassen Sie die Kontaktdaten zum Betrieb – wir übernehmen die Ansprache.";
+      return "Erfassen Sie die Kontaktdaten zum Betrieb, wir übernehmen die Ansprache.";
     }
-    return "Bitte füllen Sie die Felder aus – wir kümmern uns um die Zuordnung.";
+    return "Bitte füllen Sie die Felder aus, wir kümmern uns um die Zuordnung.";
   }, [phase, slug]);
 
   const { steps: wizardSteps, activeIndex: wizardActiveIndex } = useMemo(
@@ -441,7 +441,7 @@ export function PartnerTipModal({ open, onClose, allowedSlugs }: Props) {
               ) : (
                 <>
                   <p className="-mt-2 text-sm text-neutral-600">
-                    Tippen Sie auf eine Karte – anschließend erfassen wir die nötigen Angaben.
+                    Tippen Sie auf eine Karte. Anschließend erfassen wir die nötigen Angaben.
                   </p>
                   <ul className="grid gap-3 sm:grid-cols-2">
                     {choices.map((s) => (
@@ -517,7 +517,7 @@ export function PartnerTipModal({ open, onClose, allowedSlugs }: Props) {
                   <strong className="font-semibold">
                     Pflegebox gemeinsam mit dem Kunden oder der Kundin direkt im Konfigurator
                   </strong>{" "}
-                  abschließen. Die Box wird dann sofort korrekt zugeordnet – ohne Umweg über dieses Formular.
+                  abschließen. Die Box wird dann sofort korrekt zugeordnet, ohne Umweg über dieses Formular.
                 </p>
               </div>
               <p className="text-sm text-neutral-600">

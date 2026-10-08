@@ -39,7 +39,7 @@ export function AdminPartnerProgrammStatistikHub({
         },
         {
           id: "jePartner" as const,
-          title: "Je Partner – Detailtabelle",
+          title: "Je Partner: Detailtabelle",
           hint: "Tipps & Konfigurator je Profil",
         },
       ] as const,
@@ -49,7 +49,7 @@ export function AdminPartnerProgrammStatistikHub({
   return (
     <div className="space-y-6">
       <p className="text-sm text-neutral-600">
-        Drei Überblicksfelder – zuerst nur die Quadrate. Zum Öffnen antippen, erneut antippen schließt. Das Jahr oben
+        Drei Überblicksfelder. Zuerst nur die Quadrate. Zum Öffnen antippen, erneut antippen schließt. Das Jahr oben
         gilt für die Diagramme.
       </p>
 

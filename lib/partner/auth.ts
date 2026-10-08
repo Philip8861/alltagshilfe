@@ -100,7 +100,7 @@ export const getPartnerSession = cache(async function getPartnerSession(): Promi
         } else if (svcLoad.profile?.id) {
           profile = svcLoad.profile;
           console.warn(
-            "[getPartnerSession] partner_profiles per Service-Role gelesen — RLS für authenticated prüfen (003_repair).",
+            "[getPartnerSession] partner_profiles per Service-Role gelesen. RLS für authenticated prüfen (003_repair).",
           );
         }
       }

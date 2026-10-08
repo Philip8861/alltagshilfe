@@ -135,7 +135,7 @@ export async function ensurePartnerProfileWithUserClient(
 
   if (!svc) {
     const msg =
-      "SUPABASE_SERVICE_ROLE_KEY fehlt — Profil kann serverseitig nicht nachgetragen werden. " +
+      "SUPABASE_SERVICE_ROLE_KEY fehlt. Profil kann serverseitig nicht nachgetragen werden. " +
       (onVercel
         ? "Auf Vercel: Variable unter Production setzen und ein neues Deployment auslösen (Redeploy), sonst sieht der Laufzeit-Container den Key nicht."
         : "");

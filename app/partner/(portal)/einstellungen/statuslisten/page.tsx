@@ -71,7 +71,7 @@ export default async function PartnerEinstellungenStatuslistenPage() {
             Mein Archiv
           </h2>
           <p className="mt-1 text-sm text-white/85">
-            Von Ihnen abgelegte Fälle — ohne Einfluss auf Provision oder Auszahlung. Optional können Sie den Archiv-Bereich
+            Von Ihnen abgelegte Fälle, ohne Einfluss auf Provision oder Auszahlung. Optional können Sie den Archiv-Bereich
             auch auf der{" "}
             <Link href="/partner/dashboard" className="font-semibold underline">
               Übersicht

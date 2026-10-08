@@ -14,8 +14,8 @@ export function PartnerPasswordPromptReenable() {
     <div className="partner-dash-animate rounded-2xl border border-[#0F4F68]/15 bg-white p-5 shadow-sm sm:p-6">
       <h2 className="text-base font-bold text-[#0F4F68] sm:text-lg">Hinweis zum Passwortwechsel</h2>
       <p className="mt-2 text-sm text-neutral-600">
-        Sie haben den Hinweis zum Ändern Ihres Erstpassworts dauerhaft ausgeblendet. Sie können ihn wieder aktivieren —
-        der Dialog erscheint dann erneut nach dem nächsten Laden des Partnerportals (sofern Sie Ihr Passwort noch nicht
+        Sie haben den Hinweis zum Ändern Ihres Erstpassworts dauerhaft ausgeblendet. Sie können ihn wieder aktivieren.
+        Der Dialog erscheint dann erneut nach dem nächsten Laden des Partnerportals (sofern Sie Ihr Passwort noch nicht
         geändert haben).
       </p>
       {message ? (

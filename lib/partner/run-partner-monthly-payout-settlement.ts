@@ -129,7 +129,7 @@ export async function runPartnerMonthlyPayoutSettlement(options?: {
       return {
         ok: false,
         message: insErr.message.includes("does not exist")
-          ? "Tabelle partner_payout_reports fehlt – Migration 011/026 ausführen."
+          ? "Tabelle partner_payout_reports fehlt. Migration 011/026 ausführen."
           : insErr.message,
       };
     }
@@ -164,7 +164,7 @@ export async function runPartnerMonthlyPayoutSettlement(options?: {
     if (m.includes("referred_by_partner_id") || m.includes("referred_at")) {
       return {
         ok: true,
-        message: `Abrechnung ${periodKey}: ${reports.length} Partner (Referral übersprungen — Migration 026 nicht ausgeführt).`,
+        message: `Abrechnung ${periodKey}: ${reports.length} Partner (Referral übersprungen, Migration 026 nicht ausgeführt).`,
         periodKey,
         partnersCount: reports.length,
       };
@@ -263,7 +263,7 @@ export async function runPartnerMonthlyPayoutSettlement(options?: {
       return {
         ok: false,
         message: upErr.message.includes("does not exist")
-          ? "Spalte payout_settled_period_key fehlt – Migration 011 ausführen."
+          ? "Spalte payout_settled_period_key fehlt. Migration 011 ausführen."
           : `Bericht geschrieben, Einmal-Tipps konnten nicht finalisiert werden: ${upErr.message}`,
       };
     }

@@ -91,7 +91,7 @@ export function PartnerInitialPasswordPrompt({ shouldPrompt, onGateChange }: Pro
         </h2>
         <p id={descId} className="mt-2 text-sm text-neutral-600">
           Sie haben sich mit dem Zugang aus der E-Mail angemeldet. Bitte wählen Sie jetzt ein eigenes Passwort. Das
-          aktuelle Passwort ist vorausgefüllt — Sie müssen nur noch das neue Passwort eingeben.
+          aktuelle Passwort ist vorausgefüllt. Sie müssen nur noch das neue Passwort eingeben.
         </p>
 
         <div className="mt-5">

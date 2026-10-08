@@ -81,7 +81,7 @@ export function PdfFormFieldEditor() {
 
   const addField = useCallback(() => {
     if (fields.some((f) => f.fieldId === newFieldIdToAdd)) {
-      setError("Dieses Datenfeld ist schon in der Liste — zuerst entfernen oder anderes wählen.");
+      setError("Dieses Datenfeld ist schon in der Liste. Zuerst entfernen oder anderes wählen.");
       return;
     }
     setError(null);
@@ -566,7 +566,7 @@ export function PdfFormFieldEditor() {
 
               {fields.length === 0 ? (
                 <p className="text-sm text-neutral-600">
-                  Noch keine Felder — „Alle aus Repo laden“ oder einzelnes Datenfeld hinzufügen.
+                  Noch keine Felder. „Alle aus Repo laden“ oder einzelnes Datenfeld hinzufügen.
                 </p>
               ) : (
                 <ul

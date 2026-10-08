@@ -193,8 +193,8 @@ export function AdminContactListenWochentagKreuzPanel({ chartYear }: Props) {
       <div>
         <h3 className="text-lg font-bold text-[#0F4F68]">Herkunft, Wochentage und Kreuztabellen</h3>
         <p className="mt-1 text-sm text-neutral-600">
-          Anonyme Auswertung der Pflichtfrage „Wie sind Sie auf uns aufmerksam geworden?“ – Zeitraum wahlweise ein
-          Kalendertag, ein ganzer Monat, das Jahr {chartYear} oder frei wählbar (von–bis). Darunter Listen und Kreuzzahlen für denselben
+          Anonyme Auswertung der Pflichtfrage „Wie sind Sie auf uns aufmerksam geworden?“. Zeitraum wahlweise ein
+          Kalendertag, ein ganzer Monat, das Jahr {chartYear} oder frei wählbar (von/bis). Darunter Listen und Kreuzzahlen für denselben
           Zeitraum; die Wochentags-Tabelle summiert alle gleichnamigen Wochentage (bei einem einzelnen Tag steht nur
           der zutreffende Wochentag).
         </p>
@@ -319,7 +319,7 @@ export function AdminContactListenWochentagKreuzPanel({ chartYear }: Props) {
           disabled={resetBusy}
           onClick={async () => {
             const ok = window.confirm(
-              "Alle Quellen-Auswertungen unwiderruflich löschen? (Aggregierte Zähler je Tag, Quelle und Formular-Typ – startet bei null.)",
+              "Alle Quellen-Auswertungen unwiderruflich löschen? (Aggregierte Zähler je Tag, Quelle und Formular-Typ. Startet bei null.)",
             );
             if (!ok) return;
             setResetBusy(true);
@@ -349,9 +349,9 @@ export function AdminContactListenWochentagKreuzPanel({ chartYear }: Props) {
             Nach Wochentag (Montag bis Sonntag)
           </h4>
           <p className="mt-1 text-sm text-neutral-600">
-            Summe über alle gleichnamigen Wochentage im gewählten Zeitraum: z. B. alle Sonntage im Mai addieren –
+            Summe über alle gleichnamigen Wochentage im gewählten Zeitraum: z. B. alle Sonntage im Mai addieren,
             zum Vergleich mit Werktagen.             Karriere-Bewerbungen sind eigenständig ausgewiesen; die zweite Säule {CONTACT_WEEKDAY_NON_KARRIERE_LABEL}{" "}
-            fasst die übrigen eingetragenen Kanäle zu dieser Summe zusammen – ohne Daten zu löschen. Details je Kanal siehst du in den Kreuztabellen darunter.
+            fasst die übrigen eingetragenen Kanäle zu dieser Summe zusammen, ohne Daten zu löschen. Details je Kanal siehst du in den Kreuztabellen darunter.
           </p>
         </div>
 
@@ -506,7 +506,7 @@ export function AdminContactListenWochentagKreuzPanel({ chartYear }: Props) {
             {pflegeboxPage.gesamt > 0 ? (
               <div className="space-y-4 rounded-2xl border border-[#0F4F68]/18 bg-[#F2F9FA]/40 p-5">
                 <div>
-                  <h4 className="text-base font-bold text-[#0F4F68]">Pflegebox-Konfigurator – Aufmerksamkeit (Quellen)</h4>
+                  <h4 className="text-base font-bold text-[#0F4F68]">Pflegebox-Konfigurator: Aufmerksamkeit (Quellen)</h4>
                   <p className="mt-1 text-sm text-neutral-600">
                     Auswahl im Schritt „Adresse &amp; Geburtsdatum“; Zähler nur für abgeschlossene Bestellungen (Kind
                     „pflegebox“), getrennt von Kontaktformular und Hilfe-Finder.
@@ -545,7 +545,7 @@ export function AdminContactListenWochentagKreuzPanel({ chartYear }: Props) {
             {karrierePage.gesamt > 0 ? (
               <div className="space-y-4 rounded-2xl border border-[#0F4F68]/18 bg-[#F2F9FA]/40 p-5">
                 <div>
-                  <h4 className="text-base font-bold text-[#0F4F68]">Karriereseite – Bewerbungen (Quellen)</h4>
+                  <h4 className="text-base font-bold text-[#0F4F68]">Karriereseite: Bewerbungen (Quellen)</h4>
                   <p className="mt-1 text-sm text-neutral-600">
                     Nur Bewerbungen über das Karriere-Formular oder den Kurzcheck („Jetzt bewerben“). Allgemeine
                     Kontaktanfragen zum Thema Karriere über /kontakt sind hier nicht enthalten.

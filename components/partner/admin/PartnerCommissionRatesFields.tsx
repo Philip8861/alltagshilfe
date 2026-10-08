@@ -21,7 +21,7 @@ type Props = {
 
 function defaultHint(slug: PartnerResponsibilitySlug): string {
   const bucket = provisionBucketForServiceSlug(slug);
-  if (bucket === "monatlich") return "Monatlich · kein Standard — bitte Satz eintragen";
+  if (bucket === "monatlich") return "Monatlich · kein Standard, bitte Satz eintragen";
   const global = GLOBAL_EINMAL_PROVISION_EUR[slug];
   if (global != null) {
     return `Einmal · Standard ${global.toLocaleString("de-DE", { style: "currency", currency: "EUR" })}`;

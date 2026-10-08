@@ -196,13 +196,13 @@ export function PartnerStatistikView({ tips, orders, partnerCreatedAt, responsib
           <h1 className="text-xl font-semibold text-[#0F4F68] sm:text-2xl">Ihre Statistik</h1>
           <p className="mt-2 max-w-xl text-sm text-neutral-600">
             {showPflegebox
-              ? "Nur Ihre Tipps und Ihre Pflegebox-Bestellungen — keine fremden Partnerdaten."
-              : "Nur Ihre eigenen Tipps — keine fremden Partnerdaten."}{" "}
+              ? "Nur Ihre Tipps und Ihre Pflegebox-Bestellungen, keine fremden Partnerdaten."
+              : "Nur Ihre eigenen Tipps, keine fremden Partnerdaten."}{" "}
             Provisionswerte wie auf dem Dashboard (ohne Admin-Archiv). Ausgewertet wird ab dem Monat Ihrer
             Partner-Anlage; frühere Monate erscheinen nicht.
           </p>
           <p className="mt-2 max-w-xl text-sm text-[#0F4F68]/85">
-            Tippen Sie auf einen Bereich darunter – der Inhalt klappt auf.
+            Tippen Sie auf einen Bereich darunter. Der Inhalt klappt auf.
           </p>
         </div>
         <div className="partner-dash-animate partner-dash-delay-1 flex flex-wrap items-center gap-2">
@@ -341,8 +341,8 @@ export function PartnerStatistikView({ tips, orders, partnerCreatedAt, responsib
           title="Diagramme und Zeitverläufe"
           subtitle={
             showPflegebox
-              ? "Eingänge und Bestellungen passend zur Auswahl oben (Tag, Monat, Jahr oder Zeitraum von–bis)."
-              : "Eingänge passend zur Auswahl oben (Tag, Monat, Jahr oder Zeitraum von–bis)."
+              ? "Eingänge und Bestellungen passend zur Auswahl oben (Tag, Monat, Jahr oder Zeitraum von/bis)."
+              : "Eingänge passend zur Auswahl oben (Tag, Monat, Jahr oder Zeitraum von/bis)."
           }
         >
           <PartnerPortalStatisticsCharts

@@ -52,7 +52,7 @@ export function AdminHomepageStatistikHub({ chartYear }: Props) {
   return (
     <div className="space-y-6">
       <p className="text-sm text-neutral-600">
-        Sechs Überblicksfelder – standardmäßig nur diese Kacheln sichtbar. Zum Öffnen antippen, erneut antippen
+        Sechs Überblicksfelder. Standardmäßig sind nur diese Kacheln sichtbar. Zum Öffnen antippen, erneut antippen
         schließt; das Jahr gilt wie oben im Bereich „Statistik“. Nach dem Öffnen erscheint die Detailauswertung
         hierunter.
       </p>

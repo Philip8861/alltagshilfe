@@ -47,7 +47,7 @@ export function AdminPartnerPortalVerlauf({ initialEvents, subjectLabels, defaul
           </h2>
           <p className="mt-2 max-w-2xl text-sm text-neutral-600">
             Protokoll aller relevanten Vorgänge: neue Tipps, Statusänderungen, Archiv, Provisionen. Keine
-            Seitenaufrufe — nur fachliche Aktionen mit betroffener Person und ausführendem Konto.
+            Seitenaufrufe, nur fachliche Aktionen mit betroffener Person und ausführendem Konto.
           </p>
         </div>
         <div className="flex flex-wrap items-end gap-3">
@@ -88,7 +88,7 @@ export function AdminPartnerPortalVerlauf({ initialEvents, subjectLabels, defaul
             {initialEvents.length === 0 ? (
               <tr>
                 <td colSpan={5} className="px-3 py-8 text-center text-neutral-500">
-                  Noch keine Einträge — Migration 030 ausführen oder warten auf neue Vorgänge.
+                  Noch keine Einträge. Migration 030 ausführen oder warten auf neue Vorgänge.
                 </td>
               </tr>
             ) : (

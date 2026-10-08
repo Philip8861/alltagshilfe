@@ -138,7 +138,7 @@ export async function setPartnerReferralByCode(
     return {
       ok: false,
       code: "already_referred",
-      message: "Es ist bereits ein werbender Partner hinterlegt — eine Änderung ist nicht möglich.",
+      message: "Es ist bereits ein werbender Partner hinterlegt, eine Änderung ist nicht möglich.",
     };
   }
 
@@ -212,7 +212,7 @@ export async function setPartnerReferralByCode(
       return {
         ok: false,
         code: "already_referred",
-        message: "Es ist bereits ein werbender Partner hinterlegt — eine Änderung ist nicht möglich.",
+        message: "Es ist bereits ein werbender Partner hinterlegt, eine Änderung ist nicht möglich.",
       };
     }
     if (msg.includes("partner_referral_self_forbidden")) {
@@ -233,7 +233,7 @@ export async function setPartnerReferralByCode(
       return {
         ok: false,
         code: "db_error",
-        message: "Datenbank-Spalten fehlen — Migration 026 in Supabase ausführen.",
+        message: "Datenbank-Spalten fehlen. Migration 026 in Supabase ausführen.",
       };
     }
     return {

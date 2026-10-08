@@ -187,7 +187,7 @@ export async function updatePartnerTipStatusAction(
       ok: false,
       message:
         error.message?.includes("check constraint") || error.message?.toLowerCase().includes("violates check")
-          ? "Status von der Datenbank abgelehnt – Migration 029 (Status-Check) prüfen."
+          ? "Status von der Datenbank abgelehnt. Migration 029 (Status-Check) prüfen."
           : "Speichern fehlgeschlagen. Spalten admin_visible_note / admin_status / paid_amount_eur und Migrationen prüfen.",
     };
   }

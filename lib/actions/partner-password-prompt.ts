@@ -58,7 +58,7 @@ export async function setPartnerPasswordPromptSuppressAction(
   if (prefsErr && isPortalPreferencesMissing(prefsErr)) {
     return {
       ok: false,
-      message: "Datenbank-Update nicht möglich — Migration 013 (portal_preferences) in Supabase ausführen.",
+      message: "Datenbank-Update nicht möglich. Migration 013 (portal_preferences) in Supabase ausführen.",
     };
   }
 

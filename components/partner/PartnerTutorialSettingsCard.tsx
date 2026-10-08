@@ -37,7 +37,7 @@ export function PartnerTutorialSettingsCard({ tutorialHidden }: Props) {
       <p className="mt-2 text-sm text-neutral-600">
         Kurze geführte Erklärung zu Partner-Code, Provisionen, Statuslisten, Tipp geben, Einstellungen und Statistik.
         {tutorialHidden
-          ? " Der automatische Start nach dem Login ist ausgeblendet — Sie können den Rundgang hier jederzeit starten."
+          ? " Der automatische Start nach dem Login ist ausgeblendet. Sie können den Rundgang hier jederzeit starten."
           : " Nach dem Login erscheint der Rundgang automatisch, bis Sie ihn dauerhaft ausblenden."}
       </p>
       {message ? (

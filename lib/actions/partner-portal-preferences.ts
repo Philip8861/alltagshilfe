@@ -79,7 +79,7 @@ export async function savePartnerPortalPreferencesAction(
     if (m.includes("portal_preferences") && (m.includes("does not exist") || m.includes("schema cache"))) {
       return {
         ok: false,
-        message: "Datenbank-Spalte portal_preferences fehlt — Migration 013 in Supabase ausführen.",
+        message: "Datenbank-Spalte portal_preferences fehlt. Migration 013 in Supabase ausführen.",
       };
     }
     return { ok: false, message: "Speichern fehlgeschlagen." };

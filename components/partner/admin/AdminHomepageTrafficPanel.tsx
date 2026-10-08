@@ -290,7 +290,7 @@ export function AdminHomepageTrafficPanel({ chartYear, activeSection }: Props) {
           disabled={resetBusy}
           onClick={async () => {
             const ok = window.confirm(
-              "Alle Homepage-Aufruf-, Unique-Visitor- und Conversion-Anfragen-Statistiken unwiderruflich löschen? (Alle Tage, Pfade, Geräte, Besucher und Conversion-Anfragen – Zähler starten bei null. „Anfragen nach Kanal“ bleibt erhalten. Ratgeber-Live-Zähler basieren auf denselben Aufruf-Daten.)",
+              "Alle Homepage-Aufruf-, Unique-Visitor- und Conversion-Anfragen-Statistiken unwiderruflich löschen? (Alle Tage, Pfade, Geräte, Besucher und Conversion-Anfragen. Zähler starten bei null. „Anfragen nach Kanal“ bleibt erhalten. Ratgeber-Live-Zähler basieren auf denselben Aufruf-Daten.)",
             );
             if (!ok) return;
             setResetBusy(true);
@@ -334,7 +334,7 @@ export function AdminHomepageTrafficPanel({ chartYear, activeSection }: Props) {
                 Aufrufe insgesamt (alle Seiten)
               </h3>
               <p className="mt-1 text-sm text-neutral-600">
-                Liniendiagramm nach Tag, Monat, Jahr oder frei wählbarem Zeitraum (von–bis) – Summe der erfassten
+                Liniendiagramm nach Tag, Monat, Jahr oder frei wählbarem Zeitraum (von/bis): Summe der erfassten
                 Seitenaufrufe.
               </p>
             </div>
@@ -357,7 +357,7 @@ export function AdminHomepageTrafficPanel({ chartYear, activeSection }: Props) {
                       ? `Pro Monat im Jahr ${chartYear}`
                       : totalGran === "jahr"
                         ? `Pro Jahr (2020–${chartYear})`
-                        : `Zeitraum ${formatDayInputDe(rangeFrom)} – ${formatDayInputDe(rangeTo)}`
+                        : `Zeitraum ${formatDayInputDe(rangeFrom)} bis ${formatDayInputDe(rangeTo)}`
                 }
               />
             ) : null}
@@ -371,7 +371,7 @@ export function AdminHomepageTrafficPanel({ chartYear, activeSection }: Props) {
                 Aufrufe nach Gerät
               </h3>
               <p className="mt-1 text-sm text-neutral-600">
-                Mobil, Tablet, Desktop – grobe Einordnung per User-Agent (keine Fingerprints).
+                Mobil, Tablet, Desktop: grobe Einordnung per User-Agent (keine Fingerprints).
               </p>
             </div>
             <p className="text-sm text-neutral-600">
@@ -411,7 +411,7 @@ export function AdminHomepageTrafficPanel({ chartYear, activeSection }: Props) {
                     : "border border-[#0F4F68]/25 bg-white text-[#0F4F68] hover:bg-[#F2F9FA]"
                 }`}
               >
-                Zeitraum (Von–Bis oben)
+                Zeitraum (Von/Bis oben)
               </button>
             </div>
             {deviceLoading ? <p className="text-sm text-neutral-500">Lade Geräteverteilung…</p> : null}
@@ -444,7 +444,7 @@ export function AdminHomepageTrafficPanel({ chartYear, activeSection }: Props) {
                 Aufrufe je Seite (Pfad)
               </h3>
               <p className="mt-1 text-sm text-neutral-600">
-                Top-URLs im gewählten Jahr – Zeile aufklappen für den Verlauf nur dieser Adresse.
+                Top-URLs im gewählten Jahr. Zeile aufklappen für den Verlauf nur dieser Adresse.
               </p>
             </div>
             <p className="text-sm text-neutral-600">
@@ -510,7 +510,7 @@ export function AdminHomepageTrafficPanel({ chartYear, activeSection }: Props) {
                                   </div>
                                   <p className="mt-2 text-xs text-neutral-500">
                                     Monat oben steuert die Tages-Ansicht; Jahr oben steuert Monats- und Jahresansicht;
-                                    „Zeitraum“ nutzt die Von–Bis-Felder oben.
+                                    „Zeitraum“ nutzt die Von/Bis-Felder oben.
                                   </p>
                                   {pathLoading ? <p className="mt-3 text-sm text-neutral-500">Lade Verlauf…</p> : null}
                                   {pathErr ? (

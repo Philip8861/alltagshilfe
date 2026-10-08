@@ -39,7 +39,7 @@ export async function setPartnerTutorialHiddenAction(
   if (error) {
     const m = error.message.toLowerCase();
     if (m.includes("portal_preferences") && (m.includes("does not exist") || m.includes("schema cache"))) {
-      return { ok: false, message: "portal_preferences fehlt — Migration 013 ausführen." };
+      return { ok: false, message: "portal_preferences fehlt. Migration 013 ausführen." };
     }
     return { ok: false, message: "Speichern fehlgeschlagen." };
   }

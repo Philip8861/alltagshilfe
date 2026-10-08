@@ -16,7 +16,7 @@ export default function PartnerVertraegePage() {
       <div className="partner-dash-animate partner-dash-delay-1">
         <h1 className="text-2xl font-bold text-[#0F4F68] sm:text-3xl">Verträge</h1>
         <p className="mt-2 max-w-2xl text-sm text-neutral-600">
-          Ablage für Rahmenverträge und PDFs — Upload und Verwaltung folgen.
+          Ablage für Rahmenverträge und PDFs. Upload und Verwaltung folgen.
         </p>
       </div>
       <div

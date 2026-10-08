@@ -11,7 +11,7 @@ export default function PartnerKontaktPage() {
       <div className="text-center">
         <h1 className="text-2xl font-semibold text-[#0F4F68] sm:text-3xl">Kontakt</h1>
         <p className="mt-2 text-sm text-neutral-600 sm:text-base">
-          Schreiben Sie uns – wir melden uns zeitnah bei Ihnen.
+          Schreiben Sie uns, wir melden uns zeitnah bei Ihnen.
         </p>
       </div>
       <div className="partner-dash-animate partner-dash-delay-1 rounded-2xl border border-[#0F4F68]/10 bg-white p-6 shadow-sm sm:p-8">
