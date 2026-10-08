@@ -1,7 +1,7 @@
 "use client";
 
 import type { ReactNode } from "react";
-import { useCallback, useEffect, useId, useLayoutEffect, useMemo, useState, useTransition } from "react";
+import { useCallback, useEffect, useId, useLayoutEffect, useMemo, useRef, useState, useTransition } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { setPartnerTutorialHiddenAction } from "@/lib/actions/partner-tutorial";
 import { buildPartnerTutorialSteps } from "@/lib/partner/partner-tutorial-content";
@@ -204,6 +204,20 @@ export function PartnerTutorialOverlay({
     });
   }, [closeAll, router]);
 
+  /**
+   * Der Rundgang startet automatisch nur ein einziges Mal pro Konto. Sobald er automatisch erscheint,
+   * wird das dauerhaft im Profil vermerkt; später lässt er sich nur noch manuell über die Einstellungen öffnen.
+   */
+  const autoShowPersistedRef = useRef(false);
+  const markAutoShown = useCallback(() => {
+    if (autoShowPersistedRef.current) return;
+    autoShowPersistedRef.current = true;
+    writeSessionDone();
+    void setPartnerTutorialHiddenAction(true).catch(() => {
+      /* Netzwerkfehler: beim nächsten Login erneut versuchen */
+    });
+  }, []);
+
   useLayoutEffect(() => {
     if (pathname !== "/partner/einstellungen/passwort") {
       try {
@@ -211,6 +225,7 @@ export function PartnerTutorialOverlay({
           window.sessionStorage.removeItem(PARTNER_TUTORIAL_DEFER_AFTER_PW_PROMPT_YES);
           if (tutorialAutoShow && !passwordPromptGateBlocked && !readSessionDone()) {
             setMode("intro");
+            markAutoShown();
           }
         }
       } catch {
@@ -227,7 +242,8 @@ export function PartnerTutorialOverlay({
       /* ignore */
     }
     setMode((m) => (m === "off" ? "intro" : m));
-  }, [tutorialAutoShow, passwordPromptGateBlocked, pathname]);
+    markAutoShown();
+  }, [tutorialAutoShow, passwordPromptGateBlocked, pathname, markAutoShown]);
 
   useEffect(() => {
     const onOpen = () => {
@@ -415,8 +431,8 @@ export function PartnerTutorialOverlay({
                 </h2>
                 <p className="mt-3 text-center text-sm leading-relaxed text-neutral-700">
                   In wenigen Schritten zeigen wir Ihnen die wichtigsten Bereiche des Partnerportals: Partner-Code,
-                  Provisionen, Statuslisten und mehr. Es geht nur kurz; Sie können direkt{" "}
-                  <strong className="font-semibold text-neutral-900">starten</strong>, ohne etwas ablehnen zu müssen.
+                  Provisionen, Statuslisten und mehr. Der Rundgang erscheint nur dieses eine Mal; später finden Sie ihn
+                  jederzeit unter Einstellungen.
                 </p>
                 {actionError ? (
                   <p className="mt-3 text-center text-sm font-medium text-red-700" role="alert">
@@ -437,7 +453,7 @@ export function PartnerTutorialOverlay({
                     onClick={hideForever}
                     className="pointer-events-auto text-center text-sm font-semibold text-neutral-600 underline decoration-neutral-400 underline-offset-2 hover:text-[#0F4F68] disabled:opacity-50"
                   >
-                    Tutorial ausblenden
+                    Später, nicht jetzt
                   </button>
                 </div>
               </>,
@@ -506,7 +522,7 @@ export function PartnerTutorialOverlay({
                   onClick={hideForever}
                   className="pointer-events-auto mt-2 inline-flex min-h-9 items-center text-xs font-semibold text-neutral-600 underline decoration-neutral-400 underline-offset-2 hover:text-[#0F4F68] disabled:opacity-50"
                 >
-                  Tutorial dauerhaft ausblenden
+                  Rundgang beenden
                 </button>
               </div>
             </>,

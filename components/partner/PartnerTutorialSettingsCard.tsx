@@ -37,8 +37,8 @@ export function PartnerTutorialSettingsCard({ tutorialHidden }: Props) {
       <p className="mt-2 text-sm text-neutral-600">
         Kurze geführte Erklärung zu Partner-Code, Provisionen, Statuslisten, Tipp geben, Einstellungen und Statistik.
         {tutorialHidden
-          ? " Der automatische Start nach dem Login ist ausgeblendet. Sie können den Rundgang hier jederzeit starten."
-          : " Nach dem Login erscheint der Rundgang automatisch, bis Sie ihn dauerhaft ausblenden."}
+          ? " Der Rundgang wurde Ihnen bereits gezeigt und startet nicht mehr automatisch. Sie können ihn hier jederzeit erneut öffnen."
+          : " Der Rundgang erscheint einmalig automatisch nach Ihrem ersten Login."}
       </p>
       {message ? (
         <p className="mt-3 text-sm font-medium text-red-700" role="alert">
@@ -60,7 +60,7 @@ export function PartnerTutorialSettingsCard({ tutorialHidden }: Props) {
             onClick={showAgainOnLogin}
             className="inline-flex min-h-11 items-center justify-center rounded-xl border border-[#0F4F68]/25 bg-white px-4 py-2.5 text-sm font-semibold text-[#0F4F68] hover:bg-[#0F4F68]/5 disabled:opacity-60"
           >
-            {pending ? "Speichern…" : "Beim Login wieder automatisch anzeigen"}
+            {pending ? "Speichern…" : "Beim nächsten Login einmalig wieder anzeigen"}
           </button>
         ) : null}
       </div>
