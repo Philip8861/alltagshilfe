@@ -9,20 +9,6 @@ type Props = {
   syncReason?: string;
 };
 
-const SYNC_REASON_HINT: Record<string, string> = {
-  no_session:
-    "Die Server-Anfrage hat keine gültige Supabase-Session gesehen (Cookies). Einmal abmelden, neu anmelden, oder den Button unten erneut nutzen.",
-  no_service_role:
-    "SUPABASE_SERVICE_ROLE_KEY fehlt oder ist auf dem Server nicht lesbar — obwohl die Verwaltung manchmal trotzdem klappt, prüfen Sie Vercel → Environment Variables → Production und Redeploy.",
-  insert_failed:
-    "Einfügen in partner_profiles wurde von der Datenbank abgelehnt (Migration, RLS oder Key zum falschen Projekt). Supabase → Logs prüfen.",
-  verify_failed:
-    "Nach dem Einfügen wurde die Zeile nicht gefunden — bitte Supabase Table Editor und Logs prüfen.",
-  not_readable:
-    "Die Zeile ist in der Datenbank, Ihre Anmeldung darf sie aber nicht lesen (RLS). Supabase → Table Editor: Zeile zu Ihrer User-UUID vorhanden? Dann im SQL-Editor supabase/migrations/003_repair_partner_profiles_rls.sql ausführen oder 001_partner_portal.sql (Policies + Grants) erneut anwenden.",
-  unknown: "Bitte erneut versuchen oder SQL-Fallback unten nutzen.",
-};
-
 const syncProfileHref = "/partner/sync-profile";
 
 function SyncProfileButton({ children, label }: { children: ReactNode; label: string }) {
@@ -45,16 +31,14 @@ function SyncProfileButton({ children, label }: { children: ReactNode; label: st
  * Profil-Read (z. B. nach Redirect vom Dashboard) eine Reload-Schleife erzeugt und Klicks auf
  * Links überschrieben. Stattdessen: klarer Button mit vollem Seitenaufruf.
  */
-export function PartnerProfileEnsureClient({ ensureFailed = false, syncReason }: Props) {
+export function PartnerProfileEnsureClient({ ensureFailed = false }: Props) {
   if (ensureFailed) {
-    const hint = (syncReason && SYNC_REASON_HINT[syncReason]) || SYNC_REASON_HINT.unknown;
     return (
       <div className="mt-4 space-y-3 text-sm" role="alert">
         <p className="font-medium text-red-900">Automatische Einrichtung ist fehlgeschlagen.</p>
-        <p className="text-red-950/90">{hint}</p>
+        <p className="text-red-950/90">Bitte versuchen Sie es erneut. Falls das Problem bestehen bleibt, wenden Sie sich an unser Team.</p>
         <div className="flex flex-wrap items-center gap-3 pt-1">
           <SyncProfileButton label="Profil-Sync erneut ausführen">Erneut versuchen</SyncProfileButton>
-          <span className="text-neutral-700">oder SQL unten ausführen.</span>
         </div>
       </div>
     );
@@ -63,9 +47,7 @@ export function PartnerProfileEnsureClient({ ensureFailed = false, syncReason }:
   return (
     <div className="mt-4 space-y-3">
       <p className="text-sm text-neutral-800" role="status">
-        Als Nächstes wird in <code className="rounded bg-white/80 px-1 text-xs">{syncProfileHref}</code> die
-        Zeile in <code className="rounded bg-white/80 px-1 text-xs">partner_profiles</code> nachgetragen (Server
-        mit Service-Role-Key).
+        Vervollständigen Sie jetzt die Einrichtung Ihres Partnerzugangs.
       </p>
       <div className="relative z-20">
         <SyncProfileButton label="Partnerprofil jetzt einrichten (Seite aufrufen)">
@@ -73,7 +55,7 @@ export function PartnerProfileEnsureClient({ ensureFailed = false, syncReason }:
         </SyncProfileButton>
       </div>
       <p className="text-xs text-neutral-600">
-        Startet einen vollen Seitenaufruf (Session-Cookies) — unabhängig von Übersetzungs-Widgets.
+        Anschließend gelangen Sie direkt zu Ihrer Übersicht.
       </p>
     </div>
   );

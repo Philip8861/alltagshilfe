@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import "./partner-portal.css";
 import { useCallback, useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { PartnerInitialPasswordPrompt } from "@/components/partner/PartnerInitialPasswordPrompt";
@@ -19,7 +20,6 @@ type Props = {
   responsibilityAreaSlugs?: string[];
 };
 
-const shell = "bg-[#F2F9FA]";
 
 function NetworkNavIcon() {
   return (
@@ -35,9 +35,8 @@ function NetworkNavIcon() {
 
 function iconButtonClass(active: boolean) {
   return [
-    "flex h-11 w-11 shrink-0 items-center justify-center rounded-lg text-[#0F4F68] transition-all duration-200 ease-out",
-    active ? "bg-[#0F4F68]/12 ring-1 ring-[#0F4F68]/25 shadow-[0_2px_8px_rgba(15,79,104,0.12)]" : "hover:bg-[#0F4F68]/10",
-    "motion-safe:hover:scale-110 motion-safe:active:scale-[0.94] motion-safe:hover:-translate-y-0.5",
+    "flex min-h-12 min-w-0 flex-1 flex-col items-center justify-center gap-1 rounded-2xl px-1 py-2 text-[10px] font-semibold transition-colors md:w-full md:flex-none md:flex-row md:justify-start md:gap-3 md:px-4 md:py-3 md:text-sm",
+    active ? "bg-white text-[#0F4F68] shadow-[0_4px_12px_rgba(15,79,104,0.12)] ring-1 ring-[#c7dfe7]" : "text-[#647984] hover:bg-[#f2f6f8] hover:text-[#0F4F68]",
   ].join(" ");
 }
 
@@ -88,22 +87,25 @@ export function PartnerPortalShell({
   const networkActive = pathname === "/partner/team" || pathname.startsWith("/partner/team/");
 
   return (
-    <div className="flex min-h-screen flex-col bg-[#FAFBFC] md:flex-row">
+    <div className="partner-portal flex min-h-dvh flex-col md:flex-row">
       <aside
-        className={`${shell} order-2 fixed bottom-0 left-0 right-0 z-40 flex flex-row items-center justify-between gap-2 border-t border-[#0F4F68]/12 px-2 py-2 shadow-[0_-10px_22px_rgba(15,79,104,0.2),0_-4px_12px_rgba(15,79,104,0.12)] md:order-1 md:sticky md:top-0 md:h-screen md:w-[4.5rem] md:shrink-0 md:flex-col md:justify-between md:border-r md:border-t-0 md:px-0 md:py-5 md:shadow-[4px_0_22px_rgba(15,79,104,0.2),2px_0_12px_rgba(15,79,104,0.12)]`}
+        className="fixed inset-x-0 bottom-0 z-40 order-2 flex items-center gap-1 border-t border-[#cce2e8] bg-[#edf7f9] px-2 shadow-[3px_0_18px_-8px_rgba(15,79,104,0.25)] pb-[max(0.5rem,env(safe-area-inset-bottom))] pt-2 md:sticky md:top-0 md:order-1 md:h-dvh md:w-56 md:shrink-0 md:flex-col md:items-stretch md:border-r md:border-t-0 md:p-4"
         aria-label="Partnerportal-Navigation"
       >
-        <nav className="flex flex-1 flex-row items-center justify-center gap-1 sm:gap-2 md:flex-none md:flex-col md:justify-start md:gap-3">
+        <Link href="/partner/dashboard" aria-label="Partnerportal – zur Übersicht" className="mb-8 mt-4 hidden rounded-lg px-3 md:block">
+          <span className="block text-lg font-semibold tracking-tight text-[#0F4F68]">Partnerportal</span>
+        </Link>
+        <nav className="flex min-w-0 flex-1 items-center gap-1 md:flex-none md:flex-col md:items-stretch md:gap-2">
           <Link
             href="/partner/dashboard"
             className={iconButtonClass(dashActive)}
             aria-current={dashActive ? "page" : undefined}
             title="Übersicht"
           >
-            <span className="sr-only">Übersicht</span>
+            
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
               <path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1h-5v-8H9v8H4a1 1 0 01-1-1V9.5z" strokeLinejoin="round" />
-            </svg>
+            </svg><span>Übersicht</span>
           </Link>
           {showNetworkNav ? (
             <Link
@@ -113,8 +115,8 @@ export function PartnerPortalShell({
               aria-current={networkActive ? "page" : undefined}
               title="Werbe-Netzwerk"
             >
-              <span className="sr-only">Werbe-Netzwerk</span>
-              <NetworkNavIcon />
+              
+              <NetworkNavIcon /><span className="md:hidden">Netzwerk</span><span className="hidden md:inline">Werbe-Netzwerk</span>
             </Link>
           ) : null}
           <Link
@@ -124,10 +126,10 @@ export function PartnerPortalShell({
             aria-current={statActive ? "page" : undefined}
             title="Statistik"
           >
-            <span className="sr-only">Statistik</span>
+            
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
               <path d="M4 19V5M10 19V9M16 19v-6M22 19V11" strokeLinecap="round" />
-            </svg>
+            </svg><span>Statistik</span>
           </Link>
           <Link
             href="/partner/einstellungen"
@@ -136,16 +138,27 @@ export function PartnerPortalShell({
             aria-current={settingsActive ? "page" : undefined}
             title="Einstellungen"
           >
-            <span className="sr-only">Einstellungen</span>
-            <SettingsGearIcon />
+            
+            <SettingsGearIcon /><span>Einstellungen</span>
           </Link>
-          <PartnerLogoutButton variant="sidebar" />
         </nav>
+        <div className="md:mt-auto md:border-t md:border-[#e0e8ed] md:pt-4">
+          <PartnerLogoutButton variant="sidebar" />
+        </div>
       </aside>
 
-      <main className="order-1 min-w-0 flex-1 bg-[#FAFBFC] pb-[4.5rem] md:pb-0">
-        <div className="mx-auto w-full max-w-[min(100%,96rem)] px-4 py-6 sm:px-6 lg:px-10 lg:py-8">{children}</div>
-      </main>
+      <div className="order-1 min-w-0 flex-1 pb-[calc(5rem+env(safe-area-inset-bottom))] md:pb-0">
+        <header className="flex min-h-16 items-center justify-between gap-4 border-b border-[#d6e8ed] bg-gradient-to-r from-white to-[#f0f8fa] px-5 sm:px-8 lg:px-10">
+          <p className="text-sm font-semibold text-[#315363]">Partnerportal <span className="mx-2 text-[#a4b5be]" aria-hidden>/</span> <span className="text-[#6b7f89]">{pathname === "/partner/kontakt" ? "Kontakt" : settingsActive ? "Einstellungen" : networkActive ? "Werbe-Netzwerk" : statActive ? "Statistik" : "Übersicht"}</span></p>
+          <Link href="/partner/kontakt" className="inline-flex min-h-11 shrink-0 items-center gap-2 text-xs font-semibold text-[#476877] hover:text-[#0F4F68]">Hilfe & Kontakt <span aria-hidden>↗</span></Link>
+        </header>
+        <div className="mx-auto w-full max-w-[96rem] px-4 py-6 sm:px-8 lg:px-10 lg:py-9">{children}</div>
+        <footer className="flex flex-wrap justify-end gap-x-5 gap-y-2 px-5 pb-6 text-xs text-[#637782] sm:px-8 lg:px-10">
+          <span>Alltagshilfe Süd</span>
+          <Link href="/datenschutz" className="underline-offset-4 hover:underline">Datenschutz</Link>
+          <Link href="/impressum" className="underline-offset-4 hover:underline">Impressum</Link>
+        </footer>
+      </div>
 
       {initialPasswordChangePrompt ? (
         <PartnerInitialPasswordPrompt

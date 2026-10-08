@@ -15,7 +15,7 @@ import {
   partnerHasBetrieblicheProgram,
   partnerHasEinmalProvisionProgram,
 } from "@/lib/partner/partner-program-capabilities";
-import { PROVISION_STATUS_LIST_FULL_NAME, provisionBucketForServiceSlug } from "@/lib/partner/partner-tip-provision-bucket";
+import { provisionBucketForServiceSlug } from "@/lib/partner/partner-tip-provision-bucket";
 import type { PartnerDashboardTipSerial } from "@/lib/partner/types";
 import {
   PARTNER_RESPONSIBILITY_SLUGS,
@@ -48,7 +48,7 @@ type Props = {
 const slugSet = new Set<string>(PARTNER_RESPONSIBILITY_SLUGS);
 
 const iconWrap =
-  "flex h-11 w-11 shrink-0 items-center justify-center rounded-md bg-[#0F4F68]/10 text-[#0F4F68]";
+  "flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-[#dceff3] shadow-[0_3px_8px_rgba(15,79,104,0.08)] text-[#0F4F68]";
 
 export function PartnerDashboardClient({
   welcomeLine,
@@ -66,6 +66,7 @@ export function PartnerDashboardClient({
   const router = useRouter();
   const pathname = usePathname();
   const [tipOpen, setTipOpen] = useState(initialTipModalOpen);
+  const [copyFeedback, setCopyFeedback] = useState("");
 
   useEffect(() => {
     setTipOpen(initialTipModalOpen);
@@ -115,7 +116,7 @@ export function PartnerDashboardClient({
   };
 
   const cardBase =
-    "partner-metric-card partner-dash-animate flex min-h-[7.5rem] flex-1 flex-col justify-center gap-2 rounded-lg border border-neutral-300 bg-white p-5 sm:min-w-[12rem]";
+    "partner-metric-card partner-dash-animate flex min-h-[7.5rem] flex-1 flex-col justify-center gap-2 rounded-[1.5rem] border border-[#cce1e8] bg-gradient-to-br from-white to-[#f0f8fa] p-5 shadow-[0_7px_20px_-9px_rgba(15,79,104,0.24)] sm:min-w-[12rem]";
 
   const anyListOnDashboard =
     (hasBetriebliche && prefs.showListMonatlich) ||
@@ -123,14 +124,14 @@ export function PartnerDashboardClient({
     prefs.showArchivOnDashboard;
 
   return (
-    <div className="mx-auto w-full max-w-[min(100%,90rem)] space-y-6 sm:space-y-8">
-      <header className="flex flex-col gap-4 rounded-xl border border-[#0F4F68]/12 bg-[#F2F9FA] px-6 py-6 shadow-[0_10px_22px_rgba(15,79,104,0.2),0_4px_12px_rgba(15,79,104,0.12)] sm:flex-row sm:items-center sm:justify-between sm:px-8 sm:py-7">
+    <div className="mx-auto w-full max-w-[min(100%,90rem)] space-y-6">
+      <header className="flex flex-col gap-5 rounded-[1.75rem] border border-[#c9e5eb] bg-gradient-to-br from-[#e2f3f5] via-[#f0f8f9] to-[#e9f2f7] px-5 py-6 shadow-[0_10px_25px_-10px_rgba(15,79,104,0.25),0_3px_8px_rgba(15,79,104,0.06)] sm:flex-row sm:items-center sm:justify-between sm:px-7 sm:py-7">
         <div className="partner-dash-animate flex min-w-0 items-start gap-4 sm:items-center">
           <PartnerAvatar
             avatarUrl={avatarUrl}
             partnerCode={partnerCode}
             displayName={welcomeLine}
-            size="profile"
+            size="xl"
             ring
             alt=""
             className="hidden sm:flex"
@@ -147,18 +148,11 @@ export function PartnerDashboardClient({
                 className="sm:hidden"
               />
               <h1 className="text-2xl font-semibold leading-snug text-[#0F4F68] sm:text-3xl">
-                {welcomeLine},
+                {welcomeLine}
               </h1>
             </div>
-          <div className="mt-2 h-1 w-full max-w-[10rem] overflow-hidden rounded-full bg-[#0F4F68]/15">
-            <div
-              className="h-full w-full origin-left scale-x-0 animate-partner-bar-fill rounded-full bg-gradient-to-r from-[#0F4F68] to-[#3DB8C9]"
-              style={{ animationDelay: "0.2s" }}
-              aria-hidden
-            />
-          </div>
-          <p className="mt-3 text-sm text-neutral-700 sm:text-base">
-            {demoMode ? "Demoansicht mit Beispieldaten — so sieht Max Mustermann die Übersicht." : "Dein persönliches Partnerportal-Dashboard."}
+          <p className="mt-2 text-sm leading-6 text-[#637782]">
+            {demoMode ? "Demoansicht mit Beispieldaten — so sieht Max Mustermann die Übersicht." : "Ihre Vermittlungen und Provisionen auf einen Blick."}
           </p>
           </div>
         </div>
@@ -166,7 +160,7 @@ export function PartnerDashboardClient({
           <Link
             href="/partner/login"
             data-tutorial="partner-tipp-geben"
-            className="partner-dash-animate partner-dash-delay-2 group inline-flex w-full shrink-0 items-center justify-center gap-2 rounded-2xl bg-gradient-to-b from-[#0F4F68] to-[#0c3d52] px-5 py-3 text-sm font-semibold text-white shadow-[0_10px_22px_rgba(15,79,104,0.22),0_4px_12px_rgba(15,79,104,0.14)] ring-1 ring-[#0F4F68]/30 transition hover:from-[#0c3d52] hover:to-[#0a3446] hover:shadow-[0_14px_28px_rgba(15,79,104,0.28),0_6px_14px_rgba(15,79,104,0.16)] active:translate-y-px focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68] focus-visible:ring-offset-2 focus-visible:ring-offset-[#F2F9FA] sm:mt-0 sm:w-auto"
+            className="group inline-flex min-h-12 w-full shrink-0 items-center justify-center gap-2 rounded-2xl bg-gradient-to-b from-[#17647d] to-[#0F4F68] px-5 py-3 text-sm font-semibold text-white shadow-[0_6px_15px_rgba(15,79,104,0.22)] transition-colors hover:bg-[#0c3d52] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0F4F68] sm:w-auto"
           >
             <svg
               className="h-5 w-5 shrink-0 opacity-95 transition group-hover:scale-105"
@@ -186,7 +180,7 @@ export function PartnerDashboardClient({
             type="button"
             data-tutorial="partner-tipp-geben"
             onClick={() => setTipOpen(true)}
-            className="partner-dash-animate partner-dash-delay-2 group inline-flex w-full shrink-0 items-center justify-center gap-2 rounded-2xl bg-gradient-to-b from-[#0F4F68] to-[#0c3d52] px-5 py-3 text-sm font-semibold text-white shadow-[0_10px_22px_rgba(15,79,104,0.22),0_4px_12px_rgba(15,79,104,0.14)] ring-1 ring-[#0F4F68]/30 transition hover:from-[#0c3d52] hover:to-[#0a3446] hover:shadow-[0_14px_28px_rgba(15,79,104,0.28),0_6px_14px_rgba(15,79,104,0.16)] active:translate-y-px focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68] focus-visible:ring-offset-2 focus-visible:ring-offset-[#F2F9FA] sm:mt-0 sm:w-auto"
+            className="group inline-flex min-h-12 w-full shrink-0 items-center justify-center gap-2 rounded-2xl bg-gradient-to-b from-[#17647d] to-[#0F4F68] px-5 py-3 text-sm font-semibold text-white shadow-[0_6px_15px_rgba(15,79,104,0.22)] transition-colors hover:bg-[#0c3d52] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0F4F68] sm:w-auto"
           >
             <svg
               className="h-5 w-5 shrink-0 opacity-95 transition group-hover:scale-105"
@@ -199,7 +193,7 @@ export function PartnerDashboardClient({
             >
               <path d="M12 5v14M5 12h14" />
             </svg>
-            Tipp geben
+            Neuen Tipp geben
           </button>
         ) : (
           <p className="partner-dash-animate partner-dash-delay-2 max-w-md text-sm leading-relaxed text-neutral-600 sm:text-right">
@@ -223,26 +217,31 @@ export function PartnerDashboardClient({
               </svg>
             </div>
             <div className="min-w-0">
-              <p className="text-[0.65rem] font-semibold uppercase text-[#0F4F68]">Ihr Partner-Code</p>
+              <p className="text-xs font-semibold text-[#637782]">Ihr Partner-Code</p>
               <p
-                className={`mt-1 text-2xl font-semibold tabular-nums text-[#0F4F68] sm:text-3xl ${partnerCode ? "partner-code-settle" : ""}`}
+                className="mt-1 select-all text-2xl font-semibold tabular-nums tracking-wide text-[#0F4F68]"
               >
                 {partnerCode ?? "—"}
               </p>
+              {partnerCode ? <button type="button" onClick={async () => {
+                try { await navigator.clipboard.writeText(partnerCode); setCopyFeedback("Partner-Code kopiert."); }
+                catch { setCopyFeedback("Bitte den Code markieren und kopieren."); }
+              }} className="-mb-2 inline-flex min-h-11 items-center text-xs font-semibold text-[#0F4F68] underline-offset-4 hover:underline">Code kopieren <span aria-hidden className="ml-2">⧉</span></button> : null}
+              {copyFeedback ? <p role="status" className="text-xs text-[#526d79]">{copyFeedback}</p> : null}
             </div>
           </div>
         </div>
 
         <div className={`${cardBase} partner-dash-delay-2 relative z-[1]`}>
           <div className="flex items-start gap-4">
-            <div className={`${iconWrap} motion-safe:animate-partner-icon-nudge`} aria-hidden>
+            <div className={`${iconWrap}`} aria-hidden>
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <rect x="3" y="4" width="18" height="18" rx="2" />
                 <path d="M16 2v4M8 2v4M3 10h18" strokeLinecap="round" />
               </svg>
             </div>
             <div className="min-w-0">
-              <p className="text-[0.65rem] font-semibold uppercase text-[#0F4F68]">Nächste Auszahlung</p>
+              <p className="text-xs font-semibold text-[#637782]">Nächste Auszahlung</p>
               <p className="mt-1 text-xl font-semibold tabular-nums text-[#0F4F68] sm:text-2xl">
                 am {payoutLabel}
               </p>
@@ -260,22 +259,22 @@ export function PartnerDashboardClient({
             <section
               aria-label="Eigene Abschlussprovision und Provision durch geworbene Partner"
               data-tutorial="partner-provision-betrieblich"
-              className="rounded-xl border border-[#0F4F68]/12 bg-white p-4 shadow-[0_8px_22px_rgba(15,79,104,0.10)] sm:p-5"
+              className="rounded-[1.5rem] border border-[#cfe3e5] bg-white p-5 shadow-[0_8px_22px_-10px_rgba(15,79,104,0.23)] sm:p-6"
             >
               <header className="mb-3 flex flex-wrap items-baseline justify-between gap-2">
                 <h2 className="text-base font-semibold text-[#0F4F68] sm:text-lg">
                   Betriebliche Pflegeberatung
                 </h2>
                 <span className="text-xs font-medium text-neutral-600">
-                  Monat {formatPayoutPeriodLabelDe(payoutSummary.periodKey)}
+                  {formatPayoutPeriodLabelDe(payoutSummary.periodKey)}
                 </span>
               </header>
               <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                 <article
-                  className="rounded-lg border border-emerald-300/80 bg-gradient-to-b from-emerald-50 to-white p-4"
+                  className="rounded-2xl border border-emerald-200/80 bg-gradient-to-br from-emerald-50 to-[#f6fcf8] p-4 shadow-[0_4px_12px_-6px_rgba(16,185,129,0.2)]"
                   aria-label="Eigene Abschlussprovision"
                 >
-                  <p className="text-[0.65rem] font-bold uppercase tracking-wide text-emerald-900">
+                  <p className="text-xs font-semibold text-[#52736a]">
                     Eigene Abschlussprovision
                   </p>
                   <p className="mt-2 text-2xl font-semibold tabular-nums text-emerald-900 sm:text-3xl">
@@ -286,10 +285,10 @@ export function PartnerDashboardClient({
                   </p>
                 </article>
                 <article
-                  className="rounded-lg border border-sky-300/80 bg-gradient-to-b from-sky-50 to-white p-4"
+                  className="rounded-2xl border border-sky-200/80 bg-gradient-to-br from-sky-50 to-[#f4faff] p-4 shadow-[0_4px_12px_-6px_rgba(14,165,233,0.2)]"
                   aria-label="Provision durch geworbene Partner"
                 >
-                  <p className="text-[0.65rem] font-bold uppercase tracking-wide text-sky-900">
+                  <p className="text-xs font-semibold text-[#587381]">
                     Provision durch geworbene Partner
                   </p>
                   <p className="mt-2 text-2xl font-semibold tabular-nums text-sky-900 sm:text-3xl">
@@ -311,25 +310,25 @@ export function PartnerDashboardClient({
 
           {hasEinmal ? (
             <div
-              className={`${cardBase} partner-dash-delay-3 relative z-[1] min-h-0`}
+              className={`${cardBase} partner-dash-delay-3 relative z-[1] min-h-0 !border-emerald-200/80 !bg-gradient-to-br !from-emerald-50 !to-white`}
               data-tutorial="partner-provision-einmal"
             >
               <div className="flex items-start gap-4">
-                <div className={`${iconWrap} motion-safe:animate-partner-soft-float`} aria-hidden>
+                <div className={`${iconWrap}`} aria-hidden>
                   <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <rect x="3" y="6" width="18" height="12" rx="2" />
                     <path d="M7 10h4M7 14h10" strokeLinecap="round" />
                   </svg>
                 </div>
                 <div className="min-w-0">
-                  <p className="text-[0.65rem] font-semibold uppercase text-[#0F4F68]">Einmalprovision</p>
+                  <p className="text-xs font-semibold text-[#637782]">Einmalprovision</p>
                   <p className="mt-1 text-2xl font-semibold text-[#0F4F68] sm:text-3xl">
                     <PartnerAnimatedEuro value={provisionEinmalEur} durationMs={1750} />
                   </p>
                   <p className="mt-0.5 text-xs text-neutral-600">
                     {provisionEinmalEur > 0
                       ? "Pflegehilfsmittel, Hauswirtschaft & Betreuung, Pflegeberatung"
-                      : "Noch keine Einmalprovision ausgezahlt"}
+                      : "Noch keine bestätigte Einmalprovision"}
                   </p>
                 </div>
               </div>
@@ -350,26 +349,30 @@ export function PartnerDashboardClient({
 
       <div
         id="partner-statuslisten"
-        className="partner-dash-animate partner-dash-delay-5 scroll-mt-28 space-y-6 sm:space-y-8"
+        className="partner-dash-animate partner-dash-delay-5 scroll-mt-28 space-y-6"
       >
+        {anyListOnDashboard ? <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+          <div><h2 className="text-xl font-semibold tracking-tight text-[#183a49]">Ihre Vermittlungen</h2><p className="mt-1 text-sm text-[#637782]">Bearbeitungsstand und Abschlüsse im Überblick.</p></div>
+          <p className="text-xs text-[#637782]"><strong className="font-semibold text-[#315363]">{visiblePartnerTips.length}</strong> in Ihren Listen <span className="mx-2" aria-hidden>·</span><strong className="font-semibold text-[#315363]">{visiblePartnerTips.filter((tip) => tip.admin_status === "vertragsabschluss_erfolgreich").length}</strong> erfolgreich</p>
+        </div> : null}
         {hasBetriebliche && prefs.showListMonatlich ? (
           <section
             id="partner-statusliste-monatlich"
             data-tutorial="partner-statusliste-monatlich"
-            className="scroll-mt-28 overflow-hidden rounded-xl border border-amber-300/90 bg-white shadow-[0_8px_30px_-12px_rgba(202,138,4,0.22)] ring-1 ring-amber-200/60"
+            className="scroll-mt-28 overflow-hidden rounded-[1.5rem] border border-amber-200 bg-white shadow-[0_9px_24px_-11px_rgba(202,138,4,0.25)]"
             aria-labelledby="partner-statusliste-monatlich-heading"
           >
-            <header className="border-b border-amber-300/70 bg-gradient-to-r from-amber-100 via-[#fff8dc] to-amber-50/80 px-4 py-4 sm:px-6 sm:py-5">
-              <h2 id="partner-statusliste-monatlich-heading" className="text-lg font-semibold text-amber-950 sm:text-xl">
-                {PROVISION_STATUS_LIST_FULL_NAME.monatlich}
+            <header className="border-b border-amber-200 bg-gradient-to-r from-[#fff0c6] via-[#fff6de] to-[#fffaf0] px-5 py-5 shadow-[0_3px_10px_-5px_rgba(202,138,4,0.25)] sm:px-6">
+              <h2 id="partner-statusliste-monatlich-heading" className="text-lg font-semibold text-[#725317]">
+                Betriebliche Pflegeberatung
               </h2>
             </header>
             <div className="p-4 sm:p-6">
               <PartnerStatuslisteTable
                 variant="monatlich"
                 rows={monatlichRows}
-                emptyHint="Keine Einträge."
-                theadClass="bg-amber-50 text-amber-950"
+                emptyHint="Noch keine Vermittlungen in dieser Liste. Sobald Sie einen Tipp abgeben, sehen Sie hier den Bearbeitungsstand."
+                theadClass="bg-[#f6f8fa] text-[#637782]"
                 columns={prefs.columns}
                 demoMode={demoMode}
               />
@@ -381,20 +384,20 @@ export function PartnerDashboardClient({
           <section
             id="partner-statusliste-einmal"
             data-tutorial="partner-statusliste-einmal"
-            className="scroll-mt-28 overflow-hidden rounded-xl border border-emerald-300/80 bg-white shadow-[0_8px_30px_-12px_rgba(16,185,129,0.18)] ring-1 ring-emerald-200/50"
+            className="scroll-mt-28 overflow-hidden rounded-[1.5rem] border border-emerald-200 bg-white shadow-[0_9px_24px_-11px_rgba(16,140,108,0.22)]"
             aria-labelledby="partner-statusliste-einmal-heading"
           >
-            <header className="border-b border-emerald-200/80 bg-gradient-to-r from-emerald-50 via-[#ecfdf5] to-green-50/90 px-4 py-4 sm:px-6 sm:py-5">
-              <h2 id="partner-statusliste-einmal-heading" className="text-lg font-semibold text-emerald-900 sm:text-xl">
-                Statusliste Einmalprovision
+            <header className="border-b border-emerald-200 bg-gradient-to-r from-[#ddf4e9] via-[#ebf9f2] to-[#f4fcf7] px-5 py-5 shadow-[0_3px_10px_-5px_rgba(16,140,108,0.22)] sm:px-6">
+              <h2 id="partner-statusliste-einmal-heading" className="text-lg font-semibold text-[#245b46]">
+                Einmalprovisionen
               </h2>
             </header>
             <div className="p-4 sm:p-6">
               <PartnerStatuslisteTable
                 variant="einmal"
                 rows={einmalRows}
-                emptyHint="Keine Einträge."
-                theadClass="bg-emerald-50 text-emerald-900"
+                emptyHint="Noch keine Vermittlungen in dieser Liste. Sobald Sie einen Tipp abgeben, sehen Sie hier den Bearbeitungsstand."
+                theadClass="bg-[#f6f8fa] text-[#637782]"
                 columns={prefs.columns}
                 demoMode={demoMode}
               />
@@ -406,14 +409,14 @@ export function PartnerDashboardClient({
           <section
             id="partner-statusliste-archiv"
             data-tutorial="partner-statusliste-archiv"
-            className="scroll-mt-28 overflow-hidden rounded-xl border border-[#0F4F68]/45 bg-white shadow-[0_8px_30px_-12px_rgba(15,79,104,0.25)] ring-1 ring-[#0F4F68]/15"
+            className="scroll-mt-28 overflow-hidden rounded-[1.5rem] border border-[#c7dfe7] bg-white shadow-[0_9px_24px_-11px_rgba(15,79,104,0.24)]"
             aria-labelledby="partner-statusliste-archiv-heading"
           >
-            <header className="border-b border-[#0c3d52] bg-[#0F4F68] px-4 py-4 sm:px-6 sm:py-5">
-              <h2 id="partner-statusliste-archiv-heading" className="text-lg font-semibold text-white sm:text-xl">
-                Statusliste Archiv
+            <header className="border-b border-[#c7dfe7] bg-gradient-to-r from-[#dceef3] via-[#eaf5f8] to-[#f3f9fb] px-5 py-5 shadow-[0_3px_10px_-5px_rgba(15,79,104,0.24)] sm:px-6">
+              <h2 id="partner-statusliste-archiv-heading" className="text-lg font-semibold text-[#0F4F68]">
+                Ihr Archiv
               </h2>
-              <p className="mt-1 text-sm text-white/85">
+              <p className="mt-1 text-sm leading-6 text-[#637782]">
                 Von Ihnen abgelegte Fälle aus beiden Provisionslisten — ohne Einfluss auf Provision oder Auszahlung. Vollständige
                 Übersicht auch unter{" "}
                 <Link href="/partner/einstellungen/statuslisten#partner-archiv-section" className="font-semibold underline">
@@ -427,7 +430,7 @@ export function PartnerDashboardClient({
                 variant="archiv"
                 rows={archivedRows}
                 emptyHint="Keine archivierten Einträge."
-                theadClass="bg-[#e8f2f6] text-[#0F4F68]"
+                theadClass="bg-[#f6f8fa] text-[#637782]"
                 columns={prefs.columns}
                 demoMode={demoMode}
               />

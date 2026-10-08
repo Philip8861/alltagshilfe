@@ -59,14 +59,14 @@ function statusPill(admin: PartnerTipAdminStatus): { label: string; className: s
   const label = PARTNER_TIP_STATUS_PARTNER_LABELS[admin] ?? String(admin);
   switch (admin) {
     case "in_bearbeitung":
-      return { label, className: "bg-amber-400 text-amber-950" };
+      return { label, className: "bg-amber-50 text-amber-900 ring-1 ring-inset ring-amber-200" };
     case "vertragsabschluss_erfolgreich":
-      return { label, className: "bg-emerald-600 px-3 py-1 font-semibold text-white" };
+      return { label, className: "bg-emerald-50 text-emerald-800 ring-1 ring-inset ring-emerald-200" };
     case "nicht_erfolgreich":
     case "vertrag_gekuendigt":
-      return { label, className: "bg-red-600 text-white" };
+      return { label, className: "bg-rose-50 text-rose-800 ring-1 ring-inset ring-rose-200" };
     default:
-      return { label, className: "bg-neutral-500 text-white" };
+      return { label, className: "bg-neutral-100 text-neutral-700" };
   }
 }
 

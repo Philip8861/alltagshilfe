@@ -30,7 +30,7 @@ export function PartnerOwnArchiveTipButton({ tipId, isArchived, variant = "table
   const btnClass =
     variant === "compact"
       ? "min-h-8 rounded-lg border border-[#0F4F68]/25 bg-white px-2 py-1 text-[0.65rem] font-semibold text-[#0F4F68] hover:bg-[#F2F9FA] disabled:opacity-50"
-      : "min-h-9 rounded-lg border border-[#0F4F68]/20 bg-white px-2.5 py-1.5 text-xs font-semibold text-[#0F4F68] hover:bg-[#F2F9FA] disabled:opacity-50";
+      : "min-h-11 rounded-xl border border-[#0F4F68]/20 bg-white px-2.5 py-1.5 text-xs font-semibold text-[#0F4F68] hover:bg-[#F2F9FA] disabled:opacity-50";
 
   return (
     <form action={formAction} className="inline-flex flex-col gap-1">

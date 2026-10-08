@@ -38,6 +38,7 @@ export function PartnerLoginForm({
   const [message, setMessage] = useState<string | null>(null);
   const [showPassword, setShowPassword] = useState(false);
   const [resetOpen, setResetOpen] = useState(false);
+  const [login, setLogin] = useState("");
   const [resetLogin, setResetLogin] = useState("");
   const [resetFeedback, setResetFeedback] = useState<{ ok: boolean; text: string } | null>(null);
   const [resetSending, setResetSending] = useState(false);
@@ -51,6 +52,8 @@ export function PartnerLoginForm({
       try {
         const result = await requestPartnerPasswordResetAction(null, fd);
         setResetFeedback({ ok: result.ok, text: result.message });
+      } catch {
+        setResetFeedback({ ok: false, text: "Der Link konnte nicht angefordert werden. Bitte versuchen Sie es erneut." });
       } finally {
         setResetSending(false);
       }
@@ -87,12 +90,12 @@ export function PartnerLoginForm({
         }
 
         startTransition(async () => {
-          const allowed = await checkPartnerLoginRateLimitAction();
-          if (!allowed.ok) {
-            setMessage(allowed.message);
-            return;
-          }
           try {
+            const allowed = await checkPartnerLoginRateLimitAction();
+            if (!allowed.ok) {
+              setMessage(allowed.message);
+              return;
+            }
             const supabase = createSupabaseBrowserClient();
             const { error } = await supabase.auth.signInWithPassword({
               email: resolved.email,
@@ -129,6 +132,11 @@ export function PartnerLoginForm({
             </label>
             <input
               id="partner-login"
+              value={login}
+              onChange={(e) => setLogin(e.target.value)}
+              autoCapitalize="none"
+              spellCheck={false}
+              placeholder="Ihre E-Mail oder Ihr Anmeldename"
               name="login"
               type="text"
               autoComplete="username"
@@ -144,6 +152,7 @@ export function PartnerLoginForm({
             <div className="relative mt-2">
               <input
                 id="partner-password"
+                placeholder="Ihr Passwort"
                 name="password"
                 type={showPassword ? "text" : "password"}
                 autoComplete="current-password"
@@ -185,13 +194,14 @@ export function PartnerLoginForm({
             </div>
           </div>
 
-          <div className="flex flex-col items-center border-t border-[#0F4F68]/10 pt-4">
+          <div className="flex justify-end">
             <button
               type="button"
               className="text-sm font-semibold text-[#0F4F68] underline underline-offset-2 hover:text-[#0c3d52] disabled:opacity-50"
               disabled={disabled || pending}
               aria-expanded={false}
               onClick={() => {
+                setResetLogin(login);
                 setResetOpen(true);
                 setMessage(null);
                 setResetFeedback(null);
@@ -206,7 +216,7 @@ export function PartnerLoginForm({
             disabled={disabled || pending}
             className="inline-flex min-h-[48px] w-full items-center justify-center rounded-xl bg-[#0F4F68] px-4 py-3 text-sm font-semibold text-white shadow-md shadow-[#0F4F68]/25 transition hover:bg-[#0c3d52] hover:shadow-lg disabled:cursor-not-allowed disabled:opacity-60"
           >
-            {pending ? "Anmeldung…" : "Anmelden"}
+            {pending ? "Anmeldung…" : "Im Partnerportal anmelden"}
           </button>
         </>
       ) : (
@@ -226,8 +236,7 @@ export function PartnerLoginForm({
           </div>
           <p className="text-center text-sm font-semibold text-[#0F4F68]">Passwort zurücksetzen</p>
           <p className="text-center text-xs text-neutral-600 sm:text-sm">
-            Wir senden Ihnen eine E-Mail mit einem sicheren Link. Dort legen Sie ein neues Passwort fest (kein Passwort
-            wird per E-Mail mitgeteilt).
+            Geben Sie Ihre E-Mail oder Ihren Anmeldenamen ein. Sie erhalten einen Link, mit dem Sie ein neues Passwort festlegen können.
           </p>
           <div>
             <label htmlFor="partner-reset-login" className="block text-sm font-semibold text-[#0F4F68]">
@@ -260,7 +269,7 @@ export function PartnerLoginForm({
           ) : null}
           <button
             type="button"
-            disabled={disabled || resetSending}
+            disabled={disabled || resetSending || !resetLogin.trim()}
             className="inline-flex min-h-[48px] w-full items-center justify-center rounded-xl border border-[#0F4F68]/25 bg-white px-4 py-2.5 text-sm font-semibold text-[#0F4F68] transition hover:bg-[#0F4F68]/[0.06] disabled:cursor-not-allowed disabled:opacity-60"
             onClick={() => sendPasswordResetLink()}
           >

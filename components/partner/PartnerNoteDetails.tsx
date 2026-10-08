@@ -16,18 +16,23 @@ export function PartnerNoteDetails({ tipId, note }: Props) {
   const [read, setRead] = useState(false);
 
   useEffect(() => {
-    try {
-      if (typeof window !== "undefined" && window.localStorage.getItem(storageKey(tipId))) {
-        setRead(true);
-      }
-    } catch {
-      /* private mode etc. */
-    }
+    const syncRead = () => {
+      try { setRead(Boolean(window.localStorage.getItem(storageKey(tipId)))); }
+      catch { /* Browser-Speicher ist optional. */ }
+    };
+    syncRead();
+    window.addEventListener("partner-note-read", syncRead);
+    window.addEventListener("storage", syncRead);
+    return () => {
+      window.removeEventListener("partner-note-read", syncRead);
+      window.removeEventListener("storage", syncRead);
+    };
   }, [tipId]);
 
   const markRead = () => {
     try {
       window.localStorage.setItem(storageKey(tipId), "1");
+      window.dispatchEvent(new Event("partner-note-read"));
     } catch {
       /* ignore */
     }
@@ -46,11 +51,11 @@ export function PartnerNoteDetails({ tipId, note }: Props) {
         if (e.currentTarget.open) markRead();
       }}
     >
-      <summary className="cursor-pointer list-none font-medium text-[#0F4F68] hover:underline [&::-webkit-details-marker]:hidden">
+      <summary className="inline-flex min-h-11 cursor-pointer list-none items-center font-medium text-[#0F4F68] hover:underline [&::-webkit-details-marker]:hidden">
         <span className="inline-flex items-center gap-2">
           {!read ? (
             <span
-              className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-amber-400 text-[11px] font-black leading-none text-amber-950 shadow-[0_0_14px_rgba(251,191,36,0.95)] ring-2 ring-amber-200/80 motion-safe:animate-pulse"
+              className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-amber-100 text-[11px] font-bold leading-none text-amber-900 ring-1 ring-amber-200"
               aria-hidden
             >
               !
