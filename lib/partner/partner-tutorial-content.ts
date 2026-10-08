@@ -5,6 +5,7 @@ import {
   partnerHasWerbenetzwerkProgram,
 } from "@/lib/partner/partner-program-capabilities";
 import { PARTNER_RESPONSIBILITY_LABELS, type PartnerResponsibilitySlug } from "@/lib/partner/responsibility-areas";
+import { PARTNER_DIRECT_REFERRAL_RATE_LABEL } from "@/lib/partner/referral-money";
 
 export type PartnerTutorialStep = {
   anchor: string;
@@ -62,7 +63,7 @@ export function buildPartnerTutorialSteps(responsibilityAreas: string[] | null |
       anchor: '[data-tutorial="partner-provision-betrieblich"]',
       title: "Eigene Abschlussprovision & geworbene Partner",
       body:
-        "In diesem Kasten sehen Sie Ihre Abschlussprovision aus der betrieblichen Pflegeberatung sowie die Provision durch direkt geworbene Partner (5 % auf deren Gesamtumsatz inkl. deren Netzwerk). Die Auszahlung erfolgt am 3. jedes Monats.",
+        `In diesem Kasten sehen Sie Ihre Abschlussprovision aus der betrieblichen Pflegeberatung sowie die Provision durch direkt geworbene Partner (${PARTNER_DIRECT_REFERRAL_RATE_LABEL} auf deren Gesamtumsatz inkl. deren Netzwerk). Die Auszahlung erfolgt am 3. jedes Monats.`,
       missingAnchorHint: "Dieser Bereich erscheint, wenn bei Ihnen die betriebliche Pflegeberatung freigeschaltet ist.",
       bubbleAlignViewportCenterMd: true,
     });
@@ -122,7 +123,7 @@ export function buildPartnerTutorialSteps(responsibilityAreas: string[] | null |
       anchor: '[data-tutorial="partner-nav-netzwerk"]',
       title: "Werbe-Netzwerk",
       body:
-        "Hier sehen Sie die von Ihnen geworbenen Partner als Baum. Von deren Abschlüssen erhalten Sie 5 % Werbeprovision – ebenfalls monatlich ausgezahlt. Neue Partner werden über Ihren Partner-Code zugeordnet.",
+        `Hier sehen Sie die von Ihnen geworbenen Partner als Baum. Von deren Abschlussprovision erhalten Sie zusätzlich ${PARTNER_DIRECT_REFERRAL_RATE_LABEL} Werbeprovision – ebenfalls monatlich ausgezahlt. Neue Partner werden über Ihren Partner-Code zugeordnet.`,
       missingAnchorHint: "Nutzen Sie das Personen-Symbol in der linken bzw. unteren Leiste.",
     });
   }

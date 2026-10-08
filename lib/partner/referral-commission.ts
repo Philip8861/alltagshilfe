@@ -19,7 +19,7 @@ import {
  *      paid_amount_eur > 0,
  *      und (für Einmalprovision) noch nicht im Settlement abgerechnet.
  *
- * Referral-Bemessung = 5 % auf den Gesamtumsatz direkt geworbener Partner (rekursiv über deren Netzwerk).
+ * Referral-Bemessung = 15 % auf den Gesamtumsatz direkt geworbener Partner (rekursiv über deren Netzwerk).
  */
 
 const PERIOD_KEY_RE = /^\d{4}-\d{2}$/;
@@ -151,8 +151,8 @@ export async function getDirectReferralPartners(
 }
 
 /**
- * Referral-Provision in Cent: 5 % auf den Gesamtumsatz direkt geworbener Partner
- * (eigene Abschlussprovision + 5 % vom Gesamtumsatz ihrer direkten Kinder, rekursiv).
+ * Referral-Provision in Cent: 15 % auf den Gesamtumsatz direkt geworbener Partner
+ * (eigene Abschlussprovision + 15 % vom Gesamtumsatz ihrer direkten Kinder, rekursiv).
  */
 export async function getPartnerMonthlyReferralCommissionCents(
   svc: SupabaseClient,
@@ -230,7 +230,7 @@ function periodMonthEndUtc(periodKey: string): Date | null {
 /**
  * Komplett-Übersicht für einen Partner im Monat:
  *  - ownCents             = eigene freigegebene Abschlussprovision
- *  - referralCents        = 5 % auf Gesamtumsatz der direkten geworbenen Partner (nur ab referred_at)
+ *  - referralCents        = 15 % auf Gesamtumsatz der direkten geworbenen Partner (nur ab referred_at)
  *  - totalCents           = ownCents + referralCents (= Auszahlungssumme)
  */
 export async function getPartnerMonthlyPayoutSummary(

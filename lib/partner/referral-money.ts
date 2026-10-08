@@ -4,12 +4,18 @@
  * Regel: Geldberechnung IMMER in Cent (Integer), niemals Float.
  * EUR-Werte (numeric 12,2) aus DB werden direkt als String/number gelesen und in Cent gewandelt.
  *
- * Referral-Bemessung = 5 % auf den Gesamtumsatz direkt geworbener Partner:
- *   Gesamtumsatz = eigene Abschlussprovision + 5 % vom Gesamtumsatz jedes direkten Kindes (rekursiv).
+ * Referral-Bemessung = 15 % auf den Gesamtumsatz direkt geworbener Partner:
+ *   Gesamtumsatz = eigene Abschlussprovision + 15 % vom Gesamtumsatz jedes direkten Kindes (rekursiv).
+ *
+ * Beispiel: A wirbt B. B schließt einen Vertrag ab und erhält von uns 150 €/Monat Abschlussprovision.
+ * A erhält zusätzlich (von uns, nicht von B) 15 % davon = 22,50 €/Monat. B behält die vollen 150 €.
  */
 
-/** 5 % in Basispunkten. */
-export const PARTNER_DIRECT_REFERRAL_RATE_BPS = 500;
+/** 15 % in Basispunkten. */
+export const PARTNER_DIRECT_REFERRAL_RATE_BPS = 1500;
+
+/** Anzeige-Wert für UI-Texte („15 %“). */
+export const PARTNER_DIRECT_REFERRAL_RATE_LABEL = `${PARTNER_DIRECT_REFERRAL_RATE_BPS / 100} %`;
 
 /** Maximale Tiefe beim Aufbau des Werbe-Strukturbaums (Schutz gegen Endlos-Loop). */
 export const PARTNER_NETWORK_MAX_DEPTH = 10;
@@ -43,7 +49,7 @@ export function centsToEur(cents: number): number {
 
 /**
  * Berechnet Referral-Provision in Cent: ownCents × bps / 10000.
- * Banker's-Rounding nicht nötig — Standard math-round genügt (5 % auf glatte EUR-Beträge ist ohnehin exakt).
+ * Banker's-Rounding nicht nötig — Standard math-round genügt (15 % auf glatte EUR-Beträge ist ohnehin exakt).
  * Bei "krummen" Bemessungen (z. B. 100,33 €) wird auf den ganzen Cent gerundet (kaufmännisch).
  */
 export function referralCentsFromOwnCents(
@@ -74,7 +80,7 @@ export type PartnerRevenueNode = {
 
 /**
  * Gesamtumsatz eines Partners in Cent:
- * eigene Abschlussprovision + 5 % vom Gesamtumsatz jedes direkten Kindes.
+ * eigene Abschlussprovision + 15 % vom Gesamtumsatz jedes direkten Kindes.
  */
 export function computePartnerTotalRevenueCents(node: PartnerRevenueNode): number {
   const own = node.ownApprovedClosingCommissionCents ?? 0;
@@ -85,7 +91,7 @@ export function computePartnerTotalRevenueCents(node: PartnerRevenueNode): numbe
   return own + childBonus;
 }
 
-/** Referral-Anteil des Viewers auf ein direktes Kind: 5 % vom Gesamtumsatz des Kindes. */
+/** Referral-Anteil des Viewers auf ein direktes Kind: 15 % vom Gesamtumsatz des Kindes. */
 export function computeViewerReferralFromDirectChildCents(node: PartnerRevenueNode): number {
   return referralCentsFromOwnCents(computePartnerTotalRevenueCents(node));
 }

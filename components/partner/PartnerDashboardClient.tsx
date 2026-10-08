@@ -21,7 +21,7 @@ import {
   PARTNER_RESPONSIBILITY_SLUGS,
   type PartnerResponsibilitySlug,
 } from "@/lib/partner/responsibility-areas";
-import { formatCentsDe } from "@/lib/partner/referral-money";
+import { formatCentsDe, PARTNER_DIRECT_REFERRAL_RATE_LABEL } from "@/lib/partner/referral-money";
 import { formatPayoutPeriodLabelDe } from "@/lib/partner/payout-period";
 
 type Props = {
@@ -296,7 +296,7 @@ export function PartnerDashboardClient({
                     {formatCentsDe(payoutSummary.referralCents)}
                   </p>
                   <p className="mt-1 text-xs text-sky-900/80">
-                    5&nbsp;% auf Gesamtumsatz direkt geworbener Partner
+                    {PARTNER_DIRECT_REFERRAL_RATE_LABEL.replace(" ", "\u00a0")} auf Gesamtumsatz direkt geworbener Partner
                   </p>
                 </article>
               </div>

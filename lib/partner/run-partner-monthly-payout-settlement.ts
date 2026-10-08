@@ -138,8 +138,8 @@ export async function runPartnerMonthlyPayoutSettlement(options?: {
   /**
    * Referral-Pass:
    * Für jeden Partner mit Sponsor:
-   *   - Gesamtumsatz rekursiv (eigene Provision + 5 % vom Gesamtumsatz der direkten Kinder)
-   *   - Sponsor erhält 5 % auf den Gesamtumsatz des direkt geworbenen Partners
+   *   - Gesamtumsatz rekursiv (eigene Provision + 15 % vom Gesamtumsatz der direkten Kinder)
+   *   - Sponsor erhält 15 % auf den Gesamtumsatz des direkt geworbenen Partners
    *   - nur ab referred_at (Provisionen vor referred_at zählen NICHT)
    */
   const allReports = reports.map((r) => ({

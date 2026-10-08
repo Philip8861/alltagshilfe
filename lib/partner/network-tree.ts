@@ -30,7 +30,7 @@ export type PartnerNetworkNode = {
   noDirectReferral: boolean;
   /** Nur bei direkten Kindern: eigene freigegebene Closing-Commission im Monat in Cent. */
   ownApprovedClosingCommissionCents: number | null;
-  /** Nur bei direkten Kindern: 5 %-Anteil für aktuellen Viewer in Cent. */
+  /** Nur bei direkten Kindern: 15 %-Anteil für aktuellen Viewer in Cent. */
   referralCommissionForCurrentPartnerCents: number | null;
   /** Tiefer Baum (Datenschutz: nur partnerCode + Hinweis). */
   children: PartnerNetworkNode[];

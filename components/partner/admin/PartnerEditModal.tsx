@@ -20,6 +20,7 @@ import {
 import { getPartnerCommissionRatesAction } from "@/lib/actions/partner-admin-commission-rates";
 import { PartnerCommissionRatesFields } from "@/components/partner/admin/PartnerCommissionRatesFields";
 import type { PartnerCommissionRatesMap } from "@/lib/partner/partner-commission-rates-shared";
+import { PARTNER_DIRECT_REFERRAL_RATE_LABEL } from "@/lib/partner/referral-money";
 
 const initial: AdminWorkflowState = { ok: false, message: "" };
 
@@ -419,8 +420,9 @@ function AdminSponsorBlock({
             </button>
           </div>
           <p className="mt-1 text-xs text-neutral-500">
-            Noch kein Werber hinterlegt. Der Werber erhält 5 % Werbeprovision auf Abschlüsse dieses Partners ab dem
-            Zeitpunkt der Zuweisung. Die Beziehung ist danach nicht mehr änderbar.
+            Noch kein Werber hinterlegt. Der Werber erhält zusätzlich {PARTNER_DIRECT_REFERRAL_RATE_LABEL} Werbeprovision
+            auf die Abschlussprovision dieses Partners ab dem Zeitpunkt der Zuweisung. Die Beziehung ist danach nicht
+            mehr änderbar.
           </p>
         </>
       )}

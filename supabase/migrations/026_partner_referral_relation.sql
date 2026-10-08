@@ -1,5 +1,5 @@
 -- Werbe-Netzwerk: Partner können beim Anlegen einen werbenden Partner (PartnerCode) erhalten.
--- Geld: A erhält 5 % Referral-Provision auf eigene freigegebene Abschlussprovision von direkt geworbenem B.
+-- Geld: A erhält Referral-Provision (Satz in lib/partner/referral-money.ts, aktuell 15 %) auf die freigegebene Abschlussprovision von direkt geworbenem B.
 -- Regel-Härtung in DB: keine Self-Referral, kein direkter Zyklus, nur einmalig setzbar.
 --
 -- HINWEIS Migration:
@@ -138,7 +138,7 @@ alter table public.partner_payout_reports
   add column if not exists total_with_referral_eur numeric(12,2) not null default 0;
 
 comment on column public.partner_payout_reports.referral_eur is
-  '5 % auf eigene freigegebene Abschlussprovisionen der direkt geworbenen Partner im periodKey (nur ab referred_at).';
+  'Werbeprovision (Satz: lib/partner/referral-money.ts, aktuell 15 %) auf freigegebene Abschlussprovisionen der direkt geworbenen Partner im periodKey (nur ab referred_at).';
 
 comment on column public.partner_payout_reports.total_with_referral_eur is
   'einmal_eur + monatlich_eur + referral_eur (= Auszahlungssumme inkl. Werbeprovision; total_eur bleibt Eigenprovision).';
