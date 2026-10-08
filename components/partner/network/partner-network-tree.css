@@ -1,4 +1,14 @@
 /* Werbe-Netzwerk-Baum — kompakt, Kollisionen per JS nur bei Bedarf auflösen. */
+
+/* Zeichenfläche: dezentes Punktraster, damit Zoom/Verschieben räumlich lesbar ist. */
+.partner-network-tree__canvas {
+  background-color: #f7fbfc;
+  background-image: radial-gradient(rgba(15, 79, 104, 0.13) 1px, transparent 1.1px);
+  background-size: 22px 22px;
+  background-position: 11px 11px;
+}
+
+
 .partner-network-tree,
 .partner-network-tree ul {
   list-style: none;

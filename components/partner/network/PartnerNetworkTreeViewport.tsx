@@ -17,6 +17,8 @@ import {
 
 const MIN_SCALE = 0.35;
 const MAX_SCALE = 2.75;
+/** Startansicht: kleine Netzwerke nicht beliebig hochskalieren (Karten bleiben lesbar, nicht „aufgeblasen“). */
+const MAX_INITIAL_SCALE = 1.15;
 
 type Transform = { x: number; y: number; scale: number };
 
@@ -47,6 +49,8 @@ type Props = {
   isMobile?: boolean;
   /** Start-Zoom-Faktor (z. B. 0.9 = 10 % kleiner). */
   initialViewScale?: number;
+  /** Linker Bereich der Werkzeugleiste (Titel, Zähler …). */
+  toolbarStart?: ReactNode;
 };
 
 export function PartnerNetworkTreeViewport({
@@ -54,6 +58,7 @@ export function PartnerNetworkTreeViewport({
   layoutKey,
   isMobile = false,
   initialViewScale = 1,
+  toolbarStart,
 }: Props) {
   const viewportRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
@@ -81,7 +86,8 @@ export function PartnerNetworkTreeViewport({
     const vh = viewport.clientHeight;
     const paddingX = isMobile ? 16 : 36;
     const paddingTop = 16;
-    const paddingBottom = isMobile ? 24 : 40;
+    /* Unten Platz für den Aufklapp-Button unter der eigenen Karte und den Hinweis-Chip. */
+    const paddingBottom = isMobile ? 72 : 48;
 
     const focusSelector = isMobile ? '[data-network-focus-top="true"]' : '[data-network-focus="true"]';
     const focusEls = [...content.querySelectorAll<HTMLElement>(focusSelector)];
@@ -109,13 +115,18 @@ export function PartnerNetworkTreeViewport({
       const focusWidth = Math.max(maxX - minX, 1);
       const focusHeight = Math.max(maxY - minY, 1);
 
-      const scale = clampScale(
-        Math.min((vw - paddingX * 2) / focusWidth, (vh - paddingTop - paddingBottom) / focusHeight) *
-          initialViewScale,
+      const scale = Math.min(
+        MAX_INITIAL_SCALE,
+        clampScale(
+          Math.min((vw - paddingX * 2) / focusWidth, (vh - paddingTop - paddingBottom) / focusHeight) *
+            initialViewScale,
+        ),
       );
 
       const x = (vw - focusWidth * scale) / 2 - minX * scale;
-      const y = paddingTop - minY * scale;
+      /* Passt der Fokusbereich komplett hinein, vertikal zentrieren – sonst oben andocken. */
+      const fitsVertically = focusHeight * scale <= vh - paddingTop - paddingBottom;
+      const y = fitsVertically ? (vh - focusHeight * scale) / 2 - minY * scale : paddingTop - minY * scale;
       setTransform({ x, y, scale });
       return;
     }
@@ -126,7 +137,7 @@ export function PartnerNetworkTreeViewport({
     if (cw > vw * 0.96 || ch > vh * 0.85) {
       scale = clampScale(Math.min((vw * 0.96) / cw, (vh * 0.85) / ch) * initialViewScale);
     } else {
-      scale = clampScale(initialViewScale);
+      scale = Math.min(MAX_INITIAL_SCALE, clampScale(initialViewScale));
     }
     setTransform({
       x: (vw - cw * scale) / 2,
@@ -191,6 +202,26 @@ export function PartnerNetworkTreeViewport({
     }
     setAnimating(false);
   }, []);
+
+  /** „Alles anzeigen“: gesamten (aufgeklappten) Baum in den Viewport einpassen. */
+  const fitAll = useCallback(() => {
+    const viewport = viewportRef.current;
+    const content = contentRef.current;
+    if (!viewport || !content) return;
+    stopCenterAnimation();
+
+    const vw = viewport.clientWidth;
+    const vh = viewport.clientHeight;
+    const pad = isMobile ? 12 : 28;
+    const cw = Math.max(content.offsetWidth, 1);
+    const ch = Math.max(content.offsetHeight, 1);
+    const scale = clampScale(Math.min((vw - pad * 2) / cw, (vh - pad * 2) / ch));
+    setTransform({
+      x: (vw - cw * scale) / 2,
+      y: (vh - ch * scale) / 2,
+      scale,
+    });
+  }, [isMobile, stopCenterAnimation]);
 
   const viewportApi = useMemo<PartnerNetworkViewportApi>(() => ({ centerOnElement }), [centerOnElement]);
 
@@ -339,10 +370,45 @@ export function PartnerNetworkTreeViewport({
   const pct = Math.round(transform.scale * 100);
 
   return (
-    <div className="relative w-full">
+    <div className="relative flex w-full flex-col">
+      {/* Werkzeugleiste */}
+      <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-2 border-b border-[#0F4F68]/10 bg-white px-3 py-2.5 sm:px-4">
+        <div className="w-full min-w-0 sm:w-auto sm:flex-1">{toolbarStart}</div>
+        <div className="flex w-full items-center justify-end gap-1 sm:w-auto" role="group" aria-label="Ansicht steuern">
+          <ToolbarBtn label="Verkleinern" onClick={() => zoomBy(0.85)} icon>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.25" aria-hidden>
+              <path d="M5 12h14" strokeLinecap="round" />
+            </svg>
+          </ToolbarBtn>
+          <span
+            className="min-w-[3rem] text-center text-xs font-semibold tabular-nums text-[#0F4F68]"
+            aria-live="polite"
+            aria-label={`Zoom ${pct} Prozent`}
+          >
+            {pct}%
+          </span>
+          <ToolbarBtn label="Vergrößern" onClick={() => zoomBy(1.15)} icon>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.25" aria-hidden>
+              <path d="M12 5v14M5 12h14" strokeLinecap="round" />
+            </svg>
+          </ToolbarBtn>
+          <span className="mx-1 hidden h-5 w-px bg-[#0F4F68]/15 sm:block" aria-hidden />
+          <ToolbarBtn label="Startansicht" onClick={resetView} icon title="Startansicht: Werber, Sie und direkt geworbene Partner">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
+              <path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1h-5v-8H9v8H4a1 1 0 01-1-1V9.5z" strokeLinejoin="round" />
+            </svg>
+          </ToolbarBtn>
+          <ToolbarBtn label="Alles anzeigen" onClick={fitAll} icon title="Alles anzeigen: gesamtes Netzwerk einpassen">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
+              <path d="M8 3H5a2 2 0 00-2 2v3M16 3h3a2 2 0 012 2v3M8 21H5a2 2 0 01-2-2v-3M16 21h3a2 2 0 002-2v-3" strokeLinecap="round" />
+            </svg>
+          </ToolbarBtn>
+        </div>
+      </div>
+
       <div
         ref={viewportRef}
-        className="ahs-tree__viewport relative min-h-[clamp(16rem,42vh,22rem)] w-full cursor-grab touch-none overflow-hidden active:cursor-grabbing sm:min-h-[clamp(22rem,68vh,44rem)]"
+        className="ahs-tree__viewport partner-network-tree__canvas relative min-h-[clamp(18rem,48vh,24rem)] w-full cursor-grab touch-none overflow-hidden active:cursor-grabbing sm:min-h-[clamp(24rem,64vh,42rem)]"
         onPointerDown={onPointerDown}
         onPointerMove={onPointerMove}
         onPointerUp={onPointerUp}
@@ -363,52 +429,40 @@ export function PartnerNetworkTreeViewport({
             {children}
           </PartnerNetworkTreeViewportContext.Provider>
         </div>
-      </div>
 
-      <div className="mt-2 flex flex-wrap items-center justify-between gap-2">
-        <p className="text-[0.65rem] leading-snug text-neutral-600 sm:text-xs">
-          <span className="hidden sm:inline">Mausrad zum Zoomen · </span>
-          Ziehen zum Verschieben
-          <span className="sm:hidden"> · Zwei Finger zum Zoomen · + für weitere Ebenen</span>
+        <p className="pointer-events-none absolute bottom-2 left-1/2 max-w-[calc(100%-1.5rem)] -translate-x-1/2 truncate rounded-full border border-[#0F4F68]/10 bg-white/85 px-3 py-1 text-[0.62rem] text-neutral-600 shadow-sm backdrop-blur-sm sm:text-[0.68rem]">
+          <span className="hidden sm:inline">Mausrad zoomt · Ziehen verschiebt · </span>
+          <span className="sm:hidden">Zwei Finger zoomen · Ziehen verschiebt · </span>
+          <span className="font-semibold text-[#0F4F68]">+</span>/<span className="font-semibold text-[#0F4F68]">−</span> an
+          einer Karte öffnet bzw. schließt die Ebene darunter
         </p>
-        <div className="flex items-center gap-1.5">
-          <span className="min-w-[2.75rem] text-center text-[0.65rem] font-semibold tabular-nums text-[#0F4F68]">
-            {pct}%
-          </span>
-          <ZoomBtn label="Verkleinern" onClick={() => zoomBy(0.85)}>
-            −
-          </ZoomBtn>
-          <ZoomBtn label="Vergrößern" onClick={() => zoomBy(1.15)}>
-            +
-          </ZoomBtn>
-          <button
-            type="button"
-            onClick={resetView}
-            className="min-h-9 rounded-lg border border-[#0F4F68]/20 bg-white px-2.5 text-[0.65rem] font-semibold uppercase tracking-wide text-[#0F4F68] shadow-sm transition hover:bg-[#F2F9FA] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68]"
-          >
-            Startansicht
-          </button>
-        </div>
       </div>
     </div>
   );
 }
 
-function ZoomBtn({
+function ToolbarBtn({
   label,
+  title,
   onClick,
   children,
+  icon = false,
 }: {
   label: string;
+  title?: string;
   onClick: () => void;
   children: ReactNode;
+  icon?: boolean;
 }) {
   return (
     <button
       type="button"
       aria-label={label}
+      title={title ?? label}
       onClick={onClick}
-      className="grid h-9 w-9 place-items-center rounded-lg border border-[#0F4F68]/20 bg-white text-lg font-semibold leading-none text-[#0F4F68] shadow-sm transition hover:bg-[#F2F9FA] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68]"
+      className={`inline-flex h-9 items-center justify-center rounded-lg border border-[#0F4F68]/15 bg-white text-[#0F4F68] shadow-sm transition hover:border-[#0F4F68]/30 hover:bg-[#F2F9FA] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F4F68] ${
+        icon ? "w-9" : "px-3 text-xs font-semibold"
+      }`}
     >
       {children}
     </button>
