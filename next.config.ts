@@ -108,6 +108,14 @@ const nextConfig: NextConfig = {
     serverActions: {
       bodySizeLimit: "30mb",
     },
+    /**
+     * Client-Router-Cache: bereits besuchte dynamische Seiten (z. B. Partnerportal Übersicht ↔ Statistik)
+     * werden 30 s lang sofort aus dem Cache gezeigt statt jedes Mal neu vom Server geladen.
+     * Mutationen rufen ohnehin `router.refresh()` auf und invalidieren damit den Cache.
+     */
+    staleTimes: {
+      dynamic: 30,
+    },
   },
   async redirects() {
     return [

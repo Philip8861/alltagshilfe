@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import { isPflegeboxKonfiguratorPagePath } from "@/lib/pflegebox-konfigurator-path";
+import { isPartnerAreaPath } from "@/lib/partner-area-path";
 import { fetchPartnerSessionShared } from "@/lib/partner/partner-session-client";
 import { ReadabilityHeaderLauncher } from "@/components/accessibility/ReadabilityHeaderLauncher";
 import { cn } from "@/lib/utils";
@@ -49,10 +50,16 @@ export function HeaderStrip() {
   const partnerAdminHref = en ? "/en/partner/admin" : "/partner/admin";
   const partnerActive =
     pathname.startsWith("/partner") || pathname.startsWith("/en/partner");
+  /**
+   * Im Partnerbereich ist der Header per CSS ausgeblendet und die Session kennt das Portal bereits.
+   * Dort keinen eigenen `/api/partner/session`-Request pro Navigation auslösen (spart je Klick eine Server-Rundreise).
+   */
+  const inPartnerArea = isPartnerAreaPath(pathname);
 
   const [session, setSession] = useState<PartnerStripSession | null>(null);
 
   const loadSession = useCallback((opts?: { force?: boolean }) => {
+    if (inPartnerArea) return;
     void fetchPartnerSessionShared(opts).then((json) => {
       setSession({
         configured: json.configured,
@@ -63,7 +70,7 @@ export function HeaderStrip() {
         systemAdminSession: json.systemAdminSession,
       });
     }, () => setSession(emptySession));
-  }, []);
+  }, [inPartnerArea]);
 
   useEffect(() => {
     /** Navigation: frisch laden (Login/Logout können den Status geändert haben) — geteilt mit anderen Konsumenten. */
