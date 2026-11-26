@@ -232,6 +232,7 @@ export function buildBrandedNotificationHtml(options: {
   /** Optionaler Call-to-Action-Button unter dem Detailblock. */
   ctaHref?: string;
   ctaLabel?: string;
+  qrCodeCid?: string;
   /** „accent“ = Orange (Marke), „brand“ = Petrol (Standard). */
   ctaButtonVariant?: "brand" | "accent";
 }): string {
@@ -299,11 +300,13 @@ export function buildBrandedNotificationHtml(options: {
         </tr>`;
   }
 
-  return brandedEmailShell({
-    kindBadge,
-    headline,
-    bodyRowsHtml: `${rowHtml}${detailSection}${ctaSection}`,
-  });
+  const qrSection = options.qrCodeCid
+    ? `<tr><td style="padding:0 20px 24px;">
+        <img src="cid:${escapeHtml(options.qrCodeCid)}" width="160" height="160"
+          alt="QR-Code zur Kursanmeldung" style="display:block;border:0;" />
+      </td></tr>`
+    : "";
+  return brandedEmailShell({ kindBadge, headline, bodyRowsHtml: rowHtml + detailSection + ctaSection + qrSection });
 }
 
 /** Attribut-Inhalt für Links (href, sehr eingeschränkt). */

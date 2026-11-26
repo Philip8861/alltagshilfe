@@ -71,6 +71,13 @@ Kopie von `.env.example` nach `.env` anlegen. Wichtig:
 
 Basis-Struktur vorbereitet unter `app/konfigurator/`. Erweiterung: Schritte und State in eigenen Komponenten, Lead-Erfassung am Ende per Server Action.
 
+## Orientierungskurs und Pflegekurse
+
+- Vor der Freischaltung die Migration `supabase/migrations/036_orientierungskurs.sql` auf das Supabase-Projekt anwenden. Die Website benötigt `NEXT_PUBLIC_SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, die öffentliche HTTPS-Adresse in `NEXT_PUBLIC_SITE_URL` und den transaktionalen SMTP-Versand aus `.env.example`.
+- Für Online-Termine `ORIENTIERUNGSKURS_ONLINE_URL_TEMPLATE` auf eine HTTPS-Adresse des verwendeten Videodienstes setzen. Der Dienst muss Räume anhand frei wählbarer IDs öffnen können. `{courseId}` wird durch eine eigene ID je Kurs ersetzt. Ohne passende Konfiguration bleibt Vor Ort buchbar.
+- In der Partner-Verwaltung unter **Anlegen** beim neuen Konto **Pflegekurse freischalten** wählen. Im Bereich **Pflegekurse** können System-Admins auch bestehende Konten freischalten oder Freigaben zurücknehmen.
+- Unter **Pflegekurse** können freigeschaltete Konten Buchungseinladungen versenden und die gebuchten Kurse und Anmeldungen aller Unternehmen sehen. Unternehmen buchen über `/orientierungskurs`. Die zweite Buchungsmail enthält den individuellen Teilnahmelink, den QR-Code und den PDF-Aushang.
+
 ## Lizenz
 
 Projektintern.

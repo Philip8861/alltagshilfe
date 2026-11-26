@@ -295,6 +295,10 @@ export function CreatePartnerAccountForm() {
           </label>
         </div>
       </fieldset>
+      <label className="flex min-h-11 cursor-pointer items-center gap-3 rounded-xl border border-neutral-200 bg-neutral-50/80 px-4 py-3 text-sm font-semibold text-[#0F4F68]">
+        <input type="checkbox" name="pflegekurse" value="yes" disabled={pending} className="h-4 w-4 accent-[#0F4F68]" />
+        Pflegekurse freischalten
+      </label>
       <PartnerCommissionRatesFields disabled={pending} />
       <button
         type="submit"

@@ -1,0 +1,154 @@
+import type { SupabaseClient } from "@supabase/supabase-js";
+import { z } from "zod";
+import { courseBookingSchema, courseParticipantSchema } from "@/lib/validations/orientierungskurs";
+import { startsInFuture, type CourseSlot } from "./slots";
+
+export const COURSE_BOOKINGS = "orientierungskurs_bookings";
+export const COURSE_PARTICIPANTS = "orientierungskurs_participants";
+export const COURSE_STAFF = "orientierungskurs_staff";
+const MAIL_DELIVERIES = "orientierungskurs_mail_deliveries";
+
+export type Booking = CourseSlot & {
+  id: string;
+  registration_code: string;
+  company: string;
+  contact_name: string;
+  contact_email: string;
+  contact_phone: string;
+  address: string | null;
+  room: string | null;
+  parking: string | null;
+  meeting_url: string | null;
+};
+
+export type Participant = { first_name: string; last_name: string; email: string };
+export type DashboardBooking = Booking & { orientierungskurs_participants: Participant[] };
+
+export async function loadCourseMonth(client: SupabaseClient, month: string): Promise<CourseSlot[] | null> {
+  const { data, error } = await client.from(COURSE_BOOKINGS).select("slot_date,slot_time,format")
+    .gte("slot_date", month + "-01").lte("slot_date", monthEnd(month));
+  return error ? null : data as CourseSlot[];
+}
+
+function monthEnd(month: string): string {
+  const [year, number] = month.split("-").map(Number);
+  return new Date(Date.UTC(year, number, 0)).toISOString().slice(0, 10);
+}
+
+export async function loadCourseDashboard(client: SupabaseClient, month: string): Promise<DashboardBooking[] | null> {
+  const { data, error } = await client.from(COURSE_BOOKINGS)
+    .select("*,orientierungskurs_participants(first_name,last_name,email)")
+    .gte("slot_date", month + "-01").lte("slot_date", monthEnd(month))
+    .order("slot_date").order("slot_time")
+    .order("last_name", { referencedTable: COURSE_PARTICIPANTS })
+    .order("first_name", { referencedTable: COURSE_PARTICIPANTS });
+  return error ? null : data as DashboardBooking[];
+}
+
+export async function findCourse(client: SupabaseClient, code: string): Promise<Booking | null | undefined> {
+  const { data, error } = await client.from(COURSE_BOOKINGS).select("*").eq("registration_code", code).maybeSingle();
+  return error ? undefined : data as Booking | null;
+}
+
+export async function saveCourse(
+  client: SupabaseClient,
+  input: z.output<typeof courseBookingSchema>,
+  meetingUrl: string | null,
+): Promise<{ booking: Booking } | { error: "taken" | "past" | "online" | "storage" }> {
+  const fields = {
+    slot_date: input.date,
+    slot_time: input.time + ":00",
+    format: input.format,
+    company: input.company,
+    contact_name: input.contactName,
+    contact_email: input.email,
+    contact_phone: input.phone,
+    address: input.format === "onsite" ? input.address : null,
+    room: input.format === "onsite" ? input.room : null,
+    parking: input.format === "onsite" ? input.parking || null : null,
+  };
+
+  async function existing(): Promise<Booking | null> {
+    const { data } = await client.from(COURSE_BOOKINGS).select("*").eq("id", input.id).maybeSingle<Booking>();
+    if (!data || !Object.entries(fields).every(([key, value]) => data[key as keyof Booking] === value)) return null;
+    return data;
+  }
+
+  const saved = await existing();
+  if (saved) return { booking: saved };
+  if (!startsInFuture(input.date, input.time)) return { error: "past" };
+  if (input.format === "online" && !meetingUrl) return { error: "online" };
+
+  const { data, error } = await client.from(COURSE_BOOKINGS)
+    .insert({ id: input.id, ...fields, meeting_url: meetingUrl }).select().single<Booking>();
+  if (!error) return { booking: data };
+  if (error.code === "23505" || error.code === "23P01") {
+    const repeated = await existing();
+    return repeated ? { booking: repeated } : { error: "taken" };
+  }
+  console.error("[orientierungskurs] booking", error.code);
+  return { error: "storage" };
+}
+
+export async function saveParticipant(
+  client: SupabaseClient,
+  booking: Booking,
+  input: z.output<typeof courseParticipantSchema>,
+): Promise<"saved" | "already" | "past" | "storage"> {
+  const participant = { first_name: input.firstName, last_name: input.lastName, email: input.email };
+  const query = await client.from(COURSE_PARTICIPANTS).select("id,email,first_name,last_name")
+    .eq("course_id", booking.id).eq("email", input.email)
+    .maybeSingle<Participant & { id: string }>();
+  if (query.error) return "storage";
+  if (query.data) {
+    return query.data.id === input.id && query.data.first_name === participant.first_name &&
+      query.data.last_name === participant.last_name ? "saved" : "already";
+  }
+  if (!startsInFuture(booking.slot_date, booking.slot_time)) return "past";
+  const { error } = await client.from(COURSE_PARTICIPANTS)
+    .insert({ id: input.id, course_id: booking.id, ...participant });
+  if (!error) return "saved";
+  if (error.code === "23505") {
+    const { data } = await client.from(COURSE_PARTICIPANTS).select("id")
+      .eq("id", input.id).eq("course_id", booking.id).eq("email", input.email)
+      .eq("first_name", participant.first_name).eq("last_name", participant.last_name).maybeSingle();
+    return data ? "saved" : "already";
+  }
+  console.error("[orientierungskurs] participant", error.code);
+  return "storage";
+}
+
+export async function sendCourseMailOnce(
+  client: SupabaseClient,
+  key: string,
+  send: () => Promise<boolean>,
+): Promise<boolean> {
+  const { error: setupError } = await client.from(MAIL_DELIVERIES)
+    .upsert({ delivery_key: key }, { onConflict: "delivery_key", ignoreDuplicates: true });
+  if (setupError) return false;
+
+  const now = new Date();
+  const lease = crypto.randomUUID();
+  const { data, error } = await client.from(MAIL_DELIVERIES)
+    .update({ lease_id: lease, lease_until: new Date(now.getTime() + 180_000).toISOString() })
+    .eq("delivery_key", key).is("sent_at", null).or("lease_until.is.null,lease_until.lt." + now.toISOString())
+    .select("delivery_key").maybeSingle();
+  if (error) return false;
+  if (!data) {
+    const { data: delivery } = await client.from(MAIL_DELIVERIES)
+      .select("sent_at").eq("delivery_key", key).maybeSingle();
+    return Boolean(delivery?.sent_at);
+  }
+
+  let sent = false;
+  try {
+    sent = await send();
+  } catch {
+    console.error("[orientierungskurs] E-Mail-Vorbereitung fehlgeschlagen");
+  }
+  const { error: saveError } = await client.from(MAIL_DELIVERIES)
+    .update({ lease_id: null, lease_until: null, sent_at: sent ? new Date().toISOString() : null })
+    .eq("delivery_key", key).eq("lease_id", lease);
+  if (saveError) console.error("[orientierungskurs] E-Mail-Status", saveError.code);
+  return sent;
+}

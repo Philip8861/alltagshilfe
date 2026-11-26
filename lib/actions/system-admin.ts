@@ -13,6 +13,7 @@ import {
   getSystemAdminSession,
 } from "@/lib/partner/system-admin-session";
 import { createPartnerUserSchema, deletePartnerUserIdSchema } from "@/lib/validations/system-admin";
+import { COURSE_STAFF } from "@/lib/orientierungskurs/store";
 import { generatePartnerInitialPassword } from "@/lib/partner/generate-partner-password";
 import { assignUniquePartnerReferralCode } from "@/lib/partner/generate-partner-referral-code";
 import { setPartnerReferralByCode } from "@/lib/partner/referral";
@@ -257,6 +258,20 @@ export async function createPartnerUserAction(
       console.error("[createPartnerUser] Auth-Rollback nach Provisions-Fehler fehlgeschlagen:", rollbackErr.message);
     }
     return { ok: false, message: ratesResult.message };
+  }
+
+  if (formData.get("pflegekurse") === "yes") {
+    const { error: grantError } = await svc.from(COURSE_STAFF).insert({ profile_id: uid });
+    if (grantError) {
+      console.error("[createPartnerUser] Pflegekurse:", grantError.code);
+      const { error: rollbackError } = await svc.auth.admin.deleteUser(uid);
+      if (rollbackError) {
+        console.error("[createPartnerUser] Pflegekurse: Auth-Rollback fehlgeschlagen", rollbackError.code);
+        return { ok: false, message: "Das Konto wurde angelegt. Pflegekurse konnte nicht freigeschaltet werden. Bitte prüfen Sie das Konto in der Partnerliste." };
+      }
+      return { ok: false, message: "Das Konto konnte mit der Pflegekurse-Freigabe nicht angelegt werden. Bitte prüfen Sie die Datenbankmigration." };
+    }
+    revalidatePath("/partner/admin/pflegekurse");
   }
 
   await logPartnerPortalAuditEvent(svc, {

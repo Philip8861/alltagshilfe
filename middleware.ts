@@ -25,7 +25,13 @@ function applySecurityAndSeoHeaders(
    * und URL-basierte Conversions zeigten dann immer nur die Startseite.
    * Keine Formulardaten in URLs; Pfade sind öffentlich.
    */
-  response.headers.set("Referrer-Policy", "no-referrer-when-downgrade");
+  const isCourseRoute =
+    normalizedPath === "/orientierungskurs" ||
+    normalizedPath.startsWith("/orientierungskurs/") ||
+    normalizedPath === "/partner/pflegekurse" ||
+    normalizedPath === "/partner/admin/pflegekurse";
+  response.headers.set("Referrer-Policy", isCourseRoute ? "no-referrer" : "no-referrer-when-downgrade");
+  if (isCourseRoute) response.headers.set("X-Robots-Tag", "noindex, nofollow");
   response.headers.set("X-DNS-Prefetch-Control", "off");
   response.headers.set(
     "Permissions-Policy",

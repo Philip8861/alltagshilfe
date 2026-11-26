@@ -109,6 +109,7 @@ export type SendInternalMailAttachment = {
   filename: string;
   content: Buffer;
   contentType?: string;
+  cid?: string;
 };
 
 export type SendInternalMailInput = {
@@ -139,6 +140,7 @@ export async function sendTransactionalMail(input: {
   subject: string;
   text: string;
   html?: string;
+  attachments?: SendInternalMailAttachment[];
 }): Promise<{ ok: true } | { ok: false; code: "smtp_not_configured" | "invalid_recipient" | "send_failed" }> {
   const conn = parseSmtpConnection();
   const to = input.to.trim();
@@ -170,6 +172,7 @@ export async function sendTransactionalMail(input: {
       subject,
       text: input.text,
       ...(input.html ? { html: input.html } : {}),
+      ...(input.attachments?.length ? { attachments: input.attachments } : {}),
     });
     return { ok: true };
   } catch (e) {

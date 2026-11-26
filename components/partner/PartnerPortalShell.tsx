@@ -17,6 +17,7 @@ type Props = {
   tutorialAutoShow?: boolean;
   /** Werbe-Netzwerk nur bei betrieblicher Pflegeberatung. */
   showNetworkNav?: boolean;
+  showCourseNav?: boolean;
   /** Freigeschaltete Leistungsbereiche (für den programmabhängigen Rundgang). */
   responsibilityAreaSlugs?: string[];
 };
@@ -66,6 +67,7 @@ export function PartnerPortalShell({
   initialPasswordChangePrompt = false,
   tutorialAutoShow = true,
   showNetworkNav = false,
+  showCourseNav = false,
   responsibilityAreaSlugs,
 }: Props) {
   const pathname = usePathname();
@@ -86,6 +88,7 @@ export function PartnerPortalShell({
   const statActive = pathname === "/partner/statistik" || pathname.startsWith("/partner/statistik/");
   const settingsActive = pathname === "/partner/einstellungen" || pathname.startsWith("/partner/einstellungen/");
   const networkActive = pathname === "/partner/team" || pathname.startsWith("/partner/team/");
+  const courseActive = pathname === "/partner/pflegekurse";
 
   return (
     <div className="partner-portal flex min-h-dvh flex-col md:flex-row">
@@ -132,6 +135,15 @@ export function PartnerPortalShell({
               <path d="M4 19V5M10 19V9M16 19v-6M22 19V11" strokeLinecap="round" />
             </svg><span>Statistik</span>
           </Link>
+          {showCourseNav && (
+            <Link href="/partner/pflegekurse" className={iconButtonClass(courseActive)}
+              aria-current={courseActive ? "page" : undefined} title="Pflegekurse">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+                <rect x="3" y="5" width="18" height="16" rx="2" /><path d="M7 3v4m10-4v4M3 10h18" strokeLinecap="round" />
+              </svg>
+              <span>Pflegekurse</span>
+            </Link>
+          )}
           <Link
             href="/partner/einstellungen"
             data-tutorial="partner-nav-einstellungen"
@@ -150,7 +162,7 @@ export function PartnerPortalShell({
 
       <div className="order-1 min-w-0 flex-1 pb-[calc(5rem+env(safe-area-inset-bottom))] md:pb-0">
         <header className="flex min-h-16 items-center justify-between gap-4 border-b border-[#d6e8ed] bg-gradient-to-r from-white to-[#f0f8fa] px-5 sm:px-8 lg:px-10">
-          <p className="text-sm font-semibold text-[#315363]">Partnerportal <span className="mx-2 text-[#a4b5be]" aria-hidden>/</span> <span className="text-[#6b7f89]">{pathname === "/partner/kontakt" ? "Kontakt" : settingsActive ? "Einstellungen" : networkActive ? "Werbe-Netzwerk" : statActive ? "Statistik" : "Übersicht"}</span></p>
+          <p className="text-sm font-semibold text-[#315363]">Partnerportal <span className="mx-2 text-[#a4b5be]" aria-hidden>/</span> <span className="text-[#6b7f89]">{pathname === "/partner/kontakt" ? "Kontakt" : settingsActive ? "Einstellungen" : networkActive ? "Werbe-Netzwerk" : statActive ? "Statistik" : courseActive ? "Pflegekurse" : "Übersicht"}</span></p>
           <PartnerSupportHeaderButton />
         </header>
         <div className="mx-auto w-full max-w-[96rem] px-4 py-6 sm:px-8 lg:px-10 lg:py-9">{children}</div>

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { PartnerAccountDisabledScreen } from "@/components/partner/PartnerAccountDisabledScreen";
 import { PartnerPortalShell } from "@/components/partner/PartnerPortalShell";
 import { isPartnerAccountDisabled, requirePartnerLogin } from "@/lib/partner/auth";
+import { hasCourseAccess } from "@/lib/orientierungskurs/access";
 import { partnerHasWerbenetzwerkProgram } from "@/lib/partner/partner-program-capabilities";
 import { normalizePortalPreferences, parsePortalPreferences } from "@/lib/partner/portal-preferences";
 
@@ -11,7 +12,7 @@ export const metadata: Metadata = {
 };
 
 export default async function PartnerPortalLayout({ children }: { children: React.ReactNode }) {
-  const { profile } = await requirePartnerLogin();
+  const { profile, userId } = await requirePartnerLogin();
 
   if (isPartnerAccountDisabled(profile)) {
     return <PartnerAccountDisabledScreen />;
@@ -25,12 +26,14 @@ export default async function PartnerPortalLayout({ children }: { children: Reac
   const tutorialAutoShow = portalPrefs.tutorial_hidden !== true;
 
   const showNetworkNav = partnerHasWerbenetzwerkProgram(profile.responsibility_areas);
+  const showCourseNav = await hasCourseAccess(userId);
 
   return (
     <PartnerPortalShell
       initialPasswordChangePrompt={initialPasswordChangePrompt}
       tutorialAutoShow={tutorialAutoShow}
       showNetworkNav={showNetworkNav}
+      showCourseNav={showCourseNav}
       responsibilityAreaSlugs={profile.responsibility_areas ?? []}
     >
       {children}
