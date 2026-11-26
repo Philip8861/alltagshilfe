@@ -1,11 +1,21 @@
 import { escapeEmailHrefAttr, escapeHtml, type EmailDetailRow } from "@/lib/email/branded-html";
+import { COURSE_CONTACT_EMAIL } from "./config";
 
 type MailLink = { href: string; label: string };
 
 const closingGreeting = "Herzliche Grüße aus Bad Grönenbach";
 const signatureName = "Franz Dirscherl";
 const signatureCompany = "Alltagshilfe-Süd";
-export const COURSE_SIGNATURE_TEXT = [closingGreeting, signatureName, signatureCompany].join("\n");
+const signatureAddress = ["Hinter den Gärten 10", "87730 Bad Grönenbach"];
+const signatureContacts = [
+  { label: "Telefon ", text: "08334 / 9893330", href: "tel:+4983349893330" },
+  { label: "E-Mail ", text: COURSE_CONTACT_EMAIL, href: "mailto:" + COURSE_CONTACT_EMAIL },
+  { label: "", text: "www.alltagshilfe-sued.de", href: "https://www.alltagshilfe-sued.de" },
+];
+export const COURSE_SIGNATURE_TEXT = [
+  closingGreeting, signatureName, signatureCompany, "",
+  ...signatureAddress, ...signatureContacts.map(({ label, text }) => label + text),
+].join("\n");
 export const COURSE_SIGNATURE_LOGO_CID = "signatur-logo@alltagshilfe-sued.de";
 
 export function renderCourseSignature(hasLogo: boolean): string {
@@ -13,7 +23,13 @@ export function renderCourseSignature(hasLogo: boolean): string {
     <p style="margin:0 0 12px;"><strong>${escapeHtml(signatureName)}</strong><br>${escapeHtml(signatureCompany)}</p>
     ${hasLogo
       ? `<img src="cid:${COURSE_SIGNATURE_LOGO_CID}" alt="${escapeHtml(signatureCompany)}" width="196" height="65" style="display:block; width:196px; height:auto; max-width:100%; border:0;">`
-      : ""}`;
+      : ""}
+    <p style="margin:12px 0 0; color:#465c63; font-size:14px; line-height:1.6; overflow-wrap:anywhere;">
+      ${signatureAddress.map(escapeHtml).join("<br>")}<br>
+      ${signatureContacts.map(({ label, text, href }) =>
+        `${escapeHtml(label)}<a href="${escapeEmailHrefAttr(href)}" style="color:#0f4f68; word-break:break-word;">${escapeHtml(text)}</a>`,
+      ).join("<br>")}
+    </p>`;
 }
 
 export function renderCourseLetter(subject: string, content: string): string {
@@ -55,10 +71,9 @@ export function renderCourseNotification(options: {
   afterRows?: string;
   link?: MailLink;
   qrCodeCid?: string;
-  contactEmail: string;
   signatureHasLogo: boolean;
 }): string {
-  const { subject, headline, message, rows, afterRows, link, qrCodeCid, contactEmail } = options;
+  const { subject, headline, message, rows, afterRows, link, qrCodeCid } = options;
   const details = rows.length
     ? `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="table-layout:fixed; margin:0 0 20px;">
         ${rows.map(({ label, value }) => `<tr>
@@ -88,8 +103,5 @@ export function renderCourseNotification(options: {
     ${afterRows ? renderCourseParagraphs(afterRows) : ""}
     ${links}
     ${qrCode}
-    <p style="margin:20px 0 16px;">
-      Weitere Fragen? <a href="${escapeEmailHrefAttr("mailto:" + contactEmail)}" style="color:#0f4f68;">${escapeHtml(contactEmail)}</a>
-    </p>
     ${renderCourseSignature(options.signatureHasLogo)}`);
 }

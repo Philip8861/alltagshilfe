@@ -59,13 +59,13 @@ async function sendCourseMail(client: SupabaseClient, {
   const logo = await loadCourseSignatureLogo(client);
   const text = [
     message, ...rows.map(({ label, value }) => label + ": " + value), afterRows,
-    link ? link.label + ": " + link.href : "", "Weitere Fragen? " + COURSE_CONTACT_EMAIL, COURSE_SIGNATURE_TEXT,
+    link ? link.label + ": " + link.href : "", COURSE_SIGNATURE_TEXT,
   ].filter(Boolean).join("\n\n");
   const result = await sendTransactionalMail({
     to, from: COURSE_MAIL_FROM, subject, text, attachments: logo ? [...(attachments ?? []), logo] : attachments,
     html: renderCourseNotification({
       subject, headline, message, rows, afterRows, link, qrCodeCid,
-      contactEmail: COURSE_CONTACT_EMAIL, signatureHasLogo: Boolean(logo),
+      signatureHasLogo: Boolean(logo),
     }),
   });
   return result.ok;

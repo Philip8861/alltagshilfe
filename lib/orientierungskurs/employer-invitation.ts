@@ -1,5 +1,5 @@
 import { escapeEmailHrefAttr, escapeHtml } from "@/lib/email/branded-html";
-import { BOOKING_PATH, COURSE_CONTACT_EMAIL, INFO_APPOINTMENT_PATH } from "./config";
+import { BOOKING_PATH, INFO_APPOINTMENT_PATH } from "./config";
 import { COURSE_SIGNATURE_TEXT, renderCourseButton, renderCourseLetter, renderCourseParagraphs, renderCourseSignature } from "./mail-layout";
 
 const subject = "Kostenloser Orientierungskurs zur Vereinbarkeit von Beruf und Pflege";
@@ -24,7 +24,7 @@ export function buildEmployerInvitation(salutation: string, origin: string, code
   ] : [...message, bookingIntro];
   const text = [
     salutation, ...paragraphs, courseLabel + ": " + bookingUrl,
-    infoIntro, infoLabel + ": " + infoUrl, followUp + " " + COURSE_CONTACT_EMAIL,
+    infoIntro, infoLabel + ": " + infoUrl, followUp,
     COURSE_SIGNATURE_TEXT,
   ].join("\n\n");
   const html = renderCourseLetter(headline, `
@@ -34,9 +34,7 @@ export function buildEmployerInvitation(salutation: string, origin: string, code
     <p style="margin:0 0 24px;">
       <a href="${escapeEmailHrefAttr(infoUrl)}" style="color:#0f4f68; font-weight:bold; text-decoration:underline;">${escapeHtml(infoLabel)}</a>
     </p>
-    <p style="margin:0 0 16px;">${escapeHtml(followUp)}
-      <a href="${escapeEmailHrefAttr("mailto:" + COURSE_CONTACT_EMAIL)}" style="color:#0f4f68;">${escapeHtml(COURSE_CONTACT_EMAIL)}</a>
-    </p>
+    ${renderCourseParagraphs(followUp)}
     ${renderCourseSignature(true)}`);
   return { subject: headline, text, html };
 }
