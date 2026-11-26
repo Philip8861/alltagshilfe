@@ -18,6 +18,7 @@ import {
   type AdminReferralChild,
 } from "@/lib/actions/partner-admin-referral";
 import { getPartnerCommissionRatesAction } from "@/lib/actions/partner-admin-commission-rates";
+import { getCourseAccessForAdmin, updateCourseAccess } from "@/lib/actions/orientierungskurs";
 import { PartnerCommissionRatesFields } from "@/components/partner/admin/PartnerCommissionRatesFields";
 import type { PartnerCommissionRatesMap } from "@/lib/partner/partner-commission-rates-shared";
 import { PARTNER_DIRECT_REFERRAL_RATE_LABEL } from "@/lib/partner/referral-money";
@@ -39,6 +40,9 @@ export function PartnerEditModal({ open, onClose, profile, email, sponsorPartner
   const [state, formAction, pending] = useActionState(updatePartnerProfileAdminAction, initial);
   const [commissionRates, setCommissionRates] = useState<PartnerCommissionRatesMap>({});
   const [ratesLoading, setRatesLoading] = useState(false);
+  const [courseAccess, setCourseAccess] = useState<boolean | null>();
+  const [courseResult, setCourseResult] = useState<Awaited<ReturnType<typeof updateCourseAccess>>>();
+  const [coursePending, startCourseTransition] = useTransition();
 
   useEffect(() => {
     if (!open) return;
@@ -55,6 +59,16 @@ export function PartnerEditModal({ open, onClose, profile, email, sponsorPartner
   }, [open, profile.id]);
 
   useEffect(() => {
+    if (!open) return;
+    let active = true;
+    void getCourseAccessForAdmin(profile.id).then(
+      (allowed) => { if (active) setCourseAccess(allowed); },
+      () => { if (active) setCourseAccess(null); },
+    );
+    return () => { active = false; };
+  }, [open, profile.id]);
+
+  useEffect(() => {
     if (state.ok) {
       router.refresh();
       onClose();
@@ -67,6 +81,22 @@ export function PartnerEditModal({ open, onClose, profile, email, sponsorPartner
   const rec = profile.recruited_by ?? "";
   const disp = profile.display_name ?? "";
   const areas = new Set(profile.responsibility_areas ?? []);
+
+  function changeCourseAccess(allowed: boolean) {
+    const data = new FormData();
+    data.set("profileId", profile.id);
+    data.set("change", allowed ? "grant" : "revoke");
+    setCourseResult(undefined);
+    startCourseTransition(async () => {
+      try {
+        const result = await updateCourseAccess({ ok: false, message: "" }, data);
+        if (result.ok) setCourseAccess(allowed);
+        setCourseResult(result);
+      } catch {
+        setCourseResult({ ok: false, message: "Die Freigabe konnte nicht bestätigt werden. Bitte erneut versuchen." });
+      }
+    });
+  }
 
   return (
     <div className="fixed inset-0 z-[240] flex items-center justify-center p-4">
@@ -100,6 +130,21 @@ export function PartnerEditModal({ open, onClose, profile, email, sponsorPartner
           Login-E-Mail: <span className="font-mono font-medium text-neutral-900">{email}</span> (nur in Supabase
           Auth änderbar)
         </p>
+        <div className="mt-4 rounded-lg border border-[#c7dfe7] bg-[#f2f9fa] p-3">
+          <label className="flex min-h-11 items-center gap-3 font-semibold text-[#0F4F68]">
+            <input type="checkbox" checked={courseAccess === true}
+              disabled={coursePending || typeof courseAccess !== "boolean"}
+              onChange={(event) => changeCourseAccess(event.target.checked)} className="h-4 w-4 accent-[#0F4F68]" />
+            Pflegekurse verwalten
+          </label>
+          <p className="text-sm text-neutral-700">
+            Mit der Freigabe sieht das Konto den Bereich Pflegekurse und kann Kurse verwalten und Einladungen versenden.
+          </p>
+          {courseAccess === undefined && <p className="mt-1 text-sm" role="status">Freigabe wird geladen …</p>}
+          {courseAccess === null && <p className="mt-1 text-sm" role="alert">Die Freigabe konnte nicht geladen werden.</p>}
+          {coursePending && <p className="mt-1 text-sm" role="status">Freigabe wird gespeichert …</p>}
+          {courseResult && <p className="mt-1 text-sm" role={courseResult.ok ? "status" : "alert"}>{courseResult.message}</p>}
+        </div>
 
         {!state.ok && state.message ? (
           <p className="mt-3 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-950">

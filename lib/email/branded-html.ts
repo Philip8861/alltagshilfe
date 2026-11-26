@@ -232,6 +232,8 @@ export function buildBrandedNotificationHtml(options: {
   /** Optionaler Call-to-Action-Button unter dem Detailblock. */
   ctaHref?: string;
   ctaLabel?: string;
+  secondaryCta?: { href: string; label: string; intro: string };
+  closingText?: string;
   qrCodeCid?: string;
   /** „accent“ = Orange (Marke), „brand“ = Petrol (Standard). */
   ctaButtonVariant?: "brand" | "accent";
@@ -271,18 +273,15 @@ export function buildBrandedNotificationHtml(options: {
         </tr>`
       : "";
 
-  const ctaHrefRaw = options.ctaHref?.trim();
-  const ctaLabelRaw = options.ctaLabel?.trim();
-  let ctaSection = "";
-  if (ctaHrefRaw && ctaLabelRaw) {
+  function renderCta(ctaHrefRaw: string, ctaLabelRaw: string, variant: "brand" | "accent", intro?: string) {
     const hrefAttr = escapeEmailHrefAttr(ctaHrefRaw);
     const escLabel = escapeHtml(ctaLabelRaw);
-    const variant = options.ctaButtonVariant === "accent" ? "accent" : "brand";
     const ctaBg = variant === "accent" ? C.accent : C.primary;
     const ctaBorder = variant === "accent" ? C.accentDark : C.primaryDark;
-    ctaSection = `
+    return `
         <tr>
           <td style="padding:8px 20px 26px 20px;">
+            ${intro ? `<p style="margin:0 0 12px 0;font-family:${FONT};font-size:15px;line-height:1.6;color:#1a1a1a;">${nl2brEscaped(intro)}</p>` : ""}
             <table role="presentation" cellpadding="0" cellspacing="0" border="0">
               <tr>
                 <td style="border-radius:14px;background:${ctaBg};">
@@ -299,6 +298,14 @@ export function buildBrandedNotificationHtml(options: {
           </td>
         </tr>`;
   }
+  const ctaHrefRaw = options.ctaHref?.trim();
+  const ctaLabelRaw = options.ctaLabel?.trim();
+  const ctaSection = ctaHrefRaw && ctaLabelRaw ? renderCta(ctaHrefRaw, ctaLabelRaw, options.ctaButtonVariant ?? "brand") : "";
+  const info = options.secondaryCta;
+  const secondarySection = info ? renderCta(info.href, info.label, "brand", info.intro) : "";
+  const closingSection = options.closingText
+    ? `<tr><td style="padding:0 20px 22px;font-family:${FONT};font-size:15px;line-height:1.6;color:#1a1a1a;">${nl2brEscaped(options.closingText)}</td></tr>`
+    : "";
 
   const qrSection = options.qrCodeCid
     ? `<tr><td style="padding:0 20px 24px;">
@@ -306,7 +313,9 @@ export function buildBrandedNotificationHtml(options: {
           alt="QR-Code zur Kursanmeldung" style="display:block;border:0;" />
       </td></tr>`
     : "";
-  return brandedEmailShell({ kindBadge, headline, bodyRowsHtml: rowHtml + detailSection + ctaSection + qrSection });
+  return brandedEmailShell({
+    kindBadge, headline, bodyRowsHtml: rowHtml + detailSection + ctaSection + secondarySection + closingSection + qrSection,
+  });
 }
 
 /** Attribut-Inhalt für Links (href, sehr eingeschränkt). */

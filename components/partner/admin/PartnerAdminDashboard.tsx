@@ -1557,6 +1557,7 @@ export function PartnerAdminDashboard({
 
       {editProfile ? (
         <PartnerEditModal
+          key={editProfile.id}
           open
           profile={editProfile}
           email={authById[editProfile.id]?.email ?? "—"}

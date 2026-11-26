@@ -1,8 +1,10 @@
 import QRCode from "qrcode";
+import type { SupabaseClient } from "@supabase/supabase-js";
 import { formatDateLongDe } from "@/lib/betrieblich-info-termin/slots";
 import { buildBrandedNotificationHtml, type EmailDetailRow } from "@/lib/email/branded-html";
 import { sendTransactionalMail, type SendInternalMailAttachment } from "@/lib/email/internal-smtp";
 import { createCourseFlyer } from "./flyer";
+import { BOOKING_PATH, COURSE_BROCHURE_FILE, COURSE_MATERIAL_BUCKET, INFO_APPOINTMENT_PATH } from "./config";
 import { COURSE_FORMAT_LABEL, courseTimeLabel } from "./slots";
 import type { Booking } from "./store";
 
@@ -15,18 +17,25 @@ type CourseMail = {
   message: string;
   rows?: EmailDetailRow[];
   link?: { href: string; label: string };
+  secondaryLink?: { href: string; label: string; intro: string };
+  closing?: string;
   qrCodeCid?: string;
   attachments?: SendInternalMailAttachment[];
 };
 
-async function sendMail({ to, subject, headline, message, rows = [], link, qrCodeCid, attachments }: CourseMail) {
+export async function sendCourseMail({
+  to, subject, headline, message, rows = [], link, secondaryLink, closing, qrCodeCid, attachments,
+}: CourseMail) {
   const text = [message, ...rows.map(({ label, value }) => label + ": " + value),
-    link ? link.label + ": " + link.href : ""].filter(Boolean).join("\n\n");
+    link ? link.label + ": " + link.href : "",
+    secondaryLink ? secondaryLink.intro + "\n" + secondaryLink.label + ": " + secondaryLink.href : "",
+    closing].filter(Boolean).join("\n\n");
   const result = await sendTransactionalMail({
     to, from: COURSE_MAIL_FROM, subject, text, attachments,
     html: buildBrandedNotificationHtml({
       kindBadge: "Orientierungskurs", headline, rows, detailText: message, qrCodeCid,
       ctaHref: link?.href, ctaLabel: link?.label,
+      secondaryCta: secondaryLink, closingText: closing,
     }),
   });
   return result.ok;
@@ -49,7 +58,7 @@ function venueRows(course: Booking): EmailDetailRow[] {
 }
 
 export function sendBookingConfirmation(course: Booking) {
-  return sendMail({
+  return sendCourseMail({
     to: course.contact_email,
     subject: "1 von 2 · Ihr Orientierungskurs ist gebucht",
     headline: "Ihr Termin ist gebucht",
@@ -69,7 +78,7 @@ export async function sendShareableInvitation(course: Booking, link: string) {
   const qr = await QRCode.toBuffer(link, { width: 600, margin: 4, errorCorrectionLevel: "M" });
   const flyer = await createCourseFlyer(course, link, qr);
   const cid = "kursanmeldung@alltagshilfe-sued";
-  return sendMail({
+  return sendCourseMail({
     to: course.contact_email,
     subject: "2 von 2 · Anmeldung zum Orientierungskurs für Ihre Belegschaft",
     headline: "Einladung zum Orientierungskurs",
@@ -87,7 +96,7 @@ export async function sendShareableInvitation(course: Booking, link: string) {
 export function sendParticipantConfirmation(course: Booking, to: string, firstName: string) {
   const online = course.format === "online";
   const greeting = "Hallo " + firstName + ",\n\nIhre Anmeldung zum Orientierungskurs ist bestätigt. ";
-  return sendMail({
+  return sendCourseMail({
     to,
     subject: online ? "Ihre Anmeldung zum Online-Orientierungskurs" : "Ihre Anmeldung zum Orientierungskurs vor Ort",
     headline: "Ihre Teilnahme ist bestätigt",
@@ -99,12 +108,36 @@ export function sendParticipantConfirmation(course: Booking, to: string, firstNa
   });
 }
 
-export function sendEmployerInvitation(to: string, url: string) {
-  return sendMail({
+export async function sendEmployerInvitation(
+  client: SupabaseClient,
+  to: string,
+  origin: string,
+  recipient?: { salutation: "frau" | "herr"; lastName: string },
+) {
+  const { data, error } = await client.storage.from(COURSE_MATERIAL_BUCKET).download(COURSE_BROCHURE_FILE);
+  if (error || !data) {
+    console.error("[orientierungskurs] Kursflyer konnte nicht geladen werden");
+    return false;
+  }
+  const salutation = recipient
+    ? (recipient.salutation === "frau" ? "Sehr geehrte Frau " : "Sehr geehrter Herr ") + recipient.lastName + ","
+    : "Sehr geehrte Damen und Herren,";
+  return sendCourseMail({
     to,
-    subject: "Einladung zur Terminbuchung · Orientierungskurs für Ihre Belegschaft",
-    headline: "Orientierungskurs für Ihre Belegschaft buchen",
-    message: "Wählen Sie einen passenden Termin für den Orientierungskurs. Sie entscheiden bei der Buchung, ob der Kurs bei Ihnen vor Ort oder online stattfindet. Nach der Buchung erhalten Sie die Einladung zum Weiterleiten an Ihre Mitarbeitenden.",
-    link: { href: url, label: "Termin auswählen" },
+    subject: "Kostenloser Orientierungskurs zur Vereinbarkeit von Beruf und Pflege",
+    headline: "Beruf und Pflege vereinbaren",
+    message: salutation + "\n\n"
+      + "wir freuen uns über Ihr Interesse an unserem kostenlosen Orientierungskurs zur Vereinbarkeit von Beruf und Pflege. "
+      + "Die Pflegereform und der demografische Wandel verändern das Gesundheitswesen. Gleichzeitig wirkt sich die Pflege von Angehörigen für viele Beschäftigte direkt auf den Arbeitsalltag aus.\n\n"
+      + "Unser Kurs hilft Ihren Mitarbeitenden, sich auf eine Pflegesituation vorzubereiten und im konkreten Fall schnell die ersten Schritte und passenden Hilfen zu finden. Weitere Informationen finden Sie im Anhang.\n\n"
+      + "Über den folgenden Link buchen Sie die Schulung in drei kurzen Schritten.",
+    link: { href: new URL(BOOKING_PATH, origin).href, label: "Kostenlosen Orientierungskurs buchen" },
+    secondaryLink: {
+      href: new URL(INFO_APPOINTMENT_PATH, origin).href,
+      label: "Kostenloses Infogespräch buchen",
+      intro: "Sie möchten erst mehr erfahren? Gerne beantworten wir Ihre Fragen in einem kostenlosen 10-minütigen Infogespräch.",
+    },
+    closing: "Mit freundlichen Grüßen\nIhr Team der Alltagshilfe-Süd",
+    attachments: [{ filename: COURSE_BROCHURE_FILE, content: Buffer.from(await data.arrayBuffer()), contentType: "application/pdf" }],
   });
 }

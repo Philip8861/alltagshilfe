@@ -2,6 +2,8 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 import { formatDateLongDe } from "@/lib/betrieblich-info-termin/slots";
 import { BOOKING_PATH, courseSiteOrigin, newOnlineMeetingUrl, participationUrl } from "@/lib/orientierungskurs/config";
+import { infoAppointmentTimeLabel } from "@/lib/orientierungskurs/info-slots";
+import { loadInfoAppointments, type InfoAppointment } from "@/lib/orientierungskurs/info-store";
 import {
   COURSE_FORMAT_LABEL, FIRST_COURSE_DATE, courseHoliday, courseTimeLabel, earliestCourseDate, validCourseDate, validCourseMonth,
 } from "@/lib/orientierungskurs/slots";
@@ -105,6 +107,30 @@ async function CourseAccessSection() {
   );
 }
 
+function InfoAppointmentList({ appointments }: { appointments: InfoAppointment[] | null }) {
+  return (
+    <details className={courseCard}>
+      <summary className="cursor-pointer text-lg font-extrabold text-[#123947]">
+        Infogespräche im Monat{appointments && " (" + appointments.length + ")"}
+      </summary>
+      {appointments === null ? <p className="mt-3" role="status">Infogespräche konnten gerade nicht geladen werden.</p> :
+        appointments.length === 0 ? <p className="mt-3">In diesem Monat gibt es keine gebuchten Infogespräche.</p> :
+        <ul className="mt-3 divide-y divide-[#d0e3e7]">
+          {appointments.map((appointment) => (
+            <li key={appointment.id} className="space-y-1 py-3">
+              <p className="font-extrabold text-[#123947]">{formatDateLongDe(appointment.slot_date)} · {infoAppointmentTimeLabel(appointment.slot_time)}</p>
+              <p className="break-words">{[appointment.contact_name, appointment.company].filter(Boolean).join(" · ")}</p>
+              <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm">
+                <a className={linkClass} href={"tel:" + appointment.contact_phone.replace(/[^+\d]/g, "")}>{appointment.contact_phone}</a>
+                <a className={linkClass} href={"mailto:" + appointment.contact_email}>{appointment.contact_email}</a>
+              </div>
+            </li>
+          ))}
+        </ul>}
+    </details>
+  );
+}
+
 export async function CourseDashboard({ search, admin = false }: { search: Search; admin?: boolean }) {
   const today = earliestCourseDate();
   const month = typeof search.month === "string" && validCourseMonth(search.month) ? search.month : today.slice(0, 7);
@@ -113,11 +139,12 @@ export async function CourseDashboard({ search, admin = false }: { search: Searc
   const url = (selectedMonth: string, selectedDay?: string) =>
     root + "?month=" + selectedMonth + (selectedDay ? "&day=" + selectedDay : "");
   const client = createSupabaseServiceRoleClient();
-  const [bookings, next] = client ? await Promise.all([
+  const [bookings, next, infoAppointments] = client ? await Promise.all([
     loadCourseDashboard(client, month),
     client.from(COURSE_BOOKINGS).select("slot_date").gt("slot_date", month + "-01")
       .is("cancelled_at", null).gte("slot_date", today).order("slot_date").order("slot_time").limit(1).maybeSingle(),
-  ]) : [null, null];
+    loadInfoAppointments(client, month),
+  ]) : [null, null, null];
   const active = bookings?.filter((course) => !course.cancelled_at) ?? [];
   const selected = day ? active.filter((course) => course.slot_date === day) : active;
   const archive = bookings?.filter((course) => course.cancelled_at) ?? [];
@@ -182,6 +209,7 @@ export async function CourseDashboard({ search, admin = false }: { search: Searc
           </div>
         </details>
       )}
+      <InfoAppointmentList appointments={infoAppointments} />
       {admin && <CourseAccessSection />}
     </section>
   );

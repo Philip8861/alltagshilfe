@@ -1,6 +1,14 @@
 import { randomUUID } from "node:crypto";
 
 export const BOOKING_PATH = "/orientierungskurs";
+export const INFO_APPOINTMENT_PATH = "/orientierungskurs/infogespraech";
+export const COURSE_MATERIAL_BUCKET = "orientierungskurs-material";
+export const COURSE_BROCHURE_FILE = "Orientierungskurs-Pflege-und-Beruf.pdf";
+
+export const INFO_APPOINTMENT_ADVISORS = [
+  { name: "Philip Sonntag", email: "philip.sonntag@alltagshilfe-sued.de" },
+  { name: "Franz Dirscherl", email: "franz.dirscherl@alltagshilfe-sued.de" },
+] as const;
 
 export function courseSiteOrigin(): string | null {
   try {

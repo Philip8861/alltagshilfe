@@ -12,7 +12,7 @@ import {
   courseBookingSchema, courseEmail, courseParticipantSchema, type CourseBookingInput, type CourseParticipantInput,
 } from "@/lib/validations/orientierungskurs";
 import { getCourseOperator } from "@/lib/orientierungskurs/access";
-import { BOOKING_PATH, courseSiteOrigin, newOnlineMeetingUrl, participationUrl } from "@/lib/orientierungskurs/config";
+import { courseSiteOrigin, newOnlineMeetingUrl, participationUrl } from "@/lib/orientierungskurs/config";
 import {
   sendBookingConfirmation, sendEmployerInvitation, sendParticipantConfirmation, sendShareableInvitation,
 } from "@/lib/orientierungskurs/email";
@@ -108,12 +108,21 @@ export async function registerCourseParticipant(input: CourseParticipantInput): 
   return { ok: true, needsMailRetry: !mailSent };
 }
 
-export async function inviteCourseEmployer(input: { email: string; id: string }): Promise<{ ok: boolean; message: string }> {
+export async function inviteCourseEmployer(input: {
+  email: string; id: string; recipient?: { salutation: "frau" | "herr"; lastName: string };
+}): Promise<{ ok: boolean; message: string }> {
   const sender = await getCourseOperator();
   if (!sender) return { ok: false, message: "Sie haben keine Berechtigung, Kurseinladungen zu versenden." };
-  const parsed = z.object({ email: courseEmail, id: z.string().uuid() }).safeParse(input);
-  if (!parsed.success) return { ok: false, message: "Bitte geben Sie eine gültige Empfängeradresse an." };
-  const { email, id } = parsed.data;
+  const parsed = z.object({
+    email: courseEmail,
+    id: z.string().uuid(),
+    recipient: z.object({
+      salutation: z.enum(["frau", "herr"]),
+      lastName: z.string().trim().min(1, "Bitte geben Sie den Nachnamen für die Anrede an.").max(80),
+    }).optional(),
+  }).safeParse(input);
+  if (!parsed.success) return { ok: false, message: parsed.error.issues[0].message };
+  const { email, id, recipient } = parsed.data;
   if (!rateLimitWithConfig("course-invite:" + sender, 40, 15 * 60_000).success ||
     !rateLimitWithConfig("course-invite-recipient:" + email, 5, 15 * 60_000).success) {
     return { ok: false, message: RATE_MESSAGE };
@@ -123,9 +132,9 @@ export async function inviteCourseEmployer(input: { email: string; id: string })
   if (!client || !origin || !isTransactionalSmtpConfigured()) {
     return { ok: false, message: "Der Einladungsversand ist noch nicht eingerichtet." };
   }
-  const key = createHash("sha256").update(JSON.stringify([sender, id, email])).digest("hex");
+  const key = createHash("sha256").update(JSON.stringify([sender, id, email, recipient])).digest("hex");
   const sent = await sendCourseMailOnce(client, "invite:" + key,
-    () => sendEmployerInvitation(email, new URL(BOOKING_PATH, origin).href));
+    () => sendEmployerInvitation(client, email, origin, recipient));
   return sent ? { ok: true, message: "Einladung an " + email + " versendet." } :
     { ok: false, message: "Die Einladung konnte nicht versendet werden. Bitte erneut versuchen." };
 }
@@ -145,6 +154,16 @@ export async function updateCourseAccess(
     ? await client.from(COURSE_STAFF).upsert({ profile_id: id }, { onConflict: "profile_id", ignoreDuplicates: true })
     : await client.from(COURSE_STAFF).delete().eq("profile_id", id);
   if (result.error) return { ok: false, message: "Zugriff konnte nicht geändert werden." };
+  revalidatePath("/partner/admin");
   revalidatePath("/partner/admin/pflegekurse");
   return { ok: true, message: change === "grant" ? "Pflegekurse freigeschaltet." : "Freigabe entfernt." };
+}
+
+export async function getCourseAccessForAdmin(profileId: string): Promise<boolean | null> {
+  if (!(await getSystemAdminSession()) || !z.string().uuid().safeParse(profileId).success) return null;
+  const client = createSupabaseServiceRoleClient();
+  if (!client) return null;
+  const { data, error } = await client.from(COURSE_STAFF)
+    .select("profile_id").eq("profile_id", profileId).maybeSingle();
+  return error ? null : Boolean(data);
 }

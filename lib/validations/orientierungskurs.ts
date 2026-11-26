@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { COURSE_TIMES, validCourseDate } from "@/lib/orientierungskurs/slots";
+import { INFO_APPOINTMENT_TIMES } from "@/lib/orientierungskurs/info-slots";
 
 export const courseEmail = z.string().trim().max(254)
   .email("Bitte geben Sie eine gültige E-Mail-Adresse an.")
@@ -41,3 +42,16 @@ export const courseParticipantSchema = z.object({
 
 export type CourseBookingInput = z.input<typeof courseBookingSchema>;
 export type CourseParticipantInput = z.input<typeof courseParticipantSchema>;
+
+export const courseInfoAppointmentSchema = z.object({
+  id: z.string().uuid(),
+  date: z.string().refine(validCourseDate, "Bitte wählen Sie einen gültigen Tag."),
+  time: z.string().refine((value) => INFO_APPOINTMENT_TIMES.includes(value), "Bitte wählen Sie eine freie Uhrzeit."),
+  contactName: requiredText(120, "Bitte geben Sie Ihren Namen an."),
+  email: courseEmail,
+  phone,
+  company: z.string().trim().max(160).optional(),
+  website: z.string().max(0).optional(),
+});
+
+export type CourseInfoAppointmentInput = z.input<typeof courseInfoAppointmentSchema>;

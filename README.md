@@ -77,6 +77,7 @@ Basis-Struktur vorbereitet unter `app/konfigurator/`. Erweiterung: Schritte und 
 - Für Online-Termine `ORIENTIERUNGSKURS_ONLINE_URL_TEMPLATE` auf eine HTTPS-Adresse des verwendeten Videodienstes setzen. Der Dienst muss Räume anhand frei wählbarer IDs öffnen können. `{courseId}` wird durch eine eigene ID je Kurs ersetzt. Ohne passende Konfiguration bleibt Vor Ort buchbar.
 - In der Partner-Verwaltung unter **Anlegen** beim neuen Konto **Pflegekurse freischalten** wählen. Im Bereich **Pflegekurse** können System-Admins auch bestehende Konten freischalten oder Freigaben zurücknehmen.
 - Unter **Pflegekurse** können freigeschaltete Konten Buchungseinladungen versenden und die gebuchten Kurse und Anmeldungen aller Unternehmen sehen. Unternehmen buchen über `/orientierungskurs`. Die zweite Buchungsmail enthält den individuellen Teilnahmelink, den QR-Code und den PDF-Aushang.
+- Die erste Einladung enthält zusätzlich den Kursflyer aus dem privaten Supabase-Bucket `orientierungskurs-material` (`Orientierungskurs-Pflege-und-Beruf.pdf`) und einen Link zu `/orientierungskurs/infogespraech`. Für den Infoterminkalender wird die Migration `20261126102947_orientierungskurs_infogespraech.sql` benötigt.
 
 ## Lizenz
 
