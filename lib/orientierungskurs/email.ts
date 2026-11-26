@@ -8,15 +8,38 @@ import {
   COURSE_BROCHURE_FILE, COURSE_BROCHURE_OBJECT, COURSE_CONTACT_EMAIL, COURSE_FLYER_OBJECT,
   COURSE_MATERIAL_BUCKET, COURSE_SIGNATURE_LOGO_OBJECT, COURSE_TEAM, INFO_APPOINTMENT_ADVISORS,
 } from "./config";
-import { buildEmployerInvitation, COURSE_SIGNATURE_LOGO_CID } from "./employer-invitation";
+import { buildEmployerInvitation } from "./employer-invitation";
 import { infoAppointmentTimeLabel } from "./info-slots";
 import type { InfoAppointment } from "./info-store";
-import { renderCourseNotification } from "./mail-layout";
+import { COURSE_SIGNATURE_LOGO_CID, COURSE_SIGNATURE_TEXT, renderCourseNotification } from "./mail-layout";
 import { COURSE_FORMAT_LABEL, COURSE_PARTICIPANT_LIMIT, courseTimeLabel } from "./slots";
 import type { OutreachGreeting } from "./outreach";
 import { sendCourseMailOnce, type Booking } from "./store";
 
 const COURSE_MAIL_FROM = "Alltagshilfe-Süd <" + COURSE_CONTACT_EMAIL + ">";
+const signatureLogos = new WeakMap<SupabaseClient, Promise<SendInternalMailAttachment | undefined>>();
+
+function loadCourseSignatureLogo(client: SupabaseClient) {
+  const pending = signatureLogos.get(client);
+  if (pending) return pending;
+
+  const download = (async () => {
+    try {
+      const { data, error } = await client.storage.from(COURSE_MATERIAL_BUCKET).download(COURSE_SIGNATURE_LOGO_OBJECT);
+      if (data && !error) {
+        return {
+          filename: COURSE_SIGNATURE_LOGO_OBJECT, content: Buffer.from(await data.arrayBuffer()),
+          contentType: "image/png", cid: COURSE_SIGNATURE_LOGO_CID,
+        };
+      }
+    } catch {
+      // Der Versand von Bestätigungen kann mit der Textsignatur fortgesetzt werden.
+    }
+    console.warn("[orientierungskurs] Signaturlogo konnte nicht geladen werden");
+  })();
+  signatureLogos.set(client, download);
+  return download;
+}
 
 type CourseMail = {
   to: string;
@@ -30,14 +53,20 @@ type CourseMail = {
   attachments?: SendInternalMailAttachment[];
 };
 
-async function sendCourseMail({
+async function sendCourseMail(client: SupabaseClient, {
   to, subject, headline, message, afterRows, rows = [], link, qrCodeCid, attachments,
 }: CourseMail) {
-  const text = [message, ...rows.map(({ label, value }) => label + ": " + value), afterRows,
-    link ? link.label + ": " + link.href : "", "Weitere Fragen? " + COURSE_CONTACT_EMAIL].filter(Boolean).join("\n\n");
+  const logo = await loadCourseSignatureLogo(client);
+  const text = [
+    message, ...rows.map(({ label, value }) => label + ": " + value), afterRows,
+    link ? link.label + ": " + link.href : "", "Weitere Fragen? " + COURSE_CONTACT_EMAIL, COURSE_SIGNATURE_TEXT,
+  ].filter(Boolean).join("\n\n");
   const result = await sendTransactionalMail({
-    to, from: COURSE_MAIL_FROM, subject, text, attachments,
-    html: renderCourseNotification({ subject, headline, message, rows, afterRows, link, qrCodeCid, contactEmail: COURSE_CONTACT_EMAIL }),
+    to, from: COURSE_MAIL_FROM, subject, text, attachments: logo ? [...(attachments ?? []), logo] : attachments,
+    html: renderCourseNotification({
+      subject, headline, message, rows, afterRows, link, qrCodeCid,
+      contactEmail: COURSE_CONTACT_EMAIL, signatureHasLogo: Boolean(logo),
+    }),
   });
   return result.ok;
 }
@@ -71,7 +100,7 @@ function companyRows(course: Booking): EmailDetailRow[] {
 
 export async function notifyCourseTeamOfBooking(client: SupabaseClient, course: Booking, origin: string) {
   const results = await Promise.all(COURSE_TEAM.map(({ email }) =>
-    sendCourseMailOnce(client, "book-team:" + course.id + ":" + email, () => sendCourseMail({
+    sendCourseMailOnce(client, "book-team:" + course.id + ":" + email, () => sendCourseMail(client, {
       to: email,
       subject: (course.split_from ? "Folgetermin zum Orientierungskurs gebucht" : "Neuer Orientierungskurs gebucht") + " · " + course.company,
       headline: course.split_from ? "Folgetermin gebucht" : "Orientierungskurs gebucht",
@@ -96,14 +125,14 @@ export async function sendCourseInfoAppointmentConfirmations(client: SupabaseCli
     { label: "Rückrufnummer", value: appointment.contact_phone },
   ];
   const confirmations = await Promise.all([
-    sendCourseMailOnce(client, key + ":guest", () => sendCourseMail({
+    sendCourseMailOnce(client, key + ":guest", () => sendCourseMail(client, {
       to: appointment.contact_email,
       subject: "Bestätigung für Ihr kostenloses Infogespräch zum Orientierungskurs",
       headline: "Ihr Infogespräch ist gebucht",
       message: "Vielen Dank für Ihr Interesse am Orientierungskurs zur Vereinbarkeit von Beruf und Pflege. Wir rufen Sie zum vereinbarten Zeitpunkt unter der angegebenen Telefonnummer an.",
       rows,
     })),
-    ...INFO_APPOINTMENT_ADVISORS.map(({ email }) => sendCourseMailOnce(client, key + ":" + email, () => sendCourseMail({
+    ...INFO_APPOINTMENT_ADVISORS.map(({ email }) => sendCourseMailOnce(client, key + ":" + email, () => sendCourseMail(client, {
       to: email,
       subject: "Neues Infogespräch zum Orientierungskurs",
       headline: "Infogespräch gebucht",
@@ -124,9 +153,9 @@ function formalGreeting(salutation?: "frau" | "herr" | null, lastName?: string |
   return (salutation === "frau" ? "Sehr geehrte Frau " : "Sehr geehrter Herr ") + lastName + ",";
 }
 
-export function sendBookingConfirmation(course: Booking) {
+export function sendBookingConfirmation(client: SupabaseClient, course: Booking) {
   const greeting = formalGreeting(course.contact_salutation, course.contact_last_name);
-  return sendCourseMail({
+  return sendCourseMail(client, {
     to: course.contact_email,
     subject: "Bestätigung Ihrer Buchung zum Orientierungskurs",
     headline: "Ihr Orientierungskurs ist gebucht",
@@ -138,7 +167,6 @@ export function sendBookingConfirmation(course: Booking) {
       "Pro Termin stehen " + COURSE_PARTICIPANT_LIMIT + " Plätze zur Verfügung. Sobald alle Plätze vergeben sind, benachrichtigen wir Sie per E-Mail. Weitere Interessierte können sich auf die Warteliste setzen lassen.",
       ...(course.format === "online" ? ["Den Zugang zum Online-Kurs erhalten angemeldete Teilnehmende per E-Mail."] : []),
       "Etwa eine Woche vor dem Kurs melden wir uns bei Ihnen, um die letzten Details abzustimmen.",
-      "Herzliche Grüße aus Bad Grönenbach\nIhr Team von Alltagshilfe-Süd",
     ].join("\n\n"),
   });
 }
@@ -154,7 +182,7 @@ export async function sendShareableInvitation(client: SupabaseClient, course: Bo
   }
   const flyer = await createCourseFlyer(await template.data.arrayBuffer(), course, link, qr);
   const cid = "kursanmeldung@alltagshilfe-sued";
-  return sendCourseMail({
+  return sendCourseMail(client, {
     to: course.contact_email,
     subject: "Einladung zum kostenlosen Orientierungskurs: Pflege und Beruf",
     headline: "Einladung zum kostenlosen Orientierungskurs",
@@ -170,20 +198,19 @@ export async function sendShareableInvitation(client: SupabaseClient, course: Bo
   });
 }
 
-export function sendCourseFullNotice(course: Booking) {
-  return sendCourseMail({
+export function sendCourseFullNotice(client: SupabaseClient, course: Booking) {
+  return sendCourseMail(client, {
     to: course.contact_email,
     subject: "Ihr Orientierungskurs ist ausgebucht",
     headline: "Alle Kursplätze sind vergeben",
     message: formalGreeting(course.contact_salutation, course.contact_last_name) +
       "\n\nfür Ihren Orientierungskurs sind alle " + COURSE_PARTICIPANT_LIMIT + " Plätze vergeben. Weitere Interessierte können sich über denselben Link auf die Warteliste setzen lassen.",
     rows: courseRows(course),
-    afterRows: "Herzliche Grüße aus Bad Grönenbach\nIhr Team von Alltagshilfe-Süd",
   });
 }
 
-export function sendCourseTeamFullNotice(course: Booking, to: string, origin: string) {
-  return sendCourseMail({
+export function sendCourseTeamFullNotice(client: SupabaseClient, course: Booking, to: string, origin: string) {
+  return sendCourseMail(client, {
     to,
     subject: "Orientierungskurs ausgebucht · " + course.company,
     headline: "Zehn Kursplätze sind vergeben",
@@ -196,24 +223,24 @@ export function sendCourseTeamFullNotice(course: Booking, to: string, origin: st
   });
 }
 
-export function sendCourseWaitlistConfirmation(course: Booking, to: string, firstName: string) {
-  return sendCourseMail({
+export function sendCourseWaitlistConfirmation(client: SupabaseClient, course: Booking, to: string, firstName: string) {
+  return sendCourseMail(client, {
     to,
     subject: "Ihre Anmeldung auf der Warteliste zum Orientierungskurs",
     headline: "Sie stehen auf der Warteliste",
     message: "Hallo " + firstName + ",\n\nvielen Dank für Ihr Interesse. Für diesen Termin sind alle Plätze vergeben. Wir haben Sie auf die Warteliste gesetzt.",
     rows: courseRows(course),
-    afterRows: "Wenn wir Ihnen bei einem weiteren Termin einen Platz anbieten können, erhalten Sie eine E-Mail. Falls Sie kein Interesse mehr haben, können Sie auf diese Nachricht antworten.\n\nHerzliche Grüße aus Bad Grönenbach\nIhr Team von Alltagshilfe-Süd",
+    afterRows: "Wenn wir Ihnen bei einem weiteren Termin einen Platz anbieten können, erhalten Sie eine E-Mail. Falls Sie kein Interesse mehr haben, können Sie auf diese Nachricht antworten.",
   });
 }
 
-export function sendParticipantConfirmation(course: Booking, to: string, firstName: string) {
+export function sendParticipantConfirmation(client: SupabaseClient, course: Booking, to: string, firstName: string) {
   const online = course.format === "online";
   const courseAccess = online
     ? (course.meeting_url ? "Über den Button unten gelangen Sie zum Online-Kurs. Öffnen Sie den Link bitte zur angegebenen Uhrzeit."
       : "Die Informationen zum Online-Zugang erhalten Sie vor dem Termin per E-Mail.")
     : "";
-  return sendCourseMail({
+  return sendCourseMail(client, {
     to,
     subject: online ? "Ihre Anmeldung zum Online-Orientierungskurs" : "Ihre Anmeldung zum Orientierungskurs vor Ort im Betrieb",
     headline: "Ihre Teilnahme ist bestätigt",
@@ -222,7 +249,6 @@ export function sendParticipantConfirmation(course: Booking, to: string, firstNa
     afterRows: [
       courseAccess,
       "Falls Sie verhindert sind, melden Sie sich bitte möglichst frühzeitig ab, indem Sie auf diese E-Mail antworten. So können wir besser planen.",
-      "Herzliche Grüße aus Bad Grönenbach\nIhr Team von Alltagshilfe-Süd",
     ].filter(Boolean).join("\n\n"),
     link: online && course.meeting_url ? { href: course.meeting_url, label: "Zum Online-Kurs" } : undefined,
   });
@@ -239,9 +265,9 @@ export async function sendEmployerInvitation(
   const storage = client.storage.from(COURSE_MATERIAL_BUCKET);
   const [brochure, logo] = await Promise.all([
     storage.download(COURSE_BROCHURE_OBJECT),
-    storage.download(COURSE_SIGNATURE_LOGO_OBJECT),
+    loadCourseSignatureLogo(client),
   ]);
-  if (!brochure.data || brochure.error || !logo.data || logo.error) {
+  if (!brochure.data || brochure.error || !logo) {
     console.error("[orientierungskurs] Kursflyer oder Signaturlogo konnte nicht geladen werden");
     return "failed";
   }
@@ -250,18 +276,15 @@ export async function sendEmployerInvitation(
     to, from: COURSE_MAIL_FROM, ...buildEmployerInvitation(salutation, origin, code, reminder),
     attachments: [
       { filename: COURSE_BROCHURE_FILE, content: Buffer.from(await brochure.data.arrayBuffer()), contentType: "application/pdf" },
-      {
-        filename: COURSE_SIGNATURE_LOGO_OBJECT, content: Buffer.from(await logo.data.arrayBuffer()),
-        contentType: "image/png", cid: COURSE_SIGNATURE_LOGO_CID,
-      },
+      logo,
     ],
   });
   return result.ok ? "sent" : result.deliveryUncertain ? "unconfirmed" : "failed";
 }
 
-export function sendCourseReminderDueNotice(to: string, contact: string, sentAt: string, origin: string) {
+export function sendCourseReminderDueNotice(client: SupabaseClient, to: string, contact: string, sentAt: string, origin: string) {
   const date = new Intl.DateTimeFormat("de-DE", { timeZone: "Europe/Berlin", dateStyle: "medium" }).format(new Date(sentAt));
-  return sendCourseMail({
+  return sendCourseMail(client, {
     to,
     subject: "Pflegekurse · Erinnerung zur Prüfung fällig",
     headline: "Seit 14 Tagen ist keine passende Buchung erfasst",

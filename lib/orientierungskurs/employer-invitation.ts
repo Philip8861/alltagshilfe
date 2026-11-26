@@ -1,8 +1,6 @@
 import { escapeEmailHrefAttr, escapeHtml } from "@/lib/email/branded-html";
 import { BOOKING_PATH, COURSE_CONTACT_EMAIL, INFO_APPOINTMENT_PATH } from "./config";
-import { renderCourseButton, renderCourseLetter, renderCourseParagraphs } from "./mail-layout";
-
-export const COURSE_SIGNATURE_LOGO_CID = "signatur-logo@alltagshilfe-sued.de";
+import { COURSE_SIGNATURE_TEXT, renderCourseButton, renderCourseLetter, renderCourseParagraphs, renderCourseSignature } from "./mail-layout";
 
 const subject = "Kostenloser Orientierungskurs zur Vereinbarkeit von Beruf und Pflege";
 const courseLabel = "Kostenlosen Orientierungskurs buchen";
@@ -10,9 +8,6 @@ const infoLabel = "Kostenloses Infogespräch buchen";
 const bookingIntro = "Über den folgenden Link buchen Sie die Schulung in drei kurzen Schritten.";
 const infoIntro = "Sie möchten erst mehr erfahren? Gerne beantworten wir Ihre Fragen in einem kostenlosen 10-minütigen Infogespräch.";
 const followUp = "Bei weiteren Fragen stehen wir gerne zur Verfügung.";
-const closingGreeting = "Herzliche Grüße aus Bad Grönenbach";
-const signatureName = "Franz Dirscherl";
-const signatureCompany = "Alltagshilfe-Süd";
 const message = [
   "wir freuen uns über Ihr Interesse an unserem kostenlosen Orientierungskurs zur Vereinbarkeit von Beruf und Pflege. Die Pflegereform und der demografische Wandel verändern das Gesundheitswesen. Gleichzeitig wirkt sich die Pflege von Angehörigen für viele Beschäftigte direkt auf den Arbeitsalltag aus.",
   "Unser Kurs hilft Ihren Mitarbeitenden, sich auf eine Pflegesituation vorzubereiten und im konkreten Fall schnell die ersten Schritte und passenden Hilfen zu finden. Weitere Informationen finden Sie im Anhang.",
@@ -30,7 +25,7 @@ export function buildEmployerInvitation(salutation: string, origin: string, code
   const text = [
     salutation, ...paragraphs, courseLabel + ": " + bookingUrl,
     infoIntro, infoLabel + ": " + infoUrl, followUp + " " + COURSE_CONTACT_EMAIL,
-    closingGreeting + "\n" + signatureName + "\n" + signatureCompany,
+    COURSE_SIGNATURE_TEXT,
   ].join("\n\n");
   const html = renderCourseLetter(headline, `
     ${renderCourseParagraphs([salutation, ...paragraphs].join("\n\n"))}
@@ -42,8 +37,6 @@ export function buildEmployerInvitation(salutation: string, origin: string, code
     <p style="margin:0 0 16px;">${escapeHtml(followUp)}
       <a href="${escapeEmailHrefAttr("mailto:" + COURSE_CONTACT_EMAIL)}" style="color:#0f4f68;">${escapeHtml(COURSE_CONTACT_EMAIL)}</a>
     </p>
-    <p style="margin:0 0 10px;">${escapeHtml(closingGreeting)}</p>
-    <p style="margin:0 0 12px;"><strong>${escapeHtml(signatureName)}</strong><br>${escapeHtml(signatureCompany)}</p>
-    <img src="cid:${COURSE_SIGNATURE_LOGO_CID}" alt="${escapeHtml(signatureCompany)}" width="196" height="65" style="display:block; width:196px; height:auto; max-width:100%; border:0;">`);
+    ${renderCourseSignature(true)}`);
   return { subject: headline, text, html };
 }

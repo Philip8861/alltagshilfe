@@ -2,6 +2,20 @@ import { escapeEmailHrefAttr, escapeHtml, type EmailDetailRow } from "@/lib/emai
 
 type MailLink = { href: string; label: string };
 
+const closingGreeting = "Herzliche Grüße aus Bad Grönenbach";
+const signatureName = "Franz Dirscherl";
+const signatureCompany = "Alltagshilfe-Süd";
+export const COURSE_SIGNATURE_TEXT = [closingGreeting, signatureName, signatureCompany].join("\n");
+export const COURSE_SIGNATURE_LOGO_CID = "signatur-logo@alltagshilfe-sued.de";
+
+export function renderCourseSignature(hasLogo: boolean): string {
+  return `<p style="margin:0 0 10px;">${escapeHtml(closingGreeting)}</p>
+    <p style="margin:0 0 12px;"><strong>${escapeHtml(signatureName)}</strong><br>${escapeHtml(signatureCompany)}</p>
+    ${hasLogo
+      ? `<img src="cid:${COURSE_SIGNATURE_LOGO_CID}" alt="${escapeHtml(signatureCompany)}" width="196" height="65" style="display:block; width:196px; height:auto; max-width:100%; border:0;">`
+      : ""}`;
+}
+
 export function renderCourseLetter(subject: string, content: string): string {
   return `<!doctype html>
 <html lang="de">
@@ -42,6 +56,7 @@ export function renderCourseNotification(options: {
   link?: MailLink;
   qrCodeCid?: string;
   contactEmail: string;
+  signatureHasLogo: boolean;
 }): string {
   const { subject, headline, message, rows, afterRows, link, qrCodeCid, contactEmail } = options;
   const details = rows.length
@@ -73,7 +88,8 @@ export function renderCourseNotification(options: {
     ${afterRows ? renderCourseParagraphs(afterRows) : ""}
     ${links}
     ${qrCode}
-    <p style="margin:20px 0 0; font-size:14px; color:#546871;">
+    <p style="margin:20px 0 16px;">
       Weitere Fragen? <a href="${escapeEmailHrefAttr("mailto:" + contactEmail)}" style="color:#0f4f68;">${escapeHtml(contactEmail)}</a>
-    </p>`);
+    </p>
+    ${renderCourseSignature(options.signatureHasLogo)}`);
 }

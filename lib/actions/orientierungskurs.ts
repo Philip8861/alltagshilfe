@@ -90,7 +90,7 @@ export async function bookOrientationCourse(input: PublicCourseBookingInput): Pr
   refreshCourseOutreach();
   const url = participationUrl(origin, course.registration_code);
   const [confirmationSent, teamNotificationSent] = await Promise.all([
-    sendCourseMailOnce(client, "booking:" + course.id, () => sendBookingConfirmation(course)),
+    sendCourseMailOnce(client, "booking:" + course.id, () => sendBookingConfirmation(client, course)),
     notifyCourseTeamOfBooking(client, course, origin),
   ]);
   const invitationSent = confirmationSent &&
@@ -126,14 +126,14 @@ export async function registerCourseParticipant(input: CourseParticipantInput): 
     const staff = origin ? COURSE_TEAM : [];
     await Promise.all([
       ...(origin ? staff.map(({ email: recipient }) => sendCourseMailOnce(client, "full-team:" + latest.id + ":" + recipient,
-        () => sendCourseTeamFullNotice(latest, recipient, origin))) : []),
+        () => sendCourseTeamFullNotice(client, latest, recipient, origin))) : []),
       ...(!staff.some(({ email }) => email === latest.contact_email)
-        ? [sendCourseMailOnce(client, "full:" + latest.id, () => sendCourseFullNotice(latest))] : []),
+        ? [sendCourseMailOnce(client, "full:" + latest.id, () => sendCourseFullNotice(client, latest))] : []),
     ]);
   };
   const [mailSent] = await Promise.all([
-    result === "saved" ? sendCourseMailOnce(client, "participant:" + id, () => sendParticipantConfirmation(latest, email, firstName)) :
-      result === "waitlisted" ? sendCourseMailOnce(client, "waitlist:" + id, () => sendCourseWaitlistConfirmation(latest, email, firstName)) : true,
+    result === "saved" ? sendCourseMailOnce(client, "participant:" + id, () => sendParticipantConfirmation(client, latest, email, firstName)) :
+      result === "waitlisted" ? sendCourseMailOnce(client, "waitlist:" + id, () => sendCourseWaitlistConfirmation(client, latest, email, firstName)) : true,
     notifyWhenFull(),
   ]);
   return { ok: true, status, needsMailRetry: !mailSent };

@@ -27,7 +27,7 @@ export async function GET(request: Request) {
       if (!await courseReminderStillDue(client, entry.email)) return "skipped";
       const deliveries = await Promise.all(COURSE_TEAM.map(({ email }) =>
         sendCourseMailOnce(client, "outreach-due:" + entry.code + ":" + email,
-          () => sendCourseReminderDueNotice(email, entry.email, entry.sent_at, origin))));
+          () => sendCourseReminderDueNotice(client, email, entry.email, entry.sent_at, origin))));
       return deliveries.every(Boolean) && await markCourseOutreachNotified(client, entry.email) ? "sent" : "failed";
     }));
     notified += batch.filter((result) => result.status === "fulfilled" && result.value === "sent").length;

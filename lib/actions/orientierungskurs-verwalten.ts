@@ -134,7 +134,7 @@ async function deliverFollowupConfirmations(
   const origin = courseSiteOrigin();
   const results = await Promise.all([
     ...participants.map((person) => sendCourseMailOnce(client, "participant:" + person.id,
-      () => sendParticipantConfirmation(course, person.email, person.first_name))),
+      () => sendParticipantConfirmation(client, course, person.email, person.first_name))),
     origin ? notifyCourseTeamOfBooking(client, course, origin) : false,
   ]);
   return results.every(Boolean);
