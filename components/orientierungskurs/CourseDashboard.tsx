@@ -4,25 +4,48 @@ import { formatDateLongDe } from "@/lib/betrieblich-info-termin/slots";
 import { BOOKING_PATH, courseSiteOrigin, newOnlineMeetingUrl, participationUrl } from "@/lib/orientierungskurs/config";
 import { infoAppointmentTimeLabel } from "@/lib/orientierungskurs/info-slots";
 import { loadInfoAppointments, type InfoAppointment } from "@/lib/orientierungskurs/info-store";
+import { loadCourseOutreach } from "@/lib/orientierungskurs/outreach";
 import {
-  COURSE_FORMAT_LABEL, FIRST_COURSE_DATE, courseHoliday, courseTimeLabel, earliestCourseDate, validCourseDate, validCourseMonth,
+  COURSE_FORMAT_LABEL, COURSE_PARTICIPANT_LIMIT, FIRST_COURSE_DATE,
+  courseHoliday, courseTimeLabel, earliestCourseDate, validCourseDate, validCourseMonth,
 } from "@/lib/orientierungskurs/slots";
-import { COURSE_BOOKINGS, COURSE_STAFF, loadCourseDashboard, type DashboardBooking } from "@/lib/orientierungskurs/store";
+import { COURSE_BOOKINGS, COURSE_STAFF, loadCourseDashboard, type DashboardBooking, type Participant } from "@/lib/orientierungskurs/store";
 import { createSupabaseServiceRoleClient } from "@/lib/supabase/service";
 import { CourseAccessForm, type CourseProfileOption } from "./CourseAccessForm";
 import { CourseManageForm } from "./CourseManageForm";
+import { CourseOutreachPanel } from "./CourseOutreachPanel";
+import { CourseSplitForm } from "./CourseSplitForm";
 import { InviteEmployerForm } from "./InviteEmployerForm";
 import { CourseCalendar, adjacentMonth, courseCard, courseSecondary } from "./ui";
 
 type Search = { month?: string; day?: string };
 const linkClass = "break-all font-bold text-[#0F4F68] underline underline-offset-2";
 
+function CourseParticipantList({ title, participants }: { title: string; participants: Participant[] }) {
+  return (
+    <div className="rounded-xl bg-[#f2f8f9] p-3">
+      <h4 className="font-extrabold text-[#123947]">{title}</h4>
+      {participants.length === 0 ? <p className="mt-1 text-sm text-slate-700">Es liegen noch keine Anmeldungen vor.</p> : (
+        <ul className="mt-2 divide-y divide-[#d0e3e7]">
+          {participants.map((person) => (
+            <li key={person.id} className="flex flex-wrap justify-between gap-x-4 gap-y-1 py-2 text-sm">
+              <span className="min-w-0 break-words font-bold">{person.first_name} {person.last_name}</span>
+              <a className={linkClass} href={"mailto:" + person.email}>{person.email}</a>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+}
+
 function CourseDetails({ course, open, origin, onlineAvailable }: {
   course: DashboardBooking; open: boolean; origin: string | null; onlineAvailable: boolean;
 }) {
-  const participants = course.orientierungskurs_participants;
+  const participants = course.orientierungskurs_participants.filter((person) => !person.waitlisted);
+  const waitlist = course.orientierungskurs_participants.filter((person) => person.waitlisted);
   const archived = Boolean(course.cancelled_at);
-  const attendance = participants.length === 1 ? "1 Anmeldung" : participants.length + " Anmeldungen";
+  const attendance = participants.length + " / " + COURSE_PARTICIPANT_LIMIT + " Plätze";
   const items: [string, ReactNode][] = [
     ["Ansprechperson", course.contact_name],
     ["E-Mail", <a key="email" className={linkClass} href={"mailto:" + course.contact_email}>{course.contact_email}</a>],
@@ -43,6 +66,9 @@ function CourseDetails({ course, open, origin, onlineAvailable }: {
         <span className="mt-1 block text-sm text-slate-700">
           {formatDateLongDe(course.slot_date)} · {courseTimeLabel(course.slot_time)} · {COURSE_FORMAT_LABEL[course.format]} · {attendance}
           {archived && " · Abgesagt"}
+          {!archived && participants.length >= COURSE_PARTICIPANT_LIMIT && " · Ausgebucht"}
+          {waitlist.length > 0 && " · Warteliste (" + waitlist.length + ")"}
+          {course.split_from && " · Folgetermin"}
         </span>
       </summary>
       <div className="space-y-4 border-t border-[#d9e8eb] px-4 py-4">
@@ -54,24 +80,15 @@ function CourseDetails({ course, open, origin, onlineAvailable }: {
             </div>
           ))}
         </dl>
-        <div className="rounded-xl bg-[#f2f8f9] p-3">
-          <h4 className="font-extrabold text-[#123947]">Teilnehmende</h4>
-          {participants.length === 0 ? <p className="mt-1 text-sm text-slate-700">Es liegen noch keine Anmeldungen vor.</p> : (
-            <ul className="mt-2 divide-y divide-[#d0e3e7]">
-              {participants.map((person) => (
-                <li key={person.email} className="flex flex-wrap justify-between gap-x-4 gap-y-1 py-2 text-sm">
-                  <span className="min-w-0 break-words font-bold">{person.first_name} {person.last_name}</span>
-                  <a className={linkClass} href={"mailto:" + person.email}>{person.email}</a>
-                </li>
-              ))}
-            </ul>
-          )}
-        </div>
+        <CourseParticipantList title="Bestätigte Teilnehmende" participants={participants} />
+        {waitlist.length > 0 && <CourseParticipantList title="Warteliste" participants={waitlist} />}
+        {!archived && <CourseSplitForm id={course.id} waiting={waitlist} followup={Boolean(course.split_from)} />}
         <a className={courseSecondary} href={"/partner/pflegekurse/" + course.id + "/export"}>Kursdaten als CSV herunterladen</a>
         {!archived && (
           <CourseManageForm onlineAvailable={onlineAvailable} course={{
             id: course.id, revision: course.revision, slot_date: course.slot_date, slot_time: course.slot_time,
             format: course.format, company: course.company, contact_name: course.contact_name, contact_email: course.contact_email,
+            contact_salutation: course.contact_salutation, contact_last_name: course.contact_last_name,
             contact_phone: course.contact_phone, address: course.address, room: course.room, parking: course.parking,
           }} />
         )}
@@ -139,26 +156,46 @@ export async function CourseDashboard({ search, admin = false }: { search: Searc
   const url = (selectedMonth: string, selectedDay?: string) =>
     root + "?month=" + selectedMonth + (selectedDay ? "&day=" + selectedDay : "");
   const client = createSupabaseServiceRoleClient();
-  const [bookings, next, infoAppointments] = client ? await Promise.all([
+  const [bookings, next, infoAppointments, outreach] = client ? await Promise.all([
     loadCourseDashboard(client, month),
     client.from(COURSE_BOOKINGS).select("slot_date").gt("slot_date", month + "-01")
       .is("cancelled_at", null).gte("slot_date", today).order("slot_date").order("slot_time").limit(1).maybeSingle(),
     loadInfoAppointments(client, month),
-  ]) : [null, null, null];
+    loadCourseOutreach(client),
+  ]) : [null, null, null, null];
   const active = bookings?.filter((course) => !course.cancelled_at) ?? [];
   const selected = day ? active.filter((course) => course.slot_date === day) : active;
   const archive = bookings?.filter((course) => course.cancelled_at) ?? [];
   const nextDate = next?.data?.slot_date as string | undefined;
   const origin = courseSiteOrigin();
   const onlineAvailable = Boolean(newOnlineMeetingUrl());
+  const attendees = selected.flatMap((course) => course.orientierungskurs_participants);
+  const dueCount = outreach?.filter((entry) => entry.due && (entry.reminder_status === null || entry.reminder_status === "failed")).length;
+  const overview = [
+    [day ? "Kurse am gewählten Tag" : "Kurse im gewählten Monat", bookings ? selected.length : null],
+    ["Bestätigte Teilnahmen", bookings ? attendees.filter((person) => !person.waitlisted).length : null],
+    ["Auf der Warteliste", bookings ? attendees.filter((person) => person.waitlisted).length : null],
+    ["Fällige Erinnerungen", dueCount ?? null],
+  ] as const;
 
   return (
     <section className="mx-auto max-w-6xl space-y-5 px-4 py-6 sm:px-7 sm:py-8">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <h1 className="text-3xl font-extrabold tracking-tight text-[#123947] sm:text-4xl">Pflegekurse</h1>
-        <Link className={courseSecondary} href={BOOKING_PATH}>Öffentliche Buchungsseite öffnen</Link>
+        <div className="flex flex-wrap gap-2">
+          <a className={courseSecondary} href="#buchungseinladung">Einladung versenden</a>
+          <a className={courseSecondary} href="#versandprotokoll">Versandprotokoll</a>
+          <Link className={courseSecondary} href={BOOKING_PATH}>Buchungsseite</Link>
+        </div>
       </div>
-      <InviteEmployerForm />
+      <dl className="grid grid-cols-2 gap-2 lg:grid-cols-4">
+        {overview.map(([label, value]) => (
+          <div className={courseCard} key={label}>
+            <dt className="text-sm font-semibold text-slate-700">{label}</dt>
+            <dd className="text-2xl font-extrabold text-[#123947]">{value ?? "–"}</dd>
+          </div>
+        ))}
+      </dl>
       <div className="grid items-start gap-5 lg:grid-cols-[minmax(0,22rem)_minmax(0,1fr)]">
         <section className={courseCard} aria-label="Kurskalender">
           <h2 className="mb-4 text-xl font-extrabold text-[#123947]">Kurskalender</h2>
@@ -201,6 +238,8 @@ export async function CourseDashboard({ search, admin = false }: { search: Searc
             ) : <p>Für diesen Zeitraum sind keine Kurse gebucht.</p>}
         </section>
       </div>
+      <InviteEmployerForm />
+      <CourseOutreachPanel entries={outreach} dashboardPath={root} />
       {archive.length > 0 && (
         <details className={courseCard}>
           <summary className="cursor-pointer text-lg font-extrabold text-[#123947]">Gelöschte Kurse im Monat ({archive.length})</summary>

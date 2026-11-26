@@ -46,7 +46,7 @@ export function InviteEmployerForm() {
   }
 
   return (
-    <section className={courseCard}>
+    <section id="buchungseinladung" className={courseCard + " scroll-mt-8"}>
       <h2 className="text-xl font-extrabold text-[#123947]">Buchungseinladung versenden</h2>
       <p className="mt-1 text-sm text-slate-600">Die E-Mail enthält den Kursflyer und Links zur Kursbuchung und zum Infogespräch.</p>
       <form onSubmit={onSubmit} className="mt-4 space-y-3" aria-busy={pending}>

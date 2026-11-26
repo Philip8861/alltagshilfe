@@ -142,7 +142,11 @@ export async function sendTransactionalMail(input: {
   text: string;
   html?: string;
   attachments?: SendInternalMailAttachment[];
-}): Promise<{ ok: true } | { ok: false; code: "smtp_not_configured" | "invalid_recipient" | "send_failed" }> {
+}): Promise<{ ok: true } | {
+  ok: false;
+  code: "smtp_not_configured" | "invalid_recipient" | "send_failed";
+  deliveryUncertain?: boolean;
+}> {
   const conn = parseSmtpConnection();
   const to = input.to.trim();
   if (!conn) {
@@ -179,7 +183,11 @@ export async function sendTransactionalMail(input: {
   } catch (e) {
     const msg = e instanceof Error ? e.message : "unknown";
     console.error("[transactional-mail] Versand fehlgeschlagen:", msg);
-    return { ok: false, code: "send_failed" };
+    const smtpError = e as { command?: string; responseCode?: number } | null;
+    const rejected = (smtpError?.responseCode ?? 0) >= 400;
+    const beforeMessage = /^(CONN|EHLO|HELO|STARTTLS|AUTH(?:\s.*)?|MAIL FROM|RCPT TO|API)$/i
+      .test(smtpError?.command ?? "");
+    return { ok: false, code: "send_failed", deliveryUncertain: !rejected && !beforeMessage };
   }
 }
 

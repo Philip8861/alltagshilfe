@@ -4,20 +4,24 @@ import { useState, useTransition, type FormEvent } from "react";
 import { archiveOrientationCourse, editOrientationCourse } from "@/lib/actions/orientierungskurs-verwalten";
 import { COURSE_TIMES, courseTimeLabel, type CourseFormat } from "@/lib/orientierungskurs/slots";
 import type { Booking } from "@/lib/orientierungskurs/store";
-import { CourseField, courseButton, courseField, courseSecondary } from "./ui";
+import type { CourseContactSalutation } from "@/lib/validations/orientierungskurs";
+import { CourseField, CourseSalutationField, courseButton, courseField, courseSecondary } from "./ui";
 
 type EditableBooking = Pick<Booking, "id" | "revision" | "slot_date" | "slot_time" | "format" |
-  "company" | "contact_name" | "contact_email" | "contact_phone" | "address" | "room" | "parking">;
+  "company" | "contact_name" | "contact_salutation" | "contact_last_name" | "contact_email" | "contact_phone" |
+  "address" | "room" | "parking">;
 
 export function CourseManageForm({ course, onlineAvailable }: { course: EditableBooking; onlineAvailable: boolean }) {
   const [editing, setEditing] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [format, setFormat] = useState<CourseFormat>(course.format);
+  const [salutation, setSalutation] = useState<CourseContactSalutation | "">(course.contact_salutation ?? "unknown");
   const [pending, startTransition] = useTransition();
   const [status, setStatus] = useState<{ ok: boolean; message: string }>();
 
   function save(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    if (!salutation) return;
     const fields = new FormData(event.currentTarget);
     const field = (name: string) => String(fields.get(name) ?? "");
     setStatus(undefined);
@@ -26,6 +30,7 @@ export function CourseManageForm({ course, onlineAvailable }: { course: Editable
         const details = {
           id: course.id, date: field("date"), time: field("time"),
           company: field("company"), contactName: field("contactName"), email: field("email"), phone: field("phone"),
+          contactGreeting: { salutation, lastName: field("contactLastName") },
         };
         const input = format === "onsite"
           ? { ...details, format, address: field("address"), room: field("room"), parking: field("parking") }
@@ -60,6 +65,7 @@ export function CourseManageForm({ course, onlineAvailable }: { course: Editable
           <button type="button" className={courseSecondary} onClick={() => {
             setStatus(undefined);
             setFormat(course.format);
+            setSalutation(course.contact_salutation ?? "unknown");
             setEditing(true);
           }}>Kurs bearbeiten</button>
           <button type="button" className={courseSecondary + " text-red-800"} onClick={() => {
@@ -90,6 +96,11 @@ export function CourseManageForm({ course, onlineAvailable }: { course: Editable
             </label>
             <CourseField label="Firma" name="company" required maxLength={160} defaultValue={course.company} />
             <CourseField label="Ansprechperson" name="contactName" required maxLength={120} defaultValue={course.contact_name} />
+            <CourseSalutationField value={salutation} onChange={setSalutation} />
+            {salutation && salutation !== "unknown" && (
+              <CourseField label="Nachname für die Anrede" name="contactLastName" required maxLength={80}
+                defaultValue={course.contact_last_name ?? ""} />
+            )}
             <CourseField label="E-Mail der Ansprechperson" name="email" type="email" required maxLength={254} defaultValue={course.contact_email} />
             <CourseField label="Telefonnummer" name="phone" type="tel" required maxLength={40} defaultValue={course.contact_phone} />
             {format === "onsite" && (

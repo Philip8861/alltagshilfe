@@ -4,8 +4,8 @@ import { z } from "zod";
 import { ParticipantForm } from "@/components/orientierungskurs/ParticipantForm";
 import { CoursePage, courseCard } from "@/components/orientierungskurs/ui";
 import { formatDateLongDe } from "@/lib/betrieblich-info-termin/slots";
-import { COURSE_FORMAT_LABEL, courseTimeLabel, startsInFuture } from "@/lib/orientierungskurs/slots";
-import { findCourse } from "@/lib/orientierungskurs/store";
+import { COURSE_FORMAT_LABEL, COURSE_PARTICIPANT_LIMIT, courseTimeLabel, startsInFuture } from "@/lib/orientierungskurs/slots";
+import { courseParticipantCount, findCourse } from "@/lib/orientierungskurs/store";
 import { createSupabaseServiceRoleClient } from "@/lib/supabase/service";
 
 export const dynamic = "force-dynamic";
@@ -17,6 +17,9 @@ export default async function TeilnahmePage({ params }: { params: Promise<{ code
   const client = createSupabaseServiceRoleClient();
   const course = client ? await findCourse(client, code) : undefined;
   if (course === null) notFound();
+  const open = course && !course.cancelled_at && startsInFuture(course.slot_date, course.slot_time);
+  const count = client && course && open ? await courseParticipantCount(client, course.id) : null;
+  const full = count !== null && count >= COURSE_PARTICIPANT_LIMIT;
 
   return (
     <CoursePage title="Zum Orientierungskurs anmelden"
@@ -28,9 +31,8 @@ export default async function TeilnahmePage({ params }: { params: Promise<{ code
               {formatDateLongDe(course.slot_date)} · {courseTimeLabel(course.slot_time)} · {COURSE_FORMAT_LABEL[course.format]}
             </p>
             {course.cancelled_at ? <p>Dieser Kurs wurde abgesagt. Die Anmeldung ist geschlossen.</p> :
-            startsInFuture(course.slot_date, course.slot_time)
-              ? <ParticipantForm code={code} />
-              : <p>Die Anmeldung zu diesem Kurs ist geschlossen.</p>}
+              !open ? <p>Die Anmeldung zu diesem Kurs ist geschlossen.</p> :
+              <ParticipantForm code={code} waitlist={full} />}
           </>
         ) : <p>Die Kursanmeldung ist gerade nicht verfügbar. Bitte versuchen Sie es später erneut.</p>}
       </div>

@@ -4,17 +4,19 @@ import { useEffect, useRef, useState, useTransition, type FormEvent } from "reac
 import { bookOrientationCourse, getCourseAvailability } from "@/lib/actions/orientierungskurs";
 import { formatDateLongDe } from "@/lib/betrieblich-info-termin/slots";
 import { COURSE_FORMAT_LABEL, courseHoliday, courseTimeLabel, type CourseFormat } from "@/lib/orientierungskurs/slots";
-import { courseBookingSchema, type CourseBookingInput } from "@/lib/validations/orientierungskurs";
+import { courseBookingSchema, type CourseBookingInput, type CourseContactSalutation } from "@/lib/validations/orientierungskurs";
 import {
-  adjacentMonth, CourseCalendar, CourseField, CourseFormPrivacy, CourseHoneypot,
+  adjacentMonth, CourseCalendar, CourseField, CourseFormPrivacy, CourseHoneypot, CourseSalutationField,
   courseButton, courseCard, courseField, courseSecondary,
 } from "./ui";
 
 const steps = ["Kursformat", "Tag und Zeit", "Übersicht und Buchung"];
-const defaultContact = { company: "", contactName: "", email: "", phone: "", address: "", room: "", parking: "" };
+const defaultContact = { company: "", firstName: "", lastName: "", email: "", phone: "", address: "", room: "", parking: "" };
 type BookingSuccess = Extract<Awaited<ReturnType<typeof bookOrientationCourse>>, { ok: true }>;
 
-export function BookingWizard({ earliestDate, onlineAvailable }: { earliestDate: string; onlineAvailable: boolean }) {
+export function BookingWizard({ earliestDate, onlineAvailable, outreachCode }: {
+  earliestDate: string; onlineAvailable: boolean; outreachCode?: string;
+}) {
   const [step, setStep] = useState(0);
   const [format, setFormat] = useState<CourseFormat | null>(null);
   const [month, setMonth] = useState(earliestDate.slice(0, 7));
@@ -23,6 +25,7 @@ export function BookingWizard({ earliestDate, onlineAvailable }: { earliestDate:
   const [calendar, setCalendar] = useState<Awaited<ReturnType<typeof getCourseAvailability>>>();
   const [revision, setRevision] = useState(0);
   const [contact, setContact] = useState(defaultContact);
+  const [salutation, setSalutation] = useState<CourseContactSalutation | "">("");
   const [message, setMessage] = useState("");
   const [success, setSuccess] = useState<BookingSuccess>();
   const [pending, startTransition] = useTransition();
@@ -86,10 +89,12 @@ export function BookingWizard({ earliestDate, onlineAvailable }: { earliestDate:
 
   function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (!format) return;
+    if (!format || !salutation) return;
     const fields = new FormData(event.currentTarget);
+    const { firstName, lastName, ...details } = contact;
     const input = {
-      ...contact, date, time, format, website: String(fields.get("website") ?? ""), id: crypto.randomUUID(),
+      ...details, contactName: firstName.trim() + " " + lastName.trim(), contactGreeting: { salutation, lastName },
+      date, time, format, website: String(fields.get("website") ?? ""), id: crypto.randomUUID(), outreachCode,
     };
     const parsed = courseBookingSchema.safeParse(input);
     if (!parsed.success) {
@@ -228,8 +233,13 @@ export function BookingWizard({ earliestDate, onlineAvailable }: { earliestDate:
             <div className="grid gap-3 sm:grid-cols-2">
               <CourseField label="Firma" name="company" required autoComplete="organization" maxLength={160}
                 value={contact.company} onChange={(event) => setContact({ ...contact, company: event.target.value })} />
-              <CourseField label="Ansprechperson (Vor- und Nachname)" name="contactName" required autoComplete="name" maxLength={120}
-                value={contact.contactName} onChange={(event) => setContact({ ...contact, contactName: event.target.value })} />
+              <CourseSalutationField value={salutation} onChange={setSalutation} />
+              <CourseField label="Vorname der Ansprechperson" name="firstName" required pattern=".*\S.*"
+                autoComplete="given-name" maxLength={39} value={contact.firstName}
+                onChange={(event) => setContact({ ...contact, firstName: event.target.value })} />
+              <CourseField label="Nachname der Ansprechperson" name="lastName" required pattern=".*\S.*"
+                autoComplete="family-name" maxLength={80} value={contact.lastName}
+                onChange={(event) => setContact({ ...contact, lastName: event.target.value })} />
               <CourseField label="E-Mail der Ansprechperson" type="email" name="email" required autoComplete="email" maxLength={254}
                 value={contact.email} onChange={(event) => setContact({ ...contact, email: event.target.value })} />
               <CourseField label="Telefonnummer" name="phone" type="tel" required autoComplete="tel" maxLength={40}

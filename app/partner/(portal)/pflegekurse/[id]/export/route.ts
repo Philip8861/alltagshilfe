@@ -30,7 +30,7 @@ export async function GET(_request: Request, { params }: { params: Promise<{ id:
       "Art", "Name", "E-Mail", "Telefon"],
     [...courseData, "Ansprechperson", course.contact_name, course.contact_email, course.contact_phone],
     ...course.orientierungskurs_participants.map((person) => [
-      ...courseData, "Teilnahme", person.first_name + " " + person.last_name, person.email, "",
+      ...courseData, person.waitlisted ? "Warteliste" : "Teilnahme", person.first_name + " " + person.last_name, person.email, "",
     ]),
   ];
   const csv = "\uFEFF" + rows.map((row) => row.map(csvCell).join(";")).join("\r\n");

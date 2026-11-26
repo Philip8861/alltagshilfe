@@ -3,6 +3,8 @@ import {
 } from "@/lib/betrieblich-info-termin/slots";
 
 export const FIRST_COURSE_DATE = "2026-04-01";
+export const COURSE_PARTICIPANT_LIMIT = 10;
+export const COURSE_WAITLIST_MESSAGE = "Die zehn Kursplätze sind vergeben. Sie können sich auf die Warteliste setzen lassen.";
 const DURATION_HOURS = 2;
 const BUFFER_HOURS = 1;
 export const COURSE_TIMES = Array.from({ length: 8 }, (_, index) => minutesToHhmm((8 + index) * 60));

@@ -17,11 +17,17 @@ const message = [
   "Unser Kurs hilft Ihren Mitarbeitenden, sich auf eine Pflegesituation vorzubereiten und im konkreten Fall schnell die ersten Schritte und passenden Hilfen zu finden. Weitere Informationen finden Sie im Anhang.",
 ];
 
-export function buildEmployerInvitation(salutation: string, origin: string) {
-  const bookingUrl = new URL(BOOKING_PATH, origin).href;
+export function buildEmployerInvitation(salutation: string, origin: string, code: string, reminder: boolean) {
+  const booking = new URL(BOOKING_PATH, origin);
+  booking.searchParams.set("einladung", code);
+  const bookingUrl = booking.href;
   const infoUrl = new URL(INFO_APPOINTMENT_PATH, origin).href;
+  const headline = reminder ? "Erinnerung an den kostenlosen Orientierungskurs zu Pflege und Beruf" : subject;
+  const paragraphs = reminder ? [
+    "wir hatten Ihnen unseren kostenlosen Orientierungskurs zur Vereinbarkeit von Beruf und Pflege vorgestellt. Wenn Sie Ihren Mitarbeitenden die Teilnahme ermöglichen möchten, können Sie über den folgenden Link einen Termin buchen.",
+  ] : [...message, bookingIntro];
   const text = [
-    salutation, ...message, bookingIntro, courseLabel + ": " + bookingUrl,
+    salutation, ...paragraphs, courseLabel + ": " + bookingUrl,
     infoIntro, infoLabel + ": " + infoUrl, followUp,
     closingGreeting + "\n" + signatureName + "\n" + signatureCompany,
   ].join("\n\n");
@@ -31,7 +37,7 @@ export function buildEmployerInvitation(salutation: string, origin: string) {
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>${escapeHtml(subject)}</title>
+  <title>${escapeHtml(headline)}</title>
 </head>
 <body style="margin:0; background-color:#ffffff;">
   <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#ffffff">
@@ -40,7 +46,7 @@ export function buildEmployerInvitation(salutation: string, origin: string) {
         <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:600px;">
           <tr>
             <td align="left" style="font-family:Arial, Helvetica, sans-serif; font-size:16px; line-height:1.6; color:#25343c;">
-              ${[salutation, ...message, bookingIntro].map(paragraph).join("")}
+              ${[salutation, ...paragraphs].map(paragraph).join("")}
               <p style="margin:0 0 24px;">
                 <a href="${escapeEmailHrefAttr(bookingUrl)}" style="display:inline-block; padding:10px 15px; border:1px solid #c5dfe3; border-radius:6px; background-color:#edf6f7; color:#0f4f68; font-weight:bold; text-decoration:none;">${escapeHtml(courseLabel)}</a>
               </p>
@@ -60,5 +66,5 @@ export function buildEmployerInvitation(salutation: string, origin: string) {
   </table>
 </body>
 </html>`;
-  return { subject, text, html };
+  return { subject: headline, text, html };
 }

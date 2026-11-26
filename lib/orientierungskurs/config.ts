@@ -6,11 +6,13 @@ export const COURSE_MATERIAL_BUCKET = "orientierungskurs-material";
 export const COURSE_BROCHURE_FILE = "Orientierungskurs-Pflege-und-Beruf.pdf";
 export const COURSE_BROCHURE_OBJECT = "Orientierungskurs-Pflege-und-Beruf-mit-Buchungsbutton.pdf";
 export const COURSE_SIGNATURE_LOGO_OBJECT = "Alltagshilfe-Sued-Signatur.png";
+export const COURSE_FLYER_OBJECT = "Einladung-Orientierungskurs-Pflege-und-Beruf-v1.pdf";
 
-export const INFO_APPOINTMENT_ADVISORS = [
+export const COURSE_TEAM = [
   { name: "Philip Sonntag", email: "philip.sonntag@alltagshilfe-sued.de" },
   { name: "Franz Dirscherl", email: "franz.dirscherl@alltagshilfe-sued.de" },
 ] as const;
+export const INFO_APPOINTMENT_ADVISORS = COURSE_TEAM;
 
 export function courseSiteOrigin(): string | null {
   try {

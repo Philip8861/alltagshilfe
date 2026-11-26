@@ -1,6 +1,7 @@
 import type { InputHTMLAttributes, ReactNode } from "react";
 import { WEEKDAY_HEADERS_DE, addMonths, monthLabelDe, ymdToYearMonth } from "@/lib/betrieblich-info-termin/slots";
 import { courseMonthDates } from "@/lib/orientierungskurs/slots";
+import type { CourseContactSalutation } from "@/lib/validations/orientierungskurs";
 
 export const courseButton = "inline-flex min-h-11 items-center justify-center rounded-xl bg-[#0F4F68] px-5 py-2.5 text-sm font-bold text-white hover:bg-[#0b3c50] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0F4F68] disabled:opacity-50";
 export const courseSecondary = "inline-flex min-h-11 items-center justify-center rounded-xl border border-[#9ebec9] bg-white px-4 py-2 text-sm font-bold text-[#0F4F68] hover:bg-[#eef7f8] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 disabled:opacity-40";
@@ -12,6 +13,24 @@ export function CourseField({ label, ...input }: InputHTMLAttributes<HTMLInputEl
     <label className="grid gap-1.5 text-sm font-bold text-slate-800">
       <span>{label}</span>
       <input className={courseField + " font-normal"} {...input} />
+    </label>
+  );
+}
+
+export function CourseSalutationField({ value, onChange }: {
+  value: CourseContactSalutation | "";
+  onChange: (value: CourseContactSalutation | "") => void;
+}) {
+  return (
+    <label className="grid gap-1.5 text-sm font-bold text-slate-800">
+      Anrede für die Bestätigung
+      <select className={courseField + " font-normal"} name="salutation" required value={value}
+        onChange={(event) => onChange(event.target.value as CourseContactSalutation | "")}>
+        <option value="" disabled>Bitte wählen</option>
+        <option value="frau">Frau</option>
+        <option value="herr">Herr</option>
+        <option value="unknown">Allgemeine Anrede</option>
+      </select>
     </label>
   );
 }

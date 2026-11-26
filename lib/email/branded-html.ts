@@ -229,6 +229,8 @@ export function buildBrandedNotificationHtml(options: {
   /** Optional: längerer Fließtext / mehrzeilig (Nachricht, Konfigurator-Zusammenfassung). */
   detailTitle?: string;
   detailText?: string;
+  introText?: string;
+  closingText?: string;
   /** Optionaler Call-to-Action-Button unter dem Detailblock. */
   ctaHref?: string;
   ctaLabel?: string;
@@ -271,6 +273,12 @@ export function buildBrandedNotificationHtml(options: {
         </tr>`
       : "";
 
+  const letterSection = (value?: string) => value
+    ? `<tr><td style="padding:18px 20px;font-family:${FONT};font-size:15px;line-height:1.6;color:#1a1a1a;">
+        ${nl2brEscaped(value)}
+      </td></tr>`
+    : "";
+
   function renderCta(ctaHrefRaw: string, ctaLabelRaw: string, variant: "brand" | "accent") {
     const hrefAttr = escapeEmailHrefAttr(ctaHrefRaw);
     const escLabel = escapeHtml(ctaLabelRaw);
@@ -306,7 +314,8 @@ export function buildBrandedNotificationHtml(options: {
       </td></tr>`
     : "";
   return brandedEmailShell({
-    kindBadge, headline, bodyRowsHtml: rowHtml + detailSection + ctaSection + qrSection,
+    kindBadge, headline, bodyRowsHtml: letterSection(options.introText) + rowHtml + detailSection +
+      letterSection(options.closingText) + ctaSection + qrSection,
   });
 }
 

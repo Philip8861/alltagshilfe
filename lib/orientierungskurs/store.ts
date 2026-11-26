@@ -14,6 +14,8 @@ export type Booking = CourseSlot & {
   registration_code: string;
   company: string;
   contact_name: string;
+  contact_salutation: "frau" | "herr" | null;
+  contact_last_name: string | null;
   contact_email: string;
   contact_phone: string;
   address: string | null;
@@ -21,10 +23,12 @@ export type Booking = CourseSlot & {
   parking: string | null;
   meeting_url: string | null;
   cancelled_at: string | null;
+  split_from: string | null;
+  outreach_code: string | null;
   revision: number;
 };
 
-export type Participant = { first_name: string; last_name: string; email: string };
+export type Participant = { id: string; first_name: string; last_name: string; email: string; waitlisted: boolean };
 export type DashboardBooking = Booking & { orientierungskurs_participants: Participant[] };
 type BookingInput = z.output<typeof courseBookingSchema>;
 type CourseUpdateError = "taken" | "closed" | "online" | "storage" | "stale";
@@ -42,7 +46,7 @@ function monthEnd(month: string): string {
 
 export async function loadCourseDashboard(client: SupabaseClient, month: string): Promise<DashboardBooking[] | null> {
   const { data, error } = await client.from(COURSE_BOOKINGS)
-    .select("*,orientierungskurs_participants(first_name,last_name,email)")
+    .select("*,orientierungskurs_participants(id,first_name,last_name,email,waitlisted)")
     .gte("slot_date", month + "-01").lte("slot_date", monthEnd(month))
     .order("slot_date").order("slot_time")
     .order("last_name", { referencedTable: COURSE_PARTICIPANTS })
@@ -55,13 +59,25 @@ export async function findCourse(client: SupabaseClient, code: string): Promise<
   return error ? undefined : data as Booking | null;
 }
 
+export async function courseParticipantCount(client: SupabaseClient, courseId: string): Promise<number | null> {
+  const { count, error } = await client.from(COURSE_PARTICIPANTS).select("id", { count: "exact", head: true })
+    .eq("course_id", courseId).eq("waitlisted", false);
+  if (error) console.error("[orientierungskurs] participant count", error.code);
+  return error ? null : count;
+}
+
 function bookingFields(input: BookingInput) {
+  const greeting = input.contactGreeting;
   return {
     slot_date: input.date,
     slot_time: input.time + ":00",
     format: input.format,
     company: input.company,
     contact_name: input.contactName,
+    ...(greeting && {
+      contact_salutation: greeting.salutation === "unknown" ? null : greeting.salutation,
+      contact_last_name: greeting.salutation === "unknown" ? null : greeting.lastName,
+    }),
     contact_email: input.email,
     contact_phone: input.phone,
     address: input.format === "onsite" ? input.address : null,
@@ -76,7 +92,7 @@ async function findBookingById(client: SupabaseClient, id: string) {
 
 export async function findDashboardBooking(client: SupabaseClient, id: string): Promise<DashboardBooking | null | undefined> {
   const { data, error } = await client.from(COURSE_BOOKINGS)
-    .select("*,orientierungskurs_participants(first_name,last_name,email)").eq("id", id)
+    .select("*,orientierungskurs_participants(id,first_name,last_name,email,waitlisted)").eq("id", id)
     .order("last_name", { referencedTable: COURSE_PARTICIPANTS })
     .order("first_name", { referencedTable: COURSE_PARTICIPANTS }).maybeSingle<DashboardBooking>();
   return error ? undefined : data;
@@ -86,6 +102,7 @@ export async function saveCourse(
   client: SupabaseClient,
   input: BookingInput,
   meetingUrl: string | null,
+  outreachCode: string | null,
 ): Promise<{ booking: Booking } | { error: "taken" | "past" | "closed" | "online" | "storage" }> {
   const fields = bookingFields(input);
 
@@ -102,7 +119,7 @@ export async function saveCourse(
   if (input.format === "online" && !meetingUrl) return { error: "online" };
 
   const { data, error } = await client.from(COURSE_BOOKINGS)
-    .insert({ id: input.id, ...fields, meeting_url: meetingUrl }).select().single<Booking>();
+    .insert({ id: input.id, ...fields, meeting_url: meetingUrl, outreach_code: outreachCode }).select().single<Booking>();
   if (!error) return { booking: data };
   if (error.code === "23505" || error.code === "23P01") {
     const repeated = await existing();
@@ -146,27 +163,27 @@ export async function saveParticipant(
   client: SupabaseClient,
   booking: Booking,
   input: z.output<typeof courseParticipantSchema>,
-): Promise<"saved" | "already" | "past" | "storage"> {
+): Promise<"saved" | "waitlisted" | "already" | "past" | "storage"> {
   if (booking.cancelled_at) return "past";
   const participant = { first_name: input.firstName, last_name: input.lastName, email: input.email };
-  const query = await client.from(COURSE_PARTICIPANTS).select("id,email,first_name,last_name")
+  const query = await client.from(COURSE_PARTICIPANTS).select("id,email,first_name,last_name,waitlisted")
     .eq("course_id", booking.id).eq("email", input.email)
-    .maybeSingle<Participant & { id: string }>();
+    .maybeSingle<Participant>();
   if (query.error) return "storage";
   if (query.data) {
     return query.data.id === input.id && query.data.first_name === participant.first_name &&
-      query.data.last_name === participant.last_name ? "saved" : "already";
+      query.data.last_name === participant.last_name ? (query.data.waitlisted ? "waitlisted" : "saved") : "already";
   }
   if (!startsInFuture(booking.slot_date, booking.slot_time)) return "past";
-  const { error } = await client.from(COURSE_PARTICIPANTS)
-    .insert({ id: input.id, course_id: booking.id, ...participant });
-  if (!error) return "saved";
+  const { data, error } = await client.from(COURSE_PARTICIPANTS)
+    .insert({ id: input.id, course_id: booking.id, ...participant }).select("waitlisted").single<Pick<Participant, "waitlisted">>();
+  if (!error) return data.waitlisted ? "waitlisted" : "saved";
   if (error.code === "23514" && error.message === "Course registration is closed") return "past";
   if (error.code === "23505") {
-    const { data } = await client.from(COURSE_PARTICIPANTS).select("id")
+    const { data } = await client.from(COURSE_PARTICIPANTS).select("waitlisted")
       .eq("id", input.id).eq("course_id", booking.id).eq("email", input.email)
       .eq("first_name", participant.first_name).eq("last_name", participant.last_name).maybeSingle();
-    return data ? "saved" : "already";
+    return data ? (data.waitlisted ? "waitlisted" : "saved") : "already";
   }
   console.error("[orientierungskurs] participant", error.code);
   return "storage";
