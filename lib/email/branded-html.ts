@@ -231,6 +231,7 @@ export function buildBrandedNotificationHtml(options: {
   detailText?: string;
   introText?: string;
   closingText?: string;
+  contactEmail?: string;
   /** Optionaler Call-to-Action-Button unter dem Detailblock. */
   ctaHref?: string;
   ctaLabel?: string;
@@ -313,9 +314,14 @@ export function buildBrandedNotificationHtml(options: {
           alt="QR-Code zur Kursanmeldung" style="display:block;border:0;" />
       </td></tr>`
     : "";
+  const contactSection = options.contactEmail
+    ? `<tr><td style="padding:10px 20px 20px;font-family:${FONT};font-size:14px;color:${C.muted};">
+        Weitere Fragen? <a style="color:${C.primary};" href="${escapeEmailHrefAttr("mailto:" + options.contactEmail)}">${escapeHtml(options.contactEmail)}</a>
+      </td></tr>`
+    : "";
   return brandedEmailShell({
     kindBadge, headline, bodyRowsHtml: letterSection(options.introText) + rowHtml + detailSection +
-      letterSection(options.closingText) + ctaSection + qrSection,
+      letterSection(options.closingText) + ctaSection + qrSection + contactSection,
   });
 }
 

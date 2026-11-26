@@ -9,13 +9,14 @@ import { rateLimitWithConfig } from "@/lib/rate-limit";
 import { getClientIp } from "@/lib/security";
 import { createSupabaseServiceRoleClient } from "@/lib/supabase/service";
 import {
-  courseBookingSchema, courseEmail, courseInvitationSchema, courseParticipantSchema, manualCourseOutreachSchema,
-  type CourseBookingInput, type CourseInvitationInput, type CourseParticipantInput, type ManualCourseOutreachInput,
+  courseEmail, courseInvitationSchema, courseParticipantSchema, formatCoursePostalAddress,
+  manualCourseOutreachSchema, publicCourseBookingSchema,
+  type CourseInvitationInput, type CourseParticipantInput, type ManualCourseOutreachInput, type PublicCourseBookingInput,
 } from "@/lib/validations/orientierungskurs";
 import { getCourseOperator } from "@/lib/orientierungskurs/access";
 import { COURSE_TEAM, courseSiteOrigin, newOnlineMeetingUrl, participationUrl } from "@/lib/orientierungskurs/config";
 import {
-  sendBookingConfirmation, sendCourseFullNotice, sendCourseTeamFullNotice, sendCourseWaitlistConfirmation,
+  notifyCourseTeamOfBooking, sendBookingConfirmation, sendCourseFullNotice, sendCourseTeamFullNotice, sendCourseWaitlistConfirmation,
   sendEmployerInvitation, sendParticipantConfirmation, sendShareableInvitation,
 } from "@/lib/orientierungskurs/email";
 import {
@@ -33,7 +34,7 @@ const UNAVAILABLE = "Das hat gerade nicht geklappt. Bitte versuchen Sie es erneu
 const RATE_MESSAGE = "Zu viele Versuche. Bitte warten Sie einen Moment und versuchen Sie es erneut.";
 type ActionError = { ok: false; message: string };
 type BookingResult = ActionError & { reloadCalendar?: boolean } |
-  { ok: true; url: string; confirmationSent: boolean; invitationSent: boolean };
+  { ok: true; url: string; confirmationSent: boolean; invitationSent: boolean; teamNotificationSent: boolean };
 type ParticipantResult = ActionError | { ok: true; status: "confirmed" | "waitlisted" | "existing"; needsMailRetry: boolean };
 
 export async function getCourseAvailability(month: string): Promise<ActionError |
@@ -59,8 +60,8 @@ export async function getCourseAvailability(month: string): Promise<ActionError 
   return { ok: true, times, earliestDate };
 }
 
-export async function bookOrientationCourse(input: CourseBookingInput): Promise<BookingResult> {
-  const parsed = courseBookingSchema.safeParse(input);
+export async function bookOrientationCourse(input: PublicCourseBookingInput): Promise<BookingResult> {
+  const parsed = publicCourseBookingSchema.safeParse(input);
   if (!parsed.success) return { ok: false, message: parsed.error.issues[0].message };
   const ip = await getClientIp();
   if (!rateLimitWithConfig("course-booking:" + ip, 15, 15 * 60_000).success ||
@@ -74,7 +75,11 @@ export async function bookOrientationCourse(input: CourseBookingInput): Promise<
   }
 
   const outreachCode = parsed.data.outreachCode ? await lookupOutreachCode(client, parsed.data.outreachCode) : null;
-  const result = await saveCourse(client, parsed.data, parsed.data.format === "online" ? newOnlineMeetingUrl() : null, outreachCode);
+  const companyAddress = formatCoursePostalAddress(parsed.data.companyAddress);
+  const details = parsed.data.format === "onsite" ? {
+    ...parsed.data, companyAddress, address: formatCoursePostalAddress(parsed.data.trainingAddress ?? parsed.data.companyAddress),
+  } : { ...parsed.data, companyAddress };
+  const result = await saveCourse(client, details, details.format === "online" ? newOnlineMeetingUrl() : null, outreachCode);
   if ("error" in result) {
     if (result.error === "online") return { ok: false, message: "Online-Kurse sind momentan nicht buchbar." };
     if (result.error === "closed") return { ok: false, message: "Dieser Termin ist nicht buchbar. Bitte wählen Sie einen freien Werktag.", reloadCalendar: true };
@@ -84,10 +89,13 @@ export async function bookOrientationCourse(input: CourseBookingInput): Promise<
   const course = result.booking;
   refreshCourseOutreach();
   const url = participationUrl(origin, course.registration_code);
-  const confirmationSent = await sendCourseMailOnce(client, "booking:" + course.id, () => sendBookingConfirmation(course));
+  const [confirmationSent, teamNotificationSent] = await Promise.all([
+    sendCourseMailOnce(client, "booking:" + course.id, () => sendBookingConfirmation(course)),
+    notifyCourseTeamOfBooking(client, course, origin),
+  ]);
   const invitationSent = confirmationSent &&
     await sendCourseMailOnce(client, "share:" + course.id, () => sendShareableInvitation(client, course, url));
-  return { ok: true, url, confirmationSent, invitationSent };
+  return { ok: true, url, confirmationSent, invitationSent, teamNotificationSent };
 }
 
 export async function registerCourseParticipant(input: CourseParticipantInput): Promise<ParticipantResult> {

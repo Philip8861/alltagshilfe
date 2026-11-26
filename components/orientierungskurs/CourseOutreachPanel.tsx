@@ -20,7 +20,9 @@ function unknownAfterTimeout(status: CourseOutreach["reminder_status"], timestam
     Date.now() - new Date(timestamp).getTime() > 5 * 60_000);
 }
 
-export function CourseOutreachPanel({ entries, dashboardPath }: { entries: CourseOutreach[] | null; dashboardPath: string }) {
+export function CourseOutreachPanel({ entries, dashboardPath, today }: {
+  entries: CourseOutreach[] | null; dashboardPath: string; today: string;
+}) {
   const [search, setSearch] = useState("");
   const [pending, startTransition] = useTransition();
   const [result, setResult] = useState<{ ok: boolean; message: string }>();
@@ -120,7 +122,8 @@ export function CourseOutreachPanel({ entries, dashboardPath }: { entries: Cours
                     <div className="min-w-0 space-y-1">
                       {entry.booked_date && entry.booked_registration_code && entry.match_method ? (
                         <>
-                          <Link className="font-bold text-[#0F4F68] underline" href={dashboardPath + "?month=" + entry.booked_date.slice(0, 7) +
+                          <Link className="font-bold text-[#0F4F68] underline" href={dashboardPath +
+                            (entry.booked_date < today ? "?bereich=archiv&month=" : "?bereich=kurse&month=") + entry.booked_date.slice(0, 7) +
                             "&day=" + entry.booked_date + "#kurs-" + entry.booked_registration_code}>Kurs gebucht</Link>
                           <p>{entry.booked_company} · {entry.booked_contact}</p>
                           <p className="text-slate-600">{entry.booked_email} · Zuordnung über {matchLabels[entry.match_method]}</p>

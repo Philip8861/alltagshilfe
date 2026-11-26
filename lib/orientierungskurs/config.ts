@@ -6,7 +6,8 @@ export const COURSE_MATERIAL_BUCKET = "orientierungskurs-material";
 export const COURSE_BROCHURE_FILE = "Orientierungskurs-Pflege-und-Beruf.pdf";
 export const COURSE_BROCHURE_OBJECT = "Orientierungskurs-Pflege-und-Beruf-mit-Buchungsbutton.pdf";
 export const COURSE_SIGNATURE_LOGO_OBJECT = "Alltagshilfe-Sued-Signatur.png";
-export const COURSE_FLYER_OBJECT = "Einladung-Orientierungskurs-Pflege-und-Beruf-v1.pdf";
+export const COURSE_FLYER_OBJECT = "Einladung-Orientierungskurs-Pflege-und-Beruf-v2.pdf";
+export const COURSE_CONTACT_EMAIL = process.env.ORIENTIERUNGSKURS_EMAIL?.trim() || "orientierungskurs@alltagshilfe-sued.de";
 
 export const COURSE_TEAM = [
   { name: "Philip Sonntag", email: "philip.sonntag@alltagshilfe-sued.de" },

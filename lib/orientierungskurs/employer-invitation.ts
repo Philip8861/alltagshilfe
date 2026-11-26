@@ -1,5 +1,5 @@
 import { escapeEmailHrefAttr, escapeHtml } from "@/lib/email/branded-html";
-import { BOOKING_PATH, INFO_APPOINTMENT_PATH } from "./config";
+import { BOOKING_PATH, COURSE_CONTACT_EMAIL, INFO_APPOINTMENT_PATH } from "./config";
 
 export const COURSE_SIGNATURE_LOGO_CID = "signatur-logo@alltagshilfe-sued.de";
 
@@ -28,7 +28,7 @@ export function buildEmployerInvitation(salutation: string, origin: string, code
   ] : [...message, bookingIntro];
   const text = [
     salutation, ...paragraphs, courseLabel + ": " + bookingUrl,
-    infoIntro, infoLabel + ": " + infoUrl, followUp,
+    infoIntro, infoLabel + ": " + infoUrl, followUp + " " + COURSE_CONTACT_EMAIL,
     closingGreeting + "\n" + signatureName + "\n" + signatureCompany,
   ].join("\n\n");
   const paragraph = (value: string) => `<p style="margin:0 0 16px;">${escapeHtml(value)}</p>`;
@@ -54,7 +54,9 @@ export function buildEmployerInvitation(salutation: string, origin: string, code
               <p style="margin:0 0 24px;">
                 <a href="${escapeEmailHrefAttr(infoUrl)}" style="color:#0f4f68; font-weight:bold; text-decoration:underline;">${escapeHtml(infoLabel)}</a>
               </p>
-              ${paragraph(followUp)}
+              <p style="margin:0 0 16px;">${escapeHtml(followUp)}
+                <a href="${escapeEmailHrefAttr("mailto:" + COURSE_CONTACT_EMAIL)}" style="color:#0f4f68;">${escapeHtml(COURSE_CONTACT_EMAIL)}</a>
+              </p>
               <p style="margin:0 0 10px;">${escapeHtml(closingGreeting)}</p>
               <p style="margin:0 0 12px;"><strong>${escapeHtml(signatureName)}</strong><br>${escapeHtml(signatureCompany)}</p>
               <img src="cid:${COURSE_SIGNATURE_LOGO_CID}" alt="${escapeHtml(signatureCompany)}" width="196" height="65" style="display:block; width:196px; height:auto; max-width:100%; border:0;">

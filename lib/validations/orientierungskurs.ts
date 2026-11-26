@@ -23,6 +23,7 @@ const bookingFields = z.object({
   date: z.string().refine(validCourseDate, "Bitte wählen Sie einen gültigen Kurstag."),
   time: z.string().refine((value) => COURSE_TIMES.includes(value), "Bitte wählen Sie eine freie Uhrzeit."),
   company: requiredText(160, "Bitte geben Sie den Firmennamen an."),
+  companyAddress: z.string().trim().max(240).optional(),
   outreachCode: z.string().uuid().optional(),
   contactName: requiredText(120, "Bitte geben Sie den Namen der Ansprechperson an."),
   contactGreeting: courseContactGreeting.optional(),
@@ -31,11 +32,35 @@ const bookingFields = z.object({
   website: z.string().max(0).optional(),
 });
 
+const coursePostalAddress = z.object({
+  city: requiredText(85, "Bitte geben Sie den Ort an."),
+  postalCode: z.string().trim().regex(/^[\p{L}\d][\p{L}\d -]{1,10}[\p{L}\d]$/u, "Bitte geben Sie eine gültige PLZ an."),
+  street: requiredText(120, "Bitte geben Sie Straße und Hausnummer an."),
+});
+
+const publicBookingFields = bookingFields.extend({
+  companyAddress: coursePostalAddress,
+  contactGreeting: z.object({ salutation: personalSalutation, lastName: salutationLastName }),
+});
+const optionalRoom = z.string().trim().max(100).optional();
+
+export const publicCourseBookingSchema = z.discriminatedUnion("format", [
+  publicBookingFields.extend({ format: z.literal("onsite"), trainingAddress: coursePostalAddress.optional(), room: optionalRoom }),
+  publicBookingFields.extend({ format: z.literal("online") }),
+]);
+
+export type CoursePostalAddress = z.input<typeof coursePostalAddress>;
+export type PublicCourseBookingInput = z.input<typeof publicCourseBookingSchema>;
+
+export function formatCoursePostalAddress({ street, postalCode, city }: CoursePostalAddress) {
+  return street + ", " + postalCode + " " + city;
+}
+
 export const courseBookingSchema = z.discriminatedUnion("format", [
   bookingFields.extend({
     format: z.literal("onsite"),
-    address: requiredText(240, "Bitte geben Sie die Adresse des Schulungsorts an."),
-    room: requiredText(100, "Bitte geben Sie den Schulungsraum an."),
+    address: requiredText(240, "Bitte geben Sie die Adresse des Kursorts mit Straße, Hausnummer, PLZ und Ort an."),
+    room: optionalRoom,
     parking: z.string().trim().max(300).optional(),
   }),
   bookingFields.extend({ format: z.literal("online") }),

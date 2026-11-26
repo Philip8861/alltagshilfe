@@ -13,6 +13,7 @@ export type Booking = CourseSlot & {
   id: string;
   registration_code: string;
   company: string;
+  company_address: string | null;
   contact_name: string;
   contact_salutation: "frau" | "herr" | null;
   contact_last_name: string | null;
@@ -33,9 +34,10 @@ export type DashboardBooking = Booking & { orientierungskurs_participants: Parti
 type BookingInput = z.output<typeof courseBookingSchema>;
 type CourseUpdateError = "taken" | "closed" | "online" | "storage" | "stale";
 
-export async function loadCourseMonth(client: SupabaseClient, month: string): Promise<CourseSlot[] | null> {
-  const { data, error } = await client.from(COURSE_BOOKINGS).select("slot_date,slot_time,format")
+export async function loadCourseMonth(client: SupabaseClient, month: string, exceptCourse?: string): Promise<CourseSlot[] | null> {
+  const query = client.from(COURSE_BOOKINGS).select("slot_date,slot_time,format")
     .is("cancelled_at", null).gte("slot_date", month + "-01").lte("slot_date", monthEnd(month));
+  const { data, error } = await (exceptCourse ? query.neq("id", exceptCourse) : query);
   return error ? null : data as CourseSlot[];
 }
 
@@ -73,6 +75,7 @@ function bookingFields(input: BookingInput) {
     slot_time: input.time + ":00",
     format: input.format,
     company: input.company,
+    ...(input.companyAddress !== undefined && { company_address: input.companyAddress || null }),
     contact_name: input.contactName,
     ...(greeting && {
       contact_salutation: greeting.salutation === "unknown" ? null : greeting.salutation,
@@ -81,7 +84,7 @@ function bookingFields(input: BookingInput) {
     contact_email: input.email,
     contact_phone: input.phone,
     address: input.format === "onsite" ? input.address : null,
-    room: input.format === "onsite" ? input.room : null,
+    room: input.format === "onsite" ? input.room || null : null,
     parking: input.format === "onsite" ? input.parking || null : null,
   };
 }
@@ -156,6 +159,21 @@ export async function cancelCourse(
   const { data, error } = await client.from(COURSE_BOOKINGS)
     .update({ cancelled_at: new Date().toISOString(), revision: revision + 1 })
     .eq("id", id).eq("revision", revision).is("cancelled_at", null).select("id").maybeSingle();
+  return error ? "storage" : data ? null : "stale";
+}
+
+export async function moveCourse(
+  client: SupabaseClient, id: string, revision: number, date: string, time: string,
+): Promise<"storage" | "stale" | "taken" | "same" | null> {
+  const { data: course, error: readError } = await findBookingById(client, id);
+  if (readError) return "storage";
+  if (!course || course.cancelled_at || course.revision !== revision) return "stale";
+  if (course.slot_date === date && course.slot_time.slice(0, 5) === time) return "same";
+
+  const { data, error } = await client.from(COURSE_BOOKINGS)
+    .update({ slot_date: date, slot_time: time + ":00", revision: revision + 1 })
+    .eq("id", id).eq("revision", revision).is("cancelled_at", null).select("id").maybeSingle();
+  if (error?.code === "23P01") return "taken";
   return error ? "storage" : data ? null : "stale";
 }
 

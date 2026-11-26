@@ -2,13 +2,13 @@
 
 import { useState, useTransition, type FormEvent } from "react";
 import { archiveOrientationCourse, editOrientationCourse } from "@/lib/actions/orientierungskurs-verwalten";
-import { COURSE_TIMES, courseTimeLabel, type CourseFormat } from "@/lib/orientierungskurs/slots";
+import { COURSE_FORMAT_LABEL, type CourseFormat } from "@/lib/orientierungskurs/slots";
 import type { Booking } from "@/lib/orientierungskurs/store";
 import type { CourseContactSalutation } from "@/lib/validations/orientierungskurs";
 import { CourseField, CourseSalutationField, courseButton, courseField, courseSecondary } from "./ui";
 
 type EditableBooking = Pick<Booking, "id" | "revision" | "slot_date" | "slot_time" | "format" |
-  "company" | "contact_name" | "contact_salutation" | "contact_last_name" | "contact_email" | "contact_phone" |
+  "company" | "company_address" | "contact_name" | "contact_salutation" | "contact_last_name" | "contact_email" | "contact_phone" |
   "address" | "room" | "parking">;
 
 export function CourseManageForm({ course, onlineAvailable }: { course: EditableBooking; onlineAvailable: boolean }) {
@@ -28,8 +28,9 @@ export function CourseManageForm({ course, onlineAvailable }: { course: Editable
     startTransition(async () => {
       try {
         const details = {
-          id: course.id, date: field("date"), time: field("time"),
-          company: field("company"), contactName: field("contactName"), email: field("email"), phone: field("phone"),
+          id: course.id, date: course.slot_date, time: course.slot_time.slice(0, 5),
+          company: field("company"), companyAddress: field("companyAddress"),
+          contactName: field("contactName"), email: field("email"), phone: field("phone"),
           contactGreeting: { salutation, lastName: field("contactLastName") },
         };
         const input = format === "onsite"
@@ -79,22 +80,16 @@ export function CourseManageForm({ course, onlineAvailable }: { course: Editable
         <form onSubmit={save} aria-busy={pending} className="space-y-3 rounded-xl border border-[#cfe2e7] p-3">
           <fieldset disabled={pending} className="grid gap-3 sm:grid-cols-2">
             <legend className="mb-3 font-extrabold text-[#123947]">Kurs bearbeiten</legend>
-            <CourseField label="Kurstag" name="date" type="date" required defaultValue={course.slot_date} />
-            <label className="grid gap-1.5 text-sm font-bold text-slate-800">
-              Uhrzeit
-              <select name="time" required defaultValue={course.slot_time.slice(0, 5)} className={courseField + " font-normal"}>
-                {COURSE_TIMES.map((time) => <option key={time} value={time}>{courseTimeLabel(time)}</option>)}
-              </select>
-            </label>
             <label className="grid gap-1.5 text-sm font-bold text-slate-800">
               Kursformat
               <select className={courseField + " font-normal"} value={format}
                 onChange={(event) => setFormat(event.target.value === "online" ? "online" : "onsite")}>
-                <option value="onsite">Vor Ort</option>
-                <option value="online" disabled={!onlineAvailable && course.format !== "online"}>Online</option>
+                <option value="onsite">{COURSE_FORMAT_LABEL.onsite}</option>
+                <option value="online" disabled={!onlineAvailable && course.format !== "online"}>{COURSE_FORMAT_LABEL.online}</option>
               </select>
             </label>
             <CourseField label="Firma" name="company" required maxLength={160} defaultValue={course.company} />
+            <CourseField label="Firmenadresse" name="companyAddress" maxLength={240} defaultValue={course.company_address ?? ""} />
             <CourseField label="Ansprechperson" name="contactName" required maxLength={120} defaultValue={course.contact_name} />
             <CourseSalutationField value={salutation} onChange={setSalutation} />
             {salutation && salutation !== "unknown" && (
@@ -105,8 +100,8 @@ export function CourseManageForm({ course, onlineAvailable }: { course: Editable
             <CourseField label="Telefonnummer" name="phone" type="tel" required maxLength={40} defaultValue={course.contact_phone} />
             {format === "onsite" && (
               <>
-                <CourseField label="Schulungsadresse" name="address" required maxLength={240} defaultValue={course.address ?? ""} />
-                <CourseField label="Schulungsraum" name="room" required maxLength={100} defaultValue={course.room ?? ""} />
+                <CourseField label="Adresse des Kursorts" name="address" required maxLength={240} defaultValue={course.address ?? ""} />
+                <CourseField label="Schulungsraum (optional)" name="room" maxLength={100} defaultValue={course.room ?? ""} />
                 <label className="grid gap-1.5 text-sm font-bold text-slate-800 sm:col-span-2">
                   Parkhinweis (optional)
                   <textarea className={courseField + " font-normal"} name="parking" rows={2} maxLength={300} defaultValue={course.parking ?? ""} />

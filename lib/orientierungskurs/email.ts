@@ -5,14 +5,15 @@ import { buildBrandedNotificationHtml, type EmailDetailRow } from "@/lib/email/b
 import { sendTransactionalMail, type SendInternalMailAttachment } from "@/lib/email/internal-smtp";
 import { createCourseFlyer } from "./flyer";
 import {
-  COURSE_BROCHURE_FILE, COURSE_BROCHURE_OBJECT, COURSE_FLYER_OBJECT, COURSE_MATERIAL_BUCKET, COURSE_SIGNATURE_LOGO_OBJECT,
+  COURSE_BROCHURE_FILE, COURSE_BROCHURE_OBJECT, COURSE_CONTACT_EMAIL, COURSE_FLYER_OBJECT,
+  COURSE_MATERIAL_BUCKET, COURSE_SIGNATURE_LOGO_OBJECT, COURSE_TEAM,
 } from "./config";
 import { buildEmployerInvitation, COURSE_SIGNATURE_LOGO_CID } from "./employer-invitation";
 import { COURSE_FORMAT_LABEL, COURSE_PARTICIPANT_LIMIT, courseTimeLabel } from "./slots";
 import type { OutreachGreeting } from "./outreach";
-import type { Booking } from "./store";
+import { sendCourseMailOnce, type Booking } from "./store";
 
-const COURSE_MAIL_FROM = "Alltagshilfe-Süd <info@alltagshilfe-sued.de>";
+const COURSE_MAIL_FROM = "Alltagshilfe-Süd <" + COURSE_CONTACT_EMAIL + ">";
 
 type CourseMail = {
   to: string;
@@ -30,12 +31,13 @@ export async function sendCourseMail({
   to, subject, headline, message, afterRows, rows = [], link, qrCodeCid, attachments,
 }: CourseMail) {
   const text = [message, ...rows.map(({ label, value }) => label + ": " + value), afterRows,
-    link ? link.label + ": " + link.href : ""].filter(Boolean).join("\n\n");
+    link ? link.label + ": " + link.href : "", "Weitere Fragen? " + COURSE_CONTACT_EMAIL].filter(Boolean).join("\n\n");
   const result = await sendTransactionalMail({
     to, from: COURSE_MAIL_FROM, subject, text, attachments,
     html: buildBrandedNotificationHtml({
       kindBadge: "Orientierungskurs", headline, rows, qrCodeCid,
       introText: afterRows ? message : undefined, detailText: afterRows ? undefined : message, closingText: afterRows,
+      contactEmail: COURSE_CONTACT_EMAIL,
       ctaHref: link?.href, ctaLabel: link?.label,
     }),
   });
@@ -52,10 +54,39 @@ function courseRows(course: Booking): EmailDetailRow[] {
 function venueRows(course: Booking): EmailDetailRow[] {
   if (course.format === "online") return [];
   return [
-    { label: "Schulungsort", value: course.address ?? "" },
-    { label: "Raum", value: course.room ?? "" },
+    { label: "Adresse des Kursorts", value: course.address ?? "" },
+    ...(course.room ? [{ label: "Raum", value: course.room }] : []),
     ...(course.parking ? [{ label: "Parken", value: course.parking }] : []),
   ];
+}
+
+function companyRows(course: Booking): EmailDetailRow[] {
+  return [
+    { label: "Firma", value: course.company },
+    ...(course.company_address && course.company_address !== course.address
+      ? [{ label: "Firmenadresse", value: course.company_address }] : []),
+    { label: "Ansprechperson", value: course.contact_name },
+    { label: "E-Mail", value: course.contact_email },
+    { label: "Telefon", value: course.contact_phone },
+  ];
+}
+
+export async function notifyCourseTeamOfBooking(client: SupabaseClient, course: Booking, origin: string) {
+  const results = await Promise.all(COURSE_TEAM.map(({ email }) =>
+    sendCourseMailOnce(client, "book-team:" + course.id + ":" + email, () => sendCourseMail({
+      to: email,
+      subject: (course.split_from ? "Folgetermin zum Orientierungskurs gebucht" : "Neuer Orientierungskurs gebucht") + " · " + course.company,
+      headline: course.split_from ? "Folgetermin gebucht" : "Orientierungskurs gebucht",
+      message: "Die Buchung ist in der Pflegekursverwaltung erfasst.",
+      rows: [...courseRows(course), ...venueRows(course), ...companyRows(course)],
+      link: {
+        href: new URL("/partner/pflegekurse?bereich=kurse&month=" + course.slot_date.slice(0, 7) +
+          "&day=" + course.slot_date + "#kurs-" + course.registration_code, origin).href,
+        label: "Buchung öffnen",
+      },
+    })),
+  ));
+  return results.every(Boolean);
 }
 
 function formalGreeting(salutation?: "frau" | "herr" | null, lastName?: string | null): string {
@@ -70,13 +101,7 @@ export function sendBookingConfirmation(course: Booking) {
     subject: "Bestätigung Ihrer Buchung zum Orientierungskurs",
     headline: "Ihr Orientierungskurs ist gebucht",
     message: greeting + "\n\nhiermit bestätigen wir Ihnen die Buchung Ihres kostenlosen Orientierungskurses zur Vereinbarkeit von Pflege und Beruf.",
-    rows: [
-      ...courseRows(course), ...venueRows(course),
-      { label: "Firma", value: course.company },
-      { label: "Ansprechperson", value: course.contact_name },
-      { label: "E-Mail", value: course.contact_email },
-      { label: "Telefon", value: course.contact_phone },
-    ],
+    rows: [...courseRows(course), ...venueRows(course), ...companyRows(course)],
     afterRows: [
       "Wie geht es weiter?",
       "In einer zweiten E-Mail erhalten Sie eine Einladung, die Sie direkt an Ihre Mitarbeitenden weiterleiten können. Die PDF im Anhang können Sie auch ausdrucken und aushängen. Interessierte melden sich über den Link oder QR-Code direkt und kostenlos an.",
@@ -157,10 +182,10 @@ export function sendParticipantConfirmation(course: Booking, to: string, firstNa
   const courseAccess = online
     ? (course.meeting_url ? "Über den Button unten gelangen Sie zum Online-Kurs. Öffnen Sie den Link bitte zur angegebenen Uhrzeit."
       : "Die Informationen zum Online-Zugang erhalten Sie vor dem Termin per E-Mail.")
-    : "Bitte kommen Sie zur angegebenen Uhrzeit zum Schulungsort. Adresse, Raum und gegebenenfalls einen Parkhinweis finden Sie oben.";
+    : "Bitte kommen Sie zur angegebenen Uhrzeit zur Kursadresse. Falls ein Raum oder ein Parkhinweis angegeben wurde, finden Sie diese Informationen oben.";
   return sendCourseMail({
     to,
-    subject: online ? "Ihre Anmeldung zum Online-Orientierungskurs" : "Ihre Anmeldung zum Orientierungskurs vor Ort",
+    subject: online ? "Ihre Anmeldung zum Online-Orientierungskurs" : "Ihre Anmeldung zum Orientierungskurs vor Ort im Betrieb",
     headline: "Ihre Teilnahme ist bestätigt",
     message: "Hallo " + firstName + ",\n\nwir freuen uns, dass Sie an unserem kostenlosen Orientierungskurs zur Vereinbarkeit von Pflege und Beruf teilnehmen. Ihr Platz ist reserviert.",
     rows: [...courseRows(course), ...venueRows(course)],
@@ -212,6 +237,6 @@ export function sendCourseReminderDueNotice(to: string, contact: string, sentAt:
     headline: "Seit 14 Tagen ist keine passende Buchung erfasst",
     message: "Ihr könnt im Versandprotokoll die Zuordnung prüfen und bei Bedarf eine Erinnerung auslösen.",
     rows: [{ label: "Eingeladene Adresse", value: contact }, { label: "Erste Einladung", value: date }],
-    link: { href: new URL("/partner/pflegekurse#versandprotokoll", origin).href, label: "Zum Versandprotokoll" },
+    link: { href: new URL("/partner/pflegekurse?bereich=versand#versandprotokoll", origin).href, label: "Zum Versandprotokoll" },
   });
 }

@@ -27,10 +27,10 @@ export async function GET(_request: Request, { params }: { params: Promise<{ id:
     course.address ?? "", course.room ?? "", course.parking ?? ""];
   const rows = [
     ["Firma", "Datum", "Uhrzeit", "Kursformat", "Status", "Adresse", "Raum", "Parkhinweis",
-      "Art", "Name", "E-Mail", "Telefon"],
-    [...courseData, "Ansprechperson", course.contact_name, course.contact_email, course.contact_phone],
+      "Art", "Name", "E-Mail", "Telefon", "Firmenadresse"],
+    [...courseData, "Ansprechperson", course.contact_name, course.contact_email, course.contact_phone, course.company_address ?? ""],
     ...course.orientierungskurs_participants.map((person) => [
-      ...courseData, person.waitlisted ? "Warteliste" : "Teilnahme", person.first_name + " " + person.last_name, person.email, "",
+      ...courseData, person.waitlisted ? "Warteliste" : "Teilnahme", person.first_name + " " + person.last_name, person.email, "", course.company_address ?? "",
     ]),
   ];
   const csv = "\uFEFF" + rows.map((row) => row.map(csvCell).join(";")).join("\r\n");

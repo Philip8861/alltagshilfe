@@ -3,20 +3,28 @@
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { getCourseOperator } from "@/lib/orientierungskurs/access";
-import { newOnlineMeetingUrl } from "@/lib/orientierungskurs/config";
-import { sendParticipantConfirmation } from "@/lib/orientierungskurs/email";
-import { COURSE_PARTICIPANT_LIMIT, COURSE_TIMES, isCourseWorkday, startsInFuture, validCourseDate } from "@/lib/orientierungskurs/slots";
-import { cancelCourse, findDashboardBooking, sendCourseMailOnce, updateCourse, type Booking, type Participant } from "@/lib/orientierungskurs/store";
+import { courseSiteOrigin, newOnlineMeetingUrl } from "@/lib/orientierungskurs/config";
+import { notifyCourseTeamOfBooking, sendParticipantConfirmation } from "@/lib/orientierungskurs/email";
+import {
+  availableCourseTimes, COURSE_PARTICIPANT_LIMIT, COURSE_TIMES, courseMonthDates, earliestCourseDate,
+  isCourseWorkday, startsInFuture, validCourseDate, validCourseMonth,
+} from "@/lib/orientierungskurs/slots";
+import {
+  cancelCourse, findDashboardBooking, loadCourseMonth, moveCourse, sendCourseMailOnce, updateCourse, type Booking, type Participant,
+} from "@/lib/orientierungskurs/store";
 import { createSupabaseServiceRoleClient } from "@/lib/supabase/service";
 import { courseBookingSchema, type CourseBookingInput } from "@/lib/validations/orientierungskurs";
 
 type CourseChangeResult = { ok: boolean; message: string };
 const identity = z.object({ id: z.string().uuid(), revision: z.number().int().nonnegative() });
+const newSlot = {
+  date: z.string().refine(validCourseDate),
+  time: z.string().refine((value) => COURSE_TIMES.includes(value)),
+};
 const splitInput = z.object({
   sourceId: z.string().uuid(),
   followupId: z.string().uuid(),
-  date: z.string().refine(validCourseDate),
-  time: z.string().refine((value) => COURSE_TIMES.includes(value)),
+  ...newSlot,
   participantIds: z.array(z.string().uuid()).min(1).max(COURSE_PARTICIPANT_LIMIT)
     .refine((ids) => new Set(ids).size === ids.length),
 });
@@ -58,6 +66,40 @@ export async function archiveOrientationCourse(input: { id: string; revision: nu
   return { ok: true, message: "Kurs gelöscht und im Archiv gespeichert." };
 }
 
+export async function getCourseRescheduleAvailability(id: string, month: string): Promise<
+  { ok: true; times: Record<string, string[]> } | { ok: false; message: string }
+> {
+  const now = new Date();
+  if (!(await getCourseOperator())) return { ok: false, message: "Sie haben keine Berechtigung, Kurse zu verschieben." };
+  if (!z.string().uuid().safeParse(id).success || typeof month !== "string" ||
+    !validCourseMonth(month) || month < earliestCourseDate(now).slice(0, 7)) {
+    return { ok: false, message: "Bitte wählen Sie einen aktuellen oder zukünftigen Monat." };
+  }
+  const client = createSupabaseServiceRoleClient();
+  const bookings = client && await loadCourseMonth(client, month, id);
+  if (!bookings) return { ok: false, message: "Der Kurskalender ist gerade nicht verfügbar." };
+  const times: Record<string, string[]> = {};
+  for (const date of courseMonthDates(month)) {
+    if (date) times[date] = availableCourseTimes(date,
+      bookings.filter((course) => course.slot_date === date).map((course) => course.slot_time), now);
+  }
+  return { ok: true, times };
+}
+
+export async function rescheduleOrientationCourse(input: { id: string; revision: number; date: string; time: string }): Promise<CourseChangeResult> {
+  if (!(await getCourseOperator())) return { ok: false, message: "Sie haben keine Berechtigung, Kurse zu verschieben." };
+  const parsed = identity.extend(newSlot).safeParse(input);
+  if (!parsed.success) return { ok: false, message: "Bitte wählen Sie einen neuen Tag und eine freie Uhrzeit." };
+  const { id, revision, date, time } = parsed.data;
+  if (!isCourseWorkday(date) || !startsInFuture(date, time)) return { ok: false, message: errors.closed };
+  const client = createSupabaseServiceRoleClient();
+  if (!client) return { ok: false, message: errors.storage };
+  const error = await moveCourse(client, id, revision, date, time);
+  if (error) return { ok: false, message: error === "same" ? "Bitte wählen Sie einen anderen Termin." : errors[error] };
+  refreshCourseDashboards();
+  return { ok: true, message: "Der Termin wurde verschoben." };
+}
+
 export async function splitOrientationCourse(input: z.input<typeof splitInput>): Promise<CourseChangeResult> {
   if (!(await getCourseOperator())) return { ok: false, message: "Sie haben keine Berechtigung, Folgetermine anzulegen." };
   const parsed = splitInput.safeParse(input);
@@ -89,8 +131,12 @@ export async function splitOrientationCourse(input: z.input<typeof splitInput>):
 async function deliverFollowupConfirmations(
   client: NonNullable<ReturnType<typeof createSupabaseServiceRoleClient>>, course: Booking, participants: Participant[],
 ) {
-  const results = await Promise.all(participants.map((person) => sendCourseMailOnce(client, "participant:" + person.id,
-    () => sendParticipantConfirmation(course, person.email, person.first_name))));
+  const origin = courseSiteOrigin();
+  const results = await Promise.all([
+    ...participants.map((person) => sendCourseMailOnce(client, "participant:" + person.id,
+      () => sendParticipantConfirmation(course, person.email, person.first_name))),
+    origin ? notifyCourseTeamOfBooking(client, course, origin) : false,
+  ]);
   return results.every(Boolean);
 }
 

@@ -72,6 +72,9 @@ function legacyHauptnavigationRedirects(): {
 }
 
 const nextConfig: NextConfig = {
+  outputFileTracingIncludes: {
+    "/orientierungskurs": ["./node_modules/pdfjs-dist/standard_fonts/LiberationSans-Regular.ttf"],
+  },
   reactStrictMode: true,
   poweredByHeader: false,
   images: {

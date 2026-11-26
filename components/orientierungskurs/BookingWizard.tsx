@@ -4,15 +4,36 @@ import { useEffect, useRef, useState, useTransition, type FormEvent } from "reac
 import { bookOrientationCourse, getCourseAvailability } from "@/lib/actions/orientierungskurs";
 import { formatDateLongDe } from "@/lib/betrieblich-info-termin/slots";
 import { COURSE_FORMAT_LABEL, courseHoliday, courseTimeLabel, type CourseFormat } from "@/lib/orientierungskurs/slots";
-import { courseBookingSchema, type CourseBookingInput, type CourseContactSalutation } from "@/lib/validations/orientierungskurs";
+import { publicCourseBookingSchema, type CoursePostalAddress, type PublicCourseBookingInput } from "@/lib/validations/orientierungskurs";
 import {
-  adjacentMonth, CourseCalendar, CourseField, CourseFormPrivacy, CourseHoneypot, CourseSalutationField,
-  courseButton, courseCard, courseField, courseSecondary,
+  adjacentMonth, CourseCalendar, CourseField, CourseFormPrivacy, CourseHoneypot,
+  courseButton, courseCard, courseSecondary,
 } from "./ui";
 
 const steps = ["Kursformat", "Tag und Zeit", "Übersicht und Buchung"];
-const defaultContact = { company: "", firstName: "", lastName: "", email: "", phone: "", address: "", room: "", parking: "" };
+const defaultContact = { company: "", firstName: "", lastName: "", email: "", phone: "", room: "" };
+const emptyAddress = { city: "", postalCode: "", street: "" };
 type BookingSuccess = Extract<Awaited<ReturnType<typeof bookOrientationCourse>>, { ok: true }>;
+
+function AddressFields({ legend, prefix, address, onChange }: {
+  legend: string; prefix: string; address: CoursePostalAddress; onChange: (address: CoursePostalAddress) => void;
+}) {
+  return (
+    <fieldset className="rounded-xl border border-[#cfe2e7] p-3">
+      <legend className="px-1 text-sm font-extrabold text-[#123947]">{legend}</legend>
+      <div className="grid gap-3 sm:grid-cols-2">
+        <CourseField label="Ort" name={prefix + "City"} required autoComplete={"section-" + prefix + " address-level2"} maxLength={85}
+          value={address.city} onChange={(event) => onChange({ ...address, city: event.target.value })} />
+        <CourseField label="PLZ" name={prefix + "PostalCode"} required autoComplete={"section-" + prefix + " postal-code"} maxLength={12}
+          value={address.postalCode} onChange={(event) => onChange({ ...address, postalCode: event.target.value })} />
+        <div className="sm:col-span-2">
+          <CourseField label="Straße und Hausnummer" name={prefix + "Street"} required autoComplete={"section-" + prefix + " address-line1"} maxLength={120}
+            value={address.street} onChange={(event) => onChange({ ...address, street: event.target.value })} />
+        </div>
+      </div>
+    </fieldset>
+  );
+}
 
 export function BookingWizard({ earliestDate, onlineAvailable, outreachCode }: {
   earliestDate: string; onlineAvailable: boolean; outreachCode?: string;
@@ -25,12 +46,15 @@ export function BookingWizard({ earliestDate, onlineAvailable, outreachCode }: {
   const [calendar, setCalendar] = useState<Awaited<ReturnType<typeof getCourseAvailability>>>();
   const [revision, setRevision] = useState(0);
   const [contact, setContact] = useState(defaultContact);
-  const [salutation, setSalutation] = useState<CourseContactSalutation | "">("");
+  const [salutation, setSalutation] = useState<"herr" | "frau" | "">("");
+  const [companyAddress, setCompanyAddress] = useState<CoursePostalAddress>(emptyAddress);
+  const [trainingAddress, setTrainingAddress] = useState<CoursePostalAddress>(emptyAddress);
+  const [separateTrainingAddress, setSeparateTrainingAddress] = useState(false);
   const [message, setMessage] = useState("");
   const [success, setSuccess] = useState<BookingSuccess>();
   const [pending, startTransition] = useTransition();
   const heading = useRef<HTMLHeadingElement>(null);
-  const request = useRef<CourseBookingInput | null>(null);
+  const request = useRef<PublicCourseBookingInput | null>(null);
   const focusNext = useRef(false);
 
   useEffect(() => {
@@ -63,7 +87,7 @@ export function BookingWizard({ earliestDate, onlineAvailable, outreachCode }: {
     setMonth(adjacentMonth(month, change));
   }
 
-  function submit(input: CourseBookingInput) {
+  function submit(input: PublicCourseBookingInput) {
     setMessage("");
     startTransition(async () => {
       try {
@@ -91,12 +115,13 @@ export function BookingWizard({ earliestDate, onlineAvailable, outreachCode }: {
     event.preventDefault();
     if (!format || !salutation) return;
     const fields = new FormData(event.currentTarget);
-    const { firstName, lastName, ...details } = contact;
+    const { firstName, lastName, room, ...details } = contact;
     const input = {
       ...details, contactName: firstName.trim() + " " + lastName.trim(), contactGreeting: { salutation, lastName },
-      date, time, format, website: String(fields.get("website") ?? ""), id: crypto.randomUUID(), outreachCode,
+      date, time, format, website: String(fields.get("website") ?? ""), id: crypto.randomUUID(), outreachCode, companyAddress,
+      ...(format === "onsite" && { room, trainingAddress: separateTrainingAddress ? trainingAddress : undefined }),
     };
-    const parsed = courseBookingSchema.safeParse(input);
+    const parsed = publicCourseBookingSchema.safeParse(input);
     if (!parsed.success) {
       setMessage(parsed.error.issues[0].message);
       return;
@@ -111,7 +136,7 @@ export function BookingWizard({ earliestDate, onlineAvailable, outreachCode }: {
   }
 
   if (success) {
-    const complete = success.invitationSent && success.confirmationSent;
+    const complete = success.invitationSent && success.confirmationSent && success.teamNotificationSent;
     return (
       <div className={courseCard + " space-y-4"}>
         <h2 ref={heading} tabIndex={-1} className="text-2xl font-extrabold text-[#123947]">Ihr Termin ist gebucht</h2>
@@ -230,33 +255,46 @@ export function BookingWizard({ earliestDate, onlineAvailable, outreachCode }: {
           </dl>
           <fieldset disabled={pending} className="space-y-4">
             <legend className="font-extrabold text-[#123947]">Ihre Angaben</legend>
+            <fieldset>
+              <legend className="mb-1.5 text-sm font-bold text-slate-800">Anrede</legend>
+              <div className="flex flex-wrap gap-2">
+                {([["herr", "Herr"], ["frau", "Frau"]] as const).map(([value, label]) => (
+                  <label key={value} className="flex min-h-11 items-center gap-2 rounded-lg border border-[#bdd4db] px-3 text-sm font-bold text-[#123947]">
+                    <input type="radio" name="salutation" value={value} required checked={salutation === value}
+                      className="accent-[#0F4F68]" onChange={() => setSalutation(value)} />
+                    {label}
+                  </label>
+                ))}
+              </div>
+            </fieldset>
             <div className="grid gap-3 sm:grid-cols-2">
-              <CourseField label="Firma" name="company" required autoComplete="organization" maxLength={160}
-                value={contact.company} onChange={(event) => setContact({ ...contact, company: event.target.value })} />
-              <CourseSalutationField value={salutation} onChange={setSalutation} />
               <CourseField label="Vorname der Ansprechperson" name="firstName" required pattern=".*\S.*"
                 autoComplete="given-name" maxLength={39} value={contact.firstName}
                 onChange={(event) => setContact({ ...contact, firstName: event.target.value })} />
               <CourseField label="Nachname der Ansprechperson" name="lastName" required pattern=".*\S.*"
                 autoComplete="family-name" maxLength={80} value={contact.lastName}
                 onChange={(event) => setContact({ ...contact, lastName: event.target.value })} />
+            </div>
+            <CourseField label="Firmenname" name="company" required autoComplete="organization" maxLength={160}
+              value={contact.company} onChange={(event) => setContact({ ...contact, company: event.target.value })} />
+            <AddressFields legend="Firmenadresse" prefix="firma" address={companyAddress} onChange={setCompanyAddress} />
+            {format === "onsite" && (
+              <>
+                <button type="button" className={courseSecondary} aria-expanded={separateTrainingAddress} aria-controls="schulungsadresse"
+                  onClick={() => setSeparateTrainingAddress((value) => !value)}>Abweichende Schulungsadresse</button>
+                <div id="schulungsadresse" hidden={!separateTrainingAddress}>
+                  {separateTrainingAddress && <AddressFields legend="Wo findet die Schulung statt?" prefix="schulung"
+                    address={trainingAddress} onChange={setTrainingAddress} />}
+                </div>
+                <CourseField label="Schulungsraum (optional)" name="room" maxLength={100}
+                  value={contact.room} onChange={(event) => setContact({ ...contact, room: event.target.value })} />
+              </>
+            )}
+            <div className="grid gap-3 sm:grid-cols-2">
               <CourseField label="E-Mail der Ansprechperson" type="email" name="email" required autoComplete="email" maxLength={254}
                 value={contact.email} onChange={(event) => setContact({ ...contact, email: event.target.value })} />
               <CourseField label="Telefonnummer" name="phone" type="tel" required autoComplete="tel" maxLength={40}
                 value={contact.phone} onChange={(event) => setContact({ ...contact, phone: event.target.value })} />
-              {format === "onsite" && (
-                <>
-                  <CourseField label="Schulungsadresse (Straße, PLZ und Ort)" name="address" required maxLength={240}
-                    value={contact.address} onChange={(event) => setContact({ ...contact, address: event.target.value })} />
-                  <CourseField label="Schulungsraum" name="room" required maxLength={100}
-                    value={contact.room} onChange={(event) => setContact({ ...contact, room: event.target.value })} />
-                  <label className="grid gap-1.5 text-sm font-bold text-slate-800 sm:col-span-2">
-                    Parkhinweis (optional)
-                    <textarea className={courseField + " font-normal"} name="parking" rows={2} maxLength={300}
-                      value={contact.parking} onChange={(event) => setContact({ ...contact, parking: event.target.value })} />
-                  </label>
-                </>
-              )}
             </div>
             <CourseHoneypot />
           </fieldset>

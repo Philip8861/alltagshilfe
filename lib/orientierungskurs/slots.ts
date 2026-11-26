@@ -15,7 +15,7 @@ const berlinClock = new Intl.DateTimeFormat("en-GB", {
 export type CourseFormat = "onsite" | "online";
 export type CourseSlot = { slot_date: string; slot_time: string; format: CourseFormat };
 
-export const COURSE_FORMAT_LABEL = { onsite: "Vor Ort", online: "Online" } as const;
+export const COURSE_FORMAT_LABEL = { onsite: "Vor Ort im Betrieb", online: "Online" } as const;
 
 export function earliestCourseDate(now = new Date()): string {
   const today = berlinTodayYmd(now);
