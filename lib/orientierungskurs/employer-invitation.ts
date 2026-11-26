@@ -1,5 +1,6 @@
 import { escapeEmailHrefAttr, escapeHtml } from "@/lib/email/branded-html";
 import { BOOKING_PATH, COURSE_CONTACT_EMAIL, INFO_APPOINTMENT_PATH } from "./config";
+import { renderCourseButton, renderCourseLetter, renderCourseParagraphs } from "./mail-layout";
 
 export const COURSE_SIGNATURE_LOGO_CID = "signatur-logo@alltagshilfe-sued.de";
 
@@ -31,42 +32,18 @@ export function buildEmployerInvitation(salutation: string, origin: string, code
     infoIntro, infoLabel + ": " + infoUrl, followUp + " " + COURSE_CONTACT_EMAIL,
     closingGreeting + "\n" + signatureName + "\n" + signatureCompany,
   ].join("\n\n");
-  const paragraph = (value: string) => `<p style="margin:0 0 16px;">${escapeHtml(value)}</p>`;
-  const html = `<!doctype html>
-<html lang="de">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>${escapeHtml(headline)}</title>
-</head>
-<body style="margin:0; background-color:#ffffff;">
-  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#ffffff">
-    <tr>
-      <td align="center" style="padding:24px 20px 32px;">
-        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:600px;">
-          <tr>
-            <td align="left" style="font-family:Arial, Helvetica, sans-serif; font-size:16px; line-height:1.6; color:#25343c;">
-              ${[salutation, ...paragraphs].map(paragraph).join("")}
-              <p style="margin:0 0 24px;">
-                <a href="${escapeEmailHrefAttr(bookingUrl)}" style="display:inline-block; padding:10px 15px; border:1px solid #c5dfe3; border-radius:6px; background-color:#edf6f7; color:#0f4f68; font-weight:bold; text-decoration:none;">${escapeHtml(courseLabel)}</a>
-              </p>
-              ${paragraph(infoIntro)}
-              <p style="margin:0 0 24px;">
-                <a href="${escapeEmailHrefAttr(infoUrl)}" style="color:#0f4f68; font-weight:bold; text-decoration:underline;">${escapeHtml(infoLabel)}</a>
-              </p>
-              <p style="margin:0 0 16px;">${escapeHtml(followUp)}
-                <a href="${escapeEmailHrefAttr("mailto:" + COURSE_CONTACT_EMAIL)}" style="color:#0f4f68;">${escapeHtml(COURSE_CONTACT_EMAIL)}</a>
-              </p>
-              <p style="margin:0 0 10px;">${escapeHtml(closingGreeting)}</p>
-              <p style="margin:0 0 12px;"><strong>${escapeHtml(signatureName)}</strong><br>${escapeHtml(signatureCompany)}</p>
-              <img src="cid:${COURSE_SIGNATURE_LOGO_CID}" alt="${escapeHtml(signatureCompany)}" width="196" height="65" style="display:block; width:196px; height:auto; max-width:100%; border:0;">
-            </td>
-          </tr>
-        </table>
-      </td>
-    </tr>
-  </table>
-</body>
-</html>`;
+  const html = renderCourseLetter(headline, `
+    ${renderCourseParagraphs([salutation, ...paragraphs].join("\n\n"))}
+    <p style="margin:0 0 24px;">${renderCourseButton({ href: bookingUrl, label: courseLabel })}</p>
+    ${renderCourseParagraphs(infoIntro)}
+    <p style="margin:0 0 24px;">
+      <a href="${escapeEmailHrefAttr(infoUrl)}" style="color:#0f4f68; font-weight:bold; text-decoration:underline;">${escapeHtml(infoLabel)}</a>
+    </p>
+    <p style="margin:0 0 16px;">${escapeHtml(followUp)}
+      <a href="${escapeEmailHrefAttr("mailto:" + COURSE_CONTACT_EMAIL)}" style="color:#0f4f68;">${escapeHtml(COURSE_CONTACT_EMAIL)}</a>
+    </p>
+    <p style="margin:0 0 10px;">${escapeHtml(closingGreeting)}</p>
+    <p style="margin:0 0 12px;"><strong>${escapeHtml(signatureName)}</strong><br>${escapeHtml(signatureCompany)}</p>
+    <img src="cid:${COURSE_SIGNATURE_LOGO_CID}" alt="${escapeHtml(signatureCompany)}" width="196" height="65" style="display:block; width:196px; height:auto; max-width:100%; border:0;">`);
   return { subject: headline, text, html };
 }

@@ -1,14 +1,11 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { formatDateLongDe } from "@/lib/betrieblich-info-termin/slots";
 import { isTransactionalSmtpConfigured } from "@/lib/email/internal-smtp";
-import { INFO_APPOINTMENT_ADVISORS } from "@/lib/orientierungskurs/config";
-import { sendCourseMail } from "@/lib/orientierungskurs/email";
-import { INFO_APPOINTMENT_TIMES, infoAppointmentTimeLabel, isInfoAppointmentBookable } from "@/lib/orientierungskurs/info-slots";
+import { sendCourseInfoAppointmentConfirmations } from "@/lib/orientierungskurs/email";
+import { INFO_APPOINTMENT_TIMES, isInfoAppointmentBookable } from "@/lib/orientierungskurs/info-slots";
 import { loadInfoSlots, saveInfoAppointment } from "@/lib/orientierungskurs/info-store";
 import { courseMonthDates, earliestCourseDate, validCourseMonth } from "@/lib/orientierungskurs/slots";
-import { sendCourseMailOnce } from "@/lib/orientierungskurs/store";
 import { rateLimitWithConfig } from "@/lib/rate-limit";
 import { getClientIp } from "@/lib/security";
 import { createSupabaseServiceRoleClient } from "@/lib/supabase/service";
@@ -59,37 +56,8 @@ export async function bookCourseInfoAppointment(input: CourseInfoAppointmentInpu
     return { ok: false, refresh: true, message: "Dieser Termin ist inzwischen vergeben oder nicht mehr verfügbar. Bitte wählen Sie einen anderen." };
   }
 
-  const appointment = saved.appointment;
-  const key = "info-appointment:" + appointment.id;
-  const when = formatDateLongDe(appointment.slot_date) + ", " + infoAppointmentTimeLabel(appointment.slot_time);
-  const rows = [
-    { label: "Termin", value: when },
-    { label: "Dauer", value: "10 Minuten" },
-    { label: "Ansprechpersonen", value: INFO_APPOINTMENT_ADVISORS.map(({ name }) => name).join(" und ") },
-    { label: "Rückrufnummer", value: appointment.contact_phone },
-  ];
-  const confirmations = await Promise.all([
-    sendCourseMailOnce(client, key + ":guest", () => sendCourseMail({
-      to: appointment.contact_email,
-      subject: "Bestätigung für Ihr kostenloses Infogespräch zum Orientierungskurs",
-      headline: "Ihr Infogespräch ist gebucht",
-      message: "Vielen Dank für Ihr Interesse am Orientierungskurs zur Vereinbarkeit von Beruf und Pflege. Wir rufen Sie zum vereinbarten Zeitpunkt unter der angegebenen Telefonnummer an.",
-      rows,
-    })),
-    ...INFO_APPOINTMENT_ADVISORS.map((advisor) => sendCourseMailOnce(client, key + ":" + advisor.email, () => sendCourseMail({
-      to: advisor.email,
-      subject: "Neues Infogespräch zum Orientierungskurs",
-      headline: "Infogespräch gebucht",
-      message: "Ein kostenloser telefonischer Infotermin zur Vereinbarkeit von Beruf und Pflege wurde gebucht.",
-      rows: [
-        ...rows,
-        { label: "Kontakt", value: appointment.contact_name },
-        { label: "E-Mail", value: appointment.contact_email },
-        ...(appointment.company ? [{ label: "Firma", value: appointment.company }] : []),
-      ],
-    }))),
-  ]);
+  const emailComplete = await sendCourseInfoAppointmentConfirmations(client, saved.appointment);
   revalidatePath("/partner/pflegekurse");
   revalidatePath("/partner/admin/pflegekurse");
-  return { ok: true, emailComplete: confirmations.every(Boolean) };
+  return { ok: true, emailComplete };
 }
