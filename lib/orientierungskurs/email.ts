@@ -4,7 +4,7 @@ import { formatDateLongDe } from "@/lib/betrieblich-info-termin/slots";
 import { buildBrandedNotificationHtml, type EmailDetailRow } from "@/lib/email/branded-html";
 import { sendTransactionalMail, type SendInternalMailAttachment } from "@/lib/email/internal-smtp";
 import { createCourseFlyer } from "./flyer";
-import { BOOKING_PATH, COURSE_BROCHURE_FILE, COURSE_MATERIAL_BUCKET, INFO_APPOINTMENT_PATH } from "./config";
+import { BOOKING_PATH, COURSE_BROCHURE_FILE, COURSE_BROCHURE_OBJECT, COURSE_MATERIAL_BUCKET, INFO_APPOINTMENT_PATH } from "./config";
 import { COURSE_FORMAT_LABEL, courseTimeLabel } from "./slots";
 import type { Booking } from "./store";
 
@@ -114,7 +114,7 @@ export async function sendEmployerInvitation(
   origin: string,
   recipient?: { salutation: "frau" | "herr"; lastName: string },
 ) {
-  const { data, error } = await client.storage.from(COURSE_MATERIAL_BUCKET).download(COURSE_BROCHURE_FILE);
+  const { data, error } = await client.storage.from(COURSE_MATERIAL_BUCKET).download(COURSE_BROCHURE_OBJECT);
   if (error || !data) {
     console.error("[orientierungskurs] Kursflyer konnte nicht geladen werden");
     return false;
