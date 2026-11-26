@@ -12,7 +12,7 @@ export const hasCourseAccess = cache(async (profileId: string): Promise<boolean>
   return !error && Boolean(data);
 });
 
-export async function courseInvitationSender(): Promise<string | null> {
+export async function getCourseOperator(): Promise<string | null> {
   if (await getSystemAdminSession()) return "system-admin";
   const session = await getPartnerSession();
   if (!session?.profile || isPartnerAccountDisabled(session.profile)) return null;

@@ -11,7 +11,7 @@ import { createSupabaseServiceRoleClient } from "@/lib/supabase/service";
 import {
   courseBookingSchema, courseEmail, courseParticipantSchema, type CourseBookingInput, type CourseParticipantInput,
 } from "@/lib/validations/orientierungskurs";
-import { courseInvitationSender } from "@/lib/orientierungskurs/access";
+import { getCourseOperator } from "@/lib/orientierungskurs/access";
 import { BOOKING_PATH, courseSiteOrigin, newOnlineMeetingUrl, participationUrl } from "@/lib/orientierungskurs/config";
 import {
   sendBookingConfirmation, sendEmployerInvitation, sendParticipantConfirmation, sendShareableInvitation,
@@ -70,6 +70,7 @@ export async function bookOrientationCourse(input: CourseBookingInput): Promise<
   const result = await saveCourse(client, parsed.data, parsed.data.format === "online" ? newOnlineMeetingUrl() : null);
   if ("error" in result) {
     if (result.error === "online") return { ok: false, message: "Online-Kurse sind momentan nicht buchbar." };
+    if (result.error === "closed") return { ok: false, message: "Dieser Termin ist nicht buchbar. Bitte wählen Sie einen freien Werktag.", reloadCalendar: true };
     if (result.error === "storage") return { ok: false, message: UNAVAILABLE };
     return { ok: false, message: "Dieser Termin ist inzwischen belegt oder vergangen. Bitte wählen Sie einen anderen.", reloadCalendar: true };
   }
@@ -99,13 +100,16 @@ export async function registerCourseParticipant(input: CourseParticipantInput): 
   if (result === "past") return { ok: false, message: "Die Anmeldung zu diesem Kurs ist geschlossen." };
   if (result === "storage") return { ok: false, message: UNAVAILABLE };
   if (result === "already") return { ok: true, needsMailRetry: false };
+  const latest = await findCourse(client, code);
+  if (latest === undefined) return { ok: true, needsMailRetry: true };
+  if (!latest || latest.cancelled_at) return { ok: false, message: "Die Anmeldung zu diesem Kurs ist geschlossen." };
   const mailSent = await sendCourseMailOnce(client, "participant:" + id,
-    () => sendParticipantConfirmation(course, email, firstName));
+    () => sendParticipantConfirmation(latest, email, firstName));
   return { ok: true, needsMailRetry: !mailSent };
 }
 
 export async function inviteCourseEmployer(input: { email: string; id: string }): Promise<{ ok: boolean; message: string }> {
-  const sender = await courseInvitationSender();
+  const sender = await getCourseOperator();
   if (!sender) return { ok: false, message: "Sie haben keine Berechtigung, Kurseinladungen zu versenden." };
   const parsed = z.object({ email: courseEmail, id: z.string().uuid() }).safeParse(input);
   if (!parsed.success) return { ok: false, message: "Bitte geben Sie eine gültige Empfängeradresse an." };

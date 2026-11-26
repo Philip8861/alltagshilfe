@@ -1,21 +1,25 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { formatDateLongDe } from "@/lib/betrieblich-info-termin/slots";
-import { BOOKING_PATH, courseSiteOrigin, participationUrl } from "@/lib/orientierungskurs/config";
+import { BOOKING_PATH, courseSiteOrigin, newOnlineMeetingUrl, participationUrl } from "@/lib/orientierungskurs/config";
 import {
-  COURSE_FORMAT_LABEL, FIRST_COURSE_DATE, courseTimeLabel, earliestCourseDate, validCourseDate, validCourseMonth,
+  COURSE_FORMAT_LABEL, FIRST_COURSE_DATE, courseHoliday, courseTimeLabel, earliestCourseDate, validCourseDate, validCourseMonth,
 } from "@/lib/orientierungskurs/slots";
 import { COURSE_BOOKINGS, COURSE_STAFF, loadCourseDashboard, type DashboardBooking } from "@/lib/orientierungskurs/store";
 import { createSupabaseServiceRoleClient } from "@/lib/supabase/service";
 import { CourseAccessForm, type CourseProfileOption } from "./CourseAccessForm";
+import { CourseManageForm } from "./CourseManageForm";
 import { InviteEmployerForm } from "./InviteEmployerForm";
 import { CourseCalendar, adjacentMonth, courseCard, courseSecondary } from "./ui";
 
 type Search = { month?: string; day?: string };
 const linkClass = "break-all font-bold text-[#0F4F68] underline underline-offset-2";
 
-function CourseDetails({ course, open, origin }: { course: DashboardBooking; open: boolean; origin: string | null }) {
+function CourseDetails({ course, open, origin, onlineAvailable }: {
+  course: DashboardBooking; open: boolean; origin: string | null; onlineAvailable: boolean;
+}) {
   const participants = course.orientierungskurs_participants;
+  const archived = Boolean(course.cancelled_at);
   const attendance = participants.length === 1 ? "1 Anmeldung" : participants.length + " Anmeldungen";
   const items: [string, ReactNode][] = [
     ["Ansprechperson", course.contact_name],
@@ -25,10 +29,10 @@ function CourseDetails({ course, open, origin }: { course: DashboardBooking; ope
   if (course.address) items.push(["Schulungsadresse", course.address]);
   if (course.room) items.push(["Raum", course.room]);
   if (course.parking) items.push(["Parkhinweis", course.parking]);
-  if (course.meeting_url) {
+  if (course.meeting_url && !archived) {
     items.push(["Online-Kurs", <a key="meeting" className={linkClass} href={course.meeting_url} target="_blank" rel="noreferrer">Videokonferenz öffnen</a>]);
   }
-  if (origin) items.push(["Teilnahme", <a key="registration" className={linkClass} href={participationUrl(origin, course.registration_code)}>Anmeldeseite öffnen</a>]);
+  if (origin && !archived) items.push(["Teilnahme", <a key="registration" className={linkClass} href={participationUrl(origin, course.registration_code)}>Anmeldeseite öffnen</a>]);
 
   return (
     <details id={"kurs-" + course.registration_code} open={open} className="rounded-xl border border-[#cfe2e7] bg-white">
@@ -36,6 +40,7 @@ function CourseDetails({ course, open, origin }: { course: DashboardBooking; ope
         <span className="break-words font-extrabold text-[#123947]">{course.company}</span>
         <span className="mt-1 block text-sm text-slate-700">
           {formatDateLongDe(course.slot_date)} · {courseTimeLabel(course.slot_time)} · {COURSE_FORMAT_LABEL[course.format]} · {attendance}
+          {archived && " · Abgesagt"}
         </span>
       </summary>
       <div className="space-y-4 border-t border-[#d9e8eb] px-4 py-4">
@@ -60,6 +65,14 @@ function CourseDetails({ course, open, origin }: { course: DashboardBooking; ope
             </ul>
           )}
         </div>
+        <a className={courseSecondary} href={"/partner/pflegekurse/" + course.id + "/export"}>Kursdaten als CSV herunterladen</a>
+        {!archived && (
+          <CourseManageForm onlineAvailable={onlineAvailable} course={{
+            id: course.id, revision: course.revision, slot_date: course.slot_date, slot_time: course.slot_time,
+            format: course.format, company: course.company, contact_name: course.contact_name, contact_email: course.contact_email,
+            contact_phone: course.contact_phone, address: course.address, room: course.room, parking: course.parking,
+          }} />
+        )}
       </div>
     </details>
   );
@@ -103,11 +116,14 @@ export async function CourseDashboard({ search, admin = false }: { search: Searc
   const [bookings, next] = client ? await Promise.all([
     loadCourseDashboard(client, month),
     client.from(COURSE_BOOKINGS).select("slot_date").gt("slot_date", month + "-01")
-      .gte("slot_date", today).order("slot_date").order("slot_time").limit(1).maybeSingle(),
+      .is("cancelled_at", null).gte("slot_date", today).order("slot_date").order("slot_time").limit(1).maybeSingle(),
   ]) : [null, null];
-  const selected = day ? bookings?.filter((course) => course.slot_date === day) : bookings;
+  const active = bookings?.filter((course) => !course.cancelled_at) ?? [];
+  const selected = day ? active.filter((course) => course.slot_date === day) : active;
+  const archive = bookings?.filter((course) => course.cancelled_at) ?? [];
   const nextDate = next?.data?.slot_date as string | undefined;
   const origin = courseSiteOrigin();
+  const onlineAvailable = Boolean(newOnlineMeetingUrl());
 
   return (
     <section className="mx-auto max-w-6xl space-y-5 px-4 py-6 sm:px-7 sm:py-8">
@@ -127,7 +143,8 @@ export async function CourseDashboard({ search, admin = false }: { search: Searc
               ? <Link className={courseSecondary + " px-3"} aria-label="Nächster Monat" href={url(adjacentMonth(month, 1))}>›</Link>
               : <button type="button" className={courseSecondary + " px-3"} aria-label="Nächster Monat" disabled>›</button>}
             renderDay={(date) => {
-              const count = bookings?.filter((course) => course.slot_date === date).length ?? 0;
+              const count = active.filter((course) => course.slot_date === date).length;
+              const holiday = courseHoliday(date);
               return count ? (
                 <Link href={url(month, date)} aria-current={date === day ? "date" : undefined}
                   aria-label={formatDateLongDe(date) + ", " + count + (count === 1 ? " Kurs" : " Kurse")}
@@ -135,7 +152,12 @@ export async function CourseDashboard({ search, admin = false }: { search: Searc
                     (date === day ? "bg-[#0F4F68] text-white" : "bg-[#e8f3f5] text-[#0F4F68] hover:bg-[#d9ecef]")}>
                   {Number(date.slice(-2))}<span aria-hidden="true" className="text-[10px] font-semibold">{count} {count === 1 ? "Kurs" : "Kurse"}</span>
                 </Link>
-              ) : <span className="grid min-h-11 place-items-center text-sm text-slate-500">{Number(date.slice(-2))}</span>;
+              ) : (
+                <span title={holiday} aria-label={holiday ? formatDateLongDe(date) + ", " + holiday : undefined}
+                  className={"grid min-h-11 place-items-center rounded-lg text-sm text-slate-500 " + (holiday ? "bg-amber-50" : "")}>
+                  {Number(date.slice(-2))}
+                </span>
+              );
             }} />
           {nextDate && !nextDate.startsWith(month) && <Link className={linkClass + " mt-3 inline-block text-sm"} href={url(nextDate.slice(0, 7), nextDate)}>Zum nächsten gebuchten Kurs</Link>}
         </section>
@@ -145,13 +167,21 @@ export async function CourseDashboard({ search, admin = false }: { search: Searc
             {day && <Link className={courseSecondary} href={url(month)}>Ganzer Monat</Link>}
           </div>
           {bookings === null ? <p role="status">Kurse konnten gerade nicht geladen werden.</p> :
-            selected?.length ? (
+            selected.length ? (
               <div className="grid gap-2">
-                {selected.map((course) => <CourseDetails key={course.id} course={course} origin={origin} open={Boolean(day)} />)}
+                {selected.map((course) => <CourseDetails key={course.id} course={course} origin={origin} open={Boolean(day)} onlineAvailable={onlineAvailable} />)}
               </div>
             ) : <p>Für diesen Zeitraum sind keine Kurse gebucht.</p>}
         </section>
       </div>
+      {archive.length > 0 && (
+        <details className={courseCard}>
+          <summary className="cursor-pointer text-lg font-extrabold text-[#123947]">Gelöschte Kurse im Monat ({archive.length})</summary>
+          <div className="mt-3 grid gap-2">
+            {archive.map((course) => <CourseDetails key={course.id} course={course} origin={origin} open={false} onlineAvailable={onlineAvailable} />)}
+          </div>
+        </details>
+      )}
       {admin && <CourseAccessSection />}
     </section>
   );

@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState, useTransition, type FormEvent } from "react";
 import { bookOrientationCourse, getCourseAvailability } from "@/lib/actions/orientierungskurs";
 import { formatDateLongDe } from "@/lib/betrieblich-info-termin/slots";
-import { COURSE_FORMAT_LABEL, courseTimeLabel, type CourseFormat } from "@/lib/orientierungskurs/slots";
+import { COURSE_FORMAT_LABEL, courseHoliday, courseTimeLabel, type CourseFormat } from "@/lib/orientierungskurs/slots";
 import { courseBookingSchema, type CourseBookingInput } from "@/lib/validations/orientierungskurs";
 import {
   adjacentMonth, CourseCalendar, CourseField, CourseFormPrivacy, CourseHoneypot,
@@ -163,22 +163,25 @@ export function BookingWizard({ earliestDate, onlineAvailable }: { earliestDate:
 
       {step === 1 && (
         <>
-          <p className="mb-4 text-sm text-slate-700">Alle Termine dauern zwei Stunden. Die Uhrzeiten gelten für Deutschland.</p>
+          <p className="mb-4 text-sm text-slate-700">Die Kurse finden montags bis freitags statt. Feiertage sind gesperrt. Alle Termine dauern zwei Stunden.</p>
           <div className="grid gap-5 sm:grid-cols-2">
             <CourseCalendar month={month}
               previous={<button type="button" className={courseSecondary + " px-3"} aria-label="Vorheriger Monat"
                 disabled={month <= (calendar?.ok ? calendar.earliestDate : earliestDate).slice(0, 7)} onClick={() => changeMonth(-1)}>‹</button>}
               next={<button type="button" className={courseSecondary + " px-3"} aria-label="Nächster Monat"
                 disabled={month === "9999-12"} onClick={() => changeMonth(1)}>›</button>}
-              renderDay={(day) => (
-                <button type="button" className={"min-h-11 w-full rounded-lg text-sm font-bold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 disabled:text-slate-400 " +
-                  (day === date ? "bg-[#0F4F68] text-white" : "enabled:bg-[#edf6f8] enabled:text-[#0F4F68] enabled:hover:bg-[#dbedf1]")}
-                  disabled={!calendar?.ok || !calendar.times[day]?.length}
-                  aria-pressed={day === date} aria-label={formatDateLongDe(day)}
-                  onClick={() => { setDate(day); setTime(""); }}>
-                  {Number(day.slice(-2))}
-                </button>
-              )} />
+              renderDay={(day) => {
+                const holiday = courseHoliday(day);
+                return (
+                  <button type="button" className={"min-h-11 w-full rounded-lg text-sm font-bold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 disabled:text-slate-500 " +
+                    (holiday ? "bg-amber-50" : day === date ? "bg-[#0F4F68] text-white" : "enabled:bg-[#edf6f8] enabled:text-[#0F4F68] enabled:hover:bg-[#dbedf1]")}
+                    disabled={Boolean(holiday) || !calendar?.ok || !calendar.times[day]?.length} title={holiday}
+                    aria-pressed={day === date} aria-label={formatDateLongDe(day) + (holiday ? ", " + holiday : "")}
+                    onClick={() => { setDate(day); setTime(""); }}>
+                    {Number(day.slice(-2))}
+                  </button>
+                );
+              }} />
             <div className="rounded-xl bg-[#f2f8f9] p-4">
               {!calendar && <p role="status">Freie Termine werden geladen …</p>}
               {calendar && !calendar.ok && (

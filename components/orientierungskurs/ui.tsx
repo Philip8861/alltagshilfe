@@ -56,6 +56,8 @@ export function CourseCalendar({ month, previous, next, renderDay }: {
   renderDay: (date: string) => ReactNode;
 }) {
   const { year, month: number } = ymdToYearMonth(month);
+  const weekdays = courseMonthDates(month).filter((_, index) => index % 7 < 5);
+  const firstWeek = Math.floor(weekdays.findIndex(Boolean) / 5) * 5;
   return (
     <div>
       <div className="mb-3 flex items-center justify-between gap-3">
@@ -63,9 +65,9 @@ export function CourseCalendar({ month, previous, next, renderDay }: {
         <h3 className="text-center font-extrabold text-[#123947]" aria-live="polite">{monthLabelDe(year, number)}</h3>
         {next}
       </div>
-      <div className="grid grid-cols-7 gap-1 text-center">
-        {WEEKDAY_HEADERS_DE.map((day) => <span key={day} className="pb-1 text-xs font-bold text-slate-600">{day}</span>)}
-        {courseMonthDates(month).map((date, index) =>
+      <div className="grid grid-cols-5 gap-1 text-center">
+        {WEEKDAY_HEADERS_DE.slice(0, 5).map((day) => <span key={day} className="pb-1 text-xs font-bold text-slate-600">{day}</span>)}
+        {weekdays.slice(firstWeek).map((date, index) =>
           date ? <div key={date}>{renderDay(date)}</div> : <div key={"empty-" + index} aria-hidden="true" />,
         )}
       </div>

@@ -137,6 +137,7 @@ const SIMPLE_EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
  */
 export async function sendTransactionalMail(input: {
   to: string;
+  from?: string;
   subject: string;
   text: string;
   html?: string;
@@ -167,7 +168,7 @@ export async function sendTransactionalMail(input: {
     });
 
     await transporter.sendMail({
-      from: conn.from,
+      from: input.from ?? conn.from,
       to,
       subject,
       text: input.text,

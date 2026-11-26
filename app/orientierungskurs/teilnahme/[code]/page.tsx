@@ -27,7 +27,8 @@ export default async function TeilnahmePage({ params }: { params: Promise<{ code
             <p className="mb-5 rounded-xl bg-[#edf6f8] p-4 font-bold text-[#123947]">
               {formatDateLongDe(course.slot_date)} · {courseTimeLabel(course.slot_time)} · {COURSE_FORMAT_LABEL[course.format]}
             </p>
-            {startsInFuture(course.slot_date, course.slot_time)
+            {course.cancelled_at ? <p>Dieser Kurs wurde abgesagt. Die Anmeldung ist geschlossen.</p> :
+            startsInFuture(course.slot_date, course.slot_time)
               ? <ParticipantForm code={code} />
               : <p>Die Anmeldung zu diesem Kurs ist geschlossen.</p>}
           </>

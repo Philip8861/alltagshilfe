@@ -6,6 +6,8 @@ import { createCourseFlyer } from "./flyer";
 import { COURSE_FORMAT_LABEL, courseTimeLabel } from "./slots";
 import type { Booking } from "./store";
 
+const COURSE_MAIL_FROM = "Alltagshilfe-Süd <info@alltagshilfe-sued.de>";
+
 type CourseMail = {
   to: string;
   subject: string;
@@ -21,7 +23,7 @@ async function sendMail({ to, subject, headline, message, rows = [], link, qrCod
   const text = [message, ...rows.map(({ label, value }) => label + ": " + value),
     link ? link.label + ": " + link.href : ""].filter(Boolean).join("\n\n");
   const result = await sendTransactionalMail({
-    to, subject, text, attachments,
+    to, from: COURSE_MAIL_FROM, subject, text, attachments,
     html: buildBrandedNotificationHtml({
       kindBadge: "Orientierungskurs", headline, rows, detailText: message, qrCodeCid,
       ctaHref: link?.href, ctaLabel: link?.label,
