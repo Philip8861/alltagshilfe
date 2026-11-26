@@ -106,7 +106,7 @@ export function InfoAppointmentForm({ earliestDate }: { earliestDate: string }) 
     <form onSubmit={onSubmit} className={courseCard + " space-y-5"} aria-busy={pending}>
       <div>
         <h2 className="text-2xl font-extrabold text-[#123947]">Tag und Uhrzeit wählen</h2>
-        <p className="mt-2 text-sm text-slate-700">Montag bis Freitag von 08:00 bis 16:00 Uhr. Feiertage sind gesperrt.</p>
+        <p className="mt-2 text-sm text-slate-700">Startzeiten von 08:00 bis 16:00 Uhr, Montag bis Freitag. Feiertage sind gesperrt.</p>
       </div>
       {error}
       <div className="grid items-start gap-4 sm:grid-cols-2">
