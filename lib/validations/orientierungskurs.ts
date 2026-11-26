@@ -55,3 +55,18 @@ export const courseInfoAppointmentSchema = z.object({
 });
 
 export type CourseInfoAppointmentInput = z.input<typeof courseInfoAppointmentSchema>;
+
+export const courseInvitationSchema = z.object({
+  email: courseEmail,
+  id: z.string().uuid(),
+  recipient: z.discriminatedUnion("kind", [
+    z.object({
+      kind: z.literal("named"),
+      salutation: z.enum(["frau", "herr"], { message: "Bitte wählen Sie eine Anrede." }),
+      lastName: requiredText(80, "Bitte geben Sie den Nachnamen für die Anrede an."),
+    }),
+    z.object({ kind: z.literal("unknown") }),
+  ], { errorMap: () => ({ message: "Bitte geben Sie Anrede und Nachname an oder wählen Sie „Nicht bekannt“." }) }),
+});
+
+export type CourseInvitationInput = z.input<typeof courseInvitationSchema>;

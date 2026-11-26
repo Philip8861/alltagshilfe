@@ -8,6 +8,7 @@ export function InviteEmployerForm() {
   const [email, setEmail] = useState("");
   const [salutation, setSalutation] = useState<"" | "frau" | "herr">("");
   const [lastName, setLastName] = useState("");
+  const [nameUnknown, setNameUnknown] = useState(false);
   const [result, setResult] = useState<{ ok: boolean; message: string }>();
   const [pending, startTransition] = useTransition();
   const request = useRef<Parameters<typeof inviteCourseEmployer>[0] | null>(null);
@@ -15,13 +16,16 @@ export function InviteEmployerForm() {
   function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const address = email.trim().toLowerCase();
-    const recipient = salutation ? { salutation, lastName: lastName.trim() } : undefined;
-    if (recipient && !recipient.lastName) {
-      setResult({ ok: false, message: "Bitte geben Sie den Nachnamen für die Anrede an." });
+    const recipient = nameUnknown
+      ? { kind: "unknown" as const }
+      : salutation && lastName.trim() ? { kind: "named" as const, salutation, lastName: lastName.trim() } : null;
+    if (!recipient) {
+      setResult({ ok: false, message: "Bitte geben Sie Anrede und Nachname an oder wählen Sie „Nicht bekannt“." });
       return;
     }
-    const input = request.current?.email === address && request.current.recipient?.salutation === recipient?.salutation &&
-      request.current.recipient?.lastName === recipient?.lastName ? request.current : { email: address, recipient, id: crypto.randomUUID() };
+    const previous = request.current;
+    const input = previous?.email === address && JSON.stringify(previous.recipient) === JSON.stringify(recipient)
+      ? previous : { email: address, recipient, id: crypto.randomUUID() };
     request.current = input;
     setResult(undefined);
     startTransition(async () => {
@@ -32,6 +36,7 @@ export function InviteEmployerForm() {
           setEmail("");
           setSalutation("");
           setLastName("");
+          setNameUnknown(false);
           request.current = null;
         }
       } catch {
@@ -47,24 +52,31 @@ export function InviteEmployerForm() {
       <form onSubmit={onSubmit} className="mt-4 space-y-3" aria-busy={pending}>
         <CourseField label="E-Mail-Adresse des Unternehmens" name="email" type="email" required maxLength={254}
           value={email} onChange={(event) => setEmail(event.target.value)} disabled={pending} />
-        <details className="text-sm">
-          <summary className="cursor-pointer font-semibold text-[#0F4F68]">Persönliche Anrede (optional)</summary>
-          <div className="mt-2 grid gap-3 sm:grid-cols-2">
+        <fieldset className="space-y-2 text-sm" disabled={pending}>
+          <legend className="font-bold text-[#0F4F68]">Persönliche Anrede</legend>
+          <div className="grid gap-3 sm:grid-cols-2">
             <label className="grid gap-1.5 font-bold text-slate-800">
               Anrede
-              <select className={courseField + " font-normal"} value={salutation} disabled={pending} onChange={(event) => {
+              <select className={courseField + " font-normal disabled:bg-slate-100"} value={salutation}
+                required={!nameUnknown} disabled={nameUnknown} onChange={(event) => {
                 const value = event.target.value;
                 setSalutation(value === "frau" || value === "herr" ? value : "");
               }}>
-                <option value="">Allgemeine Anrede</option>
+                <option value="" disabled>Bitte wählen</option>
                 <option value="frau">Frau</option>
                 <option value="herr">Herr</option>
               </select>
             </label>
-            <CourseField label="Nachname" name="lastName" maxLength={80}
-              disabled={pending || !salutation} value={lastName} onChange={(event) => setLastName(event.target.value)} />
+            <CourseField label="Nachname" name="lastName" maxLength={80} required={!nameUnknown}
+              disabled={nameUnknown} value={lastName} onChange={(event) => setLastName(event.target.value)} />
           </div>
-        </details>
+          <label className="inline-flex min-h-11 items-center gap-2 font-semibold text-slate-800">
+            <input type="checkbox" checked={nameUnknown} onChange={(event) => setNameUnknown(event.target.checked)}
+              className="h-4 w-4 accent-[#0F4F68]" />
+            Nicht bekannt
+          </label>
+          {nameUnknown && <p className="text-slate-700">Die Einladung beginnt mit „Sehr geehrte Damen und Herren,“.</p>}
+        </fieldset>
         <button type="submit" className={courseButton} disabled={pending}>{pending ? "Wird versendet …" : "Einladung versenden"}</button>
       </form>
       {result && <p role={result.ok ? "status" : "alert"} className={"mt-3 break-words text-sm font-bold " + (result.ok ? "text-emerald-800" : "text-red-800")}>{result.message}</p>}

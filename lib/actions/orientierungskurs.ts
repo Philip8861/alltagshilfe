@@ -9,7 +9,8 @@ import { rateLimitWithConfig } from "@/lib/rate-limit";
 import { getClientIp } from "@/lib/security";
 import { createSupabaseServiceRoleClient } from "@/lib/supabase/service";
 import {
-  courseBookingSchema, courseEmail, courseParticipantSchema, type CourseBookingInput, type CourseParticipantInput,
+  courseBookingSchema, courseInvitationSchema, courseParticipantSchema,
+  type CourseBookingInput, type CourseInvitationInput, type CourseParticipantInput,
 } from "@/lib/validations/orientierungskurs";
 import { getCourseOperator } from "@/lib/orientierungskurs/access";
 import { courseSiteOrigin, newOnlineMeetingUrl, participationUrl } from "@/lib/orientierungskurs/config";
@@ -108,19 +109,10 @@ export async function registerCourseParticipant(input: CourseParticipantInput): 
   return { ok: true, needsMailRetry: !mailSent };
 }
 
-export async function inviteCourseEmployer(input: {
-  email: string; id: string; recipient?: { salutation: "frau" | "herr"; lastName: string };
-}): Promise<{ ok: boolean; message: string }> {
+export async function inviteCourseEmployer(input: CourseInvitationInput): Promise<{ ok: boolean; message: string }> {
   const sender = await getCourseOperator();
   if (!sender) return { ok: false, message: "Sie haben keine Berechtigung, Kurseinladungen zu versenden." };
-  const parsed = z.object({
-    email: courseEmail,
-    id: z.string().uuid(),
-    recipient: z.object({
-      salutation: z.enum(["frau", "herr"]),
-      lastName: z.string().trim().min(1, "Bitte geben Sie den Nachnamen für die Anrede an.").max(80),
-    }).optional(),
-  }).safeParse(input);
+  const parsed = courseInvitationSchema.safeParse(input);
   if (!parsed.success) return { ok: false, message: parsed.error.issues[0].message };
   const { email, id, recipient } = parsed.data;
   if (!rateLimitWithConfig("course-invite:" + sender, 40, 15 * 60_000).success ||
@@ -134,7 +126,7 @@ export async function inviteCourseEmployer(input: {
   }
   const key = createHash("sha256").update(JSON.stringify([sender, id, email, recipient])).digest("hex");
   const sent = await sendCourseMailOnce(client, "invite:" + key,
-    () => sendEmployerInvitation(client, email, origin, recipient));
+    () => sendEmployerInvitation(client, email, origin, recipient.kind === "named" ? recipient : undefined));
   return sent ? { ok: true, message: "Einladung an " + email + " versendet." } :
     { ok: false, message: "Die Einladung konnte nicht versendet werden. Bitte erneut versuchen." };
 }
